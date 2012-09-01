@@ -47,7 +47,7 @@
 <indexterm><primary>WindowBase Class</primary></indexterm>
 <para>
   WindowBase is a mixin class with methods that are common to all windows. It is inherited by both the
-  <xref linkend="chpDialogObject" /> and dialog <xref linkend="chpDialogControlObject" /> objects.
+  <xref linkend="chpDialogObject"/> and dialog <xref linkend="chpDialogControlObject"/> objects.
   Every dialog object and every dialog control object have the instance methods of the WindowBase class. In addition,
   the <xref linkend="clsWindow"/> class inherits the WindowBase class.
 </para>
@@ -285,7 +285,7 @@
 <entry>Gets the text of the dialog.</entry>
 </row>
 <row>
-<entry>title= (<xref linkend="mthTitleEquals" />)</entry>
+<entry>title= (<xref linkend="mthTitleEquals"/>)</entry>
 <entry>Sets the text of the dialog.</entry>
 </row>
 <row>
@@ -366,7 +366,7 @@
 </programlisting>
 
 <para>
-  The window handle (<xref linkend="defHandle" />) of the underlying window.
+  The window handle (<xref linkend="defHandle"/>) of the underlying window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">hwnd get:</emphasis></term>
@@ -499,15 +499,15 @@ Window handeles:
 
 <para>
   The value of the <emphasis role="italic">pixelCX</emphasis> is the width of the window in
-  pixels (<xref linkend="defPixel" />).
+  pixels (<xref linkend="defPixel"/>).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     The <emphasis role="italic">pixelCX</emphasis> value is the correct
-    width of the window, as opposed to the <xref linkend="atrSizeX" /> attribute which is usually
-    <xref linkend="ovvInaccurate"/> because it is calculated using <xref linkend="atrFactorX" />.
+    width of the window, as opposed to the <xref linkend="atrSizeX"/> attribute which is usually
+    <xref linkend="ovvInaccurate"/> because it is calculated using <xref linkend="atrFactorX"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCX get:</emphasis></term>
@@ -596,16 +596,16 @@ The dialog unit height of the button is: 14
 
 <para>
   The value of the <emphasis role="italic">pixelCY</emphasis> is the height of the window in
-  pixels (<xref linkend="defPixel" />).
+  pixels (<xref linkend="defPixel"/>).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     The <emphasis role="italic">pixelCY</emphasis> value is the correct height of the window, as opposed to the
- <xref linkend="atrSizeY" /> attribute which is usually
+ <xref linkend="atrSizeY"/> attribute which is usually
     <xref linkend="ovvInaccurate"/> because it is calculated using
- <xref linkend="atrFactorY" />.
+ <xref linkend="atrFactorY"/>.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCY get:</emphasis></term>
   <listitem>
@@ -631,7 +631,7 @@ The dialog unit height of the button is: 14
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The pixelCX (<xref linkend="examplePixelCX" />) example also uses the <emphasis role="italic">pixelCY</emphasis>
+    The pixelCX (<xref linkend="examplePixelCX"/>) example also uses the <emphasis role="italic">pixelCY</emphasis>
     attribute.
   </para>
   </listitem></varlistentry>
@@ -652,15 +652,15 @@ The dialog unit height of the button is: 14
 
 <para>
   The <emphasis role="italic">sizeX</emphasis> attribute was intended to be the width of the window and
- <xref linkend="atrSizeY" /> the height of the window in dialog units (<xref linkend="defDialogUnit" />).
-  However, in almost all cases, the value is not correct. (<xref linkend="ovvInaccurate" />)
+ <xref linkend="atrSizeY"/> the height of the window in dialog units (<xref linkend="defDialogUnit"/>).
+  However, in almost all cases, the value is not correct. (<xref linkend="ovvInaccurate"/>)
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    For a dialog control, <emphasis role="italic">sizeX</emphasis> and <xref linkend="atrSizeY" /> are
-    calculated using <xref linkend="atrFactorX" /> and <xref linkend="atrFactorY" />, which
+    For a dialog control, <emphasis role="italic">sizeX</emphasis> and <xref linkend="atrSizeY"/> are
+    calculated using <xref linkend="atrFactorX"/> and <xref linkend="atrFactorY"/>, which
     inherently makes them incorrect in almost all cases. <xref linkend="clsUserDialog"/> dialogs and their
     subclasses will have the correct values. However, the <emphasis role="italic">sizeX</emphasis> and <emphasis
     role="italic">sizeY</emphasis> values in a <xref linkend="clsResDialog"/> dialog are 0.
@@ -670,15 +670,15 @@ The dialog unit height of the button is: 14
   </para>
   <para>
     To obtain the correct width and height of a window in either pixels or dialog units, use the pixelCX (<xref
-    linkend="atrPixelCX" />) and <xref linkend="atrPixelCY" />  attributes. These values can be correctly
-    converted (<xref linkend="examplePixelCX" />) to dialog units if dialog units are desired.
+    linkend="atrPixelCX" />) and <xref linkend="atrPixelCY"/>  attributes. These values can be correctly
+    converted (<xref linkend="examplePixelCX"/>) to dialog units if dialog units are desired.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     This example displays the width and height of the ok button using <emphasis role="italic">sizeX</emphasis> and
-    <emphasis role="italic">sizeY</emphasis>. Contrast the output with the example (<xref linkend="examplePixelCX" />)
+    <emphasis role="italic">sizeY</emphasis>. Contrast the output with the example (<xref linkend="examplePixelCX"/>)
     for <emphasis role="italic">pixelCx</emphasis>.
 <programlisting>
 <![CDATA[
@@ -738,7 +738,7 @@ The dialog unit height of the button is: 11
 <para>
   The <emphasis role="italic">sizeY</emphasis> attribute is the counterpart to the <emphasis
   role="italic">sizeX</emphasis> attribute. The attribute was meant to be the height of the window in dialog
-  units (<xref linkend="defDialogUnit" />), but is not accurate. The documentation for sizeX (<xref linkend="atrSizeX"
+  units (<xref linkend="defDialogUnit"/>), but is not accurate. The documentation for sizeX (<xref linkend="atrSizeX"
   />) has a complete discussion of both attributes.
 </para> </section>  <!-- End WindowBase::sizeY() [attribute]  -->
 
@@ -766,7 +766,7 @@ The dialog unit height of the button is: 11
       <listitem>
       <para>
         A <xref linkend="clsPoint"/> object specifying the point to test for. The point must be in
-        client (<xref linkend="defScreenCoordinates" />) coordinates of the parent window.
+        <xref linkend="defScreenCoordinates"/> area coordinates of the parent window.
       </para> </listitem></varlistentry>
       <varlistentry><term>flags [optional]</term>
       <listitem>
@@ -817,7 +817,7 @@ The dialog unit height of the button is: 11
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the window handle (<xref linkend="defHandle" />) of the first child window meeting the seach criteria. If
+    Returns the window handle (<xref linkend="defHandle"/>) of the first child window meeting the seach criteria. If
     the point lies within the parent window, but not within a child window meeting the search criteria, then the handle
     of the parent window is returned. If the point lies outside of the parent window, then 0 is returned.
   </para>
@@ -829,8 +829,8 @@ The dialog unit height of the button is: 11
   </para>
   <para>
     Since this method is a method of the <xref linkend="clsWindowBase"/> class, it is a method of both
-    the <xref linkend="chpDialogObject" /> object and the dialog
-    control (<xref linkend="chpDialogControlObject" />) object. It is of limited use with a dialog control because
+    the <xref linkend="chpDialogObject"/> object and the dialog
+    control (<xref linkend="chpDialogControlObject"/>) object. It is of limited use with a dialog control because
     most dialog controls do not have child windows. However, some do. For instance, a list (<xref linkend="clsListView"
     />) view control in report view contains a child header window.
   </para> </listitem></varlistentry>
@@ -840,7 +840,7 @@ The dialog unit height of the button is: 11
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -920,7 +920,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Converts the client-area (<xref linkend="defClientArea" />) coordinates of the specified point(s) in this window to
+  Converts the <xref linkend="defClientArea"/> area coordinates of the specified point(s) in this window to
   its screen coordinates.
 </para>
 <variablelist>
@@ -930,7 +930,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -972,7 +972,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1032,7 +1032,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1078,7 +1078,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">clientToScreen</emphasis> method maps the specified
-  client-area (<xref linkend="defClientArea" />) coordinates of this window to screen coordinates.
+  <xref linkend="defClientArea"/> area coordinates of this window to screen coordinates.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1265,7 +1265,7 @@ if self~isVisible then self~disable
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <xref linkend="ovvUnderlying" /> dialog must exist when this method is invoked.
+    The <xref linkend="ovvUnderlying"/> dialog must exist when this method is invoked.
   </para>
   <para>
     When using the HIDE FAST options string, there are a number of caveats that may not be readily apparent. See the
@@ -1279,7 +1279,7 @@ if self~isVisible then self~disable
     Raises syntax errors for incorrect usage.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable back to zero. However, the operating
+    Sets the <xref linkend="dotSystemErrorCode"/> variable back to zero. However, the operating
     system does not set the error code for any of the APIs used by this method, so the variable will alwasy be zero
     after invoking this method.
   </para>
@@ -1316,7 +1316,7 @@ self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
 </programlisting>
 
 <para>
-  The draw method casuses the entire client area (<xref linkend="defClientArea" />) of the window to be immemdiately
+  The draw method casuses the entire client (<xref linkend="defClientArea"/> of the window to be immemdiately
   repainted. It is exactly the same as the <xref linkend="mthRedrawClient"/> method, except that the
   background is never erased.
 </para>
@@ -1327,7 +1327,7 @@ self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
     Using this method before the underlying dialog is created does nothing.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1431,7 +1431,7 @@ if self~isValidLastName(lastName) then self~newEdit(IDC_EDIT_FIRSTNAME)~enable
 </programlisting>
 
 <para>
-  Returns the window handle (<xref linkend="defHandle" />) of the current foreground window.
+  Returns the window handle (<xref linkend="defHandle"/>) of the current foreground window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1503,7 +1503,7 @@ separated by blanks.
   The flags are returned in their numeric format. This function is very similar to the
  <xref linkend="mthGetStyleRaw"/>() method, allowing the programmer to get the extended window flags.
   The numeric value of the extended style flags can be looked up using the
-  Windows documentation (<xref linkend="defWindowsDoc" />) and the Platform SDK (<xref linkend="defPlatformSDK" />).
+  Windows documentation (<xref linkend="defWindowsDoc"/>) and the Platform SDK (<xref linkend="defPlatformSDK"/>).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1574,7 +1574,7 @@ List control extended style flags:
 
 <para>
   Retrieves the identification number of the window. For a dialog window this will almost certainly be zero. For a
-  dialog control window it will be the <xref linkend="defResourceId" /> of the control.
+  dialog control window it will be the <xref linkend="defResourceId"/> of the control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1681,7 +1681,7 @@ self~move(px - 10, py - 10)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     This method has no effect if the underlying dialog has not yet been created.
@@ -1747,7 +1747,7 @@ self~move(px - 10, py - 10)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     This method has no effect if the underlying dialog has not yet been created.
@@ -1845,13 +1845,13 @@ height = bottom - top
   <listitem>
   <para>
     The values returned by this method are usually <xref linkend="ovvInaccurate"/> because they are
-    calculated using <xref linkend="atrFactorX" /> and <xref linkend="atrFactorY" />. The
+    calculated using <xref linkend="atrFactorX"/> and <xref linkend="atrFactorY"/>. The
  <xref linkend="mthGetRealSize"/>() method returns the correct size in pixels. Normally it is not
     necessary to covert to dialog units. However, if this is desired, use the
  <xref linkend="mthPixel2dlgUnit"/> method to get the correct size.
   </para>
   <para>
-    This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying" />) has been
+    This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying"/>) has been
     created.
   </para>
   <para>
@@ -1890,8 +1890,8 @@ height = bottom - top
   The <emphasis role="italic">getStyleRaw</emphasis> method retrieves the window style flags of the window. The flags
   are returned in their numeric format.  This allows the programmer to determine the current style of any dialog or
   control.  However, the programmer needs to be able to look up the numeric value of the window style flags to make use
-  of this functionality. This can be done using the Windows documentation (<xref linkend="defWindowsDoc" />) and the
-  Platform SDK (<xref linkend="defPlatformSDK" />).
+  of this functionality. This can be done using the Windows documentation (<xref linkend="defWindowsDoc"/>) and the
+  Platform SDK (<xref linkend="defPlatformSDK"/>).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1983,7 +1983,7 @@ Tree-view Control styles
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     Using this method before the underlying dialog is created will fail.
@@ -2057,7 +2057,7 @@ Tree-view Control styles
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying" />) has been
+    This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying"/>) has been
     created.
   </para>
   <para>
@@ -2139,7 +2139,7 @@ stFont2~setRect(r)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying" />) has been
+    This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying"/>) has been
     created.
   </para>
   <para>
@@ -2147,7 +2147,7 @@ stFont2~setRect(r)
   </para>
   <para>
     Part of the purpose of this method is to provide backwards compatibility to the
-    deprecated (<xref linkend="ovvDeprecated" />) <emphasis role="italic">getTextSize</emphasis> method. This is the
+    deprecated (<xref linkend="ovvDeprecated"/>) <emphasis role="italic">getTextSize</emphasis> method. This is the
     reason for the rather convulted arguments. In general, the Rexx programmer should always use the
  <xref linkend="mthGetTextSizePx"/> method.
   </para>
@@ -2547,7 +2547,7 @@ Generic form:
 
 <para>
   Moves, (repositions,) the window to the point specified. The new position is specified in pixels and is relative to
-  the top, left corner of the owning window's client (<xref linkend="defClientArea" />) area. For a dialog this is the
+  the top, left corner of the owning window's client (<xref linkend="defClientArea"/>) area. For a dialog this is the
   screen and for a dialog control it is the dialog's client area.
 </para>
 <variablelist>
@@ -2624,7 +2624,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -2678,7 +2678,7 @@ Generic form:
 
 <para>
   Moves, (repositions,) the window to the point specified. The new position is specified in pixels and is relative to
-  the top, left corner of the owning window's client (<xref linkend="defClientArea" />) area. For a dialog this is the
+  the top, left corner of the owning window's client (<xref linkend="defClientArea"/>) area. For a dialog this is the
   screen and for a dialog control it is the dialog's client area.
 </para>
 <variablelist>
@@ -2884,7 +2884,7 @@ Generic form:
   <listitem>
   <para>
     This method provides an interface to the <emphasis role="italic">SetWindowPos</emphasis> Windows API. Consulting the
-    Microsoft docuementation (<xref linkend="defWindowsDoc" />) may give the programmer more insight into this method.
+    Microsoft docuementation (<xref linkend="defWindowsDoc"/>) may give the programmer more insight into this method.
     The <xref linkend="mthMoveTo"/>() method is a convenience method that provides a somewhat simplier
     interface. That convenience method has no provision for the <emphasis role="italic">hwndBehind</emphasis> argument
     and only accepts a subset of the show options.
@@ -2893,7 +2893,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -2945,7 +2945,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">redraw</emphasis> method immediately redraws the entire window and all its child windows,
-  recursively, including the non-client (<xref linkend="defClientArea" />) area of the window(s). Contrast this with
+  recursively, including the non-client (<xref linkend="defClientArea"/>) area of the window(s). Contrast this with
   some of the other draw methods such as <xref linkend="mthRedrawClient"/> or
  <xref linkend="mthDraw"/>, which only redraw the <emphasis role="italic">client</emphasis> area and not the
   child windows.
@@ -2957,7 +2957,7 @@ Generic form:
     Using this method before the underlying dialog is created does nothing.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3004,7 +3004,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">redrawClient</emphasis> method causes the entire
-  client area (<xref linkend="defClientArea" />) of the window to be redrawn.
+  client (<xref linkend="defClientArea"/> of the window to be redrawn.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -3013,7 +3013,7 @@ Generic form:
     Using this method before the underlying dialog is created does nothing.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3294,7 +3294,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -3347,7 +3347,7 @@ Generic form:
 
 <para>
   Converts the screen coordinates of the specified point(s) on the screen to
-  client-area (<xref linkend="defClientArea" />) coordinates of this window.
+  <xref linkend="defClientArea"/> area coordinates of this window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3388,7 +3388,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3428,7 +3428,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">screenToClient</emphasis> method maps the screen coordinates specified to the
-  client-area (<xref linkend="defClientArea" />) of this window.
+  <xref linkend="defClientArea"/> area of this window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3492,7 +3492,7 @@ Generic form:
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex" />)
+      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex"/>)
       hexadecimal formt.
     </para>
     </listitem></varlistentry>
@@ -3521,7 +3521,7 @@ Generic form:
   <listitem>
   <para>
     This method returns the response as a whole number. This will not be usable if the response is a window
-    handle (<xref linkend="defHandle" />). For those cases, use the
+    handle (<xref linkend="defHandle"/>). For those cases, use the
  <xref linkend="mthSendMessageHandle"/>() method.
   </para>
   <para>
@@ -3532,10 +3532,10 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
-    This method requires an understanding (<xref linkend="ovvWindowMessages" />) of Windows messages.
+    This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
   </para>
   <para>
     This method can not be used before the underlying dialog is created.
@@ -3571,7 +3571,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
 
 <para>
   Sends a Windows message to the underlying window this object represents and
-  returns the response as a handle (<xref linkend="defHandle" />).
+  returns the response as a handle (<xref linkend="defHandle"/>).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3582,7 +3582,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex" />)
+      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex"/>)
       hexadecimal formt.
     </para>
     </listitem></varlistentry>
@@ -3621,10 +3621,10 @@ MovableDialog~sendMessage"0x0402", 0, 0)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
-    This method requires an understanding (<xref linkend="ovvWindowMessages" />) of Windows messages.
+    This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
   </para>
   <para>
     This method can not be used before the underlying dialog is created.
@@ -3633,7 +3633,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example sets a new application (<xref linkend="defDialogIcon" />) icon. The old icon handle is saved
+    The following example sets a new application (<xref linkend="defDialogIcon"/>) icon. The old icon handle is saved
     so it can be restored at some later point.
 
 <programlisting>
@@ -3701,7 +3701,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Sets the new point/size (<xref linkend="ovvRectangleCoordinates" />) rectangle for the window. A point / size
+  Sets the new point/size (<xref linkend="ovvRectangleCoordinates"/>) rectangle for the window. A point / size
   rectangle specifies the position of the upper left corner of the window, relative to its parent window, the width of
   the window, and the height of the window. The point / size rectangle coordinates are specified in pixels.
 </para>
@@ -3813,7 +3813,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Note that the Microsoft documentation (<xref linkend="defWindowsDoc" />) says that if HIDEWINDOW or SHOWWINDOW is
+    Note that the Microsoft documentation (<xref linkend="defWindowsDoc"/>) says that if HIDEWINDOW or SHOWWINDOW is
     used, the window can not be moved or resized. However, experimentation seems to show that the documentation is
     wrong. It may be that this behavior is different on different versions of Windows.
   </para>
@@ -3824,7 +3824,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -3876,7 +3876,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     Using this method before the underlying dialog is created will fail.
@@ -3925,7 +3925,7 @@ Generic form:
   </para>
   <para>
     The <emphasis role="italic">setText</emphasis>, <xref linkend="mthSetTitle"/>, and
-    title= (<xref linkend="mthTitleEquals" />) methods do exactly the same thing. The methods are interchangeable.
+    title= (<xref linkend="mthTitleEquals"/>) methods do exactly the same thing. The methods are interchangeable.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -4227,13 +4227,13 @@ Generic form:
   <listitem>
   <para>
     This method provides a complete interface to the <emphasis role="italic">SetWindowPos</emphasis> Windows API.
-    Consulting the Microsoft docuementation (<xref linkend="defWindowsDoc" />) may give the programmer more insight into
+    Consulting the Microsoft docuementation (<xref linkend="defWindowsDoc"/>) may give the programmer more insight into
     this method. The <xref linkend="mthSetRect"/>() method is a convenience method that provides a somewhat
     simplier interface. That convenience method has no provision for the <emphasis role="italic">hwndBehind</emphasis>
     argument and only accepts a subset of the show options.
   </para>
   <para>
-    Note that the Microsoft documentation (<xref linkend="defWindowsDoc" />) says that if HIDEWINDOW or SHOWWINDOW is
+    Note that the Microsoft documentation (<xref linkend="defWindowsDoc"/>) says that if HIDEWINDOW or SHOWWINDOW is
     used, the window can not be moved or resized. However, experimentation seems to show that the documentation is
     wrong. It may be that this behavior is different on different versions of Windows.
   </para>
@@ -4244,7 +4244,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -4629,7 +4629,7 @@ Generic form:
   <listitem>
   <para>
     This method provides an interface to the <emphasis role="italic">SetWindowPos</emphasis> Windows API. Consulting the
-    Microsoft docuementation (<xref linkend="defWindowsDoc" />) may give the programmer more insight into this method.
+    Microsoft docuementation (<xref linkend="defWindowsDoc"/>) may give the programmer more insight into this method.
     The <xref linkend="mthResizeTo"/>() method is a convenience method that provides a somewhat
     simplier interface. That convenience method has no provision for the <emphasis role="italic">hwndBehind</emphasis>
     argument and only accepts a subset of the show options.
@@ -4638,7 +4638,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -4715,7 +4715,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">update</emphasis> method causes the entire
-  client area (<xref linkend="defClientArea" />) of the window to be invalidated and the background erased.
+  client (<xref linkend="defClientArea"/> of the window to be invalidated and the background erased.
   This method is similar to both the <xref linkend="mthRedrawClient"/> and
  <xref linkend="mthDraw"/> methods except that the window is, potentially, not repainted immediately.
 </para>
@@ -4726,7 +4726,7 @@ Generic form:
     Using this method before the underlying dialog is created does nothing.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4787,7 +4787,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Retrieves the coordinates of the bounding (<xref linkend="ovvRectangleCoordinates" />) rectangle of this window. The
+  Retrieves the coordinates of the bounding (<xref linkend="ovvRectangleCoordinates"/>) rectangle of this window. The
   dimensions are in pixels and the coordinates are relative to the upper-left corner of the screen.
 </para>
 <variablelist>
@@ -4827,14 +4827,14 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     This example uses <emphasis role="italic">windowRect</emphasis> to get the position of a tab control on the screen
-    and then translates those coordinates to its position in the client (<xref linkend="defClientArea" />) area of the
+    and then translates those coordinates to its position in the client (<xref linkend="defClientArea"/>) area of the
     dialot.
 <programlisting>
 <![CDATA[

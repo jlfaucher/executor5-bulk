@@ -65,7 +65,7 @@
 <para>
   The ooDialog programmer chooses the window styles for dialog controls when he defines the dialog, either by using a
   resource editor for dialogs defined with resource scripts or binary compiled resources, or by using the one of the
-  create... (<xref linkend="sctCreateMethods" />) methods for a user dialog. After the dialog control has been
+  <xref linkend="sctCreateMethods"/> methods for a user dialog. After the dialog control has been
   created, the individual dialog control classes provide methods to change those styles that can be changed, either by
   sending the proper message to the control or by accessing the control window directly.
 </para>
@@ -200,7 +200,7 @@
 <entry>Retrievs the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
 </row>
 <row>
-<entry>data= (<xref linkend="mthDataEquals" />)</entry>
+<entry>data= (<xref linkend="mthDataEquals"/>)</entry>
 <entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
 </row>
 <row>
@@ -341,7 +341,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGroup"/></entry>
-<entry>Adds or removes the group style (<xref linkend="wsgroup" />) for the control.</entry>
+<entry>Adds or removes the <xref linkend="wsgroup"/> style for the control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthHasKeyPressConnectionDialogControlObject"/></entry>
@@ -508,7 +508,7 @@
 <entry>Gets the text of the control.</entry>
 </row>
 <row>
-<entry>title= (<xref linkend="wbdcoTitleEquals" />)</entry>
+<entry>title= (<xref linkend="wbdcoTitleEquals"/>)</entry>
 <entry>Sets the text of the control.</entry>
 </row>
 <row>
@@ -558,7 +558,7 @@
 
 <section id="wbdcoFactorX"><title>factorX (Attribute)</title>
 <programlisting>
-WindowBase::<xref linkend="atrFactorX" />
+WindowBase::<xref linkend="atrFactorX"/>
 
 <![CDATA[
 >>--factorX--------------------------------------><
@@ -571,7 +571,7 @@ WindowBase::<xref linkend="atrFactorX" />
 
 <section id="wbdcoFactorY"><title>factorY (Attribute)</title>
 <programlisting>
-WindowBase::<xref linkend="atrFactorY" />
+WindowBase::<xref linkend="atrFactorY"/>
 
 <![CDATA[
 >>--factorY--------------------------------------><
@@ -597,8 +597,8 @@ WindowBase::<xref linkend="atrFactorY" />
 </programlisting>
 
 <para>
-  The <emphasis role="italic">hDlg</emphasis> attribute reflects the window handle (<xref linkend="defHandle" />) of
-  the <xref linkend="ovvUnderlying" /> Windows dialog that this dialog control belongs to.
+  The <emphasis role="italic">hDlg</emphasis> attribute reflects the window handle (<xref linkend="defHandle"/>) of
+  the <xref linkend="ovvUnderlying"/> Windows dialog that this dialog control belongs to.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">hDlg get:</emphasis></term>
@@ -620,7 +620,7 @@ WindowBase::<xref linkend="atrFactorY" />
 
 <section id="wbdcoHwnd"><title>hwnd</title>
 <programlisting>
-WindowBase::<xref linkend="atrHwnd" />
+WindowBase::<xref linkend="atrHwnd"/>
 
 <![CDATA[
 >>--hwnd-----------------------------------------><
@@ -667,7 +667,7 @@ WindowBase::<xref linkend="atrHwnd" />
 
 <section id="wbdcoInitCode"><title>initCode (Attribute)</title>
 <programlisting>
-WindowBase::<xref linkend="atrInitCode" />
+WindowBase::<xref linkend="atrInitCode"/>
 
 <![CDATA[
 >>--initCode-------------------------------------><
@@ -742,7 +742,7 @@ WindowBase::<xref linkend="atrSizeY"/>
 
 <section id="wbdcoPixelCX"><title>pixelCX (Attribute)</title>
 <programlisting>
-WindowBase::<xref linkend="atrPixelCX" />
+WindowBase::<xref linkend="atrPixelCX"/>
 
 <![CDATA[
 >>--pixelCX--------------------------------------><
@@ -753,7 +753,7 @@ WindowBase::<xref linkend="atrPixelCX" />
 
 <section id="wbdcoPixelCY"><title>pixelCY (Attribute)</title>
 <programlisting>
-WindowBase::<xref linkend="atrPixelCY" />
+WindowBase::<xref linkend="atrPixelCY"/>
 
 <![CDATA[
 >>--pixelCY--------------------------------------><
@@ -860,7 +860,7 @@ Generic form:
  <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
       </para>
       <para>
-        The coordinates are specified as client-area (<xref linkend="defClientArea" />) coordinates, in pixels.
+        The coordinates are specified as <xref linkend="defClientArea"/> area coordinates, in pixels.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -884,7 +884,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -933,7 +933,7 @@ Generic form:
     The operating system translates the numeric <xref linkend="clsVK"/> key code produced by a key down /
     key up combination into a numeric <emphasis role="italic">character</emphasis> code. The character code is sent to
     the window with the keyboard focus in a character event notification. For enhanced 101-key and 102-key keyboards,
-    the character (<xref linkend="evtDialogControlCHAR" />) event handler will also receive extended key
+    the character (<xref linkend="evtDialogControlCHAR"/>) event handler will also receive extended key
     notifications. The extended keys are the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and the arrow keys in the clusters
     to the left of the numeric keypad.
   </para>
@@ -944,7 +944,7 @@ Generic form:
     <computeroutput>45~d2c == -</computeroutput>.
   </para>
   <para>
-    The character codes expected to reach the character (<xref linkend="evtDialogControlCHAR" />) event handler are in
+    The character codes expected to reach the character (<xref linkend="evtDialogControlCHAR"/>) event handler are in
     the following table. The explanation for the character event handler describes how to determine which character is
     received.
 
@@ -994,8 +994,8 @@ Generic form:
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    This method requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary
-    use the<xref linkend="mthComCtl32Version" /> method to determine the current version of the
+    This method requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary
+    use the <xref linkend="mthComCtl32Version"/> method to determine the current version of the
     library.
   </para>
   </listitem></varlistentry>
@@ -1059,8 +1059,8 @@ Generic form:
 </para>
 <para>
   The programmer must return a value from the event handler and the interpreter waits for this return. Generic
-  information on how to code (<xref linkend="sctCodingEventHandlers" />) event handlers is included in the
-  documentation for the EventNotification (<xref linkend="clsEventNotification" />( class.
+  information on how to code (<xref linkend="sctCodingEventHandlers"/>) event handlers is included in the
+  documentation for the EventNotification (<xref linkend="clsEventNotification"/>( class.
 </para>
 
 <programlisting>
@@ -1337,8 +1337,8 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method requires CommonControl<xref linkend="ovvComctl32" /> version 6.0 or later. If necessary
-    use the<xref linkend="mthComCtl32Version" /> method to determine the current version of the
+    This method requires CommonControl<xref linkend="ovvComctl32"/> version 6.0 or later. If necessary
+    use the <xref linkend="mthComCtl32Version"/> method to determine the current version of the
     library.
   </para>
   <para>
@@ -1637,8 +1637,8 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary
-    use the<xref linkend="mthComCtl32Version" /> method to determine the current version of the
+    This method requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary
+    use the <xref linkend="mthComCtl32Version"/> method to determine the current version of the
     library.
   </para>
   <para>
@@ -1913,7 +1913,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Sets the data (<xref linkend="sctUnderstandingDataAttributes" />) of the dialog control to the new value specified.
+  Sets the data (<xref linkend="sctUnderstandingDataAttributes"/>) of the dialog control to the new value specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1923,7 +1923,7 @@ Generic form:
     <listitem>
     <para>
       The value used to set the <emphasis role="italic">data</emphasis> of the dialog control. The exact format of this
-      value is dependent on the type of the control. The Data Attribute Methods (<xref linkend="sctDataAttributes" />)
+      value is dependent on the type of the control. The Data Attribute Methods (<xref linkend="sctDataAttributes"/>)
       section of this reference has a detailed discussion on data attributes and the meaning of the <emphasis
       role="italic">data</emphasis> of a dialog control.
     </para>
@@ -2048,8 +2048,8 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    This method requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary
-    use the<xref linkend="mthComCtl32Version" /> method to determine the current version of the
+    This method requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary
+    use the <xref linkend="mthComCtl32Version"/> method to determine the current version of the
     library.
   </para>
   <para>
@@ -2096,7 +2096,7 @@ method onDisable
 </programlisting>
 
 <para>
-  Calculates the size, (width and height,) in dialog units (<xref linkend="defDialogUnit" />) for a given string.
+  Calculates the size, (width and height,) in dialog units (<xref linkend="defDialogUnit"/>) for a given string.
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> The convoluted arguments to this method are needed to retain backwards
@@ -2112,7 +2112,7 @@ method onDisable
 </para>
 <para>
   The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use the getTextSizeDu (<xref
-  linkend="mthGetTextSizeDu" />) method of the <xref linkend="chpDialogObject" /> object.
+  linkend="mthGetTextSizeDu" />) method of the <xref linkend="chpDialogObject"/> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2197,7 +2197,7 @@ method onDisable
 </programlisting>
 
 <para>
-  Adds or removes the group style (<xref linkend="wsgroup" />) for this control.
+  Adds or removes the <xref linkend="wsgroup"/> style for this control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2256,7 +2256,7 @@ method onDisable
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2308,7 +2308,7 @@ method onDisable
     The dialog object also has a <xref linkend="mthHasKeyPressConnectionDialogObject"/>
     method. The method of the dialog control object (this method) can only check for connections that were set with the
     dialog control object's versions of <xref linkend="mthConnectKeyPressDialogControlObject"/> and
-    connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogControlObject" /> methods. This method can not check
+    connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogControlObject"/> methods. This method can not check
     for connections that were set with the dialog object's versions of connectKeyPress (<xref
     linkend="mthConnectKeyPressDialogObject" />) and connectFKeyPress (<xref
     linkend="mthConnectFKeyPressDialogObject" />) methods.
@@ -2400,7 +2400,7 @@ Generic form:
  <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
       </para>
       <para>
-        The coordinates are specified as client-area (<xref linkend="defClientArea" />) coordinates, in pixels.
+        The coordinates are specified as <xref linkend="defClientArea"/> area coordinates, in pixels.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>erase [optional]</term>
@@ -2433,7 +2433,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2463,13 +2463,13 @@ Generic form:
       <varlistentry><term>bk [required]</term>
       <listitem>
       <para>
-        The color number (<xref linkend="defColor" />) for the background color of the dialog control.
+        The color number (<xref linkend="defColor"/>) for the background color of the dialog control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
       <listitem>
       <para>
-        The color number (<xref linkend="defColor" />) for the foreground color of the dialog control. The foreground
+        The color number (<xref linkend="defColor"/>) for the foreground color of the dialog control. The foreground
         color is the color that text is written in.
       </para>
       </listitem></varlistentry>
@@ -2535,7 +2535,7 @@ Generic form:
       <listitem>
       <para>
         The system color ID for the background color of the dialog control. This can be either the whole number ID or
-        the keyword ID. IDs can be looked up in the System Color Elements table (<xref linkend="tblSysColors" />)
+        the keyword ID. IDs can be looked up in the System Color Elements table (<xref linkend="tblSysColors"/>)
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
@@ -2543,7 +2543,7 @@ Generic form:
       <para>
         The system color for the foreground color of the dialog control. The foreground color is the color that text is
         written in. This can be either the whole number ID or the keyword ID. IDs can be looked up in the System Color
-        Elements table (<xref linkend="tblSysColors" />).
+        Elements table (<xref linkend="tblSysColors"/>).
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2597,7 +2597,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Add or remove the tab stop style (<xref linkend="wstabstop" />) for this control.
+  Add or remove the tab stop style (<xref linkend="wstabstop"/>) for this control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2672,7 +2672,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2707,7 +2707,7 @@ Generic form:
       <varlistentry><term>size [required] [in / out]</term>
       <listitem>
       <para>
-        A Size <xref linkend="clsSize" />) object. The computed size is returned in this argument.
+        A Size <xref linkend="clsSize"/>) object. The computed size is returned in this argument.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2731,7 +2731,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

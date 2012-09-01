@@ -43,21 +43,21 @@
     #
     #########################################################################
 -->
-<section id="clsWindowExtensions"><title>WindowExtensions Mixin Class</title>
+<section id="clsWindowExtensions" xreflabel="WindowsExtensions"><title>WindowExtensions Mixin Class</title>
 <indexterm><primary>WindowExtensions Class</primary></indexterm>
 <para>
   WindowExtensions is a mixin class with methods that <emphasis role="italic">should</emphasis> be common to all
   windows. The class name implies it is meant to be an extension of the <xref linkend="clsWindowBase"/>
   class, providing more sophisticated window methods. It is inherited by both the
-  <xref linkend="chpDialogObject" /> and the dialog <xref linkend="chpDialogControlObject" /> objects.
+  <xref linkend="chpDialogObject"/> and the dialog <xref linkend="chpDialogControlObject"/> objects.
 </para>
 <para>
   Unfortunately, <emphasis role="bold">many</emphasis> of the methods placed in the WindowExtensions class were not
   really <emphasis role="italic">window</emphasis> methods. Rather they were extensions to the ooDialog framework.
-  Otherwise in the effort (<xref linkend="sctHistory" />) to simplify ooDialog all the methods would have been moved
+  Otherwise in the <link linkend="sctHistory">effort</link> to simplify ooDialog all the methods would have been moved
   to the WindowBase class and the WindowExtensions class would have been eliminated. However, the methods remaining in
-  WindowExtensions, do not belong in a <emphasis role="italic">window</emphasis> class, so that simplification could not
-  be done.
+  WindowExtensions, do not belong in a <emphasis role="italic">window</emphasis> class, so that
+  simplification could not be done.
 </para>
 <para>
   In addition, most of the methods do not really belong to a <emphasis role="italic">dialog control</emphasis> specific
@@ -252,7 +252,7 @@
     <varlistentry><term>color [optional]</term>
     <listitem>
     <para>
-      The color number (<xref linkend="defColor" />). When this argument is omitted and <emphasis
+      The color number (<xref linkend="defColor"/>). When this argument is omitted and <emphasis
       role="italic">brushSpecifier</emphasis> is used, the color number defaults to 1.
     </para>
     </listitem></varlistentry>
@@ -329,7 +329,7 @@
  <xref linkend="mthCreateBrushClsDialogExtensions"/> method of the
  <xref linkend="clsDialogExtensions"/> class. The method documented here is a method of the
  <xref linkend="clsWindowExtensions"/> class and is therefore inherited by both the
-    <xref linkend="chpDialogObject" /> and the dialog  control (<xref linkend="chpDialogControlObject" />)
+    <xref linkend="chpDialogObject"/> and the dialog  control (<xref linkend="chpDialogControlObject"/>)
     objects.
   </para>
   <para>
@@ -343,7 +343,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -597,7 +597,7 @@
     arguments to this method.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -609,7 +609,7 @@
     The return is a handle to a font that can be used in any ooDialog method that requires a font
     handle. Because of the way the font mapper works, it is hard to conceive of a circustance where
     this method would fail. However, if it were to fail, the
-    <xref linkend="dotSystemErrorCode" /> variable would be non-zero.
+    <xref linkend="dotSystemErrorCode"/> variable would be non-zero.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -862,7 +862,7 @@
     <para>
       The clipping precision defines how to clip characters that are partially outside the clipping
       region. It can be one or more of the following values. Use
-      .DlgUtil~or (<xref linkend="mthOrClsDlgUtil" />) to combine values.
+      .DlgUtil~or (<xref linkend="mthOrClsDlgUtil"/>) to combine values.
     </para>
     <informaltable id="tblCfxClipPrecision" frame="all" pgwide="1">
     <tgroup cols="3">
@@ -1005,7 +1005,7 @@
     <para>
       Combine one pitch value with one family value. The values are combined using a boolean or, but in
       this case they could simply be added. The programmer can also use
-      .DlgUtil~or (<xref linkend="mthOrClsDlgUtil" />) to combine values.
+      .DlgUtil~or (<xref linkend="mthOrClsDlgUtil"/>) to combine values.
     </para>
     <informaltable id="tblCfxPitchAndFamily" frame="all" pgwide="1">
     <tgroup cols="3">
@@ -1157,7 +1157,7 @@
     <varlistentry><term>color [optional]</term>
     <listitem>
     <para>
-      The color number (<xref linkend="defColor" />) for the pen. 0 is the default.
+      The color number (<xref linkend="defColor"/>) for the pen. 0 is the default.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1179,7 +1179,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1458,7 +1458,7 @@ context. </para>
 <listitem><para>The position, in pixels.
 </para></listitem></varlistentry>
 <varlistentry><term>color</term>
-<listitem><para>The color number for the pixel. For a list of color numbers, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
+<listitem><para>The color number for the pixel. For a list of color numbers, refer to Definition of Terms (<xref linkend="sctTermDefs"/>).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1493,7 +1493,7 @@ color of the brush, in pixels.
 </para></listitem></varlistentry>
 <varlistentry><term>color</term>
 <listitem><para>The color number of the outline figure whose inside will be filled.
-For a list of color numbers, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
+For a list of color numbers, refer to Definition of Terms (<xref linkend="sctTermDefs"/>).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1865,7 +1865,7 @@ horizontal scroll bar in the associated dialog or dialog control.</para>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2470,7 +2470,7 @@ vertical scroll bar in the associated dialog or dialog control.</para>
       <varlistentry><term>CLIENT</term>
       <listitem>
       <para>
-        The position for the text will be relative to the client (<xref linkend="defClientArea" />) area of the dialog
+        The position for the text will be relative to the client (<xref linkend="defClientArea"/>) area of the dialog
         or dialog control rather than relative to the window itself.
       </para>
       </listitem></varlistentry>
@@ -2583,7 +2583,7 @@ vertical scroll bar in the associated dialog or dialog control.</para>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.  See the remarks above.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.  See the remarks above.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

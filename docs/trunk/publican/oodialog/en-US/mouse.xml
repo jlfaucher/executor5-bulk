@@ -47,7 +47,7 @@
 <indexterm><primary>Mouse class</primary></indexterm>
 <para>
   In Windows the mouse is one of the important user input devices for programs. A program receives mouse input in the
-  form of messages (<xref linkend="ovvWindowMessages" />) that are sent or posted to the windows of the program. In
+  form of messages (<xref linkend="ovvWindowMessages"/>) that are sent or posted to the windows of the program. In
   addition the operating system provides a number of functions to work with the mouse. These functions allow the
   programmer to change the mouse behavior, configure the mouse, change its appearence, etc..
 </para>
@@ -81,7 +81,7 @@
 </thead>
 <tbody>
 <row>
-<entry>Constant Methods (<xref linkend="sctMouseConstantMethods" />)</entry>
+<entry>Constant Methods (<xref linkend="sctMouseConstantMethods"/>)</entry>
 <entry>The <computeroutput>Mouse</computeroutput> class provides a single <emphasis role="italic">constant</emphasis> value through the <computeroutput>::constant</computeroutput>directive.</entry>
 </row>
 <row>
@@ -238,7 +238,7 @@
 
 <para>
   Instantiates a new <computeroutput>Mouse</computeroutput> object. Each mouse object is associated with a single
-  <xref linkend="ovvUnderlying" /> window, the window of the Rexx object used to instantiate the mouse
+  <xref linkend="ovvUnderlying"/> window, the window of the Rexx object used to instantiate the mouse
   object.
 </para>
 <variablelist>
@@ -251,8 +251,8 @@
     <listitem>
     <para>
       A Rexx object that has an underlying Windows window. In all practical terms this is either a Rexx dialog
-      object (<xref linkend="chpDialogObject" />) or a Rexx dialog control
-      object (<xref linkend="chpDialogControlObject" />).
+      object (<xref linkend="chpDialogObject"/>) or a Rexx dialog control
+      object (<xref linkend="chpDialogControlObject"/>).
     </para> </listitem></varlistentry>
   </variablelist> </para>
   </listitem></varlistentry>
@@ -265,7 +265,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The operating system sends all mouse related messages (<xref linkend="ovvWindowMessages" />) to the window the
+    The operating system sends all mouse related messages (<xref linkend="ovvWindowMessages"/>) to the window the
     mouse is over. Because of this, each Rexx mouse object is assoicated with a specific window. This is important for
     the programmer to understand, especially when connecting mouse event notifications. Since all dialog controls are
     windows, when the mouse is over a dialog, most messages go to one of the dialog controls that make up the dialog.
@@ -529,7 +529,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -621,7 +621,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -705,7 +705,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -797,7 +797,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable to 0, but there are no system errors
+    Sets the <xref linkend="dotSystemErrorCode"/> variable to 0, but there are no system errors
     that would change the value from 0.
   </para>
   </listitem></varlistentry>
@@ -861,7 +861,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -952,7 +952,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1023,7 +1023,7 @@
     Raises syntax errors if incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable to 0, but there are no operating system
+    Sets the <xref linkend="dotSystemErrorCode"/> variable to 0, but there are no operating system
     errors that would change the varible.
   </para>
   </listitem></varlistentry>
@@ -1082,8 +1082,8 @@
       <varlistentry><term>rect</term>
       <listitem>
       <para>
-        A bounding (<xref linkend="ovvRectangleCoordinates" />) rectangle specified as a
-<xref linkend="clsRect" /> object that defines the area the cursor is confined to.
+        A bounding (<xref linkend="ovvRectangleCoordinates"/>) rectangle specified as a
+<xref linkend="clsRect"/> object that defines the area the cursor is confined to.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1114,7 +1114,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1181,7 +1181,7 @@
           <listitem>
           <para>
             This event notification is sent to the window that is losing the mouse capture. The
-            CaptureChanged (<xref linkend="evtCAPTURCHANGED" />) Event Handler contains information on coding the event
+            CaptureChanged (<xref linkend="evtCAPTURCHANGED"/>) Event Handler contains information on coding the event
             handler.
           </para>
           </listitem></varlistentry>
@@ -1189,7 +1189,7 @@
           <listitem>
           <para>
             The event notification is sent when the user double-clicks the left mouse button while the cursor is in the
-            client area of the window. The General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler
+            client area of the window. The General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler
             contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
@@ -1197,7 +1197,7 @@
           <listitem>
           <para>
             The event notification is sent when the user presses the left mouse button while the cursor is in the client
-            area of the window. The General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler contains
+            area of the window. The General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler contains
             information on coding the event handler.
           </para>
           </listitem></varlistentry>
@@ -1205,7 +1205,7 @@
           <listitem>
           <para>
             The event notification is sent when the user releases the left mouse button while the cursor is in the
-            client area of the window. The General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler
+            client area of the window. The General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler
             contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
@@ -1213,7 +1213,7 @@
           <listitem>
           <para>
             The event notification is sent when the user double-clicks the middle mouse button while the cursor is in
-            the client area of the window. The General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler
+            the client area of the window. The General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler
             contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
@@ -1221,7 +1221,7 @@
           <listitem>
           <para>
             The event notification is sent when the user presses the middle mouse button while the cursor is in the
-            client area of the window. The General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler
+            client area of the window. The General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler
             contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
@@ -1229,7 +1229,7 @@
           <listitem>
           <para>
             The event notification is sent when the user releases the middle mouse button while the cursor is in the
-            client area of the window. The General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler
+            client area of the window. The General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler
             contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
@@ -1238,7 +1238,7 @@
           <para>
             The event notification is sent when the cursor hovers over the client area of the window for the period of
             time specified in a prior call to the <xref linkend="mthTrackEvent"/> method. The
-            General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler contains information on coding the event
+            General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler contains information on coding the event
             handler.
           </para>
           </listitem></varlistentry>
@@ -1247,7 +1247,7 @@
           <para>
             The event notification is sent when the cursor leaves the client area of the window specified in a prior
             call to the <xref linkend="mthTrackEvent"/> method. The
-            MouseLeave (<xref linkend="evtMOUSELEAVE" />) Event Handler contains information on coding the event
+            MouseLeave (<xref linkend="evtMOUSELEAVE"/>) Event Handler contains information on coding the event
             handler.
           </para>
           </listitem></varlistentry>
@@ -1255,7 +1255,7 @@
           <listitem>
           <para>
             The event notification is sent when the cursor moves. The
-            General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler contains information on coding the event
+            General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler contains information on coding the event
             handler.
           </para>
           </listitem></varlistentry>
@@ -1263,25 +1263,25 @@
           <listitem>
           <para>
             The event notification is sent when the mouse wheel is rotated. The
-            MouseWheel (<xref linkend="evtMOUSEWHEEL" />) Event Handler contains information on coding the event handler.
+            MouseWheel (<xref linkend="evtMOUSEWHEEL"/>) Event Handler contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NCMOUSEHOVER</term>
           <listitem>
           <para>
             The event notification is sent when the cursor hovers over the
-            non-client (<xref linkend="defClientArea" />) area of the window for the period of time specified in a prior
+            non-client (<xref linkend="defClientArea"/>) area of the window for the period of time specified in a prior
             call to the <xref linkend="mthTrackEvent"/> method. The
-            NcMouseHover (<xref linkend="evtNCMOUSEHOVER" />) Mouse Event Handler contains information on coding the event
+            NcMouseHover (<xref linkend="evtNCMOUSEHOVER"/>) Mouse Event Handler contains information on coding the event
             handler.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NCMOUSELEAVE</term>
           <listitem>
           <para>
-            The event notification is sent when the cursor leaves the non-client (<xref linkend="defClientArea" />)
+            The event notification is sent when the cursor leaves the non-client (<xref linkend="defClientArea"/>)
             area of the window specified in a prior call to the <xref linkend="mthTrackEvent"/> method.
-            The MouseLeave (<xref linkend="evtMOUSELEAVE" />) Event Handler contains information on coding the event
+            The MouseLeave (<xref linkend="evtMOUSELEAVE"/>) Event Handler contains information on coding the event
             handler.
           </para>
           </listitem></varlistentry>
@@ -1289,7 +1289,7 @@
           <listitem>
           <para>
             The event notification is sent when the user double-clicks the right mouse button while the cursor is in
-            the client area of the window. The General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler
+            the client area of the window. The General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler
             contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
@@ -1297,7 +1297,7 @@
           <listitem>
           <para>
             The event notification is sent when the user presses the right mouse button while the cursor is in the
-            client area of the window. The General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler
+            client area of the window. The General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler
             contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
@@ -1305,7 +1305,7 @@
           <listitem>
           <para>
             The event notification is sent when the user releases the right mouse button while the cursor is in the
-            client area of the window. The General (<xref linkend="evtGeneralMouseEvent" />) Mouse Event Handler
+            client area of the window. The General (<xref linkend="evtGeneralMouseEvent"/>) Mouse Event Handler
             contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
@@ -1327,7 +1327,7 @@
       <listitem>
       <para>
         The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter
-        waits (<xref linkend="sctCodingEventHandlers" />) for the reply from the event handler. The default is
+        waits (<xref linkend="sctCodingEventHandlers"/>) for the reply from the event handler. The default is
         <computeroutput>.true</computeroutput>, the interpreter waits for the reply. If <emphasis
         role="italic">willReply</emphasis> is <computeroutput>.false</computeroutput>, the interpreter does not wait for
         the event handling method to return a value. See the Remarks section.
@@ -1388,10 +1388,10 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke event connection methods and on
-    how (<xref linkend="sctCodingEventHandlers" />) to code event handlers are included in the documentation for the
+    Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke event connection methods and on
+    how (<xref linkend="sctCodingEventHandlers"/>) to code event handlers are included in the documentation for the
     <xref linkend="clsEventNotification"/> class. Note that it is not possible to instantiate a
-    mouse object tied to a dialog control window until after the <xref linkend="ovvUnderlying" /> dialog
+    mouse object tied to a dialog control window until after the <xref linkend="ovvUnderlying"/> dialog
     has been created. Therefore, for dialog control windows the <emphasis role="italic">connectEvent</emphasis> method
     is normally invoked in the <xref linkend="mthInitDialog"/> method.
   </para>
@@ -1506,7 +1506,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Resets the <xref linkend="dotSystemErrorCode" /> variable to zero. There are no operating
+    Resets the <xref linkend="dotSystemErrorCode"/> variable to zero. There are no operating
     system errors that would change the variable.
   </para>
   </listitem></varlistentry>
@@ -1569,7 +1569,7 @@
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle" />) of the window gaining the mouse capture.  This may be 0 if
+      The window handle (<xref linkend="defHandle"/>) of the window gaining the mouse capture.  This may be 0 if
       there is no window gaining the capture.
     </para>
     </listitem></varlistentry>
@@ -1587,7 +1587,7 @@
   <para>
     In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
     <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
-    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse" />)
+    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse"/>)
     section for the <emphasis role="italic">connectEvent</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -1732,7 +1732,7 @@
   <para>
     In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
     <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
-    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse" />)
+    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse"/>)
     section for the <xref linkend="mthConnectEvent"/> method.
   </para>
   </listitem></varlistentry>
@@ -1805,7 +1805,7 @@
 <indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>NCMOUSEHOVER</tertiary></indexterm>
 <para>
   The event handler for the nc mouse leave event is invoked when the cursor leaves the
-  non-client (<xref linkend="defClientArea" />) area of the window assigned to the mouse object. Normally, this event
+  non-client (<xref linkend="defClientArea"/>) area of the window assigned to the mouse object. Normally, this event
   notification is <emphasis role="italic">not</emphasis> generated. To receive the notification the
  <xref linkend="mthTrackEvent"/> method must be invoked to set up the tracking behavior.
 </para>
@@ -1896,7 +1896,7 @@
   <para>
     In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
     <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
-    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse" />)
+    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse"/>)
     section for the <emphasis role="italic">connectEvent</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -1917,7 +1917,7 @@
 <indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSELEAVE</tertiary></indexterm>
 <indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>NCMOUSELEAVE</tertiary></indexterm>
 <para>
-  This description for the mouse leave event handler pertains to both the client (<xref linkend="defClientArea" />)
+  This description for the mouse leave event handler pertains to both the client (<xref linkend="defClientArea"/>)
   mouse leave (MOUSELEAVE) and the <emphasis role="italic">non-client</emphasis> mouse leave (NCMOUSELEAVE) events. The
   arguments received by event handler for both events are exactly the same, and the event handler should behave the same
   for both events.
@@ -1963,7 +1963,7 @@
   <para>
     In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
     <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
-    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse" />)
+    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse"/>)
     section for the <emphasis role="italic">connectEvent</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -2105,7 +2105,7 @@
   <para>
     In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
     <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
-    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse" />)
+    on how the event was connected, and is summarized in the Remarks (<xref linkend="tblReplyCombinationsMouse"/>)
     section for the <xref linkend="mthConnectEvent"/> method.
   </para>
   </listitem></varlistentry>
@@ -2127,7 +2127,7 @@
   </para>
   <para>
     Additional information on the mouse wheel and handling mouse wheel events is found in the system parameters
-    information (SPI (<xref linkend="clsSPI" />)) class's <xref linkend="atrWheelScrollLines" />
+    information (SPI (<xref linkend="clsSPI"/>)) class's <xref linkend="atrWheelScrollLines"/>
     attribute.
   </para>
   </listitem></varlistentry>
@@ -2252,7 +2252,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2295,7 +2295,7 @@
       <varlistentry><term>point [required]</term>
       <listitem>
       <para>
-        The initial position of the cursor, in screen (<xref linkend="defScreenCoordinates" />) coodinates, specified
+        The initial position of the cursor, in screen (<xref linkend="defScreenCoordinates"/>) coodinates, specified
         as a <xref linkend="clsPoint"/> object. Recall that screen coordinates are always in pixels.
       </para>
       </listitem></varlistentry>
@@ -2319,8 +2319,8 @@
     A drag operation is detected when the user presses the mouse button and then moves the cursor outside of the
     <emphasis role="italic">drag rectangle</emphasis>, while keeping the mouse button down. The drag rectangle is
     configurable, allowing for smaller or larger rectangles. The size of the current drag rectangle, and changing the
-    size of the drag rectangle can be done through the <xref linkend="atrDragWidth" /> and
- <xref linkend="atrDragHeight" /> attributes of the <xref linkend="clsSPI"/> (System Parameters
+    size of the drag rectangle can be done through the <xref linkend="atrDragWidth"/> and
+ <xref linkend="atrDragHeight"/> attributes of the <xref linkend="clsSPI"/> (System Parameters
     Information) class.
   </para>
   </listitem></varlistentry>
@@ -2330,7 +2330,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Resets the <xref linkend="dotSystemErrorCode" /> variable to 0. However, there are no system
+    Resets the <xref linkend="dotSystemErrorCode"/> variable to 0. However, there are no system
     errors that would change that value.
   </para>
   </listitem></varlistentry>
@@ -2386,7 +2386,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The window handle (<xref linkend="defHandle" />) of the window, belonging to the same dialog as this mouse's
+    The window handle (<xref linkend="defHandle"/>) of the window, belonging to the same dialog as this mouse's
     window, that had previously captured the mouse, or 0 if no window previosly had the capture.
   </para>
   </listitem></varlistentry>
@@ -2406,7 +2406,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable to 0, but there are no system errors
+    Sets the <xref linkend="dotSystemErrorCode"/> variable to 0, but there are no system errors
     that would change the variable from 0.
   </para>
   </listitem></varlistentry>
@@ -2450,7 +2450,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If the cursor is not confined, (clipped (<xref linkend="mthClipCursor" />),) then on return <emphasis
+    If the cursor is not confined, (clipped (<xref linkend="mthClipCursor"/>),) then on return <emphasis
     role="italic">rect</emphasis> will contain the coordinates of the screen.
   </para>
   </listitem></varlistentry>
@@ -2460,7 +2460,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2489,14 +2489,14 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the postion, in screen (<xref linkend="defScreenCoordinates" />) coodinates, as a
+    Returns the postion, in screen (<xref linkend="defScreenCoordinates"/>) coodinates, as a
  <xref linkend="clsPoint"/> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -2505,7 +2505,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The setCursorPos (<xref linkend="exampleSetCursorPos" />) example uses the <emphasis
+    The setCursorPos (<xref linkend="exampleSetCursorPos"/>) example uses the <emphasis
     role="italic">getCursorPos</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -2598,7 +2598,7 @@
     Raises syntax errors if incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable to 0, but there are no operarting
+    Sets the <xref linkend="dotSystemErrorCode"/> variable to 0, but there are no operarting
     system errors that would change it from 0.
   </para>
   </listitem></varlistentry>
@@ -2664,7 +2664,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2726,7 +2726,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2802,7 +2802,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2874,7 +2874,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2932,7 +2932,7 @@
       <varlistentry><term>cursor [required]</term>
       <listitem>
       <para>
-        This argument can either be a<xref linkend="clsImage" /> cursor object, in which case the image is
+        This argument can either be a <xref linkend="clsImage"/> cursor object, in which case the image is
         used for the new cursor, or a single keyword. When <emphasis role="italic">cursor</emphasis> is a keyword, the
         new cursor is set to one of the shared pre-defined system cursors.
       </para>
@@ -3061,7 +3061,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3136,7 +3136,7 @@ Generic form:
       <para>
         Whether the coordinates are specified as a <computeroutput>point</computeroutput> object or in the x, y format
         both coordinates are required. The coordinates are specified as
-        screen (<xref linkend="defScreenCoordinates" />) coordinates.
+        screen (<xref linkend="defScreenCoordinates"/>) coordinates.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3151,7 +3151,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -3251,7 +3251,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable to 0. However, there are no system
+    Sets the <xref linkend="dotSystemErrorCode"/> variable to 0. However, there are no system
     errors that would change the variable from 0.
   </para>
   </listitem></varlistentry>
@@ -3356,7 +3356,7 @@ Generic form:
           <varlistentry><term>NONCLIENT</term>
           <listitem>
           <para>
-            Non-client (<xref linkend="defClientArea" />) hover and leave notifications should be generated. The
+            Non-client (<xref linkend="defClientArea"/>) hover and leave notifications should be generated. The
             notifications generated are the NCMOUSELEAVE and NCMOUSEHOVER notifications, connect these events using the
  <xref linkend="mthConnectEvent"/>method.
           </para>
@@ -3373,7 +3373,7 @@ Generic form:
           </para>
           <para>
             The only anomaly is that the hover time out returned is always the actual time out and not
-            HOVER_DEFAULT (<xref linkend="sctMouseConstantMethods" />), if HOVER_DEFAULT was specified as <emphasis
+            HOVER_DEFAULT (<xref linkend="sctMouseConstantMethods"/>), if HOVER_DEFAULT was specified as <emphasis
             role="italic">hoverTime</emphasis> during the original <emphasis role="italic">trackEvent</emphasis>
             request.
           </para>
@@ -3385,9 +3385,9 @@ Generic form:
       <listitem>
       <para>
         Specifies the hover time out, (if HOVER was specified in <emphasis role="italic">event</emphasis>,) in
-        milliseconds. The constant, HOVER_DEFAULT (<xref linkend="sctMouseConstantMethods" />) can also be use to
+        milliseconds. The constant, HOVER_DEFAULT (<xref linkend="sctMouseConstantMethods"/>) can also be use to
         specify the system default hover time out. The value of the system default hover time out can be determined, or
-        changed, through the <xref linkend="atrMouseHoverTime" /> attribute of the
+        changed, through the <xref linkend="atrMouseHoverTime"/> attribute of the
  <xref linkend="clsSPI"/> (System Parameters Infomation) class.
       </para>
       </listitem></varlistentry>
@@ -3433,8 +3433,8 @@ Generic form:
     The mouse pointer is considered to be <emphasis role="italic">hovering</emphasis> when it stays within a specific
     rectangle for a specific period of time. The <xref linkend="clsSPI"/> class has attributes that can be used
     to retrieve (or change) the hover rectangle or hover time out value. The
- <xref linkend="atrMouseHoverWidth" /> and <xref linkend="atrMouseHoverHeight" />
-    attributes reflect the hover rectangle. The <xref linkend="atrMouseHoverTime" /> attribute
+ <xref linkend="atrMouseHoverWidth"/> and <xref linkend="atrMouseHoverHeight"/>
+    attributes reflect the hover rectangle. The <xref linkend="atrMouseHoverTime"/> attribute
     reflects the hover time out.
   </para>
   <para>
@@ -3449,7 +3449,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3559,7 +3559,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

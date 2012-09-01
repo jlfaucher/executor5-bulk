@@ -121,7 +121,7 @@
 <para id="paraClsImageRelease">
   A loaded image takes up some small part of the systems's resources. It is common to release an image
   when the programmer is done with it.  The .Image class has the
-<xref linkend="mthReleaseClsImage" /> method to allow the programmer to release the image, if
+<xref linkend="mthReleaseClsImage"/> method to allow the programmer to release the image, if
   desired.  It is <emphasis role="bold">important</emphasis> to note that when the ooDialog program ends,
   that is when the ooRexx interpreter process ends, the Windows operating system cleans up all the system
   resources associated with any images used in the ooDialog program.  Not releasing images does no harm
@@ -348,7 +348,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image, bitmap, icon, or cursor. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -362,7 +362,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size</term>
       <listitem>
         <para>
-          A<xref linkend="clsSize" /> object that specifies the size of the image.  The default
+          A <xref linkend="clsSize"/> object that specifies the size of the image.  The default
           is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
           should be used.  However, the MSDN <xref linkend="defWindowsDoc"/> documentation should
           be consulted for other meanings.
@@ -372,9 +372,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
           value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
-          the<xref linkend="clsDlgUtil" /> class can be used to combine more than one of the
+          the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
           symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -400,7 +400,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -461,7 +461,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -475,7 +475,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size</term>
       <listitem>
         <para>
-          A<xref linkend="clsSize" /> object that specifies the size of the image.  The default
+          A <xref linkend="clsSize"/> object that specifies the size of the image.  The default
           is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
           should be used.  However, the MSDN <xref linkend="defWindowsDoc"/> documentation should
           be consulted for other meanings.
@@ -485,9 +485,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
           value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
-          the<xref linkend="clsDlgUtil" /> class can be used to combine more than one of the
+          the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
           symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -513,7 +513,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -572,7 +572,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      See the example for the getRValue (<xref linkend="exampleGetRValueClsImage" />)() method.
+      See the example for the getRValue (<xref linkend="exampleGetRValueClsImage"/>)() method.
     </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getBValue() [class method] -->
@@ -614,7 +614,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      See the example for the getRValue (<xref linkend="exampleGetRValueClsImage" />)() method.
+      See the example for the getRValue (<xref linkend="exampleGetRValueClsImage"/>)() method.
     </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getGValue() [class method] -->
@@ -646,7 +646,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <para>
         If id is a number than it is taken to be the resource id of an image provided by the system.  The
         following are the symbolic names for all the system images. You can use
-        .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for any of the
+        .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for any of the
         following symbols:
         <simplelist type='vert' columns='4'>
         <member>IDI_APPLICATION</member> <member>IDI_HAND</member> <member>IDI_QUESTION</member>
@@ -679,7 +679,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <listitem>
       <para>
         A number between 0 and 255 that specifies the type of the image: bitmap, icon, or cursor. You can use
-        .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+        .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
         following symbols:
         <simplelist type='horiz' columns='2'>
         <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -693,7 +693,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <varlistentry><term>size</term>
     <listitem>
       <para>
-        A<xref linkend="clsSize" /> object that specifies the size of the image.
+        A <xref linkend="clsSize"/> object that specifies the size of the image.
       </para>
       <para>
         The default is a size of 0x0.  Under most circumstances this indicates that the actual size of
@@ -705,9 +705,9 @@ A fancy purple: 16734709 (0x00FF59F5)
     <listitem>
       <para>
         The load resource flags for the LoadImage() API.  The flags are one or more of the following
-        symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+        symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
         value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
-        the<xref linkend="clsDlgUtil" /> class can be used to combine more than one of the
+        the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
         symbols if needed.
         <simplelist type='horiz' columns='2'>
         <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -728,15 +728,15 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       A .Image object that represents the image specified.  If an error happened, the object may not be
-      valid.  Use the<xref linkend="mthIsNullClsImage" /> method to check if the image is
-      valid.  If there was an error, <xref linkend="dotSystemErrorCode" /> may help
+      valid.  Use the <xref linkend="mthIsNullClsImage"/> method to check if the image is
+      valid.  If there was an error, <xref linkend="dotSystemErrorCode"/> may help
       to determine the error.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -855,12 +855,12 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   These methods are used to create new Image object(s).
   <simplelist type='horiz' columns='1'>
-  <member>Image (class) method:<xref linkend="mthGetImageClsImage" /></member>
-  <member>Image (class) method:<xref linkend="mthFromFilesClsImage" /></member>
-  <member>Image (class) method:<xref linkend="mthFromIDsClsImage" /></member>
-  <member>Image (class) method:<xref linkend="mthUserIcon" /></member>
-  <member>ResourceImage (instance) method:<xref linkend="mthGetImageClsResourceImage" /></member>
-  <member>ResourceImage (instance) method:<xref linkend="mthGetImagesClsResourceImage" /></member>
+  <member>Image (class) method:<xref linkend="mthGetImageClsImage"/></member>
+  <member>Image (class) method:<xref linkend="mthFromFilesClsImage"/></member>
+  <member>Image (class) method:<xref linkend="mthFromIDsClsImage"/></member>
+  <member>Image (class) method:<xref linkend="mthUserIcon"/></member>
+  <member>ResourceImage (instance) method:<xref linkend="mthGetImageClsResourceImage"/></member>
+  <member>ResourceImage (instance) method:<xref linkend="mthGetImagesClsResourceImage"/></member>
   </simplelist>
 </para>
 </section>  <!-- End Image::new() [class method] -->
@@ -884,7 +884,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </para>
 <para>
   Take for example the task of retrieving the 'Question' icon resource from the system using the
-<xref linkend="mthGetImageClsImage" /> method.  The ooDialog programmer could
+<xref linkend="mthGetImageClsImage"/> method.  The ooDialog programmer could
   either use the numerical value of 32514 or use the <emphasis role="italic">toID</emphasis> method as
   follows.  Note that the two invocations of getImage() are equivalent:
 </para>
@@ -969,7 +969,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-       The resource ID of the icon. Can be numeric or <xref linkend="defSymbolicId" />.
+       The resource ID of the icon. Can be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>size [optional]</term>
@@ -988,9 +988,9 @@ A fancy purple: 16734709 (0x00FF59F5)
     <listitem>
     <para>
       A whole number that specifies the flags that control how the operating system loads the icon. The flags are one or
-      more of the following symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct
+      more of the following symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct
       numeric value for any of the following symbols. The <xref linkend="mthOrClsDlgUtil"/> method of the
-<xref linkend="clsDlgUtil" /> class can be used to combine more than one of the symbols if needed.
+<xref linkend="clsDlgUtil"/> class can be used to combine more than one of the symbols if needed.
       <simplelist type='horiz' columns='2'>
       <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
       <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
@@ -1050,7 +1050,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     Raises syntax errors when incorrect arguments are detected. This includes an invalid sybmbolic ID.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1152,13 +1152,13 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 <para>
   Releases the image.  This will free up operating system resources used for the image.  See the
-  introduction to the .Image class (<xref linkend="paraClsImageRelease" />) for some discussion on
+  introduction to the .Image class (<xref linkend="paraClsImageRelease"/>) for some discussion on
   releasing an image.
 </para>
 <para>
   Once an image object has been released, it is an error to use the object.  However, the
-<xref linkend="mthIsNullClsImage" /> and
-<xref linkend="mthSystemErrorCodeClsImage" /> methods can always be used.  The isNull()
+<xref linkend="mthIsNullClsImage"/> and
+<xref linkend="mthSystemErrorCodeClsImage"/> methods can always be used.  The isNull()
   method will return <computeroutput>.true</computeroutput> after an image object has been released.
   Shared images should not be released, the operating system manages them.  To prevent the programmer
   from accidentally releasing a shared image, the .Image object tracks which images are loaded as shared
@@ -1194,7 +1194,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1313,12 +1313,12 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   The systemErrorCode attribute of the image object will reflect any system error codes that are detected
   while working with an image object.  This is the same error code as the
-  <xref linkend="dotSystemErrorCode" /> is set to.  This can be useful if the programmer
+  <xref linkend="dotSystemErrorCode"/> is set to.  This can be useful if the programmer
   wants to check for an error code at some point when it is possible that .systemErrorCode has been
   reset.  (See the example below.)
 </para>
 <para>
-   Like the<xref linkend="mthIsNullClsImage" /> method this method can be invoked even when
+   Like the <xref linkend="mthIsNullClsImage"/> method this method can be invoked even when
    the image is not valid.  However, it should not be used to check if the image is valid because it is
    possible for the value to be 0 and the image to be null.
 </para>
@@ -1398,9 +1398,9 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   When an image list is no longer needed, it can be released.  This frees up the system resources used
   for the images and the image list.  The programmer releases an image list by using the
-<xref linkend="mthReleaseClsImageList" /> method.  Once an image list is released it can no
+<xref linkend="mthReleaseClsImageList"/> method.  Once an image list is released it can no
   longer be used.  It is an error to invoke any method on the released object, except for the
-<xref linkend="mthIsNullClsImageList" /> method.  The isNull() method can be invoked any time to
+<xref linkend="mthIsNullClsImageList"/> method.  The isNull() method can be invoked any time to
   test if an image list is valid or not. It should go without saying that a programmer should not release
   an image list that is in use.
 </para>
@@ -1516,7 +1516,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size [optional]</term>
       <listitem>
         <para>
-          A<xref linkend="clsSize" /> object that specifies the size of a single image in the
+          A <xref linkend="clsSize"/> object that specifies the size of a single image in the
           image list.  All images in an image list have the same size. The size is specified in pixels.
         </para>
         <para>
@@ -1530,9 +1530,9 @@ A fancy purple: 16734709 (0x00FF59F5)
         <para>
           The flags that specify the type of image list to create. The flags are one or more of the following
           symbols, but can include only one ILC_COLOR* value. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for any of the
+          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for any of the
           following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of the
-<xref linkend="clsDlgUtil" /> class can be used to combine the symbols.
+<xref linkend="clsDlgUtil"/> class can be used to combine the symbols.
         </para>
         <para>
           <simplelist type='horiz' columns='2'>
@@ -1660,7 +1660,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       The ILC_MIRROR and ILC_PERITEMMIRROR flags require
-      Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary use the
+      Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
  <xref linkend="mthComCtl32Version"/>() method to determine the current version of
       the library.
     </para>
@@ -1688,7 +1688,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   Currently it is not intended for the ooDialog programmer to instantiate an image list object directly
   using the new method.  This may change in the future and will be documented at that time, if the
   intention changes.  .ImageList objects are instantiated using the
-<xref linkend="mthCreateClsImageList" /> method.
+<xref linkend="mthCreateClsImageList"/> method.
 </para>
 </section>  <!-- End ImageList::new() [class method] -->
 
@@ -1911,7 +1911,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         <para>
           A <xref linkend="mthColorRef"/> that is used to generate the mask if the image
           list is a masked image list.  See the
-<xref linkend="mthAddMaskedClsImageList" /> method for more details on this argument.
+<xref linkend="mthAddMaskedClsImageList"/> method for more details on this argument.
           This argument is ignored if the images are not bitmaps, or if the image list is not masked.
         </para>
       </listitem></varlistentry>
@@ -2232,7 +2232,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The size of the images in the image list is returned in a<xref linkend="clsSize" />
+      The size of the images in the image list is returned in a <xref linkend="clsSize"/>
       object.
     </para>
   </listitem></varlistentry>
@@ -2611,16 +2611,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   any binary executable file.
 </para>
 <para>
-  The class provides the<xref linkend="mthReleaseClsResourceImage" /> method to free up
+  The class provides the <xref linkend="mthReleaseClsResourceImage"/> method to free up
   system resources if a module containing the resources is no longer needed.  The
-  general remarks (<xref linkend="paraClsImageRelease" />) concerning freeing the
-<xref linkend="clsImage" /> class are applicable here.  The release() method will ignore requests
+  general remarks (<xref linkend="paraClsImageRelease"/>) concerning freeing the
+<xref linkend="clsImage"/> class are applicable here.  The release() method will ignore requests
   to release the module when it is known absoulutely that the module should not be released, such as in
   the case the module is the <computeroutput>oodialog.dll</computeroutput>. In other cases only the
   programmer can know if the module should or shouldn't be released.  In those cases, the ResourceImage
   class will do as requested.  As with the images that the .Image class represents, the system resources
   used by the module the ResourceImage class represents will be automatically cleaned up when the
-  interpreter process ends.  The comments (<xref linkend="paraClsImageRelease" />) about why would a
+  interpreter process ends.  The comments (<xref linkend="paraClsImageRelease"/>) about why would a
   programmer want to release resources in the .Image class remarks are equally apropos here.
 </para>
 <para>
@@ -2740,16 +2740,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       Returns a new ResourceImage object.  This object may be null if an error occurred.  Use the
-<xref linkend="mthIsNullClsResourceImage" /> method to check for this.  Both the
-      <xref linkend="dotSystemErrorCode" /> or the
-<xref linkend="mthSystemErrorCodeClsResourceImage" /> method should contain an
+<xref linkend="mthIsNullClsResourceImage"/> method to check for this.  Both the
+      <xref linkend="dotSystemErrorCode"/> or the
+<xref linkend="mthSystemErrorCodeClsResourceImage"/> method should contain an
       error code if the object is null.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -2816,11 +2816,11 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 <para>
   Loads the specified image resource in the module and returns a new
-<xref linkend="clsImage" /> object.
+<xref linkend="clsImage"/> object.
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> <computeroutput>LoadImage()</computeroutput> is the underlying Windows API used
-  here. This method is very similar to the<xref linkend="mthGetImageClsImage" /> method of the .Image
+  here. This method is very similar to the <xref linkend="mthGetImageClsImage"/> method of the .Image
   class. The documentation for that method may provide additional insight.
 </para>
 <variablelist>
@@ -2842,7 +2842,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -2856,7 +2856,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size</term>
       <listitem>
         <para>
-          A<xref linkend="clsSize" /> object that specifies the size of the image.  The default
+          A <xref linkend="clsSize"/> object that specifies the size of the image.  The default
           is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
           should be used.  However, the MSDN <xref linkend="defWindowsDoc"/> documentation for
           <computeroutput>LoadImage()</computeroutput> should be consulted for other meanings.
@@ -2866,9 +2866,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
           value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
-          the<xref linkend="clsDlgUtil" /> class can be used to combine more than one of the
+          the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
           symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -2898,7 +2898,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the resource image is null.
     </para>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -2953,7 +2953,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> <computeroutput>LoadImage()</computeroutput> is the underlying Windows API
-    used here.  This method is very similar to the<xref linkend="mthFromIDsClsImage" /> method of the
+    used here.  This method is very similar to the <xref linkend="mthFromIDsClsImage"/> method of the
     .Image class. The documentation for that method can provide additional information.
 </para>
 <variablelist>
@@ -2979,7 +2979,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -2993,7 +2993,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size</term>
       <listitem>
         <para>
-          A<xref linkend="clsSize" /> object that specifies the size of the image.  The default
+          A <xref linkend="clsSize"/> object that specifies the size of the image.  The default
           is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
           should be used.  However, the MSDN <xref linkend="defWindowsDoc"/> documentation should
           be consulted for other meanings.
@@ -3003,9 +3003,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
           value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
-          the<xref linkend="clsDlgUtil" /> class can be used to combine more than one of the
+          the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
           symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -3030,7 +3030,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       image of any specified ID, the corresponding index in the returned array will be empty.
     </para>
     <para>
-      If there is an error, both the <xref linkend="dotSystemErrorCode" /> and the
+      If there is an error, both the <xref linkend="dotSystemErrorCode"/> and the
  <xref linkend="mthSystemErrorCodeClsResourceImage"/> attribute of this
       resource image will be set (to the same code.)  It is conceivable that an error could occur where
       the system does not set an error code, but unlikely.
@@ -3042,7 +3042,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the resource image is null.
     </para>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -3269,7 +3269,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       This method return the system error code, which will be zero if there is no error, and non-zero if
-      there is an error. The <xref linkend="dotSystemErrorCode" /> is also set to
+      there is an error. The <xref linkend="dotSystemErrorCode"/> is also set to
       this value.
     </para>
   </listitem></varlistentry>
@@ -3279,7 +3279,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the resource image is null.
     </para>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3326,13 +3326,13 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 <para>
   When a method for a resource image is invoked that sets the
-  <xref linkend="dotSystemErrorCode" />, the systemErrorCode attribute of the resource
+  <xref linkend="dotSystemErrorCode"/>, the systemErrorCode attribute of the resource
   image object is also set. This can be useful if the programmer wants to check for an error code at some
   point when it is possible that .systemErrorCode has been reset.
 </para>
 <para>
   This method can always be invoked, even if the resource image is null.  It is very similar to the
-<xref linkend="mthSystemErrorCodeClsImage" /> method of the .Image class and the
+<xref linkend="mthSystemErrorCodeClsImage"/> method of the .Image class and the
   documentation for that method is generally applicable here.
 </para>
 <variablelist>

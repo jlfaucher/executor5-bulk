@@ -66,8 +66,8 @@
   </itemizedlist>
 </para>
 <para>
-  ooDialog provides these classes to allow the programmer to interface with the underlying (<xref
-  linkend="ovvUnderlying" />) button controls:
+  ooDialog provides these classes to allow the programmer to interface with the <xref linkend="ovvUnderlying" /> button
+  controls:
 <table id="tButtonControls" frame="all">
 <title>ooDialog Button Control Classes</title>
 <tgroup cols="2">
@@ -96,13 +96,13 @@
 </row>
 <row>
 <entry>Owner Drawn Button</entry>
-<entry>AnimatedButton (<xref linkend="anibut" />), Button <xref linkend="clsButton"/></entry>
+<entry><xref linkend="clsAnimatedButton"/>, <xref linkend="clsButton"/></entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 
-<section id="anibut"><title>Animated Buttons</title>
+<section id="clsAnimatedButton" xreflabel="AnimatedButton"><title>Animated Buttons</title>
 <indexterm><primary>AnimatedButton class</primary></indexterm>
 <para>The AnimatedButton class provides the methods to
 implement an animated button within a dialog. The attributes and methods are
@@ -326,7 +326,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <computeroutput>oowalk2.rex</computeroutput> examples in
 <computeroutput>OODIALOG\SAMPLES</computeroutput>.</para>
 <para>For further information see
-<xref linkend="mthInstallAnimatedButton" />.</para>
+<xref linkend="mthInstallAnimatedButton"/>.</para>
 </section>
 
 <section id="clsCheckBox"><title>Check Boxes</title>
@@ -368,7 +368,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <listitem>
     <para>
       To dynamically define a check box in a <xref linkend="clsUserDialog"/> class,
-      use one of the create button control methods described in <xref linkend="sctCreateButtonControls" />.
+      use one of the create button control methods described in <xref linkend="sctCreateButtonControls"/>.
       That section also describes methods for creating push buttons, radio buttons,
       etc... All the methods to create check boxes begin with: <emphasis role="italic">createCheck</emphasis>.
     </para>
@@ -377,7 +377,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <listitem>
     <para>
       A check box, is a button, and the programmer uses the same method to receive notifications of events as with the
-      button control, the<xref linkend="mthConnectButtonEvent" /> method.
+      button control, the <xref linkend="mthConnectButtonEvent"/> method.
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -442,8 +442,8 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <section id="tmthNewCheckBox"><title>newCheckBox (dialog object method)</title>
 <para>
   Check box objects can not be instantiated by the programmer from Rexx code. Rather a check box object is
-  obtained by using the<xref linkend="mthNewCheckBox" /> method of the dialog object (<xref
-  linkend="chpDialogObject" />). The syntax is:
+  obtained by using the <xref linkend="mthNewCheckBox"/> method of the <xref linkend="chpDialogObject"/> object. The
+  syntax is:
 <programlisting>
 <![CDATA[
 >>--newCheckBox(--id--)--------------------------><
@@ -457,7 +457,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <section id="tmthCreateCheckBox"><title>createCheckBox (UserDialog method)</title>
 <para>
   A check box object can be created in the dialog template for a <xref linkend="clsUserDialog"/> dialog
-  through the<xref linkend="mthCreateCheckBox" /> method. The basic syntax is:
+  through the <xref linkend="mthCreateCheckBox"/> method. The basic syntax is:
 <programlisting>
 <![CDATA[
 >>--createCheckBox(-id-,--x-,--y--+------+--+------+--+---------+--+---------+->
@@ -482,9 +482,8 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 </programlisting>
 
 <para>
-  This method overrides the RadioButton getCheckState() (<xref
-  linkend="mthGetCheckStateClsRadioButton" />) method to return a keyword indicating
-  the check state of the check box, checked, unchecked, or indeterminate.
+  This method overrides the RadioButton <xref linkend="mthGetCheckStateClsRadioButton"/> method to return a keyword
+  indicating the check state of the check box, checked, unchecked, or indeterminate.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -630,7 +629,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newGroupBox (<xref linkend="tmthNewGroupBox" />) method to retrieve an object of the group box class.
+    Use the <xref linkend="tmthNewGroupBox"/> method to retrieve an object of the group box class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
@@ -685,7 +684,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>styles= (<xref linkend="mthGBStyleEquals" />)</entry>
+<entry><xref linkend="mthGBStyleEquals"/></entry>
 <entry>Assigns a new text alignment to the group box.</entry>
 </row>
 </tbody></tgroup>
@@ -693,25 +692,24 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 </section>
 
 
-<section id="tmthNewGroupBox"><title>newGroupBox (dialog object method)</title>
+<section id="tmthNewGroupBox" xreflabel="newGroupBox"><title>newGroupBox (dialog object method)</title>
 <para>
   Group box objects can not be instantiated by the programmer from Rexx code. Rather a group box object is
-  obtained by using the<xref linkend="mthNewGroupBox" /> method of the dialog object (<xref
-  linkend="chpDialogObject" />). The syntax is:
+  obtained by using the <xref linkend="mthNewGroupBox"/> method of the <xref linkend="chpDialogObject" /> object. The syntax
+  is:
 <programlisting>
 <![CDATA[
 >>--newGroupBox(--id--)--------------------------><
-
 ]]>
 </programlisting>
 </para>
 </section>  <!-- End Dialog::newGroupBox() (dialog object method) -->
 
 
-<section id="tmthCreateGroupBox"><title>createGroupBox (UserDialog method)</title>
+<section id="tmthCreateGroupBox" xreflabel="createGroupBox"><title>createGroupBox (UserDialog method)</title>
 <para>
   A group box object can be create in the dialog template for a <xref linkend="clsUserDialog"/>
-  dialog through the<xref linkend="mthCreateGroupBox" /> method. The basic syntax is:
+  dialog through the <xref linkend="mthCreateGroupBox"/> method. The basic syntax is:
 <programlisting>
 <![CDATA[
 >>--createGroupbox(-+------+-,-x-,-y-,-cx-,-cy--+---------+-+--------+-)-------><
@@ -724,7 +722,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 
 
 
-<section id="mthGBStyleEquals"><title>style=</title>
+<section id="mthGBStyleEquals" xreflabel="style="><title>style=</title>
 <indexterm><primary>style=</primary><secondary>GroupBox class</secondary></indexterm>
 <indexterm><primary>GroupBox class</primary><secondary>style=</secondary></indexterm>
 <programlisting>
@@ -810,16 +808,15 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the <xref linkend="tmthNewRadioButton"/> method of the dialog (<xref
-    linkend="chpDialogObject" />) object to retrieve a new <computeroutput>RadioButton</computeroutput>
-    object.
+    Use the <xref linkend="tmthNewRadioButton"/> method of the <xref linkend="chpDialogObject" /> object to retrieve a new
+    <computeroutput>RadioButton</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
     To dynamically define a radio button in a <xref linkend="clsUserDialog"/> class, use the
- <xref linkend="mthCreateRadioButton"/> method. There are also a number of methods that create
+    <xref linkend="mthCreateRadioButton"/> method. There are also a number of methods that create
     groups of radio buttons. These methods are described  described in <xref
     linkend="sctCreateButtonControls" />. That section also describes methods for
     creating push buttons, check boxes, etc..
@@ -829,7 +826,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <listitem>
   <para>
     To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying radio button control to a
-    method in the Rexx dialog object use the<xref linkend="mthConnectButtonEvent" /> method.
+    method in the Rexx dialog object use the <xref linkend="mthConnectButtonEvent"/> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -905,8 +902,8 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <section id="tmthNewRadioButton"><title>newRadioButton (dialog object method)</title>
 <para>
   Radio button objects can not be instantiated by the programmer from Rexx code. Rather a radio button object is
-  obtained by using the<xref linkend="mthNewRadioButton" /> method of the dialog object (<xref
-  linkend="chpDialogObject" />). The syntax is:
+  obtained by using the <xref linkend="mthNewRadioButton"/> method of the <xref linkend="chpDialogObject" /> object. The
+  syntax is:
 <programlisting>
 <![CDATA[
 >>--newRadioButton(--id--)-----------------------><
@@ -920,7 +917,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <section id="tmthCreateRadioButton"><title>createRadioButton (UserDialog method)</title>
 <para>
   A radio button object can be created in the dialog template for a <xref linkend="clsUserDialog"/>
-  dialog through the<xref linkend="mthCreateRadioButton" /> method. The basic syntax is:
+  dialog through the <xref linkend="mthCreateRadioButton"/> method. The basic syntax is:
 <programlisting>
 <![CDATA[
 >>--createRadioButton(-id-,-x-,-y-+------+--+------+--+---------+-------------->
@@ -985,8 +982,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method return 0 on success and a system error (<xref linkend="defSystemErrorCode" />) code if the operating
-      system reports one.
+      This method return 0 on success and a <xref linkend="defSystemErrorCode"/> if the operating system reports one.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1002,7 +998,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -1228,15 +1224,15 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <para>
     To dynamically define a push button control in a <xref linkend="clsUserDialog"/> class, use the
  <xref linkend="mthCreatePushButton"/> method. There are also a number of methods that create
-    groups of push buttons. These methods are described  described in (<xref linkend="sctCreateButtonControls" />).
-    That section also describes methods for creating radio buttons, check boxes, etc..
+    groups of push buttons. These methods are described  described in <xref linkend="sctCreateButtonControls"/>. That
+    section also describes methods for creating radio buttons, check boxes, etc..
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
     To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying push button to a method
-    in the Rexx dialog object use the<xref linkend="mthConnectButtonEvent" /> method.
+    in the Rexx dialog object use the <xref linkend="mthConnectButtonEvent"/> method.
   </para>
 </listitem></varlistentry>
 </variablelist>
@@ -1324,36 +1320,34 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <entry>Retrieves the current state of the button.</entry>
 </row>
 <row>
-<entry>state=<xref linkend="mthStateEquals" />)</entry>
+<entry>state=<xref linkend="mthStateEquals"/>)</entry>
 <entry>Sets the state for the button.</entry>
 </row>
 <row>
-<entry>style= (<xref linkend="mthStyleEquals" />)</entry>
+<entry><xref linkend="mthStyleEquals"/></entry>
 <entry>Changes the style of the button.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </section>
 
-<section id="tmthNewPushButton"><title>newPushButton (dialog object method)</title>
+<section id="tmthNewPushButton" xreflabel="newPushButtons"><title>newPushButton (dialog object method)</title>
 <para>
   Push button objects can not be instantiated by the programmer from Rexx code. Rather a push button object is obtained
-  by using the newPushButton () (<xref linkend="mthNewPushButton" />) method of the dialog object (<xref
-  linkend="chpDialogObject" />). The syntax is:
+  by using the <xref linkend="mthNewPushButton"/> method of the <xref linkend="chpDialogObject"/>object. The syntax is:
 <programlisting>
 <![CDATA[
 >>--newPushButton(--id--)------------------------><
-
 ]]>
 </programlisting>
 </para>
 </section>  <!-- End newPushButton() [PlainBaseDialog method] -->
 
 
-<section id="tmthCreatePushButton"><title>createPushButton (UserDialog method)</title>
+<section id="tmthCreatePushButton" xreflabel="createPushButton"><title>createPushButton (UserDialog method)</title>
 <para>
   A push button object can be created in the dialog template for a <xref linkend="clsUserDialog"/>
-  dialog through the<xref linkend="mthCreatePushButton" /> method. The basic syntax is:
+  dialog through the <xref linkend="mthCreatePushButton"/> method. The basic syntax is:
 <programlisting>
 <![CDATA[
 >>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+---------+-+-------+-+-------+-)-><
@@ -1365,13 +1359,13 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </section>  <!-- End UserDialog::createPushButton() [UserDialog method] -->
 
 
-<section id="tmthConnectButtonEvent"><title>connectButtonEvent (dialog object method)</title>
+<section id="tmthConnectButtonEvent" xreflabel="connectButtonEvent"><title>connectButtonEvent (dialog object method)</title>
 <para>
-  To connect event notifications from a button object use the connectButtonEvent() (<xref
-  linkend="mthConnectButtonEvent" />) method of the dialog (<xref
-  linkend="chpDialogObject" />) object. The basic syntax is:
+  To connect event notifications from a button object use the <xref linkend="mthConnectButtonEvent"/> method of the <xref
+  linkend="chpDialogObject"/> object. The basic syntax is:
 
-<programlisting> <![CDATA[
+<programlisting>
+<![CDATA[
 >>--connectButtonEvent(--id--,--event--+----------------+--)-------------------><
                                        +--,-methodName--+
 
@@ -1449,7 +1443,7 @@ self~newPushButton(IDCANCEL)~click
   <para>
     The possible return values are:
     <variablelist>
-      <varlistentry><term>A<xref linkend="clsSize" /> object</term>
+      <varlistentry><term>A <xref linkend="clsSize"/> object</term>
       <listitem>
       <para>
         The ideal size for the button.
@@ -1467,8 +1461,8 @@ self~newPushButton(IDCANCEL)~click
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later.If necessary use
-    the<xref linkend="mthComCtl32Version" /> method to determine the current version of the
+    This method requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.If necessary use
+    the <xref linkend="mthComCtl32Version"/> method to determine the current version of the
     library.
   </para>
   <para>
@@ -1518,7 +1512,7 @@ self~newPushButton(IDCANCEL)~click
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method returns the<xref linkend="clsImage" /> object for the button, or .nil if the button does not
+    This method returns the <xref linkend="clsImage"/> object for the button, or .nil if the button does not
     have an image.
   </para>
   </listitem></varlistentry>
@@ -1584,13 +1578,13 @@ self~newPushButton(IDCANCEL)~click
           <varlistentry><term>imageList</term>
           <listitem>
           <para>
-            The<xref linkend="clsImageList" /> object containing the images for the button.
+            The<xref linkend="clsImageList"/> object containing the images for the button.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>rect</term>
           <listitem>
           <para>
-            A<xref linkend="clsRect" /> object that specifies the margin around the image.
+            A <xref linkend="clsRect"/> object that specifies the margin around the image.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>alignment</term>
@@ -1615,9 +1609,8 @@ self~newPushButton(IDCANCEL)~click
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method requires Bommon Control Librayr (<xref linkend="ovvComctl32" />) version 6.0 or later.
-    If necessary use the<xref linkend="mthComCtl32Version" /> method to
-    determine the current version of the library.
+    This method requires Bommon Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the <xref
+    linkend="mthComCtl32Version"/> method to determine the current version of the library.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -1696,7 +1689,7 @@ self~newPushButton(IDCANCEL)~click
   <para>
     The possible return values are:
     <variablelist>
-      <varlistentry><term>A<xref linkend="clsRect" /> object</term>
+      <varlistentry><term>A <xref linkend="clsRect"/> object</term>
       <listitem>
       <para>
         The margin for drawing text in the button.
@@ -1714,8 +1707,8 @@ self~newPushButton(IDCANCEL)~click
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method requires CommonControl <xref linkend="ovvComctl32" /> version 6.0 or later.
-    If necessary use the<xref linkend="mthComCtl32Version" /> method to
+    This method requires CommonControl <xref linkend="ovvComctl32"/> version 6.0 or later.
+    If necessary use the <xref linkend="mthComCtl32Version"/> method to
     determine the current version of the library.
   </para>
   <para>
@@ -1829,7 +1822,7 @@ return .true
       <varlistentry><term>newImage [required]</term>
       <listitem>
       <para>
-        The new<xref linkend="clsImage" /> object to be associated with the button or
+        The new<xref linkend="clsImage"/> object to be associated with the button or
         <computeroutput>.nil</computeroutput>. The use of <computeroutput>.nil</computeroutput> for the argument removes any
         existing image.
       </para>
@@ -1894,23 +1887,23 @@ return .true
       <varlistentry><term>imageList [required]</term>
       <listitem>
       <para>
-        A<xref linkend="clsImageList" /> object containing the images for the button. If this argument
+        A <xref linkend="clsImageList"/> object containing the images for the button. If this argument
         is the <computeroutput>.Nil</computeroutput> object, then any existing image list is removed.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>margin [optional]</term>
       <listitem>
       <para>
-        A<xref linkend="clsRect" /> object containing the margins around the image. The default is a 0
+        A <xref linkend="clsRect"/> object containing the margins around the image. The default is a 0
         margin.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>alignment [optional]</term>
       <listitem>
       <para>
-        Specifies the alignment of the image on the button. You can use .Image~toID() (<xref
-        linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
-        following symbols, or use the numeric value itself.
+        Specifies the alignment of the image on the button. You can use the <xref linkend="mthToIDClsImage"/> method of the
+        <xref linkend="clsImage"/> class to get the correct numeric value for one of the following symbols, or use the
+        numeric value itself.
       </para>
       <para>
         <simplelist type='horiz' columns='2'>
@@ -1937,7 +1930,7 @@ return .true
       <listitem>
       <para>
         If there is an existing image list, it is returned in the same format specified in <xref
-        linkend="mthGetImageList" />.
+        linkend="mthGetImageList"/>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>.nil</term>
@@ -1960,7 +1953,7 @@ return .true
     give the button the same look and feel as other buttons on the system.
   </para>
   <para>
-    A<xref linkend="clsImageList" /> object is used to supply the images for the button. If the image list
+    A <xref linkend="clsImageList"/> object is used to supply the images for the button. If the image list
     only contains 1 image at the first index, then that image is used for all button states. If more than 1 image is
     supplied, the the image at each index is used for the button state with this mapping:
   </para>
@@ -1990,12 +1983,12 @@ return .true
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later.
-    If necessary use the<xref linkend="mthComCtl32Version" /> method to
+    This method requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+    If necessary use the <xref linkend="mthComCtl32Version"/> method to
     determine the current version of the library.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -2011,7 +2004,7 @@ return .true
   <para>
     Since the image list API is only available with XP or later, the program checks that the API is available before
     proceeding. For further information on some of the methods used in the example see <xref
-    linkend="mthGetIdealSize" /> and <xref linkend="mthComCtl32Version" />.
+    linkend="mthGetIdealSize" /> and <xref linkend="mthComCtl32Version"/>.
 
 <programlisting>
 <![CDATA[
@@ -2085,7 +2078,7 @@ return 0
       <varlistentry><term>margins</term>
       <listitem>
       <para>
-        A<xref linkend="clsRect" /> object describing the new margins.
+        A <xref linkend="clsRect"/> object describing the new margins.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2113,8 +2106,8 @@ return 0
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later.
-    If necessary use the<xref linkend="mthComCtl32Version" /> method to
+    This method requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+    If necessary use the <xref linkend="mthComCtl32Version"/> method to
     determine the current version of the library.
   </para>
   <para>
@@ -2224,7 +2217,7 @@ say button~State
 </variablelist>
 </section>
 
-<section id="mthStateEquals"><title>state=</title>
+<section id="mthStateEquals" xreflabel="state="><title>state=</title>
 <indexterm><primary>state=</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>state=</secondary></indexterm>
 <programlisting>
@@ -2336,8 +2329,8 @@ button~state="FOCUS PUSHED"
     <listitem>
     <para>
       To change a button state to not focused programmatically use one of the ooDialog methods that move the focus:
- <xref linkend="mthTabToNext"/>, <xref linkend="mthTabToPrevious"/>, setFocus (<xref
-      linkend="mthSetFocus" />), <xref linkend="mthFocusControl"/>, etc..
+      <xref linkend="mthTabToNext"/>, <xref linkend="mthTabToPrevious"/>, <xref linkend="mthSetFocus"/>, <xref
+      linkend="mthFocusControl"/>, etc..
     </para>
     </listitem>
     </orderedlist>
@@ -2346,7 +2339,7 @@ button~state="FOCUS PUSHED"
 </variablelist>
 </section>
 
-<section id="mthStyleEquals"><title>style=</title>
+<section id="mthStyleEquals" xreflabel="style="><title>style=</title>
 <indexterm><primary>style=</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>style=</secondary></indexterm>
 <programlisting>
@@ -2357,7 +2350,7 @@ button~state="FOCUS PUSHED"
 </programlisting>
 
 <para>
-  This method assigns a new style to the <xref linkend="ovvUnderlying" /> button control.
+  This method assigns a new style to the <xref linkend="ovvUnderlying"/> button control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2544,11 +2537,10 @@ button~state="FOCUS PUSHED"
         <varlistentry><term>NOTIFY</term>
         <listitem>
         <para>
-          Enables a button to send the kill focus and set focus <xref linkend="ovvEvents"/> notifications.
-          See <xref linkend="mthConnectButtonEvent" /> method of the EventNotification (<xref
-          linkend="clsEventNotification" />) class.  If the button does not have this style, kill
-          and set focus events will not be received, even if the programmer does use the
-          <emphasis role="italic">connectButtonEvent</emphasis> method to connect those events.
+          Enables a button to send the kill focus and set focus <xref linkend="ovvEvents"/> notifications. See the <xref
+          linkend="mthConnectButtonEvent"/> method of the <xref linkend="clsEventNotification" /> class.  If the button does
+          not have this style, kill and set focus events will not be received, even if the programmer does use the <emphasis
+          role="italic">connectButtonEvent</emphasis> method to connect those events.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>FLAT</term>

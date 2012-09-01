@@ -73,8 +73,8 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the<xref linkend="mthNewComboBox" /> method of the dialog (<xref
-    linkend="chpDialogObject" />) object to retrieve a combo box object.
+    Use the <xref linkend="mthNewComboBox"/> method of the <xref linkend="chpDialogObject"/> object to retrieve a combo
+    box object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
@@ -215,9 +215,8 @@
 <section id="tmthNewComboBox"><title>newComboBox (dialog object method)</title>
 <para>
   <computeroutput>ComboBox</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
-  role="italic">new</emphasis>() method. Rather, a combo box object is obtained by using the newComboBoc() (<xref
-  linkend="mthNewComboBox" />) method of the <xref linkend="chpDialogObject" />
-  object. The syntax is:
+  role="italic">new</emphasis> method. Rather, a combo box object is obtained by using the <xref
+  linkend="mthNewComboBox" /> method of the <xref linkend="chpDialogObject"/> object. The syntax is:
 <programlisting>
 <![CDATA[
 >>-newComboBox(--id--)---------------------------><
@@ -230,8 +229,8 @@
 
 <section id="tmthCreateComboBox"><title>createComboBox (UserDialog method)</title>
 <para>
-  A combo box control can be created in the dialog template of a UserDialog I<xref linkend="clsUserDialog" />)
-  through the <xref linkend="mthCreateComboBox"/> method. The basic syntax is:
+  A combo box control can be created in the dialog template of a <xref linkend="clsUserDialog"/> through the
+  <xref linkend="mthCreateComboBox"/> method. The basic syntax is:
 
 <programlisting>
 <![CDATA[
@@ -246,9 +245,8 @@
 
 <section id="tmthConnectComboBoxEvent"><title>connectComboBoxEvent (dialog object method)</title>
 <para>
-  To connect event notifications from a combo box  control use the connectComboBoxEvent (<xref
-  linkend="mthConnectComboBoxEvent" />) method of the dialog (<xref
-  linkend="chpDialogObject" />) object. The basic syntax is:
+  To connect event notifications from a combo box  control use the <xref linkend="mthConnectComboBoxEvent" /> method of
+  the <xref linkend="chpDialogObject"/> object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectComboBoxEvent(--id--,--event--+----------------+--)------------------><
@@ -312,8 +310,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The <xref linkend="mthFindClsComboBox"/> example (<xref linkend="exampleFindClsComboBox" />) uses the
-    <emphasis role="italic">add</emphasis> method.
+    The <xref linkend="mthFindClsComboBox"/> <link linkend="exampleFindClsComboBox">example</link> uses the <emphasis
+    role="italic">add</emphasis> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -719,17 +717,16 @@ new orleans
   <listitem>
   <para>
     This method is only applicable if the combo box has a horizontal scroll bar. A scroll bar can be added explicitly by
-    using the WS_HSCROLL style with the combo box definition in the resource script for a RcDialog (<xref
-    linkend="clsRcDialog" />) or a RexDialog (<xref linkend="clsResDialog" />, or by using the HSCROLL
-    style in the <xref linkend="mthCreateComboBox"/> method of a UserDialog (<xref
-    linkend="clsUserDialog" />).
+    using the WS_HSCROLL style with the combo box definition in the resource script for a <xref linkend="clsRcDialog"/>
+    or a <xref linkend="clsResDialog"/>, or by using the HSCROLL style in the <xref
+    linkend="mthCreateComboBox"/> method of a <xref linkend="clsUserDialog"/>.
   </para>
   <para>
     In addition, a horizontal scroll bar is added implicitly if the CBS_DISABLENOSCROLL style is used in the resource
     script. (Or the DISABLENOSCROLL style in the <emphasis role="italic">createComboBox</emphasis> method.)
   </para>
   <para>
-    When the <xref linkend="ovvUnderlying" /> combo box is created, it has its horizontal extend set to
+    When the <xref linkend="ovvUnderlying"/> combo box is created, it has its horizontal extend set to
     0. The <xref linkend="mthSetHorizontalExtentClsComboBox"/> method can be used to change
     this value.
   </para>
@@ -774,8 +771,8 @@ new orleans
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The <xref linkend="mthFindClsComboBox"/> example (<xref linkend="exampleFindClsComboBox" />) uses the
-    <emphasis role="italic">getText</emphasis> method.
+    The <xref linkend="mthFindClsComboBox"/> <link linkend="exampleFindClsComboBox">example</link> uses the <emphasis
+    role="italic">getText</emphasis> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -859,9 +856,8 @@ new orleans
   </para>
   <para>
     If the combo box has a horizontal scroll bar and the width of the new item is wider than the combo box, or wider
-    than the current horizontal extent, the programmer should use the setHorizontalExtent (<xref
-    linkend="mthSetHorizontalExtentClsComboBox" />) method to ensure the scroll bar is shown and
-    will scroll far enough to show the whole item.
+    than the current horizontal extent, the programmer should use the <xref linkend="mthSetHorizontalExtentClsComboBox"/>
+    method to ensure the scroll bar is shown and will scroll far enough to show the whole item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -957,13 +953,10 @@ new orleans
   </para>
   <para>
     If the combo box has a horizontal scroll bar and the width of the new text is wider than the combo box, or wider
-    than the current horizontal extent, the programmer should use the setHorizontalExtent (<xref
-    linkend="mthSetHorizontalExtentClsComboBox" />) method to ensure the scroll bar is shown and
-    will scroll far enough to show the whole item.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End ComboBox::modify() -->
+    than the current horizontal extent, the programmer should use the <xref linkend="mthSetHorizontalExtentClsComboBox"/>
+    method to ensure the scroll bar is shown and will scroll far enough to show the whole item.
+  </para> </listitem></varlistentry>
+</variablelist> </section>  <!-- End ComboBox::modify() -->
 
 <section id="mthOpenDropDown" xreflabel="openDropDown"><title>openDropDown</title>
 <indexterm><primary>openDropDown</primary></indexterm>
@@ -971,8 +964,6 @@ new orleans
 <programlisting>
 <![CDATA[
 >>--openDropDown---------------------------------><
-
-
 ]]>
 </programlisting>
 
@@ -1029,7 +1020,7 @@ new orleans
   <listitem>
   <para>
     The one-based index of the item selected, or zero if no match was found. 0 is also returned if an error occurs
-    within the combo box (<xref linkend="ovvUnderlying" />), but that is unlikely.
+    within the <xref linkend="ovvUnderlying"/> combo box , but that is unlikely.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1207,7 +1198,7 @@ new orleans
 </programlisting>
 
 <para>
-  Sets the selection in the edit control portion of a simple (<xref linkend="listComboBoxTypes" />) or drop-down combo box.
+  Sets the selection in the edit control portion of a <link linkend="listComboBoxTypes">simple</link> or drop-down combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1238,7 +1229,7 @@ new orleans
   <listitem>
   <para>
     This method returns 0 on success and 1 on error. In particular, if this method is used with a drop-down list combo
-    box, 1 is returned. Other errors could occur within the <xref linkend="ovvUnderlying" /> combo box,
+    box, 1 is returned. Other errors could occur within the <xref linkend="ovvUnderlying"/> combo box,
     but they are unlikely.
   </para>
   </listitem></varlistentry>
@@ -1318,9 +1309,9 @@ new orleans
   <para>
     This method works whether or not the combo box has a horizontal scroll bar. However, if the combo box does not have
     a scroll bar, the user will see no difference. A scroll bar can be added explicitly by using the WS_HSCROLL style
-    with the combo box definition in the resource script for a TcDialog (<xref linkend="clsRcDialog" /> or a RexDialog (<xref
-    linkend="clsResDialog" />), or by using the HSCROLL style in the createComboBox (<xref
-    linkend="mthCreateComboBox" />) method of a <xref linkend="clsUserDialog"/>.
+    with the combo box definition in the resource script for a <xref linkend="clsRcDialog"/> or a <xref
+    linkend="clsResDialog"/>, or by using the HSCROLL style in the <xref linkend="mthCreateComboBox"/> method of a <xref
+    linkend="clsUserDialog"/>.
   </para>
   <para>
     In addition, a horizontal scroll bar is added implicitly if the CBS_DISABLENOSCROLL style is used in the resource

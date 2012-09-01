@@ -143,14 +143,14 @@
   <listitem>
   <para>
     Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu item identifier.
-    These numbers are essentially the same as any other <xref linkend="defResourceId" /> used in
-    ooDialog. The Rexx programmer can use numeric or symbolic (<xref linkend="itmMenuSymbolicIDs" />) IDs for menu
+    These numbers are essentially the same as any other <xref linkend="defResourceId"/> used in
+    ooDialog. The Rexx programmer can use numeric or symbolic (<xref linkend="itmMenuSymbolicIDs"/>) IDs for menu
     item identifier's, in the same way as for other resource IDs.
   </para>
   <para>
     All menus assign menu item identifiers to command items and submenus. ooDialog uses what the Windows operating
     system calls <emphasis role="italic">extended</emphasis> menus. Extended menus also assign identifiers to
-    separators. Identifiers are used for menu command events (<xref linkend="sctMenuCommandEvents" />). In addition, a
+    separators. Identifiers are used for menu command events (<xref linkend="sctMenuCommandEvents"/>). In addition, a
     menu item can be specified using its identifier in method invocations. For example, to
  <xref linkend="mthEnableClsMenu"/> or <xref linkend="mthDisableClsMenu"/> a menu item.
   </para>
@@ -180,10 +180,10 @@
   <listitem>
   <para>
     Menu <emphasis role="italic">item identifiers</emphasis> are essentially resource
-    IDs (<xref linkend="defResourceId" />). The programmer can use symbolic IDs (<xref linkend="defSymbolicId" />) for
+    IDs (<xref linkend="defResourceId"/>). The programmer can use symbolic IDs (<xref linkend="defSymbolicId"/>) for
     menu item identifiers rather than numeric IDs for any argument in a menu object method that uses a menu item
     identifier. However, to do so, the programmer <emphasis role="italic">must</emphasis> use the global
-    <xref linkend="dotConstDir" />. If the global <computeroutput>.constDir</computeroutput> is not used,
+    <xref linkend="dotConstDir"/>. If the global <computeroutput>.constDir</computeroutput> is not used,
     then all menu item identifier arguments <emphasis role="bold">must</emphasis> be numeric.
   </para> </listitem></varlistentry>
 </variablelist>
@@ -211,14 +211,14 @@
   When a user selects a menu command item, an <xref linkend="ovvEvents"/> is generated and the operating
   system sends a notification to the owner window of the menu. The ooDialog framework provides methods to connect this
   menu command notification to a method in the Rexx dialog object in a similar manner to connecting dialog control
-  notifications (<xref linkend="sctConnectingEvents" />). The event connection methods are contained within the
+  notifications (<xref linkend="sctConnectingEvents"/>). The event connection methods are contained within the
   various menu objects and are similar to the event connection methods of the dialog object.
 </para>
 <para>
   However, there are some specific details when dealing with menus that should be understood. The menu command event is
-  connected using the menu item identifier (<xref linkend="sctMenuItemIDs" />) of the command item, just as dialog
+  connected using the menu item identifier (<xref linkend="sctMenuItemIDs"/>) of the command item, just as dialog
   control events are connected using the resource ID of the dialog control. Event notifications are always connected to
-  a specific Rexx dialog object, the dialog object that represents the <xref linkend="ovvUnderlying" />
+  a specific Rexx dialog object, the dialog object that represents the <xref linkend="ovvUnderlying"/>
   dialog that the notification is expected to be sent to.
 </para>
 <para>
@@ -258,7 +258,7 @@
   E.g., take the case of an OK push button and an Exit menu item. Many times the action to take for both is exactly the
   same. Here the ooDialog programmer would use the same resource ID for both the button and the menu item. OK buttons
   normally use the resource ID of <computeroutput>IDOK</computeroutput>, which the ooDialog framework
-  automatically (<xref linkend="sctStandardEventMethods" />) connects to the <xref linkend="mthOk"/> method. If
+  automatically (<xref linkend="sctStandardEventMethods"/>) connects to the <xref linkend="mthOk"/> method. If
   the programmer also uses the IDOK id for the Exit menu item, then nothing else need be done. Whether the user selects
   the Exit menu item, or clicks the OK button, the same method in the Rexx dialog object will be invoked.
 </para>
@@ -322,7 +322,7 @@
         If auto connection is turned on in the menu bar that the item is inserted into, and the menu bar is already
         attached to a dialog, then the item will be automatically connected. The method name that is used for the
         connected method is based on the current auto connection status
-        (getAutoConnectionStatus (<xref linkend="mthGetAutoConnectStatus" />) can be used to determine the current
+        (getAutoConnectionStatus (<xref linkend="mthGetAutoConnectStatus"/>) can be used to determine the current
         auto connection status.)
       </para>
       <para>
@@ -463,7 +463,7 @@
     <itemizedlist>
     <listitem>
     <para>
-      connectCommandEvent (Class method) (<xref linkend="mthConnectCommandEventCls" />)
+      connectCommandEvent (Class method) (<xref linkend="mthConnectCommandEventCls"/>)
     </para>
     </listitem>
     <listitem>
@@ -473,7 +473,7 @@
     </listitem>
     <listitem>
     <para>
-      connectCommandEvent (Instance method) (<xref linkend="mthConnectCommandEvent" />)
+      connectCommandEvent (Instance method) (<xref linkend="mthConnectCommandEvent"/>)
     </para>
     </listitem>
     <listitem>
@@ -538,7 +538,7 @@
 <indexterm><primary>menu command event handlers</primary></indexterm>
 <para>
   There are only two types of event handlers that the ooDialog programmer will need to code. Although similar, there are
-  a few differences between the two. One handler (<xref linkend="sctSystemMenuCommandEventHandler" />) is exclusively
+  a few differences between the two. One handler (<xref linkend="sctSystemMenuCommandEventHandler"/>) is exclusively
   for menu command event notifications generated by the system menu. The other handler, described first, is for all
   other menu command event notifications.
 </para>
@@ -549,7 +549,7 @@
   Non-system menu command <xref linkend="ovvEvents"/> notifications are actually the same notifications as
   the <xref linkend="mthConnectButtonEvent"/> CLICK event. This makes the event handler for a menu command
   event pretty simple. The event handler is invoked when the user selects a menu command item. The programmer should
-  return 0 from the event handler, however the interpreter does not wait (<xref linkend="sctCodingEventHandlers" />)
+  return 0 from the event handler, however the interpreter does not wait (<xref linkend="sctCodingEventHandlers"/>)
   for the return.
 </para>
 
@@ -578,7 +578,7 @@
     <varlistentry><term>hMenu</term>
     <listitem>
     <para>
-      The Windows handle (<xref linkend="defHandle" />) to the menu.
+      The Windows handle (<xref linkend="defHandle"/>) to the menu.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -635,7 +635,7 @@
 <indexterm><primary>SystemMenu class</primary><secondary>command event handler</secondary></indexterm>
 <para>
   System menu command <xref linkend="ovvEvents"/> notifications are generated when the user clicks on a menu
-  command item in the system menu. The interpreter waits (<xref linkend="sctCodingEventHandlers" />) for the return
+  command item in the system menu. The interpreter waits (<xref linkend="sctCodingEventHandlers"/>) for the return
   from the Rexx method and the method must return either <computeroutput>.true</computeroutput> or
   <computeroutput>.false</computeroutput>.
 </para>
@@ -661,7 +661,7 @@
     <para>
       The identifier of the system menu command item the user selected. If this is one of the standard system menu
       command items, id will be a keyword identifying the item. The keywords correspond to the system menu command item
-      constants (<xref linkend="sctSystemMenuConstantMethods" />), with the <emphasis role="italic">SC_</emphasis>
+      constants (<xref linkend="sctSystemMenuConstantMethods"/>), with the <emphasis role="italic">SC_</emphasis>
       removed. For example, if the menu item selected was the SC_CLOSE item, the keyword will be <emphasis
       role="italic">CLOSE</emphasis>. For non-standard system menu command items inserted into the menu by the
       application, <emphasis role="italic">id</emphasis> will be the numeric value of the item.
@@ -767,7 +767,7 @@
   All the menu classes in ooDialog are similar. Menus have a large number of methods that are common to all types of
   menus. These common methods are contained in the <computeroutput>Menu</computeroutput> class, a mixin class inherited
   by all menu classes. This document treats the menu object in the same way it does the dialog
-  object (<xref linkend="chpDialogObject" />) and the dialog <xref linkend="chpDialogControlObject" /> object,
+  object (<xref linkend="chpDialogObject"/>) and the dialog <xref linkend="chpDialogControlObject"/> object,
   as an abstract concept. However, in this case the abstract menu object and the <computeroutput>Menu</computeroutput>
   mixin class are essentially the same.
 </para>
@@ -856,7 +856,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetAutoConnectStatus"/></entry>
-<entry>Returns a <computeroutput>Directory</computeroutput> object containing the current status of autoconnection (<xref linkend="varAutoConnection" />).</entry>
+<entry>Returns a <computeroutput>Directory</computeroutput> object containing the current status of autoconnection (<xref linkend="varAutoConnection"/>).</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetCountClsMenu"/></entry>
@@ -884,7 +884,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetMenuHandle"/></entry>
-<entry>Retrieves the Windows handle (<xref linkend="defHandle" />) of the underylying (<xref linkend="ovvUnderlying" />) menu for the specified popup menu of this menu.</entry>
+<entry>Retrieves the Windows handle (<xref linkend="defHandle"/>) of the underylying (<xref linkend="ovvUnderlying"/>) menu for the specified popup menu of this menu.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetPopup"/></entry>
@@ -948,7 +948,7 @@
 </row>
 <row>
 <entry><xref linkend="mthIsValidItemID"/></entry>
-<entry>Determines if a specific menu item ID (<xref linkend="sctMenuItemIDs" />) is valid for this menu.</entry>
+<entry>Determines if a specific menu item ID (<xref linkend="sctMenuItemIDs"/>) is valid for this menu.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIsValidMenu"/></entry>
@@ -956,7 +956,7 @@
 </row>
 <row>
 <entry><xref linkend="mthIsValidMenuHandle"/></entry>
-<entry>Given a handle (<xref linkend="defHandle" />), determines if the handle is a menu handle and, if it is, if the menu is still valid.</entry>
+<entry>Given a handle (<xref linkend="defHandle"/>), determines if the handle is a menu handle and, if it is, if the menu is still valid.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItemTextToMethodName"/></entry>
@@ -980,7 +980,7 @@
 </row>
 <row>
 <entry><xref linkend="mthSetAutoConnection"/></entry>
-<entry>Set the current status of autoconnection (<xref linkend="varAutoConnection" />).</entry>
+<entry>Set the current status of autoconnection (<xref linkend="varAutoConnection"/>).</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetHelpID"/></entry>
@@ -1034,7 +1034,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the menu item, may be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      The resource ID of the menu item, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>methodName [required]</term>
@@ -1063,20 +1063,20 @@
   <listitem>
   <para>
     When using the <emphasis role="italic">connectCommandEvent</emphasis> class method to connect menu command events,
-    the programmer must use a menu item identifier (<xref linkend="sctMenuItemIDs" />), not a menu item <emphasis
+    the programmer must use a menu item identifier (<xref linkend="sctMenuItemIDs"/>), not a menu item <emphasis
     role="italic">position</emphasis> identifier.
   </para>
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> class method is used for all types of menus. However, the
     programmer should be aware of the differences in coding event
-    handlers (<xref linkend="sctMenuCommandEventHandlers" />) for <xref linkend="clsSystemMenu"/> and other
+    handlers (<xref linkend="sctMenuCommandEventHandlers"/>) for <xref linkend="clsSystemMenu"/> and other
     types of menus.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on error. The system error code is set this way
+    Sets the <xref linkend="dotSystemErrorCode"/> on error. The system error code is set this way
     in addition to what the OS might set:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_INVALID_PARAMETER (87)</emphasis></term>
@@ -1090,7 +1090,7 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
-        role="italic">dlg</emphasis> argument is not a <xref linkend="chpDialogObject" /> object.
+        role="italic">dlg</emphasis> argument is not a <xref linkend="chpDialogObject"/> object.
       </para> </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_ENOUGH_MEMORY (8)</emphasis></term>
       <listitem>
@@ -1170,7 +1170,7 @@
 </programlisting>
 
 <para>
-  The Windows handle (<xref linkend="defHandle" />) of the menu.
+  The Windows handle (<xref linkend="defHandle"/>) of the menu.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">hMenu get:</emphasis></term>
@@ -1273,8 +1273,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The item ID(s) (<xref linkend="entMenuItemIdentifier" />) to be checked, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
+      The item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be checked, may be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -1309,7 +1309,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -1384,14 +1384,14 @@
     <varlistentry><term>start [required]</term>
     <listitem>
     <para>
-      The resource ID of the first menu item in the group, may be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or
+      The resource ID of the first menu item in the group, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or
       numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>end [required]</term>
     <listitem>
     <para>
-      The resource ID of the last menu item in the group, may be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or
+      The resource ID of the last menu item in the group, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or
       numeric.
     </para>
     </listitem></varlistentry>
@@ -1399,7 +1399,7 @@
     <listitem>
     <para>
       The resource ID of the menu item in the group that will be checked, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>byPosition [optional]</term>
@@ -1429,7 +1429,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1504,7 +1504,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -1526,7 +1526,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
         ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
-        <xref linkend="chpDialogObject" /> object.
+        <xref linkend="chpDialogObject"/> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1575,7 +1575,7 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the menu item, may be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+        The resource ID of the menu item, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>methodName [required]</term>
@@ -1590,7 +1590,7 @@
         A Rexx dialog to connect the notification to. By default, the notification is is connected to the Rexx dialog that
         the menu is <xref linkend="mthAttachTo"/> or <xref linkend="mthAssignTo"/> to. If
         omitted and there is no assigned or attached dialog, no connection is made and the
-        <xref linkend="dotSystemErrorCode" /> is set as described in the Details section. (To connect a
+        <xref linkend="dotSystemErrorCode"/> is set as described in the Details section. (To connect a
         menu item command event, there must be a dialog to connect it to.)
       </para>
       </listitem></varlistentry>
@@ -1608,20 +1608,20 @@
   <listitem>
   <para>
     When using the <emphasis role="italic">connectCommandEvent</emphasis> method to connect menu command events, the
-    programmer must use a menu item identifier (<xref linkend="sctMenuItemIDs" />), not a menu item <emphasis
+    programmer must use a menu item identifier (<xref linkend="sctMenuItemIDs"/>), not a menu item <emphasis
     role="italic">position</emphasis> identifier.
   </para>
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> method is used for all types of menus. However, the
     programmer should be aware of the differences in coding event
-    handlers (<xref linkend="sctMenuCommandEventHandlers" />) for <xref linkend="clsSystemMenu"/> and other
+    handlers (<xref linkend="sctMenuCommandEventHandlers"/>) for <xref linkend="clsSystemMenu"/> and other
     types of menus.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on error. The system error code is set this way
+    Sets the <xref linkend="dotSystemErrorCode"/> on error. The system error code is set this way
     in addition to what the OS might set:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_INVALID_FUNCTION (1)</emphasis></term>
@@ -1698,7 +1698,7 @@
 <para>
   Connects menu <xref linkend="ovvEvents"/> notifications to a method in the Rexx dialog. These are menu
   notifications <emphasis role="italic">other</emphasis> than the menu command
-  event (<xref linkend="sctMenuCommandEvents" />) notifications.
+  event (<xref linkend="sctMenuCommandEvents"/>) notifications.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1759,7 +1759,7 @@
     <varlistentry><term>hFilter [optional]</term>
     <listitem>
     <para>
-      The Windows handle (<xref linkend="defHandle" />) of an object to use to filter the connected notification. The
+      The Windows handle (<xref linkend="defHandle"/>) of an object to use to filter the connected notification. The
       use of this filter is specific to the event being connectd. For the CONTEXTMENU event it can be a window handle,
       in which case only notifications for that specific window are generated. When this menu is a menu
  <xref linkend="clsMenuBar"/>, then for the INITMENUPOPUP event it can be the menu handle of a submenu, in which
@@ -1802,7 +1802,7 @@
   <para>
     When this menu is a menu bar, connecting the INITMENUPOPUP event and not using the optional <emphasis
     role="italic">hFilter</emphasis> argument results in <emphasis role="italic">all</emphasis> INITMENUPOPUP events
-    sent to the <xref linkend="ovvUnderlying" /> dialog invoking the connected event handler. Note that
+    sent to the <xref linkend="ovvUnderlying"/> dialog invoking the connected event handler. Note that
     this will include notifications that the programmer may not at first expect. If the user clicks on the system menu,
     an INITMENUPOPUP notification is generated. If the application uses a context menu, the INITMENUPOPUP notification
     is generated before the context menu is shown. The connected event handler will also be invoked for these
@@ -1815,7 +1815,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -1836,7 +1836,7 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
-        ommitted, but the object is not a <xref linkend="chpDialogObject" /> object.
+        ommitted, but the object is not a <xref linkend="chpDialogObject"/> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1867,7 +1867,7 @@
 <para>
   <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the
  <xref linkend="mthConnectMenuEvent"/>, described in this section, is the same as the event handler
-  described (<xref linkend="evtPopupMenuCONTEXT" />) for the CONTEXTMENU event connected through one of the
+  described (<xref linkend="evtPopupMenuCONTEXT"/>) for the CONTEXTMENU event connected through one of the
  <xref linkend="clsPopupMenu"/> class methods. The event and event handler are the same no matter how the
   event connection is made.
 </para>
@@ -1901,7 +1901,7 @@
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle" />) of the window the user clicked the mouse on, or the window
+      The window handle (<xref linkend="defHandle"/>) of the window the user clicked the mouse on, or the window
       that has the focus if the user generated the context menu event with the keyboard. Note that this will only be
       the dialog window handle of the user clicks on the dialog background. Quite often it is going to be one of the
       dialog controls.
@@ -1910,14 +1910,14 @@
     <varlistentry><term>x</term>
     <listitem>
     <para>
-      The X coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates" />) coordinates, at the
+      The X coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates"/>) coordinates, at the
       time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>y</term>
     <listitem>
     <para>
-      The Y coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates" />) coordinates, at the
+      The Y coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates"/>) coordinates, at the
       time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
@@ -1935,7 +1935,7 @@
     The following example shows the event handler method that is only invoked for a list view in the application. Note
     that since the application uses the <xref linkend="mthShowClsPopupMenu"/> method to put up the context
     menu, the handling of the menu command item selection is done in a menu command event
-    handler (<xref linkend="sctMenuCommandEventHandlers" />).
+    handler (<xref linkend="sctMenuCommandEventHandlers"/>).
 
 <programlisting>
 <![CDATA[
@@ -1990,7 +1990,7 @@
 </para>
 <para>
   The programmer must return <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> from the
-  event handler, and the interpreter waits (<xref linkend="sctCodingEventHandlers" />) for this return.
+  event handler, and the interpreter waits (<xref linkend="sctCodingEventHandlers"/>) for this return.
 </para>
 
 <programlisting>
@@ -2012,7 +2012,7 @@
     <varlistentry><term>hMenu</term>
     <listitem>
     <para>
-      The Windows handle (<xref linkend="defHandle" />) for the menu about to become active.
+      The Windows handle (<xref linkend="defHandle"/>) for the menu about to become active.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2075,7 +2075,7 @@
 </para>
 <para>
   The programmer must return <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> from the
-  event handler, and the interpreter waits (<xref linkend="sctCodingEventHandlers" />) for this return.
+  event handler, and the interpreter waits (<xref linkend="sctCodingEventHandlers"/>) for this return.
 </para>
 
 <programlisting>
@@ -2110,7 +2110,7 @@
     <varlistentry><term>hMenu</term>
     <listitem>
     <para>
-      The Windows handle (<xref linkend="defHandle" />) for the submenu about to become active.
+      The Windows handle (<xref linkend="defHandle"/>) for the submenu about to become active.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2126,7 +2126,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If both the INITMENU (<xref linkend="evtMenuObjectINITMENU" />) and INTITMENUPOPUP events are connected, then two
+    If both the INITMENU (<xref linkend="evtMenuObjectINITMENU"/>) and INTITMENUPOPUP events are connected, then two
     successive event handlers will often be invoked. Take for instance a menu bar that contains a <emphasis
     role="italic">File</emphasis> submenu. If the user clicks on the <emphasis role="italic">File</emphasis> menu, the
     operating system first generates an INITMENU notification (for the menubar about to become active) and then
@@ -2190,7 +2190,7 @@
     <listitem>
     <para>
       A <computeroutput>Collection</computeroutput> object containing the menu item
-      IDs (<xref linkend="sctMenuItemIDs" />) to connect.  The IDs can be by position IDs or resource IDs,
+      IDs (<xref linkend="sctMenuItemIDs"/>) to connect.  The IDs can be by position IDs or resource IDs,
       depending on the value of the <emphasis role="italic">byPosition</emphasis> argument. However, they must be all
       the same type, all resource IDs or all by position IDs.
     </para>
@@ -2244,7 +2244,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -2273,7 +2273,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
         ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
-        <xref linkend="chpDialogObject" /> object.
+        <xref linkend="chpDialogObject"/> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2325,7 +2325,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the popup menu to be deleted. This can be a position ID or a
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the popup menu to be deleted. This can be a position ID or a
       resource ID, depending on the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -2364,7 +2364,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error code may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -2404,7 +2404,7 @@
 </programlisting>
 
 <para>
-  Releases the operating system resources for the <xref linkend="ovvUnderlying" /> menu of this
+  Releases the operating system resources for the <xref linkend="ovvUnderlying"/> menu of this
   <computeroutput>Menu</computeroutput> object. Menubars attached to a dialog, or submenus that are a part of a menubar,
   should not be destroyed. A menubar attached to a window is automatically destroyed by the operating system when the
   window is destroyed. When the operating system destroys a menubar or popup menu, it does so recursively. All submenus
@@ -2445,7 +2445,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2493,8 +2493,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier" />) to be disabled, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be disabled, may be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -2529,7 +2529,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -2588,8 +2588,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier" />) to be enabled, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be enabled, may be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -2624,7 +2624,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -2674,7 +2674,7 @@
 
 <para>
   Returns a <computeroutput>Directory</computeroutput> object containing the current status of
-  autoconnection (<xref linkend="varAutoConnection" />).
+  autoconnection (<xref linkend="varAutoConnection"/>).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2766,7 +2766,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2800,7 +2800,7 @@
 </programlisting>
 
 <para>
-  Retrieves the Windows handle (<xref linkend="defHandle" />) of the underylying (<xref linkend="ovvUnderlying" />)
+  Retrieves the Windows handle (<xref linkend="defHandle"/>) of the underylying (<xref linkend="ovvUnderlying"/>)
   menu this Rexx object represents.
 </para>
 <variablelist>
@@ -2826,7 +2826,7 @@
   </para>
   <para>
     The value returned from <emphasis role="italic">getHandle</emphasis> is identical to the value of the
- <xref linkend="atrHMenu" /> attribute.
+ <xref linkend="atrHMenu"/> attribute.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2880,7 +2880,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2909,7 +2909,7 @@
     <varlistentry><term>pos</term>
     <listitem>
     <para>
-      The menu item position (<xref linkend="entMenuItemPosition" />) identifier whose resource ID is required.
+      The menu item position (<xref linkend="entMenuItemPosition"/>) identifier whose resource ID is required.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2934,7 +2934,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2986,8 +2986,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to get the state of. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to get the state of. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3065,7 +3065,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3109,7 +3109,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3148,7 +3148,7 @@
 </programlisting>
 
 <para>
-  Retrieves the Windows handle (<xref linkend="defHandle" />) of the underylying (<xref linkend="ovvUnderlying" />)
+  Retrieves the Windows handle (<xref linkend="defHandle"/>) of the underylying (<xref linkend="ovvUnderlying"/>)
   menu for the specified popup menu of this menu.
 </para>
 <variablelist>
@@ -3160,8 +3160,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the popup menu to get the handle for. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the popup menu to get the handle for. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3187,7 +3187,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error code may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_PARAMETER (87)</term>
@@ -3200,7 +3200,7 @@
     </variablelist>
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3247,8 +3247,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the popup menu to get the handle for. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the popup menu to get the handle for. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3283,7 +3283,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -3302,7 +3302,7 @@
     </variablelist>
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3345,8 +3345,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to get the text for. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to get the text for. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3379,7 +3379,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -3437,8 +3437,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to get the text for. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to get the text for. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3539,7 +3539,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3567,8 +3567,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier" />) to be grayed, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be grayed, may be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -3603,7 +3603,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -3663,8 +3663,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier" />) to be high lighted, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be high lighted, may be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -3705,7 +3705,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -3747,16 +3747,16 @@
     <varlistentry><term>idBefore [required]</term>
     <listitem>
     <para>
-      The newly inserted item is inserted before the item with this ID (<xref linkend="sctMenuItemIDs" />). May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID,
+      The newly inserted item is inserted before the item with this ID (<xref linkend="sctMenuItemIDs"/>). May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID,
       depending on the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to be inserted. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to be inserted. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>text [required]</term>
@@ -3902,8 +3902,8 @@
     <listitem>
     <para>
       Whether to automatically connect the command item to a method in the owning dialog. This is a
-      connection request (<xref linkend="varConnectionRequest" />) type of connection type. Do not mix this with
-      autoconnection (<xref linkend="varAutoConnection" />). The default is false. If connect is true and the menu is
+      connection request (<xref linkend="varConnectionRequest"/>) type of connection type. Do not mix this with
+      autoconnection (<xref linkend="varAutoConnection"/>). The default is false. If connect is true and the menu is
       already attached to a dialog the connection is made immediately. Otherwise the request is put in to a queue and
       the connection is made when the menu is first attached to a dialog.
     </para>
@@ -3949,7 +3949,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3996,16 +3996,16 @@
     <varlistentry><term>idBefore [required]</term>
     <listitem>
     <para>
-      The newly inserted submenu is inserted before the item with this ID (<xref linkend="sctMenuItemIDs" />). May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID,
+      The newly inserted submenu is inserted before the item with this ID (<xref linkend="sctMenuItemIDs"/>). May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID,
       depending on the value of <emphasis role="italic">byPos</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="sctMenuItemIDs" />) of the submenu to be inserted. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      The resource ID (<xref linkend="sctMenuItemIDs"/>) of the submenu to be inserted. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>pop [required]</term>
@@ -4164,7 +4164,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4215,16 +4215,16 @@
     <varlistentry><term>idBefore [required]</term>
     <listitem>
     <para>
-      The new separator is inserted before the item with this ID (<xref linkend="sctMenuItemIDs" />). May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The new separator is inserted before the item with this ID (<xref linkend="sctMenuItemIDs"/>). May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPos</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="sctMenuItemIDs" />) of the separator to be inserted. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      The resource ID (<xref linkend="sctMenuItemIDs"/>) of the separator to be inserted. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>byPosition [optional]</term>
@@ -4259,7 +4259,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4306,8 +4306,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to determine the checked status of. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine the checked status of. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4332,7 +4332,7 @@
   <para>
     This method raises a syntax condition on any failure, since there is no way to indicate failure in the
     return. The syntax condition will indicate why the method failed. If the failure was a Win32 API failure, the error
-    text will contain the value of the <xref linkend="dotSystemErrorCode" /> variable so that the
+    text will contain the value of the <xref linkend="dotSystemErrorCode"/> variable so that the
     programmer can determine the cause of the failure. However, it is very unlikely that the Win32 API will fail. The
     more common cause of a failure would be the use of an invalid symbolic ID.
   </para>
@@ -4343,7 +4343,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4372,8 +4372,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is a command item. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine if it is a command item. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4398,7 +4398,7 @@
   <para>
     This method raises a syntax condition on any failure, since there is no way to indicate failure in the
     return. The syntax condition will indicate why the method failed. If the failure was a Win32 API failure, the error
-    text will contain the value of the <xref linkend="dotSystemErrorCode" /> variable so that the
+    text will contain the value of the <xref linkend="dotSystemErrorCode"/> variable so that the
     programmer can determine the cause of the failure. However, it is very unlikely that the Win32 API will fail. The
     more common cause of a failure would be the use of an invalid symbolic ID.
   </para>
@@ -4409,7 +4409,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4437,8 +4437,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is disabled. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine if it is disabled. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4463,7 +4463,7 @@
   <para>
     This method raises a syntax condition on any failure, since there is no way to indicate failure in the
     return. The syntax condition will indicate why the method failed. If the failure was a Win32 API failure, the error
-    text will contain the value of the <xref linkend="dotSystemErrorCode" /> variable so that the
+    text will contain the value of the <xref linkend="dotSystemErrorCode"/> variable so that the
     programmer can determine the cause of the failure. However, it is very unlikely that the Win32 API will fail. The
     more common cause of a failure would be the use of an invalid symbolic ID.
   </para>
@@ -4474,7 +4474,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4502,8 +4502,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is enabled. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine if it is enabled. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4528,7 +4528,7 @@
   <para>
     This method raises a syntax condition on any failure, since there is no way to indicate failure in the
     return. The syntax condition will indicate why the method failed. If the failure was a Win32 API failure, the error
-    text will contain the value of the <xref linkend="dotSystemErrorCode" /> variable so that the
+    text will contain the value of the <xref linkend="dotSystemErrorCode"/> variable so that the
     programmer can determine the cause of the failure. However, it is very unlikely that the Win32 API will fail. The
     more common cause of a failure would be the use of an invalid symbolic ID.
   </para>
@@ -4539,7 +4539,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4567,8 +4567,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is grayed. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine if it is grayed. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4593,7 +4593,7 @@
   <para>
     This method raises a syntax condition on any failure, since there is no way to indicate failure in the
     return. The syntax condition will indicate why the method failed. If the failure was a Win32 API failure, the error
-    text will contain the value of the <xref linkend="dotSystemErrorCode" /> variable so that the
+    text will contain the value of the <xref linkend="dotSystemErrorCode"/> variable so that the
     programmer can determine the cause of the failure. However, it is very unlikely that the Win32 API will fail. The
     more common cause of a failure would be the use of an invalid symbolic ID.
   </para>
@@ -4604,7 +4604,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4632,8 +4632,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to be queried. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to be queried. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4659,7 +4659,7 @@
   <para>
     This method raises a syntax condition on any failure, since there is no way to indicate failure in the
     return. The syntax condition will indicate why the method failed. If the failure was a Win32 API failure, the error
-    text will contain the value of the <xref linkend="dotSystemErrorCode" /> variable so that the
+    text will contain the value of the <xref linkend="dotSystemErrorCode"/> variable so that the
     programmer can determine the cause of the failure. However, it is very unlikely that the Win32 API will fail. The
     more common cause of a failure would be the use of an invalid symbolic ID.
   </para>
@@ -4667,7 +4667,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -4698,8 +4698,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item to be queried. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to be queried. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4725,7 +4725,7 @@
   <para>
     This method raises a syntax condition on any failure, since there is no way to indicate failure in the
     return. The syntax condition will indicate why the method failed. If the failure was a Win32 API failure, the error
-    text will contain the value of the <xref linkend="dotSystemErrorCode" /> variable so that the
+    text will contain the value of the <xref linkend="dotSystemErrorCode"/> variable so that the
     programmer can determine the cause of the failure. However, it is very unlikely that the Win32 API will fail. The
     more common cause of a failure would be the use of an invalid symbolic ID.
   </para>
@@ -4733,7 +4733,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode" /> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/> variable.
     </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -4753,8 +4753,8 @@
 </programlisting>
 
 <para>
-  Determines if a specific menu item ID (<xref linkend="sctMenuItemIDs" />) is valid for this menu and if one of the
-  <emphasis role="italic">is*</emphasis> methods (isChecked (<xref linkend="mthIsChecked" />),
+  Determines if a specific menu item ID (<xref linkend="sctMenuItemIDs"/>) is valid for this menu and if one of the
+  <emphasis role="italic">is*</emphasis> methods (isChecked (<xref linkend="mthIsChecked"/>),
  <xref linkend="mthIsPopup"/>, etc) is likely to fail.
 </para>
 <variablelist>
@@ -4790,7 +4790,7 @@
   <listitem>
   <para>
     In most of the methods for the Menu classes, if an invalid item ID is specified, the method will fail and the
-    <xref linkend="dotSystemErrorCode" /> variable is set to the failure reason. However, in some methods
+    <xref linkend="dotSystemErrorCode"/> variable is set to the failure reason. However, in some methods
     there is no way to indicate that the method failed. For those methods, a syntax error is raised if the item ID is
     not valid.
   </para>
@@ -4810,7 +4810,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4893,7 +4893,7 @@
 </programlisting>
 
 <para>
-  Given a handle (<xref linkend="defHandle" />), determines if the handle is a menu handle and, if it is, if the menu
+  Given a handle (<xref linkend="defHandle"/>), determines if the handle is a menu handle and, if it is, if the menu
   is still valid.
 </para>
 <variablelist>
@@ -4934,7 +4934,7 @@
   Converts <emphasis role="italic">text</emphasis> to a method name as if <emphasis role="italic">text</emphasis> were
   the text of a menu command item. This method can be used as a debugging helper if the programmer has difficulty in
   determining what method name the ooDialog framework is constructing when automatically
-  connecting (<xref linkend="sctMenuCommandEventConnections" />) menu command items.
+  connecting (<xref linkend="sctMenuCommandEventConnections"/>) menu command items.
 </para>
 <para>
   The ooDialog framework constructs a method name from a string in this way: All space, tab, ampersand, colon, and plus
@@ -4966,7 +4966,7 @@
   <listitem>
   <para>
     In the menu classes there are a number of methods that connect menu command
-    events (<xref linkend="sctMenuCommandEvents" />) to a method in the Rexx dialog. Most of these methods will
+    events (<xref linkend="sctMenuCommandEvents"/>) to a method in the Rexx dialog. Most of these methods will
     automatically construct the connected method name if the programmer does not specify a method name. The name is
     constructed based on the text of the menu command item that is being connected.
   </para>
@@ -5025,7 +5025,7 @@
 
 <para>
   Releases (frees) the operating system resources used by a menu. The menu is specified by its Windows
-  handle (<xref linkend="defHandle" />). To release the operating system resources for an ooDialog
+  handle (<xref linkend="defHandle"/>). To release the operating system resources for an ooDialog
   <computeroutput>Menu</computeroutput> object, use the <xref linkend="mthDestroyClsMenu"/>() method.
 </para>
 <variablelist>
@@ -5065,7 +5065,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5093,8 +5093,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu command item to remove. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu command item to remove. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5120,7 +5120,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -5181,8 +5181,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the submenu to remove. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the submenu to remove. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5223,7 +5223,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -5279,8 +5279,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the submenu to remove. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the submenu to remove. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5306,7 +5306,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -5370,7 +5370,7 @@
 </programlisting>
 
 <para>
-  Set the current status of autoconnection (<xref linkend="varAutoConnection" />).
+  Set the current status of autoconnection (<xref linkend="varAutoConnection"/>).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5477,8 +5477,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The help ID (<xref linkend="sctMenuItemIDs" />) to be set. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      The help ID (<xref linkend="sctMenuItemIDs"/>) to be set. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>recurse [optional]</term>
@@ -5511,7 +5511,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5558,8 +5558,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item whose resource ID is to be set. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item whose resource ID is to be set. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5567,7 +5567,7 @@
     <listitem>
     <para>
       The new resource ID for the specified menu item. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>byPosition [optional]</term>
@@ -5600,7 +5600,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5661,7 +5661,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5711,8 +5711,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs" />) of the menu item whose text is being set. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
+      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item whose text is being set. May be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5744,7 +5744,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -5781,8 +5781,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The item ID(s) (<xref linkend="entMenuItemIdentifier" />) to be unchecked, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
+      The item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be unchecked, may be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -5817,7 +5817,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -5892,8 +5892,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier" />) whose high light is to be removed, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) whose high light is to be removed, may be
+      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -5928,7 +5928,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -5954,7 +5954,7 @@
 <para>
   A menu bar is often called the top-level menu. It is the bar poisitioned just below the title bar of an application
   window or a dialog. The menu bar object is used, like the <xref linkend="clsMenu"/>,
-  <xref linkend="chpDialogObject" />, and dialog <xref linkend="chpDialogControlObject" /> objects as an
+  <xref linkend="chpDialogObject"/>, and dialog <xref linkend="chpDialogControlObject"/> objects as an
   abstract concept to document the ooDialog menu objects that represent menu bars. The menu bar classes in ooDialog are
   the <xref linkend="clsBinaryMenuBar"/>, <xref linkend="clsUserMenuBar"/>, and
  <xref linkend="clsScriptMenuBar"/> classes.
@@ -6042,12 +6042,12 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If auto (<xref linkend="sctMenuCommandEventConnections" />) connection is turned on (
+    If auto (<xref linkend="sctMenuCommandEventConnections"/>) connection is turned on (
  <xref linkend="mthGetAutoConnectStatus"/>) then all menu command items are connected to a
     method in the <emphasis role="italic">dlg</emphasis> dialog at this time.
   </para>
   <para>
-    A menu bar can only be attached to a dialog after the <xref linkend="ovvUnderlying" /> dialog exists.
+    A menu bar can only be attached to a dialog after the <xref linkend="ovvUnderlying"/> dialog exists.
     A menu bar can only be attached to one dialog, and a dialog can only have one menu bar attached to it. If any of
     these conditions are not met, this method fails.
   </para>
@@ -6061,7 +6061,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -6162,7 +6162,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -6221,7 +6221,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable. There are no errors that could changes
+    Sets the <xref linkend="dotSystemErrorCode"/> variable. There are no errors that could changes
     the value from 0.
   </para>
   </listitem></varlistentry>
@@ -6257,7 +6257,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -6310,7 +6310,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on error. In addition to error codes set by the
+    Sets the <xref linkend="dotSystemErrorCode"/> on error. In addition to error codes set by the
     operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_INVALID_FUNCTION (1)</emphasis></term>
@@ -6389,7 +6389,7 @@
 </thead>
 <tbody>
 <row>
-<entry>new (Class) (<xref linkend="mthNewClsBinaryMenuBar" />)</entry>
+<entry>new (Class) (<xref linkend="mthNewClsBinaryMenuBar"/>)</entry>
 <entry>Instantiates a new binary menu bar object.</entry>
 </row>
 <row>
@@ -6490,7 +6490,7 @@
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID of the menu bar, may be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. This
+      The resource ID of the menu bar, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This
       argument is required if <emphasis role="italic">menuSrc</emphasis> is either a
       <computeroutput>.ResDialog</computeroutput> or <computeroutput>.String</computeroutput> object.
     </para>
@@ -6498,7 +6498,7 @@
     <varlistentry><term>hID [optional]</term>
     <listitem>
     <para>
-      The context help resource ID of the menu bar, may be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or
+      The context help resource ID of the menu bar, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or
       numeric.
     </para>
     </listitem></varlistentry>
@@ -6506,8 +6506,8 @@
     <listitem>
     <para>
       If specified, attach this menu bar to the specified dialog. If used, <emphasis role="italic">attachTo</emphasis>
-      has to be a <xref linkend="chpDialogObject" /> object and the dialog must be in a valid state to attach
-      the menu bar. That is, the <xref linkend="ovvUnderlying" /> dialog must exist and the dialog must
+      has to be a <xref linkend="chpDialogObject"/> object and the dialog must be in a valid state to attach
+      the menu bar. That is, the <xref linkend="ovvUnderlying"/> dialog must exist and the dialog must
       not already have a menu bar attached. If any of these conditions are not met, an exception is raised.
     </para>
     </listitem></varlistentry>
@@ -6515,10 +6515,10 @@
     <listitem>
     <para>
       If true, turn on <emphasis role="italic">auto connection</emphasis>. The default is false. Refer to the
-      discussion on command event connections (<xref linkend="sctMenuCommandEventConnections" />) to understand the
+      discussion on command event connections (<xref linkend="sctMenuCommandEventConnections"/>) to understand the
       details of <emphasis role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
       role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command
-      events (<xref linkend="sctMenuCommandEvents" />) are connected to a method in the dialog.
+      events (<xref linkend="sctMenuCommandEvents"/>) are connected to a method in the dialog.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>mName [optional]</term>
@@ -6545,8 +6545,8 @@
     Raises conditions for all failures. If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use symbolic (<xref linkend="itmMenuSymbolicIDs" />) IDs with menu objects the programmer must use the global
-    <xref linkend="dotConstDir" />.
+    To use symbolic (<xref linkend="itmMenuSymbolicIDs"/>) IDs with menu objects the programmer must use the global
+    <xref linkend="dotConstDir"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6556,7 +6556,7 @@
     occurred.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable. However, it will only be non-zero if
+    Sets the <xref linkend="dotSystemErrorCode"/> variable. However, it will only be non-zero if
     the help ID is set and there is a Windows API failure. It is unlikely that this could happen.
   </para>
   </listitem></varlistentry>
@@ -6620,7 +6620,7 @@
 </thead>
 <tbody>
 <row>
-<entry>new (Class) (<xref linkend="mthNewClsScriptMenuBar" />)</entry>
+<entry>new (Class) (<xref linkend="mthNewClsScriptMenuBar"/>)</entry>
 <entry>Returns a new <computeroutput>ScriptMenuBar</computeroutput> object.</entry>
 </row>
 <row>
@@ -6679,14 +6679,14 @@
       <listitem>
       <para>
         The resource ID of the menu definition in the resource script. May be
-        symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. If this argument is omitted, the first menu definition
+        symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. If this argument is omitted, the first menu definition
         found in the resource script is used.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>helpID [optional]</term>
       <listitem>
       <para>
-        The context help ID for this menu. May be numeric or symbolic (<xref linkend="itmMenuSymbolicIDs" />). If
+        The context help ID for this menu. May be numeric or symbolic (<xref linkend="itmMenuSymbolicIDs"/>). If
         omitted, the menu will not have a help ID.
       </para>
       </listitem></varlistentry>
@@ -6708,7 +6708,7 @@
       <para>
         If true, each menu command item in the menu is connected to a method in a Rexx dialog object the <emphasis
         role="italic">first</emphasis> time the menu is attached to a dialog. This is a connection
-        request (<xref linkend="sctMenuCommandEventConnections" />) type of connection. If the <emphasis
+        request (<xref linkend="sctMenuCommandEventConnections"/>) type of connection. If the <emphasis
         role="italic">attachTo</emphasis> argument is used, then the menu command items are connected immediately.
         Otherwise the requests for connections are queued and the connections are made when the menu bar is actually
         attached to a dialog. The name of the connected method for each menu command item is composed from the menu item
@@ -6719,7 +6719,7 @@
       <listitem>
       <para>
         Specifies a Rexx dialog object for the menu to attach to immediately. This argument must be a
-        <xref linkend="chpDialogObject" /> object, the <xref linkend="ovvUnderlying" /> Windows
+        <xref linkend="chpDialogObject"/> object, the <xref linkend="ovvUnderlying"/> Windows
         dialog must exist and that dialog must not already have a menu bar attached. If those conditions are not met,
         then a syntax condition is raised.
       </para>
@@ -6739,8 +6739,8 @@
     Raises conditions for all failures. If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use symbolic (<xref linkend="itmMenuSymbolicIDs" />) IDs with menu objects the programmer must use the global
-    <xref linkend="dotConstDir" />.
+    To use symbolic (<xref linkend="itmMenuSymbolicIDs"/>) IDs with menu objects the programmer must use the global
+    <xref linkend="dotConstDir"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6750,7 +6750,7 @@
     occurred.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable. However, it will only be non-zero if
+    Sets the <xref linkend="dotSystemErrorCode"/> variable. However, it will only be non-zero if
     the help ID is set and there is a Windows API failure. It is unlikely that this could happen.
   </para>
   </listitem></varlistentry>
@@ -6820,7 +6820,7 @@
 </thead>
 <tbody>
 <row>
-<entry>new (Class) (<xref linkend="mthNewClsUserMenuBar" />)</entry>
+<entry>new (Class) (<xref linkend="mthNewClsUserMenuBar"/>)</entry>
 <entry>Returns a new <computeroutput>UserMenuBar</computeroutput>object.</entry>
 </row>
 <row>
@@ -6893,14 +6893,14 @@
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID for the menu bar. May be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. If this
+      The resource ID for the menu bar. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. If this
       argument is omitted or is -1, the menu bar will not have a resource ID.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>helpID [optional]</term>
     <listitem>
     <para>
-      The context help ID for this menu. May be numeric or symbolic (<xref linkend="itmMenuSymbolicIDs" />). If
+      The context help ID for this menu. May be numeric or symbolic (<xref linkend="itmMenuSymbolicIDs"/>). If
       omitted, the menu will not have a help ID.
     </para>
     </listitem></varlistentry>
@@ -6921,10 +6921,10 @@
     <listitem>
     <para>
       If true, turn on <emphasis role="italic">auto connection</emphasis>. The default is false. Refer to the
-      discussion on command event connections (<xref linkend="sctMenuCommandEventConnections" />) to understand the
+      discussion on command event connections (<xref linkend="sctMenuCommandEventConnections"/>) to understand the
       details of <emphasis role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
       role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command
-      events (<xref linkend="sctMenuCommandEvents" />) are connected to a method in the dialog.
+      events (<xref linkend="sctMenuCommandEvents"/>) are connected to a method in the dialog.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>mName [optional]</term>
@@ -6958,8 +6958,8 @@
     Raises conditions for all failures. If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use symbolic (<xref linkend="itmMenuSymbolicIDs" />) IDs with menu objects the programmer must use the global
-    <xref linkend="dotConstDir" />.
+    To use symbolic (<xref linkend="itmMenuSymbolicIDs"/>) IDs with menu objects the programmer must use the global
+    <xref linkend="dotConstDir"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6969,7 +6969,7 @@
     occurred.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable. However, it will only be non-zero if
+    Sets the <xref linkend="dotSystemErrorCode"/> variable. However, it will only be non-zero if
     the help ID is set and there is a Windows API failure. It is unlikely that this could happen.
   </para>
   </listitem></varlistentry>
@@ -7043,7 +7043,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID for the menu command item. May be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      The resource ID for the menu command item. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>text [required]</term>
@@ -7156,7 +7156,7 @@
   <listitem>
   <para>
     A method name to connect the menu command event to. The default is to not connect the menu command item. This is a
-    connection request (<xref linkend="sctMenuCommandEventConnections" />) type of connection. If this argument is
+    connection request (<xref linkend="sctMenuCommandEventConnections"/>) type of connection. If this argument is
     used it can not be the empty string.
   </para>
   </listitem></varlistentry>
@@ -7178,7 +7178,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -7202,7 +7202,7 @@
   <listitem>
   <para>
     There is a good example of using the <emphasis role="italic">addItem</emphasis> method in the
-    example (<xref linkend="exampleNewUserMenuBar" />) for the <emphasis role="italic">new</emphasis> method of the
+    example (<xref linkend="exampleNewUserMenuBar"/>) for the <emphasis role="italic">new</emphasis> method of the
     <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
@@ -7233,7 +7233,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID for the popup menu. May be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      The resource ID for the popup menu. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>name [required]</term>
@@ -7340,7 +7340,7 @@
     <varlistentry><term>helpID [optional]</term>
     <listitem>
     <para>
-      The context help ID for the popup menu. May be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric.
+      The context help ID for the popup menu. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7364,7 +7364,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -7381,7 +7381,7 @@
   <listitem>
   <para>
     There is a good example of using the <emphasis role="italic">addPopup</emphasis> method in the
-    example (<xref linkend="exampleNewUserMenuBar" />) for the <emphasis role="italic">new</emphasis> method of the
+    example (<xref linkend="exampleNewUserMenuBar"/>) for the <emphasis role="italic">new</emphasis> method of the
     <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
@@ -7412,7 +7412,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID for the separator. May be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. -1 is
+      The resource ID for the separator. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. -1 is
       accepted to indicate no ID is desired, however, there are many advantages to assigning valid IDs to separators.
     </para>
     </listitem></varlistentry>
@@ -7493,7 +7493,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -7510,7 +7510,7 @@
   <listitem>
   <para>
     There is a good example of using the <emphasis role="italic">addSeparator</emphasis> method in the
-    example (<xref linkend="exampleNewUserMenuBar" />) for the <emphasis role="italic">new</emphasis> method of the
+    example (<xref linkend="exampleNewUserMenuBar"/>) for the <emphasis role="italic">new</emphasis> method of the
     <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
@@ -7558,7 +7558,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -7573,7 +7573,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleNewUserMenuBar" />) for the <emphasis role="italic">new</emphasis> method of
+    The example (<xref linkend="exampleNewUserMenuBar"/>) for the <emphasis role="italic">new</emphasis> method of
     the <computeroutput>UserMenuBar</computeroutput> class uses the <emphasis role="italic">complete</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -7664,7 +7664,7 @@
   <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the
  <xref linkend="mthConnectContextMenuCls"/> class method or the
  <xref linkend="mthConnectContextMenu"/> instance method, described in this section, is the same as
-  the event handler described (<xref linkend="evtMenuObjectCONTEXTMENU" />) for the CONTEXTMENU event connected
+  the event handler described (<xref linkend="evtMenuObjectCONTEXTMENU"/>) for the CONTEXTMENU event connected
   through the <xref linkend="mthConnectMenuEvent"/> method. The event and event handler are the
   same no matter how the event connection is made.
 </para>
@@ -7699,7 +7699,7 @@
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle" />) of the window the user clicked the mouse on, or the window
+      The window handle (<xref linkend="defHandle"/>) of the window the user clicked the mouse on, or the window
       that has the focus if the user generated the context menu event with the keyboard. Note that this will only be
       the dialog window handle of the user clicks on the dialog background. Quite often it is going to be one of the
       dialog controls.
@@ -7708,14 +7708,14 @@
     <varlistentry><term>x</term>
     <listitem>
     <para>
-      The X coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates" />) coordinates, at the
+      The X coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates"/>) coordinates, at the
       time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>y</term>
     <listitem>
     <para>
-      The Y coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates" />) coordinates, at the
+      The Y coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates"/>) coordinates, at the
       time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
@@ -7733,7 +7733,7 @@
     The following example shows the event handler method that is only invoked for a list view in the application. Note
     that since the application uses the <xref linkend="mthShowClsPopupMenu"/> method to put up the context
     menu, the handling of the menu command item selection is done in a menu command event
-    handler (<xref linkend="sctMenuCommandEventHandlers" />).
+    handler (<xref linkend="sctMenuCommandEventHandlers"/>).
 
 <programlisting>
 <![CDATA[
@@ -7884,7 +7884,7 @@
   <para>
     The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
     the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.) The <emphasis
-    role="italic">ContextMenu Event Handler</emphasis> section (<xref linkend="evtPopupMenuCONTEXT" />) has
+    role="italic">ContextMenu Event Handler</emphasis> section (<xref linkend="evtPopupMenuCONTEXT"/>) has
     information on how to code the event handler.
   </para>
   <para>
@@ -7900,7 +7900,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on error. The system error code is set this way
+    Sets the <xref linkend="dotSystemErrorCode"/> on error. The system error code is set this way
     by ooDialog, in addition to error codes the OS might set:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_WINDOW_NOT_DIALOG (1420)</emphasis></term>
@@ -7974,14 +7974,14 @@
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID for the popup menu. May be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. If this
+      The resource ID for the popup menu. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. If this
       argument is omitted or is -1, the popup menu will not have a resource ID.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>helpID [optional]</term>
     <listitem>
     <para>
-      The context help ID for this menu. May be numeric or symbolic (<xref linkend="itmMenuSymbolicIDs" />). If
+      The context help ID for this menu. May be numeric or symbolic (<xref linkend="itmMenuSymbolicIDs"/>). If
       omitted, the popup menu will not have a help ID.
     </para>
     </listitem></varlistentry>
@@ -8010,7 +8010,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable. However, the variable will only be
+    Sets the <xref linkend="dotSystemErrorCode"/> variable. However, the variable will only be
     non-zero if the Windows API used to set the help ID fails. This is unlikely to happen.
   </para>
   </listitem></varlistentry>
@@ -8062,9 +8062,9 @@
     <varlistentry><term>auto [optional]</term>
     <listitem>
     <para>
-      If true, turn on auto connection (<xref linkend="sctMenuCommandEventConnections" />). The default is false.
+      If true, turn on auto connection (<xref linkend="sctMenuCommandEventConnections"/>). The default is false.
       When <emphasis role="italic">auto connection</emphasis> is on, <emphasis role="italic">each</emphasis> time this
-      popup menu is assigned to a dialog, all menu command events (<xref linkend="sctMenuCommandEvents" />) are
+      popup menu is assigned to a dialog, all menu command events (<xref linkend="sctMenuCommandEvents"/>) are
       connected to a method in the dialog.
     </para>
     </listitem></varlistentry>
@@ -8108,7 +8108,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_MENU_HANDLE (1401)</term>
@@ -8121,7 +8121,7 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> <emphasis
-        role="italic">dlg</emphasis> is not a <xref linkend="chpDialogObject" /> object.
+        role="italic">dlg</emphasis> is not a <xref linkend="chpDialogObject"/> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -8203,7 +8203,7 @@
   <para>
     The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
     the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.) The <emphasis
-    role="italic">ContextMenu Event Handler</emphasis> section (<xref linkend="evtPopupMenuCONTEXT" />) has
+    role="italic">ContextMenu Event Handler</emphasis> section (<xref linkend="evtPopupMenuCONTEXT"/>) has
     information on how to code the event handler.
   </para>
   </listitem></varlistentry>
@@ -8213,7 +8213,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on error. The system error code is set this way
+    Sets the <xref linkend="dotSystemErrorCode"/> on error. The system error code is set this way
     in addition to what the OS might set:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_INVALID_FUNCTION (1)</emphasis></term>
@@ -8308,7 +8308,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Resets the <xref linkend="dotSystemErrorCode" /> variable to 0. There are no operating system
+    Resets the <xref linkend="dotSystemErrorCode"/> variable to 0. There are no operating system
     errors that would change that.
   </para>
   </listitem></varlistentry>
@@ -8345,7 +8345,7 @@
 
 <para>
   Displays a contex menu and returns after the user has selected an item or canceled the menu.  When the user selects an
-  item, a menu command (<xref linkend="sctMenuCommandEvents" />) event notification, using the id of the menu item
+  item, a menu command (<xref linkend="sctMenuCommandEvents"/>) event notification, using the id of the menu item
   selected, is generated. If the user cancels, nothing happens.
 </para>
 <variablelist>
@@ -8358,7 +8358,7 @@
     <listitem>
     <para>
       A <xref linkend="clsPoint"/> object specifying the location for the shortcut menu, in
-      screen (<xref linkend="defScreenCoordinates" />) co-ordinates.
+      screen (<xref linkend="defScreenCoordinates"/>) co-ordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dlg [optional]</term>
@@ -8492,7 +8492,7 @@
         <varlistentry><term>LAYOUTRTL</term>
         <listitem>
         <para>
-          Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. Use right to left
+          Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. Use right to left
           text layout. By default left to right text layout is used.
         </para>
         </listitem></varlistentry>
@@ -8531,13 +8531,13 @@
   </para>
   <para>
     For any animation to occur, the System Parameters Information menu animation must be on. (
- <xref linkend="clsSPI"/> class, <xref linkend="atrMenuAnimation" /> attribute.) In addition,
+ <xref linkend="clsSPI"/> class, <xref linkend="atrMenuAnimation"/> attribute.) In addition,
     all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (
- <xref linkend="clsSPI"/> class, <xref linkend="atrMenuFade" /> attribute.)
+ <xref linkend="clsSPI"/> class, <xref linkend="atrMenuFade"/> attribute.)
   </para>
   <para>
-    Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM" />)
-    class, <xref linkend="atrMenuDropAlignment" /> attribute,) be checked to determine the correct
+    Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM"/>)
+    class, <xref linkend="atrMenuDropAlignment"/> attribute,) be checked to determine the correct
     horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
     HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
     developing Microsoft Tablet PC applications.
@@ -8555,7 +8555,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -8584,7 +8584,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
         role="italic">dlg</emphasis> argument was specified, but the object is not a
-        <xref linkend="chpDialogObject" /> object.
+        <xref linkend="chpDialogObject"/> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -8625,7 +8625,7 @@
 
 <para>
   Displays a contex menu and returns the menu ID that the user has selected.  When the user selects an item, <emphasis
-  role="italic">no</emphasis> menu command (<xref linkend="sctMenuCommandEvents" />) event notification is generated.
+  role="italic">no</emphasis> menu command (<xref linkend="sctMenuCommandEvents"/>) event notification is generated.
   If the user cancels the menu 0 is returned.
 </para>
 <variablelist>
@@ -8638,7 +8638,7 @@
     <listitem>
     <para>
       A <xref linkend="clsPoint"/> object specifying the location for the shortcut menu, in
-      screen (<xref linkend="defScreenCoordinates" />) co-ordinates.
+      screen (<xref linkend="defScreenCoordinates"/>) co-ordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dlg [optional]</term>
@@ -8772,7 +8772,7 @@
         <varlistentry><term>LAYOUTRTL</term>
         <listitem>
         <para>
-          Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. Use right to left
+          Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. Use right to left
           text layout. By default left to right text layout is used.
         </para>
         </listitem></varlistentry>
@@ -8812,13 +8812,13 @@
   </para>
   <para>
     For any animation to occur, the System Parameters Information menu animation must be on. (
- <xref linkend="clsSPI"/> class, <xref linkend="atrMenuAnimation" /> attribute.) In addition,
+ <xref linkend="clsSPI"/> class, <xref linkend="atrMenuAnimation"/> attribute.) In addition,
     all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (
- <xref linkend="clsSPI"/> class, <xref linkend="atrMenuFade" /> attribute.)
+ <xref linkend="clsSPI"/> class, <xref linkend="atrMenuFade"/> attribute.)
   </para>
   <para>
-    Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM" />)
-    class, <xref linkend="atrMenuDropAlignment" /> attribute,) be checked to determine the correct
+    Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM"/>)
+    class, <xref linkend="atrMenuDropAlignment"/> attribute,) be checked to determine the correct
     horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
     HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
     developing Microsoft Tablet PC applications.
@@ -8836,7 +8836,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -8865,7 +8865,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
         role="italic">dlg</emphasis> argument was specified, but the object is not a
-        <xref linkend="chpDialogObject" /> object.
+        <xref linkend="chpDialogObject"/> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -8937,7 +8937,7 @@
 </thead>
 <tbody>
 <row>
-<entry>Constant Methods (<xref linkend="sctSystemMenuConstantMethods" />)</entry>
+<entry>Constant Methods (<xref linkend="sctSystemMenuConstantMethods"/>)</entry>
 <entry>The SystemMenu object provides a number of <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput>directive.</entry>
 </row>
 <row>
@@ -8945,7 +8945,7 @@
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new (Class) (<xref linkend="mthNewClsSystemMenu" />)</entry>
+<entry>new (Class) (<xref linkend="mthNewClsSystemMenu"/>)</entry>
 <entry>Instantiates and returns a new system menu object.</entry>
 </row>
 <row>
@@ -8981,7 +8981,7 @@
   The <computeroutput>SystemMenu</computeroutput> object provides a number of <emphasis
   role="italic">constant</emphasis> values through the use of the <computeroutput>::constant</computeroutput> directive.
   The constants are listed and documented in this section. These constants are the <emphasis role="italic">menu item
-  identifiers (<xref linkend="sctMenuItemIDs" />)</emphasis> for all System menu command items.
+  identifiers (<xref linkend="sctMenuItemIDs"/>)</emphasis> for all System menu command items.
 </para>
 <para>
   Recall that the constant methods defined by the <computeroutput>::constant</computeroutput> directive are both class
@@ -9139,7 +9139,7 @@
     the system menu object is valid.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -9224,7 +9224,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -9246,7 +9246,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
         ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
-        <xref linkend="chpDialogObject" /> object.
+        <xref linkend="chpDialogObject"/> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -9295,8 +9295,8 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the menu item, may be symbolic (<xref linkend="itmMenuSymbolicIDs" />) or numeric. The
-        constants (<xref linkend="sctSystemMenuConstantMethods" />) provided by the
+        The resource ID of the menu item, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. The
+        constants (<xref linkend="sctSystemMenuConstantMethods"/>) provided by the
         <computeroutput>SystemMenu</computeroutput> class can be used for the default items in a system menu.
       </para>
       </listitem></varlistentry>
@@ -9312,7 +9312,7 @@
         A Rexx dialog to connect the notification to. By default, the notification is is connected to the Rexx dialog that
         the menu is <xref linkend="mthAttachTo"/> or <xref linkend="mthAssignTo"/> to. If
         omitted and there is no assigned or attached dialog, no connection is made and the
-        <xref linkend="dotSystemErrorCode" /> is set as described in the Details section. (To connect a
+        <xref linkend="dotSystemErrorCode"/> is set as described in the Details section. (To connect a
         menu item command event, there must be a dialog to connect it to.)
       </para>
       </listitem></varlistentry>
@@ -9330,21 +9330,21 @@
   <listitem>
   <para>
     When using the <emphasis role="italic">connectCommandEvent</emphasis> method to connect menu command events, the
-    programmer must use a menu item identifier (<xref linkend="sctMenuItemIDs" />), not a menu item <emphasis
+    programmer must use a menu item identifier (<xref linkend="sctMenuItemIDs"/>), not a menu item <emphasis
     role="italic">position</emphasis> identifier.
   </para>
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> method is used for all types of menus. However, the
     programmer should be aware of the differences in coding event
-    handlers (<xref linkend="sctMenuCommandEventHandlers" />) for <computeroutput>SystemMenu</computeroutput> events and
-    other types of menus. See the section (<xref linkend="sctSystemMenuCommandEventHandler" />) exaplaining the event
+    handlers (<xref linkend="sctMenuCommandEventHandlers"/>) for <computeroutput>SystemMenu</computeroutput> events and
+    other types of menus. See the section (<xref linkend="sctSystemMenuCommandEventHandler"/>) exaplaining the event
     handler for system menu command events.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on error. The system error code is set this way
+    Sets the <xref linkend="dotSystemErrorCode"/> on error. The system error code is set this way
     in addition to what the OS might set:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_INVALID_FUNCTION (1)</emphasis></term>
@@ -9434,7 +9434,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -9478,7 +9478,7 @@
     <listitem>
     <para>
       A <computeroutput>Collection</computeroutput> object containing the menu item
-      IDs (<xref linkend="sctMenuItemIDs" />) to connect.  The IDs can be by position IDs or resource IDs,
+      IDs (<xref linkend="sctMenuItemIDs"/>) to connect.  The IDs can be by position IDs or resource IDs,
       depending on the value of the <emphasis role="italic">byPosition</emphasis> argument. However, they must be all
       the same type, all resource IDs or all by position IDs.
     </para>
@@ -9533,7 +9533,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> on failure. In addition to error codes set by
+    Sets the <xref linkend="dotSystemErrorCode"/> on failure. In addition to error codes set by
     the operating system, the following error codes may be set by ooDialog:
     <variablelist>
       <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
@@ -9562,7 +9562,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
         ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
-        <xref linkend="chpDialogObject" /> object.
+        <xref linkend="chpDialogObject"/> object.
       </para>
       </listitem></varlistentry>
     </variablelist>

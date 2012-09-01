@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<appendix id="apxDeprecated"><title>Deprecated Classes, Methods, Functions, and Routines</title>
+<appendix id="apxDeprecated" xreflabel="deprecated"><title>Deprecated Classes, Methods, Functions, and Routines</title>
 <indexterm><primary>Deprecated</primary></indexterm>
 <para>
   Beginning with ooDialog 4.2.0, many methods and some classes are deprecated. All the deprecated classes and methods
@@ -64,12 +64,12 @@
 </para>
 <para>
   There are a number of reasons why classes or methods have been deprecated. Many methods, probably the majority have
-  been deprecated due to the effort to unify (<xref linkend="termMethodNameUnification" />) the naming of methods.
-  The deprecated classes are primarily classes that overcomplicated the programming task, for no good reason. There
-  should be no need to inherit the <emphasis role="italic">AdvancedControls</emphasis> mixin class in order to use some
-  controls in a dialog, but not have to inherit the class for other controls. Some few methods are deprecated because
-  their implementation is buggy, and a few others are deprecated because they used or relied on programming techniques
-  for Windows 3.1 that no longer work well in a modern Windows version.
+  been deprecated due to the effort to <link linkend="termMethodNameUnification">unify</link> the naming of methods. The
+  deprecated classes are primarily classes that overcomplicated the programming task, for no good reason. There should be no
+  need to inherit the <emphasis role="italic">AdvancedControls</emphasis> mixin class in order to use some controls in a
+  dialog, but not have to inherit the class for other controls. Some few methods are deprecated because their implementation
+  is buggy, and a few others are deprecated because they used or relied on programming techniques for Windows 3.1 that no
+  longer work well in a modern Windows version.
 </para>
 <para>
   In all cases, deprecated methods should never be used in new code. In addition, programmers are strongly encouraged to
@@ -84,14 +84,14 @@
 <section id="deprecatedBaseClasses"><title>Deprecated Classes</title>
 <indexterm><primary>Deprecated</primary><secondary>classes</secondary></indexterm>
 <para>
-  All deprecated (<xref linkend="apxDeprecated" />( base and mixin classes are listed in this section. In general, the
-  deprecated classes are simply not needed anymore, and the programmer need do nothing to replace them.
+  All <xref linkend="apxDeprecated"/> base and mixin classes are listed in this section. In general, the deprecated classes
+  are simply not needed anymore, and the programmer need do nothing to replace them.
 </para>
 
 <section id="deprecatedAdvancedControls"><title>AdvancedControls Mixin Class</title>
 <indexterm><primary>Deprecated</primary><secondary>AdvancedControls Class</secondary></indexterm>
 <para>
-  This class is deprecated (<xref linkend="apxDeprecated" />). The ooDialog framework no longer (<xref
+  This class is <xref linkend="apxDeprecated"/>. The ooDialog framework no longer (<xref
   linkend="sctHistory" /> makes a distinction between some types of dialog controls, and how to use the
   controls. I.e., the programmer no longer needs to inherit a special class to use some of the dialog controls. All the
   methods of the AdvancedControls have been moved into the appropriate dialog class. Therefore the programmer does not
@@ -104,7 +104,7 @@
 <section id="deprecatedMessageExtensions"><title>MessageExtensions Mixin Class</title>
 <indexterm><primary>Deprecated</primary><secondary>MessageExtensions Class</secondary></indexterm>
 <para>
-  This class is deprecated (<xref linkend="apxDeprecated" />). The MessageExtensions class has been renamed to the
+  This class is <xref linkend="apxDeprecated"/>. The MessageExtensions class has been renamed to the
   <xref linkend="clsEventNotification"/> class. In addition, the EventNotification class is
   inherited by the <xref linkend="chpDialogObject"/> object so that the programmer need do nothing special
   to use event notifications in any dialog. In new code simply omit inheriting MessageExtensions. In old code, <emphasis
@@ -116,7 +116,7 @@
 <section id="deprecatedPlainUserDialog" xreflabel="PlainUserDialog"><title>PlainUserDialog Class</title>
 <indexterm><primary>Deprecated</primary><secondary>PlainUserDialog Class</secondary></indexterm>
 <para>
-  This class is deprecated (<xref linkend="apxDeprecated" />). The ooDialog framework no longer (<xref
+  This class is <xref linkend="apxDeprecated"/>. The ooDialog framework no longer (<xref
   linkend="sctHistory" />) makes a distinction between a plain user dialog and an user dialog (<xref
   linkend="clsUserDialog" />). Directly subclass the <emphasis role="italic">Userdialog</emphasis>
   instead of the <emphasis role="italic">PlainUserDialog</emphasis>.
@@ -126,7 +126,7 @@
 <section id="deprecatedCategoryDialog" xreflabel="CategoryDialog"><title>CategoryDialog Class</title>
 <indexterm><primary>Deprecated</primary><secondary>CategoryDialog Class</secondary></indexterm>
 <para>
-  This class is deprecated (<xref linkend="apxDeprecated" />). The <computeroutput>CategoryDialog</computeroutput>
+  This class is <xref linkend="apxDeprecated"/>. The <computeroutput>CategoryDialog</computeroutput>
   class was never documented well, was hard for most users to understand, was buggy, and was difficult to debug. In
   addition, the dialog pages of the <computeroutput>CategoryDialog</computeroutput> functioned using a completely
   different paradigm than all other dialogs. This was not only confusing, but <emphasis
@@ -134,7 +134,7 @@
 </para>
 <para>
   Use the <xref linkend="clsPropertySheetDialog"/>, or a <xref linkend="clsTab"/>
-  control with one of the Control (<xref linkend="sctControlDialogs" />) dialog classes, to replace the
+  control with one of the Control (<xref linkend="sctControlDialogs"/>) dialog classes, to replace the
   <computeroutput>CategoryDialog</computeroutput> class.
 </para>
 </section>
@@ -142,7 +142,7 @@
 <section id="deprecatedPropertySheet" xreflabel="PropertySheet"><title>PropertySheet Class</title>
 <indexterm><primary>Deprecated</primary><secondary>PropertySheet Class</secondary></indexterm>
 <para>
-  This class is deprecated (<xref linkend="apxDeprecated" />). The <computeroutput>PropertySheet</computeroutput>
+  This class is <xref linkend="apxDeprecated"/>. The <computeroutput>PropertySheet</computeroutput>
   class was never documented well, was hard for most users to understand, was buggy, and was difficult to debug. In
   addition, the dialog pages of the <computeroutput>PropertySheet</computeroutput> functioned using a completely
   different paradigm than all other dialogs. This was not only confusing, but <emphasis
@@ -150,7 +150,7 @@
 </para>
 <para>
   Use the <xref linkend="clsPropertySheetDialog"/>, or a <xref linkend="clsTab"/>
-  control with one of the Control (<xref linkend="sctControlDialogs" />) dialog classes, to replace the
+  control with one of the Control (<xref linkend="sctControlDialogs"/>) dialog classes, to replace the
   <computeroutput>PropertySheet</computeroutput> class.
 </para>
 </section>
@@ -161,40 +161,39 @@
 <section id="deprecatedDialogMethods"><title>Deprecated Dialog Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>dialog object methods</secondary></indexterm>
 <para>
-  Deprecated (<xref linkend="apxDeprecated" />) dialog methods and their replacement methods are listed in this
+  Deprecated (<xref linkend="apxDeprecated"/>) dialog methods and their replacement methods are listed in this
   section.
 </para>
 
 <section><title>captureMouse</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>.  Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>checkMenuItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>clearButtonRect</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the clearControlRect() (<xref
-  linkend="mthClearControlRect" />) method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the <xref linkend="mthClearControlRect"/> method.
 </para>
 </section>
 
 <section><title>clearMessages</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). It does nothing.
+  This method is <xref linkend="apxDeprecated"/>. It does nothing.
 </para>
 </section>
 
 <section><title>combineELwithSB</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). It uses an outdated process to add function to a
+  This method is <xref linkend="apxDeprecated"/>. It uses an outdated process to add function to a
   dialog that is similar to a modern up-down control. The method does not work properly. The up-down (<xref
   linkend="clsUpDown" />) dialog control should be used directly to replace this method.
 </para>
@@ -202,63 +201,63 @@
 
 <section><title>connectAnimatedButton</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthInstallAnimatedButton" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthInstallAnimatedButton"/> method.
 </para>
 </section>
 
 <section><title>connectBitmapButton</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
  <xref linkend="mthInstallBitmapButton"/> method.
 </para>
 </section>
 
 <section><title>connectEntryLine</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectEdit" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectEdit"/> method.
 </para>
 </section>
 
 <section><title>connectListControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectListView" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectListView"/> method.
 </para>
 </section>
 
 <section><title>connectMultiListBox</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectListBox" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectListBox"/> method.
 </para>
 </section>
 
 <section><title>connectSliderControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectTrackBar" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectTrackBar"/> method.
 </para>
 </section>
 
 <section><title>connectTabControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectTab" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectTab"/> method.
 </para>
 </section>
 
 <section><title>connectTreeControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectTreeView" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectTreeView"/> method.
 </para>
 </section>
 
 <section><title>deInstall</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  It does nothing and always returns 0. In older
+  This method is <xref linkend="apxDeprecated"/>.  It does nothing and always returns 0. In older
   versions of ooDialog, the <emphasis role="italic">deInstall</emphasis>() method was used to deregister the
   external functions with the API manager. This mechanism is no longer needed using the modern APIs introduced in
   ooRexx 4.0.0.
@@ -267,21 +266,21 @@
 
 <section><title>disableItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthDisableControl" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthDisableControl"/> method.
 </para>
 </section>
 
 <section><title>disableMenuItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>dump</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  It will simply print: &quot;dump() deprecated.&quot; In
+  This method is <xref linkend="apxDeprecated"/>.  It will simply print: &quot;dump() deprecated.&quot; In
   older versions of ooDialog, the <emphasis role="italic">dump</emphasis>() method would print out information tied to
   the undocumented internal implementation of ooDialog. Since the internal implementation has changed, this information
   no longer exists.
@@ -290,204 +289,204 @@
 
 <section><title>enableItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthEnableControl" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthEnableControl"/> method.
 </para>
 </section>
 
 <section><title>enableMenuItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>freeButtonDC</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthFreeControlDC" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthFreeControlDC"/> method.
 </para>
 </section>
 
 <section><title>focusItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the focusControl() (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the focusControl() (<xref
   linkend="mthFocusControl" />) method.
 </para>
 </section>
 
 <section><title>getButtonControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewPushButton" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewPushButton"/> method.
 </para>
 </section>
 
 <section><title>getButtonDC</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetControlDC" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetControlDC"/> method.
 </para>
 </section>
 
 <section><title>getButtonRect</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the
-<xref linkend="mthGetControlRect" /> method instead.
+  This method is <xref linkend="apxDeprecated"/>. Use the
+<xref linkend="mthGetControlRect"/> method instead.
 </para>
 </section>
 
 <section><title>getCheckBox</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetCheckBoxData" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetCheckBoxData"/> method.
 </para>
 </section>
 
 <section><title>getCheckControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
  <xref linkend="mthNewCheckBox"/> method.
 </para>
 </section>
 
 <section><title>getComboBox</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
  <xref linkend="mthNewComboBox"/> method.
 </para>
 </section>
 
 <section><title>getComboLine</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetComboBoxData" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetComboBoxData"/> method.
 </para>
 </section>
 
 <section><title>getEditControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewEdit" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewEdit"/> method.
 </para>
 </section>
 
 <section><title>getEntryLine</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetEditData" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetEditData"/> method.
 </para>
 </section>
 
 <section><title>getGroupBox</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewGroupBox" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewGroupBox"/> method.
 </para>
 </section>
 
 <section><title>getItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetControlHandle" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetControlHandle"/> method.
 </para>
 </section>
 
 <section><title>getListBox</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewListBox" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewListBox"/> method.
 </para>
 </section>
 
 <section><title>getListControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewListView" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewListView"/> method.
 </para>
 </section>
 
 <section><title>getListLine</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetListBoxData" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetListBoxData"/> method.
 </para>
 </section>
 
 <section><title>getMenuItemState</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>getMouseCapture</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>.  Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>getMultiList</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetListBoxData" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetListBoxData"/> method.
 </para>
 </section>
 
 <section><title>getProgressBar</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewProgressBar" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewProgressBar"/> method.
 </para>
 </section>
 
 <section><title>getRadioButton</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetRadioButtonData" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetRadioButtonData"/> method.
 </para>
 </section>
 
 <section><title>getRadioControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
  <xref linkend="mthNewRadioButton"/> method.
 </para>
 </section>
 
 <section><title>getScrollBar</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewScrollBar" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewScrollBar"/> method.
 </para>
 </section>
 
 <section><title>getSliderControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewTrackBar" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewTrackBar"/> method.
 </para>
 </section>
 
 <section><title>getStaticControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewStatic" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewStatic"/> method.
 </para>
 </section>
 
 <section><title>getTabControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewTab" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewTab"/> method.
 </para>
 </section>
 
 <section><title>getTextSize</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Replace this method with, preferably, the
-<xref linkend="mthGetTextSizeDu" /> method, or the getTextSizeDialog() (<xref
+  This method is <xref linkend="apxDeprecated"/>.  Replace this method with, preferably, the
+<xref linkend="mthGetTextSizeDu"/> method, or the getTextSizeDialog() (<xref
   linkend="mthGetTextSizeDlgClsPlainBaseDialog" />) method if absolutely necessary.
 </para>
 <para>
@@ -499,104 +498,104 @@
 
 <section><title>getTreeControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthNewTreeView" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthNewTreeView"/> method.
 </para>
 </section>
 
 <section><title>getValue</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetControlData" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetControlData"/> method.
 </para>
 </section>
 
 <section><title>getWindowRect</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the windowRext() (<xref
+  This method is <xref linkend="apxDeprecated"/>. Use the windowRext() (<xref
   linkend="mthWindowRect" />) method instead.
 </para>
 </section>
 
 <section><title>grayMenuItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>handleMessages</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). It sleeps for 10 miliseconds and returns.
+  This method is <xref linkend="apxDeprecated"/>. It sleeps for 10 miliseconds and returns.
 </para>
 </section>
 
 <section><title>hideItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthHideControl" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthHideControl"/> method.
 </para>
 </section>
 
 <section><title>hideItemFast</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthHideControlFast" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthHideControlFast"/> method.
 </para>
 </section>
 
 <section><title>isMouseButtonDown</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>.  Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>itemText</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthSetControlText" /> method. <emphasis role="bold">Note</emphasis> that this method has
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthSetControlText"/> method. <emphasis role="bold">Note</emphasis> that this method has
   always been present in ooDialog, but was never previously documented.
 </para>
 </section>
 
 <section><title>moveItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the moveControl() (<xref
+  This method is <xref linkend="apxDeprecated"/>. Use the moveControl() (<xref
   linkend="mthMoveControl" />) method instead.
 </para>
 </section>
 
 <section><title>peekDialogMessage</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). It does nothing and always returns the empty string.
+  This method is <xref linkend="apxDeprecated"/>. It does nothing and always returns the empty string.
 </para>
 </section>
 
 <section><title>redrawItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthRedrawControl" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthRedrawControl"/> method.
 </para>
 </section>
 
 <section><title>releaseMouseCapture</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>.  Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>resizeItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the resizeControl() (<xref
+  This method is <xref linkend="apxDeprecated"/>. Use the resizeControl() (<xref
   linkend="mthResizeControl" />) method instead.
 </para>
 </section>
 
 <section><title>run</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). It does nothing except sit in a loop burning up CPU.
+  This method is <xref linkend="apxDeprecated"/>. It does nothing except sit in a loop burning up CPU.
 </para>
 <para>
   Although this method was documented previously, it is the author's opinion that it was intended for internal use only.
@@ -613,57 +612,57 @@
 
 <section><title>scrollInButton</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthScrollInControl" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthScrollInControl"/> method.
 </para>
 </section>
 
 <section><title>setItemFont</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
  <xref linkend="mthSetControlFont"/> method.
 </para>
 </section>
 
 <section><title>setItemColor</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
  <xref linkend="mthSetControlColor"/> method.
 </para>
 </section>
 
 <section><title>setItemSysColor</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthSetControlSysColor" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthSetControlSysColor"/> method.
 </para>
 </section>
 
 <section><title>setMenuItemRadio</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>setStaticText</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthSetControlText" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthSetControlText"/> method.
 </para>
 </section>
 
 <section><title>uncheckMenuItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu(<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu(<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>writeToButton</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthWriteToControl" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthWriteToControl"/> method.
 </para>
 </section>
 
@@ -676,7 +675,7 @@
 <section id="deprecatedButton"><title>Deprecated Button Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>button methods</secondary></indexterm>
 <para>
-  The following lists the deprecated (<xref linkend="apxDeprecated" />) methods of the <emphasis
+  The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
   role="italic">Button</emphasis> class and how to replace those methods in ooDialog programs. The implementation of the
   following <emphasis role="italic">bitmap</emphasis> button methods was done in the dialog (<xref
   linkend="chpDialogObject" />) object. The methods are methods of the dialog, not the button.
@@ -684,88 +683,88 @@
 
 <section><title>changeBitmap</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthChangeBitmapButton" /> method of the the
-  <xref linkend="chpDialogObject" /> object.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthChangeBitmapButton"/> method of the the
+  <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>dimBitmap</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthDimBitmap" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthDimBitmap"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
 
 <section><title>displaceBitmap</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthDisplaceBitmap" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthDisplaceBitmap"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
 
 <section><title>drawBitmap</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthDrawBitmap" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthDrawBitmap"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
 
 <section><title>getBitmapPosition</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetBitmapPosition" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetBitmapPosition"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
 
 <section><title>getBitmapSizeX</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetBitmapSizeX" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetBitmapSizeX"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
 
 <section><title>getBitmapSizeY</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetBitmapSizeY" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetBitmapSizeY"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
 
 <section><title>scroll</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthScrollButton" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthScrollButton"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
 
 <section><title>scrollBitmapFromTo</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthScrollBitmapFromTo" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthScrollBitmapFromTo"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
 
 <section><title>scrollText</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthScrollText" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthScrollText"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
 
 <section><title>setBitmapPosition</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthSetBitmapPosition" /> method of the the dialog (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthSetBitmapPosition"/> method of the the dialog (<xref
   linkend="chpDialogObject" />) object.
 </para>
 </section>
@@ -775,13 +774,13 @@
 <section id="deprecatedComboBox"><title>Deprecated ComboBox Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>combo box methods</secondary></indexterm>
 <para>
-  The following lists the deprecated (<xref linkend="apxDeprecated" />) methods of the <emphasis
+  The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
   role="italic">ComboBox</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
 <section><title>editSelection</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use setEditSelection() (<xref
+  This method is <xref linkend="apxDeprecated"/>. Use setEditSelection() (<xref
   linkend="mthSetEditSelection" />).
 </para>
 </section>
@@ -791,7 +790,7 @@
 <section id="deprecatedListView"><title>Deprecated ListView Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>list-view methods</secondary></indexterm>
 <para>
-  The following lists the deprecated (<xref linkend="apxDeprecated" />) methods of the <emphasis
+  The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
   role="italic">ListView</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
@@ -838,13 +837,13 @@
 
 <section><title>getRange</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use<xref linkend="mthGetFullRangePBC" />.
+  This method is <xref linkend="apxDeprecated"/>. Use<xref linkend="mthGetFullRangePBC"/>.
 </para>
 </section>
 
 <section id="mthSetRangePBC" xreflabel="setRange"><title>setRange</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use<xref linkend="mthSetFullRangePBC" />.
+  This method is <xref linkend="apxDeprecated"/>. Use<xref linkend="mthSetFullRangePBC"/>.
 </para>
 </section>
 
@@ -856,17 +855,17 @@
 
 <section><title>isChecked</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetCheckStateClsRadioButton" /> method for radio buttons, and the over-ridden
-<xref linkend="mthGetCheckStateClsCheckBox" /> method for check boxes. This method was poorly named and
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetCheckStateClsRadioButton"/> method for radio buttons, and the over-ridden
+<xref linkend="mthGetCheckStateClsCheckBox"/> method for check boxes. This method was poorly named and
   in some circumstances produced inconsistent results.
 </para>
 </section>
 
 <section><title>indeterminate</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthSetIndeterminate" /> method of the <xref linkend="clsCheckBox"/>
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthSetIndeterminate"/> method of the <xref linkend="clsCheckBox"/>
   class. Radio buttons can not be set to indeterminate. Using this method with a radio button sets it to the checked
   state, not the indeterminate state. In addition, this method was poorly named. One can check a button, but one does
   not indeterminate a check box.
@@ -879,7 +878,7 @@
 <section id="deprecatedTab"><title>Deprecated Tab Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>tab methods</secondary></indexterm>
 <para>
-  The following lists the deprecated (<xref linkend="apxDeprecated" />) methods of the <emphasis
+  The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
   role="italic">Tab</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
@@ -906,7 +905,7 @@
 <section id="deprecatedTreeView"><title>Deprecated TreeView Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>tree-view methods</secondary></indexterm>
 <para>
-  The following lists the deprecated (<xref linkend="apxDeprecated" />) methods of the <emphasis
+  The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
   role="italic">TreeView</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
@@ -936,35 +935,35 @@
 <section id="deprecatedDialogControl"><title>Deprecated DialogControl Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>dialog control object methods</secondary></indexterm>
 <para>
-  The following lists the deprecated (<xref linkend="apxDeprecated" />) methods of the <emphasis
+  The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
   role="italic">DialogControl</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
 <section><title>captureMouse</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>getFocus</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="chpDialogObject" />
-  object's<xref linkend="mthGetFocus" /> method instead.
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="chpDialogObject"/>
+  object's<xref linkend="mthGetFocus"/> method instead.
 </para>
 </section>
 
 <section><title>getMouseCapture</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>getTextSize</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthGetTextSizeDu" /> method. The getTextSizeDlg() (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthGetTextSizeDu"/> method. The getTextSizeDlg() (<xref
   linkend="mthGetTextSizeDlgClsDialogControl" />) method could also be used, if absolutely
   necessary. However, that is not recommended.
 </para>
@@ -976,56 +975,56 @@
 
 <section><title>isMouseButtonDown</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>processMessage</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the sendMessage() (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the sendMessage() (<xref
   linkend="wbdcoSendMessage" />) method.
 </para>
 </section>
 
 <section><title>releaseMouseCapture</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>setFocus</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="chpDialogObject" />
-  object's<xref linkend="mthSetFocus" /> method instead.
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="chpDialogObject"/>
+  object's<xref linkend="mthSetFocus"/> method instead.
 </para>
 </section>
 
 <section><title>tabToNext</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="chpDialogObject" />
-  object's<xref linkend="mthTabToNext" /> method instead.
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="chpDialogObject"/>
+  object's<xref linkend="mthTabToNext"/> method instead.
 </para>
 </section>
 
 <section><title>tabToPrevious</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="chpDialogObject" />
-  object's<xref linkend="mthTabToPrevious" /> method instead.
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="chpDialogObject"/>
+  object's<xref linkend="mthTabToPrevious"/> method instead.
 </para>
 </section>
 
 <section><title>value</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the dat() (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the dat() (<xref
   linkend="mthData" />) method.
 </para>
 </section>
 
 <section><title>value=</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the data= (<xref
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the data= (<xref
   linkend="mthDataEquals" />) method.
 </para>
 </section>
@@ -1039,15 +1038,15 @@
 <para>
   Earlier versions of ooDialog used a confusing array of method names with the word <emphasis
   role="italic">connect</emphasis> in them. After the release of ooRexx 4.0.0, an effort was made to unify the method
-  names in ooDialog. The methods listed in this section are all deprecated (<xref linkend="apxDeprecated" />). They
+  names in ooDialog. The methods listed in this section are all <xref linkend="apxDeprecated"/>. They
   all forward to the method that has taken their place. You can remove this level of indirection in your programs by
   replacing all of the deprecated methods.
 </para>
 
 <section><title>connectButton</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method using the
-<xref linkend="mthConnectButtonEvent" /> method in this manner:
+  This method is <xref linkend="apxDeprecated"/>. Replace this method using the
+<xref linkend="mthConnectButtonEvent"/> method in this manner:
 <programlisting>
 <![CDATA[
   -- Change the following code:
@@ -1062,43 +1061,43 @@
 
 <section><title>connectButtonNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectButtonEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectButtonEvent"/> method.
 </para>
 </section>
 
 <section><title>connectComboBoxNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectComboBoxEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectComboBoxEvent"/> method.
 </para>
 </section>
 
 <section><title>connectCommonNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectNotifyEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectNotifyEvent"/> method.
 </para>
 </section>
 
 <section><title>connectControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectCommandEvents" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectCommandEvents"/> method.
 </para>
 </section>
 
 <section><title>connectEditNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectEditEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectEditEvent"/> method.
 </para>
 </section>
 
 <section><title>connectList</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method by using the
-<xref linkend="mthConnectListViewEvent" /> method in this manner:
+  This method is <xref linkend="apxDeprecated"/>. Replace this method by using the
+<xref linkend="mthConnectListViewEvent"/> method in this manner:
 <programlisting>
 <![CDATA[
   -- Change the following code:
@@ -1113,15 +1112,15 @@
 
 <section><title>connectListBoxNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectListBoxEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectListBoxEvent"/> method.
 </para>
 </section>
 
 <section><title>connectListLeftDoubleClick</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method by using the
-<xref linkend="mthConnectListViewEvent" /> method in this manner:
+  This method is <xref linkend="apxDeprecated"/>. Replace this method by using the
+<xref linkend="mthConnectListViewEvent"/> method in this manner:
 <programlisting>
 <![CDATA[
   -- Change the following code:
@@ -1136,71 +1135,71 @@
 
 <section><title>connectListNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectListViewEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectListViewEvent"/> method.
 </para>
 </section>
 
 <section><title>connectListViewNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectListViewEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectListViewEvent"/> method.
 </para>
 </section>
 
 <section><title>connectMenuItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the menu (<xref linkend="chpMenus" />) object
+  This method is <xref linkend="apxDeprecated"/>. Use the menu (<xref linkend="chpMenus"/>) object
   methods directly.
 </para>
 </section>
 
 <section><title>connectMouseCapture</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/> object
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/> object
   methods directly.
 </para>
 </section>
 
 <section><title>connectScrollBar</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectEachSBEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectEachSBEvent"/> method.
 </para>
 </section>
 
 <section><title>connectScrollBarNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectScrollBarEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectScrollBarEvent"/> method.
 </para>
 </section>
 
 <section><title>connectSliderNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectTrackBarEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectTrackBarEvent"/> method.
 </para>
 </section>
 
 <section><title>connectStaticNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectStaticEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectStaticEvent"/> method.
 </para>
 </section>
 
 <section><title>connectTabNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectTabEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectTabEvent"/> method.
 </para>
 </section>
 
 <section><title>connectTreeNotify</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthConnectTreeViewEvent" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthConnectTreeViewEvent"/> method.
 </para>
 </section>
 
@@ -1216,7 +1215,7 @@
 <para>
   The ooDialog documentation prior to ooDialog 4.0.0 documented ten external functions as <emphasis
   role="italic">callable functions that can be used in your Object Rexx programs</emphasis>. It then
-  mentioned in passing that the Public Routines (<xref linkend="sctPublicRoutines" />) were a more
+  mentioned in passing that the Public Routines (<xref linkend="sctPublicRoutines"/>) were a more
   convenient way to use these functions. It was noted that the external routines were registered
   automatically when the first dialog was initialized, but if the programmer wanted to use the external
   routines when no dialog was created, he could register the individual functions using
@@ -1258,22 +1257,22 @@
 
 <section><title>errorMessage</title>
 <para>
-  This function is deprecated (<xref linkend="apxDeprecated" />). Use the public routine
-  errorDialog (<xref linkend="rtnErrorDialog" />).
+  This function is <xref linkend="apxDeprecated"/>. Use the public routine
+  errorDialog (<xref linkend="rtnErrorDialog"/>).
 </para>
 </section>
 
 <section><title>getFileNameWindow</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions" />). Use the public routine
-  FileNameDialog (<xref linkend="rtnFileNameDialog" />). Do not use this function in new code. Try to migrate existing
+  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the public routine
+  FileNameDialog (<xref linkend="rtnFileNameDialog"/>). Do not use this function in new code. Try to migrate existing
   code to FileNameDialog. This function may not exist in future versions of ooDialog.
 </para> </section>
 
 <section><title>getScreenSize</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions" />). Use the
-  public routine screeSize (<xref linkend="rtnScreenSize" />). Do not use this method in new code. Try to migrate
+  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the
+  public routine screeSize (<xref linkend="rtnScreenSize"/>). Do not use this method in new code. Try to migrate
   existing code to screenSize. This function may not exist in future versions of ooDialog.
 </para>
 </section>
@@ -1290,38 +1289,38 @@
 
 <section><title>infoMessage</title>
 <para>
-  This function is deprecated (<xref linkend="apxDeprecated" />). Use the public routine infoDialog (<xref
+  This function is <xref linkend="apxDeprecated"/>. Use the public routine infoDialog (<xref
   linkend="rtnInfoDialog" />).
 </para>
 </section>
 
 <section><title>playSoundFile</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions" />). Use the public routine
-  Play (<xref linkend="rtnPlay" />). Do not use this function in new code. Try to migrate existing code to Play. This
+  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the public routine
+  Play (<xref linkend="rtnPlay"/>). Do not use this function in new code. Try to migrate existing code to Play. This
   function may not exist in future versions of ooDialog.
 </para>
 </section>
 
 <section><title>playSoundFileInLoop</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions" />). Use the public routine
-  play (<xref linkend="rtnPlay" />). Do not use this function in new code. Try to migrate existing code to <emphasis
+  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the public routine
+  play (<xref linkend="rtnPlay"/>). Do not use this function in new code. Try to migrate existing code to <emphasis
   role="italic">play</emphasis>(). This function may not exist in future versions of ooDialog.
 </para>
 </section>
 
 <section><title>sleepMS</title>
 <para>
-  This function is deprecated (<xref linkend="apxDeprecated" />). Use the public routine msSleep (<xref
+  This function is <xref linkend="apxDeprecated"/>. Use the public routine msSleep (<xref
   linkend="rtnMSSleep" />).
 </para>
 </section>
 
 <section><title>stopSoundFile</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions" />). Use the public routine
-  play (<xref linkend="rtnPlay" />). Do not use this function in new code. Try to migrate existing code to <emphasis
+  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the public routine
+  play (<xref linkend="rtnPlay"/>). Do not use this function in new code. Try to migrate existing code to <emphasis
   role="italic">play</emphasis>(). This function may not exist in future versions of ooDialog.
 </para> </section>
 
@@ -1337,7 +1336,7 @@
 
 <section><title>winTimer</title>
 <para>
-  This function is deprecated (<xref linkend="apxDeprecated" />). There is no replacement for this function.
+  This function is <xref linkend="apxDeprecated"/>. There is no replacement for this function.
 </para>
 <para>
   The implementation of this function is poor. It uses 100% of the CPU while waiting. It should be possible to provide
@@ -1348,7 +1347,7 @@
 
 <section><title>yesNoMessage</title>
 <para>
-  This function is deprecated (<xref linkend="apxDeprecated" />). Use the public routine askDialog (<xref
+  This function is <xref linkend="apxDeprecated"/>. Use the public routine askDialog (<xref
   linkend="rtnAskDialog" />).
 </para>
 </section>
@@ -1359,335 +1358,335 @@
 <section id="deprecatedUserDialogMethods"><title>Deprecated UserDialog Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>UserDialog methods</secondary></indexterm>
 <para>
-  Deprecated (<xref linkend="apxDeprecated" />) <computeroutput>UserDialog</computeroutput> methods and their
+  Deprecated (<xref linkend="apxDeprecated"/>) <computeroutput>UserDialog</computeroutput> methods and their
   replacement methods are listed in this section.
 </para>
 
 <section><title>addBitmapButton</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateBitmapButton" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateBitmapButton"/> method.
 </para>
 </section>
 
 <section><title>addBlackFrame</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateBlackFrame" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateBlackFrame"/> method.
 </para>
 </section>
 
 <section><title>addBlackRect</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateBlackRect" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateBlackRect"/> method.
 </para>
 </section>
 
 <section><title>addButton</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreatePushButton" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreatePushButton"/> method.
 </para>
 </section>
 
 <section><title>addButtonGroup</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreatePushButtonGroup" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreatePushButtonGroup"/> method.
 </para>
 </section>
 
 <section><title>addCheckBox</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateCheckBox" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateCheckBox"/> method.
 </para>
 </section>
 
 <section><title>addCheckBoxStem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateCheckBoxStem" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateCheckBoxStem"/> method.
 </para>
 </section>
 
 <section><title>addCheckGroup</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateCheckBoxGroup" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateCheckBoxGroup"/> method.
 </para>
 </section>
 
 <section><title>addComboBox</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateComboBox" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateComboBox"/> method.
 </para>
 </section>
 
 <section><title>addComboInput</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateComboBoxInput" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateComboBoxInput"/> method.
 </para>
 </section>
 
 <section><title>addEntryLine</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateEdit" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateEdit"/> method.
 </para>
 </section>
 
 <section><title>addEtchedFrame</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateEtchedFrame" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateEtchedFrame"/> method.
 </para>
 </section>
 
 <section><title>addEtchedHorizontal</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateEtchedHorizontal" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateEtchedHorizontal"/> method.
 </para>
 </section>
 
 <section><title>addEtchedVertical</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateEtchedVertical" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateEtchedVertical"/> method.
 </para>
 </section>
 
 <section><title>addGrayFrame</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateGrayFrame" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateGrayFrame"/> method.
 </para>
 </section>
 
 <section><title>addGrayRect</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateGrayRect" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateGrayRect"/> method.
 </para>
 </section>
 
 <section><title>addGroupBox</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateGroupBox" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateGroupBox"/> method.
 </para>
 </section>
 
 <section><title>addIcon</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthAddIconResource" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthAddIconResource"/> method.
 </para>
 </section>
 
 <section><title>addImage</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateStaticImage" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateStaticImage"/> method.
 </para>
 </section>
 
 <section><title>addInput</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateEditInput" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateEditInput"/> method.
 </para>
 </section>
 
 <section><title>addInputGroup</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateEditInputGroup" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateEditInputGroup"/> method.
 </para>
 </section>
 
 <section><title>addInputStem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-  createEditInputStem () (<xref linkend="mthCreateEditInputStem" />) method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+  createEditInputStem () (<xref linkend="mthCreateEditInputStem"/>) method.
 </para>
 </section>
 
 <section><title>addListBox</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateListBox" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateListBox"/> method.
 </para>
 </section>
 
 <section><title>addListControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateListView" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateListView"/> method.
 </para>
 </section>
 
 <section><title>addMenuItem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>addMenuSeparator</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>addOkCancelLeftBottom</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateOkCancelLeftBottom" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateOkCancelLeftBottom"/> method.
 </para>
 </section>
 
 <section><title>addOkCancelLeftTop</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateOkCancelLeftTop" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateOkCancelLeftTop"/> method.
 </para>
 </section>
 
 <section><title>addOkCancelRightBottom</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateOkCancelRightBottom" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateOkCancelRightBottom"/> method.
 </para>
 </section>
 
 <section><title>addOkCancelRightTop</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateOkCancelRightTop" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateOkCancelRightTop"/> method.
 </para>
 </section>
 
 <section><title>addPasswordLine</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreatePasswordEdit" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreatePasswordEdit"/> method.
 </para>
 </section>
 
 <section><title>addPopupMenu</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />).  Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>.  Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>addProgressBar</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateProgressBar" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateProgressBar"/> method.
 </para>
 </section>
 
 <section><title>addRadioButton</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateRadioButton" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateRadioButton"/> method.
 </para>
 </section>
 
 <section><title>addRadioGroup</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateRadioButtonGroup" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateRadioButtonGroup"/> method.
 </para>
 </section>
 
 <section><title>addRadioStem</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateRadioButtonStem" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateRadioButtonStem"/> method.
 </para>
 </section>
 
 <section><title>addScrollBar</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateScrollBar" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateScrollBar"/> method.
 </para>
 </section>
 
 <section><title>addSliderControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateTrackBar" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateTrackBar"/> method.
 </para>
 </section>
 
 <section><title>addStatic</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateStatic" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateStatic"/> method.
 </para>
 </section>
 
 <section><title>addTabControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateTab" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateTab"/> method.
 </para>
 </section>
 
 <section><title>addText</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateStaticText" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateStaticText"/> method.
 </para>
 </section>
 
 <section><title>addTreeControl</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateTreeView" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateTreeView"/> method.
 </para>
 </section>
 
 <section><title>addWhiteFrame</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateWhiteFrame" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateWhiteFrame"/> method.
 </para>
 </section>
 
 <section><title>addWhiteRect</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method with the
-<xref linkend="mthCreateWhiteRect" /> method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the
+<xref linkend="mthCreateWhiteRect"/> method.
 </para>
 </section>
 
 <section><title>createMenu</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>. Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>loadMenu</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the menu (<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>. Use the menu (<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
 
 <section><title>setMenu</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the menu(<xref linkend="chpMenus" />)
+  This method is <xref linkend="apxDeprecated"/>. Use the menu(<xref linkend="chpMenus"/>)
   object methods directly.
 </para>
 </section>
@@ -1699,12 +1698,12 @@
 <indexterm><primary>Deprecated</primary><secondary>WindowBase methods</secondary></indexterm>
 <para>
   The <xref linkend="clsWindowBase"/> class is inherited by both the dialog
-  object (<xref linkend="chpDialogObject" />) and the dialog <xref linkend="chpDialogControlObject" /> object.
+  object (<xref linkend="chpDialogObject"/>) and the dialog <xref linkend="chpDialogControlObject"/> object.
   Therefore, depending on the point of view of the reader, these deprecated methods may be thought of as either
   deprecated dialog methods or deprecated dialog control methods.
 </para>
 <para>
-  The following lists the deprecated (<xref linkend="apxDeprecated" />) methods of the <emphasis
+  The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
   role="italic">WindowBase</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
@@ -1715,15 +1714,15 @@
   methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
   <emphasis role="italic">WindowsManager</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
   of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
-  method common to all windows when only the window handle (<xref linkend="defHandle" />) is known.  For these cases
+  method common to all windows when only the window handle (<xref linkend="defHandle"/>) is known.  For these cases
   use a <xref linkend="clsWindow"/> object.
 </para>
 </section>
 
 <section><title>getSystemMetrics</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Replace this method the functionally equivalent
-<xref linkend="mthGetSystemMetricsClsDlgUtil" /> method of the <emphasis
+  This method is <xref linkend="apxDeprecated"/>. Replace this method the functionally equivalent
+<xref linkend="mthGetSystemMetricsClsDlgUtil"/> method of the <emphasis
   role="italic">.DlgUtil</emphasis>class.
 </para>
 </section>
@@ -1735,18 +1734,18 @@
 <indexterm><primary>Deprecated</primary><secondary>WindowExtensions methods</secondary></indexterm>
 <para>
   The <xref linkend="clsWindowExtensions"/> class is inherited by both the dialog
-  object (<xref linkend="chpDialogObject" />) and the dialog <xref linkend="chpDialogControlObject" /> object.
+  object (<xref linkend="chpDialogObject"/>) and the dialog <xref linkend="chpDialogControlObject"/> object.
   Therefore, depending on the point of view of the reader, these deprecated methods may be thought of as either
   deprecated dialog methods or deprecated dialog control methods.
 </para>
 <para>
-  The following lists the deprecated (<xref linkend="apxDeprecated" />) methods of the <emphasis
+  The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
   role="italic">WindowExtensions</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
 <section><title>absRect2LogRect</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />) because it is incorrectly implemented and
+  This method is <xref linkend="apxDeprecated"/> because it is incorrectly implemented and
  <xref linkend="ovvInaccurate"/>. Replace this method with the pixel2dlgUnit() (<xref
   linkend="mthPixel2dlgUnit" />) method.
 </para>
@@ -1754,49 +1753,49 @@
 
 <section><title>cursor_appStarting</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursor_arrow</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursor_cross</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursor_no</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursor_wait</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursorPos</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>logRect2AbsRect</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />) because it is incorrectly implemented and
+  This method is <xref linkend="apxDeprecated"/> because it is incorrectly implemented and
  <xref linkend="ovvInaccurate"/>. Replace this method with the dlgUnit2pixel() (<xref
   linkend="mthDlgUnit2pixel" />) method.
 </para>
@@ -1804,14 +1803,14 @@
 
 <section><title>restoreCursorShape</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>
 
 <section><title>setCursorPos</title>
 <para>
-  This method is deprecated (<xref linkend="apxDeprecated" />). Use the <xref linkend="clsMouse"/>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="clsMouse"/>
   object methods directly.
 </para>
 </section>

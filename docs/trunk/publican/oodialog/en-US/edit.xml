@@ -57,7 +57,7 @@
 <para>
   The <computeroutput>Edit</computeroutput> class provides methods to work with and manipulate the underlying
   Windows edit dialog control which it represents. It is a concrete subclass of the dialog control
-  object (<xref linkend="chpDialogControlObject" />) and therefore has all methods of the of the dialog control object.
+  object (<xref linkend="chpDialogControlObject"/>) and therefore has all methods of the of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -66,8 +66,8 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newEdit (<xref linkend="tmthNewEdit" />)() method of the
-    <xref linkend="chpDialogObject" /> object to retrieve a new Edit object.
+    Use the newEdit (<xref linkend="tmthNewEdit"/>)() method of the
+    <xref linkend="chpDialogObject"/> object to retrieve a new Edit object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
@@ -287,7 +287,7 @@
 <entry>Displays an informational window, a balloon tip, for the edit control.</entry>
 </row>
 <row>
-<entry>tab= (<xref linkend="mthTabEquals" />)</entry>
+<entry>tab= (<xref linkend="mthTabEquals"/>)</entry>
 <entry>An alias for the <emphasis role="italic">setTabStops</emphasis> method.</entry>
 </row>
 <row>
@@ -303,7 +303,7 @@
 <para>
   Edit objects can not be instantiated by the programmer from Rexx code. Rather an Edit object is obtained
   by using the <xref linkend="mthNewEdit"/>() method of the dialog
-  object (<xref linkend="chpDialogObject" />). The syntax is:
+  object (<xref linkend="chpDialogObject"/>). The syntax is:
 <programlisting>
 <![CDATA[
 >>--newEdit(--id--)------------------------------><
@@ -332,7 +332,7 @@
 <para>
   To connect event notifications from an edit control use the
  <xref linkend="mthConnectEditEvent"/>() method of the
-  <xref linkend="chpDialogObject" /> object. The basic syntax is:
+  <xref linkend="chpDialogObject"/> object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>--connectEditEvent(--id--,--event--+----------------+--)-----><
@@ -381,7 +381,7 @@
   </para>
   <para>
     When the operating system creates the underlying edit control, if it has the PASSWORD style, it sets the password
-    character to the default. This is an asterisk for earlier versions of Comctl32 (<xref linkend="ovvComctl32" />), a
+    character to the default. This is an asterisk for earlier versions of Comctl32 (<xref linkend="ovvComctl32"/>), a
     solid circle for Comctl32 version 6.0 and later.
   </para>
   </listitem></varlistentry>
@@ -459,19 +459,19 @@
             back again to the Windows character set. This ensures proper character conversion in certain circumstances.
             Microsoft states that this style is most useful when edit controls contain file names that will be used with
             file systems that do not support Unicode. For further details see the
-            Windows documentation (<xref linkend="defWindowsDoc" />) provided by Microsoft.
+            Windows documentation (<xref linkend="defWindowsDoc"/>) provided by Microsoft.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            Adds the <xref linkend="wstabstop" /> style.
+            Adds the <xref linkend="wstabstop"/> style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            Adds the <xref linkend="wsgroup" /> style.
+            Adds the <xref linkend="wsgroup"/> style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -492,7 +492,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method only works with the window styles (<xref linkend="paraDialogControlStyles" />) that can be changed
+    This method only works with the window styles (<xref linkend="paraDialogControlStyles"/>) that can be changed
     after the edit control has been created. Not all window styles can be changed after the control is created.
   </para>
   <para>
@@ -510,7 +510,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -724,7 +724,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary use the
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
  <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
@@ -732,7 +732,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable. The following codes may be set. They
+    Sets the <xref linkend="dotSystemErrorCode"/> variable. The following codes may be set. They
     are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
@@ -920,7 +920,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary use the
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
  <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
@@ -982,7 +982,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable. The following error code is set by
+    Sets the <xref linkend="dotSystemErrorCode"/> variable. The following error code is set by
     the ooDialog framework on error.
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
@@ -1002,7 +1002,7 @@
   <listitem>
   <para>
     This example prints to the screen the text in the edit control with the
-    <xref linkend="defSymbolicId" /> ID of <computeroutput>IDC_EDIT_COPYRIGHT</computeroutput>
+    <xref linkend="defSymbolicId"/> ID of <computeroutput>IDC_EDIT_COPYRIGHT</computeroutput>
 <programlisting>
 <![CDATA[
 
@@ -1211,7 +1211,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1275,7 +1275,7 @@
     Raises syntax errors for incorrect usage.
   </para>
   <para>
-    Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary use the
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
  <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
@@ -1283,7 +1283,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    For an example see the showBalloon (<xref linkend="exampleShowBalloon" />) example.
+    For an example see the showBalloon (<xref linkend="exampleShowBalloon"/>) example.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1541,7 +1541,7 @@ Character 55 is contained in line 2
   <varlistentry id="exampleLineIndex"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example sets the text for edit control with the <xref linkend="defSymbolicId" /> id of
+    The following example sets the text for edit control with the <xref linkend="defSymbolicId"/> id of
     IDC_EDIT and displays the number of text lines (3), the starting index of the second line (carriage return, 0x0d,
     and line feed, 0x0a, which mark a line break, are also considered to be characters), and the length of the third
     line:
@@ -1715,7 +1715,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">lineIndex</emphasis> example (<xref linkend="exampleLineIndex" />) uses the <emphasis
+    The <emphasis role="italic">lineIndex</emphasis> example (<xref linkend="exampleLineIndex"/>) uses the <emphasis
     role="italic">lines</emphasis> method
   </para>
   </listitem></varlistentry>
@@ -1885,7 +1885,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary use the
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
  <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
@@ -1893,7 +1893,7 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable. The following codes may be set. They
+    Sets the <xref linkend="dotSystemErrorCode"/> variable. The following codes may be set. They
     are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
@@ -1990,7 +1990,7 @@ Length of 3rd line: 21
         </simplelist>
       </para>
       <para>
-        The argument list (<xref linkend="argsAddStyle" />) for the <xref linkend="mthAddStyleClsEdit"/>
+        The argument list (<xref linkend="argsAddStyle"/>) for the <xref linkend="mthAddStyleClsEdit"/>
         method details the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents
         the meaning of all the edit control style keywords.
       </para>
@@ -2010,7 +2010,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method only works with the window styles (<xref linkend="paraDialogControlStyles" />) that can be changed
+    This method only works with the window styles (<xref linkend="paraDialogControlStyles"/>) that can be changed
     after the edit control has been created. Not all window styles can be changed after the control is created.
   </para>
   <para>
@@ -2028,7 +2028,7 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2179,7 +2179,7 @@ Length of 3rd line: 21
         </simplelist>
       </para>
       <para>
-        The argument list (<xref linkend="argsAddStyle" />) for the <xref linkend="mthAddStyleClsEdit"/>
+        The argument list (<xref linkend="argsAddStyle"/>) for the <xref linkend="mthAddStyleClsEdit"/>
         method details the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents
         the meaning of all the edit control style keywords.
       </para>
@@ -2199,7 +2199,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method only works with the window styles (<xref linkend="paraDialogControlStyles" />) that can be changed
+    This method only works with the window styles (<xref linkend="paraDialogControlStyles"/>) that can be changed
     after the edit control has been created. Not all window styles can be changed after the control is created.
   </para>
   <para>
@@ -2217,7 +2217,7 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2324,7 +2324,7 @@ Length of 3rd line: 21
   <listitem>
   <para>
     For the UP and PAGEUP commands, the number of lines scrolled by the operating system is negative. Be sure to use the
-    <emphasis role="italic">signed</emphasis> version of the loWord method (sLoWord (<xref linkend="mthSLoWord" />))
+    <emphasis role="italic">signed</emphasis> version of the loWord method (sLoWord (<xref linkend="mthSLoWord"/>))
     to get the correct value.
   </para>
   <para>
@@ -2649,7 +2649,7 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary use the
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
  <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
@@ -2940,7 +2940,7 @@ The new left margin is 10 and the new right margin is 5
       <varlistentry><term>rect [required.]</term>
       <listitem>
       <para>
-        A<xref linkend="clsRect" /> object that contains the new coordinates for the formatting rectangle,
+        A <xref linkend="clsRect"/> object that contains the new coordinates for the formatting rectangle,
         or 0. If <emphasis role="italic">rect</emphasis> is 0, the formatting rectangle is reset to its default.
       </para>
       </listitem></varlistentry>
@@ -3164,7 +3164,7 @@ The new left margin is 10 and the new right margin is 5
     Raises syntax errors for incorrect usage.
   </para>
   <para>
-    Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. If necessary use the
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
  <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>

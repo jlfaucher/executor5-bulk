@@ -295,7 +295,7 @@
   Specifically, the FORMAT and FORMATQUERY events connected using the connectDataTimePickerEvent (<xref
   linkend="mthConnectDateTimePickerEvent" />). The programmer must respond to the event
   notification to ensure that the custom information is displayed properly. The response comes from the FORMAT (<xref
-  linkend="evtDateTimePickerFORMAT" />) and FORMATQUERY (<xref linkend="evtDateTimePickerFORMATQUERY" />)
+  linkend="evtDateTimePickerFORMAT" />) and FORMATQUERY (<xref linkend="evtDateTimePickerFORMATQUERY"/>)
   event handlers.
 </para>
 <para>
@@ -414,7 +414,7 @@
 <para>
   <computeroutput>DateTimePicker</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
   role="italic">new</emphasis>() method. Rather, a date and time picker object is obtained by using the newDateTimePicker (<xref
-  linkend="mthNewDateTimePicker" />) method of the <xref linkend="chpDialogObject" />
+  linkend="mthNewDateTimePicker" />) method of the <xref linkend="chpDialogObject"/>
   object. The syntax is:
 <programlisting>
 <![CDATA[
@@ -487,14 +487,14 @@
   <listitem>
   <para>
     This method causes the date time picker to destroy the month calendar control and to send the DTN_CLOSEUP
-    notification (the CLOSEUP (<xref linkend="evtDateTimePickerCLOSEUP" />) event notification) that the drop-down has
+    notification (the CLOSEUP (<xref linkend="evtDateTimePickerCLOSEUP"/>) event notification) that the drop-down has
     been closed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires Windows Vista (<xref linkend="ovvRequiredWindows" />) or later.
+    Requires Windows Vista (<xref linkend="ovvRequiredWindows"/>) or later.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -540,7 +540,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode" /> if an error occurs within the underlying DTP
+    Sets the <xref linkend="dotSystemErrorCode"/> if an error occurs within the underlying DTP
     control. The system error code is set this way by the ooDialog framework:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_INVALID_MESSAGE (1002)</emphasis></term>
@@ -593,7 +593,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires Windows Vista (<xref linkend="ovvRequiredWindows" />) or later.
+    Requires Windows Vista (<xref linkend="ovvRequiredWindows"/>) or later.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -733,7 +733,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires Windows Vista (<xref linkend="ovvRequiredWindows" />) or later.
+    Requires Windows Vista (<xref linkend="ovvRequiredWindows"/>) or later.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -852,7 +852,7 @@ UpDown:      The NIL object
     DTP controls do not create a static month calendar control. Rather, they create the month calendar when needed and
     destroy the month calendar as soon as it is not needed. The DROPDOWN (<xref
     linkend="evtDateTimePickerDROPDOWN" />) notification is sent after the DTP creates the month calendar
-    and the CLOSEUP (<xref linkend="evtDateTimePickerCLOSEUP" />) notification is sent when the month calendar is
+    and the CLOSEUP (<xref linkend="evtDateTimePickerCLOSEUP"/>) notification is sent when the month calendar is
     destroyed.
   </para>
   <para>
@@ -864,7 +864,7 @@ UpDown:      The NIL object
   <para>
     This example will work on any version of Windows that ooDialog supports. It gets the month calendar for the DTP
     control and changes the first day of the week to Friday. The <emphasis role="italic">Today</emphasis> selection is
-    also removed. This is an example of a DROPDOWN (<xref linkend="evtDateTimePickerDROPDOWN" />) event handler. Note
+    also removed. This is an example of a DROPDOWN (<xref linkend="evtDateTimePickerDROPDOWN"/>) event handler. Note
     that no reference is kept for the month calendar. The object will be invalid as soon as the user closes the drop
     down:
 <programlisting>
@@ -1026,7 +1026,7 @@ UpDown:      The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return is a handle (<xref linkend="defHandle" />) to the font, the same return as the getFont (<xref
+    The return is a handle (<xref linkend="defHandle"/>) to the font, the same return as the getFont (<xref
     linkend="mthGetFont" />) or <xref linkend="mthCreateFontEx"/> methods of the dialog (<xref
     linkend="chpDialogObject" />) object would return.
   </para>
@@ -1092,12 +1092,10 @@ UpDown:      The NIL object
       <listitem>
       <para>
         This style allows the user to select a range of dates within the control. By default, the maximum range is one
-        week. The programmer changes the maximum range that can be selected by using the setMaxSelection (<xref
-        linkend="mthSetMaxSelection" />) method. Again, this style is not relevant for the DTP
-        control's child month calendar control. The DTP control only supports a specific date, a range of dates is not
-        supported.
-      </para>
-      </listitem></varlistentry>
+        week. The programmer changes the maximum range that can be selected by using the <xref linkend="mthSetMaxSelection"/>
+        method. Again, this style is not relevant for the DTP control's child month calendar control. The DTP control
+        only supports a specific date, a range of dates is not supported.
+      </para> </listitem></varlistentry>
       <varlistentry><term>NOTODAY</term>
       <listitem>
       <para>
@@ -1147,7 +1145,7 @@ UpDown:      The NIL object
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    This method requires Windows Vista (<xref linkend="ovvRequiredWindows" />) or later.
+    This method requires Windows Vista (<xref linkend="ovvRequiredWindows"/>) or later.
   </para>
   </listitem></varlistentry>
   <varlistentry id="exampleGetMonthCalStyle"><term><emphasis role="bold">Example:</emphasis></term>
@@ -1158,7 +1156,7 @@ UpDown:      The NIL object
     styles set.
   </para>
   <para>
-    For an expanded version of this example, see the example (<xref linkend="exampleSetMonthCalStyle" />) for the
+    For an expanded version of this example, see the example (<xref linkend="exampleSetMonthCalStyle"/>) for the
  <xref linkend="mthSetMonthCalStyle"/> method.
 
 <programlisting>
@@ -1364,8 +1362,7 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
     a check box that is automatically selected whenever a date is picked or entered. If the check box is subsequently
     deselected, the application cannot retrieve the date from the control because, in essence, the control has no date.
     The <emphasis role="italic">no date</emphasis> state can be set with the <emphasis
-    role="italic">setDateTime</emphasis> method and queried by using the getDateTime (<xref
-    linkend="mthGetDateTime" />) method.
+    role="italic">setDateTime</emphasis> method and queried by using the <xref linkend="mthGetDateTime"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1419,7 +1416,7 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
     <varlistentry><term>format [required]</term>
     <listitem>
     <para>
-      A format (<xref linkend="sctDTPFormatStrings" />) string that dictates how the DTP control formats the data and
+      A format (<xref linkend="sctDTPFormatStrings"/>) string that dictates how the DTP control formats the data and
       time in its display.
     </para>
     </listitem></varlistentry>
@@ -1605,8 +1602,8 @@ Monday October 24, 2011 - 11:52 AM
     <varlistentry><term>newFont [required]</term>
     <listitem>
     <para>
-      The new font for the child month calendar. One way to obtain a font is though the createFontEx (<xref
-      linkend="mthCreateFontEx" />) method.
+      The new font for the child month calendar. One way to obtain a font is though the <xref linkend="mthCreateFontEx"/>
+      method.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>redraw [optional]</term>
@@ -1686,10 +1683,9 @@ Monday October 24, 2011 - 11:52 AM
         <listitem>
         <para>
           This style allows the user to select a range of dates within the control. By default, the maximum range is one
-          week. The programmer changes the maximum range that can be selected by using the setMaxSelection (<xref
-          linkend="mthSetMaxSelection" />) method. Again, this style is not relevant for the DTP
-          control's child month calendar control. The DTP control only supports a specific date, a range of dates is not
-          supported.
+          week. The programmer changes the maximum range that can be selected by using the <xref
+          linkend="mthSetMaxSelection"/> method. Again, this style is not relevant for the DTP control's child month calendar
+          control. The DTP control only supports a specific date, a range of dates is not supported.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTODAY</term>
@@ -1752,7 +1748,7 @@ Monday October 24, 2011 - 11:52 AM
   <listitem>
   <para>
     This example is a stand-alone program. It is a slightly expanded version of the <emphasis
-    role="italic">getMonthCalStyle</emphasis> example (<xref linkend="exampleGetMonthCalStyle" />).
+    role="italic">getMonthCalStyle</emphasis> example (<xref linkend="exampleGetMonthCalStyle"/>).
 <programlisting>
 <![CDATA[
 
