@@ -56,8 +56,8 @@
 </para>
 <para>
   The <computeroutput>Edit</computeroutput> class provides methods to work with and manipulate the underlying
-  Windows edit dialog control which it represents. It is a concrete subclass of the dialog control
-  object (<xref linkend="chpDialogControlObject"/>) and therefore has all methods of the of the dialog control object.
+  Windows edit dialog control which it represents. It is a concrete subclass of the dialog <xref
+  linkend="chpDialogControlObject"/> object and therefore has all methods of the of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -66,7 +66,7 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newEdit (<xref linkend="tmthNewEdit"/>)() method of the
+    Use the <xref linkend="tmthNewEdit"/> method of the
     <xref linkend="chpDialogObject"/> object to retrieve a new Edit object.
   </para>
   </listitem></varlistentry>
@@ -287,7 +287,7 @@
 <entry>Displays an informational window, a balloon tip, for the edit control.</entry>
 </row>
 <row>
-<entry>tab= (<xref linkend="mthTabEquals"/>)</entry>
+<entry><xref linkend="mthTabEquals"/></entry>
 <entry>An alias for the <emphasis role="italic">setTabStops</emphasis> method.</entry>
 </row>
 <row>
@@ -299,11 +299,10 @@
 </section>
 
 
-<section id="tmthNewEdit"><title>newEdit (dialog object method)</title>
+<section id="tmthNewEdit" xreflabel="newEdit"><title>newEdit (dialog object method)</title>
 <para>
   Edit objects can not be instantiated by the programmer from Rexx code. Rather an Edit object is obtained
-  by using the <xref linkend="mthNewEdit"/>() method of the dialog
-  object (<xref linkend="chpDialogObject"/>). The syntax is:
+  by using the <xref linkend="mthNewEdit"/> method of the dialog <xref linkend="chpDialogObject"/> object. The syntax is:
 <programlisting>
 <![CDATA[
 >>--newEdit(--id--)------------------------------><
@@ -314,11 +313,12 @@
 </section>  <!-- End newEdit() [PlainBaseDialog method] -->
 
 
-<section id="tmthCreateEdit"><title>createEdit (UserDialog method)</title>
+<section id="tmthCreateEdit" xreflabel="createEdit"><title>createEdit (UserDialog method)</title>
 <para>
   An edit control can be added to the dialog template for a <xref linkend="clsUserDialog"/>
-  dialog through the <xref linkend="mthCreateEdit"/>() method. The basic syntax is:
-<programlisting> <![CDATA[
+  dialog through the <xref linkend="mthCreateEdit"/> method. The basic syntax is:
+<programlisting>
+<![CDATA[
 >>--createEdit(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
                                          +-,-style-+  +-,-attributeName-+
 
@@ -328,13 +328,13 @@
 </section>  <!-- End UserDialog::createEdit() [UserDialog method] -->
 
 
-<section id="tmthConnectEditEvent"><title>connectEditEvent (dialog object method)</title>
+<section id="tmthConnectEditEvent" xreflabel="connectEditEvent"><title>connectEditEvent (dialog object method)</title>
 <para>
-  To connect event notifications from an edit control use the
- <xref linkend="mthConnectEditEvent"/>() method of the
+  To connect event notifications from an edit control use the <xref linkend="mthConnectEditEvent"/> method of the
   <xref linkend="chpDialogObject"/> object. The basic syntax is:
 
-<programlisting> <![CDATA[
+<programlisting>
+<![CDATA[
 >>--connectEditEvent(--id--,--event--+----------------+--)-----><
                                      +--,-methodName--+
 
@@ -381,7 +381,7 @@
   </para>
   <para>
     When the operating system creates the underlying edit control, if it has the PASSWORD style, it sets the password
-    character to the default. This is an asterisk for earlier versions of Comctl32 (<xref linkend="ovvComctl32"/>), a
+    character to the default. This is an asterisk for earlier versions of Common Contorl <xref linkend="ovvComctl32"/>, a
     solid circle for Comctl32 version 6.0 and later.
   </para>
   </listitem></varlistentry>
@@ -459,7 +459,7 @@
             back again to the Windows character set. This ensures proper character conversion in certain circumstances.
             Microsoft states that this style is most useful when edit controls contain file names that will be used with
             file systems that do not support Unicode. For further details see the
-            Windows documentation (<xref linkend="defWindowsDoc"/>) provided by Microsoft.
+            Windows <xref linkend="defWindowsDoc"/> provided by Microsoft.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
@@ -492,8 +492,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method only works with the window styles (<xref linkend="paraDialogControlStyles"/>) that can be changed
-    after the edit control has been created. Not all window styles can be changed after the control is created.
+    This method only works with the window <link linkend="paraDialogControlStyles">styles</link> that can be changed after
+    the edit control has been created. Not all window styles can be changed after the control is created.
   </para>
   <para>
     If an operating system error occurs, this method returns the negated value of the system error code. However, this
@@ -1283,7 +1283,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    For an example see the showBalloon (<xref linkend="exampleShowBalloon"/>) example.
+    For an example see the showBalloon <link linkend="exampleShowBalloon">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1715,7 +1715,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">lineIndex</emphasis> example (<xref linkend="exampleLineIndex"/>) uses the <emphasis
+    The <emphasis role="italic">lineIndex</emphasis> <link linkend="exampleLineIndex">example</link> uses the <emphasis
     role="italic">lines</emphasis> method
   </para>
   </listitem></varlistentry>
@@ -1990,9 +1990,9 @@ Length of 3rd line: 21
         </simplelist>
       </para>
       <para>
-        The argument list (<xref linkend="argsAddStyle"/>) for the <xref linkend="mthAddStyleClsEdit"/>
-        method details the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents
-        the meaning of all the edit control style keywords.
+        The <link linkend="argsAddStyle">argument</link> list for the <xref linkend="mthAddStyleClsEdit"/> method details
+        the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents the meaning of all the edit
+        control style keywords.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2010,8 +2010,8 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method only works with the window styles (<xref linkend="paraDialogControlStyles"/>) that can be changed
-    after the edit control has been created. Not all window styles can be changed after the control is created.
+    This method only works with the window <link linkend="paraDialogControlStyles">styles</link> that can be changed after
+    the edit control has been created. Not all window styles can be changed after the control is created.
   </para>
   <para>
     If an operating system error occurs, this method returns the negated value of the system error code. However, this
@@ -2179,9 +2179,8 @@ Length of 3rd line: 21
         </simplelist>
       </para>
       <para>
-        The argument list (<xref linkend="argsAddStyle"/>) for the <xref linkend="mthAddStyleClsEdit"/>
-        method details the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents
-        the meaning of all the edit control style keywords.
+        The <link linkend="argsAddStyle">argument</link> list for the <xref linkend="mthAddStyleClsEdit"/> method details
+        the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents the meaning of all the edit control style keywords.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2199,8 +2198,8 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method only works with the window styles (<xref linkend="paraDialogControlStyles"/>) that can be changed
-    after the edit control has been created. Not all window styles can be changed after the control is created.
+    This method only works with the window <link linkend="paraDialogControlStyles">styles</link> that can be changed after
+    the edit control has been created. Not all window styles can be changed after the control is created.
   </para>
   <para>
     If an operating system error occurs, this method returns the negated value of the system error code. However, this
@@ -2324,8 +2323,8 @@ Length of 3rd line: 21
   <listitem>
   <para>
     For the UP and PAGEUP commands, the number of lines scrolled by the operating system is negative. Be sure to use the
-    <emphasis role="italic">signed</emphasis> version of the loWord method (sLoWord (<xref linkend="mthSLoWord"/>))
-    to get the correct value.
+    <emphasis role="italic">signed</emphasis> version of the loWord method (<xref linkend="mthSLoWord"/>) to get the correct
+    value.
   </para>
   <para>
     When the <emphasis role="italic">repetitions</emphasis> argument is used, ooDialog issues the scroll command in a
