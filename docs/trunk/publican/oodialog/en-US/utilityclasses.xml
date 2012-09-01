@@ -66,7 +66,7 @@
 </thead>
 <tbody>
 <row>
-<entry>.application (<xref linkend="dotApplication" />) object</entry>
+<entry><xref linkend="dotApplication" /></entry>
 <entry>An instance of the <computeroutput>ApplicationManager</computeroutput> class that is present in all ooDialog programs.</entry>
 </row>
 <row>
@@ -154,7 +154,7 @@
 </para>
 
 
-<section id="dotApplication"><title>.application object</title>
+<section id="dotApplication" xreflabel=".application object"><title>.application object</title>
 <indexterm><primary>.application</primary></indexterm>
 <para>
   The <computeroutput>.application</computeroutput> object is an instance of the
@@ -199,7 +199,7 @@
   ooDialog application. Examples of application wide defaults are the default
  <xref linkend="mthClsGetFontName"/> and font <xref linkend="mthClsGetFontSize"/>, whether
  <xref linkend="mthInitAutoDetection"/> data detection is on or off, etc.. An example of a task that
-  effects the entire application is the populating of the .constDir (<xref linkend="dotConstDir" />) with symbols.
+  effects the entire application is the populating of the <xref linkend="dotConstDir" /> with symbols.
 </para>
 <para>
   When an ooDialog application starts, the ooDialog framework instantiates an
@@ -276,7 +276,7 @@
 </row>
 <row>
 <entry><xref linkend="mthUseGlobalConstDir"/></entry>
-<entry>Specifies how the global .constDir (<xref linkend="dotConstDir" />) is used in the application.</entry>
+<entry>Specifies how the global <xref linkend="dotConstDir" /> is used in the application.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -297,7 +297,7 @@
   A new instance of the <computeroutput>ApplicationManager</computeroutput> can not be instantiated from Rexx code. A
   single instance for the <computeroutput>ApplicationManager</computeroutput> is instantiated by the ooDialog framework
   for each application and placed in the <computeroutput>.local</computeroutput> environment as the
-  .application (<xref linkend="dotApplication" />) object. All methods of the
+  <xref linkend="dotApplication" />. All methods of the
   <computeroutput>ApplicationManger</computeroutput> are invoked by the programmer though the
   <computeroutput>.application</computeroutput> object.
 </para>
@@ -305,7 +305,7 @@
 
 <section id="ruapConstDir"><title>constDir (Attribute)</title>
 <programlisting>
-ResourceUtils::constDir (<xref linkend="atrConstDir" />)
+ResourceUtils::<xref linkend="atrConstDir" />
 
 <![CDATA[
 >>--constDir-------------------------------------><
@@ -327,7 +327,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
 
 <para>
   The <emphasis role="italic">addToConstDir</emphasis> is used to add symbolic IDs to the global
-  .constDir (<xref linkend="dotConstDir" />) object. The <xref linkend="mthUseGlobalConstDir"/>,
+  <xref linkend="dotConstDir" /> object. The <xref linkend="mthUseGlobalConstDir"/>,
   parseIncludeFile (<xref linkend="ruapParseIncludeFile" />), and <xref linkend="mthSetDefaults"/> methods
   can also be used to add symbols to the <computeroutput>.constDir</computeroutput>.
 </para>
@@ -342,7 +342,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
       <para>
         <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol
         definitions (<xref linkend="defPoundDefine" />), or a collection object that maps
-        symbolic (<xref linkend="defSymbolicId" />) IDs to their numeric value.
+        <xref linkend="defSymbolicId" /> IDs to their numeric value.
       </para> </listitem></varlistentry>
     </variablelist>
   </para>
@@ -520,7 +520,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
   <para>
     The programmer can change the global font back to the default font and font size by omitting both arguments. The
  <xref linkend="mthClsSetDefaultFont"/> class method of the
-    dialog (<xref linkend="chpDialogObject" />) object can also be used to set the application-wide default dialog font.
+    <xref linkend="chpDialogObject" /> object can also be used to set the application-wide default dialog font.
   </para>
   <para>
     The length of the font name must be less than 256 characters and can not be the empty string, otherwise a syntax
@@ -561,7 +561,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
       <listitem>
       <para>
         The <emphasis role="italic">usage</emphasis> argument can either be a string specifying the global
-        .constDir (<xref linkend="dotConstDir" />) strategy (<xref linkend="entConstDirStrategy" />) to use for the
+        <xref linkend="dotConstDir" /> strategy (<xref linkend="entConstDirStrategy" />) to use for the
         application, or it can be a <computeroutput>directory</computeroutput> object specifying any number of defaults
         to set, and / or any number of application tasks to perform.
         <variablelist>
@@ -591,8 +591,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
               <para>
                 When a symbolic ID needs to be resolved, the ooDialog framework first tries to resolve the ID through the
                 <computeroutput>.constDir</computeroutput>. If that fails, the framework then tries the
-                constDir (<xref linkend="atrConstDir" />) attribute of the dialog (<xref linkend="chpDialogObject" />)
-                object.
+                <xref linkend="atrConstDir" /> attribute of the <xref linkend="chpDialogObject" /> object.
               </para>
               </listitem></varlistentry>
               <varlistentry><term>Last</term>
@@ -600,9 +599,8 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
               <para>
                 This is the opposite of the <emphasis role="italic">First</emphasis> strategy. When a symbolic ID needs to
                 be resolved, the ooDialog framework tries to resolve the ID through the
-                constDir (<xref linkend="atrConstDir" />) attribute of the dialog (<xref linkend="chpDialogObject" />)
-                object. If that fails, the framework then tries the global <computeroutput>.constDir</computeroutput>
-                object.
+                <xref linkend="atrConstDir" /> attribute of the <xref linkend="chpDialogObject" /> object. If that
+                fails, the framework then tries the global <computeroutput>.constDir</computeroutput> object.
               </para>
               </listitem></varlistentry>
               <varlistentry><term>Never</term>
@@ -681,7 +679,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
       <para>
         <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol
         definitions (<xref linkend="defPoundDefine" />), or a collection object that maps
-        symbolic (<xref linkend="defSymbolicId" />) IDs to their numeric value.
+        <xref linkend="defSymbolicId" /> IDs to their numeric value.
       </para>
       <para>
         This argument is ignored if a <computeroutput>directory</computeroutput> object is used for argument one.
@@ -758,7 +756,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
 
 <section id="ruapParseIncludeFile"><title>parseIncludefile</title>
 <programlisting>
-ResourceUtils::parseIncludeFile (<xref linkend="mthParseIncludeFile" />)
+ResourceUtils::<xref linkend="mthParseIncludeFile" />
 
 <![CDATA[
 >>--parseIncludeFile(--fileName--)---------------><
@@ -769,7 +767,7 @@ ResourceUtils::parseIncludeFile (<xref linkend="mthParseIncludeFile" />)
 
 <section id="ruapResolveNumericID"><title>resolveNumericID</title>
 <programlisting>
-ResourceUtils::resolveNumericID (<xref linkend="mthResolveNumericID" />)
+ResourceUtils::<xref linkend="mthResolveNumericID" />
 
 <![CDATA[
 >>--resolveNumericID(--id--)---------------------><
@@ -780,7 +778,7 @@ ResourceUtils::resolveNumericID (<xref linkend="mthResolveNumericID" />)
 
 <section id="ruapResolveSymbolicID"><title>resolveSymbolicID</title>
 <programlisting>
-ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
+ResourceUtils::<xref linkend="mthResolveSymbolicID" />
 
 <![CDATA[
 >>--resolveSymbolicID(--id--)--------------------><
@@ -801,8 +799,8 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
 
 <para>
   The ooDialog framework supports (<xref linkend="ovvSymbolicIDMechanism" />) using
-  symbolic (<xref linkend="defSymbolicId" />) resource IDs for method aruments that required a resource ID. The global
-  .constDir (<xref linkend="dotConstDir" />) is part of that support. The <computeroutput>.constDir</computeroutput>
+  <xref linkend="defSymbolicId" /> resource IDs for method aruments that required a resource ID. The global
+  <xref linkend="dotConstDir" /> is part of that support. The <computeroutput>.constDir</computeroutput>
   is the most efficient and capable way to use symbolic IDs. However, to support backwards program compatibility, the
   programmer must specify a usage strategy (<xref linkend="entConstDirStrategy" />) that includes the use of the
   <computeroutput>.constDir</computeroutput>.
@@ -845,7 +843,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
           <para>
             When a symbolic ID needs to be resolved, the ooDialog framework first tries to resolve the ID through the
             <computeroutput>.constDir</computeroutput>. If that fails, the framework then tries the
-            constDir (<xref linkend="atrConstDir" />) attribute of the dialog (<xref linkend="chpDialogObject" />)
+ <xref linkend="atrConstDir" /> attribute of the <xref linkend="chpDialogObject" />
             object.
           </para>
           </listitem></varlistentry>
@@ -854,7 +852,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
             <para>
               This is the opposite of the <emphasis role="italic">First</emphasis> strategy. When a symbolic ID needs to
               be resolved, the ooDialog framework tries to resolve the ID through the
-              constDir (<xref linkend="atrConstDir" />) attribute of the dialog (<xref linkend="chpDialogObject" />)
+ <xref linkend="atrConstDir" /> attribute of the <xref linkend="chpDialogObject" />
               object. If that fails, the framework then tries the global <computeroutput>.constDir</computeroutput>
               object.
             </para>
@@ -878,7 +876,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
       <para>
         <emphasis role="italic">symbolSrc</emphasis> can either be the name of a file containing symbol
         definitions (<xref linkend="defPoundDefine" />), or a collection object that maps
-        symbolic (<xref linkend="defSymbolicId" />) IDs to their numeric value.
+        <xref linkend="defSymbolicId" /> IDs to their numeric value.
       </para> </listitem></varlistentry>
     </variablelist>
   </para>
@@ -947,14 +945,14 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
 </section> <!-- End ApplicationManager Class -->
 
 
-<section id="dotConstDir"><title>.constDir object</title>
+<section id="dotConstDir" xreflabel=".constdir"><title>.constDir object</title>
 <indexterm><primary>.constDir</primary></indexterm>
 <para>
   The <computeroutput>.constDir</computeroutput> is a Rexx <computeroutput>.directory</computeroutput> object that is
   present in all ooDialog programs. It is initialized and placed in the <computeroutput>.local</computeroutput>
   environment automatically by the application (<xref linkend="dotApplication" />) object. The global
-  <computeroutput>.constDir</computeroutput> is part of the mechanism (<xref linkend="ovvSymbolicIDMechanism" />)
-  allowing the use of symbolic (<xref linkend="defSymbolicId" />) IDs in ooDialog programs.
+  <computeroutput>.constDir</computeroutput> is part of the <xref linkend="ovvSymbolicIDMechanism" />
+  allowing the use of <xref linkend="defSymbolicId" /> IDs in ooDialog programs.
 </para>
 <para>
   The <computeroutput>.constDir</computeroutput> is the most efficient way to use symbolic IDs. However, to maintain
@@ -967,7 +965,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
   Other than specifying <emphasis role="italic">how</emphasis> the <computeroutput>.constDir</computeroutput> is to be
   used, the <computeroutput>.constDir</computeroutput> is mostly transparent to the programmer. To take best advantage
   of the <computeroutput>.constDir</computeroutput> the programmer should read the section in the Brief Overview chapter
-  that discusses the symbolic ID mechanism (<xref linkend="ovvSymbolicIDMechanism" />) in ooDialog.
+  that discusses the symbolic ID <xref linkend="ovvSymbolicIDMechanism" /> in ooDialog.
 </para>
 <para>
   This example shows a typical use of the <computeroutput>.constDir</computeroutput> in a program. The example sets the
@@ -1031,7 +1029,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
 </para>
 <para>
   Each <computeroutput>DayState</computeroutput> object contains a single value. The value encodes the state of each day
-  in a format understood by the underlying (<xref linkend="ovvUnderlying" />) Windows month calendar control. The
+  in a format understood by the <xref linkend="ovvUnderlying" /> Windows month calendar control. The
   state of a single day is a binary value. I.e., on or off, true or false, special or not special, however it is
   convenient for the programmer to think of. When the state of a day is on, the month calendar displays that day in
   bold.
@@ -1587,7 +1585,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
 </section>  <!-- End DayStates::quickDayStateBuffer() -->
 
 
-<section id="atrEndMonth"><title>endMonth (Attribute)</title>
+<section id="atrEndMonth" xreflabel="endMonth"><title>endMonth (Attribute)</title>
 <indexterm><primary>endMonth</primary></indexterm>
 <indexterm><primary>DayStates class</primary><secondary>endMonth</secondary></indexterm>
 <programlisting>
@@ -1621,7 +1619,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
   <para>
     Since the cache always contains whole years, the date of the <emphasis role="italic">endMonth</emphasis> attribute
     is always going to be 12/01. The real information will be the year of the <emphasis
-    role="italic">endMonth</emphasis> date. I.e., if the startMonth (<xref linkend="atrStartMonth" />) attribute is
+    role="italic">endMonth</emphasis> date. I.e., if the <xref linkend="atrStartMonth" /> attribute is
     1/1/1990 and the <emphasis role="italic">endMonth</emphasis> attribute is 12/01/2010 then the cache contains 21
     complete years of <computeroutput>DayState</computeroutput> objects.
   </para>
@@ -1630,7 +1628,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
 </section>  <!-- End DayStates::endMonth() [attribute]  -->
 
 
-<section id="atrStartMonth"><title>startMonth (Attribute)</title>
+<section id="atrStartMonth" xreflabel="startMonth"><title>startMonth (Attribute)</title>
 <indexterm><primary>startMonth</primary></indexterm>
 <indexterm><primary>DayStates class</primary><secondary>startMonth</secondary></indexterm>
 <programlisting>
@@ -1665,7 +1663,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
     Since the cache always contains whole years, the date of the <emphasis role="italic">startMonth</emphasis> attribute
     is always going to be 1/1. The real information will be the year of the <emphasis
     role="italic">startMonth</emphasis> date. I.e., if the <emphasis role="italic">startMonth</emphasis> attribute is
-    1/1/2010 and the endMonth (<xref linkend="atrEndMonth" />) attribute is 12/01/2011 then the cache contains 2
+    1/1/2010 and the <xref linkend="atrEndMonth" /> attribute is 12/01/2011 then the cache contains 2
     complete years of <computeroutput>DayState</computeroutput> objects.
   </para>
   </listitem></varlistentry>
@@ -1722,7 +1720,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
   <listitem>
   <para>
     This example expands on the example for the <xref linkend="mthPutYear"/> method by checking the values
-    of the startMonth (<xref linkend="atrStartMonth" />) and endMonth (<xref linkend="atrEndMonth" />) day state
+    of the <xref linkend="atrStartMonth" /> and <xref linkend="atrEndMonth" /> day state
     objects.
 <programlisting>
 <![CDATA[
@@ -2046,7 +2044,7 @@ End month day state value:   1000000100000010000001000000
   dynamically defined dialog.  The class defines an area within the client (<xref linkend="defClientArea" />) area of
   a <xref linkend="clsUserDialog"/>. It is a helper class for the
  <xref linkend="mthDefineDialog"/> method of a <computeroutput>UserDialog</computeroutput> and has no
-  effect on any underlying (<xref linkend="ovvUnderlying" />) window.
+  effect on any <xref linkend="ovvUnderlying" /> window.
 </para>
 <para>
   The methods and attributes of the <computeroutput>DlgArea</computeroutput> provide the coordinates of, and within, the
@@ -2245,7 +2243,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 </variablelist>
 </section>
 
-<section id="atrT"><title>t (Attribute)</title>
+<section id="atrT" xreflabel="t"><title>t (Attribute)</title>
 <indexterm><primary>t</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>t</secondary></indexterm>
 <programlisting>
@@ -2259,7 +2257,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 
 </section>
 
-<section id="atrL"><title>l (Attribute)</title>
+<section id="atrL" xreflabel="l"><title>l (Attribute)</title>
 <indexterm><primary>l</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>l</secondary></indexterm>
 <programlisting>
@@ -2273,7 +2271,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 
 </section>
 
-<section id="atrB"><title>b (Attribute)</title>
+<section id="atrB" xreflabel="b"><title>b (Attribute)</title>
 <indexterm><primary>b</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>b</secondary></indexterm>
 <programlisting>
@@ -2288,7 +2286,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 <para></para>
 </section>
 
-<section id="atrR"><title>r (Attribute)</title>
+<section id="atrR" xreflabel="r"><title>r (Attribute)</title>
 <indexterm><primary>r</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>r</secondary></indexterm>
 <programlisting>
@@ -2302,7 +2300,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 
 </section>
 
-<section id="atrTop"><title>top (Attribute)</title>
+<section id="atrTop" xreflabel="top"><title>top (Attribute)</title>
 <indexterm><primary>top</primary><secondary>DlgArea class</secondary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>top</secondary></indexterm>
 <programlisting>
@@ -2316,7 +2314,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 
 </section>
 
-<section id="atrLeft"><title>left (Attribute)</title>
+<section id="atrLeft" xreflabel="left"><title>left (Attribute)</title>
 <indexterm><primary>left</primary><secondary>DlgArea class</secondary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>left</secondary></indexterm>
 <programlisting>
@@ -2330,7 +2328,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 
 </section>
 
-<section id="atrWidth"><title>width (Attribute)</title>
+<section id="atrWidth" xreflabel="width"><title>width (Attribute)</title>
 <indexterm><primary>width</primary><secondary>DlgArea class</secondary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>width</secondary></indexterm>
 <programlisting>
@@ -2344,7 +2342,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 
 </section>
 
-<section id="atrHeight"><title>height (Attribute)</title>
+<section id="atrHeight" xreflabel="height"><title>height (Attribute)</title>
 <indexterm><primary>height</primary><secondary>DlgArea class</secondary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>height</secondary></indexterm>
 <programlisting>
@@ -2358,7 +2356,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 
 </section>
 
-<section id="atrMargin"><title>margin (Attribute)</title>
+<section id="atrMargin" xreflabel="margin"><title>margin (Attribute)</title>
 <indexterm><primary>margin</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>margin</secondary></indexterm>
 <programlisting>
@@ -2983,7 +2981,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
       <varlistentry><term>margin</term>
       <listitem>
       <para>
-        The <computeroutput>DlgArea</computeroutput> margin (<xref linkend="atrMargin" />).
+        The <computeroutput>DlgArea</computeroutput> <xref linkend="atrMargin" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>noResize</term>
@@ -2991,7 +2989,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
       <para>
         A <computeroutput>.Set</computeroutput> object containing the resource IDs (<xref linkend="defResourceId" />)
         of the dialog controls that should <emphasis role="bold">not</emphasis> be resized during the resize event. The
-        IDs may be numeric or symbolic (<xref linkend="defSymbolicId" />).
+        IDs may be numeric or <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>noMove</term>
@@ -2999,7 +2997,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
       <para>
         A <computeroutput>.Set</computeroutput> object containing the resource IDs (<xref linkend="defResourceId" />)
         of the dialog controls that should <emphasis role="bold">not</emphasis> be moved during the resize event. The
-        IDs may be numeric or symbolic (<xref linkend="defSymbolicId" />).
+        IDs may be numeric or <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3007,7 +3005,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 </variablelist>
 </section>
 
-<section id="atrCorrectionFactor"><title>correctionFactor (Attribute)</title>
+<section id="atrCorrectionFactor" xreflabel="correctionFactor"><title>correctionFactor (Attribute)</title>
 <indexterm><primary>correctionFactor</primary></indexterm>
 <indexterm><primary>DlgAreaU class</primary><secondary>correctionFactor</secondary></indexterm>
 <programlisting>
@@ -3026,7 +3024,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 </para>
 </section>
 
-<section id="atrLastError"><title>lastError (Attribute)</title>
+<section id="atrLastError" xreflabel="lastError"><title>lastError (Attribute)</title>
 <indexterm><primary>lastError</primary></indexterm>
 <indexterm><primary>DlgAreaU class</primary><secondary>lastError</secondary></indexterm>
 <programlisting>
@@ -3042,7 +3040,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
  <xref linkend="mthDefineDialog"/> method.  The value of the attribute is .nil if no error occurred.
 </para> </section>
 
-<section id="atrNoMove"><title>noMove (Attribute)</title>
+<section id="atrNoMove" xreflabel="noMove"><title>noMove (Attribute)</title>
 <indexterm><primary>noMove</primary></indexterm>
 <indexterm><primary>DlgAreaU class</primary><secondary>noMove</secondary></indexterm>
 <programlisting>
@@ -3058,7 +3056,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   does not wish to be moved during a resize event. The IDs in the set must be numeric.
 </para>
 <para>
-  The programmer can use symbolic (<xref linkend="defSymbolicId" />) IDs for the dialog controls by adding to the set
+  The programmer can use <xref linkend="defSymbolicId" /> IDs for the dialog controls by adding to the set
   through the <xref linkend="mthNoMovePut"/> method. Or by passing in a
   <computeroutput>.Set</computeroutput> object when instantiating a <xref linkend="mthNewClsDlgAreaU"/>
   <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
@@ -3066,7 +3064,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 </para>
 </section>
 
-<section id="atrNoResize"><title>noResize (Attribute)</title>
+<section id="atrNoResize" xreflabel="noResize"><title>noResize (Attribute)</title>
 <indexterm><primary>noResize</primary></indexterm>
 <indexterm><primary>DlgAreaU class</primary><secondary>noResize</secondary></indexterm>
 
@@ -3083,7 +3081,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   does not wish to be resized during a resize event. The IDs in the set must be numeric.
 </para>
 <para>
-  The programmer can use symbolic (<xref linkend="defSymbolicId" />) IDs for the dialog controls by adding to the set
+  The programmer can use <xref linkend="defSymbolicId" /> IDs for the dialog controls by adding to the set
   through the <xref linkend="mthNoResizePut"/> method. Or by passing in a
   <computeroutput>.Set</computeroutput> object when instantiating a <xref linkend="mthNewClsDlgAreaU"/>
   <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
@@ -3091,7 +3089,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 </para>
 </section>
 
-<section id="atrUpdateOnResize"><title>updateOnResize (Attribute)</title>
+<section id="atrUpdateOnResize" xreflabel="updateOnResize"><title>updateOnResize (Attribute)</title>
 <indexterm><primary>updateOnResize</primary></indexterm>
 <indexterm><primary>DlgAreaU class</primary><secondary>updateOnResize</secondary></indexterm>
 <programlisting>
@@ -3131,7 +3129,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 </programlisting>
 
 <para>
-  Adds a dialog control to the set (<xref linkend="atrNoMove" />) of dialog controls that will not be moved during the
+  Adds a dialog control to the <xref linkend="atrNoMove" /> of dialog controls that will not be moved during the
   resize event.
 </para>
 <variablelist>
@@ -3158,7 +3156,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Using this method allows the programmer to use symbolic (<xref linkend="defSymbolicId" />) ids for the dialog
+    Using this method allows the programmer to use <xref linkend="defSymbolicId" /> IDs for the dialog
     control. If the resource ID is put directly into the set through the <emphasis role="italic">noMove</emphasis>
     attribute, symbolic IDs will not be recognized.
   </para>
@@ -3183,7 +3181,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 </programlisting>
 
 <para>
-  Adds a dialog control to the set (<xref linkend="atrNoResize" />) of dialog controls that will not be resized during
+  Adds a dialog control to the <xref linkend="atrNoResize" /> of dialog controls that will not be resized during
   the resize event.
 </para>
 <variablelist>
@@ -3211,7 +3209,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Using this method allows the programmer to use symbolic (<xref linkend="defSymbolicId" />) ids for the dialog
+    Using this method allows the programmer to use <xref linkend="defSymbolicId" /> IDs for the dialog
     control. If the resource ID is put directly into the set through the <emphasis role="italic">noResize</emphasis>
     attribute, symbolic IDs will not be recognized.
   </para>
@@ -3240,7 +3238,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   resize and reposition all the dialog controls in the <emphasis role="italic">dlgObj</emphasis> dialog in relation to
   the <emphasis role="italic">sizeInfo</emphasis> argument. Normally the dialog is then told to update itself, which
   redraws the controls. However, the updating is dependent on the value of the
-  upDateOnResize (<xref linkend="atrUpdateOnResize" />) attribute.
+ <xref linkend="atrUpdateOnResize" /> attribute.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3504,7 +3502,7 @@ if u~lastError \= .nil then call errorDialog u~lastError
 <para>
   The <computeroutput>DlgAreaU</computeroutput> <xref linkend="mthResizeClsDlgAreaU"/> method can create slightly
   over-size margins on the left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has a
-  correctionFactor  (<xref linkend="atrCorrectionFactor" />) attribute set by default to 1.05. In tests, this
+ <xref linkend="atrCorrectionFactor" /> attribute set by default to 1.05. In tests, this
   correction factor appears to neutralise the effect. If your dialogs have over (or under) sized margins, you may be
   able to correct this in your code by adjusting the <emphasis role="italic">correctionFactor</emphasis> attribute. For
   example:
@@ -3802,7 +3800,7 @@ u~resize(self, sizeinfo)
 </programlisting>
 
 <para>
-  Use this method to determine the version of the Common Controls Library (<xref linkend="ovvComctl32" />) used by
+  Use this method to determine the version of the Common Controls <xref linkend="ovvComctl32" /> used by
   ooDialog on the current system.
 </para>
 <variablelist>
@@ -4149,7 +4147,7 @@ return .true
 
 <para>
   When a message (<xref linkend="ovvWindowMessages" />) is <xref linkend="mthSendMessage"/> to an
-  underlying (<xref linkend="ovvUnderlying" />) window two of the arguments are the WPARAM and the LPARAM parameters.
+  <xref linkend="ovvUnderlying" /> window two of the arguments are the WPARAM and the LPARAM parameters.
   Quite often the Windows API requires that two numbers be packed into the LPARAM argument. The <emphasis
   role="italic">makeLParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
  <xref linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods, but works in the
@@ -4234,7 +4232,7 @@ return .true
 
 <para>
   When a message (<xref linkend="ovvWindowMessages" />) is <xref linkend="mthSendMessage"/> to an
-  underlying (<xref linkend="ovvUnderlying" />) window two of the arguments are the WPARAM and the LPARAM parameters.
+  <xref linkend="ovvUnderlying" /> window two of the arguments are the WPARAM and the LPARAM parameters.
   Quite often the Windows API requires that two numbers be packed into the WPARAM argument. The <emphasis
   role="italic">makeWParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
  <xref linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods, but works in the
@@ -5214,7 +5212,7 @@ Too bad, you are still running ooRexx 4.0.0
   <para>
     This method does not retrieve handles of hidden or disabled windows even if the point is within the window. The
  <xref linkend="mthChildWindowFromPoint"/> method of the
-    dialog (<xref linkend="chpDialogObject" />) object can be used for a nonrestrictive search.
+    <xref linkend="chpDialogObject" /> object can be used for a nonrestrictive search.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -6243,7 +6241,7 @@ Changed point q to be at (150,300)
 </section>
 
 
-<section id="atrXClsPoint"><title>x (Attribute)</title>
+<section id="atrXClsPoint" xreflabel="x"><title>x (Attribute)</title>
 <indexterm><primary>x</primary><secondary>Point class</secondary></indexterm>
 <indexterm><primary>Point class</primary><secondary>x</secondary></indexterm>
 <programlisting>
@@ -6288,7 +6286,7 @@ Changed point q to be at (150,300)
 </section>  <!-- End Point::x() [attribute]  -->
 
 
-<section id="atrYClsPoint"><title>y (Attribute)</title>
+<section id="atrYClsPoint" xreflabel="y"><title>y (Attribute)</title>
 <indexterm><primary>y</primary><secondary>Point class</secondary></indexterm>
 <indexterm><primary>Point class</primary><secondary>y</secondary></indexterm>
 <programlisting>
@@ -6990,7 +6988,7 @@ New upper corner (55,75) new lower corner 110,125)
 </section>
 
 
-<section id="atrBottomClsRect"><title>bottom (Attribute)</title>
+<section id="atrBottomClsRect" xreflabel="bottom"><title>bottom (Attribute)</title>
 <indexterm><primary>bottom</primary><secondary>Rect class</secondary></indexterm>
 <indexterm><primary>Rect class</primary><secondary>bottom</secondary></indexterm>
 <programlisting>
@@ -7036,7 +7034,7 @@ New upper corner (55,75) new lower corner 110,125)
 </section>  <!-- End Rect::bottom() [attribute]  -->
 
 
-<section id="atrLeftClsRect"><title>left (Attribute)</title>
+<section id="atrLeftClsRect" xreflabel="left"><title>left (Attribute)</title>
 <indexterm><primary>left</primary><secondary>Rect class</secondary></indexterm>
 <indexterm><primary>Rect class</primary><secondary>left</secondary></indexterm>
 <programlisting>
@@ -7082,7 +7080,7 @@ New upper corner (55,75) new lower corner 110,125)
 </section>  <!-- End Rect::left() [attribute]  -->
 
 
-<section id="atrRightClsRect"><title>right (Attribute)</title>
+<section id="atrRightClsRect" xreflabel="right"><title>right (Attribute)</title>
 <indexterm><primary>right</primary><secondary>Rect class</secondary></indexterm>
 <indexterm><primary>Rect class</primary><secondary>right</secondary></indexterm>
 <programlisting>
@@ -7129,7 +7127,7 @@ New upper corner (55,75) new lower corner 110,125)
 
 
 
-<section id="atrTopClsRect"><title>top (Attribute)</title>
+<section id="atrTopClsRect" xreflabel="top"><title>top (Attribute)</title>
 <indexterm><primary>top</primary><secondary>Rect class</secondary></indexterm>
 <indexterm><primary>Rect class</primary><secondary>top</secondary></indexterm>
 <programlisting>
@@ -7441,7 +7439,7 @@ New width: 100 new height: 300
 </section>
 
 
-<section id="atrHeightClsSize"><title>height (Attribute)</title>
+<section id="atrHeightClsSize" xreflabel="height"><title>height (Attribute)</title>
 <indexterm><primary>height</primary><secondary>Size class</secondary></indexterm>
 <indexterm><primary>Size class</primary><secondary>height</secondary></indexterm>
 <programlisting>
@@ -7492,7 +7490,7 @@ New width: 100 new height: 300
 </section>  <!-- End Size::height() [attribute]  -->
 
 
-<section id="atrWidthClsSize"><title>width (Attribute)</title>
+<section id="atrWidthClsSize" xreflabel="width"><title>width (Attribute)</title>
 <indexterm><primary>width</primary><secondary>Size class</secondary></indexterm>
 <indexterm><primary>Size class</primary><secondary>width</secondary></indexterm>
 <programlisting>
@@ -7564,8 +7562,8 @@ New width: 100 new height: 300
 <para>
   Not every possible comparsion operation is implemented, only the operators listed are supported. All the comparisons
   follow these two principles. When a comparison operator is doubled, it is a strict comparison. The
-  width (<xref linkend="atrWidthClsSize" />) attribute of each <computeroutput>Size</computeroutput> object is
-  compared and the height (<xref linkend="atrHeightClsSize" />) attribute of each <computeroutput>Size</computeroutput>
+ <xref linkend="atrWidthClsSize" /> attribute of each <computeroutput>Size</computeroutput> object is
+  compared and the <xref linkend="atrHeightClsSize" /> attribute of each <computeroutput>Size</computeroutput>
   object is compared. Both comparsions must be true.
 </para>
 <para>
@@ -7690,7 +7688,7 @@ New width: 100 new height: 300
       <listitem>
       <para>
         The <computeroutput>Size</computeroutput> object that is used to set the
-        width (<xref linkend="atrWidthClsSize" />) and height (<xref linkend="atrHeightClsSize" />) attributes of this
+ <xref linkend="atrWidthClsSize" /> and <xref linkend="atrHeightClsSize" /> attributes of this
         object.
       </para>
       </listitem></varlistentry>
@@ -7900,7 +7898,7 @@ s2: a Size (2, 3)
 </section>
 
 
-<section id="atrCMouseButtons"><title>cMouseButtons (Attribute)</title>
+<section id="atrCMouseButtons" xreflabel="cMouseButtons"><title>cMouseButtons (Attribute)</title>
 <indexterm><primary>cMouseButtons</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cMouseButtons</secondary></indexterm>
 <programlisting>
@@ -7931,7 +7929,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cMouseButtons() [attribute]  -->
 
 
-<section id="atrCxCursor"><title>cxCursor (Attribute)</title>
+<section id="atrCxCursor" xreflabel="cxCursor"><title>cxCursor (Attribute)</title>
 <indexterm><primary>cxCursor</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cxCursor</secondary></indexterm>
 <programlisting>
@@ -7962,7 +7960,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cxCursor() [attribute]  -->
 
 
-<section id="atrCxDrag"><title>cxDrag (Attribute)</title>
+<section id="atrCxDrag" xreflabel="cxDrag"><title>cxDrag (Attribute)</title>
 <indexterm><primary>cxDrag</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cxDrag</secondary></indexterm>
 <programlisting>
@@ -7989,7 +7987,7 @@ s2: a Size (2, 3)
   <para>
     The <emphasis role="italic">cxDrag</emphasis> attribute can not be changed. You can not assign a new value to
     this attribute. However, the size of the drag rectangle can be changed using the <xref linkend="clsSPI"/>
-    class through its dragWidth (<xref linkend="atrDragWidth" />) and dragHeight (<xref linkend="atrDragHeight" />)
+    class through its <xref linkend="atrDragWidth" /> and <xref linkend="atrDragHeight" />
     attributes.
   </para>
   </listitem></varlistentry>
@@ -7997,7 +7995,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cxDrag() [attribute]  -->
 
 
-<section id="atrCxFixedFrame"><title>cxFixedFrame (Attribute)</title>
+<section id="atrCxFixedFrame" xreflabel="cxFixedFrame"><title>cxFixedFrame (Attribute)</title>
 <indexterm><primary>cxFixedFrame</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cxFixedFrame</secondary></indexterm>
 <programlisting>
@@ -8010,7 +8008,7 @@ s2: a Size (2, 3)
 <para>
   Reflects the thickness of a frame around the perimeter of a window that has a caption but is not sizable, in pixels.
   <emphasis role="italic">cxFixedFrame</emphasis> is the width of the vertical border and
-  cyFixedFrame (<xref linkend="atrCyFixedFrame" />) is the height of the horizontal border.
+ <xref linkend="atrCyFixedFrame" /> is the height of the horizontal border.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">cxFixedFrame get:</emphasis></term>
@@ -8030,7 +8028,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cxFixedFrame() [attribute]  -->
 
 
-<section id="atrCxScreen"><title>cxScreen (Attribute)</title>
+<section id="atrCxScreen" xreflabel="cxScreen"><title>cxScreen (Attribute)</title>
 <indexterm><primary>cxScreen</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cxScreen</secondary></indexterm>
 <programlisting>
@@ -8061,7 +8059,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cxScreen() [attribute]  -->
 
 
-<section id="atrCxVscroll"><title>cxVscroll (Attribute)</title>
+<section id="atrCxVscroll" xreflabel="cxVscroll"><title>cxVscroll (Attribute)</title>
 <indexterm><primary>cxVscroll</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cxVscroll</secondary></indexterm>
 <programlisting>
@@ -8092,7 +8090,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cxVscroll() [attribute]  -->
 
 
-<section id="atrCyCaption"><title>cyCaption (Attribute)</title>
+<section id="atrCyCaption" xreflabel="cyCaption"><title>cyCaption (Attribute)</title>
 <indexterm><primary>cyCaption</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cyCaption</secondary></indexterm>
 <programlisting>
@@ -8123,7 +8121,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cyCaption() [attribute]  -->
 
 
-<section id="atrCyCursor"><title>cyCursor (Attribute)</title>
+<section id="atrCyCursor" xreflabel="cyCursor"><title>cyCursor (Attribute)</title>
 <indexterm><primary>cyCursor</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cyCursor</secondary></indexterm>
 <programlisting>
@@ -8154,7 +8152,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cyCursor() [attribute]  -->
 
 
-<section id="atrCyDrag"><title>cyDrag (Attribute)</title>
+<section id="atrCyDrag" xreflabel="cyDrag"><title>cyDrag (Attribute)</title>
 <indexterm><primary>cyDrag</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cyDrag</secondary></indexterm>
 <programlisting>
@@ -8181,7 +8179,7 @@ s2: a Size (2, 3)
   <para>
     The <emphasis role="italic">cyDrag</emphasis> attribute can not be changed. You can not assign a new value to
     this attribute. However, the size of the drag rectangle can be changed using the <xref linkend="clsSPI"/>
-    class through its dragWidth (<xref linkend="atrDragWidth" />) and dragHeight (<xref linkend="atrDragHeight" />)
+    class through its <xref linkend="atrDragWidth" /> and <xref linkend="atrDragHeight" />
     attributes.
   </para>
   </listitem></varlistentry>
@@ -8189,7 +8187,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cyDrag() [attribute]  -->
 
 
-<section id="atrCyFixedFrame"><title>cyFixedFrame (Attribute)</title>
+<section id="atrCyFixedFrame" xreflabel="cyFixedFrame"><title>cyFixedFrame (Attribute)</title>
 <indexterm><primary>cyFixedFrame</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cyFixedFrame</secondary></indexterm>
 <programlisting>
@@ -8202,7 +8200,7 @@ s2: a Size (2, 3)
 <para>
   Reflects the thickness of a frame around the perimeter of a window that has a caption but is not sizable, in pixels.
   <emphasis role="italic">cyFixedFrame</emphasis> is the height of the horizontal border and
-  cxFixedFrame (<xref linkend="atrCxFixedFrame" />) is the width of the vertical border.
+ <xref linkend="atrCxFixedFrame" /> is the width of the vertical border.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">cyFixedFrame get:</emphasis></term>
@@ -8222,7 +8220,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cxFixedFrame() [attribute]  -->
 
 
-<section id="atrCyHscroll"><title>cyHscroll (Attribute)</title>
+<section id="atrCyHscroll" xreflabel="cyHscroll"><title>cyHscroll (Attribute)</title>
 <indexterm><primary>cyHscroll</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cyHscroll</secondary></indexterm>
 <programlisting>
@@ -8253,7 +8251,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cyHscroll() [attribute]  -->
 
 
-<section id="atrCyScreen"><title>cyScreen (Attribute)</title>
+<section id="atrCyScreen" xreflabel="cyScreen"><title>cyScreen (Attribute)</title>
 <indexterm><primary>cyScreen</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cyScreen</secondary></indexterm>
 <programlisting>
@@ -8284,7 +8282,7 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cyScreen() [attribute]  -->
 
 
-<section id="atrMenuDropAlignment"><title>menuDropAlignment (Attribute)</title>
+<section id="atrMenuDropAlignment" xreflabel="menuDropAlignment"><title>menuDropAlignment (Attribute)</title>
 <indexterm><primary>menuDropAlignment</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>menuDropAlignment</secondary></indexterm>
 <programlisting>
@@ -8330,7 +8328,7 @@ s2: a Size (2, 3)
   When a system-wide parameter is set, the operating system will optionally update the user profile and additionally
   broadcast the WM_SETTINGCHANGE message to all top-level windows to notify them of the change. The programmer can
   specify to do neither, update the profile only, or update the profile and broadcast the message. Specifying the action
-  to take is done through the upDateFlag (<xref linkend="atrUpdateFlag" />) attribute.
+  to take is done through the <xref linkend="atrUpdateFlag" /> attribute.
 </para>
 
 <section id="sctMethodsSPI"><title>Method Table</title>
@@ -8418,12 +8416,12 @@ s2: a Size (2, 3)
 <para>
   <emphasis role="italic">WHEEL_PAGESCROLL</emphasis> is a value defined by the Windows
   SDK (<xref linkend="defPlatformSDK" />) that indicates a turn of one notch in the mouse wheel should scroll one page
-  rather than some number of lines. See the wheelScrollLines (<xref linkend="atrWheelScrollLines" />) attribute more
+  rather than some number of lines. See the <xref linkend="atrWheelScrollLines" /> attribute more
   more information on the mouse wheel.
 </para>
 </section>  <!-- End SPI::WHEEL_PAGESCROLL [constant]  -->
 
-<section id="atrDragHeight"><title>dragHeight (Attribute)</title>
+<section id="atrDragHeight" xreflabel="dragHeight"><title>dragHeight (Attribute)</title>
 <indexterm><primary>dragHeight</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>dragHeight</secondary></indexterm>
 <programlisting>
@@ -8472,7 +8470,7 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::dragHeight() [attribute]  -->
 
-<section id="atrDragWidth"><title>dragWidth (Attribute)</title>
+<section id="atrDragWidth" xreflabel="dragWidth"><title>dragWidth (Attribute)</title>
 <indexterm><primary>dragWidth</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>dragWidth</secondary></indexterm>
 <programlisting>
@@ -8521,7 +8519,7 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::dragWidth() [attribute]  -->
 
-<section id="atrMenuAnimation"><title>menuAnimation (Attribute)</title>
+<section id="atrMenuAnimation" xreflabel="menuAnimation"><title>menuAnimation (Attribute)</title>
 <indexterm><primary>menuAnimation</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>menuAnimation</secondary></indexterm>
 <programlisting>
@@ -8554,7 +8552,7 @@ s2: a Size (2, 3)
   <listitem>
   <para>
     Menu animation must be on for <emphasis role="italic">any</emphasis> menu animations to occur. The
-    menuFade (<xref linkend="atrMenuFade" />) attribute reflects whether menus use slide or fade animation.
+ <xref linkend="atrMenuFade" /> attribute reflects whether menus use slide or fade animation.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -8568,7 +8566,7 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::menuAnimation() [attribute]  -->
 
-<section id="atrMenuFade"><title>menuFade (Attribute)</title>
+<section id="atrMenuFade" xreflabel="menuFade"><title>menuFade (Attribute)</title>
 <indexterm><primary>menuFade</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>menuFade</secondary></indexterm>
 <programlisting>
@@ -8601,7 +8599,7 @@ s2: a Size (2, 3)
   <listitem>
   <para>
     When menu fade is off, menus use slide animation. For any animation to be used,
-    menuAnimation (<xref linkend="atrMenuAnimation" />) must be on. Menu fade effect is only possible if the system
+ <xref linkend="atrMenuAnimation" /> must be on. Menu fade effect is only possible if the system
     has a color depth of more than 256 colors.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -8616,7 +8614,7 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::menuFade() [attribute]  -->
 
-<section id="atrMouseHoverTime"><title>mouseHoverTime (Attribute)</title>
+<section id="atrMouseHoverTime" xreflabel="mouseHoverTime"><title>mouseHoverTime (Attribute)</title>
 <indexterm><primary>mouseHoverTime</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>mouseHoverTime</secondary></indexterm>
 <programlisting>
@@ -8666,7 +8664,7 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::mouseHoverHeight() [attribute]  -->
 
-<section id="atrMouseHoverHeight"><title>mouseHoverHeight (Attribute)</title>
+<section id="atrMouseHoverHeight" xreflabel="mouseHoverHeight"><title>mouseHoverHeight (Attribute)</title>
 <indexterm><primary>mouseHoverHeight</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>mouseHoverHeight</secondary></indexterm>
 <programlisting>
@@ -8717,7 +8715,7 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::mouseHoverHeight() [attribute]  -->
 
-<section id="atrMouseHoverWidth"><title>mouseHoverWidth (Attribute)</title>
+<section id="atrMouseHoverWidth" xreflabel="mouseHoverWidth"><title>mouseHoverWidth (Attribute)</title>
 <indexterm><primary>mouseHoverWidth</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>mouseHoverWidth</secondary></indexterm>
 <programlisting>
@@ -8768,7 +8766,7 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::mouseHoverWidth() [attribute]  -->
 
-<section id="atrUpdateFlag"><title>updateFlag (Attribute)</title>
+<section id="atrUpdateFlag" xreflabel="updateFlag"><title>updateFlag (Attribute)</title>
 <indexterm><primary>updateFlag</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>updateFlag</secondary></indexterm>
 <programlisting>
@@ -8871,7 +8869,7 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::updateFlag() [attribute]  -->
 
-<section id="atrWheelScrollLines"><title>wheelScrollLines (Attribute)</title>
+<section id="atrWheelScrollLines" xreflabel="wheelScrollLines"><title>wheelScrollLines (Attribute)</title>
 <indexterm><primary>wheelScrollLines</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>wheelScrollLines</secondary></indexterm>
 <programlisting>
@@ -8942,7 +8940,7 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::wheelScrollLines() [attribute]  -->
 
-<section id="atrWorkArea"><title>workArea (Attribute)</title>
+<section id="atrWorkArea" xreflabel="workArea"><title>workArea (Attribute)</title>
 <indexterm><primary>workArea</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>workArea</secondary></indexterm>
 <programlisting>
@@ -10369,7 +10367,7 @@ else if key == .VK~INSERT then
 
 <section id="wbwInitCode"><title>initCode (Attribute)</title>
 <programlisting>
-WindowBase::initCode (<xref linkend="atrInitCode" />)
+WindowBase::<xref linkend="atrInitCode" />
 
 <![CDATA[
 >>--initCode-------------------------------------><
@@ -10382,7 +10380,7 @@ WindowBase::initCode (<xref linkend="atrInitCode" />)
 
 <section id="wbwHwnd"><title>hwnd (Attribute)</title>
 <programlisting>
-WindowBase::hwnd (<xref linkend="atrHwnd" />)
+WindowBase::<xref linkend="atrHwnd" />
 
 <![CDATA[
 >>--hwnd-----------------------------------------><
@@ -10393,7 +10391,7 @@ WindowBase::hwnd (<xref linkend="atrHwnd" />)
 
 <section id="wbwFactorX"><title>factorX (Attribute)</title>
 <programlisting>
-WindowBase::factorX (<xref linkend="atrFactorX" />)
+WindowBase::<xref linkend="atrFactorX" />
 
 <![CDATA[
 >>--factorX--------------------------------------><
@@ -10406,7 +10404,7 @@ WindowBase::factorX (<xref linkend="atrFactorX" />)
 
 <section id="wbwFactorY"><title>factorY (Attribute)</title>
 <programlisting>
-WindowBase::factorY (<xref linkend="atrFactorY" />)
+WindowBase::<xref linkend="atrFactorY" />
 
 <![CDATA[
 >>--factorY--------------------------------------><
@@ -10419,7 +10417,7 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
 
 <section id="wbwPixelCX"><title>pixelCX (Attribute)</title>
 <programlisting>
-WindowBase::pixelCX (<xref linkend="atrPixelCX" />)
+WindowBase::<xref linkend="atrPixelCX" />
 
 <![CDATA[
 >>--pixelCX--------------------------------------><
@@ -10429,7 +10427,7 @@ WindowBase::pixelCX (<xref linkend="atrPixelCX" />)
 
 <section id="wbwPixelCY"><title>pixelCY (Attribute)</title>
 <programlisting>
-WindowBase::pixelCY (<xref linkend="atrPixelCY" />)
+WindowBase::<xref linkend="atrPixelCY" />
 
 <![CDATA[
 >>--pixelCY--------------------------------------><
@@ -10439,7 +10437,7 @@ WindowBase::pixelCY (<xref linkend="atrPixelCY" />)
 
 <section id="wbwSizeX"><title>sizeX (Attribute)</title>
 <programlisting>
-WindowBase::sizeX (<xref linkend="atrSizeX" />)
+WindowBase::<xref linkend="atrSizeX" />
 
 <![CDATA[
 >>--sizeX----------------------------------------><
@@ -10451,7 +10449,7 @@ WindowBase::sizeX (<xref linkend="atrSizeX" />)
 
 <section id="wbwSizeY"><title>sizeY (Attribute)</title>
 <programlisting>
-WindowBase::sizeY (<xref linkend="atrSizeY" />)
+WindowBase::<xref linkend="atrSizeY" />
 
 <![CDATA[
 >>--sizeY----------------------------------------><
@@ -10464,7 +10462,7 @@ WindowBase::sizeY (<xref linkend="atrSizeY" />)
 
 <section id="wbwClear"><title>clear</title>
 <programlisting>
-WindowBase::clear (<xref linkend="mthClear" />)
+WindowBase::<xref linkend="mthClear" />
 
 <![CDATA[
 >>--clear----------------------------------------><
@@ -10475,7 +10473,7 @@ WindowBase::clear (<xref linkend="mthClear" />)
 
 <section id="wbwClient2screen"><title>client2screen</title>
 <programlisting>
-WindowBase::client2screen (<xref linkend="mthClient2screen" />)
+WindowBase::<xref linkend="mthClient2screen" />
 
 <![CDATA[
 >>--client2screen(--pointOrRect--)---------------><
@@ -10486,7 +10484,7 @@ WindowBase::client2screen (<xref linkend="mthClient2screen" />)
 
 <section id="wbwClientRect"><title>clientRect</title>
 <programlisting>
-WindowBase::clientRect (<xref linkend="mthClientRect" />)
+WindowBase::<xref linkend="mthClientRect" />
 
 <![CDATA[
 >>--clientRect(--+--------+--)-------------------><
@@ -10498,7 +10496,7 @@ WindowBase::clientRect (<xref linkend="mthClientRect" />)
 
 <section id="wbwClientToScreen"><title>clientToScreen</title>
 <programlisting>
-WindowBase::clientToScreen (<xref linkend="mthClientToScreen" />)
+WindowBase::<xref linkend="mthClientToScreen" />
 
 <![CDATA[
 >>--clientToScreen(--x--,--y--)------------------><
@@ -10509,7 +10507,7 @@ WindowBase::clientToScreen (<xref linkend="mthClientToScreen" />)
 
 <section id="wbwDisable"><title>disable</title>
 <programlisting>
-WindowBase::disable (<xref linkend="mthDisable" />)
+WindowBase::<xref linkend="mthDisable" />
 
 <![CDATA[
 >>--disable--------------------------------------><
@@ -10520,7 +10518,7 @@ WindowBase::disable (<xref linkend="mthDisable" />)
 
 <section id="wbwDisplay"><title>display</title>
 <programlisting>
-WindowBase::display (<xref linkend="mthDisplay" />)
+WindowBase::<xref linkend="mthDisplay" />
 
 <![CDATA[
 ]]>
@@ -10530,7 +10528,7 @@ WindowBase::display (<xref linkend="mthDisplay" />)
 
 <section id="wbwDraw"><title>draw</title>
 <programlisting>
-WindowBase::draw (<xref linkend="mthDraw" />)
+WindowBase::<xref linkend="mthDraw" />
 
 <![CDATA[
 >>--draw-----------------------------------------><
@@ -10541,7 +10539,7 @@ WindowBase::draw (<xref linkend="mthDraw" />)
 
 <section id="wbwEnable"><title>enable</title>
 <programlisting>
-WindowBase::enable (<xref linkend="mthEnable" />)
+WindowBase::<xref linkend="mthEnable" />
 
 <![CDATA[
 >>--enable---------------------------------------><
@@ -10552,7 +10550,7 @@ WindowBase::enable (<xref linkend="mthEnable" />)
 
 <section id="wbwForegroundWindow"><title>foregroundWindow</title>
 <programlisting>
-WindowBase::foregroundWindow (<xref linkend="mthForegroundWindow" />)
+WindowBase::<xref linkend="mthForegroundWindow" />
 
 <![CDATA[
 >>--foregroundWindow-----------------------------><
@@ -10563,7 +10561,7 @@ WindowBase::foregroundWindow (<xref linkend="mthForegroundWindow" />)
 
 <section id="wbwGetClientRect"><title>getClientRect</title>
 <programlisting>
-WindowBase::getClientRect (<xref linkend="mthGetClientRect" />)
+WindowBase::<xref linkend="mthGetClientRect" />
 
 <![CDATA[
 >>--getClientRect(--+------+--)------------------><
@@ -10575,7 +10573,7 @@ WindowBase::getClientRect (<xref linkend="mthGetClientRect" />)
 
 <section id="wbwGetExStyleRaw"><title>getExStyleRaw</title>
 <programlisting>
-WindowBase::getExStyleRaw (<xref linkend="mthGetExStyleRaw" />)
+WindowBase::<xref linkend="mthGetExStyleRaw" />
 
 <![CDATA[
 >>--getExStyleRaw--------------------------------><
@@ -10586,7 +10584,7 @@ WindowBase::getExStyleRaw (<xref linkend="mthGetExStyleRaw" />)
 
 <section id="wbwGetID"><title>getID</title>
 <programlisting>
-WindowBase::getID (<xref linkend="mthGetID" />)
+WindowBase::<xref linkend="mthGetID" />
 
 <![CDATA[
 >>--getID----------------------------------------><
@@ -10597,7 +10595,7 @@ WindowBase::getID (<xref linkend="mthGetID" />)
 
 <section id="wbwGetPos"><title>getPos</title>
 <programlisting>
-WindowBase::getPos (<xref linkend="mthGetPos" />)
+WindowBase::<xref linkend="mthGetPos" />
 
 <![CDATA[
 >>--getPos---------------------------------------><
@@ -10609,7 +10607,7 @@ WindowBase::getPos (<xref linkend="mthGetPos" />)
 
 <section id="wbwGetRealPos"><title>getRealPos</title>
 <programlisting>
-WindowBase::getRealPos (<xref linkend="mthGetSize" />)
+WindowBase::<xref linkend="mthGetSize" />
 
 <![CDATA[
 >>--getRealPos-----------------------------------><
@@ -10620,7 +10618,7 @@ WindowBase::getRealPos (<xref linkend="mthGetSize" />)
 
 <section id="wbwGetRealSize"><title>getRealSize</title>
 <programlisting>
-WindowBase::getRealSize (<xref linkend="mthGetRealSize" />)
+WindowBase::<xref linkend="mthGetRealSize" />
 
 <![CDATA[
 >>--getRealSize----------------------------------><
@@ -10631,7 +10629,7 @@ WindowBase::getRealSize (<xref linkend="mthGetRealSize" />)
 
 <section id="wbwGetRect"><title>getRect</title>
 <programlisting>
-WindowBase::getRect (<xref linkend="mthGetRect" />)
+WindowBase::<xref linkend="mthGetRect" />
 
 <![CDATA[
 >>--getRect--------------------------------------><
@@ -10642,7 +10640,7 @@ WindowBase::getRect (<xref linkend="mthGetRect" />)
 
 <section id="wbwGetSize"><title>getSize</title>
 <programlisting>
-WindowBase::getSize (<xref linkend="mthGetSize" />)
+WindowBase::<xref linkend="mthGetSize" />
 
 <![CDATA[
 >>--getSize--------------------------------------><
@@ -10653,7 +10651,7 @@ WindowBase::getSize (<xref linkend="mthGetSize" />)
 
 <section id="wbwGetStyleRaw"><title>getStyleRaw</title>
 <programlisting>
-WindowBase::getStyleRaw (<xref linkend="mthGetStyleRaw" />)
+WindowBase::<xref linkend="mthGetStyleRaw" />
 
 <![CDATA[
 >>--getStyleRaw----------------------------------><
@@ -10664,7 +10662,7 @@ WindowBase::getStyleRaw (<xref linkend="mthGetStyleRaw" />)
 
 <section id="wbwGetText"><title>getText</title>
 <programlisting>
-WindowBase::getText (<xref linkend="mthGetText" />)
+WindowBase::<xref linkend="mthGetText" />
 
 <![CDATA[
 >>--getText--------------------------------------><
@@ -10675,7 +10673,7 @@ WindowBase::getText (<xref linkend="mthGetText" />)
 
 <section id="wbwGetTextSizePx"><title>getTextSizePx</title>
 <programlisting>
-WindowBase::getTextSizePx (<xref linkend="mthGetTextSizePx" />)
+WindowBase::<xref linkend="mthGetTextSizePx" />
 
 <![CDATA[
 >>--getTextSizePx(-text--)-----------------------><
@@ -10686,7 +10684,7 @@ WindowBase::getTextSizePx (<xref linkend="mthGetTextSizePx" />)
 
 <section id="wbwGetTextSizeScreen"><title>getTextSizeScreen</title>
 <programlisting>
-WindowBase::getTextSizeScreen (<xref linkend="mthGetTextSizeScreen" />)
+WindowBase::<xref linkend="mthGetTextSizeScreen" />
 
 <![CDATA[
 >>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
@@ -10698,7 +10696,7 @@ WindowBase::getTextSizeScreen (<xref linkend="mthGetTextSizeScreen" />)
 
 <section id="wbwHide"><title>hide</title>
 <programlisting>
-WindowBase::hide (<xref linkend="mthHide" />)
+WindowBase::<xref linkend="mthHide" />
 
 <![CDATA[
 >>--hide-----------------------------------------><
@@ -10709,7 +10707,7 @@ WindowBase::hide (<xref linkend="mthHide" />)
 
 <section id="wbwHideFast"><title>hideFast</title>
 <programlisting>
-WindowBase::hideFast (<xref linkend="mthHideFast" />)
+WindowBase::<xref linkend="mthHideFast" />
 
 <![CDATA[
 >>--hideFast-------------------------------------><
@@ -10720,7 +10718,7 @@ WindowBase::hideFast (<xref linkend="mthHideFast" />)
 
 <section id="wbwIsEnabled"><title>isEnabled</title>
 <programlisting>
-WindowBase::isEnabled (<xref linkend="mthIsEnabled" />)
+WindowBase::<xref linkend="mthIsEnabled" />
 
 <![CDATA[
 >>--isEnabled------------------------------------><
@@ -10731,7 +10729,7 @@ WindowBase::isEnabled (<xref linkend="mthIsEnabled" />)
 
 <section id="wbwIsVisible"><title>isVisible</title>
 <programlisting>
-WindowBase::isVisible (<xref linkend="mthIsVisible" />)
+WindowBase::<xref linkend="mthIsVisible" />
 
 <![CDATA[
 >>--isVisible------------------------------------><
@@ -10742,7 +10740,7 @@ WindowBase::isVisible (<xref linkend="mthIsVisible" />)
 
 <section id="wbwMove"><title>move</title>
 <programlisting>
-WindowBase::move (<xref linkend="mthMove" />)
+WindowBase::<xref linkend="mthMove" />
 
 <![CDATA[
 >>--move(--xPos--,--yPos--+-------------+--)-----><
@@ -10754,7 +10752,7 @@ WindowBase::move (<xref linkend="mthMove" />)
 
 <section id="wbwMoveTo"><title>moveTo</title>
 <programlisting>
-WindowBase::moveTo (<xref linkend="mthMoveTo" />)
+WindowBase::<xref linkend="mthMoveTo" />
 
 <![CDATA[
 Form 1:
@@ -10776,7 +10774,7 @@ Generic form:
 
 <section id="wbwRedraw"><title>redraw</title>
 <programlisting>
-WindowBase::redraw (<xref linkend="mthRedraw" />)
+WindowBase::<xref linkend="mthRedraw" />
 
 <![CDATA[
 >>--redraw---------------------------------------><
@@ -10787,7 +10785,7 @@ WindowBase::redraw (<xref linkend="mthRedraw" />)
 
 <section id="wbwRedrawClient"><title>redrawClient</title>
 <programlisting>
-WindowBase::redrawClient (<xref linkend="mthRedrawClient" />)
+WindowBase::<xref linkend="mthRedrawClient" />
 
 <![CDATA[
 >>--redrawClient(--+------------+--)-------------><
@@ -10799,7 +10797,7 @@ WindowBase::redrawClient (<xref linkend="mthRedrawClient" />)
 
 <section id="wbwResize"><title>resize</title>
 <programlisting>
-WindowBase::resize (<xref linkend="mthResize" />)
+WindowBase::<xref linkend="mthResize" />
 
 <![CDATA[
 >>--resize(--width--,--height--+-------------+--)------------------------------><
@@ -10811,7 +10809,7 @@ WindowBase::resize (<xref linkend="mthResize" />)
 
 <section id="wbwResizeTo"><title>resizeTo</title>
 <programlisting>
-WindowBase::resizeTo (<xref linkend="mthResizeTo" />)
+WindowBase::<xref linkend="mthResizeTo" />
 
 <![CDATA[
 Form 1:
@@ -10832,7 +10830,7 @@ Generic form:
 
 <section id="wbwScreen2client"><title>screen2client</title>
 <programlisting>
-WindowBase::screen2client (<xref linkend="mthScreen2client" />)
+WindowBase::<xref linkend="mthScreen2client" />
 
 <![CDATA[
 >>--screen2client(--pointOrRect--)---------------><
@@ -10843,7 +10841,7 @@ WindowBase::screen2client (<xref linkend="mthScreen2client" />)
 
 <section id="wbwScreenToClient"><title>screenToClient</title>
 <programlisting>
-WindowBase::screenToClient (<xref linkend="mthScreenToClient" />)
+WindowBase::<xref linkend="mthScreenToClient" />
 
 <![CDATA[
 >>--screenToClient(--x--,--y--)------------------><
@@ -10854,7 +10852,7 @@ WindowBase::screenToClient (<xref linkend="mthScreenToClient" />)
 
 <section id="wbwSendMessage"><title>sendMessage</title>
 <programlisting>
-WindowBase::sendMessage (<xref linkend="mthSendMessage" />)
+WindowBase::<xref linkend="mthSendMessage" />
 
 <![CDATA[
 >>--sendMessage(--id--,--msg--,--wParam--,--lParam--)--------------------------><
@@ -10876,7 +10874,7 @@ sendMessageHandle (<xref linkend="mthSendMessageHandle" />)
 
 <section id="wbwSetRect"><title>setRect</title>
 <programlisting>
-WindowBase::setRect (<xref linkend="mthSetRect" />)
+WindowBase::<xref linkend="mthSetRect" />
 
 <![CDATA[
 Form 1:
@@ -10905,7 +10903,7 @@ Generic form:
 
 <section id="wbwSetText"><title>setText</title>
 <programlisting>
-WindowBase::setText (<xref linkend="mthSetText" />)
+WindowBase::<xref linkend="mthSetText" />
 
 <![CDATA[
 >>--setText(--newText--)-------------------------><
@@ -10916,7 +10914,7 @@ WindowBase::setText (<xref linkend="mthSetText" />)
 
 <section id="wbwSetTitle"><title>setTitle</title>
 <programlisting>
-WindowBase::setTitle (<xref linkend="mthSetTitle" />)
+WindowBase::<xref linkend="mthSetTitle" />
 
 <![CDATA[
 >>--setTitle(--newText--)------------------------><
@@ -10927,7 +10925,7 @@ WindowBase::setTitle (<xref linkend="mthSetTitle" />)
 
 <section id="wbwShowFast"><title>showFast</title>
 <programlisting>
-WindowBase::showFast (<xref linkend="mthShowFast" />)
+WindowBase::<xref linkend="mthShowFast" />
 
 <![CDATA[
 >>--showFast-------------------------------------><
@@ -10938,7 +10936,7 @@ WindowBase::showFast (<xref linkend="mthShowFast" />)
 
 <section id="wbwTitle"><title>title</title>
 <programlisting>
-WindowBase::title (<xref linkend="mthTitle" />)
+WindowBase::<xref linkend="mthTitle" />
 
 <![CDATA[
 >>--title----------------------------------------><
@@ -10960,7 +10958,7 @@ WindowBase::title= (<xref linkend="mthTitleEquals" />)
 
 <section id="wbwUpdate"><title>update</title>
 <programlisting>
-WindowBase::update (<xref linkend="mthUpdate" />)
+WindowBase::<xref linkend="mthUpdate" />
 
 <![CDATA[
 ]]>
@@ -10970,7 +10968,7 @@ WindowBase::update (<xref linkend="mthUpdate" />)
 
 <section id="wbwWindowRect"><title>windowRect</title>
 <programlisting>
-WindowBase::windowRect (<xref linkend="mthWindowRect" />)
+WindowBase::<xref linkend="mthWindowRect" />
 
 <![CDATA[
 >>--windowRect(--+--------+--)-------------------><

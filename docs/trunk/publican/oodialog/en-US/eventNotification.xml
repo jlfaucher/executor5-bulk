@@ -48,7 +48,7 @@
 <para>
   The event notification class is a <emphasis role="italic">Mixin</emphasis> class that contains methods that connect
   the notification of a Windows <xref linkend="ovvEvents"/> sent to the
-  underlying (<xref linkend="ovvUnderlying" />) dialog with a method in the Rexx dialog object. Except as noted below, the
+  <xref linkend="ovvUnderlying" /> dialog with a method in the Rexx dialog object. Except as noted below, the
   Rexx programmer adds the method to her dialog subclass. Once the event notification is connected, each time the event
   occurs, the connected method is invoked. The programmer codes the method to take the appropriate action for the event.
 </para>
@@ -694,7 +694,7 @@
 
 <para>
   The <emphasis role="italic">addUserMsg</emphasis> method connects a Windows window
-  message (<xref linkend="ovvWindowMessages" />) sent to the underlying (<xref linkend="ovvUnderlying" />) dialog with a
+  message (<xref linkend="ovvWindowMessages" />) sent to the <xref linkend="ovvUnderlying" /> dialog with a
   method in the Rexx dialog. This method is designed to be used by ooDialog programmers who are familiar with the
   Windows API. It's use will require access to the Windows documentation (<xref linkend="defWindowsDoc" />) at a
   minimum, and will likely also require access to the Windows header files in the
@@ -948,7 +948,7 @@
 
 <para>
   The event handler connected through the <xref linkend="mthAddUserMsg"/> is invoked when ooDialog
-  internally matches a message sent to the underlying (<xref linkend="ovvUnderlying" />) Windows dialog using the
+  internally matches a message sent to the <xref linkend="ovvUnderlying" /> Windows dialog using the
   arguments specified by the programmer in the invocation of the <emphasis role="italic">addUserMsg</emphasis> method.
 </para>
 <para>
@@ -1240,7 +1240,7 @@
   Connects all scroll bar events to one method.
 </para>
 <para>
-  This method requires that the underlying (<xref linkend="ovvUnderlying" />) scroll bar exists. Therefore, the method
+  This method requires that the <xref linkend="ovvUnderlying" /> scroll bar exists. Therefore, the method
   is best invoked in the <xref linkend="mthInitDialog"/> method.
 </para>
 <variablelist>
@@ -1545,7 +1545,7 @@ informs the dialog that an event has occurred in the combo box.</para>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>id</term>
-<listitem><para>The resource ID (<xref linkend="defResourceId" />) of the combo
+<listitem><para>The <xref linkend="defResourceId" /> of the combo
 box for which a notification is to be connected to a method.
 </para></listitem></varlistentry>
 <varlistentry><term>event</term>
@@ -1643,7 +1643,7 @@ incorrect.
 <para>
   The following example invokes method PlaySong whenever the list of the combo box with the resource ID of
   IDC_CB_PROFESSIONS is about to be made visible.  In this case IDC_CB_PROFESSIONS is a
-  symbolic ID (<xref linkend="defSymbolicId" />) that has been added to the constDir (<xref linkend="atrConstDir" />)
+  symbolic ID (<xref linkend="defSymbolicId" />) that has been added to the <xref linkend="atrConstDir" />
   directory of the MyDlgClass in another part of the program:
 
 <programlisting>
@@ -1820,7 +1820,7 @@ lo word resource ID:       1003
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the date time picker control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the date time picker control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>evt [required]</term>
@@ -2273,7 +2273,7 @@ lo word resource ID:       1003
     One reason for handling the drop down event is to adjust the style of the month calendar control when it is
     displayed. Note that the DTP control creates the child month calendar control when it is needed and destroys the
     month calendar when the drop down is closed up. Therefore you can not save a reference to the month calendar object
-    and use it later. When the underlying (<xref linkend="ovvUnderlying" />) month calendar control is destroyed the
+    and use it later. When the <xref linkend="ovvUnderlying" /> month calendar control is destroyed the
     Rexx month calendar object is no longer valid.
   </para>
   <para>
@@ -3012,7 +3012,7 @@ lo word resource ID:       1003
   Optionally, the method can also initialize the scroll bar, (set the range and current position.)
 </para>
 <para>
-  This method requires that the underlying (<xref linkend="ovvUnderlying" />) scroll bar exists. Therefore, the method
+  This method requires that the <xref linkend="ovvUnderlying" /> scroll bar exists. Therefore, the method
   is best invoked in the <xref linkend="mthInitDialog"/> method.
 </para>
 <variablelist>
@@ -3352,7 +3352,7 @@ it to 0 when a nonnumeric value was entered:
   <para>
     In general error return codes are used to indicate incorrect usage rather than raised syntax conditions. However,
     syntax errors are raised if the <emphasis role="italic">methodName</emphasis> argument is missing or the empty
-    string, or invoking this method before the underlying (<xref linkend="ovvUnderlying" />) dialog is created.
+    string, or invoking this method before the <xref linkend="ovvUnderlying" /> dialog is created.
   </para>
   <para>
     Raises syntax errors when some incorrect usage is detected.
@@ -3807,7 +3807,7 @@ Help request:
   <para>
     In general error return codes are used to indicate incorrect usage rather than raised syntax conditions. However,
     syntax errors are raised for missing required arguments, using the empty string for required arguments, or invoking
-    this method before the underlying (<xref linkend="ovvUnderlying" />) dialog is created.
+    this method before the <xref linkend="ovvUnderlying" /> dialog is created.
   </para>
   <para>
     Raises syntax errors when some incorrect usage is detected.
@@ -4734,7 +4734,7 @@ incorrect.
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the month calendar control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+        The resource ID of the month calendar control. May be numeric or <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>event [required]</term>
@@ -5970,7 +5970,7 @@ incorrect.
   <listitem>
   <para>
     The resource ID of the scroll bar whose event notification is to be connected. May be numeric or
-    symbolic (<xref linkend="defSymbolicId" />).
+    <xref linkend="defSymbolicId" />.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>event [required]</term>
@@ -6115,7 +6115,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
   <listitem>
   <para>
-    This method requires that the underlying (<xref linkend="ovvUnderlying" />) scroll bar exists. Therefore, the method
+    This method requires that the <xref linkend="ovvUnderlying" /> scroll bar exists. Therefore, the method
     is best invoked in the <xref linkend="mthInitDialog"/> method. At some later point in the life cycle
     of the dialog is fine. If the method is invoked before the underlying dialog has been created a syntax condition is
     raised.
@@ -6524,7 +6524,7 @@ incorrect.
       <listitem>
       <para>
         The resource ID of the tab control whose event notification is to be connected to a method in the Rexx dialog.
-        May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+        May be numeric or <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>event [required]</term>
@@ -7126,7 +7126,7 @@ trackbar position by extracting the high-oder word. Example:
       <listitem>
       <para>
         The resource ID of the up-down control whose notification message is to be connected to a Rexx dialog's method.
-        May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+        May be numeric or <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>event [required]</term>

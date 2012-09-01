@@ -43,11 +43,11 @@
     #
     #########################################################################
 -->
-<section id="clsWindowBase"><title>WindowBase Mixin Class</title>
+<section id="clsWindowBase" xreflabel="WindowsBase"><title>WindowBase Mixin Class</title>
 <indexterm><primary>WindowBase Class</primary></indexterm>
 <para>
   WindowBase is a mixin class with methods that are common to all windows. It is inherited by both the
-  dialog (<xref linkend="chpDialogObject" />) and dialog control (<xref linkend="chpDialogControlObject" />) objects.
+  <xref linkend="chpDialogObject" /> and dialog control (<xref linkend="chpDialogControlObject" />) objects.
   Every dialog object and every dialog control object have the instance methods of the WindowBase class. In addition,
   the <xref linkend="clsWindow"/> class inherits the WindowBase class.
 </para>
@@ -301,7 +301,7 @@
 </section>
 
 
-<section id="atrFactorX"><title>factorX (Attribute)</title>
+<section id="atrFactorX" xreflabel="factorX"><title>factorX (Attribute)</title>
 <indexterm><primary>factorX</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>factorX</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>factorX</secondary></indexterm>
@@ -327,7 +327,7 @@
 </para>
 </section>  <!-- End WindowBase::factorX() [attribute]  -->
 
-<section id="atrFactorY"><title>factorY (Attribute)</title>
+<section id="atrFactorY" xreflabel="factorY"><title>factorY (Attribute)</title>
 <indexterm><primary>factorY</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>factorY</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>factorY</secondary></indexterm>
@@ -353,7 +353,7 @@
 </para>
 </section>  <!-- End WindowBase::factorX() [attribute]  -->
 
-<section id="atrHwnd"><title>hwnd (Attribute)</title>
+<section id="atrHwnd" xreflabel="hwnd"><title>hwnd (Attribute)</title>
 <indexterm><primary>hwnd</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>hwnd</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>hwnd</secondary></indexterm>
@@ -411,7 +411,7 @@ Window handeles:
 </variablelist>
 </section>  <!-- End WindowBase::hwnd() [attribute]  -->
 
-<section id="atrInitCode"><title>initCode (Attribute)</title>
+<section id="atrInitCode" xreflabel="initCode"><title>initCode (Attribute)</title>
 <indexterm><primary>initCode</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>initCode</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>initCode</secondary></indexterm>
@@ -485,7 +485,7 @@ Window handeles:
 </variablelist>
 </section>  <!-- End WindowBase::initCode() [attribute]  -->
 
-<section id="atrPixelCX"><title>pixelCX (Attribute)</title>
+<section id="atrPixelCX" xreflabel="pixelCX"><title>pixelCX (Attribute)</title>
 <indexterm><primary>pixelCX</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>pixelCX</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>pixelCX</secondary></indexterm>
@@ -506,9 +506,8 @@ Window handeles:
   <listitem>
   <para>
     The <emphasis role="italic">pixelCX</emphasis> value is the correct
-    width of the window, as opposed to the sizeX (<xref linkend="atrSizeX" />) attribute which is usually
- <xref linkend="ovvInaccurate"/> because it is calculated using factorX (<xref linkend="atrFactorX"
-    />).
+    width of the window, as opposed to the <xref linkend="atrSizeX" /> attribute which is usually
+    <xref linkend="ovvInaccurate"/> because it is calculated using <xref linkend="atrFactorX" />.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCX get:</emphasis></term>
@@ -583,7 +582,7 @@ The dialog unit height of the button is: 14
 </variablelist>
 </section>  <!-- End WindowBase::pixelCX() [attribute]  -->
 
-<section id="atrPixelCY"><title>pixelCY (Attribute)</title>
+<section id="atrPixelCY" xreflabel="pixelCY"><title>pixelCY (Attribute)</title>
 <indexterm><primary>pixelCY</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>pixelCY</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>pixelCY</secondary></indexterm>
@@ -604,9 +603,9 @@ The dialog unit height of the button is: 14
   <listitem>
   <para>
     The <emphasis role="italic">pixelCY</emphasis> value is the correct height of the window, as opposed to the
-    sizeY (<xref linkend="atrSizeY" />) attribute which is usually
- <xref linkend="ovvInaccurate"/> because it is calculated using
-    factorY (<xref linkend="atrFactorY" />).
+ <xref linkend="atrSizeY" /> attribute which is usually
+    <xref linkend="ovvInaccurate"/> because it is calculated using
+ <xref linkend="atrFactorY" />.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCY get:</emphasis></term>
   <listitem>
@@ -639,7 +638,7 @@ The dialog unit height of the button is: 14
 </variablelist>
 </section>  <!-- End WindowBase::pixelCY() [attribute]  -->
 
-<section id="atrSizeX"><title>sizeX (Attribute)</title>
+<section id="atrSizeX" xreflabel="sizeX"><title>sizeX (Attribute)</title>
 <indexterm><primary>sizeX</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>sizeX</secondary></indexterm>
 <programlisting>
@@ -653,15 +652,15 @@ The dialog unit height of the button is: 14
 
 <para>
   The <emphasis role="italic">sizeX</emphasis> attribute was intended to be the width of the window and
-  sizeY (<xref linkend="atrSizeY" />) the height of the window in dialog units (<xref linkend="defDialogUnit" />).
+ <xref linkend="atrSizeY" /> the height of the window in dialog units (<xref linkend="defDialogUnit" />).
   However, in almost all cases, the value is not correct. (<xref linkend="ovvInaccurate" />)
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    For a dialog control, <emphasis role="italic">sizeX</emphasis> and sizeY (<xref linkend="atrSizeY" />) are
-    calculated using factorX (<xref linkend="atrFactorX" />) and factorY (<xref linkend="atrFactorY" />), which
+    For a dialog control, <emphasis role="italic">sizeX</emphasis> and <xref linkend="atrSizeY" /> are
+    calculated using <xref linkend="atrFactorX" /> and <xref linkend="atrFactorY" />, which
     inherently makes them incorrect in almost all cases. <xref linkend="clsUserDialog"/> dialogs and their
     subclasses will have the correct values. However, the <emphasis role="italic">sizeX</emphasis> and <emphasis
     role="italic">sizeY</emphasis> values in a <xref linkend="clsResDialog"/> dialog are 0.
@@ -671,7 +670,7 @@ The dialog unit height of the button is: 14
   </para>
   <para>
     To obtain the correct width and height of a window in either pixels or dialog units, use the pixelCX (<xref
-    linkend="atrPixelCX" />) and pixelCY (<xref linkend="atrPixelCY" />)  attributes. These values can be correctly
+    linkend="atrPixelCX" />) and <xref linkend="atrPixelCY" />  attributes. These values can be correctly
     converted (<xref linkend="examplePixelCX" />) to dialog units if dialog units are desired.
   </para>
   </listitem></varlistentry>
@@ -724,7 +723,7 @@ The dialog unit height of the button is: 11
 </variablelist>
 </section>  <!-- End WindowBase::sizeX() [attribute]  -->
 
-<section id="atrSizeY"><title>sizeY (Attribute)</title>
+<section id="atrSizeY" xreflabel="sizeY"><title>sizeY (Attribute)</title>
 <indexterm><primary>sizeY</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>sizeY</secondary></indexterm>
 <programlisting>
@@ -830,7 +829,7 @@ The dialog unit height of the button is: 11
   </para>
   <para>
     Since this method is a method of the <xref linkend="clsWindowBase"/> class, it is a method of both
-    the dialog (<xref linkend="chpDialogObject" />) object and the dialog
+    the <xref linkend="chpDialogObject" /> object and the dialog
     control (<xref linkend="chpDialogControlObject" />) object. It is of limited use with a dialog control because
     most dialog controls do not have child windows. However, some do. For instance, a list (<xref linkend="clsListView"
     />) view control in report view contains a child header window.
@@ -1266,7 +1265,7 @@ if self~isVisible then self~disable
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The underlying (<xref linkend="ovvUnderlying" />) dialog must exist when this method is invoked.
+    The <xref linkend="ovvUnderlying" /> dialog must exist when this method is invoked.
   </para>
   <para>
     When using the HIDE FAST options string, there are a number of caveats that may not be readily apparent. See the
@@ -1575,7 +1574,7 @@ List control extended style flags:
 
 <para>
   Retrieves the identification number of the window. For a dialog window this will almost certainly be zero. For a
-  dialog control window it will be the resource ID (<xref linkend="defResourceId" />) of the control.
+  dialog control window it will be the <xref linkend="defResourceId" /> of the control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1846,7 +1845,7 @@ height = bottom - top
   <listitem>
   <para>
     The values returned by this method are usually <xref linkend="ovvInaccurate"/> because they are
-    calculated using factorX (<xref linkend="atrFactorX" />) and factorY (<xref linkend="atrFactorY" />). The
+    calculated using <xref linkend="atrFactorX" /> and <xref linkend="atrFactorY" />. The
  <xref linkend="mthGetRealSize"/>() method returns the correct size in pixels. Normally it is not
     necessary to covert to dialog units. However, if this is desired, use the
  <xref linkend="mthPixel2dlgUnit"/> method to get the correct size.

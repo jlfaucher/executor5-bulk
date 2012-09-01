@@ -68,8 +68,8 @@
 </para>
 <para>
   The <computeroutput>Tab</computeroutput> class provides methods to work with and manipulate the underlying
-  Windows tab dialog control which it represents. It is a concrete subclass of the dialog control
-  object (<xref linkend="chpDialogControlObject" />) and therefore has all methods of the dialog control object.
+  Windows tab dialog control which it represents. It is a concrete subclass of the dialog <xref linkend="chpDialogControlObject" />
+  object and therefore has all methods of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -78,27 +78,24 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newTab (<xref linkend="tmthNewTab" />)() method of the
-    dialog (<xref linkend="chpDialogObject" />) object to retrieve a new Tab object.
+    Use the <xref linkend="tmthNewTab" /> method of the
+    <xref linkend="chpDialogObject" /> object to retrieve a new Tab object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
     To dynamically define a tab in a <xref linkend="clsUserDialog"/> class, use the
-    createTab (<xref linkend="tmthCreateTab" />) method.
+    <xref linkend="tmthCreateTab" /> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
     To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying tab control to
-    a method in the Rexx dialog object use the connectTabEvent (<xref linkend="tmthConnectTabEvent" />)()
-    method.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</para>
+    a method in the Rexx dialog object use the <xref linkend="tmthConnectTabEvent" /> method.
+  </para> </listitem></varlistentry>
+</variablelist> </para>
 
 <section id="sctMethodsTab"><title>Method Table</title>
 <para>
@@ -250,7 +247,7 @@
 </section>
 
 
-<section id="tmthNewTab"><title>newTab (dialog object method)</title>
+<section id="tmthNewTab" xreflabel="newTab"><title>newTab (dialog object method)</title>
 <para>
   Tab objects can not be instantiated by the programmer from Rexx code. Rather a Tab object is obtained by using the
  <xref linkend="mthNewTab"/>() method of the <xref linkend="chpDialogObject"/> object. The
@@ -265,7 +262,7 @@
 </section>  <!-- End newTab() [PlainBaseDialog method] -->
 
 
-<section id="tmthCreateTab"><title>createTab (UserDialog method)</title>
+<section id="tmthCreateTab" xreflabel="createTab"><title>createTab (UserDialog method)</title>
 <para>
   A tab control can be added to the dialog template for a <xref linkend="clsUserDialog"/>
   dialog through the <xref linkend="mthCreateTab"/>() method. The basic syntax is:
@@ -279,11 +276,11 @@
 </section>  <!-- End UserDialog::createTab() [UserDialog method] -->
 
 
-<section id="tmthConnectTabEvent"><title>connectTabEvent (dialog object method)</title>
+<section id="tmthConnectTabEvent" xreflabel="connectTabEvent"><title>connectTabEvent (dialog object method)</title>
 <para>
   To connect event notifications from an tab control use the
  <xref linkend="mthConnectTabEvent"/>() method of the
-  dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
+  <xref linkend="chpDialogObject" /> object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectTabEvent(--id--,--event--+----------------+--+--------------+--)-----><
@@ -1304,8 +1301,8 @@ the currently selected tab.</para>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The tab control does not send a <xref linkend="mthConnectTabEvent"/> or SELCHANGE event
-    notification (<xref linkend="ovvEvents"/>) when a tab is selected using this method.
+    The tab control does not send a SELCHANGING or SELCHANGE <xref linkend="ovvEvents"/> notification when a tab is
+    selected using this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>

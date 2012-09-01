@@ -47,7 +47,7 @@
 <indexterm><primary>The Dialog Object</primary></indexterm>
 <para>
   All instantiated Rexx dialog objects have a broad base of methods in common. These methods are the same for all
-  dialogs regardless of the class of the dialog or how the dialog template (<xref linkend="ovvDialogTemplate" />) is
+  dialogs regardless of the class of the dialog or how the dialog <xref linkend="ovvDialogTemplate" /> is
   created.
 </para>
 <para>
@@ -1681,16 +1681,16 @@
       <listitem>
       <para>
         The resource ID of the dialog within the resource file. This may be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="termDialogDataStem"><term>dlgData. [optional]</term>
+      <varlistentry id="termDialogDataStem" xreflabel="dialog data stem"><term>dlgData. [optional]</term>
       <listitem>
       <para>
         A dialog data stem variable (don't forget the trailing period) that contains data used to initialize the
         underlying dialog's controls. This is part of the automatic
         data detection (<xref linkend="sctUnderstandingDataAttributes" />) feature. When
- <xref linkend="mthInitAutoDetection"/> data detection is off, using this argument does nothing.
+        <xref linkend="mthInitAutoDetection"/> data detection is off, using this argument does nothing.
       </para>
       <para>
         Each index of the data stem should be the resource ID of one of the dialog's controls. The value at that index
@@ -1715,7 +1715,7 @@
       <para>
         A file, (often called a header (<xref linkend="defHeaderFile" />) file,) defining
         symbolic IDs (<xref linkend="defSymbolicId" />) for resources. The symbolic IDs defined within the file will be
-        added to the constDir (<xref linkend="atrConstDir" />) directory.
+        added to the <xref linkend="atrConstDir" /> directory.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1903,7 +1903,7 @@
   This section describes the attributes of the dialog object.
 </para>
 
-<section id="atrAutoDetect"><title>autoDetect (Attribute)</title>
+<section id="atrAutoDetect" xreflabel="autoDetect"><title>autoDetect (Attribute)</title>
 <indexterm><primary>autoDetect</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>autoDetect</secondary></indexterm>
 
@@ -1950,7 +1950,7 @@
 
 <section id="rudoConstDir"><title>constDir (Attribute)</title>
 <programlisting>
-ResourceUtils::constDir (<xref linkend="atrConstDir" />)
+ResourceUtils::<xref linkend="atrConstDir" />
 
 <![CDATA[
 >>--constDir-------------------------------------><
@@ -1961,7 +1961,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
 </section>
 
 
-<section id="atrDlgHandle"><title>dlgHandle (Attribute)</title>
+<section id="atrDlgHandle" xreflabel="dlgHandle"><title>dlgHandle (Attribute)</title>
 <indexterm><primary>dlgHandle</primary></indexterm>
 <indexterm><primary>dialog object</primary>
 <secondary>dlgHandle</secondary></indexterm>
@@ -1975,7 +1975,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
 </programlisting>
 
 <para>
-  Reflects the window handle (<xref linkend="defHandle" />) of the underlying (<xref linkend="ovvUnderlying" />)
+  Reflects the window handle (<xref linkend="defHandle" />) of the <xref linkend="ovvUnderlying" />
   dialog this Rexx dialog represents.
 </para>
 <variablelist>
@@ -1996,8 +1996,8 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Dialog objects also have the hwnd (<xref linkend="atrHwnd" />) attribute which is inherited from the
- <xref linkend="clsWindowBase"/> class. The two attributes are essentially the same and can be used by the
+    Dialog objects also have the <xref linkend="atrHwnd" /> attribute which is inherited from the
+    <xref linkend="clsWindowBase"/> class. The two attributes are essentially the same and can be used by the
    programmer interchangeably.
   </para>
   </listitem></varlistentry>
@@ -2020,9 +2020,9 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
 
 
 
-<section id="wbdoFactorX"><title>factorX (Attribute)</title>
+<section id="wbdoFactorX" xreflabel="factorX"><title>factorX (Attribute)</title>
 <programlisting>
-WindowBase::factorX (<xref linkend="atrFactorX" />)
+WindowBase::<xref linkend="atrFactorX" />
 
 <![CDATA[
 >>--factorX--------------------------------------><
@@ -2034,9 +2034,9 @@ WindowBase::factorX (<xref linkend="atrFactorX" />)
 </section>
 
 
-<section id="wbdoFactorY"><title>factorY (Attribute)</title>
+<section id="wbdoFactorY" xreflabel="factorY"><title>factorY (Attribute)</title>
 <programlisting>
-WindowBase::factorY (<xref linkend="atrFactorY" />)
+WindowBase::<xref linkend="atrFactorY" />
 
 <![CDATA[
 >>--factorY--------------------------------------><
@@ -2048,7 +2048,7 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
 </section>
 
 
-<section id="atrFontName"><title>fontName (Attribute)</title>
+<section id="atrFontName" xreflabel="fontName"><title>fontName (Attribute)</title>
 <indexterm><primary>fontName</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>fontName</secondary></indexterm>
 <programlisting>
@@ -2093,7 +2093,7 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
   <para>
     In order to accurately calculate dialog units (<xref linkend="defDialogUnit" />) in methods such as
  <xref linkend="mthGetTextSizeDu"/>(), it is important that the <emphasis
-    role="italic">fontName</emphasis> and fontSize (<xref linkend="atrFontSize" />) attributes match the actual font
+    role="italic">fontName</emphasis> and <xref linkend="atrFontSize" /> attributes match the actual font
     that the dialog will use. Therefore, whenever dialog unit calculations are going to be made before the underlying
     dialog is created, it is important to set these attributes to match the font that will be used in the dialog. This
     must be done before the dialog unit calculations.
@@ -2170,7 +2170,7 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
 </variablelist>
 </section>  <!-- End PlainBaseDialog::fontName [attribute] -->
 
-<section id="atrFontSize"><title>fontSize (Attribute)</title>
+<section id="atrFontSize" xreflabel="fontSize"><title>fontSize (Attribute)</title>
 <indexterm><primary>fontSize</primary>
 <secondary>dialog object</secondary></indexterm>
 <programlisting>
@@ -2184,7 +2184,7 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
 
 <para>
   The <emphasis role="italic">fontSize</emphasis> attribute is the counterpart to the
-  fontName (<xref linkend="atrFontName" />) attribute. The description and remarks for the <emphasis
+ <xref linkend="atrFontName" /> attribute. The description and remarks for the <emphasis
   role="italic">fontName</emphasis> attribute apply equally well to the <emphasis role="italic">fontSize</emphasis>
   attribute.
 </para>
@@ -2205,7 +2205,7 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    See the remarks for the fontName (<xref linkend="atrFontName" />) attribute.
+    See the remarks for the <xref linkend="atrFontName" /> attribute.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2228,9 +2228,9 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
 </section>  <!-- End PlainBaseDialog::fontSize [attribute] -->
 
 
-<section id="wbdoHwnd"><title>hwnd (Attribute)</title>
+<section id="wbdoHwnd" xreflabel="hwnd"><title>hwnd (Attribute)</title>
 <programlisting>
-WindowBase::hwnd (<xref linkend="atrHwnd" />)
+WindowBase::<xref linkend="atrHwnd" />
 
 <![CDATA[
 >>--hwnd-----------------------------------------><
@@ -2240,9 +2240,9 @@ WindowBase::hwnd (<xref linkend="atrHwnd" />)
 </section>
 
 
-<section id="wbdoInitCode"><title>initCode (Attribute)</title>
+<section id="wbdoInitCode" xreflabel="initCode"><title>initCode (Attribute)</title>
 <programlisting>
-WindowBase::initCode (<xref linkend="atrInitCode" />)
+WindowBase::<xref linkend="atrInitCode" />
 
 <![CDATA[
 >>--initCode-------------------------------------><
@@ -2254,7 +2254,7 @@ WindowBase::initCode (<xref linkend="atrInitCode" />)
 </section>
 
 
-<section id="atrOwnerDialog"><title>ownerDialog (Attribute)</title>
+<section id="atrOwnerDialog" xreflabel="ownerDialog"><title>ownerDialog (Attribute)</title>
 <indexterm><primary>ownerDialog</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>ownerDialog</secondary></indexterm>
 <programlisting>
@@ -2295,7 +2295,7 @@ WindowBase::initCode (<xref linkend="atrInitCode" />)
   </para>
   <para>
     Once set, the owner dialog can not be changed or removed.  The owner dialog can not be set once the
-    underlying (<xref linkend="ovvUnderlying" />) dialog for this dialog has been created and when this owned dialog is
+    <xref linkend="ovvUnderlying" /> dialog for this dialog has been created and when this owned dialog is
     executed, the underlying owner dialog must have already been created.
   </para>
   </listitem></varlistentry>
@@ -2357,9 +2357,9 @@ WindowBase::initCode (<xref linkend="atrInitCode" />)
 </section>  <!-- End PlainBaseDialog::ownerDialog() [attribute]  -->
 
 
-<section id="wbdoPixelCX"><title>pixelCX (Attribute)</title>
+<section id="wbdoPixelCX" xreflabel="pixelCX"><title>pixelCX (Attribute)</title>
 <programlisting>
-WindowBase::pixelCX (<xref linkend="atrPixelCX" />)
+WindowBase::<xref linkend="atrPixelCX" />
 
 <![CDATA[
 >>--pixelCX--------------------------------------><
@@ -2368,9 +2368,9 @@ WindowBase::pixelCX (<xref linkend="atrPixelCX" />)
 </section>
 
 
-<section id="wbdoPixelCY"><title>pixelCY (Attribute)</title>
+<section id="wbdoPixelCY" xreflabel="pixelCY"><title>pixelCY (Attribute)</title>
 <programlisting>
-WindowBase::pixelCY (<xref linkend="atrPixelCY" />)
+WindowBase::<xref linkend="atrPixelCY" />
 
 <![CDATA[
 >>--pixelCY--------------------------------------><
@@ -2379,9 +2379,9 @@ WindowBase::pixelCY (<xref linkend="atrPixelCY" />)
 </section>
 
 
-<section id="wbdoSizeX"><title>sizeX (Attribute)</title>
+<section id="wbdoSizeX" xreflabel="sizeX"><title>sizeX (Attribute)</title>
 <programlisting>
-WindowBase::sizeX (<xref linkend="atrSizeX" />)
+WindowBase::<xref linkend="atrSizeX" />
 
 <![CDATA[
 >>--sizeX----------------------------------------><
@@ -2391,9 +2391,9 @@ WindowBase::sizeX (<xref linkend="atrSizeX" />)
 </programlisting>
 </section>
 
-<section id="wbdoSizeY"><title>sizeY (Attribute)</title>
+<section id="wbdoSizeY" xreflabel="sizeY"><title>sizeY (Attribute)</title>
 <programlisting>
-WindowBase::sizeY (<xref linkend="atrSizeY" />)
+WindowBase::<xref linkend="atrSizeY" />
 
 <![CDATA[
 >>--sizeY----------------------------------------><
@@ -2608,7 +2608,7 @@ WindowBase::sizeY (<xref linkend="atrSizeY" />)
 
 <section id="deAddAutoStartMethod"><title>addAutoStartMethod</title>
 <programlisting>
-DialogExtensions::addAutoStartMethod (<xref linkend="mthAddAutoStartMethod" />)
+DialogExtensions::<xref linkend="mthAddAutoStartMethod" />
 
 <![CDATA[
 >>--addAutoStartMethod(--+---------+--,--methodName--+---------------+--)------><
@@ -2620,7 +2620,7 @@ DialogExtensions::addAutoStartMethod (<xref linkend="mthAddAutoStartMethod" />)
 
 <section id="deEndAsyncExecution"><title>endAsyncExecution</title>
 <programlisting>
-DialogExtensions::endAsyncExecution (<xref linkend="mthEndAsyncExecution" />)
+DialogExtensions::<xref linkend="mthEndAsyncExecution" />
 
 <![CDATA[
 >>--endAsyncExecution----------------------------><
@@ -2641,7 +2641,7 @@ DialogExtensions::endAsyncExecution (<xref linkend="mthEndAsyncExecution" />)
 </programlisting>
 
 <para>
-  The <emphasis role="italic">execute</emphasis> method, creates the underlying (<xref linkend="ovvUnderlying" />)
+  The <emphasis role="italic">execute</emphasis> method, creates the <xref linkend="ovvUnderlying" />
   dialog, <xref linkend="mthShowClsPlainBaseDialog"/> it, starts the
  <xref linkend="mthAddAutoStartMethod"/> methods, if any, and destroys the underlying dialog when the user
   closes it. If auto <xref linkend="mthInitAutoDetection"/> is on, the dialog
@@ -2720,7 +2720,7 @@ DialogExtensions::endAsyncExecution (<xref linkend="mthEndAsyncExecution" />)
     <listitem>
     <para>
       The resource ID of the dialog's icon (<xref linkend="defDialogIcon" />). May be numeric or
-      symbolic (<xref linkend="defSymbolicId" />).  If an icon ID is not supplied, the default ooDialog icon will be used.
+      <xref linkend="defSymbolicId" />.  If an icon ID is not supplied, the default ooDialog icon will be used.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2816,7 +2816,7 @@ end
 
 <section id="deExecuteAsync"><title>executeAsync</title>
 <programlisting>
-DialogExtensions::executeAsync (<xref linkend="mthExecuteAsync" />)
+DialogExtensions::<xref linkend="mthExecuteAsync" />
 
 <![CDATA[
 >>--executeAsync(--+-----------+--+---------------+--+---------+--)------------><
@@ -2839,7 +2839,7 @@ DialogExtensions::executeAsync (<xref linkend="mthExecuteAsync" />)
 <para>
   The <emphasis role="italic">initDialog</emphasis> method is invoked automatically by the ooDialog framework. It is
   intended to be over-ridden by the programmer in her dialog subclasses. The method is used to initialize the
-  dialog controls, if needed, after the underlying (<xref linkend="ovvUnderlying" />) Windows dialog is created.
+  dialog controls, if needed, after the <xref linkend="ovvUnderlying" /> Windows dialog is created.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2910,7 +2910,7 @@ if MyDialog~isDialogActive then ...
 
 <section id="rudoParseIncludeFile"><title>parseIncludefile</title>
 <programlisting>
-ResourceUtils::parseIncludeFile (<xref linkend="mthParseIncludeFile" />)
+ResourceUtils::<xref linkend="mthParseIncludeFile" />
 
 <![CDATA[
 >>--parseIncludeFile(--fileName--)---------------><
@@ -2922,7 +2922,7 @@ ResourceUtils::parseIncludeFile (<xref linkend="mthParseIncludeFile" />)
 
 <section id="dePopup"><title>popup</title>
 <programlisting>
-DialogExtensions::popup (<xref linkend="mthPopup" />)
+DialogExtensions::<xref linkend="mthPopup" />
 
 <![CDATA[
 >>--popup(--+-------------+--+------------+--+--------+--)------><
@@ -2934,7 +2934,7 @@ DialogExtensions::popup (<xref linkend="mthPopup" />)
 
 <section id="dePopupAsChild"><title>popupAsChild</title>
 <programlisting>
-DialogExtensions::popupAsChild (<xref linkend="mthPopupAsChild" />)
+DialogExtensions::<xref linkend="mthPopupAsChild" />
 
 <![CDATA[
 >>--popupAsChild(--+-parent-+--------------+--+------------+--+--------+--)----><
@@ -2946,7 +2946,7 @@ DialogExtensions::popupAsChild (<xref linkend="mthPopupAsChild" />)
 
 <section id="rudoResolveNumericID"><title>resolveNumericID</title>
 <programlisting>
-ResourceUtils::resolveNumericID (<xref linkend="mthResolveNumericID" />)
+ResourceUtils::<xref linkend="mthResolveNumericID" />
 
 <![CDATA[
 >>--resolveNumericID(--id--)---------------------><
@@ -2957,7 +2957,7 @@ ResourceUtils::resolveNumericID (<xref linkend="mthResolveNumericID" />)
 
 <section id="rudoResolveSymbolicID"><title>resolveSymbolicID</title>
 <programlisting>
-ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
+ResourceUtils::<xref linkend="mthResolveSymbolicID" />
 
 <![CDATA[
 >>--resolveSymbolicID(--id--)--------------------><
@@ -2978,7 +2978,7 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
 
 <para>
   Sets the font that to be used for the underlying Windows dialog, when it is created. This method sets the
-  fontName (<xref linkend="atrFontName" />) and fontSize (<xref linkend="atrFontSize" />) attributes.
+ <xref linkend="atrFontName" /> and <xref linkend="atrFontSize" /> attributes.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3087,8 +3087,8 @@ controlObject = dialogObject~new[ControlName](resourceID)
 ]]>
 </programlisting>
   where <emphasis role="italic">[ControlName]</emphasis> is the name Microsoft uses for the control. <emphasis
-  role="italic">resourceID</emphasis> is the resource ID (<xref linkend="defResourceId" />) assigned to the dialog
-  control. Dialog control objects can only be instantiated after the underlying (<xref linkend="ovvUnderlying" />)
+  role="italic">resourceID</emphasis> is the <xref linkend="defResourceId" /> assigned to the dialog
+  control. Dialog control objects can only be instantiated after the <xref linkend="ovvUnderlying" />
   dialog has been created. For any error, all the methods return the <emphasis role="italic">.nil</emphasis> object.
 </para>
 
@@ -3116,7 +3116,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the check box dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the check box dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3178,7 +3178,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the combo box dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the combo box dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3252,8 +3252,8 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="defResourceId" />) of the date and time picker. This may be
-      symbolic (<xref linkend="defSymbolicId" />) or numeric.
+      The <xref linkend="defResourceId" /> of the date and time picker. This may be
+      <xref linkend="defSymbolicId" /> or numeric.
     </para>
     </listitem></varlistentry>
   </variablelist> </para></listitem></varlistentry>
@@ -3317,7 +3317,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the edit dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the edit dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3375,7 +3375,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the group box dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the group box dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3447,7 +3447,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the list box dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the list box dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3513,7 +3513,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the list-view dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the list-view dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3572,7 +3572,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the month calendar dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the month calendar dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3642,7 +3642,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the progress bar dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the progress bar dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3708,7 +3708,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <listitem>
     <para>
       The resource ID of the push button dialog control. May be numeric or
-      symbolic (<xref linkend="defSymbolicId" />).
+      <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3766,7 +3766,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the radio button dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the radio button dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3825,7 +3825,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the scroll bar dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the scroll bar dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3884,7 +3884,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the tab dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the tab dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3941,7 +3941,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the static dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the static dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4012,7 +4012,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the track bar dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the track bar dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4091,7 +4091,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the tree view dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the tree view dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4159,7 +4159,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the up down dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the up down dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4207,7 +4207,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <section id="enAddUserMsg"><title>addUserMsg</title>
 <programlisting>
-EventNotification::addUserMsg (<xref linkend="mthAddUserMsg" />)
+EventNotification::<xref linkend="mthAddUserMsg" />
 
 <![CDATA[
 >>--addUserMsg(-methodName-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-)-><
@@ -4219,7 +4219,7 @@ EventNotification::addUserMsg (<xref linkend="mthAddUserMsg" />)
 
 <section id="enConnectActivate"><title>connectActivate</title>
 <programlisting>
-EventNotification::connectActivate (<xref linkend="mthConnectActivate" />)
+EventNotification::<xref linkend="mthConnectActivate" />
 
 <![CDATA[
 >>--connectActivate(--+--------------+--)--------><
@@ -4230,7 +4230,7 @@ EventNotification::connectActivate (<xref linkend="mthConnectActivate" />)
 
 <section id="enConnectAllSBEvents"><title>connectAllSBEvents</title>
 <programlisting>
-EventNotification::connectAllSBEvents (<xref linkend="mthConnectAllSBEvents" />)
+EventNotification::<xref linkend="mthConnectAllSBEvents" />
 
 <![CDATA[
 >>--connectAllSBEvents(--id--,--methodName--+-------+-+-------+-+-------+--)---><
@@ -4241,7 +4241,7 @@ EventNotification::connectAllSBEvents (<xref linkend="mthConnectAllSBEvents" />)
 
 <section id="enConnectButtonEvent"><title>connectButtonEvent</title>
 <programlisting>
-EventNotification::connectButtonEvent (<xref linkend="mthConnectButtonEvent" />)
+EventNotification::<xref linkend="mthConnectButtonEvent" />
 
 <![CDATA[
 >>--connectButtonEvent(--id--,--event--+---------------+--)--------------------><
@@ -4252,7 +4252,7 @@ EventNotification::connectButtonEvent (<xref linkend="mthConnectButtonEvent" />)
 
 <section id="enConnectComboBoxEvent"><title>connectComboBoxEvent</title>
 <programlisting>
-EventNotification::connectComboBoxEvent (<xref linkend="mthConnectComboBoxEvent" />)
+EventNotification::<xref linkend="mthConnectComboBoxEvent" />
 
 <![CDATA[
 >>--connectComboBoxEvent(--id--,--event--+---------------+--)------------------><
@@ -4263,7 +4263,7 @@ EventNotification::connectComboBoxEvent (<xref linkend="mthConnectComboBoxEvent"
 
 <section id="enConnectCommandEvents"><title>connectCommandEvents</title>
 <programlisting>
-EventNotification::connectCommandEvents (<xref linkend="mthConnectCommandEvents" />)
+EventNotification::<xref linkend="mthConnectCommandEvents" />
 
 <![CDATA[
 >>--connectCommandEvents(--id--,--methodName--)--><
@@ -4273,7 +4273,7 @@ EventNotification::connectCommandEvents (<xref linkend="mthConnectCommandEvents"
 
 <section id="enConnectDateTimePickerEvent"><title>connectDateTimePickerEvent</title>
 <programlisting>
-EventNotification::connectDateTimePickedEvent (<xref linkend="mthConnectDateTimePickerEvent" />)
+EventNotification::<xref linkend="mthConnectDateTimePickerEvent" />
 
 <![CDATA[
 >>--connectDateTimePickerEvent(--id--,--event--+---------+--+-------------+-)--><
@@ -4284,7 +4284,7 @@ EventNotification::connectDateTimePickedEvent (<xref linkend="mthConnectDateTime
 
 <section id="enConnectDraw"><title>connectDraw</title>
 <programlisting>
-EventNotification::connectDraw (<xref linkend="mthConnectDraw" />)
+EventNotification::<xref linkend="mthConnectDraw" />
 
 <![CDATA[
 >>--connectDraw--(--+-----+--+---------------+--)------------------------------><
@@ -4295,7 +4295,7 @@ EventNotification::connectDraw (<xref linkend="mthConnectDraw" />)
 
 <section id="enConnectEachSBEvent"><title>connectEachSBEvent</title>
 <programlisting>
-EventNotification::connectEachSBEvent (<xref linkend="mthConnectEachSBEvent" />)
+EventNotification::<xref linkend="mthConnectEachSBEvent" />
 
 <![CDATA[
 >>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+-+-------+-+-------+-+-------+-->
@@ -4309,7 +4309,7 @@ EventNotification::connectEachSBEvent (<xref linkend="mthConnectEachSBEvent" />)
 
 <section id="enConnectEditEvent"><title>connectEditEvent</title>
 <programlisting>
-EventNotification::connectEditEvent (<xref linkend="mthConnectEditEvent" />)
+EventNotification::<xref linkend="mthConnectEditEvent" />
 
 <![CDATA[
 >>--connectEditEvent(--id--,--event--+---------------+--)----------------------><
@@ -4320,7 +4320,7 @@ EventNotification::connectEditEvent (<xref linkend="mthConnectEditEvent" />)
 
 <section id="enConnectFKeyPress"><title>connectFKeyPress</title>
 <programlisting>
-EventNotification::connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogObject" />)
+EventNotification::<xref linkend="mthConnectFKeyPressDialogObject" />
 
 <![CDATA[
 >>--connectFKeyPress(--methodName--)-------------><
@@ -4331,7 +4331,7 @@ EventNotification::connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogObj
 
 <section id="enConnectHelp"><title>connectHelp</title>
 <programlisting>
-EventNotification::connectHelp (<xref linkend="mthConnectHelp" />)
+EventNotification::<xref linkend="mthConnectHelp" />
 
 <![CDATA[
 >>--connectHelp(--methodname--)------------------><
@@ -4341,7 +4341,7 @@ EventNotification::connectHelp (<xref linkend="mthConnectHelp" />)
 
 <section id="enConnectKeyPress"><title>connectKeyPress</title>
 <programlisting>
-EventNotification::connectKeyPress (<xref linkend="mthConnectKeyPressDialogObject" />)
+EventNotification::<xref linkend="mthConnectKeyPressDialogObject" />
 
 <![CDATA[
 >>--connectKeyPress(--methodName--,--keys-+------------+--)--------------------><
@@ -4352,7 +4352,7 @@ EventNotification::connectKeyPress (<xref linkend="mthConnectKeyPressDialogObjec
 
 <section id="enConnectListBoxEvent"><title>connectListBoxEvent</title>
 <programlisting>
-EventNotification::connectListBoxEvent (<xref linkend="mthConnectListBoxEvent" />)
+EventNotification::<xref linkend="mthConnectListBoxEvent" />
 
 <![CDATA[
 >>--connectListBoxEvent(--id--,--event--+---------------+--)-------------------><
@@ -4363,7 +4363,7 @@ EventNotification::connectListBoxEvent (<xref linkend="mthConnectListBoxEvent" /
 
 <section id="enConnectListViewEvent"><title>connectListViewEvent</title>
 <programlisting>
-EventNotification::connectListViewEvent (<xref linkend="mthConnectListViewEvent" />)
+EventNotification::<xref linkend="mthConnectListViewEvent" />
 
 <![CDATA[
 >>--connectListviewEvent(--id--,--event--+---------------+--)------------------><
@@ -4374,7 +4374,7 @@ EventNotification::connectListViewEvent (<xref linkend="mthConnectListViewEvent"
 
 <section id="enConnectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
 <programlisting>
-EventNotification::connectMonthCalendarEvent (<xref linkend="mthConnectMonthCalendarEvent" />)
+EventNotification::<xref linkend="mthConnectMonthCalendarEvent" />
 
 <![CDATA[
 >>--connectMonthCalendarEvent(--id--,--event--+---------+--+-------------+-)---><
@@ -4385,7 +4385,7 @@ EventNotification::connectMonthCalendarEvent (<xref linkend="mthConnectMonthCale
 
 <section id="enConnectMove"><title>connectMove</title>
 <programlisting>
-EventNotification::connectMove (<xref linkend="mthConnectMove" />)
+EventNotification::<xref linkend="mthConnectMove" />
 
 <![CDATA[
 >>--connectMove(--methodName--)------------------><
@@ -4395,7 +4395,7 @@ EventNotification::connectMove (<xref linkend="mthConnectMove" />)
 
 <section id="enConnectNotifyEvent"><title>connectNotifyEvent</title>
 <programlisting>
-EventNotification::connectNotifyEvent (<xref linkend="mthConnectNotifyEvent" />)
+EventNotification::<xref linkend="mthConnectNotifyEvent" />
 
 <![CDATA[
 >>--connectNotifyEvent(--id--,--event--+---------------+--)--------------------><
@@ -4406,7 +4406,7 @@ EventNotification::connectNotifyEvent (<xref linkend="mthConnectNotifyEvent" />)
 
 <section id="enConnectPosChanged"><title>connectPosChanged</title>
 <programlisting>
-EventNotification::connectPosChanged (<xref linkend="mthConnectPosChanged" />)
+EventNotification::<xref linkend="mthConnectPosChanged" />
 
 <![CDATA[
 >>--connectPosChanged(--methodName--)------------><
@@ -4416,7 +4416,7 @@ EventNotification::connectPosChanged (<xref linkend="mthConnectPosChanged" />)
 
 <section id="enConnectResize"><title>connectResize</title>
 <programlisting>
-EventNotification::connectResize (<xref linkend="mthConnectResize" />)
+EventNotification::<xref linkend="mthConnectResize" />
 
 <![CDATA[
 >>--connectResize(--methodName--)----------------><
@@ -4426,7 +4426,7 @@ EventNotification::connectResize (<xref linkend="mthConnectResize" />)
 
 <section id="enConnectResizing"><title>connectResizing</title>
 <programlisting>
-EventNotification::connectResizing (<xref linkend="mthConnectResizing" />)
+EventNotification::<xref linkend="mthConnectResizing" />
 
 <![CDATA[
 >>--connectResizing(--methodName--)--------------><
@@ -4436,7 +4436,7 @@ EventNotification::connectResizing (<xref linkend="mthConnectResizing" />)
 
 <section id="enConnectScrollBarEvent"><title>connectScrollBarEvent</title>
 <programlisting>
-EventNotification::connectScrollBarEvent (<xref linkend="mthConnectScrollBarEvent" />)
+EventNotification::<xref linkend="mthConnectScrollBarEvent" />
 
 <![CDATA[
 >>--connectScrollBarEvent(--id--,--event--+---------------+--)-----------------><
@@ -4447,7 +4447,7 @@ EventNotification::connectScrollBarEvent (<xref linkend="mthConnectScrollBarEven
 
 <section id="enConnectSizeMoveEnded"><title>connectSizeMoveEnded</title>
 <programlisting>
-EventNotification::connectSizeMoveEnded (<xref linkend="mthConnectSizeMoveEnded" />)
+EventNotification::<xref linkend="mthConnectSizeMoveEnded" />
 
 <![CDATA[
 >>--connectSizeMoveEnded(--methodName--+--------------+--)---------------------><
@@ -4459,7 +4459,7 @@ EventNotification::connectSizeMoveEnded (<xref linkend="mthConnectSizeMoveEnded"
 
 <section id="enConnectStaticEvent"><title>connectStaticEvent</title>
 <programlisting>
-EventNotification::connectStaticEvent (<xref linkend="mthConnectStaticEvent" />)
+EventNotification::<xref linkend="mthConnectStaticEvent" />
 
 <![CDATA[
 >>--connectStaticNotify(--id--,--event--,-+---------------+--)-----------------><
@@ -4470,7 +4470,7 @@ EventNotification::connectStaticEvent (<xref linkend="mthConnectStaticEvent" />)
 
 <section id="enConnectTabEvent"><title>connectTabEvent</title>
 <programlisting>
-EventNotification::connectTabEvent (<xref linkend="mthConnectTabEvent" />)
+EventNotification::<xref linkend="mthConnectTabEvent" />
 
 <![CDATA[
 >>--connectTabEvent(--id--,--event--+---------------+--+--------------+--)-----><
@@ -4481,7 +4481,7 @@ EventNotification::connectTabEvent (<xref linkend="mthConnectTabEvent" />)
 
 <section id="enConnectTrackBarEvent"><title>connectTrackBarEvent</title>
 <programlisting>
-EventNotification::connectTrackBarEvent (<xref linkend="mthConnectTrackBarEvent" />)
+EventNotification::<xref linkend="mthConnectTrackBarEvent" />
 
 <![CDATA[
 >>--connectTrackBarEvent(--id--,--event--+---------------+--)------------------><
@@ -4492,7 +4492,7 @@ EventNotification::connectTrackBarEvent (<xref linkend="mthConnectTrackBarEvent"
 
 <section id="enConnectTreeViewEvent"><title>connectTreeViewEvent</title>
 <programlisting>
-EventNotification::connectTreeViewEvent (<xref linkend="mthConnectTreeViewEvent" />)
+EventNotification::<xref linkend="mthConnectTreeViewEvent" />
 
 <![CDATA[
 >>--connectTreeViewEvent(--id--,--event--+---------------+--)------------------><
@@ -4503,7 +4503,7 @@ EventNotification::connectTreeViewEvent (<xref linkend="mthConnectTreeViewEvent"
 
 <section id="enConnectUpDownEvent"><title>connectUpDownEvent</title>
 <programlisting>
-EventNotification::connectUpDownEvent (<xref linkend="mthConnectUpDownEvent" />)
+EventNotification::<xref linkend="mthConnectUpDownEvent" />
 
 <![CDATA[
 >>--connectUpDownEvent(--id--,--event--+--------------+--+-------------+-)-----><
@@ -4515,7 +4515,7 @@ EventNotification::connectUpDownEvent (<xref linkend="mthConnectUpDownEvent" />)
 
 <section id="enDefListDragHandler"><title>defListDragHandler</title>
 <programlisting>
-EventNotification::defListDragHandler (<xref linkend="mthDefListDragHandler" />)
+EventNotification::<xref linkend="mthDefListDragHandler" />
 
 <![CDATA[
 >>--defListDragHandler(--id--,--item--,--point--)------------------------------><
@@ -4526,7 +4526,7 @@ EventNotification::defListDragHandler (<xref linkend="mthDefListDragHandler" />)
 
 <section id="enDefTreeDragHandler"><title>defTreeDragHandler</title>
 <programlisting>
-EventNotification::defTreeDragHandler (<xref linkend="mthDefTreeDragHandler" />)
+EventNotification::<xref linkend="mthDefTreeDragHandler" />
 
 <![CDATA[
 >>--defTreeDragHandler(--id--,--item--,--point--)------------------------------><
@@ -4537,7 +4537,7 @@ EventNotification::defTreeDragHandler (<xref linkend="mthDefTreeDragHandler" />)
 
 <section id="enDisconnectKeyPress"><title>disconnectKeyPress</title>
 <programlisting>
-EventNotification::disconnectKeyPress (<xref linkend="mthDisconnectKeyPressDialogObject" />)
+EventNotification::<xref linkend="mthDisconnectKeyPressDialogObject" />
 
 <![CDATA[
 >>--disconnectKeyPress(--+--------------+--)-----><
@@ -4549,7 +4549,7 @@ EventNotification::disconnectKeyPress (<xref linkend="mthDisconnectKeyPressDialo
 
 <section id="enHasKeyPressConnection"><title>hasKeyPressConnection</title>
 <programlisting>
-EventNotification::hasKeyPressConnection (<xref linkend="mthHasKeyPressConnectionDialogObject" />)
+EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject" />
 
 <![CDATA[
 >>--hasKeyPressConnection(--+--------------+--)--><
@@ -4569,18 +4569,17 @@ EventNotification::hasKeyPressConnection (<xref linkend="mthHasKeyPressConnectio
   The ooDialog framework provides some default command <xref linkend="ovvEvents"/> handling methods. At this time there
   are 3 handlers, one for the <emphasis role="italic">ok</emphasis>, the <emphasis role="italic">cancel</emphasis>, and
   the <emphasis role="italic">help</emphasis> command events. These 3 specific command events are generated when a
- <xref linkend="clsButton"/>, with the correct resource ID (<xref linkend="defResourceId" />), is clicked or
-  pushed. They can also be generated when a
-  menu (<xref linkend="chpMenus" />) item, again with the correct resource ID, is selected. The cancel event is also
-  generated, in a dialog, when the user closes the dialog using the close icon in the title bar, or presses the escape
-  key.
+ <xref linkend="clsButton"/>, with the correct <xref linkend="defResourceId" />, is clicked or pushed. They can also be
+  generated when a <link linkend="chpMenus">menu</link> item with the correct resource ID is selected. The cancel event
+  is also generated, in a dialog, when the user closes the dialog using the close icon in the title bar, or presses the
+  escape key.
 </para>
 <para>
   When a new dialog object is instantiated, ooDialog uses the
   <xref linkend="clsEventNotification"/> class to automatically connect the notifications for these
-  events to the methods documented in this section. Symbolic (<xref linkend="defSymbolicId" />) IDs are also defined
-  and placed in the constDir (<xref linkend="atrConstDir" />). This table summarizes these 3 events, their resource
-  IDs, symbolic IDs, and event handling methods:
+  events to the methods documented in this section. <link linkend="defSymbolicId">Symbolic</link> IDs
+  are also defined and placed in the <xref linkend="atrConstDir" />. This table summarizes these 3 events, their
+  resource IDs, symbolic IDs, and event handling methods:
   <table id="tblStandEventHandlers" frame="all">
   <title>Standard Event Handling</title>
   <tgroup cols="4">
@@ -4950,7 +4949,7 @@ to manually update the display.
       <listitem>
       <para>
         The resource id (<xref linkend="defResourceId" />) of the control to be disabled. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -4996,7 +4995,7 @@ to manually update the display.
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method can not be used before the underlying (<xref linkend="ovvUnderlying" />) dialog is created.
+    This method can not be used before the <xref linkend="ovvUnderlying" /> dialog is created.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -5032,7 +5031,7 @@ to manually update the display.
       <listitem>
       <para>
         The resource id (<xref linkend="defResourceId" />) of the control to be enabled. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5078,7 +5077,7 @@ to manually update the display.
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method can not be used before the underlying (<xref linkend="ovvUnderlying" />) dialog is created.
+    This method can not be used before the <xref linkend="ovvUnderlying" /> dialog is created.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -5180,7 +5179,7 @@ If the dialog is already completely on the screen, then no action is taken.
       <listitem>
       <para>
         The resource ID of the dialog control to set the focus to. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />) .
+        <xref linkend="defSymbolicId" /> .
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5198,7 +5197,7 @@ If the dialog is already completely on the screen, then no action is taken.
 
 <section id="deGetControlRect"><title>getControlRect</title>
 <programlisting>
-DialogExtensions::getControlRect (<xref linkend="mthGetControlRect" />)
+DialogExtensions::<xref linkend="mthGetControlRect" />
 
 <![CDATA[
 >>--getControlRect(--id--)-----------------------><
@@ -5228,7 +5227,7 @@ DialogExtensions::getControlRect (<xref linkend="mthGetControlRect" />)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5290,7 +5289,7 @@ DialogExtensions::getControlRect (<xref linkend="mthGetControlRect" />)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method can not be invoked until the underlying (<xref linkend="ovvUnderlying" />) Windows dialog has been
+    This method can not be invoked until the <xref linkend="ovvUnderlying" /> Windows dialog has been
     created.
   </para>
   <para>
@@ -5406,7 +5405,7 @@ DialogExtensions::getControlRect (<xref linkend="mthGetControlRect" />)
       <varlistentry><term>id</term>
       <listitem>
       <para>
-        The resource id of the control to be hidden, may be numeric or symbolic (<xref linkend="defSymbolicId" />).
+        The resource id of the control to be hidden, may be numeric or <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5492,7 +5491,7 @@ DialogExtensions::getControlRect (<xref linkend="mthGetControlRect" />)
       <varlistentry><term>id</term>
       <listitem>
       <para>
-        The resource id of the control to be hidden, may be numeric or symbolic (<xref linkend="defSymbolicId" />).
+        The resource id of the control to be hidden, may be numeric or <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5849,7 +5848,7 @@ listing is available (see the File Viewer (<xref linkend="exampleFileViewer" />)
 
 <section id="deMoveControl"><title>moveControl</title>
 <programlisting>
-DialogExtensions::moveControl (<xref linkend="mthMoveControl" />)
+DialogExtensions::<xref linkend="mthMoveControl" />
 
 <![CDATA[
 >>--moveControl(--id--,--xPos--,--yPos--+------------+--)----------------------><
@@ -5860,7 +5859,7 @@ DialogExtensions::moveControl (<xref linkend="mthMoveControl" />)
 
 <section id="deResizeControl"><title>resizeControl</title>
 <programlisting>
-DialogExtensions::resizeControl (<xref linkend="mthResizeControl" />)
+DialogExtensions::<xref linkend="mthResizeControl" />
 
 <![CDATA[
 >>--resizeControl(--id--,--width--,--height--+------------+--)-----------------><
@@ -5928,7 +5927,7 @@ File Viewer (<xref linkend="exampleFileViewer" />) example.)
 
 <section id="deSetControlColor"><title>setControlColor</title>
 <programlisting>
-DialogExtensions::setControlColor (<xref linkend="mthSetControlColor" />)
+DialogExtensions::<xref linkend="mthSetControlColor" />
 
 <![CDATA[
 >>--setControlColor(--id--,--bk--+-------+--)----><
@@ -5940,7 +5939,7 @@ DialogExtensions::setControlColor (<xref linkend="mthSetControlColor" />)
 
 <section id="deSetControlFont"><title>setControlFont</title>
 <programlisting>
-DialogExtensions::setControlFont (<xref linkend="mthSetControlFont" />)
+DialogExtensions::<xref linkend="mthSetControlFont" />
 
 <![CDATA[
 >>--setControlFont(--id--,--fonthandle--+-----------+--)-----------------------><
@@ -5952,7 +5951,7 @@ DialogExtensions::setControlFont (<xref linkend="mthSetControlFont" />)
 
 <section id="deSetControlSysColor"><title>setControlSysColor</title>
 <programlisting>
-DialogExtensions::setControlSysColor (<xref linkend="mthSetControlSysColor" />)
+DialogExtensions::<xref linkend="mthSetControlSysColor" />
 
 <![CDATA[
 >>--setControlSysColor(--id--,--bk--+-------+--)-><
@@ -5985,7 +5984,7 @@ DialogExtensions::setControlSysColor (<xref linkend="mthSetControlSysColor" />)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>text [required]</term>
@@ -6075,7 +6074,7 @@ DialogExtensions::setControlSysColor (<xref linkend="mthSetControlSysColor" />)
     the result is unpredictable.
   </para>
   <para>
-    This method can not be used before the underlying (<xref linkend="ovvUnderlying" />) dialog is created.
+    This method can not be used before the <xref linkend="ovvUnderlying" /> dialog is created.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6131,7 +6130,7 @@ DialogExtensions::setControlSysColor (<xref linkend="mthSetControlSysColor" />)
     the result is unpredictable.
   </para>
   <para>
-    This method can not be used before the underlying (<xref linkend="ovvUnderlying" />) dialog is created.
+    This method can not be used before the <xref linkend="ovvUnderlying" /> dialog is created.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6149,7 +6148,7 @@ DialogExtensions::setControlSysColor (<xref linkend="mthSetControlSysColor" />)
 
 <section id="deSetForegroundWindow"><title>setForegroundWindow</title>
 <programlisting>
-DialogExtensions::setForegroundWindow (<xref linkend="mthSetForegroundWindow" />)
+DialogExtensions::<xref linkend="mthSetForegroundWindow" />
 
 <![CDATA[
 >>--setForegroundWindow(--hwnd--)----------------><
@@ -6182,7 +6181,7 @@ DialogExtensions::setForegroundWindow (<xref linkend="mthSetForegroundWindow" />
       <listitem>
       <para>
         The resource ID of the dialog control that will gain or lose the group style. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />) .
+        <xref linkend="defSymbolicId" /> .
       </para>
       </listitem></varlistentry>
       <varlistentry><term>wantStyle [optional]</term>
@@ -6313,7 +6312,7 @@ removing the tabstop style.
 
 <section id="deSetWindowRect"><title>setWindowRect</title>
 <programlisting>
-DialogExtensions::setWindowRect (<xref linkend="mthSetWindowRect" />)
+DialogExtensions::<xref linkend="mthSetWindowRect" />
 
 <![CDATA[
 Form 1:
@@ -6646,7 +6645,7 @@ the <xref linkend="mthHideWindowFast"/> method.</para>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method can not be used before the underlying (<xref linkend="ovvUnderlying" />) dialog is created.
+    This method can not be used before the <xref linkend="ovvUnderlying" /> dialog is created.
   </para>
   <para>
     This method performs the same action as if the user pressed the tab key in the dialog.
@@ -6700,7 +6699,7 @@ the <xref linkend="mthHideWindowFast"/> method.</para>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method can not be used before the underlying (<xref linkend="ovvUnderlying" />) dialog is created.
+    This method can not be used before the <xref linkend="ovvUnderlying" /> dialog is created.
   </para>
   <para>
     This method performs the same action as if the user pressed the shift-tab key in the dialog.
@@ -7067,7 +7066,7 @@ information.
 
 <section id="deChangeBitmapButton"><title>changeBitmapButton</title>
 <programlisting>
-DialogExtensions::changeBitmapButton (<xref linkend="mthChangeBitmapButton" />)
+DialogExtensions::<xref linkend="mthChangeBitmapButton" />
 
 <![CDATA[
 >>--changeBitmapButton(--id--,--normal--+-----------+--+------------+---------->
@@ -7082,7 +7081,7 @@ DialogExtensions::changeBitmapButton (<xref linkend="mthChangeBitmapButton" />)
 
 <section id="deDimBitmap"><title>dimBitmap</title>
 <programlisting>
-DialogExtensions::dimBitmap (<xref linkend="mthDimBitmap" />)
+DialogExtensions::<xref linkend="mthDimBitmap" />
 
 <![CDATA[
 >>--dimBitmap(--id-,-bmp-,-cx-,-cy--+---------+--+---------+--+---------+--)---><
@@ -7094,7 +7093,7 @@ DialogExtensions::dimBitmap (<xref linkend="mthDimBitmap" />)
 
 <section id="deDisplaceBitmap"><title>displaceBitmap</title>
 <programlisting>
-DialogExtensions::displaceBitmap (<xref linkend="mthDisplaceBitmap" />)
+DialogExtensions::<xref linkend="mthDisplaceBitmap" />
 
 <![CDATA[
 >>--displaceBitmap(--id--,--x--,--y--)-----------><
@@ -7104,7 +7103,7 @@ DialogExtensions::displaceBitmap (<xref linkend="mthDisplaceBitmap" />)
 
 <section id="deDrawBitmap"><title>drawBitmap</title>
 <programlisting>
-DialogExtensions::drawBitmap (<xref linkend="mthDrawBitmap" />)
+DialogExtensions::<xref linkend="mthDrawBitmap" />
 
 <![CDATA[
 >>--drawBitmap(--+-------+--,--id--+-----+--+-----+--+--------+--+--------+---->
@@ -7119,7 +7118,7 @@ DialogExtensions::drawBitmap (<xref linkend="mthDrawBitmap" />)
 
 <section id="deGetBitmapPosition"><title>getBitmapPosition</title>
 <programlisting>
-DialogExtensions::getBitmapPosition (<xref linkend="mthGetBitmapPosition" />)
+DialogExtensions::<xref linkend="mthGetBitmapPosition" />
 
 <![CDATA[
 >>--getBitmapPosition(--id--,--pos--)------------><
@@ -7130,7 +7129,7 @@ DialogExtensions::getBitmapPosition (<xref linkend="mthGetBitmapPosition" />)
 
 <section id="deGetBitmapSize"><title>getBitmapSize</title>
 <programlisting>
-DialogExtensions::getBitmapSize (<xref linkend="mthGetBitmapSize" />)
+DialogExtensions::<xref linkend="mthGetBitmapSize" />
 
 <![CDATA[
 >>--getBitmapSize(--id--)------------------------><
@@ -7141,7 +7140,7 @@ DialogExtensions::getBitmapSize (<xref linkend="mthGetBitmapSize" />)
 
 <section id="deGetBitmapSizeX"><title>getBitmapSizeX</title>
 <programlisting>
-DialogExtensions::getBitmapSizeX (<xref linkend="mthGetBitmapSizeX" />)
+DialogExtensions::<xref linkend="mthGetBitmapSizeX" />
 
 <![CDATA[
 >>--getBitmapSizeX(--id--)-----------------------><
@@ -7152,7 +7151,7 @@ DialogExtensions::getBitmapSizeX (<xref linkend="mthGetBitmapSizeX" />)
 
 <section id="deGetBitmapSizeY"><title>getBitmapSizeY</title>
 <programlisting>
-DialogExtensions::getBitmapSizeY (<xref linkend="mthGetBitmapSizeY" />)
+DialogExtensions::<xref linkend="mthGetBitmapSizeY" />
 
 <![CDATA[
 >>--getBitmapSizeX(--id--)-----------------------><
@@ -7163,7 +7162,7 @@ DialogExtensions::getBitmapSizeY (<xref linkend="mthGetBitmapSizeY" />)
 
 <section id="deGetBmpDisplacement"><title>getBmpDisplacement</title>
 <programlisting>
-DialogExtensions::getBmpDisplacement (<xref linkend="mthGetBmpDisplacement" />)
+DialogExtensions::<xref linkend="mthGetBmpDisplacement" />
 
 <![CDATA[
 >>--getBmpDisplacement(--id--)-------------------><
@@ -7174,7 +7173,7 @@ DialogExtensions::getBmpDisplacement (<xref linkend="mthGetBmpDisplacement" />)
 
 <section id="deInstallAnimatedButton"><title>installAnimatedButton</title>
 <programlisting>
-DialogExtensions::installAnimatedButton (<xref linkend="mthInstallAnimatedButton" />)
+DialogExtensions::<xref linkend="mthInstallAnimatedButton" />
 
 <![CDATA[
 >>--installAnimatedButton(--id,--+-------+-+--------+-,-bmpF-+--------+-,-mX-,-mY-->
@@ -7189,7 +7188,7 @@ DialogExtensions::installAnimatedButton (<xref linkend="mthInstallAnimatedButton
 
 <section id="deInstallBitmapButton"><title>installBitmapButton</title>
 <programlisting>
-DialogExtensions::installBitmapButton (<xref linkend="mthInstallBitmapButton" />)
+DialogExtensions::<xref linkend="mthInstallBitmapButton" />
 
 <![CDATA[
 >>--installBitmapButton(-id-+-------+-,-bN--+------+-+------+-+-------+-+--------+-)-><
@@ -7201,7 +7200,7 @@ DialogExtensions::installBitmapButton (<xref linkend="mthInstallBitmapButton" />
 
 <section id="deScrollBitmapFromTo"><title>scrollBitmapFromTo</title>
 <programlisting>
-DialogExtensions::scrollBitmapFromTo (<xref linkend="mthScrollBitmapFromTo" />)
+DialogExtensions::<xref linkend="mthScrollBitmapFromTo" />
 
 <![CDATA[
 >>--scrollBitmapFromTo(--id--,--fromX--,--fromY--,--toX--,--toY---------------->
@@ -7216,7 +7215,7 @@ DialogExtensions::scrollBitmapFromTo (<xref linkend="mthScrollBitmapFromTo" />)
 
 <section id="deScrollButton"><title>scrollButton</title>
 <programlisting>
-DialogExtensions::scrollButton (<xref linkend="mthScrollButton" />)
+DialogExtensions::<xref linkend="mthScrollButton" />
 
 <![CDATA[
 >>--scrollButton(--id--,--xPos--,--yPos--,--lft--,--top--,--rght--,--bttm--)---><
@@ -7227,7 +7226,7 @@ DialogExtensions::scrollButton (<xref linkend="mthScrollButton" />)
 
 <section id="deSetBitmapPosition"><title>setBitmapPosition</title>
 <programlisting>
-DialogExtensions::setBitmapPosition (<xref linkend="mthSetBitmapPosition" />)
+DialogExtensions::<xref linkend="mthSetBitmapPosition" />
 
 <![CDATA[
 Form 1:
@@ -7909,7 +7908,7 @@ then ...
 
 <section id="deGetListItemHeight"><title>getListItemHeight</title>
 <programlisting>
-DialogExtensions::getListItemHeight (<xref linkend="mthGetListItemHeight" />)
+DialogExtensions::<xref linkend="mthGetListItemHeight" />
 
 <![CDATA[
 >>--getListItemHeight(--id--)--------------------><
@@ -7920,7 +7919,7 @@ DialogExtensions::getListItemHeight (<xref linkend="mthGetListItemHeight" />)
 
 <section id="deGetListItemHeightPx"><title>getListItemHeightPx</title>
 <programlisting>
-DialogExtensions::getListItemHeightPx (<xref linkend="mthGetListItemHeightPx" />)
+DialogExtensions::<xref linkend="mthGetListItemHeightPx" />
 
 <![CDATA[
 >>--getListItemHeightPx(--id--)------------------><
@@ -7955,7 +7954,7 @@ in the list box. </para>
 
 <section id="deGetListWidth"><title>getListWidth</title>
 <programlisting>
-DialogExtensions::getListWidth (<xref linkend="mthGetListWidth" />)
+DialogExtensions::<xref linkend="mthGetListWidth" />
 
 <![CDATA[
 >>--getListWidth(--id--)-------------------------><
@@ -7966,7 +7965,7 @@ DialogExtensions::getListWidth (<xref linkend="mthGetListWidth" />)
 
 <section id="deGetListWidthPx"><title>getListWidthPx</title>
 <programlisting>
-DialogExtensions::getListWidthPx (<xref linkend="mthGetListWidthPx" />)
+DialogExtensions::<xref linkend="mthGetListWidthPx" />
 
 <![CDATA[
 >>--getListWidthPx(--id--)-----------------------><
@@ -8079,7 +8078,7 @@ a list box item using a data value. </para>
 
 <section id="deSetListColumnWidth"><title>setListColumnWidth</title>
 <programlisting>
-DialogExtensions::setListColumnWidth (<xref linkend="mthSetListColumnWidth" />)
+DialogExtensions::<xref linkend="mthSetListColumnWidth" />
 
 <![CDATA[
 >>--setListColumnWidth(--id--,--width--)---------><
@@ -8090,7 +8089,7 @@ DialogExtensions::setListColumnWidth (<xref linkend="mthSetListColumnWidth" />)
 
 <section id="deSetListColumnWidthPx"><title>setListColumnWidthPx</title>
 <programlisting>
-DialogExtensions::setListColumnWidthPx (<xref linkend="mthSetListColumnWidthPx" />)
+DialogExtensions::<xref linkend="mthSetListColumnWidthPx" />
 
 <![CDATA[
 >>--setListColumnWidthPx(--id--,--width--)-------><
@@ -8101,7 +8100,7 @@ DialogExtensions::setListColumnWidthPx (<xref linkend="mthSetListColumnWidthPx" 
 
 <section id="deSetListItemHeight"><title>setListItemHeight</title>
 <programlisting>
-DialogExtensions::setListItemHeight (<xref linkend="mthSetListItemHeight" />)
+DialogExtensions::<xref linkend="mthSetListItemHeight" />
 
 <![CDATA[
 >>--setListItemHeight(--id--,--height--)---------><
@@ -8112,7 +8111,7 @@ DialogExtensions::setListItemHeight (<xref linkend="mthSetListItemHeight" />)
 
 <section id="deSetListItemHeightPx"><title>setListItemHeightPx</title>
 <programlisting>
-DialogExtensions::setListItemHeightPx (<xref linkend="mthSetListItemHeightPx" />)
+DialogExtensions::<xref linkend="mthSetListItemHeightPx" />
 
 <![CDATA[
 >>--setListItemHeightPx(--id--,--height--)-------><
@@ -8123,7 +8122,7 @@ DialogExtensions::setListItemHeightPx (<xref linkend="mthSetListItemHeightPx" />
 
 <section id="deSetListWidth"><title>setListWidth</title>
 <programlisting>
-DialogExtensions::setListWidth (<xref linkend="mthSetListWidth" />)
+DialogExtensions::<xref linkend="mthSetListWidth" />
 
 <![CDATA[
 >>--setListWidth(--id--,--scrollwidth--)---------><
@@ -8134,7 +8133,7 @@ DialogExtensions::setListWidth (<xref linkend="mthSetListWidth" />)
 
 <section id="deSetListWidthPx"><title>setListWidthPx</title>
 <programlisting>
-DialogExtensions::setListWidthPx (<xref linkend="mthSetListWidthPx" />)
+DialogExtensions::<xref linkend="mthSetListWidthPx" />
 
 <![CDATA[
 >>--setListWidthPx(--id--,--scrollwidth--)-------><
@@ -8324,12 +8323,12 @@ var2  "09"x  ,
   <listitem>
   <para>
     This method accurately converts dialog units of this dialog to pixels. Do not use
-    factorX (<xref linkend="atrFactorX" />) and factorY (<xref linkend="atrFactorY" />) for the conversion as they are
+ <xref linkend="atrFactorX" /> and <xref linkend="atrFactorY" /> for the conversion as they are
  <xref linkend="ovvInaccurate"/>.
   </para>
   <para>
     Normally, this method is invoked prior to the creation of the underlying dialog. In order to be accurate, the
-    fontName (<xref linkend="atrFontName" />) and fontSize (<xref linkend="atrFontSize" />) attributes must
+ <xref linkend="atrFontName" /> and <xref linkend="atrFontSize" /> attributes must
     reflect the actual font the dialog will use.  Use the <xref linkend="mthSetDlgFont"/>() method if
     necessary.
   </para>
@@ -8368,7 +8367,7 @@ var2  "09"x  ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the window handle of the underlying (<xref linkend="ovvUnderlying" />) Windows dialog for this Rexx
+    Returns the window handle of the <xref linkend="ovvUnderlying" /> Windows dialog for this Rexx
     dialog, or 0 if the underlying dialog has not been created yet.
   </para>
   </listitem></varlistentry>
@@ -8453,7 +8452,7 @@ var2  "09"x  ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the window handle of the underlying (<xref linkend="ovvUnderlying" />) Windows dialog for the top Rexx
+    Returns the window handle of the <xref linkend="ovvUnderlying" /> Windows dialog for the top Rexx
     dialog, or 0 if there is no top dialog.
   </para>
   </listitem></varlistentry>
@@ -8531,7 +8530,7 @@ var2  "09"x  ,
       <listitem>
       <para>
         The resource id of the dialog control whose window handle is to be retrieved. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>hDlg [optional]</term>
@@ -8728,7 +8727,7 @@ var2  "09"x  ,
 <para>
   The primary use of this method would be in laying out the dialog template in a
   <xref linkend="clsUserDialog"/> before the underlying dialog is created.  To be sure the calculation is
-  correct, ensure that the dialog font attributes (<xref linkend="atrFontName" />) are set to the font that will be
+  correct, ensure that the dialog font <xref linkend="atrFontName" /> are set to the font that will be
   used by the dialog when it is created. The attributes can be set directly or by using the
  <xref linkend="mthSetDlgFont"/>() method.
 <programlisting>
@@ -8843,7 +8842,7 @@ var2  "09"x  ,
 </para>
 <para>
   If this method is used to aid in the lay out of the dialog controls, to be sure the calculation is correct, the
-  dialog font attributes (<xref linkend="atrFontName" />) must be set to the font that will be used by the dialog when it is
+  dialog font <xref linkend="atrFontName" /> must be set to the font that will be used by the dialog when it is
   created. The attributes can be set directly or by using the <xref linkend="mthSetDlgFont"/>() method.
 <programlisting> <![CDATA[
 
@@ -8945,12 +8944,12 @@ var2  "09"x  ,
   <listitem>
   <para>
     This method accurately converts pixels to the correct dialog units of this dialog. Do not use
-    factorX (<xref linkend="atrFactorX" />) and factorY (<xref linkend="atrFactorY" />) as they are
+ <xref linkend="atrFactorX" /> and <xref linkend="atrFactorY" /> as they are
  <xref linkend="ovvInaccurate"/>.
   </para>
   <para>
     However, if this method is invoked prior to the creation of the underlying dialog, the
-    fontName (<xref linkend="atrFontName" />) and fontSize (<xref linkend="atrFontSize" />) attributes must reflect the
+ <xref linkend="atrFontName" /> and <xref linkend="atrFontSize" /> attributes must reflect the
     actual font the dialog will use.  Use the <xref linkend="mthSetDlgFont"/>() method if necessary.
   </para>
   </listitem></varlistentry>
@@ -9017,7 +9016,7 @@ var2  "09"x  ,
 
 <section id="deDetermineSBPosition"><title>determineSBPosition</title>
 <programlisting>
-DialogExtensions::determineSBPosition (<xref linkend="mthDetermineSBPosition" />)
+DialogExtensions::<xref linkend="mthDetermineSBPosition" />
 
 <![CDATA[
 >>--determineSBPosition(--id--,--posdata--+----------+--+--------+--)----------><
@@ -9029,7 +9028,7 @@ DialogExtensions::determineSBPosition (<xref linkend="mthDetermineSBPosition" />
 
 <section id="deGetSBPos"><title>getSBPos</title>
 <programlisting>
-DialogExtensions::getSBPos (<xref linkend="mthGetSBPos" />)
+DialogExtensions::<xref linkend="mthGetSBPos" />
 
 <![CDATA[
 >>--getSBPos(--id--)-----------------------------><
@@ -9040,7 +9039,7 @@ DialogExtensions::getSBPos (<xref linkend="mthGetSBPos" />)
 
 <section id="deGetSBRange"><title>getSBRange</title>
 <programlisting>
-DialogExtensions::getSBRange (<xref linkend="mthGetSBRange" />)
+DialogExtensions::<xref linkend="mthGetSBRange" />
 
 <![CDATA[
 >>--getSBRange(--id--)---------------------------><
@@ -9051,7 +9050,7 @@ DialogExtensions::getSBRange (<xref linkend="mthGetSBRange" />)
 
 <section id="deSetSBPos"><title>setSBPos</title>
 <programlisting>
-DialogExtensions::setSBPos (<xref linkend="mthSetSBPos" />)
+DialogExtensions::<xref linkend="mthSetSBPos" />
 
 <![CDATA[
 >>--setSBPos(--id--,--pos--+----------+--)-------><
@@ -9063,7 +9062,7 @@ DialogExtensions::setSBPos (<xref linkend="mthSetSBPos" />)
 
 <section id="deSetSBRange"><title>setSBRange</title>
 <programlisting>
-DialogExtensions::setSBRange (<xref linkend="mthSetSBRange" />)
+DialogExtensions::<xref linkend="mthSetSBRange" />
 
 <![CDATA[
 >>--setSBRange(--id--,--min--,--max--,--+--------+--)--------------------------><
@@ -9099,7 +9098,7 @@ DialogExtensions::setSBRange (<xref linkend="mthSetSBRange" />)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>msg [required]</term>
@@ -9185,7 +9184,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>msg [required]</term>
@@ -9281,7 +9280,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the dialog control. May be numeric or symbolic (<xref linkend="defSymbolicId" />).
+      The resource ID of the dialog control. May be numeric or <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>msg [required]</term>
@@ -9457,7 +9456,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
 
 <section id="deClearControlRect"><title>clearControlRect</title>
 <programlisting>
-DialogExtensions::clearControlRect (<xref linkend="mthClearControlRect" />)
+DialogExtensions::<xref linkend="mthClearControlRect" />
 
 <![CDATA[
 >>--clearControlRect(--id--)---------------------><
@@ -9467,7 +9466,7 @@ DialogExtensions::clearControlRect (<xref linkend="mthClearControlRect" />)
 
 <section id="deClearRectClsDialogExtensions"><title>clearRect</title>
 <programlisting>
-DialogExtensions::clearRect (<xref linkend="mthClearRectClsDialogExtensions" />)
+DialogExtensions::<xref linkend="mthClearRectClsDialogExtensions" />
 
 <![CDATA[
 Form 1:
@@ -9494,7 +9493,7 @@ Generic form:
 
 <section id="deClearWindowRect"><title>clearWindowRect</title>
 <programlisting>
-DialogExtensions::clearWindowRect (<xref linkend="mthClearWindowRect" />)
+DialogExtensions::<xref linkend="mthClearWindowRect" />
 
 <![CDATA[
 >>--clearWindowRect(--hwnd--)--------------------><
@@ -9505,7 +9504,7 @@ DialogExtensions::clearWindowRect (<xref linkend="mthClearWindowRect" />)
 
 <section id="deCreateBrushClsDialogExtensions"><title>createBrush</title>
 <programlisting>
-DialogExtensions::createBrush (<xref linkend="mthCreateBrushClsDialogExtensions" />)
+DialogExtensions::<xref linkend="mthCreateBrushClsDialogExtensions" />
 
 <![CDATA[
 >>--createBrush(--+---------+--+------------------+--)-------------------------><
@@ -9517,7 +9516,7 @@ DialogExtensions::createBrush (<xref linkend="mthCreateBrushClsDialogExtensions"
 
 <section id="deDrawButton"><title>drawButton</title>
 <programlisting>
-DialogExtensions::drawButton (<xref linkend="mthDrawButton" />)
+DialogExtensions::<xref linkend="mthDrawButton" />
 
 <![CDATA[
 >>--drawButton(--id--)---------------------------><
@@ -9528,7 +9527,7 @@ DialogExtensions::drawButton (<xref linkend="mthDrawButton" />)
 
 <section id="deFreeControlDC"><title>freeControlDC</title>
 <programlisting>
-DialogExtensions::freeControlDC (<xref linkend="mthFreeControlDC" />)
+DialogExtensions::<xref linkend="mthFreeControlDC" />
 
 <![CDATA[
 >>--freeControlDC(--id--,--dc--)-----------------><
@@ -9538,7 +9537,7 @@ DialogExtensions::freeControlDC (<xref linkend="mthFreeControlDC" />)
 
 <section id="deFreeWindowDC"><title>freeWindowDC</title>
 <programlisting>
-DialogExtensions::freeWindowDC (<xref linkend="mthFreeWindowDC" />)
+DialogExtensions::<xref linkend="mthFreeWindowDC" />
 
 <![CDATA[
 >>--freeWindowDC(--hwnd--,--dc--)----------------><
@@ -9549,7 +9548,7 @@ DialogExtensions::freeWindowDC (<xref linkend="mthFreeWindowDC" />)
 
 <section id="deGetControlDC"><title>getControlDC</title>
 <programlisting>
-DialogExtensions::getControlDC (<xref linkend="mthGetControlDC" />)
+DialogExtensions::<xref linkend="mthGetControlDC" />
 
 <![CDATA[
 >>--getControlDC(--id--)-------------------------><
@@ -9560,7 +9559,7 @@ DialogExtensions::getControlDC (<xref linkend="mthGetControlDC" />)
 
 <section id="deGetWindowDC"><title>getWindowDC</title>
 <programlisting>
-DialogExtensions::getWindowDC (<xref linkend="mthGetWindowDC" />)
+DialogExtensions::<xref linkend="mthGetWindowDC" />
 
 <![CDATA[
 >>--getWindowDC(--hwnd--)------------------------><
@@ -9571,7 +9570,7 @@ DialogExtensions::getWindowDC (<xref linkend="mthGetWindowDC" />)
 
 <section id="deRedrawControl"><title>redrawControl</title>
 <programlisting>
-DialogExtensions::redrawControl (<xref linkend="mthRedrawControl" />)
+DialogExtensions::<xref linkend="mthRedrawControl" />
 
 <![CDATA[
 >>--redrawControl(--id--+-------------+--)-------><
@@ -9583,7 +9582,7 @@ DialogExtensions::redrawControl (<xref linkend="mthRedrawControl" />)
 
 <section id="deRedrawRectClsDialogExtensions"><title>redrawRect</title>
 <programlisting>
-DialogExtensions::redrawRect (<xref linkend="mthRedrawRectClsDialogExtensions" />)
+DialogExtensions::<xref linkend="mthRedrawRectClsDialogExtensions" />
 
 <![CDATA[
 >>--redrawRect(--+------+-,-left-,-top-,-right-,-bottom-,-+-------+--)---------><
@@ -9595,7 +9594,7 @@ DialogExtensions::redrawRect (<xref linkend="mthRedrawRectClsDialogExtensions" /
 
 <section id="deRedrawWindow"><title>redrawWindow</title>
 <programlisting>
-DialogExtensions::redrawWindow (<xref linkend="mthRedrawWindow" />)
+DialogExtensions::<xref linkend="mthRedrawWindow" />
 
 <![CDATA[
 >>--redrawWindow(--hwnd--)-----------------------><
@@ -9606,7 +9605,7 @@ DialogExtensions::redrawWindow (<xref linkend="mthRedrawWindow" />)
 
 <section id="deRedrawWindowRect"><title>redrawWindowRect</title>
 <programlisting>
-DialogExtensions::redrawWindowRect (<xref linkend="mthRedrawWindowRect" />)
+DialogExtensions::<xref linkend="mthRedrawWindowRect" />
 
 <![CDATA[
 >>--redrawWindowRect(--+--------+--+------------+--)---------------------------><
@@ -9618,7 +9617,7 @@ DialogExtensions::redrawWindowRect (<xref linkend="mthRedrawWindowRect" />)
 
 <section id="deScrollInControl"><title>scrollInControl</title>
 <programlisting>
-DialogExtensions::scrollInControl (<xref linkend="mthScrollInControl" />)
+DialogExtensions::<xref linkend="mthScrollInControl" />
 
 <![CDATA[
 >>--scrollInControl(--id-,-text--+--------+--+--------+--+--------+--+-----+--->
@@ -9633,7 +9632,7 @@ DialogExtensions::scrollInControl (<xref linkend="mthScrollInControl" />)
 
 <section id="deScrollText"><title>scrollText</title>
 <programlisting>
-DialogExtensions::scrollText (<xref linkend="mthScrollText" />)
+DialogExtensions::<xref linkend="mthScrollText" />
 
 <![CDATA[
 >>--scrollText(--hwnd-,-text--+--------+--+--------+--+--------+--+-----+------>
@@ -9648,7 +9647,7 @@ DialogExtensions::scrollText (<xref linkend="mthScrollText" />)
 
 <section id="deWriteToWindow"><title>writeToWindow</title>
 <programlisting>
-DialogExtensions::writeToWindow (<xref linkend="mthWriteToWindow" />)
+DialogExtensions::<xref linkend="mthWriteToWindow" />
 
 <![CDATA[
 >>--writeToWindow(-h-,-x-,-y-,-txt-+-------+-+------+-+--------+-+------+-+------+-)--><
@@ -9660,7 +9659,7 @@ DialogExtensions::writeToWindow (<xref linkend="mthWriteToWindow" />)
 
 <section id="deWriteToControl"><title>writeToControl</title>
 <programlisting>
-DialogExtensions::writeToControl (<xref linkend="mthWriteToControl" />)
+DialogExtensions::<xref linkend="mthWriteToControl" />
 
 <![CDATA[
 >>--writeToControl(-id-,-x-,-y-,-txt-+-------+-+------+-+--------+-+------+-+------+-)-><

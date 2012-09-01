@@ -47,7 +47,7 @@
 <indexterm><primary>UserDialog class</primary></indexterm>
 <para>
   The <computeroutput>UserDialog</computeroutput> class is a concrete subclass of the
-  dialog (<xref linkend="chpDialogObject" />) object. This class allows the programmer to dynamically define the dialog
+  <xref linkend="chpDialogObject" /> object. This class allows the programmer to dynamically define the dialog
   template (<xref linkend="ovvDialogTemplate" />) in memory.
   <indexterm><primary>Template, Dialog</primary></indexterm>
   The class provides methods to begin the dialog template,
@@ -58,7 +58,7 @@
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> The class has all the methods of the
-  dialog (<xref linkend="chpDialogObject" />) object. Only the methods specific to the
+  <xref linkend="chpDialogObject" /> object. Only the methods specific to the
   <computeroutput>UserDialog</computeroutput> are documented here.
 </para>
 <para>
@@ -361,7 +361,7 @@
     <varlistentry><term>dlgData. [optional]</term>
     <listitem>
     <para>
-      A dialog data stem (<xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
+      A <xref linkend="termDialogDataStem" /> variable (don't forget the trailing period) that
       contains data used to initialize the underlying dialog's controls.
     </para>
     </listitem></varlistentry>
@@ -394,7 +394,7 @@
   <listitem>
   <para>
     The following example creates a new dialog object, adding any symbolic IDs defined in
-    <computeroutput>resources.h</computeroutput> to the object's constDir (<xref linkend="atrConstDir" />)
+    <computeroutput>resources.h</computeroutput> to the object's <xref linkend="atrConstDir" />
     directory:
 
 <programlisting>
@@ -444,7 +444,7 @@
     <listitem>
     <para>
       The resource ID (<xref linkend="paraResourceIDs" />) for the icon. This can be numeric or
-      symbolic (<xref linkend="defSymbolicId" />).
+      <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>fileName [required]</term>
@@ -1127,7 +1127,7 @@ if success then dlg~execute
     that is normal for the control. The individual create... methods document the default for the control.  The
     programmer uses either the TAB or NOTAB keywords to change the default. After controls have been created they can
     have their tabstop style changed using the <xref linkend="mthSetTabStop"/> method of the
-    dialog (<xref linkend="chpDialogObject" />) object or the <xref linkend="mthTabStop"/> method of the
+    <xref linkend="chpDialogObject" /> object or the <xref linkend="mthTabStop"/> method of the
     dialog control  (<xref linkend="chpDialogControlObject" />) object.
   </para>
   </listitem></varlistentry>
@@ -1176,7 +1176,7 @@ if success then dlg~execute
   <listitem>
   <para id="paraResourceIDs">
     All dialog controls have a numeric resource (<xref linkend="defResourceId" />) ID. The ooDialog framework is
-    designed to accept a symbolic (<xref linkend="defSymbolicId" />) ID anywhere a resource ID is needed.  All the
+    designed to accept a <xref linkend="defSymbolicId" /> ID anywhere a resource ID is needed.  All the
     create... methods accepted a symbolic ID for the id argument.
   </para>
   <para>
@@ -4783,7 +4783,7 @@ self~createPushButtonGroup(20, 235, , ,              -
   <listitem>
   <para>
     The following example creates a date and time picker control with the
-    symbolic (<xref linkend="defSymbolicId" />) ID of IDC_DT1 positioned at (17, 7) of the dialog's
+    <xref linkend="defSymbolicId" /> ID of IDC_DT1 positioned at (17, 7) of the dialog's
     client (<xref linkend="defClientArea" />) area. The control will be 79 dialog
     units (<xref linkend="defDialogUnit" />) wide and 15 dialog units high. The date will be in the short date format.
 
@@ -4955,7 +4955,7 @@ self~createPushButtonGroup(20, 235, , ,              -
           Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit control
           displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In Windows XP
           the default mask character is a black circle. The default password character can be changed through the
-           passwordChar (<xref linkend="atrPasswordChar" />) attribute of the <xref linkend="clsEdit"/> control.
+ <xref linkend="atrPasswordChar" /> attribute of the <xref linkend="clsEdit"/> control.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CENTER</term>
@@ -5252,7 +5252,7 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
           Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit
           control displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In
           Windows XP the default mask character is a black circle. The default password character can be changed through
-          the passwordChar (<xref linkend="atrPasswordChar" />) attribute of the <xref linkend="clsEdit"/>
+          the <xref linkend="atrPasswordChar" /> attribute of the <xref linkend="clsEdit"/>
           control.
         </para>
         </listitem></varlistentry>
@@ -5583,7 +5583,7 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
           Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit
           control displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In
           Windows XP the default mask character is a black circle. The default password character can be changed through
-          the passwordChar (<xref linkend="atrPasswordChar" />) attribute of the <xref linkend="clsEdit"/>
+          the <xref linkend="atrPasswordChar" /> attribute of the <xref linkend="clsEdit"/>
           control.
         </para>
         </listitem></varlistentry>
@@ -5903,7 +5903,7 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
           Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit control
           displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In Windows XP
           the default mask character is a black circle. The default password character can be changed through the
-          passwordChar (<xref linkend="atrPasswordChar" />) attribute of the <xref linkend="clsEdit"/> control.
+ <xref linkend="atrPasswordChar" /> attribute of the <xref linkend="clsEdit"/> control.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CENTER</term>
@@ -6591,7 +6591,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
       <listitem>
       <para>
         The resource ID (<xref linkend="idArgument" />) for the list-view control. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
@@ -6881,7 +6881,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
       <listitem>
       <para>
         The resource ID (<xref linkend="idArgument" />) for the month calendar. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
@@ -7053,7 +7053,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example creates a month calendar control with the symbolic (<xref linkend="defSymbolicId" />) ID
+    The following example creates a month calendar control with the <xref linkend="defSymbolicId" /> ID
     of IDC_MC1 positioned at (162, 7) of the dialog's client (<xref linkend="defClientArea" />) area. The control
     will be 140 dialog units (<xref linkend="defDialogUnit" />) wide and 100 dialog units high. The calendar will
     not display the <emphasis role="italic">today</emphasis> date at the bottom of the calendar and will not circle
@@ -7141,7 +7141,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
         <varlistentry><term>MARQUEE</term>
         <listitem>
         <para>
-          The progress bar moves like a marquee. This method requires Common Control Library (<xref linkend="ovvComctl32" />)
+          The progress bar moves like a marquee. This method requires Common Control <xref linkend="ovvComctl32" />
           version 6.0 or later.
         </para>
         </listitem></varlistentry>
@@ -7212,7 +7212,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example creates a progress bar with the symbolic (<xref linkend="defSymbolicId" />) resource id,
+    The following example creates a progress bar with the <xref linkend="defSymbolicId" /> resource id,
     IDC_PBAR_DONE, close to the bottom of the dialog. The progress bar is 12 dialog units high with a border of 10
     dialog units below it. The progress bar is almost as wide as the dialog. It has a border of 10 dialog units on each
     side.
@@ -9801,7 +9801,7 @@ return 0
       <listitem>
       <para>
         The resource ID (<xref linkend="idArgument" />) for the tab control. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
@@ -9983,7 +9983,7 @@ return 0
   <listitem>
   <para>
     The following example creates a tab control within the in-memory dialog template. Its resource id is the numeric
-    value of the symbolic (<xref linkend="defSymbolicId" />) id: IDC_TAB. If needed, multiple rows of tabs are
+    value of the <xref linkend="defSymbolicId" /> id: IDC_TAB. If needed, multiple rows of tabs are
     displayed so tat all tabs are visible at once. All tabs have the same width. Its data (the selected tab) is
     associated with data attribute CURRENTPAGE.
 <programlisting>
@@ -10022,7 +10022,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
       <listitem>
       <para>
         The resource ID (<xref linkend="idArgument" />) for the trackbar control. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
@@ -10208,7 +10208,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
   <listitem>
   <para>
     The following example creates a vertical trackbar at the right border of the dialog. The trackbar has the
-    symbolic (<xref linkend="defSymbolicId" />) resource ID of IDC_TB_PRESSURE and its data
+    <xref linkend="defSymbolicId" /> resource ID of IDC_TB_PRESSURE and its data
     attribute (<xref linkend="sctUnderstandingDataAttributes" />) is named PRESSURE. The trackbar displays automatic
     tick marks on both sides.
 <programlisting>
@@ -10248,7 +10248,7 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
     <listitem>
     <para>
       The resource ID (<xref linkend="idArgument" />) for the tree view control. May be numeric or
-      symbolic (<xref linkend="defSymbolicId" />).
+      <xref linkend="defSymbolicId" />.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
@@ -10422,7 +10422,7 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      The following example creates a tree view with the symbolic (<xref linkend="defSymbolicId" />) resource ID. The
+      The following example creates a tree view with the <xref linkend="defSymbolicId" /> resource ID. The
       control is positioned at x=100 and y=80 and with a size of width=40 and height=120. The name for the data
       attribute of the tree view will be ORGCHART The tree view uses lines for child items and roots, displays a button
       to the left of each parent item, and supports item editing.
@@ -10462,7 +10462,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
       <listitem>
       <para>
         The resource ID (<xref linkend="idArgument" />) for the up-down control. May be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
@@ -10643,7 +10643,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example creates an up down control with the symbolic (<xref linkend="defSymbolicId" />) ID of
+    The following example creates an up down control with the <xref linkend="defSymbolicId" /> ID of
     IDC_UPD positioned at (81, 26) of the dialog's client (<xref linkend="defClientArea" />) area. The control will
     be 12 dialog units (<xref linkend="defDialogUnit" />) wide and 16 dialog units high. The up down will wrap
     around when it reaches either end of its range, the up and down arrow keys can be used to change the position, and
@@ -10704,7 +10704,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
   </para>
   <para>
     It is important to note that the <emphasis role="italic">defineDialog</emphasis> method is invoked <emphasis
-    role="bold">before</emphasis> the underlying (<xref linkend="ovvUnderlying" />) Windows dialog is create.
+    role="bold">before</emphasis> the <xref linkend="ovvUnderlying" /> Windows dialog is create.
     Therefore, all methods requiring the underlying dialog to exist can not be used in the <emphasis
     role="italic">defineDialog</emphasis> method.
   </para>
@@ -10747,7 +10747,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
 </programlisting>
 
 <para>
-  The <emphasis role="italic">load</emphasis> method reads the dialog template (<xref linkend="ovvDialogTemplate" />)
+  The <emphasis role="italic">load</emphasis> method reads the dialog <xref linkend="ovvDialogTemplate" />
   form a resource <xref linkend="defResourceScript"/> file. The method invokes the
  <xref linkend="mthLoadFrame"/> and <xref linkend="mthLoadItems"/> methods to parse the
   resource script statements create the in-memory form of the dialog template needed by the operating system.
@@ -10773,7 +10773,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID of the dialog. May be numeric or symbolic (<xref linkend="defSymbolicId" />). Resource scripts
+      The resource ID of the dialog. May be numeric or <xref linkend="defSymbolicId" />. Resource scripts
       often contain more than one dialog definition, the resource ID is used to locate the correct dialog. If the
       resource script only contains one dialog resource, then this argument can be omitted.
     </para>
@@ -10898,7 +10898,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID of the dialog. May be numeric or symbolic (<xref linkend="defSymbolicId" />). Resource scripts
+      The resource ID of the dialog. May be numeric or <xref linkend="defSymbolicId" />. Resource scripts
       often contain more than one dialog definition, the resource ID is used to locate the correct dialog. If the
       resource script only contains one dialog resource, then this argument can be omitted.
     </para>
@@ -10989,7 +10989,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID of the dialog. May be numeric or symbolic (<xref linkend="defSymbolicId" />). Resource scripts
+      The resource ID of the dialog. May be numeric or <xref linkend="defSymbolicId" />. Resource scripts
       often contain more than one dialog definition, the resource ID is used to locate the correct dialog. If the
       resource script only contains one dialog resource, then this argument can be omitted.
     </para>

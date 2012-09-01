@@ -59,8 +59,8 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the <xref linkend="mthNewTreeView"/> method of the
-    dialog (<xref linkend="chpDialogObject" />) object to retrieve a list-view object.
+    Use the <xref linkend="mthNewTreeView"/> method of the <xref linkend="chpDialogObject" /> object to retrieve a
+    tree-view object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
@@ -280,7 +280,7 @@
 
 </section>
 
-<section id="tmthNewTreeView"><title>newTreeView (dialog object method)</title>
+<section id="tmthNewTreeView" xreflabel="newTreeView"><title>newTreeView (dialog object method)</title>
 <para>
   Tree-view objects can not be instantiated by the programmer from Rexx code. Rather a tree-view object is obtained by
   using the <xref linkend="mthNewTreeView"/> method of the dialog
@@ -295,7 +295,7 @@
 </section>  <!-- End newTreeView() [PlainBaseDialog method] -->
 
 
-<section id="tmthCreateTreeView"><title>createTreeView (UserDialog method)</title>
+<section id="tmthCreateTreeView" xreflabel="createTreeView"><title>createTreeView (UserDialog method)</title>
 <para>
   A tree-view object can be created in the dialog template for a <xref linkend="clsUserDialog"/>
   dialog through the <xref linkend="mthCreateTreeView"/> method. The basic syntax is:
@@ -310,11 +310,10 @@
 </section>  <!-- End UserDialog::createTreeView() [UserDialog method] -->
 
 
-<section id="tmthConnectTreeViewEvent"><title>connectTreeViewEvent (dialog object method)</title>
+<section id="tmthConnectTreeViewEvent" xreflabel="connectTreeViewEvent"><title>connectTreeViewEvent (dialog object method)</title>
 <para>
-  To connect event notifications from a tree-view object use the
- <xref linkend="mthConnectTreeViewEvent"/> method of the
-  dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
+  To connect event notifications from a tree-view object use the <xref linkend="mthConnectTreeViewEvent"/> method of the
+  <xref linkend="chpDialogObject" /> object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>--connectTreeViewEvent(--id--,--event--+---------------+--)------------------><
@@ -894,6 +893,70 @@ associated with the specified parent item.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthFind"><title>find</title>
+<indexterm><primary>find</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>find</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--find(--text--)-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Finds the first tree-view item whose label matches the text specified.  The search is case insensitive.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        Specifies the label, the text, of item to search for. The search is case insensitive, but is otherwise exact.
+        I.e., <emphasis role="italic">Coffe Product</emphasis> will not match <emphasis role="italic">Coffe
+        Products</emphasis>, but will match <emphasis role="italic">coffe product</emphasis> or <emphasis
+        role="italic">coffe PRODUCT</emphasis>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the <link linkend="defHandle">handle</link> of the item found, or 0 if no item matches <emphasis
+    role="italic">text</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The first item to match the search text is returned. The search always starts at the root of the tree.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example searches for the first tree-view item whose label is <emphasis role="italic">Computers</emphasis>, and
+    if found, selects that item.
+<programlisting>
+<![CDATA[
+
+  tv = self~newTreeView(IDC_TV_PRODUCTS)
+
+  hItem = tv~find('Computers')
+  if hItem \== 0 then tv~select(hItem)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::find() -->
 
 <section id="firstvisibletrc"><title>firstVisible</title>
 <indexterm><primary>firstVisible</primary>
@@ -2329,5 +2392,146 @@ visible:
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="clsTvCustomDrawSimple"><title>TvCustomDrawSimple Class</title>
+<indexterm><primary>TvCustomDrawSimple class</primary></indexterm>
+<para>
+  A <computeroutput>TvCustomDrawSimple</computeroutput> object is used when a <link
+  linkend="clsTreeView">TreeView</link> control is registered for simple <link linkend="clsCustomDraw">custom</link>
+  draw. A <computeroutput>TvCustomDrawSimple</computeroutput> object is passed to the CUSTOMDRAW event handler. It
+  supplies both information to the event handler and returns information back to the Windows control. The attributes of
+  the object convey the information both ways.
+</para>
+<para>
+  When the ooDialog framework recieves information from the Windows custom draw control, it assigns values to the
+  attributes of the <computeroutput>TvCustomDrawSimple</computeroutput> object and sends the object to the Rexx dialog's
+  event handler. The programmer uses those values to determine what action to take and then assigns values to the
+  object's attributes to convey information back to the Windows control. The
+  <computeroutput>TvCustomDrawSimple</computeroutput> object is specific to the
+  <computeroutput>TreeView</computeroutput> class. Other ooDialog controls that support custom draw have their own
+  class that performs a similar function, but whose attributes are specific to that control. For instance, the <link
+  linkend="clsListView">ListView</link> class uses the <link linkend="clsLvCustomDrawSimple">LvCustomDrawSimple</link>
+  for its CUSTOMDRAW event handler.
+</para>
+
+<section id="evtTreeViewCustomDraw"><title>CustomDraw Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>CUSTOMDRAW</secondary></indexterm>
+<indexterm><primary>custom draw</primary><secondary>tree-view control</secondary></indexterm>
+<para>
+  The event handler for the custom draw event is invoked when the tree-view control is about
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onCustomDraw unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End CustomDraw Event Handler -->
+<section id="sctMethodsTvCustomDrawSimple"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>TvCustomDrawSimple</computeroutput> class:
+
+<table id="tblMethodsTvCustomDrawSimple" frame="all"> <title>TvCustomDrawSimple Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsTvCustomDrawSimple">new</link></entry>
+<entry>The Rexx programmer can not instantiate a <computeroutput>TvCustomDrawSimple</computeroutput>object, the ooDialog framework instantiates these objects</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsTvCustomDrawSimple"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>TvCustomDrawSimple class</secondary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <computeroutput>TvCustomDrawSimple</computeroutput> class can not be instantiated by the Rexx program. When
+  needed, the ooDialog framework instantiates a <computeroutput>TvCustomDrawSimple</computeroutput> object and passes
+  it to the dialog's custom draw event handler TODO need link.
+</para>
+</section>  <!-- End TvCustomDrawSimple::new() -->
+
+</section> <!-- End TvCustomDrawSimple Class -->
+
 
 </chapter>

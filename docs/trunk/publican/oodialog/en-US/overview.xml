@@ -202,7 +202,7 @@
   resource, a resource script, or by using the <xref linkend="mthAddIconResource"/> method of the
   UserDialog.  The following table shows the pre-defined symbolic IDs of the icon images provided by ooDialog. The
   symbolic ID should always be used in case the numeric value is changed in the future. In addition, the programmer
-  should avoid using any of the <link linkend="ovvPreDefinedSymbolicIDs"></link>pre-defined symbolic IDs reserved by
+  should avoid using any of the <link linkend="ovvPreDefinedSymbolicIDs">pre-defined</link> symbolic IDs reserved by
   ooDialog. The IDI_DLG_DEFAULT is a fifth symbolic ID that represents the default dialog icon. This ID can always be
   used where a dialog icon ID is needed.
 </para>
@@ -268,8 +268,8 @@
 xPixels = xDialogUnits * self~FactorX
 ]]>
 </programlisting>
-  <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixels</computeroutput> will not
-  be <xref linkend="ovvInaccurate"/>.
+  <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixels</computeroutput> will be
+  <xref linkend="ovvInaccurate"/>.
 </para>
 </section>
 
@@ -331,7 +331,7 @@ xPixels = xDialogUnits * self~FactorX
 
 <section id="defResourceEditor" xreflabel="resource editor"><title>Resource Editor</title>
 <para>
-  Resource editors are visual tools used to create a dialog template (<xref linkend="ovvDialogTemplate" />) in a text
+  Resource editors are visual tools used to create a dialog <xref linkend="ovvDialogTemplate" /> in a text
   file. Visual resource editors provide a WYSIWYG (what you see is what you get) environment to design dialogs. The
   editor manages the size and positioning of a dialog and its controls. The user can drag and drop controls where they
   are wanted and use the mouse to size the dialog and controls. Resource editors simplify the process of designing the
@@ -340,7 +340,7 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 </section>
 
-<section id="defResourceId" xreflabel="ID"><title>Resource ID</title>
+<section id="defResourceId" xreflabel="resource ID"><title>Resource ID</title>
 <para>
   A resource ID is the identification number of a dialog resource. There are several different types of dialog
   resources, menus, dialog controls, and bitmaps, to name a few. You assign IDs when you create the resource definition
@@ -348,7 +348,7 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 <para>
   IDs must be unique for each resource of the same type.  Although two resources of different types may have the same
-  ID, when using (<xref linkend="ovvSymbolicIDMechanism" />) symbolic IDs within the ooDialog framework it is
+  ID, when using <link linkend="ovvSymbolicIDMechanism">symbolic</link> IDs within the ooDialog framework it is
   advisable to give all resources unique numerical IDs.
 </para>
 </section>
@@ -357,7 +357,7 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   Resource script files are plain text files usually produced by a resource editor.  The files generally have a file
   extension of &quot;.rc&quot;, but an extension of &quot;.dlg&quot; is used by some resource editors. The text of a
-  resource script defines a dialog template (<xref linkend="ovvDialogTemplate" />). The format of the text is defined
+  resource script defines a dialog <xref linkend="ovvDialogTemplate" />. The format of the text is defined
   by Microsoft and public knowledge. The format is easily parsable by computer software and is used by resource
   compilers to produce a compiled (binary) file containing the dialog template(s) defined in the script file. The
   ooDialog framework can parse a resource script file and dynamically produce a dialog template in memory. This is the
@@ -388,9 +388,9 @@ xPixels = xDialogUnits * self~FactorX
   Symbolic names are most often used in compiled programs, where a preprocessor replaces each occurrence of the symbolic
   name in the code with its numeric value before the code is compiled. Symbolic names are less often used in interpreted
   languages because there is no preprocessor step where substitutions can be made. However, ooDialog provides a robust
-  and useful mechanism (<xref linkend="ovvSymbolicIDMechanism" />) for using symbolic IDs in ooDialog programs.
+  and useful <xref linkend="ovvSymbolicIDMechanism" /> for using symbolic IDs in ooDialog programs.
   Programmers wishing to use symbolic resource IDs in their programs should be familiar with this
-  mechanism (<xref linkend="ovvSymbolicIDMechanism" />).
+  <xref linkend="ovvSymbolicIDMechanism" />.
 </para>
 </section>
 
@@ -706,7 +706,7 @@ xPixels = xDialogUnits * self~FactorX
 <section id="ovvDialogTemplate" xreflabel="template"><title>Dialog Template</title>
 <para>
   <indexterm><primary>Template, Dialog</primary></indexterm>
-  The underlying (<xref linkend="ovvUnderlying" />) dialog seen by the user is created by the operating system from a
+  The <xref linkend="ovvUnderlying" /> dialog seen by the user is created by the operating system from a
   dialog template in memory. The template describes the size and position of the dialog and all of its controls. The
   template also contains modifiers that control the style, behavior, and attributes of the dialog and its controls. To
   make designing dialogs easier, Windows supports the concept of a textual representation of the dialog template. The
@@ -828,8 +828,8 @@ xPixels = xDialogUnits * self~FactorX
 <section id="ovvPreDefinedSymbolicIDs"><title>Predefined Symbolic IDs</title>
 <para>
   The symbolic IDs in the following table are pre-defined by ooDialog and always available to the programmer. They are
-  placed in the either the constDir (<xref linkend="atrConstDir" />) attribute when an instance of a dialog class is
-  created, or in the global .constDir (<xref linkend="dotConstDir" />). Where they are placed is dependent on the
+  placed in the either the <xref linkend="atrConstDir" /> attribute when an instance of a dialog class is
+  created, or in the global <xref linkend="dotConstDir" />. Where they are placed is dependent on the
  <xref linkend="mthUseGlobalConstDir"/> of the <computeroutput>.constDir</computeroutput>. All symbolic
   names after IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog
   programmer.
@@ -1035,9 +1035,8 @@ xPixels = xDialogUnits * self~FactorX
    The <xref linkend="clsOS"/> class supplies methods that allow the programmer to determine exactly which
    operating system version the program is currently executing on. For programs that need to run on all versions of
    Windows, the programmer must either avoid using methods not available on all versions, or test for the current
-   version and provide an alternative code path dependent on that version.  The
- <xref linkend="mthIsAtLeastVista"/>() method of the <emphasis role="italic">OS</emphasis> class
-   provides an example of this.
+   version and provide an alternative code path dependent on that version.  The  <xref linkend="mthIsAtLeastVista"/>
+   method of the <emphasis role="italic">OS</emphasis> class provides an example of this.
 </para>
 </section>
 
@@ -1055,11 +1054,10 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   Another concept that is often hard to grasp is that many of the methods of the ooDialog dialog and control
   objects can only be used after the underlying Windows dialog has been created.  In general this means in the
- <xref linkend="mthInitDialog"/>() method or later in the life cycle of the dialog. In particular, the
- <xref linkend="mthDefineDialog"/>() method of the
-  <xref linkend="clsUserDialog"/> class executes before the underlying dialog is created. Therefore, any
-  method that requires the underlying dialog to have been created can not work in the <emphasis
-  role="italic">defineDialog</emphasis> method. In earlier versions of ooDialog, in general, if the programmer
+ <xref linkend="mthInitDialog"/> method or later in the life cycle of the dialog. In particular, the
+ <xref linkend="mthDefineDialog"/> method of the <xref linkend="clsUserDialog"/> class executes before the underlying
+  dialog is created. Therefore, any method that requires the underlying dialog to have been created can not work in the
+  <emphasis role="italic">defineDialog</emphasis> method. In earlier versions of ooDialog, in general, if the programmer
   invoked a method requiring that the underlying dialog was created, the error was simply ignored. But, the method
   had no effect.
 </para>
@@ -1087,7 +1085,7 @@ xPixels = xDialogUnits * self~FactorX
 
 <section id="ovvSymbolicIDMechanism" xreflabel="mechanism"><title>Using Symbolic IDs in ooDialog:</title>
 <para>
-  ooDialog allows programmers to use symbolic (<xref linkend="defSymbolicId" />) resource IDs in their programs. The
+  ooDialog allows programmers to use <xref linkend="defSymbolicId" /> resource IDs in their programs. The
   symbolic ID can be used for any argument in any method that requires a resource ID. Although this is mostly
   transparent to the programmer, if the programmer is going to use symbolic IDs, he should understand the basics of the
   mechanism allowing the use of symbolic IDs.
@@ -1107,7 +1105,7 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">constDir Attribute:</emphasis></term>
   <listitem>
   <para>
-    Originally the constDir was implemented as an attribute (<xref linkend="atrConstDir" />) of the dialog object. Each
+    Originally the constDir was implemented as an <xref linkend="atrConstDir" /> of the dialog object. Each
     dialog object then has its own constDir, which was used to resolve symbolic IDs where needed in the methods of the
     dialog. Each dialog control has a reference to its owner dialog, allowing the dialog object's constDir to be used to
     resolve symbolic IDs for the methods of the control. This mechanism exists unchanged in the current ooDialog
@@ -1116,7 +1114,7 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     However, as enhancements to ooDialog started to be made in version 4.0.0 and later, it became apparent that the
     constDir attribute was not adequate. Classes such as the <xref linkend="clsMenu"/> classes and
- <xref linkend="clsResourceImage"/> class also used resource IDs, but objects of these classes are
+    <xref linkend="clsResourceImage"/> class also used resource IDs, but objects of these classes are
     independent of any dialog object. Without access to a dialog object, there was no way in those classes to use symbolic
     IDs. To fix this problem, ooDialog 4.2.0 added the global <computeroutput>.constDir</computeroutput> to the
     mechanism for using symbolic IDs.
@@ -1125,14 +1123,14 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Global .constDir object:</emphasis></term>
   <listitem>
   <para>
-    The global .constDir (<xref linkend="dotConstDir" />) works in the same way as the dialog object's constDir attribute.
+    The global <xref linkend="dotConstDir" /> works in the same way as the dialog object's constDir attribute.
     When a symbolic ID needs to be resolved, it can be looked up in the global <computeroutput>.constDir</computeroutput>.
     The integration of the global <computeroutput>.constDir</computeroutput> into the mechanism for resolving symbolic
     IDs is done by allowing the programmer to specify how, or even if, the <computeroutput>.constDir</computeroutput>
     should be used. The four choices are <emphasis role="italic">only</emphasis>, <emphasis
     role="italic">first</emphasis>, <emphasis role="italic">last</emphasis>, or <emphasis
     role="italic">never</emphasis>. The programmer specifies which of these strategies is to be used through one of the
-    methods of the .application (<xref linkend="dotApplication" />) object. (The
+    methods of the <xref linkend="dotApplication" />. (The
     <computeroutput>.application</computeroutput> object is an instance of the
  <xref linkend="clsApplicationManager"/> class.)
   </para>
@@ -1211,7 +1209,7 @@ xPixels = xDialogUnits * self~FactorX
     provides some additional methods for reading a file and adding the symbol definitions to a constant directory. The
     dialog object has the <xref linkend="mthParseIncludeFile"/> method. The
  <xref linkend="clsApplicationManager"/> class has several methods, which are accessed through the
-    .application (<xref linkend="dotApplication" />) object. These are: the
+    <xref linkend="dotApplication" />. These are: the
  <xref linkend="mthUseGlobalConstDir"/>, <xref linkend="mthAddToConstDir"/>,
  <xref linkend="mthSetDefaults"/>, and <xref linkend="mthParseIncludeFile"/>
     methods.
@@ -1254,9 +1252,9 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Classes Requiring the Global .constDir for Symbolic IDs:</emphasis></term>
   <listitem>
   <para>
-    As explained previously, the dialog object's constDir (<xref linkend="atrConstDir" />) attribute allows
+    As explained previously, the dialog object's <xref linkend="atrConstDir" /> attribute allows
     programmers to use symbolic IDs for arguments requiring resource IDs in the methods of the
-    dialog (<xref linkend="chpDialogObject" />) object and the dialog (<xref linkend="chpDialogControlObject" />) control
+    <xref linkend="chpDialogObject" /> object and the dialog (<xref linkend="chpDialogControlObject" />) control
     object. However, the ooDialog framework contains other classes with methods requiring resource IDs. The
  <xref linkend="clsMenu"/> classes and the <xref linkend="clsResourceImage"/> class are
     examples of these classes. If the programmer wishes to use symbolic IDs in classes other than the dialog and
@@ -1588,7 +1586,7 @@ xPixels = xDialogUnits * self~FactorX
     reason for it. The <emphasis role="italic">advanced</emphasis> controls were only advanced in the previous
     millenium. To simplify this, the need to inherit the <computeroutput>AdvancedControls</computeroutput> class has
     been eliminated. The methods to work with all controls are part of the base
-    dialog (<xref linkend="chpDialogObject" />) object. The
+    <xref linkend="chpDialogObject" /> object. The
     AdvancedControls (<xref linkend="deprecatedAdvancedControls" />) is deprecated.
   </para>
   <para>
@@ -1596,7 +1594,7 @@ xPixels = xDialogUnits * self~FactorX
     Connecting <xref linkend="ovvEvents"/> notifications to a method in the Rexx dialog is such a fundamental
     part of using a dialog that the programmer should not need to do anything special. The methods to connect events are
     now all methods of the base classes where they are needed. The methods to connect dialog events are part of the base
-    dialog (<xref linkend="chpDialogObject" />), methods to connect menu events are part of the
+    <xref linkend="chpDialogObject" />, methods to connect menu events are part of the
  <xref linkend="clsMenu"/> class, methods to connect mouse events are part of the
  <xref linkend="clsMouse"/> class, etc..
   </para>
@@ -1889,7 +1887,7 @@ xPixels = xDialogUnits * self~FactorX
     <itemizedlist>
     <listitem>
     <para>
-      .application (<xref linkend="dotApplication" />) object: The <computeroutput>.application</computeroutput>
+      <xref linkend="dotApplication" />: The <computeroutput>.application</computeroutput>
       object is an instance of the <xref linkend="clsApplicationManager"/> class that is present
       in all ooDialog programs. It is used by the programmer to manage application wide settings, behaviour, and
       constants.
@@ -1898,7 +1896,7 @@ xPixels = xDialogUnits * self~FactorX
     <listitem>
     <para>
       .constdir (<xref linkend="dotConstDir" />) object: Part of the
-      mechanism (<xref linkend="ovvSymbolicIDMechanism" />) allowing the use of symbolic (<xref linkend="defSymbolicId" />)
+      <xref linkend="ovvSymbolicIDMechanism" /> allowing the use of <xref linkend="defSymbolicId" />
       IDs in ooDialog programs. The <computeroutput>.constDir</computeroutput> is the most efficient way to use
       symbolic IDs.
     </para>

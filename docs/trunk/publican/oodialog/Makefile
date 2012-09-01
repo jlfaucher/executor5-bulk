@@ -43,19 +43,23 @@ PRODUCT = oodialog
 
 all: pdf html
 
-pdf:
+pdf: datepub.tmp svnrev.tmp
 	- rm -rf tmp/en-US/pdf
 	publican build --formats=pdf --langs=en-US
-	cd tmp/en-US/pdf; mv ooRexx*.pdf $(PRODUCT).pdf; cd ../../..
+	cd tmp/en-US/pdf; mv ooRexx*.pdf $(PRODUCT).pdf; cp $(PRODUCT).pdf ../../../; cd ../../..
 
-html:
+html: datepub.tmp svnrev.tmp
 	- rm -rf tmp/en-US/html
 	publican build --formats=html --langs=en-US
 	cd tmp/en-US/html; zip -r $(PRODUCT)-html.zip *; cd ../../..
 
+svnrev.tmp:
+	svnversion > svnrev.tmp
 
+datepub.tmp:
+	date "+%A, %B %d, %Y" > datepub.tmp
 
 
 clean:
-	rm -f tmp
+	rm -fr tmp
 

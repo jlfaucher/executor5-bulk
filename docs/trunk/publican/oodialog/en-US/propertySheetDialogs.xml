@@ -77,7 +77,7 @@
 </para>
 <para>
   The <computeroutput>ControlDialog</computeroutput> class is a mixin class that signals to the ooDialog framework that
-  the underlying (<xref linkend="ovvUnderlying" />) Windows dialog is to have the control dialog style. To use a
+  the <xref linkend="ovvUnderlying" /> Windows dialog is to have the control dialog style. To use a
   control dialog in an ooDialog program, the programmer simply subclasses one of the 3 provided dialog classes that
   inherit the <computeroutput>ControlDialog</computeroutput> mixin class. These are the
  <xref linkend="clsRcControlDialog"/>, the <xref linkend="clsResControlDialog"/>
@@ -159,7 +159,7 @@
   <listitem>
   <para>
     Returns the <link linkend="tblConstantsDlgObject">IDOK</link> constant if the dialog was
-    activated (<xref linkend="atrWasActivatedClsControlDialog" />) and is closed as though the user pressed the <emphasis
+ <xref linkend="atrWasActivatedClsControlDialog" /> and is closed as though the user pressed the <emphasis
     role="italic">Ok</emphasis> button.  Otherwise, the IDCANCEL constant is returned.
   </para>
   </listitem></varlistentry>
@@ -167,7 +167,7 @@
   <listitem>
   <para>
     When a dialog is used as a control in another dialog there are some operating system differences in how the
-    underlying (<xref linkend="ovvUnderlying" />) dialog behaves. The ooDialog framework ensures that the Rexx dialog object
+    <xref linkend="ovvUnderlying" /> dialog behaves. The ooDialog framework ensures that the Rexx dialog object
     used as a dialog control behaves consistently with other dialogs in ooDialog. Closing a control dialog through some
     other mechanism than the <emphasis role="italic">endExecution</emphasis> method will bypass the internal processing
     used by the framework. This makes it likely that at some point the control dialog will not behave consistently with
@@ -295,7 +295,7 @@
       <listitem>
       <para>
         The resource ID of the list-view control in a page of a tab control, may be numeric or
-        symbolic (<xref linkend="defSymbolicId" />).
+        <xref linkend="defSymbolicId" />.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>seconds [optional]</term>
@@ -363,7 +363,7 @@
 </variablelist>
 </section>  <!-- End ControlDialog::initUpdateListView() -->
 
-<section id="atrWasActivatedClsControlDialog"><title>wasActivated (Attribute)</title>
+<section id="atrWasActivatedClsControlDialog" xreflabel="wasActivated"><title>wasActivated (Attribute)</title>
 <indexterm><primary>wasActivated</primary></indexterm>
 <indexterm><primary>ControlDialog class</primary><secondary>wasActivated</secondary></indexterm>
 <programlisting>
@@ -376,7 +376,7 @@
 </programlisting>
 
 <para>
-  Reflects whether the underlying (<xref linkend="ovvUnderlying" />) dialog for this control dialog was ever created.
+  Reflects whether the <xref linkend="ovvUnderlying" /> dialog for this control dialog was ever created.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">wasActivated get:</emphasis></term>
@@ -410,7 +410,7 @@
 <indexterm><primary>RcControlDialog Class</primary></indexterm>
 <para>
   The <computeroutput>RcControlDialog</computeroutput> should be subclassed when the programmer wants to use a resource
-  <xref linkend="defResourceScript"/> to create the dialog template (<xref linkend="ovvDialogTemplate" />)
+  <xref linkend="defResourceScript"/> to create the dialog <xref linkend="ovvDialogTemplate" />
   for his control dialog.
 </para>
 
@@ -449,7 +449,7 @@
 </row>
 <row>
 <entry><xref linkend="atrWasActivatedClsControlDialog"/></entry>
-<entry>Reflects whether the underlying (<xref linkend="ovvUnderlying" />) dialog for this control dialog was ever created.</entry>
+<entry>Reflects whether the <xref linkend="ovvUnderlying" /> dialog for this control dialog was ever created.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -505,7 +505,7 @@
       <varlistentry><term>data. [optional]</term>
       <listitem>
       <para>
-        A dialog data stem (<xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
+        A <xref linkend="termDialogDataStem" /> variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
@@ -572,8 +572,8 @@
       <para>
         Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this
  <xref linkend="clsControlDialog"/>. All control dialogs <emphasis role="italic">must</emphasis>
-        have the ownerDialog (<xref linkend="atrOwnerDialog" />) attribute set to the Rexx dialog that owns the
-        control dialog, before the underlying (<xref linkend="ovvUnderlying" />) control dialog is created. In
+        have the <xref linkend="atrOwnerDialog" /> attribute set to the Rexx dialog that owns the
+        control dialog, before the <xref linkend="ovvUnderlying" /> control dialog is created. In
         addition, the underlying owner dialog must be created before the underlying control dialog can be created.
       </para>
       <para>
@@ -644,7 +644,7 @@
 <indexterm><primary>ResControlDialog Class</primary></indexterm>
 <para>
   Subclass the <computeroutput>ResControlDialog</computeroutput> to use a control dialog in an application where the
-  dialog template (<xref linkend="ovvDialogTemplate" />) comes from a compiled binary resource file.
+  dialog <xref linkend="ovvDialogTemplate" /> comes from a compiled binary resource file.
 </para>
 
 <section id="sctMethodsResControlDialog"><title>Method Table</title>
@@ -681,7 +681,7 @@
 </row>
 <row>
 <entry><xref linkend="atrWasActivatedClsControlDialog"/></entry>
-<entry>Reflects whether the underlying (<xref linkend="ovvUnderlying" />) dialog for this control dialog was ever created..</entry>
+<entry>Reflects whether the <xref linkend="ovvUnderlying" /> dialog for this control dialog was ever created..</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -735,14 +735,14 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template.  This may be numeric or symbolic (<xref linkend="defSymbolicId" />).
+        The resource ID of the dialog template.  This may be numeric or <xref linkend="defSymbolicId" />.
         The resource ID is assigned to the dialog template when it was compiled.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>dlgData. [optional]</term>
       <listitem>
       <para>
-        A dialog data stem (<xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
+        A <xref linkend="termDialogDataStem" /> variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
@@ -757,8 +757,8 @@
       <para>
         Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this
  <xref linkend="clsControlDialog"/>. All control dialogs <emphasis role="italic">must</emphasis>
-        have the ownerDialog (<xref linkend="atrOwnerDialog" />) attribute set to the Rexx dialog that owns the
-        control dialog, before the underlying (<xref linkend="ovvUnderlying" />) control dialog is created. In
+        have the <xref linkend="atrOwnerDialog" /> attribute set to the Rexx dialog that owns the
+        control dialog, before the <xref linkend="ovvUnderlying" /> control dialog is created. In
         addition, the underlying owner dialog must be created before the underlying control dialog can be created.
       </para>
       <para>
@@ -872,7 +872,7 @@
 </row>
 <row>
 <entry><xref linkend="atrWasActivatedClsControlDialog"/></entry>
-<entry>Reflects whether the underlying (<xref linkend="ovvUnderlying" />) dialog for this control dialog was ever created..</entry>
+<entry>Reflects whether the <xref linkend="ovvUnderlying" /> dialog for this control dialog was ever created..</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -917,7 +917,7 @@
     <varlistentry><term>dlgData. [optional]</term>
     <listitem>
     <para>
-      A dialog data stem (<xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
+      A <xref linkend="termDialogDataStem" /> variable (don't forget the trailing period) that
       contains data used to initialize the underlying dialog's controls.
     </para>
     </listitem></varlistentry>
@@ -932,8 +932,8 @@
     <para>
       Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this
  <xref linkend="clsControlDialog"/>. All control dialogs <emphasis role="italic">must</emphasis>
-      have the ownerDialog (<xref linkend="atrOwnerDialog" />) attribute set to the Rexx dialog that owns the
-      control dialog, before the underlying (<xref linkend="ovvUnderlying" />) control dialog is created. In
+      have the <xref linkend="atrOwnerDialog" /> attribute set to the Rexx dialog that owns the
+      control dialog, before the <xref linkend="ovvUnderlying" /> control dialog is created. In
       addition, the underlying owner dialog must be created before the underlying control dialog can be created.
     </para>
     <para>
@@ -1139,7 +1139,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetCurrentPageHwnd"/></entry>
-<entry>Retrieves the window handle (<xref linkend="defHandle" />) of the underlying (<xref linkend="ovvUnderlying" />) dialog of the current page in this property sheet dialog.</entry>
+<entry>Retrieves the window handle (<xref linkend="defHandle" />) of the <xref linkend="ovvUnderlying" /> dialog of the current page in this property sheet dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetPage"/></entry>
@@ -1354,7 +1354,7 @@
           <para>
             Adjusts the title in the title bar of the property sheet. The title takes the appropriate form for the
             Microsoft Windows version. In more recent versions of Windows, the title is the string specified by the
-            caption (<xref linkend="atrCaption" />) attribute followed by the string <emphasis
+ <xref linkend="atrCaption" /> attribute followed by the string <emphasis
             role="italic">Properties</emphasis>. In older versions of Windows, the title is the string <emphasis
             role="italic">Properties for</emphasis>, followed by the string specified by the <emphasis
             role="italic">caption</emphasis> attribute This keyword is not supported with the AEROWIZARD style.
@@ -1420,7 +1420,7 @@
       <varlistentry><term>title [optional]</term>
       <listitem>
       <para>
-        Sets the caption (<xref linkend="atrCaption" />) attribute to the text specified.
+        Sets the <xref linkend="atrCaption" /> attribute to the text specified.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>hFile [optional]</term>
@@ -1428,7 +1428,7 @@
       <para>
         A file, (often called a header (<xref linkend="defHeaderFile" />) file,) defining
         symbolic IDs (<xref linkend="defSymbolicId" />) for resources. The symbolic IDs defined within the file will be
-        added to the constDir (<xref linkend="atrConstDir" />) directory.
+        added to the <xref linkend="atrConstDir" /> directory.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1479,7 +1479,7 @@
 </variablelist>
 </section>
 
-<section id="atrAppIcon"><title>appIcon (Attribute)</title>
+<section id="atrAppIcon" xreflabel="appIcon"><title>appIcon (Attribute)</title>
 <indexterm><primary>appIcon</primary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>appIcon</secondary></indexterm>
 <programlisting>
@@ -1507,7 +1507,7 @@
   <listitem>
   <para>
     The <emphasis role="italic">appIcon</emphasis> can be set either using an <xref linkend="clsImage"/>
-    object, or a resource ID, numeric or symbolic (<xref linkend="defSymbolicId" />).
+    object, or a resource ID, numeric or <xref linkend="defSymbolicId" />.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1519,7 +1519,7 @@
   <para>
     When the <emphasis role="italic">appIcon</emphasis> attribute is specified as a resource ID, then the image must be
     a resource in the resource <xref linkend="clsResourceImage"/> specified by the
-    resources (<xref linkend="atrResourcesClsPSD" />) attribute. When the property sheet dialog is shown, if an icon can not
+ <xref linkend="atrResourcesClsPSD" /> attribute. When the property sheet dialog is shown, if an icon can not
     be loaded from the resource image, the the property sheet dialog will not have a dialog icon.
   </para>
   </listitem></varlistentry>
@@ -1553,7 +1553,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetDialog::appIcon() [attribute]  -->
 
-<section id="atrCaption"><title>caption (Attribute)</title>
+<section id="atrCaption" xreflabel="caption"><title>caption (Attribute)</title>
 <indexterm><primary>caption</primary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>caption</secondary></indexterm>
 <programlisting>
@@ -1580,7 +1580,7 @@
   <listitem>
   <para>
     Sets the value the property sheet dialog will use for its title bar when the
-    underlying (<xref linkend="ovvUnderlying" />) dialog is created.
+    <xref linkend="ovvUnderlying" /> dialog is created.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1603,7 +1603,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetDialog::caption() [attribute]  -->
 
-<section id="atrHeader"><title>header (Attribute)</title>
+<section id="atrHeader" xreflabel="header"><title>header (Attribute)</title>
 <indexterm><primary>header</primary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>header</secondary></indexterm>
 <programlisting>
@@ -1644,7 +1644,7 @@
     The bitmap for the header area can either be a stand alone bitmap loaded as an
     <computeroutput>Image</computeroutput> object, or it can be a compiled binary image located in the resource section
     of an executable file. If the bitmap is within the resource section of an executable module, then the
-    resources (<xref linkend="atrResourcesClsPSD" />) attribute of this dialog object is set to the executable and the
+ <xref linkend="atrResourcesClsPSD" /> attribute of this dialog object is set to the executable and the
     <emphasis role="italic">header</emphasis> attribute is set to the resource ID of the bitmap.
   </para>
   </listitem></varlistentry>
@@ -1676,7 +1676,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetDialog::header() [attribute]  -->
 
-<section id="atrImageList"><title>imageList (Attribute)</title>
+<section id="atrImageList" xreflabel="imageList"><title>imageList (Attribute)</title>
 <indexterm><primary>imageList</primary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>imageList</secondary></indexterm>
 <programlisting>
@@ -1713,7 +1713,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    An icon for the tab of a page can also be assigned through the tabIcon (<xref linkend="atrTabIcon" />) attribute
+    An icon for the tab of a page can also be assigned through the <xref linkend="atrTabIcon" /> attribute
     of the <xref linkend="clsPropertySheetPage"/> dialog object for each page in a property sheet
     dialog. However, assigning an image list to the <emphasis role="italic">imageList</emphasis> attribute takes
     precedence over the <emphasis role="italic">tabIcon</emphasis> attribute of a property sheet page dialog. If an
@@ -1730,7 +1730,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetDialog::imageList() [attribute]  -->
 
-<section id="atrPages"><title>pages (Attribute)</title>
+<section id="atrPages" xreflabel="pages"><title>pages (Attribute)</title>
 <indexterm><primary>pages</primary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>pages</secondary></indexterm>
 <programlisting>
@@ -1773,7 +1773,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetDialog::pages() [attribute]  -->
 
-<section id="atrResourcesClsPSD"><title>resources (Attribute)</title>
+<section id="atrResourcesClsPSD" xreflabel="resources"><title>resources (Attribute)</title>
 <indexterm><primary>resources</primary><secondary>PropertySheetDialog class</secondary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>resources</secondary></indexterm>
 <programlisting>
@@ -1809,8 +1809,8 @@
   <para>
     Many of the resources used by a property sheet dialog can be located within the resource section of an executable
     module. (Recall that in Windows both an executable file and a DLL are executable modules.) Resources such as the
-    appIcon (<xref linkend="atrAppIcon" />), header (<xref linkend="atrHeader" />),
-    imageList (<xref linkend="atrImageList" />), etc.. can all be located in the
+ <xref linkend="atrAppIcon" />, <xref linkend="atrHeader" />,
+ <xref linkend="atrImageList" />, etc.. can all be located in the
     <computeroutput>ResourceImage</computeroutput> that is the value of the <emphasis role="italic">resources</emphasis>
     attribute.
   </para>
@@ -1849,7 +1849,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetDialog::resources() [attribute]  -->
 
-<section id="atrStartPage"><title>startPage (Attribute)</title>
+<section id="atrStartPage" xreflabel="startPage"><title>startPage (Attribute)</title>
 <indexterm><primary>startPage</primary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>startPage</secondary></indexterm>
 <programlisting>
@@ -1911,7 +1911,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetDialog::startPage() [attribute]  -->
 
-<section id="atrWatermark"><title>watermark (Attribute)</title>
+<section id="atrWatermark" xreflabel="watermark"><title>watermark (Attribute)</title>
 <indexterm><primary>watermark</primary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>watermark</secondary></indexterm>
 <programlisting>
@@ -1950,7 +1950,7 @@
     The bitmap for the watermark can either be a stand alone bitmap loaded as an <computeroutput>Image</computeroutput>
     object, or it can be a compiled binary image located in the resource section
     of an executable file. If the bitmap is within the resource section of an executable module, then the
-    resources (<xref linkend="atrResourcesClsPSD" />) attribute of this dialog object is set to the executable and the
+ <xref linkend="atrResourcesClsPSD" /> attribute of this dialog object is set to the executable and the
     <emphasis role="italic">watermark</emphasis> attribute is set to the resource ID of the bitmap.
   </para>
   </listitem></varlistentry>
@@ -2045,7 +2045,7 @@
   <para>
     It is possible that the user never <emphasis role="italic">visited</emphasis> a page before it was removed. In this
     case the Rexx dialog object could be used to add or insert a new page at some later point, because the underlying
-    Windows dialog would never have been created. The wasActivated (<xref linkend="atrWasActivatedClsPSP" />)
+    Windows dialog would never have been created. The <xref linkend="atrWasActivatedClsPSP" />
     attribute can be used to test for this condition.  However, it
     is probably simplier to always instantiate a new Rexx dialog object for each page added to a property sheet.
   </para>
@@ -2362,7 +2362,7 @@
 </programlisting>
 
 <para>
-  Retrieves the window handle (<xref linkend="defHandle" />) of the underlying (<xref linkend="ovvUnderlying" />)
+  Retrieves the window handle (<xref linkend="defHandle" />) of the <xref linkend="ovvUnderlying" />
   dialog of the current page in this property sheet dialog.
 </para>
 <variablelist>
@@ -2552,7 +2552,7 @@
       <varlistentry><term>hwnd [required]</term>
       <listitem>
       <para>
-        The window (<xref linkend="atrHwnd" />)handle (<xref linkend="defHandle" />) whose page index is needed.
+        The <xref linkend="atrHwnd" />handle (<xref linkend="defHandle" />) whose page index is needed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2862,7 +2862,7 @@
   <para>
     It is possible that the user never <emphasis role="italic">visited</emphasis> a page before it was removed. In this
     case the Rexx dialog object could be used to add or insert a new page at some later point, because the underlying
-    Windows dialog would never have been created. The wasActivated (<xref linkend="atrWasActivatedClsPSP" />)
+    Windows dialog would never have been created. The <xref linkend="atrWasActivatedClsPSP" />
     attribute can be used to test for this condition.  However, it
     is probably simplier to always instantiate a new Rexx dialog object for each page added to a property sheet.
   </para>
@@ -4110,7 +4110,7 @@
 <para>
   All property sheet page dialogs are managed more by the operating system than is typical for an ooDialog dialog. The
   programmer does not <xref linkend="mthExecute"/> the page dialog to create the
-  underlying (<xref linkend="ovvUnderlying" />) Windows dialog, or stop the dialog. The operating system creates and
+  <xref linkend="ovvUnderlying" /> Windows dialog, or stop the dialog. The operating system creates and
   destroys the underlying page dialogs.
 </para>
 <para>
@@ -4245,7 +4245,7 @@
 </row>
 <row>
 <entry><xref linkend="atrPageID"/></entry>
-<entry>Reflects the value of the page ID, which identifies the page to the underlying (<xref linkend="ovvUnderlying" />) property sheet dialog.</entry>
+<entry>Reflects the value of the page ID, which identifies the page to the <xref linkend="ovvUnderlying" /> property sheet dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="atrPageNumber"/></entry>
@@ -4269,7 +4269,7 @@
 </row>
 <row>
 <entry><xref linkend="atrWasActivatedClsPSP"/></entry>
-<entry>Reflects whether the underlying (<xref linkend="ovvUnderlying" />) property sheet page was created.</entry>
+<entry>Reflects whether the <xref linkend="ovvUnderlying" /> property sheet page was created.</entry>
 </row>
 <row>
 <entry><xref linkend="atrWantAccelerators"/></entry>
@@ -4325,7 +4325,7 @@
 </row>
 <row>
 <entry><xref linkend="mthSetSizeClsPSP"/></entry>
-<entry>Used to set both the cx (<xref linkend="atrCX" />) and cy (<xref linkend="atrCY" />) attributes at one time.</entry>
+<entry>Used to set both the <xref linkend="atrCX" /> and <xref linkend="atrCY" /> attributes at one time.</entry>
 </row>
 <row>
 <entry><xref linkend="mthTranslateAccelerator"/></entry>
@@ -4383,7 +4383,7 @@
 </section>  <!-- End Page Event Handlers  -->
 
 
-<section id="atrCX"><title>cx (Attribute)</title>
+<section id="atrCX" xreflabel="cx"><title>cx (Attribute)</title>
 <indexterm><primary>cx</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>cx</secondary></indexterm>
 <programlisting>
@@ -4432,7 +4432,7 @@
     specified by the <emphasis role="italic">cx</emphasis> attribute. So, to have a different width than one of the
     recommended widths, the programmer must set this attribute before the dialog template is created. Note that the
  <xref linkend="mthSetSizeClsPSP"/> method can be used to set both the <emphasis
-    role="italic">cx</emphasis> and cy (<xref linkend="atrCY" />) attributes at one time.
+    role="italic">cx</emphasis> and <xref linkend="atrCY" /> attributes at one time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4458,7 +4458,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::cx() [attribute]  -->
 
-<section id="atrCY"><title>cy (Attribute)</title>
+<section id="atrCY" xreflabel="cy"><title>cy (Attribute)</title>
 <indexterm><primary>cy</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>cy</secondary></indexterm>
 <programlisting>
@@ -4507,7 +4507,7 @@
     specified by the <emphasis role="italic">cy</emphasis> attribute. So, to have a different height than one of the
     recommended heights, the programmer must set this attribute before the dialog template is created. Note that the
  <xref linkend="mthSetSizeClsPSP"/> method can be used to set both the <emphasis
-    role="italic">cy</emphasis> and cx (<xref linkend="atrCX" />) attributes at one time.
+    role="italic">cy</emphasis> and <xref linkend="atrCX" /> attributes at one time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4533,7 +4533,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::cy() [attribute]  -->
 
-<section id="atrHeaderSubtitle"><title>headerSubtitle (Attribute)</title>
+<section id="atrHeaderSubtitle" xreflabel="headerSubtitle"><title>headerSubtitle (Attribute)</title>
 <indexterm><primary>headerSubtitle</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>headerSubtitle</secondary></indexterm>
 <programlisting>
@@ -4580,7 +4580,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::headerSubtitle() [attribute]  -->
 
-<section id="atrHeaderTitle"><title>headerTitle (Attribute)</title>
+<section id="atrHeaderTitle" xreflabel="headerTitle"><title>headerTitle (Attribute)</title>
 <indexterm><primary>headerTitle</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>headerTitle</secondary></indexterm>
 <programlisting>
@@ -4626,7 +4626,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::headerTitle() [attribute]  -->
 
-<section id="atrPageID"><title>pageID (Attribute)</title>
+<section id="atrPageID" xreflabel="pageID"><title>pageID (Attribute)</title>
 <indexterm><primary>pageID</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>pageID</secondary></indexterm>
 <programlisting>
@@ -4639,7 +4639,7 @@
 </programlisting>
 
 <para>
-  Reflects the value of the page ID, which identifies the page to the underlying (<xref linkend="ovvUnderlying" />)
+  Reflects the value of the page ID, which identifies the page to the <xref linkend="ovvUnderlying" />
   property sheet dialog. The ID is essentially an opaque value to the Rexx programmer.
 </para>
 <variablelist>
@@ -4674,7 +4674,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::pageID() [attribute]  -->
 
-<section id="atrPageNumber"><title>pageNumber (Attribute)</title>
+<section id="atrPageNumber" xreflabel="pageNumber"><title>pageNumber (Attribute)</title>
 <indexterm><primary>pageNumber</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>pageNumber</secondary></indexterm>
 <programlisting>
@@ -4707,7 +4707,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::pageNumber() [attribute]  -->
 
-<section id="atrPageTitle"><title>pageTitle (Attribute)</title>
+<section id="atrPageTitle" xreflabel="pageTitle"><title>pageTitle (Attribute)</title>
 <indexterm><primary>pageTitle</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>pageTitle</secondary></indexterm>
 <programlisting>
@@ -4790,7 +4790,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::pageTitle() [attribute]  -->
 
-<section id="atrPropSheet"><title>propSheet (Attribute)</title>
+<section id="atrPropSheet" xreflabel="propSheet"><title>propSheet (Attribute)</title>
 <indexterm><primary>propSheet</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>propSheet</secondary></indexterm>
 <programlisting>
@@ -4850,7 +4850,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::propSheet() [attribute]  -->
 
-<section id="atrResourcesClsPSP"><title>resources (Attribute)</title>
+<section id="atrResourcesClsPSP" xreflabel="resources"><title>resources (Attribute)</title>
 <indexterm><primary>resources</primary><secondary>PropertySheetPage class</secondary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>resources</secondary></indexterm>
 <programlisting>
@@ -4900,7 +4900,7 @@
   <para>
     To supply the tab icon for this page from a resource image, the programmer would set the <emphasis
     role="italic">resources</emphasis> attribute to a resource image containing the icon and set the
-    tabIcon (<xref linkend="atrTabIcon" />) attribute to the resource ID of the icon in the resource image.
+ <xref linkend="atrTabIcon" /> attribute to the resource ID of the icon in the resource image.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4945,7 +4945,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::resources() [attribute]  -->
 
-<section id="atrTabIcon"><title>tabIcon (Attribute)</title>
+<section id="atrTabIcon" xreflabel="tabIcon"><title>tabIcon (Attribute)</title>
 <indexterm><primary>tabIcon</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>tabIcon</secondary></indexterm>
 <programlisting>
@@ -4973,20 +4973,20 @@
   <para>
     This attribute can either be set to a stand alone icon <xref linkend="clsImage"/> object or to the
     resource ID of the icon if the icon image is contained in a compiled resource file. If the attribute is set to a
-    resource ID, then the resources (<xref linkend="atrResourcesClsPSP" />) attribute must be set to a
+    resource ID, then the <xref linkend="atrResourcesClsPSP" /> attribute must be set to a
  <xref linkend="clsResourceImage"/> object that contains the icon image. If the attribute is set to an
     <computeroutput>Image</computeroutput> object, the the image has to be an actual icon image. It can not be a bitmap
     or cursor.
   </para>
   <para>
-    When a resource ID is used it may be numeric or symbolic (<xref linkend="defSymbolicId" />).
+    When a resource ID is used it may be numeric or <xref linkend="defSymbolicId" />.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
     The tab icons for all pages in a <xref linkend="clsPropertySheetDialog"/> sheet dialog can also be set
-    through the imageList (<xref linkend="atrImageList" />) attribute. If both the <emphasis
+    through the <xref linkend="atrImageList" /> attribute. If both the <emphasis
     role="italic">imageList</emphasis> attribute and the <emphasis role="italic">tabIcon</emphasis> attribute are set,
     the icon for the tab is taken from the <emphasis role="italic">imageList</emphasis> attribute.
   </para>
@@ -5032,7 +5032,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::tabIcon() [attribute]  -->
 
-<section id="atrWasActivatedClsPSP"><title>wasActivated (Attribute)</title>
+<section id="atrWasActivatedClsPSP" xreflabel="wasActivated"><title>wasActivated (Attribute)</title>
 <indexterm><primary>wasActivated</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>wasActivated</secondary></indexterm>
 <programlisting>
@@ -5045,7 +5045,7 @@
 </programlisting>
 
 <para>
-  Reflects whether the underlying (<xref linkend="ovvUnderlying" />) property sheet page was created.
+  Reflects whether the <xref linkend="ovvUnderlying" /> property sheet page was created.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">wasActivated get:</emphasis></term>
@@ -5071,7 +5071,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::wasActivated() [attribute]  -->
 
-<section id="atrWantAccelerators"><title>wantAccelerators (Attribute)</title>
+<section id="atrWantAccelerators" xreflabel="wantAccelerators"><title>wantAccelerators (Attribute)</title>
 <indexterm><primary>wantAccelerators</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>wantAccelerators</secondary></indexterm>
 <programlisting>
@@ -5118,7 +5118,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::wantAccelerators() [attribute]  -->
 
-<section id="atrWantGetObject"><title>wantGetObject (Attribute)</title>
+<section id="atrWantGetObject" xreflabel="wantGetObject"><title>wantGetObject (Attribute)</title>
 <indexterm><primary>wantGetObject</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>wantGetObject</secondary></indexterm>
 <programlisting>
@@ -5365,7 +5365,7 @@
   <listitem>
   <para>
     By default, the GETOBJECT notification is completely ignored. This is controlled by the
-    wantGetObject (<xref linkend="atrWantGetObject" />) attribute. If that attribute is set to true, the <emphasis
+ <xref linkend="atrWantGetObject" /> attribute. If that attribute is set to true, the <emphasis
     role="italic">getObject</emphasis> event handler will be invoked.
   </para>
   </listitem></varlistentry>
@@ -5926,7 +5926,7 @@
   <listitem>
   <para>
     The Rexx programmer returns 0 to allow the page to become active, -1 to prevent a page change, and the page
-    number (<xref linkend="atrPageNumber" />) or page ID (<xref linkend="atrPageID" />), to go to that specific page. The
+ <xref linkend="atrPageNumber" /> or page <xref linkend="atrPageID" />, to go to that specific page. The
     default implementation returns 0.
   </para>
   </listitem></varlistentry>
@@ -5982,8 +5982,8 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setSize</emphasis> method can be used to set both the cx (<xref linkend="atrCX" />) and
-  cy (<xref linkend="atrCY" />) attributes at one time.
+  The <emphasis role="italic">setSize</emphasis> method can be used to set both the <xref linkend="atrCX" /> and
+ <xref linkend="atrCY" /> attributes at one time.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6334,7 +6334,7 @@ Alt held: 0 shift held: 0 control held: 0
   <listitem>
   <para>
     The Rexx programmer returns 0 to allow the page to be changed to the previous page, -1 to prevent the page from
-    changing, and the page number (<xref linkend="atrPageNumber" />) or page ID (<xref linkend="atrPageID" />), to
+    changing, and the page <xref linkend="atrPageNumber" /> or page <xref linkend="atrPageID" />, to
     go to that specific page instead of the previous page. The default implementation returns 0.
   </para>
   </listitem></varlistentry>
@@ -6499,7 +6499,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <listitem>
   <para>
     The Rexx programmer returns 0 to allow the page to be changed to the next page, -1 to prevent the page from
-    changing, and the page number (<xref linkend="atrPageNumber" />) or page ID (<xref linkend="atrPageID" />), to
+    changing, and the page <xref linkend="atrPageNumber" /> or page <xref linkend="atrPageID" />, to
     go to that specific page instead of the next page. The default implementation returns 0.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -6758,7 +6758,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <varlistentry><term>data. [optional]</term>
       <listitem>
       <para>
-        A dialog data stem (<xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
+        A <xref linkend="termDialogDataStem" /> variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
@@ -6817,7 +6817,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a large property
-            sheet page. This sets the cx (<xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            sheet page. This sets the <xref linkend="atrCX" /> and <emphasis role="italic">cy</emphasis>
             attributes of the page to the constant (<xref linkend="tblPropertySheetPageMethods" />) values
             PROP_LG_CXDLG and PROP_LG_CYDLG respectively.
           </para>
@@ -6834,7 +6834,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a medium property
-            sheet page. This sets the cx (<xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            sheet page. This sets the <xref linkend="atrCX" /> and <emphasis role="italic">cy</emphasis>
             attributes of the page to the constant (<xref linkend="tblPropertySheetPageMethods" />) values
             PROP_MED_CXDLG and PROP_MED_CYDLG respectively. This is the default if the SMALL or LARGE keywords are not
             used.
@@ -6869,7 +6869,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a small property
-            sheet page. This sets the cx (<xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            sheet page. This sets the <xref linkend="atrCX" /> and <emphasis role="italic">cy</emphasis>
             attributes of the page to the constant (<xref linkend="tblPropertySheetPageMethods" />) values
             PROP_SM_CXDLG and PROP_SM_CYDLG respectively.
           </para>
@@ -6893,7 +6893,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERSUBTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the headerSubtitle (<xref linkend="atrHeaderSubtitle" />) attribute as the
+            Displays the string value of the <xref linkend="atrHeaderSubtitle" /> attribute as the
             subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
             keyword is used.
           </para>
@@ -6901,7 +6901,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the headerTitle (<xref linkend="atrHeaderTitle" />) attribute as the title in
+            Displays the string value of the <xref linkend="atrHeaderTitle" /> attribute as the title in
             the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
           </para>
           </listitem></varlistentry>
@@ -6916,7 +6916,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USETITLE</term>
           <listitem>
           <para>
-            Specifies that the pageTitle (<xref linkend="atrPageTitle" />) attribute will be used as the title of the
+            Specifies that the <xref linkend="atrPageTitle" /> attribute will be used as the title of the
             page, rather than the title stored in the dialog template for the page. This keyword is not supported when
             using the Aero-style wizard.
           </para>
@@ -7057,14 +7057,14 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template.  This may be numeric or symbolic (<xref linkend="defSymbolicId" />).
+        The resource ID of the dialog template.  This may be numeric or <xref linkend="defSymbolicId" />.
         The resource ID is assigned to the dialog template when it was compiled.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>dlgData. [optional]</term>
       <listitem>
       <para>
-        A dialog data stem (<xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
+        A <xref linkend="termDialogDataStem" /> variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
@@ -7123,7 +7123,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a large property
-            sheet page. This sets the cx (<xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            sheet page. This sets the <xref linkend="atrCX" /> and <emphasis role="italic">cy</emphasis>
             attributes of the page to the constant (<xref linkend="tblPropertySheetPageMethods" />) values
             PROP_LG_CXDLG and PROP_LG_CYDLG respectively.
           </para>
@@ -7140,7 +7140,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a medium property
-            sheet page. This sets the cx (<xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            sheet page. This sets the <xref linkend="atrCX" /> and <emphasis role="italic">cy</emphasis>
             attributes of the page to the constant (<xref linkend="tblPropertySheetPageMethods" />) values
             PROP_MED_CXDLG and PROP_MED_CYDLG respectively. This is the default if the SMALL or LARGE keywords are not
             used.
@@ -7175,7 +7175,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a small property
-            sheet page. This sets the cx (<xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            sheet page. This sets the <xref linkend="atrCX" /> and <emphasis role="italic">cy</emphasis>
             attributes of the page to the constant (<xref linkend="tblPropertySheetPageMethods" />) values
             PROP_SM_CXDLG and PROP_SM_CYDLG respectively.
           </para>
@@ -7199,7 +7199,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERSUBTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the headerSubtitle (<xref linkend="atrHeaderSubtitle" />) attribute as the
+            Displays the string value of the <xref linkend="atrHeaderSubtitle" /> attribute as the
             subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
             keyword is used.
           </para>
@@ -7207,7 +7207,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the headerTitle (<xref linkend="atrHeaderTitle" />) attribute as the title in
+            Displays the string value of the <xref linkend="atrHeaderTitle" /> attribute as the title in
             the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
           </para>
           </listitem></varlistentry>
@@ -7222,7 +7222,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USETITLE</term>
           <listitem>
           <para>
-            Specifies that the pageTitle (<xref linkend="atrPageTitle" />) attribute will be used as the title of the
+            Specifies that the <xref linkend="atrPageTitle" /> attribute will be used as the title of the
             page, rather than the title stored in the dialog template for the page. This keyword is not supported when
             using the Aero-style wizard.
           </para>
@@ -7309,7 +7309,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <varlistentry><term>dlgData. [optional]</term>
       <listitem>
       <para>
-        A dialog data stem (<xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
+        A <xref linkend="termDialogDataStem" /> variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
@@ -7368,7 +7368,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a large property
-            sheet page. This sets the cx (<xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            sheet page. This sets the <xref linkend="atrCX" /> and <emphasis role="italic">cy</emphasis>
             attributes of the page to the constant (<xref linkend="tblPropertySheetPageMethods" />) values
             PROP_LG_CXDLG and PROP_LG_CYDLG respectively.
           </para>
@@ -7385,7 +7385,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a medium property
-            sheet page. This sets the cx (<xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            sheet page. This sets the <xref linkend="atrCX" /> and <emphasis role="italic">cy</emphasis>
             attributes of the page to the constant (<xref linkend="tblPropertySheetPageMethods" />) values
             PROP_MED_CXDLG and PROP_MED_CYDLG respectively. This is the default if the SMALL or LARGE keywords are not
             used.
@@ -7403,7 +7403,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a small property
-            sheet page. This sets the cx (<xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            sheet page. This sets the <xref linkend="atrCX" /> and <emphasis role="italic">cy</emphasis>
             attributes of the page to the constant (<xref linkend="tblPropertySheetPageMethods" />) values
             PROP_SM_CXDLG and PROP_SM_CYDLG respectively.
           </para>
@@ -7444,7 +7444,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERSUBTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the headerSubtitle (<xref linkend="atrHeaderSubtitle" />) attribute as the
+            Displays the string value of the <xref linkend="atrHeaderSubtitle" /> attribute as the
             subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
             keyword is used.
           </para>
@@ -7452,7 +7452,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the headerTitle (<xref linkend="atrHeaderTitle" />) attribute as the title in
+            Displays the string value of the <xref linkend="atrHeaderTitle" /> attribute as the title in
             the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
           </para>
           </listitem></varlistentry>
@@ -7467,7 +7467,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USETITLE</term>
           <listitem>
           <para>
-            Specifies that the pageTitle (<xref linkend="atrPageTitle" />) attribute will be used as the title of the
+            Specifies that the <xref linkend="atrPageTitle" /> attribute will be used as the title of the
             page, rather than the title stored in the dialog template for the page. This keyword is not supported when
             using the Aero-style wizard.
           </para>
@@ -7489,7 +7489,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <para>
         The text to use for this page's title. The page title is used as the text for the tab label for this page in the
         property sheet <xref linkend="clsPropertySheetDialog"/>. This argument sets the
-        pageTitle (<xref linkend="atrPageTitle" />) attribute of this property sheet page and automatically adds the
+ <xref linkend="atrPageTitle" /> attribute of this property sheet page and automatically adds the
         USETITLE keyword to the <emphasis role="italic">pageOpts</emphasis> argument. If this arugment is omitted and
         the <emphasis role="italic">pageTitle</emphasis> attribute is not set by the programmer, then a label is
         constructed automatically by the ooDialog framework. The label will consist of the word <emphasis

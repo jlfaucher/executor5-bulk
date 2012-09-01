@@ -143,7 +143,7 @@
   <listitem>
   <para>
     Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu item identifier.
-    These numbers are essentially the same as any other resource ID (<xref linkend="defResourceId" />) used in
+    These numbers are essentially the same as any other <xref linkend="defResourceId" /> used in
     ooDialog. The Rexx programmer can use numeric or symbolic (<xref linkend="itmMenuSymbolicIDs" />) IDs for menu
     item identifier's, in the same way as for other resource IDs.
   </para>
@@ -183,7 +183,7 @@
     IDs (<xref linkend="defResourceId" />). The programmer can use symbolic IDs (<xref linkend="defSymbolicId" />) for
     menu item identifiers rather than numeric IDs for any argument in a menu object method that uses a menu item
     identifier. However, to do so, the programmer <emphasis role="italic">must</emphasis> use the global
-    .constDir (<xref linkend="dotConstDir" />). If the global <computeroutput>.constDir</computeroutput> is not used,
+    <xref linkend="dotConstDir" />. If the global <computeroutput>.constDir</computeroutput> is not used,
     then all menu item identifier arguments <emphasis role="bold">must</emphasis> be numeric.
   </para> </listitem></varlistentry>
 </variablelist>
@@ -218,7 +218,7 @@
   However, there are some specific details when dealing with menus that should be understood. The menu command event is
   connected using the menu item identifier (<xref linkend="sctMenuItemIDs" />) of the command item, just as dialog
   control events are connected using the resource ID of the dialog control. Event notifications are always connected to
-  a specific Rexx dialog object, the dialog object that represents the underlying (<xref linkend="ovvUnderlying" />)
+  a specific Rexx dialog object, the dialog object that represents the <xref linkend="ovvUnderlying" />
   dialog that the notification is expected to be sent to.
 </para>
 <para>
@@ -1090,7 +1090,7 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
-        role="italic">dlg</emphasis> argument is not a dialog (<xref linkend="chpDialogObject" />) object.
+        role="italic">dlg</emphasis> argument is not a <xref linkend="chpDialogObject" /> object.
       </para> </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_ENOUGH_MEMORY (8)</emphasis></term>
       <listitem>
@@ -1159,7 +1159,7 @@
 </variablelist>
 </section>  <!-- End Menu::connectCommandEvent() -->
 
-<section id="atrHMenu"><title>hMenu (Attribute)</title>
+<section id="atrHMenu" xreflabel="hMenu"><title>hMenu (Attribute)</title>
 <indexterm><primary>hMenu</primary></indexterm>
 <indexterm><primary>menu object</primary><secondary>hMenu</secondary></indexterm>
 <programlisting>
@@ -1205,7 +1205,7 @@
 </variablelist>
 </section>  <!-- End Menu::hMenu() [attribute]  -->
 
-<section id="atrWID"><title>wID (Attribute)</title>
+<section id="atrWID" xreflabel="wID"><title>wID (Attribute)</title>
 <indexterm><primary>wID</primary></indexterm>
 <indexterm><primary>menu object</primary><secondary>wID</secondary></indexterm>
 <programlisting>
@@ -1526,7 +1526,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
         ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
-        dialog (<xref linkend="chpDialogObject" />) object.
+        <xref linkend="chpDialogObject" /> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1802,7 +1802,7 @@
   <para>
     When this menu is a menu bar, connecting the INITMENUPOPUP event and not using the optional <emphasis
     role="italic">hFilter</emphasis> argument results in <emphasis role="italic">all</emphasis> INITMENUPOPUP events
-    sent to the underlying (<xref linkend="ovvUnderlying" />) dialog invoking the connected event handler. Note that
+    sent to the <xref linkend="ovvUnderlying" /> dialog invoking the connected event handler. Note that
     this will include notifications that the programmer may not at first expect. If the user clicks on the system menu,
     an INITMENUPOPUP notification is generated. If the application uses a context menu, the INITMENUPOPUP notification
     is generated before the context menu is shown. The connected event handler will also be invoked for these
@@ -1836,7 +1836,7 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
-        ommitted, but the object is not a dialog (<xref linkend="chpDialogObject" />) object.
+        ommitted, but the object is not a <xref linkend="chpDialogObject" /> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2273,7 +2273,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
         ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
-        dialog (<xref linkend="chpDialogObject" />) object.
+        <xref linkend="chpDialogObject" /> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2404,7 +2404,7 @@
 </programlisting>
 
 <para>
-  Releases the operating system resources for the underlying (<xref linkend="ovvUnderlying" />) menu of this
+  Releases the operating system resources for the <xref linkend="ovvUnderlying" /> menu of this
   <computeroutput>Menu</computeroutput> object. Menubars attached to a dialog, or submenus that are a part of a menubar,
   should not be destroyed. A menubar attached to a window is automatically destroyed by the operating system when the
   window is destroyed. When the operating system destroys a menubar or popup menu, it does so recursively. All submenus
@@ -2826,7 +2826,7 @@
   </para>
   <para>
     The value returned from <emphasis role="italic">getHandle</emphasis> is identical to the value of the
-    hMenu (<xref linkend="atrHMenu" />) attribute.
+ <xref linkend="atrHMenu" /> attribute.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5954,7 +5954,7 @@
 <para>
   A menu bar is often called the top-level menu. It is the bar poisitioned just below the title bar of an application
   window or a dialog. The menu bar object is used, like the <xref linkend="clsMenu"/>,
-  dialog (<xref linkend="chpDialogObject" />), and dialog control (<xref linkend="chpDialogControlObject" />) objects as an
+  <xref linkend="chpDialogObject" />, and dialog control (<xref linkend="chpDialogControlObject" />) objects as an
   abstract concept to document the ooDialog menu objects that represent menu bars. The menu bar classes in ooDialog are
   the <xref linkend="clsBinaryMenuBar"/>, <xref linkend="clsUserMenuBar"/>, and
  <xref linkend="clsScriptMenuBar"/> classes.
@@ -6047,7 +6047,7 @@
     method in the <emphasis role="italic">dlg</emphasis> dialog at this time.
   </para>
   <para>
-    A menu bar can only be attached to a dialog after the underlying (<xref linkend="ovvUnderlying" />) dialog exists.
+    A menu bar can only be attached to a dialog after the <xref linkend="ovvUnderlying" /> dialog exists.
     A menu bar can only be attached to one dialog, and a dialog can only have one menu bar attached to it. If any of
     these conditions are not met, this method fails.
   </para>
@@ -6506,8 +6506,8 @@
     <listitem>
     <para>
       If specified, attach this menu bar to the specified dialog. If used, <emphasis role="italic">attachTo</emphasis>
-      has to be a dialog (<xref linkend="chpDialogObject" />) object and the dialog must be in a valid state to attach
-      the menu bar. That is, the underlying (<xref linkend="ovvUnderlying" />) dialog must exist and the dialog must
+      has to be a <xref linkend="chpDialogObject" /> object and the dialog must be in a valid state to attach
+      the menu bar. That is, the <xref linkend="ovvUnderlying" /> dialog must exist and the dialog must
       not already have a menu bar attached. If any of these conditions are not met, an exception is raised.
     </para>
     </listitem></varlistentry>
@@ -6546,7 +6546,7 @@
   </para>
   <para>
     To use symbolic (<xref linkend="itmMenuSymbolicIDs" />) IDs with menu objects the programmer must use the global
-    .constDir (<xref linkend="dotConstDir" />).
+    <xref linkend="dotConstDir" />.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6719,7 +6719,7 @@
       <listitem>
       <para>
         Specifies a Rexx dialog object for the menu to attach to immediately. This argument must be a
-        dialog (<xref linkend="chpDialogObject" />) object, the underlying (<xref linkend="ovvUnderlying" />) Windows
+        <xref linkend="chpDialogObject" /> object, the <xref linkend="ovvUnderlying" /> Windows
         dialog must exist and that dialog must not already have a menu bar attached. If those conditions are not met,
         then a syntax condition is raised.
       </para>
@@ -6740,7 +6740,7 @@
   </para>
   <para>
     To use symbolic (<xref linkend="itmMenuSymbolicIDs" />) IDs with menu objects the programmer must use the global
-    .constDir (<xref linkend="dotConstDir" />).
+    <xref linkend="dotConstDir" />.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6959,7 +6959,7 @@
   </para>
   <para>
     To use symbolic (<xref linkend="itmMenuSymbolicIDs" />) IDs with menu objects the programmer must use the global
-    .constDir (<xref linkend="dotConstDir" />).
+    <xref linkend="dotConstDir" />.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -8121,7 +8121,7 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> <emphasis
-        role="italic">dlg</emphasis> is not a dialog (<xref linkend="chpDialogObject" />) object.
+        role="italic">dlg</emphasis> is not a <xref linkend="chpDialogObject" /> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -8492,7 +8492,7 @@
         <varlistentry><term>LAYOUTRTL</term>
         <listitem>
         <para>
-          Requires Common Control Library (<xref linkend="ovvComctl32" />) version 6.0 or later. Use right to left
+          Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. Use right to left
           text layout. By default left to right text layout is used.
         </para>
         </listitem></varlistentry>
@@ -8531,13 +8531,13 @@
   </para>
   <para>
     For any animation to occur, the System Parameters Information menu animation must be on. (
- <xref linkend="clsSPI"/> class, menuAnimation (<xref linkend="atrMenuAnimation" />) attribute.) In addition,
+ <xref linkend="clsSPI"/> class, <xref linkend="atrMenuAnimation" /> attribute.) In addition,
     all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (
- <xref linkend="clsSPI"/> class, menuFade (<xref linkend="atrMenuFade" />) attribute.)
+ <xref linkend="clsSPI"/> class, <xref linkend="atrMenuFade" /> attribute.)
   </para>
   <para>
     Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM" />)
-    class, menuAnimation (<xref linkend="atrMenuDropAlignment" />) attribute,) be checked to determine the correct
+    class, <xref linkend="atrMenuDropAlignment" /> attribute,) be checked to determine the correct
     horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
     HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
     developing Microsoft Tablet PC applications.
@@ -8584,7 +8584,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
         role="italic">dlg</emphasis> argument was specified, but the object is not a
-        dialog (<xref linkend="chpDialogObject" />) object.
+        <xref linkend="chpDialogObject" /> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -8772,7 +8772,7 @@
         <varlistentry><term>LAYOUTRTL</term>
         <listitem>
         <para>
-          Requires Common Control Library (<xref linkend="ovvComctl32" />) version 6.0 or later. Use right to left
+          Requires Common Control <xref linkend="ovvComctl32" /> version 6.0 or later. Use right to left
           text layout. By default left to right text layout is used.
         </para>
         </listitem></varlistentry>
@@ -8812,13 +8812,13 @@
   </para>
   <para>
     For any animation to occur, the System Parameters Information menu animation must be on. (
- <xref linkend="clsSPI"/> class, menuAnimation (<xref linkend="atrMenuAnimation" />) attribute.) In addition,
+ <xref linkend="clsSPI"/> class, <xref linkend="atrMenuAnimation" /> attribute.) In addition,
     all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (
- <xref linkend="clsSPI"/> class, menuFade (<xref linkend="atrMenuFade" />) attribute.)
+ <xref linkend="clsSPI"/> class, <xref linkend="atrMenuFade" /> attribute.)
   </para>
   <para>
     Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM" />)
-    class, menuAnimation (<xref linkend="atrMenuDropAlignment" />) attribute,) be checked to determine the correct
+    class, <xref linkend="atrMenuDropAlignment" /> attribute,) be checked to determine the correct
     horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
     HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
     developing Microsoft Tablet PC applications.
@@ -8865,7 +8865,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
         role="italic">dlg</emphasis> argument was specified, but the object is not a
-        dialog (<xref linkend="chpDialogObject" />) object.
+        <xref linkend="chpDialogObject" /> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -9246,7 +9246,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
         ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
-        dialog (<xref linkend="chpDialogObject" />) object.
+        <xref linkend="chpDialogObject" /> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -9562,7 +9562,7 @@
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
         ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
-        dialog (<xref linkend="chpDialogObject" />) object.
+        <xref linkend="chpDialogObject" /> object.
       </para>
       </listitem></varlistentry>
     </variablelist>
