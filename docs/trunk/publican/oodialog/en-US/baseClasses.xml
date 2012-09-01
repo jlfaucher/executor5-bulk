@@ -56,14 +56,14 @@
   To make it easier to understand the methods and attributes that all dialogs have in common, this documentation treats
   the <xref linkend="chpDialogObject"/> object as a whole.  The dialog object chapter shows all the methods
   and attributes that every dialog has, without making much distinction as to what specific mixin or base class the
-  method belongs to. The dialog control object (<xref linkend="chpDialogControlObject" />), is treated in a similar
+  method belongs to. The dialog <xref linkend="chpDialogControlObject" /> object, is treated in a similar
   fashion in its chapter.
 </para>
 <para>
   This chapter describes the base and mixin classes that make up the dialog object and the dialog control object and
   shows how they fit together. In addition, it contains the detailed information for the mixin classes inherited by both
   the dialog and dialog control object. The <xref linkend="chpDialogObject"/> object and the
-  dialog control (<xref linkend="chpDialogControlObject" />) object chapters link back to this chapter for the detailed
+  dialog <xref linkend="chpDialogControlObject" /> object chapters link back to this chapter for the detailed
   information where needed.
 </para>
 
@@ -89,9 +89,8 @@
   PlainBaseDialog is the base class of all dialog classes in the ooDialog framework.  It implements methods that are
   common to every dialog.  PlainBaseDialog is an abstract class. A programmer can not instantiate a new PlainBaseDialog
   object and display a dialog on the screen. Rather, the ooDialog programmer subclasses one of the concrete classes
-  provided by the ooDialog framework, such as the <xref linkend="clsResDialog"/>, the RcDialog (<xref
-  linkend="clsRcDialog" />), or the <xref linkend="clsUserDialog"/>, to create and
-  execute a real dialog.
+  provided by the ooDialog framework, such as the <xref linkend="clsResDialog"/>, the (<xref linkend="clsRcDialog" />),
+  or the <xref linkend="clsUserDialog"/>, to create and execute a real dialog.
 </para>
 <para>
   Many of the methods of the PlainBaseDialog are actually implemented in one of the mixin classes inherited by the
@@ -241,7 +240,7 @@
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a combo box control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectDateTimePicker (<xref linkend="pbdConnectDateTimePicker" /></entry>
+<entry><xref linkend="pbdConnectDateTimePicker"/><entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a date time picker control in the underlying dialog.</entry>
 </row>
 <row>
@@ -249,7 +248,7 @@
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a edit control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectListBox (<xref linkend="pbdConnectListBox" /></entry>
+<entry><xref linkend="pbdConnectListBox"/><entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a list box control in the underlying dialog.</entry>
 </row>
 <row>
@@ -269,7 +268,7 @@
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a tab control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectTrackBar (<xref linkend="pbdConnectTrackBar" /></entry>
+<entry><xref linkend="pbdConnectTrackBar"/><entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a track bar control in the underlying dialog.</entry>
 </row>
 <row>
@@ -297,7 +296,7 @@
 <entry>Takes a dimension expressed in dialog units of this dialog and transforms it to a dimension expressed in pixels.</entry>
 </row>
 <row>
-<entry>enable Control (<xref linkend="pbdEnableControl" />)</entry>
+<entry><xref linkend="pbdEnableControl"/></entry>
 <entry>Enables the control with the specified resource id.</entry>
 </row>
 <row>
@@ -333,7 +332,7 @@
 <entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specified combo box in the underlying dialog.</entry>
 </row>
 <row>
-<entry>getComboEntry (<xref linkend="pbdGetComboEntry" /></entry>
+<entry><xref linkend="pbdGetComboEntry"/><entry>
 <entry>Returns the string at the specified index of the combo box.</entry>
 </row>
 <row>
@@ -453,7 +452,7 @@
 <entry>Inserts a string into the list of a combo box.</entry>
 </row>
 <row>
-<entry>insertListEntry (<xref linkend="pbdInsertListEntry" /></entry>
+<entry><xref linkend="pbdInsertListEntry"/><entry>
 <entry>Inserts a string into the specified list box.</entry>
 </row>
 <row>
@@ -537,7 +536,7 @@
 <entry>Returns an object of the <computeroutput>ScrollBar</computeroutput> class for the scroll bar control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newTrackBar (<xref linkend="pbdNewTrackBar" /></entry>
+<entry><xref linkend="pbdNewTrackBar"/><entry>
 <entry>Returns an object of the <computeroutput>TrackBar</computeroutput> class for the track bar control with the specified resource ID.</entry>
 </row>
 <row>
@@ -557,7 +556,7 @@
 <entry>Returns an object of the <computeroutput>UpDown</computeroutput> class for the up-down control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>noAutoDetection (<xref linkend="pbdNoAutoDetection" /></entry>
+<entry><xref linkend="pbdNoAutoDetection"/><entry>
 <entry>Turns automatic data field detection off</entry>
 </row>
 <row>
@@ -1116,7 +1115,7 @@ PlainBaseDialog::<xref linkend="mthDlgUnit2pixel" />
 
 <section id="pbdEnableControl" xreflabel="enableControl"><title>enableControl</title>
 <programlisting>
-PlainBaseDialog::enableControl (<xref linkend="mthEnableControl" />
+PlainBaseDialog::<xref linkend="mthEnableControl"/>
 
 <![CDATA[
 >>--enableControl(--id--)------------------------><
@@ -1136,7 +1135,7 @@ PlainBaseDialog::<xref linkend="mthEnsureVisible" />
 
 <section id="pbdExecute" xreflabel="execute"><title>execute</title>
 <programlisting>
-PlainBaseDialog::execute (<xref linkend="mthExecute" />
+PlainBaseDialog::<xref linkend="mthExecute"/>
 
 <![CDATA[
 >>--execute(--+-------------+--+---------+--)----><
@@ -1147,7 +1146,7 @@ PlainBaseDialog::execute (<xref linkend="mthExecute" />
 
 <section id="pbdFindComboEntry" xreflabel="findComboEntry"><title>findComboEntry</title>
 <programlisting>
-PlainBaseDialog::findComboEntry (<xref linkend="mthFindComboEntry" />
+PlainBaseDialog::<xref linkend="mthFindComboEntry"/>
 
 r<![CDATA[
 >>--findComboEntry(--id--,--aString--)-----------><
@@ -1611,7 +1610,7 @@ PlainBaseDialog::<xref linkend="mthMinimize" />
 
 <section id="pbdNewCheckBox" xreflabel="newCheckBox"><title>newCheckBox</title>
 <programlisting>
-PlainBaseDialog::newCheckBox (<xref linkend="mthNewCheckBox" />
+PlainBaseDialog::<xref linkend="mthNewCheckBox"/>
 
 <![CDATA[
 >>--newCheckBox(--id--)--------------------------><
@@ -1661,7 +1660,7 @@ PlainBaseDialog::<xref linkend="mthNewGroupBox" />
 
 <section id="pbdNewListBox" xreflabel="newListBox"><title>newListBox</title>
 <programlisting>
-PlainBaseDialog::newListBox (<xref linkend="mthNewListBox" />
+PlainBaseDialog::<xref linkend="mthNewListBox"/>
 
 <![CDATA[
 >>--newListBox(--id--)---------------------------><
@@ -2172,7 +2171,7 @@ PlainBaseDialog::<xref linkend="mthValidate" />
 </para>
 <para>
   See <xref linkend="figComponentClassesDiagram" /> to visualize the mixin classes that the
-  DialogControl inherits. In essence the DialogControl is the dialog control (<xref linkend="chpDialogControlObject" />)
+  DialogControl inherits. In essence the DialogControl is the dialog <xref linkend="chpDialogControlObject"/>
   object. All the methods and attributes of the DialogControl are listed and documented in the dialog control
   object chapter. This includes the methods and attributes of its inherited mixin classes.
 </para>
@@ -2436,7 +2435,7 @@ DialogControl::<xref linkend="mthHasKeyPressConnectionDialogControlObject" />
 
 <section id="dcoRedrawRect"><title>redrawRect</title>
 <programlisting>
-DialogControl::redrawRect (<xref linkend="mthRedrawRectClsDialogControl" />
+DialogControl::<xref linkend="mthRedrawRectClsDialogControl"/>
 
 <![CDATA[
 Form 1:
@@ -2804,7 +2803,7 @@ DialogControl::<xref linkend="mthUsingUnicode" />
   <listitem>
   <para>
     The ooDialog framework provides a <xref linkend="ovvSymbolicIDMechanism" /> allowing programmers to
-    use symbolic (<xref linkend="defSymbolicId" /> IDs in their program. This method is intended to look up a
+    use <xref linkend="defSymbolicId"/> IDs in their program. This method is intended to look up a
     numeric resource ID and return its symbolic ID. The lookup is done in the
     <computeroutput>.Directory</computeroutput> object assigned to the .constDir (<xref linkend="atrConstDir" />)
     attribute of this resource utils object. If an item in the <computeroutput>constDir</computeroutput> matches the
@@ -2870,7 +2869,7 @@ DialogControl::<xref linkend="mthUsingUnicode" />
   <listitem>
   <para>
     The ooDialog framework provides a <xref linkend="ovvSymbolicIDMechanism" /> allowing programmers to
-    use symbolic (<xref linkend="defSymbolicId" /> IDs in their program. The <emphasis
+    use <xref linkend="defSymbolicId"/> IDs in their program. The <emphasis
     role="italic">resolveSymbolicID</emphasis> is the foundation of this mechanism. The framework relies on it heavily,
     however it is not expected that the programmer would have much need for the method.
   </para>
@@ -2977,7 +2976,7 @@ DialogControl::<xref linkend="mthUsingUnicode" />
 <entry>Creates a combobox with a static text control (for the label) in the dialog template. </entry>
 </row>
 <row>
-<entry>createDateTimePicker (<xref linkend="mthCreateDateTimePicker" /></entry>
+<entry><xref linkend="mthCreateDateTimePicker"/><entry>
 <entry>Creates a date time picker control in the dialog template.</entry>
 </row>
 <row>
@@ -3354,7 +3353,7 @@ DynamicDialog::<xref linkend="mthCreateEditInputStem" />
 
 <section id="ddCreateEtchedFrame"><title>createEtchedFrame</title>
 <programlisting>
-DynamicDialog::createEtchedFrame (<xref linkend="mthCreateEtchedFrame" />
+DynamicDialog::<xref linkend="mthCreateEtchedFrame"/>
 
 <![CDATA[
 >>--createEtchedFrame(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)------------><

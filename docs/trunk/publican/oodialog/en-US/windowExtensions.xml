@@ -49,7 +49,7 @@
   WindowExtensions is a mixin class with methods that <emphasis role="italic">should</emphasis> be common to all
   windows. The class name implies it is meant to be an extension of the <xref linkend="clsWindowBase"/>
   class, providing more sophisticated window methods. It is inherited by both the
-  <xref linkend="chpDialogObject" /> and the dialog control (<xref linkend="chpDialogControlObject" />) objects.
+  <xref linkend="chpDialogObject" /> and the dialog <xref linkend="chpDialogControlObject" /> objects.
 </para>
 <para>
   Unfortunately, <emphasis role="bold">many</emphasis> of the methods placed in the WindowExtensions class were not
@@ -1591,11 +1591,11 @@ device context. </para>
 
 <para>The fontToDC method loads a font into a device
 context and returns the handle of the previous font. Use the <xref linkend="mthGetWindowDC"/>,
-getDC (<xref linkend="mthGetDC" />), or <xref linkend="mthGetControlDC"/> method to retrieve a device
+<xref linkend="mthGetDC"/>, or <xref linkend="mthGetControlDC"/> method to retrieve a device
 context, and the <xref linkend="mthCreateFontEx"/>() method to get a font handle. To reset the font to
 the original state, use another fontToDC call with the handle of the previous font. To release the device context, use
 the <xref linkend="mthFreeWindowDC"/>, <xref linkend="mthFreeDC"/>, or
-freeControlDC (<xref linkend="mthFreeControlDC" />) method.
+<xref linkend="mthFreeControlDC"/> method.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1643,7 +1643,7 @@ MyDialog~freeDC(dc)
 
 <para>The getArcDirection method returns the current
 drawing direction for the
-drawArc (<xref linkend="mthDrawArc" />) method. </para>
+<xref linkend="mthDrawArc"/> method. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:

@@ -1063,11 +1063,11 @@ if success then dlg~execute
   </para>
   <para>
     For any control, the visible style can be changed during program execution by using the
- <xref linkend="mthHide"/> or <xref linkend="mthShowClsWindowBase"/> methods. (Or any of the related
+    <xref linkend="mthHide"/> or <xref linkend="mthShowClsWindowBase"/> methods. (Or any of the related
     methods like <xref linkend="mthHideFast"/>, <xref linkend="mthDisplay"/>, etc..)
   </para>
   </listitem></varlistentry>
-  <varlistentry><term id="wsdisabled"><emphasis role="bold">DISABLED</emphasis></term>
+  <varlistentry><term id="wsdisabled" xreflabel="disabled"><emphasis role="bold">DISABLED</emphasis></term>
   <listitem>
   <para>
     All windows can be disabled or enabled.  When a dialog control is disabled it will not accept keyboard or mouse
@@ -1080,11 +1080,11 @@ if success then dlg~execute
   </para>
   <para>
     All controls can have their enabled style changed during program execution by using the
- <xref linkend="mthDisable"/> or <xref linkend="mthEnable"/> methods. (Or any of the related
+    <xref linkend="mthDisable"/> or <xref linkend="mthEnable"/> methods. (Or any of the related
     methods like <xref linkend="mthDisableControl"/>, <xref linkend="mthEnableControl"/>, etc..)
   </para>
   </listitem></varlistentry>
-  <varlistentry><term id="wsborder"><emphasis role="bold">BORDER, NOBORDER</emphasis></term>
+  <varlistentry><term id="wsborder" xreflabel="border"><emphasis role="bold">BORDER, NOBORDER</emphasis></term>
   <listitem>
   <para>
     Most, but not all, windows are drawn with a border.  When using the create... methods individual controls are drawn
@@ -1093,7 +1093,7 @@ if success then dlg~execute
     used to change the default.  In general, this style can not be changed after a control is created.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term id="wsgroup"><emphasis role="bold">GROUP</emphasis></term>
+  <varlistentry><term id="wsgroup" xreflabel="group"><emphasis role="bold">GROUP</emphasis></term>
   <listitem>
   <para>
     This style is used to place a series of consecutive dialog controls in a group.  The first control with the group
@@ -1109,11 +1109,11 @@ if success then dlg~execute
   <para>
     The GROUP keyword is used to give a control the group style when it is created using one of the create... methods.
     After the control has been created its group style can be changed during the execution of a dialog by using the
- <xref linkend="mthSetGroup"/> method of the PlainBaseDialog class or the
- <xref linkend="mthGroup"/> method of the DialogControl class.
+    <xref linkend="mthSetGroup"/> method of the PlainBaseDialog class or the
+    <xref linkend="mthGroup"/> method of the DialogControl class.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term id="wstabstop"><emphasis role="bold">TAB NOTAB</emphasis></term>
+  <varlistentry><term id="wstabstop" xreflabel="tabstop"><emphasis role="bold">TAB NOTAB</emphasis></term>
   <listitem>
   <para>
     The tabstop style is another style that is only meaningful with dialog controls.  When a control has the tabstop
@@ -1668,13 +1668,13 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsgroup" />) control style.
+            The <xref linkend="wsgroup" /> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The no tabstop (<xref linkend="wstabstop" />) control style.
+            The no <xref linkend="wstabstop" /> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -2013,7 +2013,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The no tabstop (<xref linkend="wstabstop" />) control style.
+            The no <xref linkend="wstabstop" /> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -2296,7 +2296,7 @@ self~objectrexx = 1
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The no tabstop (<xref linkend="wstabstop" />) control style.
+            The no <xref linkend="wstabstop" /> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -2462,13 +2462,13 @@ self~objectrexx = 1
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          The group (<xref linkend="wsgroup" />) control style.
+          The <xref linkend="wsgroup" /> control style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TAB</term>
         <listitem>
         <para>
-          The tabstop (<xref linkend="wstabstop" />) control style.
+          The <xref linkend="wstabstop" /> control style.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -2935,7 +2935,7 @@ self~objectrexx = 1
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The control has the group (<xref linkend="wsgroup" />) style. For the auto radio buttons to work, the
+            The control has the <xref linkend="wsgroup" /> style. For the auto radio buttons to work, the
             first radio button should be given the group style. None of the other radio buttons should have the group
             style. The first control that has the group style then ends the group.
           </para>
@@ -2943,7 +2943,7 @@ self~objectrexx = 1
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The control does not have the tabstop (<xref linkend="wstabstop" />) style.
+            The control does not have the <xref linkend="wstabstop" /> style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -3260,7 +3260,7 @@ end
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The no tabstop (<xref linkend="wstabstop" />) control style.
+            The no <xref linkend="wstabstop" /> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -3531,7 +3531,7 @@ MyDialog~execute
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The no tabstop (<xref linkend="wstabstop" />) control style.
+            The no <xref linkend="wstabstop" /> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -3777,13 +3777,13 @@ MyDialog~execute
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsgroup" />) control style.
+            The <xref linkend="wsgroup" /> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The no tabstop (<xref linkend="wstabstop" />) control style.
+            The no <xref linkend="wstabstop" /> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -4052,13 +4052,13 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsgroup" />) control style.
+            The <xref linkend="wsgroup" /> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The no tabstop (<xref linkend="wstabstop" />) control style.
+            The no <xref linkend="wstabstop" /> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -4291,13 +4291,13 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          Create the combo box with the group (<xref linkend="wsgroup" />) style.
+          Create the combo box with the <xref linkend="wsgroup" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          Create the combo box without the tabstop (<xref linkend="wstabstop" />) style. By default the combo box
+          Create the combo box without the <xref linkend="wstabstop" /> style. By default the combo box
           is created with the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -4501,13 +4501,13 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          Create the combo box with the group (<xref linkend="wsgroup" />) style.
+          Create the combo box with the <xref linkend="wsgroup" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          Create the combo box without the tabstop (<xref linkend="wstabstop" />) style. By default the combo box
+          Create the combo box without the <xref linkend="wstabstop" /> style. By default the combo box
           is created with the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -4721,13 +4721,13 @@ self~createPushButtonGroup(20, 235, , ,              -
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The date and time picker has the group (<xref linkend="wsgroup" />) control style.
+            The date and time picker has the <xref linkend="wsgroup" /> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The date and time picker is created without tabstop (<xref linkend="wstabstop" />) control style. The
+            The date and time picker is created without <xref linkend="wstabstop" /> control style. The
             default is to create the date and time picker with the tabstop style.
           </para>
           </listitem></varlistentry>
@@ -5015,13 +5015,13 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          Create the edit control with the group (<xref linkend="wsgroup" />) style.
+          Create the edit control with the <xref linkend="wsgroup" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          Create the edit control without the tabstop (<xref linkend="wstabstop" />) style. By default the edit control
+          Create the edit control without the <xref linkend="wstabstop" /> style. By default the edit control
           is created with the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -5314,13 +5314,13 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          Create the edit control with the group (<xref linkend="wsgroup" />) style.
+          Create the edit control with the <xref linkend="wsgroup" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          Create the edit control without the tabstop (<xref linkend="wstabstop" />) style. By default the edit
+          Create the edit control without the <xref linkend="wstabstop" /> style. By default the edit
           control is created with the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -5645,13 +5645,13 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          Create the edit control with the group (<xref linkend="wsgroup" />) style.
+          Create the edit control with the <xref linkend="wsgroup" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          Create the edit control without the tabstop (<xref linkend="wstabstop" />) style. By default the edit control
+          Create the edit control without the <xref linkend="wstabstop" /> style. By default the edit control
           is created with the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -5964,13 +5964,13 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          Create the edit control with the group (<xref linkend="wsgroup" />) style.
+          Create the edit control with the <xref linkend="wsgroup" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          Create the edit control without the tabstop (<xref linkend="wstabstop" />) style. By default the edit control
+          Create the edit control without the <xref linkend="wstabstop" /> style. By default the edit control
           is created with the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -6270,13 +6270,13 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          Create the edit control with the group (<xref linkend="wsgroup" />) style.
+          Create the edit control with the <xref linkend="wsgroup" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          Create the edit control without the tabstop (<xref linkend="wstabstop" />) style. By default the edit control
+          Create the edit control without the <xref linkend="wstabstop" /> style. By default the edit control
           is created with the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -6499,13 +6499,13 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          Create the list box with the group (<xref linkend="wsgroup" />) style.
+          Create the list box with the <xref linkend="wsgroup" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          Create the list box without the tabstop (<xref linkend="wstabstop" />) style. By default the list box is
+          Create the list box without the <xref linkend="wstabstop" /> style. By default the list box is
           created with the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -6773,7 +6773,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            Create the list-view with the group (<xref linkend="wsgroup" />) style.
+            Create the list-view with the <xref linkend="wsgroup" /> style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOBORDER</term>
@@ -6786,7 +6786,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            Create the list-view without the tabstop (<xref linkend="wstabstop" />) control style. By default the
+            Create the list-view without the <xref linkend="wstabstop" /> control style. By default the
             control is created with the tabstop style.
           </para>
           </listitem></varlistentry>
@@ -6993,13 +6993,13 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsgroup" />) control style.
+            The <xref linkend="wsgroup" /> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The no tabstop (<xref linkend="wstabstop" />) control style.
+            The no <xref linkend="wstabstop" /> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -7321,13 +7321,13 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          Create the scroll bar with the group (<xref linkend="wsgroup" />) style.
+          Create the scroll bar with the <xref linkend="wsgroup" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TAB</term>
         <listitem>
         <para>
-          Create the scroll bar with the tabstop (<xref linkend="wstabstop" />) style.
+          Create the scroll bar with the <xref linkend="wstabstop" /> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BORDER</term>
@@ -7456,7 +7456,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-            connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -7592,7 +7592,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-            connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -7727,7 +7727,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-            connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -7862,7 +7862,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-            connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -7997,7 +7997,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-            connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -8133,7 +8133,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-            connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -8269,7 +8269,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-            connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -8561,7 +8561,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <para>
           Causes the static control to send notification messages for the click, double click, disabled, and enabled
           events.  A static control without this style does not send notification messages.  See the
-          connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
           <xref linkend="clsEventNotification"/> class for further information.
         </para>
         </listitem></varlistentry>
@@ -8875,7 +8875,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-            connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -9033,7 +9033,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           Causes the static control to send notification messages for the click, double click, disabled, and enabled
           events.  A static control without this style does not send notification messages.  See the
 
-          connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
           <xref linkend="clsEventNotification"/> class for further information.
         </para>
         </listitem></varlistentry>
@@ -9151,9 +9151,9 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <listitem>
   <para>
     After adding the static image control, the programmer will still need to assign an image to the control.  This is done
-    with either the setImage() (<xref linkend="mthSetImageClsStaticControl" />) method or the
-    setIcon() (<xref linkend="mthSetIcon" />) methods of the static control.  This can only be done once the underlying
-    dialog has been created, meaning in initDialog() (<xref linkend="mthInitDialog" />) or later.
+    with either the<xref linkend="mthSetImageClsStaticControl" /> method or the
+<xref linkend="mthSetIcon" /> methods of the static control.  This can only be done once the underlying
+    dialog has been created, meaning in<xref linkend="mthInitDialog" /> or later.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -9279,7 +9279,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <para>
           Causes the static control to send notification messages for the click, double click, disabled, and enabled
           events.  A static control without this style does not send notification messages.  See the
-          connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
           <xref linkend="clsEventNotification"/> class for further information.
         </para>
         </listitem></varlistentry>
@@ -9557,7 +9557,7 @@ return 0
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-            connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -9693,7 +9693,7 @@ return 0
         <para>
           Causes the static control to send notification messages for the click, double click, disabled, and enabled
           events.  A static control without this style does not send notification messages.  See the
-          connectStaticEvent() (<xref linkend="mthConnectStaticEvent" />) method of the
+<xref linkend="mthConnectStaticEvent" /> method of the
           <xref linkend="clsEventNotification"/> class for further information.
         </para>
         </listitem></varlistentry>
@@ -9914,7 +9914,7 @@ return 0
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The control has group (<xref linkend="wsgroup" />) control style.
+            The control has <xref linkend="wsgroup" /> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
@@ -9927,7 +9927,7 @@ return 0
           <varlistentry><term>NOTTAB</term>
           <listitem>
           <para>
-            Create the control without the tabstop (<xref linkend="wstabstop" />) control style. By default the control
+            Create the control without the <xref linkend="wstabstop" /> control style. By default the control
             is created with the tabstop style.
           </para>
           </listitem></varlistentry>
@@ -10139,7 +10139,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The trackbar is created with the group (<xref linkend="wsgroup" />) control style.
+            The trackbar is created with the <xref linkend="wsgroup" /> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
@@ -10152,7 +10152,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            Create the trackbar without the tabstop (<xref linkend="wstabstop" />) control style. By default the
+            Create the trackbar without the <xref linkend="wstabstop" /> control style. By default the
             trackbar is created with the tabstop style.
           </para>
           </listitem></varlistentry>
@@ -10354,7 +10354,7 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          The tree view has the group (<xref linkend="wsgroup" />) control style.
+          The tree view has the <xref linkend="wsgroup" /> control style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOBORDER</term>
@@ -10367,7 +10367,7 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          Create the control without the tabstop (<xref linkend="wstabstop" />) control style. By default the control
+          Create the control without the <xref linkend="wstabstop" /> control style. By default the control
           is created with the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -10576,7 +10576,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsgroup" />) control style.
+            The <xref linkend="wsgroup" /> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
@@ -10588,7 +10588,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            Create the control with the tabstop (<xref linkend="wstabstop" />) control style. By default the control
+            Create the control with the <xref linkend="wstabstop" /> control style. By default the control
             is created without the tabstop style.
           </para>
           </listitem></varlistentry>

@@ -101,7 +101,7 @@
   linkend="clsUserDialog" />, <xref linkend="clsResDialog"/>, and RxDialog (<xref
   linkend="clsRcDialog" />), and of course their subclasses. Automatic data detection can be turned on or
   off. By default it is <emphasis role="bold">on</emphasis>. The best way to turn automatic data field detection off for
-  a single dialog is to over-ride the initAutoDetection() (<xref linkend="mthInitAutoDetection" />) method in your
+  a single dialog is to over-ride the<xref linkend="mthInitAutoDetection" /> method in your
   subclass. The <xref linkend="dotApplication" />, an instance of the ApplicationManager (<xref
   linkend="clsApplicationManager" />) class, can be used to change the default to <emphasis
   role="bold">off</emphasis> for the entire program.
@@ -120,7 +120,7 @@
   for any control. However, with automatic detection off, the ooDialog framework will not set the state of the dialog
   controls to match the values of the connected attributes when the underlying dialog is created. Likewise, when the
   dialog ends the connected attributes of the Rexx dialog object are not updated to the state of the dialog controls.
-  But, the programmer can use the setData() (<xref linkend="mthSetData" />) and getData() (<xref
+  But, the programmer can use the<xref linkend="mthSetData" /> and getData() (<xref
   linkend="mthGetData" />) methods to do this herself.
 </para>
 <para>
@@ -131,7 +131,7 @@
     <varlistentry><term><emphasis role="bold">UserDialog:</emphasis></term>
     <listitem>
     <para>
-      In a UserDialog (<xref linkend="clsUserDialog" /> the connect... (<xref linkend="sctConnectDataMethods" />)
+      In a <xref linkend="clsUserDialog" /> the connect... (<xref linkend="sctConnectDataMethods" />)
       attribute methods are called automatically from the create... (<xref linkend="sctCreateMethods" />) methods of the
       <computeroutput>UserDialog</computeroutput>. Each of the create... methods takes an optional argument that allows
       the programmer to specify the data attribute name. If that argument is omitted, the attribute name is automatically (<xref
@@ -464,7 +464,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 </para>
 <para>
   With auto detection on, the states of the dialog controls are set to the data (values) of the corresponding data
-  attributes. This is done <emphasis role="bold">after</emphasis> initDialog() (<xref linkend="mthInitDialog" />) is
+  attributes. This is done <emphasis role="bold">after</emphasis><xref linkend="mthInitDialog" /> is
   invoked. The consequence of this is that, if the programmer explicitly sets the state of the dialog controls in the
   <emphasis role="italic">initDialog</emphasis>() method, the ooDialog framwork will then <emphasis
   role="bold">reset</emphasis> the state of all the dialog controls afterwards. This can be disconcerting to the
