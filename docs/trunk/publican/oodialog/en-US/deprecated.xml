@@ -91,15 +91,13 @@
 <section id="deprecatedAdvancedControls"><title>AdvancedControls Mixin Class</title>
 <indexterm><primary>Deprecated</primary><secondary>AdvancedControls Class</secondary></indexterm>
 <para>
-  This class is <xref linkend="apxDeprecated"/>. The ooDialog framework no longer (<xref
-  linkend="sctHistory" /> makes a distinction between some types of dialog controls, and how to use the
-  controls. I.e., the programmer no longer needs to inherit a special class to use some of the dialog controls. All the
-  methods of the AdvancedControls have been moved into the appropriate dialog class. Therefore the programmer does not
-  need to do anything to use any dialog control in any dialog. In new code simply omit inheriting AdvancedControls. In
-  old code, <emphasis role="italic">inherit AdvancedControls</emphasis> can be deleted from any dialog class declaration
-  and the program will behave the same.
-</para>
-</section>
+  This class is <xref linkend="apxDeprecated"/>. The ooDialog framework no <link linkend="sctHistory">longer</link> makes a
+  distinction between some types of dialog controls, and how to use the controls. I.e., the programmer no longer needs to
+  inherit a special class to use some of the dialog controls. All the methods of the AdvancedControls have been moved into
+  the appropriate dialog class. Therefore the programmer does not need to do anything to use any dialog control in any
+  dialog. In new code simply omit inheriting AdvancedControls. In old code, <emphasis role="italic">inherit
+  AdvancedControls</emphasis> can be deleted from any dialog class declaration and the program will behave the same.
+</para> </section>
 
 <section id="deprecatedMessageExtensions"><title>MessageExtensions Mixin Class</title>
 <indexterm><primary>Deprecated</primary><secondary>MessageExtensions Class</secondary></indexterm>
@@ -116,10 +114,11 @@
 <section id="deprecatedPlainUserDialog" xreflabel="PlainUserDialog"><title>PlainUserDialog Class</title>
 <indexterm><primary>Deprecated</primary><secondary>PlainUserDialog Class</secondary></indexterm>
 <para>
-  This class is <xref linkend="apxDeprecated"/>. The ooDialog framework no longer (<xref
-  linkend="sctHistory" />) makes a distinction between a plain user dialog and an user dialog (<xref
-  linkend="clsUserDialog" />). Directly subclass the <emphasis role="italic">Userdialog</emphasis>
-  instead of the <emphasis role="italic">PlainUserDialog</emphasis>.
+  This class is <xref linkend="apxDeprecated"/>. The ooDialog framework no <link linkend="sctHistory">longer</link> makes a
+  distinction between a PlainUserDialog and an
+                                               <xref linkend="clsUserDialog"/>. Directly
+  subclass the <emphasis role="italic">Userdialog</emphasis> instead of the <emphasis
+  role="italic">PlainUserDialog</emphasis>.
 </para>
 </section>
 
@@ -158,7 +157,7 @@
 </section>
 
 
-<section id="deprecatedDialogMethods"><title>Deprecated Dialog Methods</title>
+<section id="deprecatedDialogMethods" xreflabel="deprecated"><title>Deprecated Dialog Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>dialog object methods</secondary></indexterm>
 <para>
   <link linkend="apxDeprecated">Deprecated</link> dialog methods and their replacement methods are listed in this section.
@@ -193,8 +192,8 @@
 <section><title>combineELwithSB</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. It uses an outdated process to add function to a
-  dialog that is similar to a modern up-down control. The method does not work properly. The up-down (<xref
-  linkend="clsUpDown" />) dialog control should be used directly to replace this method.
+  dialog that is similar to a modern up-down control. The method does not work properly. The <xref linkend="clsUpDown"/>
+  dialog control should be used directly to replace this method.
 </para>
 </section>
 
@@ -309,8 +308,7 @@
 
 <section><title>focusItem</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>. Replace this method with the focusControl() (<xref
-  linkend="mthFocusControl" />) method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the <xref linkend="mthFocusControl"/> method.
 </para>
 </section>
 
@@ -485,8 +483,8 @@
 <section><title>getTextSize</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>.  Replace this method with, preferably, the
-<xref linkend="mthGetTextSizeDu"/> method, or the getTextSizeDialog() (<xref
-  linkend="mthGetTextSizeDlgClsPlainBaseDialog" />) method if absolutely necessary.
+  <xref linkend="mthGetTextSizeDu"/> method, or the <xref linkend="mthGetTextSizeDlgClsPlainBaseDialog"/> method if
+  absolutely necessary.
 </para>
 <para>
   This method never worked correctly, the previous documentation for this method was incorrect and /
@@ -511,10 +509,8 @@
 
 <section><title>getWindowRect</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>. Use the windowRext() (<xref
-  linkend="mthWindowRect" />) method instead.
-</para>
-</section>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="mthWindowRect"/> method instead.
+</para> </section>
 
 <section><title>grayMenuItem</title>
 <para>
@@ -560,10 +556,8 @@
 
 <section><title>moveItem</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>. Use the moveControl() (<xref
-  linkend="mthMoveControl" />) method instead.
-</para>
-</section>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="mthMoveControl"/> method instead.
+</para> </section>
 
 <section><title>peekDialogMessage</title>
 <para>
@@ -587,10 +581,8 @@
 
 <section><title>resizeItem</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>. Use the resizeControl() (<xref
-  linkend="mthResizeControl" />) method instead.
-</para>
-</section>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="mthResizeControl"/> method instead.
+</para> </section>
 
 <section><title>run</title>
 <para>
@@ -653,10 +645,8 @@
 
 <section><title>uncheckMenuItem</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>.  Use the menu(<xref linkend="chpMenus"/>)
-  object methods directly.
-</para>
-</section>
+  This method is <xref linkend="apxDeprecated"/>.  Use the <xref linkend="chpMenus"/> object methods directly.
+</para> </section>
 
 <section><title>writeToButton</title>
 <para>
@@ -676,8 +666,8 @@
 <para>
   The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
   role="italic">Button</emphasis> class and how to replace those methods in ooDialog programs. The implementation of the
-  following <emphasis role="italic">bitmap</emphasis> button methods was done in the dialog (<xref
-  linkend="chpDialogObject" />) object. The methods are methods of the dialog, not the button.
+  following <emphasis role="italic">bitmap</emphasis> button methods was done in the <xref linkend="chpDialogObject"/>
+  object. The methods are methods of the dialog, not the button.
 </para>
 
 <section><title>changeBitmap</title>
@@ -691,80 +681,70 @@
 <section><title>dimBitmap</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthDimBitmap"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthDimBitmap"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>displaceBitmap</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthDisplaceBitmap"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthDisplaceBitmap"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>drawBitmap</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthDrawBitmap"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthDrawBitmap"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>getBitmapPosition</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthGetBitmapPosition"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthGetBitmapPosition"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>getBitmapSizeX</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthGetBitmapSizeX"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthGetBitmapSizeX"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>getBitmapSizeY</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthGetBitmapSizeY"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthGetBitmapSizeY"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>scroll</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthScrollButton"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthScrollButton"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>scrollBitmapFromTo</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthScrollBitmapFromTo"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthScrollBitmapFromTo"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>scrollText</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthScrollText"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthScrollText"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
 <section><title>setBitmapPosition</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthSetBitmapPosition"/> method of the the dialog (<xref
-  linkend="chpDialogObject" />) object.
+<xref linkend="mthSetBitmapPosition"/> method of the the <xref linkend="chpDialogObject"/> object.
 </para>
 </section>
 
@@ -779,10 +759,8 @@
 
 <section><title>editSelection</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>. Use setEditSelection() (<xref
-  linkend="mthSetEditSelection" />).
-</para>
-</section>
+  This method is <xref linkend="apxDeprecated"/>. Use <xref linkend="mthSetEditSelection"/>.
+</para> </section>
 
 </section>  <!-- End Deprecated ComboBox Methods Section -->
 
@@ -946,9 +924,8 @@
 <section><title>getTextSize</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-<xref linkend="mthGetTextSizeDu"/> method. The getTextSizeDlg() (<xref
-  linkend="mthGetTextSizeDlgClsDialogControl" />) method could also be used, if absolutely
-  necessary. However, that is not recommended.
+  <xref linkend="mthGetTextSizeDu"/> method. The <xref linkend="mthGetTextSizeDlgClsDialogControl"/> method could also be
+  used, if absolutely necessary. However, that is not recommended.
 </para>
 <para>
   This method never worked correctly, the previous documentation for this method was incorrect and /
@@ -965,10 +942,8 @@
 
 <section><title>processMessage</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>. Replace this method with the sendMessage() (<xref
-  linkend="wbdcoSendMessage" />) method.
-</para>
-</section>
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the <xref linkend="wbdcoSendMessage"/> method.
+</para> </section>
 
 <section><title>releaseMouseCapture</title>
 <para>
@@ -1000,15 +975,13 @@
 
 <section><title>value</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>. Replace this method with the dat() (<xref
-  linkend="mthData" />) method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the <xref linkend="mthData"/> method.
 </para>
 </section>
 
 <section><title>value=</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>. Replace this method with the data= (<xref
-  linkend="mthDataEquals" />) method.
+  This method is <xref linkend="apxDeprecated"/>. Replace this method with the <xref linkend="mthDataEquals"/> method.
 </para>
 </section>
 
@@ -1198,11 +1171,10 @@
 <para>
   The ooDialog documentation prior to ooDialog 4.0.0 documented ten external functions as <emphasis
   role="italic">callable functions that can be used in your Object Rexx programs</emphasis>. It then
-  mentioned in passing that the Public Routines (<xref linkend="sctPublicRoutines"/>) were a more
-  convenient way to use these functions. It was noted that the external routines were registered
-  automatically when the first dialog was initialized, but if the programmer wanted to use the external
-  routines when no dialog was created, he could register the individual functions using
-  <computeroutput>RxFuncAdd</computeroutput>.
+  mentioned in passing that the Public  <link linkend="sctPublicRoutines">Routines</link> were a more convenient way to use
+  these functions. It was noted that the external routines were registered automatically when the first dialog was
+  initialized, but if the programmer wanted to use the external routines when no dialog was created, he could register the
+  individual functions using <computeroutput>RxFuncAdd</computeroutput>.
 </para>
 <para>
   The 3.2.0 documentation expounded on that a little and also mentioned that there were other external
@@ -1241,77 +1213,72 @@
 <section><title>errorMessage</title>
 <para>
   This function is <xref linkend="apxDeprecated"/>. Use the public routine
-  errorDialog (<xref linkend="rtnErrorDialog"/>).
+ <xref linkend="rtnErrorDialog"/>.
 </para>
 </section>
 
 <section><title>getFileNameWindow</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the public routine
-  FileNameDialog (<xref linkend="rtnFileNameDialog"/>). Do not use this function in new code. Try to migrate existing
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>). Use the public routine
+ <xref linkend="rtnFileNameDialog"/>. Do not use this function in new code. Try to migrate existing
   code to FileNameDialog. This function may not exist in future versions of ooDialog.
 </para> </section>
 
 <section><title>getScreenSize</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the
-  public routine screeSize (<xref linkend="rtnScreenSize"/>). Do not use this method in new code. Try to migrate
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>). Use the
+  public routine <xref linkend="rtnScreenSize"/>. Do not use this method in new code. Try to migrate
   existing code to screenSize. This function may not exist in future versions of ooDialog.
 </para>
 </section>
 
 <section><title>getSysMetrics</title>
 <para>
-  This function is deprecated.  It is replaced by the functionally equivalent getSystemMetrics() (<xref
-  linkend="mthGetSystemMetricsClsDlgUtil" />) method of the .DlgUtil class.  Do not
-  use this function in new code. Try to migrate existing code to to the
-  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This function may not exist in
-  future versions of ooDialog.
+  This function is deprecated.  It is replaced by the functionally equivalent <xref linkend="mthGetSystemMetricsClsDlgUtil"/>
+  method of the .DlgUtil class.  Do not use this function in new code. Try to migrate existing code to to the
+  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This function may not exist in future versions of
+  ooDialog.
 </para>
 </section>
 
 <section><title>infoMessage</title>
 <para>
-  This function is <xref linkend="apxDeprecated"/>. Use the public routine infoDialog (<xref
-  linkend="rtnInfoDialog" />).
-</para>
-</section>
+  This function is <xref linkend="apxDeprecated"/>. Use the public routine <xref linkend="rtnInfoDialog"/>.
+</para> </section>
 
 <section><title>playSoundFile</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the public routine
-  Play (<xref linkend="rtnPlay"/>). Do not use this function in new code. Try to migrate existing code to Play. This
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>). Use the public routine
+ <xref linkend="rtnPlay"/>. Do not use this function in new code. Try to migrate existing code to Play. This
   function may not exist in future versions of ooDialog.
 </para>
 </section>
 
 <section><title>playSoundFileInLoop</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the public routine
-  play (<xref linkend="rtnPlay"/>). Do not use this function in new code. Try to migrate existing code to <emphasis
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>). Use the public routine
+ <xref linkend="rtnPlay"/>. Do not use this function in new code. Try to migrate existing code to <emphasis
   role="italic">play</emphasis>(). This function may not exist in future versions of ooDialog.
 </para>
 </section>
 
 <section><title>sleepMS</title>
 <para>
-  This function is <xref linkend="apxDeprecated"/>. Use the public routine msSleep (<xref
-  linkend="rtnMSSleep" />).
+  This function is <xref linkend="apxDeprecated"/>. Use the public routine <xref linkend="rtnMSSleep"/>.
 </para>
 </section>
 
 <section><title>stopSoundFile</title>
 <para>
-  This function is deprecated. See this explanation (<xref linkend="deprecatedExternalFunctions"/>). Use the public routine
-  play (<xref linkend="rtnPlay"/>). Do not use this function in new code. Try to migrate existing code to <emphasis
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>). Use the public routine
+ <xref linkend="rtnPlay"/>. Do not use this function in new code. Try to migrate existing code to <emphasis
   role="italic">play</emphasis>(). This function may not exist in future versions of ooDialog.
 </para> </section>
 
 <section><title>systemMetrics Routine</title>
 <para>
-  This routine is deprecated.  It is replaced by the functionally equivalent getSystemMetrics() (<xref
-  linkend="mthGetSystemMetricsClsDlgUtil" />) method of the .DlgUtil class.  Do not use this
-  routine in new code. Try to migrate existing code to to the
+  This routine is deprecated.  It is replaced by the functionally equivalent <xref linkend="mthGetSystemMetricsClsDlgUtil"/>
+  method of the .DlgUtil class.  Do not use this routine in new code. Try to migrate existing code to to the
   <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method. This routine may not exist in future versions of
   ooDialog.
 </para>
@@ -1330,8 +1297,7 @@
 
 <section><title>yesNoMessage</title>
 <para>
-  This function is <xref linkend="apxDeprecated"/>. Use the public routine askDialog (<xref
-  linkend="rtnAskDialog" />).
+  This function is <xref linkend="apxDeprecated"/>. Use the public routine <xref linkend="rtnAskDialog"/>.
 </para>
 </section>
 
@@ -1341,8 +1307,7 @@
 <section id="deprecatedUserDialogMethods"><title>Deprecated UserDialog Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>UserDialog methods</secondary></indexterm>
 <para>
-  Deprecated (<xref linkend="apxDeprecated"/>) <computeroutput>UserDialog</computeroutput> methods and their
-  replacement methods are listed in this section.
+  Deprecated <computeroutput>UserDialog</computeroutput> methods and their replacement methods are listed in this section.
 </para>
 
 <section><title>addBitmapButton</title>
@@ -1495,7 +1460,7 @@
 <section><title>addInputStem</title>
 <para>
   This method is <xref linkend="apxDeprecated"/>. Replace this method with the
-  createEditInputStem () (<xref linkend="mthCreateEditInputStem"/>) method.
+  <xref linkend="mthCreateEditInputStem"/> method.
 </para>
 </section>
 
@@ -1669,10 +1634,8 @@
 
 <section><title>setMenu</title>
 <para>
-  This method is <xref linkend="apxDeprecated"/>. Use the menu(<xref linkend="chpMenus"/>)
-  object methods directly.
-</para>
-</section>
+  This method is <xref linkend="apxDeprecated"/>. Use the <xref linkend="chpMenus"/> object methods directly.
+</para> </section>
 
 </section>  <!-- End Deprecated UserDialog Methods Section -->
 
@@ -1680,10 +1643,9 @@
 <section id="deprecatedWindowBase"><title>Deprecated WindowBase Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>WindowBase methods</secondary></indexterm>
 <para>
-  The <xref linkend="clsWindowBase"/> class is inherited by both the dialog
-  object (<xref linkend="chpDialogObject"/>) and the dialog <xref linkend="chpDialogControlObject"/> object.
-  Therefore, depending on the point of view of the reader, these deprecated methods may be thought of as either
-  deprecated dialog methods or deprecated dialog control methods.
+  The <xref linkend="clsWindowBase"/> class is inherited by both the dialog <xref linkend="chpDialogObject"/> object and the
+  dialog <xref linkend="chpDialogControlObject"/> object. Therefore, depending on the point of view of the reader, these
+  deprecated methods may be thought of as either deprecated dialog methods or deprecated dialog control methods.
 </para>
 <para>
   The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
@@ -1716,10 +1678,9 @@
 <section id="deprecatedWindowExtensions"><title>Deprecated WindowExtensions Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>WindowExtensions methods</secondary></indexterm>
 <para>
-  The <xref linkend="clsWindowExtensions"/> class is inherited by both the dialog
-  object (<xref linkend="chpDialogObject"/>) and the dialog <xref linkend="chpDialogControlObject"/> object.
-  Therefore, depending on the point of view of the reader, these deprecated methods may be thought of as either
-  deprecated dialog methods or deprecated dialog control methods.
+  The <xref linkend="clsWindowExtensions"/> class is inherited by both the <xref linkend="chpDialogObject"/> object and the
+  dialog <xref linkend="chpDialogControlObject"/> object. Therefore, depending on the point of view of the reader, these
+  deprecated methods may be thought of as either deprecated dialog methods or deprecated dialog control methods.
 </para>
 <para>
   The following lists the <xref linkend="apxDeprecated"/> methods of the <emphasis
@@ -1729,8 +1690,7 @@
 <section><title>absRect2LogRect</title>
 <para>
   This method is <xref linkend="apxDeprecated"/> because it is incorrectly implemented and
- <xref linkend="ovvInaccurate"/>. Replace this method with the pixel2dlgUnit() (<xref
-  linkend="mthPixel2dlgUnit" />) method.
+ <xref linkend="ovvInaccurate"/>. Replace this method with the <xref linkend="mthPixel2dlgUnit"/> method.
 </para>
 </section>
 
@@ -1779,8 +1739,7 @@
 <section><title>logRect2AbsRect</title>
 <para>
   This method is <xref linkend="apxDeprecated"/> because it is incorrectly implemented and
- <xref linkend="ovvInaccurate"/>. Replace this method with the dlgUnit2pixel() (<xref
-  linkend="mthDlgUnit2pixel" />) method.
+ <xref linkend="ovvInaccurate"/>. Replace this method with the <xref linkend="mthDlgUnit2pixel"/> method.
 </para>
 </section>
 

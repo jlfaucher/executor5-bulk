@@ -75,7 +75,7 @@
 </thead>
 <tbody>
 <row>
-<entry>Constant Methods (<xref linkend="sctDialogConstantMethods"/>)</entry>
+<entry><link linkend="sctDialogConstantMethods">Constant Methods</link></entry>
 <entry>The dialog object provides a number of <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput>directive.</entry>
 </row>
 <row>
@@ -1347,7 +1347,7 @@
 <entry>Gets the text of the dialog.</entry>
 </row>
 <row>
-<entry>title= (<xref linkend="wbdoTitleEquals"/>)</entry>
+<entry><xref linkend="wbdoTitleEquals"/></entry>
 <entry>Sets the text of the dialog.</entry>
 </row>
 <row>
@@ -1637,7 +1637,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      See the previous getFontName (<xref linkend="exampleGetFontNameCls"/>)() example.
+      See the previous getFontName <link linkend="exampleGetFontNameCls">example</link>.
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1689,7 +1689,7 @@
       <para>
         A dialog data stem variable (don't forget the trailing period) that contains data used to initialize the
         underlying dialog's controls. This is part of the automatic
-        data detection (<xref linkend="sctUnderstandingDataAttributes"/>) feature. When
+        data <link linkend="sctUnderstandingDataAttributes">detection</link> feature. When
         <xref linkend="mthInitAutoDetection"/> data detection is off, using this argument does nothing.
       </para>
       <para>
@@ -1704,18 +1704,17 @@
       <para>
         <emphasis role="bold">Note:</emphasis> when the argument is used the behavior of automatic data detection is
         changed in this way. When the underlying dialog is created, the data stem <emphasis role="bold">only</emphasis>
-        is used to set the state of the dialog controls. The values of the
-        data attributes (<xref linkend="sctUnderstandingDataAttributes"/>) are ignored. However, when the dialog closes
-        with the <emphasis role="italic">ok</emphasis> command, the values of both the data attributes <emphasis
+        is used to set the state of the dialog controls. The values of the data <link
+        linkend="sctUnderstandingDataAttributes">attributes</link> are ignored. However, when the dialog closes with the
+        <emphasis role="italic">ok</emphasis> command, the values of both the data attributes <emphasis
         role="bold">and</emphasis> the data stem indexes are updated.
       </para>
       </listitem></varlistentry>
       <varlistentry id="termHFile"><term>hFile [optional]</term>
       <listitem>
       <para>
-        A file, (often called a header (<xref linkend="defHeaderFile"/>) file,) defining
-        <xref linkend="defSymbolicId"/> IDs for resources. The symbolic IDs defined within the file will be
-        added to the <xref linkend="atrConstDir"/> directory.
+        A file, (often called a header <xref linkend="defHeaderFile"/>,) defining <xref linkend="defSymbolicId"/> IDs for
+        resources. The symbolic IDs defined within the file will be added to the <xref linkend="atrConstDir"/> directory.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1819,8 +1818,8 @@
   This method changes the default dialog font used for all dialogs. The default dialog font is used whenever a
   dynamically defined dialog template does not specify a font. Since it is very unusual for a resource script to not
   specify a font, this mostly effects the <xref linkend="clsUserDialog"/> classes. Binary compiled
-  dialog templates (ResDialog (<xref linkend="clsResDialog"/>)) can not be changed, so the default dialog font has no
-  meaning for a ResDialog.
+  dialog templates (<xref linkend="clsResDialog"/>) can not be changed, so the default dialog font has no meaning for a
+  ResDialog.
 </para>
 <para>
   Currently the default font is <computeroutput>MS Shell Dlg</computeroutput> with a size of
@@ -1838,7 +1837,7 @@
   dynamic dialogs, that don't specify a font, that are created afterwards will use the new default font.
 </para>
 <para>
-  The actual font used by a dialog directly effects the value of a dialog unit (<xref linkend="defDialogUnit"/>).
+  The actual font used by a dialog directly effects the value of a <xref linkend="defDialogUnit"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1869,27 +1868,27 @@
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example shows a change to the oostddlg.rex sample program.  The default font is changed to
-      Tahoma pt 10.  This causes all the Standard Dialogs (<xref linkend="sctStandardDialogs"/>) to
-      be created using this font.
-      <programlisting>
-      <![CDATA[
+  <para>
+    This example shows a change to the oostddlg.rex sample program.  The default font is changed to
+    Tahoma pt 10.  This causes all the Standard <link linkend="sctStandardDialogs">Dialogs</link> to be created using this
+    font.
+<programlisting>
+<![CDATA[
 
-      /*--------------------------------------------------------------------------*/
-      /*                                                                          */
-      /* oodialog\samples\oostddlg.rex   Standard Dialog demonstration            */
-      /*                                                                          */
-      /*--------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------*/
+/*                                                                          */
+/* oodialog\samples\oostddlg.rex   Standard Dialog demonstration            */
+/*                                                                          */
+/*--------------------------------------------------------------------------*/
 
-      .PlainBaseDialog~setDefaultFont("Tahoma", 10)
-      say
-      say 'Starting standard dialog demonstration...'
+.PlainBaseDialog~setDefaultFont("Tahoma", 10)
+say
+say 'Starting standard dialog demonstration...'
 
-      ...
-      ]]>
-      </programlisting>
-    </para>
+...
+]]>
+</programlisting>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PlainBaseDialog::setDefaultFont() [class method?] -->
@@ -1917,7 +1916,7 @@
 </programlisting>
 
 <para>
-  Reflects whether automatic data field detection (<xref linkend="sctUnderstandingDataAttributes"/>) is on or off.
+  Reflects whether automatic data field <link linkend="sctUnderstandingDataAttributes">detection</link> is on or off.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">autoDetect get:</emphasis></term>
@@ -2064,16 +2063,15 @@ WindowBase::<xref linkend="atrFactorY"/>
   Prior to the creation of the underlying Windows dialog, the font name attribute specifies the name of the font that
   will be used to create the dialog. This font is used in a <xref linkend="clsUserDialog"/> when the font is not
   specified in the <xref linkend="mthCreate"/>() or the
- <xref linkend="mthCreateCenter"/>() methods, or in a <xref linkend="clsRcDialog"/> where the
-  font is not specified in the resource script file. With a binary compiled dialog resource
-  (ResDialog (<xref linkend="clsResDialog"/>)) the font has already been specified when the dialog template
-  was compiled and can not be changed. Therefore the font name attribute has no effect on a ResDialog prior to the
-  execution of the dialog.
+  <xref linkend="mthCreateCenter"/>() methods, or in a <xref linkend="clsRcDialog"/> where the
+  font is not specified in the resource script file. With a binary compiled dialog resource (<xref
+  linkend="clsResDialog"/>) the font has already been specified when the dialog template was compiled and can not be
+  changed. Therefore the font name attribute has no effect on a ResDialog prior to the execution of the dialog.
 </para>
 <para>
   After the creation of the dialog, the attribute always reflects the font name that was actually used the underlying
-  dialog was created. The public <xref linkend="mthSetDlgFont"/>() method can be used to set both the
-  font name and font size attributes at the same time.
+  dialog was created. The public <xref linkend="mthSetDlgFont"/> method can be used to set both the font name and font size
+  attributes at the same time.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">fontName get:</emphasis>[public]</term>
@@ -2221,7 +2219,7 @@ WindowBase::<xref linkend="atrFactorY"/>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the fontName (<xref linkend="exampleFontName"/>)() example, which also uses the fontSize attribute.
+    See the fontName <link linkend="exampleFontName">example</link>/>, which also uses the fontSize attribute.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2719,7 +2717,7 @@ DialogExtensions::<xref linkend="mthEndAsyncExecution"/>
     <varlistentry><term>icon [optional]</term>
     <listitem>
     <para>
-      The resource ID of the dialog's icon (<xref linkend="defDialogIcon"/>). May be numeric or
+      The resource ID of the <xref linkend="defDialogIcon"/>. May be numeric or
       <xref linkend="defSymbolicId"/>.  If an icon ID is not supplied, the default ooDialog icon will be used.
     </para>
     </listitem></varlistentry>
@@ -2761,19 +2759,19 @@ DialogExtensions::<xref linkend="mthEndAsyncExecution"/>
   </para>
   <para>
     If another ooDialog dialog has been started by the Rexx program, it is disabled when <emphasis
-    role="italic">execute</emphasis> is invoked. This in effect makes the dialog a
-    modal (<xref linkend="defModalModeless"/>) dialog. To start a <emphasis role="italic">modeless</emphasis> dialog use
-    the <xref linkend="mthPopup"/> or <xref linkend="mthPopupAsChild"/> methods.
+    role="italic">execute</emphasis> is invoked. This in effect makes the dialog a <xref linkend="defModalModeless"/>
+    dialog. To start a <emphasis role="italic">modeless</emphasis> dialog use the <xref linkend="mthPopup"/> or <xref
+    linkend="mthPopupAsChild"/> methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     The following example instantiates a new <xref linkend="clsUserDialog"/> subclass object. The dialog
-    template (<xref linkend="ovvDialogTemplate"/>) is started by the <emphasis role="italic">create</emphasis>
+    <xref linkend="ovvDialogTemplate"/> is started by the <emphasis role="italic">create</emphasis>
     method and finished in the <emphasis role="italic">defineDialog</emphasis> method. Then the <emphasis
     role="italic">execute</emphasis> method runs the dialog as the topmost window.  The
-    dialog icon (<xref linkend="defDialogIcon"/>) is set to one of the pre-defined icons supplied by ooDialog.
+    <xref linkend="defDialogIcon"/> is set to one of the pre-defined icons supplied by ooDialog.
   </para>
   <para>
     When the user terminates the dialog, the return from <emphasis role="italic">execute</emphasis> is checked to
@@ -3031,10 +3029,9 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   <listitem>
   <para>
     This example sets the dialog font for a <xref linkend="clsUserDialog"/> dialog before the dialog
-    template (<xref linkend="ovvDialogTemplate"/>) is started. This allows the code to
- <xref linkend="ovvInaccurate"/> calculate the size of the bitmap in dialog
-    units (<xref linkend="defDialogUnit"/>). The size of the bitmap is then used to size the dialog and to place the other
-    controls in the dialog.
+    <xref linkend="ovvDialogTemplate"/> is started. This allows the code to
+    <xref linkend="ovvInaccurate"/> calculate the size of the bitmap in <xref linkend="defDialogUnit"/>s. The size of the
+    bitmap is then used to size the dialog and to place the other controls in the dialog.
 
 <programlisting>
 <![CDATA[
@@ -3072,9 +3069,9 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 
 <section id="sctInstantiateControls"><title>Instantiating Dialog Controls</title>
 <para>
-  The methods in this section are used to instantiate one of the concrete dialog
-  control (<xref linkend="chpDialogControlObject"/>) objects. The dialog control objects can not be instantiated directly by the programmer in Rexx code.
-  Dialog controls are instantiated indirectly through the dialog object.
+  The methods in this section are used to instantiate one of the concrete dialog <xref linkend="chpDialogControlObject"/>
+  objects. The dialog control objects can not be instantiated directly by the programmer in Rexx code. Dialog controls are
+  instantiated indirectly through the dialog object.
 </para>
 <para>
   <emphasis role="bold">All</emphasis> dialog control objects are obtained through one of the methods in this section.
@@ -3131,8 +3128,8 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example determines the check state of a 3STATE (<xref linkend="termThreeStateStyle"/>) check box
-    and displays a message announcing the state:
+    The following example determines the check state of a <link linkend="termThreeStateStyle">3STATE</link> check box and
+    displays a message announcing the state:
 
 <programlisting>
 <![CDATA[
@@ -3195,8 +3192,8 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <para>
     The following example comes from a fictious accounting program. In one of the dialogs for the program, when the user
     selects a specific city, say San Diego, the zip code combo box is populated with the valid zip codes for that city.
-    In the program, symbolic ID (<xref linkend="defSymbolicId"/>)s have been used for the controls.  The valid zip
-    codes are passed into the method as an array.
+    In the program, symbolic ID <xref linkend="defSymbolicId"/>s have been used for the controls.  The valid zip codes are
+    passed into the method as an array.
 
 <programlisting>
 <![CDATA[
@@ -4027,9 +4024,9 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Prior to the effort to unify (<xref linkend="termMethodNameUnification"/>) the class and method names in
-    ooDialog, the track bar control was called a slider. This may have been the most egregious misnomer in ooDialog and
-    the term <emphasis role="italic">slider</emphasis> is no longer used.
+    Prior to the effort to <link linkend="termMethodNameUnification">unify</link> the class and method names in ooDialog,
+    the track bar control was called a slider. This may have been the most egregious misnomer in ooDialog and the term
+    <emphasis role="italic">slider</emphasis> is no longer used.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4631,8 +4628,8 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
 <para>
   A default <emphasis role="italic">cancel</emphasis> method is provided by the ooDialog framework. The
   <computeroutput>cancel</computeroutput> event notification is
-  automatically (<xref linkend="sctStandardEventMethods"/>) connected to this method. This method is meant to be over-ridden
-  by the programmer if the default implementation is not sufficient for the needs of the program.
+  <link linkend="sctStandardEventMethods">automatically</link> connected to this method. This method is meant to be
+  over-ridden by the programmer if the default implementation is not sufficient for the needs of the program.
 </para>
 <para>
   The method is invoked in response to the <computeroutput>cancel</computeroutput> command event. The default
@@ -4655,9 +4652,9 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
   role="italic">cancel</emphasis> method.
 </para>
 <para>
-  The example (<xref linkend="exampleOk"/>) given for the <emphasis role="italic">ok</emphasis> method shows the
-  proper way to over-ride the <emphasis role="italic">ok</emphasis> method. The general principle could be used to
-  over-ride the <emphasis role="italic">cancel</emphasis> method as well.
+  The <link linkend="exampleOk">example</link> given for the <emphasis role="italic">ok</emphasis> method shows the proper
+  way to over-ride the <emphasis role="italic">ok</emphasis> method. The general principle could be used to over-ride the
+  <emphasis role="italic">cancel</emphasis> method as well.
 </para>
 </section>
 
@@ -4674,9 +4671,9 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
 <para>
   A default <emphasis role="italic">help</emphasis> method is provided by the ooDialog framework. The
   <computeroutput>help</computeroutput> event notification is
-  automatically (<xref linkend="sctStandardEventMethods"/>) connected to this method. This method is meant to be over-ridden
-  by the programmer. The default implementation does nothing and returns 0. The programmer could over-ride this method to
-  display some form of help to the user.
+  <link linkend="sctStandardEventMethods">automatically</link> connected to this method. This method is meant to be
+  over-ridden by the programmer. The default implementation does nothing and returns 0. The programmer could over-ride this
+  method to display some form of help to the user.
 </para>
 </section>
 
@@ -4692,7 +4689,7 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
 
 <para>
   A default <emphasis role="italic">ok</emphasis> method is provided by the ooDialog framework. The
-  <computeroutput>ok</computeroutput> event notification is automatically (<xref linkend="sctStandardEventMethods"/>)
+  <computeroutput>ok</computeroutput> event notification is <link linkend="sctStandardEventMethods">automatically</link>
   connected to this method. This method is meant to be over-ridden by the programmer if the default implementation is not
   sufficient for the needs of the program.
 </para>
@@ -4884,7 +4881,7 @@ color of a dialog. </para>
 <variablelist>
 <varlistentry><term>color</term>
 <listitem><para>A color-palette index specifying the background color. For information
-on the color numbers, refer to Definition of Terms (<xref linkend="sctTermDefs"/>).
+on the color numbers, refer to Definition of <link linkend="sctTermDefs">Terms</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -4948,7 +4945,7 @@ to manually update the display.
       <varlistentry><term>id</term>
       <listitem>
       <para>
-        The resource id (<xref linkend="defResourceId"/>) of the control to be disabled. May be numeric or
+        The <xref linkend="defResourceId"/> of the control to be disabled. May be numeric or
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
@@ -5030,7 +5027,7 @@ to manually update the display.
       <varlistentry><term>id</term>
       <listitem>
       <para>
-        The resource id (<xref linkend="defResourceId"/>) of the control to be enabled. May be numeric or
+        The <xref linkend="defResourceId"/> of the control to be enabled. May be numeric or
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
@@ -5701,7 +5698,7 @@ if a dialog is currently minimized.
 and, if it is, the <computeroutput>restore</computeroutput> method is used to
 show the dialog in the size and position it was prior to being minimized.  The
 complete program listing that this code snippet comes from is available (see the
-File Viewer (<xref linkend="exampleFileViewer"/>) example.)
+File Viewer <link linkend="exampleFileViewer">example</link>.)
 
 <programlisting>
 <![CDATA[
@@ -5755,7 +5752,7 @@ have the <computeroutput>MAXIMIZEBOX</computeroutput> style when it is created.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following code snippet minimizes the dialog to the taskbar.
 It is used in the FileViewer example.  The complete program listing is available
-(see the File Viewer (<xref linkend="exampleFileViewer"/>) example.)
+(see the File Viewer <link linkend="exampleFileViewer">example</link>.)
 
 <programlisting>
 <![CDATA[
@@ -5815,7 +5812,7 @@ have the <computeroutput>MINIMIZEBOX</computeroutput> style when it is created.
 <listitem><para>This example creates a secondary dialog to display the contents
 of a file.  The secondary dialog is show full screen (maximized.)  At the same
 time the parent dialog is minimized to the taskbar.  The complete program
-listing is available (see the File Viewer (<xref linkend="exampleFileViewer"/>) example.)
+listing is available (see the File Viewer <link linkend="exampleFileViewer">example</link>.)
 
 <programlisting>
 <![CDATA[
@@ -5907,7 +5904,7 @@ to restore a dialog window that he previously minimized or maximized.
 and, if it is, the <computeroutput>restore</computeroutput> method is used to
 show the dialog in the size and position it was prior to being minimized.  The
 complete program listing for this code snippet is available (see the
-File Viewer (<xref linkend="exampleFileViewer"/>) example.)
+File Viewer <link linkend="exampleFileViewer">example</link>.)
 
 <programlisting>
 <![CDATA[
@@ -6258,7 +6255,7 @@ DialogExtensions::<xref linkend="mthSetForegroundWindow"/>
 ]]>
 </programlisting>
 
-<para>Add or remove the tab stop style (<xref linkend="wstabstop"/>) for the
+<para>Add or remove the <xref linkend="wstabstop"/> style for the
 specified control.  When  a control has the tabstop style, the user can set the
 focus to the control by using the tab key.  When a control does not have this
 style, the tab key will skip over the control.  Adding or removing this style
@@ -8193,9 +8190,9 @@ var2  "09"x  ,
   Prior to ooDialog level 4.2.0, menus were really only minimally supported, through a few methods of the dialog class.
   In ooDialog 4.2.0 true <xref linkend="chpMenus"/> objects were introduced.  Therefore the menu methods of
   the dialog object, other than <xref linkend="mthGetMenuBar"/>() and
- <xref linkend="mthHasMenuBar"/>(), are deprecated.  Use the methods of the menu classes directly to work
-  with menus. The listing of the deprecated (<xref linkend="deprecatedDialogMethods"/>) dialog methods documents all
-  the methods to use to replace all deprecated methods.
+  <xref linkend="mthHasMenuBar"/>(), are deprecated.  Use the methods of the menu classes directly to work
+  with menus. The listing of the <xref linkend="deprecatedDialogMethods"/> dialog methods documents all the
+  methods to use to replace all deprecated methods.
 </para>
 
 <section id="mthGetMenuBar" xreflabel="getMenuBar"><title>getMenuBar</title>
@@ -9104,8 +9101,7 @@ DialogExtensions::<xref linkend="mthSetSBRange"/>
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex"/>)
-      hexadecimal format.
+      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> format.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>wParam [required]</term>
@@ -9143,7 +9139,7 @@ DialogExtensions::<xref linkend="mthSetSBRange"/>
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
+    This method requires an understanding  of Windows <xref linkend="ovvWindowMessages"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -9190,8 +9186,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex"/>)
-      hexadecimal format.
+      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> format.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>wParam [required]</term>
@@ -9229,7 +9224,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
+    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -9286,8 +9281,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex"/>)
-      hexadecimal format.
+      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> format.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>wParam [required]</term>
@@ -9325,7 +9319,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
+    This method requires an understanding of Windows messages <xref linkend="ovvWindowMessages"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry id="exampleSendMessageToWindow"><term><emphasis role="bold">Example:</emphasis></term>
@@ -9385,8 +9379,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex"/>)
-      hexadecimal format.
+      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> format.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>wParam [required]</term>
@@ -9423,14 +9416,14 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
+    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">sendMessageToWindow</emphasis> example (<xref linkend="exampleSendMessageToWindow"/>)
-    also uses the <emphasis role="italic">sendMessageToWindowH</emphasis> method.
+    The <emphasis role="italic">sendMessageToWindow</emphasis> <link linkend="exampleSendMessageToWindow">example</link> also
+    uses the <emphasis role="italic">sendMessageToWindowH</emphasis> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -9448,8 +9441,8 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
   displaying text.
 </para>
 <para>
-  All drawing operations make use of a device context (<xref linkend="defDeviceContext"/>). The ooDialog framework
-  provides a number of methods, such as the <xref linkend="mthGetWindowDC"/>,
+  All drawing operations make use of a <xref linkend="defDeviceContext"/>. The ooDialog framework provides a number of
+  methods, such as the <xref linkend="mthGetWindowDC"/>,
  <xref linkend="mthGetDC"/>, and <xref linkend="mthGetControlDC"/> methods that allow the
   programmer to retrieve a device context.
 </para>

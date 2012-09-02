@@ -48,7 +48,7 @@
 <para>
   The <computeroutput>UserDialog</computeroutput> class is a concrete subclass of the
   <xref linkend="chpDialogObject"/> object. This class allows the programmer to dynamically define the dialog
-  template (<xref linkend="ovvDialogTemplate"/>) in memory.
+  <xref linkend="ovvDialogTemplate"/> in memory.
   <indexterm><primary>Template, Dialog</primary></indexterm>
   The class provides methods to begin the dialog template,
   to create the dialog controls within the dialog dialog template, and to read and parse a resource
@@ -63,12 +63,11 @@
 </para>
 <para>
   The basic process for creating a <computeroutput>UserDialog</computeroutput> is this: Invoke the
- <xref linkend="mthCreate"/>() or <xref linkend="mthCreateCenter"/> methods to start the
-  dialog template.  Then, in the <xref linkend="mthDefineDialog"/> method, create each dialog
-  control using one of the create ... (<xref linkend="sctCreateMethods"/>) methods. The <emphasis
-  role="italic">defineDialog</emphasis> method is invoked automatically by the <emphasis role="italic">create</emphasis>
-  or <emphasis role="italic">createCenter</emphasis> methods and is meant to be over-ridden by the programmer for the
-  purpose of creating dialog controls.
+  <xref linkend="mthCreate"/> or <xref linkend="mthCreateCenter"/> methods to start the dialog template.  Then, in the <xref
+  linkend="mthDefineDialog"/> method, create each dialog control using one of the <xref linkend="sctCreateMethods"/> methods.
+  The <emphasis role="italic">defineDialog</emphasis> method is invoked automatically by the <emphasis
+  role="italic">create</emphasis> or <emphasis role="italic">createCenter</emphasis> methods and is meant to be over-ridden
+  by the programmer for the purpose of creating dialog controls.
 </para>
 <para>
   In addition to creating dialog controls one at a time, there are also methods that allow the programmer to define a
@@ -368,7 +367,7 @@
     <varlistentry><term>hFile [optional]</term>
     <listitem>
     <para>
-      The name of a file (<xref linkend="termHFile"/>) containing symbolic ID defines for resource IDs.
+      The name of a <xref linkend="defHeaderFile"/>) containing symbolic ID defines for resource IDs.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -412,8 +411,8 @@
 </programlisting>
   </para>
   <para>
-    The example (<xref linkend="exampleDialogObjectnew"/>) for the <emphasis role="italic">new</emphasis> method in
-    the dialog object shows the use of the dialog data stem and header file arguments in more detail.
+    The <link linkend="exampleDialogObjectnew">example</link> for the <emphasis role="italic">new</emphasis> method in the
+    dialog object shows the use of the dialog data stem and header file arguments in more detail.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -443,15 +442,14 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="paraResourceIDs"/>) for the icon. This can be numeric or
-      <xref linkend="defSymbolicId"/>.
+      The <xref linkend="paraResourceIDs"/> for the icon. This can be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>fileName [required]</term>
     <listitem>
     <para>
-      The file name of the icon.  If the icon file is not in the current directory, then a relative or fully qualified
-      file name should be used.
+      The file name of the icon. If the icon file is not in the current directory, then a relative or fully qualified file
+      name should be used.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -484,17 +482,16 @@
     <orderedlist>
     <listitem>
     <para>
-      The icon can be used as the application icon (<xref linkend="defDialogIcon"/>) of the dialog. Specify the
-      resource ID of the icon as the <emphasis role="italic">icon</emphasis> argument in the
- <xref linkend="mthExecute"/>, <xref linkend="mthExecuteAsync"/>,
- <xref linkend="mthPopup"/>, or <xref linkend="mthPopupAsChild"/> methods. The ooDialog
-      framework will automatically load the icon.
+      The icon can be used as the <xref linkend="defDialogIcon"/>. Specify the resource ID of the icon as the <emphasis
+      role="italic">icon</emphasis> argument in the <xref linkend="mthExecute"/>, <xref linkend="mthExecuteAsync"/>,
+      <xref linkend="mthPopup"/>, or <xref linkend="mthPopupAsChild"/> methods. The ooDialog framework will automatically
+      load the icon.
     </para>
     </listitem>
     <listitem>
     <para>
       The icon can be loaded into memory by using the <xref linkend="mthUserIcon"/> method of the
- <xref linkend="clsImage"/> class.
+      <xref linkend="clsImage"/> class.
     </para>
     </listitem>
     </orderedlist>
@@ -505,7 +502,7 @@
   <para>
     The following example creates a very simple dialog that has an OK button and a static text box. The <emphasis
     role="italic">addIconResource</emphasis> method is used to load an icon resource using the ID of 105.  That icon is
-    then used in the <emphasis role="italic">execute</emphasis> method for the dialog icon (<xref linkend="defDialogIcon"/>).
+    then used in the <emphasis role="italic">execute</emphasis> method for the <xref linkend="defDialogIcon"/>.
   </para>
 <programlisting>
 <![CDATA[
@@ -547,7 +544,7 @@
 
 <para>
   The <emphasis role="italic">create</emphasis> method begins the creation of the in-memory Windows dialog
-  template (<xref linkend="ovvDialogTemplate"/>) by specifying the general details for the dialog itself.
+  <xref linkend="ovvDialogTemplate"/> by specifying the general details for the dialog itself.
 </para>
 <para>
   Once the dialog template has been started, the dialog controls can be created in the dialog template using the
@@ -768,7 +765,7 @@ if success then dlg~execute
 
 <para>
   The <emphasis role="italic">createCenter</emphasis> method begins the creation of an in-memory dialog
-  template (<xref linkend="ovvDialogTemplate"/>) for a dialog that will be centered in the user's screen. It is a
+  <xref linkend="ovvDialogTemplate"/> for a dialog that will be centered in the user's screen. It is a
   convenience method that merely invokes the <xref linkend="mthCreate"/> method with the CENTER keyword
   added to the options argument. The <emphasis role="italic">x</emphasis> and <emphasis role="italic">y</emphasis>
   arguments are not needed because they are ignored when the dialog is centered.  Other than that the method is exactly
@@ -967,16 +964,15 @@ if success then dlg~execute
 <indexterm><primary>UserDialog class</primary><secondary>understanding the create... methods</secondary></indexterm>
 <para>
   The methods listed in this section (all starting with create) are used to help create a dialog
-  template (<xref linkend="ovvDialogTemplate"/>) dynamically. The methods in this section are used to define the individual
+  <xref linkend="ovvDialogTemplate"/> dynamically. The methods in this section are used to define the individual
   dialog controls. The methods can also be used in a dialog that is created by loading a resource
   <xref linkend="defResourceScript"/> in a <xref linkend="clsRcDialog"/>. The methods will
   then be used to define controls in addition to the ones defined in the resource script.
 </para>
 <para>
-  During the effort (<xref linkend="termMethodNameUnification"/>) to unify the method names in ooDialog, all the
-  add... methods were renamed to create... methods. Where needed, some of these methods had their argument order changed
-  so that the order was consistent for all the create... methods. The create... methods all follow these general
-  guidelines
+  During the <link linkend="termMethodNameUnification">effort</link> to unify the method names in ooDialog, all the add...
+  methods were renamed to create... methods. Where needed, some of these methods had their argument order changed so that the
+  order was consistent for all the create... methods. The create... methods all follow these general guidelines
   <itemizedlist>
   <listitem>
   <para>
@@ -991,7 +987,7 @@ if success then dlg~execute
   <para>
     For all the create... methods, the arguments are always in the same order. Although, for some of the methods, some
     arguments may be required and in other of the methods the arguments may be optional. The order is exactly:
-    resourceID, control coordinates (<xref linkend="paraControlCoordinates"/>), style option, text if any, attribute
+    resourceID, control <xref linkend="paraControlCoordinates"/>, style option, text if any, attribute
     name if any, methodName to connect, if any.
   </para>
   </listitem>
@@ -1017,7 +1013,7 @@ if success then dlg~execute
   role="italic">defineDialog</emphasis> method as recommended, then he does not need to worry about invoking the methods
   at the wrong time.
 </para>
-<para id="paraStyleExplanation">
+<para id="paraStyleExplanation" xreflabel="style">
   The behavior and appearance of all dialog controls defined using one of the create... methods are controlled by a
   style option.  For each of the create... methods, one of the arguments consists of a set of keywords that define the
   style of the control being defined.  These keywords allow the programmer to change the default behavior and  / or
@@ -1046,7 +1042,7 @@ if success then dlg~execute
   only need to specify the DISABLED keyword when the control should be disabled as the dialog is first displayed.
 </para>
 <variablelist>
-  <varlistentry><term id="wsvisible"><emphasis role="bold">HIDDEN</emphasis></term>
+  <varlistentry><term id="wsvisible" xreflabel="visible"><emphasis role="bold">HIDDEN</emphasis></term>
   <listitem>
   <para>
     All windows (and every dialog control is a window) can be visible or invisible.  When a control is invisible it is
@@ -1128,11 +1124,11 @@ if success then dlg~execute
     programmer uses either the TAB or NOTAB keywords to change the default. After controls have been created they can
     have their tabstop style changed using the <xref linkend="mthSetTabStop"/> method of the
     <xref linkend="chpDialogObject"/> object or the <xref linkend="mthTabStop"/> method of the
-    dialog control  (<xref linkend="chpDialogControlObject"/>) object.
+    dialog <xref linkend="chpDialogControlObject"/> object.
   </para>
   </listitem></varlistentry>
 </variablelist>
-<para id="paraControlCoordinates">
+<para id="paraControlCoordinates" xreflabel="co-ordinates">
   All dialog controls have a position and size. The position of the control is specified by the coordinates of its upper
   left corner (x, y) and the size is specified by its width (cx) and height (cy).  Windows uses a coordinate system that
   specifies the upper left corner of the screen as (0,0). Moving to the left in this system increases the x value and
@@ -1140,18 +1136,17 @@ if success then dlg~execute
   simple explanation becomes more complicated with dual-monitor systems.)
 </para>
 <para>
-  For the create... methods all coordinates, (the x, y, cx, and cy arguments,) are specified in dialog
-  units (<xref linkend="defDialogUnit"/>). The position of the dialog control is specified in relation to the upper left
-  corner of the dialog's <xref linkend="defClientArea"/>. All the create... methods that create a single
-  control have the following common arguments.  Some of the other create... methods that create a group of
-  controls will only take the position, or the size arguments:
+  For the create... methods all coordinates, (the x, y, cx, and cy arguments,) are specified in
+  <xref linkend="defDialogUnit"/>s. The position of the dialog control is specified in relation to the upper left corner of
+  the dialog's <xref linkend="defClientArea"/>. All the create... methods that create a single control have the following
+  common arguments.  Some of the other create... methods that create a group of controls will only take the position, or the
+  size arguments:
 </para>
 <variablelist>
   <varlistentry><term id="xArgument"><emphasis role="bold">x</emphasis></term>
   <listitem>
   <para>
-    The left position of the control in the dialog's client window, in dialog
-    units (<xref linkend="defDialogUnit"/>).
+    The left position of the control in the dialog's client window, in <xref linkend="defDialogUnit"/>s.
   </para>
   </listitem></varlistentry>
   <varlistentry><term id="yArgument"><emphasis role="bold">y</emphasis></term>
@@ -1174,10 +1169,10 @@ if success then dlg~execute
   </listitem></varlistentry>
   <varlistentry><term id="idArgument"><emphasis role="bold">id</emphasis></term>
   <listitem>
-  <para id="paraResourceIDs">
-    All dialog controls have a numeric resource (<xref linkend="defResourceId"/>) ID. The ooDialog framework is
-    designed to accept a <xref linkend="defSymbolicId"/> ID anywhere a resource ID is needed.  All the
-    create... methods accepted a symbolic ID for the id argument.
+  <para id="paraResourceIDs" xreflabel="resource ID">
+    All dialog controls have a numeric <xref linkend="defResourceId"/>. The ooDialog framework is designed to accept a
+    <xref linkend="defSymbolicId"/> ID anywhere a resource ID is needed.  All the create... methods accepted a symbolic ID
+    for the id argument.
   </para>
   <para>
     By default static controls and group boxes are assigned a resource id of -1. However, assigning a positive id allows
@@ -1245,19 +1240,19 @@ if success then dlg~execute
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the control.
+      The <xref linkend="idArgument"/> for the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y [required]</term>
     <listitem>
     <para>
-      The  control's position coordinates (<xref linkend="paraControlCoordinates"/>).
+      The  control's position <xref linkend="paraControlCoordinates"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>cx, cy [optional]</term>
     <listitem>
     <para>
-      The  control's width and height coordinates (<xref linkend="paraControlCoordinates"/>). If omitted the button
+      The  control's width and height <xref linkend="paraControlCoordinates"/>. If omitted the button
       will be created with 0 width and height. The programmer would be responsible for resizing the button after the
       underlying dialog is created. This makes sense when the programmer wants to size the button to match the exact
       size of the loaded bitmap(s).
@@ -1348,13 +1343,13 @@ if success then dlg~execute
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          The group (<xref linkend="wsborder"/>) control style.
+          The <xref linkend="wsgroup"/> control style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTAB</term>
         <listitem>
         <para>
-          The no tabstop (<xref linkend="wsborder"/>) control style. By default the button is created with the
+          The no <xref linkend="wstabstopr"/> control style. By default the button is created with the
           tabstop style except in these conditions: the bmpFocused is omitted, and the bmpSelected is omitted, and the
           FRAME style keyword is not used.
         </para>
@@ -1362,7 +1357,7 @@ if success then dlg~execute
         <varlistentry><term>TAB</term>
         <listitem>
         <para>
-          The tabstop (<xref linkend="wsborder"/>) control style. The button is normally created with the tabstop
+          The <xref linkend="wstabstopr"/> control style. The button is normally created with the tabstop
           style and this keyword is not necessary.  However, if the bmpFocused argument is omitted, and the bmpSelected
           argument is omitted, and the FRAME style keyword is not used, the button is created without the tabstop style.
           In this case only, it is necessary to use the TAB keyword to change the default behavior.
@@ -1492,20 +1487,20 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the control.
+        The <xref linkend="idArgument"/> for the control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x [required], y [required], cx [optional], cy [optional]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>) If cx or cy are omitted, then the size for
+        The  control <xref linkend="paraControlCoordinates"/> If cx or cy are omitted, then the size for
         the check box is calculated internally using its label.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces:
       </para>
       <para>
@@ -1650,7 +1645,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -1662,7 +1657,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
@@ -1692,7 +1687,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
         The name of a data <xref linkend="sctUnderstandingDataAttributes"/> to connect with the check
         box. Using this argument allows the programmer to control the name of the data attribute. If you omit this
         argument, or the supplied name is not valid, then the data attribute name is constructed
-        automatically (<xref linkend="sctDataAttributeNames"/>).
+        <link linkend="sctDataAttributeNames">automatically</link>.
       </para>
       <para>
         If automatic data <xref linkend="mthInitAutoDetection"/> is off then no data attribute is
@@ -1813,21 +1808,21 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the first check box. This id is increased by 1 for each
+        The <xref linkend="idArgument"/> for the first check box. This id is increased by 1 for each
         additional check box and then assigned to the control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y [required]</term>
       <listitem>
       <para>
-        The position coordinates (<xref linkend="paraControlCoordinates"/>) of the group of check boxes.  x and y
+        The position <xref linkend="paraControlCoordinates"/> of the group of check boxes.  x and y
         name the position of the first check box control. The other check boxes are positioned automatically.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>cx [optional]</term>
       <listitem>
       <para>
-        The width coordinate (<xref linkend="paraControlCoordinates"/>) of as single check box, plus its text. If
+        The width <xref linkend="paraControlCoordinates"/> of as single check box, plus its text. If
         omitted, the space needed for the check box and its text is calculated by the ooDialog framework.
       </para>
       </listitem></varlistentry>
@@ -1842,7 +1837,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces. Each check box in the group is given the style specified by this option.
       </para>
       <para>
@@ -1987,7 +1982,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -2022,7 +2017,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
       <varlistentry><term>idstat [optional]</term>
       <listitem>
       <para>
-        This argument is used to set the resource ID (<xref linkend="idArgument"/>) for the
+        This argument is used to set the <xref linkend="idArgument"/> for the
         group <xref linkend="clsGroupBox"/>, if one is used. The argument is ignored if the NOBORDER style is used.
         If the NOBORDER style is not used and this argument is omitted then -1 is used for the resource ID.
       </para>
@@ -2035,7 +2030,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
   <listitem>
   <para>
     The following example adds a group of four check boxes to the dialog. Two check boxes are
-    preselected (see Sample Check Box Group (<xref linkend="fig54"/>)):
+    <link linkend="fig54">preselected</link>/>:
   </para>
 <programlisting>
 <![CDATA[
@@ -2087,21 +2082,21 @@ self~objectrexx = 1
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the first check box This id is increased by 1 for each
+        The <xref linkend="idArgument"/> for the first check box This id is increased by 1 for each
         additional check box and then assigned to the control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y [required]</term>
       <listitem>
       <para>
-        The position coordinates (<xref linkend="paraControlCoordinates"/>) for the check box group. The group is
+        The position <xref linkend="paraControlCoordinates"/> for the check box group. The group is
         positioned so that the upper left corner of the group is at the x, y coordinates specified.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>cx [optional]</term>
       <listitem>
       <para>
-        The width coordinate (<xref linkend="paraControlCoordinates"/>) for a single check box plus its label.
+        The width <xref linkend="paraControlCoordinates"/> for a single check box plus its label.
         If omitted, the proper width is calculated by the ooDialog framework.
       </para>
       </listitem></varlistentry>
@@ -2126,7 +2121,7 @@ self~objectrexx = 1
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces. Each check box in the group is given the style specified by this option.
       </para>
       <para>
@@ -2271,7 +2266,7 @@ self~objectrexx = 1
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -2305,7 +2300,7 @@ self~objectrexx = 1
       <varlistentry><term>idStat [optional]</term>
       <listitem>
       <para>
-        This argument is used to set the resource ID (<xref linkend="idArgument"/>) for the
+        This argument is used to set the <xref linkend="idArgument"/> for the
         group <xref linkend="clsGroupBox"/>, if one is used. The argument is ignored if the NOBORDER style is used.
         If this argument is omitted and the NOBORDER style is not used, then -1 is assigned as the resource ID for the
         group box.
@@ -2389,7 +2384,7 @@ self~objectrexx = 1
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the group box. If omitted, -1 is used for the resource id.
+      The <xref linkend="idArgument"/> for the group box. If omitted, -1 is used for the resource id.
       Group boxes normally are give -1 for their resource id because there is usually no need for the programmer to
       interact with a group box. However, if the programmer wants to modify something in the underlying group box, say
       to change its size, change its text, etc., then a positive resource id is needed.
@@ -2398,13 +2393,13 @@ self~objectrexx = 1
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The  control coordinates (<xref linkend="paraControlCoordinates"/>).
+      The  control <xref linkend="paraControlCoordinates"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more style (<xref linkend="paraStyleExplanation"/>) keywords separated by
+      A list of 0 or more <xref linkend="paraStyleExplanation"/> keywords separated by
       spaces:
     </para>
     <para>
@@ -2444,7 +2439,7 @@ self~objectrexx = 1
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          The not visible (<xref linkend="wsvisible"/>) window style.
+          The not <xref linkend="wsvisible"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -2456,7 +2451,7 @@ self~objectrexx = 1
         <varlistentry><term>BORDER</term>
         <listitem>
         <para>
-          The border (<xref linkend="wsborder"/>) window style.
+          The <xref linkend="wsborder"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GROUP</term>
@@ -2768,13 +2763,13 @@ self~objectrexx = 1
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the control.
+        The <xref linkend="idArgument"/> for the control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x [required], y [required], cx [optional], cy [optional]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>). If either cx or cy are
+        The  control <xref linkend="paraControlCoordinates"/>. If either cx or cy are
         omitted, then the size for the radio button is calculated internally using its label. (The
         text argument.)
       </para>
@@ -2782,7 +2777,7 @@ self~objectrexx = 1
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords separated by
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by
         spaces:
       </para>
       <para>
@@ -2917,7 +2912,7 @@ self~objectrexx = 1
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The control has the not visible (<xref linkend="wsvisible"/>) window style.
+            The control has the not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -2929,7 +2924,7 @@ self~objectrexx = 1
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The control has the border (<xref linkend="wsborder"/>) window style.
+            The control has the <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
@@ -2961,7 +2956,7 @@ self~objectrexx = 1
       <para>
         The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the radio
         button. If you omit this argument then the name of the data attribute is constructed
-        automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+        <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
         is off, this argument is ignored.
       </para>
       </listitem></varlistentry>
@@ -2975,11 +2970,11 @@ self~objectrexx = 1
       </para>
       <para>
         However, the <emphasis role="italic">createRadioButton</emphasis> method is also used by the
- <xref linkend="clsRcDialog"/> to create radio button controls found in the resource
+        <xref linkend="clsRcDialog"/> to create radio button controls found in the resource
         <xref linkend="defResourceScript"/> for the dialog. Therefore, if this string contains the word
         CONNECTRADIOS, case insignificant, then the method name is generated in the same way as it is by specifying
         CONNECTRADIOS in the <emphasis role="italic">opts</emphasis> argument when
- <xref linkend="mthNewClsRcDialog"/> a <computeroutput>RcDialog</computeroutput>.
+        <xref linkend="mthNewClsRcDialog"/> a <computeroutput>RcDialog</computeroutput>.
       </para>
       <para>
         First a string is constructed from the label of the button with all space, tab, ampersand, colon, and plus sign
@@ -3077,14 +3072,14 @@ end
       <varlistentry><term>id1 [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the first radio button. This id is increased by 1 for each
+        The <xref linkend="idArgument"/> for the first radio button. This id is increased by 1 for each
         additional radio button and then assigned to the control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x [required], y [required], cx [optional]</term>
       <listitem>
       <para>
-        The control coordinates (<xref linkend="paraControlCoordinates"/>).  x and y name the position of the first
+        The control <xref linkend="paraControlCoordinates"/>.  x and y name the position of the first
         radio button control. The other radio buttons are positioned automatically. cx specifies the length of the radio
         button plus text. If omitted, the space needed is calculated.
       </para>
@@ -3100,7 +3095,7 @@ end
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords separated by
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by
         spaces. Each radio button in the group is given the style specified by this option.
       </para>
       <para>
@@ -3235,7 +3230,7 @@ end
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -3269,7 +3264,7 @@ end
       <varlistentry><term>idstat [optional]</term>
       <listitem>
       <para>
-        This argument is used to set the resource ID (<xref linkend="idArgument"/>) for the
+        This argument is used to set the <xref linkend="idArgument"/> for the
         group <xref linkend="clsGroupBox"/>, if one is used. The argument is ignored if the NOBORDER style is used.
         If omitted and the NOBORDER style is not used, then -1 is used for the resource ID.
       </para>
@@ -3280,8 +3275,8 @@ end
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example adds a group of three radio buttons with IDs 301, 302, and 303 to the dialog
-    (see Sample Radio Button Group (<xref linkend="fig53"/>)):
+    The following example adds a group of three radio buttons with IDs 301, 302, and 303 to the <link
+    linkend="fig53">dialog</link>:
   </para>
 <programlisting>
 <![CDATA[
@@ -3333,21 +3328,21 @@ MyDialog~execute
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the first radio button. This id is increased by 1 for each
+        The <xref linkend="idArgument"/> for the first radio button. This id is increased by 1 for each
         additional radio button and then assigned to the control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y [required]</term>
       <listitem>
       <para>
-        The control position coordinates (<xref linkend="paraControlCoordinates"/>).  x and y name the position of
+        The control position <xref linkend="paraControlCoordinates"/>.  x and y name the position of
         the first radio button control. The other radio buttons are positioned automatically.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>cx [optional]</term>
       <listitem>
       <para>
-        The control width coordinate (<xref linkend="paraControlCoordinates"/>). cx specifies the length of the radio
+        The control width <xref linkend="paraControlCoordinates"/>. cx specifies the length of the radio
         button plus text. If omitted, the space needed is calculated.
       </para>
       </listitem></varlistentry>
@@ -3371,7 +3366,7 @@ MyDialog~execute
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords separated by
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by
         spaces. Each radio button in the group is given the style specified by this option.
       </para>
       <para>
@@ -3506,7 +3501,7 @@ MyDialog~execute
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -3540,7 +3535,7 @@ MyDialog~execute
       <varlistentry><term>idstat [optional]</term>
       <listitem>
       <para>
-        This argument is used to set the resource ID (<xref linkend="idArgument"/>) for the
+        This argument is used to set the <xref linkend="idArgument"/> for the
         group <xref linkend="clsGroupBox"/>, if one is used. The argument is ignored if the NOBORDER style is used.
         If this argument is omitted and the the NOBORDER style is not used then -1 is used for the resource ID.
       </para>
@@ -3624,19 +3619,19 @@ MyDialog~execute
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the button.
+        The <xref linkend="idArgument"/> for the button.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces:
       </para>
       <para>
@@ -3759,7 +3754,7 @@ MyDialog~execute
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -3771,7 +3766,7 @@ MyDialog~execute
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
@@ -3875,14 +3870,14 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
       <varlistentry><term>x, y [required]</term>
       <listitem>
       <para>
-        The coordinates (<xref linkend="paraControlCoordinates"/>) of the position of the upper left corner of the
+        The <xref linkend="paraControlCoordinates"/> of the position of the upper left corner of the
         button group.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>cx, cy [optional]</term>
       <listitem>
       <para>
-        The width and height coordinates (<xref linkend="paraControlCoordinates"/>) of a single button. Both cx and
+        The width and height <xref linkend="paraControlCoordinates"/> of a single button. Both cx and
         cy are optional. The default for cx is 40 and for cy 12.
       </para>
       </listitem></varlistentry>
@@ -3890,7 +3885,7 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
       <listitem>
       <para>
         A single string containing three words (separated by blanks) for each button. The first word is the text that is
-        displayed on the button. The second is the resource ID (<xref linkend="idArgument"/>) of the button, and the
+        displayed on the button. The second is the <xref linkend="idArgument"/> of the button, and the
         third is the name of a method in the Rexx dialog object that is connected to the button clicked
         <xref linkend="ovvEvents"/>. The fourth to sixth words are for the next button, and so forth. The <emphasis
         role="italic">txt id m</emphasis> triplet can repeat any number of times and determines how many buttons are
@@ -3912,7 +3907,7 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
       <varlistentry><term>o [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords separated by
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by
         spaces. Each button is given the same set of styles, except for the DEFAULT style. If the style arg contains the
         DEFAULT keyword, it is only given to the first button:
       </para>
@@ -4034,7 +4029,7 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -4046,7 +4041,7 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
@@ -4121,7 +4116,7 @@ self~createPushButtonGroup(20, 235, , ,              -
 <indexterm><primary>UserDialog class</primary><secondary>create combo box controls</secondary></indexterm>
 <para>
   The methods in this section are all used to create combo <xref linkend="clsComboBox"/> controls in the dialog
-  template (<xref linkend="ovvDialogTemplate"/>).
+  <xref linkend="ovvDialogTemplate"/>.
 </para>
 
 <section id="mthCreateComboBox" xreflabel="createComboBox"><title>createComboBox</title>
@@ -4148,19 +4143,19 @@ self~createPushButtonGroup(20, 235, , ,              -
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the control.
+      The <xref linkend="idArgument"/> for the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The combo box coordinates (<xref linkend="paraControlCoordinates"/>).
+      The combo box <xref linkend="paraControlCoordinates"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
       separated by spaces:
     </para>
     <para>
@@ -4279,7 +4274,7 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          Create the combo box without the visible (<xref linkend="wsvisible"/>) style.
+          Create the combo box without the <xref linkend="wsvisible"/> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -4304,7 +4299,7 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>NOBORDER</term>
         <listitem>
         <para>
-          Create the combo box without the border (<xref linkend="wsborder"/>) style.  By default combo boxes are
+          Create the combo box without the <xref linkend="wsborder"/> style.  By default combo boxes are
           created with a border.
         </para>
         </listitem></varlistentry>
@@ -4316,7 +4311,7 @@ self~createPushButtonGroup(20, 235, , ,              -
     <para>
       The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the combo box
       control. If you omit this argument then the name of the data attribute is constructed
-      automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+      <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
       is off, this argument is ignored.
     </para>
     </listitem></varlistentry>
@@ -4386,19 +4381,19 @@ self~createPushButtonGroup(20, 235, , ,              -
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the control.
+      The <xref linkend="idArgument"/> for the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y [required]</term>
     <listitem>
     <para>
-      The position coordinate (<xref linkend="paraControlCoordinates"/>) of the input group.
+      The position <xref linkend="paraControlCoordinates"/> of the input group.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>cx1 [optional]</term>
     <listitem>
     <para>
-      The width coordinate (<xref linkend="paraControlCoordinates"/>) of the static text control used for the
+      The width <xref linkend="paraControlCoordinates"/> of the static text control used for the
       label. If omitted, the width is calculated automatically using the dialog font. The height of the label is
       always calculated automatically using the dialog font.
     </para>
@@ -4406,13 +4401,13 @@ self~createPushButtonGroup(20, 235, , ,              -
     <varlistentry><term>cx2 [required]</term>
     <listitem>
     <para>
-      The  width coordinate (<xref linkend="paraControlCoordinates"/>) of the combo box.
+      The  width <xref linkend="paraControlCoordinates"/> of the combo box.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>count [optional]</term>
     <listitem>
     <para>
-      The  height coordinate (<xref linkend="paraControlCoordinates"/>) of the combo box specified as a number
+      The  height <xref linkend="paraControlCoordinates"/> of the combo box specified as a number
       of lines. The height of one line if text is calculated using the dialog font. This height is used for the height
       of the label. The <emphasis role="italic">count</emphasis> argument then specifies how many lines. of that
       height, the combo box should be. The default is 5 lines.
@@ -4427,7 +4422,7 @@ self~createPushButtonGroup(20, 235, , ,              -
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
       separated by spaces:
     </para>
     <para>
@@ -4489,7 +4484,7 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          Create the combo box without the visible (<xref linkend="wsvisible"/>) style.
+          Create the combo box without the <xref linkend="wsvisible"/> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -4514,7 +4509,7 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>NOBORDER</term>
         <listitem>
         <para>
-          Create the combo box without the border (<xref linkend="wsborder"/>) style.  By default combo boxes are
+          Create the combo box without the <xref linkend="wsborder"/> style.  By default combo boxes are
           created with a border.
         </para>
         </listitem></varlistentry>
@@ -4524,7 +4519,7 @@ self~createPushButtonGroup(20, 235, , ,              -
     <varlistentry><term>idStat [optional]</term>
     <listitem>
     <para>
-      This argument is used to set the resource ID (<xref linkend="idArgument"/>) for the label, if one is desired.
+      This argument is used to set the <xref linkend="idArgument"/> for the label, if one is desired.
       If omitted, the default static control ID (-1) is used.
     </para>
     </listitem></varlistentry>
@@ -4533,7 +4528,7 @@ self~createPushButtonGroup(20, 235, , ,              -
     <para>
       The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the combo box
       control. If you omit this argument then the name of the data attribute is constructed
-      automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+      <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
       is off, this argument is ignored.
     </para>
     </listitem></varlistentry>
@@ -4602,19 +4597,19 @@ self~createPushButtonGroup(20, 235, , ,              -
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the date time picker.
+        The <xref linkend="idArgument"/> for the date time picker.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces. <emphasis role="bold">Note</emphasis> that the LONG, SHORT, CENTURY, and TIME styles are
         mutually exclusive. If the programmer specifies more than one of those style keywords, only one of the styles will
         be in effect. Which style is in effect is undefined.
@@ -4693,16 +4688,15 @@ self~createPushButtonGroup(20, 235, , ,              -
           <varlistentry><term>UPDOWN</term>
           <listitem>
           <para>
-            This style shows an up-down (<xref linkend="clsUpDown"/>) control to the right of the date and time picker.
-            The use can modify date and time values using the up-down control. This style can be used in place of the
-            drop-down <xref linkend="clsMonthCalendar"/> calendar. The drop-down month calendar is the default
-            style.
+            This style shows an <ref linkend="clsUpDown"/> control to the right of the date and time picker. The use can
+            modify date and time values using the up-down control. This style can be used in place of the drop-down
+            <xref linkend="clsMonthCalendar"/> calendar. The drop-down month calendar is the default style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The date and time picker has the not visible (<xref linkend="wsvisible"/>) window style.
+            The date and time picker has the not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -4714,7 +4708,7 @@ self~createPushButtonGroup(20, 235, , ,              -
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The date and time picker has the border (<xref linkend="wsborder"/>) window style. By default a date and
+            The date and time picker has the <xref linkend="wsborder"/> window style. By default a date and
             time picker is created without the border style.
           </para>
           </listitem></varlistentry>
@@ -4739,7 +4733,7 @@ self~createPushButtonGroup(20, 235, , ,              -
       <para>
         The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the dialog
         control. If you omit this argument then the name of the data attribute is constructed
-        automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+        <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
         is off, this argument is ignored.
       </para>
       </listitem></varlistentry>
@@ -4784,8 +4778,8 @@ self~createPushButtonGroup(20, 235, , ,              -
   <para>
     The following example creates a date and time picker control with the
     <xref linkend="defSymbolicId"/> ID of IDC_DT1 positioned at (17, 7) of the dialog's
-    <xref linkend="defClientArea"/>. The control will be 79 dialog
-    units (<xref linkend="defDialogUnit"/>) wide and 15 dialog units high. The date will be in the short date format.
+    <xref linkend="defClientArea"/>. The control will be 79 <xref linkend="defDialogUnit"/>s wide and 15 dialog units high.
+    The date will be in the short date format.
 
 <programlisting>
 <![CDATA[
@@ -4805,7 +4799,7 @@ self~createPushButtonGroup(20, 235, , ,              -
 <indexterm><primary>UserDialog class</primary><secondary>create edit controls</secondary></indexterm>
 <para>
   The methods in this section are all used to create <xref linkend="clsEdit"/> controls in the dialog
-  template (<xref linkend="ovvDialogTemplate"/>).
+  <xref linkend="ovvDialogTemplate"/>.
 </para>
 
 <section id="mthCreateEdit" xreflabel="createEdit"><title>createEdit</title>
@@ -4833,26 +4827,26 @@ self~createPushButtonGroup(20, 235, , ,              -
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the control.
+      The <xref linkend="idArgument"/> for the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx [required]</term>
     <listitem>
     <para>
-      The control position and width coordinates (<xref linkend="paraControlCoordinates"/>).
+      The control position and width <xref linkend="paraControlCoordinates"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>cy [optional]</term>
     <listitem>
     <para>
-      The height coordinate (<xref linkend="paraControlCoordinates"/>) for the control. If omitted, then the height
+      The height <xref linkend="paraControlCoordinates"/> for the control. If omitted, then the height
       is calculated automatically to fit the height of the dialog font.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
       separated by spaces:
     </para>
     <para>
@@ -4949,7 +4943,7 @@ self~createPushButtonGroup(20, 235, , ,              -
           Selected text in an edit control keeps its highlight when the focus is shifted away from the control.
         </para>
         </listitem></varlistentry>
-        <varlistentry id="styleEditPASSWORD"><term>PASSWORD</term>
+        <varlistentry id="styleEditPASSWORD" xreflabel="PASSWORD"><term>PASSWORD</term>
         <listitem>
         <para>
           Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit control
@@ -5003,7 +4997,7 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          Create the edit control without the visible (<xref linkend="wsvisible"/>) style.
+          Create the edit control without the <xref linkend="wsvisible"/> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -5028,7 +5022,7 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>NOBORDER</term>
         <listitem>
         <para>
-          Create the edit control without the border (<xref linkend="wsborder"/>) style.  By default edit controls are
+          Create the edit control without the <xref linkend="wsborder"/> style.  By default edit controls are
           created with a border.
         </para>
         </listitem></varlistentry>
@@ -5040,7 +5034,7 @@ self~createPushButtonGroup(20, 235, , ,              -
     <para>
       The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the edit
       control. If you omit this argument then the name of the data attribute is constructed
-      automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+      <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
       is off, this argument is ignored.
     </para>
     </listitem></varlistentry>
@@ -5125,13 +5119,13 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the control.
+      The <xref linkend="idArgument"/> for the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx2 [required]</term>
     <listitem>
     <para>
-      The position (x, y) coordinates (<xref linkend="paraControlCoordinates"/>) of the pair of controls, along with
+      The position (x, y) <xref linkend="paraControlCoordinates"/> of the pair of controls, along with
       the width coordinate of the edit control. x and y are the position of the upper-left edge of the label. The edit
       control is aligned automatically. cx2 is the width of the edit control.
     </para>
@@ -5139,7 +5133,7 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
     <varlistentry><term>cx1, cy [optional]</term>
     <listitem>
     <para>
-      cx1 is the width coordinate (<xref linkend="paraControlCoordinates"/>) of the static control. If omitted, this
+      cx1 is the width <xref linkend="paraControlCoordinates"/> of the static control. If omitted, this
       width is calculated by the ooDialog framework. cy is the height cooridinates of the two controls. If it is
       omitted, it is also calculated automatically using the height of dialog font.
     </para>
@@ -5147,7 +5141,7 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords,
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords,
       separated by spaces, used to set the style of the edit control.
     </para>
     <para>
@@ -5302,7 +5296,7 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          Create the edit control without the visible (<xref linkend="wsvisible"/>) style.
+          Create the edit control without the <xref linkend="wsvisible"/> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -5327,7 +5321,7 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
         <varlistentry><term>NOBORDER</term>
         <listitem>
         <para>
-          Create the edit control without the border (<xref linkend="wsborder"/>) style. By default edit controls are
+          Create the edit control without the <xref linkend="wsborder"/> style. By default edit controls are
           created with a border.
         </para>
         </listitem></varlistentry>
@@ -5337,7 +5331,7 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
     <varlistentry><term>idstatic [optional]</term>
     <listitem>
     <para>
-      This argument is used to set the resource ID (<xref linkend="idArgument"/>) for the static control, if one is
+      This argument is used to set the <xref linkend="idArgument"/> for the static control, if one is
       desired. If omitted, the default static control ID (-1) is used.
     </para>
     </listitem></varlistentry>
@@ -5346,8 +5340,8 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
     <para>
       The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the edit
       control. If you omit this argument then the name of the data attribute is constructed
-      automatically (<xref linkend="sctDataAttributeNames"/>) using the text of the label. If
-      auto <xref linkend="mthInitAutoDetection"/> is off, this argument is ignored.
+      <link linkend="sctDataAttributeNames">automatically</link> using the text of the label. If
+      <link linkend="mthInitAutoDetection">automatic</link> data detection is off, this argument is ignored.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5390,8 +5384,8 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
   <para>
     The following example creates an edit control with the label <emphasis role="italic">Your e-mail
     address</emphasis> The label is placed on the edit control's left side. It also automatically creates a data
-    attribute (<xref linkend="sctUnderstandingDataAttributes"/>) with the name YOUREMAILADDRESS. The height of the
-    individual controls is calculated. (See Sample Edit Input (<xref linkend="fig55"/>).)
+    <link linkend="sctUnderstandingDataAttributes">attribute</link> with the name YOUREMAILADDRESS. The height of the
+    individual controls is <link linkend="fig55">calculated</link>.
   </para>
 <programlisting>
 <![CDATA[
@@ -5442,14 +5436,14 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) that is assigned to the first edit control. Consecutive numbers
+      The <xref linkend="idArgument"/> that is assigned to the first edit control. Consecutive numbers
       are assigned to the other edit controls
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y [required]</term>
     <listitem>
     <para>
-      The position coordinates (<xref linkend="paraControlCoordinates"/>) of the input group.
+      The position <xref linkend="paraControlCoordinates"/> of the input group.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>cx1 [optional]</term>
@@ -5480,7 +5474,7 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
     <varlistentry><term>s [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
       separated by spaces. Each individual edit control is created with the style specified.
     </para>
     <para>
@@ -5633,7 +5627,7 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          Create the edit control without the visible (<xref linkend="wsvisible"/>) style.
+          Create the edit control without the <xref linkend="wsvisible"/> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -5669,7 +5663,7 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
     <varlistentry><term>id2 [optional]</term>
     <listitem>
     <para>
-      This argument is used to set the resource ID (<xref linkend="idArgument"/>) for the first static text control,
+      This argument is used to set the <xref linkend="idArgument"/> for the first static text control,
       that is, the label for the first edit control. If this argument is omitted, the static text controls are assigned
       the default (-1) static control ID.
     </para>
@@ -5714,7 +5708,7 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
   <para>
     Note that this method calls <xref linkend="mthCreateEditInput"/> to add each individual edit
     control and its static text label. Because of that, a data
-    attribute (<xref linkend="sctUnderstandingDataAttributes"/>) will be created for each edit control as though you had
+    <link linkend="sctUnderstandingDataAttributes">attribute</link> will be created for each edit control as though you had
     invoked the <emphasis role="italic">createEditInput</emphasis> method and omitted the <emphasis
     role="italic">attr</emphasis> argument. When the <emphasis role="italic">attr</emphasis> argument is omitted, the
     data attribute name is taken from the text of the label.
@@ -5767,14 +5761,14 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) that is assigned to the first edit control. Consecutive numbers
+      The <xref linkend="idArgument"/> that is assigned to the first edit control. Consecutive numbers
       are assigned to the other edit controls
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y [required]</term>
     <listitem>
       <para>
-        The position coordinates (<xref linkend="paraControlCoordinates"/>) of the input group.
+        The position <xref linkend="paraControlCoordinates"/> of the input group.
       </para>
     </listitem></varlistentry>
     <varlistentry><term>cx1 [optional]</term>
@@ -5800,7 +5794,7 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords separated by
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by
       spaces. This specifies the style for the edit control(s) in the group. Each edit control is assigned the same
       style.
     </para>
@@ -5952,7 +5946,7 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          Create the edit control without the visible (<xref linkend="wsvisible"/>) style.
+          Create the edit control without the <xref linkend="wsvisible"/> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -5988,7 +5982,7 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
     <varlistentry><term>idStat [optional]</term>
     <listitem>
     <para>
-      This argument is used to set the resource ID (<xref linkend="idArgument"/>) for the first static text control,
+      This argument is used to set the <xref linkend="idArgument"/> for the first static text control,
       that is, the label for the first edit control. If this argument is omitted the static text controls are assigned
       the default (-1) static control ID. Resource IDs only need to be assigned to the static controls if there is some
       need to manipulate the underlying static control after it has been created. For instance if its text needed to be
@@ -6035,7 +6029,7 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
   <para>
     Note that this method calls <xref linkend="mthCreateEditInput"/> to add each individual edit
     control and its static text label. Because of that, a data
-    attribute (<xref linkend="sctUnderstandingDataAttributes"/>) will be created for each edit control as though you had
+    <link linkend="sctUnderstandingDataAttributes">attribute</link> will be created for each edit control as though you had
     invoked the <emphasis role="italic">createEditInput</emphasis> method and omitted the <emphasis
     role="italic">attr</emphasis> argument. When the <emphasis role="italic">attr</emphasis> argument is omitted, the
     data attribute name is taken from the text of the label.
@@ -6082,10 +6076,9 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
   template with the PASSWORD style.
 </para>
 <para>
-  When an edit control has the PASSWORD (<xref linkend="styleEditPASSWORD"/>) style id does not echo the characters
-  typed but displays the password character instead. This method is a convenience method and is used exactly like the
- <xref linkend="mthCreateEdit"/> method.  It simple specifies the PASSWORD style automatically for the
-  programmer.
+  When an edit control has the <xref linkend="styleEditPASSWORD"/> style it does not echo the characters typed but displays
+  the password character instead. This method is a convenience method and is used exactly like the <xref
+  linkend="mthCreateEdit"/> method.  It simple specifies the PASSWORD style automatically for the programmer.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6097,26 +6090,26 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the control.
+      The <xref linkend="idArgument"/> for the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx [required]</term>
     <listitem>
     <para>
-      The position and width coordinates (<xref linkend="paraControlCoordinates"/>) for the control.
+      The position and width <xref linkend="paraControlCoordinates"/> for the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>cy [optional]</term>
     <listitem>
     <para>
-      The height coordinate (<xref linkend="paraControlCoordinates"/>) for the control. If this argument is omitted,
+      The height <xref linkend="paraControlCoordinates"/> for the control. If this argument is omitted,
       then the height is calculated to fit the height of the dialog font.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
       separated by spaces.
     </para>
     <para>
@@ -6258,7 +6251,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          Create the edit control without the visible (<xref linkend="wsvisible"/>) style.
+          Create the edit control without the <xref linkend="wsvisible"/> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -6283,7 +6276,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         <varlistentry><term>NOBORDER</term>
         <listitem>
         <para>
-          Create the edit control without the border (<xref linkend="wsborder"/>) style. By default edit controls are
+          Create the edit control without the <xref linkend="wsborder"/> style. By default edit controls are
           created with a border.
         </para>
         </listitem></varlistentry>
@@ -6295,7 +6288,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
     <para>
       The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the dialog
       control. If you omit this argument then the name of the data attribute is constructed
-      automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+      <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
       is off, this argument is ignored.
     </para>
     </listitem></varlistentry>
@@ -6364,19 +6357,19 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the control.
+      The <xref linkend="idArgument"/> for the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The  control coordinates (<xref linkend="paraControlCoordinates"/>).
+      The  control <xref linkend="paraControlCoordinates"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
       separated by spaces:
     </para>
     <para>
@@ -6487,7 +6480,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          Create the list box without the visible (<xref linkend="wsvisible"/>) style.
+          Create the list box without the <xref linkend="wsvisible"/> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -6512,7 +6505,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         <varlistentry><term>NOBORDER</term>
         <listitem>
         <para>
-          Create the list box without the border (<xref linkend="wsborder"/>) style.  By default list box controls are
+          Create the list box without the <xref linkend="wsborder"/> style.  By default list box controls are
           created with a border.
         </para>
         </listitem></varlistentry>
@@ -6524,7 +6517,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
     <para>
       The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the list box
       control. If you omit this argument then the name of the data attribute is constructed
-      automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+      <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
       is off, this argument is ignored.
     </para>
     </listitem></varlistentry>
@@ -6578,8 +6571,8 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
 </programlisting>
 
 <para>
-  Creates a list-view (<xref linkend="clsListView"/>) control in the dialog template and specifies the resource ID,
-  position, size, style, and attribute name for the control.
+  Creates a <xref linkend="clsListView"/> control in the dialog template and specifies the resource ID, position, size,
+  style, and attribute name for the control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6590,20 +6583,20 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the list-view control. May be numeric or
+        The <xref linkend="idArgument"/> for the list-view control. May be numeric or
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces:
       </para>
       <para>
@@ -6696,12 +6689,10 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <listitem>
           <para>
             The list-view allows the user to edit the list-view items. To store the edited text, you must connect a method
-            to the ENDEDIT (<xref linkend="evtListViewENDEDIT"/>) event notification (<xref linkend="ovvEvents"/>)
-            using the <xref linkend="mthConnectListViewEvent"/> method. Alternatively you can
-            connect the DEFAULTEDIT (<xref linkend="kwListViewDEFAULTEDIT"/>) event handler using <emphasis
-            role="italic">connectListViewEvent</emphasis>.
-          </para>
-          </listitem></varlistentry>
+            to the <xref linkend="evtListViewENDEDIT"/> <xref linkend="ovvEvents"/> notification using the <xref
+            linkend="mthConnectListViewEvent"/> method. Alternatively you can connect the <xref
+            linkend="kwListViewDEFAULTEDIT"/> event handler using <emphasis role="italic">connectListViewEvent</emphasis>.
+          </para> </listitem></varlistentry>
           <varlistentry><term>HSCROLL</term>
           <listitem>
           <para>
@@ -6761,7 +6752,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -6779,7 +6770,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <varlistentry><term>NOBORDER</term>
           <listitem>
           <para>
-            Create the list-view without border (<xref linkend="wsborder"/>) window style. By default list views are
+            Create the list-view without <xref linkend="wsborder"/> window style. By default list views are
             created with a border
           </para>
           </listitem></varlistentry>
@@ -6798,7 +6789,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
       <para>
         The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the dialog
         control. If you omit this argument then the name of the data attribute is constructed
-        automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+        <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
         is off, this argument is ignored.
       </para>
       </listitem></varlistentry>
@@ -6844,7 +6835,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
       The following example creates a list-view with the resource ID of 555 at position x=100 and y=80 and with a size
       of width=40 and height=120. The list-view is a report view with items sorted in ascending order. It supports item
       editing and column headers do not behave like buttons. The data
-      attribute (<xref linkend="sctUnderstandingDataAttributes"/>) for the list-view is EMPLOYEES.
+      <link linkend="sctUnderstandingDataAttributes">attribute</link> for the list-view is EMPLOYEES.
 <programlisting>
 <![CDATA[
 
@@ -6880,20 +6871,20 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the month calendar. May be numeric or
+        The <xref linkend="idArgument"/> for the month calendar. May be numeric or
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces:
       </para>
       <para>
@@ -6975,7 +6966,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -6987,7 +6978,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
@@ -7010,7 +7001,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
       <para>
         The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the dialog
         control. If you omit this argument then the name of the data attribute is constructed
-        automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+        <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
         is off, this argument is ignored.
       </para>
       </listitem></varlistentry>
@@ -7086,7 +7077,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
 <para>
   The <emphasis role="italic">createProgressBar</emphasis> method creates a
   progress <xref linkend="clsProgressBar"/> in the dialog template and connects it with a data
-  attribute (<xref linkend="sctUnderstandingDataAttributes"/>).
+  <link linkend="sctUnderstandingDataAttributes">attribute</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7098,19 +7089,19 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the progress bar.
+      The <xref linkend="idArgument"/> for the progress bar.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The control coordinates (<xref linkend="paraControlCoordinates"/>).
+      The control <xref linkend="paraControlCoordinates"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords separated by
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by
       spaces.
     </para>
     <para>
@@ -7148,33 +7139,33 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          The progress bar has the not visible (<xref linkend="wsvisible"/>) window style.
+          The progress bar has the not <xref linkend="wsvisible"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
         <listitem>
         <para>
-          The progress bar has the not enabled (<xref linkend="wsborder"/>) window style.
+          The progress bar has the <xref linkend="wsdisabled"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BORDER</term>
         <listitem>
         <para>
-          The progress bar has border (<xref linkend="wsborder"/>) window style. Normally the progress bar is created
+          The progress bar has the <xref linkend="wsborder"/> window style. Normally the progress bar is created
           without the border style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          The progress bar has the group (<xref linkend="wsborder"/>) control style. A progress bar is normally
+          The progress bar has the <xref linkend="wsgroup"/> control style. A progress bar is normally
           created without the group style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TAB</term>
         <listitem>
         <para>
-          The progress bar has the tabstop (<xref linkend="wsborder"/>) control style. Normally, a progress bar is
+          The progress bar has the <xref linkend="wstabstopr"/> control style. Normally, a progress bar is
           not a tab stop.
         </para>
         </listitem></varlistentry>
@@ -7252,19 +7243,19 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the scroll bar
+      The <xref linkend="idArgument"/> for the scroll bar
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The  control coordinates (<xref linkend="paraControlCoordinates"/>).
+      The  control <xref linkend="paraControlCoordinates"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
       separated by spaces:
     </para>
     <para>
@@ -7309,7 +7300,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          Create the scroll bar without the visible (<xref linkend="wsvisible"/>) style.
+          Create the scroll bar without the <xref linkend="wsvisible"/> style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -7333,7 +7324,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <varlistentry><term>BORDER</term>
         <listitem>
         <para>
-          Create the scroll bar with the border (<xref linkend="wsborder"/>) style.
+          Create the scroll bar with the <xref linkend="wsborder"/> style.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -7390,8 +7381,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 <para>
   A word about frames and rectangles.  In early versions of the ooDialog reference frames and rectangles were documented
   as though they were types of separate controls.  They are not, they are just a static control with a particular style.
-  The Frames and Rectangles (<xref linkend="figFramesRects"/>) picture gives some idea of how the different types of
-  static controls can appear.
+  The Frames and Rectangles picture gives some idea of how the different types of static controls can appear:
   <figure id="figFramesRects"><title>Frames and Rectangles</title>
   <mediaobject>
   <imageobject>
@@ -7413,7 +7403,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 
 <para>
   The <emphasis role="italic">createBlackFrame</emphasis> method creates a black
-  frame (<xref linkend="figFramesRects"/>) static control in the dialog template. The rectangle is drawn with the current
+  <link linkend="figFramesRects">frame</link> static control in the dialog template. The rectangle is drawn with the current
   window frame color, which is black in the default color scheme.
 </para>
 <variablelist>
@@ -7425,19 +7415,19 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the static control.
+        The <xref linkend="idArgument"/> for the static control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces.
       </para>
       <para>
@@ -7469,31 +7459,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The not enabled (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wsgroup"/> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            The tabstop (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wstabstopr"/> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -7531,7 +7521,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the Frames and Rectangles (<xref linkend="exampleFramesRects"/>) example.
+    See the Frames and Rectangles <link linkend="exampleFramesRects">example</link> .
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7549,7 +7539,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 
 <para>
   The <emphasis role="italic">createBlackRect</emphasis> method creates a black
-  rectangle (<xref linkend="figFramesRects"/>) static control in the dialog template. The rectangle is filled with the
+  <link linkend="figFramesRects">rectangle</link>) static control in the dialog template. The rectangle is filled with the
   current window frame color, which is black in the default color scheme.
 </para>
 <variablelist>
@@ -7561,19 +7551,19 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the static control.
+        The <xref linkend="idArgument"/> for the static control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces.
       </para>
       <para>
@@ -7605,31 +7595,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The not enabled (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wsgroup"/> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            The tabstop (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wstabstopr"/> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -7667,7 +7657,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the Frames and Rectangles (<xref linkend="exampleFramesRects"/>) example.
+    See the Frames and Rectangles <link linkend="exampleFramesRects">example</link> .
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7685,7 +7675,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 
 <para>
   The <emphasis role="italic">createEtchedFrame</emphasis>() method adds an etched
-  frame (<xref linkend="figFramesRects"/>) static control to the dialog.
+  <link linkend="figFramesRects">frame</link> static control to the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7696,19 +7686,19 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the static control.
+        The <xref linkend="idArgument"/> for the static control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces.
       </para>
       <para>
@@ -7740,31 +7730,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The not enabled (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wsgroup"/> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            The tabstop (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wstabstopr"/> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -7802,7 +7792,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the Frames and Rectangles (<xref linkend="exampleFramesRects"/>) example.
+    See the Frames and Rectangles <link linkend="exampleFramesRects">example</link> .
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7820,7 +7810,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 
 <para>
   The <emphasis role="italic">createEtchedHorizontal</emphasis>() method adds an etched horizontal
-  line (<xref linkend="figFramesRects"/>) static control to the dialog.
+  <link linkend="figFramesRects">line</link> static control to the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7831,20 +7821,19 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the static control.
+        The <xref linkend="idArgument"/> for the static control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
-        separated by spaces.
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by spaces.
       </para>
       <para>
         <simplelist type='vert' columns='3'>
@@ -7862,7 +7851,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <para>
             Causes the static control to send notification messages for the click, double click, disabled, and enabled
             events.  A static control without this style does not send notification messages.  See the
-<xref linkend="mthConnectStaticEvent"/> method of the
+            <xref linkend="mthConnectStaticEvent"/> method of the
             <xref linkend="clsEventNotification"/> class for further information.
           </para>
           </listitem></varlistentry>
@@ -7875,31 +7864,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The not enabled (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wsgroup"/> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            The tabstop (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wstabstopr"/> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -7937,7 +7926,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the Frames and Rectangles (<xref linkend="exampleFramesRects"/>) example.
+    See the Frames and Rectangles <link linkend="exampleFramesRects">example</link> .
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7955,7 +7944,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 
 <para>
   The <emphasis role="italic">createEtchedVertical</emphasis>() method creates an etched vertical
-  line (<xref linkend="figFramesRects"/>) static control in the dialog template.
+  <link linkend="figFramesRects">line</link> static control in the dialog template.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7966,19 +7955,19 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the static control.
+        The <xref linkend="idArgument"/> for the static control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces.
       </para>
       <para>
@@ -8010,31 +7999,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The not enabled (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wsgroup"/> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            The tabstop (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wstabstopr"/> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -8072,7 +8061,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the Frames and Rectangles (<xref linkend="exampleFramesRects"/>) example.
+    See the Frames and Rectangles <link linkend="exampleFramesRects">example</link> .
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -8090,7 +8079,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 
 <para>
   The <emphasis role="italic">createGrayFrame</emphasis> method creates a gray
-  frame (<xref linkend="figFramesRects"/>) static control in the dialog template. The frame is drawn with the same color
+  <link linkend="figFramesRects">frame</link> static control in the dialog template. The frame is drawn with the same color
   as the screen background (desktop), which is gray in the default color scheme.
 </para>
 <variablelist>
@@ -8102,19 +8091,19 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the static control.
+        The <xref linkend="idArgument"/> for the static control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces.
       </para>
       <para>
@@ -8146,31 +8135,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The not enabled (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wsgroup"/> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            The tabstop (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wstabstopr"/> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -8208,7 +8197,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      See the Frames and Rectangles (<xref linkend="exampleFramesRects"/>) example.
+      See the Frames and Rectangles <link linkend="exampleFramesRects">example</link> .
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -8226,7 +8215,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 
 <para>
   The <emphasis role="italic">createGrayRect</emphasis> method creates a gray
-  rectangle (<xref linkend="figFramesRects"/>) static control in the dialog template. The rectangle is filled with the
+  <link linkend="figFramesRects">rectangle</link>) static control in the dialog template. The rectangle is filled with the
   same color as the screen background (desktop), which is gray in the default color scheme.
 </para>
 <variablelist>
@@ -8238,19 +8227,19 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the static control.
+        The <xref linkend="idArgument"/> for the static control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces.
       </para>
       <para>
@@ -8282,31 +8271,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The not enabled (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wsgroup"/> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            The tabstop (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wstabstopr"/> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -8344,7 +8333,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      See the Frames and Rectangles (<xref linkend="exampleFramesRects"/>) example.
+      See the Frames and Rectangles <link linkend="exampleFramesRects">example</link> .
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -8374,20 +8363,20 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the static control. -1 is used if <emphasis
+      The <xref linkend="idArgument"/> for the static control. -1 is used if <emphasis
       role="italic">id</emphasis> is omitted.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+      The  control <xref linkend="paraControlCoordinates"/>
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more style (<xref linkend="paraStyleExplanation"/>) keywords separated by spaces.
+      A list of 0 or more <xref linkend="paraStyleExplanation"/> keywords separated by spaces.
     </para>
     <para>
       <simplelist type='vert' columns='3'>
@@ -8460,55 +8449,55 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <varlistentry><term>WHITERECT</term>
         <listitem>
         <para>
-          A rectangle (<xref linkend="figFramesRects"/>)rectangle filled with the current window background color,
+          A <link linkend="figFramesRects">rectangle</link>)rectangle filled with the current window background color,
           which is white in the default color scheme.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>WHITEFRAME</term>
         <listitem>
         <para>
-          A frame (<xref linkend="figFramesRects"/>) drawn with the same color as the window background, which is white
+          A <link linkend="figFramesRects">frame</link> drawn with the same color as the window background, which is white
           in the default color scheme.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GRAYRECT</term>
         <listitem>
         <para>
-          A rectangle (<xref linkend="figFramesRects"/>)rectangle filled with the current screen background color,
+          A <link linkend="figFramesRects">rectangle</link>)rectangle filled with the current screen background color,
           which is gray in the default color scheme.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GRAYFRAME</term>
         <listitem>
         <para>
-          A frame (<xref linkend="figFramesRects"/>) drawn with the same color as the current screen background, which
+          A <link linkend="figFramesRects">frame</link> drawn with the same color as the current screen background, which
           is gray in the default color scheme.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BLACKRECT</term>
         <listitem>
         <para>
-          A rectangle (<xref linkend="figFramesRects"/>)rectangle filled with the current window frame color, which is
+          A <link linkend="figFramesRects">rectangle</link>)rectangle filled with the current window frame color, which is
           black in the default color scheme.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BLACKFRAME</term>
         <listitem>
         <para>
-          A frame (<xref linkend="figFramesRects"/>) drawn with the same color as the current window frames, which is
+          A <link linkend="figFramesRects">frame</link> drawn with the same color as the current window frames, which is
           black in the default color scheme.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>ETCHED</term>
         <listitem>
         <para>
-          A frame (<xref linkend="figFramesRects"/>) drawn with an etched appearance.
+          A <link linkend="figFramesRects">frame</link> drawn with an etched appearance.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>HORZ</term>
         <listitem>
         <para>
-          A frame (<xref linkend="figFramesRects"/>) drawn with an etched appearance, but only the top horizontal line
+          A <link linkend="figFramesRects">frame</link> drawn with an etched appearance, but only the top horizontal line
           of the frame is drawn.  In other words, this is a single horizontal line, whose position and length are
           determined by the position and width of the imaginary frame specified by the control coordinates.
         </para>
@@ -8516,7 +8505,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <varlistentry><term>VERT</term>
         <listitem>
         <para>
-          A frame (<xref linkend="figFramesRects"/>) drawn with an etched appearance, but only the left vertical line
+          A <link linkend="figFramesRects">frame</link> drawn with an etched appearance, but only the left vertical line
           of the frame is drawn.  In other words, this is a single vertical line, whose position and length are determined
           by the position and height of the imaginary frame specified by the control coordinates.
         </para>
@@ -8653,31 +8642,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          The not visible (<xref linkend="wsvisible"/>) window style.
+          The not <xref linkend="wsvisible"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
         <listitem>
         <para>
-          The not enabled (<xref linkend="wsborder"/>) window style.
+          The <xref linkend="wsdisabled"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BORDER</term>
         <listitem>
         <para>
-          The border (<xref linkend="wsborder"/>) window style.
+          The <xref linkend="wsborder"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          The group (<xref linkend="wsborder"/>) control style.
+          The <xref linkend="wsgroup"/> control style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TAB</term>
         <listitem>
         <para>
-          The control is created with the tabstop (<xref linkend="wsborder"/>) style. By default, static controls do
+          The control is created with the <xref linkend="wstabstopr"/> style. By default, static controls do
           not have the tabstop style.
         </para>
         </listitem></varlistentry>
@@ -8752,8 +8741,8 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 </programlisting>
 
 <para>
-  Creates one of the frame, rectangle, or etched line static (<xref linkend="figFramesRects"/>) controls in the
-  dialog template. The <emphasis role="italic">style</emphasis> option dictates which type is created.
+  Creates one of the frame, rectangle, or etched line <link linkend="figFramesRects">static</link> controls in the dialog
+  template. The <emphasis role="italic">style</emphasis> option dictates which type is created.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8764,20 +8753,20 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the static control. -1 is used if <emphasis
+        The <xref linkend="idArgument"/> for the static control. -1 is used if <emphasis
         role="italic">id</emphasis> is omitted.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more style (<xref linkend="paraStyleExplanation"/>) keywords separated by spaces. If this
+        A list of 0 or more <xref linkend="paraStyleExplanation"/> keywords separated by spaces. If this
         argument is omitted, the default is WHITERECT.
       </para>
       <para>
@@ -8809,55 +8798,55 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>WHITERECT</term>
           <listitem>
           <para>
-            A rectangle (<xref linkend="figFramesRects"/>)rectangle filled with the current window background color,
+            A <link linkend="figFramesRects">rectangle</link>)rectangle filled with the current window background color,
             which is white in the default color scheme.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>WHITEFRAME</term>
           <listitem>
           <para>
-            A frame (<xref linkend="figFramesRects"/>) drawn with the same color as the window background, which is white
+            A <link linkend="figFramesRects">frame</link> drawn with the same color as the window background, which is white
             in the default color scheme.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GRAYRECT</term>
           <listitem>
           <para>
-            A rectangle (<xref linkend="figFramesRects"/>)rectangle filled with the current screen background color,
+            A <link linkend="figFramesRects">rectangle</link>)rectangle filled with the current screen background color,
             which is gray in the default color scheme.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GRAYFRAME</term>
           <listitem>
           <para>
-            A frame (<xref linkend="figFramesRects"/>) drawn with the same color as the current screen background, which
+            A <link linkend="figFramesRects">frame</link> drawn with the same color as the current screen background, which
             is gray in the default color scheme.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BLACKRECT</term>
           <listitem>
           <para>
-            A rectangle (<xref linkend="figFramesRects"/>)rectangle filled with the current window frame color, which is
+            A <link linkend="figFramesRects">rectangle</link>)rectangle filled with the current window frame color, which is
             black in the default color scheme.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BLACKFRAME</term>
           <listitem>
           <para>
-            A frame (<xref linkend="figFramesRects"/>) drawn with the same color as the current window frames, which is
+            A <link linkend="figFramesRects">frame</link> drawn with the same color as the current window frames, which is
             black in the default color scheme.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>ETCHED</term>
           <listitem>
           <para>
-            A frame (<xref linkend="figFramesRects"/>) drawn with an etched appearance.
+            A <link linkend="figFramesRects">frame</link> drawn with an etched appearance.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>HORZ</term>
           <listitem>
           <para>
-            A frame (<xref linkend="figFramesRects"/>) drawn with an etched appearance, but only the top horizontal line
+            A <link linkend="figFramesRects">frame</link> drawn with an etched appearance, but only the top horizontal line
             of the frame is drawn.  In other words, this is a single horizontal line, whose position and length are
             determined by the position and width of the imaginary frame specified by the control coordinates.
           </para>
@@ -8865,7 +8854,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>VERT</term>
           <listitem>
           <para>
-            A frame (<xref linkend="figFramesRects"/>) drawn with an etched appearance, but only the left vertical line
+            A <link linkend="figFramesRects">frame</link> drawn with an etched appearance, but only the left vertical line
             of the frame is drawn.  In other words, this is a single vertical line, whose position and length are determined
             by the position and height of the imaginary frame specified by the control coordinates.
           </para>
@@ -8888,31 +8877,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The not enabled (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wsgroup"/> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            The tabstop (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wstabstopr"/> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -8973,20 +8962,20 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the static control. The resource id is required for this
+      The <xref linkend="idArgument"/> for the static control. The resource id is required for this
       method because, without a positive resource ID, there is no way to set the image in the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+      The  control <xref linkend="paraControlCoordinates"/>
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more style (<xref linkend="paraStyleExplanation"/>) keywords separated by spaces. If this
+      A list of 0 or more <xref linkend="paraStyleExplanation"/> keywords separated by spaces. If this
       argument is omitted, the default is ICON.
     </para>
     <para>
@@ -9088,31 +9077,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          The not visible (<xref linkend="wsvisible"/>) window style.
+          The not <xref linkend="wsvisible"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
         <listitem>
         <para>
-          The not enabled (<xref linkend="wsborder"/>) window style.
+          The <xref linkend="wsdisabled"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BORDER</term>
         <listitem>
         <para>
-          The border (<xref linkend="wsborder"/>) window style.
+          The <xref linkend="wsborder"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          The group (<xref linkend="wsborder"/>) control style.
+          The <xref linkend="wsgroup"/> control style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TAB</term>
         <listitem>
         <para>
-          The tabstop (<xref linkend="wsborder"/>) control style.
+          The <xref linkend="wstabstopr"/> control style.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -9200,20 +9189,20 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the static control.
+      The <xref linkend="idArgument"/> for the static control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x [required], y [required], cx [optional], cy [optional]</term>
     <listitem>
     <para>
-      The control  (<xref linkend="paraControlCoordinates"/>) coordinates.  When cx and cy are omitted, then width and
-      height of the control are calculated automatically based on the width and height of the text string.
+      The control <xref linkend="paraControlCoordinates"/>. When cx and cy are omitted, then width and height of the control
+      are calculated automatically based on the width and height of the text string.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more style (<xref linkend="paraStyleExplanation"/>) keywords separated by spaces.  If this
+      A list of 0 or more <xref linkend="paraStyleExplanation"/> keywords separated by spaces.  If this
       argument is omitted LEFT is the default.
     </para>
     <para>
@@ -9334,31 +9323,31 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          The not visible (<xref linkend="wsvisible"/>) window style.
+          The not <xref linkend="wsvisible"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
         <listitem>
         <para>
-          The not enabled (<xref linkend="wsborder"/>) window style.
+          The <xref linkend="wsdisabled"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BORDER</term>
         <listitem>
         <para>
-          The border (<xref linkend="wsborder"/>) window style.
+          The <xref linkend="wsborder"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          The group (<xref linkend="wsborder"/>) control style.
+          The <xref linkend="wsgroup"/> control style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TAB</term>
         <listitem>
         <para>
-          The tabstop (<xref linkend="wsborder"/>) control style.
+          The <xref linkend="wstabstopr"/> control style.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -9402,7 +9391,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <varlistentry id="exampleFramesRects"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example is similar to the one used to produce the picture (<xref linkend="figFramesRects"/>) of frames and
+    This example is similar to the one used to produce the <link linkend="figFramesRects">picture</link> of frames and
     rectangles.  You can copy and paste it into 2 files and it should run as is.
 
 <programlisting>
@@ -9514,7 +9503,7 @@ return 0
 
 <para>
   The <emphasis role="italic">createWhiteFrame</emphasis> method creates a white
-  frame (<xref linkend="figFramesRects"/>) static control in the dialog template. The frame is drawn with the
+  <link linkend="figFramesRects">frame</link> static control in the dialog template. The frame is drawn with the
   current window background color, which is white in the default color scheme.
 </para>
 <variablelist>
@@ -9526,19 +9515,19 @@ return 0
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the static control.
+        The <xref linkend="idArgument"/> for the static control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces.
       </para>
       <para>
@@ -9570,31 +9559,31 @@ return 0
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The not enabled (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The group (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wsgroup"/> control style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            The tabstop (<xref linkend="wsborder"/>) control style.
+            The <xref linkend="wstabstopr"/> control style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -9632,7 +9621,7 @@ return 0
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the Frames and Rectangles (<xref linkend="exampleFramesRects"/>) example.
+    See the Frames and Rectangles <link linkend="exampleFramesRects">example</link> .
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -9650,7 +9639,7 @@ return 0
 
 <para>
   The <emphasis role="italic">createWhiteRect</emphasis> method creates a white
-  rectangle (<xref linkend="figFramesRects"/>) static control in the dialog template. The rectangle is filled with the
+  <link linkend="figFramesRects">rectangle</link>) static control in the dialog template. The rectangle is filled with the
   current window background color, which is white in the default color scheme.
 </para>
 <variablelist>
@@ -9662,19 +9651,19 @@ return 0
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the static control.
+      The <xref linkend="idArgument"/> for the static control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+      The  control <xref linkend="paraControlCoordinates"/>
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
       separated by spaces.
     </para>
     <para>
@@ -9706,31 +9695,31 @@ return 0
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          The not visible (<xref linkend="wsvisible"/>) window style.
+          The not <xref linkend="wsvisible"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
         <listitem>
         <para>
-          The not enabled (<xref linkend="wsborder"/>) window style.
+          The <xref linkend="wsdisabled"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BORDER</term>
         <listitem>
         <para>
-          The border (<xref linkend="wsborder"/>) window style.
+          The <xref linkend="wsborder"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          The group (<xref linkend="wsborder"/>) control style.
+          The <xref linkend="wsgroup"/> control style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TAB</term>
         <listitem>
         <para>
-          The tabstop (<xref linkend="wsborder"/>) control style.
+          The <xref linkend="wstabstopr"/> control style.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -9768,7 +9757,7 @@ return 0
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      See the Frames and Rectangles (<xref linkend="exampleFramesRects"/>) example.
+      See the Frames and Rectangles <link linkend="exampleFramesRects">example</link> .
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -9800,20 +9789,20 @@ return 0
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the tab control. May be numeric or
+        The <xref linkend="idArgument"/> for the tab control. May be numeric or
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces:
       </para>
       <para>
@@ -9902,7 +9891,7 @@ return 0
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The control has the not visible (<xref linkend="wsvisible"/>) window style.
+            The control has the not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -9920,7 +9909,7 @@ return 0
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            Create the control with the border (<xref linkend="wsborder"/>) window style. By default tab controls are
+            Create the control with the <xref linkend="wsborder"/> window style. By default tab controls are
             created without the border style.
           </para>
           </listitem></varlistentry>
@@ -9939,7 +9928,7 @@ return 0
       <para>
         The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the dialog
         control. If you omit this argument then the name of the data attribute is constructed
-        automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+        <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
         is off, this argument is ignored.
       </para>
       </listitem></varlistentry>
@@ -10021,20 +10010,20 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the trackbar control. May be numeric or
+        The <xref linkend="idArgument"/> for the trackbar control. May be numeric or
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords separated by
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by
         spaces:
       </para>
       <para>
@@ -10127,7 +10116,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The trackbar is created with the not visible (<xref linkend="wsvisible"/>) window style.
+            The trackbar is created with the not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -10145,7 +10134,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            Crate the trackbar with the border (<xref linkend="wsborder"/>) window style. Normally trackbars are not
+            Crate the trackbar with the <xref linkend="wsborder"/> window style. Normally trackbars are not
             created with the border style.
           </para>
           </listitem></varlistentry>
@@ -10164,7 +10153,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
       <para>
         The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the dialog
         control. If you omit this argument then the name of the data attribute is constructed
-        automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+        <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
         is off, this argument is ignored.
       </para>
       </listitem></varlistentry>
@@ -10209,7 +10198,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
   <para>
     The following example creates a vertical trackbar at the right border of the dialog. The trackbar has the
     <xref linkend="defSymbolicId"/> resource ID of IDC_TB_PRESSURE and its data
-    attribute (<xref linkend="sctUnderstandingDataAttributes"/>) is named PRESSURE. The trackbar displays automatic
+    <link linkend="sctUnderstandingDataAttributes">attribute</link> is named PRESSURE. The trackbar displays automatic
     tick marks on both sides.
 <programlisting>
 <![CDATA[
@@ -10247,20 +10236,20 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="idArgument"/>) for the tree view control. May be numeric or
+      The <xref linkend="idArgument"/> for the tree view control. May be numeric or
       <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The tree view coordinates (<xref linkend="paraControlCoordinates"/>).
+      The tree view <xref linkend="paraControlCoordinates"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+      A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
       separated by spaces:
     </para>
     <para>
@@ -10303,10 +10292,9 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
         <listitem>
         <para>
           The tree view allows the user to edit the tree view items. To store the edited text, you must connect a method
-          to the ENDEDIT (<xref linkend="evtListViewENDEDIT"/>) event notification (<xref linkend="ovvEvents"/>)
-          using the <xref linkend="mthConnectTreeViewEvent"/> method. Alternatively you can
-          connect the DEFAULTEDIT (<xref linkend="evtTreeViewDEFAULTEDIT"/>) event handler using <emphasis
-          role="italic">connectTreeViewEvent</emphasis>.
+          to the <xref linkend="evtListViewENDEDIT"/> <xref linkend="ovvEvents"/> notification using the <xref
+          linkend="mthConnectTreeViewEvent"/> method. Alternatively you can connect the <xref
+          linkend="evtTreeViewDEFAULTEDIT"/> event handler using <emphasis role="italic">connectTreeViewEvent</emphasis>.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>HSCROLL</term>
@@ -10342,7 +10330,7 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          The tree view has not visible (<xref linkend="wsvisible"/>) window style.
+          The tree view has not <xref linkend="wsvisible"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
@@ -10360,7 +10348,7 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
         <varlistentry><term>NOBORDER</term>
         <listitem>
         <para>
-          The tree view is created without the border (<xref linkend="wsborder"/>) style. Normally the tree view is
+          The tree view is created without the <xref linkend="wsborder"/> style. Normally the tree view is
           created with the border style.
         </para>
         </listitem></varlistentry>
@@ -10379,7 +10367,7 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
     <para>
       The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the tree view
       control. If you omit this argument then the name of the data attribute is constructed
-      automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+      <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
       is off, this argument is ignored.
     </para>
     </listitem></varlistentry>
@@ -10449,8 +10437,8 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
 </programlisting>
 
 <para>
-  Creates an up-down (<xref linkend="clsUpDown"/>) control in the dialog template and specifies the resource ID,
-  position, size, style, and attribute name for the control.
+  Creates an <xref linkend="clsUpDown"/> control in the dialog template and specifies the resource ID, position, size,
+  style, and attribute name for the control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -10461,20 +10449,20 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID (<xref linkend="idArgument"/>) for the up-down control. May be numeric or
+        The <xref linkend="idArgument"/> for the up-down control. May be numeric or
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control coordinates (<xref linkend="paraControlCoordinates"/>)
+        The  control <xref linkend="paraControlCoordinates"/>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following style (<xref linkend="paraStyleExplanation"/>) keywords
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
         separated by spaces:
       </para>
       <para>
@@ -10564,7 +10552,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not visible (<xref linkend="wsvisible"/>) window style.
+            The not <xref linkend="wsvisible"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -10582,7 +10570,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The border (<xref linkend="wsborder"/>) window style.
+            The <xref linkend="wsborder"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
@@ -10600,7 +10588,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
       <para>
         The name of the data <xref linkend="sctUnderstandingDataAttributes"/> associated with the dialog
         control. If you omit this argument then the name of the data attribute is constructed
-        automatically (<xref linkend="sctDataAttributeNames"/>). If auto <xref linkend="mthInitAutoDetection"/>
+        <link linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">automatic</link> data detection
         is off, this argument is ignored.
       </para>
       </listitem></varlistentry>
@@ -10679,7 +10667,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
   The <emphasis role="italic">defineDialog</emphasis> method is invoked automatically by the ooDialog framework. It is
   designed to be over-ridden in a subclass of <computeroutput>UserDialog</computeroutput>. The programmer uses this
   method to dynamically create the dialog controls for the dialog by using the appropriate
-  create ... (<xref linkend="sctCreateMethods"/>) methods. For all practical purposes, all dialog controls of a
+  <xref linkend="sctCreateMethods"/> methods. For all practical purposes, all dialog controls of a
   <computeroutput>UserDialog</computeroutput> should be created in this method.
 </para>
 <variablelist>
@@ -10713,7 +10701,7 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
   <listitem>
   <para>
     This example demonstrates how to create a push <xref linkend="mthCreatePushButton"/> and an
- <xref linkend="mthCreateEdit"/> control in a dialog:
+    <xref linkend="mthCreateEdit"/> control in a dialog:
 
 <programlisting>
 <![CDATA[
@@ -10843,9 +10831,9 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
   <para>
     The following example creates a dialog from the dialog template with a symbolic resource id of
     <computeroutput>IDD_DIALOG1</computeroutput> in the <computeroutput>dialog1.rc</computeroutput> resource script
-    file. As the resource script file is being parsed, the CLICKED events (<xref linkend="ovvEvents"/>) for all push
-    and radio buttons are connected to a methods in the Rexx dialog object. See the CONNECTBUTTONS and CONNECTRADIOS
-    keyword above for a little more detail on how the method names are constructed.
+    file. As the resource script file is being parsed, the CLICKED <xref linkend="ovvEvents"/> for all push and radio
+    buttons are connected to a methods in the Rexx dialog object. See the CONNECTBUTTONS and CONNECTRADIOS keyword above for
+    a little more detail on how the method names are constructed.
 
   <programlisting>
   <![CDATA[
@@ -10872,7 +10860,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
 
 <para>
   The <emphasis role="italic">loadFrame</emphasis> method starts the creation of the in-memory Windows dialog
-  template (<xref linkend="ovvDialogTemplate"/>) using a dialog definition from a resource
+  <xref linkend="ovvDialogTemplate"/> using a dialog definition from a resource
   <xref linkend="defResourceScript"/> file. It creates the non<xref linkend="defClientArea"/> of
   the dialog.
 </para>
@@ -10963,7 +10951,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
 
 <para>
   The <emphasis role="italic">loadItems</emphasis> method finishes the creation of the in-memory Windows dialog
-  template (<xref linkend="ovvDialogTemplate"/>) using a dialog definition from a resource
+  <xref linkend="ovvDialogTemplate"/> using a dialog definition from a resource
   <xref linkend="defResourceScript"/> file. It creates the dialog controls for the dialog. In essence it defines
   the <xref linkend="defClientArea"/> of the dialog.
 </para>

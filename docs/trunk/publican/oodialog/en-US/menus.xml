@@ -132,25 +132,26 @@
 </table>
 </para>
 
-<section id="sctMenuItemIDs"><title>Menu Item IDs</title>
+<section id="sctMenuItemIDs" xreflabel="ID"><title>Menu Item IDs</title>
 <para>
   Each menu item in a menu can be uniquely identified. This documentation generically refers to a menu item <emphasis
   role="italic">ID</emphasis>, but there are really two ways of identifying a menu item.
 </para>
 
 <variablelist>
-  <varlistentry id="entMenuItemIdentifier"><term><emphasis role="bold">Menu Item Identifier</emphasis></term>
+  <varlistentry id="entMenuItemIdentifier" xreflabel="ID(s)">
+  <term><emphasis role="bold">Menu Item Identifier</emphasis></term>
   <listitem>
   <para>
     Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu item identifier.
     These numbers are essentially the same as any other <xref linkend="defResourceId"/> used in
-    ooDialog. The Rexx programmer can use numeric or symbolic (<xref linkend="itmMenuSymbolicIDs"/>) IDs for menu
+    ooDialog. The Rexx programmer can use numeric or <xref linkend="itmMenuSymbolicIDs"/> IDs for menu
     item identifier's, in the same way as for other resource IDs.
   </para>
   <para>
     All menus assign menu item identifiers to command items and submenus. ooDialog uses what the Windows operating
     system calls <emphasis role="italic">extended</emphasis> menus. Extended menus also assign identifiers to
-    separators. Identifiers are used for menu command events (<xref linkend="sctMenuCommandEvents"/>). In addition, a
+    separators. Identifiers are used for <xref linkend="sctMenuCommandEvents"/>s. In addition, a
     menu item can be specified using its identifier in method invocations. For example, to
  <xref linkend="mthEnableClsMenu"/> or <xref linkend="mthDisableClsMenu"/> a menu item.
   </para>
@@ -160,7 +161,8 @@
     specified position
   </para>
   </listitem></varlistentry>
-  <varlistentry id="entMenuItemPosition"><term><emphasis role="bold">Menu Item Position</emphasis></term>
+  <varlistentry id="entMenuItemPosition" xreflabel="menu item position">
+  <term><emphasis role="bold">Menu Item Position</emphasis></term>
   <listitem>
   <para>
     In addition to having a unique identifier, each menu item in a menu bar or menu has a unique position value.
@@ -176,13 +178,14 @@
     submenu.
   </para>
   </listitem></varlistentry>
-  <varlistentry id="itmMenuSymbolicIDs"><term><emphasis role="bold">Symbolic Menu Item IDs</emphasis></term>
+  <varlistentry id="itmMenuSymbolicIDs" xreflabel="symbolic">
+  <term><emphasis role="bold">Symbolic Menu Item IDs</emphasis></term>
   <listitem>
   <para>
-    Menu <emphasis role="italic">item identifiers</emphasis> are essentially resource
-    IDs (<xref linkend="defResourceId"/>). The programmer can use <xref linkend="defSymbolicId"/> IDs for
-    menu item identifiers rather than numeric IDs for any argument in a menu object method that uses a menu item
-    identifier. However, to do so, the programmer <emphasis role="italic">must</emphasis> use the global
+    Menu <emphasis role="italic">item identifiers</emphasis> are essentially <xref linkend="defResourceId"/>s. The programmer
+    can use <xref linkend="defSymbolicId"/> IDs for menu item identifiers rather than numeric IDs for any argument in a menu
+    object method that uses a menu item identifier. However, to do so, the programmer <emphasis role="italic">must</emphasis>
+    use the global
     <xref linkend="dotConstDir"/>. If the global <computeroutput>.constDir</computeroutput> is not used,
     then all menu item identifier arguments <emphasis role="bold">must</emphasis> be numeric.
   </para> </listitem></varlistentry>
@@ -205,18 +208,18 @@
   Menu items that are not separators and do not open a submenu are called menu command items.
 </para>
 
-<section id="sctMenuCommandEvents"><title>Menu Command Events</title>
+<section id="sctMenuCommandEvents" xreflabel="menu command event"><title>Menu Command Events</title>
 <indexterm><primary>menu object</primary><secondary>command events</secondary></indexterm>
 <para>
   When a user selects a menu command item, an <xref linkend="ovvEvents"/> is generated and the operating
   system sends a notification to the owner window of the menu. The ooDialog framework provides methods to connect this
   menu command notification to a method in the Rexx dialog object in a similar manner to connecting dialog control
-  notifications (<xref linkend="sctConnectingEvents"/>). The event connection methods are contained within the
-  various menu objects and are similar to the event connection methods of the dialog object.
+  <link linkend="sctConnectingEvents">notifications</link>. The event connection methods are contained within the various
+  menu objects and are similar to the event connection methods of the dialog object.
 </para>
 <para>
   However, there are some specific details when dealing with menus that should be understood. The menu command event is
-  connected using the menu item identifier (<xref linkend="sctMenuItemIDs"/>) of the command item, just as dialog
+  connected using the menu item <xref linkend="sctMenuItemIDs"/> of the command item, just as dialog
   control events are connected using the resource ID of the dialog control. Event notifications are always connected to
   a specific Rexx dialog object, the dialog object that represents the <xref linkend="ovvUnderlying"/>
   dialog that the notification is expected to be sent to.
@@ -258,9 +261,9 @@
   E.g., take the case of an OK push button and an Exit menu item. Many times the action to take for both is exactly the
   same. Here the ooDialog programmer would use the same resource ID for both the button and the menu item. OK buttons
   normally use the resource ID of <computeroutput>IDOK</computeroutput>, which the ooDialog framework
-  automatically (<xref linkend="sctStandardEventMethods"/>) connects to the <xref linkend="mthOk"/> method. If
-  the programmer also uses the IDOK id for the Exit menu item, then nothing else need be done. Whether the user selects
-  the Exit menu item, or clicks the OK button, the same method in the Rexx dialog object will be invoked.
+  <link linkend="sctStandardEventMethods">automatically</link> connects to the <xref linkend="mthOk"/> method. If the
+  programmer also uses the IDOK id for the Exit menu item, then nothing else need be done. Whether the user selects the Exit
+  menu item, or clicks the OK button, the same method in the Rexx dialog object will be invoked.
 </para>
 <para>
   Notice that, since a button click and a menu item selection generate the same notification, it is not possible to
@@ -269,7 +272,7 @@
 
 </section>  <!-- End Section::Menu Command Events -->
 
-<section id="sctMenuCommandEventConnections"><title>Menu Command Event Connections</title>
+<section id="sctMenuCommandEventConnections" xreflabel="connection"><title>Menu Command Event Connections</title>
 <indexterm><primary>menu object</primary><secondary>command event connections</secondary></indexterm>
 <para>
   Menus are separate objects from dialog objects and can be instantiated with no reference to any dialog. In addition,
@@ -284,7 +287,8 @@
 </para>
 
 <variablelist>
-  <varlistentry id="varAutoConnection"><term><emphasis role="bold">Auto Connection</emphasis></term>
+  <varlistentry id="varAutoConnection" xreflabel="autoconnection">
+  <term><emphasis role="bold">Auto Connection</emphasis></term>
   <listitem>
   <para>
     When auto connection is on, <emphasis role="italic">each</emphasis> time a menu bar is attached to a dialog, or a
@@ -321,9 +325,8 @@
       <para>
         If auto connection is turned on in the menu bar that the item is inserted into, and the menu bar is already
         attached to a dialog, then the item will be automatically connected. The method name that is used for the
-        connected method is based on the current auto connection status
-        (getAutoConnectionStatus (<xref linkend="mthGetAutoConnectStatus"/>) can be used to determine the current
-        auto connection status.)
+        connected method is based on the current auto connection status. <xref linkend="mthGetAutoConnectStatus"/> can be
+        used to determine the current auto connection status.
       </para>
       <para>
         This will <emphasis role="italic">only</emphasis> be done if the item is being inserted by item identifier, not
@@ -377,7 +380,8 @@
     </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry id="varConnectionRequest"><term><emphasis role="bold">Connection Request</emphasis></term>
+  <varlistentry id="varConnectionRequest" xreflabel="connection request">
+  <term><emphasis role="bold">Connection Request</emphasis></term>
   <listitem>
   <para>
     A <emphasis role="italic">connection request</emphasis> is made when a menu command item is to be connected to a
@@ -463,22 +467,22 @@
     <itemizedlist>
     <listitem>
     <para>
-      connectCommandEvent (Class method) (<xref linkend="mthConnectCommandEventCls"/>)
+      <xref linkend="mthConnectCommandEventCls"/> (Class method)
     </para>
     </listitem>
     <listitem>
     <para>
- <xref linkend="mthConnectAllCommandEvents"/>
+      <xref linkend="mthConnectAllCommandEvents"/>
     </para>
     </listitem>
     <listitem>
     <para>
-      connectCommandEvent (Instance method) (<xref linkend="mthConnectCommandEvent"/>)
+      <xref linkend="mthConnectCommandEvent"/> (Instance method)
     </para>
     </listitem>
     <listitem>
     <para>
- <xref linkend="mthConnectSomeCommandEvents"/>
+      <xref linkend="mthConnectSomeCommandEvents"/>
     </para>
     </listitem>
     </itemizedlist>
@@ -534,13 +538,13 @@
 
 </section>  <!-- End Section::Menu Command Event Connections -->
 
-<section id="sctMenuCommandEventHandlers"><title>Menu Command Event Handlers</title>
+<section id="sctMenuCommandEventHandlers" xreflabel="handler"><title>Menu Command Event Handlers</title>
 <indexterm><primary>menu command event handlers</primary></indexterm>
 <para>
   There are only two types of event handlers that the ooDialog programmer will need to code. Although similar, there are
-  a few differences between the two. One handler (<xref linkend="sctSystemMenuCommandEventHandler"/>) is exclusively
-  for menu command event notifications generated by the system menu. The other handler, described first, is for all
-  other menu command event notifications.
+  a few differences between the two. One <link linkend="sctSystemMenuCommandEventHandler">handler</link> is exclusively for
+  menu command event notifications generated by the system menu. The other handler, described first, is for all other menu
+  command event notifications.
 </para>
 
 <section id="sctMenuObjectCommandEventHandler"><title>Menu Object Command Event Handler</title>
@@ -661,7 +665,7 @@
     <para>
       The identifier of the system menu command item the user selected. If this is one of the standard system menu
       command items, id will be a keyword identifying the item. The keywords correspond to the system menu command item
-      constants (<xref linkend="sctSystemMenuConstantMethods"/>), with the <emphasis role="italic">SC_</emphasis>
+      <link linkend="sctSystemMenuConstantMethods">constants</link>, with the <emphasis role="italic">SC_</emphasis>
       removed. For example, if the menu item selected was the SC_CLOSE item, the keyword will be <emphasis
       role="italic">CLOSE</emphasis>. For non-standard system menu command items inserted into the menu by the
       application, <emphasis role="italic">id</emphasis> will be the numeric value of the item.
@@ -766,10 +770,9 @@
 <para>
   All the menu classes in ooDialog are similar. Menus have a large number of methods that are common to all types of
   menus. These common methods are contained in the <computeroutput>Menu</computeroutput> class, a mixin class inherited
-  by all menu classes. This document treats the menu object in the same way it does the dialog
-  object (<xref linkend="chpDialogObject"/>) and the dialog <xref linkend="chpDialogControlObject"/> object,
-  as an abstract concept. However, in this case the abstract menu object and the <computeroutput>Menu</computeroutput>
-  mixin class are essentially the same.
+  by all menu classes. This document treats the menu object in the same way it does the <xref linkend="chpDialogObject"/>
+  object and the dialog <xref linkend="chpDialogControlObject"/> object, as an abstract concept. However, in this case the
+  abstract menu object and the <computeroutput>Menu</computeroutput> mixin class are essentially the same.
 </para>
 <para>
   The methods listed in this chapter are all methods of the <computeroutput>Menu</computeroutput> class and all ooDialog
@@ -856,7 +859,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetAutoConnectStatus"/></entry>
-<entry>Returns a <computeroutput>Directory</computeroutput> object containing the current status of autoconnection (<xref linkend="varAutoConnection"/>).</entry>
+<entry>Returns a <computeroutput>Directory</computeroutput> object containing the current status of <xref linkend="varAutoConnection"/>.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetCountClsMenu"/></entry>
@@ -884,7 +887,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetMenuHandle"/></entry>
-<entry>Retrieves the Windows <xref linkend="defHandle"/> of the underylying (<xref linkend="ovvUnderlying"/>) menu for the specified popup menu of this menu.</entry>
+<entry>Retrieves the Windows <xref linkend="defHandle"/> of the <xref linkend="ovvUnderlying"/> menu for the specified popup menu of this menu.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetPopup"/></entry>
@@ -948,7 +951,7 @@
 </row>
 <row>
 <entry><xref linkend="mthIsValidItemID"/></entry>
-<entry>Determines if a specific menu item ID (<xref linkend="sctMenuItemIDs"/>) is valid for this menu.</entry>
+<entry>Determines if a specific menu item <xref linkend="sctMenuItemIDs"/> is valid for this menu.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIsValidMenu"/></entry>
@@ -980,7 +983,7 @@
 </row>
 <row>
 <entry><xref linkend="mthSetAutoConnection"/></entry>
-<entry>Set the current status of autoconnection (<xref linkend="varAutoConnection"/>).</entry>
+<entry>Set the current status of <xref linkend="varAutoConnection"/>.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetHelpID"/></entry>
@@ -1034,7 +1037,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the menu item, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      The resource ID of the menu item, may be <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>methodName [required]</term>
@@ -1063,13 +1066,13 @@
   <listitem>
   <para>
     When using the <emphasis role="italic">connectCommandEvent</emphasis> class method to connect menu command events,
-    the programmer must use a menu item identifier (<xref linkend="sctMenuItemIDs"/>), not a menu item <emphasis
+    the programmer must use a menu item <xref linkend="sctMenuItemIDs"/>, not a menu item <emphasis
     role="italic">position</emphasis> identifier.
   </para>
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> class method is used for all types of menus. However, the
     programmer should be aware of the differences in coding event
-    handlers (<xref linkend="sctMenuCommandEventHandlers"/>) for <xref linkend="clsSystemMenu"/> and other
+    <xref linkend="sctMenuCommandEventHandlers"/>s for <xref linkend="clsSystemMenu"/> and other
     types of menus.
   </para>
   </listitem></varlistentry>
@@ -1273,8 +1276,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be checked, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
+      The item <xref linkend="entMenuItemIdentifier"/> to be checked, may be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -1384,14 +1387,14 @@
     <varlistentry><term>start [required]</term>
     <listitem>
     <para>
-      The resource ID of the first menu item in the group, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or
+      The resource ID of the first menu item in the group, may be <xref linkend="itmMenuSymbolicIDs"/> or
       numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>end [required]</term>
     <listitem>
     <para>
-      The resource ID of the last menu item in the group, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or
+      The resource ID of the last menu item in the group, may be <xref linkend="itmMenuSymbolicIDs"/> or
       numeric.
     </para>
     </listitem></varlistentry>
@@ -1399,7 +1402,7 @@
     <listitem>
     <para>
       The resource ID of the menu item in the group that will be checked, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>byPosition [optional]</term>
@@ -1575,7 +1578,7 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the menu item, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+        The resource ID of the menu item, may be <xref linkend="itmMenuSymbolicIDs"/> or numeric.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>methodName [required]</term>
@@ -1608,13 +1611,13 @@
   <listitem>
   <para>
     When using the <emphasis role="italic">connectCommandEvent</emphasis> method to connect menu command events, the
-    programmer must use a menu item identifier (<xref linkend="sctMenuItemIDs"/>), not a menu item <emphasis
+    programmer must use a menu item <xref linkend="sctMenuItemIDs"/>, not a menu item <emphasis
     role="italic">position</emphasis> identifier.
   </para>
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> method is used for all types of menus. However, the
     programmer should be aware of the differences in coding event
-    handlers (<xref linkend="sctMenuCommandEventHandlers"/>) for <xref linkend="clsSystemMenu"/> and other
+    <xref linkend="sctMenuCommandEventHandlers"/>s for <xref linkend="clsSystemMenu"/> and other
     types of menus.
   </para>
   </listitem></varlistentry>
@@ -1697,8 +1700,7 @@
 
 <para>
   Connects menu <xref linkend="ovvEvents"/> notifications to a method in the Rexx dialog. These are menu
-  notifications <emphasis role="italic">other</emphasis> than the menu command
-  event (<xref linkend="sctMenuCommandEvents"/>) notifications.
+  notifications <emphasis role="italic">other</emphasis> than the <xref linkend="sctMenuCommandEvents"/> notifications.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1867,7 +1869,7 @@
 <para>
   <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the
  <xref linkend="mthConnectMenuEvent"/>, described in this section, is the same as the event handler
-  described (<xref linkend="evtPopupMenuCONTEXT"/>) for the CONTEXTMENU event connected through one of the
+  <link linkend="evtPopupMenuCONTEXT">described</link> for the CONTEXTMENU event connected through one of the
  <xref linkend="clsPopupMenu"/> class methods. The event and event handler are the same no matter how the
   event connection is made.
 </para>
@@ -1935,7 +1937,7 @@
     The following example shows the event handler method that is only invoked for a list view in the application. Note
     that since the application uses the <xref linkend="mthShowClsPopupMenu"/> method to put up the context
     menu, the handling of the menu command item selection is done in a menu command event
-    handler (<xref linkend="sctMenuCommandEventHandlers"/>).
+    <xref linkend="sctMenuCommandEventHandlers"/>.
 
 <programlisting>
 <![CDATA[
@@ -1981,7 +1983,7 @@
 
 </section>  <!-- End Context Menu Event Handler -->
 
-<section id="evtMenuObjectINITMENU"><title>InitMenu Event Handler</title>
+<section id="evtMenuObjectINITMENU" xreflabel="INITMENU"><title>InitMenu Event Handler</title>
 <indexterm><primary>menu object event</primary><secondary>INITMENU</secondary></indexterm>
 <para>
   The event handler for the init menu event is invoked when the user clicks on a menu or uses a menu key. The menu is
@@ -2126,14 +2128,12 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If both the INITMENU (<xref linkend="evtMenuObjectINITMENU"/>) and INTITMENUPOPUP events are connected, then two
-    successive event handlers will often be invoked. Take for instance a menu bar that contains a <emphasis
-    role="italic">File</emphasis> submenu. If the user clicks on the <emphasis role="italic">File</emphasis> menu, the
-    operating system first generates an INITMENU notification (for the menubar about to become active) and then
-    generates an INTIMENUPOPUP notification (for the <emphasis role="italic">File</emphasis> submenu about to be come
-    active.)
-  </para>
-  </listitem></varlistentry>
+    If both the <xref linkend="evtMenuObjectINITMENU"/> and INTITMENUPOPUP events are connected, then two successive event
+    handlers will often be invoked. Take for instance a menu bar that contains a <emphasis role="italic">File</emphasis>
+    submenu. If the user clicks on the <emphasis role="italic">File</emphasis> menu, the operating system first generates an
+    INITMENU notification (for the menubar about to become active) and then generates an INTIMENUPOPUP notification (for the
+    <emphasis role="italic">File</emphasis> submenu about to be come active.)
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
@@ -2190,7 +2190,7 @@
     <listitem>
     <para>
       A <computeroutput>Collection</computeroutput> object containing the menu item
-      IDs (<xref linkend="sctMenuItemIDs"/>) to connect.  The IDs can be by position IDs or resource IDs,
+      <xref linkend="sctMenuItemIDs"/>s to connect.  The IDs can be by position IDs or resource IDs,
       depending on the value of the <emphasis role="italic">byPosition</emphasis> argument. However, they must be all
       the same type, all resource IDs or all by position IDs.
     </para>
@@ -2325,7 +2325,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the popup menu to be deleted. This can be a position ID or a
+      The <xref linkend="sctMenuItemIDs"/> of the popup menu to be deleted. This can be a position ID or a
       resource ID, depending on the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -2493,8 +2493,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be disabled, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item <xref linkend="entMenuItemIdentifier"/> to be disabled, may be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -2588,8 +2588,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be enabled, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item <xref linkend="entMenuItemIdentifier"/> to be enabled, may be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -2674,7 +2674,7 @@
 
 <para>
   Returns a <computeroutput>Directory</computeroutput> object containing the current status of
-  autoconnection (<xref linkend="varAutoConnection"/>).
+  <xref linkend="varAutoConnection"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2800,7 +2800,7 @@
 </programlisting>
 
 <para>
-  Retrieves the Windows <xref linkend="defHandle"/> of the underylying (<xref linkend="ovvUnderlying"/>)
+  Retrieves the Windows <xref linkend="defHandle"/> of the <xref linkend="ovvUnderlying"/>
   menu this Rexx object represents.
 </para>
 <variablelist>
@@ -2909,7 +2909,7 @@
     <varlistentry><term>pos</term>
     <listitem>
     <para>
-      The menu item position (<xref linkend="entMenuItemPosition"/>) identifier whose resource ID is required.
+      The <xref linkend="entMenuItemPosition"/> identifier whose resource ID is required.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2986,8 +2986,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to get the state of. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to get the state of. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3148,7 +3148,7 @@
 </programlisting>
 
 <para>
-  Retrieves the Windows <xref linkend="defHandle"/> of the underylying (<xref linkend="ovvUnderlying"/>)
+  Retrieves the Windows <xref linkend="defHandle"/> of the <xref linkend="ovvUnderlying"/>
   menu for the specified popup menu of this menu.
 </para>
 <variablelist>
@@ -3160,8 +3160,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the popup menu to get the handle for. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the popup menu to get the handle for. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3247,8 +3247,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the popup menu to get the handle for. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the popup menu to get the handle for. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3345,8 +3345,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to get the text for. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to get the text for. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3437,8 +3437,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to get the text for. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to get the text for. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3567,8 +3567,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be grayed, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item <xref linkend="entMenuItemIdentifier"/> to be grayed, may be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -3663,8 +3663,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be high lighted, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item <xref linkend="entMenuItemIdentifier"/> to be high lighted, may be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -3747,16 +3747,16 @@
     <varlistentry><term>idBefore [required]</term>
     <listitem>
     <para>
-      The newly inserted item is inserted before the item with this ID (<xref linkend="sctMenuItemIDs"/>). May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID,
+      The newly inserted item is inserted before the item with this <xref linkend="sctMenuItemIDs"/>. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID,
       depending on the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to be inserted. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to be inserted. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>text [required]</term>
@@ -3902,8 +3902,8 @@
     <listitem>
     <para>
       Whether to automatically connect the command item to a method in the owning dialog. This is a
-      connection request (<xref linkend="varConnectionRequest"/>) type of connection type. Do not mix this with
-      autoconnection (<xref linkend="varAutoConnection"/>). The default is false. If connect is true and the menu is
+      <xref linkend="varConnectionRequest"/> type of connection type. Do not mix this with
+      <xref linkend="varAutoConnection"/>. The default is false. If connect is true and the menu is
       already attached to a dialog the connection is made immediately. Otherwise the request is put in to a queue and
       the connection is made when the menu is first attached to a dialog.
     </para>
@@ -3996,16 +3996,16 @@
     <varlistentry><term>idBefore [required]</term>
     <listitem>
     <para>
-      The newly inserted submenu is inserted before the item with this ID (<xref linkend="sctMenuItemIDs"/>). May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID,
+      The newly inserted submenu is inserted before the item with this <xref linkend="sctMenuItemIDs"/>. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID,
       depending on the value of <emphasis role="italic">byPos</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="sctMenuItemIDs"/>) of the submenu to be inserted. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      The resource <xref linkend="sctMenuItemIDs"/> of the submenu to be inserted. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>pop [required]</term>
@@ -4215,16 +4215,16 @@
     <varlistentry><term>idBefore [required]</term>
     <listitem>
     <para>
-      The new separator is inserted before the item with this ID (<xref linkend="sctMenuItemIDs"/>). May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The new separator is inserted before the item with this <xref linkend="sctMenuItemIDs"/>. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPos</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (<xref linkend="sctMenuItemIDs"/>) of the separator to be inserted. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      The resource <xref linkend="sctMenuItemIDs"/> of the separator to be inserted. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>byPosition [optional]</term>
@@ -4306,8 +4306,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine the checked status of. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to determine the checked status of. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4372,8 +4372,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine if it is a command item. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to determine if it is a command item. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4437,8 +4437,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine if it is disabled. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to determine if it is disabled. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4502,8 +4502,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine if it is enabled. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to determine if it is enabled. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4567,8 +4567,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to determine if it is grayed. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to determine if it is grayed. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4632,8 +4632,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to be queried. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to be queried. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4698,8 +4698,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item to be queried. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item to be queried. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4753,9 +4753,9 @@
 </programlisting>
 
 <para>
-  Determines if a specific menu item ID (<xref linkend="sctMenuItemIDs"/>) is valid for this menu and if one of the
-  <emphasis role="italic">is*</emphasis> methods (isChecked (<xref linkend="mthIsChecked"/>),
- <xref linkend="mthIsPopup"/>, etc) is likely to fail.
+  Determines if a specific menu item <xref linkend="sctMenuItemIDs"/> is valid for this menu and if one of the
+  <emphasis role="italic">is*</emphasis> methods, <xref linkend="mthIsChecked"/>, <xref linkend="mthIsPopup"/>, etc., is
+  likely to fail.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4934,7 +4934,7 @@
   Converts <emphasis role="italic">text</emphasis> to a method name as if <emphasis role="italic">text</emphasis> were
   the text of a menu command item. This method can be used as a debugging helper if the programmer has difficulty in
   determining what method name the ooDialog framework is constructing when automatically
-  connecting (<xref linkend="sctMenuCommandEventConnections"/>) menu command items.
+  <link linkend="sctMenuCommandEventConnections">connecting</link>/> menu command items.
 </para>
 <para>
   The ooDialog framework constructs a method name from a string in this way: All space, tab, ampersand, colon, and plus
@@ -4965,10 +4965,9 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    In the menu classes there are a number of methods that connect menu command
-    events (<xref linkend="sctMenuCommandEvents"/>) to a method in the Rexx dialog. Most of these methods will
-    automatically construct the connected method name if the programmer does not specify a method name. The name is
-    constructed based on the text of the menu command item that is being connected.
+    In the menu classes there are a number of methods that connect <xref linkend="sctMenuCommandEvents"/>s to a method in the
+    Rexx dialog. Most of these methods will automatically construct the connected method name if the programmer does not
+    specify a method name. The name is constructed based on the text of the menu command item that is being connected.
   </para>
   <para>
     Sometimes, it may be difficult for the programmer to know what the constructed name is going to be. For instance,
@@ -5093,8 +5092,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu command item to remove. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu command item to remove. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5181,8 +5180,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the submenu to remove. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the submenu to remove. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5279,8 +5278,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the submenu to remove. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the submenu to remove. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5370,7 +5369,7 @@
 </programlisting>
 
 <para>
-  Set the current status of autoconnection (<xref linkend="varAutoConnection"/>).
+  Set the current status of <xref linkend="varAutoConnection"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5477,8 +5476,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The help ID (<xref linkend="sctMenuItemIDs"/>) to be set. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      The help <xref linkend="sctMenuItemIDs"/> to be set. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>recurse [optional]</term>
@@ -5558,8 +5557,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item whose resource ID is to be set. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item whose resource ID is to be set. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5567,7 +5566,7 @@
     <listitem>
     <para>
       The new resource ID for the specified menu item. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>byPosition [optional]</term>
@@ -5711,8 +5710,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (<xref linkend="sctMenuItemIDs"/>) of the menu item whose text is being set. May be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a position ID or a resource ID, depending on
+      The <xref linkend="sctMenuItemIDs"/> of the menu item whose text is being set. May be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5781,8 +5780,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The item ID(s) (<xref linkend="entMenuItemIdentifier"/>) to be unchecked, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
+      The item <xref linkend="entMenuItemIdentifier"/> to be unchecked, may be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -5892,8 +5891,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (<xref linkend="entMenuItemIdentifier"/>) whose high light is to be removed, may be
-      symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item <xref linkend="entMenuItemIdentifier"/> whose high light is to be removed, may be
+      <xref linkend="itmMenuSymbolicIDs"/> or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -6042,9 +6041,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If auto (<xref linkend="sctMenuCommandEventConnections"/>) connection is turned on (
- <xref linkend="mthGetAutoConnectStatus"/>) then all menu command items are connected to a
-    method in the <emphasis role="italic">dlg</emphasis> dialog at this time.
+    If auto <xref linkend="sctMenuCommandEventConnections"/> is turned on (<xref linkend="mthGetAutoConnectStatus"/>) then
+    all menu command items are connected to a method in the <emphasis role="italic">dlg</emphasis> dialog at this time.
   </para>
   <para>
     A menu bar can only be attached to a dialog after the <xref linkend="ovvUnderlying"/> dialog exists.
@@ -6389,7 +6387,7 @@
 </thead>
 <tbody>
 <row>
-<entry>new (Class) (<xref linkend="mthNewClsBinaryMenuBar"/>)</entry>
+<entry><xref linkend="mthNewClsBinaryMenuBar"/></entry>
 <entry>Instantiates a new binary menu bar object.</entry>
 </row>
 <row>
@@ -6490,7 +6488,7 @@
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID of the menu bar, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. This
+      The resource ID of the menu bar, may be <xref linkend="itmMenuSymbolicIDs"/> or numeric. This
       argument is required if <emphasis role="italic">menuSrc</emphasis> is either a
       <computeroutput>.ResDialog</computeroutput> or <computeroutput>.String</computeroutput> object.
     </para>
@@ -6498,7 +6496,7 @@
     <varlistentry><term>hID [optional]</term>
     <listitem>
     <para>
-      The context help resource ID of the menu bar, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or
+      The context help resource ID of the menu bar, may be <xref linkend="itmMenuSymbolicIDs"/> or
       numeric.
     </para>
     </listitem></varlistentry>
@@ -6515,10 +6513,10 @@
     <listitem>
     <para>
       If true, turn on <emphasis role="italic">auto connection</emphasis>. The default is false. Refer to the
-      discussion on command event connections (<xref linkend="sctMenuCommandEventConnections"/>) to understand the
-      details of <emphasis role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
-      role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command
-      events (<xref linkend="sctMenuCommandEvents"/>) are connected to a method in the dialog.
+      discussion on command event <xref linkend="sctMenuCommandEventConnections"/>s to understand the details of <emphasis
+      role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
+      role="italic">each</emphasis> time this menu bar is attached to a dialog, all <xref linkend="sctMenuCommandEvents"/>s
+      are connected to a method in the dialog.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>mName [optional]</term>
@@ -6545,7 +6543,7 @@
     Raises conditions for all failures. If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use symbolic (<xref linkend="itmMenuSymbolicIDs"/>) IDs with menu objects the programmer must use the global
+    To use <xref linkend="itmMenuSymbolicIDs"/> IDs with menu objects the programmer must use the global
     <xref linkend="dotConstDir"/>.
   </para>
   </listitem></varlistentry>
@@ -6620,7 +6618,7 @@
 </thead>
 <tbody>
 <row>
-<entry>new (Class) (<xref linkend="mthNewClsScriptMenuBar"/>)</entry>
+<entry><xref linkend="mthNewClsScriptMenuBar"/></entry>
 <entry>Returns a new <computeroutput>ScriptMenuBar</computeroutput> object.</entry>
 </row>
 <row>
@@ -6679,14 +6677,14 @@
       <listitem>
       <para>
         The resource ID of the menu definition in the resource script. May be
-        symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. If this argument is omitted, the first menu definition
+        <xref linkend="itmMenuSymbolicIDs"/> or numeric. If this argument is omitted, the first menu definition
         found in the resource script is used.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>helpID [optional]</term>
       <listitem>
       <para>
-        The context help ID for this menu. May be numeric or symbolic (<xref linkend="itmMenuSymbolicIDs"/>). If
+        The context help ID for this menu. May be numeric or <xref linkend="itmMenuSymbolicIDs"/>. If
         omitted, the menu will not have a help ID.
       </para>
       </listitem></varlistentry>
@@ -6707,12 +6705,12 @@
       <listitem>
       <para>
         If true, each menu command item in the menu is connected to a method in a Rexx dialog object the <emphasis
-        role="italic">first</emphasis> time the menu is attached to a dialog. This is a connection
-        request (<xref linkend="sctMenuCommandEventConnections"/>) type of connection. If the <emphasis
+        role="italic">first</emphasis> time the menu is attached to a dialog. This is a <xref
+        linkend="sctMenuCommandEventConnections"/> request type of connection. If the <emphasis
         role="italic">attachTo</emphasis> argument is used, then the menu command items are connected immediately.
         Otherwise the requests for connections are queued and the connections are made when the menu bar is actually
         attached to a dialog. The name of the connected method for each menu command item is composed from the menu item
- <xref linkend="mthItemTextToMethodName"/>. The default for this argument is false.
+        <xref linkend="mthItemTextToMethodName"/>. The default for this argument is false.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>attachTo [optional]</term>
@@ -6739,7 +6737,7 @@
     Raises conditions for all failures. If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use symbolic (<xref linkend="itmMenuSymbolicIDs"/>) IDs with menu objects the programmer must use the global
+    To use <xref linkend="itmMenuSymbolicIDs"/> IDs with menu objects the programmer must use the global
     <xref linkend="dotConstDir"/>.
   </para>
   </listitem></varlistentry>
@@ -6820,7 +6818,7 @@
 </thead>
 <tbody>
 <row>
-<entry>new (Class) (<xref linkend="mthNewClsUserMenuBar"/>)</entry>
+<entry><xref linkend="mthNewClsUserMenuBar"/></entry>
 <entry>Returns a new <computeroutput>UserMenuBar</computeroutput>object.</entry>
 </row>
 <row>
@@ -6893,14 +6891,14 @@
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID for the menu bar. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. If this
+      The resource ID for the menu bar. May be <xref linkend="itmMenuSymbolicIDs"/> or numeric. If this
       argument is omitted or is -1, the menu bar will not have a resource ID.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>helpID [optional]</term>
     <listitem>
     <para>
-      The context help ID for this menu. May be numeric or symbolic (<xref linkend="itmMenuSymbolicIDs"/>). If
+      The context help ID for this menu. May be numeric or <xref linkend="itmMenuSymbolicIDs"/>. If
       omitted, the menu will not have a help ID.
     </para>
     </listitem></varlistentry>
@@ -6921,10 +6919,10 @@
     <listitem>
     <para>
       If true, turn on <emphasis role="italic">auto connection</emphasis>. The default is false. Refer to the
-      discussion on command event connections (<xref linkend="sctMenuCommandEventConnections"/>) to understand the
-      details of <emphasis role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
-      role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command
-      events (<xref linkend="sctMenuCommandEvents"/>) are connected to a method in the dialog.
+      discussion on command event <xref linkend="sctMenuCommandEventConnections"/>s to understand the details of <emphasis
+      role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
+      role="italic">each</emphasis> time this menu bar is attached to a dialog, all <xref linkend="sctMenuCommandEvents"/>s
+      are connected to a method in the dialog.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>mName [optional]</term>
@@ -6958,7 +6956,7 @@
     Raises conditions for all failures. If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use symbolic (<xref linkend="itmMenuSymbolicIDs"/>) IDs with menu objects the programmer must use the global
+    To use <xref linkend="itmMenuSymbolicIDs"/> IDs with menu objects the programmer must use the global
     <xref linkend="dotConstDir"/>.
   </para>
   </listitem></varlistentry>
@@ -7043,7 +7041,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID for the menu command item. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      The resource ID for the menu command item. May be <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>text [required]</term>
@@ -7156,8 +7154,8 @@
   <listitem>
   <para>
     A method name to connect the menu command event to. The default is to not connect the menu command item. This is a
-    connection request (<xref linkend="sctMenuCommandEventConnections"/>) type of connection. If this argument is
-    used it can not be the empty string.
+    <xref linkend="sctMenuCommandEventConnections"/>  request type of connection. If this argument is used it can not be the
+    empty string.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -7171,7 +7169,7 @@
   <para>
     It is suggested that the ooDialog programmer create an empty <xref linkend="clsBinaryMenuBar"/>
     and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as
- <xref linkend="mthInsertPopup"/>. This provides all the functionality of the
+    <xref linkend="mthInsertPopup"/>. This provides all the functionality of the
     <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
   </para>
   </listitem></varlistentry>
@@ -7202,7 +7200,7 @@
   <listitem>
   <para>
     There is a good example of using the <emphasis role="italic">addItem</emphasis> method in the
-    example (<xref linkend="exampleNewUserMenuBar"/>) for the <emphasis role="italic">new</emphasis> method of the
+    <link linkend="exampleNewUserMenuBar">example</link>) for the <emphasis role="italic">new</emphasis> method of the
     <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
@@ -7233,7 +7231,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID for the popup menu. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      The resource ID for the popup menu. May be <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>name [required]</term>
@@ -7340,7 +7338,7 @@
     <varlistentry><term>helpID [optional]</term>
     <listitem>
     <para>
-      The context help ID for the popup menu. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric.
+      The context help ID for the popup menu. May be <xref linkend="itmMenuSymbolicIDs"/> or numeric.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7381,7 +7379,7 @@
   <listitem>
   <para>
     There is a good example of using the <emphasis role="italic">addPopup</emphasis> method in the
-    example (<xref linkend="exampleNewUserMenuBar"/>) for the <emphasis role="italic">new</emphasis> method of the
+    <link linkend="exampleNewUserMenuBar">example</link>) for the <emphasis role="italic">new</emphasis> method of the
     <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
@@ -7412,7 +7410,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID for the separator. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. -1 is
+      The resource ID for the separator. May be <xref linkend="itmMenuSymbolicIDs"/> or numeric. -1 is
       accepted to indicate no ID is desired, however, there are many advantages to assigning valid IDs to separators.
     </para>
     </listitem></varlistentry>
@@ -7510,7 +7508,7 @@
   <listitem>
   <para>
     There is a good example of using the <emphasis role="italic">addSeparator</emphasis> method in the
-    example (<xref linkend="exampleNewUserMenuBar"/>) for the <emphasis role="italic">new</emphasis> method of the
+    <link linkend="exampleNewUserMenuBar">example</link>) for the <emphasis role="italic">new</emphasis> method of the
     <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
@@ -7573,7 +7571,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleNewUserMenuBar"/>) for the <emphasis role="italic">new</emphasis> method of
+    The <link linkend="exampleNewUserMenuBar">example</link>) for the <emphasis role="italic">new</emphasis> method of
     the <computeroutput>UserMenuBar</computeroutput> class uses the <emphasis role="italic">complete</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -7664,9 +7662,9 @@
   <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the
  <xref linkend="mthConnectContextMenuCls"/> class method or the
  <xref linkend="mthConnectContextMenu"/> instance method, described in this section, is the same as
-  the event handler described (<xref linkend="evtMenuObjectCONTEXTMENU"/>) for the CONTEXTMENU event connected
-  through the <xref linkend="mthConnectMenuEvent"/> method. The event and event handler are the
-  same no matter how the event connection is made.
+  the event handler <link linkend="evtMenuObjectCONTEXTMENU">described</link>/> for the CONTEXTMENU event connected through
+  the <xref linkend="mthConnectMenuEvent"/> method. The event and event handler are the same no matter how the event
+  connection is made.
 </para>
 <para>
   The event handler for the context menu event is invoked when the user right-mouse clicks on a window, types SHIFT-F10
@@ -7733,7 +7731,7 @@
     The following example shows the event handler method that is only invoked for a list view in the application. Note
     that since the application uses the <xref linkend="mthShowClsPopupMenu"/> method to put up the context
     menu, the handling of the menu command item selection is done in a menu command event
-    handler (<xref linkend="sctMenuCommandEventHandlers"/>).
+    <xref linkend="sctMenuCommandEventHandlers"/>.
 
 <programlisting>
 <![CDATA[
@@ -7884,7 +7882,7 @@
   <para>
     The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
     the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.) The <emphasis
-    role="italic">ContextMenu Event Handler</emphasis> section (<xref linkend="evtPopupMenuCONTEXT"/>) has
+    role="italic">ContextMenu Event Handler</emphasis> <link linkend="evtPopupMenuCONTEXT">section</link> has
     information on how to code the event handler.
   </para>
   <para>
@@ -7974,14 +7972,14 @@
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID for the popup menu. May be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. If this
+      The resource ID for the popup menu. May be <xref linkend="itmMenuSymbolicIDs"/> or numeric. If this
       argument is omitted or is -1, the popup menu will not have a resource ID.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>helpID [optional]</term>
     <listitem>
     <para>
-      The context help ID for this menu. May be numeric or symbolic (<xref linkend="itmMenuSymbolicIDs"/>). If
+      The context help ID for this menu. May be numeric or <xref linkend="itmMenuSymbolicIDs"/>. If
       omitted, the popup menu will not have a help ID.
     </para>
     </listitem></varlistentry>
@@ -8062,12 +8060,10 @@
     <varlistentry><term>auto [optional]</term>
     <listitem>
     <para>
-      If true, turn on auto connection (<xref linkend="sctMenuCommandEventConnections"/>). The default is false.
-      When <emphasis role="italic">auto connection</emphasis> is on, <emphasis role="italic">each</emphasis> time this
-      popup menu is assigned to a dialog, all menu command events (<xref linkend="sctMenuCommandEvents"/>) are
-      connected to a method in the dialog.
-    </para>
-    </listitem></varlistentry>
+      If true, turn on auto <xref linkend="sctMenuCommandEventConnections"/>. The default is false. When <emphasis
+      role="italic">auto connection</emphasis> is on, <emphasis role="italic">each</emphasis> time this popup menu is
+      assigned to a dialog, all <xref linkend="sctMenuCommandEvents"/>s are connected to a method in the dialog.
+    </para> </listitem></varlistentry>
     <varlistentry><term>mName [optional]</term>
     <listitem>
     <para>
@@ -8203,7 +8199,7 @@
   <para>
     The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
     the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.) The <emphasis
-    role="italic">ContextMenu Event Handler</emphasis> section (<xref linkend="evtPopupMenuCONTEXT"/>) has
+    role="italic">ContextMenu Event Handler</emphasis> <link linkend="evtPopupMenuCONTEXT">section</link> has
     information on how to code the event handler.
   </para>
   </listitem></varlistentry>
@@ -8345,8 +8341,8 @@
 
 <para>
   Displays a contex menu and returns after the user has selected an item or canceled the menu.  When the user selects an
-  item, a menu command (<xref linkend="sctMenuCommandEvents"/>) event notification, using the id of the menu item
-  selected, is generated. If the user cancels, nothing happens.
+  item, a <xref linkend="sctMenuCommandEvents"/> notification, using the id of the menu item selected, is generated. If the
+  user cancels, nothing happens.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8536,11 +8532,10 @@
  <xref linkend="clsSPI"/> class, <xref linkend="atrMenuFade"/> attribute.)
   </para>
   <para>
-    Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM"/>)
-    class, <xref linkend="atrMenuDropAlignment"/> attribute,) be checked to determine the correct
-    horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
-    HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
-    developing Microsoft Tablet PC applications.
+    Microsoft says that it is essential that the System Metric, menu drop alignment (<xref linkend="clsSM"/> class, <xref
+    linkend="atrMenuDropAlignment"/> attribute,) be checked to determine the correct horizontal alignment flag (LEFT or
+    RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or HORNEGANIMATION) to use. The say it is essential
+    for creating the optimal user experience, especially when developing Microsoft Tablet PC applications.
   </para>
   <para>
     Microsoft also notes that to display a context menu for a notification icon, the current window must be the
@@ -8625,8 +8620,8 @@
 
 <para>
   Displays a contex menu and returns the menu ID that the user has selected.  When the user selects an item, <emphasis
-  role="italic">no</emphasis> menu command (<xref linkend="sctMenuCommandEvents"/>) event notification is generated.
-  If the user cancels the menu 0 is returned.
+  role="italic">no</emphasis> <xref linkend="sctMenuCommandEvents"/> notification is generated. If the user cancels the menu
+  0 is returned.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8817,11 +8812,10 @@
  <xref linkend="clsSPI"/> class, <xref linkend="atrMenuFade"/> attribute.)
   </para>
   <para>
-    Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM"/>)
-    class, <xref linkend="atrMenuDropAlignment"/> attribute,) be checked to determine the correct
-    horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
-    HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
-    developing Microsoft Tablet PC applications.
+    Microsoft says that it is essential that the System Metric, menu drop alignment (<xref linkend="clsSM"/> class, <xref
+    linkend="atrMenuDropAlignment"/> attribute,) be checked to determine the correct horizontal alignment flag (LEFT or
+    RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or HORNEGANIMATION) to use. The say it is essential
+    for creating the optimal user experience, especially when developing Microsoft Tablet PC applications.
   </para>
   <para>
     Microsoft also notes that to display a context menu for a notification icon, the current window must be the
@@ -8937,7 +8931,7 @@
 </thead>
 <tbody>
 <row>
-<entry>Constant Methods (<xref linkend="sctSystemMenuConstantMethods"/>)</entry>
+<entry><link linkend="sctSystemMenuConstantMethods">Constant Methods</link></entry>
 <entry>The SystemMenu object provides a number of <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput>directive.</entry>
 </row>
 <row>
@@ -8945,7 +8939,7 @@
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new (Class) (<xref linkend="mthNewClsSystemMenu"/>)</entry>
+<entry><xref linkend="mthNewClsSystemMenu"/> (Class)</entry>
 <entry>Instantiates and returns a new system menu object.</entry>
 </row>
 <row>
@@ -8981,7 +8975,7 @@
   The <computeroutput>SystemMenu</computeroutput> object provides a number of <emphasis
   role="italic">constant</emphasis> values through the use of the <computeroutput>::constant</computeroutput> directive.
   The constants are listed and documented in this section. These constants are the <emphasis role="italic">menu item
-  identifiers (<xref linkend="sctMenuItemIDs"/>)</emphasis> for all System menu command items.
+  <xref linkend="sctMenuItemIDs"/>s</emphasis> for all System menu command items.
 </para>
 <para>
   Recall that the constant methods defined by the <computeroutput>::constant</computeroutput> directive are both class
@@ -9295,8 +9289,8 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the menu item, may be symbolic (<xref linkend="itmMenuSymbolicIDs"/>) or numeric. The
-        constants (<xref linkend="sctSystemMenuConstantMethods"/>) provided by the
+        The resource ID of the menu item, may be <xref linkend="itmMenuSymbolicIDs"/> or numeric. The
+        <link linkend="sctSystemMenuConstantMethods">constants</link> provided by the
         <computeroutput>SystemMenu</computeroutput> class can be used for the default items in a system menu.
       </para>
       </listitem></varlistentry>
@@ -9330,14 +9324,14 @@
   <listitem>
   <para>
     When using the <emphasis role="italic">connectCommandEvent</emphasis> method to connect menu command events, the
-    programmer must use a menu item identifier (<xref linkend="sctMenuItemIDs"/>), not a menu item <emphasis
+    programmer must use a menu item <xref linkend="sctMenuItemIDs"/>, not a menu item <emphasis
     role="italic">position</emphasis> identifier.
   </para>
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> method is used for all types of menus. However, the
     programmer should be aware of the differences in coding event
-    handlers (<xref linkend="sctMenuCommandEventHandlers"/>) for <computeroutput>SystemMenu</computeroutput> events and
-    other types of menus. See the section (<xref linkend="sctSystemMenuCommandEventHandler"/>) exaplaining the event
+    <xref linkend="sctMenuCommandEventHandlers"/>s for <computeroutput>SystemMenu</computeroutput> events and
+    other types of menus. See the <link linkend="sctSystemMenuCommandEventHandler">section</link>/> exaplaining the event
     handler for system menu command events.
   </para>
   </listitem></varlistentry>
@@ -9478,7 +9472,7 @@
     <listitem>
     <para>
       A <computeroutput>Collection</computeroutput> object containing the menu item
-      IDs (<xref linkend="sctMenuItemIDs"/>) to connect.  The IDs can be by position IDs or resource IDs,
+      <xref linkend="sctMenuItemIDs"/>s to connect.  The IDs can be by position IDs or resource IDs,
       depending on the value of the <emphasis role="italic">byPosition</emphasis> argument. However, they must be all
       the same type, all resource IDs or all by position IDs.
     </para>
