@@ -47,8 +47,8 @@
 <indexterm><primary>dialog control object</primary></indexterm>
 <indexterm><primary>dialog control object</primary></indexterm>
 <para>
-  This chapter discussses the <emphasis role="italic">dialog control object</emphasis> in a fashion similar to the dialog object (<xref
-  linkend="chpDialogObject" />(. It lists the methods that are common to all dialog controls. In the
+  This chapter discussses the <emphasis role="italic">dialog control object</emphasis> in a fashion similar to the <xref
+  linkend="chpDialogObject"/> object. It lists the methods that are common to all dialog controls. In the
   graphical user interface (GUI) for the Windows operating system both dialogs and dialog controls are windows.
   Therefore, many of the methods of a dialog control object are the same as the methods of the dialog object. These are
   the methods that are common to all windows, whether they are dialog windows or dialog control windows.
@@ -200,7 +200,7 @@
 <entry>Retrievs the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
 </row>
 <row>
-<entry>data= (<xref linkend="mthDataEquals"/>)</entry>
+<entry><xref linkend="mthDataEquals"/></entry>
 <entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
 </row>
 <row>
@@ -508,7 +508,7 @@
 <entry>Gets the text of the control.</entry>
 </row>
 <row>
-<entry>title= (<xref linkend="wbdcoTitleEquals"/>)</entry>
+<entry><xref linkend="wbdcoTitleEquals"/></entry>
 <entry>Sets the text of the control.</entry>
 </row>
 <row>
@@ -649,20 +649,17 @@ WindowBase::<xref linkend="atrHwnd"/>
   <varlistentry><term><emphasis role="bold">id get:</emphasis></term>
   <listitem>
   <para>
-    Returns the resource ID of the dialog control. This is always the whole number resource ID, not the symbolic (<xref
-  linkend="defSymbolicId" />) ID, even if symbolic IDs are used for the control.
+    Returns the resource ID of the dialog control. This is always the whole number resource ID, not the <xref
+    linkend="defSymbolicId" />) ID, even if symbolic IDs are used for the control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">id set:</emphasis></term>
   <listitem>
   <para>
-    The programmer can not set the value of this attribute. Its value is the value of the underlying (<xref
-    linkend="ovvUnderlying" />) dialog control's ID, which is set when the dialog control is created by
-    the operating system and can not be changed.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogControl::id() [attribute]  -->
+    The programmer can not set the value of this attribute. Its value is the value of the <xref linkend="ovvUnderlying"/>
+    dialog control's ID, which is set when the dialog control is created by the operating system and can not be changed.
+  </para> </listitem></varlistentry>
+</variablelist> </section>  <!-- End DialogControl::id() [attribute]  -->
 
 
 <section id="wbdcoInitCode"><title>initCode (Attribute)</title>
@@ -860,7 +857,7 @@ Generic form:
  <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
       </para>
       <para>
-        The coordinates are specified as <xref linkend="defClientArea"/> area coordinates, in pixels.
+        The coordinates are specified as <xref linkend="defClientArea"/> coordinates, in pixels.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -932,10 +929,9 @@ Generic form:
   <para>
     The operating system translates the numeric <xref linkend="clsVK"/> key code produced by a key down /
     key up combination into a numeric <emphasis role="italic">character</emphasis> code. The character code is sent to
-    the window with the keyboard focus in a character event notification. For enhanced 101-key and 102-key keyboards,
-    the character (<xref linkend="evtDialogControlCHAR"/>) event handler will also receive extended key
-    notifications. The extended keys are the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and the arrow keys in the clusters
-    to the left of the numeric keypad.
+    the window with the keyboard focus in a character event notification. For enhanced 101-key and 102-key keyboards, the
+    <xref linkend="evtDialogControlCHAR"/> event handler will also receive extended key notifications. The extended keys are
+    the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and the arrow keys in the clusters to the left of the numeric keypad.
   </para>
   <para>
     There is not a one to one correspondence between the numeric value of a virtual key code and the numeric character
@@ -944,9 +940,8 @@ Generic form:
     <computeroutput>45~d2c == -</computeroutput>.
   </para>
   <para>
-    The character codes expected to reach the character (<xref linkend="evtDialogControlCHAR"/>) event handler are in
-    the following table. The explanation for the character event handler describes how to determine which character is
-    received.
+    The character codes expected to reach the <xref linkend="evtDialogControlCHAR"/> event handler are in the following
+    table. The explanation for the character event handler describes how to determine which character is received.
 
     <table id="tblCharacterCode" frame="all"> <title>Numeric Character Code for the Character Event</title>
     <tgroup cols="2">
@@ -1054,13 +1049,13 @@ Generic form:
 <indexterm><primary>dialog control object Event</primary><secondary>CHAR</secondary></indexterm>
 <para>
   The <xref linkend="ovvEvents"/> handler for the char event is invoked when the dialog control has the
-  keyboard focus and the user types a key or a keyboard combination that the operating system translates to a character (<xref
-  linkend="rmkConnectCharEvent" />).
+  keyboard focus and the user types a key or a keyboard combination that the operating system translates to a
+  <link linkend="rmkConnectCharEvent">character</link>.
 </para>
 <para>
   The programmer must return a value from the event handler and the interpreter waits for this return. Generic
-  information on how to code (<xref linkend="sctCodingEventHandlers"/>) event handlers is included in the
-  documentation for the EventNotification (<xref linkend="clsEventNotification"/>( class.
+  information on how to <link linkend="sctCodingEventHandlers">code</link>) event handlers is included in the
+  documentation for the <xref linkend="clsEventNotification"/> class.
 </para>
 
 <programlisting>
@@ -1091,7 +1086,7 @@ Generic form:
     <para>
       To determine the character received use <computeroutput>char~d2c</computeroutput> when <emphasis
       role="italic">isCtrl</emphasis> is false and <emphasis role="italic">misc</emphasis> does <emphasis
-      role="italic">not</emphasis> contain the word <emphasis role="italic">extended</emphasis>. Use the VK (<xref
+      role="italic">not</emphasis> contain the word <emphasis role="italic">extended</emphasis>. Use the <xref
       linkend="clsVK" />) class when <emphasis role="italic">isCtrl</emphasis> is false and <emphasis
       role="italic">misc</emphasis> contains the word <emphasis role="italic">extended</emphasis>.
     </para>
@@ -1325,8 +1320,8 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">connectFKeyPress</emphasis> method is a convenience method for the connectKeyPress (<xref
-    linkend="mthConnectKeyPressDialogControlObject" />) method. It is equivalent to using the
+    The <emphasis role="italic">connectFKeyPress</emphasis> method is a convenience method for the <xref
+    linkend="mthConnectKeyPressDialogControlObject"/> method. It is equivalent to using the
     <emphasis role="italic">connectKeyPress</emphasis> method and supplying the FKEYS keyword for the <emphasis
     role="italic">keys</emphasis> argument and omitting the <emphasis role="italic">filter</emphasis> argument. The
     <emphasis role="italic">connectKeyPress</emphasis> method documentation goes into deeper detail in explaining how
@@ -1406,8 +1401,8 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectKeyPress</emphasis> method connects a key press event (<xref
-  linkend="ovvEvents" />) notification with a method in the Rexx dialog. A single key or multiple keys can be
+  The <emphasis role="italic">connectKeyPress</emphasis> method connects a key press <xref linkend="ovvEvents"/>
+  notification with a method in the Rexx dialog. A single key or multiple keys can be
   connected to the same method.  Multiple methods can be connected for key press events, but only 1 method can be
   connected to any single key.
 </para>
@@ -1451,8 +1446,8 @@ Generic form:
           <varlistentry><term>FKEYS</term>
           <listitem>
           <para>
-            All Function keys, other than F1.  (In Windows the F1 key is the help key and the connectHelp (<xref
-            linkend="mthConnectHelp" />) method should be used for F1.)
+            All Function keys, other than F1.  (In Windows the F1 key is the help key and the <xref
+            linkend="mthConnectHelp"/> method should be used for F1.)
           </para>
           </listitem></varlistentry>
           <varlistentry><term>ALPHA</term>
@@ -1815,8 +1810,8 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">data</emphasis> method retrieves the current data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of the dialog control.
+  The <emphasis role="italic">data</emphasis> method retrieves the current
+  <link linkend="sctUnderstandingDataAttributes">data</link> of the dialog control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1829,9 +1824,9 @@ Generic form:
   <listitem>
   <para>
     The current <emphasis role="italic">data</emphasis> of the dialog control. Exactly what the format of the <emphasis
-    role="italic">data</emphasis> takes is dependent on the type of the control. The Data Attribute Methods (<xref
-    linkend="sctDataAttributes" />) section of this reference has a detailed discussion on
-    data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog control.
+    role="italic">data</emphasis> takes is dependent on the type of the control. The Data Attribute Methods
+    <link linkend="sctDataAttributes">xection</link> of this reference has a detailed discussion on data attributes and the
+    meaning of the <emphasis role="italic">data</emphasis> of a dialog control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1913,7 +1908,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Sets the data (<xref linkend="sctUnderstandingDataAttributes"/>) of the dialog control to the new value specified.
+  Sets the <link linkend="sctUnderstandingDataAttributes">data</link> of the dialog control to the new value specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1923,9 +1918,9 @@ Generic form:
     <listitem>
     <para>
       The value used to set the <emphasis role="italic">data</emphasis> of the dialog control. The exact format of this
-      value is dependent on the type of the control. The Data Attribute Methods (<xref linkend="sctDataAttributes"/>)
-      section of this reference has a detailed discussion on data attributes and the meaning of the <emphasis
-      role="italic">data</emphasis> of a dialog control.
+      value is dependent on the type of the control. The Data Attribute Methods <link
+      linkend="sctDataAttributes">section</link> of this reference has a detailed discussion on data attributes and the
+      meaning of the <emphasis role="italic">data</emphasis> of a dialog control.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2040,9 +2035,8 @@ Generic form:
     The method of the dialog control object (this method) can only disconnect key press events that were set with the
     dialog control object's versions of <xref linkend="mthConnectKeyPressDialogControlObject"/> and
  <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods. This method can not
-    disconnect key press events that were set with the dialog object's versions of connectKeyPress (<xref
-    linkend="mthConnectKeyPressDialogObject" />) and connectFKeyPress (<xref
-    linkend="mthConnectFKeyPressDialogObject" />) methods.
+    disconnect key press events that were set with the dialog object's versions of <xref
+    linkend="mthConnectKeyPressDialogObject"/> and <xref linkend="mthConnectFKeyPressDialogObject"/> methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2096,7 +2090,7 @@ method onDisable
 </programlisting>
 
 <para>
-  Calculates the size, (width and height,) in dialog units (<xref linkend="defDialogUnit"/>) for a given string.
+  Calculates the size, (width and height,) in <xref linkend="defDialogUnit"/> for a given string.
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> The convoluted arguments to this method are needed to retain backwards
@@ -2111,8 +2105,8 @@ method onDisable
   make much sense for this method to be a method of a dialog control in the first place.
 </para>
 <para>
-  The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use the getTextSizeDu (<xref
-  linkend="mthGetTextSizeDu" />) method of the <xref linkend="chpDialogObject"/> object.
+  The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use the <xref
+  linkend="mthGetTextSizeDu"/> method of the <xref linkend="chpDialogObject"/> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2244,8 +2238,8 @@ method onDisable
     navigation depending on the options the user selects.
   </para>
   <para>
-    The negative return value from this method is a hold over from a period prior to the introduction of the .systemErrorCode (<xref
-    linkend="dotSystemErrorCode" />). This method now sets the
+    The negative return value from this method is a hold over from a period prior to the introduction of the <xref
+    linkend="dotSystemErrorCode"/>. This method now sets the
     <computeroutput>.systemErrorCode</computeroutput>, making it easier to use the negative return as a failure
     indication and use the <computeroutput>.systemErrorCode</computeroutput> value to look up the actual error.
   </para>
@@ -2308,10 +2302,9 @@ method onDisable
     The dialog object also has a <xref linkend="mthHasKeyPressConnectionDialogObject"/>
     method. The method of the dialog control object (this method) can only check for connections that were set with the
     dialog control object's versions of <xref linkend="mthConnectKeyPressDialogControlObject"/> and
-    connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogControlObject"/> methods. This method can not check
-    for connections that were set with the dialog object's versions of connectKeyPress (<xref
-    linkend="mthConnectKeyPressDialogObject" />) and connectFKeyPress (<xref
-    linkend="mthConnectFKeyPressDialogObject" />) methods.
+    <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods. This method can not check
+    for connections that were set with the dialog object's versions of <xref linkend="mthConnectKeyPressDialogObject"/> and
+    <xref linkend="mthConnectFKeyPressDialogObject"/> methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2382,9 +2375,9 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">redrawRect</emphasis> method redraws the specified bounding (<xref
-  linkend="ovvRectangleCoordinates" />) rectangular within the client area of this dialog control.
-  Optionally the background of the rectangle can be erased first.
+  The <emphasis role="italic">redrawRect</emphasis> method redraws the specified
+  <link linkend="ovvRectangleCoordinates">bounding</link> rectangle within the client area of this dialog control. Optionally
+  the background of the rectangle can be erased first.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2397,10 +2390,10 @@ Generic form:
       <para>
         The coordinates of the rectangle to be redrawn. The coordinates specify the upper left and lower right corners
         of the rectangle. The corners can be specified using either a <xref linkend="clsRect"/> object, two
- <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
+        <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
       </para>
       <para>
-        The coordinates are specified as <xref linkend="defClientArea"/> area coordinates, in pixels.
+        The coordinates are specified as <xref linkend="defClientArea"/> coordinates, in pixels.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>erase [optional]</term>
@@ -2463,13 +2456,13 @@ Generic form:
       <varlistentry><term>bk [required]</term>
       <listitem>
       <para>
-        The color number (<xref linkend="defColor"/>) for the background color of the dialog control.
+        The <xref linkend="defColor"/> for the background color of the dialog control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
       <listitem>
       <para>
-        The color number (<xref linkend="defColor"/>) for the foreground color of the dialog control. The foreground
+        The <xref linkend="defColor"/> for the foreground color of the dialog control. The foreground
         color is the color that text is written in.
       </para>
       </listitem></varlistentry>
@@ -2522,8 +2515,8 @@ Generic form:
 </programlisting>
 
 <para>
-  Sets the background color, and optionally the text color, for this dialog control using the system colors (<xref
-  linkend="defSysColor" />).
+  Sets the background color, and optionally the text color, for this dialog control using the system
+  <link linkend="defSysColor">colors</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2535,7 +2528,7 @@ Generic form:
       <listitem>
       <para>
         The system color ID for the background color of the dialog control. This can be either the whole number ID or
-        the keyword ID. IDs can be looked up in the System Color Elements table (<xref linkend="tblSysColors"/>)
+        the keyword ID. IDs can be looked up in the System Color Elements (<link linkend="tblSysColors">table</link>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
@@ -2543,7 +2536,7 @@ Generic form:
       <para>
         The system color for the foreground color of the dialog control. The foreground color is the color that text is
         written in. This can be either the whole number ID or the keyword ID. IDs can be looked up in the System Color
-        Elements table (<xref linkend="tblSysColors"/>).
+        Elements <link linkend="tblSysColors">table</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2597,7 +2590,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Add or remove the tab stop style (<xref linkend="wstabstop"/>) for this control.
+  Add or remove the <xref linkend="wstabstop"/> style for this control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2660,8 +2653,8 @@ Generic form:
     execution of a dialog allows the programmer to alter how the user navigates through the dialog controls.
   </para>
   <para>
-    The negative return value from this method is a hold over from a period prior to the introduction of the .systemErrorCode (<xref
-    linkend="dotSystemErrorCode" />). This method now sets the
+    The negative return value from this method is a hold over from a period prior to the introduction of the <xref
+    linkend="dotSystemErrorCode"/>. This method now sets the
     <computeroutput>.systemErrorCode</computeroutput>, making it easier to use the negative return as a failure
     indication and use the <computeroutput>.systemErrorCode</computeroutput> value to look up the actual error.
   </para>

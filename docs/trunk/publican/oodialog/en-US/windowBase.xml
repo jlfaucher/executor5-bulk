@@ -652,7 +652,7 @@ The dialog unit height of the button is: 14
 
 <para>
   The <emphasis role="italic">sizeX</emphasis> attribute was intended to be the width of the window and
- <xref linkend="atrSizeY"/> the height of the window in dialog units (<xref linkend="defDialogUnit"/>).
+ <xref linkend="atrSizeY"/> the height of the window in <xref linkend="defDialogUnit"/>.
   However, in almost all cases, the value is not correct. (<xref linkend="ovvInaccurate"/>)
 </para>
 <variablelist>
@@ -920,7 +920,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Converts the <xref linkend="defClientArea"/> area coordinates of the specified point(s) in this window to
+  Converts the <xref linkend="defClientArea"/> coordinates of the specified point(s) in this window to
   its screen coordinates.
 </para>
 <variablelist>
@@ -1078,7 +1078,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">clientToScreen</emphasis> method maps the specified
-  <xref linkend="defClientArea"/> area coordinates of this window to screen coordinates.
+  <xref linkend="defClientArea"/> coordinates of this window to screen coordinates.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2547,7 +2547,7 @@ Generic form:
 
 <para>
   Moves, (repositions,) the window to the point specified. The new position is specified in pixels and is relative to
-  the top, left corner of the owning window's client <xref linkend="defClientArea"/>. For a dialog this is the
+  the top, left corner of the owning window's <xref linkend="defClientArea"/>. For a dialog this is the
   screen and for a dialog control it is the dialog's client area.
 </para>
 <variablelist>
@@ -2678,7 +2678,7 @@ Generic form:
 
 <para>
   Moves, (repositions,) the window to the point specified. The new position is specified in pixels and is relative to
-  the top, left corner of the owning window's client <xref linkend="defClientArea"/>. For a dialog this is the
+  the top, left corner of the owning window's <xref linkend="defClientArea"/>. For a dialog this is the
   screen and for a dialog control it is the dialog's client area.
 </para>
 <variablelist>
@@ -2945,7 +2945,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">redraw</emphasis> method immediately redraws the entire window and all its child windows,
-  recursively, including the non-client <xref linkend="defClientArea"/> of the window(s). Contrast this with
+  recursively, including the non-<xref linkend="defClientArea"/> of the window(s). Contrast this with
   some of the other draw methods such as <xref linkend="mthRedrawClient"/> or
  <xref linkend="mthDraw"/>, which only redraw the <emphasis role="italic">client</emphasis> area and not the
   child windows.
@@ -3347,7 +3347,7 @@ Generic form:
 
 <para>
   Converts the screen coordinates of the specified point(s) on the screen to
-  <xref linkend="defClientArea"/> area coordinates of this window.
+  <xref linkend="defClientArea"/> coordinates of this window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3428,7 +3428,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">screenToClient</emphasis> method maps the screen coordinates specified to the
-  <xref linkend="defClientArea"/> area of this window.
+  <xref linkend="defClientArea"/> of this window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3813,7 +3813,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Note that the Microsoft documentation (<xref linkend="defWindowsDoc"/>) says that if HIDEWINDOW or SHOWWINDOW is
+    Note that the Microsoft <xref linkend="defWindowsDoc"/> says that if HIDEWINDOW or SHOWWINDOW is
     used, the window can not be moved or resized. However, experimentation seems to show that the documentation is
     wrong. It may be that this behavior is different on different versions of Windows.
   </para>
@@ -4233,7 +4233,7 @@ Generic form:
     argument and only accepts a subset of the show options.
   </para>
   <para>
-    Note that the Microsoft documentation (<xref linkend="defWindowsDoc"/>) says that if HIDEWINDOW or SHOWWINDOW is
+    Note that the Microsoft <xref linkend="defWindowsDoc"/> says that if HIDEWINDOW or SHOWWINDOW is
     used, the window can not be moved or resized. However, experimentation seems to show that the documentation is
     wrong. It may be that this behavior is different on different versions of Windows.
   </para>
@@ -4834,7 +4834,7 @@ Generic form:
   <listitem>
   <para>
     This example uses <emphasis role="italic">windowRect</emphasis> to get the position of a tab control on the screen
-    and then translates those coordinates to its position in the client <xref linkend="defClientArea"/> of the
+    and then translates those coordinates to its position in the <xref linkend="defClientArea"/> of the
     dialot.
 <programlisting>
 <![CDATA[

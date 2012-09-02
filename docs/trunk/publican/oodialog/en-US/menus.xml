@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="chpMenus"><title>Menus</title>
+<chapter id="chpMenus" xreflabel="Menu"><title>Menus</title>
 <indexterm><primary>Menus</primary></indexterm>
 
 <para>
@@ -180,7 +180,7 @@
   <listitem>
   <para>
     Menu <emphasis role="italic">item identifiers</emphasis> are essentially resource
-    IDs (<xref linkend="defResourceId"/>). The programmer can use symbolic IDs (<xref linkend="defSymbolicId"/>) for
+    IDs (<xref linkend="defResourceId"/>). The programmer can use <xref linkend="defSymbolicId"/> IDs for
     menu item identifiers rather than numeric IDs for any argument in a menu object method that uses a menu item
     identifier. However, to do so, the programmer <emphasis role="italic">must</emphasis> use the global
     <xref linkend="dotConstDir"/>. If the global <computeroutput>.constDir</computeroutput> is not used,
@@ -549,8 +549,8 @@
   Non-system menu command <xref linkend="ovvEvents"/> notifications are actually the same notifications as
   the <xref linkend="mthConnectButtonEvent"/> CLICK event. This makes the event handler for a menu command
   event pretty simple. The event handler is invoked when the user selects a menu command item. The programmer should
-  return 0 from the event handler, however the interpreter does not wait (<xref linkend="sctCodingEventHandlers"/>)
-  for the return.
+  return 0 from the event handler, however the interpreter does not <link linkend="sctCodingEventHandlers">wait</link> for
+  the return.
 </para>
 
 <programlisting>
@@ -635,7 +635,7 @@
 <indexterm><primary>SystemMenu class</primary><secondary>command event handler</secondary></indexterm>
 <para>
   System menu command <xref linkend="ovvEvents"/> notifications are generated when the user clicks on a menu
-  command item in the system menu. The interpreter waits (<xref linkend="sctCodingEventHandlers"/>) for the return
+  command item in the system menu. The interpreter <link linkend="sctCodingEventHandlers">waits</link>) for the return
   from the Rexx method and the method must return either <computeroutput>.true</computeroutput> or
   <computeroutput>.false</computeroutput>.
 </para>
@@ -1910,14 +1910,14 @@
     <varlistentry><term>x</term>
     <listitem>
     <para>
-      The X coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates"/>) coordinates, at the
+      The X coordinate of the mouse position, in screen <xref linkend="defScreenCoordinates"/>) coordinates, at the
       time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>y</term>
     <listitem>
     <para>
-      The Y coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates"/>) coordinates, at the
+      The Y coordinate of the mouse position, in screen <xref linkend="defScreenCoordinates"/>) coordinates, at the
       time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
@@ -1990,7 +1990,7 @@
 </para>
 <para>
   The programmer must return <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> from the
-  event handler, and the interpreter waits (<xref linkend="sctCodingEventHandlers"/>) for this return.
+  event handler, and the interpreter <link linkend="sctCodingEventHandlers">waits</link>) for this return.
 </para>
 
 <programlisting>
@@ -2075,7 +2075,7 @@
 </para>
 <para>
   The programmer must return <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> from the
-  event handler, and the interpreter waits (<xref linkend="sctCodingEventHandlers"/>) for this return.
+  event handler, and the interpreter <link linkend="sctCodingEventHandlers">waits</link>) for this return.
 </para>
 
 <programlisting>
@@ -7708,14 +7708,14 @@
     <varlistentry><term>x</term>
     <listitem>
     <para>
-      The X coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates"/>) coordinates, at the
+      The X coordinate of the mouse position, in screen <xref linkend="defScreenCoordinates"/>) coordinates, at the
       time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>y</term>
     <listitem>
     <para>
-      The Y coordinate of the mouse position, in screen (<xref linkend="defScreenCoordinates"/>) coordinates, at the
+      The Y coordinate of the mouse position, in screen <xref linkend="defScreenCoordinates"/>) coordinates, at the
       time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
@@ -8358,7 +8358,7 @@
     <listitem>
     <para>
       A <xref linkend="clsPoint"/> object specifying the location for the shortcut menu, in
-      screen (<xref linkend="defScreenCoordinates"/>) co-ordinates.
+      screen <xref linkend="defScreenCoordinates"/>) co-ordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dlg [optional]</term>
@@ -8638,7 +8638,7 @@
     <listitem>
     <para>
       A <xref linkend="clsPoint"/> object specifying the location for the shortcut menu, in
-      screen (<xref linkend="defScreenCoordinates"/>) co-ordinates.
+      screen <xref linkend="defScreenCoordinates"/>) co-ordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dlg [optional]</term>

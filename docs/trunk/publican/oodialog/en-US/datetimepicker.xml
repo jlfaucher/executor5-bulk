@@ -78,8 +78,8 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the <xref linkend="mthNewDateTimePicker"/> method of the dialog (<xref
-    linkend="chpDialogObject" />) to retrieve a date and time picker object.
+    Use the <xref linkend="mthNewDateTimePicker"/> method of the <xref linkend="chpDialogObject" /> to retrieve a date and
+    time picker object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
@@ -92,8 +92,7 @@
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To receive notification of date and time picker events use the connectDataTimePickerEvent (<xref
-    linkend="mthConnectDateTimePickerEvent" />) method.
+    To receive notification of date and time picker events use the <xref linkend="mthConnectDateTimePickerEvent"/> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -284,19 +283,17 @@
 
 <section id="sctDTPCallback"><title>Callback Fields</title>
 <para>
-  The date and time picker control supports <emphasis role="italic">call back fields</emphasis> within the format (<xref
-  linkend="sctDTPFormatStrings" />) strings. The call back fields allow the programmer to display custom
+  The date and time picker control supports <emphasis role="italic">call back fields</emphasis> within the
+  <link linkend="sctDTPFormatStrings">format</link> strings. The call back fields allow the programmer to display custom
   information at the point of the call back field by allowing the control to query the application for information. For
   instance, the control can query the application for what text to display in the call back field or the maximum length
   the display text in a field will be.
 </para>
 <para>
   The queries are done through <xref linkend="ovvEvents"/> notification messages from the control.
-  Specifically, the FORMAT and FORMATQUERY events connected using the connectDataTimePickerEvent (<xref
-  linkend="mthConnectDateTimePickerEvent" />). The programmer must respond to the event
-  notification to ensure that the custom information is displayed properly. The response comes from the FORMAT (<xref
-  linkend="evtDateTimePickerFORMAT" />) and FORMATQUERY (<xref linkend="evtDateTimePickerFORMATQUERY"/>)
-  event handlers.
+  Specifically, the FORMAT and FORMATQUERY events connected using the <xref linkend="mthConnectDateTimePickerEvent"/>. The
+  programmer must respond to the event notification to ensure that the custom information is displayed properly. The response
+  comes from the <xref linkend="evtDateTimePickerFORMAT"/> and <xref linkend="evtDateTimePickerFORMATQUERY"/> event handlers.
 </para>
 <para>
   Call back fields are declared using one or more capital <emphasis role="bold">X</emphasis> characters (ASCII Code 88)
@@ -413,9 +410,8 @@
 <section id="tmthNewDateTimePicker" xreflabel="newDateTimePicker"><title>newDateTimePicker (dialog object method)</title>
 <para>
   <computeroutput>DateTimePicker</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
-  role="italic">new</emphasis>() method. Rather, a date and time picker object is obtained by using the newDateTimePicker (<xref
-  linkend="mthNewDateTimePicker" />) method of the <xref linkend="chpDialogObject"/>
-  object. The syntax is:
+  role="italic">new</emphasis>() method. Rather, a date and time picker object is obtained by using the <xref
+  linkend="mthNewDateTimePicker"/> method of the <xref linkend="chpDialogObject"/> object. The syntax is:
 <programlisting>
 <![CDATA[
 >>-newDateTimePicker(--id--)---------------------><
@@ -429,10 +425,11 @@
 <section id="tmthCreateDateTimePicker" xreflabel="createDateTimePicker">
 <title>createDateTimePicker (UserDialog method)</title>
 <para>
-  A date and time picker control can be added to the dialog template of a UserDialog (<xref
-  linkend="clsUserDialog" />) through the createDateTimePicker (<xref
-  linkend="mthCreateDateTimePicker" />) method. The basic syntax is:
-<programlisting> <![CDATA[
+  A date and time picker control can be added to the dialog template of a <xref linkend="clsUserDialog" />) through the
+  <xref linkend="mthCreateDateTimePicker"/> method. The basic syntax is:
+
+<programlisting>
+<![CDATA[
 >>-createDateTimePicker(-id-,--x-,--y-,--cx-,--cy-+----------+-+-------------+--><
                                                   +-,--style-+ +-,--attrName-+
 
@@ -445,11 +442,11 @@
 <section id="tmthConnectDateTimePickerEvent" xreflabel="connectDateTimePickerEvent">
 <title>connectDateTimePickerEvent (dialog object method)</title>
 <para>
-  To connect event notifications from a DTP control use the connectDateTimePickerEvent (<xref
-  linkend="mthConnectDateTimePickerEvent" />) method of the dialog (<xref
-  linkend="chpDialogObject" />) object. The basic syntax is:
+  To connect event notifications from a DTP control use the <xref linkend="mthConnectDateTimePickerEvent"/> method of the
+  <xref linkend="chpDialogObject"/> object. The basic syntax is:
 
-<programlisting> <![CDATA[
+<programlisting>
+<![CDATA[
 >>--connectDateTimePickerEvent(--id-,-evt--+----------+-+------------+-)------><
                                            +-,--mName-+ +-,-wilReply-+
 
@@ -489,14 +486,13 @@
   <listitem>
   <para>
     This method causes the date time picker to destroy the month calendar control and to send the DTN_CLOSEUP
-    notification (the CLOSEUP (<xref linkend="evtDateTimePickerCLOSEUP"/>) event notification) that the drop-down has
-    been closed.
+    notification (the <xref linkend="evtDateTimePickerCLOSEUP"/> event notification) that the drop-down has been closed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires Windows Vista (<xref linkend="ovvRequiredWindows"/>) or later.
+    <xref linkend="ovvRequiredWindows"/> Windows Vista or later.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -595,7 +591,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires Windows Vista (<xref linkend="ovvRequiredWindows"/>) or later.
+    <xref linkend="ovvRequiredWindows"/> Windows Vista or later.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -735,7 +731,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires Windows Vista (<xref linkend="ovvRequiredWindows"/>) or later.
+    <xref linkend="ovvRequiredWindows"/> Windows Vista or later.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -840,22 +836,19 @@ UpDown:      The NIL object
   <listitem>
   <para>
     <emphasis role="bold">Note:</emphasis> The following information mostly applies to Windows XP and earlier. For
-    Windows Vista and later the date and time picker control has the setMonthCalStyle (<xref
-    linkend="mthSetMonthCalStyle" />) and getMonthCalStyle (<xref
-    linkend="mthGetMonthCalStyle" />) methods to directly manipulate the month calendar control's
-    styles.
+    Windows Vista and later the date and time picker control has the <xref linkend="mthSetMonthCalStyle"/> and
+    <xref linkend="mthGetMonthCalStyle"/> methods to directly manipulate the month calendar control's styles.
   </para>
   <para>
     Obtaining the month calendar control allows the programmer to change its style or appearance. For instance the
- <xref linkend="mthSetFirstDayOfWeek"/> day of the week could be changed or the <emphasis
+    <xref linkend="mthSetFirstDayOfWeek"/> day of the week could be changed or the <emphasis
     role="italic">Go To Today</emphasis> could be removed by setting the NOTODAY style.
   </para>
   <para>
     DTP controls do not create a static month calendar control. Rather, they create the month calendar when needed and
-    destroy the month calendar as soon as it is not needed. The DROPDOWN (<xref
-    linkend="evtDateTimePickerDROPDOWN" />) notification is sent after the DTP creates the month calendar
-    and the CLOSEUP (<xref linkend="evtDateTimePickerCLOSEUP"/>) notification is sent when the month calendar is
-    destroyed.
+    destroy the month calendar as soon as it is not needed. The <xref linkend="evtDateTimePickerDROPDOWN"/> notification is
+    sent after the DTP creates the month calendar and the <xref linkend="evtDateTimePickerCLOSEUP"/> notification is sent
+    when the month calendar is destroyed.
   </para>
   <para>
     After the underlying month calendar control is destroyed, Rexx month calendar object is no longer valid.
@@ -866,9 +859,8 @@ UpDown:      The NIL object
   <para>
     This example will work on any version of Windows that ooDialog supports. It gets the month calendar for the DTP
     control and changes the first day of the week to Friday. The <emphasis role="italic">Today</emphasis> selection is
-    also removed. This is an example of a DROPDOWN (<xref linkend="evtDateTimePickerDROPDOWN"/>) event handler. Note
-    that no reference is kept for the month calendar. The object will be invalid as soon as the user closes the drop
-    down:
+    also removed. This is an example of a <xref linkend="evtDateTimePickerDROPDOWN"/> event handler. Note that no reference
+    is kept for the month calendar. The object will be invalid as soon as the user closes the drop down:
 <programlisting>
 <![CDATA[
 
@@ -978,9 +970,8 @@ UpDown:      The NIL object
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method is essentially the same as the <xref linkend="mthGetColor"/> method of the Month Calendar (<xref
-    linkend="clsMonthCalendar" />) class, except that DTP control is asked to get the color from its
-    child month calendar.
+    This method is essentially the same as the <xref linkend="mthGetColor"/> method of the <xref linkend="clsMonthCalendar"/>
+    class, except that DTP control is asked to get the color from its child month calendar.
   </para>
   <para>
     The <xref linkend="clsImage"/> class has a number of convenience methods for working with COLORREFs,
@@ -1028,11 +1019,9 @@ UpDown:      The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return is a <xref linkend="defHandle"/> to the font, the same return as the getFont (<xref
-    linkend="mthGetFont" />) or <xref linkend="mthCreateFontEx"/> methods of the dialog (<xref
-    linkend="chpDialogObject" />) object would return.
-  </para>
-  </listitem></varlistentry>
+    The return is a <xref linkend="defHandle"/> to the font, the same return as the <xref linkend="mthGetFont"/> or <xref
+    linkend="mthCreateFontEx"/> methods of the <xref linkend="chpDialogObject"/> object would return.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
@@ -1147,7 +1136,7 @@ UpDown:      The NIL object
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    This method requires Windows Vista (<xref linkend="ovvRequiredWindows"/>) or later.
+    <xref linkend="ovvRequiredWindows"/> Windows Vista or later.
   </para>
   </listitem></varlistentry>
   <varlistentry id="exampleGetMonthCalStyle"><term><emphasis role="bold">Example:</emphasis></term>
@@ -1158,8 +1147,8 @@ UpDown:      The NIL object
     styles set.
   </para>
   <para>
-    For an expanded version of this example, see the example (<xref linkend="exampleSetMonthCalStyle"/>) for the
- <xref linkend="mthSetMonthCalStyle"/> method.
+    For an expanded version of this example, see the <link linkend="exampleSetMonthCalStyle">example</link> for the
+    <xref linkend="mthSetMonthCalStyle"/> method.
 
 <programlisting>
 <![CDATA[
@@ -1406,8 +1395,8 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
 </programlisting>
 
 <para>
-  Sets the display of a date and time picker (DTP) control based the specified format (<xref
-  linkend="sctDTPFormatStrings" />) string.
+  Sets the display of a date and time picker (DTP) control based the specified <link
+  linkend="sctDTPFormatStrings">format</link> string.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1418,8 +1407,8 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
     <varlistentry><term>format [required]</term>
     <listitem>
     <para>
-      A format (<xref linkend="sctDTPFormatStrings"/>) string that dictates how the DTP control formats the data and
-      time in its display.
+      A <link linkend="sctDTPFormatStrings">format</link> string that dictates how the DTP control formats the data and time
+      in its display.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1750,7 +1739,7 @@ Monday October 24, 2011 - 11:52 AM
   <listitem>
   <para>
     This example is a stand-alone program. It is a slightly expanded version of the <emphasis
-    role="italic">getMonthCalStyle</emphasis> example (<xref linkend="exampleGetMonthCalStyle"/>).
+    role="italic">getMonthCalStyle</emphasis> <link linkend="exampleGetMonthCalStyle">example</link>.
 <programlisting>
 <![CDATA[
 

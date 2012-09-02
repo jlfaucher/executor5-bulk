@@ -1714,7 +1714,7 @@
       <listitem>
       <para>
         A file, (often called a header (<xref linkend="defHeaderFile"/>) file,) defining
-        symbolic IDs (<xref linkend="defSymbolicId"/>) for resources. The symbolic IDs defined within the file will be
+        <xref linkend="defSymbolicId"/> IDs for resources. The symbolic IDs defined within the file will be
         added to the <xref linkend="atrConstDir"/> directory.
       </para>
       </listitem></varlistentry>
@@ -2091,7 +2091,7 @@ WindowBase::<xref linkend="atrFactorY"/>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    In order to accurately calculate dialog units (<xref linkend="defDialogUnit"/>) in methods such as
+    In order to accurately calculate <xref linkend="defDialogUnit"/> in methods such as
  <xref linkend="mthGetTextSizeDu"/>(), it is important that the <emphasis
     role="italic">fontName</emphasis> and <xref linkend="atrFontSize"/> attributes match the actual font
     that the dialog will use. Therefore, whenever dialog unit calculations are going to be made before the underlying
@@ -2272,7 +2272,7 @@ WindowBase::<xref linkend="atrInitCode"/>
   on owned windows. See the remarks section for a more detailed discussion of the owner window.
 </para>
 <para>
-  In the ooDialog framework, <emphasis role="italic">all</emphasis> control (<xref linkend="sctControlDialogs"/>)
+  In the ooDialog framework, <emphasis role="italic">all</emphasis> <xref linkend="sctControlDialogs"/>
   dialogs <emphasis role="italic">must</emphasis> have an owner dialog. Dialogs like the
  <xref linkend="clsPropertySheetDialog"/> can <emphasis role="italic">not</emphasis> have an owner
   dialog. For the most part other dialogs would not have an owner dialog.
@@ -2645,7 +2645,7 @@ DialogExtensions::<xref linkend="mthEndAsyncExecution"/>
   dialog, <xref linkend="mthShowClsPlainBaseDialog"/> it, starts the
  <xref linkend="mthAddAutoStartMethod"/> methods, if any, and destroys the underlying dialog when the user
   closes it. If auto <xref linkend="mthInitAutoDetection"/> is on, the dialog
-  data (<xref linkend="sctUnderstandingDataAttributes"/>) is passed to the underlying dialog before execution and received
+  <link linkend="sctUnderstandingDataAttributes">data</link> is passed to the underlying dialog before execution and received
   from it after the dialog is terminated.
 </para>
 <variablelist>
@@ -8191,7 +8191,7 @@ var2  "09"x  ,
 <indexterm><primary>dialog object</primary><secondary>menu methods</secondary></indexterm>
 <para>
   Prior to ooDialog level 4.2.0, menus were really only minimally supported, through a few methods of the dialog class.
-  In ooDialog 4.2.0 true menu (<xref linkend="chpMenus"/>) objects were introduced.  Therefore the menu methods of
+  In ooDialog 4.2.0 true <xref linkend="chpMenus"/> objects were introduced.  Therefore the menu methods of
   the dialog object, other than <xref linkend="mthGetMenuBar"/>() and
  <xref linkend="mthHasMenuBar"/>(), are deprecated.  Use the methods of the menu classes directly to work
   with menus. The listing of the deprecated (<xref linkend="deprecatedDialogMethods"/>) dialog methods documents all
@@ -8210,7 +8210,7 @@ var2  "09"x  ,
 
 <para>
   The <emphasis role="italic">getMenuBar</emphasis> method returns the
-  menu (<xref linkend="chpMenus"/>) object attached to the dialog, or <emphasis
+  <xref linkend="chpMenus"/> object attached to the dialog, or <emphasis
   role="bold">.nil</emphasis> if there is no menu attached.
 </para>
 <variablelist>
@@ -8719,7 +8719,7 @@ var2  "09"x  ,
 
 <para>
   Calculates the size the given string will occupy in the dialog.  The size is returned in
-  dialog units (<xref linkend="defDialogUnit"/>).  To calculate the size in pixels use the
+  <xref linkend="defDialogUnit"/>.  To calculate the size in pixels use the
  <xref linkend="mthGetTextSizePx"/>() method. The
  <xref linkend="mthGetTextSizeDlgClsPlainBaseDialog"/>() method is similar to <emphasis
   role="italic">getTextSizeDu</emphasis>, but should only be used when necessary
@@ -8820,7 +8820,7 @@ var2  "09"x  ,
 </programlisting>
 
 <para>
-  Calculates the size, (width and height,) in dialog units (<xref linkend="defDialogUnit"/>) for a given string.
+  Calculates the size, (width and height,) in <xref linkend="defDialogUnit"/> for a given string.
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> The convoluted arguments to this method are needed to retain backwards

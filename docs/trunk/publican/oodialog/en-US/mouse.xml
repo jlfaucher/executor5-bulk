@@ -1270,7 +1270,7 @@
           <listitem>
           <para>
             The event notification is sent when the cursor hovers over the
-            non-client <xref linkend="defClientArea"/> of the window for the period of time specified in a prior
+            non-<xref linkend="defClientArea"/> of the window for the period of time specified in a prior
             call to the <xref linkend="mthTrackEvent"/> method. The
             NcMouseHover (<xref linkend="evtNCMOUSEHOVER"/>) Mouse Event Handler contains information on coding the event
             handler.
@@ -1279,7 +1279,7 @@
           <varlistentry><term>NCMOUSELEAVE</term>
           <listitem>
           <para>
-            The event notification is sent when the cursor leaves the non-client (<xref linkend="defClientArea"/>)
+            The event notification is sent when the cursor leaves the non-<xref linkend="defClientArea"/>
             area of the window specified in a prior call to the <xref linkend="mthTrackEvent"/> method.
             The MouseLeave (<xref linkend="evtMOUSELEAVE"/>) Event Handler contains information on coding the event
             handler.
@@ -1327,7 +1327,7 @@
       <listitem>
       <para>
         The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter
-        waits (<xref linkend="sctCodingEventHandlers"/>) for the reply from the event handler. The default is
+        <link linkend="sctCodingEventHandlers">waits</link>) for the reply from the event handler. The default is
         <computeroutput>.true</computeroutput>, the interpreter waits for the reply. If <emphasis
         role="italic">willReply</emphasis> is <computeroutput>.false</computeroutput>, the interpreter does not wait for
         the event handling method to return a value. See the Remarks section.
@@ -1805,7 +1805,7 @@
 <indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>NCMOUSEHOVER</tertiary></indexterm>
 <para>
   The event handler for the nc mouse leave event is invoked when the cursor leaves the
-  non-client <xref linkend="defClientArea"/> of the window assigned to the mouse object. Normally, this event
+  non-<xref linkend="defClientArea"/> of the window assigned to the mouse object. Normally, this event
   notification is <emphasis role="italic">not</emphasis> generated. To receive the notification the
  <xref linkend="mthTrackEvent"/> method must be invoked to set up the tracking behavior.
 </para>
@@ -1917,7 +1917,7 @@
 <indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSELEAVE</tertiary></indexterm>
 <indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>NCMOUSELEAVE</tertiary></indexterm>
 <para>
-  This description for the mouse leave event handler pertains to both the client (<xref linkend="defClientArea"/>)
+  This description for the mouse leave event handler pertains to both the <xref linkend="defClientArea"/>
   mouse leave (MOUSELEAVE) and the <emphasis role="italic">non-client</emphasis> mouse leave (NCMOUSELEAVE) events. The
   arguments received by event handler for both events are exactly the same, and the event handler should behave the same
   for both events.
@@ -2295,7 +2295,7 @@
       <varlistentry><term>point [required]</term>
       <listitem>
       <para>
-        The initial position of the cursor, in screen (<xref linkend="defScreenCoordinates"/>) coodinates, specified
+        The initial position of the cursor, in screen <xref linkend="defScreenCoordinates"/>) coodinates, specified
         as a <xref linkend="clsPoint"/> object. Recall that screen coordinates are always in pixels.
       </para>
       </listitem></varlistentry>
@@ -2489,7 +2489,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the postion, in screen (<xref linkend="defScreenCoordinates"/>) coodinates, as a
+    Returns the postion, in screen <xref linkend="defScreenCoordinates"/>) coodinates, as a
  <xref linkend="clsPoint"/> object.
   </para>
   </listitem></varlistentry>
@@ -3136,7 +3136,7 @@ Generic form:
       <para>
         Whether the coordinates are specified as a <computeroutput>point</computeroutput> object or in the x, y format
         both coordinates are required. The coordinates are specified as
-        screen (<xref linkend="defScreenCoordinates"/>) coordinates.
+        screen <xref linkend="defScreenCoordinates"/>) coordinates.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3356,7 +3356,7 @@ Generic form:
           <varlistentry><term>NONCLIENT</term>
           <listitem>
           <para>
-            Non-client (<xref linkend="defClientArea"/>) hover and leave notifications should be generated. The
+            Non-<xref linkend="defClientArea"/> hover and leave notifications should be generated. The
             notifications generated are the NCMOUSELEAVE and NCMOUSEHOVER notifications, connect these events using the
  <xref linkend="mthConnectEvent"/>method.
           </para>

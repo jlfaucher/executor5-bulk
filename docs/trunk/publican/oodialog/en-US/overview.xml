@@ -87,7 +87,7 @@
   familiar to the average Rexx programmer.
 </para>
 
-<section id="defClientArea" xreflabel="client"><title>Client / Nonclient Area</title>
+<section id="defClientArea" xreflabel="client area"><title>Client / Nonclient Area</title>
 <para>
   The <emphasis role="italic">client area</emphasis> of a window is the part of a window where, normally, the window
   does its active drawing. For a top-level window this is usually where an application displays its output. The title
@@ -372,7 +372,7 @@ xPixels = xDialogUnits * self~FactorX
   role="italic">client</emphasis> coordinates are used to distinguish the origin (0,0) of the coordinate. For a screen
   coordinate, the origin is the upper left corner of the primary display device, typically a monitor, and usually called
   the screen. Client coordinates on the other hand have an origin of the upper left corner of the
-  client <xref linkend="defClientArea"/> of the window.  Both screen and client coordinates are always given in the
+  <xref linkend="defClientArea"/> of the window.  Both screen and client coordinates are always given in the
   device unit of the display, which for all practical purposes is a pixel (<xref linkend="defPixel"/>).
 </para>
 </section>
@@ -778,7 +778,7 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   The ability to directly reply to event notifications greatly extends the power of the ooDialog framework. However, it
   also changes how the ooDialog programmer must write his event handlers. In particular, the event handler must return
-  in a timely manner. This is discussed more fully (<xref linkend="sctCodingEventHandlers"/>) in the
+  in a timely manner. This is discussed more <link linkend="sctCodingEventHandlers">fully</link>/> in the
   <computeroutput>EventNotification</computeroutput> class documentation.
 </para>
 </section>
@@ -787,7 +787,7 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   The <emphasis role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes of the
   <xref linkend="chpDialogObject"/> object were intended to provide a way to convert between
-  pixels (<xref linkend="defPixel"/>) and dialog units (<xref linkend="defDialogUnit"/>), and vice versa. Although their
+  pixels (<xref linkend="defPixel"/>) and <xref linkend="defDialogUnit"/>, and vice versa. Although their
   values may have been correct when ooDialog was originally designed (<xref linkend="sctHistory"/>), in almost all
   cases the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is not
   correct.
@@ -1018,9 +1018,9 @@ xPixels = xDialogUnits * self~FactorX
   </listitem></varlistentry>
 </variablelist> </section>
 
-<section id="ovvRequiredWindows"><title>Required Windows Version</title>
+<section id="ovvRequiredWindows" xreflabel="Requires"><title>Required Windows Version</title>
 <para>
-  The required Windows version is similar to the required ComCtl32 (<xref linkend="ovvComctl32"/>) library version.
+  The required Windows version is similar to the required Common Control <xref linkend="ovvComctl32"/> library version.
   Later versions of the Windows operating system have dialog and dialog control features not available in earlier
   versions of the operating system.
 </para>
@@ -1529,7 +1529,7 @@ xPixels = xDialogUnits * self~FactorX
   </para>
   <para>
     In ooDialog 4.2.0 an effort has been made to unify the naming of methods and classes. To begin with, each dialog
-    control is named the same as it is in the Microsoft documentation (<xref linkend="defWindowsDoc"/>). An example
+    control is named the same as it is in the Microsoft <xref linkend="defWindowsDoc"/>. An example
     of this is the edit control. The name of the control is <emphasis role="italic">edit</emphasis>. Rather than call an
     edit control an <emphasis role="italic">entry line</emphasis>, it is called an edit control. In addition, all dialog
     controls are controls. Adding <emphasis role="italic">control</emphasis> to the control's name is redundant, and
@@ -1559,7 +1559,7 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     The primary areas that should be looked at for this unification are the
     create (<xref linkend="sctCreateMethods"/>) methods of the UserDialog, methods concerned with connecting
-    data (<xref linkend="sctUnderstandingDataAttributes"/>) attributes, methods returning an
+    <link linkend="sctUnderstandingDataAttributes">data</link> attributes, methods returning an
     instantiated (<xref linkend="sctInstantiateControls"/>) dialog control object, and methods that connect event
     notifications (<xref linkend="sctMethodsEventNotification"/>).
   </para>
@@ -1618,8 +1618,8 @@ xPixels = xDialogUnits * self~FactorX
     ooDialog 4.2.0 has been completely rewritten to use the C++ native APIs introduced in ooRexx 4.0.0. A primary
     benefit of this is that now the ooDialog framework can directly invoke the connected event handling method in the
     Rexx dialog and the programmer can directly reply to the operating system message. Further discussion on the
-    benefits of this is included in the section on coding (<xref linkend="sctCodingEventHandlers"/>) event
-    handling methods.
+    benefits of this is included in the section on <link linkend="sctCodingEventHandlers">coding</link> event handling
+    methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Correct Conversion of Dialog Units to Pixels</emphasis></term>

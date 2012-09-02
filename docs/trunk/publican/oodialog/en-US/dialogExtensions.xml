@@ -621,7 +621,8 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">clearRect</emphasis> method clears the specified bounding (<xref linkend="ovvRectangleCoordinates"/>) rectangular within the client area of a window. The rectangle is
+  The <emphasis role="italic">clearRect</emphasis> method clears the specified bounding <xref
+  linkend="ovvRectangleCoordinates"/> within the client area of a window. The rectangle is
   <emphasis role="italic">cleared</emphasis> by redrawing it with the background brush set to the typical background
   color for dialog boxes and three dimensional elements.
 </para>
@@ -645,7 +646,7 @@ Generic form:
  <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
       </para>
       <para>
-        The coordinates are specified as <xref linkend="defClientArea"/> area coordinates, in pixels.
+        The coordinates are specified as <xref linkend="defClientArea"/> coordinates, in pixels.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -819,7 +820,7 @@ MyDialog~clearWindowRect(hwnd)
     <varlistentry><term>color [optional]</term>
     <listitem>
     <para>
-      The color number (<xref linkend="defColor"/>). When this argument is omitted and <emphasis
+      The <xref linkend="defColor"/>. When this argument is omitted and <emphasis
       role="italic">brushSpecifier</emphasis> is used, the color number defaults to 1.
     </para>
     </listitem></varlistentry>
@@ -1082,7 +1083,7 @@ sent along with the scroll bar event.
 
 <para>
   The <emphasis role="italic">displaceBitmap</emphasis> method sets the position of a bitmap within the
-  client <xref linkend="defClientArea"/> of a bitmap button.
+  <xref linkend="defClientArea"/> of a bitmap button.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1186,7 +1187,7 @@ sent along with the scroll bar event.
       <varlistentry><term>x, y [optional]</term>
       <listitem>
       <para>
-        The client area coordinates (<xref linkend="defScreenCoordinates"/>) where the upper left corner of the
+        The client area <xref linkend="defScreenCoordinates"/> where the upper left corner of the
         bitmap is to be drawn, in pixels. The default is (0, 0).
       </para>
       </listitem></varlistentry>
@@ -1588,7 +1589,7 @@ of a window. </para>
 </programlisting>
 
 <para>
-  Retrieves the position in client coordinates (<xref linkend="defScreenCoordinates"/>)  of the upper left corner of a
+  Retrieves the position in client <xref linkend="defScreenCoordinates"/>  of the upper left corner of a
   bitmap within a bitmap button.
 </para>
 <variablelist>
@@ -1843,7 +1844,7 @@ of a window. </para>
 </programlisting>
 
 <para>
-  Returns a string containing the client (<xref linkend="defClientArea"/>) coordinates of the bitmap in a bitmap
+  Returns a string containing the <xref linkend="defClientArea"/> coordinates of the bitmap in a bitmap
   button.
 </para>
 <variablelist>
@@ -2983,7 +2984,7 @@ Generic form:
  <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
       </para>
       <para>
-        The coordinates are specified as <xref linkend="defClientArea"/> area coordinates, in pixels.
+        The coordinates are specified as <xref linkend="defClientArea"/> coordinates, in pixels.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>erase [optional]</term>
@@ -3242,14 +3243,14 @@ self~resizeControl(IDC_PB_NEXT, 40, 30, "SHOWWINDOW")
       <varlistentry><term>fromX, fromY [required]</term>
       <listitem>
       <para>
-        The starting position, in client coordinates (<xref linkend="defScreenCoordinates"/>), where the upper
+        The starting position, in client <xref linkend="defScreenCoordinates"/>, where the upper
         left corner of the bitmap is first drawn. This is specified in pixels.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>toX, toY [required]</term>
       <listitem>
       <para>
-        The ending position, in client coordinates (<xref linkend="defScreenCoordinates"/>), where the upper
+        The ending position, in client <xref linkend="defScreenCoordinates"/>, where the upper
         left corner of the bitmap is drawn last. This is specified in pixels.
       </para>
       </listitem></varlistentry>
@@ -3335,14 +3336,14 @@ self~resizeControl(IDC_PB_NEXT, 40, 30, "SHOWWINDOW")
       <varlistentry><term>xPos, yPos [required]</term>
       <listitem>
       <para>
-        The client area coordinates (<xref linkend="defScreenCoordinates"/>) of the new position for the upper left
+        The client area <xref linkend="defScreenCoordinates"/> of the new position for the upper left
         corner of the specified rectangle. The coordinates are specified in pixels.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>lft, top, rght, bttm [required]</term>
       <listitem>
       <para>
-        The client area coordinates (<xref linkend="defScreenCoordinates"/>) of the upper left and bottom right
+        The client area <xref linkend="defScreenCoordinates"/> of the upper left and bottom right
         corners of the rectangular area to be moved. The coordinates are specified in pixels.
       </para>
       </listitem></varlistentry>
@@ -3521,7 +3522,7 @@ self~resizeControl(IDC_PB_NEXT, 40, 30, "SHOWWINDOW")
       <varlistentry><term>displaceY</term>
       <listitem>
       <para>
-        The Y client area coordinate (<xref linkend="defScreenCoordinates"/>) of the text. The default is 0. This
+        The Y client area <xref linkend="defScreenCoordinates"/> of the text. The default is 0. This
         argument is used to shift the text down from the top edge of the control, if needed.
       </para>
       </listitem></varlistentry>
@@ -3733,7 +3734,7 @@ self~start(scrollInControl, IDC_PB_SCROLLER, "Hello world!", "Arial", 36,   -
       <varlistentry><term>displaceY</term>
       <listitem>
       <para>
-        The Y client area coordinate (<xref linkend="defScreenCoordinates"/>) of the text. The default is 0. This
+        The Y client area <xref linkend="defScreenCoordinates"/> of the text. The default is 0. This
         argument is used to shift the text down from the top edge of the window, if needed.
       </para>
       </listitem></varlistentry>
@@ -3828,7 +3829,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Sets the position of the upper left corner of the bitmap within the client <xref linkend="defClientArea"/>
+  Sets the position of the upper left corner of the bitmap within the <xref linkend="defClientArea"/>
   of a bitmap button.
 </para>
 <variablelist>
@@ -3938,13 +3939,13 @@ Generic form:
       <varlistentry><term>bk [required]</term>
       <listitem>
       <para>
-        The color number (<xref linkend="defColor"/>) for the background color of the dialog control.
+        The <xref linkend="defColor"/> for the background color of the dialog control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
       <listitem>
       <para>
-        The color number (<xref linkend="defColor"/>) for the foreground color of the dialog control. The foreground
+        The <xref linkend="defColor"/> for the foreground color of the dialog control. The foreground
         color is the color that text is written in.
       </para>
       </listitem></varlistentry>
@@ -4686,7 +4687,7 @@ Generic form:
  <xref linkend="clsSize"/> objects, or the individual x and y coordinates, width, and height values.
       </para>
       <para>
-        The coordinates are specified as <xref linkend="defClientArea"/> area coordinates, in pixels. All 4
+        The coordinates are specified as <xref linkend="defClientArea"/> coordinates, in pixels. All 4
         of the coordinates
       </para>
       </listitem></varlistentry>
@@ -4778,7 +4779,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example resizes an edit control so that it takes up the entire client <xref linkend="defClientArea"/>
+    This example resizes an edit control so that it takes up the entire <xref linkend="defClientArea"/>
     of the dialog:
 <programlisting>
 <![CDATA[
@@ -4903,7 +4904,7 @@ Generic form:
       <varlistentry><term>CLIENT</term>
       <listitem>
       <para>
-        The position for the text will be relative to the client <xref linkend="defClientArea"/> of the
+        The position for the text will be relative to the <xref linkend="defClientArea"/> of the
         specified window, rather than relative to the window itself.
       </para>
       </listitem></varlistentry>
@@ -5140,7 +5141,7 @@ self~writeToWindow(hwnd, 3, 3, "Hello world!", "Arial", 24, "BOLD ITALIC CLIENT"
       <varlistentry><term>CLIENT</term>
       <listitem>
       <para>
-        The position for the text will be relative to the client <xref linkend="defClientArea"/> of the
+        The position for the text will be relative to the <xref linkend="defClientArea"/> of the
         specified window, rather than relative to the window itself.
       </para>
       </listitem></varlistentry>
