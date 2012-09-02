@@ -217,7 +217,7 @@ modify scroll bar controls.
 </table>
 </section>
 
-<section id="tmthNewScrollBar"><title>newScrollBar (dialog object method)</title>
+<section id="tmthNewScrollBar" xreflabel="newScrollBar"><title>newScrollBar (dialog object method)</title>
 <para>
   <computeroutput>ScrollBar</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
   role="italic">new</emphasis>() method. Rather, a scroll bar object is obtained by using the
@@ -233,7 +233,7 @@ modify scroll bar controls.
 </section>  <!-- End Dialog::newScrollBar() (dialog object method) -->
 
 
-<section id="tmthCreateScrollBar"><title>createScrollBar (UserDialog method)</title>
+<section id="tmthCreateScrollBar" xreflabel="createScrollBar"><title>createScrollBar (UserDialog method)</title>
 <para>
   A scroll bar control can be created in the dialog template of a <xref linkend="clsUserDialog"/>
   through the <xref linkend="mthCreateScrollBar"/> method. The basic syntax is:
@@ -249,7 +249,8 @@ modify scroll bar controls.
 </section>  <!-- End UserDialog::createScrollBar() (UserDialog method) -->
 
 
-<section id="tmthConnectScrollBarEvent"><title>connectScrollBarEvent (dialog object method)</title>
+<section id="tmthConnectScrollBarEvent" xreflabel="connectScrollBarEvent">
+<title>connectScrollBarEvent (dialog object method)</title>
 <para>
   To connect an individual event notification from a scroll bar control use the
  <xref linkend="mthConnectScrollBarEvent"/> method of the
@@ -265,7 +266,7 @@ modify scroll bar controls.
 </section>  <!-- End EventNotification::connectScrollBarEvent() (dialog object method) -->
 
 
-<section id="tmthConnectAllSBEvents"><title>connectAllSBEvents (dialog object method)</title>
+<section id="tmthConnectAllSBEvents" xreflabel="connectAllSBEvents"><title>connectAllSBEvents (dialog object method)</title>
 <para>
   To connect all event notifications from a scroll bar control to a single method use the
  <xref linkend="mthConnectAllSBEvents"/> method of the <xref linkend="chpDialogObject"/>
@@ -283,7 +284,7 @@ modify scroll bar controls.
 </section>  <!-- End EventNotification::connectAllSBEvents() (dialog object method) -->
 
 
-<section id="tmthConnectEachSBEvent"><title>connectEachSBEvent (dialog object method)</title>
+<section id="tmthConnectEachSBEvent" xreflabel="connectEachSBEvent"><title>connectEachSBEvent (dialog object method)</title>
 <para>
   To connect a number of event notifications from a scroll bar control, and specify an individual method for each event,
   in one method invocation use the <xref linkend="mthConnectEachSBEvent"/> method of the
@@ -313,7 +314,7 @@ modify scroll bar controls.
 
 <para>
   When a scroll bar sends an <xref linkend="ovvEvents"/> notification
-  rmessage (<xref linkend="ovvWindowMessages"/>), one of the pararmeters contains the numeric code, (defined by Windows,)
+  r<link linkend="ovvWindowMessages">message</link>, one of the pararmeters contains the numeric code, (defined by Windows,)
   for the event. The <computeroutput>ScrollBar</computeroutput> class provides
   <computeroutput>::constant</computeroutput> values for each of the event codes. This allows the programmer to
   determine which event is represented by the event code without having to know what the individual numeric value is for

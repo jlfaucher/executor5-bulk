@@ -487,7 +487,7 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The arguments specifying the bitmaps can be a bitmap file name, a bitmap handle (<xref linkend="defHandle"/>), or
+    The arguments specifying the bitmaps can be a bitmap file name, a bitmap <xref linkend="defHandle"/>, or
     the resource number of a bitmap compiled into the resource DLL of a <xref linkend="clsResDialog"/>.
     The bitmap arguments must all be the same type. I.e. all file names, all resource IDs, or all handles. Symbolic
     resource IDs can be used for the bitmap arguments. If the bitmap arguments are handles the style argument must
@@ -514,7 +514,7 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -584,7 +584,7 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -634,7 +634,7 @@ Generic form:
       <varlistentry><term>hwnd [required]</term>
       <listitem>
       <para>
-        The handle (<xref linkend="defHandle"/>) of the window containing the rectangle to be cleared.
+        The <xref linkend="defHandle"/> of the window containing the rectangle to be cleared.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>rectCoordinates [required]</term>
@@ -669,7 +669,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -920,7 +920,7 @@ MyDialog~clearWindowRect(hwnd)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1063,7 +1063,7 @@ sent along with the scroll bar event.
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1082,7 +1082,7 @@ sent along with the scroll bar event.
 
 <para>
   The <emphasis role="italic">displaceBitmap</emphasis> method sets the position of a bitmap within the
-  client (<xref linkend="defClientArea"/>) area of a bitmap button.
+  client <xref linkend="defClientArea"/> of a bitmap button.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1173,7 +1173,7 @@ sent along with the scroll bar event.
       <varlistentry><term>hwnd [optional]</term>
       <listitem>
       <para>
-        The window handle (<xref linkend="defHandle"/>) of the bitmap button. This argument is, and has always been,
+        The window <xref linkend="defHandle"/> of the bitmap button. This argument is, and has always been,
         ignored. It is simply retained for backwards compatibility.
       </para>
       </listitem></varlistentry>
@@ -1250,7 +1250,7 @@ sent along with the scroll bar event.
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1638,7 +1638,7 @@ of a window. </para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1693,7 +1693,7 @@ of a window. </para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1768,7 +1768,7 @@ of a window. </para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1824,7 +1824,7 @@ of a window. </para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1886,7 +1886,7 @@ of a window. </para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2394,7 +2394,7 @@ end
           <para>
             This option <emphasis role="italic">must</emphasis> be used if the named bitmaps are already loaded into memory by using the
  <xref linkend="mthLoadBitmap"/> method. The bitmap source arguments must be specified as the
-            bitmap handle (<xref linkend="defHandle"/>) returned from the <emphasis
+            bitmap <xref linkend="defHandle"/> returned from the <emphasis
             role="italic">loadBitmap</emphasis> method.
           </para>
           </listitem></varlistentry>
@@ -2972,7 +2972,7 @@ Generic form:
       <listitem>
       <para>
         By default the rectangle to redraw is assumed to belong to the client area of this dialog. Optionally, the
-        window handle (<xref linkend="defHandle"/>) of some other window can be specified.
+        window <xref linkend="defHandle"/> of some other window can be specified.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>rectCoordinates [required]</term>
@@ -3016,7 +3016,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3125,7 +3125,7 @@ Generic form:
     <varlistentry><term>hwnd [optional]</term>
     <listitem>
     <para>
-      Optionally, some other window can be forced to redraw by specifying the handle (<xref linkend="defHandle"/>) to
+      Optionally, some other window can be forced to redraw by specifying the <xref linkend="defHandle"/> to
       the window. All Rexx dialog and dialog controls have the <xref linkend="atrHwnd"/> attribute which
       contains the handle of the window (<xref linkend="ovvUnderlying"/>). In addition, methods like
  <xref linkend="mthGetControlHandle"/> can be used to obtain a window handle. If you omit this
@@ -3152,7 +3152,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3371,7 +3371,7 @@ self~resizeControl(IDC_PB_NEXT, 40, 30, "SHOWWINDOW")
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3618,7 +3618,7 @@ self~start(scrollInControl, IDC_PB_SCROLLER, "Hello world!", "Arial", 36,   -
       <varlistentry><term>hwnd [required]</term>
       <listitem>
       <para>
-        The window handle (<xref linkend="defHandle"/>) where the text will be scrolled.
+        The window <xref linkend="defHandle"/> where the text will be scrolled.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>text [required]</term>
@@ -3828,7 +3828,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Sets the position of the upper left corner of the bitmap within the client (<xref linkend="defClientArea"/>) area
+  Sets the position of the upper left corner of the bitmap within the client <xref linkend="defClientArea"/>
   of a bitmap button.
 </para>
 <variablelist>
@@ -3885,7 +3885,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry id="exampleSetBitmapPosition"><term><emphasis role="bold">Example:</emphasis></term>
@@ -4141,7 +4141,7 @@ self~setControlSysColor(IDC_PB_NEXT, 'MENU')
     <varlistentry><term>hwnd [required]</term>
     <listitem>
     <para>
-      The handle (<xref linkend="defHandle"/>) to the window that is to become the foreground window.
+      The <xref linkend="defHandle"/> to the window that is to become the foreground window.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4189,7 +4189,7 @@ self~setControlSysColor(IDC_PB_NEXT, 'MENU')
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4673,7 +4673,7 @@ Generic form:
       <varlistentry><term>hwnd [required]</term>
       <listitem>
       <para>
-        The handle (<xref linkend="defHandle"/>) of the window to be resized and / or moved.
+        The <xref linkend="defHandle"/> of the window to be resized and / or moved.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>rectCoordinates [required]</term>
@@ -4772,13 +4772,13 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example resizes an edit control so that it takes up the entire client (<xref linkend="defClientArea"/>) area
+    This example resizes an edit control so that it takes up the entire client <xref linkend="defClientArea"/>
     of the dialog:
 <programlisting>
 <![CDATA[
@@ -4829,7 +4829,7 @@ Generic form:
     <varlistentry><term>h [required]</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle"/>) of the dialog or dialog control to write the text to.
+      The window <xref linkend="defHandle"/> of the dialog or dialog control to write the text to.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y [required]</term>
@@ -4903,7 +4903,7 @@ Generic form:
       <varlistentry><term>CLIENT</term>
       <listitem>
       <para>
-        The position for the text will be relative to the client (<xref linkend="defClientArea"/>) area of the
+        The position for the text will be relative to the client <xref linkend="defClientArea"/> of the
         specified window, rather than relative to the window itself.
       </para>
       </listitem></varlistentry>
@@ -5016,7 +5016,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.  See the remarks above.
+    Sets the <xref linkend="dotSystemErrorCode"/>.  See the remarks above.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5140,7 +5140,7 @@ self~writeToWindow(hwnd, 3, 3, "Hello world!", "Arial", 24, "BOLD ITALIC CLIENT"
       <varlistentry><term>CLIENT</term>
       <listitem>
       <para>
-        The position for the text will be relative to the client (<xref linkend="defClientArea"/>) area of the
+        The position for the text will be relative to the client <xref linkend="defClientArea"/> of the
         specified window, rather than relative to the window itself.
       </para>
       </listitem></varlistentry>
@@ -5253,7 +5253,7 @@ self~writeToWindow(hwnd, 3, 3, "Hello world!", "Arial", 24, "BOLD ITALIC CLIENT"
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.  See the remarks above.
+    Sets the <xref linkend="dotSystemErrorCode"/>.  See the remarks above.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

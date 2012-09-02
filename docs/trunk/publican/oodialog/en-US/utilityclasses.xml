@@ -56,8 +56,8 @@
 <table id="tUtilityClasses" frame="all">
 <title>ooDialog Utility Classes and Objects</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="4*" />
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
 <thead>
 <row>
 <entry>Utility Class or Object</entry>
@@ -74,8 +74,8 @@
 <entry>Manages application (global) settings for a single ooDialog program.</entry>
 </row>
 <row>
-<entry>.constDir object (<xref linkend="dotConstDir"/>)</entry>
-<entry>an ooRexx <computeroutput>.Directory</computeroutput> object used to resolove symbolic (<xref linkend="ovvSymbolicIDMechanism"/>) IDs.</entry>
+<entry><xref linkend="dotConstDir"/></entry>
+<entry>an ooRexx <computeroutput>.Directory</computeroutput> object used to resolove <link linkend="ovvSymbolicIDMechanism">symbolic</link> IDs.</entry>
 </row>
 <row>
 <entry>DayState <xref linkend="clsDayState"/></entry>
@@ -98,43 +98,43 @@
 <entry>Provides some common, useful, utilities for working with dialogs.</entry>
 </row>
 <row>
-<entry>FindWindow routine (<xref linkend="rtnFindWindow"/>)</entry>
+<entry><xref linkend="rtnFindWindow"/></entry>
 <entry>Searches the desktop for a specific window and returns its handle.</entry>
 </row>
 <row>
-<entry>MSSleep routine (<xref linkend="rtnMSSleep"/>)</entry>
+<entry><xref linkend="rtnMSSleep"/></entry>
 <entry>Sleeps for the specified number of milliseconds.</entry>
 </row>
 <row>
-<entry>OS <xref linkend="clsPoint"/></entry>
+<entry><xref linkend="clsOS"/></entry>
 <entry>Provides methods for accessing information about the operating system.</entry>
 </row>
 <row>
-<entry>Play routine (<xref linkend="rtnPlay"/>)</entry>
+<entry><xref linkend="rtnPlay"/></entry>
 <entry>Used to play audio sounds.</entry>
 </row>
 <row>
-<entry>Point <xref linkend="clsPoint"/></entry>
+<entry><xref linkend="clsPoint"/></entry>
 <entry>An object that represents a point in a 2-D coordinate system.</entry>
 </row>
 <row>
-<entry>Rect <xref linkend="clsRect"/></entry>
+<entry><xref linkend="clsRect"/></entry>
 <entry>An object used to represent a rectangle in a 2-D coordinate system.</entry>
 </row>
 <row>
-<entry>ScreenSize routine (<xref linkend="rtnScreenSize"/>)</entry>
+<entry><xref linkend="rtnScreenSize"/></entry>
 <entry>Obtains the screen size in dialog units and in pixels.</entry>
 </row>
 <row>
-<entry>Size <xref linkend="clsSize"/></entry>
+<entry><xref linkend="clsSize"/></entry>
 <entry>An object encapsulating a width and height dimension in a 2-D coordinate system.</entry>
 </row>
 <row>
-<entry>SM <xref linkend="clsSM"/></entry>
+<entry><xref linkend="clsSM"/></entry>
 <entry>A class whose attributes reflect the system metrics or configuration settings of the computer.</entry>
 </row>
 <row>
-<entry>SPI <xref linkend="clsSPI"/></entry>
+<entry><xref linkend="clsSPI"/></entry>
 <entry>A class whose attributes reflect the system-wide parameters of the computer.</entry>
 </row>
 <row>
@@ -142,11 +142,11 @@
 <entry>Reflects the <xref linkend="defSystemErrorCode"/>, if set.</entry>
 </row>
 <row>
-<entry>VK <xref linkend="clsVK"/></entry>
+<entry><xref linkend="clsVK"/></entry>
 <entry>Translates back and forth between virtual key code numbers and symbolic names.</entry>
 </row>
 <row>
-<entry>Window <xref linkend="clsWindow"/></entry>
+<entry><xref linkend="clsWindow"/></entry>
 <entry>An utility class with methods common to all windows.</entry>
 </row>
 </tbody></tgroup>
@@ -204,10 +204,10 @@
 <para>
   When an ooDialog application starts, the ooDialog framework instantiates an
   <computeroutput>ApplicationManager</computeroutput> object and places it in the
-  <computeroutput>.local</computeroutput> environment (.application (<xref linkend="dotApplication"/>).) Only one
-  instance of an <computeroutput>ApplicationManager</computeroutput> per application can be instantiated. In practice
-  this means that the ooRexx programmer can not create a new <computeroutput>ApplicationManager</computeroutput> object.
-  The programmer invokes all methods of the <computeroutput>ApplicationManager</computeroutput> through the
+  <computeroutput>.local</computeroutput> environment (<xref linkend="dotApplication"/>.) Only one instance of an
+  <computeroutput>ApplicationManager</computeroutput> per application can be instantiated. In practice this means that the
+  ooRexx programmer can not create a new <computeroutput>ApplicationManager</computeroutput> object. The programmer invokes
+  all methods of the <computeroutput>ApplicationManager</computeroutput> through the
   <computeroutput>.application</computeroutput> object.
 </para>
 
@@ -252,11 +252,11 @@
 </row>
 <row>
 <entry><xref linkend="mthAutoDetectionClsApplicationManger"/></entry>
-<entry>Sets the application global default for autoDetction (<xref linkend="paraAutomaticDataDetection"/>) to off, or on.</entry>
+<entry>Sets the application global default for <link linkend="paraAutomaticDataDetection">autoDetction</link> to off, or on.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultFont"/></entry>
-<entry>Changes the <xref linkend="mthClsSetDefaultFont"/> font for the application.</entry>
+<entry>Changes the <link linkend="mthClsSetDefaultFont">default</link> font for the application.</entry>
 </row>
 <row>
 <entry><xref linkend="ruapParseIncludeFile"/></entry>
@@ -328,7 +328,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 <para>
   The <emphasis role="italic">addToConstDir</emphasis> is used to add symbolic IDs to the global
   <xref linkend="dotConstDir"/> object. The <xref linkend="mthUseGlobalConstDir"/>,
-  parseIncludeFile (<xref linkend="ruapParseIncludeFile"/>), and <xref linkend="mthSetDefaults"/> methods
+  <xref linkend="ruapParseIncludeFile"/>, and <xref linkend="mthSetDefaults"/> methods
   can also be used to add symbols to the <computeroutput>.constDir</computeroutput>.
 </para>
 <variablelist>
@@ -341,7 +341,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
       <listitem>
       <para>
         <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol
-        definitions (<xref linkend="defPoundDefine"/>), or a collection object that maps
+        <xref linkend="defPoundDefine"/>s, or a collection object that maps
         <xref linkend="defSymbolicId"/> IDs to their numeric value.
       </para> </listitem></varlistentry>
     </variablelist>
@@ -358,7 +358,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   <para>
     If <emphasis role="italic">symbols</emphasis> is a string it is taken to be the name of a file containing symbol
     definitons. The result in this case is the same as using the
-    parseIncludeFile (<xref linkend="ruapParseIncludeFile"/>). The file is parsed and any symbol definitions are
+    <xref linkend="ruapParseIncludeFile"/>. The file is parsed and any symbol definitions are
     added to the <computeroutput>.constDir</computeroutput>.
   </para>
   <para>
@@ -678,7 +678,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
       <listitem>
       <para>
         <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol
-        definitions (<xref linkend="defPoundDefine"/>), or a collection object that maps
+        <xref linkend="defPoundDefine"/>s, or a collection object that maps
         <xref linkend="defSymbolicId"/> IDs to their numeric value.
       </para>
       <para>
@@ -754,7 +754,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 </variablelist>
 </section>  <!-- End ApplicationManager::setDefaults() -->
 
-<section id="ruapParseIncludeFile"><title>parseIncludefile</title>
+<section id="ruapParseIncludeFile" xreflabel="parseIncludeFile"><title>parseIncludeRile</title>
 <programlisting>
 ResourceUtils::<xref linkend="mthParseIncludeFile"/>
 
@@ -765,7 +765,7 @@ ResourceUtils::<xref linkend="mthParseIncludeFile"/>
 </programlisting>
 </section>
 
-<section id="ruapResolveNumericID"><title>resolveNumericID</title>
+<section id="ruapResolveNumericID" xreflabel="resolveNumericID"><title>resolveNumericID</title>
 <programlisting>
 ResourceUtils::<xref linkend="mthResolveNumericID"/>
 
@@ -776,7 +776,7 @@ ResourceUtils::<xref linkend="mthResolveNumericID"/>
 </programlisting>
 </section>
 
-<section id="ruapResolveSymbolicID"><title>resolveSymbolicID</title>
+<section id="ruapResolveSymbolicID" xreflabel="resolveSymbolicID"><title>resolveSymbolicID</title>
 <programlisting>
 ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 
@@ -798,7 +798,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 </programlisting>
 
 <para>
-  The ooDialog framework supports (<xref linkend="ovvSymbolicIDMechanism"/>) using
+  The ooDialog framework supports a <xref linkend="ovvSymbolicIDMechanism"/> for using
   <xref linkend="defSymbolicId"/> resource IDs for method aruments that required a resource ID. The global
   <xref linkend="dotConstDir"/> is part of that support. The <computeroutput>.constDir</computeroutput>
   is the most efficient and capable way to use symbolic IDs. However, to support backwards program compatibility, the
@@ -875,7 +875,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
       </para>
       <para>
         <emphasis role="italic">symbolSrc</emphasis> can either be the name of a file containing symbol
-        definitions (<xref linkend="defPoundDefine"/>), or a collection object that maps
+        <xref linkend="defPoundDefine"/>s, or a collection object that maps
         <xref linkend="defSymbolicId"/> IDs to their numeric value.
       </para> </listitem></varlistentry>
     </variablelist>
@@ -892,7 +892,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   <para>
     If <emphasis role="italic">symbolSrc</emphasis> is a string it is taken to be the name of a file containing symbol
     definitons. The result in this case is the same as using the
-    parseIncludeFile (<xref linkend="ruapParseIncludeFile"/>). The file is parsed and any symbol definitions are
+    <xref linkend="ruapParseIncludeFile"/>. The file is parsed and any symbol definitions are
     added to the <computeroutput>.constDir</computeroutput>.
   </para>
   <para>
@@ -902,7 +902,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
   </para>
   <para>
     Either the <xref linkend="mthAddToConstDir"/> or the
-    parseIncludeFile (<xref linkend="ruapParseIncludeFile"/>) can be used to add additional symbols to the
+    <xref linkend="ruapParseIncludeFile"/> can be used to add additional symbols to the
     <computeroutput>.constDir</computeroutput>. <emphasis role="bold">Note</emphasis> that if the usage strategy is
     specified as <emphasis role="italic">None</emphasis> and the <emphasis role="italic">symbolSrc</emphasis> argument
     is used, the symbols will be loaded into the <computeroutput>.constDir</computeroutput>, (because the
@@ -950,7 +950,7 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 <para>
   The <computeroutput>.constDir</computeroutput> is a Rexx <computeroutput>.directory</computeroutput> object that is
   present in all ooDialog programs. It is initialized and placed in the <computeroutput>.local</computeroutput>
-  environment automatically by the application (<xref linkend="dotApplication"/>) object. The global
+  environment automatically by the <xref linkend="dotApplication"/> object. The global
   <computeroutput>.constDir</computeroutput> is part of the <xref linkend="ovvSymbolicIDMechanism"/>
   allowing the use of <xref linkend="defSymbolicId"/> IDs in ooDialog programs.
 </para>
@@ -2041,7 +2041,7 @@ End month day state value:   1000000100000010000001000000
 <indexterm><primary>DlgArea class</primary></indexterm>
 <para>
   The <computeroutput>DlgArea</computeroutput> class provides assistance in laying out the dialog controls in a
-  dynamically defined dialog.  The class defines an area within the client (<xref linkend="defClientArea"/>) area of
+  dynamically defined dialog.  The class defines an area within the client <xref linkend="defClientArea"/> of
   a <xref linkend="clsUserDialog"/>. It is a helper class for the
  <xref linkend="mthDefineDialog"/> method of a <computeroutput>UserDialog</computeroutput> and has no
   effect on any <xref linkend="ovvUnderlying"/> window.
@@ -2193,10 +2193,11 @@ End month day state value:   1000000100000010000001000000
       <varlistentry><term>x [required]</term>
       <listitem>
       <para>
-        The x coordinate for the area to be defined. The coordinate is specified in dialog
-        units (<xref linkend="defDialogUnit"/>) and is relative to the top left corner of the
-        client (<xref linkend="defClientArea"/>) area of the <computeroutput>UserDialog</computeroutput>.
-      </para> </listitem></varlistentry>
+        The x coordinate for the area to be defined. The coordinate is specified in <xref linkend="defDialogUnit"/>s and is
+        relative to the top left corner of the client <xref linkend="defClientArea"/> of the
+        <computeroutput>UserDialog</computeroutput>.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>y [required]</term>
       <listitem>
       <para>
@@ -2585,7 +2586,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 
 <para>
   Returns the remaining height, in dialog units, between the last <xref linkend="mthYClsDlgArea"/> invocation and
-  the bottom margin of the area. This is equivalent to h("R") (<xref linkend="mthH"/>).
+  the bottom margin of the area. This is equivalent to <xref linkend="mthH"/>("R").
 </para>
 
 </section>
@@ -2684,7 +2685,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 
 <para>
   Returns the remaining width, in dialog units, between the last <xref linkend="mthXClsDlgArea"/> invocation and the
-  right margin of the area. This is equivalent to w("R") (<xref linkend="mthW"/>).
+  right margin of the area. This is equivalent to <xref linkend="mthW"/>("R").
 </para>
 
 </section>
@@ -2701,7 +2702,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 </programlisting>
 
 <para>
-  Returns a x coordinate relative to the client (<xref linkend="defClientArea"/>) area of the dialog by specifying
+  Returns a x coordinate relative to the client <xref linkend="defClientArea"/> of the dialog by specifying
   an offset relative to the defined dialog area.
 </para>
 <variablelist>
@@ -2732,7 +2733,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
   <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
   <listitem>
   <para>
-    The appropriate client (<xref linkend="defClientArea"/>) area x coordinate, in dialog units, as specified by the
+    The appropriate client <xref linkend="defClientArea"/> x coordinate, in dialog units, as specified by the
     <emphasis role="italic">offset</emphasis> argument.
   </para>
   </listitem></varlistentry>
@@ -2751,7 +2752,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 </programlisting>
 
 <para>
-  Returns a y coordinate relative to the client (<xref linkend="defClientArea"/>) area of the dialog by specifying
+  Returns a y coordinate relative to the client <xref linkend="defClientArea"/> of the dialog by specifying
   an offset relative to the defined dialog area.
 </para>
 <variablelist>
@@ -2782,7 +2783,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
   <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
   <listitem>
   <para>
-    The appropriate client (<xref linkend="defClientArea"/>) area y coordinate, in dialog units, as specified by the
+    The appropriate client <xref linkend="defClientArea"/> y coordinate, in dialog units, as specified by the
     <emphasis role="italic">offset</emphasis> argument.
   </para>
   </listitem></varlistentry>
@@ -2987,17 +2988,17 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
       <varlistentry><term>noResize</term>
       <listitem>
       <para>
-        A <computeroutput>.Set</computeroutput> object containing the resource IDs (<xref linkend="defResourceId"/>)
-        of the dialog controls that should <emphasis role="bold">not</emphasis> be resized during the resize event. The
-        IDs may be numeric or <xref linkend="defSymbolicId"/>.
+        A <computeroutput>.Set</computeroutput> object containing the resource <xref linkend="defResourceId"/>s of the dialog
+        controls that should <emphasis role="bold">not</emphasis> be resized during the resize event. The IDs may be numeric
+        or <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>noMove</term>
       <listitem>
       <para>
-        A <computeroutput>.Set</computeroutput> object containing the resource IDs (<xref linkend="defResourceId"/>)
-        of the dialog controls that should <emphasis role="bold">not</emphasis> be moved during the resize event. The
-        IDs may be numeric or <xref linkend="defSymbolicId"/>.
+        A <computeroutput>.Set</computeroutput> object containing the resource <xref linkend="defResourceId"/>s of the dialog
+        controls that should <emphasis role="bold">not</emphasis> be moved during the resize event. The IDs may be
+        numeric or <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3018,11 +3019,9 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 
 <para>
   An attribute containing the value used to adjust the ratio of the top &amp; left margins to the bottom &amp; right
-  margins. (The default correction factor is set to 1.05.) The
-  Possible Problems (<xref linkend="sctDlgAreaUProblems"/>) section has additional details on using the
-  <emphasis role="italic">correctionFactor</emphasis> attribute.
-</para>
-</section>
+  margins. (The default correction factor is set to 1.05.) The Possible <link linkend="sctDlgAreaUProblems">Problems</link>
+  section has additional details on using the <emphasis role="italic">correctionFactor</emphasis> attribute.
+</para> </section>
 
 <section id="atrLastError" xreflabel="lastError"><title>lastError (Attribute)</title>
 <indexterm><primary>lastError</primary></indexterm>
@@ -3256,7 +3255,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
     <listitem>
     <para>
       The new size of the dialog. Normally, <emphasis role="italic">sizeInfo</emphasis> comes from the value passed to
-      your resize event (<xref linkend="paraResizeEvent"/>) handler.
+      your resize <link linkend="paraResizeEvent">event</link> handler.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3346,8 +3345,8 @@ u = .dlgAreaU~new(self)
 </programlisting>
 <para>
   Your <emphasis role="italic">defineDialog</emphasis> method must not reference variables within the
-  create (<xref linkend="sctCreateMethods"/>) control method parameters. Although you can use references to
- <xref linkend="clsDlgArea"/> attributes, so
+  <link linkend="sctCreateMethods">create</link>/> control method parameters. Although you can use references to
+  <xref linkend="clsDlgArea"/> attributes, so
 </para>
 <programlisting>
 <![CDATA[
@@ -3456,7 +3455,7 @@ if u~lastError \= .nil then call errorDialog u~lastError
 </tgroup>
 </table>
 <para>
-  The following methods (<xref linkend="sctCreateMethods"/>) can be used to define dialog controls in a
+  The following <link linkend="sctCreateMethods">create</link> methods can be used to define dialog controls in a
   <xref linkend="clsUserDialog"/>, but cannot be handled by the
   <computeroutput>DlgAreaU</computeroutput> <xref linkend="mthResizeClsDlgAreaU"/> method. If you use any of
   these methods, the dialog controls will not be automatically resized and positioned.
@@ -3588,7 +3587,7 @@ u~resize(self, sizeinfo)
 ]]>
 </programlisting>
 <para>
-  This achieves the same dialog as the previous  DlgArea example (<xref linkend="exampleDlgArea"/>), but now it is
+  This achieves the same dialog as the previous DlgArea <link linkend="exampleDlgArea">example</link>, but now it is
   resizable by dragging the frame.
 </para>
 </section>
@@ -4045,7 +4044,7 @@ return .true
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the loWord() example (<xref linkend="exampleLoWordClsDlgUtil"/>).
+    See the loWord() <link linkend="exampleLoWordClsDlgUtil">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4146,7 +4145,7 @@ return .true
 </programlisting>
 
 <para>
-  When a message (<xref linkend="ovvWindowMessages"/>) is <xref linkend="mthSendMessage"/> to an
+  When a <link linkend="ovvWindowMessages">message</link> is <link linkend="mthSendMessage">sent</link> to an
   <xref linkend="ovvUnderlying"/> window two of the arguments are the WPARAM and the LPARAM parameters.
   Quite often the Windows API requires that two numbers be packed into the LPARAM argument. The <emphasis
   role="italic">makeLParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
@@ -4231,11 +4230,11 @@ return .true
 </programlisting>
 
 <para>
-  When a message (<xref linkend="ovvWindowMessages"/>) is <xref linkend="mthSendMessage"/> to an
+  When a <link linkend="ovvWindowMessages">message</link> is <link linkend="mthSendMessage">sent</link> to an
   <xref linkend="ovvUnderlying"/> window two of the arguments are the WPARAM and the LPARAM parameters.
   Quite often the Windows API requires that two numbers be packed into the WPARAM argument. The <emphasis
   role="italic">makeWParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
- <xref linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods, but works in the
+  <xref linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods, but works in the
   opposite direction.
 </para>
 <variablelist>
@@ -4275,13 +4274,12 @@ return .true
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    Although the example (<xref linkend="exampleMakeLParam"/>) for <emphasis role="italic">makeLParam</emphasis> does
-    not show the use of <emphasis role="italic">makeWParam</emphasis>, the basic idea in using either method is
-    essentially the same.
+    Although the <link linkend="exampleMakeLParam">example</link> for <emphasis role="italic">makeLParam</emphasis> does not
+    show the use of <emphasis role="italic">makeWParam</emphasis>, the basic idea in using either method is essentially the
+    same.
   </para>
   </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DlgUtil::makeWParam() -->
+</variablelist> </section>  <!-- End DlgUtil::makeWParam() -->
 
 
 <section id="mthOrClsDlgUtil" xreflabel="or"><title>or (Class Method)</title>
@@ -4407,7 +4405,7 @@ return .true
   <listitem>
   <para>
     A <xref linkend="clsRect"/> object that contains the coordinates of the work area. The coordinates are
-    expressed in screen (<xref linkend="defScreenCoordinates"/>) coordinates.
+    expressed in screen <xref linkend="defScreenCoordinates"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4480,8 +4478,8 @@ return .true
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If a Rexx dialog object is not supplied, it is unlikely that the dialog units (<xref linkend="defDialogUnit"/>)
-    will be correct. Without a reference to a dialog, the method calculates the dialog units using 8 point System font.
+    If a Rexx dialog object is not supplied, it is unlikely that the <xref linkend="defDialogUnit"/>s will be correct.
+    Without a reference to a dialog, the method calculates the dialog units using 8 point System font.
     Since dialog units are dependent on the font in use for a specific dialog, It is highly unlikely that this is
     correct for any specific dialog.
   </para>
@@ -4666,7 +4664,7 @@ return .true
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the sLoWord() example (<xref linkend="exampleSLoWordClsDlgUtil"/>).
+    See the <emphasis role="italic">sLoWord</emphasis> <link linkend="exampleSLoWordClsDlgUtil">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5124,7 +5122,7 @@ In the ok method thread ID:                 2344
       <varlistentry><term>Level</term>
       <listitem>
       <para>
-        The ooDialog level (<xref linkend="tblOODialogLevels"/>). Continuing with the same example the level would be
+        The ooDialog <link linkend="tblOODialogLevels">level</link>. Continuing with the same example the level would be
         <computeroutput>4.2.0</computeroutput>
       </para>
       </listitem></varlistentry>
@@ -5183,7 +5181,7 @@ Too bad, you are still running ooRexx 4.0.0
 </programlisting>
 
 <para>
-  Retrieves the window handle (<xref linkend="defHandle"/>) of the window that contains the specified point.
+  Retrieves the window <xref linkend="defHandle"/> of the window that contains the specified point.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5211,7 +5209,7 @@ Too bad, you are still running ooRexx 4.0.0
   <listitem>
   <para>
     This method does not retrieve handles of hidden or disabled windows even if the point is within the window. The
- <xref linkend="mthChildWindowFromPoint"/> method of the
+    <xref linkend="mthChildWindowFromPoint"/> method of the
     <xref linkend="chpDialogObject"/> object can be used for a nonrestrictive search.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5250,7 +5248,7 @@ Too bad, you are still running ooRexx 4.0.0
 </section> <!-- End DlgUtil Class -->
 
 
-<section id="rtnFindWindow"><title>FindWindow Routine</title>
+<section id="rtnFindWindow" xreflabel="FindWindow"><titlte>FindWindow Routine</title>
 <indexterm><primary>FindWindow</primary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>FindWindow</secondary></indexterm>
@@ -5279,7 +5277,7 @@ returns its handle.</para>
 </section>
 
 
-<section id="rtnMSSleep"><title>MSSleep Routine</title>
+<section id="rtnMSSleep" xreflabel="MSSleep"><titlte>MSSleep Routine</title>
 <indexterm><primary>MSSleep</primary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>MSSleep</secondary></indexterm>
@@ -5852,7 +5850,7 @@ returns its handle.</para>
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5997,7 +5995,7 @@ returns its handle.</para>
 </section> <!-- End OS Class -->
 
 
-<section id="rtnPlay"><title>Play Routine</title>
+<section id="rtnPlay" xreflabel="Play"><titlte>Play Routine</title>
 <indexterm><primary>Play</primary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>Play</secondary></indexterm>
@@ -6116,11 +6114,11 @@ rc = play("Welcome.wav")
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>+ (<xref linkend="mthPlus"/>)</entry>
+<entry><xref linkend="mthPlus"/></entry>
 <entry>Adds two <computeroutput>Point</computeroutput>objects</entry>
 </row>
 <row>
-<entry>- (<xref linkend="mthMinus"/>)</entry>
+<entry><xref linkend="mthMinus"/></entry>
 <entry>Subtracts two <computeroutput>Point</computeroutput>objects</entry>
 </row>
 <row>
@@ -6279,7 +6277,7 @@ Changed point q to be at (150,300)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See .Point~new (<xref linkend="exampleNewClsPoint"/>) example.
+    See the .Point~new <link linkend="exampleNewClsPoint">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -6324,14 +6322,14 @@ Changed point q to be at (150,300)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See .Point~new (<xref linkend="exampleNewClsPoint"/>) example.
+    See the .Point~new <link linkend="exampleNewClsPoint">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Point::y() [attribute]  -->
 
 
-<section id="mthPlus"><title>+ (addition)</title>
+<section id="mthPlus" xreflabel="+"><title>+ (addition)</title>
 <indexterm><primary>+</primary></indexterm>
 <indexterm><primary>Point class</primary><secondary>+</secondary></indexterm>
 <programlisting>
@@ -6398,7 +6396,7 @@ Changed point q to be at (150,300)
 </section>  <!-- End Point::+() -->
 
 
-<section id="mthMinus"><title>- (subtraction)</title>
+<section id="mthMinus" xreflabel="-"><title>- (subtraction)</title>
 <indexterm><primary>-</primary></indexterm>
 <indexterm><primary>Point class</primary><secondary>-</secondary></indexterm>
 <programlisting>
@@ -7027,7 +7025,7 @@ New upper corner (55,75) new lower corner 110,125)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See .Rect~new (<xref linkend="exampleNewClsRect"/>) example.
+    See the .Rect~new <link linkend="exampleNewClsRect">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7073,7 +7071,7 @@ New upper corner (55,75) new lower corner 110,125)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See .Rect~new (<xref linkend="exampleNewClsRect"/>) example.
+    See the .Rect~new <link linkend="exampleNewClsRect">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7119,7 +7117,7 @@ New upper corner (55,75) new lower corner 110,125)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See .Rect~new (<xref linkend="exampleNewClsRect"/>) example.
+    See the .Rect~new <link linkend="exampleNewClsRect">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7166,7 +7164,7 @@ New upper corner (55,75) new lower corner 110,125)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See .Rect~new (<xref linkend="exampleNewClsRect"/>) example.
+    See the .Rect~new <link linkend="exampleNewClsRect">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7230,7 +7228,7 @@ New upper corner (55,75) new lower corner 110,125)
 </section> <!-- End Rect Class -->
 
 
-<section id="rtnScreenSize"><title>ScreenSize Routine</title>
+<section id="rtnScreenSize" xreflabel="ScreenSize"><titlte>ScreenSize Routine</title>
 <indexterm><primary>ScreenSize</primary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>ScreenSize</secondary></indexterm>
@@ -7256,9 +7254,9 @@ size in pixels of the width is at index 3 and the height in pixels is at index
 <listitem>
 <para>
   There are a few problems with this routine. The main problem is with the values returned for the
-  dialog units (<xref linkend="defDialogUnit"/>). Since dialog units are depenedent on the font in use for a specific
-  dialog, and there is no dialog involved here, the routine calculates the dialog units using 8 point System font. It is
-  higly unlikely that this is correct for any specific dialog.
+  <xref linkend="defDialogUnit"/>x. Since dialog units are depenedent on the font in use for a specific dialog, and there is
+  no dialog involved here, the routine calculates the dialog units using 8 point System font. It is higly unlikely that this
+  is correct for any specific dialog.
 </para>
 <para>
   The <xref linkend="mthScreenSize"/> method of the <xref linkend="clsDlgUtil"/> class is
@@ -7483,7 +7481,7 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See .Size~new (<xref linkend="exampleNewClsSize"/>) example.
+    See the .Size~new <link linkend="exampleNewClsSize">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7528,7 +7526,7 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See .Size~new (<xref linkend="exampleNewClsSize"/>) example.
+    See the .Size~new <link linkend="exampleNewClsSize">example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -8351,7 +8349,7 @@ s2: a Size (2, 3)
 <entry align="center"><emphasis role="bold">Constants</emphasis></entry>
 </row>
 <row>
-<entry>WHEEL_PAGESCROLL (<xref linkend="cnstWHEEL-PAGESCROLL"/>)</entry>
+<entry><xref linkend="cnstWHEEL-PAGESCROLL"/></entry>
 <entry>Indicates a turn of the mouse wheel should scroll 1 page rather than some number of lines.</entry>
 </row>
 <row>
@@ -8403,7 +8401,7 @@ s2: a Size (2, 3)
 </para>
 </section>
 
-<section id="cnstWHEEL-PAGESCROLL"><title>WHEEL_PAGESCROLL (Constant)</title>
+<section id="cnstWHEEL-PAGESCROLL" xreflabel="WHELL_PAGESCROLL"><title>WHEEL_PAGESCROLL (Constant)</title>
 <indexterm><primary>WHEEL_PAGESCROLL</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>WHEEL_PAGESCROLL</secondary></indexterm>
 <programlisting>
@@ -8414,10 +8412,9 @@ s2: a Size (2, 3)
 </programlisting>
 
 <para>
-  <emphasis role="italic">WHEEL_PAGESCROLL</emphasis> is a value defined by the Windows
-  SDK (<xref linkend="defPlatformSDK"/>) that indicates a turn of one notch in the mouse wheel should scroll one page
-  rather than some number of lines. See the <xref linkend="atrWheelScrollLines"/> attribute more
-  more information on the mouse wheel.
+  <emphasis role="italic">WHEEL_PAGESCROLL</emphasis> is a value defined by the Windows <xref linkend="defPlatformSDK"/>
+  that indicates a turn of one notch in the mouse wheel should scroll one page rather than some number of lines. See the
+  <xref linkend="atrWheelScrollLines"/> attribute more more information on the mouse wheel.
 </para>
 </section>  <!-- End SPI::WHEEL_PAGESCROLL [constant]  -->
 
@@ -8461,7 +8458,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8510,7 +8507,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8557,7 +8554,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8605,7 +8602,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8655,7 +8652,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8706,7 +8703,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8757,7 +8754,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8911,7 +8908,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      Sets the <xref linkend="dotSystemErrorCode"/> variable.
+      Sets the <xref linkend="dotSystemErrorCode"/>.
     </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -8982,7 +8979,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8994,7 +8991,7 @@ s2: a Size (2, 3)
 </section> <!-- End SPI Class -->
 
 
-<section id="dotSystemErrorCode"><title>.systemErrorCode object</title>
+<section id="dotSystemErrorCode" xreflabel=".systemErrorCode object"><title>.systemErrorCode object</title>
 <indexterm><primary>.systemErrorCode</primary></indexterm>
 <para>
   The .systemErrorCode can be used, at times, to obtain additional information when the invocation of a
@@ -10289,7 +10286,7 @@ else if key == .VK~INSERT then
 <entry>Gets the text of the window.</entry>
 </row>
 <row>
-<entry>title= (<xref linkend="wbwTitleEquals"/>)</entry>
+<entry><xref linkend="wbwTitleEquals"/></entry>
 <entry>Sets the text of the window.</entry>
 </row>
 <row>
@@ -10317,7 +10314,7 @@ else if key == .VK~INSERT then
 </programlisting>
 
 <para>
-  Given a window handle (<xref linkend="defHandle"/>), instantiates a new <computeroutput>Window</computeroutput>
+  Given a window <xref linkend="defHandle"/>, instantiates a new <computeroutput>Window</computeroutput>
   object.
 </para>
 <variablelist>
@@ -10945,9 +10942,9 @@ WindowBase::<xref linkend="mthTitle"/>
 </section>
 
 
-<section id="wbwTitleEquals"><title>title=</title>
+<section id="wbwTitleEquals" xreflabel="title="><title>title=</title>
 <programlisting>
-WindowBase::title= (<xref linkend="mthTitleEquals"/>)
+WindowBase::<xref linkend="mthTitleEquals"/>
 
 <![CDATA[
 >>--title=newText--------------------------------><

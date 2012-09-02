@@ -372,7 +372,7 @@ xPixels = xDialogUnits * self~FactorX
   role="italic">client</emphasis> coordinates are used to distinguish the origin (0,0) of the coordinate. For a screen
   coordinate, the origin is the upper left corner of the primary display device, typically a monitor, and usually called
   the screen. Client coordinates on the other hand have an origin of the upper left corner of the
-  client (<xref linkend="defClientArea"/>) area of the window.  Both screen and client coordinates are always given in the
+  client <xref linkend="defClientArea"/> of the window.  Both screen and client coordinates are always given in the
   device unit of the display, which for all practical purposes is a pixel (<xref linkend="defPixel"/>).
 </para>
 </section>
@@ -752,7 +752,7 @@ xPixels = xDialogUnits * self~FactorX
   class. The connected methods are often called <emphasis role="italic">event handlers</emphasis> because the code in
   the method handles the event.
 </para>
-<para id="ovvEventsDirectReply">
+<para id="ovvEventsDirectReply" xreflabel="directly">
   Event notification messages in Windows fall into two groups, messages where the reply is ignored and messages where
   the reply is significant. Prior to the introduction of the C++ (<xref linkend="sctHistory"/>) native APIs, there
   was <emphasis role="bold">no way</emphasis> in ooDialog to <emphasis role="italic">directly</emphasis> reply to the
@@ -1188,7 +1188,7 @@ xPixels = xDialogUnits * self~FactorX
     The easiest way to add symbols is to have the ooDialog framework add the symbols itself from a file. Whenever
     ooDialog parses a resource <xref linkend="defResourceScript"/> or a
     header file (<xref linkend="defHeaderFile"/>), it automatically adds any symbol
-    definitions (<xref linkend="defPoundDefine"/>) it finds to a constant directory. Which constant directory is dependent
+    <xref linkend="defPoundDefine"/>s it finds to a constant directory. Which constant directory is dependent
     on the global <computeroutput>.constDir</computeroutput> usage strategy in effect.
   </para>
   <para>
@@ -1332,10 +1332,10 @@ xPixels = xDialogUnits * self~FactorX
   However, the ooDialog framework provides a few generic methods that send window messages to the underlying operating
   system windows. These methods, in contrast to most methods, can not be used by the Rexx programmer without some
   knowledge of the window message being sent. The methods are clearly marked. The programmer would need to consult the
-  Windows Documentation (<xref linkend="defWindowsDoc"/>) to understand what both the WPARAM and LPARAM arguments
+  Windows <xref linkend="defWindowsDoc"/> to understand what both the WPARAM and LPARAM arguments
   must be, and to understand what the LRESULT return, if any, means. In addition, the programmer would need to determine
   the numeric value of the window message ID. This could be done using a
-  Windows platform SDK (<xref linkend="defPlatformSDK"/>), or perhaps through a Google search.
+  Windows platform <xref linkend="defPlatformSDK"/>, or perhaps through a Google search.
 </para>
 <para>
   These generic send messages methods allow Rexx programmers to send any message to any of the underlying windows in

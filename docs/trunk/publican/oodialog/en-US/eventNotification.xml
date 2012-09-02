@@ -81,16 +81,15 @@
 </listitem></itemizedlist>
 </para>
 <para>
-  Whenever a dialog object is instantiated, the ooDialog framework
-  automatically (<xref linkend="sctStandardEventMethods"/>) makes several event connections. For all other events the Rexx
-  programmer, usually, needs to specifically connect the event to his dialog, through one of the event notification
-  methods, to be able to respond to the event. In a <xref linkend="clsUserDialog"/>, some of the methods
-  that create dialog controls have an option that automatically connects an event to a dialog method. But, for most
-  events, say the resize or move events, the connection needs to be made explicitly.  Indeed, except for trivial
-  dialogs, most of the programming is deciding which events to be notified of and taking action upon receiving the
-  notification.
+  Whenever a dialog object is instantiated, the ooDialog framework <link
+  linkend="sctStandardEventMethods">automatically</link> makes several event connections. For all other events the Rexx
+  programmer, usually, needs to specifically connect the event to his dialog, through one of the event notification methods,
+  to be able to respond to the event. In a <xref linkend="clsUserDialog"/>, some of the methods that create dialog controls
+  have an option that automatically connects an event to a dialog method. But, for most events, say the resize or move
+  events, the connection needs to be made explicitly.  Indeed, except for trivial dialogs, most of the programming is
+  deciding which events to be notified of and taking action upon receiving the notification.
 </para>
-<para id="paraWhereToConnectEvents">
+<para id="paraGuidelinesWhereToConnect" xreflabel="guidelines on where to">
   In general, events should be connected before the dialog is shown on the screen, or immediately after the dialog is
   created. There is no reason why the programmer can not place the invocation where ever it makes the most sense.
   Connecting the events in the <xref linkend="mthInitDialog"/>() method is usually sufficient. In a
@@ -110,8 +109,8 @@
   The methods in a Rexx dialog object connected to Windows event notifications are commonly called event handlers
   because the method handles the event. In order to properly code an event handler, the Rexx programmer needs to
   understand somewhat the underlying mechanism of event notification. This is particularly important in ooDialog 4.2.0
-  and later with its ability to directly (<xref linkend="ovvEventsDirectReply"/>) invoke the event handling method
-  from the window message (<xref linkend="ovvWindowMessages"/>) processing loop.
+  and later with its ability to <xref linkend="ovvEventsDirectReply"/> invoke the event handling method from the window
+  <link linkend="ovvWindowMessages">message</link> processing loop.
 </para>
 <para>
   When the operating system sends an event notification to the underlying dialog, the operating system waits for a reply
@@ -131,10 +130,10 @@
 </para>
 <para>
   With ooDialog 4.2.0 and later, the event handling method in the Rexx dialog object is invoked by the interpreter
-  directly from the message processing loop in the underlying Windows dialog. This allows the Rexx programmer
-  to return (<xref linkend="exampleEventHandler1"/>) a value to the notification, to
-  synchronize (<xref linkend="exampleEventHandler1"/>) the handling of notifications, or to
-  veto (<xref linkend="exampleEventHandler3"/>) an event. Remember, with this direct invocation of the event handling
+  directly from the message processing loop in the underlying Windows dialog. This allows the Rexx programmer to
+  <link linkend="exampleEventHandler1">return</link> a value to the notification, to <link
+  linkend="exampleEventHandler1">synchronize</link> the handling of notifications, or to
+  <link linkend="exampleEventHandler3">veto</link> an event. Remember, with this direct invocation of the event handling
   methods, the interpreter is waiting in the message processing loop for the return from the method. Therefore, the
   programmer needs to return from the method in a reasonable amount of time. Do not be overly worried about this, the
   interpreter processes a large number of statements in a very short time. There is adequate time to process and return
@@ -169,9 +168,8 @@
 <para>
   All event connections made using event connection methods introduced after ooDialog 4.1.0 assume the programmer wants
   the event handler invoked directly and for the ooDialog framework to wait for the return. These methods will be called
-  new connection methods. For instance, the date <xref linkend="clsDateTimePicker"/> picker control did not
-  exist in ooDialog 4.1.0, so its event connection method,
- <xref linkend="mthConnectDateTimePickerEvent"/> falls into this category.
+  new connection methods. For instance, the <xref linkend="clsDateTimePicker"/> control did not exist in ooDialog 4.1.0, so
+  its event connection method, <xref linkend="mthConnectDateTimePickerEvent"/> falls into this category.
 </para>
 </listitem>
 <listitem>
@@ -218,7 +216,7 @@
 <para>
   Below is a code snippet for an application that displays the current date and time, with a push button that refreshes
   the display. Note these points about the code snippet. Since the <emphasis role="italic">connectButtonEvent</emphasis>
-  method is the replacement for the deprecated (<xref linkend="ovvDeprecated"/>) <emphasis
+  method is the replacement for the <xref linkend="ovvDeprecated"/> <emphasis
   role="italic">connectButtonNotify</emphasis> it is in essence an existing connection method, using the original
   arguments. Therefore, the method is invoked from the message processing loop using <emphasis
   role="italic">startWith</emphasis>. Because of this, technically, it does not have to be unguarded and does not have
@@ -476,10 +474,10 @@
   <para>
     The two common ways to solve this problem would be to use an <emphasis role="italic">early reply</emphasis> or to
     start a <emphasis role="italic">second activity</emphasis> running to do the processing. Using the
-    onTabChanging (<xref linkend="exampleEventHandler3"/>) event handler above, here are two typical ways to handle the
+    <link linkend="exampleEventHandler3">onTabChanging</link> event handler above, here are two typical ways to handle the
     event when some lengthy processing is involved. As a hypothetical, say that when the user changes to a new tab, the
-    program needs to gather up all the data on the validated page and write it to disk, or send it somewhere. One
-    approach would be to validate the page, do an early reply, and then finish up the processing:
+    program needs to gather up all the data on the validated page and write it to disk, or send it somewhere. One approach
+    would be to validate the page, do an early reply, and then finish up the processing:
   </para>
 <programlisting>
 <![CDATA[
@@ -694,11 +692,11 @@
 
 <para>
   The <emphasis role="italic">addUserMsg</emphasis> method connects a Windows window
-  message (<xref linkend="ovvWindowMessages"/>) sent to the <xref linkend="ovvUnderlying"/> dialog with a
+  <link linkend="ovvWindowMessages">message</link> sent to the <xref linkend="ovvUnderlying"/> dialog with a
   method in the Rexx dialog. This method is designed to be used by ooDialog programmers who are familiar with the
   Windows API. It's use will require access to the Windows <xref linkend="defWindowsDoc"/> at a
   minimum, and will likely also require access to the Windows header files in the
-  Windows platform SDK (<xref linkend="defPlatformSDK"/>).
+  Windows platform <xref linkend="defPlatformSDK"/>.
 </para>
 <para>
   Internally, ooDialog examines every window message the Windows dialog receives. If the window message matches the
@@ -711,7 +709,7 @@
   <para>
     All arguments, except for <emphasis role="italic">rxMsg</emphasis>, represent non-negative whole numbers. For
     convenience, the programmer can either use the numeric value for these argument, or the numbers can be expressed in
-    conventional hexadecimal (<xref linkend="defConventionalHex"/>) format.
+    conventional <xref linkend="defConventionalHex"/> format.
   </para>
   <para>
     The arguments are:
@@ -740,7 +738,7 @@
       <varlistentry><term>wP [optional]</term>
       <listitem>
       <para>
-        The numeric value of the WPARAM (<xref linkend="ovvWindowMessages"/>) parameter in the window message to
+        The numeric value of the <link linkend="ovvWindowMessages">WPARAM</link> parameter in the window message to
         match. This defaults to 0.
       </para>
       </listitem></varlistentry>
@@ -755,8 +753,8 @@
       <varlistentry><term>lP [optional]</term>
       <listitem>
       <para>
-        The numeric value of the LPARAM (<xref linkend="ovvWindowMessages"/>) parameter in the window message to
-        match. This defaults to 0.
+        The numeric value of the <link linkend="ovvWindowMessages">LPARAM</link>/>) parameter in the window message to match.
+        This defaults to 0.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>f3 [optional]</term>
@@ -785,12 +783,12 @@
   </para>
   <para>
     Details for all window messages and their parameters are available in the Windows
-    documentation (<xref linkend="defWindowsDoc"/>). The numeric value of the message IDs (and possibly the message
-    parameters) can be looked up in the Windows platform SDK (<xref linkend="defPlatformSDK"/>).
+    <xref linkend="defWindowsDoc"/>. The numeric value of the message IDs (and possibly the message parameters) can be
+    looked up in the Windows platform <xref linkend="defPlatformSDK"/>.
   </para>
   <para>
     In all cases, it is preferable to use specific connect event methods provided by ooDialog.  Such as
- <xref linkend="mthConnectEditEvent"/>, <xref linkend="mthConnectResize"/>, etc..
+    <xref linkend="mthConnectEditEvent"/>, <xref linkend="mthConnectResize"/>, etc..
     <emphasis role="italic">addUserMsg</emphasis> is provided for those cases where the specific connect event method
     the programmer needs is not present in ooDialog.
   </para>
@@ -969,7 +967,7 @@
     <varlistentry><term>wParam</term>
     <listitem>
     <para>
-      The WPARAM (<xref linkend="ovvWindowMessages"/>) parameter to the window message that was connected through
+      The <link linkend="ovvWindowMessages">WPARAM</link> parameter to the window message that was connected through
       <emphasis role="italic">addUserMsg</emphasis>. This will be the numeric value of WPARAM and may or may not be of
       use to the programmer depending on the specific window message.
     </para>
@@ -977,9 +975,9 @@
     <varlistentry><term>lParam</term>
     <listitem>
     <para>
-      The LPARAM (<xref linkend="ovvWindowMessages"/>) parameter to the window message that was connected through
-      <emphasis role="italic">addUserMsg</emphasis>. Again, this will be the numeric value of LPARAM and may or may not
-      be of use to the programmer depending on the specific window message.
+      The <link linkend="ovvWindowMessages">LPARAM</link> parameter to the window message that was connected through
+      <emphasis role="italic">addUserMsg</emphasis>. Again, this will be the numeric value of LPARAM and may or may not be of
+      use to the programmer depending on the specific window message.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -994,7 +992,7 @@
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleAddUserMsg"/>) for <emphasis role="italic">addUserMsg</emphasis> shows how a
+    The <link linkend="exampleAddUserMsg">example</link> for <emphasis role="italic">addUserMsg</emphasis> shows how a
     typical event handler might be coded.
   </para>
   </listitem></varlistentry>
@@ -1063,14 +1061,14 @@
     the window is gaining or losing the activation.
   </para>
   <para>
-    Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-    role="italic">connectActivate</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>)
-    to code event handlers are included in the documentation for the
+    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+    role="italic">connectActivate</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link> to code event
+    handlers are included in the documentation for the
     <xref linkend="clsEventNotification"/> class.
   </para>
   <para>
     The interpreter invokes the event handler directly and waits in the window
-    message (<xref linkend="ovvWindowMessages"/>) processing loop for the return from the event handler. Connecting the
+    <link linkend="ovvWindowMessages">message</link> processing loop for the return from the event handler. Connecting the
     activate event requires that the programmer reply to the event from the event handler in a timely manner.
   </para>
   </listitem></varlistentry>
@@ -1089,7 +1087,7 @@
   </listitem></varlistentry>
 </variablelist>
 
-<section id="evtACTIVATE"><title>Activate Event Handler</title>
+<section id="evtACTIVATE" xreflabel="ACTIVATE"><title>Activate Event Handler</title>
 <indexterm><primary>dialog object</primary><secondary>events</secondary><tertiary>ACTIVATE</tertiary></indexterm>
 
 <programlisting>
@@ -1152,7 +1150,7 @@
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle"/>) of the window being activated or deactivated, depending on the
+      The window <xref linkend="defHandle"/> of the window being activated or deactivated, depending on the
       <emphasis role="italic">status</emphasis> argument. If the keyword is INACTIVE, then this is the handle of the
       window gaining the activation. If the keyword is ACTIVE or CLICKACTIVE, it is the handle of the window losing the
       activation.
@@ -1263,7 +1261,7 @@
 <listitem>
 <para>
   The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter
-  waits (<xref linkend="sctCodingEventHandlers"/>) for the reply from the event handler. The default is
+  <link linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler. The default is
   <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. If <emphasis
   role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
   event handling method returns a value.
@@ -1390,7 +1388,7 @@
       <listitem>
       <para>
         The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter
-        waits (<xref linkend="sctCodingEventHandlers"/>) for the reply from the event handler. The default is
+        <link linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler. The default is
         <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. If <emphasis
         role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
         event handling method returns a value.
@@ -1430,8 +1428,8 @@
     <orderedlist>
     <listitem>
     <para>
-      Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-      role="italic">connectComboBoxEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>)
+      Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+      role="italic">connectComboBoxEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
       to code event handlers are included in the documentation for the
       <xref linkend="clsEventNotification"/> class.
     </para>
@@ -1486,10 +1484,10 @@
   <listitem>
   <para>
     In order to receive the GOTFOCUS, LOSTFOCUS, and DBLCLK event notifications, the button control has to have the
-    NOTIFY (BS_NOTIFY) style.  For user defined dialogs use the NOTIFY style keyword in the
-    create ... (<xref linkend="sctCreateMethods"/>) method when the button is defined.  For dialogs created from a
-    compiled resource or a resource script file use the BS_NOTIFY style for the button resource.  The other event
-    notifications are always sent and it is not necessary to add the NOTIFY style for those events.
+    NOTIFY (BS_NOTIFY) style.  For user defined dialogs use the NOTIFY style keyword in the <link
+    linkend="sctCreateMethods">create</link> method when the button is defined.  For dialogs created from a compiled resource
+    or a resource script file use the BS_NOTIFY style for the button resource.  The other event notifications are always sent
+    and it is not necessary to add the NOTIFY style for those events.
   </para>
   <para>
     The <emphasis role="italic">connectButtonEvent</emphasis> method is a member of the
@@ -1614,8 +1612,8 @@ incorrect.
 <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
 <listitem>
 <para>
-  Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-  role="italic">connectComboBoxEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>)
+  Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+  role="italic">connectComboBoxEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
   to code event handlers are included in the documentation for the
   <xref linkend="clsEventNotification"/> class.
 </para>
@@ -1642,9 +1640,9 @@ incorrect.
 <listitem>
 <para>
   The following example invokes method PlaySong whenever the list of the combo box with the resource ID of
-  IDC_CB_PROFESSIONS is about to be made visible.  In this case IDC_CB_PROFESSIONS is a
-  symbolic ID (<xref linkend="defSymbolicId"/>) that has been added to the <xref linkend="atrConstDir"/>
-  directory of the MyDlgClass in another part of the program:
+  IDC_CB_PROFESSIONS is about to be made visible.  In this case IDC_CB_PROFESSIONS is a <xref
+  linkend="defSymbolicId"/> ID that has been added to the <xref linkend="atrConstDir"/> directory of the MyDlgClass in
+  another part of the program:
 
 <programlisting>
 <![CDATA[
@@ -1827,9 +1825,9 @@ lo word resource ID:       1003
     <listitem>
     <para>
       Exactly one of the following keywords. The keyword specifies the event to be connected. For each event, the
-      documentation for the event handler, (CloseUp (<xref linkend="evtDateTimePickerCLOSEUP"/>),
-      DateTimeChange (<xref linkend="evtDateTimePickerDATETIMECHANGE"/>), etc.,) will contain additional information about
-      the event. Case is not significant:
+      documentation for the event handler, <xref linkend="evtDateTimePickerCLOSEUP"/>), <xref
+      linkend="evtDateTimePickerDATETIMECHANGE"/>, etc., will contain additional information about the event. Case is not
+      significant:
     </para>
     <para>
       <simplelist type='vert' columns='3'>
@@ -1870,18 +1868,17 @@ lo word resource ID:       1003
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control to request text to be displayed in a
-          callback (<xref linkend="sctDTPCallback"/>) field. The <emphasis role="italic">willReply</emphasis> argument
-          is ignored for this event, the event handler must return (<xref linkend="sctCodingEventHandlers"/>) a
-          reply.
+          <link linkend="sctDTPCallback">callback</link>/> field. The <emphasis role="italic">willReply</emphasis> argument
+          is ignored for this event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>FORMATQUERY</term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control to retrieve the maximum allowable size of the string that will be
-          displayed in a callback (<xref linkend="sctDTPCallback"/>) field. The <emphasis
+          displayed in a <link linkend="sctDTPCallback">callback</link> field. The <emphasis
           role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
-          return (<xref linkend="sctCodingEventHandlers"/>) a reply.
+          <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>USERSTRING</term>
@@ -1890,15 +1887,15 @@ lo word resource ID:       1003
           Sent by a date and time picker (DTP) control when a user finishes editing a string in the control. This
           notification message is only sent by DTP controls that have the CANPARSE style. The <emphasis
           role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
-          return (<xref linkend="sctCodingEventHandlers"/>) a reply.
+          <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>KEYDOWN</term>
         <listitem>
         <para>
-          Sent by a date and time picker (DTP) control when the user types in a
-          callback (<xref linkend="sctDTPCallback"/>) field. The <emphasis role="italic">willReply</emphasis> argument is
-          ignored for this event, the event handler must return (<xref linkend="sctCodingEventHandlers"/>) a reply.
+          Sent by a date and time picker (DTP) control when the user types in a <link
+          linkend="sctDTPCallback">callback</link> field. The <emphasis role="italic">willReply</emphasis> argument is
+          ignored for this event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>KILLFOCUS</term>
@@ -1951,8 +1948,8 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-    role="italic">connectDateTimePickerEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>)
+    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+    role="italic">connectDateTimePickerEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
     to code event handlers are included in the documentation for the
     <xref linkend="clsEventNotification"/> class.
   </para>
@@ -1995,7 +1992,7 @@ lo word resource ID:       1003
   </listitem></varlistentry>
 </variablelist>
 
-<section id="evtDateTimePickerCLOSEUP"><title>CloseUp Event Handler</title>
+<section id="evtDateTimePickerCLOSEUP" xreflabel="CLOSEUP"><title>CloseUp Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>CLOSEUP</secondary></indexterm>
 <para>
   The event handler for the close up event is invoked when the user closes the drop-down month calendar. The month
@@ -2015,7 +2012,7 @@ lo word resource ID:       1003
 </para>
 <para>
   The programmer may have instantiated a Rexx month calendar object during the
-   DROPDOWN (<xref linkend="evtDateTimePickerDROPDOWN"/>) event notification. Once the underlying Windows month calendar is
+   <xref linkend="evtDateTimePickerDROPDOWN"/> event notification. Once the underlying Windows month calendar is
   destroyed, the Rexx <computeroutput>MonthCalendar</computeroutput> is no longer valid.
 </para>
 
@@ -2087,7 +2084,7 @@ lo word resource ID:       1003
 </section>  <!-- End CloseUp Event Handler -->
 
 
-<section id="evtDateTimePickerDATETIMECHANGE"><title>DateTimeChange Event Handler</title>
+<section id="evtDateTimePickerDATETIMECHANGE" xreflabel="DATETIMECHANGE"><title>DateTimeChange Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>DATETIMECHANGE</secondary></indexterm>
 <para>
   The event handler for the date time change event is invoked whenever a change in the underlying DTP control takes
@@ -2217,7 +2214,7 @@ lo word resource ID:       1003
 </section>  <!-- End DateTimeChange Event Handler -->
 
 
-<section id="evtDateTimePickerDROPDOWN"><title>DropDown Event Handler</title>
+<section id="evtDateTimePickerDROPDOWN" xreflabel="DROPDOWN"><title>DropDown Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>DROPDOWN</secondary></indexterm>
 <para>
   The event handler for the drop down event is invoked when the user activates the drop down month calendar. The DTP
@@ -2326,11 +2323,11 @@ lo word resource ID:       1003
 
 </section>  <!-- End DropDown Event Handler -->
 
-<section id="evtDateTimePickerFORMAT"><title>Format Event Handler</title>
+<section id="evtDateTimePickerFORMAT" xreflabel="FORMAT"><title>Format Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>FORMAT</secondary></indexterm>
 <para>
   The event handler for the format event is invoked when the DTP control requests the text to be displayed in a
-  callback (<xref linkend="sctDTPCallback"/>) field.
+  <link linkend="sctDTPCallback">callback</link> field.
 </para>
 <para>
   The programmer must return the text to display for the callback field and the interpreter waits for this return. This
@@ -2391,11 +2388,10 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The <computeroutput>FORMAT</computeroutput>, FORMATQUERY (<xref linkend="evtDateTimePickerFORMATQUERY"/>), and
-    KEYDOWN (<xref linkend="evtDateTimePickerKEYDOWN"/>) event notifications all work together to provide the
-    functionality for call back fields. It is a little difficult to grasp the concepts from small snippets of code, so a
-    complete example program is included in the ooDialog samples:
-    <computeroutput>samples\oodialog\controls\fiscalReports.rex</computeroutput>.
+    The <computeroutput>FORMAT</computeroutput>, <xref linkend="evtDateTimePickerFORMATQUERY"/>, and <xref
+    linkend="evtDateTimePickerKEYDOWN"/> event notifications all work together to provide the functionality for call back
+    fields. It is a little difficult to grasp the concepts from small snippets of code, so a complete example program is
+    included in the ooDialog samples: <computeroutput>samples\oodialog\controls\fiscalReports.rex</computeroutput>.
   </para>
   <para>
     This is an example FORMAT event handler. It comes from the complete
@@ -2434,11 +2430,11 @@ lo word resource ID:       1003
 </section>  <!-- End Format Event Handler -->
 
 
-<section id="evtDateTimePickerFORMATQUERY"><title>FormatQuery Event Handler</title>
+<section id="evtDateTimePickerFORMATQUERY" xreflabel="FORMATQUERY"><title>FormatQuery Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>FORMATQUERY</secondary></indexterm>
 <para>
   The event handler for the format query event is invoked when the DTP control requests the maximum size needed to
-  display a string in a call back field (<xref linkend="sctDTPCallback"/>).
+  display a string in a <link linkend="sctDTPCallback">callback</link> field.
 </para>
 <para>
   The programmer must fill in a <xref linkend="clsSize"/> object with the maximum size needed and return a
@@ -2500,11 +2496,10 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The <computeroutput>FORMATQUERY</computeroutput>, FORMAT (<xref linkend="evtDateTimePickerFORMAT"/>), and
-    KEYDOWN (<xref linkend="evtDateTimePickerKEYDOWN"/>) event notifications all work together to provide the
-    functionality for call back fields. It is a little difficult to grasp the concepts from small snippets of code, so a
-    complete example program is included in the ooDialog samples:
-    <computeroutput>samples\oodialog\controls\fiscalReports.rex</computeroutput>.
+    The <computeroutput>FORMATQUERY</computeroutput>, <xref linkend="evtDateTimePickerFORMAT"/>, and <xref
+    linkend="evtDateTimePickerKEYDOWN"/> event notifications all work together to provide the functionality for call back
+    fields. It is a little difficult to grasp the concepts from small snippets of code, so a complete example program is
+    included in the ooDialog samples: <computeroutput>samples\oodialog\controls\fiscalReports.rex</computeroutput>.
   </para>
   <para>
     The following example FORMATQUERY event handler comes from that example program:
@@ -2544,11 +2539,11 @@ lo word resource ID:       1003
 </section>  <!-- End FormatQuery Event Handler -->
 
 
-<section id="evtDateTimePickerKEYDOWN"><title>KEYDOWN Event Handler</title>
+<section id="evtDateTimePickerKEYDOWN" xreflabel="KEYDOWN"><title>KEYDOWN Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>KEYDOWN</secondary></indexterm>
 <para>
   The event handler for the key down event is invoked when the user types a key in a
-  call (<xref linkend="sctDTPCallback"/>) back field.
+  <link linkend="sctDTPCallback">callback</link> field.
 </para>
 <para>
   The programmer must return a <computeroutput>DateTime</computeroutput> object and the interpreter waits for this
@@ -2630,9 +2625,9 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The <computeroutput>KEYDOWN</computeroutput>, FORMAT (<xref linkend="evtDateTimePickerFORMAT"/>), and
-    FORMATQUERY (<xref linkend="evtDateTimePickerFORMATQUERY"/>) event notifications all work together to provide the
-    functionality for call back fields. It is a little difficult to grasp the concepts from small snippets of code, so a
+    The <computeroutput>KEYDOWN</computeroutput>, <xref linkend="evtDateTimePickerFORMAT"/>, and <xref
+    linkend="evtDateTimePickerFORMATQUERY"/> event notifications all work together to provide the functionality for call
+    back fields. It is a little difficult to grasp the concepts from small snippets of code, so a
     complete example program is included in the ooDialog samples:
     <computeroutput>samples\oodialog\controls\fiscalReports.rex</computeroutput>.
   </para>
@@ -2672,7 +2667,7 @@ lo word resource ID:       1003
 </section>  <!-- End KEYDOWN Event Handler -->
 
 
-<section id="evtDateTimePickerKILLFOCUS"><title>KillFocus Event Handler</title>
+<section id="evtDateTimePickerKILLFOCUS" xreflabel="KILLFOCUS"><title>KillFocus Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>KILLFOCUS</secondary></indexterm>
 <para>
   The event handler for the kill focus event is invoked when the DTP control loses the input focus.
@@ -2726,7 +2721,7 @@ lo word resource ID:       1003
 </section>  <!-- End KillFocus Event Handler -->
 
 
-<section id="evtDateTimePickerSETFOCUS"><title>SetFocus Event Handler</title>
+<section id="evtDateTimePickerSETFOCUS" xreflabel="SETFOCUS"><title>SetFocus Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>SETFOCUS</secondary></indexterm>
 <para>
   The event handler for the set focus event is invoked when the DTP control gains the input focus.
@@ -2779,7 +2774,7 @@ lo word resource ID:       1003
 
 </section>  <!-- End SetFocus Event Handler -->
 
-<section id="evtDateTimePickerUSERSTRING"><title>UserString Event Handler</title>
+<section id="evtDateTimePickerUSERSTRING" xreflabel="USERSTRING"><title>UserString Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>USERSTRING</secondary></indexterm>
 <para>
   The event handler for the USERSTRING event is invoked when the user has finished editing a string in the DTP control.
@@ -3065,7 +3060,7 @@ the dragging.
 <listitem>
 <para>
   The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter
-  waits (<xref linkend="sctCodingEventHandlers"/>) for the reply from the event handler. The default is
+  <link linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler. The default is
   <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. If <emphasis
   role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
   event handling method returns a value.
@@ -3193,8 +3188,8 @@ incorrect.
   <orderedlist>
   <listitem>
   <para>
-    There are some common (<xref linkend="paraWhereToConnectEvents"/>) guidelines for the invocation of the event
-    connection methods.
+    There are some common <xref linkend="paraGuidelinesWhereToConnect"/> place the invocation of the event connection
+    methods.
   </para>
   </listitem>
   <listitem>
@@ -3323,9 +3318,8 @@ it to 0 when a nonnumeric value was entered:
 
   </para>
   <para>
-    The event handling method receives the same arguments as the
-    event (<xref linkend="connectKeyPressEventHandler"/>) handler for the <emphasis
-    role="italic">connectKeyPress</emphasis> method .
+    The event handling method receives the same arguments as the <link linkend="connectKeyPressEventHandler">event</link>
+    handler for the <emphasis role="italic">connectKeyPress</emphasis> method.
   </para>
   <para>
     Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
@@ -3371,8 +3365,8 @@ it to 0 when a nonnumeric value was entered:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example is a variation on the example (<xref linkend="connectKeyPressExample"/>) shown for the
- <xref linkend="mthConnectKeyPressDialogObject"/> method. It connects all the function keys to the
+    The following example is a variation on the <link linkend="connectKeyPressExample">example</link> shown for the
+    <xref linkend="mthConnectKeyPressDialogObject"/> method. It connects all the function keys to the
     same method and then determines what action to take by examining which key was pressed.
 
   <programlisting>
@@ -3468,8 +3462,8 @@ it to 0 when a nonnumeric value was entered:
   <listitem>
   <para>
     Note that the Windows help event notification connected by this method is not the same as the help <emphasis
-    role="bold">command</emphasis> event notification automatically (<xref linkend="sctStandardEventMethods"/>)
-    connected when a dialog object is instantiated.
+    role="bold">command</emphasis> event notification <link linkend="sctStandardEventMethods">automatically</link> connected
+    when a dialog object is instantiated.
   </para>
   <para>
     The method connected to the Help event will receive the following four arguments in the order listed:
@@ -4056,8 +4050,8 @@ incorrect.
 <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
 <listitem>
 <para>
-  Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-  role="italic">connectListBoxEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>)
+  Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+  role="italic">connectListBoxEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
   to code event handlers are included in the documentation for the
   <xref linkend="clsEventNotification"/> class.
 </para>
@@ -4362,7 +4356,7 @@ incorrect.
   </listitem></varlistentry>
 </variablelist>
 
-<section id="evtListViewCLICK"><title>Click / Double Click Event Handler</title>
+<section id="evtListViewCLICK" xreflabel="CLICK"><title>Click / Double Click Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>CLICK</secondary></indexterm>
 <indexterm><primary>ListView Event</primary><secondary>DBLCLK</secondary></indexterm>
 <para>
@@ -4420,7 +4414,7 @@ incorrect.
 </variablelist>
 </section>
 
-<section id="evtListViewCHECKBOXCHANGED"><title>CheckBoxChanged Event Handler</title>
+<section id="evtListViewCHECKBOXCHANGED" xreflabel="CHECKBOXCHANGED"><title>CheckBoxChanged Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>CHECKBOXCHANGED</secondary></indexterm>
 <para>
   The event handler for the checkbox changed event is invoked when the user checks or unchecks a checkbox in the
@@ -4492,7 +4486,7 @@ incorrect.
 
 </section>  <!-- End CheckBoxChanged Event Handler -->
 
-<section id="evtListViewSELECTCHANGE"><title>SelectChange Event Handler</title>
+<section id="evtListViewSELECTCHANGE" xreflabel="SELECTCHANGE"><title>SelectChange Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>SELECTCHANGE</secondary></indexterm>
 <para>
   The event handler for the selection changed event is invoked when the selection state of an item changes. The method
@@ -4531,7 +4525,7 @@ incorrect.
 </variablelist>
 </section>
 
-<section id="evtListViewFOCUSCHANGED"><title>FocusChanged Event Handler</title>
+<section id="evtListViewFOCUSCHANGED" xreflabel="FOCUSCHANGED"><title>FocusChanged Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>FOCUSCHANGED</secondary></indexterm>
 <para>
   The event handler for the focus changed event is invoked when an item gains or loses focus. The method receives three
@@ -4569,7 +4563,7 @@ incorrect.
 </variablelist>
 </section>
 
-<section id="evtListViewSELECTFOCUSCHANGED"><title>SelectFocusChanged Event Handler</title>
+<section id="evtListViewSELECTFOCUSCHANGED" xreflabel="SELECTFOCUSCHANGED"><title>SelectFocusChanged Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>SELECTFOCUSCHANGED</secondary></indexterm>
 <para>
   The event handle for the selection or focus changed event is invoked when either the selection or the focus of an item
@@ -4630,7 +4624,7 @@ incorrect.
 
 </section>
 
-<section id="evtListViewCOLUMNCLICK"><title>ColumnClick Event Handler</title>
+<section id="evtListViewCOLUMNCLICK" xreflabel="COLUMNCLICK"><title>ColumnClick Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>COLUMNCLICK</secondary></indexterm>
 <para>
   The event-handling method connected to COLUMNCLICK receives two arguments: the control ID of the list-view control and
@@ -4648,7 +4642,7 @@ incorrect.
 
 </section>
 
-<section id="evtListViewKEYDOWN"><title>KeyDown Event Handler</title>
+<section id="evtListViewKEYDOWN" xreflabel="KEYDOWN"><title>KeyDown Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>KEYDOWN</secondary></indexterm>
 <para>
   The event-handling method connected to KEYDOWN receives two arguments: the control ID of the list-view control and the
@@ -4668,7 +4662,7 @@ incorrect.
 
 </section>
 
-<section id="evtListViewBEGINDRAG"><title>BeginDrag Event Handler</title>
+<section id="evtListViewBEGINDRAG" xreflabel="BEGINDRAG"><title>BeginDrag Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>BEGINDRAG</secondary></indexterm>
 
 <para>
@@ -4687,7 +4681,7 @@ incorrect.
 </programlisting>
 </section>
 
-<section id="evtListViewBEGINRDRAG"><title>BeginRDrag Event Handler</title>
+<section id="evtListViewBEGINRDRAG" xreflabel=""><title>BeginRDrag Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
 
 <para>
@@ -4755,7 +4749,7 @@ incorrect.
            Sent by a month calendar control to request information about how individual days should be displayed. This
            notification message is only sent if the month calendar control has the DAYSTATE style. The <emphasis
            role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
-           return (<xref linkend="sctCodingEventHandlers"/>) a reply.
+           <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>RELEASED</term>
@@ -4822,8 +4816,8 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-    role="italic">connectMonthCalendarEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>)
+    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+    role="italic">connectMonthCalendarEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
     to code event handlers are included in the documentation for the
     <xref linkend="clsEventNotification"/> class.
   </para>
@@ -4927,7 +4921,7 @@ incorrect.
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle"/>) for the month calendar control requesting the information.
+      The window <xref linkend="defHandle"/> for the month calendar control requesting the information.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4980,7 +4974,7 @@ incorrect.
 </section>  <!-- End GetDayState Event Handler -->
 
 
-<section id="evtMonthCalendarRELEASED"><title>Released Event Handler</title>
+<section id="evtMonthCalendarRELEASED" xreflabel=""><title>Released Event Handler</title>
 <indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>RELEASED</tertiary></indexterm>
 
 <programlisting>
@@ -5014,7 +5008,7 @@ incorrect.
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle"/>) for the month calendar control sending the notification
+      The window <xref linkend="defHandle"/> for the month calendar control sending the notification
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5030,7 +5024,7 @@ incorrect.
 </section>  <!-- End Released Event Handler -->
 
 
-<section id="evtMonthCalendarSELCHANGED"><title>SelChanged Event Handler</title>
+<section id="evtMonthCalendarSELCHANGED" xreflabel="SELCHANGED"><title>SelChanged Event Handler</title>
 <indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>SELCHANGED</tertiary></indexterm>
 
 <programlisting>
@@ -5049,7 +5043,7 @@ incorrect.
   notification at regular intervals so that the month calendar control can respond to date changes.
 </para>
 <para>
-  The notification is similar to the SELECT (<xref linkend="evtMonthCalendarSELECT"/>) notification, except that the SELECT
+  The notification is similar to the <xref linkend="evtMonthCalendarSELECT"/> notification, except that the SELECT
   notification is only sent when the user explicitly changes the date. This notification is sent when the selected date
   is changed for any reason.
 </para>
@@ -5089,7 +5083,7 @@ incorrect.
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle"/>) for the month calendar control sending the notification.
+      The window <xref linkend="defHandle"/> for the month calendar control sending the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5105,7 +5099,7 @@ incorrect.
 
 </section>  <!-- End SelChanged Event Handler -->
 
-<section id="evtMonthCalendarSELECT"><title>Select Event Handler</title>
+<section id="evtMonthCalendarSELECT" xreflabel="SELECT"><title>Select Event Handler</title>
 <indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>SELECT</tertiary></indexterm>
 
 <programlisting>
@@ -5118,9 +5112,8 @@ incorrect.
 </programlisting>
 
 <para>
-  The SELECT event handler is invoked when the user explicitly selects a new date. Contrast this with the
-  SELCHANGE (<xref linkend="evtMonthCalendarSELCHANGED"/>) event handler which is invoked when the selected date is changed for any
-  reason.
+  The SELECT event handler is invoked when the user explicitly selects a new date. Contrast this with the <xref
+  linkend="evtMonthCalendarSELCHANGED"/> event handler which is invoked when the selected date is changed for any reason.
 </para>
 <para>
   The interpreter waits, or does not wait, for the reply as specified by the programmer in the
@@ -5158,7 +5151,7 @@ incorrect.
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle"/>) for the month calendar control sending the notification.
+      The window <xref linkend="defHandle"/> for the month calendar control sending the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5174,7 +5167,7 @@ incorrect.
 
 </section>  <!-- End Select Event Handler -->
 
-<section id="evtMonthCalendarVIEWCHANGE"><title>ViewChange Event Handler</title>
+<section id="evtMonthCalendarVIEWCHANGE" xreflabel="VIEWCHANGE"><title>ViewChange Event Handler</title>
 <indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>VIEWCHANGE</tertiary></indexterm>
 
 <programlisting>
@@ -5226,7 +5219,7 @@ incorrect.
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle"/>) for the month calendar control sending the notification
+      The window <xref linkend="defHandle"/> for the month calendar control sending the notification
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5575,10 +5568,10 @@ incorrect.
     <varlistentry><term>synch [optional]</term>
     <listitem>
     <para>
-      A boolean value that specifies if the interpreter should invoke the event handler
-      directly (<xref linkend="ovvEventsDirectReply"/>) or not. The default is <computeroutput>.true</computeroutput>, see
-      the remarks. If this behavior is not desired, the <emphasis role="italic">synch</emphasis> argument can be used to
-      specify that the interpreter should not wait for a reply.
+      A boolean value that specifies if the interpreter should invoke the event handler <xref
+      linkend="ovvEventsDirectReply"/>, or not. The default is <computeroutput>.true</computeroutput>, see the remarks. If
+      this behavior is not desired, the <emphasis role="italic">synch</emphasis> argument can be used to specify that the
+      interpreter should not wait for a reply.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5669,9 +5662,9 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Example 2:</emphasis></term>
   <listitem>
   <para>
-    This example is pulled from the File Viewer (<xref linkend="exampleFileViewer"/>) example at the end of the
-    &quot;Appearance and Behavior Methods&quot; section. A complete working example is presented there that uses a
-    number of the dialog methods.
+    This example is pulled from the File Viewer <link linkend="exampleFileViewer">example</link> at the end of the
+    &quot;Appearance and Behavior Methods&quot; section. A complete working example is presented there that uses a number of
+    the dialog methods.
 
 <programlisting>
 <![CDATA[
@@ -5768,14 +5761,14 @@ incorrect.
     of the dialog being resized and, if desired, can change its size or position.
   </para>
   <para>
-    Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-    role="italic">connectResizing</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>)
+    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+    role="italic">connectResizing</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
     to code event handlers are included in the documentation for the
     <xref linkend="clsEventNotification"/> class.
   </para>
   <para>
     The interpreter invokes the event handler directly and waits in the window
-    message (<xref linkend="ovvWindowMessages"/>) processing loop for the return from the event handler. Connecting the
+    <link linkend="ovvWindowMessages">message</link> processing loop for the return from the event handler. Connecting the
     sizing event requires that the programmer reply to the event from the event handler in a timely manner.
   </para>
   </listitem></varlistentry>
@@ -6077,7 +6070,7 @@ incorrect.
   <listitem>
   <para>
     The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter
-    waits (<xref linkend="sctCodingEventHandlers"/>) for the reply from the event handler. The default is
+    <link linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler. The default is
     <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. If <emphasis
     role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
     event handling method returns a value.
@@ -6121,7 +6114,7 @@ incorrect.
     raised.
   </para>
   <para>
-    Common guidelines on how (<xref linkend="sctCodingEventHandlers"/>) to code event handlers are included in the
+    Common guidelines on <link linkend="sctCodingEventHandlers">how</link> to code event handlers are included in the
     documentation for the <xref linkend="clsEventNotification"/> class.
   </para>
   <para>
@@ -6157,7 +6150,7 @@ incorrect.
     omitted, the ooDialog framework automatically connects the event to the <emphasis
     role="italic">onPosition</emphasis> method. The event handler extracts the new position from the notification
     arguments and sets the position for the scroll bar. It also displays the new position and the event type. The
-    <computeroutput>ScrollBar</computeroutput> class provides the THUMBPOSITION (<xref linkend="sctSBEventCode"/>)
+    <computeroutput>ScrollBar</computeroutput> class provides the <link linkend="sctSBEventCode">THUMBPOSITION</link>
     constant, whose value is the value of the POSITION event code.
 
 <programlisting>
@@ -6224,7 +6217,7 @@ incorrect.
     <varlistentry><term>willReply [optional]</term>
     <listitem>
     <para>
-      The default behavior is for the interpreter to wait in the window message (<xref linkend="ovvWindowMessages"/>)
+      The default behavior is for the interpreter to wait in the window <link linkend="ovvWindowMessages">message</link>
       processing loop for the return from the event handler, (the default for <emphasis
       role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>). However, the operating system
       ignores the return from this event notification. Specifying <computeroutput>.false</computeroutput> changes the
@@ -6349,9 +6342,9 @@ incorrect.
   inform the dialog that an event has occurred with regard to the static control.
 </para>
 <para>
-  For user defined dialogs use the NOTIFY style keyword in the create... (<xref linkend="sctCreateStaticControls"/>)
-  static control methods when the control is defined. For dialogs created from a compiled resource or a resource script
-  file use the SS_NOTIFY style when defining the control in a resource editor.
+  For user defined dialogs use the NOTIFY style keyword in the <link linkend="sctCreateStaticControls">create...</link>
+  static control methods when the control is defined. For dialogs created from a compiled resource or a resource script file
+  use the SS_NOTIFY style when defining the control in a resource editor.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6440,7 +6433,7 @@ incorrect.
   <orderedlist>
   <listitem>
   <para>
-    There are some common (<xref linkend="paraWhereToConnectEvents"/>) guidelines for the invocation of the event
+    There are some common <xref linkend="paraGuidelinesWhereToConnect"/> place the invocation of the event
     connection methods.
   </para>
   </listitem>
@@ -6576,7 +6569,7 @@ incorrect.
       <listitem>
       <para>
         The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter
-        waits (<xref linkend="sctCodingEventHandlers"/>) for the reply from the event handler. The default is
+        <link linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler. The default is
         <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. If <emphasis
         role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
         event handling method returns a value.
@@ -6606,8 +6599,8 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-    role="italic">connectTabEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>)
+    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+    role="italic">connectTabEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
     to code event handlers are included in the documentation for the
     <xref linkend="clsEventNotification"/> class.
   </para>
@@ -6975,8 +6968,8 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-    role="italic">connectTreeViewEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>)
+    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+    role="italic">connectTreeViewEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
     to code event handlers are included in the documentation for the
     <xref linkend="clsEventNotification"/> class.
   </para>
@@ -7114,7 +7107,7 @@ trackbar position by extracting the high-oder word. Example:
 
 <para>
   The <emphasis role="italic">connectUpDownEvent</emphasis> method connects an <xref linkend="ovvEvents"/>
-  notification message from a up-down (<xref linkend="clsUpDown"/>) control to a method in the Rexx dialog.
+  notification message from a <xref linkend="clsUpDown"/> control to a method in the Rexx dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7141,7 +7134,7 @@ trackbar position by extracting the high-oder word. Example:
         <para>
            Sent when the position of the control is about to change. This happens when the user requests a change in the
            value by pressing the control's up or down arrow. The event handler must
-           return (<xref linkend="sctCodingEventHandlers"/>) a reply for this event. The interpreter waits for that reply.
+           <link linkend="sctCodingEventHandlers">return</link> a reply for this event. The interpreter waits for that reply.
         </para>
         <para>
           The DELTAPOS notification is sent before the scroll message which actually changes the control's position.
@@ -7172,8 +7165,8 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common guidelines on where (<xref linkend="paraWhereToConnectEvents"/>) to invoke the <emphasis
-    role="italic">connectUpDownEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers"/>) to
+    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+    role="italic">connectUpDownEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link> to
     code event handlers are included in the documentation for the
     <xref linkend="clsEventNotification"/> class.
   </para>
@@ -7195,7 +7188,7 @@ trackbar position by extracting the high-oder word. Example:
 </variablelist>
 
 
-<section id="evtUpDownDELTAPOS"><title>DeltaPos Event Handler</title>
+<section id="evtUpDownDELTAPOS" xreflabel="DELTAPOS"><title>DeltaPos Event Handler</title>
 <indexterm><primary>UpDown class</primary><secondary>events</secondary><tertiary>DELTAPOS</tertiary></indexterm>
 
 <programlisting>
@@ -7247,7 +7240,7 @@ trackbar position by extracting the high-oder word. Example:
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      The window handle (<xref linkend="defHandle"/>) of the up-down control whose position is about to change.
+      The window <xref linkend="defHandle"/> of the up-down control whose position is about to change.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7483,8 +7476,8 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example is a variation on the example (<xref linkend="connectKeyPressExample"/>) shown for the
- <xref linkend="mthConnectKeyPressDialogObject"/> method. It builds on the fictitious customer
+    The following example is a variation on the <link linkend="connectKeyPressExample">example</link> shown for the
+    <xref linkend="mthConnectKeyPressDialogObject"/> method. It builds on the fictitious customer
     order system.  The F7 key saves the completed invoice into the system and enters a different phase of the companies
     business process. At this point (for whatever fictitious business reason) the fields can no longer be cleared and
     the user is not allowed to look up customer or product information.  But, the user may still need to print the

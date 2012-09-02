@@ -366,7 +366,7 @@
 </programlisting>
 
 <para>
-  The window handle (<xref linkend="defHandle"/>) of the underlying window.
+  The window <xref linkend="defHandle"/> of the underlying window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">hwnd get:</emphasis></term>
@@ -817,7 +817,7 @@ The dialog unit height of the button is: 11
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the window handle (<xref linkend="defHandle"/>) of the first child window meeting the seach criteria. If
+    Returns the window <xref linkend="defHandle"/> of the first child window meeting the seach criteria. If
     the point lies within the parent window, but not within a child window meeting the search criteria, then the handle
     of the parent window is returned. If the point lies outside of the parent window, then 0 is returned.
   </para>
@@ -840,7 +840,7 @@ The dialog unit height of the button is: 11
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -930,7 +930,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -972,7 +972,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1032,7 +1032,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1279,7 +1279,7 @@ if self~isVisible then self~disable
     Raises syntax errors for incorrect usage.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable back to zero. However, the operating
+    Sets the <xref linkend="dotSystemErrorCode"/> back to zero. However, the operating
     system does not set the error code for any of the APIs used by this method, so the variable will alwasy be zero
     after invoking this method.
   </para>
@@ -1327,7 +1327,7 @@ self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
     Using this method before the underlying dialog is created does nothing.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1431,7 +1431,7 @@ if self~isValidLastName(lastName) then self~newEdit(IDC_EDIT_FIRSTNAME)~enable
 </programlisting>
 
 <para>
-  Returns the window handle (<xref linkend="defHandle"/>) of the current foreground window.
+  Returns the window <xref linkend="defHandle"/> of the current foreground window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1503,7 +1503,7 @@ separated by blanks.
   The flags are returned in their numeric format. This function is very similar to the
  <xref linkend="mthGetStyleRaw"/>() method, allowing the programmer to get the extended window flags.
   The numeric value of the extended style flags can be looked up using the
-  Windows <xref linkend="defWindowsDoc"/> and the Platform SDK (<xref linkend="defPlatformSDK"/>).
+  Windows <xref linkend="defWindowsDoc"/> and the Platform <xref linkend="defPlatformSDK"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1681,7 +1681,7 @@ self~move(px - 10, py - 10)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method has no effect if the underlying dialog has not yet been created.
@@ -1747,7 +1747,7 @@ self~move(px - 10, py - 10)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method has no effect if the underlying dialog has not yet been created.
@@ -1891,7 +1891,7 @@ height = bottom - top
   are returned in their numeric format.  This allows the programmer to determine the current style of any dialog or
   control.  However, the programmer needs to be able to look up the numeric value of the window style flags to make use
   of this functionality. This can be done using the Windows <xref linkend="defWindowsDoc"/> and the
-  Platform SDK (<xref linkend="defPlatformSDK"/>).
+  Platform <xref linkend="defPlatformSDK"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1983,7 +1983,7 @@ Tree-view Control styles
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Using this method before the underlying dialog is created will fail.
@@ -2147,7 +2147,7 @@ stFont2~setRect(r)
   </para>
   <para>
     Part of the purpose of this method is to provide backwards compatibility to the
-    deprecated (<xref linkend="ovvDeprecated"/>) <emphasis role="italic">getTextSize</emphasis> method. This is the
+    <xref linkend="ovvDeprecated"/> <emphasis role="italic">getTextSize</emphasis> method. This is the
     reason for the rather convulted arguments. In general, the Rexx programmer should always use the
  <xref linkend="mthGetTextSizePx"/> method.
   </para>
@@ -2547,7 +2547,7 @@ Generic form:
 
 <para>
   Moves, (repositions,) the window to the point specified. The new position is specified in pixels and is relative to
-  the top, left corner of the owning window's client (<xref linkend="defClientArea"/>) area. For a dialog this is the
+  the top, left corner of the owning window's client <xref linkend="defClientArea"/>. For a dialog this is the
   screen and for a dialog control it is the dialog's client area.
 </para>
 <variablelist>
@@ -2624,7 +2624,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -2678,7 +2678,7 @@ Generic form:
 
 <para>
   Moves, (repositions,) the window to the point specified. The new position is specified in pixels and is relative to
-  the top, left corner of the owning window's client (<xref linkend="defClientArea"/>) area. For a dialog this is the
+  the top, left corner of the owning window's client <xref linkend="defClientArea"/>. For a dialog this is the
   screen and for a dialog control it is the dialog's client area.
 </para>
 <variablelist>
@@ -2893,7 +2893,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -2945,7 +2945,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">redraw</emphasis> method immediately redraws the entire window and all its child windows,
-  recursively, including the non-client (<xref linkend="defClientArea"/>) area of the window(s). Contrast this with
+  recursively, including the non-client <xref linkend="defClientArea"/> of the window(s). Contrast this with
   some of the other draw methods such as <xref linkend="mthRedrawClient"/> or
  <xref linkend="mthDraw"/>, which only redraw the <emphasis role="italic">client</emphasis> area and not the
   child windows.
@@ -2957,7 +2957,7 @@ Generic form:
     Using this method before the underlying dialog is created does nothing.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3013,7 +3013,7 @@ Generic form:
     Using this method before the underlying dialog is created does nothing.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3294,7 +3294,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -3388,7 +3388,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3521,7 +3521,7 @@ Generic form:
   <listitem>
   <para>
     This method returns the response as a whole number. This will not be usable if the response is a window
-    handle (<xref linkend="defHandle"/>). For those cases, use the
+    <xref linkend="defHandle"/>. For those cases, use the
  <xref linkend="mthSendMessageHandle"/>() method.
   </para>
   <para>
@@ -3532,7 +3532,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
@@ -3571,7 +3571,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
 
 <para>
   Sends a Windows message to the underlying window this object represents and
-  returns the response as a handle (<xref linkend="defHandle"/>).
+  returns the response as a <xref linkend="defHandle"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3621,7 +3621,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
@@ -3824,7 +3824,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -3876,7 +3876,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     Using this method before the underlying dialog is created will fail.
@@ -4244,7 +4244,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -4638,7 +4638,7 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
     This method can not be used if the underlying dialog has not yet been created.
@@ -4726,7 +4726,7 @@ Generic form:
     Using this method before the underlying dialog is created does nothing.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4827,14 +4827,14 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable.
+    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     This example uses <emphasis role="italic">windowRect</emphasis> to get the position of a tab control on the screen
-    and then translates those coordinates to its position in the client (<xref linkend="defClientArea"/>) area of the
+    and then translates those coordinates to its position in the client <xref linkend="defClientArea"/> of the
     dialot.
 <programlisting>
 <![CDATA[

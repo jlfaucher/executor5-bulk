@@ -78,8 +78,8 @@
 </para>
 <para>
   The <computeroutput>UpDown</computeroutput> class provides methods to work with and manipulate the underlying Windows
-  up-down dialog control which it represents. It is a concrete subclass of the dialog control
-  object (<xref linkend="chpDialogControlObject"/>) and therefore has all methods of the of the dialog control object.
+  up-down dialog control which it represents. It is a concrete subclass of the dialog
+  <xref linkend="chpDialogControlObject"/> object and therefore has all methods of the of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -88,7 +88,7 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newUpDown (<xref linkend="tmthNewUpDown"/>)() method of the
+    Use the <xref linkend="tmthNewUpDown"/> method of the
     <xref linkend="chpDialogObject"/> object to retrieve a new UpDown object.
   </para>
   </listitem></varlistentry>
@@ -200,11 +200,10 @@
 </section>
 
 
-<section id="tmthNewUpDown"><title>newUpDown (dialog object method)</title>
+<section id="tmthNewUpDown" xreflabel="newUpDown"><title>newUpDown (dialog object method)</title>
 <para>
   UpDown objects can not be instantiated by the programmer from Rexx code. Rather an UpDown object is obtained by using
-  the <xref linkend="mthNewUpDown"/>() method of the dialog
-  object (<xref linkend="chpDialogObject"/>). The syntax is:
+  the <xref linkend="mthNewUpDown"/> method of the <xref linkend="chpDialogControlObject"/> object. The syntax is:
 <programlisting>
 <![CDATA[
 >>-newUpDown(--id--)-----------------------------><
@@ -215,11 +214,12 @@
 </section>  <!-- End newUpDown() [PlainBaseDialog method] -->
 
 
-<section id="tmthCreateUpDown"><title>createUpDown (UserDialog method)</title>
+<section id="tmthCreateUpDown" xreflabel="createUpDown"><title>createUpDown (UserDialog method)</title>
 <para>
   An UpDown object can be added to the dialog template for a <xref linkend="clsUserDialog"/> dialog
-  through the <xref linkend="mthCreateUpDown"/>() method. The basic syntax is:
-<programlisting> <![CDATA[
+  through the <xref linkend="mthCreateUpDown"/> method. The basic syntax is:
+<programlisting>
+<![CDATA[
 >>--createUpDown(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
                                            +-,-style-+  +-,-attributeName-+
 
@@ -229,13 +229,13 @@
 </section>  <!-- End UserDialog::createUpDown() [UserDialog method] -->
 
 
-<section id="tmthConnectUpDownEvent"><title>connectUpDownEvent (dialog object method)</title>
+<section id="tmthConnectUpDownEvent" xreflabel="connectUpDownEvent"><title>connectUpDownEvent (dialog object method)</title>
 <para>
-  To connect event notifications from an up-down object use the
- <xref linkend="mthConnectUpDownEvent"/>() method of the
+  To connect event notifications from an up-down object use the<xref linkend="mthConnectUpDownEvent"/> method of the
   <xref linkend="chpDialogObject"/> object. The basic syntax is:
 
-<programlisting> <![CDATA[
+<programlisting>
+<![CDATA[
 >>-connectUpDownEvent(--id--,--event--+----------------+--)------------><
                                       +--,-methodName--+
 
@@ -256,7 +256,7 @@
 </programlisting>
 
 <para>
-  Constructs the (proper) reply object for a DELTAPOS (<xref linkend="evtUpDownDELTAPOS"/>) up-down
+  Constructs the (proper) reply object for a <xref linkend="evtUpDownDELTAPOS"/> up-down
   <xref linkend="ovvEvents"/> notification.
 </para>
 <variablelist>
@@ -497,7 +497,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <xref linkend="dotSystemErrorCode"/> variable. See the remarks section.
+    Sets the <xref linkend="dotSystemErrorCode"/>. See the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
