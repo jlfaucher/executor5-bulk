@@ -3790,7 +3790,79 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 <indexterm><primary>custom draw</primary><secondary>overview</secondary></indexterm>
 
 <para>
+  All windows in the Windows operating system periodically paint and erase themselves based on messages received from the
+  system or other applications. This process of painting or erasing is called a paint cycle. The common controls
+  that support custom draw send <xref linkend="ovvEvents"/> notifications at specific points while the control is being
+  drawn. The notifications describe drawing operations that apply to the entire control as well as drawing operations
+  specific to items within the control.
+</para>
+<para>
+  Part of the the information sent in the custom draw notification is what stage of paint cycle the control is in. The stage
+  will either be part of the overall painting of the control or part of the painting of an item the control contains. The
+  stage is identified by a constant value supplied by the <xref linkend="clsCustomDraw"/> class. The possible draw stages are
+  described in the following table:
 
+<table id="tblCustomDrawStage" frame="all"> <title>Stages of Custom Draw</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
+<thead>
+<row>
+<entry>Constant Value</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Global Stages</emphasis></entry>
+<entry align="center"><emphasis role="bold">Draw Stages</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_PREPAINT"/></entry>
+<entry>This stage is before the paint cycle begins.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_POSTPAINT"/></entry>
+<entry>This stage is after the paint cycle is complete.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_PREERASE"/></entry>
+<entry>This stage is before the erase cycle begins. </entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_POSTERASE"/></entry>
+<entry>This stage is after the erase cycle is complete.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Item Specific</emphasis></entry>
+<entry align="center"><emphasis role="bold">Draw Stages</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_ITEMPREPAINT"/></entry>
+<entry>This stage is before an item is drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_ITEMPOSTPAINT"/></entry>
+<entry>This stage is after an item has been drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_ITEMPREERASE "/></entry>
+<entry>This stage is before an item is erased.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_ITEMPOSTERASE"/></entry>
+<entry>This stage is after an item has been erased.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_SUBITEMPREPAINT"/></entry>
+<entry>This stage is before an subitem is drawn. Only used in <xref linkend="clsListView"/> controls in report mode.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_SUBITEMPOSTPAINT"/></entry>
+<entry>This stage is after an subitem has been drawn. Only used in list-view controls in report mode.</entry>
+</row>
+</tbody></tgroup>
+</table>
 </para>
 
 
@@ -3877,25 +3949,103 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 </para>
 
 <variablelist>
-  <varlistentry><term><emphasis role="bold">CDRF_DODEFAULT</emphasis></term>
+  <varlistentry id="cnstCDDS_PREPAINT" xreflabel="CDDS_PREPAINT"><term>CDDS_PREPAINT</term>
   <listitem>
   <para>
     xxx and xxx sss.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">CDRF_NEWFONT</emphasis></term>
+  <varlistentry id="cnstCDDS_POSTPAINT" xreflabel="CDDS_POSTPAINT"><term>CDDS_POSTPAINT</term>
   <listitem>
   <para>
     xxx and xxx sss.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">CDRF_SKIPDEFAULT</emphasis></term>
+  <varlistentry id="cnstCDDS_PREERASE" xreflabel="CDDS_PREERASE"><term>CDDS_PREERASE</term>
   <listitem>
   <para>
     xxx and xxx sss.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">CDRF_DOERASE</emphasis></term>
+  <varlistentry id="cnstCDDS_POSTERASE" xreflabel="CDDS_POSTERASE"><term><emphasis role="bold">CDDS_POSTERASE</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_ITEMPREPAINT " xreflabel="CDDS_ITEMPREPAINT "><term><emphasis role="bold">CDDS_ITEMPREPAINT </emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_ITEMPOSTPAINT" xreflabel="CDDS_ITEMPOSTPAINT"><term><emphasis role="bold">CDDS_ITEMPOSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_ITEMPREERASE" xreflabel="CDDS_ITEMPREERASE"><term><emphasis role="bold">CDDS_ITEMPREERASE</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_ITEMPOSTERASE" xreflabel="CDDS_ITEMPOSTERASE"><term><emphasis role="bold">CDDS_ITEMPOSTERASE</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_SUBITEMPREPAINT" xreflabel="CDDS_SUBITEMPREPAINT"><term><emphasis role="bold">CDDS_SUBITEMPREPAINT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_SUBITEMPOSTPAINT" xreflabel="CDDS_SUBITEMPOSTPAINT"><term><emphasis role="bold">CDDS_SUBITEMPOSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NOTIFYITEMDRAW " xreflabel="CDRF_NOTIFYITEMDRAW "><term><emphasis role="bold">CDRF_NOTIFYITEMDRAW</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NOTIFYPOSTPAINT " xreflabel="CDRF_NOTIFYPOSTPAINT "><term><emphasis role="bold">CDRF_NOTIFYPOSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnst" xreflabel=""><term><emphasis role="bold"></emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_DODEFAULT" xreflabel="CDRF_DODEFAULT"><term><emphasis role="bold">CDRF_DODEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="CDRF_NEWFONT" xreflabel="CDRF_NEWFONT"><term><emphasis role="bold">CDRF_NEWFONT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="CDRF_SKIPDEFAULT" xreflabel="CDRF_SKIPDEFAULT"><term><emphasis role="bold">CDRF_SKIPDEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="CDRF_DOERASE" xreflabel="CDRF_DOERASE"><term><emphasis role="bold">CDRF_DOERASE</emphasis></term>
   <listitem>
   <para>
     xxx and xxx sss.
