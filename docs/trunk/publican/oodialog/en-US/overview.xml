@@ -753,11 +753,11 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 <para id="ovvEventsDirectReply" xreflabel="directly">
   Event notification messages in Windows fall into two groups, messages where the reply is ignored and messages where
-  the reply is significant. Prior to the introduction of the C++ (<link linkend="sctHistory">native</link> APIs, there was
+  the reply is significant. Prior to the introduction of the C++ <link linkend="sctHistory">native</link> APIs, there was
   <emphasis role="bold">no way</emphasis> in ooDialog to <emphasis role="italic">directly</emphasis> reply to the
   notification message. This placed a severe restriction on ooDialog programs. Many of the features of the operating
   system could not be used with this restriction. For instance, when a user selects a new tab in a
- <xref linkend="clsTab"/> control, the operating system sends a SELCHANGING event notification before the selected
+  <xref linkend="clsTab"/> control, the operating system sends a SELCHANGING event notification before the selected
   tab is changed. The programmer can allow or prevent the change by replying true or false to the notification message.
 </para>
 <para>
@@ -786,7 +786,7 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   The <emphasis role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes of the
   <xref linkend="chpDialogObject"/> object were intended to provide a way to convert between
-  <xref linkend="ovvWindowMessages"/> and <xref linkend="defDialogUnit"/>, and vice versa. Although their
+  <xref linkend="defPixel"/>s and <xref linkend="defDialogUnit"/>, and vice versa. Although their
   values may have been correct when ooDialog was originally <link linkend="sctHistory">designed</link>, in almost all cases
   the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is not correct.
 </para>
