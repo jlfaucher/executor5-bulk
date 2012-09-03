@@ -1167,7 +1167,7 @@ if success then dlg~execute
     The height of the control in dialog units.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term id="idArgument"><emphasis role="bold">id</emphasis></term>
+  <varlistentry><term id="idArgument" xreflabel="resource ID"><emphasis role="bold">id</emphasis></term>
   <listitem>
   <para id="paraResourceIDs" xreflabel="resource ID">
     All dialog controls have a numeric <xref linkend="defResourceId"/>. The ooDialog framework is designed to accept a
@@ -1214,14 +1214,13 @@ if success then dlg~execute
   internally handles the drawing of the button.
 </para>
 <para>
-  <emphasis role="bold">Note:</emphasis> On Windows XP and later, using an <xref linkend="mthSetImageList"/>
-  list with the button will produce a better overall appearance in the dialog. Using an image list gives the button the
-  same look and feel as other buttons on the system. The buttons produced using the <emphasis
-  role="italic">createBitmapButton</emphasis> method and the
- <xref linkend="mthInstallBitmapButton"/>() have the look and feel of Windows 98 buttons.  When an
-  image list is used with a button, the other button styles, such as the NOTIFY style can still be used. Whereas with
-  the bitmap button the other button styles can not be used.  The image list button supports all the features of the
-  bitmap button, and more.
+  <emphasis role="bold">Note:</emphasis> On Windows XP and later, using an <link linkend="mthSetImageList">image</link> list
+  with the button will produce a better overall appearance in the dialog. Using an image list gives the button the same look
+  and feel as other buttons on the system. The buttons produced using the <emphasis
+  role="italic">createBitmapButton</emphasis> and the <xref linkend="mthInstallBitmapButton"/> methods have the look and feel
+  of Windows 98 buttons.  When an image list is used with a button, the other button styles, such as the NOTIFY style can
+  still be used. Whereas with the bitmap button the other button styles can not be used.  The image list button supports all
+  the features of the bitmap button, and more.
 </para>
 <para>
   The bitmap arguments can be specified by either a file name, a bitmap handle, or the numeric resource ID of a bitmap
@@ -1264,7 +1263,7 @@ if success then dlg~execute
       <emphasis role="bold">Note:</emphasis> The 3.2.0 ooDialog documentation incorrectly stated you could use the
       NOTIFY style keyword. Do not do this. Owner-drawn buttons should not use any other button styles than OWNER or
       DEFAULT, and the OWNER style is automatically added by the ooDialog framework. The result of using the
-      NOTIFY style will be less than satisfactory. A button that uses an image <xref linkend="mthSetImageList"/>
+      NOTIFY style will be less than satisfactory. A button that uses an image <link linkend="mthSetImageList">list</link>
       allows the use of the NOTIFY style and will give a better overall look to the dialog.  Using a button
       with an image list should be the preferred method for non-text buttons.
     </para>
