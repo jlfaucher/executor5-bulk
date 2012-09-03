@@ -1818,8 +1818,8 @@
   This method changes the default dialog font used for all dialogs. The default dialog font is used whenever a
   dynamically defined dialog template does not specify a font. Since it is very unusual for a resource script to not
   specify a font, this mostly effects the <xref linkend="clsUserDialog"/> classes. Binary compiled
-  dialog templates (<xref linkend="clsResDialog"/>) can not be changed, so the default dialog font has no meaning for a
-  ResDialog.
+  dialog templates, subclasses of the <xref linkend="clsResDialog"/> class, can not be changed, so the default dialog font
+  has no meaning for a <computeroutput>ResDialog</computeroutput>.
 </para>
 <para>
   Currently the default font is <computeroutput>MS Shell Dlg</computeroutput> with a size of
@@ -2064,9 +2064,10 @@ WindowBase::<xref linkend="atrFactorY"/>
   will be used to create the dialog. This font is used in a <xref linkend="clsUserDialog"/> when the font is not
   specified in the <xref linkend="mthCreate"/>() or the
   <xref linkend="mthCreateCenter"/>() methods, or in a <xref linkend="clsRcDialog"/> where the
-  font is not specified in the resource script file. With a binary compiled dialog resource (<xref
-  linkend="clsResDialog"/>) the font has already been specified when the dialog template was compiled and can not be
-  changed. Therefore the font name attribute has no effect on a ResDialog prior to the execution of the dialog.
+  font is not specified in the resource script file. With a binary compiled dialog resource, subclasses of the <xref
+  linkend="clsResDialog"/> class, the font has already been specified when the dialog template was compiled and can not be
+  changed. Therefore the font name attribute has no effect on a <computeroutput>ResDialog</computeroutput> prior to the
+  execution of the dialog.
 </para>
 <para>
   After the creation of the dialog, the attribute always reflects the font name that was actually used the underlying
@@ -9139,7 +9140,7 @@ DialogExtensions::<xref linkend="mthSetSBRange"/>
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding  of Windows <xref linkend="ovvWindowMessages"/>.
+    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>s.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -9224,7 +9225,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>.
+    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>s.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -9319,7 +9320,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding of Windows messages <xref linkend="ovvWindowMessages"/>.
+    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>s.
   </para>
   </listitem></varlistentry>
   <varlistentry id="exampleSendMessageToWindow"><term><emphasis role="bold">Example:</emphasis></term>
@@ -9416,7 +9417,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>.
+    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>s.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

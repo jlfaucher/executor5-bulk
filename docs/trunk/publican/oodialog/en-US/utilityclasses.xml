@@ -197,14 +197,14 @@
 <para>
   An application manager is used to set certain application wide defaults and to perform tasks that effect the entire
   ooDialog application. Examples of application wide defaults are the default
- <xref linkend="mthClsGetFontName"/> and font <xref linkend="mthClsGetFontSize"/>, whether
- <xref linkend="mthInitAutoDetection"/> data detection is on or off, etc.. An example of a task that
-  effects the entire application is the populating of the <xref linkend="dotConstDir"/> with symbols.
+  <link linkend="mthClsGetFontName">font</link> and font <link linkend="mthClsGetFontSize">size</link>, whether
+  <link linkend="mthInitAutoDetection">automatic</link> data detection is on or off, etc.. An example of a task that effects
+  the entire application is the populating of the <xref linkend="dotConstDir"/> with symbols.
 </para>
 <para>
   When an ooDialog application starts, the ooDialog framework instantiates an
   <computeroutput>ApplicationManager</computeroutput> object and places it in the
-  <computeroutput>.local</computeroutput> environment (<xref linkend="dotApplication"/>.) Only one instance of an
+  <computeroutput>.local</computeroutput> environment as the <xref linkend="dotApplication"/>. Only one instance of an
   <computeroutput>ApplicationManager</computeroutput> per application can be instantiated. In practice this means that the
   ooRexx programmer can not create a new <computeroutput>ApplicationManager</computeroutput> object. The programmer invokes
   all methods of the <computeroutput>ApplicationManager</computeroutput> through the
@@ -4145,7 +4145,7 @@ return .true
 </programlisting>
 
 <para>
-  When a <link linkend="ovvWindowMessages">message</link> is <link linkend="mthSendMessage">sent</link> to an
+  When a <xfer linkend="ovvWindowMessages"/> is <link linkend="mthSendMessage">sent</link> to an
   <xref linkend="ovvUnderlying"/> window two of the arguments are the WPARAM and the LPARAM parameters.
   Quite often the Windows API requires that two numbers be packed into the LPARAM argument. The <emphasis
   role="italic">makeLParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
@@ -4230,7 +4230,7 @@ return .true
 </programlisting>
 
 <para>
-  When a <link linkend="ovvWindowMessages">message</link> is <link linkend="mthSendMessage">sent</link> to an
+  When a <xfer linkend="ovvWindowMessages"/ is <link linkend="mthSendMessage">sent</link> to an
   <xref linkend="ovvUnderlying"/> window two of the arguments are the WPARAM and the LPARAM parameters.
   Quite often the Windows API requires that two numbers be packed into the WPARAM argument. The <emphasis
   role="italic">makeWParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the

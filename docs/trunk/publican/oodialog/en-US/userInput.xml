@@ -53,8 +53,8 @@
   The following table lists the general categories of user input in the Windows operating system, as described by the
   Windows documentation. Several of the categories have no current implmentation in ooDialog, or the implementation
   is scatterd throughout the <xref linkend="chpDialogObject"/> and dialog
-  control (<xref linkend="chpDialogControlObject"/>) classes. These categories are mentioned here for completeness.
-  Future versions of ooDialog may be enhanced to address those categories.
+  <xref linkend="chpDialogControlObject"/> classes. These categories are mentioned here for completeness. Future versions of
+  ooDialog may be enhanced to address those categories.
 <table id="tblUserInputClasses" frame="all"> <title>ooDialog User Input Groups</title>
 <tgroup cols="2">
 <colspec colwidth="1*" />
@@ -67,7 +67,7 @@
 </thead>
 <tbody>
 <row>
-<entry>Common Dialogs (<xref linkend="sctCommonDialogLibrary"/>)</entry>
+<entry><xref linkend="sctCommonDialogLibrary"/></entry>
 <entry>Objects and routines used to easily gather user input in a standard way.</entry>
 </row>
 <row>
@@ -79,7 +79,7 @@
 <entry>The operating system generates keyboard input from the physical keyboard and provides the means for a program to receive and process that input.</entry>
 </row>
 <row>
-<entry>Mouse (<xref linkend="clsMouse"/>) Input</entry>
+<entry><xref linkend="clsMouse"/> Input</entry>
 <entry>ooDialog programs deal with mouse input primarily through the <computeroutput>Mouse</computeroutput> class</entry>
 </row>
 <row>
@@ -94,7 +94,7 @@
 </para>
 
 
-<section id="sctCommonDialogLibrary"><title>Common Dialog Library</title>
+<section id="sctCommonDialogLibrary" xreflabel="Common Dialog Library"><title>Common Dialog Library</title>
 <indexterm><primary>Common Input Dialogs and Routines</primary></indexterm>
 <para>
   The ooDialog framework provides a number of easy to use dialogs and routines that obtain user input in common
@@ -253,7 +253,7 @@ rule are noted in the documentation for the individual dialog.
 <varlistentry><term>Functions:</term>
 <listitem><para>Each standard dialog is also available as a callable function.
 These functions are described in the
-Public Routines (<xref linkend="sctPublicRoutines"/>) section of this chapter.
+Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter.
 </para></listitem></varlistentry>
 </variablelist>
 
@@ -272,7 +272,7 @@ selected by the user are marked in a stem variable with the value 1.
 </variablelist>
 <para>The method listed below is defined by this class.</para>
 
-<section id="initCheckList"><title>init</title>
+<section id="initCheckList" xreflabel="init"><title>init</title>
 <indexterm><primary>init</primary>
 <secondary>CheckList class</secondary></indexterm>
 <programlisting>
@@ -358,7 +358,7 @@ end
 a defined duration. </para>
 <para>The methods listed below are defined by this class.</para>
 
-<section id="initTimedMessage"><title>init</title>
+<section id="initTimedMessage" xreflabel="init"><title>init</title>
 <indexterm><primary>init</primary>
 <secondary>TimedMessage class</secondary></indexterm>
 <programlisting>
@@ -511,15 +511,14 @@ class and how to add a background bitmap to the dialog window:
 ]]>
 </programlisting>
 
-<para>The execute method creates and shows the message window. If the specified
-duration (see init (<xref linkend="initTimedMessage"/>) method) is not
-negative, this method destroys the dialog automatically when the duration is up.
-If the duration is less than 0, then the programmer must destroy the dialog
-manually by invoking the <computeroutput>ok</computeroutput> method.  See
-this example (<xref linkend="example2TimedMessage"/>) for a code snippet showing the
-procedure.
+<para>
+  The execute method creates and shows the message window. If the specified <link linkend="initTimedMessage">duration</link>
+  is not negative, this method destroys the dialog automatically when the duration is up. If the duration is less than 0,
+  then the programmer must destroy the dialog manually by invoking the <computeroutput>ok</computeroutput> method.  See this
+  <link linkend="example2TimedMessage">example</link> for a code snippet showing the procedure.
 </para>
 </section>
+
 </section>
 
 <section id="clsInputBox" xreflabel="InputBox"><title>InputBox Class</title>
@@ -536,7 +535,7 @@ a title, a message, one entry line, an OK, and a Cancel push button. </para>
 </variablelist>
 <para>The methods listed below are defined by this class.</para>
 
-<section id="initInputBox"><title>init</title>
+<section id="initInputBox" xreflabel="init"><title>init</title>
 <indexterm><primary>init</primary>
 <secondary>InputBox class</secondary></indexterm>
 <programlisting>
@@ -723,7 +722,7 @@ by the user are stored in attributes matching the labels of the entry lines.
 <para>The methods are the same as for the InputBox <xref linkend="clsInputBox"/>
 class, with the exception of Init.</para>
 
-<section id="initMultiInputBox"><title>init</title>
+<section id="initMultiInputBox" xreflabel="init"><title>init</title>
 <indexterm><primary>init</primary>
 <secondary>MultiInputBox class</secondary></indexterm>
 <programlisting>
@@ -809,7 +808,7 @@ is used to terminate the dialog. </para>
 </variablelist>
 <para>The method listed below is defined by this class.</para>
 
-<section id="initListChoice"><title>init</title>
+<section id="initListChoice" xreflabel="init"><title>init</title>
 <indexterm><primary>init</primary>
 <secondary>ListChoice class</secondary></indexterm>
 <programlisting>
@@ -927,7 +926,7 @@ a group of radio buttons. The user can select only one item of the group. </para
 </variablelist>
 <para>The method listed below is defined by this class.</para>
 
-<section id="initSingleSelection"><title>init</title>
+<section id="initSingleSelection" xreflabel="init"><title>init</title>
 <indexterm><primary>init</primary>
 <secondary>SingleList class</secondary></indexterm>
 <programlisting>
@@ -1265,10 +1264,10 @@ say  "You Selected the month: " mon.s
         </variablelist>
       </para>
       <para>
-        These keywords are used to indicate the modality (<xref linkend="defModalModeless"/>) of the message box.
-        <emphasis role="bold">Note</emphasis> that the description of the modality behaviour here assumes that the
-        window specified by the <emphasis role="italic">hwnd</emphasis> argument belongs to the programmer's Rexx
-        application. Use only one keyword from this group.
+        These keywords are used to indicate the <link linkend="defModalModeless">modality</link> of the message box.
+        <emphasis role="bold">Note</emphasis> that the description of the modality behaviour here assumes that the window
+        specified by the <emphasis role="italic">hwnd</emphasis> argument belongs to the programmer's Rexx application. Use
+        only one keyword from this group.
       </para>
       <para>
         <simplelist type='vert' columns='3'>
@@ -1379,10 +1378,10 @@ say  "You Selected the month: " mon.s
           <para>
             Adds a <emphasis role="bold">Help</emphasis> push button to the message box, in addition to the push buttons
             specifed in the <emphasis role="italic">pb</emphasis> argument. When the user clicks the <emphasis
-            role="bold">Help</emphasis> button or presses F1, the operating system sends a HELP event
-            notification (<xref linkend="ovvEvents"/>) to the window specified by the <emphasis
-            role="italic">hwnd</emphasis> argument. If this window is an ooDialog dialog, the programmer can capture
-            this notification using the <xref linkend="mthConnectHelp"/> method.
+            role="bold">Help</emphasis> button or presses F1, the operating system sends a HELP <xref
+            linkend="ovvEvents"/> notification  to the window specified by the <emphasis role="italic">hwnd</emphasis>
+            argument. If this window is an ooDialog dialog, the programmer can capture this notification using the
+            <xref linkend="mthConnectHelp"/> method.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -1395,7 +1394,7 @@ say  "You Selected the month: " mon.s
   <listitem>
   <para>
     <emphasis role="italic">MessageDialog</emphasis> returns the Microsoft defined resource ID of the button pushed by
-    the user, and 0 on error. The programmer can use a constant (<xref linkend="sctMethodsDlgObject"/>) of the
+    the user, and 0 on error. The programmer can use a <link linkend="sctMethodsDlgObject">constant</link> of the
     <xref linkend="chpDialogObject"/> object to determine the return. The return values are:
     <variablelist>
       <varlistentry><term>0</term>
@@ -1484,9 +1483,9 @@ say  "You Selected the month: " mon.s
     The <xref linkend="rtnAskDialog"/>, <xref linkend="rtnInfoDialog"/>, and
  <xref linkend="rtnErrorDialog"/> routines are all implemented using the
     <computeroutput>MessageDialog</computeroutput> routine. While they are simplier to use, they are not very flexible.
-    In addition because of the way modal (<xref linkend="defModalModeless"/>) dialogs are implemented, it is possbile
-    that those routines will not diable the correct dialog. If the programmer encounters problems with the wrong dialog
-    being disabled, the solution is to use the <computeroutput>MessageDialog</computeroutput> routine and specify the
+    In addition because of the way <xref linkend="defModalModeless"/> dialogs are implemented, it is possbile that those
+    routines will not diable the correct dialog. If the programmer encounters problems with the wrong dialog being disabled,
+    the solution is to use the <computeroutput>MessageDialog</computeroutput> routine and specify the
     proper window handle of the owner window.
   </para>
   </listitem></varlistentry>
@@ -1876,16 +1875,15 @@ call directory curdir
 ret = TimedMessage("We are starting...","Please wait",3000)
 ]]>
 </programlisting><para> The parameters are the same as described in the
-init (<xref linkend="initTimedMessage"/>) method of the <computeroutput>
+<xref linkend="initTimedMessage"/> method of the <computeroutput>
 TimedMessage</computeroutput> class.
 </para>
 <para>The function returns 0, always, when the duration is non-negative.  When
 the duration is less than 0, the function returns a reference to the
 <computeroutput>TimedMessage</computeroutput> dialog object.  This is needed in
-order for the programmer to manually dismiss the dialog.  Below are the same 3
-examples (<xref linkend="example1TimedMessage"/>) listed for the
-<computeroutput>TimedMessage</computeroutput> dialog, modified to work with the
-public routine:
+order for the programmer to manually dismiss the dialog.  Below are the same 3 <link
+linkend="example1TimedMessage">examples</link> listed for the <computeroutput>TimedMessage</computeroutput> dialog,
+modified to work with the public routine:
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Example
@@ -1945,15 +1943,18 @@ end
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>InputBox</secondary></indexterm>
-<para>A shortcut function to invoke an
-InputBox (<xref linkend="clsInputBox"/>) dialog as a function: </para>
+<para>
+  A shortcut function to invoke an <xref linkend="clsInputBox"/> dialog as a function:
+</para>
 <programlisting>
 <![CDATA[
 say "Your name:" InputBox("Please enter your name","Personal Data")
 ]]>
-</programlisting><para> The parameters are described in the
-                   init (<xref linkend="initInputBox"/>) method of the<computeroutput>
-InputBox</computeroutput> class.</para>
+</programlisting>
+<para>
+  The parameters are described in the <xref linkend="initInputBox"/> method of the<computeroutput>InputBox</computeroutput>
+  class.
+</para>
 </section>
 
 <section id="rtnPasswordBox" xreflabel="PasswordBox"><title>PasswordBox Routine</title>
@@ -1969,9 +1970,9 @@ dialog as a function:
 pwd = PasswordBox("Please enter your password","Security")
 ]]>
 </programlisting>
-<para> The parameters are described in the
-  init (<xref linkend="initInputBox"/>) method of the <computeroutput>
-InputBox</computeroutput>class.
+<para>
+  The parameters are described in the <xref linkend="initInputBox"/> method of the <computeroutput>InputBox</computeroutput>
+  class.
 </para>
 </section>
 
@@ -1988,9 +1989,9 @@ dialog as a function:
 say "Your age:" IntegerBox("Please enter your age","Personal Data")
 ]]>
 </programlisting>
-<para> The parameters are described in the
-  init (<xref linkend="initInputBox"/>) method of the <computeroutput>
-InputBox</computeroutput>class.
+<para>
+  The parameters are described in the <xref linkend="initInputBox"/> method of the <computeroutput>InputBox</computeroutput>
+  class.
 </para>
 </section>
 
@@ -2011,10 +2012,9 @@ if res \= .Nil then do entry over res
                     end
 ]]>
 </programlisting>
-<para> The parameters are described in the
-  init (<xref linkend="initMultiInputBox"/>) method of the <computeroutput>
-MultiInputBox</computeroutput>class.  However, instead of using stems,
-arrays are used for input.
+<para>
+  The parameters are described in the <xref linkend="initMultiInputBox"/> method of the
+  <computeroutput>MultiInputBox</computeroutput> class. However, instead of using stems, arrays are used for input.
 </para>
 <para>The user's input to the dialog is also returned in an array.  Note this
 other difference from the MultiInputBox dialog: if the user cancels the dialog
@@ -2038,10 +2038,9 @@ day = ListChoice("Select a day","My favorite day", ,
 say "Your favorite day is" day
 ]]>
 </programlisting>
-<para> The parameters are described in the
-  init (<xref linkend="initListChoice"/>) method of the <computeroutput>
-ListChoice</computeroutput>class. However, instead of an input stem an array is
-passed into the function.
+<para>
+  The parameters are described in the <xref linkend="initListChoice"/> method of the
+  <computeroutput>ListChoice</computeroutput> class. However, instead of an input stem an array is passed into the function.
 </para>
 <para>If the user cancels the dialog <computeroutput>.nil</computeroutput> is
 returned rather than the empty string.
@@ -2066,13 +2065,12 @@ if days <> .Nil then do day over days
                     end
 ]]>
 </programlisting>
-<para> The parameters are described in the
-  init (<xref linkend="initListChoice"/>) method of the <computeroutput>
-MultiListChoice</computeroutput>class. However, instead of stems, arrays are
-passed into the function.
+<para>
+  The parameters are described in the <xref linkend="initListChoice"/> method of the
+  <computeroutput>MultiListChoice</computeroutput> class. However, instead of stems, arrays are passed into the function.
 </para>
-<para>If the user cancels the dialog <computeroutput>.nil</computeroutput> is
-returned rather than the empty string.
+<para>
+  If the user cancels the dialog, <computeroutput>.nil</computeroutput> is returned rather than the empty string.
 </para>
 </section>
 
@@ -2099,10 +2097,11 @@ dialog: </para>
 
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are similar to what is described in the
-            init (<xref linkend="initCheckList"/>) method of the <computeroutput>
-CheckList</computeroutput>class. However, instead of stems, arrays are
-passed into and returned from the function.
+<listitem>
+<para>
+  The arguments are similar to what is described in the <xref linkend="initCheckList"/>) method of the
+  <computeroutput>CheckList</computeroutput> class. However, instead of stems, arrays are passed into and returned from the
+  function.
 <variablelist>
 <varlistentry><term>message</term>
 <listitem><para>A text string that is displayed on top of the check box group.
@@ -2185,8 +2184,8 @@ box was checked by the user or will contain <computeroutput>.false
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>SingleSelection</secondary></indexterm>
-<para>The SingleSelection function provides a shortcut means to invoke a
-SingleSelection (<xref linkend="clsSingleSelection"/>) dialog
+<para>
+  The SingleSelection function provides a shortcut means to invoke a<xref linkend="clsSingleSelection"/> dialog
 </para>
 <programlisting>
 <![CDATA[
@@ -2207,10 +2206,10 @@ else
 
 ]]>
 </programlisting>
-<para> The parameters are described in the
-  init (<xref linkend="initSingleSelection"/>) method of the <computeroutput>
-SingleSelection</computeroutput>class. However, instead of an input stem an
-array is passed into the function.
+<para>
+  The parameters are described in the <xref linkend="initSingleSelection"/>) method of the
+  <computeroutput>SingleSelection</computeroutput> class. However, instead of an input stem an array is passed into the
+  function.
 </para>
 </section>
 

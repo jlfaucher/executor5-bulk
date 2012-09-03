@@ -326,17 +326,16 @@
   </para>
   <para>
     The <emphasis role="italic">createBrush</emphasis> method here is almost identical to the
- <xref linkend="mthCreateBrushClsDialogExtensions"/> method of the
- <xref linkend="clsDialogExtensions"/> class. The method documented here is a method of the
- <xref linkend="clsWindowExtensions"/> class and is therefore inherited by both the
-    <xref linkend="chpDialogObject"/> and the dialog  control (<xref linkend="chpDialogControlObject"/>)
-    objects.
+    <xref linkend="mthCreateBrushClsDialogExtensions"/> method of the
+    <xref linkend="clsDialogExtensions"/> class. The method documented here is a method of the
+    <xref linkend="clsWindowExtensions"/> class and is therefore inherited by both the
+    <xref linkend="chpDialogObject"/> and the dialog <xref linkend="chpDialogControlObject"/> objects.
   </para>
   <para>
     However, in the dialog object, the <emphasis role="italic">createBrush</emphasis> method of the
     <computeroutput>DialogExtensions</computeroutput> class over-rides this method. Therefore, this documentation is
     essentially the dialog control's <emphasis role="italic">createBrush</emphasis> documentation and the
- <xref linkend="mthCreateBrushClsDialogExtensions"/> documentation is for the dialog object's <emphasis
+    <xref linkend="mthCreateBrushClsDialogExtensions"/> documentation is for the dialog object's <emphasis
     role="italic">createBrush</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -862,7 +861,7 @@
     <para>
       The clipping precision defines how to clip characters that are partially outside the clipping
       region. It can be one or more of the following values. Use
-      .DlgUtil~or (<xref linkend="mthOrClsDlgUtil"/>) to combine values.
+      .DlgUtil~<xref linkend="mthOrClsDlgUtil"/> to combine values.
     </para>
     <informaltable id="tblCfxClipPrecision" frame="all" pgwide="1">
     <tgroup cols="3">
@@ -1005,7 +1004,7 @@
     <para>
       Combine one pitch value with one family value. The values are combined using a boolean or, but in
       this case they could simply be added. The programmer can also use
-      .DlgUtil~or (<xref linkend="mthOrClsDlgUtil"/>) to combine values.
+      .DlgUtil~<xref linkend="mthOrClsDlgUtil"/> to combine values.
     </para>
     <informaltable id="tblCfxPitchAndFamily" frame="all" pgwide="1">
     <tgroup cols="3">
@@ -1458,7 +1457,7 @@ context. </para>
 <listitem><para>The position, in pixels.
 </para></listitem></varlistentry>
 <varlistentry><term>color</term>
-<listitem><para>The color number for the pixel. For a list of color numbers, refer to Definition of Terms (<xref linkend="sctTermDefs"/>).
+<listitem><para>The <xref linkend="defColorNumber"/> for the pixel.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1492,11 +1491,14 @@ in the given device context using the active brush. </para>
 color of the brush, in pixels.
 </para></listitem></varlistentry>
 <varlistentry><term>color</term>
-<listitem><para>The color number of the outline figure whose inside will be filled.
-For a list of color numbers, refer to Definition of Terms (<xref linkend="sctTermDefs"/>).
-</para></listitem></varlistentry>
+<listitem>
+<para>
+  The <xref linkend="defColorNumber"/> of the outline figure whose inside will be filled.
+</para>
+</listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
+</para>
+</listitem></varlistentry>
 </variablelist>
 </section>
 

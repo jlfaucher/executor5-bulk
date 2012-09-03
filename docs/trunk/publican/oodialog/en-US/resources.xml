@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="chapResources"><title>Resources</title>
+<chapter id="chapResources" xreflabel="resources"><title>Resources</title>
 <indexterm><primary>Resources</primary></indexterm>
 <para>
   In the Windows OS, a <emphasis role="italic">resource</emphasis>, is binary data used by a
@@ -348,8 +348,8 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image, bitmap, icon, or cursor. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
-          following symbols:
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
+          value for one of the following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
           <member>IMAGE_CURSOR</member>
@@ -372,7 +372,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
+          symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
           value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
           the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
           symbols if needed.
@@ -461,7 +461,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -485,7 +485,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
+          symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
           value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
           the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
           symbols if needed.
@@ -552,28 +552,30 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
-      The single argument is:
-      <variablelist>
+    The single argument is:
+    <variablelist>
       <varlistentry><term>colorRef</term>
       <listitem>
-        <para>
-          A RGB color, a COLORREF.  See the <xref linkend="mthColorRef"/>() method for a
-          brief discussion of these terms.
-        </para></listitem></varlistentry>
-      </variablelist>
+      <para>
+        A RGB color, a COLORREF. See the <xref linkend="mthColorRef"/> method for a brief discussion of these terms.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The return is the blue component of the specified RGB color.
-    </para>
+  <para>
+    The return is the blue component of the specified RGB color.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      See the example for the getRValue (<xref linkend="exampleGetRValueClsImage"/>)() method.
-    </para></listitem></varlistentry>
+  <para>
+    See the <link linkend="exampleGetRValueClsImage">example</link> for the <emphasis role="italic">getRValue</emphasis>
+    method.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getBValue() [class method] -->
 
@@ -607,15 +609,17 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The return is the green component of the specified RGB color.
-    </para>
+  <para>
+    The return is the green component of the specified RGB color.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      See the example for the getRValue (<xref linkend="exampleGetRValueClsImage"/>)() method.
-    </para></listitem></varlistentry>
+  <para>
+    See the <link linkend="exampleGetRValueClsImage">example</link> for the <emphasis role="italic">getRValue</emphasis>
+    method.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getGValue() [class method] -->
 
@@ -646,7 +650,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <para>
         If id is a number than it is taken to be the resource id of an image provided by the system.  The
         following are the symbolic names for all the system images. You can use
-        .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for any of the
+        the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for any of the
         following symbols:
         <simplelist type='vert' columns='4'>
         <member>IDI_APPLICATION</member> <member>IDI_HAND</member> <member>IDI_QUESTION</member>
@@ -679,7 +683,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <listitem>
       <para>
         A number between 0 and 255 that specifies the type of the image: bitmap, icon, or cursor. You can use
-        .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
+        the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the
         following symbols:
         <simplelist type='horiz' columns='2'>
         <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -705,7 +709,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <listitem>
       <para>
         The load resource flags for the LoadImage() API.  The flags are one or more of the following
-        symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
+        symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
         value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
         the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
         symbols if needed.
@@ -988,7 +992,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <listitem>
     <para>
       A whole number that specifies the flags that control how the operating system loads the icon. The flags are one or
-      more of the following symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct
+      more of the following symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct
       numeric value for any of the following symbols. The <xref linkend="mthOrClsDlgUtil"/> method of the
 <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the symbols if needed.
       <simplelist type='horiz' columns='2'>
@@ -1152,8 +1156,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 <para>
   Releases the image.  This will free up operating system resources used for the image.  See the
-  introduction to the .Image class (<xref linkend="paraClsImageRelease"/>) for some discussion on
-  releasing an image.
+  introduction to the <link linkend="paraClsImageRelease">Image</link> class for some discussion on releasing an image.
 </para>
 <para>
   Once an image object has been released, it is an error to use the object.  However, the
@@ -1530,7 +1533,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         <para>
           The flags that specify the type of image list to create. The flags are one or more of the following
           symbols, but can include only one ILC_COLOR* value. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for any of the
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for any of the
           following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of the
 <xref linkend="clsDlgUtil"/> class can be used to combine the symbols.
         </para>
@@ -2613,19 +2616,20 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   The class provides the <xref linkend="mthReleaseClsResourceImage"/> method to free up
   system resources if a module containing the resources is no longer needed.  The
-  general remarks (<xref linkend="paraClsImageRelease"/>) concerning freeing the
-<xref linkend="clsImage"/> class are applicable here.  The release() method will ignore requests
+  general <link linkend="paraClsImageRelease">remarks</link> concerning freeing the
+  <xref linkend="clsImage"/> class are applicable here.  The release() method will ignore requests
   to release the module when it is known absoulutely that the module should not be released, such as in
   the case the module is the <computeroutput>oodialog.dll</computeroutput>. In other cases only the
   programmer can know if the module should or shouldn't be released.  In those cases, the ResourceImage
   class will do as requested.  As with the images that the .Image class represents, the system resources
   used by the module the ResourceImage class represents will be automatically cleaned up when the
-  interpreter process ends.  The comments (<xref linkend="paraClsImageRelease"/>) about why would a
-  programmer want to release resources in the .Image class remarks are equally apropos here.
+  interpreter process ends.  The <link linkend="paraClsImageRelease">comments</link> about why would a programmer want to
+  release resources in the <computeroutput>Image</computeroutput> class remarks are equally apropos here.
 </para>
 <para>
-  <emphasis role="bold">Note:</emphasis> The ResourceImage class is new in ooDialog as of ooRexx version 4.0.0.  Its
-  first implementation supports image resources and provides the basic framework upon which to expand in the future.
+  <emphasis role="bold">Note:</emphasis> The <computeroutput>ResourceImage</computeroutput> class is new in ooDialog as of
+  ooRexx version 4.0.0. Its first implementation supports image resources and provides the basic framework upon which to
+  expand in the future.
 </para>
 
 <section id="sctMethodsResourceImageClass"><title>Method Table</title>
@@ -2842,7 +2846,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -2866,7 +2870,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
+          symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
           value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
           the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
           symbols if needed.
@@ -2979,7 +2983,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use
-          .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric value for one of the
+          the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -3003,7 +3007,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage"/>) to get the correct numeric
+          symbols. You can use the <xref linkend="mthToIDClsImage"/> method of the <xref linkend="clsImage"/> class to get the correct numeric
           value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
           the <xref linkend="clsDlgUtil"/> class can be used to combine more than one of the
           symbols if needed.

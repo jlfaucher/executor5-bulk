@@ -47,9 +47,9 @@
 <indexterm><primary>Trackbar class</primary></indexterm>
 <para>
   A trackbar is a window that contains a slider and optional tick marks. Prior to the effort to
-  unify (<xref linkend="termMethodNameUnification"/>) the ooDialog class and method names, a trackbar was called a slider
-  control. This was misnomer, the slider is a part of the the track bar. Trackbars are now called by their correct name
-  in this documentation.
+  <link linkend="termMethodNameUnification">unify</link> the ooDialog class and method names, a trackbar was called a slider
+  control. This was misnomer, the slider is a part of the the track bar. Trackbars are now called by their correct name in
+  this documentation.
 </para>
 <para>
   Trackbars are useful if you want the user to select a specific value or a set of consecutive values within a specific
@@ -78,24 +78,24 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newTrackBar (<xref linkend="tmthNewTrackBar"/>)() method of the
-    <xref linkend="chpDialogObject"/> object to retrieve a new TrackBar object.
+    Use the <xref linkend="tmthNewTrackBar"/> method of the <xref linkend="chpDialogObject"/> object to retrieve a new
+    TrackBar object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define a trackbar in the dialog template of a <xref linkend="clsUserDialog"/> class,
-    use the createTrackBar (<xref linkend="tmthCreateTrackBar"/>) method.
+    To dynamically define a trackbar in the dialog template of a <xref linkend="clsUserDialog"/> class, use the <xref
+    linkend="tmthCreateTrackBar"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
     To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying trackbar control to a
-    method in the Rexx dialog object use the connectTrackBarEvent (<xref linkend="tmthConnectTrackBarEvent"/>)()
-    method.
-  </para> </listitem></varlistentry>
+    method in the Rexx dialog object use the <xref linkend="tmthConnectTrackBarEvent"/> method.
+  </para>
+  </listitem></varlistentry>
 </variablelist> </para>
 
 <section id="sctMethodsTrackBar"><title>Method Table</title>
@@ -169,7 +169,7 @@
 <entry>Retrieves the current logical position of the slider in a trackbar.</entry>
 </row>
 <row>
-<entry>pos= (<xref linkend="mthPosEquals"/>)</entry>
+<entry><xref linkend="mthPosEquals"/></entry>
 <entry>Sets the logical position of the slider in a trackbar, however the trackbar is not redrawn.</entry>
 </row>
 <row>
@@ -223,8 +223,7 @@
 <section id="tmthNewTrackBar" xreflabel="newTrackBar"><title>newTrackBar (dialog object method)</title>
 <para>
   Track bar objects can not be instantiated by the programmer from Rexx code. Rather a trackbar object is obtained by
-  using the <xref linkend="mthNewTrackBar"/>() method of the dialog
-  object (<xref linkend="chpDialogObject"/>). The syntax is:
+  using the <xref linkend="mthNewTrackBar"/> method of the <xref linkend="chpDialogObject"/> object. The syntax is:
 <programlisting>
 <![CDATA[
 >>-newTrackBar(--id--)---------------------------><
@@ -564,7 +563,7 @@ of the slider.</para>
 </variablelist>
 </section>
 
-<section id="mthPosEquals"><title>pos=</title>
+<section id="mthPosEquals" xreflabel="pos="><title>pos=</title>
 <indexterm><primary>pos=</primary></indexterm>
 <programlisting>
 <![CDATA[

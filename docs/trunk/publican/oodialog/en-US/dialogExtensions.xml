@@ -1344,7 +1344,7 @@ sent along with the scroll bar event.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The executeAsync (<xref linkend="exampleExecuteAsync"/>) example shows the proper use of the <emphasis
+    The executeAsync <link linkend="exampleExecuteAsync">example</link> shows the proper use of the <emphasis
   role="italic">endAsyncExecution</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -1450,8 +1450,8 @@ sent along with the scroll bar event.
       <varlistentry><term>icon [optional]</term>
       <listitem>
       <para>
-        The resource ID of the dialog's icon (<xref linkend="defDialogIcon"/>). May be numeric or
-        <xref linkend="defSymbolicId"/>.  If an icon ID is not supplied, the default ooDialog icon will be used.
+        The resource ID of the <xref linkend="defDialogIcon"/>. May be numeric or <xref linkend="defSymbolicId"/>. If an
+        icon ID is not supplied, the default ooDialog icon will be used.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1488,8 +1488,8 @@ sent along with the scroll bar event.
   <para>
     If another ooDialog dialog has been started by the Rexx program, it is disabled when <emphasis
     role="italic">executeAsync</emphasis> is invoked. This in effect makes the dialog a
-    modal (<xref linkend="defModalModeless"/>) dialog. To start a <emphasis role="italic">modeless</emphasis> dialog use
-    the <xref linkend="mthPopup"/> or <xref linkend="mthPopupAsChild"/> methods.
+    <xref linkend="defModalModeless"/> dialog. To start a <emphasis role="italic">modeless</emphasis> dialog use the <xref
+    linkend="mthPopup"/> or <xref linkend="mthPopupAsChild"/> methods.
   </para>
   </listitem></varlistentry>
   <varlistentry id="exampleExecuteAsync"><term><emphasis role="bold">Example:</emphasis></term>
@@ -2539,7 +2539,7 @@ method to manually update the display.
 </programlisting>
 
 <para>
-  The <emphasis role="italic">popup</emphasis> method starts a modeless (<xref linkend="defModalModeless"/>) dialog
+  The <emphasis role="italic">popup</emphasis> method starts a <link linkend="defModalModeless">modeless</link> dialog
   executing and returns immediately.
 </para>
 <variablelist>
@@ -2622,8 +2622,8 @@ method to manually update the display.
       <varlistentry><term>icon [optional]</term>
       <listitem>
       <para>
-        The resource ID of the dialog's icon (<xref linkend="defDialogIcon"/>). May be numeric or
-        <xref linkend="defSymbolicId"/>.  If an icon ID is not supplied, the default ooDialog icon will be used.
+        The resource ID of the <xref linkend="defDialogIcon"/>. May be numeric or <xref linkend="defSymbolicId"/>. If an
+        icon ID is not supplied, the default ooDialog icon will be used.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2708,10 +2708,10 @@ method to manually update the display.
 </programlisting>
 
 <para>
-  The <emphasis role="italic">popupAsChild</emphasis> method starts a modeless (<xref linkend="defModalModeless"/>)
-  dialog executing and returns immediately. It is very similar to the <xref linkend="mthPopup"/> method, but
-  has the additional functionality that it is closed automatically when the <emphasis role="italic">parent</emphasis>
-  dialog is closed.
+  The <emphasis role="italic">popupAsChild</emphasis> method starts a <link linkend="defModalModeless">modeless</link>
+  dialog executing and returns immediately. It is very similar to the
+                                                     <xref linkend="mthPopup"/> method, but has the additional functionality
+  that it is closed automatically when the <emphasis role="italic">parent</emphasis> dialog is closed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2802,8 +2802,8 @@ method to manually update the display.
       <varlistentry><term>icon [optional]</term>
       <listitem>
       <para>
-        The resource ID of the dialog's icon (<xref linkend="defDialogIcon"/>). May be numeric or
-        <xref linkend="defSymbolicId"/>.  If an icon ID is not supplied, the default ooDialog icon will be used.
+        The resource ID of the <xref linkend="defDialogIcon"/>. May be numeric or <xref linkend="defSymbolicId"/>. If an
+      icon ID is not supplied, the default ooDialog icon will be used.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2961,7 +2961,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">redrawRect</emphasis> method redraws the specified
-  bounding (<xref linkend="ovvRectangleCoordinates"/>) rectangular within the client area of this dialog. Optionally,
+  <link linkend="ovvRectangleCoordinates">bounding</link> rectangular within the client area of this dialog. Optionally,
   another window can be specified, and the background of the rectangle can be erased first.
 </para>
 <variablelist>
@@ -3118,7 +3118,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">redrawWindowRect</emphasis> method, by default, forces this dialog to completely
-  redraw its client (<xref linkend="defClientArea"/>.
+  redraw its <xref linkend="defClientArea"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3129,8 +3129,8 @@ Generic form:
     <para>
       Optionally, some other window can be forced to redraw by specifying the <xref linkend="defHandle"/> to
       the window. All Rexx dialog and dialog controls have the <xref linkend="atrHwnd"/> attribute which
-      contains the handle of the window (<xref linkend="ovvUnderlying"/>). In addition, methods like
- <xref linkend="mthGetControlHandle"/> can be used to obtain a window handle. If you omit this
+      contains the handle of the <xref linkend="ovvUnderlying"/> window. In addition, methods like
+      <xref linkend="mthGetControlHandle"/> can be used to obtain a window handle. If you omit this
       argument, the handle of the dialog itself is used.
     </para>
     </listitem></varlistentry>
@@ -4057,7 +4057,7 @@ self~setControlColor(IDC_PB_PREVIOUS, 2, 4)
 
 <para>
   Sets the background color, and optionally the text color, for the specified dialog control using the system
-  colors (<xref linkend="defSysColor"/>).
+  <xref linkend="defSysColor"/>s.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4076,7 +4076,7 @@ self~setControlColor(IDC_PB_PREVIOUS, 2, 4)
       <listitem>
       <para>
         The system color ID for the background color of the dialog control. This can be either the whole number ID or
-        the keyword ID. IDs can be looked up in the System Color Elements table (<xref linkend="tblSysColors"/>)
+        the keyword ID. IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
@@ -4084,7 +4084,7 @@ self~setControlColor(IDC_PB_PREVIOUS, 2, 4)
       <para>
         The system color for the foreground color of the dialog control. The foreground color is the color that text is
         written in. This can be either the whole number ID or the keyword ID. IDs can be looked up in the System Color
-        Elements table (<xref linkend="tblSysColors"/>)
+        Elements <link linkend="tblSysColors">table</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -4681,11 +4681,11 @@ Generic form:
       <varlistentry><term>rectCoordinates [required]</term>
       <listitem>
       <para>
-        The coordinates for the new size and position of the window as a
-        point/size (<xref linkend="ovvRectangleCoordinates"/>) rectangle. The coordinates specify the upper left point of
-        the the new position, the width of the window and the height of the window. These coordinates can be specified
-        using either a <xref linkend="clsRect"/> object, a <xref linkend="clsPoint"/> object and a
- <xref linkend="clsSize"/> objects, or the individual x and y coordinates, width, and height values.
+        The coordinates for the new size and position of the window as a <link
+        linkend="ovvRectangleCoordinates">point/size</link> rectangle. The coordinates specify the upper left point of the
+        the new position, the width of the window and the height of the window. These coordinates can be specified using
+        either a <xref linkend="clsRect"/> object, a <xref linkend="clsPoint"/> and a
+        <xref linkend="clsSize"/> object, or the individual x and y coordinates, width, and height values.
       </para>
       <para>
         The coordinates are specified as <xref linkend="defClientArea"/> coordinates, in pixels. All 4

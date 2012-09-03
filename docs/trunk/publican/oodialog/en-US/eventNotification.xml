@@ -110,7 +110,7 @@
   because the method handles the event. In order to properly code an event handler, the Rexx programmer needs to
   understand somewhat the underlying mechanism of event notification. This is particularly important in ooDialog 4.2.0
   and later with its ability to <xref linkend="ovvEventsDirectReply"/> invoke the event handling method from the window
-  <link linkend="ovvWindowMessages">message</link> processing loop.
+  <xref linkend="ovvWindowMessages"/> processing loop.
 </para>
 <para>
   When the operating system sends an event notification to the underlying dialog, the operating system waits for a reply
@@ -692,7 +692,7 @@
 
 <para>
   The <emphasis role="italic">addUserMsg</emphasis> method connects a Windows window
-  <link linkend="ovvWindowMessages">message</link> sent to the <xref linkend="ovvUnderlying"/> dialog with a
+  <xref linkend="ovvWindowMessages"/> sent to the <xref linkend="ovvUnderlying"/> dialog with a
   method in the Rexx dialog. This method is designed to be used by ooDialog programmers who are familiar with the
   Windows API. It's use will require access to the Windows <xref linkend="defWindowsDoc"/> at a
   minimum, and will likely also require access to the Windows header files in the
@@ -1067,9 +1067,9 @@
     <xref linkend="clsEventNotification"/> class.
   </para>
   <para>
-    The interpreter invokes the event handler directly and waits in the window
-    <link linkend="ovvWindowMessages">message</link> processing loop for the return from the event handler. Connecting the
-    activate event requires that the programmer reply to the event from the event handler in a timely manner.
+    The interpreter invokes the event handler directly and waits in the window <xref linkend="ovvWindowMessages"/> processing
+    loop for the return from the event handler. Connecting the activate event requires that the programmer reply to the event
+    from the event handler in a timely manner.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -5767,9 +5767,9 @@ incorrect.
     <xref linkend="clsEventNotification"/> class.
   </para>
   <para>
-    The interpreter invokes the event handler directly and waits in the window
-    <link linkend="ovvWindowMessages">message</link> processing loop for the return from the event handler. Connecting the
-    sizing event requires that the programmer reply to the event from the event handler in a timely manner.
+    The interpreter invokes the event handler directly and waits in the window <xref linkend="ovvWindowMessages"/> processing
+    loop for the return from the event handler. Connecting the sizing event requires that the programmer reply to the event
+    from the event handler in a timely manner.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Handler:</emphasis></term>
@@ -6217,11 +6217,11 @@ incorrect.
     <varlistentry><term>willReply [optional]</term>
     <listitem>
     <para>
-      The default behavior is for the interpreter to wait in the window <link linkend="ovvWindowMessages">message</link>
-      processing loop for the return from the event handler, (the default for <emphasis
-      role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>). However, the operating system
-      ignores the return from this event notification. Specifying <computeroutput>.false</computeroutput> changes the
-      default behavior so that the interpreter does not wait for the return from the event handling method.
+      The default behavior is for the interpreter to wait in the window <xfer linkend="ovvWindowMessages"/> processing loop
+      for the return from the event handler, (the default for <emphasis role="italic">willReply</emphasis> is
+      <computeroutput>.true</computeroutput>). However, the operating system ignores the return from this event notification.
+      Specifying <computeroutput>.false</computeroutput> changes the default behavior so that the interpreter does not wait
+      for the return from the event handling method.
     </para>
     </listitem></varlistentry>
   </variablelist>

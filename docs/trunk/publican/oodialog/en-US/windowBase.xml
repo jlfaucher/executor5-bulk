@@ -285,7 +285,7 @@
 <entry>Gets the text of the dialog.</entry>
 </row>
 <row>
-<entry>title= (<xref linkend="mthTitleEquals"/>)</entry>
+<entry><xref linkend="mthTitleEquals"/></entry>
 <entry>Sets the text of the dialog.</entry>
 </row>
 <row>
@@ -499,7 +499,7 @@ Window handeles:
 
 <para>
   The value of the <emphasis role="italic">pixelCX</emphasis> is the width of the window in
-  pixels (<xref linkend="defPixel"/>).
+  <xref linkend="defPixel"/>s.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -596,7 +596,7 @@ The dialog unit height of the button is: 14
 
 <para>
   The value of the <emphasis role="italic">pixelCY</emphasis> is the height of the window in
-  pixels (<xref linkend="defPixel"/>).
+  <xref linkend="defPixel"/>s.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -631,7 +631,7 @@ The dialog unit height of the button is: 14
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The pixelCX (<xref linkend="examplePixelCX"/>) example also uses the <emphasis role="italic">pixelCY</emphasis>
+    The pixelCX <link linkend="examplePixelCX">example</link> also uses the <emphasis role="italic">pixelCY</emphasis>
     attribute.
   </para>
   </listitem></varlistentry>
@@ -652,8 +652,8 @@ The dialog unit height of the button is: 14
 
 <para>
   The <emphasis role="italic">sizeX</emphasis> attribute was intended to be the width of the window and
- <xref linkend="atrSizeY"/> the height of the window in <xref linkend="defDialogUnit"/>.
-  However, in almost all cases, the value is not correct. (<xref linkend="ovvInaccurate"/>)
+ <xref linkend="atrSizeY"/> the height of the window in <xref linkend="defDialogUnit"/>s.
+  However, in almost all cases, the value is <xref linkend="ovvInaccurate"/>)
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -669,17 +669,16 @@ The dialog unit height of the button is: 14
     These attributes are set one time by the ooDialog framework and not changed by the framework again.
   </para>
   <para>
-    To obtain the correct width and height of a window in either pixels or dialog units, use the pixelCX (<xref
-    linkend="atrPixelCX" />) and <xref linkend="atrPixelCY"/>  attributes. These values can be correctly
-    converted (<xref linkend="examplePixelCX"/>) to dialog units if dialog units are desired.
-  </para>
-  </listitem></varlistentry>
+    To obtain the correct width and height of a window in either pixels or dialog units, use the <xref linkend="atrPixelCX"/>
+    and <xref linkend="atrPixelCY"/> attributes. These values can be correctly converted, as shown in this <link
+    linkend="examplePixelCX">example</link>, to dialog units if dialog units are desired.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     This example displays the width and height of the ok button using <emphasis role="italic">sizeX</emphasis> and
-    <emphasis role="italic">sizeY</emphasis>. Contrast the output with the example (<xref linkend="examplePixelCX"/>)
-    for <emphasis role="italic">pixelCx</emphasis>.
+    <emphasis role="italic">sizeY</emphasis>. Contrast the output with the <link linkend="examplePixelCX">example</link> for
+    <emphasis role="italic">pixelCx</emphasis>.
 <programlisting>
 <![CDATA[
 
@@ -738,8 +737,8 @@ The dialog unit height of the button is: 11
 <para>
   The <emphasis role="italic">sizeY</emphasis> attribute is the counterpart to the <emphasis
   role="italic">sizeX</emphasis> attribute. The attribute was meant to be the height of the window in dialog
-  units (<xref linkend="defDialogUnit"/>), but is not accurate. The documentation for sizeX (<xref linkend="atrSizeX"
-  />) has a complete discussion of both attributes.
+  <xref linkend="defDialogUnit"/>s, but is not accurate. The documentation for <xref linkend="atrSizeX"/> has a complete
+  discussion of both attributes.
 </para> </section>  <!-- End WindowBase::sizeY() [attribute]  -->
 
 
@@ -829,10 +828,9 @@ The dialog unit height of the button is: 11
   </para>
   <para>
     Since this method is a method of the <xref linkend="clsWindowBase"/> class, it is a method of both
-    the <xref linkend="chpDialogObject"/> object and the dialog
-    control (<xref linkend="chpDialogControlObject"/>) object. It is of limited use with a dialog control because
-    most dialog controls do not have child windows. However, some do. For instance, a list (<xref linkend="clsListView"
-    />) view control in report view contains a child header window.
+    the <xref linkend="chpDialogObject"/> object and the dialog <xref linkend="chpDialogControlObject"/> object. It is of
+    limited use with a dialog control because most dialog controls do not have child windows. However, some do. For instance,
+    a <xref linkend="clsListView"/> view control in report view contains a child header window.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -1316,9 +1314,8 @@ self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
 </programlisting>
 
 <para>
-  The draw method casuses the entire client (<xref linkend="defClientArea"/> of the window to be immemdiately
-  repainted. It is exactly the same as the <xref linkend="mthRedrawClient"/> method, except that the
-  background is never erased.
+  The draw method casuses the entire <xref linkend="defClientArea"/> of the window to be immemdiately repainted. It is
+  exactly the same as the <xref linkend="mthRedrawClient"/> method, except that the background is never erased.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1851,8 +1848,7 @@ height = bottom - top
  <xref linkend="mthPixel2dlgUnit"/> method to get the correct size.
   </para>
   <para>
-    This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying"/>) has been
-    created.
+    This method can only be used after the <xref linkend="ovvUnderlying"/> Windows dialog has been created.
   </para>
   <para>
     Raises syntax errors for incorrect usage.
@@ -2057,8 +2053,7 @@ Tree-view Control styles
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying"/>) has been
-    created.
+    This method can only be used after the <xref linkend="ovvUnderlying"/> Windows dialog has been created.
   </para>
   <para>
     Raises syntax errors for incorrect usage.
@@ -2139,8 +2134,7 @@ stFont2~setRect(r)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying"/>) has been
-    created.
+    This method can only be used after the <xref linkend="ovvUnderlying"/> Windows dialog has been created.
   </para>
   <para>
     Raises syntax errors for incorrect usage.
@@ -2463,8 +2457,8 @@ else
 </programlisting>
 
 <para>
-  The move method moves the associated dialog or dialog control to the specified position. This method is not accurate
-  (<xref linkend="ovvInaccurate"/>) because it uses the incorrect <emphasis role="italic">factorX</emphasis> and
+  The move method moves the associated dialog or dialog control to the specified position. This method is <xref
+  linkend="ovvInaccurate"/> because it uses the incorrect <emphasis role="italic">factorX</emphasis> and
   <emphasis role="italic">factorY</emphasis> attributes.
 </para>
 <variablelist>
@@ -2884,10 +2878,10 @@ Generic form:
   <listitem>
   <para>
     This method provides an interface to the <emphasis role="italic">SetWindowPos</emphasis> Windows API. Consulting the
-    Microsoft docuementation (<xref linkend="defWindowsDoc"/>) may give the programmer more insight into this method.
-    The <xref linkend="mthMoveTo"/>() method is a convenience method that provides a somewhat simplier
-    interface. That convenience method has no provision for the <emphasis role="italic">hwndBehind</emphasis> argument
-    and only accepts a subset of the show options.
+    Microsoft <xref linkend="defWindowsDoc"/> may give the programmer more insight into this method. The <xref
+    linkend="mthMoveTo"/>() method is a convenience method that provides a somewhat simplier interface. That convenience
+    method has no provision for the <emphasis role="italic">hwndBehind</emphasis> argument and only accepts a subset of the
+    show options.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -3003,8 +2997,8 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">redrawClient</emphasis> method causes the entire
-  client (<xref linkend="defClientArea"/> of the window to be redrawn.
+  The <emphasis role="italic">redrawClient</emphasis> method causes the entire <xref linkend="defClientArea"/> of the window
+  to be redrawn.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -3492,8 +3486,7 @@ Generic form:
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex"/>)
-      hexadecimal formt.
+      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> formt.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>wParam [required]</term>
@@ -3535,7 +3528,7 @@ Generic form:
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
+    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>s.
   </para>
   <para>
     This method can not be used before the underlying dialog is created.
@@ -3582,8 +3575,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
     <varlistentry><term>msg [required]</term>
     <listitem>
     <para>
-      The Windows message ID. This may be numeric or a string in conventional (<xref linkend="defConventionalHex"/>)
-      hexadecimal formt.
+      The Windows message ID. This may be numeric or a string in conventional <xref linkend="defConventionalHex"/> formt.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>wParam [required]</term>
@@ -3624,7 +3616,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
     Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   <para>
-    This method requires an understanding (<xref linkend="ovvWindowMessages"/>) of Windows messages.
+    This method requires an understanding of Windows <xref linkend="ovvWindowMessages"/>s.
   </para>
   <para>
     This method can not be used before the underlying dialog is created.
@@ -3633,8 +3625,8 @@ MovableDialog~sendMessage"0x0402", 0, 0)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example sets a new application (<xref linkend="defDialogIcon"/>) icon. The old icon handle is saved
-    so it can be restored at some later point.
+    The following example sets a new <xref linkend="defDialogIcon"/>). The old icon handle is saved so it can be restored at
+    some later point.
 
 <programlisting>
 <![CDATA[
@@ -3701,9 +3693,9 @@ Generic form:
 </programlisting>
 
 <para>
-  Sets the new point/size (<xref linkend="ovvRectangleCoordinates"/>) rectangle for the window. A point / size
-  rectangle specifies the position of the upper left corner of the window, relative to its parent window, the width of
-  the window, and the height of the window. The point / size rectangle coordinates are specified in pixels.
+  Sets the new <link linkend="ovvRectangleCoordinates">point / size</link> rectangle for the window. A point / size rectangle
+  specifies the position of the upper left corner of the window, relative to its parent window, the width of the window, and
+  the height of the window. The point / size rectangle coordinates are specified in pixels.
 </para>
 <para>
   In essence this moves and resizes the window. By using different <emphasis role="italic">showOpts</emphasis>, the
@@ -3714,8 +3706,8 @@ Generic form:
   <listitem>
   <para>
     The first argument(s) specify the new coordinates of the window. These coordinates can be specified using either a
- <xref linkend="clsRect"/> object, or by using a <xref linkend="clsPoint"/> object followed by a
- <xref linkend="clsSize"/> object, or by using the x, y coordinates of the upper left point of the window
+    <xref linkend="clsRect"/> object, or by using a <xref linkend="clsPoint"/> object followed by a
+    <xref linkend="clsSize"/> object, or by using the x, y coordinates of the upper left point of the window
     followed by the width and height of the window.
   <variablelist>
     <varlistentry><term>ptSizeRectangle [required]</term>
@@ -3924,9 +3916,10 @@ Generic form:
     the user has entered, etc..
   </para>
   <para>
-    The <emphasis role="italic">setText</emphasis>, <xref linkend="mthSetTitle"/>, and
-    title= (<xref linkend="mthTitleEquals"/>) methods do exactly the same thing. The methods are interchangeable.
-  </para> </listitem></varlistentry>
+    The <emphasis role="italic">setText</emphasis>, <xref linkend="mthSetTitle"/>, and <xref linkend="mthTitleEquals"/>
+    methods do exactly the same thing. The methods are interchangeable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -4227,10 +4220,10 @@ Generic form:
   <listitem>
   <para>
     This method provides a complete interface to the <emphasis role="italic">SetWindowPos</emphasis> Windows API.
-    Consulting the Microsoft docuementation (<xref linkend="defWindowsDoc"/>) may give the programmer more insight into
-    this method. The <xref linkend="mthSetRect"/>() method is a convenience method that provides a somewhat
-    simplier interface. That convenience method has no provision for the <emphasis role="italic">hwndBehind</emphasis>
-    argument and only accepts a subset of the show options.
+    Consulting the Microsoft <xref linkend="defWindowsDoc"/> may give the programmer more insight into this method. The
+    <xref linkend="mthSetRect"/>() method is a convenience method that provides a somewhat simplier interface. That
+    convenience method has no provision for the <emphasis role="italic">hwndBehind</emphasis> argument and only accepts a
+    subset of the show options.
   </para>
   <para>
     Note that the Microsoft <xref linkend="defWindowsDoc"/> says that if HIDEWINDOW or SHOWWINDOW is
@@ -4629,10 +4622,10 @@ Generic form:
   <listitem>
   <para>
     This method provides an interface to the <emphasis role="italic">SetWindowPos</emphasis> Windows API. Consulting the
-    Microsoft docuementation (<xref linkend="defWindowsDoc"/>) may give the programmer more insight into this method.
-    The <xref linkend="mthResizeTo"/>() method is a convenience method that provides a somewhat
-    simplier interface. That convenience method has no provision for the <emphasis role="italic">hwndBehind</emphasis>
-    argument and only accepts a subset of the show options.
+    Microsoft <xref linkend="defWindowsDoc"/> may give the programmer more insight into this method. The <xref
+    linkend="mthResizeTo"/>() method is a convenience method that provides a somewhat simplier interface. That convenience
+    method has no provision for the <emphasis role="italic">hwndBehind</emphasis> argument and only accepts a subset of the
+    show options.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -4684,7 +4677,7 @@ Generic form:
 </para>
 </section>
 
-<section id="mthTitleEquals"><title>title=</title>
+<section id="mthTitleEquals" xreflabel="title="><title>title=</title>
 <indexterm><primary>title=</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>title=</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>title=</secondary></indexterm>
@@ -4714,10 +4707,9 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">update</emphasis> method causes the entire
-  client (<xref linkend="defClientArea"/> of the window to be invalidated and the background erased.
-  This method is similar to both the <xref linkend="mthRedrawClient"/> and
- <xref linkend="mthDraw"/> methods except that the window is, potentially, not repainted immediately.
+  The <emphasis role="italic">update</emphasis> method causes the entire <xref linkend="defClientArea"/> of the window to be
+  invalidated and the background erased. This method is similar to both the  <xref linkend="mthRedrawClient"/> and
+  <xref linkend="mthDraw"/> methods except that the window is, potentially, not repainted immediately.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4787,8 +4779,8 @@ Generic form:
 </programlisting>
 
 <para>
-  Retrieves the coordinates of the bounding (<xref linkend="ovvRectangleCoordinates"/>) rectangle of this window. The
-  dimensions are in pixels and the coordinates are relative to the upper-left corner of the screen.
+  Retrieves the coordinates of the bounding <xref linkend="ovvRectangleCoordinates"/> of this window. The dimensions are in
+  pixels and the coordinates are relative to the upper-left corner of the screen.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4816,7 +4808,7 @@ Generic form:
   <listitem>
   <para>
     The <emphasis role="italic">windowRect</emphasis> method supplies an alternative to the
- <xref linkend="mthGetRect"/>(hwnd) method, to allow returning a
+    <xref linkend="mthGetRect"/>(hwnd) method, to allow returning a
     <computeroutput>.Rect</computeroutput> object, which is usually more convienent, rather than a string of blank
     separated values.
   </para>
