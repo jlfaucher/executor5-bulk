@@ -3797,15 +3797,15 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
   specific to items within the control.
 </para>
 <para>
-  Part of the the information sent in the custom draw notification is what stage of paint cycle the control is in. The stage
-  will either be part of the overall painting of the control or part of the painting of an item the control contains. The
-  stage is identified by a constant value supplied by the <xref linkend="clsCustomDraw"/> class. The possible draw stages are
-  described in the following table:
+  Part of the the information sent in the custom draw notification is what stage of the paint cycle the control is in. The
+  stage will either be part of the overall painting of the control or part of the painting of an item the control contains.
+  The stage is identified by a constant value supplied by the <xref linkend="clsCustomDraw"/> class. The possible draw
+  stages are described in the following table:
 
 <table id="tblCustomDrawStage" frame="all"> <title>Stages of Custom Draw</title>
 <tgroup cols="2">
 <colspec colwidth="1*"/>
-<colspec colwidth="4*"/>
+<colspec colwidth="2*"/>
 <thead>
 <row>
 <entry>Constant Value</entry>
@@ -3865,6 +3865,60 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 </table>
 </para>
 
+<para>
+  The ooDialog program that uses custom draw processes the information sent by the control and returns information that
+  instructs the underlying dialog control what to do. The key to using custom draw is in this information sent back to the
+  control in response to the event notification message. The information returned by the program determines the control's
+  behavior for that paint cycle.
+</para>
+<para>
+  Part of the information returned is a combination of response codes to the event notification. The
+  <computeroutput>CustomDraw</computeroutput> class provides constant values for these codes as summarized in the following
+  table:
+
+<table id="tblCustomDrawResponse" frame="all"> <title>Notification Responses</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="2*"/>
+<thead>
+<row>
+<entry>Constant Value</entry>
+<entry>Effect</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><xref linkend="cnstCDRF_DODEFAULT "/></entry>
+<entry>The control will draw itself. It will not send additional event notifications for this paint cycle. This respons cannot be used with any other response.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_NOTIFYITEMDRAW"/></entry>
+<entry>The control will send event notifications for any item-specific drawing operations. It will send event notification messages before and after it draws items.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_NOTIFYPOSTPAINT"/></entry>
+<entry>The control will send an event notification when the painting cycle for the entire control is complete.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_SKIPDEFAULT"/></entry>
+<entry>The control will not perform any painting at all. </entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_DOERASE"/></entry>
+<entry>The control will only draw the background.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_SKIPPOSTPAINT"/></entry>
+<entry>The control will not draw the focus rectangle around an item.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+<para>
+  Custom draw can be used by the program to draw the entire item, or to change part of the way an item is drawn. Custom draw
+  can be used to change the foreground and background colors, and the font used by the control for each item. For list-view
+  controls in report view, the programmer can also change change the colores and the font for each individual subitem.
+</para>
 
 </section> <!-- End CustomDrawOverview section -->
 
@@ -3873,9 +3927,102 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 <indexterm><primary>custom draw</primary><secondary>in ooDialog</secondary></indexterm>
 
 <para>
+  Using custom draw in ooDialog involves a few basic steps.
 
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">Inherit <computeroutput>CustomDraw</computeroutput></emphasis></term>
+    <listitem>
+    <para>
+      The dialog subclass where the programmer wants to use custom draw must inherit the
+      <computeroutput>CustomDraw</computeroutput> mixin class.
+
+<programlisting>
+::class 'CustomDrawDlg' subclass RcDialog inherit CustomDraw
+</programlisting>
+    </para>
+    <para>
+      The dialog subclass does not have to be a <xref linkend="clsRcDialog"/> of course. It can be any dialog class supported
+      by ooDialog, except the <xref linkend="clsPropertySheetDialog"/>. Recall that the property sheet dialog is managed by
+      the operating system, not ooDialog. However, the pages of the property sheet dialog, any <xref
+      linkend="clsPropertySheetPage"/> dialog, can all use custom draw.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Initialize <computeroutput>CustomDraw</computeroutput></emphasis></term>
+    <listitem>
+    <para>
+      Before any other use of custom draw, the <computeroutput>CustomDraw</computeroutput> class must be initialized. This is
+      done through the <xref linkend="mthCustomDraw"/> method. This can be done wherever it seems convenient, but typically
+      it would be done before the dialog control is populated with its items.
+<programlisting>
+::method init
+    expose textRed textBlack
+
+    forward class (super) continue
+
+    self~customDraw
+
+</programlisting>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Register Control(s)</emphasis></term>
+    <listitem>
+    <para>
+      Once the <computeroutput>CustomDraw</computeroutput> class is initialized, the next step is to register the dialog
+      controls that will use custom draw. Each individual control must be registered using the <xref
+      linkend="mthCustomDrawControl"/> method.
+<programlisting>
+::method init
+    ...
+
+    self~customDrawControl(IDC_LV_CUSTOM, 'ListView', onCustomDraw)
+
+</programlisting>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Code an Event Handler</emphasis></term>
+    <listitem>
+    <para>
+      The last part of using custom draw is coding the event handler. In ooDialog, the information from the Windows dialog
+      control is passed on the the Rexx event handler in the form of an object. Each individual dialog control type has a
+      control specific class that is used to pass the information. Details on how to code the event handler are explained in
+      the documentation of the control specific class.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Supported Dialog controls.</emphasis></term>
+    <listitem>
+    <para>
+      ooDialog supports custom draw for the dialog controls listed in the following table. The table has a link to the class
+      used to provide the event handler with the information sent by the underlying dialog control and a link to the
+      documentation for the event handler for the specific type of control.
+
+<table id="tblSupportedCustomDrawControls" frame="all"><title>ooDialog Supported Custom Draw Controls</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="2*"/>
+<thead>
+<row>
+<entry>Control</entry>
+<entry>Information Class</entry>
+<entry>Event Handler</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><xref linkend="clsListView"/></entry>
+<entry><xref linkend="clsLvCustomDrawSimple"/></entry>
+<entry><xref linkend="evtListViewCustomDraw"/></entry>
+</row>
+<row>
+<entry><xref linkend="clsTreeView"/></entry>
+<entry><xref linkend="clsTvCustomDrawSimple"/></entry>
+<entry><xref linkend="evtTreeViewCustomDraw"/></entry>
+</row>
+</tbody></tgroup>
+</table>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
 </para>
-
 
 </section> <!-- End CustomDrawInOODialog section -->
 
@@ -3949,19 +4096,19 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 </para>
 
 <variablelist>
-  <varlistentry id="cnstCDDS_PREPAINT" xreflabel="CDDS_PREPAINT"><term>CDDS_PREPAINT</term>
+  <varlistentry id="cnstCDDS_PREPAINT" xreflabel="CDDS_PREPAINT"><term><emphasis role="bold">CDDS_PREPAINT</emphasis></term>
   <listitem>
   <para>
     xxx and xxx sss.
   </para>
   </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_POSTPAINT" xreflabel="CDDS_POSTPAINT"><term>CDDS_POSTPAINT</term>
+  <varlistentry id="cnstCDDS_POSTPAINT" xreflabel="CDDS_POSTPAINT"><term><emphasis role="bold">CDDS_POSTPAINT</emphasis></term>
   <listitem>
   <para>
     xxx and xxx sss.
   </para>
   </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_PREERASE" xreflabel="CDDS_PREERASE"><term>CDDS_PREERASE</term>
+  <varlistentry id="cnstCDDS_PREERASE" xreflabel="CDDS_PREERASE"><term><emphasis role="bold">CDDS_PREERASE</emphasis></term>
   <listitem>
   <para>
     xxx and xxx sss.
@@ -4009,6 +4156,12 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
     xxx and xxx sss.
   </para>
   </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_DODEFAULT" xreflabel="CDRF_DODEFAULT"><term><emphasis role="bold">CDRF_DODEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
   <varlistentry id="cnstCDRF_NOTIFYITEMDRAW " xreflabel="CDRF_NOTIFYITEMDRAW "><term><emphasis role="bold">CDRF_NOTIFYITEMDRAW</emphasis></term>
   <listitem>
   <para>
@@ -4016,18 +4169,6 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
   </para>
   </listitem></varlistentry>
   <varlistentry id="cnstCDRF_NOTIFYPOSTPAINT " xreflabel="CDRF_NOTIFYPOSTPAINT "><term><emphasis role="bold">CDRF_NOTIFYPOSTPAINT</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnst" xreflabel=""><term><emphasis role="bold"></emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_DODEFAULT" xreflabel="CDRF_DODEFAULT"><term><emphasis role="bold">CDRF_DODEFAULT</emphasis></term>
   <listitem>
   <para>
     xxx and xxx sss.
