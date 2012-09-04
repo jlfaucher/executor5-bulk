@@ -1333,6 +1333,7 @@ REXX_METHOD_PROTOTYPE(lvcds_setClrText  );
 REXX_METHOD_PROTOTYPE(lvcds_setClrTextBk);
 REXX_METHOD_PROTOTYPE(lvcds_getDrawStage);
 REXX_METHOD_PROTOTYPE(lvcds_setFont     );
+REXX_METHOD_PROTOTYPE(lvcds_getID       );
 REXX_METHOD_PROTOTYPE(lvcds_getItem     );
 REXX_METHOD_PROTOTYPE(lvcds_setReply    );
 REXX_METHOD_PROTOTYPE(lvcds_getSubItem  );
@@ -1345,6 +1346,7 @@ REXX_METHOD_PROTOTYPE(tvcds_setClrText  );
 REXX_METHOD_PROTOTYPE(tvcds_setClrTextBk);
 REXX_METHOD_PROTOTYPE(tvcds_getDrawStage);
 REXX_METHOD_PROTOTYPE(tvcds_setFont     );
+REXX_METHOD_PROTOTYPE(tvcds_getID       );
 REXX_METHOD_PROTOTYPE(tvcds_getItem     );
 REXX_METHOD_PROTOTYPE(tvcds_setReply    );
 REXX_METHOD_PROTOTYPE(tvcds_getLevel    );
@@ -2264,6 +2266,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lvcds_getDrawStage,             lvcds_getDrawStage),
     REXX_METHOD(lvcds_setFont,                  lvcds_setFont),
     REXX_METHOD(lvcds_getItem,                  lvcds_getItem),
+    REXX_METHOD(lvcds_getID,                    lvcds_getID),
     REXX_METHOD(lvcds_setReply,                 lvcds_setReply),
     REXX_METHOD(lvcds_getSubItem,               lvcds_getSubItem),
     REXX_METHOD(lvcds_getUserData,              lvcds_getUserData),
@@ -2275,6 +2278,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tvcds_setClrTextBk,             tvcds_setClrTextBk),
     REXX_METHOD(tvcds_getDrawStage,             tvcds_getDrawStage),
     REXX_METHOD(tvcds_setFont,                  tvcds_setFont),
+    REXX_METHOD(tvcds_getID,                    tvcds_getID),
     REXX_METHOD(tvcds_getItem,                  tvcds_getItem),
     REXX_METHOD(tvcds_setReply,                 tvcds_setReply),
     REXX_METHOD(tvcds_getLevel,                 tvcds_getLevel),

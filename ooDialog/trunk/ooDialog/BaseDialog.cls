@@ -229,6 +229,8 @@
 ::constant CDDS_ITEMPREERASE           65539  -- 0x00010003 (CDDS_ITEM | CDDS_PREERASE)
 ::constant CDDS_ITEMPOSTERASE          65540  -- 0x00010004 (CDDS_ITEM | CDDS_POSTERASE)
 ::constant CDDS_SUBITEM               131072  -- 0x00020000
+::constant CDDS_SUBITEMPREPAINT       196609  -- 0x00030001  -- ooRexx defined for convenience
+::constant CDDS_SUBITEMPOSTPAINT      196610  -- 0x00030002  -- ooRexx defined for convenience
 
 ::constant CLR_NONE               4294967295  --  0xFFFFFFFFL
 ::constant CLR_INVALID            4294967295  --  0xFFFFFFFFL

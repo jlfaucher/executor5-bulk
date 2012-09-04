@@ -3641,9 +3641,11 @@ RexxMethod1(uint32_t, lvfr_subitems, CSELF, pCSelf)
  *         do a CDRF_DODEFAULT immediately if that is the case.
  *
  *         The simple case is to only respond to item prepaint or subitem
- *         prepaint.  We don't currently check the return reply from Rexx, but
- *         it should be either CDRF_NOTIFYSUBITEMDRAW, CDRF_NEWFONT, or
- *         CDRF_DODEFAULT.
+ *         prepaint.  We check the reply value in the CLvCustomDrawSimple struct
+ *         to see if it is CDRF_DODEFAULT. If it is, we send that on to the
+ *         list-view control. If it is not, we don't check ary further, but it
+ *         should be either CDRF_NEWFONT, or CDRF_NOTIFYSUBITEMDRAW |
+ *         CDRF_NEFONT.
  */
 MsgReplyType lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
@@ -3675,7 +3677,7 @@ MsgReplyType lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
         pclvcds->drawStage = lvcd->nmcd.dwDrawStage;
         pclvcds->item      = lvcd->nmcd.dwItemSpec;
         pclvcds->subItem   = lvcd->iSubItem;
-        pclvcds->id        = ((NMHDR *)lParam)->idFrom;
+        pclvcds->id        = (uint32_t)((NMHDR *)lParam)->idFrom;
         pclvcds->userData  = lviLParam2UserData(lvcd->nmcd.lItemlParam);
 
         RexxObjectPtr custDrawSimple = c->SendMessage1(TheLvCustomDrawSimpleClass, "NEW", lvcdsBuf);
@@ -3686,6 +3688,11 @@ MsgReplyType lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
             msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
             if ( msgReply == TheTrueObj )
             {
+                if ( pclvcds->reply == CDRF_DODEFAULT )
+                {
+                    goto done_out;
+                }
+
                 lvcd->clrText   = pclvcds->clrText;
                 lvcd->clrTextBk = pclvcds->clrTextBk;
 

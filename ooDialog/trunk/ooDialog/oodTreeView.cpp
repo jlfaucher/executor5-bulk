@@ -713,12 +713,12 @@ RexxMethod2(RexxObjectPtr, tv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
  *         fixed by checking for a condition and immediately returning
  *         CDRF_DODEFAULT if a condition was detected.
  *
- *         The simple case is to only respond to CDDS_PREPAINT or
- *         CDDS_ITEMPREPAINT.  We tried allowing the user to repsond to
- *         CDDS_PREPAINT, but, if the response was anything other than
- *         CDRF_NOTIFYITEMDRAW, then things just didn't work.  So, we went back
- *         to always replying CDRF_NOTIFYITEMDRAW for CDDS_PREPAINT.
- *
+ *         The simple case is to only respond to item prepaint or subitem
+ *         prepaint.  We check the reply value in the CTvCustomDrawSimple struct
+ *         to see if it is CDRF_DODEFAULT. If it is, we send that on to the
+ *         list-view control. If it is not, we don't check ary further, but it
+ *         should be either CDRF_NEWFONT, or CDRF_NOTIFYSUBITEMDRAW |
+ *         CDRF_NEFONT.
  */
 MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
@@ -749,7 +749,7 @@ MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
 
         pctvcds->drawStage = tvcd->nmcd.dwDrawStage;
         pctvcds->item      = (HTREEITEM)tvcd->nmcd.dwItemSpec;
-        pctvcds->id        = ((NMHDR *)lParam)->idFrom;
+        pctvcds->id        = (uint32_t)((NMHDR *)lParam)->idFrom;
         pctvcds->level     = tvcd->iLevel;
 
         RexxObjectPtr custDrawSimple = c->SendMessage1(TheTvCustomDrawSimpleClass, "NEW", tvcdsBuf);
@@ -760,6 +760,11 @@ MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
             msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
             if ( msgReply == TheTrueObj )
             {
+                if ( pctvcds->reply == CDRF_DODEFAULT )
+                {
+                    goto done_out;
+                }
+
                 tvcd->clrText   = pctvcds->clrText;
                 tvcd->clrTextBk = pctvcds->clrTextBk;
 
