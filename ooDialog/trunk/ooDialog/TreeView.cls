@@ -223,4 +223,4 @@
 ::attribute item get external      "LIBRARY oodialog tvcds_getItem"
 ::attribute reply set external     "LIBRARY oodialog tvcds_setReply"
 ::attribute level get external     "LIBRARY oodialog tvcds_getLevel"
-::attribute userData get external  "LIBRARY oodialog tvcds_getUserData"        -- Do not document, no way to set user data for tree view
+::attribute userData get external  "LIBRARY oodialog tvcds_getUserData"        -- Do not document yet, no way to set user data for tree view

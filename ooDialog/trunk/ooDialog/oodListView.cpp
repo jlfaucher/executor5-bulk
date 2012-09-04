@@ -3808,7 +3808,7 @@ RexxMethod1(uint32_t, lvcds_getSubItem, CSELF, pCSelf)
 
 /** LvCustomDrawSimple::userData   [attribute]
  */
-RexxMethod2(RexxObjectPtr, lvcds_getUserData, uint32_t, reply, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, lvcds_getUserData, CSELF, pCSelf)
 {
     return ((pCLvCustomDrawSimple)pCSelf)->userData;
 }
