@@ -3641,11 +3641,17 @@ RexxMethod1(uint32_t, lvfr_subitems, CSELF, pCSelf)
  *         do a CDRF_DODEFAULT immediately if that is the case.
  *
  *         The simple case is to only respond to item prepaint or subitem
- *         prepaint.  We check the reply value in the CLvCustomDrawSimple struct
- *         to see if it is CDRF_DODEFAULT. If it is, we send that on to the
- *         list-view control. If it is not, we don't check ary further, but it
- *         should be either CDRF_NEWFONT, or CDRF_NOTIFYSUBITEMDRAW |
- *         CDRF_NEFONT.
+ *         prepaint. If the user returns .false from the event handler, this has
+ *         the effect of returning CDFR_DODEFAULT to the list-view.
+ *
+ *         If the user returns .true, we not check the reply value in the
+ *         CLvCustomDrawSimple struct, assuming the user has set the value to
+ *         what they actually want. The user should use either CDRF_NEWFONT, or
+ *         CDRF_NOTIFYSUBITEMDRAW, or (CDRF_NOTIFYSUBITEMDRAW | CDRF_NEFONT.)
+ *         When .true is returned the colors are updated in the NMLVCUSTOMDRAW
+ *         struct. If hFont in the LvCustomDrawSimple object is not null, the
+ *         font is selected into the device context, which has the effect of
+ *         changing the font.
  */
 MsgReplyType lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
@@ -3688,11 +3694,6 @@ MsgReplyType lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
             msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
             if ( msgReply == TheTrueObj )
             {
-                if ( pclvcds->reply == CDRF_DODEFAULT )
-                {
-                    goto done_out;
-                }
-
                 lvcd->clrText   = pclvcds->clrText;
                 lvcd->clrTextBk = pclvcds->clrTextBk;
 
