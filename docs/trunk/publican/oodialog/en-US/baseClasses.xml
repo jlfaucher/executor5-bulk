@@ -3799,8 +3799,8 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 <para>
   Part of the the information sent in the custom draw notification is what stage of the paint cycle the control is in. The
   stage will either be part of the overall painting of the control or part of the painting of an item the control contains.
-  The stage is identified by a constant value supplied by the <xref linkend="clsCustomDraw"/> class. The possible draw
-  stages are described in the following table:
+  The stage is identified by a constant value supplied by the <computeroutput>CustomDraw</computeroutput> class. The possible
+  draw stages are described in the following table:
 
 <table id="tblCustomDrawStage" frame="all"> <title>Stages of Custom Draw</title>
 <tgroup cols="2">
@@ -3814,7 +3814,7 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 </thead>
 <tbody>
 <row>
-<entry align="center"><emphasis role="bold">Global Stages</emphasis></entry>
+<entry align="center"><emphasis role="bold">Global</emphasis></entry>
 <entry align="center"><emphasis role="bold">Draw Stages</emphasis></entry>
 </row>
 <row>
@@ -3917,7 +3917,7 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 <para>
   Custom draw can be used by the program to draw the entire item, or to change part of the way an item is drawn. Custom draw
   can be used to change the foreground and background colors, and the font used by the control for each item. For list-view
-  controls in report view, the programmer can also change change the colores and the font for each individual subitem.
+  controls in report view, the programmer can also change change the colors and the font for each individual subitem.
 </para>
 
 </section> <!-- End CustomDrawOverview section -->
@@ -3944,7 +3944,7 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
       The dialog subclass does not have to be a <xref linkend="clsRcDialog"/> of course. It can be any dialog class supported
       by ooDialog, except the <xref linkend="clsPropertySheetDialog"/>. Recall that the property sheet dialog is managed by
       the operating system, not ooDialog. However, the pages of the property sheet dialog, any <xref
-      linkend="clsPropertySheetPage"/> dialog, can all use custom draw.
+      linkend="clsPropertySheetPage"/> dialogs, can use custom draw.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">Initialize <computeroutput>CustomDraw</computeroutput></emphasis></term>
@@ -4028,13 +4028,33 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 </section> <!-- End CustomDrawInOODialog section -->
 
 
-<section id="sctSimpleCustomDraw"><title>Simple Custom Draw</title>
+<section id="sctSimpleCustomDraw" xreflabel="simple"><title>Simple Custom Draw</title>
 <indexterm><primary>custom draw</primary><secondary>simple custom draw</secondary></indexterm>
 
 <para>
-
+  Currently, ooDialog supports a limited subset of the full functionality supplied by the Windows custom draw API. The
+  developers are denoting this as <emphasis role="italic">simple</emphasis> custom draw. Simple custom draw allows the
+  ooDialog programmer to change the foreground and background colors of individual dialog control items and subitems. It also
+  allows the programmer to change the font of individual items and subitems.
 </para>
-
+<para>
+  There are a number of reasons for only supporting simple custom draw at this point. For one, it is probably sufficient for
+  everything an ooDialog programmer will want to do. It allows the most useful functionality of custom draw to be delievered
+  sooner and leaves the possiblity of future enhancements providing more functionality. Drawing in Windows needs to be done
+  quickly and efficiently. This type of programming is normally done in a low-level language. It is not clear that a complete
+  implementation of custom draw would produce satisfactory results.
+</para>
+<para>
+  In simple custom draw, the ooDialog framework does not invoke the custom draw event handler for every single custom draw
+  notification sent by the dialog control. Rather, it replies directly for a number of the drawing stages itself, returning
+  the correct information so that the item and subitem prepaint notifications are sent by the control. It then invokes the
+  Rexx event handler for the item and subitem prepaint notifications. This allows the ooDialog programmer to change the
+  colors and fonts for any individual item or subitem.
+</para>
+<para>
+  In simple custom draw, the Rexx event handler will not recieve notifications for the postpaint, preerase, and posterase
+  drawing stages. The ooDialog programmer just needs to focus on handling the prepaint notifications for items and subitems.
+</para>
 
 </section> <!-- End SimpleCustomDraw section -->
 
@@ -4055,20 +4075,16 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 </thead>
 <tbody>
 <row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Constant</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="sctConstantsClsCustomDraw">constants</link></entry>
-<entry>The <computeroutput>CustomDraw</computeroutput>class provides a number of constant values needed to work with the custom draw interface.</entry>
+<entry>The <computeroutput>CustomDraw</computeroutput> class provides a number of constant values needed to work with the custom draw interface.</entry>
 </row>
 <row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="mthCustomDraw">customDraw</link></entry>
@@ -4088,122 +4104,169 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 </section>
 
 
-<section id="sctConstantsClsCustomDraw"><title>Constants</title>
+<section id="sctConstantsClsCustomDraw" xreflabel="CustomDraw constants"><title>Constants</title>
 <indexterm><primary>constants</primary><secondary>CustomDraw class</secondary></indexterm>
 <indexterm><primary>CustomDraw class</primary><secondary>constants</secondary></indexterm>
 
 <para>
-
+  The Windows API for custom draw has a number of constant values used to specify varying things. There are constants used to
+  indicate the current stage of custom draw paint cycle, constants to use in replying to custom draw event notifications,
+  etc.. The <computeroutput>CustomDraw</computeroutput> class supplies the following <emphasis
+  role="italic">constant</emphasis> values to use with custom drawing. Note that, except where indicated, the CDRF_* response
+  codes can be combined together. The <xref linkend="mthOrClsDlgUtil"/> method can be used to combine values.
 </para>
 
 <variablelist>
-  <varlistentry id="cnstCDDS_PREPAINT" xreflabel="CDDS_PREPAINT"><term><emphasis role="bold">CDDS_PREPAINT</emphasis></term>
+  <varlistentry id="cnstCDDS_ITEMPREERASE" xreflabel="CDDS_ITEMPREERASE"><term><emphasis role="bold">CDDS_ITEMPREERASE</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_POSTPAINT" xreflabel="CDDS_POSTPAINT"><term><emphasis role="bold">CDDS_POSTPAINT</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_PREERASE" xreflabel="CDDS_PREERASE"><term><emphasis role="bold">CDDS_PREERASE</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_POSTERASE" xreflabel="CDDS_POSTERASE"><term><emphasis role="bold">CDDS_POSTERASE</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before an item is erased.
   </para>
   </listitem></varlistentry>
   <varlistentry id="cnstCDDS_ITEMPREPAINT " xreflabel="CDDS_ITEMPREPAINT "><term><emphasis role="bold">CDDS_ITEMPREPAINT </emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_ITEMPOSTPAINT" xreflabel="CDDS_ITEMPOSTPAINT"><term><emphasis role="bold">CDDS_ITEMPOSTPAINT</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_ITEMPREERASE" xreflabel="CDDS_ITEMPREERASE"><term><emphasis role="bold">CDDS_ITEMPREERASE</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before an item is drawn.
   </para>
   </listitem></varlistentry>
   <varlistentry id="cnstCDDS_ITEMPOSTERASE" xreflabel="CDDS_ITEMPOSTERASE"><term><emphasis role="bold">CDDS_ITEMPOSTERASE</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    after an item has been erased.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_ITEMPOSTPAINT" xreflabel="CDDS_ITEMPOSTPAINT"><term><emphasis role="bold">CDDS_ITEMPOSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent after
+    an item has been drawn.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_POSTERASE" xreflabel="CDDS_POSTERASE"><term><emphasis role="bold">CDDS_POSTERASE</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    when the erase cycle is complete.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_POSTPAINT" xreflabel="CDDS_POSTPAINT"><term><emphasis role="bold">CDDS_POSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent when the paint cycle is complete.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_PREERASE" xreflabel="CDDS_PREERASE"><term><emphasis role="bold">CDDS_PREERASE</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before the erase cycle begins.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_PREPAINT" xreflabel="CDDS_PREPAINT"><term><emphasis role="bold">CDDS_PREPAINT</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before the paint cycle begins.
   </para>
   </listitem></varlistentry>
   <varlistentry id="cnstCDDS_SUBITEMPREPAINT" xreflabel="CDDS_SUBITEMPREPAINT"><term><emphasis role="bold">CDDS_SUBITEMPREPAINT</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before a subitem is drawn. This only applies to list-view controls in report view.
   </para>
   </listitem></varlistentry>
   <varlistentry id="cnstCDDS_SUBITEMPOSTPAINT" xreflabel="CDDS_SUBITEMPOSTPAINT"><term><emphasis role="bold">CDDS_SUBITEMPOSTPAINT</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    after a subitem has been drawn. It is only sent for list-view controls in report view.
   </para>
   </listitem></varlistentry>
   <varlistentry id="cnstCDRF_DODEFAULT" xreflabel="CDRF_DODEFAULT"><term><emphasis role="bold">CDRF_DODEFAULT</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_NOTIFYITEMDRAW " xreflabel="CDRF_NOTIFYITEMDRAW "><term><emphasis role="bold">CDRF_NOTIFYITEMDRAW</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_NOTIFYPOSTPAINT " xreflabel="CDRF_NOTIFYPOSTPAINT "><term><emphasis role="bold">CDRF_NOTIFYPOSTPAINT</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_NEWFONT" xreflabel="CDRF_NEWFONT"><term><emphasis role="bold">CDRF_NEWFONT</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_SKIPDEFAULT" xreflabel="CDRF_SKIPDEFAULT"><term><emphasis role="bold">CDRF_SKIPDEFAULT</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    that the control should draw itself. The control will not send any more notification messages for the current paint
+    cycle. This response can not be combined with other response values.
   </para>
   </listitem></varlistentry>
   <varlistentry id="cnstCDRF_DOERASE" xreflabel="CDRF_DOERASE"><term><emphasis role="bold">CDRF_DOERASE</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    that the control should only draw the background.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NEWFONT" xreflabel="CDRF_NEWFONT"><term><emphasis role="bold">CDRF_NEWFONT</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    that the programmer has changed the font for the item being drawn. For list-view and tree-view custom draw, it should
+    also be used to indicate that the colors have been changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NOTIFYITEMDRAW " xreflabel="CDRF_NOTIFYITEMDRAW "><term><emphasis role="bold">CDRF_NOTIFYITEMDRAW</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    the control should send notification message for any item-specific drawing operations. The control will send
+    event notifications before and after it draws items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NOTIFYPOSTPAINT " xreflabel="CDRF_NOTIFYPOSTPAINT "><term><emphasis role="bold">CDRF_NOTIFYPOSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    the control should send a notification when the painting cycle for the entire control is complete.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_SKIPDEFAULT" xreflabel="CDRF_SKIPDEFAULT"><term><emphasis role="bold">CDRF_SKIPDEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw 8event handler. It indicates
+    that the control should not do any painting, the application will paint the entire control.
   </para>
   </listitem></varlistentry>
   <varlistentry id="cnstCDRF_SKIPPOSTPAINT" xreflabel="CDRF_SKIPPOSTPAINT"><term><emphasis role="bold">CDRF_SKIPPOSTPAINT</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    that the control should not draw the focus rectangle around an item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCLR_DEFAULT" xreflabel="CLR_DEFAULT"><term><emphasis role="bold">CLR_DEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    A special COLORREF value. COLORREFs are discussed in the documentation for both the <xref linkend="mthRGB"/> and <xref
+    linkend="mthColorRef"/> methods. The CLR_DEFAULT constant value is identical to the value returned either of those
+    methods when the CLR_DEFAULT keyword is used as the first argument to the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCLR_INVALID" xreflabel="CLR_INVALID"><term><emphasis role="bold">CLR_INVALID</emphasis></term>
+  <listitem>
+  <para>
+    A special COLORREF value. COLORREFs are discussed in the documentation for both the <xref linkend="mthRGB"/> and <xref
+    linkend="mthColorRef"/> methods. The CLR_INVALID constant value is identical to the value returned either of those
+    methods when the CLR_INVALID keyword is used as the first argument to the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCLR_NONE" xreflabel="CLR_NONE"><term><emphasis role="bold">CLR_NONE</emphasis></term>
+  <listitem>
+  <para>
+    A special COLORREF value. COLORREFs are discussed in the documentation for both the <xref linkend="mthRGB"/> and <xref
+    linkend="mthColorRef"/> methods. The CLR_NONE constant value is identical to the value returned either of those methods
+    when the CLR_NONE keyword is used as the first argument to the method.
   </para>
   </listitem></varlistentry>
 </variablelist>
 
 </section>
 
-<section id="mthCustomDraw"><title>customDraw</title>
+<section id="mthCustomDraw" xreflabel="customDraw"><title>customDraw</title>
 <indexterm><primary>customDraw</primary></indexterm>
 <indexterm><primary>CustomDraw class</primary><secondary>customDraw</secondary></indexterm>
 <programlisting>
@@ -4260,7 +4323,7 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 </variablelist>
 </section>  <!-- End CustomDraw::customDraw() -->
 
-<section id="mthCustomDrawControl"><title>customDrawControl</title>
+<section id="mthCustomDrawControl" xreflabel="customDrawControl"><title>customDrawControl</title>
 <indexterm><primary>customDrawControl</primary></indexterm>
 <indexterm><primary>CustomDraw class</primary><secondary>customDrawControl</secondary></indexterm>
 <programlisting>
@@ -4363,7 +4426,7 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 </variablelist>
 </section>  <!-- End CustomDraw::customDrawControl() -->
 
-<section id="mthRGB"><title>rgb</title>
+<section id="mthRGB" xreflabel="rgb"><title>rgb</title>
 <indexterm><primary>rgb</primary></indexterm>
 <indexterm><primary>CustomDraw class</primary><secondary>rgb</secondary></indexterm>
 <programlisting>

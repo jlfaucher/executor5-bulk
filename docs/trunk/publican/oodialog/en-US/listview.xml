@@ -7001,39 +7001,46 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary></indexterm>
 <para>
   A <computeroutput>LvCustomDrawSimple</computeroutput> object is used when a <link
-  linkend="clsListView">ListView</link> control is registered for <link linkend="clsCustomDraw">custom</link> draw. A
-  <computeroutput>LvCustomDrawSimple</computeroutput> object is passed to the CUSTOMDRAW event handler. It supplies both
-  information to the event handler and returns information back to the Windows control. The attributes of the object
-  convey the information both ways.
+  linkend="clsListView">ListView</link> control is registered for <emphasis role="italic">simple</emphasis> <link
+  linkend="clsCustomDraw">custom</link> draw. A <computeroutput>LvCustomDrawSimple</computeroutput> object is passed to the
+  CUSTOMDRAW event handler. It supplies both information to the event handler and returns information back to the Windows
+  control. The attributes of the object convey the information both ways.
 </para>
 <para>
-  When the ooDialog framework recieves information from the Windows custom draw control, it assigns values to the
-  attributes of the <computeroutput>LvCustomDrawSimple</computeroutput> object and sends the object to the Rexx dialog's
-  event handler. The programmer uses those values to determine what action to take and then assigns values to the
-  object's attributes to convey information back to the Windows control. The
-  <computeroutput>LvCustomDrawSimple</computeroutput> object is specific to the
-  <computeroutput>ListView</computeroutput> class. Other ooDialog controls that support custom draw have their own class
-  that performs a similar function, but whose attributes are specific to that control. For instance, the <link
-  linkend="clsTreeView">TreeView</link> class uses the <link linkend="clsTvCustomDrawSimple">TvCustomDrawSimple</link>
-  for its CUSTOMDRAW event handler.
+  When the ooDialog framework recieves information from the Windows custom draw control, it instantiates a
+  <computeroutput>LvCustomDrawSimple</computeroutput>object, assigns values to the attributes of the object, and sends the
+  object to the Rexx dialog's event handler. The programmer uses the assigned values to determine what action to take and
+  then assigns values to the object's attributes to convey information back to the Windows control. The
+  <computeroutput>LvCustomDrawSimple</computeroutput> object is specific to the <computeroutput>ListView</computeroutput>
+  class. Other ooDialog controls that support custom draw have their own class that performs a similar function, but whose
+  attributes are specific to that control. For instance, the <link linkend="clsTreeView">TreeView</link> class uses the <link
+  linkend="clsTvCustomDrawSimple">TvCustomDrawSimple</link> for its CUSTOMDRAW event handler.
 </para>
 
-<section id="evtListViewCustomDraw"><title>CustomDraw Event Handler</title>
+<section id="evtListViewCustomDraw" xreflabel="List-view CustomDraw Event Handler"><title>CustomDraw Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>CUSTOMDRAW</secondary></indexterm>
 <indexterm><primary>custom draw</primary><secondary>list-view control</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  When the list-view control is registered for <xref linkend="sctSimpleCustomDraw"/> custom draw, the event handler is
+  invoked when the draw stage is item prepaint. Depending on the response from the event handler to the item prepaint
+  notification, the event handler will also be invoked when the draw stage is subitem prepaint. For simple custom draw, the
+  ooDialog framework handles the other draw stages internally. It makes the appropriate response to the dialog control so
+  that the dialog control will send the item prepaint notifications. It is then up to the programmer to request that the
+  control send the subitem prepaint notifcations.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The single argument passed to the event handler is a <computeroutput>LvCustomdDrawSimple</computeroutput> object. The event
+  handler examines the values of the attributes of the object to determine the information sent by the underlying list-view
+  control. The event handler then assign values to the object that specify how the list-view control should draw the item, or
+  subitem. Finally, the programmer must always return true or false from the event handler.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onCustomDraw unguarded
-  use arg x, y, z
+  use arg lvcdSimple
 
-  return zz
+  return boolean
 ]]>
 </programlisting>
 
@@ -7041,10 +7048,10 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 1 argument:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>lvcdSimple</term>
     <listitem>
     <para>
       xx
@@ -7122,12 +7129,12 @@ that allows the user to remove the check mark from all the check boxes:
 </para>
 </section>
 
-<section id="mthNewClsLvCustomDrawSimple"><title>new (Class Method)</title>
+<section id="mthNewClsLvCustomDrawSimple" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>LvCustomDrawSimple class</secondary></indexterm>
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--><
+>>--new------------------------------------------><
 
 ]]>
 </programlisting>
