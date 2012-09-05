@@ -7137,7 +7137,7 @@ that allows the user to remove the check mark from all the check boxes:
     As an example, say the goal was to shade every other row in the list-view when in report mode. The event handler will be
     invoked before each item is to be painted. The programmer would examine the <xref linkend="atrItem"/> attrbute to
     determine if it was an odd or even row. If the row was even, the color attributes, <xref linkend="atrClrTextBk"/> and
-    <xref linkend="atrClrText"/>, would be set to the desired colors to shade the row. The <xref linkend="atrReply"/>
+    <xref linkend="atrClrText"/>, would be set to the desired colors to shade the row. The <xref linkend="atrReplyLV"/>
     attribute would be set to a response value that indicates to the list-view is to use the information in the object to
     draw the item, and the event handler would return true. If the row was odd, the event handler would simply return false
     to indicate that the list-view should draw the item itself. The following code snippet demonstrates this:
@@ -7268,7 +7268,7 @@ that allows the user to remove the check mark from all the check boxes:
 <entry>Reflects the 0-based index of the list-view item that needs to be drawn.</entry>
 </row>
 <row>
-<entry><xref linkend="atrReply"/> </entry>
+<entry><xref linkend="atrReplyLV"/> </entry>
 <entry>Reflects the <link linkend="sctConstantsClsCustomDraw">CDRF_*</link> response value that is used to reply to the event notification.</entry>
 </row>
 <row>
@@ -7459,7 +7459,7 @@ that allows the user to remove the check mark from all the check boxes:
     notifications internaly and the event handler only gets invoked for 2 of the draw stages. Because of this, the draw stage
     value will always be either <xref linkend="cnstCDDS_ITEMPREPAINT"/> or <xref linkend="cnstCDDS_SUBITEMPREPAINT"/>. In
     addtion, the value will only be CDDS_SUBITEMPREPAINT if the programmer has requested subitem notifications by setting
-    the <xref linkend="atrReply"/> attribute to <xref linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/> in response to an item prepaint
+    the <xref linkend="atrReplyLV"/> attribute to <xref linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/> in response to an item prepaint
     notification.
   </para>
   </listitem></varlistentry>
@@ -7726,7 +7726,7 @@ that allows the user to remove the check mark from all the check boxes:
 </variablelist>
 </section>  <!-- End LvCustomDrawSimple::item() [attribute]  -->
 
-<section id="atrReply" xreflabel="reply"><title>reply (Attribute)</title>
+<section id="atrReplyLV" xreflabel="reply"><title>reply (Attribute)</title>
 <indexterm><primary>reply</primary></indexterm>
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>reply</secondary></indexterm>
 <programlisting>
