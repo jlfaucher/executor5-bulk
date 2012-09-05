@@ -1185,7 +1185,6 @@ void standardConditionMsg(RexxThreadContext *c, RexxDirectoryObject condObj, Rex
  */
 bool checkForCondition(RexxThreadContext *c, bool clear)
 {
-    //printf("In checkForCondition() condition ?=%d\n", c->CheckCondition());
     if ( c->CheckCondition() )
     {
         RexxCondition condition;

@@ -412,6 +412,40 @@ void *wrongReplyListException(RexxThreadContext *c, const char *mName, const cha
  *
  *  900 User message.
  *
+ *  The reply from the event handler, ('mName',) must be in the range 'min' to
+ *  'max'; found 'actual'
+ *
+ *  The reply from the event handler (onSysCommand) must be in the range
+ *  –2147483648 to 2147483647; found Tom
+ *
+ * @param c      The thread context we are operating under.
+ * @param mName  The method name of the event handler
+ * @param min    The minimum value allowed.
+ * @param max    The maximum value allowed.
+ * @param actual Actual reply object
+ *
+ * @return Pointer to void, could be used in the return statement of a method
+ *         to return NULLOBJECT after the exeception is raised.
+ *
+ * @notes  This exception is meant to be used when the reply from a Rexx event
+ *         handler is incorrect.
+ */
+void *wrongReplyRangeException(RexxThreadContext *c, const char *mName, int32_t min, int32_t max, RexxObjectPtr actual)
+{
+    TCHAR buffer[512];
+    _snprintf(buffer, sizeof(buffer), "The reply from the event handler (%s) must be in the range %I32d to %I32d; found %s",
+              mName, min, max, c->ObjectToStringValue(actual));
+    return executionErrorException(c, buffer);
+}
+
+/**
+ *  Error 98.900
+ *
+ *  98 The language processor detected a specific error during execution. The
+ *  associated error gives the reason for the error.
+ *
+ *  900 User message.
+ *
  *  The reply from the event handler, ('mName,) 'msg'
  *
  *  The reply from the event handler (onUserString) can only be .nil if the DTP

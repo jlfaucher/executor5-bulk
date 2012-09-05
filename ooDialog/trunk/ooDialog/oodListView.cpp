@@ -313,8 +313,8 @@ static int getColumnWidthArg(RexxMethodContext *context, RexxObjectPtr _width, s
  * This function gets the Rexx object stored by the user, translating it to the
  * LvFullRow object if needed.
  *
- * TODO However, if it is a LvFullRow object and the list-view item lParam is
- * not null, then we *should* return that.
+ * TODO It would be nice to allow the user to store an additional user data item
+ * when the lParam is a LvFullRow ... ?
  *
  * @param lvi Pointer to a LVITEM struct.
  *
@@ -340,6 +340,20 @@ static RexxObjectPtr getLviUserData(LVITEM *lvi)
 }
 
 
+/**
+ * Translates a list-view item lParam to a Rexx object.
+ *
+ * Some of the list-view related APIs pass the lParam value directly. If, this
+ * value is not 0, it is a value stored by ooDialog.  Normally this is a Rexx
+ * object. But, for a LvFullRow object we store the CSelf pointer instead.
+ *
+ * This function checks for that and returns the LvFullRow Rexx object, rather
+ * than the CSelf pointer.
+ *
+ * @param lParam
+ *
+ * @return The Rexx object that is the lParam.
+ */
 RexxObjectPtr lviLParam2UserData(LPARAM lParam)
 {
     RexxObjectPtr result = TheNilObj;
@@ -348,15 +362,7 @@ RexxObjectPtr lviLParam2UserData(LPARAM lParam)
     {
         if ( isLvFullRowStruct((void *)(lParam)) )
         {
-            pCLvFullRow pclvfr = (pCLvFullRow)lParam;
-            if ( pclvfr->subItems[0]->lParam != 0 )
-            {
-                result = (RexxObjectPtr)pclvfr->subItems[0]->lParam;
-            }
-            else
-            {
-                result = pclvfr->rexxSelf;
-            }
+            result = ((pCLvFullRow)lParam)->rexxSelf;
         }
         else
         {
@@ -486,6 +492,61 @@ done_out:
 
 
 /**
+ * A list view item sort callback function that sorts the list-view here, using
+ * string compares.
+ *
+ * @param lParam1
+ * @param lParam2
+ * @param lParamSort
+ *
+ * @return int32_t
+ *
+ * @remarks  The Rexx programmer will have had to set the lParam user data field
+ *           to a LvFullRow item. If not, we simply return 0 and no sorting is
+ *           done.
+ *
+ *           If lParam1 or lParam2 is null, indicating the user did not set a
+ *           data value for the item, we simpley return 0.
+ */
+int32_t CALLBACK LvInternCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+{
+    if ( lParam1 == NULL || lParam2 == NULL )
+    {
+        return 0;
+    }
+
+    if ( ! (isLvFullRowStruct((void *)(lParam1)) && isLvFullRowStruct((void *)(lParam2)))  )
+    {
+        return 0;
+    }
+
+    uint16_t col = LOWORD(lParamSort);
+
+    pCLvFullRow pclvfr1 = (pCLvFullRow)lParam1;
+    pCLvFullRow pclvfr2 = (pCLvFullRow)lParam2;
+
+    switch ( HIWORD(lParamSort) )
+    {
+        case lvSortAscending :
+            return strcmp(pclvfr1->subItems[col]->pszText, pclvfr2->subItems[col]->pszText);
+
+        case lvSortAscendingI :
+            return stricmp(pclvfr1->subItems[col]->pszText, pclvfr2->subItems[col]->pszText);
+
+        case lvSortDescending :
+            return strcmp(pclvfr2->subItems[col]->pszText, pclvfr1->subItems[col]->pszText);
+
+        case lvSortDescendingI :
+            return stricmp(pclvfr2->subItems[col]->pszText, pclvfr1->subItems[col]->pszText);
+
+        default :
+            break;
+    }
+    return 0;
+}
+
+
+/**
  * A list view item sort callback function that works by invoking a method in
  * the Rexx dialog that does the actual comparison.
  *
@@ -504,6 +565,11 @@ done_out:
  *           window message processing thread, so we do no need to worry about
  *           doing an AttachThread(), with its subsequent problems of how to do
  *           a DetachThread().
+ *
+ *           Testing also shows that doing ReleaseLocalReference, significantly
+ *           increases the time it takes to sort 1000 items.  Using the elapsed
+ *           time count in the the Rexx shows shows an increase from 4.9 seconds
+ *           to 6.9 seconds.
  */
 int32_t CALLBACK LvRexxCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 {
@@ -512,28 +578,190 @@ int32_t CALLBACK LvRexxCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParam
         return 0;
     }
 
+    RexxObjectPtr lp1 = lviLParam2UserData(lParam1);
+    RexxObjectPtr lp2 = lviLParam2UserData(lParam2);
+
     pCRexxSort pcrs = (pCRexxSort)lParamSort;
     RexxThreadContext *c = pcrs->threadContext;
 
-    RexxArrayObject args = c->ArrayOfThree((RexxObjectPtr)lParam1, (RexxObjectPtr)lParam2, pcrs->param);
+    RexxArrayObject args = c->ArrayOfThree(lp1, lp2, pcrs->param);
 
     RexxObjectPtr reply = c->SendMessage(pcrs->rexxDlg, pcrs->method, args);
+    // c->ReleaseLocalReference(args);
+
     if ( msgReplyIsGood(c, pcrs->pcpbd, reply, pcrs->method, false) )
     {
         int32_t answer;
         if ( c->Int32(reply, &answer) )
         {
+            // c->ReleaseLocalReference(reply);
             return answer;
         }
 
-        // Not sure what raising a condition here will do ...
-        wrongReplyListException(c, pcrs->method, "-1, 0, or 1", reply);
+        // We end the dialog on this error.
+        wrongReplyRangeException(c, pcrs->method, INT32_MIN, INT32_MAX, reply);
+        c->ReleaseLocalReference(reply);
+
+        pCPlainBaseDialog pcpbd = dlgToCSelf(c, pcrs->rexxDlg);
+        endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+    }
+    else
+    {
+        if ( reply != NULLOBJECT )
+        {
+            c->ReleaseLocalReference(reply);
+        }
     }
 
     // There was some error if we are here ...
     return 0;
 }
 
+/**
+ * Set up for ListView::sortItems() when the user indicates the sort should be
+ * done internally.
+ *
+ * The user can specify which column to sort on, whether to sort ascending or
+ * desxending, and whethere to sort ignoring case or not.
+ *
+ * The default is to sort on column 0, ascending, case sensitive.
+ *
+ * The user changes the default with a directory object whose indexes: COLUMN,
+ * ASCENDING, and CASELESS are checked.  A missing index uses the default,
+ *
+ * Ascending and caseless must be boolean, column must be a non-negative whole
+ * number.
+ *
+ * @param c
+ * @param sortInfo
+ * @param pcdc
+ *
+ * @return logical_t
+ */
+logical_t internalListViewSort(RexxMethodContext *c, RexxObjectPtr sortInfo, pCDialogControl pcdc)
+{
+    LPARAM sortValue = 0;
+
+    if ( sortInfo == NULLOBJECT )
+    {
+        sortValue = MAKELPARAM(0, lvSortAscending);
+    }
+    else
+    {
+        if ( ! c->IsOfType(sortInfo, "DIRECTORY") )
+        {
+            wrongClassException(c->threadContext, 2, "Directory");
+            goto err_out;
+        }
+
+        RexxDirectoryObject info = (RexxDirectoryObject)sortInfo;
+
+        logical_t ascending = TRUE;
+        logical_t caseless  = FALSE;
+        uint32_t  col       = 0;
+
+        RexxObjectPtr obj = c->DirectoryAt(info, "ASCENDING");
+        if ( obj != NULLOBJECT )
+        {
+            if ( ! c->Logical(obj, &ascending) )
+            {
+                directoryIndexExceptionList(c->threadContext, 2, "Ascending", "true or false", obj);
+                goto err_out;
+            }
+        }
+
+        obj = c->DirectoryAt(info, "CASELESS");
+        if ( obj != NULLOBJECT )
+        {
+            if ( ! c->Logical(obj, &caseless) )
+            {
+                directoryIndexExceptionList(c->threadContext, 2, "CASELESS", "true or false", obj);
+                goto err_out;
+            }
+        }
+
+        obj = c->DirectoryAt(info, "COLUMN");
+        if ( obj != NULLOBJECT )
+        {
+            if ( ! c->UnsignedInt32(obj, &col) )
+            {
+                directoryIndexExceptionMsg(c->threadContext, 2, "COLUMN", "must be a non-negative whole number", obj);
+                goto err_out;
+            }
+
+            uint32_t count = (uint32_t)getColumnCount(pcdc->hCtrl);
+            if ( col >= count  )
+            {
+                wrongRangeException(c->threadContext, 2, 0, count - 1, col);
+                goto err_out;
+            }
+        }
+
+        if ( ascending )
+        {
+            sortValue = MAKELPARAM(col, caseless ? lvSortAscendingI : lvSortAscending);
+        }
+        else
+        {
+            sortValue = MAKELPARAM(col, caseless ? lvSortDescendingI : lvSortDescending);
+        }
+    }
+
+    return ListView_SortItems(pcdc->hCtrl, LvInternCompareFunc, sortValue);
+
+err_out:
+    return FALSE;
+}
+
+
+/**
+ * Sets things up for a list-view sort when the comparison function will invoke
+ * a method in the Rexx dialog to do the actual sorting.
+ *
+ * @param context
+ * @param sortInfo
+ * @param pcdc
+ *
+ * @return logical_t
+ *
+ * @note Testing shows that using a method in the Rexx dialog to do the sort
+ *       works well and seems fast with a smallish number of list-view items.
+ *       However, with large lists it is slow.  This can be seen with lists
+ *       containing a 1000 item.
+ */
+logical_t rexxListViewSort(RexxMethodContext *context, CSTRING method, RexxObjectPtr sortInfo, pCDialogControl pcdc)
+{
+    pCRexxSort pcrs = pcdc->pcrs;
+    if ( pcrs == NULL )
+    {
+        pcrs = (pCRexxSort)LocalAlloc(LPTR, sizeof(CRexxSort));
+        if ( pcrs == NULL )
+        {
+            outOfMemoryException(context->threadContext);
+            return FALSE;
+        }
+        pcdc->pcrs = pcrs;
+    }
+
+    safeLocalFree(pcrs->method);
+    memset(pcrs, 0, sizeof(CRexxSort));
+
+    pcrs->method = (char *)LocalAlloc(LPTR, strlen(method) + 1);
+    if ( pcrs->method == NULL )
+    {
+        outOfMemoryException(context->threadContext);
+        return FALSE;
+    }
+
+    strcpy(pcrs->method, method);
+    pcrs->pcpbd         = pcdc->pcpbd;
+    pcrs->rexxDlg       = pcdc->pcpbd->rexxSelf;
+    pcrs->rexxLV        = pcdc->rexxSelf;
+    pcrs->threadContext = pcdc->pcpbd->dlgProcContext;
+    pcrs->param         = (argumentExists(2) ? sortInfo : TheNilObj);
+
+    return ListView_SortItems(pcdc->hCtrl, LvRexxCompareFunc, pcrs);
+}
 
 /** ListView::add()
  *
@@ -2212,36 +2440,14 @@ RexxMethod3(logical_t, lv_sortItems, CSTRING, method, OPTIONAL_RexxObjectPtr, pa
         return FALSE;
     }
 
-    pCRexxSort pcrs = pcdc->pcrs;
-    if ( pcrs == NULL )
+    if ( stricmp(method, "InternalListViewSort") == 0 )
     {
-        pcrs = (pCRexxSort)LocalAlloc(LPTR, sizeof(CRexxSort));
-        if ( pcrs == NULL )
-        {
-            outOfMemoryException(context->threadContext);
-            return FALSE;
-        }
-        pcdc->pcrs = pcrs;
+        return internalListViewSort(context, param, pcdc);
     }
-
-    safeLocalFree(pcrs->method);
-    memset(pcrs, 0, sizeof(CRexxSort));
-
-    pcrs->method = (char *)LocalAlloc(LPTR, strlen(method) + 1);
-    if ( pcrs->method == NULL )
+    else
     {
-        outOfMemoryException(context->threadContext);
-        return FALSE;
+        return rexxListViewSort(context, method, param, pcdc);
     }
-
-    strcpy(pcrs->method, method);
-    pcrs->pcpbd         = pcdc->pcpbd;
-    pcrs->rexxDlg       = pcdc->pcpbd->rexxSelf;
-    pcrs->rexxLV        = pcdc->rexxSelf;
-    pcrs->threadContext = pcdc->pcpbd->dlgProcContext;
-    pcrs->param         = (argumentExists(2) ? param : TheNilObj);
-
-    return ListView_SortItems(pcdc->hCtrl, LvRexxCompareFunc, pcrs);
 }
 
 /** ListView::stringWidthPX()

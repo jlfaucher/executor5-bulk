@@ -166,6 +166,8 @@ typedef CLvCustomDrawSimple *pCLvCustomDrawSimple;
 
 enum FullRowOp {lvfrAdd, lvfrPrepend, lvfrInsert};
 
+enum LvSortOpt {lvSortAscending = 1, lvSortAscendingI, lvSortDescending, lvSortDescendingI};
+
 #define LVFULLROW_MAGIC              0xCafeDeaf  // Magic number to identify a CLvFullRow struct
 #define LVFULLROW_DEF_SUBITEMS       10          // Initial size of the subItems array
 
