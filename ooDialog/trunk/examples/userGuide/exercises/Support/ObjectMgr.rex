@@ -177,13 +177,11 @@ call "RequiresList.rex"
     use arg modelClass, modelInstance, parentDlg
     say "ObjectMgr-showModel-01a - modelNames:" modelClass modelInstance
     say "ObjectMgr-showModel-01b - parentDlg: " parentDlg
-    --componentId = self~getComponentId(modelClass, modelInstance)
     --say "ObjectMgr-showModel-02 - modelClass: '"||modelClass||"';  modelInstance: '"||modelInstance||"'"
     -- If this is an "anonymous" component (instance name "A"|"a"), ask it for an instance name:
     if modelInstance = "A" | modelInstance = "a" then do
       anonModelClass = "."||modelClass
       interpret "modelInstance = "||anonModelClass||"~getInstanceName"
-      --modelInstance = .CustomerListModel~getInstanceName()
       say "ObjectMgr-showModel-02 - modelInstance: " modelInstance
     end
     modelId = self~getComponentId(modelClass, modelInstance)
@@ -216,11 +214,8 @@ call "RequiresList.rex"
     interpret "targetObject =" viewClassId
     say "ObjectMgr-showModel-05: parentDlg =" parentDlg
     msg = .Message~new(targetObject, "newInstance", "I", modelId, parentDlg)
-    --msg = .Message~new(.CustomerView, "newInstance", "I", modelId, parentDlg)
     --say "ObjectMgr-showModel-06: Class is:" .CustomerView .ObjectMgr
     viewId = msg~send
-    --viewId = .PersonView~newInstance(modelId)
-    --viewId = .CustomerView~newInstance(modelId, parentDlg)
     say "ObjectMgr-showModel-07 - viewId:" viewId
 
     self~addView(modelClass, modelInstance, viewClass, viewId)

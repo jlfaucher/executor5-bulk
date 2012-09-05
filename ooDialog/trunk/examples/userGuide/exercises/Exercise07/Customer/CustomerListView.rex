@@ -225,32 +225,17 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD loadList
-    expose lvCustomers modelData
-    -- modelData is a 2D array, where row 1 compriaes the column names.
-
-    --objectMgr = .local~my.ObjectMgr					-- Ex07
-    --custDataId = objectMgr~getComponentId("CustomerData", "The")	-- Ex07
-    --arr = custDataId~queryAll()						-- Ex07
-
-    say "CustomerListView-loadList-01: dataArray =" modelData
-    rows = modelData~dimension(1)			-- Ex07 - number of rows
-    say "CustomerListView-loadList-02:Dims =" modelData~dimension(1) modelData~dimension(2)
-
-    do i = 2 to rows				-- Ex07 - omit the header line.
-      say "CustomerListView-loadList-02: arr[i,1 =" modelData[i,1]
-      lvCustomers~addRow( , ,modelData[i,1],modelData[i,2],modelData[i,5])
+    expose lvCustomers modelData					-- Ex07
+    say "CustomerListView-LoadList-00: modelData =" modelData
+    -- modelData is a directory.
+    say "CustomerListView-loadList-01: No Records =" modelData[count]
+    rows = modelData[count]				-- Ex07 - number of rows
+    arrData = modelData[records]
+    say "CustomerListView-loadList-02:Dims =" arrData~dimension(1) arrData~dimension(2)
+    do i = 1 to rows				-- Ex07 - omit the header line.
+      say "CustomerListView-loadList-02: arr[i,1 =" arrData[i,1]
+      lvCustomers~addRow( , ,arrData[i,1],arrData[i,2],arrData[i,5])
     end
-    /*
-    lvCustomers~addRow( , ,"CU001", "ABC Inc.",   "TX 20152")
-    lvCustomers~addRow( , ,"CU002", "Frith Inc.", "CA 30543")
-    lvCustomers~addRow( , ,"CU003", "LMN & Co",   "NY 47290-1201")
-    lvCustomers~addRow( , ,"CU005", "EJ Smith",   "NJ 12345")
-    lvCustomers~addRow( , ,"CU010", "Red-On Inc.","AZ 12345")
-    lvCustomers~addRow( , ,"AB15784", "Joe Bloggs & Co Ltd","LB7 4EJ")
-    */
-    /*do i = 1 to 50
-      lvCustomers~addRow(i, , "Line" i, i)
-    end*/
     lvCustomers~setColumnWidth(1)	-- set width of 2nd column to longest text entry.
 
 /*============================================================================*/

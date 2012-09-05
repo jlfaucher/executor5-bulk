@@ -448,17 +448,17 @@
 
 ::ROUTINE sendMsg
   use arg targetObject, targetMethod, data
-  say "sendMsg-01 - targetObject targetMethod data =" targetObject targetMethod data
+  say "MessageSender-sendMsg-01: targetObject targetMethod data =" targetObject targetMethod data
   SIGNAL ON SYNTAX NAME catchIt1
   SIGNAL ON NOMETHOD NAME catchIt2
   msg = .Message~new(targetObject, targetMethod, i, data)
   response = msg~send
-  say "sendMsg-02. response =" response
+  say "MessageSender-sendMsg-02: response =" response
   return response
-  catchIt1: say "CaughtIt1."
+  catchIt1: say "MessageSender-sendMsg-03: CatchIt1 - Syntax."
   SIGNAL OFF SYNTAX
   return "SendMsg - Syntax Error"
-  catchIt2: say "CaughtIt2."
+  catchIt2: say "MessageSender-sendMsg-04: CatchIt2 - NoMethod."
   SIGNAL OFF NOMETHOD
   return "SendMsg - No Method"
 /*============================================================================*/

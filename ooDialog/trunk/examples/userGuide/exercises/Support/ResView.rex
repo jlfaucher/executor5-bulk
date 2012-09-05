@@ -36,20 +36,20 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide - Exercise07
 
-   Support - RcView						 v00-02  09Aug12
+   Support - ResView						 v00-01  21Aug12
    ----------------
    A simple superclass class for the Model-View framework.
-   Code is idential to that in ResView.
+   Code is idential to that in RcView.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-  --say "RcView."
+  --say "ResView."
 ::REQUIRES "ooDialog.cls"
 --::REQUIRES "ObjectMgr.rex"
 
 /*============================================================================*/
 
-::CLASS 'RcView' SUBCLASS RcDialog PUBLIC
+::CLASS 'ResView' SUBCLASS ResDialog PUBLIC
 
   --::ATTRIBUTE offsetParentDlg
   ::ATTRIBUTE viewMgr
@@ -60,7 +60,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     expose objectMgr
-    say "RcView-init-01."
+    say "ResView-init-01."
     forward class (super) continue
     objectMgr = .local~my.ObjectMgr	-- Needed to clear up when dialog closed.
     self~viewMgr = .local~myViewMgr
@@ -75,14 +75,14 @@
     expose viewClass viewInstance
     use arg modelId
     -- Get View Instance name and View Class for tidy-up when dialog is closed.
-    say ".RcView~activate-01: class = " viewClass
+    say ".ResView~activate-01: class = " viewClass
     viewInstance = self~identityHash
     dlgName = self~objectName
-    say ".RcView~activate-02: dlgName = " dlgName
-    parse var dlgName . viewClass
-    say ".RcView~activate-03: class name = '"||viewClass||"'"
-    say ".RcView-activate-04: viewInstance =" viewInstance
-    say ".RcView-activate-05: modelId =" modelId
+    say ".ResView~activate-02: dlgName = " dlgName
+    parse var dlgName "a " viewClass
+    say ".ResView~activate-03: class name = '"||viewClass||"'"
+    say ".ResView-activate-04: viewInstance =" viewInstance
+    say ".ResView-activate-05: modelId =" modelId
     modelData = modelId~query
     return modelData
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

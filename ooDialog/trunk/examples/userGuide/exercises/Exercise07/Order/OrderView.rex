@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: The OrderView class				  v01-00 07Jun12
+   Exercise 07: The OrderView class				  v01-01 25Aug12
 
    OrderFormView.rex
 
@@ -49,7 +49,8 @@
    Outstanding Problems: None reported.
 
    Changes:
-     v01-00 07Jun12: First Version
+     v01-00 07Jun12: First Version (Exercise06)
+     v01-01 25Aug12: Ex07 - changed to use the MVF.
 
 ------------------------------------------------------------------------------*/
 
@@ -58,28 +59,29 @@
 
 
 ::REQUIRES "ooDialog.cls"
-::REQUIRES "Order\OrderModelData.rex"
+::REQUIRES "Order\OrderModelsData.rex"
+::REQUIRES "..\Support\RcView.rex"
 
 
 /*==============================================================================
-  OrderView							  v01-00 07Jun12
+  OrderView							  v01-01 25Aug12
   -------------
   The "view" (or "gui") part of the Order component - part of the sample
   Order Management application.
 
   Changes:
     v01-00 07Jun12: First Version.
-
+    v01-01 25Aug12: Ex07 - changed to use the MVF.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderView SUBCLASS RcDialog PUBLIC
+::CLASS OrderView SUBCLASS RcView PUBLIC				-- Ex07
 
   ::METHOD newInstance CLASS PUBLIC
-    expose rootDlg
-    use arg rootDlg, orderNo
+    use strict arg idModel, rootDlg					-- Ex07
     say ".OrderView-newInstance: rootDlg =" rootDlg
     dlg = self~new("Order\OrderView.rc", "IDD_ORDER_DIALOG")
-    dlg~activate(rootDlg, orderNo)
+    dlg~activate(idModel, rootDlg)					-- Ex07
+    return dlg								-- Ex07
 
   /*----------------------------------------------------------------------------
     Dialog Setup Methods
@@ -110,24 +112,50 @@
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD activate unguarded
-    use arg rootDlg
+  ::METHOD activate UNGUARDED
+    expose rootDlg orderData
+    use strict arg idModelInstance, rootDlg				-- Ex07
+    forward class (super) continue		-- Ex07 - MVF: required to get Model's data
+    orderData = RESULT				-- Ex07 - MVF: model's data returned by super
+    say "OrderView-activate-00: orderData = " orderData
+
     -- Shows the Dialog - i.e. makes it visible to the user.
-    say "OrderView-activate-01"
+    say "OrderView-activate-01: OrderNumber = " orderData["OrderNo"] orderData~orderNo
+    -- OrderNo SO-3456
+    -- CustNo BA0314
+    -- Disc 0
+    -- Cmtd Y
+    -- Date 120527
     if rootDlg = "SA" then self~execute("SHOWTOP","IDI_ORDER_DLGICON")
     else self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_ORDER_DLGICON")
-    return
+    return self								-- Ex07
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
     -- Called by ooDialog after SHOWTOP.
-    expose menuBar custControls
+    expose menuBar orderControls orderData				-- Ex07
     say "OrderView-initDialog-01"
 
     menuBar~attachTo(self)
 
-    return
+    orderControls = .Directory~new
+    orderControls[ecOrderNameAddr] = self~newEdit(          "IDC_ORDER_NAMEADDR")
+    orderControls[dtOrderDate]     = self~newDateTimePicker("IDC_ORDER_DATE"    )
+    orderControls[ecOrderNo]       = self~newEdit(          "IDC_ORDER_ORDNO"   )
+    orderControls[ecCustNo]        = self~newEdit(          "IDC_ORDER_CUSTNO"  )
+    orderControls[ecOrderItems]    = self~newListView(      "IDC_ORDER_ITEMS"   )
+    orderControls[ecOrder]         = self~newListView(      "IDC_ORDER_ITEMS"   )
+    orderControls[stNetCost]       = self~newStatic(        "IDC_ST_NET"        )
+    orderControls[stDiscountPC]    = self~newStatic(        "IDC_ST_DISCOUNT_PC")
+    orderControls[stDiscount]      = self~newStatic(        "IDC_ST_DISCOUNT"   )
+    orderControls[stTaxPC]         = self~newStatic(        "IDC_ST_TAX_PC"     )
+    orderControls[stTax]           = self~newStatic(        "IDC_ST_TAX"        )
+    orderControls[stTotal]         = self~newStatic(        "IDC_ST_TOTAL"      )
+
+
+    self~showData
+
 
   /*----------------------------------------------------------------------------
     Event-Handler Methods - Menu Events
@@ -145,6 +173,27 @@
   ::METHOD noMenuFunction UNGUARDED
     use arg title
     ret = MessageDialog(.HRSov~NoMenu, self~hwnd, title, 'WARNING')
+
+
+  /*----------------------------------------------------------------------------
+    Application Methods
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD showData
+    expose orderControls orderData
+    say "--------------------"
+    say "OrderView-showData-00: contents of orderData:"
+    do i over orderdata
+      say i orderData[i]
+    end
+    --say "orderData['CustNo']:" orderData['CustNo']  -- orderData~CustNo, orderData~'CustNo' - neither work.
+    --say "--------------------"
+
+    orderControls[ecOrderNo]~setText(orderData["OrderNo"])
+    --orderControls[] = self~newEdit("IDC_ORDER_NAMEADDR")
+    --orderControls[ecOrderItems]    = self~newListView("IDC_ORDER_ITEMS")
+    --orderControls[ecOrderNo]       = self~newListView("IDC_ORDER_ORDNO")
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     -- "Cancel" - This method over-rides the default Windows action of

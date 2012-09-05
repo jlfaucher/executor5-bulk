@@ -49,8 +49,8 @@
 
 ::CLASS 'Model' PUBLIC
 
-  ::ATTRIBUTE myData
   ::ATTRIBUTE wantList     CLASS PUBLIC		-- for List subclasses
+  ::ATTRIBUTE myData
   --::ATTRIBUTE instanceName CLASS PUBLIC		-- for Anonymous subclasses
 
   /*----------------------------------------------------------------------------
@@ -62,7 +62,6 @@
     say ".Model-newInstance-01."
     -- Check that the model's Data object is up and running. If not, then return .false:
     if noDataError = .true then return .false
-
     -- Now get the name of the Data component (FredModel or FredListModel --> FredData):
     -- Get my root name (i.e. the root name of the subclass):
     className = self~objectName		-- objectName for a class Foo is "The Foo class"
@@ -88,9 +87,10 @@
     -- Got my data id, now get data for this model instance.
     -- But distinguish between Entity Models and List Models - the former needs
     -- a single record, the latter a group of records.
-    say ".Model-newInstance-05: getAllRecords =" getAllRecords
-    if getAllRecords then myData = myDataId~queryAll()	-- retruns an array
-    else myData = myDataId~find(instanceName)		-- a directory
+    -- say ".Model-newInstance-05a: getAllRecords =" getAllRecords
+    if getAllRecords then myData = myDataId~getFile()	-- returns a 2D array
+    else myData = myDataId~getRecord(instanceName)		-- a directory
+    -- say ".Model-newInstance-05b: array dimensions: =" myData~dimension
     if myData = .false then return .false	-- if ID (key) not found
     -- All is well, then make new instance:
     say ".Model-newInstance-06: myData =" myData
@@ -109,6 +109,58 @@
     return anonInstanceName
 
 
+  /*----------------------------------------------------------------------------
+    query - returns Customer data.
+            Standard protocol:
+            Accept a .nil, directory, array, or string of names.
+            if .nil then return all fields; else return values for the names in
+            the directory, array, or string. String is assumed to be data
+            names separated by one or more spaces.
+            All returns are a Directory containing names and values.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD query PUBLIC
+    use arg dataNames
+    say "Model-query-01: dataNames:" dataNames
+    dirReturn = .Directory~new
+    say "Model-query-01a: args =" arg()
+    select
+      when arg() = 0 then do
+        return self~myData
+      end
+
+      -- Caller is requesting specific data items:
+      when dataNames~isa(.Directory) then do
+        do i over dataNames
+      	  dirReturn[i] = self~dirData[i]
+        end
+      end
+
+      when dataNames~isa(.Array) then do
+        do i over dataNames
+          say "Model-query-03: dataNames: '"||dataNames"'"
+          dirReturn[i] = self~dirData[i]
+        end
+      end
+
+      -- dataNames must be separated by a *single* space.
+      when dataNames~isa(.String) then do
+        dataNames = dataNames~strip
+        --say "Model-query-04: dataNames: '"||dataNames"'"
+        n = dataNames~countStr(" ")+1
+        do i = 1 to n
+          parse var dataNames name " " dataNames
+          if name = " " then iterate     -- ignore extraneous leading spaces.
+          --say "Model-query-05: name: '"name"'"
+          dirReturn[name] = self~dirData[name]
+        end
+      end
+
+      otherwise return .false
+    end
+
+    return dirReturn
+
+/*============================================================================*/
 
 
 /*============================================================================*/

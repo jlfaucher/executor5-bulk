@@ -34,18 +34,22 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide
-   Exercise06: The Product List View				  v01-00 06Jun12
+/* ooDialog User Guide - Exercise07
 
-   Contains: classes "ProductListView, HRSplv (for human-readable strings)
+  ProductListView						  v02-00 21Aug12
+  -------------
+  The view of a list of products.
 
-   Pre-requisites: ProductListView.rc, ProductListView.h, ProdList.ico
+  Changes:
+    v01-00 06Jun12: First version
+    v02-00 21Aug12: Modified for Exercise07 to use the Model-View Framework.
 
-   Description: An "intermediate" component - called by OrderMgr,
+  Contains: classes "ProductListView, HRSplv (for human-readable strings)
+
+  Pre-requisites: ProductListView.rc, ProductListView.h, ProdList.ico
+
+  Description: An "intermediate" component - called by OrderMgr,
                 invokes "ProductView".
-
-   Changes:
-   v01-00 06Jun12: First version.
 
    Outstanding Problems: None reported.
 *******************************************************************************/
@@ -55,30 +59,33 @@
 
 ::REQUIRES "ooDialog.cls"
 ::REQUIRES "Product\ProductView.rex"
+::REQUIRES "..\Support\RcView.rex"
 
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ProductListView						  v01-00 06Jun12
+  ProductListView						  v02-00 21Aug12
   -------------
   The view of a list of products.
   Changes:
-    v01-00: First version
-
+    v01-00 06Jun12: First version
+    v02-00 21Aug12: Modified to use the Model-View Framework.
+    		    Comment "Ex07" shows where changes from Ex06 have been made.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS ProductListView SUBCLASS RcDialog PUBLIC
+::CLASS ProductListView SUBCLASS RcView PUBLIC
 
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD newInstance CLASS PUBLIC
-    use arg rootDlg
+    use arg idModel, rootDlg						-- Ex07
     --say ".ProductListView-newInstance-01: rootDlg =" rootDlg
     dlg = self~new("Product\ProductListView.rc", "IDD_PRODLIST_DIALOG")
     --say ".ProductListView-newInstance-02."
-    dlg~activate(rootDlg)
+    dlg~activate(idModel,rootDlg)					-- Ex07
+    return dlg								-- Ex07
 
 
   /*----------------------------------------------------------------------------
@@ -108,21 +115,22 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate unguarded
-    expose rootDlg
-    use arg rootDlg
+    expose rootDlg modelData idModel						-- Ex07
+    use arg idModelInstance, rootDlg					-- Ex07
+    forward class (super) continue		-- Ex07: required to get Model's data
+    modelData = RESULT				-- Ex07: model's data returned by super
     --say "ProductListView-activate-01: root =" root
-
     if rootDlg = "SA" then do			-- If standalone operation required
       rootDlg = self				      -- To pass on to children
       self~execute("SHOWTOP","IDI_PRODLIST_DLGICON")
     end
     else self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_PRODLIST_DLGICON")
-    return
+    return self								-- Ex07
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
-    expose menuBar lvProducts btnShowProduct
+    expose menuBar lvProducts btnShowProduct modelData idModel		-- Ex07
     -- Called by ooDialog after SHOWTOP.
 
     menuBar~attachTo(self)
@@ -130,13 +138,16 @@
     --say "ProductListView-initDialog-01"; say
     lvProducts = self~newListView("IDC_PRODLIST_LISTVIEW");
     lvProducts~addExtendedStyle(GRIDLINES FULLROWSELECT)
-    lvProducts~insertColumnPX(0,"Number",60,"LEFT")
-    lvProducts~insertColumnPX(1,"Name",150,"LEFT")
-    lvProducts~insertColumnPX(2,"Zip",50,"LEFT")
+    lvProducts~insertColumnPX(0,"Number", 60,"LEFT")
+    lvProducts~insertColumnPX(1,"Name",  160,"LEFT")
+    lvProducts~insertColumnPX(2,"Price",  50,"RIGHT")			-- Ex07 (Right-adjust)
+    lvProducts~insertColumnPX(3,"UOM",    40,"RIGHT")			-- Ex07 (added)
     self~connectListViewEvent("IDC_PRODLIST_LISTVIEW","CLICK",itemSelected)
     self~connectListViewEvent("IDC_PRODLIST_LISTVIEW","ACTIVATE",openItem)
     self~connectButtonEvent("IDC_PRODLIST_SHOWPRODUCT","CLICKED",showProduct)
 
+    -- Set model instance name into the Titlebar:
+    --parse var self~objectName
     self~loadList
 
 
@@ -191,11 +202,13 @@
     if lvProducts~getItemInfo(item, info) then do
       --say "ProductListView-showProduct-02: info~text =" info~text
       --say "ProductListView-showProduct-03; root =" root
-      .local~my.idProductData  = .ProductData~newInstance	-- create a ProductData instance
-      .local~my.idProductModel = .ProductModel~newInstance	-- create a ProductModel instance
-      .local~my.idProductData~activate
-      .local~my.idProductModel~activate
-      .ProductView~newInstance(rootDlg,"CU003")
+      objectMgr = .local~my.ObjectMgr
+      objectMgr~showModel("ProductModel", info~text, self)		--Ex07
+      --.local~my.idProductData  = .ProductData~newInstance	-- create a ProductData instance
+      --.local~my.idProductModel = .ProductModel~newInstance	-- create a ProductModel instance
+      --.local~my.idProductData~activate
+      --.local~my.idProductModel~activate
+      --.ProductView~newInstance(rootDlg,"CU003")
       --say "ProductListView-showProduct-04: after startProductView"
       self~disableControl("IDC_PRODLIST_SHOWPRODUCT")
     end
@@ -205,12 +218,16 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD loadList
-    expose lvProducts
-    lvProducts~addRow(2, ,"CU003","Widget, 5in")
-    lvProducts~addRow(4, ,"CU025","Slodget, case of 24", "RG7 3UP")
-    lvProducts~addRow(3, ,"DX210","Driblet, 5in, 10-pack, no delivery.", "021956")
-    do i = 1 to 50
-      lvProducts~addRow(i, , "Line" i, i)
+    expose lvProducts modelData						-- Ex07
+    say "ProductListView-loadList-01: dataArray =" modelData		-- Ex07
+    rows = modelData[count]						-- Ex07 - number of rows
+    arrData = modelData[records]
+    say "ProductListView-loadList-02:Dims =" arrData~dimension(1) arrData~dimension(2)
+    do i = 1 to rows
+      say "ProductListView-loadList-03: arr[i,1] =" arrData[i,1]
+      -- Change file price to display format (i.e. cents to dollars.cents):
+      displayPrice = (arrData[i,3]/100)~format(,2)
+      lvProducts~addRow( , ,arrData[i,1], arrData[i,2], displayPrice, arrData[i,4])
     end
     lvProducts~setColumnWidth(1)	-- set width of 2nd column to longest text entry.
 

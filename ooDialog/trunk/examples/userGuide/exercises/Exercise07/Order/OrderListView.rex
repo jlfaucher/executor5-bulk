@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: The Order ListView 				  v01-00 07Jun12
+   Exercise 07: The Order ListView 				  v01-01 25Aug12
 
    Contains: class "OrderListView", "HRSolv"
 
@@ -47,7 +47,8 @@
                 and invokes OrderView.
 
    Changes:
-     v01-00 07Jun12: First Version
+   v01-00 07Jun12: First Version (Ex06).
+   v01-01 25Aug12: Updated for Ex07 using the MVF.
 
    Outstanding Problems: None reported.
 
@@ -59,11 +60,12 @@
 
 ::REQUIRES "ooDialog.cls"
 ::REQUIRES "Order\OrderView.rex"
+::REQUIRES "..\Support\RcView.rex"
 
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  OrderListView						  	  v01-00 07Jun12
+  OrderListView						  	  v01-01 25Aug12
   -------------
   The view of a list of products.
   Changes:
@@ -71,19 +73,19 @@
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderListView SUBCLASS RcDialog PUBLIC
+::CLASS OrderListView SUBCLASS RcView PUBLIC
 
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD newInstance CLASS PUBLIC
-    use arg rootDlg
-    say ".OrderListView-newInstance-01: root =" "'"||rootDlg||"'"
+    use strict arg idModel, rootDlg						  --Ex07
+    say ".OrderListView-newInstance-01: root, idModel =" rootDlg idModel
     dlg = self~new("Order\OrderListView.rc", "IDD_ORDLIST_LISTVIEW")
     say ".OrderListView-newInstance-02."
-    dlg~activate(rootDlg)				-- Must be the last statement.
-
+    dlg~activate(idModel, rootDlg)					  --Ex07
+    return dlg								  --Ex07
 
   /*----------------------------------------------------------------------------
     Instance Methods
@@ -111,22 +113,24 @@
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD activate unguarded
-    expose rootDlg
-    use arg rootDlg
-    say "OrderListView-activate-01: root =" rootDlg
-    --trace i
+  ::METHOD activate UNGUARDED
+    expose rootDlg modelData						  --Ex07
+    use strict arg idModel, rootDlg					  --Ex07
+    say "OrderListView-activate-01: idModel, root =" idModel rootDlg
+    forward class (super) continue					  --Ex07
+    modelData = RESULT							  --Ex07
+    say "OrderListView-activate-02: modelData dims =" modelData modelData~dimension
     if rootDlg = "SA" then do			-- If standalone operation required
       rootDlg = self				      -- To pass on to children
       self~execute("SHOWTOP","IDI_ORDLIST_DLGICON")
     end
     else self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_ORDLIST_DLGICON")
-    return
+    --return self								  --Ex07
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
-    expose menuBar lvOrders btnShowOrder
+    expose menuBar lvOrders btnShowOrder modelData			  --Ex07
     -- Called by ooDialog after SHOWTOP.
 
     menuBar~attachTo(self)
@@ -139,7 +143,7 @@
     lvOrders~insertColumnPX(2,"CustName",130,"LEFT")
     lvOrders~insertColumnPX(3,"Date",80,"LEFT")
     self~connectListViewEvent("IDC_ORDLIST_LIST","CLICK",itemSelected)
-    self~connectListViewEvent("IDC_ORDLIST_LIST","ACTIVATE",openItem)
+    self~connectListViewEvent("IDC_ORDLIST_LIST","ACTIVATE",openItem)	-- double-click
     self~connectButtonEvent("IDC_ORDLIST_SHOWORDER","CLICKED",showOrder)
 
     self~loadList
@@ -196,12 +200,8 @@
     info=.Directory~new
     if lvOrders~getItemInfo(item, info) then do
       say "OrderListView-showOrder-02: info~text =" info~text
-      .local~my.idOrderData  = .OrderData~new	-- create Order Data instance
-      .local~my.idOrderModel = .OrderModel~new	-- create Order Model instance
-      .local~my.idOrderData~activate
-      .local~my.idOrderModel~activate
-      .OrderView~newInstance(rootDlg,"DM00263")
-      --say "OrderListView-showOrder-03: after startOrderView"
+      objectMgr = .local~my.ObjectMgr
+      objectMgr~showModel("OrderModel", info~text, self)		--Ex07
       self~disableControl("IDC_ORDLIST_SHOWORDER")
     end
     else do
@@ -210,18 +210,19 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD loadList
-    expose lvOrders
-
-    lvOrders~addRow( 1, ,"DM00263", "CU003",   "ABC Inc.",   "21Nov12")
-    lvOrders~addRow( 2, ,"DM10473", "AB15784", "Frith Inc.", "12Oct12")
-    lvOrders~addRow( 3, ,"DM13003", "CU001",   "LMN & Co",   "07Jun12")
-    lvOrders~addRow( 4, ,"AS49005", "CU003",   "EJ Smith",   "30Aug12")
-    lvOrders~addRow( 5, ,"AM72010", "CU005",   "Red-On Inc.","17Jan13")
-    lvOrders~addRow( 6, ,"OZ15784", "CU003",   "Joe Bloggs & Co Ltd","28Feb13")
-    /*do i = 1 to 50
-      lvOrders~addRow(i, , "Line" i, i)
-    end*/
-    lvOrders~setColumnWidth(1)	-- set width of 2nd column to longest text entry.
+    expose lvOrders modelData						-- Ex07
+    say "OrderListView-loadList-01: dataArray =" modelData		-- Ex07
+    rows = modelData[count]						-- Ex07 - number of rows
+    arrData = modelData[records]
+    --say "OrderListView-loadList-02:Dims =" modelData~dimension(1) modelData~dimension(2)
+    do i = 1 to rows
+      --say "OrderListView-loadList-04a: modelData[i,2] =" modelData[i,2]
+      -- Change date to display format - i.e. yymmdd to (US format!) mm-dd-yy):
+      date = arrData[i,3]
+      displayDate = date~substr(3,2)||"/"||date~substr(5)||"/"||date~substr(1,2)
+      lvOrders~addRow( , ,arrData[i,1], arrData[i,2], arrData[i,6], displayDate)
+    end
+    lvOrders~setColumnWidth(2)	-- set width of 3rd column to longest text entry.
 
 
 /*============================================================================*/

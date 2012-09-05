@@ -35,50 +35,54 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: Customer Models and Data Classes	  	  v01-01 17Aug12
+   Exercise 07:          					  v00-04 21Aug11
 
-   Contains: 	   classes "CustomerModel" "CustomerListModel" and "CustomerData".
+   The ProductModel, ProductListModel, and ProductData Classes
 
+   Contains:  classes "ProductModel", "ProductListModel, "ProductData",
+              and "ProductDT".
    Pre-requisites: None.
 
    Outstanding Problems:
    None.
 
    Changes:
-   v01-00 07Jun12: First version.
-   v01-01 09Aug12: Modified to use the Model-View Framework with data read from
-                   file using the GenericFile class. CustomerListModel added.
+   v00-02: 21Jly11
+   v00-03: Correct "return" statement not in right place (typo in code!!)
+           Renamed the ProductDT attributes (initial "prod" deemed extraneous)
+         - 26Aug11: added some comments - no change to function.
+   v00-04 21Aug12: ProducListModel added. Modified to fit the MV Framework.
 ------------------------------------------------------------------------------*/
+
+
+/*//////////////////////////////////////////////////////////////////////////////
+  ==============================================================================
+  ProductModel							  v00-02 12Jly11
+  ------------
+  The "model" part of the Product component.
+
+  interface productModel{
+    aProductModel newInstance()  -- Class method.
+    null	  activate()
+    aProductDT     query()
+  };
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::REQUIRES "..\Support\GenericFile.rex"
 ::REQUIRES "..\Support\Model.rex"
 
-/*//////////////////////////////////////////////////////////////////////////////
-  ==============================================================================
-  CustomerModel							  v01-01 09Aug12
-  ------------
-  The "model" part of the Customer component.
-
-   Changes:
-     v01-00 07Jun12: First version.
-  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
-::CLASS CustomerModel SUBCLASS Model PUBLIC
-
-  ::ATTRIBUTE myData
+::CLASS ProductModel SUBCLASS Model PUBLIC
 
 /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD newInstance CLASS PUBLIC
-    expose noDataError
-    use strict arg instanceName
-    -- Get my data via my superclass@
-    forward class (super) continue
-    customerId = RESULT
-    return customerId
-
+    -- Creates an instance and returns it.
+    use strict arg instanceName						--Ex07
+    forward class (super) continue					--Ex07
+    modelId = RESULT							--Ex07
+    return modelId							--Ex07
 
 
 /*----------------------------------------------------------------------------
@@ -86,90 +90,46 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD init
-    use strict arg dirData
-    self~myData = dirData
-    say "CustomerModel-init-01: customerId  =" dirData["CustNo"]
-    say "CustomerModel-init-02: dirCustomer =" dirData "as follows:"
-    do i over dirData
-      say i "=" dirData[i]
-    end
-    return self
+    -- Gets its data from ProductData.
+    expose prodData
+    use strict arg prodData						--Ex07
+    return self								--Ex07
 
 
   ::METHOD query PUBLIC
-  /*----------------------------------------------------------------------------
-    query - returns Customer data.
-            Standard protocol:
-            Accept a .nil, directory, array, or string of names.
-            if .nil then return all fields; else return values for the names in
-            the directory, array, or string. String is assumed to be data
-            names separated by one or more spaces.
-            All returns are a Directory containing names and values.
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    use arg dataNames
-    say "CustomerModel-query-01: dataNames:" dataNames
-    dirReturn = .Directory~new
-    select
-      when dataNames = .nil | dataNames = "" then return self~myData
-      when dataNames = "DATANAMES"           then return self~myData
-
-      -- Caller is requesting specific data items:
-      when dataNames~isa(.Directory) then do
-        do i over dataNames
-      	  dirReturn[i] = self~dirData[i]
-        end
-      end
-
-      when dataNames~isa(.Array) then do
-        do i over dataNames
-          say "CustomerModel-query-03: dataNames: '"||dataNames"'"
-          dirReturn[i] = self~dirData[i]
-        end
-      end
-
-      -- dataNames must be separated by a *single* space.
-      when dataNames~isa(.String) then do
-        dataNames = dataNames~strip
-        --say "CustomerModel-query-04: dataNames: '"||dataNames"'"
-        n = dataNames~countStr(" ")+1
-        do i = 1 to n
-          parse var dataNames name " " dataNames
-          if name = " " then iterate     -- ignore extraneous leading spaces.
-          --say "CustomerModel-query-05: name: '"name"'"
-          dirReturn[name] = self~dirData[name]
-        end
-      end
-
-      otherwise return .false
-    end
-
-    return dirReturn
-
+    -- Returns data requested (no argument = return all)
+    -- self~myData (super's attribute) is a DT. So ask the data component for its
+    -- directory version of the data (an attribute of ProductData).
+    expose prodData
+    say "ProductModel-query-01: prodData =" prodData
+    dir = .directory~new
+    return prodData
 /*============================================================================*/
-
 
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  CustomerListModel						  v00-01 15Aug12
+  ProductListModel						  v00-01 20Aug12
   ----------------
-  The model for a list of Customers.
+  The model for a list of Products.
   Changes:
-    v00-01 15Aug12: First version
+    v00-01 20Aug12: First version
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS CustomerListModel SUBCLASS Model PUBLIC
+::CLASS ProductListModel SUBCLASS Model PUBLIC
 
-  ::ATTRIBUTE myData
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD newInstance CLASS PUBLIC
     use arg instanceName
-    self~wantList = .true		-- set super's attribute
+    --self~myInstanceName = instanceName
+    self~wantList = .true				-- set super's attribute
     forward class (super) continue
-    return RESULT
+    id = RESULT
+    say "ProductListModel-newInstance-01: id =" id
+    return id
 
 
   /*----------------------------------------------------------------------------
@@ -178,17 +138,17 @@
 
   ::METHOD init
     expose arrData
-    use arg arrData
-    self~myData = arrdata
-    say "CustomerListModel-init-01: myData =" self~myData
+    use strict arg data
+    self~myData = data
+    say "ProductListModel-init-01: myData =" self~myData
     return self
 
   ::METHOD query PUBLIC
   /*----------------------------------------------------------------------------
-    query - returns an array of all Customer data.
+    query - returns an array of all Product data.
             In MVF this method is invoked by the RcView (or ResView) superclass.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    say "CustomerListModel-query-01."
+    say "ProductListModel-query-01."
     return self~myData
 
 /*============================================================================*/
@@ -197,90 +157,111 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  CustomerData							  v01-01 09Aug12
+  ProductData							  v01-00 20Jly11
   ------------
-  The "data" part of the Customer component.
-   Changes:
-     v01-00 07Jun12: First version.
-     v01-01 09Aug12: Second version - subclasses GenericFile to read data from
-                     a disk file.
+  The "data" part of the Product component.
+  [interface (idl format)]
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS CustomerData SUBCLASS GenericFile PUBLIC
+::CLASS ProductData SUBCLASS GenericFile PUBLIC
 
   ::ATTRIBUTE created CLASS
+  ::ATTRIBUTE dirData
 
 /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD newInstance CLASS PUBLIC		-- Invoked by ObjectMgr
+  ::METHOD newInstance CLASS PUBLIC
     use strict arg instanceName
-    if self~created = "CREATED" then do		-- If this is first time
-      say ".CustomerData-newInstance-01."
-      customerDataId = self~new()
+    if self~created = "CREATED" then do
       self~created = .true
-      return customerDataId
+      productDataId = self~new()
+      --if r = .true then self~created = .true
+      return productDataId
     end
     else do
-      say ".CustomerData-newInstance-02 - Error - Singleton component, so can't have more than one instance."
+      say "... singleton component, so can't have more than one instance."
       return .false
     end
 
 
-  /*----------------------------------------------------------------------------
+/*----------------------------------------------------------------------------
     Instance Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init PUBLIC
-    expose fileName numRecords
-    fileName = "Customer\CustomerFile.txt"
-    columns = 5			-- colums in the Customer "table"
-    numRecords = self~init:super(fileName, columns)
-    say "CustomerData-init-01: numRecords:" numRecords
+    expose filename numRecords
+    filename = "Product\ProductFile.txt";  columns = 6
+    numRecords = self~init:super(filename, columns)
+    say "ProductData-init-01: numRecords:" numRecords
+    /*
     if numRecords > 0 then do
-      say "CustomerData-init-02: Array is:"
+      say "ProductData-init-02: Array is:"
       say self~fileArray~tostring
     end
+    */
     return self
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD getData PUBLIC	--  ???? Use the DT???
+    expose data
+    say "ProductData-getData-01."
+    return data
+
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Find - forward to super, then pack data into a ProductDT.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD getRecord PUBLIC
+    use strict arg dataKey
+    --say "ProductData-getRecord-00: dataKey = <"||dataKey||">"
+    forward class (super) continue
+    dirData = RESULT			-- Generic File returns a directory.
+    --say "ProductData-getRecord-01: dirData =" dirData
+    self~dirData = dirData
+    if dirData = .false then return .false
+    -- Now convert dirData to a DT, pack it into dirData then return dirData:
+    dt = .ProductDT~new
+    dt~number      = dirData["ProdNo"]
+    dt~name        = dirData["ProdName"]
+    dt~price       = dirData["ListPrice"]
+    dt~uom         = dirData["UOM"]
+    dt~description = dirData["Description"]
+    dt~size        = dirData["Size"]
+    dirData["DT"] = dt
+    return dirData
 
 
 /*============================================================================*/
 
+
+
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  CustomerDT - A business data type for Customer data.		  v00-01 05May12
+  ProductDT - A business data type for Product data.		  v00-02 07Aug11
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
-::CLASS CustomerDT PUBLIC
+::CLASS ProductDT PUBLIC
 
   --		dtName		XML Name	Description
   --		---------	----------	-------------------------------
   --		ProductDT	product
-  ::ATTRIBUTE	custNo		-- custNo	Customer Number
-  ::ATTRIBUTE	custName	-- custName	Customer Name
-  ::ATTRIBUTE	discount	-- discount	Discount code
-  ::ATTRIBUTE	address		-- address	Customer's address
-  ::ATTRIBUTE   zipCode		-- zip		ZipCode
-
-  ::METHOD makeDir
-    dir = .Directory~new
-    dir["custNo"]     = self~custNo
-    dir["custName"]   = self~custName
-    dir["discount"]   = self~discount
-    dir["address"]    = self~address
-    dir["zipCode"]    = self~zipCode
-    return dir
+  ::ATTRIBUTE	number		-- number	Product Number
+  ::ATTRIBUTE	name		-- name		Product Description
+  ::ATTRIBUTE	price		-- price	Product Price (rightmost two digits are 100ths of currency unit)
+--::ATTRIBUTE   currency	-- currency	Three-letter currency code
+  ::ATTRIBUTE	uom		-- uom		Product Unit of Measure
+  ::ATTRIBUTE   description	-- descrip	Product Description
+  ::ATTRIBUTE   size		-- size		Produce Size Category (S/M/L)
 
   ::METHOD list PUBLIC
-    expose custNo custName discount address zipCode
+    expose number name price uom description size
     say "---------------"
-    say "CustomerDT-List:"
-    say "CustNo:  " custNo "    CustName:" custName
-    say "Address: " address
-    say "Zip:     " zipCode "   Discount:" discount
+    say "ProductDT-List:"
+    say "Number: " number   "Name:" name
+    say "Price:" price "UOM:" uom  "Size:" size
+    say "Description:" description
     say "---------------"
-
 /*============================================================================*/

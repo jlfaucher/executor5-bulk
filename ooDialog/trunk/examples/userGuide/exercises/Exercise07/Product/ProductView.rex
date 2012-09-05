@@ -59,7 +59,8 @@
 
 ::requires "ooDialog.cls"
 ::requires "..\Support\NumberOnlyEditEx.cls"
-::requires "Product\ProductModelData.rex"
+::requires "Product\ProductModelsData.rex"
+::REQUIRES "..\support\ResView.rex"
 
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -76,7 +77,7 @@
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS ProductView SUBCLASS ResDialog PUBLIC
+::CLASS ProductView SUBCLASS ResView PUBLIC
 
   ::ATTRIBUTE dialogState PRIVATE	-- States are: 'closable' or 'inUpdate".
 
@@ -84,13 +85,18 @@
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD newInstance CLASS PUBLIC UNGUARDED
-    use arg rootDlg, productNo			--ADDED FOR EXERCISE06.
+    use arg idModel, rootDlg						--Ex07
     if parent = "SA" then hasParent = .false; else hasParent = .true
-    --say ".ProductView-newInstance-01: rootDlg =" rootDlg
+    say ".ProductView-newInstance-01: model, rootDlg =" idModel rootDlg
     .Application~addToConstDir("Product\ProductView.h")
     -- Create an instance of ProductView and show it:
-    dlg = .ProductView~new("Product\res\ProductView.dll", IDD_PRODUCT_VIEW)
-    dlg~activate(rootDlg, productNo)			-- CHANGED FOR EXERCISE06.
+    --dlg = .ProductView~new("Product\res\ProductView.dll", IDD_PRODUCT_VIEW)
+    dlg = self~new("Product\res\ProductView.dll", IDD_PRODUCT_VIEW)
+    -- Check super (temp debug):
+    --  x = self~fred:super(); say "x =" x
+    say ".ProductView-newInstance-02: dlg =" dlg
+    dlg~activate(idModel, rootDlg)					--Ex07
+    return dlg								--Ex07
 
 
   /*----------------------------------------------------------------------------
@@ -104,14 +110,18 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     --say "ProductView-init-01."
-    -- called first (result of .ProductView~new)
     forward class (super) continue
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate UNGUARDED
-    use arg rootDlg, productNo							--ADDED FOR EXERCISE06.
-    --say "ProductView-activate-01: rootDlg =" rootDlg
+    expose prodData
+    use arg idModel, rootDlg, prodData					--Ex07- note: prodData is a ProductDT.
+    say "ProductView-activate-01. idModel, rootDlg =" idModel rootDlg
+    forward class (super) continue		-- MVF: required to get Model's data
+    dirdata = RESULT				-- MVF: model's data returned by super
+    prodData = dirData[DT]
+    say "ProductView-activate-02: rootDlg, prodData =" rootDlg prodData
     self~dialogState = "closable"
     if rootDlg = "SA" then self~execute("SHOWTOP","IDI_PROD_DLGICON")		--ADDED FOR EXERCISE06.
     else self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_PROD_DLGICON")		--ADDED FOR EXERCISE06.
@@ -120,7 +130,7 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
-    expose menuBar prodControls prodData
+    expose menuBar prodControls prodData				--Ex07
     --say "ProductView-initDialog-01"
 
     menuBar = .BinaryMenuBar~new(self, IDR_PRODUCT_VIEW_MENU, , self, .true)
@@ -144,7 +154,7 @@
     prodControls[ecProdPrice]~connectCharEvent(onChar)
     prodControls[ecUOM]~connectCharEvent(onChar)
 
-    prodData = self~getData	-- Gets data from ProductModel into prodData
+    --prodData = self~getData	-- Gets data from ProductModel into prodData
     self~showData	-- Show the data
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -288,25 +298,27 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD getData
+  --::METHOD getData				-- Ex07 makes this method redundant
     -- Get data from the ProductModel:
     --expose prodData
     --say "ProductView-getData-01."
-    idProductModel = .local~my.idProductModel
-    prodData = idProductModel~query		-- prodData is of type ProductDT
-    return prodData
+  --  idProductModel = .local~my.idProductModel
+  --  prodData = idProductModel~query		-- prodData is of type ProductDT
+  --  return prodData
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD showData
     -- Transfrom data (where necessary) to display format, and then disable controls.
     expose prodControls prodData
-    --say "ProductView-showData-01."
+    say "ProductView-showData-01: prodData =" prodData
     -- Set data in controls:
     prodControls[ecProdNo]~setText(   prodData~number       )
     prodControls[ecProdName]~setText( prodData~name         )
     -- Price in prodData has no decimal point - 2 decimal places are implied - hence /100 for display.
-    prodControls[ecProdPrice]~setText(prodData~price/100    )
+    --  Pad with zeros if necessary.
+    displayPrice = (prodData~price/100)~format(,2)		-- corrected in Ex07
+    prodControls[ecProdPrice]~setText(displayPrice)
     prodControls[ecUOM]~settext(      proddata~uom          )
     prodControls[ecProdDescr]~setText(prodData~description  )
     size = prodData~size
