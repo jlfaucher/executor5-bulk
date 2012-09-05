@@ -3900,6 +3900,10 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 <entry>The control will send an event notification when the painting cycle for the entire control is complete.</entry>
 </row>
 <row>
+<entry><xref linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/></entry>
+<entry>The control will send event notifications for any subitem-specific drawing operations. It will send event notification messages before and after it draws subitems.</entry>
+</row>
+<row>
 <entry><xref linkend="cnstCDRF_SKIPDEFAULT"/></entry>
 <entry>The control will not perform any painting at all. </entry>
 </row>
@@ -4124,7 +4128,7 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
     before an item is erased.
   </para>
   </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_ITEMPREPAINT " xreflabel="CDDS_ITEMPREPAINT "><term><emphasis role="bold">CDDS_ITEMPREPAINT </emphasis></term>
+  <varlistentry id="cnstCDDS_ITEMPREPAINT" xreflabel="CDDS_ITEMPREPAINT "><term><emphasis role="bold">CDDS_ITEMPREPAINT </emphasis></term>
   <listitem>
   <para>
     Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
@@ -4222,6 +4226,14 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
   <para>
     One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
     the control should send a notification when the painting cycle for the entire control is complete.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NOTIFYSUBITEMDRAW " xreflabel="CDRF_NOTIFYSUBITEMDRAW "><term><emphasis role="bold">CDRF_NOTIFYSUBITEMDRAW</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    the control should send notification message for any subitem-specific drawing operations. The control will send
+    event notifications before and after it draws subitems.
   </para>
   </listitem></varlistentry>
   <varlistentry id="cnstCDRF_SKIPDEFAULT" xreflabel="CDRF_SKIPDEFAULT"><term><emphasis role="bold">CDRF_SKIPDEFAULT</emphasis></term>

@@ -2797,10 +2797,11 @@ incremented or decremented by .1 of a second.
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
     list-view items. The data value can be any ooRexx object. The data value is set using the
- <xref linkend="mthSetItemData"/> method. If needed the data value can be removed from a list-view item
+    <xref linkend="mthSetItemData"/> method. If needed the data value can be removed from a list-view item
     through the <xref linkend="mthRemoveItemData"/> method.  Storing a user value for each item can
     be useful in any number of ways. One specific use is in the <xref linkend="mthSortItems"/> method.
-  </para> </listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -6888,6 +6889,61 @@ that allows the user to remove the check mark from all the check boxes:
 </variablelist>
 </section>  <!-- End LvItem::new() -->
 
+<section id="atrUserDataClsLvItem" xreflabel="userData"><title>userData (Attribute)</title>
+<indexterm><primary>userData</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>userData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--userData-----------------------------------------------------><
+
+>>--userData-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">userData get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">userData set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::userData() [attribute]  -->
+
 </section> <!-- End LvItem Class -->
 
 <section id="clsLvSubItem" xreflabel="LvSubItem"><title>LvSubItem Class</title>
@@ -7029,10 +7085,11 @@ that allows the user to remove the check mark from all the check boxes:
   control send the subitem prepaint notifcations.
 </para>
 <para>
-  The single argument passed to the event handler is a <computeroutput>LvCustomdDrawSimple</computeroutput> object. The event
+  The single argument passed to the event handler is a <computeroutput>LvCustomDrawSimple</computeroutput> object. The event
   handler examines the values of the attributes of the object to determine the information sent by the underlying list-view
-  control. The event handler then assign values to the object that specify how the list-view control should draw the item, or
-  subitem. Finally, the programmer must always return true or false from the event handler.
+  control. The event handler then assigns values to the object that specify how the list-view control should draw the item,
+  or subitem. Finally, the programmer returns true to have the updated information passed on to the list-view, or false to
+  have the list-view draw the item as it normally would.
 </para>
 
 <programlisting>
@@ -7054,19 +7111,8 @@ that allows the user to remove the check mark from all the check boxes:
     <varlistentry><term>lvcdSimple</term>
     <listitem>
     <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
-    <listitem>
-    <para>
-      xx
+      A <computeroutput>LvCustomDrawSimple</computeroutput> object whose attributes are used to convey information back and
+      forth between the underlying list-view control and the event handler.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7074,25 +7120,102 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Return true to indicate that the attributes in the <computeroutput>LvCustomDrawSimple</computeroutput> object are to be
+    used by the list-view when drawing the item or subitem. Return false to indicate the list-view should draw the item
+    itself. Returning false is the equivalent of using the <xref linkend="cnstCDRF_DODEFAULT"/> value for the response to the
+    list-view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The key to using custom draw is to examine the attributes of the <computeroutput>LvCustomDrawSimple</computeroutput>
+    object sent as the argument to the event handler to determine which item is about to be drawn, and then set attributes in
+    the object to customize the drawing of that item.
+  </para>
+  <para>
+    As an example, say the goal was to shade every other row in the list-view when in report mode. The event handler will be
+    invoked before each item is to be painted. The programmer would examine the <xref linkend="atrItem"/> attrbute to
+    determine if it was an odd or even row. If the row was even, the color attributes, <xref linkend="atrClrTextBk"/> and
+    <xref linkend="atrClrText"/>, would be set to the desired colors to shade the row. The <xref linkend="atrRepy"/>
+    attribute would be set to a response value that indicates to the list-view is to use the information in the object to
+    draw the item, and the event handler would return true. If the row was odd, the event handler would simply return false
+    to indicate that the list-view should draw the item itself. The following code snippet demonstrates this:
+
+<programlisting>
+<![CDATA[
+
+::method init
+    expose rowYellow
+
+    forward class (super) continue
+
+    self~customDraw
+    self~customDrawControl(IDC_LV_CUSTOM, 'ListView', onCustomDraw)
+
+    rowYellow   = self~RGB(245, 245, 127)
+    ...
+
+::method onCustomDraw unguarded
+    expose rowYellow
+    use arg cdInfo
+
+    item = cdInfo~item
+
+    if (item // 2) == 0 then do
+        cdInfo~clrText   = self~CLR_DEFAULT
+        cdInfo~clrTextBk = rowYellow
+        cdInfo~reply     = self~CDRF_NOTIFYITEMDRAW
+        return .true
+    end
+    else do
+        return .false
+    end
+
+]]>
+</programlisting>
+
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
-
+    The following example is an expansion of the example in the remarks section. It has a list-view that has check boxes. If
+    an item is checked then a new font is set for that row, along with different colors. Othewise, alternating rows are
+    shaded with a different color:
 <programlisting>
 <![CDATA[
 
+::method onCustomDraw unguarded
+    expose list textRed textBlack textBlue rowGreen rowLiteBlue rowYellow checkedFont
+    use arg cdInfo
+
+    item = cdInfo~item
+
+    if list~isChecked(item) then do
+        cdInfo~clrText   = textBlue
+        cdInfo~clrTextBk = rowLiteBlue
+        cdInfo~font      = checkedFont
+    end
+    else if (item // 2) == 0 then do
+        cdInfo~clrText   = textRed
+        cdInfo~clrTextBk = rowYellow
+    end
+    else do
+        cdInfo~clrText   = textBlack
+        cdInfo~clrTextBk = rowGreen
+    end
+
+    cdInfo~reply = self~CDRF_NEWFONT
+    return .true
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-
 </section>  <!-- End CustomDraw Event Handler -->
+
 <section id="sctMethodsLvCustomDrawSimple"><title>Method Table</title>
 <para>
   The following table lists the class and instance methods of the <computeroutput>LvCustomDrawSimple</computeroutput> class:
@@ -7121,8 +7244,40 @@ that allows the user to remove the check mark from all the check boxes:
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsLvCustomDrawSimple">new</link></entry>
-<entry></entry>
+<entry><xref linkend="atrClrText"/> </entry>
+<entry>Reflects a custom color that the text of the list-view item should be drawn with.</entry>
+</row>
+<row>
+<entry><xref linkend="atrClrTextBk"/> </entry>
+<entry>Reflects a custom color that the text background of the list-view itme should be drawn with.</entry>
+</row>
+<row>
+<entry><xref linkend="atrDrawStage"/> </entry>
+<entry>Reflects the draw <link linkend="sctCustomDrawOverview">stage</link> of the current paint cycle.</entry>
+</row>
+<row>
+<entry><xref linkend="atrFont"/> </entry>
+<entry>Reflects a custom font that the list-view should use for the text.</entry>
+</row>
+<row>
+<entry><xref linkend="atrID"/> </entry>
+<entry>Reflects the resource ID of the list-view control sending the custom draw event notification message.</entry>
+</row>
+<row>
+<entry><xref linkend="atrItem"/> </entry>
+<entry>Reflects the 0-based index of the list-view item that needs to be drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="atrReply"/> </entry>
+<entry>Reflects the <link linkend="sctConstantsClsCustomDraw">CDRF_*</link> response value that is used to reply to the event notification.</entry>
+</row>
+<row>
+<entry><xref linkend="atrSubItem"/> </entry>
+<entry>Reflects the index of the subitem that needs to be drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="atrUserDataClsLvCustomDrawSimple"/> </entry>
+<entry>Reflects the <emphasis role="italic">user data</emphasis> for the list-view item that needs to be drawn.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -7141,8 +7296,8 @@ that allows the user to remove the check mark from all the check boxes:
 
 <para>
   The <computeroutput>LvCustomDrawSimple</computeroutput> class can not be instantiated by the Rexx program. When
-  needed, the ooDialog framework instantiates a <computeroutput>LvCustomdDrawSimple</computeroutput> object and passes
-  it to the dialog's custom draw event handler TODO need link.
+  needed, the ooDialog framework instantiates a <computeroutput>LvCustomDrawSimple</computeroutput> object and passes
+  it to the dialog's custom draw <link linkend="evtListViewCustomDraw">event</link> handler.
 </para>
 </section>  <!-- End LvCustomDrawSimple::new() -->
 
@@ -7159,40 +7314,46 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  xx
+  Reflects a custom color that the text of the list-view item should be drawn with. This attribute is information sent back
+  to the list-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">clrText get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    This is a set-only attribute, it is information to be sent back to the list-view control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">clrText set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to the color value for the text of the item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To construct the proper color value use the <xref linkend="mthRGB"/> method of the
+    <computeroutput>CustomDraw</computeroutput> class. The <xref linkend="cnstCLR_DEFAULT"/> value can also be used to have
+    the item text be drawn in the default list-view color.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
+    the background color is set to a yellowish color:
 <programlisting>
 <![CDATA[
 
+  cdInfo~clrText   = self~RGB(247,   7,  59)
+  cdInfo~clrTextBk = self~RGB(245, 245, 127)
 
 ]]>
 </programlisting>
@@ -7214,40 +7375,46 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  xx
+  Reflects a custom color that the text background of the list-view itme should be drawn with. This attribute is information
+  sent back to the list-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">clrTextBk get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    This is a set-only attribute, it is information to be sent back to the list-view control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">clrTextBk set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to a custom color that should be used for the text background when the item is drawn.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To construct the proper color value use the <xref linkend="mthRGB"/> method of the
+    <computeroutput>CustomDraw</computeroutput> class. The <xref linkend="cnstCLR_DEFAULT"/> value can also be used to have
+    the item text background drawn in the default list-view color.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
+    the background color is set to a yellowish color:
 <programlisting>
 <![CDATA[
 
+  cdInfo~clrText   = self~RGB(247,   7,  59)
+  cdInfo~clrTextBk = self~RGB(245, 245, 127)
 
 ]]>
 </programlisting>
@@ -7269,40 +7436,71 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  xx
+  Reflects the draw <link linkend="sctCustomDrawOverview">stage</link> of the current paint cycle. This attribute is
+  information sent from the list-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">drawStage get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the draw stage constant value as sent by the list-view control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">drawStage set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    This is a get-only attribute. It is information sent from the list-view control and can not be changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In <link linkend="sctSimpleCustomDraw">simple</link> custom draw, the ooDialog framework handles many of draw stage
+    notifications internaly and the event handler only gets invoked for 2 of the draw stages. Because of this, the draw stage
+    value will always be either <xref linkend="cnstCDDS_ITEMPREPAINT"/> or <xref linkend="cnstCDDS_SUBITEMPREPAINT"/>. In
+    addtion, the value will only be CDDS_SUBITEMPREPAINT if the programmer has requested subitem notifications by setting
+    the <xref linkend="atrRepy"/> attribute to <xref linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/> in response to an item prepaint
+    notification.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from a program that uses a custom font and color for the entire row, if the item is checked. If not
+    checked then it uses custom draw for each subitem. The draw stage will either be CDDS_ITEMPREPAINT or
+    CDDS_SUBITEMPREPAINT. If it is CDDS_ITEMPREPAINT, then the event hander determines if the item is checked.
+  </para>
+  <para>
+    When the item is checked, the event handler sets the custom color and font. Then, because it does not return
+    CDRF_NOTIFYSUBITEMDRAW in the response, the list-view draws the entire row in the custom color and font, and does
+    <emphasis role="italic">not</emphasis> send any subitem notifications. When the item is not checked, CDRF_NOTIFYSUBITEM
+    is set in the response and this causes the list-view to send event notifications for each subitem:
+
 <programlisting>
 <![CDATA[
 
+  ...
+
+  if cdInfo~drawStage == self~CDDS_ITEMPREPAINT then do
+      if list~isChecked(item) then do
+          cdInfo~clrText   = textBlue
+          cdInfo~clrTextBk = rowLiteBlue
+          cdInfo~font      = checkedFont
+          cdInfo~reply     = self~CDRF_NEWFONT
+      end
+      else do
+          cdInfo~reply = self~CDRF_NOTIFYSUBITEMDRAW
+      end
+      return .true
+  end
+
+  ...
 
 ]]>
 </programlisting>
@@ -7324,40 +7522,65 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  xx
+  Reflects a custom font that the list-view should use for the text. This attribute is information sent back to the list-view
+  control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">font get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    This is a set-only attribute, it is information to be sent back to the list-view control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">font set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to the <xref linkend="defHandle"/> of a font to used for the text of the item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To have the font drawn in the default font of the list-view simply do not set the <emphasis role="italic">font</emphasis>
+    attribute to anything. For example, if the color for the font should be changed, but not the font itself, then the
+    programmer should not set this attribute.
+  </para>
+  <para>
+    Use the <xref linkend="mthCreateFontEx"/> method to get the handle of a font. Microsoft recommends that the response code
+    when a new font is to be used include <xref linkend="cnstCDRF_NEWFONT"/> value. If the programmer also needs subitem
+    notifications and is changing the font, then the CDRF_NEWFONT code should be combined with the <xref
+    linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/> value. The <xref linkend="mthOrClsDlgUtil"/> method of the
+    <computeroutput>DlgUtil</computeroutput> class can be used to combine the values.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the <emphasis role="italic">font</emphasis> attribute being set and the response codes for new font
+    and subitem notify being combined:
 <programlisting>
 <![CDATA[
 
+  checkedFont = self~createFontEx("Courier New", 10)
+
+  ...
+
+  item = cdInfo~item
+
+  if list~isChecked(item) then do
+      cdInfo~clrText   = self~RGB( 17,   5, 250)
+      cdInfo~clrTextBk = self~RGB(115, 245, 186)
+      cdInfo~font      = checkedFont
+      cdInfo~reply     = .DlgUtil~or(self~CDRF_NEWFONT, self~CDRF_NOTFYSUBITEMDRAW)
+  end
+
+  ...
 
 ]]>
 </programlisting>
@@ -7365,6 +7588,72 @@ that allows the user to remove the check mark from all the check boxes:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End LvCustomDrawSimple::font() [attribute]  -->
+
+<section id="atrID" xreflabel="id"><title>id (Attribute)</title>
+<indexterm><primary>id</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>id</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--id-----------------------------------------------------><
+
+>>--id-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the resource ID of the list-view control sending the custom draw event notification message. This attribute is
+  information sent from the list-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">id get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the numeric <xref linkend="defResourceId"/> of the list-view control that sent the custom draw event
+    notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">id set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the list-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses custom draw with a list-view and a tree-view. It uses the same event handler, <emphasis
+    role="italic">onCustomDraw</emphasis> for both controls and then use the <emphasis role="italic">id</emphasis> attribute
+    to determine which control has sent the event notification:
+<programlisting>
+<![CDATA[
+
+  self~customDraw
+  self~customDrawControl(IDC_LV_STATS, 'ListView', onCustomDraw)
+  self~customDrawControl(IDC_TV_PLAYERS, 'TreeView', onCustomDraw)
+
+  ...
+
+::method onCustomDraw unguarded
+    use arg customDrawInfo
+
+    if customDrawInfo~ID == .constDir[IDC_LV_STATS] then
+        return self~customDrawStats(customDrawInfo)
+    else
+        return self~customDrawPlayers(customDrawInfo)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::id() [attribute]  -->
 
 <section id="atrItem" xreflabel="item"><title>item (Attribute)</title>
 <indexterm><primary>item</primary></indexterm>
@@ -7379,39 +7668,55 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  xx
+  Reflects the 0-based index of the list-view item that needs to be drawn. This attribute is information sent from the
+  list-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">item get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the item index that the event notifications is for.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">item set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    This is a get-only attribute. It is information sent from the list-view control and can not be changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Use the item index to determine exactly which item or subitem is going to be painted.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shades every other row in the list-view. It uses the <emphasis role="italic">item</emphasis> attribute to
+    determine if the row is an even or odd row:
 <programlisting>
 <![CDATA[
+
+::method onCustomDraw unguarded
+    expose rowYellow
+    use arg cdInfo
+
+    if (cdInfo~item // 2) == 0 then do
+        cdInfo~clrText   = self~CLR_DEFAULT
+        cdInfo~clrTextBk = rowYellow
+        cdInfo~reply     = self~CDRF_NOTIFYITEMDRAW
+        return .true
+    end
+    else do
+        return .false
+    end
 
 
 ]]>
@@ -7434,40 +7739,57 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  xx
+  Reflects the <link linkend="sctConstantsClsCustomDraw">CDRF_*</link> response value that is used to reply to the event
+  notification. This attribute is information sent back to the list-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">reply get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    This is a set-only attribute, it is information to be sent back to the list-view control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">reply set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The <emphasis role="italic">reply</emphasis> attribute should be set to onem or a combination, of the CDRF_* constant
+    values.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">reply</emphasis> attribute can be set to any valid combination of CDRF_* values. However, in
+    <emphasis role="italic">simple</emphasis> custom draw only a few values make any sense. These are CDRF_NOTIFYITEMDRAW,
+    CDRF_NOTIFYSUBITEMDRAW, and CDRF_NEWFONT.
+  </para>
+  <para>
+    Rather than set <emphasis role="italic">reply</emphasis> to CDRF_DODEFAULT and returning true from the event handler, the
+    programmer should just return false from the event handler. Using any of the other CDRF_* values, in simple custom draw,
+    will have no effect in the Rexx program and will cause the list-view control to send unnecessary event notifications.
+  </para>
+  <para>
+    The only combination of CDRF_* values that make sense is combining CDRF_NEWFONT and CDRF_NOTIFYSUBITEMDRAW. And, this is
+    really only needed if the font is being changed and subitem notifications are desired. If only the colors are changed
+    when subitem notifications are desired, then it is sufficient to use CDRF_NOTIFYSUBITEMDRAW by itself. Use the <xref
+    linkend="mthOrClsDlgUtil"/> method to combine two values if needed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows setting the <emphasis role="italic">reply</emphasis> attribute using both the new font and notify
+    subitem draw values:
 <programlisting>
 <![CDATA[
 
+  customDraw~reply = .DlgUtil~or(self~CDRF_NEWFONT, self~CDRF_NOTIFYSUBITEMDRAW)
 
 ]]>
 </programlisting>
@@ -7489,25 +7811,34 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  xx
+  Reflects the index of the subitem that needs to be drawn. This attribute is information sent from the list-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">subItem get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the subitem index that needs to be drawn. The value only has meaning if the <xref linkend="atrDrawStage"/>
+    attribute is <xref linkend="cnstCDDS_SUBITEMPREPAINT"/>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">subItem set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    This is a get-only attribute. It is information sent from the list-view control and can not be changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Experimentation has shown that when subitem notifications have been requested, when the CDDS_ITEMPREPAINT draw stage
+    notification is sent, the <emphasis role="italic">subItem</emphasis> value is not always 0. This would indicate that the
+    list-view control only bothers to set the <emphasis role="italic">subitem</emphasis> value for the CDDS_SUBITEMPREPAINT
+    notification.
+  </para>
+  <para>
+    When the draw stage is CDDS_SUBITEMPREPAINT, if the item itself is being drawn, then <emphasis
+    role="italic">subItem</emphasis> will be 0. Otherwise, <emphasis role="italic">subItem</emphasis> will be 1 for the first
+    subitem, 2 for the second subitem, and so on.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -7519,10 +7850,20 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is a snippet of code from a program where the second subitem in a list-view is a number. If the nubmer is
+    negative, it is drawn in red text and if it is not negative, is is drawn in black text:
 <programlisting>
 <![CDATA[
 
+  if customDrawInfo~subItem == 2 then do
+      number = list~itemText(customDrawInfo~item, 2)
+      if number < 0 then
+          customDrawInfo~clrText = textRed
+      else
+          customDrawInfo~clrText = textBlack
+  end
+
+  ...
 
 ]]>
 </programlisting>
@@ -7531,7 +7872,7 @@ that allows the user to remove the check mark from all the check boxes:
 </variablelist>
 </section>  <!-- End LvCustomDrawSimple::subItem() [attribute]  -->
 
-<section id="atrUserData" xreflabel="userData"><title>userData (Attribute)</title>
+<section id="atrUserDataClsLvCustomDrawSimple" xreflabel="userData"><title>userData (Attribute)</title>
 <indexterm><primary>userData</primary></indexterm>
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>userData</secondary></indexterm>
 <programlisting>
@@ -7544,40 +7885,60 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  xx
+  Reflects the <emphasis role="italic">user data</emphasis> for the list-view item that needs to be drawn. This attribute is
+  information sent from the list-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">userData get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the user data for the item about to be drawn, or <computeroutput>.nil</computeroutput> if no user data was set
+    for the item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">userData set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    This is a get-only attribute. It is information sent from the list-view control and can not be changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The list-view allows the programmer to associate a value with any list-view item. This user data value is sent by the
+    list-view in the event notification information. The programmer can set the user data for a list-view item in several
+    ways. The <xref linkend="mthSetItemData"/> of the <xref linkend="clsListview"/> class, the <emphasis
+    role="italic">userData</emphasis> argument of the <xref linkend="mthNewClsLvItem"/> method of the <xref
+    linkend="clsLvItem"/> class, or the <xref linkend="atrUserDataClsLvItem"/> attribute of the
+    <computeroutput>LvItem</computeroutput> class are all used to set the user data value for an item.
+  </para>
+  <para>
+    The <emphasis role="italic">userData</emphasis> attribute could be used to help decide how to custom draw the list-view
+    item or subitem, see the example below.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example the color to draw the text for each item is stored in the user data for the item. This makes for a very
+    simple event handler, the text color is just set to whatever value the user data is:
 <programlisting>
 <![CDATA[
 
+::method onCustomDraw unguarded
+    use arg lvcds
+
+    lvcds~clrText   = lvcds~userData
+    lvcds~clrTextBk = self~CLR_DEFAULT
+    lvcds~reply     = self~CDRF_NEWFONT
+
+    return .true
 
 ]]>
 </programlisting>

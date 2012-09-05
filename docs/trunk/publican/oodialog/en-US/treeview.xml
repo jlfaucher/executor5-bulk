@@ -168,6 +168,10 @@
 <entry><xref linkend="expand"/></entry>
 </row>
 <row>
+<entry><xref linkend="mthFind"/></entry>
+<entry>Finds the first tree-view item whose label matches the text specified. The search is case insensitive.</entry>
+</row>
+<row>
 <entry>firstVisible</entry>
 <entry><xref linkend="firstvisibletrc"/></entry>
 </row>
@@ -2412,22 +2416,29 @@ visible:
   for its CUSTOMDRAW event handler.
 </para>
 
-<section id="evtTreeViewCustomDraw" xreflabel="TreeView CustomDraw Event Handler"><title>CustomDraw Event Handler</title>
+r<section id="evtTreeViewCustomDraw" xreflabel="TreeView CustomDraw Event Handler"><title>CustomDraw Event Handler</title>
 <indexterm><primary>TreeView Event</primary><secondary>CUSTOMDRAW</secondary></indexterm>
 <indexterm><primary>custom draw</primary><secondary>tree-view control</secondary></indexterm>
 <para>
-  The event handler for the custom draw event is invoked when the tree-view control is about
+  When the tree-view control is registered for <xref linkend="sctSimpleCustomDraw"/> custom draw, the event handler is
+  invoked when the draw stage is item prepaint. For simple custom draw, the ooDialog framework handles the other draw stages
+  internally. It makes the appropriate response to the dialog control so that the dialog control will send the item prepaint
+  notifications.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The single argument passed to the event handler is a <computeroutput>TvCustomDrawSimple</computeroutput> object. The event
+  handler examines the values of the attributes of the object to determine the information sent by the underlying tree-view
+  control. The event handler then assigns values to the object that specify how the tree-view control should draw the item.
+  Finally, the programmer returns true to have the updated information passed on to the tree-view, or false to have the
+  tree-view draw the item as it normally would.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onCustomDraw unguarded
-  use arg x, y, z
+  use arg tvcdSimple
 
-  return zz
+  return boolean
 ]]>
 </programlisting>
 
@@ -2435,25 +2446,14 @@ visible:
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 1 argument:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>tvcdSimple</term>
     <listitem>
     <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
-    <listitem>
-    <para>
-      xx
+      A <computeroutput>TvCustomDrawSimple</computeroutput> object whose attributes are used to convey information back and
+      forth between the underlying tree-view control and the event handler.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2461,25 +2461,62 @@ visible:
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Return true to indicate that the attributes in the <computeroutput>TvCustomDrawSimple</computeroutput> object are to be
+    used by the tree-view when drawing the item. Return false to indicate the tree-view should draw the item itself.
+    Returning false is the equivalent of using the <xref linkend="cnstCDRF_DODEFAULT"/> value for the response to the
+    tree-view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The key to using custom draw is to examine the attributes of the <computeroutput>TvCustomDrawSimple</computeroutput>
+    object sent as the argument to the event handler to determine which item is about to be drawn, and then set attributes in
+    the object to customize the drawing of that item.
+  </para>
+  <para>
+    As an example, say the goal was to draw every other level in the tree-view with a different color. The event handler will
+    be invoked before each item is to be painted. The programmer would examine the <xref linkend="atrLevel"/> attrbute to
+    determine if it was an odd or even level. If the level was even, the color attributes, <xref linkend="atrClrTextBkTV"/>
+    and <xref linkend="atrClrTextTV"/>, would be set to the desired colors to color the item. If the level was odd, the
+    event handler would set the color attributes to the colors for a item at an odd level. Then the <xref
+    linkend="atrRepyTV"/> attribute would be set to a response value that indicates to the tree-view is to use the
+    information in the object to draw the item, and the event handler would return true to indicate that custom drawing is to
+    be done. The example below demonstrates this:
+
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
-
+    The following example shows the code for the discussion in the remarks section
 <programlisting>
 <![CDATA[
 
+::method onCustomDraw unguarded
+  use arg tvcds
+
+  if tvcds~level // 2 == 1 then do
+    tvcds~clrText   = self~RGB(82, 61, 0)
+    tvcds~clrTextBk = self~RGB(250, 250, 250)
+  end
+  else do
+    tvcds~clrText   = self~RGB(0, 20, 82)
+    tvcds~clrTextBk = self~RGB(250, 250, 250)
+  end
+
+  tvcds~reply = self~CDRF_NEWFONT
+  return .true
 
 ]]>
 </programlisting>
+
   </para>
   </listitem></varlistentry>
 </variablelist>
 
 </section>  <!-- End CustomDraw Event Handler -->
+
 <section id="sctMethodsTvCustomDrawSimple"><title>Method Table</title>
 <para>
   The following table lists the class and instance methods of the <computeroutput>TvCustomDrawSimple</computeroutput> class:
@@ -2496,23 +2533,55 @@ visible:
 </thead>
 <tbody>
 <row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsTvCustomDrawSimple">new</link></entry>
+<entry><xref linkend="mthNewClsTvCustomDrawSimple"/>/entry>
 <entry>The Rexx programmer can not instantiate a <computeroutput>TvCustomDrawSimple</computeroutput>object, the ooDialog framework instantiates these objects</entry>
 </row>
 <row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrClrTextTV"/></entry>
+<entry>Reflects a custom color that the text of the tree-view item should be drawn with.</entry>
+</row>
+<row>
+<entry><xref linkend="atrClrTextBkTV"/></entry>
+<entry>Reflects a custom color that the text background of the tree-view item should be drawn with.</entry>
+</row>
+<row>
+<entry><xref linkend="atrDrawStageTV"/></entry>
+<entry>Reflects the draw <link linkend="sctCustomDrawOverview">stage</link> of the current paint cycle.</entry>
+</row>
+<row>
+<entry><xref linkend="atrFontTV"/></entry>
+<entry>Reflects a custom font that the tree-view should use for the text.</entry>
+</row>
+<row>
+<entry><xref linkend="atrIDTV"/></entry>
+<entry>Reflects the resource ID of the tree-view control sending the custom draw event notification message.</entry>
+</row>
+<row>
+<entry><xref linkend="atrItemTV"/></entry>
+<entry>Reflects the <xref linkend="defHandle"/> of the tree-view item that needs to be drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="atrLevel"/></entry>
+<entry>Reflects the level in the tree of the item that needs to be drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="atrReplyTV"/></entry>
+<entry>Reflects the <link linkend="sctConstantsClsCustomDraw">CDRF_*</link> response value that is used to reply to the event notification.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 </section>
 
-<section id="mthNewClsTvCustomDrawSimple"><title>new (Class Method)</title>
+<section id="mthNewClsTvCustomDrawSimple" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>TvCustomDrawSimple class</secondary></indexterm>
 <indexterm><primary>TvCustomDrawSimple class</primary><secondary>new</secondary></indexterm>
 <programlisting>
@@ -2528,6 +2597,489 @@ visible:
   it to the dialog's custom draw event handler TODO need link.
 </para>
 </section>  <!-- End TvCustomDrawSimple::new() -->
+
+<section id="atrClrTextTV" xreflabel="clrText"><title>clrText (Attribute)</title>
+<indexterm><primary>clrText</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>clrText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clrText-----------------------------------------------------><
+
+>>--clrText-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects a custom color that the text of the tree-view item should be drawn with. This attribute is information sent back
+  to the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">clrText get:</emphasis></term>
+  <listitem>
+  <para>
+    This is a set-only attribute, it is information to be sent back to the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">clrText set:</emphasis></term>
+  <listitem>
+  <para>
+    Set this attribute to the color value for the text of the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To construct the proper color value use the <xref linkend="mthRGB"/> method of the
+    <computeroutput>CustomDraw</computeroutput> class. Note that the <xref linkend="cnstCLR_DEFAULT"/> value does not seem to
+    work with tree-views. Experimentation seems to show that the text color must be explicitly set to the proper value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
+    the background color is set to a yellowish color:
+<programlisting>
+<![CDATA[
+
+  cdInfo~clrText   = self~RGB(247,   7,  59)
+  cdInfo~clrTextBk = self~RGB(245, 245, 127)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::clrText() [attribute]  -->
+
+<section id="atrClrTextBkTV" xreflabel="clrTextBk"><title>clrTextBk (Attribute)</title>
+<indexterm><primary>clrTextBk</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>clrTextBk</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clrTextBk-----------------------------------------------------><
+
+>>--clrTextBk-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects a custom color that the text background of the tree-view item should be drawn with. This attribute is information
+  sent back to the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">clrTextBk get:</emphasis></term>
+  <listitem>
+  <para>
+    This is a set-only attribute, it is information to be sent back to the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">clrTextBk set:</emphasis></term>
+  <listitem>
+  <para>
+    Set this attribute to a custom color that should be used for the text background when the item is drawn.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To construct the proper color value use the <xref linkend="mthRGB"/> method of the
+    <computeroutput>CustomDraw</computeroutput> class. Note that the <xref linkend="cnstCLR_DEFAULT"/> value does not seem to
+    work with tree-views. Experimentation seems to show that the text color must be explicitly set to the proper value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example snippet of code the <emphasis role="italic">clrText</emphasis> attribute is set to a reddish color and
+    the background color is set to a yellowish color:
+<programlisting>
+<![CDATA[
+
+  cdInfo~clrText   = self~RGB(247,   7,  59)
+  cdInfo~clrTextBk = self~RGB(245, 245, 127)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::clrTextBk() [attribute]  -->
+
+<section id="atrDrawStageTV" xreflabel="drawStage"><title>drawStage (Attribute)</title>
+<indexterm><primary>drawStage</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>drawStage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--drawStage-----------------------------------------------------><
+
+>>--drawStage-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the draw <link linkend="sctCustomDrawOverview">stage</link> of the current paint cycle. This attribute is
+  information sent from the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">drawStage get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the draw stage constant value as sent by the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">drawStage set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In <link linkend="sctSimpleCustomDraw">simple</link> custom draw, the ooDialog framework handles many of draw stage
+    notifications internaly and the event handler only gets invoked for the <xref linkend="cnstCDDS_ITEMPREPAINT"/> draw
+    stage.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::drawStage() [attribute]  -->
+
+<section id="atrFontTV" xreflabel="font"><title>font (Attribute)</title>
+<indexterm><primary>font</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>font</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--font-----------------------------------------------------><
+
+>>--font-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects a custom font that the tree-view should use for the text. This attribute is information sent back to the tree-view
+  control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">font get:</emphasis></term>
+  <listitem>
+  <para>
+    This is a set-only attribute, it is information to be sent back to the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">font set:</emphasis></term>
+  <listitem>
+  <para>
+    Set this attribute to the <xref linkend="defHandle"/> of a font to used for the text of the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To have the font drawn in the default font of the tree-view simply do not set the <emphasis role="italic">font</emphasis>
+    attribute to anything. For example, if the color for the font should be changed, but not the font itself, then the
+    programmer should not set this attribute.
+  </para>
+  <para>
+    Use the <xref linkend="mthCreateFontEx"/> method to get the handle of a font. Microsoft recommends that the response code
+    when a new font is to be used include <xref linkend="cnstCDRF_NEWFONT"/> value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::font() [attribute]  -->
+
+<section id="atrIDTV" xreflabel="id"><title>id (Attribute)</title>
+<indexterm><primary>id</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>id</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--id-----------------------------------------------------><
+
+>>--id-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the resource ID of the tree-view control sending the custom draw event notification message. This attribute is
+  information sent from the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">id get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the numeric <xref linkend="defResourceId"/> of the tree-view control that sent the custom draw event
+    notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">id set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses custom draw with a list-view and a tree-view. It uses the same event handler, <emphasis
+    role="italic">onCustomDraw</emphasis> for both controls and then use the <emphasis role="italic">id</emphasis> attribute
+    to determine which control has sent the event notification:
+<programlisting>
+<![CDATA[
+
+  self~customDraw
+  self~customDrawControl(IDC_LV_STATS, 'ListView', onCustomDraw)
+  self~customDrawControl(IDC_TV_PLAYERS, 'TreeView', onCustomDraw)
+
+  ...
+
+::method onCustomDraw unguarded
+    use arg customDrawInfo
+
+    if customDrawInfo~ID == .constDir[IDC_LV_STATS] then
+        return self~customDrawStats(customDrawInfo)
+    else
+        return self~customDrawPlayers(customDrawInfo)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::id() [attribute]  -->
+
+<section id="atrItemTV" xreflabel="item"><title>item (Attribute)</title>
+<indexterm><primary>item</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>item</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--item-----------------------------------------------------><
+
+>>--item-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the <xref linkend="defHandle"/> of the tree-view item that needs to be drawn. This attribute is information sent
+  from the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">item get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the item handle that the event notifications is for.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">item set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Use the item index to determine exactly which item or subitem is going to be painted.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the font and colors of the selected item in a tree-view It uses the <emphasis
+    role="italic">item</emphasis> attribute to determine if item to be drawn is the selected item or not. Notice that if the
+    item is not the selected item, .false is returned which tells the tree-view to draw the item without any customization:
+<programlisting>
+<![CDATA[
+
+    bkClr        = self~RGB(250, 250, 250)
+    selectedClr  = self~RGB(82, 0, 20)
+    selectedFont = self~createFontEx('Courier New', 10)
+
+    self~customDraw
+    self~customDrawControl(IDC_TREE, 'TreeView')
+    ...
+
+::method onCustomDraw unguarded
+    expose tv bkClr selectedClr selectedFont
+    use arg tvcds
+
+    if tv~selected == tvcds~item then do
+      tvcds~clrText   = selectedClr
+      tvcds~clrTextBk = bkClr
+      tvcds~font      = selectedFont
+      tvcds~reply     = self~CDRF_NEWFONT
+      return .true
+    end
+
+    return .false
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::item() [attribute]  -->
+
+<section id="atrLevel" xreflabel="level"><title>level (Attribute)</title>
+<indexterm><primary>level</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>level</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--level-------------------------------------------------------><
+
+>>--level= varName---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the level in the tree of the item that needs to be drawn. This attribute is information sent from the tree-view
+  control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">level get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the level in the tree of the item to be drawn. The root of the tree is level 1. All direct children of the root
+    are at level 2. A direct child of any node at level 2 is at level 3, and so on.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">level set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This snippet of code colors each level in a tree in alternating colors:
+<programlisting>
+<![CDATA[
+
+  ...
+
+  if tvcds~level // 2 == 1 then do
+    tvcds~clrText   = oddLevelClr
+    tvcds~clrTextBk = bkClr
+  end
+  else do
+    tvcds~clrText   = evenLevelClr
+    tvcds~clrTextBk = bkClr
+  end
+
+  tvcds~reply = self~CDRF_NEWFONT
+  return .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::level [attribute]  -->
+
+<section id="atrReplyTV" xreflabel="reply"><title>reply (Attribute)</title>
+<indexterm><primary>reply</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>reply</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--reply-----------------------------------------------------><
+
+>>--reply-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the <link linkend="sctConstantsClsCustomDraw">CDRF_*</link> response value that is used to reply to the event
+  notification. This attribute is information sent back to the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">reply get:</emphasis></term>
+  <listitem>
+  <para>
+    This is a set-only attribute, it is information to be sent back to the tree-view control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">reply set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">reply</emphasis> attribute should be set to one of the CDRF_* constant values.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">reply</emphasis> attribute can be set to any valid combination of CDRF_* values. However, in
+    <emphasis role="italic">simple</emphasis> custom draw only a two values make any sense. These are CDRF_NOTIFYITEMDRAW,
+    and CDRF_NEWFONT.
+  </para>
+  <para>
+    Rather than set <emphasis role="italic">reply</emphasis> to CDRF_DODEFAULT and returning true from the event handler, the
+    programmer should just return false from the event handler. Using any of the other CDRF_* values, in simple custom draw,
+    will have no effect in the Rexx program and will cause the tree-view control to send unnecessary event notifications.
+  </para>
+  <para>
+    The only combination of CDRF_* values that make sense is combining CDRF_NEWFONT and CDRF_NOTIFYITEMDRAW. And, this is
+    never really needed. Using CDRF_NEWFONT is sufficient if the font is changed and CDRF_CDRF_NOTIFYITEMDRAW is sufficient
+    if any of the colors have been changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::reply() [attribute]  -->
 
 </section> <!-- End TvCustomDrawSimple Class -->
 
