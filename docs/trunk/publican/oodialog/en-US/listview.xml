@@ -7137,7 +7137,7 @@ that allows the user to remove the check mark from all the check boxes:
     As an example, say the goal was to shade every other row in the list-view when in report mode. The event handler will be
     invoked before each item is to be painted. The programmer would examine the <xref linkend="atrItem"/> attrbute to
     determine if it was an odd or even row. If the row was even, the color attributes, <xref linkend="atrClrTextBk"/> and
-    <xref linkend="atrClrText"/>, would be set to the desired colors to shade the row. The <xref linkend="atrRepy"/>
+    <xref linkend="atrClrText"/>, would be set to the desired colors to shade the row. The <xref linkend="atrReply"/>
     attribute would be set to a response value that indicates to the list-view is to use the information in the object to
     draw the item, and the event handler would return true. If the row was odd, the event handler would simply return false
     to indicate that the list-view should draw the item itself. The following code snippet demonstrates this:
@@ -7459,7 +7459,7 @@ that allows the user to remove the check mark from all the check boxes:
     notifications internaly and the event handler only gets invoked for 2 of the draw stages. Because of this, the draw stage
     value will always be either <xref linkend="cnstCDDS_ITEMPREPAINT"/> or <xref linkend="cnstCDDS_SUBITEMPREPAINT"/>. In
     addtion, the value will only be CDDS_SUBITEMPREPAINT if the programmer has requested subitem notifications by setting
-    the <xref linkend="atrRepy"/> attribute to <xref linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/> in response to an item prepaint
+    the <xref linkend="atrReply"/> attribute to <xref linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/> in response to an item prepaint
     notification.
   </para>
   </listitem></varlistentry>
@@ -7907,7 +7907,7 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     The list-view allows the programmer to associate a value with any list-view item. This user data value is sent by the
     list-view in the event notification information. The programmer can set the user data for a list-view item in several
-    ways. The <xref linkend="mthSetItemData"/> of the <xref linkend="clsListview"/> class, the <emphasis
+    ways. The <xref linkend="mthSetItemData"/> of the <xref linkend="clsListView"/> class, the <emphasis
     role="italic">userData</emphasis> argument of the <xref linkend="mthNewClsLvItem"/> method of the <xref
     linkend="clsLvItem"/> class, or the <xref linkend="atrUserDataClsLvItem"/> attribute of the
     <computeroutput>LvItem</computeroutput> class are all used to set the user data value for an item.
