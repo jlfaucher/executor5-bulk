@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version='1.0' encoding='utf-8' ?>                                                  
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
 %BOOK_ENTITIES;
@@ -1390,6 +1390,21 @@ determined, <computeroutput>0</computeroutput> is returned.</para>
 ]]>
 </programlisting>
 
+<para>Returns the index of the first item in the array or the Nil object if the
+array is empty.  For multi-dimention arrays, the index is returned as an array
+of index values.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>first method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Mike", "Rick", "Fred", "Rick")
+   say a~first  -- says: 1
+   a = .array~of(,"Mike", "Rick")
+   say a~first  -- says: 2
+</programlisting>
+</section>
+
 <section id="mthArrayFirstItem"><title>firstItem</title>
 <indexterm><primary>firstItem method</primary>
 <secondary>of Array class</secondary></indexterm>
@@ -1411,7 +1426,6 @@ musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS   
 item=musketeers~firstItem                         /* Gives first item in array     */
                                                   /* (Assigns "Porthos" to item)   */
 </programlisting>
-</section>
 
 <para>Returns the index of the first item in the array or the Nil object if the
 array is empty.  For multi-dimention arrays, the index is returned as an array
@@ -1599,7 +1613,6 @@ index items.
 ]]>
 </programlisting>
 
-<para> </para>
 <para>Returns the last item in the array or the Nil object if the array is
 empty.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -4720,12 +4733,12 @@ is empty.  Returns
 queue is empty.</para>
 </section>
 
-<section id="mthArrayLastItem"><title>lastItem</title>
+<section id="mthQueueLastItem"><title>lastItem</title>
 <indexterm><primary>lastItem method</primary>
-<secondary>of Array class</secondary></indexterm>
+<secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>lastItem method</secondary>
-<tertiary>of Array class</tertiary></indexterm>
+<tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
 >>-lastItem----------------------------------------------------><
