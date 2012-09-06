@@ -507,6 +507,14 @@ done_out:
  *
  *           If lParam1 or lParam2 is null, indicating the user did not set a
  *           data value for the item, we simpley return 0.
+ *
+ *           It is also possible that the column number specified by the
+ *           programmer is greater than the number of subitems in the full row.
+ *           There is a check that the column number is not greater than the
+ *           number of columns in the list view, but the list view could have a
+ *           column and not have any matching subitem in the full row object.
+ *           So, we need to check that there is actually a subitem in the row to
+ *           match the column number.
  */
 int32_t CALLBACK LvInternCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 {
@@ -524,6 +532,11 @@ int32_t CALLBACK LvInternCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lPar
 
     pCLvFullRow pclvfr1 = (pCLvFullRow)lParam1;
     pCLvFullRow pclvfr2 = (pCLvFullRow)lParam2;
+
+    if ( col > pclvfr1->subItemCount || col > pclvfr2->subItemCount)
+    {
+        return 0;
+    }
 
     switch ( HIWORD(lParamSort) )
     {
@@ -587,14 +600,14 @@ int32_t CALLBACK LvRexxCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParam
     RexxArrayObject args = c->ArrayOfThree(lp1, lp2, pcrs->param);
 
     RexxObjectPtr reply = c->SendMessage(pcrs->rexxDlg, pcrs->method, args);
-    // c->ReleaseLocalReference(args);
+    c->ReleaseLocalReference(args);
 
     if ( msgReplyIsGood(c, pcrs->pcpbd, reply, pcrs->method, false) )
     {
         int32_t answer;
         if ( c->Int32(reply, &answer) )
         {
-            // c->ReleaseLocalReference(reply);
+            c->ReleaseLocalReference(reply);
             return answer;
         }
 
@@ -3477,6 +3490,11 @@ inline void lvfrStoreItem(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t ind
     c->SendMessage1(pclvfr->bagOfItems, "PUT", pclvfr->rxSubItems[index]);
 }
 
+inline RexxObjectPtr lvfrUnStoreItem(RexxMethodContext *c, pCLvFullRow pclvfr, RexxObjectPtr item)
+{
+    return c->SendMessage1(pclvfr->bagOfItems, "REMOVE", item);
+}
+
 inline void adjustSubItemIndexes(pCLvFullRow pclvfr)
 {
     for ( uint32_t i = 1; i <= pclvfr->subItemCount; i++ )
@@ -3739,6 +3757,7 @@ RexxMethod2(uint32_t, lvfr_addSubitem, RexxObjectPtr, subitem, CSELF, pCSelf)
     pclvfr->rxSubItems[i]         = subitem;
     pclvfr->subItems[i]           = (LPLVITEM)context->ObjectToCSelf(subitem);
     pclvfr->subItems[i]->iSubItem = i;
+    pclvfr->subItems[i]->iItem    = pclvfr->subItems[0]->iItem;
 
     lvfrStoreItem(context, pclvfr, i);
 
@@ -3788,9 +3807,11 @@ RexxMethod2(RexxObjectPtr, lvfr_removeSubitem, uint32_t, index, CSELF, pCSelf)
         memmove(&pclvfr->subItems[index],   &pclvfr->subItems[index + 1],   count);
     }
 
-    pclvfr->subItemCount++;
+    pclvfr->subItemCount--;
 
     adjustSubItemIndexes(pclvfr);
+
+    subItem = lvfrUnStoreItem(context, pclvfr, subItem);
 
     return subItem;
 }
