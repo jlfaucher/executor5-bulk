@@ -70,7 +70,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the extended attribute value on success or a zero-length string on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.sysGetxattr">
+<title>SysGetxattr</title>
 <programlisting>
 <![CDATA[
 /* get an extended attribute */
@@ -78,6 +79,7 @@ C API to perform the action.</para>
 mimetype = SysGetxattr('/home/dashley/example.txt', 'mimetype')
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -99,7 +101,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns an array of the extended attribute names on success. The array will be empty on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.sysListxattr">
+<title>SysListxattr</title>
 <programlisting>
 <![CDATA[
 /* list the extended attribute names */
@@ -110,6 +113,7 @@ do name over names
 end
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -134,7 +138,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns 0 on success or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.sysRemovexattr">
+<title>SysRemovexattr</title>
 <programlisting>
 <![CDATA[
 /* remove an extended attribute */
@@ -142,6 +147,7 @@ C API to perform the action.</para>
 retc = SysRemovexattr('/home/dashley/example.txt', 'mimetype')
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -169,7 +175,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the 0 on success or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.sysSetxattr">
+<title>SysSetxattr</title>
 <programlisting>
 <![CDATA[
 /* set an extended attribute */
@@ -177,6 +184,7 @@ C API to perform the action.</para>
 retc = SysSetxattr('/home/dashley/example.txt', 'mimetype', 'text/plain')
 ]]>
 </programlisting>
+</example>
 </section>
 
 

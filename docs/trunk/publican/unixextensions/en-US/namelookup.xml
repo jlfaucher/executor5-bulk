@@ -64,7 +64,8 @@ C API to perform the action.</para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the hostname of the machine.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysGethostname">
+<title>SysGethostname</title>
 <programlisting>
 <![CDATA[
 /* the following example comes from a Linux laptop running Fedora */
@@ -72,6 +73,7 @@ C API to perform the action.</para>
 SysGethostname()      -->  "wda.holmes4.com"
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -112,7 +114,8 @@ Allowed values are:
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysGetservbyname">
+<title>SysGetservbyname</title>
 <programlisting>
 <![CDATA[
 /* the following examples came from a Linux laptop running Fedora */
@@ -121,6 +124,7 @@ SysGetservbyname("HTTP", "TCP", "n")      -->  HTTP
 SysGetservbyname("HTTP", "TCP", "p")      -->  80
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -161,7 +165,8 @@ Allowed values are:
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysGetservbyport">
+<title>SysGetservbyport</title>
 <programlisting>
 <![CDATA[
 /* the following examples came from a Linux laptop running Fedora */
@@ -170,6 +175,7 @@ SysGetservbyport(80, "TCP", "n")      -->  HTTP
 SysGetservbyport(80, "TCP", "p")      -->  80
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -188,12 +194,14 @@ to the environment variable TZ.</para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the time zone name.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysGettzname1">
+<title>SysGettzname1</title>
 <programlisting>
 <![CDATA[
 say SysGettzname1()
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -212,24 +220,15 @@ to the environment variable TZ.</para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the daylight savings time zone name.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysGettzname2">
+<title>SysGettzname2</title>
 <programlisting>
 <![CDATA[
 say SysGettzname2()
 ]]>
 </programlisting>
+</example>
 </section>
-
-
-
-
-
-
-
-
-
-
-
 
 </chapter>
 

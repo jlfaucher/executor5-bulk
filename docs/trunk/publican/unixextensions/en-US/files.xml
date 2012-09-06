@@ -69,7 +69,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysgetaccess">
+<title>SysGetAccess</title>
 <programlisting>
 <![CDATA[
 /* do others have write permission on the file? */
@@ -77,6 +78,7 @@ C API to perform the action.</para>
 retc = SysAccess("/home/dashley/temp.txt", 2)
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -105,7 +107,8 @@ This parameter must be a decimal number.
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="syschmod">
+<title>SysChmod</title>
 <programlisting>
 <![CDATA[
 /* set the mode bits on a file */
@@ -114,6 +117,7 @@ retc = SysChmod("/home/dashley/temp.txt", "rwxrwxr-x")
 retc = SysChmod("/home/dashley/temp.txt", "rwSrwsr-x")
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -143,7 +147,8 @@ to be successful.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="syschown">
+<title>SysChown</title>
 <programlisting>
 <![CDATA[
 /* change the ownership attributes of a file */
@@ -151,6 +156,7 @@ to be successful.</para>
 call SysChown "/home/username/myfile", 501, 530
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -172,7 +178,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="syschroot">
+<title>SysChroot</title>
 <programlisting>
 <![CDATA[
 /* change the ownership attributes of a file */
@@ -180,6 +187,7 @@ C API to perform the action.</para>
 call SysChroot "/home/username/"
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -201,7 +209,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysclose">
+<title>SysClose</title>
 <programlisting>
 <![CDATA[
 /* close filehandle 0 */
@@ -209,6 +218,7 @@ C API to perform the action.</para>
 call SysClose 0
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -233,7 +243,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="syseuidaccess">
+<title>SysEuidaccess</title>
 <programlisting>
 <![CDATA[
 /* do others have write permission on the file? */
@@ -241,6 +252,7 @@ C API to perform the action.</para>
 retc = SysEuidaccess("/home/dashley/temp.txt", 2)
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -267,7 +279,8 @@ C APIs to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns an ooRexx array.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysgetdirlist">
+<title>SysGetdirlist</title>
 <programlisting>
 <![CDATA[
 /* get the subdirectory entries */
@@ -278,6 +291,7 @@ do entry over arr
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -305,7 +319,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="syslchown">
+<title>SysLchown</title>
 <programlisting>
 <![CDATA[
 /* change the ownership attributes of a symbolic link */
@@ -313,6 +328,7 @@ C API to perform the action.</para>
 call SysLchown "/home/username/myfile", 501, 530
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -337,7 +353,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="syslink">
+<title>SysLink</title>
 <programlisting>
 <![CDATA[
 /* create a new link */
@@ -345,6 +362,7 @@ C API to perform the action.</para>
 call SysLink "/pub", "/home/username/myownpublink"
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -369,7 +387,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysmkdir">
+<title>SysMkdir</title>
 <programlisting>
 <![CDATA[
 /* create a new subdir */
@@ -377,6 +396,7 @@ C API to perform the action.</para>
 retc = SysMkdir("./pub", b2d("111111101")) 
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -398,7 +418,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysRmdir">
+<title>SysRmdir</title>
 <programlisting>
 <![CDATA[
 /* remove a subdir */
@@ -406,6 +427,7 @@ C API to perform the action.</para>
 retc = SysRmdir("./pub") 
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -468,7 +490,8 @@ shell command "ls -l".
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysStat">
+<title>SysStat</title>
 <programlisting>
 <![CDATA[
 /* the following examples came from a Linux laptop running Fedora 12 */
@@ -480,6 +503,7 @@ SysStat("/home/dashley/temp.txt", "s")  -->  427
 SysStat("/home/dashley/temp.txt", "a")  -->  2009-12-02 13:22:16
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -504,7 +528,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysSymlink">
+<title>SysSymlink</title>
 <programlisting>
 <![CDATA[
 /* create a new symlink */
@@ -512,6 +537,7 @@ C API to perform the action.</para>
 call SysSymlink "/pub", "/home/username/myownpublink"
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -534,6 +560,8 @@ C API to perform the action.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysUmask">
+<title>SysUmask</title>
 <programlisting>
 <![CDATA[
 /* set the umask */
@@ -541,6 +569,7 @@ C API to perform the action.</para>
 call SysUmask 2
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -582,7 +611,8 @@ Allowed values are:
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysUname">
+<title>SysUname</title>
 <programlisting>
 <![CDATA[
 /* the following examples came from a Linux laptop running Fedora 12 */
@@ -595,6 +625,7 @@ SysUname("v")   -->  #1 SMP Wed Dec 9 11:14:59 EST 2009
 SysUname("m")   -->  i686
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -616,7 +647,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysUnlink">
+<title>SysUnlink</title>
 <programlisting>
 <![CDATA[
 /* remove a link */
@@ -624,6 +656,7 @@ C API to perform the action.</para>
 call SysUnLink "/home/username/myownpublink"
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -647,7 +680,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns an array of the expanded results.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysWordexp">
+<title>SysWordexp</title>
 <programlisting>
 <![CDATA[
 /* process an expansion */
@@ -658,8 +692,8 @@ do mem over arr
    end
 ]]>
 </programlisting>
+</example>
 </section>
-
 
 </chapter>
 

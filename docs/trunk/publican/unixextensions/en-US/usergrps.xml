@@ -61,7 +61,8 @@ C API to perform the action.</para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical effective group id.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysGetegid">
+<title>SysGetegid</title>
 <programlisting>
 <![CDATA[
 /* get the current effective group id */
@@ -69,6 +70,7 @@ C API to perform the action.</para>
 myegid = SysGetegid()
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -86,7 +88,8 @@ C API to perform the action.</para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical effective user id.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysGeteuid">
+<title>SysGeteuid</title>
 <programlisting>
 <![CDATA[
 /* get the current effective user id */
@@ -94,6 +97,7 @@ C API to perform the action.</para>
 myeuid = SysGeteuid()
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -111,7 +115,8 @@ C API to perform the action.</para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical group id.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysGetgid">
+<title>SysGetgid</title>
 <programlisting>
 <![CDATA[
 /* get the current group id */
@@ -119,6 +124,7 @@ C API to perform the action.</para>
 mygid = SysGetgid()
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -159,17 +165,19 @@ Allowed values are:
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information about a group.</para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysGetgrgid">
+<title>SysGetgrgid</title>
 <programlisting>
 <![CDATA[
 /* the following examples came from a Linux laptop running Fedora */
 
-SysGetpwgid(100, "n")      -->  users
-SysGetpwgid(100, "g")      -->  100
-SysGetpwgid(100, "m")      -->  an ooRexx array with the member user names
-SysGetpwgid(100, "p")      -->  ""
+SysGetgrgid(100, "n")      -->  users
+SysGetgrgid(100, "g")      -->  100
+SysGetgrgid(100, "m")      -->  an ooRexx array with the member user names
+SysGetgrgid(100, "p")      -->  ""
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -210,17 +218,19 @@ Allowed values are:
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysGetgrnam">
+<title>SysGetgrnam</title>
 <programlisting>
 <![CDATA[
 /* the following examples came from a Linux laptop running Fedora */
 
-SysGetpwgrp("users", "n")      -->  users
-SysGetpwgrp("users", "g")      -->  100
-SysGetpwgrp("users", "m")      -->  an ooRexx array with the member user names
-SysGetpwgrp("users", "p")      -->  ""
+SysGetgrnam("users", "n")      -->  users
+SysGetgrnam("users", "g")      -->  100
+SysGetgrnam("users", "m")      -->  an ooRexx array with the member user names
+SysGetgrnam("users", "p")      -->  ""
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -238,7 +248,8 @@ C API to perform the action.</para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical process group id.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysGetpgrp">
+<title>SysGetpgrp</title>
 <programlisting>
 <![CDATA[
 /* get the current process group id */
@@ -246,6 +257,7 @@ C API to perform the action.</para>
 mypgrp = SysGetpgrp()
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -295,7 +307,8 @@ Allowed values are:
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysGetpwnam">
+<title>SysGetpwnam</title>
 <programlisting>
 <![CDATA[
 /* the following examples came from a Linux laptop running Fedora */
@@ -309,6 +322,7 @@ SysGetpwnam("dashley", "s")      -->  bash
 SysGetpwnam("dashley", "p")      -->  ""
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -358,7 +372,8 @@ Allowed values are:
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysGetpwuid">
+<title>SysGetpwuid</title>
 <programlisting>
 <![CDATA[
 /* the following examples came from a Linux laptop running Fedora */
@@ -372,6 +387,7 @@ SysGetpwuid(500, "s")      -->  bash
 SysGetpwuid(500, "p")      -->  ""
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -389,7 +405,8 @@ C API to perform the action.</para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical user id.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysGetuid">
+<title>SysGetuid</title>
 <programlisting>
 <![CDATA[
 /* get the current user id */
@@ -397,6 +414,7 @@ C API to perform the action.</para>
 myuid = SysGetuid()
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -418,7 +436,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysSetegid">
+<title>SysSetegid</title>
 <programlisting>
 <![CDATA[
 /* set the effective group id to 520 */
@@ -426,6 +445,7 @@ C API to perform the action.</para>
 call SysSetegid 520
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -447,7 +467,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysSeteuid">
+<title>SysSeteuid</title>
 <programlisting>
 <![CDATA[
 /* set the effective user id to 520 */
@@ -455,6 +476,7 @@ C API to perform the action.</para>
 call SysSeteuid 520
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -476,7 +498,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysSetgid">
+<title>SysSetgid</title>
 <programlisting>
 <![CDATA[
 /* set the group id to 520 */
@@ -484,6 +507,7 @@ C API to perform the action.</para>
 call SysSetgid 520
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -508,7 +532,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysSetpgid">
+<title>SysSetpgid</title>
 <programlisting>
 <![CDATA[
 /* set process group id */
@@ -516,6 +541,7 @@ C API to perform the action.</para>
 call SysSetpgid 9321, 520
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -533,7 +559,8 @@ C API to perform the action.</para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysSetpgrp">
+<title>SysSetpgrp</title>
 <programlisting>
 <![CDATA[
 /* set the current process group id */
@@ -541,6 +568,7 @@ C API to perform the action.</para>
 call SysSetpgrp
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -562,7 +590,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.sysSetuid">
+<title>SysSetuid</title>
 <programlisting>
 <![CDATA[
 /* set the user id to 520 */
@@ -570,12 +599,8 @@ C API to perform the action.</para>
 call SysSetuid 520
 ]]>
 </programlisting>
+</example>
 </section>
-
-
-
-
-
 
 </chapter>
 

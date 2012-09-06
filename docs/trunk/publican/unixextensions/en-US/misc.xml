@@ -69,7 +69,8 @@ C API to perform the action.</para>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the encrypted string or a zero-length string on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysCrypt">
+<title>SysCrypt</title>
 <programlisting>
 <![CDATA[
 /* encrypt a string */
@@ -77,6 +78,7 @@ C API to perform the action.</para>
 encstr = SysCrypt("String to encrypt.", "3A")
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -94,7 +96,8 @@ C API to perform the action.</para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current sid or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysGetsid">
+<title>SysGetsid</title>
 <programlisting>
 <![CDATA[
 /* get the session id */
@@ -102,6 +105,7 @@ C API to perform the action.</para>
 mysid = SysGetsid()
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -117,7 +121,8 @@ mysid = SysGetsid()
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the numeric errno value.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysGeterrno">
+<title>SysGeterrno</title>
 <programlisting>
 <![CDATA[
 /* get the errno */
@@ -125,6 +130,7 @@ mysid = SysGetsid()
 errno = SysGeterrno()
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -145,7 +151,8 @@ errno = SysGeterrno()
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns a short description of the errno value.
 If the message is not available it returns the strimg "Unknown".</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysGeterrnomsg">
+<title>SysGeterrnomsg</title>
 <programlisting>
 <![CDATA[
 /* get the errno message */
@@ -153,6 +160,7 @@ If the message is not available it returns the strimg "Unknown".</para>
 say SysGeterrnomsg(26)
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -170,7 +178,8 @@ C macro to perform the action.</para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns 32 or 64 in most cases.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysGetsizeofptr">
+<title>SysGetsizeofptr</title>
 <programlisting>
 <![CDATA[
 /* get the pointer size */
@@ -178,6 +187,7 @@ C macro to perform the action.</para>
 addrmode = SysGetsizeofptr()
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -195,7 +205,8 @@ C API to perform the action.</para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the new sid or -1 on an error.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysSetsid">
+<title>SysSetsid</title>
 <programlisting>
 <![CDATA[
 /* set the session id to zero */
@@ -203,6 +214,7 @@ C API to perform the action.</para>
 call SysSetsid 0
 ]]>
 </programlisting>
+</example>
 </section>
 
 
@@ -274,7 +286,8 @@ Allowed values are:
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns previous signal value. This is meaningless to the Rexx programmer.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="sysSignal">
+<title>SysSignal</title>
 <programlisting>
 <![CDATA[
 /* Cause alarm signals to be ignored */
@@ -287,8 +300,8 @@ call SysSignal 2, "default"
 call SysSignal 1, "I"
 ]]>
 </programlisting>
+</example>
 </section>
-
 
 </chapter>
 
