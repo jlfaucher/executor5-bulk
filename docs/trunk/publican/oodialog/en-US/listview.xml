@@ -6091,26 +6091,24 @@ grid position.</para>
       <para>
         When <emphasis role="italic">methodName</emphasis> is not <emphasis role="italic">InternalListViewSort</emphasis>,
         then it names a comparison method in the Rexx dialog that is used by the list-view to sort its items. The details of
-        how the Rexx method is implemented are in the remarks section. The Rexx method is passed the <xref
-        linkend="mthSetItemData"/> value associated with two list-view items being compared. The Rexx method must return a
-        whole number: less than 0 if the first list-view item should precede the second item, greater than 0 if the first
-        list-view item should follow the second, or 0 if the two items are equivalent.
+        how the Rexx method is implemented are in the remarks section.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>param [optional]</term>
       <listitem>
       <para>
-        For the Rexx sort, the <emphasis role="italic">param</emphasis> argument can be any object the programmer wants to
-        use. If the argument exists, it is passed as the third argument to the <emphasis role="italic">methodName</emphasis>
-        comparison method. If it is not specified, <computeroutput>.nil</computeroutput> is passed as the third
-        argument.
+        For the <emphasis role="bold">Rexx sort</emphasis>, the <emphasis role="italic">param</emphasis> argument can be any object the programmer
+        wants to use. If the argument exists, it is passed as the third argument to the <emphasis
+        role="italic">methodName</emphasis> comparison method. If it is not specified,
+        <computeroutput>.nil</computeroutput> is passed as the third argument.
       </para>
       <para>
-        For the internal sort, the <emphasis role="italic">param</emphasis> argument can be a
+        For the <emphasis role="bold">internal sort</emphasis>, the <emphasis role="italic">param</emphasis> argument can be a
         <computeroutput>Directory</computeroutput> object that is used to change the internal sort parameters. If <emphasis
         role="italic">param</emphasis> is omitted in this case, the sort is performed on the list-view item text, as a
         case-sensitive ascending sort. If not omitted, the following indexes in the
         <computeroutput>Directory</computeroutput> object are checked and alter the sort as described:
+      </para>
 
         <variablelist>
           <varlistentry><term><emphasis role="bold">ASCENDING:</emphasis></term>
@@ -6130,16 +6128,15 @@ grid position.</para>
           <varlistentry><term><emphasis role="bold">COLUMN:</emphasis></term>
           <listitem>
           <para>
-            If present, the index must be a non-negative number, with in the range of 0 to the number of subitem columns in
-            the list-view. Recall that the first subitem is in column 1, the second subitem is in column 2, and so on. The
-            value of the COLUMN index specifies which text the sort is performed on. A value of 0 specifies that the sort is
-            performed on the item text. Non-zero values specify that the sort is performed on the text of the subitem
-            specified. I.e., a value of 2 specifies the the sort is performed on the text of subitem 2. If omitted, the
-            default value is 0.
+            If present, the index must be a non-negative number, within the range of 0 to the number of subitem columns
+            in the list-view. Recall that the first subitem is in column 1, the second subitem is in column 2, and so
+            on. The value of the COLUMN index specifies which text the sort is performed on. A value of 0 specifies that
+            the sort is performed on the item text. Non-zero values specify that the sort is performed on the text of
+            the subitem specified. I.e., a value of 2 specifies the the sort is performed on the text of subitem 2. If
+            omitted, the default value is 0.
           </para>
           </listitem></varlistentry>
         </variablelist>
-      </para>
       </listitem></varlistentry>
     </variablelist>
   </para>
@@ -6198,7 +6195,7 @@ grid position.</para>
         value is the value the programmer assigned to the item using the <xref linkend="mthSetItemData"/> method.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>data1</term>
+      <varlistentry><term>data2</term>
       <listitem>
       <para>
         The <emphasis role="italic">data value</emphasis> assigned to the second list-view item to be compared.
@@ -6786,20 +6783,21 @@ that allows the user to remove the check mark from all the check boxes:
     <varlistentry><term>item [required]</term>
     <listitem>
     <para>
-      A <link linkend="clsLvItem">LvItem</link> object that specifies the values of the list-view item being added.
+      A <link linkend="clsLvItem">LvItem</link> object that specifies the attributes of the list-view item being added.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>subItem [optional]</term>
     <listitem>
     <para>
-      A <link linkend="clsLvSubItem">LvSubItem</link> object that specifies the values for a subitem of the list-view
+      A <link linkend="clsLvSubItem">LvSubItem</link> object that specifies the attributes of a subitem of the list-view
       item being added. The argument can repeat has many times as needed to specify all the subitems of the item. The
       subitems are added to the item in the order of the arguments to the <emphasis role="italic">new</emphasis> method.
     </para>
     <para>
       <emphasis role="bold">Note:</emphasis> The very last argument can optionally be <computeroutput>.true</computeroutput>
-      or <computeroutput>.false</computeroutput> to signal that the <computeroutput>LvFullRow</computeroutput> is to be used
-      with internal sorting of the list-view items. This usage is explained in the remarks section.
+      or <computeroutput>.false</computeroutput> to signal that the <computeroutput>LvFullRow</computeroutput> object
+      itself is to be assigned as the user data value of the list-view items. This usage is explained in the remarks
+      section.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -6858,7 +6856,7 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example show a method that creates an array of list-view full rows from NFL football player data. The array is
+    This example shows a method that creates an array of list-view full rows from NFL football player data. The array is
     later used to insert the rows into a list-view control.
 <programlisting>
 <![CDATA[
