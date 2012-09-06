@@ -1417,7 +1417,8 @@ Possible values are:</para>
       </para></listitem>
    </varlistentry>
 </variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example id="ex.sockselect-function:">
+<title>SockSelect</title>
 <programlisting>
 r.0 = 2                     /* specify 2 sockets for read in stem r. */
 r.1 = 101
@@ -1432,6 +1433,7 @@ do i = 1 to r.0           /* display sockets ready for read          */
     say "socket" r.i "is ready for reading."
 end
 </programlisting>
+</example>
 <para>That SockSelect() call can be invoked as:</para>
 <programlisting>
 rc = SockSelect("r.","w.","")
