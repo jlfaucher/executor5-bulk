@@ -273,7 +273,8 @@ one or more of the following constants:</para>
   <computeroutput>0xAAAAAAAA</computeroutput> where A represents any hexadecimal digit. If an error
   happens, the numerical system error code is returned instead of a string with two words.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.getStyle-function">
+<title>getStyle</title>
 <programlisting>
 <![CDATA[
 
@@ -307,7 +308,7 @@ Found this window.
 */
 ]]>
 </programlisting>
-
+</example>
 </section>
 
 <section id="restorewo"><title>restore</title>
@@ -496,9 +497,10 @@ window.</para>
 
 <para>Sets the input focus to the child window associated with the specified
 WindowObject instance <emphasis role="italic">wndObject</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <para>The following example sets the input focus to the last child window:
 </para>
+<example id="ex.focusItem-function">
+<title>focusItem</title>
 <programlisting>
  dlg = wndmgr~find("TestDialog")
     if dlg \= .Nil then do
@@ -507,6 +509,7 @@ WindowObject instance <emphasis role="italic">wndObject</emphasis>.</para>
         dlg~focusItem(lChild)
     end
 </programlisting>
+</example>
 </section>
 
 <section id="findchildwo"><title>findChild</title>
@@ -688,7 +691,8 @@ following entries, where each entry starts with an exclamation mark (!):</para>
 <listitem><para>
 </para></listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.enumerateChildren-function">
+<title>enumerateChildren</title>
 <programlisting>
       wo = winmgr~find("TestDialog")
         enum. = wo~enumerateChildren
@@ -703,6 +707,7 @@ following entries, where each entry starts with an exclamation mark (!):</para>
            say "Rect:" enum.i.!Coordinates
         end
 </programlisting>
+</example>
 </section>
 
 <section id="sendmessagewo"><title>sendMessage</title>

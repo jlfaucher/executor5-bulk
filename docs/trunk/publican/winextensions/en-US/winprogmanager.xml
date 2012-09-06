@@ -273,12 +273,15 @@ The default is &quot;NORMAL&quot;.
 <listitem><para>The following example creates a shortcut named
 &quot;My NotePad&quot;
 to the Notepad editor within the directory c:\temp:
+<example id="ex.windowprogrammanager-addShortCut">
+<title>WindowsProgramManager class - addShortCut method</title>
 <programlisting>
 pm = .WindowsProgramManager~new
 	if pm~InitCode \= 0 then exit
 	pm~addShortCut("c:\temp\My Notepad","%SystemRoot%\system32\notepad.exe")
 	::requires "winsystm.cls"
 </programlisting>
+</example>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -338,12 +341,15 @@ must not contain any brackets or parenthesis. Otherwise, this method fails.
 </programlisting>
 
 <para>Adds a shortcut to a program group. The shortcut is placed into the last
-group used with either AddGroup or ShowGroup. Example: </para>
+group used with either AddGroup or ShowGroup.</para>
+<example id="ex.windowprogrammanager-addItem">
+<title>WindowsProgramManager class - addItem method</title>
 <programlisting>
 AddItem("OODialog Samples", ,
 "rexx oodialog\samples\sample.rex", ,
 "oodialog\samples\oodialog.ico")
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The name that you specify for the <emphasis role="italic">group</emphasis>
@@ -437,7 +443,8 @@ and the location option "COMMON".
 deleted that was previously created with "COMMON" and vice
 versa.</para></note>
 
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.windowprogrammanager-deleteDesktopIcon">
+<title>WindowsProgramManager class - deleteDesktopIcon method</title>
 <programlisting>
 <![CDATA[
 pm = .WindowsProgramManager~new
@@ -455,7 +462,7 @@ exit
 ::requires "winsystm.cls"
 ]]>
 </programlisting>
-
+</example>
 </section>
 
 <section id="wpdegr"><title>deleteGroup</title>

@@ -226,14 +226,14 @@ HKEY_LOCAL_MACHINE and HKEY_USERS.</para>
   Adds a new named subkey to the registry and returns its handle. The first argument is the parent key
   handle. The second argument is the name of the new subkey.
 </para>
-<para>
-  Example:
+<example id ="ex.WindowsRegistry-create">
+<title>WindowsRegistry class - create method</title>
 <programlisting>
 <![CDATA[
 newKey = rg~create(rg~local_machine, "myOwnKey")
 ]]>
 </programlisting>
-</para>
+</example>
 </section>
 
 <section id="wrAtrCurrentKey"><title>current_key (Attribute [get])</title>
@@ -462,6 +462,8 @@ flushed.</para>
 <para>
   Example:
 </para>
+<example id ="ex.WindowsRegistry-getValue">
+<title>WindowsRegistry class - getValue method</title>
 <programlisting>
 myval. = rg~getvalue(,"filesystem")        /* current key */
 say "Type is" myval.type
@@ -471,6 +473,7 @@ say "my default value is:" myval.data
 myval. = rg~getvalue(mykey,"")
 say "my default value is:" myval.data
 </programlisting>
+</example>
 <para>
   On success, possible types are: NORMAL, EXPAND, MULTI, NUMBER, BINARY, NONE, OTHER.
 </para>
@@ -478,6 +481,8 @@ say "my default value is:" myval.data
   Since errors are possible, it may be best to test that the return is a stem before assigning the return to a stem.
   Something like this:
 </para>
+<example id ="ex.WindowsRegistry-getValue-errors">
+<title>WindowsRegistry class - getValue errors</title>
 <programlisting>
 
   retVal = rg~getvalue(,"filesystem")        /* current key */
@@ -488,6 +493,7 @@ say "my default value is:" myval.data
     say "Error getting registery value."
   end
 </programlisting>
+</example>
 </section>
 
 <section id="wrlist"><title>list</title>
@@ -505,13 +511,16 @@ say "my default value is:" myval.data
 
 <para>Retrieves the list of subkeys for a given key in a stem variable. The name
 of the stem variable must include the period. The keys are returned as stem.1,
-stem.2, and so on. Example: </para>
+stem.2, and so on.</para>
+<example id ="ex.WindowsRegistry-list">
+<title>WindowsRegistry class - list method</title>
 <programlisting>
 rg~LIST(objectrexxkey,orexxkeys.)
 do i over orexxkeys.
 say orexxkeys.i
 end
 </programlisting>
+</example>
 </section>
 
 <section id="wrliva"><title>listValues</title>
@@ -536,7 +545,8 @@ as a path, NONE for no specified type, MULTI for multiple strings, NUMBER
 for a 4-byte value, and BINARY for any data format.</para>
 <para>If <emphasis role="italic">key_handle</emphasis> is omitted, the values
 of CURRENT_KEY are listed.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id ="ex.WindowsRegistry-listValues">
+<title>WindowsRegistry class - listValues method</title>
 <programlisting>
 qstem. = rg~QUERY(objectrexxkey)
 rg~LISTVALUES(objectrexxkey,lv.)
@@ -546,6 +556,7 @@ if lv.i.type = "NORMAL" then
 say "data of value:" lv.i.data
 end
 </programlisting>
+</example>
 </section>
 
 <section id="wrload"><title>load</title>
@@ -742,11 +753,14 @@ values returned are <emphasis role="italic">class</emphasis> (class name),
 <emphasis role="italic">time</emphasis> of
 last modification. If <emphasis role="italic">key_handle</emphasis> is omitted,
 CURRENT_KEY is queried. Example:</para>
+<example id ="ex.WindowsRegistry-query">
+<title>WindowsRegistry class - query method</title>
 <programlisting>
 myquery. = rg~query(objectrexxkey)
 say "class="myquery.class "at" myquery.date
 say "subkeys="myquery.subkeys "values="myquery.values
 </programlisting>
+</example>
 </section>
 
 <section id="wrrepl"><title>replace</title>
@@ -836,12 +850,15 @@ rg~SAVE(objectrexxkey,"\objrexx\orexx")
 
 <para>Sets a named value of a given key. If
 <emphasis role="italic">name</emphasis> is blank or omitted,
-the default value is set. Examples: </para>
+the default value is set.</para>
+<example id ="ex.WindowsRegistry-setValue">
+<title>WindowsRegistry class - setValue method</title>
 <programlisting>
 rg~SETVALUE(objectrexxkey, ,"My default","NORMAL")
 rg~SETVALUE(objectrexxkey,"Product_Name","Object Rexx")
 rg~SETVALUE(objectrexxkey,"VERSION","1.0")
 </programlisting>
+</example>
 </section>
 
 <section id="wrunld"><title>unload</title>

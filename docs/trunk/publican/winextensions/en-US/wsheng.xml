@@ -159,6 +159,8 @@ uses an Internet Explorer pop-up window to denote a particular mouse action.
 The appropriate activity takes place when the mouse is rolled over the first
 paragraph, when it leaves the second, and when it is used to click the third.
 </para>
+<example id="ex.wsh-browser">
+<title>Windows Scripting Shell - Browser invocation</title>
 <programlisting>
 &lt;HTML>
 &lt;!--
@@ -215,6 +217,7 @@ Event takes place when cursor moves over this paragraph.&lt;/P>
 
 &lt;/HTML>
 </programlisting>
+</example>
 <para>The important things to note in this example are:</para>
 <itemizedlist>
 <listitem><para>The <computeroutput>LANGUAGE="Object Rexx"</computeroutput>
@@ -300,6 +303,8 @@ version of the scripting host. If this file had the name
 <computeroutput>"SimpleORexx.wsf</computeroutput>", the command to invoke it
 would be <computeroutput>"CScript //nologo SimpleORexx.wsf"</computeroutput>,
 or <computeroutput>"WScript //nologo SimpleORexx.wsf"</computeroutput>.</para>
+<example id="ex.wsh-wscript">
+<title>Windows Scripting Shell - WScript invocation</title>
 <programlisting>
 &lt;?xml version="1.0"?>
 &lt;?job error="true" debug="true" ?>
@@ -366,6 +371,7 @@ WScript~Echo("Done!")
 &lt;/package>
 
 </programlisting>
+</example>
 <para>The important things to note in this example are:</para>
 <itemizedlist>
 <listitem><para>Accept the two XML tags
@@ -408,6 +414,8 @@ elaborate than the <computeroutput>.wsf</computeroutput> type. Since a
 <computeroutput>.wsc</computeroutput> file is used as a COM object, the XML
 must describe the object in a way that is independent of the script language.
 Consider the following example.</para>
+<example id="ex.wsh-wsc">
+<title>Windows Scripting Shell - WSC invocation</title>
 <programlisting>
 &lt;?xml version="1.0"?>
 &lt;?component error="true" debug="true" ?>
@@ -537,6 +545,7 @@ a = WShell~Popup("A message via an implicit COM object.");
 &lt;/package>
 
 </programlisting>
+</example>
 <para>The important things to note are:</para>
 <itemizedlist>
 <listitem><para>There are three distinct sections in this file, and two of them
@@ -660,6 +669,8 @@ the lack of the word GREAT!. WSH does not pass the command line
 <computeroutput>args</computeroutput> to Object Rexx. The
 <computeroutput>WScript~Arguments</computeroutput> method/object
 must be used, as in the following code:</para>
+<example id="WindowsScriptingShell-arguments">
+<title>Windows Scripting Shell - Arguments</title>
 <programlisting>
 /*    Note that the WScript object is not declared. It just appears
  * courtesy of CScript and WScript
@@ -670,6 +681,7 @@ If WScript~Arguments~length &gt; 0 Then Do I = 0 To (WScript~Arguments~length - 
   End
 Else Say "No arguments were sent."
 </programlisting>
+</example>
 <para>From a command prompt,
 <computeroutput>"wscript //e:"Object Rexx" Safe.rex GREAT!"</computeroutput>,
 will seem as if it produced no output at all. As when
@@ -736,6 +748,8 @@ when the file name is right-clicked in Windows Explorer.</para>
 to use an OLE-enabled application, such as Object Rexx. The following Object
 Rexx code shows how to define the object in Object Rexx, and invoke its methods.
 </para>
+<example id="WindowsScriptingShell-oorexx">
+<title>Windows Scripting Shell - ooRexx invocation</title>
 <programlisting>
 &lt;?xml version="1.0"?&gt;
 &lt;?job error="true" debug="true" ?&gt;
@@ -774,6 +788,7 @@ ReturnValue = Sample~NamedRoutine("A parm");
   &lt;/job&gt;
 &lt;/package&gt;
 </programlisting>
+</example>
 <para>Object Rexx is not the only way to invoke the script. Any application that
 can call COM objects can invoke it. For further information, see the relevant
 documentation.</para>

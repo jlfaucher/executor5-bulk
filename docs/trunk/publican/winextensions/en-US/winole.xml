@@ -182,7 +182,8 @@
   connection, if possible. In the subclass, the programmer implements the events he is interested in
   receiving notifications for.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.ole-ie">
+<title>OLEObject - WatchedIE</title>
 <programlisting>
 <![CDATA[
 
@@ -210,6 +211,7 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 
 ]]>
 </programlisting>
+</example>
 <para>
   However, the process described above only allows using events with OLEObject objects that are directly
   instantiated by the programmer. There are a number of OLE objects that support events, where the
@@ -227,7 +229,8 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 <para>
   The following example demonstrates this second process that is available in ooRexx 4.0.0 and onwards.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.ole-word">
+<title>OLEObject - Watch Word</title>
 <programlisting>
 <![CDATA[
 
@@ -256,6 +259,7 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 
 ]]>
 </programlisting>
+</example>
 <para>
   The preceding example brings up one last point that is important to note when defining event methods.
   It is possible for an event method to have the same name as a normal invocation method of the OLE
@@ -302,6 +306,8 @@ echo " " > stop.monitor
   The stop file ends the program. The pause file has the program stop monitoring for new mail, but keep
   running. The restart file has the program restart monitoring from the paused state.
 </para>
+<example id="ex.ole-outlook">
+<title>OLEObject - Monitor Outlook</title>
 <programlisting>
 <![CDATA[
 
@@ -404,6 +410,7 @@ return 0
 
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="clsOLEOjbect"><title>The OLEObject Class</title>
@@ -712,7 +719,8 @@ ONSTATUSBAR
   can determine if the OLE object supports events by using the isConnectable() (<xref
   linkend="oleobjisconnectable" />) method.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.ole-connectEvents">
+<title>OLEObject - connectEvents method</title>
 <programlisting>
 <![CDATA[
 
@@ -724,6 +732,7 @@ ONSTATUSBAR
 
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="oleobjisconnected"><title>isConnected</title>
@@ -743,7 +752,8 @@ ONSTATUSBAR
   Returns <computeroutput>.true</computeroutput> if the instance is connected and
   <computeroutput>.false</computeroutput> if not.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.ole-isConnected">
+<title>OLEObject - isConnected method</title>
 <programlisting>
 <![CDATA[
   wordObj = .oleObject~new("Word.Application", "WITHEVENTS")
@@ -756,6 +766,7 @@ ONSTATUSBAR
 
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="oleobjisconnectable"><title>isConnectable</title>
@@ -776,7 +787,8 @@ ONSTATUSBAR
   majority do not support events. This method returns <computeroutput>.true</computeroutput> if the
   object is connectable, otherwise <computeroutput>.false</computeroutput>.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.ole-isConnectable">
+<title>OLEObject - isConnectable method</title>
 <programlisting>
 <![CDATA[
 
@@ -804,6 +816,7 @@ ONSTATUSBAR
 
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="oleobjdisconnectevents"><title>disconnectEvents</title>
@@ -839,6 +852,8 @@ ONSTATUSBAR
   to stop the notifications, the program simply disconnects the events from the OutLook object. When the
   user wants to resume notifications, the program reconnects the events.
 </para>
+<example id="ex.ole-disconnectEvents">
+<title>OLEObject - disconnectEvents method</title>
 <programlisting>
 <![CDATA[
 
@@ -871,6 +886,7 @@ ONSTATUSBAR
 
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="oleobjremoveeventhandler"><title>removeEventHandler</title>
@@ -891,7 +907,8 @@ ONSTATUSBAR
   linkend="oleobjdisconnectevents" />) method for a way to temporarily disconnect
   from event notifications.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.ole-removeEventHandler">
+<title>OLEObject - removeEventHandler method</title>
 <programlisting>
 <![CDATA[
 
@@ -900,6 +917,7 @@ ONSTATUSBAR
 
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="oleobjaddeventmethod"><title>addEventMethod</title>
@@ -933,6 +951,8 @@ ONSTATUSBAR
   documentation for the <computeroutput>.methods</computeroutput> directory in the Open Object Rexx
   Reference book for more details if needed.
 </para>
+<example id="ex.ole-printNewMail">
+<title>OLEObject - printNewMail method</title>
 <programlisting>
 <![CDATA[
 
@@ -951,6 +971,7 @@ ONSTATUSBAR
 
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="oleobjremoveeventmethod"><title>removeEventMethod</title>
@@ -970,7 +991,8 @@ ONSTATUSBAR
   previously added to this object by the addEventMethod() (<xref linkend="oleobjaddeventmethod" />)
   method.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.ole-removeEventMethod">
+<title>OLEObject - removeEventMethod method</title>
 <programlisting>
 <![CDATA[
 
@@ -990,6 +1012,7 @@ ONSTATUSBAR
 
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="oleobgetknme"><title>getKnownMethods</title>
@@ -1116,7 +1139,8 @@ opt]").</entry>
 <member>QueryInterface</member>
 <member>Release</member>
 </simplelist>
-<para><emphasis role="bold">Example script:</emphasis></para>
+<example id="ex.ole-getKnownMethods">
+<title>OLEObject - getKnownMethods method</title>
 <programlisting>
 myOLEObject = .OLEObject~new("InternetExplorer.Application")
 methods. = myOLEObject~getKnownMethods
@@ -1132,6 +1156,7 @@ end
 
 exit
 </programlisting>
+</example>
 <para><emphasis role="bold">Sample output:</emphasis></para>
 <programlisting>
 The following methods are available to this OLE object:
@@ -1183,11 +1208,13 @@ GoHome
   method is similar to the <computeroutput>new</computeroutput> method where the programmer supplies a
   ProgID or CLSID. In this case the programmer supplies a moniker.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.ole-getObkectMoniker">
+<title>OLEObject - getObjectMoniker method</title>
 <programlisting>
 /* create a Word.Document by opening a certain file */
 myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
 </programlisting>
+</example>
 </section>
 
 <section id="oleobgetoutpar"><title>getOutParameters</title>
@@ -1219,11 +1246,14 @@ method invocation will be placed in the <computeroutput>out</computeroutput>
 array at position one; the "normal" return
 value gets processed as usual. In this case the method will return the .NIL
 object:</para>
+<example id="ex.ole-getOutParameters">
+<title>OLEObject - getOutParameters method</title>
 <programlisting>
 resultTest = myOLEObject~aMethod(1, 2, .NIL)
 say "Invocation result  :" resultTest
 say "Result in out array:" myOLEObject~getOutParameters~at(1)
 </programlisting>
+</example>
 <para>The output of this sample script will be:</para>
 <programlisting>
 The NIL object
@@ -1286,10 +1316,13 @@ myOLEObject~OLEMethodName
   name already defined for the OLEObject. The programmer can invoke the
   <computeroutput>unknown</computeroutput> method directly, like this:
 </para>
+<example id="ex.ole-unknown">
+<title>OLEObject - unknown method</title>
 <programlisting>
 msgArgs = .array~of("C:\open\myFile.txt", "C:\processDir\")
 val = myOLEObject~unknown("copy", msgArgs)
 </programlisting>
+</example>
 <para>
   This causes the implementation of the <computeroutput>unknown</computeroutput>() method in the
   OLEObject object to invoke the <computeroutput>copy</computeroutput> method of the OLE object with the
@@ -1496,6 +1529,8 @@ converted to is specified.  The parameter flags are omitted.  The fourth
 parameter to the ~link method call is the parameter where the default
 conversion was failing.
 </para>
+<example id="ex.ole-conversion">
+<title>OLEObject - automatic conversions</title>
 <programlisting>
   connect  = .OLEObject~new("Ccl.Connect")
   flow     = .OLEObject~new("Ccl.Flow")
@@ -1505,6 +1540,7 @@ conversion was failing.
   ...
   connect~link(flow, "FOO", buffer, uow)
 </programlisting>
+</example>
 <note><para>
 It is extremely rare that the OLE support fails to do the right thing
 with its automatic conversion.  99.999% of the time the ooRexx programmer
@@ -1525,6 +1561,8 @@ updating a MS Access database where the number of records affected by the
 update is returned in an "out" parameter.  Here the out parameter is the
 second parameter in the ~execute method call.
 </para>
+<example id="ex.olevariant-new">
+<title>OLEVariant - new</title>
 <programlisting>
   sql = "update myTable set id=id*3 where id > 7"
   param = .OLEVariant~new(0)
@@ -1532,6 +1570,7 @@ second parameter in the ~execute method call.
   count = param~!varValue_
   say count "record(s) were affected."
 </programlisting>
+</example>
 <para>
 Finally an example where the OLE support does not use the correct parameter
 flags for the method call.  The Windows Management Instrumentation,
@@ -1544,6 +1583,8 @@ ahead and use its automatic conversion) and the parameter flags are
 specified.  Since this an out parameter, the OLEVariant object is also used
 to transport the returned data back to the calling program.
 </para>
+<example id="ex.ole-parameterflags">
+<title>OLEObject - incorrect parameter flags</title>
 <programlisting>
   objProcess = .oleObject~getObject("WinMgmts:Win32_Process")
 
@@ -1554,6 +1595,7 @@ to transport the returned data back to the calling program.
     say 'The notepad process was created and its PID is' pid
   end
 </programlisting>
+</example>
 <para>
 <emphasis role="bold">Methods available to the OLEVariant class</emphasis>
 </para>
@@ -1639,6 +1681,8 @@ If either the varType or paramFlags arguments are used, and not the
 .nil object, they must be valid variant types or param flags for OLE
 Automation.  If they are not valid, a syntax error will be raised.
 </para></note>
+<example id="ex.ole-parameters">
+<title>OLEObject - parameters</title>
 <programlisting>
 manager = .oleObject~new("com.sun.star.ServiceManager", "WITHEVENTS")
 cf = manager~createInstance("com.sun.star.reflection.CoreReflection")
@@ -1649,6 +1693,7 @@ param = .OLEVariant~new(.nil, "VT_DISPATCH,VT_BYREF", "IN,OUT")
 
 retVal = classSize~createObject(param)
 </programlisting>
+</example>
 </section>
 
 <section><title>!VARVALUE_</title>

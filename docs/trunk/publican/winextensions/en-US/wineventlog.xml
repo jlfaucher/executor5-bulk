@@ -563,6 +563,8 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
   <listitem>
     <para>
       The use of the attribute is straight-forward.
+<example id="ex.WindowsEventLog-1-class">
+<title>WindowsEventLog class - minimumRead method</title>
 <programlisting>
 <![CDATA[
 
@@ -578,6 +580,7 @@ Smallest possible read buffer is 16 kilobytes
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -615,6 +618,8 @@ Smallest possible read buffer is 16 kilobytes
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para> This example displays the maximum size the programmer can set the minimum read buffer to.
+<example id="ex.WindowsEventLog-2-class">
+<title>WindowsEventLog class - mimimumReadMax method</title>
 <programlisting>
 <![CDATA[
 
@@ -630,6 +635,7 @@ Largest possible minimum read buffer is 256 kilobytes
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -670,6 +676,8 @@ Largest possible minimum read buffer is 256 kilobytes
     <para>
       This example displays the size of the minimum read buffer when a new WindowsEventLog object is
       created and then displays the size after the programmer has changed the minimum.
+<example id="ex.WindowsEventLog-3-class">
+<title>WindowsEventLog class - minimumReadBuffer method</title>
 <programlisting>
 <![CDATA[
 
@@ -689,6 +697,7 @@ Adjusted size of the minimum read buffer to 65536 bytes
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -734,6 +743,8 @@ Adjusted size of the minimum read buffer to 65536 bytes
   <listitem>
     <para>
       This example displays the number of event log records that were read from the System log.
+<example id="ex.WindowsEventLog-4-class">
+<title>WindowsEventLog class - events method</title>
 <programlisting>
 <![CDATA[
 
@@ -751,6 +762,7 @@ The System log has 1983 records
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -812,6 +824,8 @@ The System log has 1983 records
       The following two code snippets are equivalent.  They both open the Application log on the local
       machine if they succeed:
     </para>
+<example id="ex.WindowsEventLog-5-class">
+<title>WindowsEventLog class - open method</title>
 <programlisting>
 eventLog1 = .WindowsEventLog~new
 ret = eventLog1~open
@@ -829,9 +843,12 @@ if ret \== 0 then do
   ...
 end
 </programlisting>
+</example>
   <para>
     The following example opens the System log on SERVER01:
   </para>
+<example id="ex.WindowsEventLog-6-class">
+<title>WindowsEventLog class - open method</title>
 <programlisting>
 
 eventLog = .WindowsEventLog~new
@@ -847,6 +864,7 @@ else do
   ...
 end
 </programlisting>
+</example>
   </listitem></varlistentry>
 </variablelist>
 </section>
@@ -887,8 +905,9 @@ end
       The following code snippet opens the default event log (the Application log,) displays some
       information about the log, then closes the open log.
     </para>
+<example id="ex.WindowsEventLog-7-class">
+<title>WindowsEventLog class - close method</title>
 <programlisting>
-
 log = .WindowsEventLog~new
 
 ret = log~open
@@ -909,6 +928,7 @@ end
 
 /*
 </programlisting>
+</example>
   </listitem></varlistentry>
 </variablelist>
 
@@ -1037,6 +1057,8 @@ end
     <para>
       This example reads the 5 most recent event records in the System event log and displays them to the
       console. (If there are less than 5 records in the log, then all the records are read.)
+<example id="ex.WindowsEventLog-8-class">
+<title>WindowsEventLog class - readRecords method</title>
 <programlisting>
 <![CDATA[
 
@@ -1109,6 +1131,7 @@ Displayed 5 records
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1205,6 +1228,8 @@ Displayed 5 records
   <listitem>
     <para>
       This example writes some fictious data to an event log.
+<example id="ex.WindowsEventLog-9-class">
+<title>WindowsEventLog class - write method</title>
 <programlisting>
 <![CDATA[
 
@@ -1226,6 +1251,7 @@ Displayed 5 records
 ::requires 'winSystm.cls'
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1297,6 +1323,8 @@ Displayed 5 records
       If the back up fails, the log will not be cleared. The back up file will be named
       eagle_application.evt and will be located <emphasis role="italic">on</emphasis> the Eagle system,
       not on the local machine.
+<example id="ex.WindowsEventLog-10-class">
+<title>WindowsEventLog class - clear method</title>
 <programlisting>
 <![CDATA[
 
@@ -1318,6 +1346,7 @@ Displayed 5 records
 
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1355,6 +1384,8 @@ Displayed 5 records
   <listitem>
     <para>
       This example displays the current value of the minimum read buffer size.
+<example id="ex.WindowsEventLog-11-class">
+<title>WindowsEventLog class - mimimumRead method</title>
 <programlisting>
 <![CDATA[
 
@@ -1370,6 +1401,7 @@ Current minimum size of the read buffer is: 16 KB
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1442,6 +1474,8 @@ Current minimum size of the read buffer is: 16 KB
   <listitem>
     <para>
       This method is straight forward to use:
+<example id="ex.WindowsEventLog-12-class">
+<title>WindowsEventLog class - minimumRead= method</title>
 <programlisting>
 <![CDATA[
 
@@ -1458,6 +1492,7 @@ Current minimum size of the read buffer is: 64 KB
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1509,6 +1544,8 @@ Current minimum size of the read buffer is: 64 KB
     <para>
       This example is a snippet of code from an application that monitors the system log. When the log
       gets full, the log is backed up and cleared.
+<example id="ex.WindowsEventLog-13-class">
+<title>WindowsEventLog class - isFull method</title>
 <programlisting>
 <![CDATA[
 
@@ -1523,6 +1560,7 @@ return success
 
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1577,6 +1615,8 @@ return success
     <para>
       This example opens the system log on the Osprey server. It then checks that there are at least 10
       records before reading the log:
+<example id="ex.WindowsEventLog-14-class">
+<title>WindowsEventLog class - getNumber method</title>
 <programlisting>
 <![CDATA[
 
@@ -1591,6 +1631,7 @@ return success
 
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1637,6 +1678,8 @@ return success
   <listitem>
     <para>
       This example displays the names of all the event logs on the current system.
+<example id="ex.WindowsEventLog-15-class">
+<title>WindowsEventLog class - getLogNames method</title>
 <programlisting>
 <![CDATA[
 
@@ -1659,6 +1702,7 @@ Log: System
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1711,6 +1755,8 @@ Log: System
   <listitem>
     <para>
       This example displays the last record written to application log.
+<example id="ex.WindowsEventLog-16-class">
+<title>WindowsEventLog class - getLast method</title>
 <programlisting>
 <![CDATA[
 
@@ -1749,6 +1795,7 @@ Data     :
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1805,6 +1852,8 @@ Data     :
       It is somewhat interesting to note that this first record was written right after the operating
       system had been installed, prior to the computer being added to a work group and given the Osprey
       name.  This can be seen when the record is displayed, the Computer field is MACHINENAME.
+<example id="ex.WindowsEventLog-17-class">
+<title>WindowsEventLog class - getFirst method</title>
 <programlisting>
 <![CDATA[
 
@@ -1842,6 +1891,7 @@ Data     :
 */
 ]]>
 </programlisting>
+</example>
     </para>
   </listitem></varlistentry>
 </variablelist>
