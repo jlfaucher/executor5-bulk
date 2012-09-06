@@ -70,12 +70,15 @@ Experimentation may be called for.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>The following will display the BufSize and reset it to 8192.</para>
+<example id="ex.RxFtp-bufSize">
+<title>RxFtp class - bufSize method</title>
 <programlisting>
 <![CDATA[
 say myftpobj~bufSize
 myftpobj~bufSize = 8192
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="cmdresponse"><title>CmdResponse</title>
@@ -94,6 +97,8 @@ activity between the client and the server.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>The following will display the CmdResponse array.</para>
+<example id="ex.RxFtp-cmdresponse">
+<title>RxFtp class - cmdresponse method</title>
 <programlisting>
 <![CDATA[
 do i = 1 to myftpobj~cmdresponse~items
@@ -101,6 +106,7 @@ do i = 1 to myftpobj~cmdresponse~items
 end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="crremove"><title>CR_Remove</title>
@@ -120,11 +126,14 @@ then CR bytes are retained in the locally stored file.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>The following will disable the removal of CR bytes.</para>
+<example id="ex.RxFtp-CR_Remove">
+<title>RxFtp class - CR_Remove method</title>
 <programlisting>
 <![CDATA[
 myftpobj~cr_remove = .false
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="debug"><title>Debug</title>
@@ -143,11 +152,14 @@ then all debugging messages will be suppressed.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>The following will enable the debugging messages.</para>
+<example id="ex.RxFtp-debug">
+<title>RxFtp class - debug method</title>
 <programlisting>
 <![CDATA[
 myftpobj~debug = .true
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="ftperrno"><title>FtpErrno</title>
@@ -192,11 +204,14 @@ when the method is successful.
 </variablelist>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>The following will display the FtpErrno.</para>
+<example id="ex.RxFtp-ftperrno">
+<title>RxFtp class - ftperrno method</title>
 <programlisting>
 <![CDATA[
 if myftpobj~ftperrno <> "" then say myftpobj~ftperrno
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="response"><title>Response</title>
@@ -215,6 +230,8 @@ listing in response to invoking the FtpDir method.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>The following will display the Response array.</para>
+<example id="ex.RxFtp-response">
+<title>RxFtp class - response method</title>
 <programlisting>
 <![CDATA[
 if myftpobj~response <> .nil then do i = 1 to myftpobj~response~items
@@ -222,5 +239,6 @@ if myftpobj~response <> .nil then do i = 1 to myftpobj~response~items
    end
 ]]>
 </programlisting>
+</example>
 </section>
 </chapter>
