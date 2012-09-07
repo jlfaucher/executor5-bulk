@@ -254,6 +254,8 @@ instruction, a PROCEDURE instruction, or a DROP instruction</para></listitem>
 <para>SIGNAL ON NOVALUE can trap any uninitialized
 variables except tails in compound variables.
 </para></note>
+<example id="ex.signal-novalue">
+<title>NOVALUE no raised for stems</title>
 <programlisting>
 /* The following does not raise NOVALUE. */
 signal on novalue
@@ -265,6 +267,7 @@ exit
 novalue:
 say "NOVALUE is raised."
 </programlisting>
+</example>
 You can specify this condition
 only for SIGNAL ON.</para>
 </listitem></varlistentry>
@@ -626,6 +629,8 @@ again before any changes made in the editor can take effect.</para>
 occasional failure of a function call) as in the following example:   </para>
 <indexterm><primary>examples</primary>
 <secondary>SIGL, special variable</secondary></indexterm>
+<example id="ex.sigl">
+<title>SIGL</title>
 <programlisting>
 signal on syntax
 a = a + 1      /* This is to create a syntax error */
@@ -638,6 +643,7 @@ say "Rexx error" rc "in line" sigl":" "ERRORTEXT"(rc)
 say "SOURCELINE"(sigl)
 trace ?r; nop
 </programlisting>
+</example>
 <para>This code first displays the error code, line number, and error message.
  It then displays the line in error, and finally drops into debug mode to
 let you inspect the values of the variables used at the line in error.</para>

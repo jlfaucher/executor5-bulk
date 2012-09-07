@@ -117,6 +117,8 @@ appear for any method name not associated with a class. See
 names <emphasis role="italic">name</emphasis> and <emphasis role="italic">name=</emphasis>.
 These are the methods for getting and setting an attribute.  These generated methods are
 equivalent to the following code sequences: </para>
+<example id="ex.directives-attribute">
+<title>ATTRIBUTE directive equivalent code</title>
 <programlisting>
 ::method "NAME="  /* attribute set method                                   */
   expose name     /* establish direct access to object variable (attribute) */
@@ -126,6 +128,7 @@ equivalent to the following code sequences: </para>
   expose name     /* establish direct access to object variable (attribute) */
   return name     /* return object&apos;s current value                          */
 </programlisting>
+</example>
 <para>Both methods will be created with the same method properties (for example, PRIVATE, GUARDED, etc.).
 If GET or SET are not specified, the pair of methods will be automatically
 generated.  In that case, there is no method code body following the directive,
@@ -144,6 +147,8 @@ sequence:</para>
 <para>will create a NAME method with PUBLIC access and a NAME= method with PRIVATE access.</para>
 <para>The GET and SET options may also be used to override the default method body generated for the attribute.  This
 is frequently used so the SET attribute method can perform new value validation.</para>
+<example id="ex.directives-attribute-getset">
+<title>ATTRIBUTE directive - get and set methods</title>
 <programlisting>
 ::attribute size get
 ::attribute size set
@@ -153,6 +158,7 @@ is frequently used so the SET attribute method can perform new value validation.
     raise syntax 93.906 array ("size", value)
   size=value
 </programlisting>
+</example>
 <para>If you specify the CLASS option, the created methods are class
 methods. See <xref linkend="provide" />. The attribute methods are
 associated with the class specified on the most recent ::CLASS directive. The
@@ -181,10 +187,11 @@ with "GET" or "SET" as appropriate.  If the method name is specified in
 <emphasis role="italic">spec</emphasis> and GET or SET is specified, the spec
 name will be used unchanged.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>::ATTRIBUTE directive</secondary>
 <tertiary>EXTERNAL option</tertiary></indexterm>
+<example id="ex.directives-attribute-getsetrename">
+<title>ATTRIBUTE directive - naming the get and set methods</title>
 <programlisting>
 -- maps "NAME" method to "GETNAME and
 -- "NAME=" to "SETNAME"
@@ -194,6 +201,7 @@ name will be used unchanged.
 -- maps "ADDRESS=" method to "setHomeAddress"
 ::ATTRIBUTE address SET EXTERNAL "LIBRARY mylib setHomeAddress"
 </programlisting>
+</example>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>You can specify all options in any order.
@@ -313,6 +321,8 @@ constants. If you omit the INHERIT option, the class inherits only from
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>::CLASS directive</secondary></indexterm>
+<example id="ex.directives-class">
+<title>CLASS directive</title>
 <programlisting>
 ::class rectangle
 ::method area    /* defined for the RECTANGLE class */
@@ -324,11 +334,13 @@ constants. If you omit the INHERIT option, the class inherits only from
   expose width height
   return width*height/2
 </programlisting>
+</example>
 <para>The ::CLASS directives in a program are processed in the order in which
 they appear. If a ::CLASS directive has a dependency on ::CLASS directives
 that appear later in the program, processing of the directive is deferred
 until all of the class's dependencies have been processed.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.directives-class-deferredproc">
+<title>CLASS directive deferred processing</title>
 <programlisting>
 ::class savings subclass account  /* requires the ACCOUNT class */
 ::method type
@@ -338,6 +350,7 @@ until all of the class's dependencies have been processed.</para>
 ::method type
   return "an Account"
 </programlisting>
+</example>
 <para>The Savings class in the preceding example is not created until the Account
 class that appears later in the program has been created. </para>
 
@@ -383,15 +396,20 @@ a return result that is specified by
 literal string or symbol that is taken as a constant. Also permitted is the
 single character "-" or "+" followed by a literal string or symbol that is a
 valid number.  Here are some examples of valid constants:</para>
+<example id="ex.constant">
+<title>CONSTANT examples</title>
 <programlisting>
 ::class MathConstants public
 ::constant pi 3.1415926
 ::constant author "Isaac Asimov"
 ::constant absolute_zero -273.15
 </programlisting>
+</example>
 <para>A ::CONSTANT directive is a shorthand syntax for creating constants
 associated with a class.  The created name constant can be accessed using either
-the class object or an instance of the class itself.  For example:</para>
+the class object or an instance of the class itself.</para>
+<example id="ex.constant-access">
+<title>CONSTANT access examples</title>
 <programlisting>
 say "Pi is" .MathConstants~pi    -- displays "Pi is 3.1415926"
 instance = .MathConstants~new
@@ -400,6 +418,7 @@ say "Pi is" instance~pi          -- also displays "Pi is 3.1415926"
 ::class MathConstants public
 ::constant pi 3.1415926
 </programlisting>
+</example>
 </section>
 
 <section id="methd"><title>::METHOD</title>
@@ -467,7 +486,8 @@ directive starts a section of method code which is ended by another directive or
 the end of the program. The ::METHOD is not included in the source of the
 created METHOD object.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.method-1">
+<title>METHOD examples</title>
 <programlisting>
 r = .rectangle~new(20,10)
 say "Area is" r~area       /* Produces "Area is 200" */
@@ -486,6 +506,7 @@ say "Area is" r~area       /* Produces "Area is 200" */
   expose width height
   return (width+height)*2
 </programlisting>
+</example>
 <para>If you specify the ATTRIBUTE option, method variable accessor methods are
 created.  In addition to generating a method named
 <emphasis role="italic">methodname</emphasis>, another method named
@@ -495,11 +516,16 @@ returns the value of object instance variable that matches the method name.
 <para>For example, the directive </para>
 <indexterm><primary>examples</primary>
 <secondary>::METHOD directive</secondary></indexterm>
+<example id="ex.method-2">
+<title>METHOD ATTRIBUTE examples</title>
 <programlisting>
 ::method name attribute
 </programlisting>
+</example>
 <para>creates two methods, NAME and NAME=. The NAME and NAME= methods are
 equivalent to the following code sequences: </para>
+<example id="ex.method-3">
+<title>METHOD ATTRIBUTE code expansion</title>
 <programlisting>
 ::method "NAME="
   expose name
@@ -509,6 +535,7 @@ equivalent to the following code sequences: </para>
   expose name
   return name
 </programlisting>
+</example>
 <para>If you specify the ABSTRACT option, the method creates an ABSTRACT method placeholder.
 ABSTRACT methods define a method that an implementing subclass is expected to provide a concrete
 implementation for.  Any attempt to invoke an ABSTRACT method directly will raise a SYNTAX condition.
@@ -525,10 +552,11 @@ platform-specific mechanisms for loading libraries. For Unix-based systems, the
 library name is case-sensitive.  The third token is optional and specifies the
 name of the method within the library package.  If not specified, the ::METHOD
 name is used.  The target package method name is case insensitive.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>::METHOD directive</secondary>
 <tertiary>EXTERNAL option</tertiary></indexterm>
+<example id="ex.method-external-1">
+<title>METHOD EXTERNAL examples</title>
 <programlisting>
 
 -- creates method INIT from method RegExp_Init
@@ -539,12 +567,14 @@ name is used.  The target package method name is case insensitive.</para>
 -- in library rxregexp
 ::METHOD POS EXTERNAL "LIBRARY rxregexp"
 </programlisting>
+</example>
 
 <para>If the ATTRIBUTE option is specified with the EXTERNAL option, then two
 method objects need to be created.  The target method name is appended to the
 string "GET" to derive the name of the getter attribute method.  To generate the
 setter attribute method, the name is appended to the string "SET".</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.method-external-2">
+<title>METHOD EXTERNAL examples</title>
 <programlisting>
 -- maps "NAME" method to "GETNAME and
 -- "NAME=" to "SETNAME"
@@ -554,6 +584,7 @@ setter attribute method, the name is appended to the string "SET".</para>
 -- "ADDRESS=" to "SETMyAddress"
 ::METHOD address ATTRIBUTE EXTERNAL "LIBRARY mylib MyAddress"
 </programlisting>
+</example>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>You can specify all options in any order.
@@ -820,9 +851,10 @@ only within its containing Rexx program.</para>
 <para>Routines you define with the ::ROUTINE directive behave like external routines.
 In the search order for routines, they follow internal routines and built-in
 functions but precede all other external routines.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>::ROUTINE directive</secondary></indexterm>
+<example id="ex.directive-routine">
+<title>ROUTINE examples</title>
 <programlisting>
 
 ::class c
@@ -836,6 +868,7 @@ call r "B"  /* displays "In method B" */
 use arg name
 say "In method" name
 </programlisting>
+</example>
 <para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
 identifies a routine in an external native library that will be defined as the
 named routine for this program.  The <emphasis role="italic">spec</emphasis> is
@@ -865,10 +898,11 @@ function.  See
 <xref linkend="bifRxfuncadd" /> for more details.
 </para></listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>::ROUTINE directive</secondary>
 <tertiary>EXTERNAL option</tertiary></indexterm>
+<example id="ex.directive-routine-registered">
+<title>ROUTINE REGISTERED examples</title>
 <programlisting>
 
 -- load a function from rxmath library
@@ -879,6 +913,7 @@ function.  See
 ::routine SQLLoadFuncs "REGISTERED rexxsql SQLLoadFuncs"
 
 </programlisting>
+</example>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>It is an error to specify ::ROUTINE with the same routine name more than

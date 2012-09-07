@@ -148,9 +148,9 @@ such as TRACE and NUMERIC settings, is saved too. See the CALL instruction
 function, you must specify an expression in any RETURN
 instruction so that the routine can return.  This is not necessary if it is
 called as a subroutine.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example>
+<title>Recursive internal function execution</title>
 <programlisting>
-/* Recursive internal function execution... */
 arg x
 say x"! =" factorial(x)
 exit
@@ -158,7 +158,8 @@ factorial: procedure   /* Calculate factorial by    */
   arg n                /*   recursive invocation.   */
   if n=0 then return 1
   return  factorial(n-1) * n
-  </programlisting>
+</programlisting>
+</example>
 <para>FACTORIAL is unusual in that it calls
 <indexterm><primary>recursive call</primary></indexterm>
 itself (this is recursive invocation).  The PROCEDURE instruction ensures
@@ -259,7 +260,8 @@ and call it as a built-in function or external routine under the same name
 as the existing internal function.  To call the target built-in or external routine
 from inside your internal routine, you must use a literal string for the function name.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example>
+<title>DATE function - overriding</title>
 <programlisting>
 /* This internal DATE function modifies the          */
 /* default for the DATE function to standard date.   */
@@ -271,6 +273,7 @@ date: procedure
   -- be all uppercase because built-in functions have uppercase names.
   return "DATE"(in)
 </programlisting>
+</example>
 <para>Since built-in functions have uppercase names the literal
 string must also be in uppercase for the search to succeed.
 </para>
@@ -406,6 +409,8 @@ was called. Otherwise, the language processor stops with an error message.
 </para></listitem>
 </itemizedlist>
 <para>Here are some examples of how to call a Rexx procedure: </para>
+<example>
+<title>How to call Rexx procedures</title>
 <programlisting>
 call Beep 500, 100         /* Example 1: a subroutine call */
 </programlisting>
@@ -428,6 +433,7 @@ the expression for the function call, like in the preceding example.  In this
 case, however, the clause as a whole evaluates to a single expression. Therefore,
 the evaluated expression is passed to the current default environment as a
 command. </para>
+</example>
 
 <note><title>Note</title>
 <para>Many other languages, such as C, throw away the return
@@ -540,6 +546,8 @@ it must be a positive whole number or zero. The default for
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>ABBREV function</secondary></indexterm>
+<example id="ex.bif-abbrev">
+<title>Builtin function ABBREV examples</title>
 <programlisting>
 ABBREV("Print","Pri")      ->    1
 ABBREV("PRINT","Pri")      ->    0
@@ -548,6 +556,7 @@ ABBREV("PRINT","PRY")      ->    0
 ABBREV("PRINT","")         ->    1
 ABBREV("PRINT","",1)       ->    0
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <indexterm><primary>ABBREV function</primary>
@@ -556,6 +565,8 @@ ABBREV("PRINT","",1)       ->    0
 <computeroutput>0</computeroutput>, or the default,
 is used. This allows a default keyword to be selected automatically if desired;
 for example: </para>
+<example id="ex.bif-abbrev-ex">
+<title>Builtin function ABBREV example</title>
 <programlisting>
 say "Enter option:";   pull option .
 select  /* keyword1 is to be the default */
@@ -565,6 +576,7 @@ select  /* keyword1 is to be the default */
   otherwise nop;
 end;
 </programlisting>
+</example>
 </note>
 </section>
 
@@ -593,10 +605,13 @@ is formatted according to the current NUMERIC settings.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>ABS function</secondary></indexterm>
+<example id="ex.bif-abs">
+<title>Builtin function ABS</title>
 <programlisting>
 ABS("12.3")       ->    12.3
 ABS(" -0.307")    ->    0.307
 </programlisting>
+</example>
 </section>
 
 
@@ -628,11 +643,14 @@ removed from the result.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>ADDRESS function</secondary></indexterm>
+<example id="ex.bif-address">
+<title>Builtin function ADDRESS</title>
 <programlisting>
 ADDRESS()    ->    "CMD"        /* default under Windows */
 
 ADDRESS()    ->    "bash"       /* default under Linux   */
 </programlisting>
+</example>
 </section>
 
 
@@ -703,6 +721,8 @@ was called. Otherwise, it returns <computeroutput>0</computeroutput>.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>ARG function</secondary></indexterm>
+<example id="ex.bif-arg">
+<title>Builtin function ARG</title>
 <programlisting>
 /*  following "Call name;" (no arguments) */
 ARG()         ->    0
@@ -726,6 +746,7 @@ ARG(4,"o")    ->    1
 ARG(1,"A")    ->    .array~of(a, ,b)
 ARG(3,"a")    ->    .array~of(b)
 </programlisting>
+</example>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -794,17 +815,23 @@ conversion to make a total that is a multiple of 4.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>B2X function</secondary></indexterm>
+<example id="ex.bif-b2x">
+<title>Builtin function B2X</title>
 <programlisting>
 B2X("11000011")    ->   "C3"
 B2X("10111")       ->   "17"
 B2X("101")         ->   "5"
 B2X("1 1111 0000") ->   "1F0"
 </programlisting>
+</example>
 <para>You can combine B2X with the functions X2D and X2C to convert a binary
 number into other forms. For example: </para>
+<example id="ex.bif-b2x-1">
+<title>Builtin function B2X combined with X2D function</title>
 <programlisting>
 X2D(B2X("10111"))  ->   "23"   /* decimal 23 */
 </programlisting>
+</example>
 </section>
 
 
@@ -838,6 +865,8 @@ beep (if activated).</para></note>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>BEEP function</secondary></indexterm>
+<example id="ex.bif-beep">
+<title>Builtin function BEEP</title>
 <programlisting>
 /* C scale */
 note.1 = 262    /* middle C */
@@ -854,6 +883,7 @@ call beep note.i,250    /* hold each note for */
 /* one-quarter second */
 end
 </programlisting>
+</example>
 </section>
 
 
@@ -895,6 +925,8 @@ is the zero-length (null) string.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>BITAND function</secondary></indexterm>
+<example id="ex.bif-bitand">
+<title>Builtin function BITAND</title>
 <programlisting>
 BITAND("12"x)                  ->    "12"x
 BITAND("73"x,"27"x)            ->    "23"x
@@ -902,6 +934,7 @@ BITAND("13"x,"5555"x)          ->    "1155"x
 BITAND("13"x,"5555"x,"74"x)    ->    "1154"x
 BITAND("pQrS", ,"DF"x)         ->    "PQRS"      /* ASCII   */
 </programlisting>
+</example>
 </section>
 
 
@@ -943,6 +976,8 @@ is the zero-length (null) string.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>BITOR function</secondary></indexterm>
+<example id="ex.bif-bitor">
+<title>Builtin function BITOR</title>
 <programlisting>
 BITOR("12"x)                  ->    "12"x
 BITOR("15"x,"24"x)            ->    "35"x
@@ -951,6 +986,7 @@ BITOR("15"x,"2456"x,"F0"x)    ->    "35F6"x
 BITOR("1111"x, ,"4D"x)        ->    "5D5D"x
 BITOR("pQrS", ,"20"x)         ->    "pqrs" /* ASCII   */
 </programlisting>
+</example>
 </section>
 
 
@@ -994,6 +1030,8 @@ is the zero-length (null) string.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>BITXOR function</secondary></indexterm>
+<example id="ex.bif-bitxor">
+<title>Builtin function BITXOR</title>
 <programlisting>
 BITXOR("12"x)                     ->  "12"x
 BITXOR("12"x,"22"x)               ->  "30"x
@@ -1003,6 +1041,7 @@ BITXOR("1111"x,"444444"x,"40"x)   ->  "555504"x
 BITXOR("1111"x, ,"4D"x)           ->  "5C5C"x
 BITXOR("C711"x,"222222"x," ")     ->  "E53302"x  /* ASCII  */
 </programlisting>
+</example>
 </section>
 
 
@@ -1041,6 +1080,8 @@ an unsigned binary number.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>C2D function</secondary></indexterm>
+<example id="ex.bif-c2d">
+<title>Builtin function C2D</title>
 <programlisting>
 C2D("09"X)      ->        9
 C2D("81"X)      ->      129
@@ -1048,6 +1089,7 @@ C2D("FF81"X)    ->    65409
 C2D("")         ->        0
 C2D("a")        ->       97     /*  ASCII   */
 </programlisting>
+</example>
 <para>If you specify <emphasis role="italic">n</emphasis>,
 the string is taken as a signed number expressed
 in <emphasis role="italic">n</emphasis> characters. The number is positive if
@@ -1063,6 +1105,8 @@ had been processed. If <emphasis role="italic">n</emphasis> is
 <computeroutput>0</computeroutput>, C2D always returns
 <computeroutput>0</computeroutput>.</para>
 <para>Here are some examples: </para>
+<example id="ex.bif-c2d-1">
+<title>Builtin function C2D</title>
 <programlisting>
 C2D("81"X,1)      ->     -127
 C2D("81"X,2)      ->      129
@@ -1073,6 +1117,7 @@ C2D("F081"X,2)    ->    -3967
 C2D("F081"X,1)    ->     -127
 C2D("0031"X,0)    ->        0
 </programlisting>
+</example>
 </section>
 
 
@@ -1111,10 +1156,13 @@ returned.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>C2X function</secondary></indexterm>
+<example id="ex.bif-c2x">
+<title>Builtin function C2X</title>
 <programlisting>
 C2X("0123"X)    ->    "0123"   /* "30313233"X     in ASCII */
 C2X("ZD8")      ->    "5A4438" /* "354134343338"X in ASCII */
 </programlisting>
+</example>
 </section>
 
 
@@ -1168,12 +1216,15 @@ end.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>CENTRE function</secondary></indexterm>
+<example id="ex.bif-center">
+<title>Builtin function CENTER</title>
 <programlisting>
 CENTER(abc,7)               ->    "  ABC  "
 CENTER(abc,8,"-")           ->    "--ABC---"
 CENTRE("The blue sky",8)    ->    "e blue s"
 CENTRE("The blue sky",7)    ->    "e blue "
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>To avoid errors because of the difference between British and American
@@ -1204,6 +1255,8 @@ If <emphasis role="italic">count</emphasis> is not specified, all occurrences of
 is specified, it must be a positive, whole number that gives the maximum number of
 occurrences to be replaced.
 The following defines the effect: </para>
+<example id="ex.bif-changestr-newneedle">
+<title>Builtin function CHANGESTR with newneedle</title>
 <programlisting>
 result = ""
 $tempx = 1
@@ -1215,16 +1268,20 @@ do forever
 end
 result = result || substr(haystack, $tempx)
 </programlisting>
+</example>
 <para>Here are some examples:</para>
 <indexterm><primary>CHANGESTR function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>CHANGESTR function</secondary></indexterm>
+<example id="ex.bif-changestr">
+<title>Builtin function CHANGESTR</title>
 <programlisting>
 CHANGESTR("1","101100","")     ->    "000"
 CHANGESTR("1","101100","X")    ->    "X0XX00"
 CHANGESTR("1","101100","X", 1) ->    "X01100"
 </programlisting>
+</example>
 </section>
 
 
@@ -1285,6 +1342,8 @@ and CHARIN returns with fewer than the requested number of characters.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>CHARIN function</secondary></indexterm>
+<example id="ex.bif-charin">
+<title>Builtin function CHARIN</title>
 <programlisting>
 CHARIN(myfile,1,3)   ->   "MFC"    /* the first 3        */
                                    /* characters         */
@@ -1298,6 +1357,7 @@ CHARIN()             ->   "a"      /* default is         */
                                    /* 1 character        */
 CHARIN(, ,5)         ->   "bcd e"
 </programlisting>
+</example>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -1373,6 +1433,8 @@ with the number of characters that could not be written (the residual count).</p
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>CHAROUT function</secondary></indexterm>
+<example id="ex.bif-charout">
+<title>Builtin function CHAROUT</title>
 <programlisting>
 CHAROUT(myfile,"Hi")     ->   0   /* typically        */
 CHAROUT(myfile,"Hi",5)   ->   0   /* typically        */
@@ -1381,16 +1443,20 @@ CHAROUT(myfile)          ->   0   /* at end of stream */
 CHAROUT(,"Hi")           ->   0   /* typically        */
 CHAROUT(,"Hello")        ->   2   /* maybe            */
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>This routine is often best called as a subroutine. The residual
 count is then available in the variable RESULT.</para></note>
 <para>For example: </para>
+<example id="ex.bif-charout-sub">
+<title>Builtin function CHAROUT</title>
 <programlisting>
 Call CHAROUT myfile,"Hello"
 Call CHAROUT myfile,"Hi",6
 Call CHAROUT myfile
 </programlisting>
+</example>
 </section>
 
 
@@ -1431,11 +1497,14 @@ CHARS always returns <computeroutput>1</computeroutput>.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>CHARS function</secondary></indexterm>
+<example id="ex.bif-chars">
+<title>Builtin function CHARS</title>
 <programlisting>
 CHARS(myfile)     ->   42   /* perhaps */
 CHARS(nonfile)    ->   0
 CHARS()           ->   1    /* perhaps */
 </programlisting>
+</example>
 </section>
 
 
@@ -1470,6 +1539,8 @@ does not match. The shorter string is padded on the right with
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>COMPARE function</secondary></indexterm>
+<example id="ex.bif-compare">
+<title>Builtin function COMPARE</title>
 <programlisting>
 COMPARE("abc","abc")         ->    0
 COMPARE("abc","ak")          ->    2
@@ -1478,6 +1549,7 @@ COMPARE("ab ","ab"," ")      ->    0
 COMPARE("ab ","ab","x")      ->    3
 COMPARE("ab-- ","ab","-")    ->    5
 </programlisting>
+</example>
 </section>
 
 
@@ -1571,6 +1643,8 @@ the condition is delayed or ignored</para></listitem></itemizedlist>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>CONDITION function</secondary></indexterm>
+<example id="ex.bif-condition">
+<title>Builtin function CONDITION</title>
 <programlisting>
 CONDITION()            ->    "CALL"        /* perhaps */
 CONDITION("C")         ->    "FAILURE"
@@ -1578,6 +1652,7 @@ CONDITION("I")         ->    "CALL"
 CONDITION("D")         ->    "FailureTest"
 CONDITION("S")         ->    "OFF"        /* perhaps */
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The CONDITION function returns condition information that
@@ -1619,10 +1694,13 @@ be a positive whole number or zero.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>COPIES function</secondary></indexterm>
+<example id="ex.bif-copies">
+<title>Builtin function COPIES</title>
 <programlisting>
 COPIES("abc",3)    ->    "abcabcabc"
 COPIES("abc",0)    ->    ""
 </programlisting>
+</example>
 </section>
 
 
@@ -1648,6 +1726,8 @@ do not overlap. The following defines the effect:</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>COUNTSTR function</secondary></indexterm>
+<example id="ex.bif-countstr-1">
+<title>Builtin function COUNTSTR with needle and haystack</title>
 <programlisting>
 result=0
 $tempx=pos(needle,haystack)
@@ -1656,15 +1736,19 @@ result=result+1
 $temp=pos(needle,haystack,$temp+length(needle))
 end
 </programlisting>
+</example>
 <para>Here are some examples: </para>
 <indexterm><primary>COUNTSTR function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>COUNTSTR function</secondary></indexterm>
+<example id="ex.bif-countstr">
+<title>Builtin function COUNTSTR</title>
 <programlisting>
 COUNTSTR("1","101101")        ->    4
 COUNTSTR("KK","J0KKK0")       ->    1
 </programlisting>
+</example>
 </section>
 
 
@@ -1705,6 +1789,8 @@ has no leading "00"x characters.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>D2C function</secondary></indexterm>
+<example id="ex.bif-d2c">
+<title>Builtin function D2C</title>
 <programlisting>
 D2C(65)      ->   "A"      /* "41"x is an ASCII "A"               */
 D2C(65,1)    ->   "A"
@@ -1715,6 +1801,7 @@ D2C(-109,1)  ->   "&ocirc;"      /* "93"x is an ASCII "&ocirc;"   */
 D2C(76,2)    ->   " L"     /* "4C"x  is an ASCII "L"              */
 D2C(-180,2)  ->   " L"     /* the leading character is a "FF"x    */
 </programlisting>
+</example>
 <para>Implementation maximum:
 <indexterm><primary>implementation maximum</primary>
 <secondary>D2C function</secondary></indexterm>
@@ -1766,6 +1853,8 @@ or zero, and the returned result has no leading zeros.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>D2X function</secondary></indexterm>
+<example id="ex.bif-d2x">
+<title>Builtin function D2X</title>
 <programlisting>
 D2X(9)         ->    "9"
 D2X(129)       ->    "81"
@@ -1777,6 +1866,7 @@ D2X(-127,2)    ->    "81"
 D2X(-127,4)    ->    "FF81"
 D2X(12,0)      ->    ""
 </programlisting>
+</example>
 <para>Implementation maximum:
 <indexterm><primary>implementation maximum</primary>
 <secondary>D2X function</secondary></indexterm>
@@ -1921,6 +2011,8 @@ is a null string, which is a valid hexadecimal string.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DATATYPE function</secondary></indexterm>
+<example id="ex.bif-datatype">
+<title>Builtin function DATATYPE</title>
 <programlisting>
 DATATYPE(" 12 ")         ->   "NUM"
 DATATYPE("")             ->   "CHAR"
@@ -1936,6 +2028,7 @@ DATATYPE("BC d3","X")    ->    1
 DATATYPE("1","O")        ->    1
 DATATYPE("11,"O")        ->    0
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The DATATYPE function tests the meaning or type of characters in a string,
@@ -2110,6 +2203,8 @@ example, <computeroutput>Tuesday</computeroutput>.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DATE function</secondary></indexterm>
+<example id="ex.bif-date">
+<title>Builtin function DATE</title>
 <programlisting>
 DATE()         ->    "13 Nov 1996"
 DATE("B")      ->    728975
@@ -2123,6 +2218,7 @@ DATE("S")      ->    "19961113"
 DATE("U")      ->    "11/13/96"
 DATE("W")      ->    "Wednesday"
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The first call to DATE or TIME in one clause causes a time
@@ -2141,17 +2237,22 @@ The default for <emphasis role="italic">option2</emphasis> is "N", so you need
 to specify <emphasis role="italic">option2</emphasis> if
 <emphasis role="italic">string</emphasis> is not in the Normal
 format. Here are some examples: </para>
+<example id="ex.bif-date-1">
+<title>Builtin function DATE set</title>
 <programlisting>
 DATE("O","13 Feb 1923")     ->    "23/02/13"
 DATE("O","06/01/50","U")    ->    "50/06/01"
 DATE("N", "63326132161828000", "f")   -> "23 Sep 2007"
 </programlisting>
+</example>
 <para>If you specify an output separator character
 <emphasis role="italic">osep</emphasis>, the
 days, month, and year returned are separated by this character. Any nonalphanumeric
 character or an empty string can be used. A separator character is only valid
 for the formats "E", "N", "O", "S", and "U".
 Here are some examples:</para>
+<example id="ex.bif-date-2">
+<title>Builtin function DATE set</title>
 <programlisting>
 DATE("S","13 Feb 1996","N","-")     ->    "1996-02-13"
 DATE("N","13 Feb 1996","N","")      ->    "13Feb1996"
@@ -2160,6 +2261,7 @@ DATE("O","06/01/50","U","")         ->    "500601"
 DATE("E","02/13/96","U",".")        ->    "13.02.96"
 DATE("N", , ,"_")                   ->    "26_Mar_1998"  (today)
 </programlisting>
+</example>
 <para>In this way, formats can be created that are derived from their
 respective default format, which is the format associated with
 <emphasis role="italic">option</emphasis> using its default separator character.
@@ -2186,16 +2288,22 @@ long as its format has the generalized form specified by
 its separator character matches the character specified by
 <emphasis role="italic">isep</emphasis>.</para>
 <para>Here are some examples:</para>
+<example id="ex.bif-date-3">
+<title>Builtin function DATE set</title>
 <programlisting>
 DATE("S","1996-11-13","S","","-")      ->    "19961113"
 DATE("S","13-Nov-1996","N","","-")     ->    "19961113"
 DATE("O","06*01*50","U","","*")        ->    "500601"
 DATE("U","13.Feb.1996","N", ,".")      ->    "02/13/96"
 </programlisting>
+</example>
 <para>You can determine the number of days between two dates; for example:</para>
+<example id="ex.bif-date-4">
+<title>Builtin function DATE days</title>
 <programlisting>
 say date("B","12/25/96","U")-date("B") " shopping days till Christmas!"
 </programlisting>
+</example>
 <para>If <emphasis role="italic">string</emphasis> does not include the
 century but <emphasis role="italic">option</emphasis> defines that the
 century be returned as part of the date, the century
@@ -2213,10 +2321,13 @@ it is recommended that you explicitly provide the century.</para></note>
 of "00:00:00.000000" is used for the conversion.
 A time stamp for a time and date combination can be created by
 combining a value from Time() for the time of day.</para>
+<example id="ex.bif-date-5">
+<title>Builtin function DATE timestamp</title>
 <programlisting>
     numeric digits 18  -- needed to add the timestamps
     timestamp = date('f, '20072301', 'S') + time('f', '08:14:22', 'N')
 </programlisting>
+</example>
 </section>
 
 <section id="bifDelstr"><title>DELSTR (Delete String)</title>
@@ -2257,11 +2368,14 @@ the function returns <emphasis role="italic">string</emphasis> unchanged.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DELSTR function</secondary></indexterm>
+<example id="ex.bif-delstr">
+<title>Builtin function DELSTR</title>
 <programlisting>
 DELSTR("abcd",3)       ->    "ab"
 DELSTR("abcde",3,2)    ->    "abe"
 DELSTR("abcde",6)      ->    "abcde"
 </programlisting>
+</example>
 </section>
 
 
@@ -2308,6 +2422,8 @@ whitespace preceding the first word involved.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DELWORD function</secondary></indexterm>
+<example id="ex.bif-delword">
+<title>Builtin function DELWORD</title>
 <programlisting>
 DELWORD("Now is the  time",2,2)  ->  "Now time"
 DELWORD("Now is the time ",3)    ->  "Now is "
@@ -2315,6 +2431,7 @@ DELWORD("Now is the  time",5)    ->  "Now is the  time"
 DELWORD("Now is   the time",3,1) ->  "Now is   time"
 DELWORD("Now is the  time",2,2)  ->  "Now time"
 </programlisting>
+</example>
 </section>
 
 
@@ -2340,9 +2457,12 @@ information.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DIGITS function</secondary></indexterm>
+<example id="ex.bif-digits">
+<title>Builtin function DIGITS</title>
 <programlisting>
 DIGITS()    ->    9      /* by default */
 </programlisting>
+</example>
 </section>
 
 
@@ -2377,6 +2497,8 @@ returns to the former directory. </para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DIRECTORY function</secondary></indexterm>
+<example id="ex.bif-directory">
+<title>Builtin function DIRECTORY</title>
 <programlisting>
 /* get current directory      */
 curdir = directory()
@@ -2391,6 +2513,7 @@ end
 else
   say "Can&apos;t find /usr/games"
 </programlisting>
+</example>
 </section>
 
 
@@ -2421,6 +2544,8 @@ unsuccessful.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>ENDLOCAL function</secondary></indexterm>
+<example id="ex.bif-endlocal">
+<title>Builtin function ENDLOCAL</title>
 <programlisting>
 n = SETLOCAL()                   /* saves the current environment */
           /*
@@ -2430,6 +2555,7 @@ n = SETLOCAL()                   /* saves the current environment */
           */
 n = ENDLOCAL()                   /* restores the initial environment */
 </programlisting>
+</example>
 <para>For additional examples, see
 <xref linkend="bifSetlocal" />.</para>
 </section>
@@ -2462,10 +2588,13 @@ complete description of error numbers and messages.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>ERRORTEXT function</secondary></indexterm>
+<example id="ex.bif-errortext">
+<title>Builtin function ERRORTEXT</title>
 <programlisting>
 ERRORTEXT(16)    ->    "Label not found"
 ERRORTEXT(60)    ->    ""
 </programlisting>
+</example>
 </section>
 
 
@@ -2521,6 +2650,8 @@ information, then the FILESPEC function returns a null string (&quot;&quot;).
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>FILESPEC function</secondary></indexterm>
+<example id="ex.bif-filespec">
+<title>Builtin function FILESPEC</title>
 <programlisting>
 thisfile = "C:\WINDOWS\UTIL\SYSTEM.INI"
 say FILESPEC("drive",thisfile)     /* says "C:"              */
@@ -2531,6 +2662,7 @@ say FILESPEC("extension",thisfile) /* says "INI"      */
 part = "name"
 say FILESPEC(part,thisfile)        /* says "SYSTEM.INI"      */
 </programlisting>
+</example>
 </section>
 
 
@@ -2555,9 +2687,12 @@ FORM. See <xref linkend="keyNumeric" /> for more information.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>FORM function</secondary></indexterm>
+<example id="ex.bif-form">
+<title>Builtin function FORM</title>
 <programlisting>
 FORM()    ->    "SCIENTIFIC"  /* by default */
 </programlisting>
+</example>
 </section>
 
 
@@ -2617,6 +2752,8 @@ to an integer.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>FORMAT function</secondary></indexterm>
+<example id="ex.bif-format">
+<title>Builtin function FORMAT</title>
 <programlisting>
 FORMAT("3",4)            ->    "   3"
 FORMAT("1.73",4,0)       ->    "   2"
@@ -2627,6 +2764,7 @@ FORMAT(" - 12.73", ,4)   ->    "-12.7300"
 FORMAT(" - 12.73")       ->    "-12.73"
 FORMAT("0.000")          ->    "0"
 </programlisting>
+</example>
 <para>The first three arguments are as described previously.  In addition,
 <emphasis role="italic">expp</emphasis> and
 <emphasis role="italic">expt</emphasis> control the exponent part of the result, which,
@@ -2656,6 +2794,8 @@ part of the result. If the exponent would be
 <computeroutput>0</computeroutput> and <emphasis role="italic">expp</emphasis>
 is not specified, the number is not an exponential expression.</para>
 <para>Here are some examples: </para>
+<example id="ex.bif-format-1">
+<title>Builtin function FORMAT</title>
 <programlisting>
 FORMAT("12345.73", , ,2,2)  ->    "1.234573E+04"
 FORMAT("12345.73", ,3, ,0)  ->    "1.235E+4"
@@ -2663,6 +2803,7 @@ FORMAT("1.234573", ,3, ,0)  ->    "1.235"
 FORMAT("12345.73", , ,3,6)  ->    "12345.73"
 FORMAT("1234567e5", ,3,0)   ->    "123456700000.000"
 </programlisting>
+</example>
 </section>
 
 
@@ -2687,9 +2828,12 @@ FUZZ. See <xref linkend="keyNumeric" /> for more information.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>FUZZ function</secondary></indexterm>
+<example id="ex.bif-fuzz">
+<title>Builtin function FUZZ</title>
 <programlisting>
 FUZZ()    ->    0     /* by default */
 </programlisting>
+</example>
 </section>
 
 
@@ -2736,6 +2880,8 @@ string <emphasis role="italic">new</emphasis>, then INSERT truncates
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>INSERT function</secondary></indexterm>
+<example id="ex.bif-insert">
+<title>Builtin function INSERT</title>
 <programlisting>
 INSERT(" ","abcdef",3)         ->    "abc def"
 INSERT("123","abc",5,6)        ->    "abc  123   "
@@ -2743,6 +2889,7 @@ INSERT("123","abc",5,6,"+")    ->    "abc++123+++"
 INSERT("123","abc")            ->    "123abc"
 INSERT("123","abc", ,5,"-")    ->    "123--abc"
 </programlisting>
+</example>
 </section>
 
 
@@ -2788,6 +2935,8 @@ number and defaults to <emphasis role="italic">start</emphasis>.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>LASTPOS function</secondary></indexterm>
+<example id="ex.bif-lastpos">
+<title>Builtin function LASTPOS</title>
 <programlisting>
 LASTPOS(" ","abc def ghi")      ->    8
 LASTPOS(" ","abcdefghi")        ->    0
@@ -2795,6 +2944,7 @@ LASTPOS("xy","efgxyz")          ->    4
 LASTPOS(" ","abc def ghi",7)    ->    4
 LASTPOS(" ","abc def ghi",7,3)  ->    0
 </programlisting>
+</example>
 </section>
 
 
@@ -2836,11 +2986,14 @@ whole number or zero. The LEFT function is exactly equivalent to:
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>LEFT function</secondary></indexterm>
+<example id="ex.bif-left">
+<title>Builtin function LEFT</title>
 <programlisting>
 LEFT("abc d",8)        ->    "abc d   "
 LEFT("abc d",8,".")    ->    "abc d..."
 LEFT("abc  def",7)     ->    "abc  de"
 </programlisting>
+</example>
 </section>
 
 
@@ -2868,11 +3021,14 @@ Returns the length of <emphasis role="italic">string</emphasis>.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>LENGTH function</secondary></indexterm>
+<example id="ex.bif-length">
+<title>Builtin function LENGTH</title>
 <programlisting>
 LENGTH("abcdefgh")    ->    8
 LENGTH("abc defg")    ->    8
 LENGTH("")            ->    0
 </programlisting>
+</example>
 </section>
 
 
@@ -2934,6 +3090,8 @@ and LINEIN returns whatever characters are available.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>LINEIN function</secondary></indexterm>
+<example id="ex.bif-linein">
+<title>Builtin function LINEIN</title>
 <programlisting>
 LINEIN()                             /* Reads one line from the    */
                                      /* default input stream;      */
@@ -2968,6 +3126,7 @@ LINEIN("QUEUE:")   ->  "Queue line" /* Read a line from the queue. */
                                     /* program waits until a line  */
                                     /* is put on the queue.        */
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>If you want to read complete lines from the default input
@@ -3052,6 +3211,8 @@ count of lines written.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>LINEOUT function</secondary></indexterm>
+<example id="ex.bif-lineout">
+<title>Builtin function LINEOUT</title>
 <programlisting>
 LINEOUT(,"Display this")          /* Writes string to the default   */
                                   /* output stream (usually, the    */
@@ -3077,12 +3238,16 @@ LINEOUT(myfile, ,1)               /* Opens the file (if not already */
 
 LINEOUT(myfile)                   /* Closes ANYFILE.TXT             */
 </programlisting>
+</example>
 <para> LINEOUT is often most useful when called as a subroutine. The return
 value is then available in the variable RESULT. For example: </para>
+<example id="ex.bif-lineout-1">
+<title>Builtin function LINEOUT call</title>
 <programlisting>
 Call LINEOUT "A:rexx.bat","Shell",1
 Call LINEOUT ,"Hello"
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>If the lines are to be written
@@ -3136,12 +3301,15 @@ remaining in the file or 0 if no lines remain.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>LINES function</secondary></indexterm>
+<example id="ex.bif-lines">
+<title>Builtin function LINES</title>
 <programlisting>
 LINES(myfile)    ->    0    /* at end of the file   */
 LINES()          ->    1    /* data remains in the  */
                             /* default input stream */
                             /* STDIN:               */
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The CHARS function returns the number of characters in a persistent stream
@@ -3179,11 +3347,14 @@ the default is to convert the remainder of the string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>lower function</secondary></indexterm>
+<example id="ex.bif-lower">
+<title>Builtin function LOWER</title>
 <programlisting>
 lower("Albert Einstein")      ->    "albert einstein"
 lower("ABCDEF", 4)            ->    "ABCdef"
 lower("ABCDEF", 3, 2)         ->    "ABcdEF"
 </programlisting>
+</example>
 </section>
 
 
@@ -3211,12 +3382,15 @@ the current NUMERIC settings. You can specify any number of
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>MAX function</secondary></indexterm>
+<example id="ex.bif-max">
+<title>Builtin function MAX</title>
 <programlisting>
 MAX(12,6,7,9)                                                ->    12
 MAX(17.3,19,17.03)                                           ->    19
 MAX(-7,-3,-4.3)                                              ->    -3
 MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
 </programlisting>
+</example>
 </section>
 
 
@@ -3244,12 +3418,15 @@ to the current NUMERIC settings. You can specify any number of
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>MIN function</secondary></indexterm>
+<example id="ex.bif-min">
+<title>Builtin function MIN</title>
 <programlisting>
 MIN(12,6,7,9)                                                ->   6
 MIN(17.3,19,17.03)                                           ->  17.03
 MIN(-7,-3,-4.3)                                              ->  -7
 MIN(21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->   1
 </programlisting>
+</example>
 </section>
 
 
@@ -3295,6 +3472,8 @@ number.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>OVERLAY function</secondary></indexterm>
+<example id="ex.bif-overlay">
+<title>Builtin function OVERLAY</title>
 <programlisting>
 OVERLAY(" ","abcdef",3)         ->    "ab def"
 OVERLAY(".","abcdef",3,2)       ->    "ab. ef"
@@ -3302,6 +3481,7 @@ OVERLAY("qq","abcd")            ->    "qqcd"
 OVERLAY("qq","abcd",4)          ->    "abcqq"
 OVERLAY("123","abc",5,6,"+")    ->    "abc+123+++"
 </programlisting>
+</example>
 </section>
 
 
@@ -3348,6 +3528,8 @@ a non-negative whole number.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>POS function</secondary></indexterm>
+<example id="ex.bif-pos">
+<title>Builtin function POS</title>
 <programlisting>
 POS("day","Saturday")       ->    6
 POS("x","abc def ghi")      ->    0
@@ -3355,6 +3537,7 @@ POS(" ","abc def ghi")      ->    4
 POS(" ","abc def ghi",5)    ->    8
 POS(" ","abc def ghi",5,3)  ->    0
 </programlisting>
+</example>
 </section>
 
 
@@ -3404,9 +3587,12 @@ for a discussion of Rexx input and output.)</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>QUEUED function</secondary></indexterm>
+<example id="ex.bif-queued">
+<title>Builtin function QUEUED</title>
 <programlisting>
 QUEUED()    ->    5    /* Perhaps */
 </programlisting>
+</example>
 </section>
 
 
@@ -3449,6 +3635,8 @@ argument. This
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>RANDOM function</secondary></indexterm>
+<example id="ex.bif-random">
+<title>Builtin function RANDOM</title>
 <programlisting>
 RANDOM()          ->    305
 RANDOM(5,8)       ->      7
@@ -3456,6 +3644,7 @@ RANDOM(2)         ->      0  /*  0  to  2    */
 RANDOM(, ,1983)   ->    123  /* reproducible */
 RANDOM(-5, 5)     ->    -3
 </programlisting>
+</example>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -3464,6 +3653,8 @@ To obtain a predictable sequence of quasi-random numbers,
 use RANDOM a number of times, but specify a
 <emphasis role="italic">seed</emphasis> only the first time.
 For example, to simulate 40 throws of a 6-sided, unbiased die:
+<example id="ex.bif-random-1">
+<title>Builtin function RANDOM with seed</title>
 <programlisting>
 sequence = RANDOM(1,6,12345)  /* any number would */
                               /* do for a seed    */
@@ -3472,6 +3663,7 @@ sequence = sequence RANDOM(1,6)
 end
 say sequence
 </programlisting>
+</example>
 The numbers are generated mathematically, using the initial
 <emphasis role="italic">seed</emphasis>, so that as far as possible they appear
 to be random. Running the program again produces the same sequence; using a different
@@ -3506,10 +3698,13 @@ seed is not saved across internal routine calls.</para></listitem>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>REVERSE function</secondary></indexterm>
+<example id="ex.bif-reverse">
+<title>Builtin function REVERSE</title>
 <programlisting>
 REVERSE("ABc.")    ->    ".cBA"
 REVERSE("XYZ ")    ->    " ZYX"
 </programlisting>
+</example>
 </section>
 
 
@@ -3549,11 +3744,14 @@ number or zero.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>RIGHT function</secondary></indexterm>
+<example id="ex.bif-right">
+<title>Builtin function RIGHT</title>
 <programlisting>
 RIGHT("abc  d",8)     ->    "  abc  d"
 RIGHT("abc def",5)    ->    "c def"
 RIGHT("12",5,"0")     ->    "00012"
 </programlisting>
+</example>
 </section>
 
 <section id="bifRxfuncadd"><title>RXFUNCADD</title>
@@ -3595,10 +3793,13 @@ A return value 1 signifies that the function could not be resolved.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>RXFUNCADD function</secondary></indexterm>
+<example id="ex.bif-rxfuncadd">
+<title>Builtin function RXFUNCADD</title>
 <programlisting>
 rxfuncadd("SysCls","rexxutil", "SysCls") -> 0 /* if SysCls can be located */
                                          -> 1 /* if SysCls can not be located */
 </programlisting>
+</example>
 </section>
 
 
@@ -3624,9 +3825,12 @@ functions. A zero return value signifies successful removal. </para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>RXFUNCDROP function</secondary></indexterm>
+<example id="ex.bif-rxfuncdrop">
+<title>Builtin function RXFUNCDROP</title>
 <programlisting>
 rxfuncdrop("SysLoadFuncs")         -> 0 /* if successfully removed   */
 </programlisting>
+</example>
 </section>
 
 
@@ -3653,9 +3857,12 @@ of <computeroutput>1</computeroutput> if it is not. </para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>RXFUNCQUERY function</secondary></indexterm>
+<example id="ex.bif-rxfuncquery">
+<title>Builtin function RXFUNCQUERY</title>
 <programlisting>
 rxfuncquery("SysLoadFuncs")        -> 0 /* if registered             */
 </programlisting>
+</example>
 </section>
 
 
@@ -3761,6 +3968,8 @@ program places a line on the queue.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>RXFUNCQUEUE function</secondary></indexterm>
+<example id="ex.bif-rxqueue">
+<title>Builtin function RXQUEUE</title>
 <programlisting>
 /* default queue                                    */
 rxqueue("Get")             -> "SESSION"
@@ -3771,6 +3980,7 @@ rxqueue("Set", "Fred")     -> "SESSION"
 /* assuming FRED exists                             */
 rxqueue("delete", "Fred")  -> "0"
 </programlisting>
+</example>
 </section>
 
 
@@ -3805,6 +4015,8 @@ SETLOCAL is restored upon exiting the procedure.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SETLOCAL function</secondary></indexterm>
+<example id="ex.bif-setlocal">
+<title>Builtin function SETLOCAL</title>
 <programlisting>
 /* Current path is "user/bin" */
 n = SETLOCAL()           /* saves all environment settings */
@@ -3815,6 +4027,7 @@ n = ENDLOCAL()           /* restores initial environment including */
                          /* the changed PATH variable, which is    */
                          /* "user/bin"                             */
 </programlisting>
+</example>
 </section>
 
 
@@ -3848,11 +4061,14 @@ if it is greater than <computeroutput>0</computeroutput>.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SIGN function</secondary></indexterm>
+<example id="ex.bif-sign">
+<title>Builtin function SIGN</title>
 <programlisting>
 SIGN("12.3")       ->     1
 SIGN(" -0.307")    ->    -1
 SIGN(0.0)          ->     0
 </programlisting>
+</example>
 </section>
 
 
@@ -3892,10 +4108,13 @@ for all attempts to retrieve a line of the program.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SOURCELINE function</secondary></indexterm>
+<example id="ex.bif-sourceline">
+<title>Builtin function SOURCELINE</title>
 <programlisting>
 SOURCELINE()    ->   10
 SOURCELINE(1)   ->   "/* This is a 10-line Rexx program */"
 </programlisting>
+</example>
 </section>
 
 
@@ -3933,6 +4152,8 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SPACE function</secondary></indexterm>
+<example id="ex.bif-space">
+<title>Builtin function SPACE</title>
 <programlisting>
 SPACE("abc  def  ")          ->    "abc def"
 SPACE("  abc def",3)         ->    "abc   def"
@@ -3940,6 +4161,7 @@ SPACE("abc  def  ",1)        ->    "abc def"
 SPACE("abc  def  ",0)        ->    "abcdef"
 SPACE("abc  def  ",2,"+")    ->    "abc++def"
 </programlisting>
+</example>
 </section>
 
 
@@ -4174,12 +4396,15 @@ were specified with a length equal to that of the file).
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>STREAM function</secondary></indexterm>
+<example id="ex.bif-stream">
+<title>Builtin function STREAM</title>
 <programlisting>
 stream(strout,"c","open")
 stream(strout,"c","open write")
 stream(strinp,"c","open read")
 stream(strinp,"c","open read shared")
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>CLOSE</term>
 <listitem><para>closes the named stream. The STREAM function itself returns
@@ -4187,10 +4412,12 @@ stream(strinp,"c","open read shared")
 successfully closed, or an appropriate error
 message. If an attempt is made to close an unopened file, STREAM returns a
 null string (&quot;&quot;). </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.bif-stream-1">
+<title>Builtin function STREAM on unopened file</title>
 <programlisting>
 stream("STRM.TXT","c","close")
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>FLUSH</term>
 <listitem><para>forces any data currently buffered for writing to be written
@@ -4261,11 +4488,12 @@ a detailed discussion of this issue.
 in a file open only for writing, you receive an error message.</para></note>
 </para></listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>STREAM function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>STREAM function</secondary></indexterm>
+<example id="ex.bif-stream-2">
+<title>Builtin function STREAM examples</title>
 <programlisting>
 stream(name,"c","seek =2 read")
 stream(name,"c","seek +15 read")
@@ -4273,6 +4501,7 @@ stream(name,"c","seek -7 write line")
 fromend  = 125
 stream(name,"c","seek &lt;"fromend read)
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>POSITION</term>
 <listitem><para>is a synonym for SEEK.
@@ -4299,9 +4528,12 @@ streams.
 <listitem><para>returns the date and time stamps of a stream in US format.
 This is included for compatibility with
 <trademark class="registered">OS/2</trademark>.
+<example id="ex.bif-stream-3">
+<title>Builtin function STREAM QUERY examples</title>
 <programlisting>
 stream("..\file.txt","c","query datetime")
 </programlisting>
+</example>
 </para>
 <para>A sample output might be: </para>
 <programlisting>
@@ -4311,9 +4543,12 @@ stream("..\file.txt","c","query datetime")
 <varlistentry><term>QUERY EXISTS</term>
 <listitem><para>returns the full path specification of the named stream, if it
 exists, or a null string.</para>
+<example id="ex.bif-stream-4">
+<title>Builtin function STREAM QUERY EXISTS examples</title>
 <programlisting>
 stream("..\file.txt","c","query exists")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 c:\data\file.txt
@@ -4321,9 +4556,12 @@ c:\data\file.txt
 </listitem></varlistentry>
 <varlistentry><term>QUERY HANDLE</term>
 <listitem><para>returns the handle associated with the open stream. </para>
+<example id="ex.bif-stream-5">
+<title>Builtin function STREAM QUERY HANDLE examples</title>
 <programlisting>
 stream("..\file.txt","c","query handle")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 3
@@ -4354,9 +4592,12 @@ starts tracking the current line number if not already doing so. Thus, it
 might require a scan of the stream from the top to count line-end characters.
 See <xref linkend="positio" /> for a
 detailed discussion of this issue.</para>
+<example id="ex.bif-stream-6">
+<title>Builtin function STREAM QUERY POSITION examples</title>
 <programlisting>
 stream("myfile","c","query position write")
 </programlisting>
+</example>
 <para>A sample output might
 be: </para>
 <programlisting>
@@ -4370,9 +4611,12 @@ characters.</para></listitem></varlistentry>
 </para></listitem></varlistentry>
 <varlistentry><term>QUERY SIZE</term>
 <listitem><para>returns the size, in bytes, of a persistent stream. </para>
+<example id="ex.bif-stream-7">
+<title>Builtin function STREAM QUERY SIZE examples</title>
 <programlisting>
 stream("..\file.txt","c","query size")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 1305
@@ -4388,9 +4632,12 @@ stream("..\file.txt","c","query size")
 <listitem><para>returns the date and time stamps of a stream in an international format.
 This is the preferred method of getting the date and time because it provides
 the full 4-digit year.</para>
+<example id="ex.bif-stream-8">
+<title>Builtin function STREAM QUERY TIMESTAMP examples</title>
 <programlisting>
 stream("..\file.txt","c","query timestamp")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 1998-11-12 03:29:12
@@ -4461,6 +4708,8 @@ will be removed.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>STRIP function</secondary></indexterm>
+<example id="ex.bif-strip">
+<title>Builtin function STRIP</title>
 <programlisting>
 STRIP("  ab c  ")        ->    "ab c"
 STRIP("  ab c  ","L")    ->    "ab c  "
@@ -4469,6 +4718,7 @@ STRIP("12.7000", ,0)     ->    "12.7"
 STRIP("0012.700", ,0)    ->    "12.7"
 STRIP("12.0000", "T", '.0') -> "12"
 </programlisting>
+</example>
 </section>
 
 
@@ -4510,11 +4760,14 @@ character is a blank.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SUBSTR function</secondary></indexterm>
+<example id="ex.bif-substr">
+<title>Builtin function SUBSTR</title>
 <programlisting>
 SUBSTR("abc",2)          ->    "bc"
 SUBSTR("abc",2,4)        ->    "bc  "
 SUBSTR("abc",2,6,".")    ->    "bc...."
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>In some situations the positional (numeric) patterns of parsing
@@ -4561,11 +4814,14 @@ the selected words.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SUBWORD function</secondary></indexterm>
+<example id="ex.bif-subword">
+<title>Builtin function SUBWORD</title>
 <programlisting>
 SUBWORD("Now is the  time",2,2)    ->    "is the"
 SUBWORD("Now is the  time",3)      ->    "the  time"
 SUBWORD("Now is the  time",5)      ->    ""
 </programlisting>
+</example>
 </section>
 
 
@@ -4609,6 +4865,8 @@ before it is passed to the function.</para></note>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>SYMBOL function</secondary></indexterm>
+<example id="ex.bif-symbol">
+<title>Builtin function SYMBOL</title>
 <programlisting>
 /* following: Drop A.3;  J=3 */
 SYMBOL("J")      ->   "VAR"
@@ -4617,6 +4875,7 @@ SYMBOL("a.j")    ->   "LIT" /* has tested A.3     */
 SYMBOL(2)        ->   "LIT" /* a constant symbol  */
 SYMBOL("*")      ->   "BAD" /* not a valid symbol */
 </programlisting>
+</example>
 </section>
 
 
@@ -4781,6 +5040,8 @@ to a minimum value of 12 when performing timestamp arithmetic.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>TIME function</secondary></indexterm>
+<example id="ex.bif-time">
+<title>Builtin function TIME</title>
 <programlisting>
 TIME()       ->   "16:54:22"
 TIME("C")    ->   "4:54pm"
@@ -4790,6 +5051,7 @@ TIME("M")    ->   "1014"           /* 54 + 60*16 */
 TIME("N")    ->   "16:54:22"
 TIME("S")    ->   "60862"  /* 22 + 60*(54+60*16) */
 </programlisting>
+</example>
 <para><emphasis role="bold">The elapsed-time clock:</emphasis></para>
 <para>You can use the TIME function to measure real (elapsed) time intervals.
 On the first call in a program to <computeroutput>TIME("E")</computeroutput>
@@ -4807,6 +5069,8 @@ example of the elapsed-time clock: </para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>TIME function</secondary></indexterm>
+<example id="ex.bif-time-1">
+<title>Builtin function TIME elapsed</title>
 <programlisting>
 time("E")    ->    0          /* The first call */
                   /* pause of one second here */
@@ -4816,6 +5080,7 @@ time("R")    ->    2.030000   /* or thereabouts */
                   /* pause of one second here */
 time("R")    ->    1.050000   /* or thereabouts */
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The elapsed-time clock is synchronized with the other calls
@@ -4833,17 +5098,23 @@ So you need to specify <emphasis role="italic">option2</emphasis> only if
 <emphasis role="italic">string</emphasis> is not in
 the Normal format. <emphasis role="italic">option2</emphasis> must specify the
 current time, for example, not "E" or "R". Here are some examples: </para>
+<example id="ex.bif-time-2">
+<title>Builtin function TIME formating</title>
 <programlisting>
 time("C","11:27:21")    ->    11:27am
 time("N","11:27am","C") ->    11:27:00
 time("N", "63326132161828000", "F")   ->   08:16:01
 </programlisting>
+</example>
 <para>You can determine the difference between two times; for example:</para>
+<example id="ex.bif-time-3">
+<title>Builtin function TIME difference</title>
 <programlisting>
 If TIME("M","5:00pm","C")-TIME("M")&lt;=0
 then say "Time to go home"
 else say "Keep working"
 </programlisting>
+</example>
 <para>The TIME returned is the earliest time consistent with
 <emphasis role="italic">string</emphasis>.
 For example, if the result requires components that are not specified in the
@@ -4854,10 +5125,13 @@ source are ignored.</para>
 of 1 January 0001 is used for the conversion.
 A time stamp for a time and date combination can be created by
 combining a value from Date('F') for the time of day.</para>
+<example id="ex.bif-time-4">
+<title>Builtin function TIME with F option</title>
 <programlisting>
     numeric digits 18  -- needed to add the timestamps
     timestamp = date('f, '20072301', 'S') + time('f', '08:14:22', 'N')
 </programlisting>
+</example>
 <indexterm><primary>implementation maximum</primary>
 <secondary>TIME function</secondary></indexterm>
 <para><emphasis role="bold">Implementation maximum:</emphasis>
@@ -4910,11 +5184,14 @@ even if interactive debugging is active. Also unlike the TRACE instruction,
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>TRACE function</secondary></indexterm>
+<example id="ex.bif-trace">
+<title>Builtin function TRACE</title>
 <programlisting>
 TRACE()       ->   "?R" /* maybe */
 TRACE("O")    ->   "?R" /* also sets tracing off */
 TRACE("?I")   ->   "O"  /* now in interactive debugging */
 </programlisting>
+</example>
 </section>
 
 
@@ -4980,6 +5257,8 @@ the string from the starting position to the end is used. </para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>TRANSLATE function</secondary></indexterm>
+<example id="ex.bif-translate">
+<title>Builtin function TRANSLATE</title>
 <programlisting>
 TRANSLATE("abcdef")                        ->    "ABCDEF"
 TRANSLATE("abcdef", , , , 2, 3)            ->    "aBCDef"
@@ -4990,6 +5269,7 @@ TRANSLATE("APQRV", XRANGE("00"X, "Q"))     ->    "APQ  "
 TRANSLATE("4123", "abcd", "1234")          ->    "dabc"
 TRANSLATE("4123", "abcd", "1234", , 2, 2)  ->    "4ab1"
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The last example shows how to use the TRANSLATE function
@@ -5036,12 +5316,15 @@ in the result, any minus sign is removed.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>TRUNC function</secondary></indexterm>
+<example id="ex.bif-trunc">
+<title>Builtin function TRUNC</title>
 <programlisting>
 TRUNC(12.3)           ->    12
 TRUNC(127.09782,3)    ->    127.097
 TRUNC(127.1,3)        ->    127.100
 TRUNC(127,2)          ->    127.00
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The <emphasis role="italic">number</emphasis> is rounded according to the
@@ -5078,14 +5361,16 @@ be a positive whole number.  If <emphasis role="italic">n</emphasis> is not spec
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
 the default is to convert the remainder of the string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>upper function</secondary></indexterm>
+<example id="ex.bif-upper">
+<title>Builtin function UPPER</title>
 <programlisting>
 upper("Albert Einstein")      ->    "ALBERT EINSTEIN"
 upper("abcdef", 4)            ->    "abcDEF"
 upper("abcdef", 3, 2)         ->    "abCDef"
 </programlisting>
+</example>
 </section>
 
 
@@ -5152,6 +5437,8 @@ assignment.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>VALUE function</secondary></indexterm>
+<example id="ex.bif-value">
+<title>Builtin function VALUE</title>
 <programlisting>
 /* After: Drop A3; A33=7; K=3; fred="K"; list.5="Hi" */
 VALUE("a"k)     ->  "A3" /* looks up A3                */
@@ -5163,6 +5450,7 @@ VALUE(fred,5)   ->  "3"  /* looks up K and             */
 VALUE(fred)     ->  "5"  /* looks up K                 */
 VALUE("LIST."k) ->  "Hi" /* looks up LIST.5            */
 </programlisting>
+</example>
 
 <indexterm><primary>global variables</primary>
 <secondary>access with VALUE function</secondary></indexterm>
@@ -5186,6 +5474,8 @@ Call VALUE "MYVAR", "FIRST" || "00"X || "SECOND", "ENVIRONMENT"
 </programlisting>
 <para>sets MYVAR to &quot;FIRST&quot;, truncating "00"x and "SECOND".</para>
 <para>Here are some more examples: </para>
+<example id="ex.bif-value-1">
+<title>Builtin function VALUE</title>
 <programlisting>
 /* Given that an external variable FRED has a value of 4         */
 share = "ENVIRONMENT"
@@ -5203,6 +5493,7 @@ say value("PATH",new,env)   /* says "C:\WINDOWS" (perhaps)       */
 
 say value("PATH", ,env)     /* says "C:\EDIT\DOCS;"              */
 </programlisting>
+</example>
 
 <para>To delete an environment variable use the Nil object as the
 <emphasis role="italic">newvalue</emphasis>. To delete the environment
@@ -5275,6 +5566,8 @@ no such object, it returns, by default, the string
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>VALUE function</secondary></indexterm>
+<example id="ex.bif-value-3">
+<title>Builtin function VALUE</title>
 <programlisting>
 /* Assume the environment name MYNAME identifies the string "Simon"    */
 name = value("MYNAME", ,"") /* Sends MYNAME message to the environment */
@@ -5284,6 +5577,7 @@ say "Hello," name           /* Produces: "Hello, Simon"                */
 name = value("NONAME", ,"") /* Sends NONAME message to the environment */
 say "Hello," name           /* Produces:  "Hello, .NONAME"             */
 </programlisting>
+</example>
 <para>You can use the VALUE function to change a value in the Rexx environment
 directory. Include a <emphasis role="italic">newvalue</emphasis> and specify
 <emphasis role="italic">selector</emphasis> as the
@@ -5295,6 +5589,8 @@ environment object. After receiving this message, the environment identifies
 the object <emphasis role="italic">newvalue</emphasis> by the name
 <emphasis role="italic">name</emphasis>.</para>
 <para>Here is an example: </para>
+<example id="ex.bif-value-4">
+<title>Builtin function VALUE</title>
 <programlisting>
 name = value("MYNAME","David","") /* Sends "MYNAME=("David") message  */
 /* to the environment.                                                */
@@ -5302,6 +5598,7 @@ name = value("MYNAME","David","") /* Sends "MYNAME=("David") message  */
 /*   call value "MYNAME","David",""                                   */
 say "Hello," .myname              /* Produces:  "Hello, David"        */
 </programlisting>
+</example>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -5352,6 +5649,8 @@ a symbol that has been assigned a value), or
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>VAR function</secondary></indexterm>
+<example id="ex.bif-var">
+<title>Builtin function VAR</title>
 <programlisting>
 /* Following: DROP A.3; J=3  */
 VAR("J")       -> 1
@@ -5360,6 +5659,7 @@ VAR("a.j")     -> 0  /* has tested "A.3"  */
 VAR(2)         -> 0  /* a constant symbol */
 VAR("*")       -> 0  /* an invalid symbol */
 </programlisting>
+</example>
 </section>
 
 
@@ -5429,6 +5729,8 @@ than <computeroutput>LENGTH(string)</computeroutput>, the function returns
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>VERIFY function</secondary></indexterm>
+<example id="ex.bif-verify">
+<title>Builtin function VERIFY</title>
 <programlisting>
 VERIFY("123","1234567890")             ->    0
 VERIFY("1Z3","1234567890")             ->    2
@@ -5442,6 +5744,7 @@ VERIFY("AB3CD5","1234567890","M",4)    ->    6
 VERIFY("ABCDEF","ABC","N",2,3)         ->    4
 VERIFY("ABCDEF","ADEF","M",2,3)        ->    4
 </programlisting>
+</example>
 </section>
 
 
@@ -5476,10 +5779,13 @@ SUBWORD(<emphasis role="italic">string</emphasis>,
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>WORD function</secondary></indexterm>
+<example id="ex.bif-word">
+<title>Builtin function WORD</title>
 <programlisting>
 WORD("Now is the time",3)    ->    "the"
 WORD("Now is the time",5)    ->    ""
 </programlisting>
+</example>
 </section>
 
 
@@ -5509,10 +5815,13 @@ are in <emphasis role="italic">string</emphasis>.
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>WORDINDEX function</secondary></indexterm>
+<example id="ex.bif-wordindex">
+<title>Builtin function WORDINDEX</title>
 <programlisting>
 WORDINDEX("Now is the time",3)    ->    8
 WORDINDEX("Now is the time",6)    ->    0
 </programlisting>
+</example>
 </section>
 
 
@@ -5543,11 +5852,14 @@ returns <computeroutput>0</computeroutput> if less than
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>WORDLENGTH function</secondary></indexterm>
+<example id="ex.bif-wordlength">
+<title>Builtin function WORDLENGTH</title>
 <programlisting>
 WORDLENGTH("Now is the time",2)       ->    2
 WORDLENGTH("Now comes the time",2)    ->    5
 WORDLENGTH("Now is the time",6)       ->    0
 </programlisting>
+</example>
 </section>
 
 
@@ -5587,6 +5899,8 @@ word at which to start the search.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>WORDPOS function</secondary></indexterm>
+<example id="ex.bif-wordpos">
+<title>Builtin function WORDPOS</title>
 <programlisting>
 WORDPOS("the","now is the time")              ->  3
 WORDPOS("The","now is the time")              ->  0
@@ -5596,6 +5910,7 @@ WORDPOS("is   time ","now is   the time")     ->  0
 WORDPOS("be","To be or not to be")            ->  2
 WORDPOS("be","To be or not to be",3)          ->  6
 </programlisting>
+</example>
 </section>
 
 
@@ -5628,10 +5943,13 @@ WORDPOS("be","To be or not to be",3)          ->  6
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>WORDS function</secondary></indexterm>
+<example id="ex.bif-words">
+<title>Builtin function WORDS</title>
 <programlisting>
 WORDS("Now is the time")    ->    4
 WORDS(" ")                  ->    0
 </programlisting>
+</example>
 </section>
 
 
@@ -5671,19 +5989,25 @@ returns a null string.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>X2B function</secondary></indexterm>
+<example id="ex.bif-x2b">
+<title>Builtin function X2B</title>
 <programlisting>
 X2B("C3")        ->  "11000011"
 X2B("7")         ->  "0111"
 X2B("1 C1")      ->  "000111000001"
 </programlisting>
+</example>
 <para>You can combine X2B with the functions D2X and C2X to convert numbers or
 character strings into binary form.</para>
 <para>Here are some examples: </para>
+<example id="ex.bif-x2b-1">
+<title>Builtin function X2B</title>
 <programlisting>
 X2B(C2X("C3"x))  ->  "11000011"
 X2B(D2X("129"))  ->  "10000001"
 X2B(D2X("12"))   ->  "1100"
 </programlisting>
+</example>
 </section>
 
 
@@ -5723,10 +6047,13 @@ returns a null string.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>X2C function</secondary></indexterm>
+<example id="ex.bif-x2c">
+<title>Builtin function X2C</title>
 <programlisting>
 X2C("4865 6c6c 6f") ->  "Hello"     /*  ASCII             */
 X2C("3732 73")      ->  "72s"       /*  ASCII             */
 </programlisting>
+</example>
 </section>
 
 
@@ -5769,6 +6096,8 @@ an unsigned binary number.</para>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>X2D function</secondary></indexterm>
+<example id="ex.bif-x2d">
+<title>Builtin function X2D</title>
 <programlisting>
 X2D("0E")        ->    14
 X2D("81")        ->    129
@@ -5777,6 +6106,7 @@ X2D("FF81")      ->    65409
 X2D("46 30"X)    ->    240          /*  ASCII   */
 X2D("66 30"X)    ->    240          /*  ASCII   */
 </programlisting>
+</example>
 <para>If you specify <emphasis role="italic">n</emphasis>, the string is
 taken as a signed number expressed in <emphasis role="italic">n</emphasis>
 hexadecimal digits. If the leftmost bit is off, then the number
@@ -5793,6 +6123,8 @@ on the left with <computeroutput>0</computeroutput> characters
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>X2D function</secondary></indexterm>
+<example id="ex.bif-x2d-1">
+<title>Builtin function X2D</title>
 <programlisting>
 X2D("81",2)      ->    -127
 X2D("81",4)      ->    129
@@ -5802,6 +6134,7 @@ X2D("F081",2)    ->    -127
 X2D("F081",1)    ->    1
 X2D("0031",0)    ->    0
 </programlisting>
+</example>
 </section>
 
 
@@ -5840,6 +6173,8 @@ for <emphasis role="italic">start</emphasis> is
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>XRANGE function</secondary></indexterm>
+<example id="ex.bif-xrange">
+<title>Builtin function XRANGE</title>
 <programlisting>
 XRANGE("a","f")      ->   "abcdef"
 XRANGE("03"x,"07"x)  ->   "0304050607"x
@@ -5847,6 +6182,7 @@ XRANGE(,"04"x)       ->   "0001020304"x
 XRANGE("FE"x,"02"x)  ->   "FEFF000102"x
 XRANGE("i","j")      ->   "ij"                   /* ASCII  */
 </programlisting>
+</example>
 </section>
 </section>
 </chapter>

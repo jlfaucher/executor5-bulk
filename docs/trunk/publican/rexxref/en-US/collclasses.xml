@@ -1027,11 +1027,14 @@ whole-number indexes to reference items in an array.</para>
   For any array method that takes an index, the index may be specified as either individual arguments or
   as an array of indexes.  For example, the following are equivalent:
 </para>
+<example id="ex.Array-indexes">
+<title>Array class - [] method</title>
 <programlisting>
     x = myarray[1,2,3]   -- retrieves an item from a multi-dimension array
     index = .array~of(1,2,3)  -- create an index list
     x = myarray[index]   -- also retrieves from "1,2,3"
 </programlisting>
+</example>
 <para>Methods such as index() (<xref linkend="mthArrayIndex" />) that return
 index items will return a single numeric value for single-dimension arrays and
 an array of indexes for multi-dimension arrays.</para>
@@ -1076,12 +1079,14 @@ space is to be allocated initially for each dimension of the array.
 whole number.
 If it is <computeroutput>0</computeroutput>, the corresponding dimension is
 initially empty.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>of method</secondary></indexterm>
+<example id="ex.Array-of">
+<title>Array class - of method</title>
 <programlisting>
    a = .array~new()  -- create an new, empty array
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayOf"><title>of (Class Method)</title>
@@ -1106,16 +1111,18 @@ single-index array containing the specified
 and so on.</para>
 <para>If you use the OF method and omit any argument items, the returned array
 does not include the indexes corresponding to those you omitted.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>of method</secondary></indexterm>
+<example id="ex.Array-of2">
+<title>Array class - of method</title>
 <programlisting>
-   a = .array~of("Fred", "Mike", "David")
+a = .array~of("Fred", "Mike", "David")
 
-   do name over a
-      say name  -- displays "Fred", "Mike", and "David"
-   end
+do name over a
+   say name  -- displays "Fred", "Mike", and "David"
+end
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayAtGet"><title>[]</title>
@@ -1178,22 +1185,24 @@ method.</para>
 For multi-dimension arrays, each returned index will be an array of index
 values.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>allIndexes method</secondary></indexterm>
+<example id="ex.Array-allIndexes">
+<title>Array class - allIndexes method</title>
 <programlisting>
-   a = .array~of("Fred", "Mike", "David")
+a = .array~of("Fred", "Mike", "David")
 
-   do name over a~allIndexes
-      say name  -- displays "1", "2", and "3"
-   end
+do name over a~allIndexes
+   say name  -- displays "1", "2", and "3"
+end
 
-   a~remove(2)  -- remove second item
+a~remove(2)  -- remove second item
 
-   do name over a~allIndexes
-      say name  -- displays "1" and "3"
-   end
+do name over a~allIndexes
+   say name  -- displays "1" and "3"
+end
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayAllItems"><title>allItems</title>
@@ -1209,22 +1218,24 @@ values.
 </programlisting>
 
 <para>Returns an array of all items contained in the array.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>allItems method</secondary></indexterm>
+<example id="ex.Array-allItems">
+<title>Array class - allItems method</title>
 <programlisting>
-   a = .array~of("Fred", "Mike", "David")
+a = .array~of("Fred", "Mike", "David")
 
-   do name over a~allItems
-      say name  -- displays "Fred", "Mike", and "David"
-   end
+do name over a~allItems
+   say name  -- displays "Fred", "Mike", and "David"
+end
 
-   a~remove(2)  -- remove second item
+a~remove(2)  -- remove second item
 
-   do name over a~allItems
-      say name  -- displays "Fred" and "David"
-   end
+do name over a~allItems
+   say name  -- displays "Fred" and "David"
+end
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayAppend"><title>append</title>
@@ -1242,13 +1253,15 @@ values.
 <para>Appends an item to the array after the last item (the item with the
 highest index).  The return value is the index of newly added item.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>append method</secondary></indexterm>
+<example id="ex.Array-append">
+<title>Array class - append method</title>
 <programlisting>
    a = .array~of("Mike", "Rick")
    a~append("Fred")  -- a = .array~of("Mike", "Rick", "Fred")
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayAt"><title>at</title>
@@ -1275,13 +1288,15 @@ Nil object.</para>
   Note that the index argument may also be specified as an array of
   indexes.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>at method</secondary></indexterm>
+<example id="ex.Array-at">
+<title>Array class - at method</title>
 <programlisting>
    a = .array~of("Mike", "Rick")
    say a~at(2)  -- says: "Rick"
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayDelete"><title>delete</title>
@@ -1312,14 +1327,16 @@ The delete method is only valid with single-dimension arrays.  The
 The index argument may also be specified as an array of
 indexes.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
+<example id="ex.Array-delete">
+<title>Array class - delete method</title>
 <programlisting>
    a = .array~of("Fred", "Mike", "Rick", "David")
    a~delete(2)  -- removes "Mike", resulting in the array
                 -- ("Fred", "Rick", "David")
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayDimension"><title>dimension</title>
@@ -1341,19 +1358,21 @@ whole number). If you omit <emphasis role="italic">n</emphasis>,
 this method returns the dimensionality
 (number of dimensions) of the array. If the number of dimensions has not been
 determined, <computeroutput>0</computeroutput> is returned.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>dimension method</secondary></indexterm>
+<example id="ex.Array-dimension">
+<title>Array class - dimension method</title>
 <programlisting>
-   a = .array~of(,"Mike", "Rick")
-   say a~dimension     -- says: 1 (number of dimensions in the array)
-   say a~dimension(1)  -- says: 3 (upper bound of dimension one)
+a = .array~of(,"Mike", "Rick")
+say a~dimension     -- says: 1 (number of dimensions in the array)
+say a~dimension(1)  -- says: 3 (upper bound of dimension one)
 
-   a = .array~new~~put("Mike",1,1)~~put("Rick",1,2)
-   say a~dimension     -- says: 2 (number of dimensions in the array)
-   say a~dimension(1)  -- says: 1 (upper bound of dimension one)
-   say a~dimension(2)  -- says: 2 (upper bound of dimension two)
+a = .array~new~~put("Mike",1,1)~~put("Rick",1,2)
+say a~dimension     -- says: 2 (number of dimensions in the array)
+say a~dimension(1)  -- says: 1 (upper bound of dimension one)
+say a~dimension(2)  -- says: 2 (upper bound of dimension two)
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayEmpty"><title>empty</title>
@@ -1369,13 +1388,15 @@ determined, <computeroutput>0</computeroutput> is returned.</para>
 </programlisting>
 
 <para>Removes all items from the array.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>empty method</secondary></indexterm>
+<example id="ex.Array-empty">
+<title>Array class - empty method</title>
 <programlisting>
-   a = .array~of("Mike", "Rick", "Fred", "Rick")
-   a~empty  -- a = .array~new
+a = .array~of("Mike", "Rick", "Fred", "Rick")
+a~empty  -- a = .array~new
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayFirst"><title>first</title>
@@ -1394,15 +1415,17 @@ determined, <computeroutput>0</computeroutput> is returned.</para>
 array is empty.  For multi-dimention arrays, the index is returned as an array
 of index values.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
+<example id="ex.Array-first">
+<title>Array class - first method</title>
 <programlisting>
-   a = .array~of("Mike", "Rick", "Fred", "Rick")
-   say a~first  -- says: 1
-   a = .array~of(,"Mike", "Rick")
-   say a~first  -- says: 2
+a = .array~of("Mike", "Rick", "Fred", "Rick")
+say a~first  -- says: 1
+a = .array~of(,"Mike", "Rick")
+say a~first  -- says: 2
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayFirstItem"><title>firstItem</title>
@@ -1420,26 +1443,30 @@ of index values.
 <para> </para>
 <para>Returns the first item in the array or the Nil object if the array is
 empty.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.Array-firstItem-1">
+<title>Array class - firstItem method</title>
 <programlisting>
 musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
 item=musketeers~firstItem                         /* Gives first item in array     */
                                                   /* (Assigns "Porthos" to item)   */
 </programlisting>
+</example>
 
 <para>Returns the index of the first item in the array or the Nil object if the
 array is empty.  For multi-dimention arrays, the index is returned as an array
 of index values.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
+<example id="ex.Array-firstItem-2">
+<title>Array class - firstItem method</title>
 <programlisting>
-   a = .array~of("Mike", "Rick", "Fred", "Rick")
-   say a~first  -- says: 1
-   a = .array~of(,"Mike", "Rick")
-   say a~first  -- says: 2
+a = .array~of("Mike", "Rick", "Fred", "Rick")
+say a~first  -- says: 1
+a = .array~of(,"Mike", "Rick")
+say a~first  -- says: 2
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayHasIndex"><title>hasIndex</title>
@@ -1463,14 +1490,16 @@ an item associated with the specified index or indexes. Returns
   Note that the index argument may also be specified as an array of
   indexes.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>hasIndex method</secondary></indexterm>
+<example id="ex.Array-hasIndex">
+<title>Array class - hasIndex method</title>
 <programlisting>
-   a = .array~of("Mike", "Rick", "Fred", "Rick")
-   say a~hasIndex(2)  -- says: 1
-   say a~hasIndex(5)  -- says: 0
+a = .array~of("Mike", "Rick", "Fred", "Rick")
+say a~hasIndex(2)  -- says: 1
+say a~hasIndex(5)  -- says: 0
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayHasItem"><title>hasItem</title>
@@ -1490,14 +1519,16 @@ the specified item at any index location.  Returns
 <computeroutput>0</computeroutput> (false) otherwise.
 Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>hasItem method</secondary></indexterm>
+<example id="ex.Array-hasItem">
+<title>Array class - hasItem method</title>
 <programlisting>
-   a = .array~of("Mike", "Rick", "Fred", "Rick")
-   say a~hasItem("Rick")  -- says: 1
-   say a~hasItem("Mark")  -- says: 0
+a = .array~of("Mike", "Rick", "Fred", "Rick")
+say a~hasItem("Rick")  -- says: 1
+say a~hasItem("Mark")  -- says: 0
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayIndex"><title>index</title>
@@ -1519,13 +1550,15 @@ index values.  If the array does not contain the specified item, the Nil object 
 returned. Item equality is determined by using the == method of <emphasis
 role="italic">item</emphasis>.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>index method</secondary></indexterm>
+<example id="ex.Array-index">
+<title>Array class - index method</title>
 <programlisting>
-   a = .array~of("Mike", "Rick", "Fred", "Rick")
-   say a~index("Rick")  -- says: 2
+a = .array~of("Mike", "Rick", "Fred", "Rick")
+say a~index("Rick")  -- says: 2
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayIsEmpty"><title>isEmpty</title>
@@ -1543,15 +1576,17 @@ role="italic">item</emphasis>.
 <para>Returns <computeroutput>1</computeroutput> (true) if the array is
 empty.  Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>isEmpty method</secondary></indexterm>
+<example id="ex.Array-isEmpty">
+<title>Array class - isEmpty method</title>
 <programlisting>
-   a = .array~new
-   say a~isEmpty  -- says: 1
-   a[1] = "1"
-   say a~isEmpty  -- says: 0
+a = .array~new
+say a~isEmpty  -- says: 1
+a[1] = "1"
+say a~isEmpty  -- says: 0
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayItems"><title>items</title>
@@ -1567,13 +1602,15 @@ empty.  Returns
 </programlisting>
 
 <para>Returns the number of items in the collection.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>items method</secondary></indexterm>
+<example id="ex.Array-items">
+<title>Array class - items method</title>
 <programlisting>
-   a = .array~of("Fred", , "Mike", , "David")
-   say a~items  -- says: 3
+a = .array~of("Fred", , "Mike", , "David")
+say a~items  -- says: 3
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayLast"><title>last</title>
@@ -1592,13 +1629,15 @@ empty.  Returns
 array is empty.  For multi-dimension arrays, index is returned as an array of
 index items.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>last method</secondary></indexterm>
+<example id="ex.Array-last">
+<title>Array class - last method</title>
 <programlisting>
-   a = .array~of("Fred", , "Mike", , "David")
-   say a~last  -- says: 5
+a = .array~of("Fred", , "Mike", , "David")
+say a~last  -- says: 5
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayLastItem"><title>lastItem</title>
@@ -1615,12 +1654,14 @@ index items.
 
 <para>Returns the last item in the array or the Nil object if the array is
 empty.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.Array-lastItem">
+<title>Array class - lastItem method</title>
 <programlisting>
 musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
 item=musketeers~lastItem                          /* Gives last item in array      */
                                                   /* (Assigns "Aramis" to item)    */
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayMakeArray"><title>makeArray</title>
@@ -1641,13 +1682,15 @@ Items in the new array will have the same order as the source array.
 Multi-dimension arrays arrays will be converted into a non-sparse single
 dimension array.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>makeArray method</secondary></indexterm>
+<example id="ex.Array-makeArray">
+<title>Array class - makeArray method</title>
 <programlisting>
-   a = .array~of("Fred", , "Mike", , "David")
-   b = a~makeArray  -- b = .array~of("Fred", "Mike", "David")
+a = .array~of("Fred", , "Mike", , "David")
+b = a~makeArray  -- b = .array~of("Fred", "Mike", "David")
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayMakeString"><title>makeString</title>
@@ -1698,13 +1741,15 @@ next position and the index is returned as an array of index values.
   Note that the index argument may also be specified as an array of
   indexes.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>next method</secondary></indexterm>
+<example id="ex.Array-next">
+<title>Array class - next method</title>
 <programlisting>
-   a = .array~of("Fred", , "Mike", , "David")
-   say a~next(3)  -- says: 5
+a = .array~of("Fred", , "Mike", , "David")
+say a~next(3)  -- says: 5
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayPrevious"><title>previous</title>
@@ -1730,13 +1775,15 @@ previous position and the index is returned as an array of index values.</para>
   Note that the index argument may also be specified as an array of
   indexes.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>previous method</secondary></indexterm>
+<example id="ex.Array-previous">
+<title>Array class - previous method</title>
 <programlisting>
-   a = .array~of("Fred", , "Mike", , "David")
-   say a~previous(3)  -- says: 1
+a = .array~of("Fred", , "Mike", , "David")
+say a~previous(3)  -- says: 1
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayPut"><title>put</title>
@@ -1770,6 +1817,8 @@ that dimension, the array is expanded to the new dimension size.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>put method</secondary></indexterm>
+<example id="ex.Array-put">
+<title>Array class - put method</title>
 <programlisting>
 a = .array~new
 a~put("Fred", 1) -- a = .array~of("Fred")
@@ -1784,8 +1833,8 @@ end
 
 Mike
 Mike
-
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayRemove"><title>remove</title>
@@ -1816,13 +1865,15 @@ removal.
 Note that the index argument may also be specified as an array of
 indexes.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>remove method</secondary></indexterm>
+<example id="ex.Array-remove">
+<title>Array class - remove method</title>
 <programlisting>
-   a = .array~of("Fred", "Mike", "Mike", "David")
-   a~remove(2)  -- removes "Mike"
+a = .array~of("Fred", "Mike", "Mike", "David")
+a~remove(2)  -- removes "Mike"
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayRemoveItem"><title>removeItem</title>
@@ -1842,13 +1893,15 @@ one index, the first located item is removed.
 Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
 The return value is the
 removed item.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>removeItem method</secondary></indexterm>
+<example id="ex.Array-removeItem">
+<title>Array class - removeItem method</title>
 <programlisting>
-   a = .array~of("Fred", "Mike", "Mike", "David")
-   a~removeItem("Mike")  -- removes the item at index "2"
+a = .array~of("Fred", "Mike", "Mike", "David")
+a~removeItem("Mike")  -- removes the item at index "2"
 </programlisting>
+</example>
 </section>
 
 <section id="mthArraySection"><title>section</title>
@@ -1880,16 +1933,18 @@ arrays.</para>
   Note that the <emphasis role="italic">start</emphasis> argument, (the
   index argument,) may also be specified as an array of indexes.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>section method</secondary></indexterm>
+<example id="ex.Array-section">
+<title>Array class - section method</title>
 <programlisting>
-   a = .array~of(1,2,3,4)  -- Loads the array
+a = .array~of(1,2,3,4)  -- Loads the array
 
-   b = a~section(2)   -- b = .array~of(2,3,4)
-   c = a~section(2,2) -- c = .array~of(2,3)
-   d = a~section(2,0) -- d = .array~new
+b = a~section(2)   -- b = .array~of(2,3,4)
+c = a~section(2,2) -- c = .array~of(2,3)
+d = a~section(2,0) -- d = .array~new
 </programlisting>
+</example>
 </section>
 
 <section id="mthArraySize"><title>size</title>
@@ -2002,18 +2057,20 @@ The supplier enumerates the array items in their sequenced order.
 For multi-dimensional arrays, the supplier index method will return the
 index values as an array of index numbers.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>supplier method</secondary></indexterm>
+<example id="ex.Array-supplier">
+<title>Array class - supplier method</title>
 <programlisting>
-   a = .array~of("Fred", "Mike", "David")
-   sup = a~supplier
-   a~append("Joe")
-   do while sup~available
-      say sup~item  -- displays "Fred", "Mike", and "David"
-      sup~next
-   end
+a = .array~of("Fred", "Mike", "David")
+sup = a~supplier
+a~append("Joe")
+do while sup~available
+   say sup~item  -- displays "Fred", "Mike", and "David"
+   sup~next
+end
 </programlisting>
+</example>
 </section>
 
 <section id="mthArrayToString"><title>toString</title>
@@ -2038,26 +2095,30 @@ If the line format is use, a <emphasis role="italic">separator</emphasis> string
 can be specified.  The separator will be used between concatenated elements instead of the
 default line end separator.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>toString method</secondary></indexterm>
+<example id="ex.Array-toString">
+<title>Array class - toString method</title>
 <programlisting>
-   a = .array~of(1,2,3,4)  -- Loads the array
+a = .array~of(1,2,3,4)  -- Loads the array
 
-   say a~toString  -- Produces: 1
-                   --           2
-                   --           3
-                   --           4
+say a~toString  -- Produces: 1
+                --           2
+                --           3
+                --           4
 
-   say a~toString("c")  -- Produces: 1234
+say a~toString("c")  -- Produces: 1234
 
-   say a~toString(, ", ")  -- Produces: 1, 2, 3, 4
+say a~toString(, ", ")  -- Produces: 1, 2, 3, 4
 </programlisting>
+</example>
 </section>
 
 <section id="arex"><title>Examples</title>
 <indexterm><primary>examples</primary>
 <secondary>of Array class</secondary></indexterm>
+<example id="ex.Array-examples1">
+<title>Array class - examples</title>
 <programlisting>
 array1=.array~of(1,2,3,4)  /* Loads the array */
 
@@ -2067,14 +2128,20 @@ do i=1 to 4                   /* Loads the array */
   array2[i]=i
 end
 </programlisting>
+</example>
 <para>You can produce the elements loaded into an array, for example: </para>
+<example id="ex.Array-examples2">
+<title>Array class - examples</title>
 <programlisting>
 do i=1 to 4
   say array1[i]
 end
 </programlisting>
+</example>
 <para>If you omit any argument values before arguments you supply, the corresponding
 indexes are skipped in the returned array: </para>
+<example id="ex.Array-examples3">
+<title>Array class - examples</title>
 <programlisting>
 directions=.array~of("North","South", ,"West")
 do i=1 to 4                                  /* Produces: North          */
@@ -2082,14 +2149,17 @@ do i=1 to 4                                  /* Produces: North          */
                                              /*           The Nil object */
 end                                          /*           West           */
 </programlisting>
-
+</example>
 <para>Here is an example using the ~~: </para>
+<example id="ex.Array-examples4">
+<title>Array class - examples</title>
 <programlisting>
 z=.array~of(1,2,3)~~put(4,4)
 do i = 1 to z~size
   say z[i]              /* Produces:  1 2 3 4 */
 end
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -2366,6 +2436,8 @@ collection class object.</para>
 <section id="bagex"><title>Examples</title>
 <indexterm><primary>examples</primary>
 <secondary>of Bag class</secondary></indexterm>
+<example id="ex.Bag-examples">
+<title>Bag class - examples</title>
 <programlisting>
 /* Create a bag of fruit */
 fruit = .bag~of("Apple", "Orange", "Apple", "Pear")
@@ -2375,6 +2447,7 @@ fruit~remove("Apple")    /* Remove one of the apples. */
 fruit~~put("Banana")~put("Orange") /* Add a couple.   */
 say fruit~items          /* How many pieces? (5)      */
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -2802,6 +2875,8 @@ letter is needed; all characters following it are ignored.)
 <secondary>of CircularQueue class</secondary>
 </indexterm>
 
+<example id="ex.CircularQueue-examples">
+<title>CircularQueue class - examples</title>
 <programlisting>
   -- create a circular buffer with five items
 u=.circularQueue~of("a", "b", "c", "d", "e")
@@ -2859,6 +2934,7 @@ content: [y,z], content (LIFO): [z->y]
 after pushing the three items &apos;1&apos;, &apos;2&apos;, &apos;3&apos;:
 content: [3,2], content (LIFO): [2->3]
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -3010,10 +3086,12 @@ linkend="mthDirectorySetMethod" />) is associated with index
 returned. If the collection has no item or method associated with index
 <emphasis role="italic">name</emphasis>, the Nill object is returned.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.Directory-at">
+<title>Directory class - at method</title>
 <programlisting>
 say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </programlisting>
+</example>
 </section>
 
 <section id="mthDirectoryEmpty"><title>empty</title>
@@ -3386,6 +3464,8 @@ index values in the receiver collection.</para>
 <section id="direx"><title>Examples</title>
 <indexterm><primary>examples</primary>
 <secondary>of Directory class</secondary></indexterm>
+<example id="ex.Directory-examples">
+<title>Directory class - examples</title>
 <programlisting>
 /******************************************************************************/
 /*  A Phone Book Directory program                                            */
@@ -3432,6 +3512,7 @@ Exit
   If value = "" then value = "No listing found for" at_index
   Return value
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -3684,12 +3765,14 @@ list is empty.
 <para> </para>
 <para>Returns the first item in the list or the Nil object if the list is
 empty.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.List-firstItem">
+<title>Directory class - firstItem method</title>
 <programlisting>
 musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS      */
 item=musketeers~firstItem                       /* Gives first item in list     */
                                                 /* (Assigns "Porthos" to item)  */
 </programlisting>
+</example>
 </section>
 
 <section id="mthListHasIndex"><title>hasIndex</title>
@@ -3777,6 +3860,8 @@ The index values for any items in the list are not modified by the insertion.</p
 <indexterm><primary>examples</primary>
 <secondary>insert method</secondary>
 <tertiary>of List class</tertiary></indexterm>
+<example id="ex.List-insert">
+<title>Directory class - insert method</title>
 <programlisting>
 musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS        */
                                                 /* consisting of: Porthos         */
@@ -3801,6 +3886,7 @@ musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis  
                                           /*               Aramis           */
                                           /*               D&apos;Artagnan  */
 </programlisting>
+</example>
 </section>
 
 <section id="mthListIsEmpty"><title>isEmpty</title>
@@ -4516,14 +4602,16 @@ moved up in the queue ordering and the item indexes will adjusted for the deleti
 reduced by 1 element.
 The delete method and the remove method produce the same result for the list class.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
+<example id="ex.Queue-delete">
+<title>Queue class - delete method</title>
 <programlisting>
    a = .queue~of("Fred", "Mike", "Rick", "David")
    a~delete(2)  -- removes "Mike", resulting in the queue
                 -- ("Fred", "Rick", "David")
 </programlisting>
+</example>
 </section>
 
 <section id="mthQueueEmpty"><title>empty</title>
@@ -4659,6 +4747,8 @@ by the queue object.</para>
 <indexterm><primary>examples</primary>
 <secondary>insert method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
+<example id="ex.Queue-insert">
+<title>Queue class - insert method</title>
 <programlisting>
 musketeers=.queue~of("Porthos","Athos","Aramis) /* Creates queue MUSKETEERS       */
                                                 /* consisting of: Porthos         */
@@ -4683,6 +4773,7 @@ musketeers~insert("D&apos;Artagnan")       /* Adds D&apos;Artagnan after Aramis 
                                            /*               Aramis           */
                                            /*               D&apos;Artagnan  */
 </programlisting>
+</example>
 </section>
 
 <section id="mthQueueIsEmpty"><title>isEmpty</title>
@@ -4748,12 +4839,14 @@ queue is empty.</para>
 <para> </para>
 <para>Returns the last item in the array or the Nil object if the array is
 empty.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.Queue-lastItem">
+<title>Queue class - lastItem method</title>
 <programlisting>
 musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
 item=musketeers~lastItem                          /* Gives last item in array      */
                                                   /* (Assigns "Aramis" to item)    */
 </programlisting>
+</example>
 </section>
 
 <section id="mthQueueMakeArray"><title>makeArray</title>
@@ -5522,6 +5615,8 @@ collection class object.</para>
 <section id="relex"><title>Examples</title>
 <indexterm><primary>examples</primary>
 <secondary>of Relation class</secondary></indexterm>
+<example id="ex.Releation-examples">
+<title>Relation class - examples</title>
 <programlisting>
 /* Use a relation to express parent-child relationships */
 family = .relation~new
@@ -5558,6 +5653,7 @@ Do grandparent Over family               /* Iterate for each index in family   *
   checked_for_grandkids~put(grandparent) /* Add to already-checked set         */
 End
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -5829,15 +5925,19 @@ class.
 </para></note>
 <para>Stems are automatically created whenever a Rexx stem variable or Rexx
 compound variable is used. For example: </para>
+<example id="ex.Stem-examples1">
+<title>Stem class - examples</title>
 <programlisting>
 a.1 = 2
 </programlisting>
+</example>
 <para>creates a new stem collection with the name <computeroutput>A.</computeroutput>
 and assigns it to the Rexx variable <computeroutput>A.</computeroutput>; it also assigns
 the value 2 to entry 1 in the collection.</para>
 <para>The value of an uninitialized stem index is the stem object NAME
-concatenated with the derived stem index.  For
-example</para>
+concatenated with the derived stem index.</para>
+<example id="ex.Stem-examples2">
+<title>Stem class - examples</title>
 <programlisting>
 say a.[1,2]  -- implicitly creates stem object with name "A."
 -- displays "A.1.2"
@@ -5845,6 +5945,7 @@ say a.[1,2]  -- implicitly creates stem object with name "A."
 a = .stem~new("B.")
 say a[1,2]     -- displays "B.1.2"
 </programlisting>
+</example>
 <para>In addition to the items explicitly assigned to the
 collection indexes,
 a value may be assigned to all possible stem indexes.  The
@@ -6926,7 +7027,9 @@ The supplier iterates over the items in an unspecified order.
 <section id="sortarray"><title>Sorting Arrays</title>
 <para>Any non-sparse Array instance can have its elements placed into sorted order using the
 <emphasis role="bold">sort</emphasis> method of the Array class.  The simplest sort is
-sorting an array of strings.  For example:</para>
+sorting an array of strings.</para>
+<example id="ex.Array-sorting">
+<title>Array class - sorting</title>
 <programlisting>
 myArray = .array~of("Zoe", "Fred", "Xavier", "Andy")
 myArray~sort
@@ -6935,6 +7038,7 @@ do name over myArray
    say name
 end
 </programlisting>
+</example>
 <para>will display the names in the order "Andy", "Fred", "Xavier", "Zoe".</para>
 <para>The <emphasis role="bold">sort</emphasis> method orders the strings by using the
 <emphasis role="bold">compareTo</emphasis> method of the String class.  The
@@ -6949,6 +7053,8 @@ are examples of built-in Rexx classes that can be sorted.  Any user created clas
 implement a compareTo() method to enable sorting.
 For example, consider the
 following simple class:</para>
+<example id="ex.Sorting">
+<title>Non-string sorting</title>
 <programlisting>
 <![CDATA[
   ::class Employee inherit Comparable
@@ -6972,11 +7078,14 @@ following simple class:</para>
 
 ]]>
 </programlisting>
+</example>
 <para>The Employee class implements its sort order using the employee identification number.  When the
 <emphasis role="bold">sort</emphasis> method needs to compare two Employee instances, it will call the
 <emphasis role="bold">compareTo</emphasis> method on one of the instances, passing the second instance as an argument.
 The <emphasis role="bold">compareTo</emphasis> method tells the <emphasis role="bold">sort</emphasis> method
 which of the two instances should be first.</para>
+<example id="ex.Sorting-compare">
+<title>Comparison during sorting</title>
 <programlisting>
 <![CDATA[
     a = .array~new
@@ -6991,6 +7100,7 @@ which of the two instances should be first.</para>
     end
 ]]>
 </programlisting>
+</example>
 </section>
 <section id="sortcomparator"><title>Sorting with more than one order</title>
 <para>The String class <emphasis role="bold">compareTo</emphasis> method only implements a sort ordering for an ascending
@@ -7001,14 +7111,19 @@ method takes a single argument, which is a Comparator object that implements a <
 method.  The <emphasis role="bold">compare</emphasis> method performs comparisons between pairs of items.  Different
 comparators can be customized for different comparison purposes.  For example, the Rexx language provides a
 DescendingComparator class that will sort items into descending order:</para>
+<example id="ex.Sorting-multi-order">
+<title>Multi-order sorting</title>
 <programlisting>
 ::CLASS 'DescendingComparator' MIXINCLASS Comparator
 ::METHOD compare
 use strict arg left, right
 return -left~compareTo(right)
 </programlisting>
+</example>
 <para>The DescendingComparator merely inverts the result returned by the item
 <emphasis role="bold">compareTo</emphasis> method.  Our previous example</para>
+<example id="ex.Sorting-descendingcompare">
+<title>Descending compare sorting</title>
 <programlisting>
 myArray = .array~of("Zoe", "Fred", "Xavier", "Andy")
 myArray~sortWith(.DescendingComparator~new)
@@ -7017,17 +7132,21 @@ do name over myArray
    say name
 end
 </programlisting>
+</example>
 <para>now displays in the order "Zoe", "Xavier", "Fred", "Andy".</para>
 <para>Custom Comparators are simple to create for any sorting purpose.  The only requirement is implementing a
 <emphasis role="bold">compare</emphasis> method that knows how to compare pairs of items in some particular
 manner.  For example, to sort our Employee class by name instead of the default employee id, we can use the following
 simple comparator class:</para>
+<example id="ex.Sorting-customcompare">
+<title>Custom compare sorting</title>
 <programlisting>
 ::CLASS EmployeeNameSorter MIXINCLASS Comparator
 ::METHOD compare
   use strict arg left, right
   return left~name~compareTo(right~name)  -- do the comparison using the names
 </programlisting>
+</example>
 </section>
 <section id="ltcomparators"><title>Builtin Comparators</title>
 <para>Rexx includes a number of built-in Comparators for common sorting operations.</para>
@@ -7080,6 +7199,8 @@ sorting algorithm that does not require any additional memory to implement.
 Unfortunately, a Quicksort is also an <emphasis role="italic">unstable</emphasis> sort.
 In an unstable sort, items are not guaranteed to maintain their original positions if they
 compare equal during the sort.  Consider the following simple example:</para>
+<example id="ex.Sorting-unstablesort">
+<title>Unstable sort</title>
 <programlisting>
 a = .array~of("Fred", "George", "FRED", "Mike", "fred")
 a~sortwith(.caselesscomparator~new)
@@ -7087,6 +7208,7 @@ do name over a
   say name
 end
 </programlisting>
+</example>
 <para>This example displays the 3 occurrences of Fred in the order "Fred", "fred", "FRED", even though they compare
 equal using a caseless comparison.</para>
 <para>The Array class implements a second sort algorithm that is available using the
