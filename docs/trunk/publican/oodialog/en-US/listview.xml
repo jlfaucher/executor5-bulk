@@ -6715,16 +6715,14 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvFullRow class</primary></indexterm>
 <para>
   A <computeroutput>LvFullRow</computeroutput> object is used in ooDialog to represent a list-view item and all subitems
-  of that item. The attributes of the <computeroutput>LvFullRow</computeroutput> object reflect the data that defines
+  of that item. A <computeroutput>LvFullRow</computeroutput> object is composed of a <xref linkend="clsLvItem"/> object whose
+  attributes reflect the list-view item and zero or more <xref linkend="clsLvSubItem"/> objects that reflect the subitems of
   the list-view item in the <link linkend="ovvUnderlying">underlying</link> list-view.
 </para>
 <para>
-  Each item in a list-view control has an icon, a label, a current state, and an application-defined value. The
-  attributes of the <computeroutput>LvFullRow</computeroutput> reflect these values. In addition, each list-view item
-  can contain one or more <emphasis role="italic">subitems</emphasis>. In ooDialog, list-view subitems can be
-  represented through the <link linkend="clsLvSubItem">LvSubItem</link> class. The
-  <computeroutput>LvFullRow</computeroutput> object contains the <computeroutput>LvSubItem</computeroutput> objects
-  defined for the item.
+  Normally, the subitems of a list-view item are only thought about when the list-view is in report view. However, once added
+  to an item, the subitems exist whatever view the list-view is in.  A full row object can be used to add or insert items
+  along with all the subitems of the item, or to query information about an item and its subitems.
 </para>
 
 <section id="sctMethodsLvFullRow"><title>Method Table</title>
@@ -6743,16 +6741,16 @@ that allows the user to remove the check mark from all the check boxes:
 </thead>
 <tbody>
 <row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsLvFullRow">new</link></entry>
+<entry><xref linkend="mthNewClsLvFullRow"/></entry>
 <entry>Instantiates a new <computeroutput>LvFullRow</computeroutput> object.</entry>
 </row>
 <row>
-<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
 </row>
 </tbody></tgroup>
 </table>
