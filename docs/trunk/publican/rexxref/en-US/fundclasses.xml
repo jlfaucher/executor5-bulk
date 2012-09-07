@@ -217,14 +217,16 @@ object and the <emphasis role="italic">argument</emphasis>.
 <para>Returns a copy of the receiver object. The copied object has
 the same methods as the receiver object and an equivalent set of object
 variables, with the same values.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary><emphasis role="bold">copy</emphasis> method</secondary></indexterm>
+<example id="ex.object-copy">
+<title>Object class - copy method</title>
 <programlisting>
 myarray=.array~of("N","S","E","W")
 /* Copies array myarray to array directions */
 directions=myarray~copy
 </programlisting>
+</example>
 <note><title>Note</title>
 <para>The copy method is a "shallow copy".  Only the target object is copied.  Additional
 objects referenced by the target object are not copied.  For example, copying an Array object instance
@@ -435,6 +437,8 @@ An object is an instance of a class if the object is directly an instance of the
 specified <emphasis role="italic">class</emphasis> or if
 <emphasis role="italic">class</emphasis> is in the object's direct or mixin
 class inheritance chain. For example:
+<example id="ex.object-isinstanceof">
+<title>Object class - isInstanceOf method</title>
 <programlisting>
 <![CDATA[
 "abc"~isInstanceOf(.string)             ->  1
@@ -442,6 +446,7 @@ class inheritance chain. For example:
 "abc"~isInstanceOf(.mutablebuffer)      ->  0
 ]]>
 </programlisting>
+</example>
 </para>
 </section>
 
@@ -480,9 +485,10 @@ method for an example using <emphasis role="bold">objectName</emphasis>.</para>
 
 <para>Sets the receiver object's name to the string
 <emphasis role="italic">newname</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary><emphasis role="bold">objectName=</emphasis> method</secondary></indexterm>
+<example id="ex.object-objectnameequals">
+<title>Object class - objectName= method</title>
 <programlisting>
 points=.array~of("N","S","E","W")
 say points~objectName         /* (no change yet) Says: "an Array"    */
@@ -495,6 +501,7 @@ say points                    /* Says string representation of       */
 say points[3]                 /* Says: "E"Points is still an array   */
                               /* of 4 items                          */
 </programlisting>
+</example>
 </section>
 
 <section id="mthObjectRequest"><title>request</title>
@@ -633,9 +640,9 @@ search. For more information, see
 <emphasis role="italic">argument</emphasis>s are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.object-send">
+<title>Object class - send method</title>
 <programlisting>
-
 world=.WorldObject~new
 -- the following 3 calls are equivalent
 msg1=world~hello("Fred")
@@ -654,6 +661,7 @@ say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
   use arg name
   return "Hello" name time('L')
 </programlisting>
+</example>
 </section>
 
 <section id="mthObjectSendWith"><title>sendWith</title>
@@ -685,7 +693,8 @@ The values contained in
 <emphasis role="italic">arguments</emphasis> are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.object-sendwith">
+<title>Object class - sendWith method</title>
 <programlisting>
 world=.WorldObject~new
 // the following 3 calls are equivalent
@@ -705,6 +714,7 @@ say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
   use arg name
   return "Hello" name time('L')
 </programlisting>
+</example>
 </section>
 
 <section id="mthObjectSetMethod"><title>setMethod</title>
@@ -798,7 +808,8 @@ object retains its result and holds it until the sender requests it by sending
 a <emphasis role="bold">result</emphasis> message. For further details,
 see <xref linkend="mthMessageStart" />.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.object-start">
+<title>Object class - start method</title>
 <programlisting>
 world=.WorldObject~new
 msg1=world~start("HELLO")                /* same as next line     */
@@ -813,6 +824,7 @@ say msg2~result           /* Produces Hello world 21:04:25.081000 */
 ::method hello
   return "Hello world" time('L')
 </programlisting>
+</example>
 </section>
 
 <section id="mthObjectStartWith"><title>startWith</title>
@@ -850,7 +862,8 @@ object retains its result and holds it until the sender requests it by sending
 a <emphasis role="bold">result</emphasis> message. For further details,
 see <xref linkend="mthMessageStart" />.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.object-startWith">
+<title>Object class - startWith method</title>
 <programlisting>
 world=.WorldObject~new
 msg1=world~startWith("HELLO", .array~of("Fred")                /* same as next line     */
@@ -866,6 +879,7 @@ say msg2~result           /* Produces Hello Fred 21:04:25.081000  */
   use arg name
   return "Hello" name time('L')
 </programlisting>
+</example>
 </section>
 
 <section id="mthObjectString"><title>string</title>
@@ -1033,9 +1047,10 @@ The id class
 </programlisting>
 <para> where <emphasis role="italic">id</emphasis> is the identifier assigned
 to the class when it was created.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>defaultName method</secondary></indexterm>
+<example id="ex.class-defaultName">
+<title>Class class - defaultName method</title>
 <programlisting>
 say .array~defaultName     /* Displays "The Array class"   */
 say .account~defaultName   /* Displays "The ACCOUNT class" */
@@ -1044,6 +1059,7 @@ say .savings~defaultName   /* Displays "The Savings class" */
 ::class account            /* Name is all upper case       */
 ::class "Savings"          /* String name is mixed case    */
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassDefine"><title>define</title>
@@ -1083,13 +1099,15 @@ their method definitions.</para></listitem>
 <listitem><para>The <emphasis role="bold">define</emphasis>
 method is a protected method.</para></listitem>
 </orderedlist>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>define method</secondary></indexterm>
+<example id="ex.class-define">
+<title>Class class - define method</title>
 <programlisting>
 bank_account=.object~subclass("Account")
 bank_account~define("TYPE",&apos;return "a bank account"&apos;)
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassDelete"><title>delete</title>
@@ -1123,14 +1141,16 @@ cannot delete inherited methods the target's superclasses define.</para>
 <listitem><para>The <emphasis role="bold">delete</emphasis>
 method is a protected method.</para></listitem>
 </orderedlist>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
+<example id="ex.class-delete">
+<title>Class class - delete method</title>
 <programlisting>
 myclass=.object~subclass("Myclass")        /* After creating a class  */
 myclass~define("TYPE",&apos;return "my class"&apos;) /* and defining a method   */
 myclass~delete("TYPE")                     /* this deletes the method */
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassEnhanced"><title>enhanced</title>
@@ -1162,9 +1182,10 @@ You can use any collection that supports a
 <emphasis role="italic">argument</emphasis>s specified on the
 <emphasis role="bold">enhanced</emphasis> method.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>enhanced method</secondary></indexterm>
+<example id="ex.class-enhanced">
+<title>Class class - enhanced method</title>
 <programlisting>
 /* Set up rclass with class method or methods you want in your */
 /* remote class */
@@ -1175,6 +1196,7 @@ rclassmeths["DISPATCH"]=d_source     /* d_source must have code for a  */
 /* The following sends init("Remote Class") to a new instance */
 rclass=.class~enhanced(rclassmeths,"Remote Class")
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassId"><title>id</title>
@@ -1193,13 +1215,15 @@ rclass=.class~enhanced(rclassmeths,"Remote Class")
 is an argument on the <emphasis role="bold">subClass</emphasis> and
 <emphasis role="bold">mixinClass</emphasis> methods.) The string
 representations of the class and its instances contain the class identity.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>id method</secondary></indexterm>
+<example id="ex.class-id">
+<title>Class class - id method</title>
 <programlisting>
 myobject=.object~subClass("my object")  /* Creates a subclass    */
 say myobject~id                         /* Produces: "my object" */
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassInherit"><title>inherit</title>
@@ -1253,12 +1277,14 @@ as before <emphasis role="bold">inherit</emphasis>, with the addition of
 <listitem><para>The <emphasis role="bold">inherit</emphasis>
 method is a protected method.</para></listitem>
 </orderedlist>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>inherit method</secondary></indexterm>
+<example id="ex.class-inherit">
+<title>Class class - inherit method</title>
 <programlisting>
 room~inherit(.location)
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassIsSubclassOf"><title>isSubClassOf</title>
@@ -1280,12 +1306,15 @@ A class is a subclass of a class if the target class is the same as
 <emphasis role="italic">class</emphasis> or if
 <emphasis role="italic">class</emphasis> is in the object's direct or mixin
 class inheritance chain. For example:
+<example id="ex.class-issubclassof">
+<title>Class class - isSubclassOf method</title>
 <programlisting>
 <![CDATA[
 .String~isSubclassOf(.object)             ->  1
 .String~isSubclassOf(.mutablebuffer)      ->  0
 ]]>
 </programlisting>
+</example>
 </para>
 </section>
 
@@ -1330,9 +1359,10 @@ class defined <emphasis role="italic">methodname</emphasis> as unavailable,
 this method returns the Nil object. If the receiver
 class did not define <emphasis role="italic">methodname</emphasis>, an
 error is raised.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>method method</secondary></indexterm>
+<example id="ex.class-method">
+<title>Class class - method method</title>
 <programlisting>
 /* Create and retrieve the method definition of a class */
 myclass=.object~subClass("My class")   /* Create a class         */
@@ -1342,6 +1372,7 @@ method_source = myclass~method("ECHO")~source     /* Extract it  */
 say method_source                 /* Says "an Array"              */
 say method_source[1]              /* Shows the method source code */
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassMethods"><title>methods</title>
@@ -1378,9 +1409,10 @@ at the time of the supplier's creation.
 are included with the other methods that
 <emphasis role="bold">methods</emphasis> returns. The hidden methods
 have the Nil object for the associated method.</para></note>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>methods method</secondary></indexterm>
+<example id="ex.class-methods">
+<title>Class class - methods method</title>
 <programlisting>
 objsupp=.object~methods
 do while objsupp~available
@@ -1388,6 +1420,7 @@ say objsupp~index           -- displays all instance method
 objsupp~next                -- names of the Object class
 end
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassMixinClass"><title>mixinClass</title>
@@ -1431,13 +1464,15 @@ method returns the metaclass of a class.</para>
 <para>The method search order of the new subclass is the same as that of the
 receiver class, with the addition of the new subclass at the start of the
 order.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>mixinClass method</secondary></indexterm>
+<example id="ex.class-mixinclass">
+<title>Class class - mixinClass method</title>
 <programlisting>
 buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
                                        /* Superclass is Object class */
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassNew"><title>new</title>
@@ -1463,9 +1498,10 @@ by running its <emphasis role="bold">init</emphasis> methods. (See
 <emphasis role="bold">init</emphasis> message. If you specify args,
 <emphasis role="bold">new</emphasis> passes these
 arguments on the <emphasis role="bold">init</emphasis> message.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>new method</secondary></indexterm>
+<example id="ex.class-new">
+<title>Class class - new method</title>
 <programlisting>
 <![CDATA[
 /* new method example */
@@ -1483,6 +1519,7 @@ else balance = 0
 If balance > 100 then Say "  You win a free toaster oven"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassQueryMixinClass"><title>queryMixinClass</title>
@@ -1542,14 +1579,16 @@ metaclass of a class.</para>
 <para>The method search order of the new subclass is the same as that of the
 receiver class, with the addition of the new subclass at the start of the
 order.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>subClass method</secondary></indexterm>
+<example id="ex.class-subclass">
+<title>Class class - subclass method</title>
 <programlisting>
 room=.object~subclass("Room")   /* Superclass is .object     */
                                 /* Subclass is room          */
                                 /* Subclass identity is Room */
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassSubclasses"><title>subclasses</title>
@@ -1588,14 +1627,16 @@ the original class used on a <emphasis role="bold">subClass</emphasis> or a
 <emphasis role="bold">mixinClass</emphasis> method. For the Object Class,
 <emphasis role="bold">superClass</emphasis> returns .Nil.</para>
 
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>superClass method</secondary></indexterm>
+<example id="ex.class-superclass">
+<title>Class class - superClass method</title>
 <programlisting>
 say .object~superclass    -- displays "The Nil object"
 say .class~superclass     -- displays "The Object class"
 say .set~superclass       -- displays "The Table class"
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassSuperClasses"><title>superClasses</title>
@@ -1621,9 +1662,10 @@ which the class has inherited the classes. The original class used on a
 <emphasis role="bold">mixinClass</emphasis> method is the first item of the
 array.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>superClasses method</secondary></indexterm>
+<example id="ex.class-superclasses">
+<title>Class class - superClasses method</title>
 <programlisting>
 z=.class~superClasses
 /* To obtain the information this returns, you could use:     */
@@ -1631,6 +1673,7 @@ do i over z
   say i
 end
 </programlisting>
+</example>
 </section>
 
 <section id="mthClassUninherit"><title>uninherit</title>
@@ -1654,15 +1697,17 @@ sent to the receiver for the class <emphasis role="italic">classobj</emphasis>.
 <para>You cannot change the classes that Rexx provides by sending
 <emphasis role="bold">uninherit</emphasis> messages.
 </para></note>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>uninherit method</secondary></indexterm>
+<example id="ex.class-uninherit">
+<title>Class class - uninherut method</title>
 <programlisting>
 location=.object~mixinClass("Location")
 room=.object~subclass("Room")~~inherit(location) /* Creates subclass */
 /* and specifies inheritance */
 room~uninherit(location)
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -1812,9 +1857,10 @@ the result can be negative)
 about precision, the format of valid
 numbers, and the operation rules for arithmetic. Note that if an arithmetic
 result is shown in exponential notation, it might have been rounded.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>arithmetic methods of String class</secondary></indexterm>
+<example id="ex.string-arithmetic">
+<title>String class - arithmetic methods</title>
 <programlisting>
 <![CDATA[
 5+5     ->    10
@@ -1828,6 +1874,7 @@ result is shown in exponential notation, it might have been rounded.</para>
 -5      ->    -5             /* Prefix -  */
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringComparisonMethods"><title>Comparison Methods</title>
@@ -1937,9 +1984,10 @@ padded). False if <emphasis role="italic">argument</emphasis> is the Nil object.
 </tbody>
 </tgroup>
 </informaltable>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>comparison methods of String class</secondary></indexterm>
+<example id="ex.string-comparison">
+<title>String class - comparison methods</title>
 <programlisting>
 <![CDATA[
 5=5        ->     1          /* equal            */
@@ -1956,6 +2004,7 @@ padded). False if <emphasis role="italic">argument</emphasis> is the Nil object.
 12\>13     ->     1
 ]]>
 </programlisting>
+</example>
 <para>All strict comparison operations have one of the characters doubled that
 define the operator. The <computeroutput>==</computeroutput> and
 <computeroutput>\==</computeroutput> operators check
@@ -2051,7 +2100,8 @@ characters.</para>
 </tbody>
 </tgroup>
 </informaltable>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example id="ex.string-comparison-1">
+<title>String class - comparison methods</title>
 <programlisting>
 <![CDATA[
 "space"=="space"     ->     1         /* Strictly equal     */
@@ -2066,6 +2116,7 @@ characters.</para>
 " space"\>>"space"   ->     1
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringLogicalMethods"><title>Logical Methods</title>
@@ -2134,9 +2185,10 @@ becomes <computeroutput>0</computeroutput>, and
 </tbody>
 </tgroup>
 </informaltable>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>logical methods of String class</secondary></indexterm>
+<example id="ex.string-logical">
+<title>String class - logical methods</title>
 <programlisting>
 <![CDATA[
 1&0     ->     0
@@ -2145,6 +2197,7 @@ becomes <computeroutput>0</computeroutput>, and
 \1      ->     0
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringConcatenationMethods"><title>Concatenation Methods</title>
@@ -2188,11 +2241,12 @@ object and the <emphasis role="italic">argument</emphasis>.
 </tbody>
 </tgroup>
 </informaltable>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>concatenation methods of String class</secondary></indexterm>
 <indexterm><primary>prefix - method</primary></indexterm>
 <indexterm><primary>prefix + method</primary></indexterm>
+<example id="ex.string-concatenation">
+<title>String class - concatenation methods</title>
 <programlisting>
 <![CDATA[
 f = "abc"
@@ -2201,6 +2255,7 @@ f || "def"  ->   "abcdef"
 f "def"     ->   "abc def"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringAbbrev"><title>abbrev</title>
@@ -2233,9 +2288,10 @@ of the receiving string and the length of
 positive whole number or zero. The default for
 <emphasis role="italic">length</emphasis> is the number of characters in
 <emphasis role="italic">info</emphasis>.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>abbrev method</secondary></indexterm>
+<example id="ex.string-abbrev">
+<title>String class - abbrev method</title>
 <programlisting>
 <![CDATA[
 "Print"~abbrev("Pri")      ->    1
@@ -2246,12 +2302,14 @@ positive whole number or zero. The default for
 "PRINT"~abbrev("",1)       ->    0
 ]]>
 </programlisting>
+</example>
 <note><title>Note</title>
 <para>A null string always matches if a length of
 <computeroutput>0</computeroutput>, or the
 default, is used. This allows a default keyword to be selected automatically
 if desired.</para></note>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.string-abbrev-1">
+<title>String class - abbrev method</title>
 <programlisting>
 say "Enter option:";   pull option .
 select  /* keyword1 is to be the default */
@@ -2261,6 +2319,7 @@ select  /* keyword1 is to be the default */
   otherwise nop;
 end;
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringAbs"><title>abs</title>
@@ -2279,13 +2338,15 @@ end;
 
 <para>Returns the absolute value of the receiving string. The result has no
 sign and is formatted according to the current NUMERIC settings.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>abs method</secondary></indexterm>
+<example id="ex.string-abs">
+<title>String class - abs method</title>
 <programlisting>
 12.3~abs      ->     12.3
 "-0.307"~abs  ->     0.307
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringB2x"><title>b2x</title>
@@ -2324,9 +2385,10 @@ If the number of binary digits in the receiving string is not a multiple of
 four, up to three <computeroutput>0</computeroutput>
 digits are added on the left
 before the conversion to make a total that is a multiple of four.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>b2x method</secondary></indexterm>
+<example id="ex.string-b2x">
+<title>String class - b2x method</title>
 <programlisting>
 <![CDATA[
 "11000011"~b2x     ->   "C3"
@@ -2335,12 +2397,15 @@ before the conversion to make a total that is a multiple of four.</para>
 "1 1111 0000"~b2x  ->   "1F0"
 ]]>
 </programlisting>
+</example>
 <para>You can combine <emphasis role="bold">b2x</emphasis>
 with the methods <emphasis role="bold">x2d</emphasis> and
 <emphasis role="bold">x2c</emphasis> to convert a binary
 number into other forms.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.string-b2x-1">
+<title>String class - b2x method with x2d</title>
 <programlisting>"10111"~b2x~x2d  ->   "23"   /* decimal 23 */</programlisting>
+</example>
 </section>
 
 <section id="mthStringBitAnd"><title>bitAnd</title>
@@ -2373,9 +2438,10 @@ it extends the shorter of the two strings
 on the right before the logical operation. The default for
 <emphasis role="italic">string</emphasis> is
 the zero-length (null) string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>bitAnd method</secondary></indexterm>
+<example id="ex.string-bitand">
+<title>String class - bitand method</title>
 <programlisting>
 <![CDATA[
 "12"x~bitAnd                   ->    "12"x
@@ -2385,6 +2451,7 @@ the zero-length (null) string.</para>
 "pQrS"~bitAnd(,"DF"x)          ->    "PQRS"      /* ASCII   */
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringBitOr"><title>bitOr</title>
@@ -2417,9 +2484,10 @@ If you provide <emphasis role="italic">pad</emphasis>, it extends the shorter
 of the two strings on the right before the logical operation. The default for
 <emphasis role="italic">string</emphasis> is
 the zero-length (null) string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>bitOr method</secondary></indexterm>
+<example id="ex.string-bitor">
+<title>String class - bitor method</title>
 <programlisting>
 <![CDATA[
 "12"x~bitOr                   ->    "12"x
@@ -2430,6 +2498,7 @@ the zero-length (null) string.</para>
 "pQrS"~bitOr(,"20"x)          ->    "pqrs" /* ASCII   */
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringBitXor"><title>bitXor</title>
@@ -2465,9 +2534,10 @@ it extends the shorter of the two strings
 on the right before carrying out the logical operation. The default for
 <emphasis role="italic">string</emphasis> is the zero-length (null) string.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>bitXor method</secondary></indexterm>
+<example id="ex.string-bitxor">
+<title>String class - bitxor method</title>
 <programlisting>
 <![CDATA[
 "12"x~bitXor                      ->  "12"x
@@ -2479,6 +2549,7 @@ on the right before carrying out the logical operation. The default for
 "C711"x~bitXor("222222"x," ")     ->  "E53302"x  /* ASCII  */
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringC2d"><title>c2d</title>
@@ -2507,9 +2578,10 @@ length of the returned result. If you do not specify
 <emphasis role="italic">n</emphasis>, the receiving string is processed
 as an unsigned binary number. If the receiving string is null, C2D returns
 <computeroutput>0</computeroutput>.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>c2d method</secondary></indexterm>
+<example id="ex.string-c2d">
+<title>String class - c2d method</title>
 <programlisting>
 <![CDATA[
 "09"X~c2d       ->        9
@@ -2519,6 +2591,7 @@ as an unsigned binary number. If the receiving string is null, C2D returns
 "a"~c2d         ->       97     /*  ASCII   */
 ]]>
 </programlisting>
+</example>
 <para>If you specify <emphasis role="italic">n</emphasis>, the receiving string
 is taken as a signed number expressed in <emphasis role="italic">n</emphasis>
 characters. The number is positive if the leftmost bit is off, and negative
@@ -2532,7 +2605,8 @@ been processed. If <emphasis role="italic">n</emphasis> is
 <computeroutput>0</computeroutput>,
 <emphasis role="bold">c2d</emphasis> always returns
 <computeroutput>0</computeroutput>.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example id="ex.string-c2d-1">
+<title>String class - c2d method</title>
 <programlisting>
 <![CDATA[
 "81"X~c2d(1)      ->     -127
@@ -2545,6 +2619,7 @@ been processed. If <emphasis role="italic">n</emphasis> is
 "0031"X~c2d(0)    ->        0
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringC2x"><title>c2x</title>
@@ -2578,15 +2653,17 @@ is the ASCII representation of <computeroutput>1</computeroutput>.</para>
 not include whitespace. The receiving string can be of any length. If the
 receiving string is null,
 <emphasis role="bold">c2x</emphasis> returns a null string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>c2x method</secondary></indexterm>
+<example id="ex.string-c2x">
+<title>String class - c2x method</title>
 <programlisting>
 <![CDATA[
 "0123"X~c2x    ->    "0123"   /* "30313233"X     in ASCII */
 "ZD8"~c2x      ->    "5A4438" /* "354134343338"X in ASCII */
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessAbbrev"><title>caselessAbbrev</title>
@@ -2625,9 +2702,10 @@ a
 positive whole number or zero. The default for
 <emphasis role="italic">length</emphasis> is the number of characters in
 <emphasis role="italic">info</emphasis>.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>abbrev method</secondary></indexterm>
+<example id="ex.string-caselessabbrev">
+<title>String class - caselessAbbrev method</title>
 <programlisting>
 <![CDATA[
 "Print"~caselessAbbrev("Pri")      ->    1
@@ -2638,13 +2716,15 @@ positive whole number or zero. The default for
 "PRINT"~caselessAbbrev("",1)       ->    0
 ]]>
 </programlisting>
+</example>
 <note><title>Note</title>
 <para>A null string always matches if a length of
 <computeroutput>0</computeroutput>, or the
 default, is used. This allows a default keyword to be selected
 automatically
 if desired.</para></note>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.string-caselessabbrev-1">
+<title>String class - caselessAbbrev method</title>
 <programlisting>
 say "Enter option:";   parse pull option .
 select  /* keyword1 is to be the default */
@@ -2654,6 +2734,7 @@ select  /* keyword1 is to be the default */
   otherwise nop;
 end;
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessChangeStr"><title>caselessChangeStr</title>
@@ -2682,6 +2763,8 @@ using caseless comparisons.
 <para>Here are some examples:</para>
 <indexterm><primary>examples</primary>
 <secondary>caselessChangeStr method</secondary></indexterm>
+<example id="ex.string-caselesschangestr">
+<title>String class - caselessChangeStr method</title>
 <programlisting>
 <![CDATA[
 "AbaAbb"~caselessChangeStr("A","")     ->    "bbb"
@@ -2689,6 +2772,7 @@ AbaBabAB~changeStr("ab","xy")          ->    "xyxyxyxy"
 AbaBabAB~changeStr("ab","xy",1)        ->    "xyaBabAB"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessCompare"><title>caselessCompare</title>
@@ -2718,9 +2802,10 @@ does not match. The shorter string is padded on the right with
 necessary. The default <emphasis role="italic">pad</emphasis> character is
 a
 blank.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>compare method</secondary></indexterm>
+<example id="ex.string-caselesscompare">
+<title>String class - caselessCompare method</title>
 <programlisting>
 <![CDATA[
 "abc"~caselessCompare("ABC")         ->    0
@@ -2731,6 +2816,7 @@ blank.</para>
 "abXX "~caselessCompare("ab","x")    ->    5
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessCompareTo"><title>caselessCompareTo</title>
@@ -2768,9 +2854,10 @@ is omitted, the comparison starts at the first character.
 <emphasis role="italic">length</emphasis> must be a non-negative whole number.  If omitted, the comparison will take
 place to the end of the target string.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>caselessCompareTo method</secondary></indexterm>
+<example id="ex.string-caselesscompareto">
+<title>String class - caselessCompareTo method</title>
 <programlisting>
 <![CDATA[
 
@@ -2782,6 +2869,7 @@ place to the end of the target string.
 "000abc000"~caselessCompareTo(111abc111", 4, 3)  -> 0
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessCountStr"><title>caselessCountStr</title>
@@ -2807,12 +2895,15 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 <para>Here are some examples:</para>
 <indexterm><primary>examples</primary>
 <secondary>countStr method</secondary></indexterm>
+<example id="ex.string-caselesscountstr">
+<title>String class - caselessCountStr method</title>
 <programlisting>
 <![CDATA[
 "a0Aa0A"~caselessCountStr("a")        ->    4
 "J0kKk0"~caselessCountStr("KK")       ->    1
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessEquals"><title>caselessEquals</title>
@@ -2834,15 +2925,17 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 
 <para>Returns .true ("1") if the target string is strictly equal to the
 <emphasis role="italic">other</emphasis> string, using a caseless comparison.
-Returns .false ("0") if the two strings are not strictly equal.
-<emphasis role="bold">Examples:</emphasis></para>
+Returns .false ("0") if the two strings are not strictly equal.</para>
 <indexterm><primary>examples</primary>
 <secondary>caselessEquals method</secondary></indexterm>
+<example id="ex.string-caselessequals">
+<title>String class - caselessEquals method</title>
 <programlisting>
 "a"~caselessEquals("A")          ->    1
 "aa"~caselessEquals("A")         ->    0
 "4"~caselessEquals("3")          ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessLastPos"><title>caselessLastPos</title>
@@ -2883,9 +2976,10 @@ The <emphasis role="italic">length</emphasis> must be a non-negative whole
 number and defaults to <emphasis role="italic">start</emphasis>.  The search is
 performed using caseless comparisons.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>caselessLastPos method</secondary></indexterm>
+<example id="ex.string-caselesslastpos">
+<title>String class - caselessLastPos method</title>
 <programlisting>
 "abc def ghi"~caselessLastPos(" ")      ->    8
 "abcdefghi"~caselessLastPos(" ")        ->    0
@@ -2893,6 +2987,7 @@ performed using caseless comparisons.
 "abc def ghi"~caselessLastPos(" ",7)    ->    4
 "abc def ghi"~caselessLastPos(" ",7,3)  ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessMatch"><title>caselessMatch</title>
@@ -2934,15 +3029,17 @@ must be a positive whole number and the combination of <emphasis role="italic">n
 <para>The caselessMatch method is useful for efficient string parsing as it does
 not require new string objects be extracted from the target string.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>caselessMatch method</secondary></indexterm>
+<example id="ex.string-caselessmatch">
+<title>String class - caselessMatch method</title>
 <programlisting>
 "Saturday"~caselessMatch(6, "day")           ->    1
 "Saturday"~caselessMatch(6, "DAY")           ->    1
 "Saturday"~caselessMatch(6, "SUNDAY", 4, 3)  ->    1
 "Saturday"~caselessMatch(6, "daytime", 1, 3) ->    1
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessMatchChar"><title>caselessMatchChar</title>
@@ -2968,15 +3065,17 @@ character of the string <emphasis role="italic">chars</emphasis>.  Returns .fals
 match any of the characters in the reference set.  The match is made using caseless comparisons.
 The argument <emphasis role="italic">n</emphasis> must be
 a positive whole number less than or equal to the length of the target string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>caselessMatchChar method</secondary></indexterm>
+<example id="ex.string-caselessmatchchar">
+<title>String class - caselessMatchChar method</title>
 <programlisting>
 "a+b"~caselessMatchChar(2, "+-*/")           ->    1
 "a+b"~caselessMatchChar(1, "+-*/")           ->    0
 "Friday"~caselessMatchChar(3, "aeiou")       ->    1
 "FRIDAY"~caselessMatchChar(3, "aeiou")       ->    1
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessPos"><title>caselessPos</title>
@@ -3018,9 +3117,10 @@ If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>caselessPos method</secondary></indexterm>
+<example id="ex.string-caselesspos">
+<title>String class - caselessPos method</title>
 <programlisting>
 "Saturday"~caselessPos("DAY")       ->    6
 "abc def ghi"~caselessPos("x")      ->    0
@@ -3028,6 +3128,7 @@ a non-negative whole number.
 "abc def ghi"~caselessPos(" ",5)    ->    8
 "abc def ghi"~caselessPos(" ",5,3)  ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCaselessWordPos"><title>caselessWordPos</title>
@@ -3062,9 +3163,10 @@ You can override this by specifying <emphasis
 role="italic">start</emphasis>
 (which must be positive),
 the word at which the search is to be started.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>wordPos method</secondary></indexterm>
+<example id="ex.string-caselesswordpos">
+<title>String class - caselessWordPos method</title>
 <programlisting>
 "now is the time"~caselessWordPos("the")              ->  3
 "now is the time"~caselessWordPos("The")              ->  3
@@ -3074,6 +3176,7 @@ the word at which the search is to be started.</para>
 "To be or not to be"~caselessWordPos("BE")            ->  2
 "To be or not to be"~caselessWordPos("BE",3)          ->  6
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCeiling"><title>ceiling</title>
@@ -3098,15 +3201,17 @@ to standard Rexx rules, as though the operation
 The ceiling is then calculated and returned.
 The result is never in exponential form. If there are no nonzero digits in
 the result, any minus sign is removed.  </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>ceiling method</secondary></indexterm>
+<example id="ex.string-ceiling">
+<title>String class - ceiling method</title>
 <programlisting>
 2~ceiling             ->    2
 '-2'~ceiling          ->    -2
 12.3~ceiling          ->    13
 '-12.3'~ceiling       ->    -12
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The <emphasis role="italic">number</emphasis> is rounded according to the
@@ -3155,11 +3260,12 @@ more character than the left-hand end. </para>
 of the difference between British and American spellings, this method can
 be called either <emphasis role="bold">center</emphasis> or
 <emphasis role="bold">centre</emphasis>.</para></note>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>center method</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>centre method</secondary></indexterm>
+<example id="ex.string-center">
+<title>String class - center method</title>
 <programlisting>
 <![CDATA[
 abc~center(7)               ->    "  ABC  "
@@ -3168,6 +3274,7 @@ abc~CENTER(8,"-")           ->    "--ABC---"
 "The blue sky"~centre(7)    ->    "e blue "
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringChangeStr"><title>changeStr</title>
@@ -3193,6 +3300,8 @@ occurrences to be replaced.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>examples</primary>
 <secondary>changeStr method</secondary></indexterm>
+<example id="ex.string-changeStr">
+<title>String class - changeStr method</title>
 <programlisting>
 <![CDATA[
 101100~changeStr("1","")     ->    "000"
@@ -3200,6 +3309,7 @@ occurrences to be replaced.</para>
 101100~changeStr("1","X",1)  ->    "X01100"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCompare"><title>compare</title>
@@ -3227,9 +3337,10 @@ does not match. The shorter string is padded on the right with
 <emphasis role="italic">pad</emphasis> if
 necessary. The default <emphasis role="italic">pad</emphasis> character is a
 blank.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>compare method</secondary></indexterm>
+<example id="ex.string-compare">
+<title>String class - compare method</title>
 <programlisting>
 <![CDATA[
 "abc"~compare("abc")         ->    0
@@ -3240,6 +3351,7 @@ blank.</para>
 "ab-- "~compare("ab","-")    ->    5
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCompareTo"><title>compareTo</title>
@@ -3276,9 +3388,10 @@ is omitted, the comparison starts at the first character.
 <emphasis role="italic">length</emphasis> must be a non-negative whole number.  If omitted, the comparison will take
 place to the end of the target string.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>compareTo method</secondary></indexterm>
+<example id="ex.string-compareto">
+<title>String class - compareTo method</title>
 <programlisting>
 <![CDATA[
 
@@ -3290,6 +3403,7 @@ place to the end of the target string.
 "000abc000"~compareTo(111abc111", 4, 3)  -> 0
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCopies"><title>copies</title>
@@ -3314,15 +3428,17 @@ place to the end of the target string.
 <para>Returns <emphasis role="italic">n</emphasis> concatenated copies of the
 receiving string. The <emphasis role="italic">n</emphasis> must be a positive
 whole number or zero.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>copies method</secondary></indexterm>
+<example id="ex.string-copies">
+<title>String class - copies method</title>
 <programlisting>
 <![CDATA[
 "abc"~copies(3)    ->    "abcabcabc"
 "abc"~copies(0)    ->    ""
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringCountStr"><title>countStr</title>
@@ -3343,12 +3459,15 @@ string that do not overlap.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>examples</primary>
 <secondary>countStr method</secondary></indexterm>
+<example id="ex.string-countstr">
+<title>String class - countStr method</title>
 <programlisting>
 <![CDATA[
 "101101"~countStr("1")        ->    4
 "J0KKK0"~CountStr("KK")       ->    1
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringD2c"><title>d2c</title>
@@ -3381,9 +3500,10 @@ of NUMERIC DIGITS.</para>
 must be a positive whole number
 or zero, and the result length is as needed. Therefore, the returned result
 has no leading "00"x characters.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>d2c method</secondary></indexterm>
+<example id="ex.string-d2c">
+<title>String class - d2c method</title>
 <programlisting>
 "65"~d2c       ->   "A"      /* "41"x is an ASCII "A"    */
 "65"~d2c(1)    ->   "A"
@@ -3394,6 +3514,7 @@ has no leading "00"x characters.</para>
 "76"~d2c(2)    ->   " L"     /* "4C"x  is an ASCII " L"  */
 "-180"~d2c(2)  ->   " L"
 </programlisting>
+</example>
 <indexterm><primary>implementation maximum</primary>
 <secondary>d2c method</secondary></indexterm>
 <para>Implementation maximum: The returned string must not have more than 250
@@ -3437,9 +3558,10 @@ positive whole number or zero.</para>
 <para>If you omit <emphasis role="italic">n</emphasis>, the receiving string
 must be a positive whole number
 or zero, and the returned result has no leading zeros.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>d2x method</secondary></indexterm>
+<example id="ex.string-d2x">
+<title>String class - d2x method</title>
 <programlisting>
 "9"~d2x        ->    "9"
 "129"~d2x      ->    "81"
@@ -3451,6 +3573,7 @@ or zero, and the returned result has no leading zeros.</para>
 "-127"~d2x(4)  ->    "FF81"
 "12"~d2x(0)    ->    ""
 </programlisting>
+</example>
 <indexterm><primary>implementation maximum</primary>
 <secondary>d2x method</secondary></indexterm>
 <para>Implementation maximum: The returned string must not have more than 500
@@ -3576,9 +3699,10 @@ the receiving string is a null string.
 <computeroutput>1</computeroutput> when NUMERIC DIGITS is set to 9.
 </para></listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>dataType method</secondary></indexterm>
+<example id="ex.string-datatype">
+<title>String class - datatype method</title>
 <programlisting>
 <![CDATA[
 " 12 "~dataType          ->   "NUM"
@@ -3596,6 +3720,7 @@ the receiving string is a null string.
 "11"~dataType("O")        ->   0
 ]]>
 </programlisting><para> </para>
+</example>
 
 <note><title>Note</title>
 <para>The <emphasis role="bold">dataType</emphasis>
@@ -3625,14 +3750,16 @@ or EBCDIC).</para></note>
 receiving string. If the receiving string is not in base64 format then the
 returned result is undefined.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>decodeBase64 method</secondary></indexterm>
+<example id="ex.string-decodeBase64">
+<title>String class - decodeBase64 method</title>
 <programlisting>
 <![CDATA[
 "YWJjZGVm"~decodeBase64       ->    "abcdef"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringDelStr"><title>delStr</title>
@@ -3667,9 +3794,10 @@ zero. The <emphasis role="italic">n</emphasis> must be
 a positive whole number. If <emphasis role="italic">n</emphasis> is greater
 than the length of the receiving
 string, the method returns the receiving string unchanged.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>delStr method</secondary></indexterm>
+<example id="ex.string-delStr">
+<title>String class - delStr method</title>
 <programlisting>
 <![CDATA[
 "abcd"~delStr(3)       ->    "ab"
@@ -3677,6 +3805,7 @@ string, the method returns the receiving string unchanged.</para>
 "abcde"~delStr(6)      ->    "abcde"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringDelWord"><title>delWord</title>
@@ -3714,11 +3843,12 @@ string unchanged. The string deleted includes any whitespace characters
 following the final word involved but none of the whitespace characters
 preceding the first word involved.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>delWord method</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>delWord method</secondary></indexterm>
+<example id="ex.string-delWord">
+<title>String class - delWord method</title>
 <programlisting>
 <![CDATA[
 "Now is the  time"~delWord(2,2)  ->  "Now time"
@@ -3727,6 +3857,7 @@ preceding the first word involved.
 "Now is   the time"~delWord(3,1) ->  "Now is   time"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringEncodeBase64"><title>encodeBase64</title>
@@ -3748,14 +3879,16 @@ preceding the first word involved.
 
 <para>Returns a new string that is the base64 encoded version of the receiving
 string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>encodeBase64 method</secondary></indexterm>
+<example id="ex.string-encodeBase64">
+<title>String class - encodeBase64 method</title>
 <programlisting>
 <![CDATA[
 "abcdef"~encodeBase64       ->    "YWJjZGVm"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringEquals"><title>equals</title>
@@ -3773,15 +3906,17 @@ string.</para>
 <para>Returns .true ("1") if the target string is strictly equal to the
 <emphasis role="italic">other</emphasis> string.
 Returns .false ("0") if the two strings are not strictly equal.  This is
-the same comparison performed by the "==" comparison method.
-<emphasis role="bold">Examples:</emphasis></para>
+the same comparison performed by the "==" comparison method.</para>
 <indexterm><primary>examples</primary>
 <secondary>equals method</secondary></indexterm>
+<example id="ex.string-equals">
+<title>String class - equals method</title>
 <programlisting>
 "3"~equals("3")          ->    1
 "33"~equals("3")         ->    0
 "4"~equals("3")          ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringFloor"><title>floor</title>
@@ -3806,15 +3941,17 @@ to standard Rexx rules, as though the operation
 The floor is then calculated and returned.
 The result is never in exponential form. If there are no nonzero digits in
 the result, any minus sign is removed.  </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>floor method</secondary></indexterm>
+<example id="ex.string-floor">
+<title>String class - floor method</title>
 <programlisting>
 2~floor               ->    2
 '-2'~floor            ->    -2
 12.3~floor            ->    12
 '-12.3'~floor         ->    -13
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The <emphasis role="italic">number</emphasis> is rounded according to the
@@ -3867,9 +4004,10 @@ the number is padded on the left with blanks. If
 part of the number, the number is rounded (or extended with zeros) to fit.
 Specifying <computeroutput>0</computeroutput> causes the number to be rounded
 to an integer.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>format method</secondary></indexterm>
+<example id="ex.string-format">
+<title>String class - format method</title>
 <programlisting>
 "3"~format(4)            ->    "   3"
 "1.73"~format(4,0)       ->    "   2"
@@ -3880,6 +4018,7 @@ to an integer.</para>
 " - 12.73"~format        ->    "-12.73"
 "0.000"~format           ->    "0"
 </programlisting>
+</example>
 <para><emphasis role="italic">expp</emphasis> and
 <emphasis role="italic">expt</emphasis> control the exponent part of the result,
 which, by default, is formatted according to the current NUMERIC settings
@@ -3909,7 +4048,8 @@ are supplied for the exponent part of the result. If the exponent would be
 <computeroutput>0</computeroutput> and <emphasis role="italic">expp</emphasis>
 is not specified, the number is not an exponential
 expression.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example id="ex.string-format-1">
+<title>String class - format method</title>
 <programlisting>
 "12345.73"~format(, ,2,2)   ->    "1.234573E+04"
 "12345.73"~format(,3, ,0)   ->    "1.235E+4"
@@ -3917,6 +4057,7 @@ expression.</para>
 "12345.73"~format(, ,3,6)   ->    "12345.73"
 "1234567e5"~format(,3,0)    ->    "123456700000.000"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringHashCode"><title>hashCode</title>
@@ -3974,10 +4115,11 @@ then <emphasis role="bold">insert</emphasis>
 truncates <emphasis role="italic">new</emphasis> to length
 <emphasis role="italic">length</emphasis>. The default
 <emphasis role="italic">pad</emphasis> character is a blank.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>insert method</secondary>
 <tertiary>of String class</tertiary></indexterm>
+<example id="ex.string-insert">
+<title>String class - insert method</title>
 <programlisting>
 "abc"~insert("123")            ->    "123abc"
 "abcdef"~insert(" ",3)         ->    "abc def"
@@ -3985,6 +4127,7 @@ truncates <emphasis role="italic">new</emphasis> to length
 "abc"~insert("123",5,6,"+")    ->    "abc++123+++"
 "abc"~insert("123", ,5,"-")    ->    "123--abc"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringLastPos"><title>lastPos</title>
@@ -4021,9 +4164,10 @@ value or omitted.
 The <emphasis role="italic">length</emphasis> must be a non-negative whole
 number and defaults to <emphasis role="italic">start</emphasis>.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>lastPos method</secondary></indexterm>
+<example id="ex.string-lastpos">
+<title>String class - lastPos method</title>
 <programlisting>
 "abc def ghi"~lastPos(" ")      ->    8
 "abcdefghi"~lastPos(" ")        ->    0
@@ -4031,6 +4175,7 @@ number and defaults to <emphasis role="italic">start</emphasis>.
 "abc def ghi"~lastPos(" ",7)    ->    4
 "abc def ghi"~lastPos(" ",7,3)  ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringLeft"><title>left</title>
@@ -4064,14 +4209,16 @@ method is exactly equivalent to:</para>
 ]]>
 </programlisting>
 
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>left method</secondary></indexterm>
+<example id="ex.string-left">
+<title>String class - left method</title>
 <programlisting>
 "abc d"~left(8)        ->    "abc d   "
 "abc d"~left(8,".")    ->    "abc d..."
 "abc  def"~left(7)     ->    "abc  de"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringLength"><title>length</title>
@@ -4092,14 +4239,16 @@ method is exactly equivalent to:</para>
 </programlisting>
 
 <para>Returns the length of the receiving string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>length method</secondary></indexterm>
+<example id="ex.string-length">
+<title>String class - length method</title>
 <programlisting>
 "abcdefgh"~length     ->    8
 "abc defg"~length     ->    8
 ""~length             ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringLower"><title>lower</title>
@@ -4123,14 +4272,16 @@ be a positive whole number.  If <emphasis role="italic">n</emphasis> is not spec
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
 the default is to convert the remainder of the string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>lower method</secondary></indexterm>
+<example id="ex.string-lower">
+<title>String class - lower method</title>
 <programlisting>
 "Albert Einstein"~lower      ->    "albert einstein"
 "ABCDEF"~lower(4)            ->    "ABCdef"
 "ABCDEF"~lower(3,2)          ->    "ABcdEF"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringMakeArray"><title>makeArray</title>
@@ -4156,7 +4307,8 @@ The
 default separator is the newline character.
 </para>
 
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.string-makeArray">
+<title>String class - makeArray method</title>
 <programlisting>
 <![CDATA[
 string = "hello".endofline"world".endofline"this is an array."
@@ -4171,6 +4323,7 @@ string = "hello*world*this is an array.*"
 array = string~makeArray("*")     /* contains 3 items */
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringMakeString"><title>makeString</title>
@@ -4226,15 +4379,17 @@ must be a positive whole number and the combination of <emphasis role="italic">n
 <para>The match method is useful for efficient string parsing as it does not
 require new string objects be extracted from the target string.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>match method</secondary></indexterm>
+<example id="ex.string-match">
+<title>String class - match method</title>
 <programlisting>
 "Saturday"~match(6, "day")           ->    1
 "Saturday"~match(6, "DAY")           ->    0
 "Saturday"~match(6, "Sunday", 4, 3)  ->    1
 "Saturday"~match(6, "daytime", 1, 3) ->    1
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringMatchChar"><title>matchChar</title>
@@ -4254,15 +4409,17 @@ require new string objects be extracted from the target string.
 character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
 match any of the characters in the reference set.  The argument <emphasis role="italic">n</emphasis> must be
 a positive whole number less than or equal to the length of the target string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>matchChar method</secondary></indexterm>
+<example id="ex.string-matchchar">
+<title>String class - matchChar method</title>
 <programlisting>
 "a+b"~matchChar(2, "+-*/")           ->    1
 "a+b"~matchChar(1, "+-*/")           ->    0
 "Friday"~matchChar(3, "aeiou")       ->    1
 "FRIDAY"~matchChar(3, "aeiou")       ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringMax"><title>max</title>
@@ -4284,15 +4441,17 @@ a positive whole number less than or equal to the length of the target string.</
 number that <emphasis role="bold">max</emphasis>
 returns is formatted according to the current NUMERIC settings.
 You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>max method</secondary></indexterm>
+<example id="ex.string-max">
+<title>String class - max method</title>
 <programlisting>
 12~max(6,7,9)                                                ->    12
 17.3~max(19,17.03)                                           ->    19
 "-7"~max("-3","-4.3")                                        ->    -3
 1~max(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringMin"><title>min</title>
@@ -4315,15 +4474,17 @@ The number that <emphasis role="bold">min</emphasis>
 returns is formatted according to the current NUMERIC
 settings. You can specify any number of
 <emphasis role="italic">number</emphasis>s.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>min method</secondary></indexterm>
+<example id="ex.string-min">
+<title>String class - min method</title>
 <programlisting>
 12~min(6,7,9)                                                ->     6
 17.3~min(19,17.03)                                           ->    17.03
 "-7"~MIN("-3","-4.3")                                        ->    -7
 21~min(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->     1
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringOverlay"><title>overlay</title>
@@ -4359,9 +4520,10 @@ and the default value for <emphasis role="italic">n</emphasis> is
 <computeroutput>1</computeroutput>. If you specify
 <emphasis role="italic">n</emphasis>, it must be a positive whole number.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>overlay method</secondary></indexterm>
+<example id="ex.string-overlay">
+<title>String class - overlay method</title>
 <programlisting>
 "abcdef"~overlay(" ",3)         ->    "ab def"
 "abcdef"~overlay(".",3,2)       ->    "ab. ef"
@@ -4369,6 +4531,7 @@ and the default value for <emphasis role="italic">n</emphasis> is
 "abcd"~overlay("qq",4)          ->    "abcqq"
 "abc"~overlay("123",5,6,"+")    ->    "abc+123+++"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringPos"><title>pos</title>
@@ -4408,9 +4571,10 @@ If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>pos method</secondary></indexterm>
+<example id="ex.string-pos">
+<title>String class - pos method</title>
 <programlisting>
 "Saturday"~pos("day")       ->    6
 "abc def ghi"~pos("x")      ->    0
@@ -4418,6 +4582,7 @@ a non-negative whole number.
 "abc def ghi"~pos(" ",5)    ->    8
 "abc def ghi"~pos(" ",5,3)  ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringReplaceAt"><title>replaceAt</title>
@@ -4453,14 +4618,18 @@ If <emphasis
 role="italic">n</emphasis> is greater than the length of the receiving string, padding is added before the <emphasis
 role="italic">new</emphasis> string. The default <emphasis role="italic">pad</emphasis> character is a blank.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>replaceAt method</secondary></indexterm>
+<example id="ex.string-replaceAt">
+<title>String class - replaceAt method</title>
 <programlisting>
 "abcdef"~replaceAt(" ",3, 1)      ->    "ab def"
 "abcdef"~replaceAt(" ",3, 3)      ->    "ab f"
 "abc"~replaceAt("123",5,6,"+")    ->    "abc+123"
-</programlisting> </section>
+</programlisting>
+</example>
+</section>
+
 
 <section id="mthStringReverse"><title>reverse</title>
 <indexterm><primary>reverse method</primary>
@@ -4475,13 +4644,15 @@ role="italic">new</emphasis> string. The default <emphasis role="italic">pad</em
 </programlisting>
 
 <para>Returns a copy of the receiving string reversed.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>reverse method</secondary></indexterm>
+<example id="ex.string-reverse">
+<title>String class - reverse method</title>
 <programlisting>
 "ABc."~reverse    ->    ".cBA"
 "XYZ "~reverse    ->    " ZYX"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringRight"><title>right</title>
@@ -4514,14 +4685,16 @@ with <emphasis role="italic">pad</emphasis> characters, or truncated, on the
 left as needed. The default <emphasis role="italic">pad</emphasis> character
 is a blank. The <emphasis role="italic">length</emphasis> must be a positive
 whole number or zero.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>right method</secondary></indexterm>
+<example id="ex.string-right">
+<title>String class - right method</title>
 <programlisting>
 "abc  d"~right(8)     ->    "  abc  d"
 "abc def"~right(5)    ->    "c def"
 "12"~right(5,"0")     ->    "00012"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringRound"><title>round</title>
@@ -4546,9 +4719,10 @@ to standard Rexx rules, as though the operation
 The rounded value is then calculated and returned.
 The result is never in exponential form. If there are no nonzero digits in
 the result, any minus sign is removed.  </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>round method</secondary></indexterm>
+<example id="ex.string-round">
+<title>String class - round method</title>
 <programlisting>
 2~round               ->    2
 '-2'~round            ->    -2
@@ -4557,6 +4731,7 @@ the result, any minus sign is removed.  </para>
 2.5~round             ->    3
 '-2.5'~round          ->    -3
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The <emphasis role="italic">number</emphasis> is rounded according to the
@@ -4585,14 +4760,16 @@ less than <computeroutput>0</computeroutput>,
 <computeroutput>0</computeroutput> if it is
 <computeroutput>0</computeroutput>, and <computeroutput>1</computeroutput>
 if it is greater than <computeroutput>0</computeroutput>.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>sign method</secondary></indexterm>
+<example id="ex.string-sign">
+<title>String class - sign method</title>
 <programlisting>
 "12.3"~sign       ->     1
 " -0.307"~sign    ->    -1
 0.0~sign          ->     0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringSpace"><title>space</title>
@@ -4623,9 +4800,10 @@ Leading and trailing whitespace characters are always removed. The default for
 <emphasis role="italic">n</emphasis> is <computeroutput>1</computeroutput>,
 and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>space method</secondary></indexterm>
+<example id="ex.string-space">
+<title>String class - space method</title>
 <programlisting>
 "abc  def  "~space           ->    "abc def"
 "  abc def"~space(3)         ->    "abc   def"
@@ -4633,6 +4811,7 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 "abc  def  "~space(0)        ->    "abcdef"
 "abc  def  "~space(2,"+")    ->    "abc++def"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringStrip"><title>strip</title>
@@ -4688,9 +4867,10 @@ characters (spaces and horizontal tabs). If
 <emphasis role="italic">chars</emphasis>, is a null string, then no characters are
 removed.  Otherwise, any occurrences of the characters in <emphasis role="italic">chars</emphasis>
 will be removed.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>strip method</secondary></indexterm>
+<example id="ex.string-strip">
+<title>String class - strip method</title>
 <programlisting>
 "  ab c  "~strip         ->    "ab c"
 "  ab c  "~strip("L")    ->    "ab c  "
@@ -4699,6 +4879,7 @@ will be removed.</para>
 "0012.700"~strip(,0)     ->    "12.7"
 "0012.000"~strip(,".0"") ->    "12"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringsubchar"><title>subchar</title>
@@ -4750,14 +4931,16 @@ only pad characters are returned.</para>
 <para>If you omit <emphasis role="italic">length</emphasis>, the rest of the
 string is returned. The default <emphasis role="italic">pad</emphasis>
 character is a blank.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>subStr method</secondary></indexterm>
+<example id="ex.string-substr">
+<title>String class - substr method</title>
 <programlisting>
 "abc"~substr(2)          ->    "bc"
 "abc"~substr(2,4)        ->    "bc  "
 "abc"~substr(2,6,".")    ->    "bc...."
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>In some situations the positional (numeric) patterns
@@ -4793,14 +4976,16 @@ to the number of remaining words in the receiving string. The returned string
 never has leading or trailing whitespace, but includes all whitespace characters
 between the selected words.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>subWord method</secondary></indexterm>
+<example id="ex.string-subword">
+<title>String class - subWord method</title>
 <programlisting>
 "Now is the  time"~subWord(2,2)    ->    "is the"
 "Now is the  time"~subWord(3)      ->    "the  time"
 "Now is the  time"~subWord(5)      ->    ""
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringSubWords"><title>subWords</title>
@@ -4830,21 +5015,26 @@ If you omit <emphasis role="italic">length</emphasis>, it defaults
 to the number of remaining words in the receiving string. The strings
 in the returned array never have leading or trailing whitespace.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>subWords method</secondary></indexterm>
+<example id="ex.string-subwords">
+<title>String class - subWords method</title>
 <programlisting>
 "Now is the  time"~subWords         ->    .array~of("Now", "is", "the", "time")
 "Now is the  time"~subWords(2,2)    ->    .array~of("is", "the")
 "Now is the  time"~subWords(3)      ->    .array~of("the", "time")
 "Now is the  time"~subWords(5)      ->    .array~new(0)
 </programlisting>
+</example>
 <para>The subWords method is useful for iterating over the individual words in a string.</para>
+<example id="ex.string-subwords-1">
+<title>String class - subWords method</title>
 <programlisting>
     do word over source~subWords    -- extract all of the words to loop over
        say word
     end
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringTranslate"><title>translate</title>
@@ -4901,9 +5091,10 @@ character of the translated range.  The default starting position is 1.
 <emphasis role="italic">length</emphasis> is the range of characters to be
 translated.  If omitted, <emphasis role="italic">length</emphasis> remainder of
 the string from the starting position to the end is used. </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>translate method</secondary></indexterm>
+<example id="ex.string-translate">
+<title>String class - translate method</title>
 <programlisting>
 "abcdef"~translate                         ->    "ABCDEF"
 "abcdef"~translate(, , , 3, 2)             ->    "abCDef"
@@ -4914,6 +5105,7 @@ the string from the starting position to the end is used. </para>
 "4123"~translate("abcd", "1234")           ->    "dabc"
 "4123"~translate("abcd", "1234", , 2, 2)   ->    "4ab1"
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The last example shows how to use the
@@ -4956,15 +5148,17 @@ This number is then truncated to <emphasis role="italic">n</emphasis> decimal
 places or trailing zeros are added if needed to reach the specified length.
 The result is never in exponential form. If there are no nonzero digits in
 the result, any minus sign is removed.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>trunc method</secondary></indexterm>
+<example id="ex.string-trunc">
+<title>String class - trunc method</title>
 <programlisting>
 12.3~trunc            ->    12
 127.09782~trunc(3)    ->    127.097
 127.1~trunc(3)        ->    127.100
 127~trunc(2)          ->    127.00
 </programlisting>
+</example>
 
 <note><title>Note</title>
 <para>The <emphasis role="italic">number</emphasis> is rounded according to the
@@ -4993,14 +5187,16 @@ be a positive whole number.  If <emphasis role="italic">n</emphasis> is not spec
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
 the default is to convert the remainder of the string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>upper method</secondary></indexterm>
+<example id="ex.string-upper">
+<title>String class - upper method</title>
 <programlisting>
 "Albert Einstein"~upper      ->    "ALBERT EINSTEIN"
 "abcdef"~upper(4)            ->    "abcDEF"
 "abcdef"~upper(3,2)          ->    "abCDef"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringVerify"><title>verify</title>
@@ -5061,9 +5257,10 @@ returns <computeroutput>0</computeroutput>. If
 <computeroutput>0</computeroutput> if
 you specify <computeroutput>Match</computeroutput>. Otherwise, the method
 returns the <emphasis role="italic">start</emphasis> value.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>verify method</secondary></indexterm>
+<example id="ex.string-verify">
+<title>String class - verify method</title>
 <programlisting>
 "123"~verify("1234567890")             ->    0
 "1Z3"~verify("1234567890")             ->    2
@@ -5077,6 +5274,7 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 "ABCDEF"~verify("ABC","N",2,3)         ->    4
 "ABCDEF"~verify("ADEF","M",2,3)        ->    4
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringWord"><title>word</title>
@@ -5103,13 +5301,15 @@ fewer than
 <emphasis role="italic">n</emphasis> must be a positive whole number. This
 method is exactly equivalent
 to <computeroutput>receiving_string~subWord(n,1)</computeroutput>.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>word method</secondary></indexterm>
+<example id="ex.string-word">
+<title>String class - word method</title>
 <programlisting>
 "Now is the time"~word(3)    ->    "the"
 "Now is the time"~word(5)    ->    ""
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringWordIndex"><title>wordIndex</title>
@@ -5131,13 +5331,15 @@ receiving string. It returns
 <emphasis role="italic">n</emphasis> words. The <emphasis
 role="italic">n</emphasis> must be a positive whole number.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>wordIndex method</secondary></indexterm>
+<example id="ex.string-wordindex">
+<title>String class - wordIndex method</title>
 <programlisting>
 "Now is the time"~wordIndex(3)    ->    8
 "Now is the time"~wordIndex(6)    ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringWordLength"><title>wordLength</title>
@@ -5160,14 +5362,16 @@ whitespace-delimited word in the receiving
 string or <computeroutput>0</computeroutput> if the receiving string has fewer
 than <emphasis role="italic">n</emphasis> words.
 The <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>wordLength method</secondary></indexterm>
+<example id="ex.string-wordlength">
+<title>String class - wordLength method</title>
 <programlisting>
 "Now is the time"~wordLength(2)       ->    2
 "Now comes the time"~wordLength(2)    ->    5
 "Now is the time"~wordLength(6)       ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringWordPos"><title>wordPos</title>
@@ -5199,9 +5403,10 @@ exactly.</para>
 You can override this by specifying <emphasis role="italic">start</emphasis>
 (which must be positive),
 the word at which the search is to be started.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>wordPos method</secondary></indexterm>
+<example id="ex.string-wordPos">
+<title>String class - wordPos method</title>
 <programlisting>
 "now is the time"~wordPos("the")              ->  3
 "now is the time"~wordPos("The")              ->  0
@@ -5211,6 +5416,7 @@ the word at which the search is to be started.</para>
 "To be or not to be"~wordPos("be")            ->  2
 "To be or not to be"~wordPos("be",3)          ->  6
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringWords"><title>words</title>
@@ -5236,13 +5442,15 @@ the word at which the search is to be started.</para>
 
 <para>Returns the number of whitespace-delimited words in the receiving string.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>words method</secondary></indexterm>
+<example id="ex.string-words">
+<title>String class - words method</title>
 <programlisting>
 "Now is the time"~words      ->    4
 " "~words                    ->    0
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringX2b"><title>x2b</title>
@@ -5272,24 +5480,28 @@ improve readability; they are ignored.
 <para>The returned string has a length that is a multiple of four, and does not
 include any whitespace.</para>
 <para>If the receiving string is null, the method returns a null string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>x2b method</secondary></indexterm>
+<example id="ex.string-x2b">
+<title>String class - x2b method</title>
 <programlisting>
 "C3"~x2b        ->  "11000011"
 "7"~x2b         ->  "0111"
 "1 C1"~x2b      ->  "000111000001"
 </programlisting>
+</example>
 <para>You can combine <emphasis role="bold">x2b</emphasis>
 with the methods <emphasis role="bold">d2x</emphasis> and
 <emphasis role="bold">c2x</emphasis> to convert numbers or
 character strings into binary form.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example id="ex.string-x2b-1">
+<title>String class - x2b method with c2x</title>
 <programlisting>
 "C3"x~c2x~x2b  ->  "11000011"
 "129"~d2x~x2b  ->  "10000001"
 "12"~d2x~x2b   ->  "1100"
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringX2c"><title>x2c</title>
@@ -5320,13 +5532,15 @@ boundaries only, not leading or trailing) to improve readability; they are
 ignored.
 </para>
 <para>If the receiving string is null, the method returns a null string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>x2c method</secondary></indexterm>
+<example id="ex.string-x2c">
+<title>String class - x2c method</title>
 <programlisting>
 "4865 6c6c 6f"~x2c ->  "Hello"     /*  ASCII             */
 "3732 73"~x2c      ->  "72s"       /*  ASCII             */
 </programlisting>
+</example>
 </section>
 
 <section id="mthStringX2d"><title>x2d</title>
@@ -5360,9 +5574,10 @@ are ignored.
 <para>If you do not specify <emphasis role="italic">n</emphasis>,
 the receiving string is processed as
 an unsigned binary number.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>x2d method</secondary></indexterm>
+<example id="ex.string-x2d">
+<title>String class - x2d method</title>
 <programlisting>
 "0E"~x2d        ->    14
 "81"~x2d        ->    129
@@ -5371,6 +5586,7 @@ an unsigned binary number.</para>
 "46 30"X~x2d    ->    240          /*  ASCII   */
 "66 30"X~x2d    ->    240          /*  ASCII   */
 </programlisting>
+</example>
 <para>If you specify <emphasis role="italic">n</emphasis>, the receiving string
 is taken as a signed number expressed in <emphasis role="italic">n</emphasis>
 hexadecimal digits. If the leftmost bit is off, then
@@ -5382,7 +5598,8 @@ the method returns <computeroutput>0</computeroutput>.</para>
 <computeroutput>0</computeroutput> characters
 (note, not &quot;sign-extended&quot;), or truncated on the left to
 <emphasis role="italic">n</emphasis> characters.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example id="ex.string-x2d-1">
+<title>String class - x2d method</title>
 <programlisting>
 "81"~x2d(2)      ->    -127
 "81"~x2d(4)      ->    129
@@ -5392,6 +5609,7 @@ the method returns <computeroutput>0</computeroutput>.</para>
 "F081"~x2d(1)    ->    1
 "0031"~x2d(0)    ->    0
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -5493,10 +5711,12 @@ name of the method within the library package.  If not specified,
 The method name is not case sensitive.
 If the target method cannot be resolved, .nil is returned.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.method-loadexternalmethod">
+<title>Method class - loadExternalMethod method</title>
 <programlisting>
 method = .Method~loadExternalMethod("homeAddress=", 'LIBRARY mylib setHomeAddress')
 </programlisting>
+</example>
 </section>
 
 <section id="mthMethodIsGuarded"><title>isGuarded</title>
@@ -5784,10 +6004,12 @@ name of the routine within the library package.  If not specified,
 The routine name is not case sensitive. If the target routine cannot be
 resolved, .nil is returned.
 </para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.routine-loadexternalroutine">
+<title>Routine class - loadExternalRoutine method</title>
 <programlisting>
 routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
 </programlisting>
+</example>
 </section>
 
 <section id="mthRoutineCall"><title>call</title>
@@ -6574,9 +6796,10 @@ message, you can use the <emphasis role="bold">result</emphasis>
 method to obtain any result from the messages
 <emphasis role="bold">send</emphasis> or
 <emphasis role="bold">start</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>notify method</secondary></indexterm>
+<example id="ex.message-notify">
+<title>Message class - notify method</title>
 <programlisting>
 /* Event-driven greetings */
 
@@ -6604,7 +6827,8 @@ method to obtain any result from the messages
 
   /* Don&apos;t leave until user has entered "quit"    */
   guard on when name="quit"
-  </programlisting>
+</programlisting>
+</example>
 </section>
 
 <section id="mthMessageResult"><title>result</title>
@@ -6625,7 +6849,8 @@ If message processing is not yet complete, this method waits until it completes.
 If the message <emphasis role="bold">send</emphasis> or
 <emphasis role="bold">start</emphasis> raises an error condition, this method
 also raises an error condition.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.message-result">
+<title>Message class - result method</title>
 <programlisting>
 /* Example using result method */
 string="700"                 /* Create a new string object, string   */
@@ -6637,6 +6862,7 @@ bond=string~start("reverse") /* Create a message object, bond, and   */
 /* Ask bond for the result of the message */
 say "The result of message was" bond~result     /* Result is 007     */
 </programlisting>
+</example>
 </section>
 
 <section id="mthMessageSend"><title>send</title>
@@ -6692,13 +6918,13 @@ message object retains any result and holds it until requested via
 the <emphasis role="bold">result</emphasis>
 method. You can use the <emphasis role="bold">notify</emphasis> method to request
 notification when message processing completes.</para>
-</section>
 
-<section id="exam"><title>Example</title>
 <indexterm><primary>examples</primary>
 <secondary>start method</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>of Message class</secondary></indexterm>
+<example id="ex.message-start">
+<title>Message class - start method</title>
 <programlisting>
 /* Using Message class methods */
 /* Note: In the following example, ::METHOD directives define class Testclass */
@@ -6729,6 +6955,7 @@ end
 reply "Bye Bye, Ollie..."
 return
 </programlisting>
+</example>
 <para>The following output is possible: </para>
 <programlisting>
 Hello, Ollie!
