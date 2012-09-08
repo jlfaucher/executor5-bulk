@@ -140,26 +140,64 @@
     menuBar~attachTo(self)
 
     orderControls = .Directory~new
-    orderControls[ecOrderNameAddr] = self~newEdit(          "IDC_ORDER_NAMEADDR")
-    orderControls[dtOrderDate]     = self~newDateTimePicker("IDC_ORDER_DATE"    )
-    orderControls[ecOrderNo]       = self~newEdit(          "IDC_ORDER_ORDNO"   )
-    orderControls[ecCustNo]        = self~newEdit(          "IDC_ORDER_CUSTNO"  )
-    orderControls[ecOrderItems]    = self~newListView(      "IDC_ORDER_ITEMS"   )
-    orderControls[ecOrder]         = self~newListView(      "IDC_ORDER_ITEMS"   )
-    orderControls[stNetCost]       = self~newStatic(        "IDC_ST_NET"        )
-    orderControls[stDiscountPC]    = self~newStatic(        "IDC_ST_DISCOUNT_PC")
-    orderControls[stDiscount]      = self~newStatic(        "IDC_ST_DISCOUNT"   )
-    orderControls[stTaxPC]         = self~newStatic(        "IDC_ST_TAX_PC"     )
-    orderControls[stTax]           = self~newStatic(        "IDC_ST_TAX"        )
-    orderControls[stTotal]         = self~newStatic(        "IDC_ST_TOTAL"      )
+    orderControls[ecOrderNameAddr] = self~newEdit(    "IDC_ORDER_NAMEADDR")
+    orderControls[ecOrderDate]     = self~newEdit(    "IDC_ORDER_DATE"    )
+    orderControls[ecOrderNo]       = self~newEdit(    "IDC_ORDER_ORDNO"   )
+    orderControls[ecCustNo]        = self~newEdit(    "IDC_ORDER_CUSTNO"  )
+    orderControls[lvOrderItems]    = self~newListView("IDC_ORDER_ITEMS"   )
+    orderControls[stNetCost]       = self~newStatic(  "IDC_ST_NET"        )
+    orderControls[stDiscountPC]    = self~newStatic(  "IDC_ST_DISCOUNT_PC")
+    orderControls[stDiscount]      = self~newStatic(  "IDC_ST_DISCOUNT"   )
+    orderControls[stTaxPC]         = self~newStatic(  "IDC_ST_TAX_PC"     )
+    orderControls[stTax]           = self~newStatic(  "IDC_ST_TAX"        )
+    orderControls[stTotal]         = self~newStatic(  "IDC_ST_TOTAL"      )
 
+    -- Each Order Item consists of ProdNo, ProdName, Qty:
+    orderItems = orderControls[lvOrderItems]
+    orderItems~addExtendedStyle(GRIDLINES FULLROWSELECT)
+    orderItems~insertColumnPX(0,"Product No.",110,"LEFT")
+    orderItems~insertColumnPX(1,"Product Name",160,"LEFT")
+    orderItems~insertColumnPX(2,"Quantity",85,"LEFT")
+    self~connectListViewEvent("IDC_ORDER_ITEMS","ACTIVATE",showProduct)	-- double-click
 
+    --font = self~createFontEx("Ariel", 10)
+    font = self~createFontEx("Courier", 8)
+    orderControls[lvOrderItems]~setFont(font)
     self~showData
 
 
   /*----------------------------------------------------------------------------
     Event-Handler Methods - Menu Events
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD showProduct
+    expose orderControls rootDlg
+    say "OrderView-showProduct-01: Show Product requested."
+    productItem = orderControls[lvOrderItems]~selected
+    say "OrderView-showProduct-01: item selected =" productItem
+    if item = -1 then do		-- if no item selected.
+      ret = MessageDialog(.HRSolv~nilSelected, self~hwnd, title, 'WARNING')
+      return
+    end
+
+    info=.Directory~new
+    if orderControls[lvOrderItems]~getItemInfo(productItem, info) then do
+      say "OrderView-showOrder-02: info~text =" info~text
+      objectMgr = .local~my.ObjectMgr
+      objectMgr~showModel("ProductModel", info~text, self)		--Ex07
+      self~disableControl("IDC_ORDLIST_SHOWORDER")
+    end
+    else do
+      say "OrderListView-showOrder-04: ~getItemInfo returned .false."
+    end
+
+
+    -- From OrderListView - to be modified:
+/*
+
+
+*/
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD anAction UNGUARDED
@@ -189,11 +227,40 @@
     end
     --say "orderData['CustNo']:" orderData['CustNo']  -- orderData~CustNo, orderData~'CustNo' - neither work.
     --say "--------------------"
-
+    -- Format & show the address:
+    custAddr = orderData["CustAddress"]
+    parse var custAddr street "," city "," state
+    say "OrderView-showData-01: address =" street city state orderData["Zip"]
+    eol = .endOfLine
+    custNameAddr = orderData["CustName"]||eol||street||eol||city||eol||state orderData["Zip"]
+    orderControls[ecOrderNameAddr]~setText(custNameAddr)
+    -- Format & show the order date:
+    orderDate = orderData["Date"]
+    yy = orderDate~left(2); dd = orderDate~right(2); mm = orderDate~substr(3,2)
+    orderDate = mm||"/"||dd||"/"||yy
+    orderControls[ecOrderDate]~setText(orderDate)
+    -- Show the Order NUmber:
     orderControls[ecOrderNo]~setText(orderData["OrderNo"])
-    --orderControls[] = self~newEdit("IDC_ORDER_NAMEADDR")
-    --orderControls[ecOrderItems]    = self~newListView("IDC_ORDER_ITEMS")
-    --orderControls[ecOrderNo]       = self~newListView("IDC_ORDER_ORDNO")
+    -- Show the Customer NUmber:
+    orderControls[ecCustNo]~setText(orderData["CustNo"])
+
+    -- Show the Order Items (aka Order Lines):
+    lvOrderLines = orderControls[lvOrderItems]
+    arr = orderData[OrderLines]
+    --say "OrderView-showData-02: order lines array dims =" arr~dimension
+--    do i = 1 to arr~dimension(1)
+--      say arr[i,2]  arr[i,3]  arr[i,4]
+--    end
+    do i=1 to arr~dimension(1)
+      qty = arr[i,3]~right(8," ")
+      lvOrderLines~addRow( , , arr[i,2], arr[i,4], qty )
+    end
+    --lvOrderLines~setColumnWidth(0)	-- set width of 2nd column to longest text entry.
+    --lvOrderLines~setColumnWidth(1)
+    --lvOrderLines~setColumnWidth(3)
+    --say "OrderView-showData-02: arrOrderLines =" arrOrderLines
+    --orderControls[lvOrderItems]
+
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     -- "Cancel" - This method over-rides the default Windows action of

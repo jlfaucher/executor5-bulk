@@ -294,7 +294,7 @@
     custControls[ecCustName]~setText(custData["CustName"])
     -- Re-format Cust Address from a comma-separated string into a		-- Ex07
     -- line-end-separated string.
-    strCustAddr = custData["Address"]~changeStr(",",.endOfLine)
+    strCustAddr = custData["CustAddress"]~changeStr(",",.endOfLine)
     --strCustAddr~~changeStr(",",.endOfLine) -- to many twiddles!
     say "CustomerView-showData-02: strCustAddr =" strCustAddr
     say "CustomerView-showData-03: custData['Zip'] =" custData["Zip"]

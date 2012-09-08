@@ -203,7 +203,7 @@
       --say "ProductListView-showProduct-02: info~text =" info~text
       --say "ProductListView-showProduct-03; root =" root
       objectMgr = .local~my.ObjectMgr
-      objectMgr~showModel("ProductModel", info~text, self)		--Ex07
+      objectMgr~showModel("ProductModel", info~text, rootDlg)		--Ex07
       --.local~my.idProductData  = .ProductData~newInstance	-- create a ProductData instance
       --.local~my.idProductModel = .ProductModel~newInstance	-- create a ProductModel instance
       --.local~my.idProductData~activate

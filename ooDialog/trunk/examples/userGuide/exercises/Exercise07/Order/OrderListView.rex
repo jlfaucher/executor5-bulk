@@ -119,7 +119,7 @@
     say "OrderListView-activate-01: idModel, root =" idModel rootDlg
     forward class (super) continue					  --Ex07
     modelData = RESULT							  --Ex07
-    say "OrderListView-activate-02: modelData dims =" modelData modelData~dimension
+    --say "OrderListView-activate-02: modelData =" modelData
     if rootDlg = "SA" then do			-- If standalone operation required
       rootDlg = self				      -- To pass on to children
       self~execute("SHOWTOP","IDI_ORDLIST_DLGICON")
@@ -201,7 +201,7 @@
     if lvOrders~getItemInfo(item, info) then do
       say "OrderListView-showOrder-02: info~text =" info~text
       objectMgr = .local~my.ObjectMgr
-      objectMgr~showModel("OrderModel", info~text, self)		--Ex07
+      objectMgr~showModel("OrderModel", info~text, rootDlg)		--Ex07
       self~disableControl("IDC_ORDLIST_SHOWORDER")
     end
     else do

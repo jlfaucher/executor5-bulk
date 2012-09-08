@@ -252,10 +252,11 @@
   ::METHOD addCustomerInfo PRIVATE
     -- (1) Add column headers (field names) from Customer to OrderHeaders:
     columnHeaders = self~dirOrderHeaders[headers]
-    columnHeaders[6] = "CustName"; columnHeaders[7] = "Address"
+    columnHeaders[6] = "CustName"; columnHeaders[7] = "CustDisc"
+    columnHeaders[8] = "CustAddress"; columnHeaders[9] = "Zip"
     self~dirOrderHeaders[headers] = columnHeaders
 
-    -- (2) Add values for custName and Address for each order header line:
+    -- (2) Add values for custName, Discount, CustAddress and Zip for each order header line:
     arrData = self~dirOrderHeaders[records]
     --say "OrderData-getFile-02 arrData, dims =" arrData arrData~dimension
     -- (2a) First get id for CustomerData:
@@ -269,11 +270,15 @@
       --say "OrderData-getFile-04: arrOrderHeaders[i,2] =" arrOrderHeaders[i,2]
       orderCustNo = arrData[i,2]
       custDir = idCustdata~getRecord(orderCustNo)
-      orderCustName = custDir["CustName"]
-      orderCustAddr = custDir["Address"]
+      --orderCustName     = custDir["CustName"]
+      --orderCustDiscount = custDir["Discount"]
+      --orderCustAddress  = custDir["CustAddress"]
+      --orderCustZip      = custDir["Zip"]
       -- add customer's Name and Address to the end of the record:
-      arrData[i,6] = orderCustName
-      arrData[i,7] = orderCustAddr
+      arrData[i,6] = custDir["CustName"]
+      arrData[i,7] = custDir["CustDisc"]
+      arrData[i,8] = custDir["CustAddress"]
+      arrData[i,9] = custDir["Zip"]
       --say "OrderData-getFile-05: custName = " arrOrderHeaders[i,6]
     end
     self~dirOrderHeaders[records] = arrData
@@ -328,13 +333,14 @@
     		The format of the directory is:
                 Index   Item
                 ------- -------
-                OrderNo		the order number (from dirOrderHeaders}
-                CustNo		customer number  (from dirOrderHeaders}
-                Date		order date	 (from dirOrderHeaders}
-                Disc		discount         (from dirOrderHeaders}
-                Cmtd		committed?	 (from dirOrderHeaders}
-                OrderLineHdrs   <a 1D array>	 (from dirOrderLines)
-                OrderLines	<a 2D array>	 (from dirOrderLines)
+                OrderNo		the order number  (from dirOrderHeaders}
+                CustNo		customer number   (from dirOrderHeaders}
+                Date		order date	  (from dirOrderHeaders}
+                Disc		discount          (from dirOrderHeaders}
+                Cmtd		committed?	  (from dirOrderHeaders}
+                CustDisc        customer discount (from dirOrderHeaders)
+                OrderLineHdrs   <a 1D array>	  (from dirOrderLines)
+                OrderLines	<a 2D array>	  (from dirOrderLines)
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD getRecord PUBLIC
     use strict arg orderNo
@@ -350,7 +356,6 @@
     numSrcOrderLines         = self~dirOrderLines[count]
 
     -- (2) Find the Order Header record:
-    columns = 7
     found = .false
     do recordNo = 1 to numSrcOrderHeaders
       if arrSrcOrderHeaders[recordNo,1] = orderNo then do
@@ -363,6 +368,7 @@
     -- (3a) Put the Order headers(i,e, the field labels) into dirOrderRecord:
     dirOrderRecord = .Directory~new
     -- Put the OrderHeader info into dirOrderRecord:
+    columns = arrSrcOrderHeaderLabels~items
     do j=1 to columns
       itemName = arrSrcOrderHeaderLabels[j]
       dirOrderRecord[itemName] = arrSrcOrderHeaders[recordNo,j]
@@ -407,12 +413,16 @@
     say "Number of Orders:" self~dirOrderHeaders[Count]
     arrOHH = self~dirOrderHeaders[Headers]
     say "Order Headers: Headers or Field Names ("||arrOHH~items "columns):"
-    say "  " arrOHH[1] arrOHH[2] arrOHH[3] arrOHH[4] arrOHH[5] arrOHH[6] arrOHH[7]
+    do i=1 to 9
+      say "Order Headers FieldNames:" arrOHH[i]
+    end
+    say "  " arrOHH[1] arrOHH[2] arrOHH[3] arrOHH[4] arrOHH[5] arrOHH[6] arrOHH[7] arrOHH[8] arrOHH[9]
     say "Order Headers - Records"
     arrOHR = self~dirOrderHeaders[Records]
     do i = 1 to arrOHR~dimension(1)
       say i||".  " arrOHR[i,1] arrOHR[i,2] arrOHR[i,3] arrOHR[i,4]
       say "    " arrOHR[i,5] arrOHR[i,6] arrOHR[i,7]
+      say "    " arrOHR[i,8] arrOHR[i,9]
     end
     say
     say "Number of Order Lines:" self~dirOrderLines[Count]

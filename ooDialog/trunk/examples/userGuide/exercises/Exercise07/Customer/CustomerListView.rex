@@ -215,7 +215,7 @@
       --.local~my.idCustomerModel~activate
       --.CustomerView~newInstance(rootDlg,"CU003")
       objectMgr = .local~my.ObjectMgr					-- Ex07
-      objectMgr~showModel("CustomerModel", info~text, self)		-- Ex07
+      objectMgr~showModel("CustomerModel", info~text, rootDlg)		-- Ex07
       --objectMgr~showModel("CustomerModel", "CU0003", self)		-- Ex07
       self~disableControl("IDC_CUSTLIST_SHOWCUST")			-- Ex07
     end

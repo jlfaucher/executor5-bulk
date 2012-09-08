@@ -6,7 +6,6 @@
 #define IDI_ORDER_DLGICON                       109
 #define IDR_ORDER_MENU                          110
 #define IDC_ORDER_NAMEADDR                      1000
-#define IDC_ORDER_DATE                          1001
 #define IDC_ST_DISCOUNT_PC                      1005
 #define IDM_ORDER_DOTHIS                        40000
 #define IDM_ORDER_ABOUT                         40001
@@ -18,3 +17,4 @@
 #define IDC_ST_TAX                              40012
 #define IDC_ST_NET                              40013
 #define IDC_ST_TOTAL                            40014
+#define IDC_ORDER_DATE                          40017
