@@ -128,9 +128,12 @@ patterns.</para></listitem>
 <tertiary>examples</tertiary></indexterm>
 <indexterm><primary>word</primary>
 <secondary>in parsing</secondary></indexterm>
+<example>
+<title>Parsing templates</title>
 <programlisting>
 parse value "time and tide" with var1 var2 var3
 </programlisting>
+</example>
 <para>The template
 in this instruction is: <computeroutput>var1 var2 var3</computeroutput>.
 The data to be parsed is between the keywords
@@ -148,11 +151,14 @@ var3="tide"
 <para>In this example, the source string to be parsed is a literal string,
 <computeroutput>time and tide</computeroutput>. In the next example, the source
 string is a variable.</para>
+<example>
+<title>Parse value</title>
 <programlisting>
 /* PARSE VALUE using a variable as the source string to parse    */
 string="time and tide"
 parse value string with var1 var2 var3           /* same results */
 </programlisting>
+</example>
 <para id="pvalex">PARSE VALUE does not convert lowercase
 <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput> in
 the source string to uppercase
@@ -178,6 +184,8 @@ name of the variable containing the source string follows the keywords
 the source string. The template is
 <computeroutput>star1 star2 star3</computeroutput>.</para>
 
+<example>
+<title>Parse var</title>
 <programlisting>
 /* PARSE VAR example                                             */
 stars="Sirius Polaris Rigil"
@@ -185,6 +193,7 @@ parse var stars star1 star2 star3             /* star1="Sirius"  */
 /* star2="Polaris" */
 /* star3="Rigil"   */
 </programlisting>
+</example>
 <para>All variables in a template receive new values. If there are more
 variables in the template than words in the source string, the leftover
 variables receive null (empty) values. This is true for the entire parsing:
@@ -206,7 +215,7 @@ parse var satellites Earth Jupiter              /* Earth="moon"  */
 /* Jupiter="Io Europa Callisto..."*/
 </programlisting>
 
-<para> Parsing
+<para>Parsing
 <indexterm><primary>blanks</primary>
 <secondary>in parsing, treatment of</secondary></indexterm>
 <indexterm><primary>parsing</primary>
@@ -221,6 +230,8 @@ to a variable. The exception to this is the word or group of words assigned to
 the last variable. The last variable in a template receives leftover data,
 preserving extra leading and trailing whitespace characters. Here is an example:
 </para>
+<example>
+<title>Parse var</title>
 <programlisting>
 /* Preserving extra blanks                                       */
 solar5="Mercury Venus  Earth   Mars     Jupiter  "
@@ -230,6 +241,7 @@ parse var solar5 var1 var2 var3 var4
 /* var3  ="Earth"                                                */
 /* var4  ="  Mars     Jupiter  "                                 */
 </programlisting>
+</example>
 <para>In the source string,
 <indexterm><primary>parsing</primary>
 <secondary>string patterns</secondary>
@@ -255,6 +267,8 @@ parse value "   Pluto   " with var1        /* var1="   Pluto   "*/
 allows any message term value that can be used on the left side of an assignment
 instruction (See <xref linkend="assinmt" />).
 For example:</para>
+<example>
+<title>Parse var</title>
 <programlisting>
 /* Preserving extra blanks                                       */
 solar5="Mercury Venus  Earth   Mars     Jupiter  "
@@ -265,6 +279,7 @@ parse var solar5 d~var1 d~var2 d~var3 d~var4
 /* d~var3  ="Earth"                                                */
 /* d~var4  ="  Mars     Jupiter  "                                 */
 </programlisting>
+</example>
 </section>
 
 <section id="placeh"><title>The Period as a Placeholder</title>
@@ -286,6 +301,8 @@ adjacent periods with whitespace; otherwise, an error results.</para>
 <indexterm><primary>parsing</primary>
 <secondary>examples</secondary>
 <tertiary>period as a placeholder</tertiary></indexterm>
+<example>
+<title>Period placeholder</title>
 <programlisting>
 /* Period as a placeholder                                       */
 stars="Arcturus Betelgeuse Sirius Rigil"
@@ -295,6 +312,7 @@ parse var stars . . brightest .            /* brightest="Sirius" */
 stars="Arcturus Betelgeuse Sirius Rigil"
 parse var stars drop junk brightest rest   /* brightest="Sirius" */
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -351,22 +369,28 @@ templates with templates containing literal string patterns. </para>
 <indexterm><primary>parsing</primary>
 <secondary>examples</secondary>
 <tertiary>templates containing string patterns</tertiary></indexterm>
+<example>
+<title>Template string patterns</title>
 <programlisting>
 /* Simple template                                               */
 name="Smith, John"
 parse var name ln fn                     /* Assigns: ln="Smith," */
 /*          fn="John"   */
 </programlisting>
+</example>
 <para>Notice that the comma remains (the variable
 <computeroutput>ln</computeroutput> contains
 <computeroutput>"Smith,"</computeroutput>). In the next example the template
 is <computeroutput>ln ", " fn</computeroutput>. This removes the comma.</para>
+<example>
+<title>Template string patterns</title>
 <programlisting>
 /* Template with literal string pattern                          */
 name="Smith, John"
 parse var name ln ", " fn                /* Assigns: ln="Smith"  */
                                          /*          fn="John"   */
 </programlisting>
+</example>
 <para>First, the language processor scans the source string for ", ".
 It splits the source string at that point. The variable
 <computeroutput>ln</computeroutput> receives
@@ -451,6 +475,8 @@ records, such as: </para>
 <indexterm><primary>parsing</primary>
 <secondary>examples</secondary>
 <tertiary>templates containing positional patterns</tertiary></indexterm>
+<example>
+<title>Parsing stems</title>
 <programlisting>
 /* Parsing with absolute positional patterns in template         */
 record.1="Clemens   Samuel    Mark Twain          "
@@ -461,6 +487,7 @@ do n=1 to 3
   If lastname="Evans" &amp; firstname="Mary Ann" then say "By George!"
 end                         /* Says "By George!" after record 2  */
 </programlisting>
+</example>
 <para>The source string is split at character position 11 and at position 21.
 The language processor assigns characters 1 to 10 to
 <computeroutput>lastname</computeroutput>,
@@ -512,6 +539,8 @@ respectively, from the start of the string (for the first pattern) or from
 the position of the last match. The position of the last match is the first
 character of the last match. Here is the same example as for absolute positional
 patterns done with relative positional patterns: </para>
+<example>
+<title>Parsing with relative positional patterns</title>
 <programlisting>
 /* Parsing with relative positional patterns in template         */
 record.1="Clemens   Samuel    Mark Twain          "
@@ -522,6 +551,7 @@ do n=1 to 3
   If lastname="Evans" &amp; firstname="Mary Ann" then say "By George!"
 end                                             /* same results  */
 </programlisting>
+</example>
 <para>Whitespace characters between the sign and the number are insignificant.
 Therefore,
 <computeroutput>+10</computeroutput> and
@@ -601,6 +631,8 @@ respectively, from the start of the string (for the first pattern) or from
 the position of the last match. The position of the last match is the first
 character of the last match. Here is the same example as for relative positional
 patterns done with length positional patterns: </para>
+<example>
+<title>Parsing with relative positional patterns</title>
 <programlisting>
 /* Parsing with relative positional patterns in template         */
 record.1="Clemens   Samuel    Mark Twain          "
@@ -611,6 +643,7 @@ do n=1 to 3
   If lastname="Evans" &amp; firstname="Mary Ann" then say "By George!"
 end                                             /* same results  */
 </programlisting>
+</example>
 <para>Whitespace characters between the trigger and the number are
 insignificant. Therefore,
 <computeroutput>&gt;10</computeroutput> and
@@ -620,6 +653,8 @@ insignificant. Therefore,
 the special case of the value 0.  A &gt;0 pattern will split the string into a null string and leave
 the match position unchanged.  This is particularly useful for parsing off length-qualified fields
 from a string.</para>
+<example>
+<title>Parsing with length patterns</title>
 <programlisting>
 /* Parsing with length patterns in template         */
 line = "04Mark0005Twain"
@@ -630,11 +665,14 @@ say '"'first'" "'middle'" "'last'"'  -- displays "Mark" "" "Twain"
 parse var line len +2 first +(len) len +2 middle +(len) len +2 last +(len)
 say '"'first'" "'middle'" "'last'"'  -- displays "Mark" "05Twain" "Twain"
 </programlisting>
+</example>
 <para>The &lt; length pattern will move the position the indicated position to the left, and split
 the string between the original position and the movement position.  At of the operation, the current
 position is returned to the original position.  This movement is equivalent to using a negative relative
 pattern followed by a positive relative pattern for the same length.  This operation allows for easy
 extraction of characters that precede a string match.</para>
+<example>
+<title>Parsing with length patterns</title>
 <programlisting>
 /* Parsing with length patterns in template         */
 parse value '12345.6789' with '.' digit &lt;1    -- digit -> "5"
@@ -642,6 +680,7 @@ parse value '12345.6789' with '.' digit &lt;1    -- digit -> "5"
 /* parsing with relative patterns only */
 parse value '12345.6789' with '.' -1 digit +1    -- digit -> "5"
 </programlisting>
+</example>
 
 <section id="patwd"><title>Combining Patterns and Parsing into Words</title>
 <indexterm><primary>parsing</primary>
@@ -660,6 +699,8 @@ template to each substring, following the rules for parsing into words.</para>
 <secondary>examples</secondary>
 <tertiary>combining string pattern and parsing into words</tertiary>
 </indexterm>
+<example>
+<title>Combining string patterns</title>
 <programlisting>
 /* Combining string pattern and parsing into words               */
 name="    John      Q.   Public"
@@ -667,6 +708,7 @@ parse var name fn init "." ln        /* Assigns: fn="John"       */
 /*          init="     Q"                                        */
 /*          ln="   Public"                                       */
 </programlisting>
+</example>
 <para>The pattern divides the template into two sections: </para>
 <itemizedlist>
 <listitem><para><computeroutput>fn init</computeroutput></para></listitem>
@@ -707,6 +749,8 @@ is the only variable in this section of the template.
 <secondary>examples</secondary>
 <tertiary>combining positional patterns with parsing into words</tertiary>
 </indexterm>
+<example>
+<title>Combining positional patterns</title>
 <programlisting>
 /* Combining positional patterns with parsing into words         */
 string="R E X X"
@@ -715,6 +759,7 @@ parse var string var1 var2 4 var3 6 var4   /* Assigns: var1="R"  */
 /*          var3=" X"                                            */
 /*          var4=" X"                                            */
 </programlisting>
+</example>
 <para>The pattern divides the template into three sections: </para>
 <itemizedlist>
 <listitem><para><computeroutput>var1 var2</computeroutput></para></listitem>
@@ -789,6 +834,8 @@ the same template.</para>
 <indexterm><primary>parsing</primary>
 <secondary>variable patterns</secondary>
 <tertiary>string</tertiary></indexterm>
+<example>
+<title>Combining variables in patterns</title>
 <programlisting>
 /* Using a variable as a string pattern                          */
 /*  The variable (delim) is set in the same template             */
@@ -797,6 +844,7 @@ pull date
 parse var date month 3 delim +1 day +2 (delim) year
 /* Sets: month="11"; delim="/"; day="15"; year="98"  */
 </programlisting>
+</example>
 
 <para>If an equal, a plus, a minus sign, &gt; or &lt; precedes the left parenthesis, the
 value of the expression is treated as an absolute, relative positional, or length positional pattern.
@@ -819,12 +867,15 @@ positions of the last two fields.</para>
 <secondary>positional patterns</secondary></indexterm>
 <indexterm><primary>variable</primary>
 <secondary>patterns, parsing with positional</secondary></indexterm>
+<example>
+<title>Combining variables an positional patterns</title>
 <programlisting>
 /* Using a variable as a positional pattern                      */
 dataline = "12 26 .....Samuel ClemensMark Twain"
 parse var dataline pos1 pos2 6 =(pos1) realname =(pos2) pseudonym
 /* Assigns: realname="Samuel Clemens"; pseudonym="Mark Twain"    */
 </programlisting>
+</example>
 <para>The positional pattern <computeroutput>6</computeroutput> is needed in
 the template for the following reason: Word parsing occurs after the language
 processor divides the source string into substrings using patterns. Therefore,
@@ -965,6 +1016,8 @@ empty, it uses default input, typically the terminal.)</entry>
 <tertiary>parsing instructions</tertiary></indexterm>
 <para>All examples in this section parse source strings into words.</para>
 <para>ARG </para>
+<example>
+<title>ARG with source string named in Rexx program invocation</title>
 <programlisting>
 /* ARG with source string named in Rexx program invocation       */
 /*  Program name is PALETTE.  Specify 2 primary colors (yellow,  */
@@ -984,37 +1037,50 @@ Say new; exit                              /* Displays: "purple" */
 Err:
 say &apos;Input error--color is not "red" or "blue" or "yellow"&apos;; exit
 </programlisting>
+</example>
 <para>ARG converts alphabetic characters to uppercase before parsing. An example
 of ARG with the arguments in the CALL to a subroutine is in
 <xref linkend="parsmul" />.</para>
 <para>PARSE ARG is similar to ARG except that PARSE ARG
 does not convert alphabetic characters to uppercase before parsing.</para>
 <para>PARSE LINEIN </para>
+<example>
+<title>PARSE LINEIN</title>
 <programlisting>
 parse linein "a=" num1 "c=" num2     /* Assume: 8 and 9          */
 sum=num1+num2                        /* Enter: a=8 b=9 as input  */
 say sum                              /*  Displays: "17"          */
 </programlisting>
+</example>
 <para>PARSE PULL </para>
+<example>
+<title>PARSE PULL</title>
 <programlisting>
 PUSH "80 7"                /* Puts data on queue                 */
 parse pull fourscore seven /* Assigns: fourscore="80"; seven="7" */
 SAY fourscore+seven        /* Displays: "87"                     */
 </programlisting>
+</example>
 <para>PARSE SOURCE </para>
+<example>
+<title>PARSE SOURCE</title>
 <programlisting>
 parse source sysname .
 Say sysname                         /* Possibly Displays:        */
                                     /* "Windows"                 */
 </programlisting>
+</example>
 <para><xref linkend="pvalex" />.</para>
 <para>PARSE VAR examples are throughout the chapter, starting
 with <xref linkend="parsingch" />.</para>
 <para>PARSE VERSION </para>
+<example>
+<title>PARSE VERSION</title>
 <programlisting>
 parse version . level .
 say level                /* Displays: "6.02" */
 </programlisting>
+</example>
 <para>PULL is similar to PARSE PULL except that PULL converts
 alphabetic characters to uppercase before parsing.</para>
 </section>
@@ -1049,6 +1115,8 @@ to the next string.</para>
 <indexterm><primary>parsing</primary>
 <secondary>examples</secondary>
 <tertiary>parsing multiple strings in a subroutine</tertiary></indexterm>
+<example>
+<title>Parsing variable strings</title>
 <programlisting>
 /* Parsing several strings in a subroutine                       */
 num="3"
@@ -1062,6 +1130,7 @@ Sub:
   total=subtotal+1
   RETURN
 </programlisting>
+</example>
 <para>Note that when a Rexx program is started as a command, only one argument
 string is recognized. You can pass several argument strings for parsing if:
 </para>
@@ -1100,6 +1169,8 @@ string pattern.  </para>
 <indexterm><primary>parsing</primary>
 <secondary>examples</secondary>
 <tertiary>combining string and positional patterns</tertiary></indexterm>
+<example>
+<title>Combining string and positional patterns</title>
 <programlisting>
 /* Template containing string pattern, then variable name, then  */
 /*  relative positional pattern does not skip any data.          */
@@ -1107,6 +1178,7 @@ string="REstructured eXtended eXecutor"
 parse var string var1 3 junk "X" var2 +1 junk "X" var3 +1 junk
 say var1||var2||var3 /* Concatenates variables; displays: "Rexx" */
 </programlisting>
+</example>
 <para>Here is how this template works:</para>
 
 <mediaobject>

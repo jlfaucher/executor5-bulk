@@ -165,6 +165,8 @@ use subclassing. For example, you can create Statarray, a subclass of the
 Array class (<xref linkend="clsArray" />).
 The statArray class can include a
 method for computing a total of all the numeric elements of an array.</para>
+<example>
+<title>Creating an array subclass</title>
 <programlisting>
 /* Creating an array subclass for statistics */
 
@@ -200,6 +202,7 @@ method for computing a total of all the numeric elements of an array.</para>
   expose total
   return total
 </programlisting>
+</example>
 <para>You can use this method on the individual array
 <emphasis>instances</emphasis>, so it is an
 <emphasis>instance method</emphasis>.</para>
@@ -222,6 +225,8 @@ CLASS option. The second version uses a metaclass.</para>
 <para><emphasis role="bold">Version 1</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>metaclass</secondary></indexterm>
+<example>
+<title>Adding a CLASS method</title>
 <programlisting>
 /* Adding a class method using ::METHOD */
 
@@ -262,6 +267,7 @@ say "The point class has created" .point~instances "instances."
   expose xVal yVal                  /* Use object variables         */
   return "("xVal","yVal")"          /* to return string value       */
 </programlisting>
+
 <para><emphasis role="bold">Version 2</emphasis></para>
 <programlisting>
 /* Adding a class method using a metaclass  */
@@ -303,6 +309,7 @@ return instanceCount
   expose xVal yVal                     /* Use object variables         */
   return "("xVal","yVal")"             /* to return string value       */
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -323,6 +330,8 @@ class name and the name of the environment symbol (<xref linkend="ensym" />) use
 <para>Now you can use ::METHOD directive (<xref linkend="methd" />) to add methods to your new class. The
 ::METHOD directives must immediately follow the ::CLASS directive that creates
 the class. </para>
+<example>
+<title>Adding a method</title>
 <programlisting>
 ::method type
   return "an account"
@@ -335,25 +344,34 @@ the class. </para>
   expose name
   return name
 </programlisting>
+</example>
 <para>This adds the methods TYPE, NAME, and NAME= to the Account class.</para>
 <para>You can create a subclass of the Account class and define a method for
 it: </para>
+<example>
+<title>Adding a method</title>
 <programlisting>
 ::class "Savings" subclass account
 ::method type
 return "a savings account"
 </programlisting>
+</example>
 <para>Now you can create an instance of the Savings class with the NEW method
 (see <xref linkend="mthClassNew" />) and send TYPE, NAME, and NAME= messages
 to that instance:</para>
+<example>
+<title>Invoking a method</title>
 <programlisting>
 asav = .savings~new
 say asav~type
 asav~name = "John Smith"
 </programlisting>
+</example>
 <para>The Account class methods NAME and NAME= create a pair of access methods
 to the account object variable NAME. The following directive sequence creates
 the NAME and NAME= methods: </para>
+<example>
+<title>Defining SET and GET methods</title>
 <programlisting>
 ::method "name="
   expose name
@@ -363,6 +381,7 @@ the NAME and NAME= methods: </para>
   expose name
   return name
 </programlisting>
+</example>
 
 <para>You can replace this with a single ::ATTRIBUTE directive (<xref linkend="attrd" />.
 For example, the directive </para>
@@ -383,11 +402,14 @@ might add the following constant to your Account class:</para>
 ::constant checkingMinimum 200
 </programlisting>
 <para>This value can be retrieved using either of the following methods</para>
+<example>
+<title>Retieving method values</title>
 <programlisting>
   say .Account~checkingMinimum    -- displays "200"
   asave = .savings~new
   say asave~checkingMinimum       -- also displays "200"
 </programlisting>
+</example>
 
 <section id="usingcl"><title>Using Classes</title>
 <para>When you create a new class, it is always a subclass of an existing class.
@@ -450,6 +472,8 @@ defines a new method (%), creates an instance of the Cost class (mycost),
 and sends a <computeroutput>%</computeroutput> message
 to <computeroutput>mycost</computeroutput>: </para>
 
+<example>
+<title>Accessing a method</title>
 <programlisting>
 cost=.object~subclass("A cost")
 cost~define("%", &apos;expose p; say "Enter a price."; pull p; say p*1.07;&apos;)
@@ -458,6 +482,7 @@ mycost~"%"        /* Produces:  Enter a price.             */
                   /* If the user specifies a price of 100, */
                   /* produces: 107.00                      */
 </programlisting>
+</example>
 </section>
 
 <section id="xmeths"><title>Default Search Order for Method Selection</title>
@@ -511,6 +536,8 @@ with the original message.</para>
 <para>For example, the following UNKNOWN method will print out the name of
 the invoked method and then invoke the same method on another object.  This
 can be used track the messages that are sent to an object:</para>
+<example>
+<title>Defining an UNKNOWN method</title>
 <programlisting>
 <![CDATA[
 ::method unknown
@@ -521,6 +548,7 @@ say name "invoked with" arguments~toString
 forward to(target) message(name) arguments(arguments)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="chsrod"><title>Changing the Search Order for Methods</title>
@@ -583,6 +611,8 @@ the same object, accessed via the special variable SELF.  Private methods of an 
 be accessed from other instances of the same class (or subclass instances).
 </para></listitem>
 <listitem><para>From within a method defined at the same class scope as the method.  For example:</para>
+<example>
+<title>Referencing methods</title>
 <programlisting>
 <![CDATA[
 ::class Savings
@@ -596,11 +626,14 @@ be accessed from other instances of the same class (or subclass instances).
   checking = .true
 ]]>
 </programlisting>
+</example>
 <para>The newCheckingAccount CLASS method is able to invoke the makeChecking method because
 the scope of the makeChecking method is .Savings.
 </para></listitem>
 <listitem><para>From within an instance (or subclass instance) of a class to a private class
 method of its class.  For example:</para>
+<example>
+<title>Referencing methods</title>
 <programlisting>
 <![CDATA[
 ::class Savings
@@ -618,6 +651,7 @@ method of its class.  For example:</para>
   accountNumber = self~class~allocateAccountNumber
 ]]>
 </programlisting>
+</example>
 <para>The instance init method of the Savings class is able to invoke the allocateAccountNumber private
 method of the .Savings class object because it is owned by an instance of the .Savings class.</para>
 </listitem>
@@ -637,7 +671,8 @@ the object is created. If an object has more than one INIT method (for example,
 it is defined in several classes), each INIT method must forward the INIT
 message up the hierarchy to complete the object's initialization.</para>
 
-<para><emphasis role="bold">Example:</emphasis></para>
+<example>
+<title>Instance initialization</title>
 <programlisting>
 asav = .savings~new(1000.00, 6.25)
 say asav~type
@@ -664,13 +699,17 @@ asav~name = "John Smith"
 ::method type
   return "a savings account"
 </programlisting>
+</example>
 <para>The NEW method of the Savings class object creates a new Savings object
 and calls the INIT method of the new object. The INIT method arguments are
 the arguments specified on the NEW method. In the Savings INIT method, the
 line: </para>
+<example>
+<title>Instance initialization</title>
 <programlisting>
 self~init:super(balance)
 </programlisting>
+</example>
 <para> calls the INIT method of
 the Account class, using just the balance argument specified on the NEW message.
 </para>
@@ -753,7 +792,8 @@ if .nil = string
 </programlisting>
 <para>will not as the Nil object's "=" method does not expect
 a string as an argument.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example>
+<title>Comparing to the .NIL object</title>
 <programlisting>
 d = .directory~new
 say substr(d,5,7)         /* Produces "rectory" from "a Directory" */
@@ -761,6 +801,7 @@ signal on nostring
 say substr(d,5,7)         /* Raises the NOSTRING condition */
 say substr(d~string,3,6)  /* Displays "Direct" */
 </programlisting>
+</example>
 <para>For arguments to Rexx object methods, different rules apply. When a
 method expects a string as an argument, the argument object is sent the
 REQUEST("STRING") message. If REQUEST returns the Nil object, then the

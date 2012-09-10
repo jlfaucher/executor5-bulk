@@ -58,8 +58,8 @@ are used, or the Environment object may be directly accessed using the .ENVIRONM
 Environment use the same name as the corresponding environment symbol, but without a leading period.  For example:
 </para>
 <programlisting>
-  say .true              -- Displays "1"
-  say .environment~true  -- Also displays "1"
+  say .true              -> Displays "1"
+  say .environment~true  -> Also displays "1"
 </programlisting>
 <para>The Environment object directory contains all of the Rexx built-in classes (Array, etc.), plus special Rexx
 constants such as .NIL, .TRUE, and .FALSE.</para>
@@ -142,7 +142,8 @@ command line objects are combined into single string and passed to the script as
 retrievable via the BIF ARG(1). The array supplied by the .LOCAL environment is a direct
 collection of the individual C arguments passed to the program. The name of this array is
 SYSCARGS.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>.LOCAL</title>
 <programlisting>
 /* .LOCAL example--places something in the Local environment directory */
 .local~my.alarm = theAlarm
@@ -176,6 +177,7 @@ do carg over cmdargs
    say carg
 end
 </programlisting>
+</example>
 </section>
 
 <section id="debuginputobj"><title>The Debug Input Monitor (.DEBUGINPUT)</title>
@@ -354,7 +356,8 @@ the .METHODS directory. These are known as <emphasis role="italic">floating
 methods</emphasis>. If there are no such methods,
 the .METHODS symbol has the default value of
 <computeroutput>.METHODS</computeroutput>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example>
+<title>.METHODS</title>
 <programlisting>
 /* .methods contains one entry with the index (method name) "TALK" */
 o=.object~enhanced(.methods)  /* create object, enhance it with methods */
@@ -363,6 +366,7 @@ o~talk("echo this text")  /* test "TALK" method */
   use arg text  /* retrieve the argument */
   say text  /* display received argument */
 </programlisting>
+</example>
 </section>
 
 <section id="rs"><title>The Return Status (.RS)</title>

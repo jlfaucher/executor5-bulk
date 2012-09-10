@@ -75,15 +75,21 @@ write pointers. The program needs to synchronize the read and write pointers
 of both stream objects, or overlays occur.</para>
 <para>To obtain a stream object (for example,
 <computeroutput>MYFIL</computeroutput>), you could use: </para>
+<example>
+<title>Obtaining a stream object</title>
 <programlisting>
 MyStream = .stream~new("MYFIL")
 </programlisting>
+</example>
 <para>You can manipulate stream objects with character or line methods: </para>
 <indexterm><primary>character input and output</primary></indexterm>
+<example>
+<title>Performing input on a stream object</title>
 <programlisting>
 nextchar = MyStream~charin()
 nextline = MyStream~linein()
 </programlisting>
+</example>
 <para>In addition to stream objects, the language processor defines an external
 data queue object for interprogram communication. This queue object understands
 line functions only.</para>
@@ -315,7 +321,8 @@ the number of items remaining in the queue.</para></listitem>
 </itemizedlist>
 <para>Here is an example of using a queue:</para>
 
-<figure><title>Sample Rexx Procedure Using a Queue</title>
+<example>
+<title>Sample Rexx Procedure Using a Queue</title>
 <programlisting>
 /*                                                                            */
 /* push/pull WITHOUT multiprogramming support                                 */
@@ -342,7 +349,7 @@ say "Pushed at " a b ", Pulled at " date() time() /* tell user                */
 call RXQUEUE "Delete",newq                   /* destroy unique queue created  */
 call RXQUEUE "Set",oq               /* reset to default queue (not required)  */
 </programlisting>
-</figure>
+</example>
 <para>Special considerations:</para>
 <itemizedlist>
 <listitem><para>External programs that must communicate with a
@@ -557,6 +564,8 @@ one stream to another.</para>
 <secondary>FILECOPY program</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>of program</secondary></indexterm>
+<example>
+<title>FILECOPY program</title>
 <programlisting>
 /* FILECOPY.CMD */
 /* This routine copies, as lines, the stream or     */
@@ -580,6 +589,7 @@ exit
 notready:
 return
 </programlisting>
+</example>
 <para>As long as lines remain in the named input stream, a line is read and is
 then immediately written to the named output stream. This program is easy
 to change so that it filters the lines before writing them.</para>
@@ -591,6 +601,8 @@ lines.</para>
 <secondary>COLLECTOR program</secondary></indexterm>
 <indexterm><primary>programs</primary>
 <secondary>examples</secondary></indexterm>
+<example>
+<title>COLLECT program</title>
 <programlisting>
 /* COLLECT.CMD */
 /* This routine collects characters from the stream */
@@ -610,6 +622,7 @@ do forever
   end
 queue buffer /* place it on the external data queue */
 </programlisting>
+</example>
 <para>Here each line is built up in a variable called
 <computeroutput>BUFFER</computeroutput>. When
 the line is complete (for example, when the user presses the Enter key) the

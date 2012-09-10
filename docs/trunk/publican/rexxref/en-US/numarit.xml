@@ -60,6 +60,8 @@ language.</para>
 characters are permitted, and exponential notation can be used. Valid numbers
 are, for example:
 </para>
+<example>
+<title>Numbers</title>
 <programlisting>
 12             /* a whole number                      */
 "-76"          /* a signed whole number               */
@@ -70,6 +72,7 @@ are, for example:
 4E9            /* exponential notation                */
 0.73e-7        /* exponential notation                */
 </programlisting>
+</example>
 <para>A number in Rexx is defined as follows:</para>
 <programlisting>
 <![CDATA[
@@ -132,12 +135,15 @@ Thus, with NUMERIC DIGITS 9, if a result requires more than 9 digits, it is roun
 For example, the division of 2 by 3 results in 0.666666667.</para></listitem>
 <listitem><para>Except for division and power, trailing zeros are preserved.
 For example:
+<example>
+<title>Arithmetic</title>
 <programlisting>
 2.40 + 2    ->    4.40
 2.40 - 2    ->    0.40
 2.40 * 2    ->    4.80
 2.40 / 2    ->    1.2
 </programlisting>
+</example>
 If necessary, you can
 remove trailing zeros with the STRIP method (see
 <xref linkend="mthStringStrip" />), the
@@ -151,10 +157,13 @@ If the number of places needed
 before the decimal point exceeds the NUMERIC DIGITS setting, or the number
 of places after the point exceeds twice the NUMERIC DIGITS setting, the number
 is expressed in exponential notation:
+<example>
+<title>Arithmetic</title>
 <programlisting>
 1e6 * 1e6    ->    1E+12           /* not 1000000000000 */
 1 / 3E10     ->    3.33333333E-11  /* not 0.0000000000333333333 */
 </programlisting>
+</example>
 </para></listitem></itemizedlist>
 
 <section id="prec"><title>Precision</title>
@@ -282,7 +291,8 @@ be calculated.</para>
 <indexterm><primary>examples</primary>
 <secondary>operator examples</secondary></indexterm>
 <indexterm><primary>basic operator examples</primary></indexterm>
-<para></para>
+<example>
+<title>Operators</title>
 <programlisting>
 /* With:  NUMERIC DIGITS 5 */
 12+7.00     ->    19.00
@@ -309,6 +319,7 @@ be calculated.</para>
 10//0.3     ->     0.1
 3.6//1.3    ->     1.0
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -371,6 +382,8 @@ comparison operators.</para>
 <secondary>exponential, example</secondary></indexterm>
 <indexterm><primary>operator</primary>
 <secondary>examples</secondary></indexterm>
+<example>
+<title>Exponential notation</title>
 <programlisting>
 12E7   =    120000000           /* Displays "1" */
 12E-5  =    0.00012             /* Displays "1" */
@@ -378,6 +391,7 @@ comparison operators.</para>
 0e123  =    0e456               /* Displays "1" */
 0e123  ==   0e456               /* Displays "0" */
 </programlisting>
+</example>
 <para>The results of calculations are returned in either conventional or
 exponential form, depending on the setting of
 <indexterm><primary>NUMERIC instruction</primary>
@@ -418,6 +432,8 @@ is used with the following instruction:</para>
 </programlisting>
 
 <para> Scientific notation is the default. </para>
+<example>
+<title>Scientific notation</title>
 <programlisting>
 /* after the instruction */
 Numeric form scientific
@@ -429,6 +445,7 @@ Numeric form engineering
 
 123.45  * 1e11    ->    12.345E+12
 </programlisting>
+</example>
 </section>
 
 <section id="numcom"><title>Numeric Comparisons</title>
@@ -500,7 +517,6 @@ comparison. The FUZZ setting must always be less than DIGITS.</para>
 to 8 significant digits, just as though
 <computeroutput>NUMERIC DIGITS 8</computeroutput> had been
 put in effect for the duration of the operation.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>arithmetic</primary>
 <secondary>numeric comparisons example</secondary>
 <tertiary>examples</tertiary></indexterm>
@@ -510,6 +526,8 @@ put in effect for the duration of the operation.</para>
 <secondary>numeric, example</secondary></indexterm>
 <indexterm><primary>numeric</primary>
 <secondary>comparisons, example</secondary></indexterm>
+<example>
+<title>Comparison</title>
 <programlisting>
 <![CDATA[
 Numeric digits 5
@@ -521,6 +539,7 @@ say  4.9999 = 5     /* Displays "1"    */
 say  4.9999 < 5     /* Displays "0"    */
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="nudbr"><title>Limits and Errors when Rexx Uses Numbers Directly</title>
