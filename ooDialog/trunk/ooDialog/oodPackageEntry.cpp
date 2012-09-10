@@ -1005,12 +1005,15 @@ REXX_METHOD_PROTOTYPE(lv_getColumnInfo);
 REXX_METHOD_PROTOTYPE(lv_getColumnOrder);
 REXX_METHOD_PROTOTYPE(lv_getColumnText);
 REXX_METHOD_PROTOTYPE(lv_getExtendedStyle);
+REXX_METHOD_PROTOTYPE(lv_getFullRow);
 REXX_METHOD_PROTOTYPE(lv_getImageList);
+REXX_METHOD_PROTOTYPE(lv_getItem);
 REXX_METHOD_PROTOTYPE(lv_getItemData);
 REXX_METHOD_PROTOTYPE(lv_getItemInfo);
 REXX_METHOD_PROTOTYPE(lv_getItemPos);
 REXX_METHOD_PROTOTYPE(lv_getNextItem);
 REXX_METHOD_PROTOTYPE(lv_getNextItemWithState);
+REXX_METHOD_PROTOTYPE(lv_getSubitem);
 REXX_METHOD_PROTOTYPE(lv_hasCheckBoxes);
 REXX_METHOD_PROTOTYPE(lv_hitTestInfo);
 REXX_METHOD_PROTOTYPE(lv_insert);
@@ -1925,12 +1928,15 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_getColumnOrder,              lv_getColumnOrder),
     REXX_METHOD(lv_getColumnText,               lv_getColumnText),
     REXX_METHOD(lv_getExtendedStyle,            lv_getExtendedStyle),
+    REXX_METHOD(lv_getFullRow,                  lv_getFullRow),
     REXX_METHOD(lv_getImageList,                lv_getImageList),
+    REXX_METHOD(lv_getItem,                     lv_getItem),
     REXX_METHOD(lv_getItemData,                 lv_getItemData),
     REXX_METHOD(lv_getItemInfo,                 lv_getItemInfo),
     REXX_METHOD(lv_getItemPos,                  lv_getItemPos),
     REXX_METHOD(lv_getNextItem,                 lv_getNextItem),
     REXX_METHOD(lv_getNextItemWithState,        lv_getNextItemWithState),
+    REXX_METHOD(lv_getSubitem,                  lv_getSubitem),
     REXX_METHOD(lv_hasCheckBoxes,               lv_hasCheckBoxes),
     REXX_METHOD(lv_hitTestInfo,                 lv_hitTestInfo),
     REXX_METHOD(lv_insert,                      lv_insert),

@@ -144,8 +144,10 @@ typedef struct _lvFullRow
     RexxObjectPtr    *rxSubItems;    // The Rexx subitems rxSubItems[0] is a LvItem, the rest LvSubItems
     RexxObjectPtr     rexxSelf;      // The LvFullRow Rexx object
     RexxObjectPtr     bagOfItems;    // A Rexx bag to hold the Rexx items and protect from GC
+    HWND              hList;         // The list-view this full row has been inserted into.
     uint32_t          subItemCount;  // The number of subItems
     uint32_t          size;          // The allocated size of the subItem array.
+    uint32_t          id;            // The unique Id for the list-view item, from ListView_MapIndexToID
 } CLvFullRow;
 typedef CLvFullRow *pCLvFullRow;
 
@@ -169,6 +171,7 @@ enum FullRowOp {lvfrAdd, lvfrPrepend, lvfrInsert};
 enum LvSortOpt {lvSortAscending = 1, lvSortAscendingI, lvSortDescending, lvSortDescendingI};
 
 #define LVFULLROW_MAGIC              0xCafeDeaf  // Magic number to identify a CLvFullRow struct
+#define LVFULLROW_NOID               0xffffffff  // No ID assigned
 #define LVFULLROW_DEF_SUBITEMS       10          // Initial size of the subItems array
 
 extern RexxObjectPtr lviLParam2UserData(LPARAM lParam);

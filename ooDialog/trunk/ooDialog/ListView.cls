@@ -155,13 +155,16 @@
 ::method getColumnText unguarded external "LIBRARY oodialog lv_getColumnText"
 ::method getExtendedStyle unguarded external "LIBRARY oodialog lv_getExtendedStyle"
 ::method getExtendedStyleRaw unguarded external "LIBRARY oodialog lv_getExtendedStyle"
+::method getFullRow unguarded external "LIBRARY oodialog lv_getFullRow"
 ::method getHoverTime unguarded
    return self~sendWinIntMsg(self~LVM_GETHOVERTIME, 0, 0)
 
 ::method getImageList unguarded external "LIBRARY oodialog lv_getImageList"
+::method getItem unguarded external "LIBRARY oodialog lv_getItem"
 ::method getItemData unguarded external "LIBRARY oodialog lv_getItemData"
 ::method getItemInfo unguarded external "LIBRARY oodialog lv_getItemInfo"
 ::method getItemPos unguarded external "LIBRARY oodialog lv_getItemPos"
+::method getSubitem unguarded external "LIBRARY oodialog lv_getSubitem"
 ::method hasCheckBoxes unguarded external "LIBRARY oodialog lv_hasCheckBoxes"
 ::method hitTestInfo unguarded external "LIBRARY oodialog lv_hitTestInfo"
 ::method insert unguarded external "LIBRARY oodialog lv_insert"
