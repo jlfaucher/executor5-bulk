@@ -263,12 +263,15 @@ Different types of objects can implement different versions of this message as
 long as it fulfills the expectations of the the invoking object.  For example,
 the LOOP instruction has a form called OVER.  Loop OVER will iterate over a number of
 elements provided by an object.  For example,</para>
+<example>
+<title>LOOP OVER</title>
 <programlisting>
 myarray = .array~of("Rick", "David", "Mark")
 loop name over myarray
    say name
 end
 </programlisting>
+</example>
 <para>Will display the strings "Rick", "David", and "Mark", in that sequence.  The
 LOOP OVER instruction will work with Arrays, Lists, stem variables, streams, etc.
 The LOOP instruction itself does not know anything about Arrays or Lists or stems or streams.

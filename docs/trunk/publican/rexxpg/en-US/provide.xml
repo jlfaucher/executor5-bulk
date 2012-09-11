@@ -1026,6 +1026,8 @@ directive.</para></listitem></orderedlist>
 <indexterm><primary>directives</primary>
 <secondary>sample program</secondary></indexterm>
 <para>Here is a program that uses directives to create new classes and methods: </para>
+<example>
+<title>Using directives</title>
 <programlisting>
 <![CDATA[
 asav = .savings~new              /* executable code begins */
@@ -1045,6 +1047,7 @@ asav~name= "John Smith"          /* executable code ends   */
     return "a savings account"   /* ... directives end     */
 ]]>
 </programlisting>
+</example>
 <para>The preceding program uses the
 ::CLASS directive to create two classes, the Account class and its Savings
 <indexterm><primary>SUBCLASS option</primary></indexterm>
@@ -1094,6 +1097,8 @@ Rexx saves the information returned by INIT and DIET as variables in the Dino
 object.</para>
 <para>In the example, the Dinosaur class and its two methods are defined following
 the executable program code: </para>
+<example>
+<title>Defining methods</title>
 <programlisting>
 <![CDATA[
 dino=.dinosaur~new         /* Create a new dinosaur instance and
@@ -1132,6 +1137,7 @@ exit
     return 0
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -1242,6 +1248,8 @@ use subclassing. For example, you can create Statarray, a subclass of the
 Array class.
 The statArray class can include a
 method for computing a total of all the numeric elements of an array.</para>
+<example>
+<title>Creating an Array subclass</title>
 <programlisting>
 /* Creating an array subclass for statistics */
 
@@ -1276,6 +1284,7 @@ method for computing a total of all the numeric elements of an array.</para>
   expose total
   return total
 </programlisting>
+</example>
 <para>You can use this method on the individual array
 <emphasis>instances</emphasis>, so it is an
 <emphasis>instance method</emphasis>.</para>
@@ -1298,6 +1307,8 @@ CLASS option. The second version uses a metaclass.</para>
 <para><emphasis role="bold">Version 1</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>metaclass</secondary></indexterm>
+<example>
+<title>Adding a class method</title>
 <programlisting>
 /* Adding a class method using ::METHOD */
 
@@ -1379,6 +1390,7 @@ return instanceCount
   expose xVal yVal                     /* Use object variables         */
   return "("xVal","yVal")"             /* to return string value       */
 </programlisting>
+</example>
 </section>
 </section>
 </chapter>

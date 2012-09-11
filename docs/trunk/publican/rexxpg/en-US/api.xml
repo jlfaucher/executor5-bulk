@@ -99,6 +99,8 @@ reuse it to run multiple programs.
 </para>
 <para>Interpreter environments are created using the
 RexxCreateInterpreter() (<xref linkend="createinterpreter" />) API:</para>
+<example>
+<title>API - Rexx CreateInterpreter</title>
 <programlisting>
 RexxInstance *instance;
 RexxThreadContext *threadContext;
@@ -108,10 +110,13 @@ if (RexxCreateInterpreter(&amp;instance, &amp;threadContext, options)) {
 &hellip;
 }
 </programlisting>
+</example>
 <para>Once you've created an interpreter instance, you can use the APIs provided by the
 RexxInstance or RexxThreadContext interface to perform operations
 like running programs, loading class packages, etc.  For example, the following
 code will run a program using a created instance, checking for syntax errors upon completion:</para>
+<example>
+<title>API - RexxInstance and RexxThreadContext</title>
 <programlisting>
 <![CDATA[
     // create an Array object to hold the program arguments
@@ -155,6 +160,7 @@ code will run a program using a created instance, checking for syntax errors upo
     instance->Terminate();
 ]]>
 </programlisting>
+</example>
 <para>The example above creates a Rexx String object for each program argument
 stores them in a Rexx array.  It then uses
 CallProgram() (<xref linkend="mthCallProgram" />) to call "myprogram.rex", passing the array object
@@ -168,6 +174,8 @@ a final step, the interpreter instance is destroyed once we're finished using it
 <indexterm><primary>RexxCreateInterpreter</primary></indexterm>
 <para>RexxCreateInterpreter creates an interpreter instance and an associated
 thread context interface for the current thread.</para>
+<example>
+<title>API - RexxInstance and RexxThreadContext</title>
 <programlisting>
 RexxInstance *instance;
 RexxThreadContext *threadContext;
@@ -177,6 +185,7 @@ if (RexxCreateInterpreter(&amp;instance, &amp;threadContext, options)) {
 &hellip;
 }
 </programlisting>
+</example>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
     <tgroup cols="2">
@@ -221,6 +230,8 @@ name terminates the option list.  The available interpreter options are:</para>
 <varlistentry><term>INITIAL_ADDRESS_ENVIRONMENT</term>
 <listitem><para>Contains the ASCII-Z name of the initial address environment
 that will be used for all Rexx programs run under this instance.</para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
 RexxOption options[2];
 
@@ -228,6 +239,7 @@ options[0].optionName = INITIAL_ADDRESS_ENVIRONMENT;
 options[0].option = "EDITOR";
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>APPLICATION_DATA</term>
 <listitem><para>Contains a void * value that will be stored with the interpreter
@@ -236,6 +248,8 @@ GetApplicationData() (<xref linkend="mthGetApplicationData" />) API.  The applic
 data pointer allows methods, functions, exits, and command handlers to recover
 access to globally defined application data.
 </para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
 RexxOption options[2];
 
@@ -243,6 +257,7 @@ options[0].optionName = APPLICATION_DATA;
 options[0].option = (void *)editorInfo;
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>EXTERNAL_CALL_PATH</term>
 <listitem><para>Contains an ASCII-Z string defining an additional search path that
@@ -250,6 +265,8 @@ is used when searching for Rexx program files.  The call path string uses the
 format appropriate for the host platform environment.  On Windows, the path elements
 are separated by semicolons (;).  On Unix-based systems, a colon (:) is used.
 </para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
 RexxOption options[2];
 
@@ -257,12 +274,15 @@ options[0].optionName = EXTERNAL_CALL_PATH;
 options[0].option = myCallPath;
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>EXTERNAL_CALL_EXTENSIONS</term>
 <listitem><para>Contains an ASCII-Z string defining a list of extensions that will
 be used when searching for Rexx program files.  The specified extensions must include
 the extension ".".  Multiple extensions are separated by a comma (,).
 </para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
 RexxOption options[2];
 
@@ -270,6 +290,7 @@ options[0].optionName = EXTERNAL_CALL_EXTENSIONS;
 options[0].option = ".ed,.mac";  // add ".ed" and ".mac" to search path.
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>LOAD_REQUIRED_LIBRARY</term>
 <listitem><para>Specifies the name of an external native library that will be loaded
@@ -277,6 +298,8 @@ once the interpreter instance is created.  The library name is an ASCII-Z string
 with the library name in the same format used for ::REQUIRED LIBRARY.  Multiple libraries
 can be loaded by specifying this option multiple times.
 </para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
 RexxOption options[2];
 
@@ -284,6 +307,7 @@ options[0].optionName = LOAD_REQUIRED_LIBRARY;
 options[0].option = "rxmath";
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>REGISTER_LIBRARY</term>
 <listitem><para>Specifies a package that will be registerd with the Rexx environment
@@ -295,6 +319,8 @@ The library name is an ASCII-Z string
 with the library name in the same format used for ::REQUIRED LIBRARY.  Multiple libraries
 can be registered by specifying this option multiple times.
 </para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
 RexxOption options[2];
 RexxLibraryPackage package;
@@ -306,6 +332,7 @@ options[0].optionName = REGISTER_LIBRARY;
 options[0].option = (void *)&amp;package;
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>DIRECT_EXITS</term>
 <listitem><para>Specifies a list of system exits that will be used with this interpreter
@@ -316,8 +343,9 @@ The list is terminated by an instance using an
 exit type of 0.  The direct exits are called using the RexxExitContext calling convention.
 See <xref linkend="exitsapi" /> for details.
 </para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
-
 RexxContextExit exits[2];
 RexxOption options[2];
 
@@ -330,6 +358,7 @@ options[0].optionName = DIRECT_EXITS;
 options[0].option = (void *)exits;
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>DIRECT_ENVIRONMENTS</term>
 <listitem><para>Registers one or more subcommand handler environments with the interpreter
@@ -340,8 +369,9 @@ The list is terminated by an instance using a
 handler name of NULL.  The direct environment handlers are called using the calling convention
 described in <xref linkend="commandapi" />.
 </para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
-
 RexxContextEnvironment environments[2];
 RexxOption options[2];
 
@@ -354,6 +384,7 @@ options[0].optionName = DIRECT_ENVIRONMENTS;
 options[0].option = (void *)environments;
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>REGISTERED_EXITS</term>
 <listitem><para>Specifies a list of system exits that will be used with this interpreter
@@ -364,8 +395,9 @@ The list is terminated by an instance using an
 exit type of 0.  The registered exits are called using the RexxExitHandler calling convention.
 See <xref linkend="sysex" /> for details.
 </para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
-
 RXSYSEXIT exits[2];
 RexxOption options[2];
 
@@ -378,6 +410,7 @@ options[0].optionName = REGISTERED_EXITS;
 options[0].option = (void *)exits;
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>REGISTERED_ENVIRONMENTS</term>
 <listitem><para>Registers one or more subcommand handler environments with the interpreter
@@ -388,8 +421,9 @@ The list is terminated by an instance using a
 handler name of NULL.  The direct environment handlers are called using the calling convention
 described in <xref linkend="subcom" />.
 </para>
+<example>
+<title>API - RexxOption</title>
 <programlisting>
-
 RexxRegisteredEnvironment environments[2];
 RexxOption options[2];
 
@@ -402,6 +436,7 @@ options[0].optionName = REGISTERED_ENVIRONMENTS;
 options[0].option = (void *)environments;
 options[1].optionName = NULL;
 </programlisting>
+</example>
 </listitem></varlistentry>
 </variablelist>
 </section>
@@ -602,6 +637,8 @@ vectors used for different contexts, but they use very similar calling concepts.
 the RexxInstance value returned by RexxCreateInterpreter.  The RexxInstance type is defined
 as a struct when compiled for C code, or a C++ class when compiled for ++.  The
 struct version looks like this:</para>
+<example>
+<title>API - RexxInstance</title>
 <programlisting>
 struct RexxInstance_
 {
@@ -609,6 +646,7 @@ struct RexxInstance_
     void *applicationData;              // creator defined data pointer
 };
 </programlisting>
+</example>
 <para>The field <emphasis role="italic">applicationData</emphasis> contains any
 value that was specified via the APPLICATION_DATA option on the RexxCreateInterpreter call.
 This provides easy access any application-specific data needed to interact with the interpreter.
@@ -618,6 +656,8 @@ always possible to recover this data pointer.</para>
 that defines the RexxInstance programming interfaces.  The RexxInstance services are ones that
 may be called from any thread and in any context.  The services are called using C function pointer
 fields in the interface structure.  The RexxInstanceInterface looks like this:</para>
+<example>
+<title>API - RexxInstanceInterface</title>
 <programlisting>
 typedef struct
 {
@@ -631,6 +671,7 @@ typedef struct
     void        (RexxEntry *SetTrace)(RexxInstance *, logical_t);
 } RexxInstanceInterface;
 </programlisting>
+</example>
 <para>The first thing to note is the interface struct contains a field named
 <emphasis role="italic">interfaceVersion</emphasis>.  The interfaceVersion field
 is a version marker that defines the services the called interpreter version supports.
@@ -652,6 +693,8 @@ size_t version = context->InterpreterVersion();
 first object.  That's handled automatically be the C++ method.</para>
 <para>The RexxThreadContext pointer returned from RexxCreateInterpreter() functions the same way.
 RexxThreadContext looks like this:</para>
+<example>
+<title>API - RexxThreadContext</title>
 <programlisting>
 struct RexxThreadContext_
 {
@@ -659,6 +702,7 @@ struct RexxThreadContext_
     RexxThreadInterface *functions;     // the interface function vector
 }
 </programlisting>
+</example>
 <para>The RexxThreadContext struct contains an embedded RexxInstance pointer for the instance it is
 associated with.  It also contains an interface vector for the functions available with a
 RexxThreadContext.  The RexxThreadInterface vector has its own version identifier and
@@ -902,6 +946,8 @@ routines and methods using addresses stored in the RexxPackageEntry table.</para
 <para>The RexxPackageEntry structure contains information about the
 package and descriptors of any methods and/or routines defined within
 the package.  The structure looks like this:</para>
+<example>
+<title>API - RexxPackageEntry</title>
 <programlisting>
 typedef struct _RexxPackageEntry
 {
@@ -916,6 +962,7 @@ typedef struct _RexxPackageEntry
     struct _RexxMethodEntry *methods;   // methods contained in this package
 } RexxPackageEntry;
 </programlisting>
+</example>
 <para>The fields in the RexxPackageEntry have the following functions:</para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">size</emphasis>
@@ -979,6 +1026,8 @@ creating the exported method table.
 </variablelist>
 <para>Here is an example of a RexxPackageEntry table taken from the rxmath
 library package:</para>
+<example>
+<title>API - RexxPackageEntry and RexxRoutineEntry</title>
 <programlisting>
 // now build the actual entry list
 RexxRoutineEntry rxmath_functions[] =
@@ -1019,6 +1068,8 @@ RexxPackageEntry rxmath_package_entry =
 // package loading stub.
 OOREXX_GET_PACKAGE(rxmath);
 </programlisting>
+</example>
+</section>
 
 <section id="functionapi"><title>Defining Library Routines</title>
 <para>The RexxRoutineEntry table defines routines that are exported by a library package.
@@ -1055,6 +1106,8 @@ to create prototype declarations so the routine entry table can be generated.
 The oorexxapi.h header file includes REXX_CLASSIC_ROUTINE_PROTOTYPE() and
 REXX_TYPED_ROUTINE_PROTOTYPE() macros to generate the appropriate declarations.
 For example,</para>
+<example>
+<title>API - REXX_TYPED_ROUTINE_PROTYPE</title>
 <programlisting>
 // create function declarations for the linker
 REXX_TYPED_ROUTINE_PROTOTYPE(RxCalcPi);
@@ -1068,6 +1121,7 @@ RexxRoutineEntry rxmath_functions[] =
     REXX_LAST_ROUTINE()
 };
 </programlisting>
+</example>
 
 <section id="routinedcl"><title>Routine Declarations</title>
 <para>Library routines are created using a series of macros that
@@ -1078,12 +1132,15 @@ target routine.
 These macros are named "RexxRoutine<emphasis role="italic">n</emphasis>, where
 <emphasis role="italic">n</emphasis> is the number of arguments you wish to
 be passed to your routine.  For example,</para>
+<example>
+<title>API - RexxRoutine2</title>
 <programlisting>
 RexxRoutine2(int, beep, wholenumber_t, frequency, wholenumber_t, duration)
 {
     return Beep(frequency, duration);  /* sound beep                 */
 }
 </programlisting>
+</example>
 <para>defines a <emphasis role="italic">beep</emphasis> routine that will be
 passed two <emphasis role="italic">wholenumber_t</emphasis> arguments
 (<emphasis role="italic">frequency</emphasis>
@@ -1091,12 +1148,15 @@ and <emphasis role="italic">duration</emphasis>).
 The return value is an <emphasis role="italic">int</emphasis> value.
 </para>
 <para>An argument can be made optional by prefixing the type with "OPTIONAL_".  For example,</para>
+<example>
+<title>API - RexxRoutine2</title>
 <programlisting>
 RexxRoutine2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, duration)
 {
     return Beep(frequency, duration);  /* sound beep                 */
 }
 </programlisting>
+</example>
 <para>would define a routine that takes two arguments.  The first argument is required, but the
 second is optional.  Any optional arguments, when omitted on a call, will be passed using a zero
 value appropriate to the type.  The macros argumentExists(n) or argumentOmitted(n) can reliably test if
@@ -1192,6 +1252,8 @@ memory associated with a CSTRING return value, so care must be taken to avoid
 memory leaks.  Also, locally declared character buffers cannot be returned as
 the storage associated with buffer is no longer valid once your routine returns to
 the Rexx interpreter.  For example, the following is not valid:</para>
+<example>
+<title>API - CString</title>
 <programlisting>
 RexxRoutine0(CSTRING, MyRoutine)
 {
@@ -1201,9 +1263,12 @@ RexxRoutine0(CSTRING, MyRoutine)
    return buffer;     // buffer is not valid once return executes
 }
 </programlisting>
+</example>
 <para>A RexxStringObject return value and the
 String() (<xref linkend="mthString" />) API is more appropriate in this
 situation.</para>
+<example>
+<title>API - RexxStringObject</title>
 <programlisting>
 RexxRoutine0(RexxStringObject, MyRoutine)
 {
@@ -1213,6 +1278,7 @@ RexxRoutine0(RexxStringObject, MyRoutine)
    return context->String(buffer);     // creates a string object and returns it.
 }
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>POINTER</term>
 <listitem><para>an "unwrapped" Pointer or Buffer string object.  If the argument is a
@@ -1276,6 +1342,8 @@ to create a prototype declarations so the method entry table can be generated.
 The oorexxapi.h header file includes
 a REXX_METHOD_PROTOTYPE() macro to generate the appropriate declarations.
 For example,</para>
+<example>
+<title>API - REXX_METHOD_PROTOTYPE</title>
 <programlisting>
 // create function declarations for the linker
 REXX_METHOD_PROTOTYPE(point_init);
@@ -1289,6 +1357,7 @@ RexxMethodEntry point_methods[] =
     REXX_LAST_METHOD()
 };
 </programlisting>
+</example>
 
 <section id="methoddcl"><title>Method Declarations</title>
 <para>Library methods are created using a series of macros that
@@ -1299,12 +1368,15 @@ target method.
 These macros are named "RexxMethod<emphasis role="italic">n</emphasis>, where
 <emphasis role="italic">n</emphasis> is the number of arguments you wish to
 be passed to your method.  For example,</para>
+<example>
+<title>API - RexxMethod2</title>
 <programlisting>
 RexxMethod2(int, beep, wholenumber_t, frequency, wholenumber_t, duration)
 {
     return Beep(frequency, duration);  /* sound beep                 */
 }
 </programlisting>
+</example>
 <para>defines a <emphasis role="italic">beep</emphasis> method that will be
 passed two <emphasis role="italic">wholenumber_t</emphasis> arguments
 (<emphasis role="italic">frequency</emphasis>
@@ -1312,12 +1384,15 @@ and <emphasis role="italic">duration</emphasis>).
 The return value is an <emphasis role="italic">int</emphasis> value.
 </para>
 <para>An argument can be made optional by prefixing the type with "OPTIONAL_".  For example,</para>
+<example>
+<title>API - RexxMethod2</title>
 <programlisting>
 RexxMethod2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, duration)
 {
     return Beep(frequency, duration);  /* sound beep                 */
 }
 </programlisting>
+</example>
 <para>would define a method that takes two arguments.  The first argument is required, but the
 second is optional.  Any omitted optional arguments will be passed using a zero
 value appropriate for the type.  The macros argumentExists(n) or argumentOmitted(n) can reliably test if
@@ -1409,6 +1484,8 @@ memory associated with a CSTRING return value, so care must be taken to avoid
 memory leaks.  Also, locally declared character buffers cannot be returned as
 the storage associated with buffer is no longer valid once your method returns to
 the Rexx interpreter.  For example, the following is not valid:</para>
+<example>
+<title>API - CString</title>
 <programlisting>
 RexxMethod0(CSTRING, MyMethod)
 {
@@ -1418,8 +1495,11 @@ RexxMethod0(CSTRING, MyMethod)
    return buffer;     // buffer is not valid once return executes
 }
 </programlisting>
+</example>
 <para>A RexxStringObject return value and the String() API is more appropriate in this
 situation.</para>
+<example>
+<title>API - RexxStringObject</title>
 <programlisting>
 RexxMethod0(RexxStringObject, MyMethod)
 {
@@ -1429,6 +1509,7 @@ RexxMethod0(RexxStringObject, MyMethod)
    return context->String(buffer);     // creates a string object and returns it.
 }
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>POINTER</term>
 <listitem><para>an "unwrapped" Pointer or Buffer string object.  If the argument is a
@@ -1482,8 +1563,9 @@ scopes searching for a variable named CSELF.  If a CSELF variable is located and
 of either the Pointer or Buffer class, the POINTER value will be passed to the method as a void * value.
 Objects that rely on CSELF values typically set the variable CSELF inside an init method for the object.  For
 example:</para>
+<example>
+<title>API - CSELF</title>
 <programlisting>
-
 RexxMethod2(RexxObjectPtr, stream_init, OSELF, self, CSTRING, name)
 {
     // create a new stream info member
@@ -1494,12 +1576,15 @@ RexxMethod2(RexxObjectPtr, stream_init, OSELF, self, CSTRING, name)
     return NULLOBJECT;
 }
 </programlisting>
+</example>
 
 <para>
 Then, within a method for the object, the CSELF variable is used as an argument to the method, the void *
 is retrieved and cast to the correct type:
 </para>
 
+<example>
+<title>API - CSELF</title>
 <programlisting>
 RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject, data, OPTIONAL_int64_t, position)
 {
@@ -1509,6 +1594,7 @@ RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject,
     ...
 }
 </programlisting>
+</example>
 <para>CSELF is not valid as a return value.
 </para></listitem></varlistentry>
 </variablelist>
@@ -1539,6 +1625,8 @@ BufferData() (<xref linkend="mthBufferData" />), which returns a pointer to the 
 data buffer.  The data buffer area is writeable storage, into which any data may be placed.  This
 is frequently used to allocate a C++ struct or class instance that is the native embodiment of the
 class implementation.  For example</para>
+<example>
+<title>API - RexxBufferObject</title>
 <programlisting>
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_init)
@@ -1558,9 +1646,12 @@ RexxMethod0(RexxObjectPtr, myclass_init)
 }
 ]]>
 </programlisting>
+</example>
 <para>This example allocates a Buffer object instance, creates a C++ class in its data area, and
 stores a reference to the Buffer in the MYDATA object variable.  Other C++ methods can access
 this instance by using the C++ equivalent to the Rexx EXPOSE instruction.</para>
+<example>
+<title>API - RexxBufferObject</title>
 <programlisting>
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_dosomething)
@@ -1574,12 +1665,15 @@ RexxMethod0(RexxObjectPtr, myclass_dosomething)
 }
 ]]>
 </programlisting>
+</example>
 <para>Since Buffer object instances are reclaimed automatically when the object
 is gabage collected, no additional steps are required to cleanup that memory.
 However, if there are additional dymanically allocated resources associated with
 the Buffer, such as pointers to system allocated resources or dynamically allocated
 memory, it may be necessary to add an UNINIT method to your class to ensure the
 resources are not leaked.</para>
+<example>
+<title>API - RexxBufferObject</title>
 <programlisting>
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_uninit)
@@ -1594,6 +1688,7 @@ RexxMethod0(RexxObjectPtr, myclass_uninit)
 }
 ]]>
 </programlisting>
+</example>
 </section>
 <section id="clsPointer"><title>The Pointer class</title>
 <para>The Pointer class has similar uses as the Buffer class, but Pointer instances
@@ -1605,6 +1700,8 @@ objects, but when a Pointer is reclaimed, whatever values refererenced by the
 Pointer instance are not cleaned up.  If additional cleanup is required, then
 it will be necessary to implement an UNINIT method to handle the cleanup.  Here
 are the Buffer examples above reworked for the Pointer class:</para>
+<example>
+<title>API - RexxObjectPtr</title>
 <programlisting>
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_init)
@@ -1644,6 +1741,7 @@ RexxMethod0(RexxObjectPtr, myclass_uninit)
 }
 ]]>
 </programlisting>
+</example>
 </section>
 <section id="clsPointerType"><title>The POINTER method type</title>
 <para>The Rexx runtime has some special support for Pointer and Buffer objects
@@ -1656,6 +1754,8 @@ value, thus removing the need to unwrapper these in the method code.  The POINTE
 is generally used for private methods of a class where the Rexx versions of the methods
 pass Pointer or Buffer references to the private native code.  For example, the Rexx
 code might look like this:</para>
+<example>
+<title>API - RexxObjectPtr</title>
 <programlisting>
 ::method setTitle
   expose title prefix handle
@@ -1665,7 +1765,10 @@ code might look like this:</para>
 
 ::method privateSetTitle PRIVATE EXTERNAL "LIBRARY mygui setTitle"
 </programlisting>
+</example>
 <para>The corresponding C++ method would look like this:</para>
+<example>
+<title>API - RexxObjectPtr</title>
 <programlisting>
 <![CDATA[
 RexxMethod2(RexxObjectPtr, setTitle, POINTER, handle, CSTRING, title)
@@ -1677,6 +1780,7 @@ RexxMethod2(RexxObjectPtr, setTitle, POINTER, handle, CSTRING, title)
 }
 ]]>
 </programlisting>
+</example>
 <para>When POINTER is used as a method return type, the runtime will automatically
 create a Pointer object instance that wrappers the returned void *value.  The created
 Pointer instance is the result returned to the Rexx code.</para>
@@ -1689,6 +1793,8 @@ is assigned to an instance of Pointer or Buffer, then the corresponding data poi
 is returned as the argument.  The CSELF is most useful when just a single anchor to
 native C++ data is backing an object instance and the backing data is created in the
 object INIT method.  Here's the Pointer example above reworked to use CSELF:</para>
+<example>
+<title>API - CSELF</title>
 <programlisting>
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_init)
@@ -1724,6 +1830,7 @@ RexxMethod1(RexxObjectPtr, myclass_uninit, CSELF, cself)
 }
 ]]>
 </programlisting>
+</example>
 <para>Using the CSELF argument type eliminates the need to directly
 access the Rexx variable used to anchor the value in every method except
 the INIT method.  This produces generally smaller code and more reliable too
@@ -1759,7 +1866,6 @@ the CSELF information for an object other than the current active object to be r
 </section>
 </section>
 </section>
-</section>
 
 <section id="exitsapi"><title>Rexx Exits Interface</title>
 <indexterm><primary>exits</primary></indexterm>
@@ -1788,6 +1894,8 @@ reside as entry points within the application that creates the interpreter insta
 <secondary>definition</secondary></indexterm>
 <para>The following is a sample exit handler
 declaration: </para>
+<example>
+<title>API - Rexx_IO_Exit</title>
 <programlisting>
 <![CDATA[
 int REXXENTRY Rexx_IO_exit(
@@ -1797,6 +1905,7 @@ int REXXENTRY Rexx_IO_exit(
      PEXIT parmBlock);           // function-dependent control block
 ]]>
 </programlisting>
+</example>
 <para>where:</para>
 <variablelist>
 <varlistentry><term>context</term>
@@ -2085,6 +2194,8 @@ the usual external function search order.</para></listitem>
 (&quot;Incorrect call to routine&quot;), 43 (&quot;Routine not found&quot;),
 or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 
@@ -2103,6 +2214,7 @@ typedef  struct _RXOFNCCAL_PARM {      /* fnc */
 }  RXOFNCCAL_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The name of the external function is defined
 by the <emphasis role="italic">rxfnc_name</emphasis> CONSTRXSTRING (<xref linkend="rxstrings" />) value.
 The arguments to the
@@ -2161,6 +2273,8 @@ function when no suitable call target has been located.</para></listitem>
 (&quot;Incorrect call to routine&quot;), 43 (&quot;Routine not found&quot;),
 or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 
@@ -2179,6 +2293,7 @@ typedef  struct _RXEXFCAL_PARM {       /* fnc */
 }  RXEXFCAL_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The name of the external function is defined by the <emphasis role="italic">rxfnc_name</emphasis>
 CONSTRXSTRING value.
 The arguments to the
@@ -2235,6 +2350,8 @@ the usual external function search order.</para></listitem>
 (&quot;Incorrect call to routine&quot;), 43 (&quot;Routine not found&quot;),
 or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2260,6 +2377,7 @@ typedef struct {
 } RXFNCCAL_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The name of the external function is defined
 by <emphasis role="italic">rxfnc_name</emphasis> and
 <emphasis role="italic">rxfnc_namel</emphasis>. The arguments to the
@@ -2320,6 +2438,8 @@ handler.</para></listitem>
 <listitem><para>Continuation: Raise the ERROR or FAILURE condition
 when indicated by the parameter list flags.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2341,6 +2461,7 @@ typedef struct {
 } RXCMDHST_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The <emphasis role="italic">rxcmd_command</emphasis> field contains
 the issued command. <emphasis role="italic">Rxcmd_address</emphasis>,
 <emphasis role="italic">rxcmd_addressl</emphasis>,
@@ -2377,6 +2498,8 @@ data queue.</para></listitem>
 <listitem><para>Exit action: Return a line from the data queue that
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2385,6 +2508,7 @@ typedef struct {
 } RXMSQPLL_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The exit handler returns the queue line in
 the <emphasis role="italic">rxmsq_retc</emphasis> RXSTRING.</para>
 </listitem></itemizedlist>
@@ -2400,6 +2524,8 @@ data queue.</para></listitem>
 <listitem><para>Exit action: Add the line to the data queue that
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2411,6 +2537,7 @@ typedef struct {
 } RXMSQPSH_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The <emphasis role="italic">rxmsq_value</emphasis> RXSTRING contains
 the line added to the queue. It is the responsibility of the exit handler
 to truncate the string if the exit handler data queue has a maximum length
@@ -2427,6 +2554,8 @@ Rexx data queue.</para></listitem>
 <listitem><para>Exit action: Return the size of the data queue that
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2434,6 +2563,7 @@ typedef struct {
 } RXMSQSIZ_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The exit handler returns the number of queue
 lines in <emphasis role="italic">rxmsq_size</emphasis>.</para>
 </listitem></itemizedlist>
@@ -2449,6 +2579,8 @@ to <emphasis role="italic">newname</emphasis>.</para></listitem>
 <listitem><para>Exit action: Change the default queue name for the
 data queue that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2457,6 +2589,7 @@ typedef struct {
 } RXMSQNAM_PARM;
 ]]>
 </programlisting>
+</example>
 <para><emphasis role="italic">rxmsq_name</emphasis> contains the new queue
 name.</para></listitem></itemizedlist>
 </para></listitem></varlistentry>
@@ -2486,6 +2619,8 @@ stream (STDOUT).</para></listitem>
 <listitem><para>Exit action: Write a line to the output stream that
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2493,6 +2628,7 @@ typedef struct {
 } RXSIOSAY_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The output line is contained in
 <emphasis role="italic">rxsio_string</emphasis>. The output line can be of any
 length. It is the responsibility of the
@@ -2510,6 +2646,8 @@ stream (.ERROR).</para></listitem>
 <listitem><para>Exit action: Write a line to the error output stream
 that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2517,6 +2655,7 @@ typedef struct {
 } RXSIOTRC_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The output line is contained in
 <emphasis role="italic">rxsio_string</emphasis>. The output line can be of any
 length. It is the responsibility of the
@@ -2533,6 +2672,8 @@ stream (STDIN).</para></listitem>
 <listitem><para>Exit action: Return a line from the standard input
 stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2540,6 +2681,7 @@ typedef struct {
 } RXSIOTRD_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The input stream line is returned in the
 <emphasis role="italic">rxsiotrd_retc</emphasis> RXSTRING.</para>
 </listitem></itemizedlist>
@@ -2554,6 +2696,8 @@ stream (STDIN).</para></listitem>
 <listitem><para>Exit action: Return a line from the standard debug
 stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2561,6 +2705,7 @@ typedef struct {
 } RXSIODTR_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The input stream line is returned in the
 <emphasis role="italic">rxsiodtr_retc</emphasis> RXSTRING.</para>
 </listitem></itemizedlist>
@@ -2593,6 +2738,8 @@ returned, a NOVALUE condition will be raised.  If SIGNAL ON NOVALUE is not enabl
 the variable name will be returned as the value.
 </para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 
@@ -2602,6 +2749,7 @@ typedef  struct _RXVARNOVALUE_PARM {   /* var */
 }  RXVARNOVALUE_PARM;
 ]]>
 </programlisting>
+</example>
 </listitem>
 </itemizedlist>
 </listitem></varlistentry>
@@ -2631,6 +2779,8 @@ The exit is given the opportunity to provide a value for the given environment s
 returned as a result.
 .</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 
@@ -2641,6 +2791,7 @@ typedef  struct _RXVALCALL_PARM {      /* val */
 }  RXVALCALL_PARM;
 ]]>
 </programlisting>
+</example>
 <para>
 If the newValue argument is specified on the VALUE() built-in function, that value
 is assigned to <emphasis role="italic">value</emphasis> on the call to the exit.
@@ -2677,6 +2828,8 @@ condition (either TRUE or FALSE).</para></listitem>
 <listitem><para>Continuation: Raise the Rexx HALT condition if the
 exit handler returns TRUE.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2686,6 +2839,7 @@ typedef struct {
 } RXHLTTST_PARM;
 ]]>
 </programlisting>
+</example>
 <para>If the exit handler sets <emphasis role="italic">rxfhhalt</emphasis> to
 TRUE, the HALT condition is raised in the Rexx program.</para>
 <para>The Rexx program can retrieve the reason string using the CONDITION("D")
@@ -2733,6 +2887,8 @@ FALSE to TRUE, the Rexx interpreter enters the interactive Rexx debug mode
 using TRACE ?R level of tracing. When the exit handler switches from TRUE
 to FALSE, the Rexx interpreter exits the interactive debug mode.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>API - Rexx_IO_Exit parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2742,6 +2898,7 @@ typedef struct {
 } RXTRCTST_PARM;
 ]]>
 </programlisting>
+</example>
 <para>If the exit handler switches <emphasis role="italic">rxftrace</emphasis>
 to TRUE, Rexx switches on the interactive debug mode. If the exit handler
 switches <emphasis role="italic">rxftrace</emphasis> to FALSE, Rexx switches
@@ -2863,6 +3020,8 @@ One traditional FAILURE condition is the unknown command error.</para>
 <para>Command handlers raise ERROR and FAILURE conditions using the
 RaiseCondition() (<xref linkend="mthRaiseCondition" />) API provided by the RexxExitContext.  For
 example:</para>
+<example>
+<title>API - Command handler interface</title>
 <programlisting>
 <![CDATA[
 // if this was an unknown command, give our generic unknown command return code
@@ -2882,6 +3041,7 @@ else if (errorStatus == COMMAND_ERROR) {
 return context->WholeNumber(rc);
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="apilisting"><title>Rexx Interface Methods Listing</title>

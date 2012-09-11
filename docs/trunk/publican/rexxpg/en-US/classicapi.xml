@@ -128,6 +128,8 @@ to describe Rexx character strings.  An RXSTRING is a content-insensitive,
 flat model character string with
 a theoretical maximum length of 4 gigabytes. The following structure defines
 an RXSTRING:</para>
+<example>
+<title>RXSTRING</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -138,8 +140,11 @@ typedef struct {
 typedef RXSTRING *PRXSTRING;      /* pointer to an RXSTRING       */
 ]]>
 </programlisting>
+</example>
 <para>Many programming interfaces use RXSTRINGs for input-only operations.
 These APIs use a constant version of the RXSTRING, the CONSTRXSTRING.</para>
+<example>
+<title>RXSTRING</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -150,6 +155,7 @@ typedef struct {
 typedef CONSTRXSTRING *PCONSTRXSTRING;      /* pointer to a CONSTRXSTRING       */
 ]]>
 </programlisting>
+</example>
 
 <para>Notes:</para>
 <orderedlist>
@@ -373,6 +379,8 @@ to be used. The RXSYSEXIT structures have the following form:</para>
 <indexterm><primary>application programming interfaces</primary>
 <secondary>RXSYSEXIT data structure</secondary></indexterm>
 <indexterm><primary>RXSYSEXIT data structure</primary></indexterm>
+<example>
+<title>RXSYSEXIT</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -381,6 +389,7 @@ typedef struct {
 } RXSYSEXIT;
 ]]>
 </programlisting>
+</example>
 <para>The <emphasis role="italic">sysexit_name</emphasis> is the address of an
 ASCII exit handler name registered with RexxRegisterExitExe or
 RexxRegisterExitDll. <emphasis role="italic">Sysexit_code</emphasis>
@@ -434,7 +443,8 @@ in the macrospace, the return code is -3 (&quot;Program is unreadable&quot;).</p
 <section id="rexxstartxmp"><title>Example</title>
 <indexterm><primary>RexxStart</primary>
 <secondary>example using</secondary></indexterm>
-<para></para>
+<example>
+<title>RexxStart</title>
 <programlisting>
 <![CDATA[
 int       return_code;                 /* interpreter return code    */
@@ -466,6 +476,7 @@ char      return_buffer[250];          /* returned buffer            */
      RexxFreeMemory(RXSTRPTR(retval)); /* release the RXSTRING       */
 ]]>
 </programlisting>
+</example>
 <para>When RexxStart is executed within an external program (usually
 a C program), the main Rexx thread runs on the same thread as the RexxStart
 invocation.  When the main thread terminates, the interpreter will wait until
@@ -535,6 +546,8 @@ command.</para>
 <indexterm><primary>subcommand interface</primary>
 <secondary>definition</secondary></indexterm>
 <para>  The following example is a sample subcommand handler definition. </para>
+<example>
+<title>Command handler</title>
 <programlisting>
 <![CDATA[
 RexxReturnCode REXXENTRY command_handler(
@@ -543,6 +556,7 @@ RexxReturnCode REXXENTRY command_handler(
   PRXSTRING Retstr);          /* Returned RC string                  */
 ]]>
 </programlisting>
+</example>
 <para>where:</para>
 <variablelist>
 <varlistentry><term>Command</term>
@@ -606,6 +620,8 @@ longer than the default RXSTRING. If the subcommand handler sets
 <section id="subcomhandlxmp"><title>Example</title>
 <indexterm><primary>subcommand interface</primary>
 <secondary>subcommand handler example</secondary></indexterm>
+<example>
+<title>Subcommand handler</title>
 <programlisting>
 <![CDATA[
 RexxReturnCode REXXENTRY Edit_Commands(
@@ -650,6 +666,7 @@ RexxReturnCode REXXENTRY Edit_Commands(
 }
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 </section>
@@ -838,6 +855,8 @@ This is not an error condition. It means that RexxRegisterSubcomExe has successf
 registered the new subcommand handler.</para>
 <para>A Rexx procedure can register dynamic-link library
 subcommand handlers with the RXSUBCOM command. For example: </para>
+<example>
+<title>RXSUBCOM</title>
 <programlisting>
 <![CDATA[
                                /* register Dialog Manager       */
@@ -846,6 +865,7 @@ subcommand handlers with the RXSUBCOM command. For example: </para>
 Address ispcir                 /* send commands to dialog mgr   */
 ]]>
 </programlisting>
+</example>
 <para>The RXSUBCOM command registers the Dialog Manager subcommand handler ISPCIR
 as routine ISPCIR in the ISPCIR dynamic-link library.</para>
 </section>
@@ -853,6 +873,8 @@ as routine ISPCIR in the ISPCIR dynamic-link library.</para>
 <section id="rxsubcomregxmp"><title>Example</title>
 <indexterm><primary>RexxStart</primary>
 <secondary>exit example</secondary></indexterm>
+<example>
+<title>RexxStart</title>
 <programlisting>
 <![CDATA[
 const char  *user_info[2];       /* saved user information     */
@@ -866,6 +888,7 @@ rc = RexxRegisterSubcomExe("Editor", /* register editor handler    */
 
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -1010,6 +1033,8 @@ environment is not registered (other Rexx subcommand functions).</entry>
 </section>
 
 <section id="rxquerysubcomxmp"><title>Example</title>
+<example>
+<title>Command handlers</title>
 <programlisting>
 <![CDATA[
 RexxReturnCode REXXENTRY Edit_Commands(
@@ -1030,6 +1055,7 @@ RexxReturnCode REXXENTRY Edit_Commands(
   global_workarea = user_info[0];      /* set the global anchor      */
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 </section>
@@ -1075,6 +1101,8 @@ directly from a Rexx program using the Rexx RXFUNCADD built-in function.</para>
 <indexterm><primary>external function interface</primary>
 <secondary>writing</secondary></indexterm>
 <para>The following is a sample external function definition:</para>
+<example>
+<title>External functions</title>
 <programlisting>
 <![CDATA[
 size_t REXXENTRY SysLoadFuncs(
@@ -1085,6 +1113,7 @@ size_t REXXENTRY SysLoadFuncs(
      PRXSTRING   Retstr)                 /* returned result string     */
 ]]>
 </programlisting>
+</example>
 <para>where:</para>
 <variablelist>
 <varlistentry><term>Name</term>
@@ -1153,6 +1182,8 @@ are available to all processes. The function names cannot be duplicated.</para>
 <section id="callextfuxmp"><title>Example</title>
 <indexterm><primary>external function interface</primary>
 <secondary>simple function</secondary></indexterm>
+<example>
+<title>External functions</title>
 <programlisting>
 <![CDATA[
 size_t REXXENTRY SysMkDir(
@@ -1177,6 +1208,7 @@ size_t REXXENTRY SysMkDir(
 }
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -1254,6 +1286,8 @@ EXPORTS
 </programlisting>
 <para>A Rexx procedure can register dynamic-link library-external
 functions with the RXFUNCADD built-in function. For example: </para>
+<example>
+<title>RXFUNCADD</title>
 <programlisting>
 <![CDATA[
                                /* register function SysLoadFuncs  */
@@ -1262,6 +1296,7 @@ Call RxFuncAdd "SysLoadFuncs", "RexxUTIL", "SysLoadFuncs"
 Call SysLoadFuncs              /* call to load other functions    */
 ]]>
 </programlisting>
+</example>
 <para>RXFUNCADD registers the external function SysLoadFuncs as routine
 SysLoadFuncs in the rexxutil library. SysLoadFuncs registers
 additional functions in rexxutil with RexxRegisterFunctionDll. See the
@@ -1269,6 +1304,8 @@ SysLoadFuncs routine below for a function registration example.</para>
 </section>
 
 <section id="regfudllxmp"><title>Example</title>
+<example>
+<title>External functions</title>
 <programlisting>
 <![CDATA[
 static const char *RxFncTable[] =      /* function package list      */
@@ -1306,6 +1343,7 @@ size_t REXXENTRY SysLoadFuncs(
 }
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -1495,6 +1533,8 @@ within an executable application module.
 <secondary>definition</secondary></indexterm>
 <para>The following is a sample exit handler
 definition: </para>
+<example>
+<title>Rexx_IO_exit</title>
 <programlisting>
 <![CDATA[
 int REXXENTRY Rexx_IO_exit(
@@ -1503,6 +1543,7 @@ int REXXENTRY Rexx_IO_exit(
      PEXIT ParmBlock);    /* function-dependent control block   */
 ]]>
 </programlisting>
+</example>
 <para>where:</para>
 <variablelist>
 <varlistentry><term>ExitNumber</term>
@@ -1583,6 +1624,8 @@ exit code marks the exit list end.</para>
 <tertiary>RXSYSEXIT</tertiary></indexterm>
 <indexterm><primary>SYSEXIT interface</primary>
 <secondary>RXSYSEXIT data structure</secondary></indexterm>
+<example>
+<title>RXSYSEXIT</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -1591,6 +1634,7 @@ typedef struct {
 } RXSYSEXIT;
 ]]>
 </programlisting>
+</example>
 <para>The Rexx interpreter calls the registered exit handler named in
 <emphasis role="italic">sysexit_name</emphasis> for all of the
 <emphasis role="italic">sysexit_code</emphasis> subfunctions.</para>
@@ -1598,6 +1642,8 @@ typedef struct {
 <section id="identifyexithandlxmp"><title>Example</title>
 <indexterm><primary>SYSEXIT interface</primary>
 <secondary>sample exit</secondary></indexterm>
+<example>
+<title>RXSYSEXIT</title>
 <programlisting>
 <![CDATA[
 ...
@@ -1658,6 +1704,7 @@ int REXXENTRY Init_exit(
 }
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 </section>
@@ -1810,6 +1857,8 @@ the usual external function search order.</para></listitem>
 (&quot;Incorrect call to routine&quot;), 43 (&quot;Routine not found&quot;),
 or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>RXFUNC parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -1835,6 +1884,7 @@ typedef struct {
 } RXFNCCAL_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The name of the external function is defined
 by <emphasis role="italic">rxfnc_name</emphasis> and
 <emphasis role="italic">rxfnc_namel</emphasis>. The arguments to the
@@ -1891,6 +1941,8 @@ handler.</para></listitem>
 <listitem><para>Continuation: Raise the ERROR or FAILURE condition
 when indicated by the parameter list flags.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>RXCMD parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -1912,6 +1964,7 @@ typedef struct {
 } RXCMDHST_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The <emphasis role="italic">rxcmd_command</emphasis> field contains
 the issued command. <emphasis role="italic">Rxcmd_address</emphasis>,
 <emphasis role="italic">rxcmd_addressl</emphasis>,
@@ -1948,6 +2001,8 @@ data queue.</para></listitem>
 <listitem><para>Exit action: Return a line from the data queue that
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>RXMSQ parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -1956,6 +2011,7 @@ typedef struct {
 } RXMSQPLL_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The exit handler returns the queue line in
 the <emphasis role="italic">rxmsq_retc</emphasis> RXSTRING.</para>
 </listitem></itemizedlist>
@@ -1971,6 +2027,8 @@ data queue.</para></listitem>
 <listitem><para>Exit action: Add the line to the data queue that
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>RXMSQ parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -1982,6 +2040,7 @@ typedef struct {
 } RXMSQPSH_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The <emphasis role="italic">rxmsq_value</emphasis> RXSTRING contains
 the line added to the queue. It is the responsibility of the exit handler
 to truncate the string if the exit handler data queue has a maximum length
@@ -1998,6 +2057,8 @@ Rexx data queue.</para></listitem>
 <listitem><para>Exit action: Return the size of the data queue that
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>RXMSQ parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2005,6 +2066,7 @@ typedef struct {
 } RXMSQSIZ_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The exit handler returns the number of queue
 lines in <emphasis role="italic">rxmsq_size</emphasis>.</para>
 </listitem></itemizedlist>
@@ -2020,6 +2082,8 @@ to <emphasis role="italic">newname</emphasis>.</para></listitem>
 <listitem><para>Exit action: Change the default queue name for the
 data queue that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>RXMSQ parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2028,6 +2092,7 @@ typedef struct {
 } RXMSQNAM_PARM;
 ]]>
 </programlisting>
+</example>
 <para><emphasis role="italic">rxmsq_name</emphasis> contains the new queue
 name.</para></listitem></itemizedlist>
 </para></listitem></varlistentry>
@@ -2057,6 +2122,8 @@ stream (STDOUT).</para></listitem>
 <listitem><para>Exit action: Write a line to the output stream that
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>RXSIO parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2064,6 +2131,7 @@ typedef struct {
 } RXSIOSAY_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The output line is contained in
 <emphasis role="italic">rxsio_string</emphasis>. The output line can be of any
 length. It is the responsibility of the
@@ -2081,6 +2149,8 @@ stream (.ERROR).</para></listitem>
 <listitem><para>Exit action: Write a line to the error output stream
 that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>RXSIO parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2088,6 +2158,7 @@ typedef struct {
 } RXSIOTRC_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The output line is contained in
 <emphasis role="italic">rxsio_string</emphasis>. The output line can be of any
 length. It is the responsibility of the
@@ -2104,6 +2175,8 @@ stream (STDIN).</para></listitem>
 <listitem><para>Exit action: Return a line from the standard input
 stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>RXSIO parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2111,6 +2184,7 @@ typedef struct {
 } RXSIOTRD_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The input stream line is returned in the
 <emphasis role="italic">rxsiotrd_retc</emphasis> RXSTRING.</para>
 </listitem></itemizedlist>
@@ -2125,6 +2199,8 @@ stream (STDIN).</para></listitem>
 <listitem><para>Exit action: Return a line from the standard debug
 stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
+<example>
+<title>RXSIO parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2132,6 +2208,7 @@ typedef struct {
 } RXSIODTR_PARM;
 ]]>
 </programlisting>
+</example>
 <para>The input stream line is returned in the
 <emphasis role="italic">rxsiodtr_retc</emphasis> RXSTRING.</para>
 </listitem></itemizedlist>
@@ -2165,6 +2242,8 @@ condition (either TRUE or FALSE).</para></listitem>
 <listitem><para>Continuation: Raise the Rexx HALT condition if the
 exit handler returns TRUE.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>RXHLT parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2174,6 +2253,7 @@ typedef struct {
 } RXHLTTST_PARM;
 ]]>
 </programlisting>
+</example>
 <para>If the exit handler sets <emphasis role="italic">rxfhhalt</emphasis> to
 TRUE, the HALT condition is raised in the Rexx program.</para>
 <para>The Rexx program can retrieve the reason string using the CONDITION("D")
@@ -2220,6 +2300,8 @@ FALSE to TRUE, the Rexx interpreter enters the interactive Rexx debug mode
 using TRACE ?R level of tracing. When the exit handler switches from TRUE
 to FALSE, the Rexx interpreter exits the interactive debug mode.</para></listitem>
 <listitem><para>Parameter list:</para>
+<example>
+<title>RXTRC parameter list</title>
 <programlisting>
 <![CDATA[
 typedef struct {
@@ -2229,6 +2311,7 @@ typedef struct {
 } RXTRCTST_PARM;
 ]]>
 </programlisting>
+</example>
 <para>If the exit handler switches <emphasis role="italic">rxftrace</emphasis>
 to TRUE, Rexx switches on the interactive debug mode. If the exit handler
 switches <emphasis role="italic">rxftrace</emphasis> to FALSE, Rexx switches
@@ -2475,6 +2558,8 @@ has been properly registered.</para>
 <section id="regexitexexmp"><title>Example</title>
 <indexterm><primary>SYSEXIT interface</primary>
 <secondary>registration example</secondary></indexterm>
+<example>
+<title>SYSEXIT</title>
 <programlisting>
 <![CDATA[
 const char      *user_info[2];       /* saved user information     */
@@ -2488,6 +2573,7 @@ rc = RexxRegisterExitExe("IO_Exit",  /* register editor handler    */
 
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -2627,6 +2713,8 @@ and DLL names
 </section>
 
 <section id="queryrexitxmp"><title>Example</title>
+<example>
+<title>Command handler</title>
 <programlisting>
 <![CDATA[
 int REXXENTRY Edit_IO_Exit(
@@ -2649,6 +2737,7 @@ int REXXENTRY Edit_IO_Exit(
 }
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 </section>
@@ -2740,6 +2829,8 @@ Each block is a separate variable access request.
 <indexterm><primary>SHVBLOCK</primary></indexterm>
 <indexterm><primary>variable pool interface</primary>
 <secondary>SHVBLOCK data structure</secondary></indexterm>
+<example>
+<title>SHVBLOCK</title>
 <programlisting>
 <![CDATA[
 typedef struct shvnode {
@@ -2753,6 +2844,7 @@ typedef struct shvnode {
 }   SHVBLOCK;
 ]]>
 </programlisting>
+</example>
 <para>where:</para>
 <variablelist>
    <varlistentry><term>shvnext</term>
@@ -3004,6 +3096,8 @@ issued.
 <section id="variablepoolxmp"><title>Example</title>
 <indexterm><primary>variable pool interface</primary>
 <secondary>RexxVariablePool example</secondary></indexterm>
+<example>
+<title>RexxVariablePool</title>
 <programlisting>
 <![CDATA[
 /*********************************************************************/
@@ -3030,6 +3124,7 @@ int SetRexxVariable(
 }
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 </section>

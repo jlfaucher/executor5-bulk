@@ -164,6 +164,8 @@ say "PATH command using Rexx"
 <para>The following example, DP.CMD, shows a program using the DIR
 and PATH commands. The PAUSE command is added to wait for the user to press
 a key before issuing the next instruction or command. Borders are added too.</para>
+<example>
+<title>DIR and PATH commands</title>
 <programlisting>
 <![CDATA[
 /* DP.CMD -- Issue DIR and PATH commands to Windows */
@@ -183,6 +185,7 @@ say "="~copies(40)    /* display line of =       */
                       /* PATH setting            */
 ]]>
 </programlisting>
+</example>
 <para>When you specify the following:</para>
 <programlisting>
 <![CDATA[
@@ -239,8 +242,8 @@ by using the built in <computeroutput>directory()</computeroutput> or
 <computeroutput>value()</computeroutput> functions rather than issuing a host command
 for <computeroutput>cd</computeroutput>, <computeroutput>set</computeroutput>, etc.</para>
 
-<para>Some examples for Windows:</para>
-
+<example>
+<title>Environment commands (Windows)</title>
 <programlisting>
 <![CDATA[
 'cd c:\tmp'               /* executed in Rexx program process */
@@ -250,9 +253,10 @@ for <computeroutput>cd</computeroutput>, <computeroutput>set</computeroutput>, e
 'set myvar=my value'      /* executed in Rexx program process */
 ]]>
 </programlisting>
+</example>
 
-<para>Some examples for Unix:</para>
-
+<example>
+<title>Environment commands (Unix)</title>
 <programlisting>
 <![CDATA[
 'cd'                      /* executed in Rexx program process: go to $HOME directory */
@@ -265,6 +269,7 @@ for <computeroutput>cd</computeroutput>, <computeroutput>set</computeroutput>, e
 'unset myvar'             /* executed in Rexx program process */
 ]]>
 </programlisting>
+</example>
 
 </note>
 </section>
@@ -275,6 +280,8 @@ for <computeroutput>cd</computeroutput>, <computeroutput>set</computeroutput>, e
 or Unix/Linux shell scripts. The
 following example shows a Windows batch file that processes user input to
 display a help message: </para>
+<example>
+<title>Windows batch file</title>
 <programlisting>
 <![CDATA[
 @echo off
@@ -305,7 +312,10 @@ prompt
 :exit
 ]]>
 </programlisting>
+</example>
 <para>Here is the equivalent program in Rexx: </para>
+<example>
+<title>Rexx program</title>
 <programlisting>
 <![CDATA[
 /* HELP.CMD -- Get help for a system message */
@@ -322,6 +332,7 @@ end
 exit
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="bldcom"><title>Using Variables to Build Commands</title>
@@ -332,6 +343,8 @@ and the input file name.</para>
 <para>To have Rexx issue the command to the operating system, put the variable
 containing the command string on a line by itself. Rexx evaluates the variable
 and passes the resultant string to Windows: </para>
+<example>
+<title>SHOFIL.CMD (Windows)</title>
 <programlisting>
 <![CDATA[
 /* SHOFIL.CMD - build command with variables  */
@@ -353,6 +366,7 @@ commandstr           /* ...Rexx passes the    */
                      /* string on to Windows  */
 ]]>
 </programlisting>
+</example>
 <para>Rexx displays the following on the screen when you run the program:</para>
 <programlisting>
 <![CDATA[
@@ -376,6 +390,8 @@ as those for forming expressions. Be careful with symbols that are used in
 Rexx and Windows programs. The DIRREX.CMD program
 below shows how Rexx evaluates a command when the command name and a variable
 name are the same: </para>
+<example>
+<title>DIRREX.CMD (Windows)</title>
 <programlisting>
 <![CDATA[
 /* DIRREX.CMD - assign a value to the symbol DIR  */
@@ -386,6 +402,7 @@ dir = "echo This is not a directory."
 dir
 ]]>
 </programlisting>
+</example>
 <para>Because dir is a variable that contains a string, the string
 is passed to the system. The DIR command is not executed. Here are the results: </para>
 <programlisting>
@@ -399,6 +416,8 @@ This is not a directory.
 <para>Rexx evaluates a literal string--a string enclosed in matching quotation
 marks--exactly as it is. To ensure that a symbol in a command is not
 evaluated as a variable, enclose it in matching quotation marks as follows:</para>
+<example>
+<title>Passing values to command environments</title>
 <programlisting>
 <![CDATA[
 /* assign a value to the symbol DIR         */
@@ -409,6 +428,7 @@ dir = "echo This is another string now."
 "dir"
 ]]>
 </programlisting>
+</example>
 <para>Rexx displays a directory listing.</para>
 <para>The best way to ensure that Rexx passes a string to the system as a command
 is to enclose the entire clause in quotation marks. This is especially important
@@ -444,6 +464,8 @@ To address the Windows environment, use the symbol CMD. For
 <emphasis role="italic">expression</emphasis>, specify an expression
 that results in a string that Rexx passes to
 the environment. Here are some examples: </para>
+<example>
+<title>ADDREXX instruction</title>
 <programlisting>
 <![CDATA[
 address CMD "dir"     /* pass the literal string      */
@@ -462,6 +484,7 @@ address edit "rain"   /* Rexx passes the "rain"       */
                       /* environment named edit       */
 ]]>
 </programlisting>
+</example>
 <para>Notice that the ADDRESS instruction lets a single Rexx program issue commands
 to two or more environments.</para>
 </section>
@@ -478,6 +501,8 @@ variable named RC.</para>
 always 0. If something goes wrong, the return code issued is a nonzero number.
 The number depends on the command itself and the error encountered.</para>
 <para>This example shows how to display a return code: </para>
+<example>
+<title>GETRC.CMD (Windows)</title>
 <programlisting>
 <![CDATA[
 /* GETRC.CMD report */
@@ -485,9 +510,12 @@ The number depends on the command itself and the error encountered.</para>
 say "the return code is" RC
 ]]>
 </programlisting>
+</example>
 <para>The special variable RC can be used in expressions like any other
 variable. In the next example, an error message is displayed when the TYPE command
 returns a nonzero value in RC: </para>
+<example>
+<title>RC special variable</title>
 <programlisting>
 <![CDATA[
 /* Simple if/then error handler */
@@ -498,6 +526,7 @@ if RC \= 0
 then say "Could not find" filename
 ]]>
 </programlisting>
+</example>
 <para>This program tells you only that the system could not find a nonexistent
 file.</para>
 <para>A system error does not stop a Rexx program.
@@ -610,6 +639,8 @@ the <citetitle pubwork="book">Open Object Rexx: Reference.</citetitle></para>
 <section id="disabl"><title>Disabling Traps</title>
 <para>To turn off a trap for any part of a program, use the SIGNAL or CALL
 instructions with the OFF keyword, such as: </para>
+<example>
+<title>SIGNAL</title>
 <programlisting>
 <![CDATA[
 SIGNAL OFF ERROR
@@ -618,6 +649,7 @@ CALL OFF ERROR
 CALL OFF FAILURE
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="signal"><title>Using SIGNAL ON ERROR</title>
@@ -647,6 +679,8 @@ name, you could use CALL ON to recover and resume processing:</para>
 <section id="common"><title>A Common Error-Handling Routine</title>
 <para>The following example shows a simple error trap that you can use in many
 programs: </para>
+<example>
+<title>Common error handling routine</title>
 <programlisting>
 <![CDATA[
 /* Here is a sample "main program" with an error            */
@@ -664,6 +698,7 @@ say "instruction = "  sourceline(sigl)
 exit
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 </chapter>

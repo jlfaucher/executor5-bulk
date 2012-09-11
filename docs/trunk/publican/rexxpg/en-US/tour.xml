@@ -105,6 +105,8 @@ application.</para>
   interpreter). Here is a typical Rexx program named greeting.rex. It prompts the user to type in a name
   and then displays a personalized greeting:
 </para>
+<example>
+<title>GREETING.REX</title>
 <programlisting>
 <![CDATA[
 /* greeting.rex - a Rexx program to display a greeting.  */
@@ -114,6 +116,7 @@ say "Hello" name                 /* Display greeting     */
 exit 0                   /* Exit with a return code of 0 */
 ]]>
 </programlisting>
+</example>
 <para>
   SAY
   <indexterm><primary>SAY instruction</primary></indexterm>
@@ -524,6 +527,8 @@ name = expression
 name. For <emphasis role="italic">expression</emphasis>, specify the
 information to be stored, such as a number, a string, or
 some calculation. Here are some examples: </para>
+<example>
+<title>Arithmetic</title>
 <programlisting>
 <![CDATA[
 a=1+2
@@ -531,6 +536,7 @@ b=a*1.5
 c="This is a string assignment. No memory allocation needed!"
 ]]>
 </programlisting>
+</example>
 <para>The PARSE instruction
 <indexterm><primary>instructions</primary>
 <secondary>PULL</secondary></indexterm>
@@ -538,6 +544,8 @@ and its variants PULL and ARG also assign values to variables.  PARSE assigns
 data from various sources to one or more variables according to the rules
 of parsing. PARSE PULL, for example, is often used to read data from the
 keyboard: </para>
+<example>
+<title>PARSE PULL</title>
 <programlisting>
 <![CDATA[
 /* Using PARSE PULL to read the keyboard                              */
@@ -546,6 +554,7 @@ parse pull response       /* read keyboard and put result in RESPONSE */
 say response              /* possibly displays "John Smith"           */
 ]]>
 </programlisting>
+</example>
 <para>Other operands of PARSE indicate the source of the data. PARSE ARG, for
 example, retrieves command line arguments. PARSE VERSION retrieves the information
 about the version of the Rexx interpreter being used.</para>
@@ -554,6 +563,8 @@ using a template. The various pieces of data are assigned
 to variables that are part of the template. The following example prompts
 the user for a date, and assigns the month, day, and year to different variables.
 (In a real application, you would want to add instructions to verify the input.) </para>
+<example>
+<title>PARSE PULL</title>
 <programlisting>
 <![CDATA[
 /* PARSE example using a template */
@@ -564,6 +575,7 @@ say day
 say year
 ]]>
 </programlisting>
+</example>
 <para>The template in this example contains two literal strings ("/"). The PARSE
 instruction uses these literals to determine how to split the data.</para>
 <para>The PULL and ARG instructions
@@ -591,6 +603,8 @@ for more information on Rexx parsing.</para>
 <para>Rexx functions can
 be used in any expression. In the following example, the built-in function
 WORD is used to return the third blank-delimited word in a string: </para>
+<example>
+<title>Rexx function use</title>
 <programlisting>
 <![CDATA[
 /* Example of function use                                     */
@@ -599,8 +613,11 @@ surname=word(myname,3)    /* assign WORD result to SURNAME     */
 say surname               /* display Public                    */
 ]]>
 </programlisting>
+</example>
 <para>Literal strings can be supplied as arguments to functions, so the previous
 program can be rewritten as follows: </para>
+<example>
+<title>Rexx function use</title>
 <programlisting>
 <![CDATA[
 /* Example of function use                                            */
@@ -608,14 +625,18 @@ surname=word("John Q. Public",3) /* assign WORD result to SURNAME     */
 say surname                      /* display Public                    */
 ]]>
 </programlisting>
+</example>
 <para>Because an expression can be used with the SAY instruction, you can further
 reduce the program to: </para>
+<example>
+<title>Rexx expressions</title>
 <programlisting>
 <![CDATA[
 /* Example of function use                                            */
 say word("John Q. Public",3)
 ]]>
 </programlisting>
+</example>
 <para>Functions can be nested.
 <indexterm><primary>functions</primary>
 <secondary>nesting</secondary></indexterm>
@@ -623,6 +644,8 @@ Suppose you want to display only the first two letters of the third word,
 Public. The LEFT function can return the first two letters, but you need to
 give it the third word. LEFT expects the input string as its first argument
 and the number of characters to return as its second argument: </para>
+<example>
+<title>Rexx function use</title>
 <programlisting>
 <![CDATA[
 /* Example of function use */
@@ -635,6 +658,7 @@ say left(thirdword,2)
 say left(word("John Q. Public",3),2)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="progcon"><title>Program Control</title>
@@ -663,6 +687,8 @@ say left(word("John Q. Public",3),2)
 <secondary>for program control (DO, LOOP, IF, SELECT ...)</secondary></indexterm>
 DO, LOOP, IF, and SELECT to control your program. Here is a
 typical Rexx IF instruction: </para>
+<example>
+<title>IF instruction</title>
 <programlisting>
 <![CDATA[
 if a>1 & b<0 then do]]>
@@ -671,6 +697,7 @@ say "I&apos;m ending with a return code of 99."
 exit 99
 end
 </programlisting>
+</example>
 <para>The Rexx relational operator &amp; for a logical AND is different from the operator
 in C, which is &amp;&amp;. Other relational operators differ as well, so you
 may want to review the appropriate section in the
@@ -764,6 +791,8 @@ switching between C and Rexx. The familiar C language braces { } are not used
 in Rexx for blocks of instructions. Instead, Rexx uses DO/END pairs. The THEN
 keyword is always required.</para>
 <para>Here is an IF instruction with an ELSE: </para>
+<example>
+<title>IF and ELSE instructions</title>
 <programlisting>
 <![CDATA[
 if a>1 & b<0 then do]]>
@@ -776,8 +805,11 @@ else do
     say "On with the rest of the program."
 end  /* if */
 </programlisting>
+</example>
 <para>You can omit the DO/END pairs if only one clause follows the THEN or ELSE
 keyword: </para>
+<example>
+<title>IF and ELSE instructions</title>
 <programlisting>
 <![CDATA[
 if words(myvar) > 5 then
@@ -786,7 +818,10 @@ else
     say "Variable MYVAR has fewer than six words."
 ]]>
 </programlisting>
+</example>
 <para>Rexx also supports an ELSE IF construction: </para>
+<example>
+<title>ELSE IF instruction</title>
 <programlisting>
 <![CDATA[
 count=words(myvar)
@@ -798,12 +833,15 @@ else
     say "Variable MYVAR has fewer than four words."
 ]]>
 </programlisting>
+</example>
 <para>The SELECT instruction in Rexx is similar to the SELECT CASE statement
 in Basic and the switch statement in C. SELECT executes
 a block of statements based on the value of an expression. Rexx's SELECT
 differs from the equivalent statements in Basic and C in that the SELECT keyword
 is not followed by an expression. Instead, expressions are placed in WHEN
 clauses:</para>
+<example>
+<title>SELECT instruction</title>
 <programlisting>
 select
 when name="Bob" then
@@ -813,6 +851,7 @@ when name="Mary" then
 otherwise
 end /* select */
 </programlisting>
+</example>
 <para>WHEN clauses are evaluated sequentially. When one of the expressions is
 true, the statement, or block of statements, is executed. All the other blocks
 are skipped, even if their WHEN clauses would have evaluated to true. Notice
@@ -825,6 +864,8 @@ include an OTHERWISE.</para>
 <para>As with the IF instruction, you can use DO/END pairs for several clauses
 within SELECT cases. You do not need a DO/END pair if several clauses follow
 the OTHERWISE keyword: </para>
+<example>
+<title>SELECT and OTHERWISE instructions</title>
 <programlisting>
 select
 when name="Bob" then
@@ -838,10 +879,13 @@ otherwise
     anonymous=anonymous+1
 end /* select */
 </programlisting>
+</example>
 <para>Many Basic implementations have several different instructions for loops.
 Rexx has knows the DO/END and LOOP/END pair. All of the traditional looping variations
 are incorporated into the DO and LOOP instructions, which
 can be used interchangeably for looping: </para>
+<example>
+<title>DO and LOOP instructions</title>
 <programlisting>
 do i=1 to 10         /* Simple loop            */
    say i
@@ -885,8 +929,11 @@ do until a&gt;b         /* least once.  The expression is         */
    say "Until loop"  /* evaluated at the end of the loop.      */
 end
 </programlisting>
+</example>
 <para>Rexx also has a FOREVER keyword. Use the LEAVE, RETURN, or EXIT
 instructions to break out of the loop:</para>
+<example>
+<title>DO FOREVER instruction</title>
 <programlisting>
                   /* Program to emulate your five-year-old child */
 num=random(1,10)  /* To emulate a three-year-old, move this inside the loop! */
@@ -900,6 +947,7 @@ do forever
   say "No, guess again..."
 end
 </programlisting>
+</example>
 <para>Rexx also includes an
 <indexterm><primary>ITERATE instructions</primary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -908,6 +956,8 @@ end
 <secondary>ITERATE instruction</secondary></indexterm>
 ITERATE instruction, which skips the rest of the
 instructions in that iteration of the loop: </para>
+<example>
+<title>ITERATE instruction</title>
 <programlisting>
 <![CDATA[
 loop i=1 to 100
@@ -919,7 +969,10 @@ loop i=1 to 100
 end
 ]]>
 </programlisting>
+</example>
 <para>You can use loops in IF or SELECT instructions: </para>
+<example>
+<title>ITERATE instruction</title>
 <programlisting>
 <![CDATA[
 /* Say hello ten times if I is equal to 1 */
@@ -929,8 +982,11 @@ if i=1 then
    end
 ]]>
 </programlisting>
+</example>
 <para>There is an equivalent to the Basic GOTO statement: the Rexx SIGNAL
 instruction. SIGNAL causes control to branch to a label:</para>
+<example>
+<title>SIGNAL instruction</title>
 <programlisting>
 <![CDATA[
 Signal fred;  /* Transfer control to label FRED below */
@@ -939,6 +995,7 @@ Signal fred;  /* Transfer control to label FRED below */
 Fred: say "Hi!"
 ]]>
 </programlisting>
+</example>
 <para>As with GOTO, you need to be careful about how you use SIGNAL.
 In particular, do not use SIGNAL to jump to the middle of a DO/END block or
 into a SELECT structure.</para>
@@ -958,6 +1015,8 @@ routines that make all variables accessible to the called routine. You can
 also write routines that hide the caller's variables.</para>
 <para>The following shows an example of a routine in which all variables are
 accessible: </para>
+<example>
+<title>ROUTINE instruction</title>
 <programlisting>
 <![CDATA[
 /* Routine example                     */
@@ -971,6 +1030,7 @@ i=i+12             /* Increment I      */
 return
 ]]>
 </programlisting>
+</example>
 <para>  The
 <indexterm><primary>instructions</primary>
 <secondary>CALL</secondary></indexterm>
@@ -992,6 +1052,8 @@ main program and will execute those instructions. The SAY instruction displays
 routine.</para>
 <para>You can return a result to the caller by placing an expression in the RETURN
 instruction, like this: </para>
+<example>
+<title>RETURN instruction</title>
 <programlisting>
 <![CDATA[
 /* Routine with result                 */
@@ -1004,11 +1066,14 @@ myroutine:         /* Label            */
 return i+12        /* Increment I      */
 ]]>
 </programlisting>
+</example>
 <para>The returned result is available to the  caller in the
 <indexterm><primary>variables</primary>
 <secondary>special</secondary></indexterm>
 special variable RESULT, as previously shown.
 If your routine returns a result, you can call it as a function: </para>
+<example>
+<title>RESULT special variable</title>
 <programlisting>
 <![CDATA[
 /* Routine with result called as function  */
@@ -1020,6 +1085,7 @@ myroutine:         /* Label                */
 return i+12        /* Increment I          */
 ]]>
 </programlisting>
+</example>
 <para>You can pass arguments to this sort of routine, but all variables are
 available to the routine anyway.</para>
 <para> You can also write routines that separate the caller's variables
@@ -1032,6 +1098,8 @@ To get protection, use the
 <indexterm><primary>Rexx</primary>
 <secondary>PROCEDURE instruction</secondary></indexterm>
 PROCEDURE instruction, as follows: </para>
+<example>
+<title>PROCEDURE instruction</title>
 <programlisting>
 <![CDATA[
 /* Routine example using PROCEDURE instruction                             */
@@ -1053,6 +1121,7 @@ cointoss: procedure             /* Use PROCEDURE to protect caller         */
 return "TAILS"
 ]]>
 </programlisting>
+</example>
 <para>In this example, the variable i is used in both the
 main program and the routine. When the PROCEDURE instruction is placed after
 the routine label, the routine's variables become local variables. They
@@ -1070,6 +1139,8 @@ operand to the PROCEDURE instruction. List the desired variables after the
 <indexterm><primary>variables</primary>
 <secondary>making accessible</secondary></indexterm>
 EXPOSE keyword: </para>
+<example>
+<title>EXPOSE keyword</title>
 <programlisting>
 <![CDATA[
 /* Routine example using PROCEDURE instruction with EXPOSE operand         */
@@ -1092,13 +1163,17 @@ cointoss: procedure expose headcount tailcount /* Expose the counter variables *
 return "TAILS"
 ]]>
 </programlisting>
+</example>
 <para>To pass arguments to a routine, separate the arguments with commas:</para>
+<example>
+<title>Passing arguments</title>
 <programlisting>
 <![CDATA[
 call myroutine arg1, "literal arg", arg3   /* Call as subroutine */
 myrc=myroutine(arg1, "literal arg", arg3)  /* Call as function   */
 ]]>
 </programlisting>
+</example>
 <para>In the routine, use the
 <indexterm><primary>USE ARG instructions</primary></indexterm>
 <indexterm><primary>instructions</primary>

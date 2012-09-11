@@ -116,6 +116,8 @@ rexx count r:\rexx\articles\devcon7.scr
 <para>COUNT uses the String method WORDS to count the words, so COUNT
 actually counts whitespace-delimited tokens: </para>
 <indexterm><primary>counting words in a file</primary></indexterm>
+<example>
+<title>COUNT.CMD</title>
 <programlisting>
 <![CDATA[
 /* COUNT.CMD - counts the words in a file                          */
@@ -129,6 +131,7 @@ end
 say count                   /* Display the count                   */
 ]]>
 </programlisting>
+</example>
 <para>To read a file, COUNT first creates a Stream object for the file by sending
 the NEW message to the Stream class. The file name (with or without a path)
 is specified as an argument on the NEW method.</para>
@@ -147,6 +150,8 @@ When Rexx implicitly opens a file because of a LINEIN request, it tries to
 open the file for both reading and writing. If that fails, it opens the file
 for reading. To ensure that the file is opened only for reading, you can modify
 COUNT as follows: </para>
+<example>
+<title>COUNT.CMD</title>
 <programlisting>
 <![CDATA[
 /* COUNT.CMD - counts the words in a file                          */
@@ -166,6 +171,7 @@ file~close                  /* Close the file                      */
 say count                   /* Display the count                   */
 ]]>
 </programlisting>
+</example>
 <para>The CLOSE method, used near the end of the previous example, closes the
 file. A CLOSE is not required. Rexx closes the stream for you when the program
 ends. However, it is a good idea to CLOSE streams to make the resource available
@@ -196,6 +202,8 @@ rexx cview libpath
 <para>If CVIEW finds the string, it displays the line on which the string is
 found. CVIEW continues to prompt for new search strings until you enter Q in
 response to the prompt. </para>
+<example>
+<title>CVIEW.CMD</title>
 <programlisting>
 <![CDATA[
 /* CVIEW - display lines from CONFIG.SYS                               */
@@ -219,6 +227,7 @@ loop forever
 end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="textfilelines"><title>Reading Specific Lines of a Text File</title>
@@ -229,6 +238,8 @@ end
 <para>You can read
 a specific line of a text file by entering a line number as an argument on
 the LINEIN method. In this example, line 3 is read from CONFIG.SYS: </para>
+<example>
+<title>LINEIN</title>
 <programlisting>
 <![CDATA[
 /* Read and display line 3 of CONFIG.SYS */
@@ -236,6 +247,7 @@ infile=.stream~new("c:\config.sys")
 say infile~linein(3)
 ]]>
 </programlisting>
+</example>
 <para>You do not reduce file I/O by using specific line numbers. Because text
 files do not have a specific record length, Rexx must read through the file
 counting line-end characters to find the line you want.</para>
@@ -249,6 +261,8 @@ counting line-end characters to find the line you want.</para>
 <para>  To write lines of text to a file, you use the LINEOUT
 method. By default, LINEOUT appends to an existing file. The following example
 adds an item to a to-do list that is maintained as a simple text file: </para>
+<example>
+<title>TODO.CMD</title>
 <programlisting>
 <![CDATA[
 /* TODO.CMD - add to a todo list                              */
@@ -258,6 +272,7 @@ file~lineout(date() time() text)  /* Append a line to the file */
 exit
 ]]>
 </programlisting>
+</example>
 <para>In TODO, a text string is provided as the only argument on LINEOUT. Rexx
 writes the line of text to the file and then writes a new-line character.
 You do not have to provide a new-line character in the string to be written.</para>
@@ -281,6 +296,8 @@ is followed by the remainder of the old file.</para>
 as an argument. In the following example, a file named TEMP.DAT is replaced
 with a random number of lines. TEMP.DAT is then read and displayed. You can run the example
 repeatedly to verify that TEMP.DAT is replaced on each run. </para>
+<example>
+<title>REPFILE.CMD</title>
 <programlisting>
 <![CDATA[
 /* REPFILE.CMD - demonstrates file replacement */
@@ -305,6 +322,7 @@ end
 testfile~close
 ]]>
 </programlisting>
+</example>
 <para>The REPFILE example also demonstrates that Rexx maintains separate read and
 write pointers to a stream. The read pointer is still at the beginning of
 the file while the write pointer is at the end of it.</para>
@@ -318,6 +336,8 @@ into lines using new-line characters. In most cases, you use the character
 I/O methods (such as CHARS, CHARIN, CHAROUT) on these files.</para>
 <para>Suppose, for example, that you want to read the data in the CHORD.WAV
 file (supplied with Windows multimedia support in c:\winnt) into a variable:</para>
+<example>
+<title>GETCHORD.CMD</title>
 <programlisting>
 <![CDATA[
 /* GETCHORD - reads CHORD.WAV into a variable           */
@@ -330,6 +350,7 @@ mychord=chordf~charin(1,chordf~chars)
 say "Number of characters read into variable" mychord~length
 ]]>
 </programlisting>
+</example>
 <para>The CHARIN method returns a string of characters from the stream,
 which in this case is CHORD.WAV. CHARIN accepts two optional arguments. If no arguments
 are specified, CHARIN reads one character from the current read position and
@@ -373,6 +394,8 @@ LINEOUT and then reads those lines using CHARIN. You can mix line methods
 and character methods. Rexx maintains separate read and write pointers, so
 there is no need to close the file or search for another position before reading
 the lines just written. </para>
+<example>
+<title>LINECHAR.CMD</title>
 <programlisting>
 <![CDATA[
 /* LINECHAR.CMD - demonstrate line end characters                   */
@@ -395,6 +418,7 @@ end /* do */
 file~close                       /* Close the file                  */
 ]]>
 </programlisting>
+</example>
 <para>It is not recommended to use line methods to read binary files. Your binary
 file might not contain any new-line characters. And, if it did, the characters
 probably are not meant to be interpreted as new-line characters.</para>
@@ -410,6 +434,8 @@ CHAROUT writes only the characters that you specify in an argument of the
 method. CHAROUT does not add carriage-return and line-feed
 characters to
 the end of the string. Here is an example: </para>
+<example>
+<title>JACK.CMD</title>
 <programlisting>
 <![CDATA[
 /* JACK.CMD - demonstrate that CHAROUT does not add new-line characters  */
@@ -422,6 +448,7 @@ filebin~close                  /* Close the file so we can display it   */
 "type binary.dat"              /* Use the TYPE command to display file  */
 ]]>
 </programlisting>
+</example>
 <para>Because new-line characters are not added, the text displayed
 by the TYPE command is concatenated.</para>
 <para>CHAROUT writes the string specified and advances the write pointer. If
@@ -477,6 +504,8 @@ the file.</para>
 you to use line methods in a binary-mode stream. Because Rexx now knows how
 long each record is, it can calculate the displacement of the file for a given
 record number and read the record directly. </para>
+<example>
+<title>DIRECT.CMD</title>
 <programlisting>
 <![CDATA[
 /* DIRECT.CMD - demonstration of direct file access       */
@@ -525,11 +554,6 @@ do i=1 to 5
 end
 say "Press Enter to continue"; parse pull resp
 
-
-]]>
-</programlisting>
-<programlisting>
-<![CDATA[
 /* Case 6: Write records in random order with LINEOUT     */
 say "Case 6: Replace record 2 with LINEOUT"
 db~lineout("This should replace line 2",2)
@@ -549,6 +573,7 @@ say "Press Enter to continue"; parse pull resp
 db~close
 ]]>
 </programlisting>
+</example>
 <para>After opening the file, DIRECT writes three records using LINEOUT. The records are
 not padded to 50 characters. Rexx handles that. Because the file is opened
 in binary mode, Rexx does not write line-end characters at the end of each
@@ -616,6 +641,8 @@ and start writing at character position 5000 if you choose.</para>
 QUERY method of the Stream class. The following ISTHERE.CMD program
 accepts a file name as a command line argument and checks for the existence
 of that file. </para>
+<example>
+<title>ISTHERE.CMD</title>
 <programlisting>
 <![CDATA[
 /* ISTHERE.CMD - test for the existence of a file        */
@@ -627,6 +654,7 @@ else
    say fid "exists."
 ]]>
 </programlisting>
+</example>
 <para>In the example, a stream object is created for the file even though it
 might not exist. This is acceptable because the file is not opened when the
 stream object is created.</para>
@@ -645,6 +673,8 @@ of the stream object. Otherwise, QUERY returns a null string.</para>
 <para>The QUERY method can also return date and time stamps,
 read position, write position, the size of the file, and so on. The following
 example shows most of the QUERY arguments. </para>
+<example>
+<title>INFOON.CMD</title>
 <programlisting>
 <![CDATA[
 /* INFOON.CMD - display information about a file */
@@ -670,6 +700,7 @@ say "Write position (in terms of characters):" qfile~query("seek write")
 qfile~close
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="standardio"><title>Using Standard I/O</title>
@@ -695,6 +726,8 @@ to display a progress indicator. For every line processed, COUNT now uses
 CHAROUT to display a single period. COUNT does not write any line-end
 characters, so the periods wrap to the next line when they reach the end of
 the line in the Windows window. </para>
+<example>
+<title>Modified COUNT.CMD</title>
 <programlisting>
 <![CDATA[
                             /* count counts the words in a file */
@@ -710,8 +743,11 @@ say ""
 say count
 ]]>
 </programlisting>
+</example>
 <para>Reading from STDIN using LINEIN is similar to reading with the PARSE PULL
 instruction: </para>
+<example>
+<title>INEXAM.CMD</title>
 <programlisting>
 <![CDATA[
 /* INEXAM.CMD - example of reading STDIN with LINEIN  */
@@ -728,11 +764,14 @@ response=.input~linein
 .output~lineout("Hi" response)
 ]]>
 </programlisting>
+</example>
 <para>Using character methods with STDIN and STDOUT gives you more control over
 the reading and writing of line-end characters. In the following example,
 the prompting string is written to STDOUT using CHAROUT. Because CHAROUT does
 not add any line-end characters to the stream, the display cursor is positioned
 after the prompt string on the same line. </para>
+<example>
+<title>INCHAR.CMD</title>
 <programlisting>
 <![CDATA[
 /* INCHAR.CMD - example of reading STDIN with CHARIN  */
@@ -741,6 +780,7 @@ response=.input~charin(,10)
 .output~charout("Hi" response)
 ]]>
 </programlisting>
+</example>
 <para>CHARIN is used to read the user's response. The user's keystrokes
 are not returned to your program until the user presses the Enter key. In
 the example, a length of 10 is specified. If fewer characters than the specified
@@ -775,6 +815,8 @@ in a similar manner. (Generally, these are listed in the manual for the device.)
 <para>Usually the control characters are characters that you cannot type at the
 keyboard. To use them in your program, send a D2C message to the character's
 ASCII value as shown in the example. </para>
+<example>
+<title>PRINTIT.CMD</title>
 <programlisting>
 <![CDATA[
 /* PRINTIT.CMD - Prints a text file                                    */
@@ -805,5 +847,6 @@ infile~close                      /* close the file                  */
 exit                              /* end the program normally        */
 ]]>
 </programlisting>
+</example>
 </section>
 </chapter>

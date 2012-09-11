@@ -248,6 +248,8 @@ demonstrate STRING and INIT. In the first program, the Part class is created,
 and along with it, the two methods under discussion, STRING and INIT: </para>
 <indexterm><primary>directives</primary>
 <secondary>sample program</secondary></indexterm>
+<example>
+<title>STRING and INIT methods</title>
 <programlisting>
 <![CDATA[
 /* PARTDEF.CMD - Class and method definition file */
@@ -266,6 +268,7 @@ expose name
 return "Part name:" name
 ]]>
 </programlisting>
+</example>
 <para>In the ::CLASS directive, the
 keyword PUBLIC indicates that the class can be shared with other programs.
 The two ::METHOD directives define
@@ -302,6 +305,8 @@ the EXPOSE instruction to identify which object variables it requires.  The RETU
 returns the result string.</para>
 <para>The following
 example shows how to use the Part class: </para>
+<example>
+<title>The PART class</title>
 <programlisting>
 <![CDATA[
 /* USEPART.CMD  - use the Part class */
@@ -313,6 +318,7 @@ exit
 ::requires partdef
 ]]>
 </programlisting>
+</example>
 <para>The USEPART program creates two parts, which are instances of the Part
 class. It then displays the names of the two parts.</para>
 <para>Rexx processes all directives before running your program. The
@@ -365,6 +371,8 @@ the object is reclaimed by the garbage collector.
 by Rexx using INIT and deleted by Rexx using UNINIT. This program makes visible
 Rexx's automatic invocation of INIT and UNINIT by revealing its processing
 on the screen using the SAY instruction: </para>
+<example>
+<title>UNINIT method</title>
 <programlisting>
 /* UNINIT.CMD - example of UNINIT processing */
 
@@ -385,6 +393,7 @@ exit
     say "Forgetting" text
     return
 </programlisting>
+</example>
 <para>Whether uninitialization processing is needed depends on the circumstances,
 If the object only contains references to normal Rexx objects, an UNINIT method
 is generally not needed.  If the object contains references to external system
@@ -447,6 +456,8 @@ superclass of the class that defined the method currently running. </para>
 special variable SUPER lets you call a method in the superclass of an object.
 For example, the following Savings class has INIT methods that the Savings
 class, Account class, and Object class define. </para>
+<example>
+<title>SELF variable</title>
 <programlisting>
 <![CDATA[
 ::class Account
@@ -472,6 +483,7 @@ class, Account class, and Object class define. </para>
     return "a savings account"
 ]]>
 </programlisting>
+</example>
 <para>When the INIT method of the Savings
 class is called, the variable SUPER is set to the Account class object. For
 example: </para>
@@ -683,13 +695,15 @@ and .environment directories for programs to use, but .local should be preferred
 To avoid conflicts with
 future Rexx-defined entries, it is recommended that entries you place in either
 of these directories include at least one period in the entry name.</para></note>
-<para><emphasis role="bold">Example:</emphasis></para>
+<example>
+<title>.Local object</title>
 <programlisting>
 <![CDATA[
 /* establish a global settings directory */
 .local~setentry("MyProgram.settings", .directory~new)
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -767,7 +781,8 @@ correctly. It creates a new class (<computeroutput>Cost</computeroutput>),
 defines a new method (<computeroutput>%</computeroutput>), creates an instance
 of the Cost class (Mycost), and sends
 a <computeroutput>%</computeroutput> message to Mycost:</para>
-<para></para>
+<example>
+<title>Messages</title>
 <programlisting>
 <![CDATA[
 
@@ -784,6 +799,7 @@ mycost~"%"                  /* Sends % message to mycost.  */
     return 0
 ]]>
 </programlisting>
+</example>
 
 <section id="meths"><title>The Default Search Order for Selecting a Method</title>
 <indexterm><primary>search order</primary>
@@ -886,6 +902,8 @@ or variable name whose value is a valid class.</para></listitem>
 Account subclass of the Object superclass is created. It defines a TYPE method
 for Account, and creates the Savings subclass of Account. The example defines
 a TYPE method for the Savings subclass, as follows: </para>
+<example>
+<title>SUBCLASS option</title>
 <programlisting>
 <![CDATA[
 ::class Savings subclass Account
@@ -894,15 +912,19 @@ a TYPE method for the Savings subclass, as follows: </para>
     return "a savings account"
 ]]>
 </programlisting>
+</example>
 <para>To change
 the search order so Rexx searches for TYPE in the Account rather than Savings
 subclass, enter this instead: </para>
+<example>
+<title>SUBCLASS method search order</title>
 <programlisting>
 <![CDATA[
   ::method "TYPE"
     return self~type:super "(savings)"
 ]]>
 </programlisting>
+</example>
 <para>When you create an <computeroutput>asav</computeroutput> instance of
 the Savings subclass and send a TYPE message to
 <computeroutput>asav</computeroutput>: </para>
@@ -944,6 +966,8 @@ the same object, accessed via the special variable SELF.  Private methods of an 
 be accessed from other instances of the same class (or subclass instances).
 </para></listitem>
 <listitem><para>From within a method defined at the same class scope as the method.  For example:</para>
+<example>
+<title>PUBLIC and PRIVATE options</title>
 <programlisting>
 <![CDATA[
 ::class Savings
@@ -957,11 +981,14 @@ be accessed from other instances of the same class (or subclass instances).
   checking = .true
 ]]>
 </programlisting>
+</example>
 <para>The newCheckingAccount CLASS method is able to invoke the makeChecking method because
 the scope of the makeChecking method is .Savings.
 </para></listitem>
 <listitem><para>From within an instance (or subclass instance) of a class to a private class
 method of its class.  For example:</para>
+<example>
+<title>PUBLIC and PRIVATE options</title>
 <programlisting>
 <![CDATA[
 ::class Savings
@@ -979,6 +1006,7 @@ method of its class.  For example:</para>
   accountNumber = self~class~allocateAccountNumber
 ]]>
 </programlisting>
+</example>
 <para>The instance INIT method of the Savings class is able to invoke the allocateAccountNumber private
 method of the .Savings class object because it is owned by an instance of the .Savings class.</para>
 </listitem>
