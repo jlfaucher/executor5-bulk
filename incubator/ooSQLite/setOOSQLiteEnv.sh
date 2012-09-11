@@ -40,5 +40,5 @@
 ooSQLitePath=`pwd`/bin
 
 export PATH=$ooSQLitePath:$PATH
-export $ooSQLitePath:LD_LIBRARY_PATH=$LD_LIBRARY_PATH:
+export LD_LIBRARY_PATH=$ooSQLitePath:$LD_LIBRARY_PATH
 
