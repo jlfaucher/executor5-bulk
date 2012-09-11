@@ -115,10 +115,13 @@ handlers. Once the subcommand handler is registered, a Rexx program can send
 commands to the subcommand handler with the Rexx ADDRESS instruction. For
 example, Rexx Dialog Manager programs use RXSUBCOM to register the ISPCIR
 subcommand handler. </para>
+<example>
+<title>Command RXSUBCOM - REGISTER option</title>
 <programlisting>
 "RXSUBCOM REGISTER ISPCIR ISPCIR ISPCIR"
 Address ispcir
 </programlisting>
+</example>
 <para>See <xref linkend="keyAddress" /> for details of the ADDRESS
 instruction.</para>
 
@@ -325,6 +328,8 @@ When RXQUEUE does not have a value, RXQUEUE uses SESSION for the queue name.
 </para>
 <para>The following example obtains the Windows version number with RXQUEUE:
 </para>
+<example>
+<title>Command RXQUEUE</title>
 <programlisting>
 /* Sample program to show simple use of RXQUEUE */
 /* Find out the Windows version number, using the  */
@@ -338,10 +343,13 @@ Pull . "VERSION" number "]" /* The bracket is required for
 Windows 95, not for Windows NT */
 Say "We are running on Windows Version" number
 </programlisting>
+</example>
 <para>Note that the syntax of the version string that is returned
 by Windows can vary, so the parsing syntax for retrieving the version number
 may be different.</para>
 <para>The following example processes output from the DIR command:</para>
+<example>
+<title>Command RXQUEUE</title>
 <programlisting>
 /* Sample program to show how to use the RXQUEUE filter */
 /* This program filters the output from a DIR command,  */
@@ -391,6 +399,7 @@ Say "The total size of those files is" size_total
 
 Call rxqueue "DELETE", queue_name
 </programlisting>
+</example>
 </section>
 </section>
 

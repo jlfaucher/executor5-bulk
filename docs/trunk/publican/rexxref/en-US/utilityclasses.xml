@@ -480,7 +480,8 @@ If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
 number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class DATETIME</title>
 <programlisting>
 <![CDATA[
 today = .DateTime~new    -- initializes to current date and time
@@ -492,6 +493,7 @@ day = .DateTime~new(2007, 9, 30)
 day = .DateTime~new(2007, 9, 30, 10, 33, 00)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthDateTimeArithmeticMethods"><title>Arithmetic Methods</title>
@@ -555,9 +557,10 @@ instance.  The receiver DateTime object is not changed.  The TimeSpan may be eit
 </tbody>
 </tgroup>
 </informaltable>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>arithmetic methods of DateTime class</secondary></indexterm>
+<example>
+<title>Class DATETIME - arithmetic</title>
 <programlisting>
 <![CDATA[
 t = .dateTime~new~timeOfDay  -- returns TimeSpan for current time.
@@ -572,6 +575,7 @@ nextCentury = .dateTime~new(2101, 1, 1)
 say "The next century starts in" (nextCentury - .dateTime~new)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthDateTimeCompareTo"><title>compareTo</title>
@@ -798,6 +802,8 @@ result in years being subtracted from the DateTime value.
 <para>The addYears method will take leap years into account.  If the addition result would fall on February 29th of
 a non-leap year, the day will be rolled back to the 28th.
 </para>
+<example>
+<title>Class DATETIME - addYears method</title>
 <programlisting>
 <![CDATA[
 date = .DateTime~new(2008, 2, 29)
@@ -805,6 +811,7 @@ say date              -- Displays "2008-02-29T00:00:00.000000"
 say date~addYears(1)  -- Displays "2009-02-29T00:00:00.000000"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthDateTimeAddWeeks"><title>addWeeks</title>
@@ -847,6 +854,8 @@ fractional values.
 Negative values
 result in days being subtracted from the DateTime value.
 </para>
+<example>
+<title>Class DATETIME - addDays method</title>
 <programlisting>
 <![CDATA[
 date = .DateTime~new(2008, 2, 29)
@@ -854,6 +863,7 @@ say date              -- Displays "2008-02-29T00:00:00.000000"
 say date~addDays(1.5) -- Displays "2008-03-01T12:00:00.000000"
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthDateTimeAddHours"><title>addHours</title>
@@ -1595,13 +1605,13 @@ specify a date, the Alarm uses the first future occurrence of the
 specified time. You can use the cancel()
 method to cancel a pending alarm. See
 <xref linkend="creo" /> for more information.</para>
-</section>
 
-<section id="alaex"><title>Examples</title>
-<indexterm><primary>examples</primary>
-<secondary>of Alarm class</secondary></indexterm>
 <para>The following code sets up an alarm at 5:10 p.m. on December 15, 2007.
 (Assume today's date/time is prior to December 15, 2007.)  </para>
+<indexterm><primary>examples</primary>
+<secondary>of Alarm class</secondary></indexterm>
+<example>
+<title>Class ALARM</title>
 <programlisting>
 /* Alarm Examples */
 
@@ -1622,14 +1632,18 @@ say "It is now" "TIME"("C")".Please "inmsg
 /* On the specified data and time, displays the following message: */
 /* "It is now 5:10pm. Please Call the Bank" */
 </programlisting>
+</example>
 <para>For the following example, the user uses the same code as in the
 preceding example to define <computeroutput>msg</computeroutput>,
 a message object to run at the specified time. The following code sets up
 an alarm to run the <computeroutput>msg</computeroutput> message
 object in 30 seconds from the current time: </para>
+<example>
+<title>Class ALARM</title>
 <programlisting>
 a=.alarm~new(30,msg)
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -1856,7 +1870,8 @@ components.  Each of these components must be a valid whole number within the ac
 component.  For example, <emphasis role="italic">hours</emphasis> must be in the range 0-23, while
 <emphasis role="italic">minutes</emphasis> must be in the range 0-59.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class TIMESPAN</title>
 <programlisting>
 <![CDATA[
                          -- initializes to 15 hours, 37 minutes and 30 seconds
@@ -1868,6 +1883,7 @@ span = .TimeSpan~new(15, 37, 30)
 span = .TimeSpan~new(6, 4, 33, 15, 100)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthTimeSpanArithmeticMethods"><title>Arithmetic Methods</title>
@@ -1992,9 +2008,10 @@ is not altered by this operation.
 </tbody>
 </tgroup>
 </informaltable>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>arithmetic methods of DateTime class</secondary></indexterm>
+<example>
+<title>Class TIMESPAN</title>
 <programlisting>
 <![CDATA[
 t1 = .timespan~fromHours(1)
@@ -2003,6 +2020,7 @@ t2 = t1 * 2
 say t1 t2 (t1 + t2)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthTimeSpanCompareTo"><title>compareTo</title>
@@ -3161,9 +3179,11 @@ messages sent to a monitor object. For additional information, see
 <xref linkend="unkno" />.</para>
 </section>
 
-<section id="monex"><title>Examples</title>
+<section><title>Examples</title>
 <indexterm><primary>examples</primary>
 <secondary>of Monitor class</secondary></indexterm>
+<example>
+<title>Class MONITOR</title>
 <programlisting>
 .local~setentry("output",.monitor~new(.stream~new("my.new")~~command("open nobuffer")))
 
@@ -3175,6 +3195,7 @@ previous_destination=.output~destination(.stream~new("my.out")~~command("open wr
 .output~destination(.Stdout)
 current_output_destination_stream_object=.output~current
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -3684,9 +3705,10 @@ backward scan starts. The <emphasis role="italic">start</emphasis> must be a
 positive whole number and defaults to
 <computeroutput>receiving_buffer~length</computeroutput> if larger than that
 value or omitted.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>lastPos method</secondary></indexterm>
+<example>
+<title>Class MUTABLEBUGGER - lastPos method</title>
 <programlisting>
 x1 - .mutablebuffer~new("abc def ghi")
 x1~lastPos(" ")      ->    8
@@ -3697,6 +3719,7 @@ x1~lastPos("xy")     ->    4
 x1 - .mutablebuffer~new("abc def ghi")
 x1~lastPos(" ",7) -> 4
 </programlisting>
+</example>
 </section>
 
 <section id="mthMutableBufferLength"><title>length</title>
@@ -3872,9 +3895,10 @@ character of the receiving buffer (that is, the value of
 You can override this by specifying <emphasis role="italic">start</emphasis>
 (which must be
 a positive whole number), the point at which the search starts.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>pos method</secondary></indexterm>
+<example>
+<title>Class MUTABLEBUGGER - pos method</title>
 <programlisting>
 x1 = .mutablebuffer~new("Saturday")
 x1~pos("day")       ->    6
@@ -3883,6 +3907,7 @@ x1~pos("x")         ->    0
 x1~pos(" ")         ->    4
 x1~pos(" ",5)       ->    8
 </programlisting>
+</example>
 </section>
 
 <section id="mthMutableBufferReplaceAt"><title>replaceAt</title>
@@ -4227,9 +4252,10 @@ returns
 <computeroutput>0</computeroutput> if
 you specify <computeroutput>Match</computeroutput>. Otherwise, the method
 returns the <emphasis role="italic">start</emphasis> value.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>verify method</secondary></indexterm>
+<example>
+<title>Class MUTABLEBUGGER - verify method</title>
 <programlisting>
 .mutablebuffer~new('123')~verify('1234567890')             ->    0
 .mutablebuffer~new('1Z3')~verify('1234567890')             ->    2
@@ -4243,6 +4269,7 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 .mutablebuffer~new('ABCDEF')~verify('ABC',"N",2,3)         ->    4
 .mutablebuffer~new('ABCDEF')~verify('ADEF',"M",2,3)        ->    4
 </programlisting>
+</example>
 </section>
 
 <section id="mthMutableBufferWord"><title>word</title>
@@ -4492,9 +4519,10 @@ be used to abbreviate common sets:</para>
 </tgroup>
 </informaltable>
 
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
+<example>
+<title>Class REGULAREXPRESSION</title>
 <programlisting>
 <![CDATA[
 ::requires "rxregexp.cls"
@@ -4523,6 +4551,7 @@ be used to abbreviate common sets:</para>
                              "This is " and "nice.".
 ]]>
 </programlisting>
+</example>
 
 <section><title>Inherited Methods</title>
 
@@ -4555,14 +4584,15 @@ syntax. If the strings match, you can decide whether you want to
 apply "greedy" matching (a maximum-length match) or "non-greedy"
 matching (a minimum-length match).</para>
 
-<para><emphasis role="bold">Examples:</emphasis></para>
-
+<example>
+<title>Class REGULAREXPRESSION - new method</title>
 <programlisting>
 <![CDATA[
 myRE1 = .RegularExpression~new
 myRE2 = .RegularExpression~new("Hello?*")
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthRegularExpressionMatch"><title>match</title>
@@ -4634,9 +4664,10 @@ matching behavior.</para>
 </variablelist>
 
 
-<para><emphasis role="bold">Example 1:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
+<example>
+<title>Class REGULAREXPRESSION - parse method</title>
 <programlisting>
 <![CDATA[
 a.0 = "does not match regular expression"
@@ -4661,6 +4692,7 @@ exit
 ::requires "rxregexp.cls"
 ]]>
 </programlisting>
+</example>
 
 <para>Output:</para>
 
@@ -4673,9 +4705,10 @@ Hi there!                >> Does not match regular expression
 ]]>
 </programlisting>
 
-<para><emphasis role="bold">Example 2:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
+<example>
+<title>Class REGULAREXPRESSION - parse method</title>
 <programlisting>
 <![CDATA[
 a.0 = "an invalid number!"
@@ -4703,10 +4736,12 @@ exit
 ::requires "rxregexp.cls"
 ]]>
 </programlisting>
+</example>
 
-<para><emphasis role="bold">Example 3:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
+<example>
+<title>Class REGULAREXPRESSION - parse method</title>
 <programlisting>
 <![CDATA[
 str = "<p>Paragraph 1</p><p>Paragraph 2</p>"
@@ -4721,6 +4756,7 @@ say "myRE2 (maximal) matched" str~substr(1,myRE2~position)
 ::requires "rxregexp.cls"
 ]]>
 </programlisting>
+</example>
 
 <para>Output:</para>
 
@@ -4752,7 +4788,8 @@ It returns 0 on an unsuccessful match or the starting position
 on a successful match. The end position of the match can be
 retrieved with the position method (<xref linkend="mthRegularExpressionPosition" />).</para>
 
-<para><emphasis role="bold">Example:</emphasis></para>
+<example>
+<title>Class REGULAREXPRESSION - haystack method</title>
 <programlisting>
 <![CDATA[
 str = "It is the year 2002!"
@@ -4766,6 +4803,7 @@ end
 ::requires "rxregexp.cls"
 ]]>
 </programlisting>
+</example>
 
 <para>Output:</para>
 
@@ -4792,7 +4830,8 @@ Found the number 2002 in this sentence.
 <para>Returns the character position at which the last parse(), pos(), or match()
 method ended.</para>
 
-<para><emphasis role="bold">Example:</emphasis></para>
+<example>
+<title>Class REGULAREXPRESSION - position method</title>
 <programlisting>
 <![CDATA[
 myRE = .RegularExpression~new
@@ -4809,6 +4848,7 @@ say myRE~position                     -- will be 2 (failure to match)
 ::requires "rxregexp.cls"
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -5337,6 +5377,8 @@ would return false, the supplier raises an error.
 <section id="supex"><title>Examples</title>
 <indexterm><primary>examples</primary>
 <secondary>of Supplier class</secondary></indexterm>
+<example>
+<title>Class SUPPLIER</title>
 <programlisting>
 desserts=.array~of(apples, peaches, pumpkins, 3.14159) /* Creates array */
 say "The desserts we have are:"
@@ -5355,6 +5397,7 @@ end
 /* PUMPKINS                  */
 /* 3.14159 is pi, not pie!!! */
 </programlisting>
+</example>
 </section>
 
 <section id="mthSupplierSupplier"><title>supplier</title>
@@ -6036,7 +6079,8 @@ Orderable class (<xref linkend="clsObject" />).</para>
 On Windows, each of the drives is a root element (Ex : "C:\").
 On Unix, there is just one root ("/").
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE</title>
 <programlisting>
 <![CDATA[
 say .File~listRoots~toString
@@ -6047,6 +6091,7 @@ E:\
 R:\
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="clsmthFilePathSeparator"><title>pathSeparator (Class Method)</title>
@@ -6083,13 +6128,15 @@ R:\
 </para>
 <para>This query method is available as both instance and class method.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - separator method</title>
 <programlisting>
 <![CDATA[
 file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file")
 -- "dir1/dir2/file" on Unix, "dir1\dir2\file" on Windows
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileAbsoluteFile"><title>absoluteFile</title>
@@ -6106,7 +6153,8 @@ file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file
 
 <para>Returns the fully qualified path as a new instance of File.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - absoluteFile method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -6123,6 +6171,7 @@ say .File~new("my file")~absoluteFile              -- /opt/ooRexx/my file
 say .File~new("../my file")~absoluteFile           -- /opt/my file
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileAbsolutePath"><title>absolutePath</title>
@@ -6139,7 +6188,8 @@ say .File~new("../my file")~absoluteFile           -- /opt/my file
 
 <para>Returns the fully qualified path as a string.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - absolutePath method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -6156,6 +6206,7 @@ say .File~new("my file")~absolutePath              -- /opt/ooRexx/my file
 say .File~new("../my file")~absolutePath           -- /opt/my file
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileCanRead"><title>canRead</title>
@@ -6208,7 +6259,8 @@ If the filesystem is case-sensitive then the paths comparison is case-sensitive,
 If the two paths are equal , 0 is returned. If the target path is larger, 1 is returned. -1 if the
 <emphasis role="italic">other</emphasis> argument is the larger path.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - conpareTo method</title>
 <programlisting>
 <![CDATA[
 file1 = .File~new("file", "dir")
@@ -6218,6 +6270,7 @@ file1~compareTo(file2)    -- 0 on Windows (both Files denote the same path)
 file1~compareTo(file2)    -- 1 on Unix ("/dir/file" is greater than "/DIR/FILE")
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileDelete"><title>delete</title>
@@ -6296,7 +6349,8 @@ object then the absolute path of <emphasis role="italic">dir</emphasis> is prepe
 The normalization consists in adjusting the separators to the platform's convention and removing
 the final separator (if any).
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - init method</title>
 <programlisting>
 <![CDATA[
 /* Windows */
@@ -6316,6 +6370,7 @@ file = .File~new("file", "samples")          -- samples/file
 file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileIsCaseSensitive"><title>isCaseSensitive</title>
@@ -6390,7 +6445,8 @@ directory which is hidden. Otherwise returns .false ("0").
 <para>On Unix, a file or directory is hidden when its name starts with a period character (".") or when one of its parent
 directories has a name starting with a period character.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - isHidden method</title>
 <programlisting>
 <![CDATA[
 /* Unix, when file exists */
@@ -6399,6 +6455,7 @@ say .File~new("/tmp/.file")~isHidden            -- 1
 say .File~new("/tmp/.dir/file")~isHidden        -- 1
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileLastModified"><title>lastModified (Attribute)</title>
@@ -6431,6 +6488,8 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Examples:</emphasis></term>
   <listitem>
+<example>
+<title>Class FILE - lastModified method</title>
     <programlisting>
     <![CDATA[
     /* On Windows */
@@ -6453,6 +6512,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
     return 0 -- OK
     ]]>
     </programlisting>
+</example>
   </listitem></varlistentry>
 </variablelist>
 </section>
@@ -6494,7 +6554,8 @@ The special names "." and ".." are not returned.
 <para>The result is an array of strings.
 If the receiver object is not a directory then the result is .nil.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - list method</title>
 <programlisting>
 <![CDATA[
 names = .File~new("c:\program files\oorexx\samples")~list
@@ -6509,6 +6570,7 @@ factor.rex
 (etc...)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileListFiles"><title>listFiles</title>
@@ -6531,7 +6593,8 @@ The special names "." and ".." are not returned.
 <para>The result is an array of File objects.
 If the receiver object is not a directory then the result is .nil.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - listFiles method</title>
 <programlisting>
 <![CDATA[
 do file over deepListFiles("c:\program files\oorexx\samples")
@@ -6562,6 +6625,7 @@ c:\program files\oorexx\samples\api\callrxwn\backward.fnc
 (etc...)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileMakeDir"><title>makeDir</title>
@@ -6621,7 +6685,8 @@ If the directory already exists then the result is .false.
 This is everything after the last path separator. On Windows, the file's
 extension is part of the name.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - name method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -6634,6 +6699,7 @@ say .File~new("/opt/ooRexx/bin/rexx.img")~name           -- rexx.img
 say .File~new("/")~name                                  -- empty string
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileParent"><title>parent</title>
@@ -6652,7 +6718,8 @@ say .File~new("/")~name                                  -- empty string
 If no separator is found or the absolute path ends with a separator
 (which means this is a root path) then returns .nil.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Class FILE - parent method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -6665,6 +6732,7 @@ say .File~new("/opt/ooRexx/bin/rexx.img")~parent           -- /opt/ooRexx/bin
 say .File~new("/")~parent                                  -- The NIL object
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="mthFileParentFile"><title>parentFile</title>

@@ -113,6 +113,8 @@ processing. The following figures illustrate this concept.</para>
 </mediaobject>
 </figure>
 <para>Here is an example of using early reply to run methods concurrently.</para>
+<example>
+<title>REPLY instruction</title>
 <programlisting>
 /* Example of early reply */
 
@@ -132,6 +134,7 @@ do reps
   say msg
 end
 </programlisting>
+</example>
 </section>
 
 <section id="mesobj"><title>Message Objects</title>
@@ -160,6 +163,8 @@ Meanwhile the object that obtained message object
 not interrupt the object that obtained it. It waits until this object requests
 the information. Here is an example of using a message object to run methods
 concurrently. </para>
+<example>
+<title>Message object usage</title>
 <programlisting>
 /* Example of using a message object */
 
@@ -182,6 +187,7 @@ do reps
 end
 return "Repeated" msg"," reps "times."
 </programlisting>
+</example>
 </section>
 
 <section id="defco"><title>Default Concurrency</title>
@@ -208,6 +214,8 @@ the same object at the same scope until the method that is running completes.
 Thus, if different activities send several messages within a single scope
 to an object the methods run sequentially.</para>
 <para>The next example shows how the default concurrency works. </para>
+<example>
+<title>Default concurrency for methods</title>
 <programlisting>
 /* Example of default concurrency for methods of different scopes */
 
@@ -234,6 +242,7 @@ do reps
   say msg
 end
 </programlisting>
+</example>
 <para>The preceding example produces output such as the following: </para>
 <programlisting>
 Repeating Object 1 running call 1, 8 times.
@@ -259,6 +268,8 @@ Object 1 running call 2
 </programlisting>
 <para>The following example shows that methods of the same scope do not run
 concurrently by default.</para>
+<example>
+<title>Default concurrency for methods</title>
 <programlisting>
 /* Example of methods with the same scope not running concurrently*/
 
@@ -277,6 +288,7 @@ do reps
   say msg
 end
 </programlisting>
+</example>
 <para>The REPEAT method includes a REPLY instruction, but the methods for the
 two REPEAT messages in the example cannot run concurrently. This is because
 REPEAT is called twice at the same scope and requires exclusive access to
@@ -314,6 +326,8 @@ The REPEATER and REPEAT methods have the same scope. REPEAT runs on the same
 object at the same time as the REPEATER method because a message to SELF runs
 the REPEAT method. The language processor treats this as a subroutine call
 rather than as concurrently running two methods. </para>
+<example>
+<title>Sending a message to SELF</title>
 <programlisting>
 /* Example of sending message to SELF */
 
@@ -338,6 +352,7 @@ do reps
 end
 return "Repeated" msg"," reps "times."
 </programlisting>
+</example>
 <para>The activity locking rules also allow indirect object recursion. The following
 figure illustrates indirect object recursion.</para>
 
@@ -467,12 +482,15 @@ that is independent of the activity sequence.</para>
 <section id="addex"><title>Additional Examples</title>
 <para>The following example uses REPLY in a method for a write-back cache.
 </para>
+<example>
+<title>Method Write_Back</title>
 <programlisting>
 /* Method Write_Back                                 */
 use arg data           /* Save data to be written    */
 reply 0                /* Tell the sender all was OK */
 self~disk_write(data)  /* Now write the data         */
 </programlisting>
+</example>
 <para>The REPLY instruction returns control to the point at which method
 Write_Back was called, returning the result
 <computeroutput>0</computeroutput>. The caller of method Write_Back
@@ -480,12 +498,15 @@ continues processing from this point; meanwhile, method Write_Back also
 continues processing.</para>
 <para>The following example uses a message object. It reads a line asynchronously
 into the variable <computeroutput>nextline</computeroutput>:</para>
+<example>
+<title>Message to INFILE</title>
 <programlisting>
 mymsg = infile~start("READLINE") /* Gets message object to carry    */
 /* message to INFILE                                                */
 /* do other work */
 nextline=mymsg~result            /* Gets result from message object */
 </programlisting>
+</example>
 <para>This creates a message object that waits for the read to finish while the
 sender continues with other work. When the line is read, the
 <computeroutput>mymsg</computeroutput>
@@ -503,7 +524,8 @@ access to resources, for example, preventing simultaneous access.
 Synchronization often uses semaphores. Here is an example of a semaphore class:
 </para>
 
-<figure><title>Example of a Rexx Semaphore Class</title>
+<example>
+<title>Example of a Rexx Semaphore Class</title>
 <programlisting>
 /*******************************************************************************/
 /*  A Rexx Semaphore Class.                                                    */
@@ -718,7 +740,7 @@ return waits                                /* Return number of objects waiting 
   expose owned
   owned = self~resetSem                     /* Reset semaphore                */
 </programlisting>
-</figure>
+</example>
 <note><title>Note</title>
 <para>There are functions available that use system semaphores.
 See <xref linkend="utlSyscreateeventsem" />, and
@@ -734,6 +756,8 @@ and SIGNAL methods for client methods to use, and one or more condition variable
 Guarded methods provide the functionality of monitors. Do not confuse this
 with the Monitor class (see <xref linkend="clsMonitor" />).
 </para>
+<example>
+<title>Example of a Rexx Monitor Class</title>
 <programlisting>
 ::method init
 /* Initialize the bounded buffer */
@@ -759,6 +783,7 @@ reply b.out
 out = out//size+1
 n = n-1
 </programlisting>
+</example>
 </section>
 
 <section id="readwrit"><title>Readers and Writers</title>
@@ -766,6 +791,8 @@ n = n-1
 problem of the readers and writers requires that writers exclude writers and
 readers, whereas readers exclude only writers. The UNGUARDED option is required
 to allow several concurrent readers. </para>
+<example>
+<title>Example of a Rexx Readers and Writers</title>
 <programlisting>
 ::method init
 expose readers writers
@@ -794,6 +821,7 @@ writers = writers + 1
 say "Writing (writers:" writers", readers:" readers")."
 writers = writers - 1
 </programlisting>
+</example>
 </section>
 </section>
 </section>

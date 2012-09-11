@@ -155,6 +155,7 @@ is defined by a mixin class, the SUPER variable will always be the superperclass
 call a method in the superclass of an object. For example, the following Savings
 class has INIT methods that the Savings class, Account class, and Object class
 define. </para>
+<example><title>Using the SUPER variable</title>
 <programlisting>
 ::class Account
 
@@ -178,6 +179,7 @@ self~init:super(balance) /* Forwards to the Account INIT method */
 ::method type
 return "a savings account"
 </programlisting>
+</example>
 <para>When the INIT method of the Savings
 class is called, the variable SUPER is set to the Account class object. The
 instruction: </para>
@@ -188,9 +190,11 @@ self~init:super(balance) /* Forwards to the Account INIT method */
 calling the INIT method of the Savings class. When the INIT method of the
 Account class is called, the variable SUPER is assigned to the Object class.
 </para>
+<example><title>Forwarding an event</title>
 <programlisting>
 self~init:super          /* Forwards to the Object INIT method  */
 </programlisting>
+</example>
 <para>calls the INIT method that the Object class defines.</para>
 </listitem></varlistentry>
 </variablelist>

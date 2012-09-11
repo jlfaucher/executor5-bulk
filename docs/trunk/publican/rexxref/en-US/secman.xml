@@ -236,7 +236,7 @@ directory as the method RESULT.</para>
 security manager defines checkpoints (for example, by calling an external
 function).</para>
 
-<figure><title>Agent Program</title>
+<example><title>Agent Program</title>
 <programlisting>
 /* Agent */
 interpret "echo Hello There"
@@ -249,7 +249,7 @@ say .array
 .object~setmethod("SETMETHOD")
 ::requires agent2.cmd
 </programlisting>
-</figure>
+</example>
 <para>The following server implements the security manager with three levels
 of security. For each action the security manager must check (for example,
 by calling an external routine): </para>
@@ -263,7 +263,7 @@ subclass of the noWay class) replaces the prohibited action with a different
 action.</para></listitem>
 </orderedlist>
 
-<figure id="servex"><title>Example of Server Implementing Security Manager</title>
+<example id="ex.servex"><title>Example of Server Implementing Security Manager</title>
 <programlisting>
 /* Server implements security manager */
 parse arg program
@@ -348,7 +348,7 @@ return 1
   info~securitymanager = self          /* load under this authority         */
   return 1                             /* return "handled" return value     */
 </programlisting>
-</figure>
+</example>
 </section>
 </section>
 </chapter>

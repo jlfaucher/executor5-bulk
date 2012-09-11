@@ -766,16 +766,18 @@ that of the file). The <emphasis role="italic">length</emphasis> must be
 <computeroutput>1</computeroutput> or greater.
 </para></listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>command method</secondary>
 <tertiary>OPEN option</tertiary></indexterm>
+<example>
+<title>Stream command - OPEN option</title>
 <programlisting>
 stream_name~command("open")
 stream_name~command("open write")
 stream_name~command("open read")
 stream_name~command("open read shared")
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>CLOSE</term>
 <listitem><para>closes the stream object. The COMMAND
@@ -856,10 +858,11 @@ for a detailed discussion of this issue. </para>
 for writing, you receive an error message.</para></note>
 </listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>command method</secondary>
 <tertiary>SEEK option</tertiary></indexterm>
+<example>
+<title>Stream command - SEEK option</title>
 <programlisting>
 <![CDATA[
 stream_name~command("seek =2 read")
@@ -869,6 +872,7 @@ fromend  = 125
 stream_name~command("seek <"fromend read)
 ]]>
 </programlisting>
+</example>
 </listitem></varlistentry>
 <varlistentry><term>POSITION</term>
 <listitem><para>is a synonym for SEEK.</para>
@@ -886,9 +890,12 @@ example:
 <indexterm><primary>examples</primary>
 <secondary>command method</secondary>
 <tertiary>QUERY DATETIME option</tertiary></indexterm>
+<example>
+<title>Stream command - QUERY DATETIME option</title>
 <programlisting>
 stream_name~command("query datetime")
 </programlisting>
+</example>
 </para><para>A sample output might be: </para>
 <programlisting>
 11-12-95 03:29:12
@@ -900,9 +907,12 @@ if it exists, or a null string. For example: </para>
 <indexterm><primary>examples</primary>
 <secondary>command method</secondary>
 <tertiary>QUERY EXISTS option</tertiary></indexterm>
+<example>
+<title>Stream command - QUERY EXISTS option</title>
 <programlisting>
 stream_name~command("query exists")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 c:\data\file.txt
@@ -910,13 +920,16 @@ c:\data\file.txt
 </listitem></varlistentry>
 <varlistentry><term>QUERY HANDLE</term>
 <listitem><para>Returns the handle associated with the open stream.
-For example: </para>
+</para>
 <indexterm><primary>examples</primary>
 <secondary>command method</secondary>
 <tertiary>QUERY HANDLE option</tertiary></indexterm>
+<example>
+<title>Stream command - QUERY HANDLE option</title>
 <programlisting>
 stream_name~command("query handle")
 </programlisting>
+</example>
 <para>A sample output might be:
 <computeroutput>3</computeroutput></para>
 
@@ -947,10 +960,13 @@ processor starts tracking the current line number if not
 already doing so, and, thus, might require a scan of the stream from
 the top to count the line-end characters. See
 <xref linkend="positio" />
-for a detailed discussion of this issue. For example: </para>
+for a detailed discussion of this issue.</para>
+<example>
+<title>Stream command - QUERY POSITION WRITE option</title>
 <programlisting>
 stream_name~command("query position write")
 </programlisting>
+</example>
 <para>A sample
 output might be: </para>
 <programlisting>
@@ -968,10 +984,13 @@ characters.
 </para></listitem></varlistentry>
 <varlistentry><term>QUERY SIZE</term>
 <listitem><para>Returns the size, in bytes, of a persistent stream.
-For example: </para>
+</para>
+<example>
+<title>Stream command - QUERY SIZE option</title>
 <programlisting>
 stream_name~command("query size")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 1305
@@ -986,10 +1005,13 @@ is <computeroutput>PERSISTENT</computeroutput>,
 <varlistentry><term>QUERY TIMESTAMP</term>
 <listitem><para>Returns the date and time stamps of a persistent stream
 in an international format. This is the preferred method of getting date and
-time because it provides the full 4-digit year. For example:</para>
+time because it provides the full 4-digit year</para>
+<example>
+<title>Stream command - QUERY TIMESTAMP option</title>
 <programlisting>
 stream_name~command("query timestamp")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 1995-11-12 03:29:12
@@ -1299,14 +1321,16 @@ of the file). The <emphasis role="italic">length</emphasis> must be
 <computeroutput>1</computeroutput> or greater.
 </para></listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>open method</secondary></indexterm>
+<example>
+<title>Stream object - OPEN method</title>
 <programlisting>
 stream_name~open
 stream_name~open("write")
 stream_name~open("read")
 </programlisting>
+</example>
 </section>
 
 <section id="mthStreamPosition"><title>position</title>
@@ -1381,10 +1405,13 @@ is returned for nonexistent streams. </para>
 <variablelist>
 <varlistentry><term>DATETIME</term>
 <listitem><para>returns the date and time stamps of a persistent stream
-in US format. For example:</para>
+in US format.</para>
+<example>
+<title>Stream object - QUERY method</title>
 <programlisting>
 stream_name~query("datetime")
 </programlisting>
+</example>
 <para>A sample output might
 be: </para>
 <programlisting>
@@ -1396,9 +1423,12 @@ be: </para>
 if it exists, or a null string. For example: </para>
 <indexterm><primary>examples</primary>
 <secondary>query method</secondary></indexterm>
+<example>
+<title>Stream object - QUERY method</title>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~query("exists")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 c:\data\file.txt
@@ -1406,10 +1436,13 @@ c:\data\file.txt
 </listitem></varlistentry>
 <varlistentry><term>HANDLE</term>
 <listitem><para>returns the handle associated with the open stream.
-For example:</para>
+</para>
+<example>
+<title>Stream object - QUERY method</title>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~query("handle")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 3
@@ -1441,10 +1474,13 @@ processor starts tracking the current line number if not already doing so, and,
 thus, might require a scan of the stream from the top to count the line-end
 characters. See
 <xref linkend="positio" />
-for a detailed discussion of this issue. For example: </para>
+for a detailed discussion of this issue.</para>
+<example>
+<title>Stream object - QUERY method</title>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~query("position write")
 </programlisting>
+</example>
 <para>A sample output
 might be: </para>
 <programlisting>
@@ -1458,10 +1494,13 @@ characters. </para></listitem></varlistentry>
 </para></listitem></varlistentry>
 <varlistentry><term>SIZE</term>
 <listitem><para>returns the size, in bytes, of a persistent stream.
-For example: </para>
+</para>
+<example>
+<title>Stream object - QUERY method</title>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~query("size")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 1305
@@ -1476,10 +1515,13 @@ object is <computeroutput>PERSISTENT</computeroutput>,
 <varlistentry><term>TIMESTAMP</term>
 <listitem><para>returns the date and time stamps of a persistent stream
 in an international format. This is the preferred method of getting the date and
-time because it provides the full 4-digit year. For example:</para>
+time because it provides the full 4-digit year.</para>
+<example>
+<title>Stream object - QUERY method</title>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~query("timestamp")
 </programlisting>
+</example>
 <para>A sample output might be: </para>
 <programlisting>
 1998-11-12 03:29:12
@@ -1590,9 +1632,10 @@ for a detailed discussion of this issue. </para>
 for writing, you receive an error message.</para></note>
 </listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>seek method</secondary></indexterm>
+<example>
+<title>Stream object - SEEK method</title>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~seek("=2 read")
 <emphasis role="italic">stream_name</emphasis>~seek("+15 read")
@@ -1600,6 +1643,7 @@ for writing, you receive an error message.</para></note>
 fromend  = 125
 <emphasis role="italic">stream_name</emphasis>~seek("&lt;"fromend read)
 </programlisting>
+</example>
 </section>
 
 <section id="mthStreamState"><title>state</title>
@@ -1703,7 +1747,9 @@ class.
 <emphasis role="bold">uninit</emphasis>
 method then that method must invoke the superclass
 <emphasis role="bold">uninit</emphasis> method.
-For example:</para>
+</para>
+<example>
+<title>Stream object - UNINIT method</title>
 <programlisting>
 <![CDATA[
 ::class CustomStream subclass Stream
@@ -1716,6 +1762,7 @@ super~uninit  -- this should be the last action in the method
 return
 ]]>
 </programlisting>
+</example>
 </section>
 </section>
 
