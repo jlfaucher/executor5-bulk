@@ -91,7 +91,8 @@ and must pass four arguments.</para>
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Zero.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Creating new windows</title>
 <programlisting>
 <![CDATA[
 /* create the standard screen */
@@ -101,6 +102,7 @@ scr = .Window~new()
 win = .Window~new(10, 20, 5, 10)  
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="OrxncursesVersion">
@@ -139,7 +141,8 @@ win = .Window~new(10, 20, 5, 10)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>The current or new base.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Set base (one or zero based)</title>
 <programlisting>
 <![CDATA[
 .window~setbase(0)
@@ -151,6 +154,7 @@ scr~refresh()
 scr~napms(500)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Slkinit">
@@ -173,7 +177,8 @@ creating the standard screen.</para>
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Zero.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Set a soft label</title>
 <programlisting>
 <![CDATA[
 left = 0
@@ -194,6 +199,7 @@ scr~slk_set(8, 'Change', right)
 scr~slk_refresh()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <!--#########################################################################
@@ -242,7 +248,8 @@ scr~slk_refresh()
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Add a character to the screen</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -262,6 +269,7 @@ do while \eof
 strm~close()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Addchnstr">
@@ -356,13 +364,15 @@ strm~close()
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Add a string to the screen</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
 scr~addstr('Goodbye, cruel C Programming!')
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Assumedefaultcolors">
@@ -409,7 +419,8 @@ scr~addstr('Goodbye, cruel C Programming!')
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Turn off one or more attributes</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -418,6 +429,7 @@ scr~attron(scr~A_BOLD)
 scr~attroff(scr~A_BOLD)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Attron">
@@ -439,13 +451,15 @@ scr~attroff(scr~A_BOLD)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Turn on one or more attributes</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
 scr~attron(scr~A_BOLD)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Attrset">
@@ -467,7 +481,8 @@ scr~attron(scr~A_BOLD)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Set one or more attributes</title>
 <programlisting>
 <![CDATA[
 lf = .window~ASCII_LF~d2c()
@@ -487,6 +502,7 @@ do a = 1 to text~items()
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Baudrate">
@@ -519,7 +535,8 @@ do a = 1 to text~items()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Beep the terminal</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -528,6 +545,7 @@ scr~addstr('Attention!' || lf)
 scr~beep()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Bkgd">
@@ -549,7 +567,8 @@ scr~beep()
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Set the background attribute for the whole screen</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -559,6 +578,7 @@ scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 scr~bkgd(scr~COLOR_PAIR(1))
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Bkgdset">
@@ -629,7 +649,8 @@ scr~bkgd(scr~COLOR_PAIR(1))
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Set a window border</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -638,6 +659,7 @@ scr~border('ba'~x2d(), 'ba'~x2d(), 'cd'~x2d(), 'cd'~x2d(),,
            'c9'~x2d(), 'bb'~x2d(), 'c8'~x2d(), 'bc'~x2d())
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Box">
@@ -663,7 +685,8 @@ scr~border('ba'~x2d(), 'ba'~x2d(), 'cd'~x2d(), 'cd'~x2d(),,
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Draw a box arounf a window</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -671,6 +694,7 @@ scr = .window~new()
 scr~box('*'~c2d(), '*'~c2d())
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Canchangecolor">
@@ -687,7 +711,8 @@ scr~box('*'~c2d(), '*'~c2d())
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>One or zero.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Determine if terminal hardware can change its color set</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -697,6 +722,7 @@ if \scr~can_change_color() then do
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Cbreak">
@@ -758,7 +784,8 @@ if \scr~can_change_color() then do
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Clear the screen</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -766,6 +793,7 @@ scr = .window~new()
 scr~clear()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Clearok">
@@ -803,7 +831,8 @@ scr~clear()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Clear the window from the current cursor position</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -812,6 +841,7 @@ scr~move(6, 21)
 scr~clrtobot()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Clrtoeol">
@@ -828,7 +858,8 @@ scr~clrtobot()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Clear the line from the current cursor position</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -850,12 +881,13 @@ do forever
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Colorpair">
 <title>Color_pair</title>
 <indexterm><primary>Color_pair</primary></indexterm>
-<para>Returns the number of possible COLOR_PAIR attribute.</para>
+<para>Returns the number of possible COLOR_PAIR attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
 <programlisting>
 <![CDATA[
@@ -866,7 +898,8 @@ do forever
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Possible color pairs attributes.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Get the number of possible COLOR_PAIR attributes</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -876,6 +909,7 @@ scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 scr~bkgd(scr~color_pair(1))
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Colorpairs">
@@ -996,7 +1030,8 @@ scr~bkgd(scr~color_pair(1))
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Copy a window to self</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1019,6 +1054,7 @@ bottom~getch()
 retc = bottom~copywin(top, 1, 1, 1, 1, 5, 13, .false)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Cursset">
@@ -1040,7 +1076,8 @@ retc = bottom~copywin(top, 1, 1, 1, 1, 5, 13, .false)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Set cursor visibility</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1053,6 +1090,7 @@ scr~curs_set(1)
 scr~curs_set(2)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Cursesversion">
@@ -1086,7 +1124,8 @@ on the line one position to the left.</para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Delete the character under the cursor</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1097,6 +1136,7 @@ do c = 1 to 11
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Deleteln">
@@ -1114,7 +1154,8 @@ cursor up one line.</para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Delete the line under the cursor</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1123,6 +1164,7 @@ scr~move(2, 1)
 scr~deleteln()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Delwin">
@@ -1139,7 +1181,8 @@ scr~deleteln()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Delete a window</title>
 <programlisting>
 <![CDATA[
 lf = .window~ASCII_LF~d2c()
@@ -1161,6 +1204,7 @@ else do
 scr~refresh()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Derwin">
@@ -1210,7 +1254,8 @@ scr~refresh()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Update the terminal</title>
 <programlisting>
 <![CDATA[
 filename = 'Readme.txt'
@@ -1242,6 +1287,7 @@ s3~pnoutrefresh(1, 1, 1, (wide * 2) + (spacer * 2), tall, (wide *3) + (spacer * 
 scr~doupdate()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Dupwin">
@@ -1258,7 +1304,8 @@ scr~doupdate()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>A Window instance.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Duplicate a window</title>
 <programlisting>
 <![CDATA[
 numeric digits 12
@@ -1276,6 +1323,7 @@ fred~getch()
 barney = fred~dupwin()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Echo">
@@ -1324,7 +1372,8 @@ barney = fred~dupwin()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>End nCurses formating</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1332,6 +1381,7 @@ scr = .window~new()
 scr~endwin()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Erase">
@@ -1396,7 +1446,8 @@ scr~endwin()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Flash the screen</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1405,6 +1456,7 @@ scr~addstr('I said ATTENTION!')
 scr~flash()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Flushinp">
@@ -1421,7 +1473,8 @@ scr~flash()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Flash the input queue</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1429,6 +1482,7 @@ scr = .window~new()
 scr~flushinp()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Getbegyx">
@@ -1478,7 +1532,8 @@ relative to the stdscr.</para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>A one character string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Get a character from the keyboard</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1486,6 +1541,7 @@ scr = .window~new()
 char = scr~getch()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Getmaxyx">
@@ -1502,7 +1558,8 @@ char = scr~getch()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>A string in the form "maxy maxx".</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Get the width and height of the screen</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1511,6 +1568,7 @@ maxyx = scr~getmaxyx()
 parse var maxyx maxy maxx .
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Getmouse">
@@ -1527,7 +1585,8 @@ parse var maxyx maxy maxx .
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>An instance of the Mevent class.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Get a mouse event</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1549,6 +1608,7 @@ do forever
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Getnstr">
@@ -1569,7 +1629,9 @@ do forever
    </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<para>A string.</para>
+<example>
+<title>Get a string from the terminal</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1583,6 +1645,7 @@ scr~noecho()
 password = scr~getnstr(8)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Getparyx">
@@ -1636,7 +1699,8 @@ password = scr~getnstr(8)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>A Window instance.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Create a new window from a file</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1645,6 +1709,7 @@ win = scr~getwin('window.dat')
 win~refresh()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Getyx">
@@ -1698,7 +1763,8 @@ win~refresh()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>One or zero.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Determine if the terminal has color support</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1709,6 +1775,7 @@ if \scr~has_colors() then do
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Hasic">
@@ -1766,7 +1833,8 @@ if \scr~has_colors() then do
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Draw a horizontal line</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1782,6 +1850,7 @@ do y = 1 to maxy
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Idcok">
@@ -1960,7 +2029,8 @@ do y = 1 to maxy
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Assign foreground and background colors</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -1968,6 +2038,7 @@ scr~start_color()
 scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Innstr">
@@ -2010,7 +2081,8 @@ scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Insert attr/character under the cursor</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -2023,6 +2095,7 @@ do i = len to 1 by -1
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Insdelln">
@@ -2060,7 +2133,8 @@ do i = len to 1 by -1
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Insert one line</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -2069,6 +2143,7 @@ scr~move(2, 1)
 scr~insertln()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Insnstr">
@@ -2272,7 +2347,8 @@ scr~insertln()
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Turn on/off reading keypad (function, etc) keys</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -2280,6 +2356,7 @@ scr~noecho()
 scr~keypad(.true)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Killchar">
@@ -2421,7 +2498,8 @@ scr~keypad(.true)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Event mask (numeric).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Set/return the mouse event mask</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -2442,6 +2520,7 @@ else do
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Move">
@@ -2467,7 +2546,8 @@ else do
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Move the cursor</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -2489,6 +2569,7 @@ do forever
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="OrxCurMvaddch">
@@ -2645,7 +2726,8 @@ do forever
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Add a string after moving the cursor</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -2659,6 +2741,7 @@ do y = 1 to maxy
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Mvchgat">
@@ -2833,7 +2916,8 @@ do y = 1 to maxy
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Draw a horizontal after moving the cursor</title>
 <programlisting>
 <![CDATA[
 y = .array~of( 1,  1,  6,  1,  6,  6, 11, 11, 11, 11, 16,  6)
@@ -2847,6 +2931,7 @@ do c = 1 to 12 by 2
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Mvinch">
@@ -3071,7 +3156,8 @@ do c = 1 to 12 by 2
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Draw a vertical after moving the cursor</title>
 <programlisting>
 <![CDATA[
 y = .array~of( 1,  1,  6,  1,  6,  6, 11, 11, 11, 11, 16,  6)
@@ -3085,6 +3171,7 @@ do c = 1 to 12 by 2
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Mvwin">
@@ -3110,7 +3197,8 @@ do c = 1 to 12 by 2
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Move a window</title>
 <programlisting>
 <![CDATA[
 tsize = 18
@@ -3131,6 +3219,7 @@ do y = 2 to maxy
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Napms">
@@ -3152,7 +3241,8 @@ do y = 2 to maxy
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Pause a program</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -3163,6 +3253,7 @@ scr~refresh()
 scr~napms(500)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Ncursesmouseversion">
@@ -3179,7 +3270,8 @@ scr~napms(500)
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>String.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Return the nCurses mouse version string</title>
 <programlisting>
 <![CDATA[
 lf = .window~ASCII_LF~d2c()
@@ -3194,6 +3286,7 @@ else do
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Ncursesversion">
@@ -3210,7 +3303,8 @@ else do
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>String.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Return the nCurses version string</title>
 <programlisting>
 <![CDATA[
 lf = .window~ASCII_LF~d2c()
@@ -3225,6 +3319,7 @@ else do
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Nl">
@@ -3278,7 +3373,8 @@ else do
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Change the setch() function to non-blocking</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -3286,6 +3382,7 @@ scr = .window~new()
 scr~nodelay(.TRUE);		/* turn off getch() wait */
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Noecho">
@@ -3302,13 +3399,15 @@ scr~nodelay(.TRUE);		/* turn off getch() wait */
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Turn off echo</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
 scr~noecho()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Nonl">
@@ -3399,7 +3498,8 @@ scr~noecho()
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Overlay the destination window</title>
 <programlisting>
 <![CDATA[
 alpha = .window~new(0,0,1,1)		/* Remember to check for errors! */
@@ -3416,6 +3516,7 @@ alpha~getch()
 scr~overlay(alpha)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Overwrite">
@@ -3437,7 +3538,8 @@ scr~overlay(alpha)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Overwrite the destination window</title>
 <programlisting>
 <![CDATA[
 alpha = .window~new(0,0,1,1)		/* Remember to check for errors! */
@@ -3454,6 +3556,7 @@ alpha~getch()
 scr~overwrite(alpha)   -- see book text
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Paircontent">
@@ -3565,7 +3668,8 @@ scr~overwrite(alpha)   -- see book text
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Save a window to a file</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -3579,6 +3683,7 @@ else do
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Qiflush">
@@ -3644,7 +3749,8 @@ else do
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Refresh the screen and turn nCurses formatting on</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -3652,6 +3758,7 @@ scr~addstr('Goodbye, cruel C Programming!')
 scr~refresh()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Scrdump">
@@ -3673,7 +3780,8 @@ scr~refresh()
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Dump the terminal screen to a file</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -3687,6 +3795,7 @@ else do
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Scrrestore">
@@ -3708,7 +3817,8 @@ else do
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Restore the screen from a file</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -3719,6 +3829,7 @@ if retc = scr~ERR then do
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Scrl">
@@ -3761,7 +3872,7 @@ if retc = scr~ERR then do
 <section id="Scrollok">
 <title>Scrollok</title>
 <indexterm><primary>Scrollok</primary></indexterm>
-<para>Allow a wildow to scroll.</para>
+<para>Allow a window to scroll.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
 <programlisting>
 <![CDATA[
@@ -3777,7 +3888,8 @@ if retc = scr~ERR then do
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Allow a window to scroll</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -3785,6 +3897,7 @@ scr = .window~new()
 scr~scrollok(.true)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Setscrreg">
@@ -3905,7 +4018,8 @@ scr~scrollok(.true)
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Hide the soft labels</title>
 <programlisting>
 <![CDATA[
 center = 1
@@ -3925,6 +4039,7 @@ scr~slk_clear()
 ch = scr~getch()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Slkcolor">
@@ -3999,7 +4114,8 @@ ch = scr~getch()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Refresh the soft labels</title>
 <programlisting>
 <![CDATA[
 left = 0
@@ -4020,6 +4136,7 @@ scr~slk_set(8, 'Change', right)
 scr~slk_refresh()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Slkrestore">
@@ -4036,7 +4153,8 @@ scr~slk_refresh()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Restore the soft labels</title>
 <programlisting>
 <![CDATA[
 .window~slk_init(3)
@@ -4045,6 +4163,7 @@ scr = .window~new()
 scr~slk_restore()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Slkset">
@@ -4070,7 +4189,8 @@ scr~slk_restore()
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Set the soft labels</title>
 <programlisting>
 <![CDATA[
 left = 0
@@ -4091,6 +4211,7 @@ scr~slk_set(8, 'Change', right)
 scr~slk_refresh()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Slktouch">
@@ -4155,13 +4276,15 @@ scr~slk_refresh()
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Turn on using color</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
 scr~start_color()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Subpad">
@@ -4211,7 +4334,8 @@ scr~start_color()
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>A Window instance.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Create a subwindow</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -4219,6 +4343,7 @@ scr = .window~new()
 sonny = scr~subwin(5, 20, 11, 31)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Syncok">
@@ -4336,7 +4461,8 @@ sonny = scr~subwin(5, 20, 11, 31)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Mark one or more lines as changed</title>
 <programlisting>
 <![CDATA[
 tsize = 18
@@ -4357,6 +4483,7 @@ do y = 2 to maxy
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Touchwin">
@@ -4509,7 +4636,8 @@ do y = 2 to maxy
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Draw a vertical line</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -4525,6 +4653,7 @@ do y = 1 to maxy
    end
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="Wenclose">
@@ -4685,13 +4814,15 @@ do y = 1 to maxy
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>A new pad instance.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Create a new pad</title>
 <programlisting>
 <![CDATA[
 /* create a new pad */
 win = .Window~new(5, 10)  
 ]]>
 </programlisting>
+</example>
 </section>
 
 <!--#########################################################################
@@ -4791,7 +4922,8 @@ win = .Window~new(5, 10)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Refresh a pad</title>
 <programlisting>
 <![CDATA[
 filename = 'Readme.txt'
@@ -4823,6 +4955,7 @@ s3~pnoutrefresh(1, 1, 1, (wide * 2) + (spacer * 2), tall, (wide *3) + (spacer * 
 scr~doupdate()
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="padPrefresh">
@@ -4864,7 +4997,8 @@ scr~doupdate()
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>Either ERR (-1) or OK (0).</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Refresh the pad to a stdscr</title>
 <programlisting>
 <![CDATA[
 scr = .window~new()
@@ -4884,6 +5018,7 @@ p~addstr("New pad created")
 p~prefresh(1, 1, 1, 1, 2, 16)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="padRedrawwin">
@@ -4997,7 +5132,8 @@ p~prefresh(1, 1, 1, 1, 2, 16)
 </variablelist>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>A Pad instance.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<example>
+<title>Create a subpad</title>
 <programlisting>
 <![CDATA[
 lf = .window~ASCII_LF~d2c()
@@ -5012,6 +5148,7 @@ scr~refresh()
 pea = pod~subpad(20, 20, 30, 30)
 ]]>
 </programlisting>
+</example>
 </section>
 
 <section id="padSubwin">
