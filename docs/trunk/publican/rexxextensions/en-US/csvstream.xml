@@ -307,6 +307,8 @@ After issuing the OPEN message to a csvStream which has been opened with headers
 to learn the nature of the fields by analysing the data. You can teach it by setting the headers field attributes name 
 and literal. For instance:
 </para>
+<example>
+<title>Describing header fields</title>
 <programlisting>
 /* set the name of the second field to 'Height' */
 MyCsvStream~headers~field(2)~name='Height'
@@ -315,32 +317,42 @@ MyCsvStream~headers~field(2)~name='Height'
 third column as literal data rather than numeric */
 MyCsvStream~headers~field(3)~literal= .true
 </programlisting>
+</example>
 <para>
 By default the delimiter csvStream expects is a comma (after all CSV stands for Comma Separated Variables) 
 and literals are qualified by a double inverted comma. However you can create and read files with other delimiters 
 or qualifiers by changing the attributes delimiter and qualifier after instantiating A csvStream object. For 
 instance, to use ; as a delimiter and ' as a qualifier do the following:
 </para>
+<example>
+<title>Describing field delimiters</title>
 <programlisting>
 MyCsvStream = .csvStream~new
 MyCsvStream~delimiter=";"
 MyCsvStream~qualifier="'" 
 </programlisting>
+</example>
 <para>
 If the attribute StripOption is set to 'L', 'T' or 'B' then data is stripped using that option before 
 CSVLineIn inserts it in the returned array. The default of 'N' means no stripping is performed. One 
 can specify which character to strip using the attribute stripChar which defaults to blank.
 </para>
+<example>
+<title>Setting the strip option</title>
 <programlisting>
 MyCsvStream~StripOption = 'T' /* strip trailing blanks */
 </programlisting>
+</example>
 <para>
 or
 </para>
+<example>
+<title>Removing leading zeros</title>
 <programlisting>
 MyCsvStream~StripOption = 'L' 
 MyCsvStream~stripChar = '0' /* strip Leading zeroes */
 </programlisting>
+</example>
 </section>
 </section>
 
@@ -424,9 +436,8 @@ See <emphasis>Changing the behaviour of a csvStream object</emphasis> under the 
 <title>Examples</title>
 <indexterm><primary>csvStream</primary>
 <secondary>Example code</secondary></indexterm>
-<para>
-Files without headers
-</para>
+<example>
+<title>Files without headers</title>
 <programlisting>
 <![CDATA[
 csv = .csvStream~new('c:\MyData.csv') /* 2nd arg defaults to no headers */
@@ -504,6 +515,7 @@ else say 'COULD NOT OPEN CSV FILE -' csv~description
 ::requires 'csvstream.cls'
 ]]>
 </programlisting>
+</example>
 </section>
 </chapter>
 
