@@ -525,6 +525,133 @@ RexxObjectPtr lviLParam2UserData(LPARAM lParam)
     return result;
 }
 
+/**
+ * Merges the state information being set in a LVITEM struct with an existing
+ * LVITEM struct.
+ *
+ * @param c
+ * @param pclvfr
+ * @param existingLvi
+ * @param lvi
+ */
+void mergeLviState(RexxMethodContext *c, pCLvFullRow pclvfr, LPLVITEM existingLvi, LPLVITEM lvi)
+{
+    if ( LVIF_COLFMT & lvi->mask )
+    {
+        safeLocalFree(existingLvi->piColFmt);
+
+        existingLvi->piColFmt = lvi->piColFmt;
+        existingLvi->cColumns = lvi->cColumns;
+    }
+    if ( LVIF_COLUMNS & lvi->mask )
+    {
+        safeLocalFree(existingLvi->puColumns);
+
+        existingLvi->puColumns = lvi->puColumns;
+        existingLvi->cColumns  = lvi->cColumns;
+    }
+    if ( LVIF_GROUPID & lvi->mask )
+    {
+        existingLvi->iGroupId = lvi->iGroupId;
+    }
+    if ( LVIF_IMAGE & lvi->mask )
+    {
+        existingLvi->iImage = lvi->iImage;
+    }
+    if ( LVIF_INDENT & lvi->mask )
+    {
+        existingLvi->iIndent = lvi->iIndent;
+    }
+    if ( LVIF_TEXT & lvi->mask )
+    {
+        resetFullRowText(c, pclvfr, 0, lvi->pszText);
+    }
+    if ( LVIF_STATE & lvi->mask )
+    {
+        uint32_t existingState = existingLvi->state;
+        uint32_t newState      = 0;
+
+        if ( LVIS_STATEIMAGEMASK & lvi->stateMask )
+        {
+            newState = INDEXTOSTATEIMAGEMASK(lvi->state & LVIS_STATEIMAGEMASK);
+        }
+        else
+        {
+            newState = existingState & LVIS_STATEIMAGEMASK;
+        }
+
+        if ( LVIS_OVERLAYMASK & lvi->stateMask )
+        {
+            newState |= INDEXTOOVERLAYMASK(lvi->state & LVIS_OVERLAYMASK);
+        }
+        else
+        {
+            newState |= existingState & LVIS_OVERLAYMASK;
+        }
+
+        if ( LVIS_CUT & lvi->stateMask )
+        {
+            newState |= lvi->state & LVIS_CUT;
+        }
+        else
+        {
+            newState |= existingState & LVIS_CUT;
+        }
+
+        if ( LVIS_DROPHILITED & lvi->stateMask )
+        {
+            newState |= lvi->state & LVIS_DROPHILITED;
+        }
+        else
+        {
+            newState |= existingState & LVIS_DROPHILITED;
+        }
+
+        if ( LVIS_FOCUSED & lvi->stateMask )
+        {
+            newState |= lvi->state & LVIS_FOCUSED;
+        }
+        else
+        {
+            newState |= existingState & LVIS_FOCUSED;
+        }
+
+        if ( LVIS_SELECTED & lvi->stateMask )
+        {
+            newState |= lvi->state & LVIS_SELECTED;
+        }
+        else
+        {
+            newState |= existingState & LVIS_SELECTED;
+        }
+
+        existingLvi->state      = newState;
+        existingLvi->stateMask |= lvi->stateMask;
+    }
+}
+
+/**
+ *
+ * Returns the lParam user data for the specified list-view item as a Rexx
+ * object
+ *
+ * @param hList
+ *
+ * @return The Rexx object set as the user data, or the .nil object if no user
+ *         data is set.
+ */
+static RexxObjectPtr getCurrentLviUserData(HWND hList, uint32_t index)
+{
+    LVITEM        lvi    = {LVIF_PARAM, index};
+    RexxObjectPtr result = TheNilObj;
+
+    if ( ListView_GetItem(hList, &lvi) != 0 )
+    {
+        result = getLviUserData(&lvi);
+    }
+    return result;
+}
+
 
 static LPARAM getLParamUserData(RexxMethodContext *c, RexxObjectPtr data)
 {
@@ -566,6 +693,21 @@ static void protectLviUserData(RexxMethodContext *c, pCDialogControl pcdc, LVITE
         {
             c->SendMessage1(pcdc->rexxBag, "PUT", data);
         }
+    }
+}
+
+/**
+ * Removes a Rexx object from the Rexx bag.
+ *
+ * @param c
+ * @param pcdc
+ * @param oldUserData
+ */
+static void unProtectLviUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr oldUserData)
+{
+    if ( oldUserData != TheNilObj && oldUserData != NULLOBJECT && pcdc->rexxBag != NULLOBJECT )
+    {
+        c->SendMessage1(pcdc->rexxBag, "REMOVE", oldUserData);
     }
 }
 
@@ -1384,6 +1526,43 @@ RexxMethod3(int32_t, lv_checkUncheck, int32_t, index, NAME, method, CSELF, pCSel
     return 0;
 }
 
+/** ListView::delete()
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, lv_delete, int32_t, index, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheOneObj;
+    }
+
+    unProtectLviUserData(context, pcdc, getCurrentLviUserData(pcdc->hCtrl, index));
+
+    return ListView_DeleteItem(pcdc->hCtrl, index) ? TheZeroObj : TheOneObj;
+}
+
+/** ListView::deleteAll()
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, lv_deleteAll, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheOneObj;
+    }
+
+    if ( pcdc->rexxBag != NULL )
+    {
+        context->SendMessage0(pcdc->rexxBag, "EMPTY");
+    }
+
+    return ListView_DeleteAllItems(pcdc->hCtrl) ? TheZeroObj : TheOneObj;
+}
+
 /** ListView::deselectAll()
  *
  *
@@ -1864,16 +2043,12 @@ RexxMethod2(RexxObjectPtr, lv_getItem, uint32_t, itemIndex, CSELF, pCSelf)
  */
 RexxMethod2(RexxObjectPtr, lv_getItemData, uint32_t, index, CSELF, pCSelf)
 {
-    LVITEM        lvi    = {LVIF_PARAM, index};
     RexxObjectPtr result = TheNilObj;
 
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc != NULL )
     {
-        if ( ListView_GetItem(pcdc->hCtrl, &lvi) != 0 )
-        {
-            result = getLviUserData(&lvi);
-        }
+        result = getCurrentLviUserData(pcdc->hCtrl, index);
     }
     return result;
 }
@@ -2509,6 +2684,87 @@ err_out:
     return TheNegativeOneObj;
 }
 
+/** ListView::modifyItem()
+ *
+ *  Modifies a list-view item using a LvItem object.
+ *
+ *  @remarks  There are 3 scenarios we have to manage here.
+ *
+ *            1.) There is no current lParam user data set.  In this case the
+ *            lvItem is just used as is to do a set item.  If a lParam user data
+ *            value is set, we need to protect it.
+ *
+ *            2.) There is a current lParam user data set, but it is not a full
+ *            row object.  In this case, if lvItem contains a lParam user data
+ *            value, we need to replace the current value with the new value.
+ *
+ *            3.) There is a current lParam user data set and it is a full row
+ *            object.  In this case, if lvItem contains a lParma user data value
+ *            we need to update the current value with the new value.  If not,
+ *            we need to merge the new lvItem into the full row item.
+ */
+RexxMethod2(logical_t, lv_modifyItem, RexxObjectPtr, lvItem, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+
+    if ( pcdc == NULL )
+    {
+        goto err_out;
+    }
+
+    if ( ! context->IsOfType(lvItem, "LVITEM") )
+    {
+        wrongClassException(context->threadContext, 1, "LvItem");
+        goto err_out;
+    }
+
+    HWND     hList = pcdc->hCtrl;
+    LPLVITEM lvi   = (LPLVITEM)context->ObjectToCSelf(lvItem);
+
+    RexxObjectPtr oldUserData      = getCurrentLviUserData(hList, lvi->iItem);
+    pCLvFullRow   pclvfr           = maybeGetFullRow(hList, lvi->iItem);
+    bool          lParamIsModified = (lvi->mask & LVIF_PARAM) ? true : false;
+
+    if ( ListView_SetItem(hList, lvi) == 0 )
+    {
+        goto err_out;
+    }
+
+    printf("New lv item mask=0x%08x state=0x%08x stateMask=0x%08x\n", lvi->mask, lvi->state, lvi->stateMask);
+
+    if ( lParamIsModified )
+    {
+        protectLviUserData(context, pcdc, lvi);
+    }
+
+    if ( oldUserData != TheNilObj )
+    {
+        if ( pclvfr == NULL )
+        {
+            if ( lParamIsModified )
+            {
+                unProtectLviUserData(context, pcdc, oldUserData);
+            }
+        }
+        else
+        {
+            if ( lParamIsModified )
+            {
+                unProtectLviUserData(context, pcdc, oldUserData);
+            }
+            else
+            {
+                mergeLviState(context, pclvfr, pclvfr->subItems[0], lvi);
+            }
+        }
+    }
+
+    return TRUE;
+
+err_out:
+    return FALSE;
+}
+
 /** ListView::next()
  *  ListView::nextSelected()
  *  ListView::nextLeft()
@@ -2603,26 +2859,28 @@ RexxMethod3(uint32_t, lv_replaceStyle, CSTRING, removeStyle, CSTRING, additional
  */
 RexxMethod2(RexxObjectPtr, lv_removeItemData, uint32_t, index, CSELF, pCSelf)
 {
-    LVITEM        lvi    = {LVIF_PARAM, index};
-    RexxObjectPtr result = TheNilObj;
-
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
     {
-        return result;
+        return TheNilObj;
     }
-    if ( ListView_GetItem(pcdc->hCtrl, &lvi) != 0 )
+
+    RexxObjectPtr result = getCurrentLviUserData(pcdc->hCtrl, index);
+    if ( result != TheNilObj )
     {
-        result = getLviUserData(&lvi);
+        LVITEM lvi = {LVIF_PARAM, index};
 
-        lvi.lParam = 0;
-        ListView_SetItem(pcdc->hCtrl, &lvi);
-
-        if ( pcdc->rexxBag != NULL )
+        if ( ListView_SetItem(pcdc->hCtrl, &lvi) )
         {
-            context->SendMessage1(pcdc->rexxBag, "REMOVE", result);
+            unProtectLviUserData(context, pcdc, result);
+        }
+        else
+        {
+            // Not removed, set result back to the .nil ojbect.
+            result = TheNilObj;
         }
     }
+
     return result;
 }
 
@@ -2866,11 +3124,14 @@ RexxMethod3(RexxObjectPtr, lv_setItemData, uint32_t, index, RexxObjectPtr, data,
         return TheFalseObj;
     }
 
+    RexxObjectPtr oldUserData = getCurrentLviUserData(pcdc->hCtrl, index);
+
     lvi.lParam = getLParamUserData(context, data);
 
     if ( ListView_SetItem(pcdc->hCtrl, &lvi) != 0 )
     {
         protectLviUserData(context, pcdc, &lvi);
+        unProtectLviUserData(context, pcdc, oldUserData);
         return TheTrueObj;
     }
     return TheFalseObj;

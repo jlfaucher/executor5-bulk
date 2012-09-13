@@ -61,8 +61,6 @@
 ::constant LVM_GETITEMCOUNT       "0x1004"
 ::constant LVM_EDITLABELA         "0x1017"
 ::constant LVM_EDITLABELW         "0x1076"
-::constant LVM_DELETEALLITEMS     "0x1009"
-::constant LVM_DELETEITEM         "0x1008"
 ::constant LVM_GETTOPINDEX        "0x1027"
 
 ::constant I_IMAGECALLBACK        -1
@@ -111,14 +109,8 @@
    use strict arg column
    return self~sendWinIntMsg(self~LVM_GETCOLUMNWIDTH, column, 0)
 
-::method delete unguarded
-   use strict arg index
-   return self~sendWinIntMsg(self~LVM_DELETEITEM, index, 0) <> 0
-
-::method deleteAll unguarded
-   use strict arg
-   return self~sendWinIntMsg(self~LVM_DELETEALLITEMS, 0, 0) <> 0
-
+::method delete unguarded external "LIBRARY oodialog lv_delete"
+::method deleteAll unguarded external "LIBRARY oodialog lv_deleteAll"
 ::method deleteColumn unguarded
    use strict arg index
    return self~sendWinIntMsg(self~LVM_DELETECOLUMN, index, 0) <> 0
@@ -215,6 +207,7 @@
    return self~modifyColumnPx(index, label, width, align)
 
 ::method modifyColumnPx unguarded external "LIBRARY oodialog lv_modifyColumnPx"
+::method modifyItem unguarded external "LIBRARY oodialog lv_modifyItem"
 ::method next unguarded external "LIBRARY oodialog lv_getNextItem"
 ::method nextLeft unguarded external "LIBRARY oodialog lv_getNextItem"
 ::method nextRight unguarded external "LIBRARY oodialog lv_getNextItem"

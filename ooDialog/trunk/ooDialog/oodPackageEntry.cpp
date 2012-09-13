@@ -995,6 +995,8 @@ REXX_METHOD_PROTOTYPE(lv_addRemoveStyle);
 REXX_METHOD_PROTOTYPE(lv_addRow);
 REXX_METHOD_PROTOTYPE(lv_arrange);
 REXX_METHOD_PROTOTYPE(lv_checkUncheck);
+REXX_METHOD_PROTOTYPE(lv_delete);
+REXX_METHOD_PROTOTYPE(lv_deleteAll);
 REXX_METHOD_PROTOTYPE(lv_deselectAll);
 REXX_METHOD_PROTOTYPE(lv_find);
 REXX_METHOD_PROTOTYPE(lv_findNearestXY);
@@ -1024,6 +1026,7 @@ REXX_METHOD_PROTOTYPE(lv_itemState);
 REXX_METHOD_PROTOTYPE(lv_itemText);
 REXX_METHOD_PROTOTYPE(lv_modify);
 REXX_METHOD_PROTOTYPE(lv_modifyColumnPx);
+REXX_METHOD_PROTOTYPE(lv_modifyItem);
 REXX_METHOD_PROTOTYPE(lv_prependFullRow);
 REXX_METHOD_PROTOTYPE(lv_removeItemData);
 REXX_METHOD_PROTOTYPE(lv_replaceExtendStyle);
@@ -1918,6 +1921,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_addRow,                      lv_addRow),
     REXX_METHOD(lv_arrange,                     lv_arrange),
     REXX_METHOD(lv_checkUncheck,                lv_checkUncheck),
+    REXX_METHOD(lv_delete,                      lv_delete),
+    REXX_METHOD(lv_deleteAll,                   lv_deleteAll),
     REXX_METHOD(lv_deselectAll,                 lv_deselectAll),
     REXX_METHOD(lv_find,                        lv_find),
     REXX_METHOD(lv_findNearestXY,               lv_findNearestXY),
@@ -1947,6 +1952,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_itemState,                   lv_itemState),
     REXX_METHOD(lv_modify,                      lv_modify),
     REXX_METHOD(lv_modifyColumnPx,              lv_modifyColumnPx),
+    REXX_METHOD(lv_modifyItem,                  lv_modifyItem),
     REXX_METHOD(lv_prependFullRow,         	    lv_prependFullRow),
     REXX_METHOD(lv_removeItemData,   	        lv_removeItemData),
     REXX_METHOD(lv_replaceExtendStyle,          lv_replaceExtendStyle),

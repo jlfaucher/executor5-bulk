@@ -2158,7 +2158,7 @@ RexxMethod2(RexxObjectPtr, dlgctrl_putInBag, RexxObjectPtr, object, CSELF, pCSel
     {
         if ( pcdc->rexxBag == NULL )
         {
-            RexxObjectPtr bag = rxNewSet(context);
+            RexxObjectPtr bag = rxNewBag(context);
             context->SetObjectVariable(DIALOGCONTROL_BAG_ATTRIBUTE, bag);
             pcdc->rexxBag = bag;
         }

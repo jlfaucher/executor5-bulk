@@ -695,8 +695,8 @@ typedef struct _dcCSelf {
     pCRexxSort          pcrs;            // Pointer to Rexx sort struct used for sorting list view items, usually null.
     RexxObjectPtr       rexxMouse;       // Rexx mouse object if there is one.
 
-    // A Rexx Set to put Rexx objects in, used to prevent gc.
-    RexxObjectPtr       rexxBag;         // Called a bag but really a .Set
+    // A Rexx bag to put Rexx objects in, used to prevent gc.
+    RexxObjectPtr       rexxBag;         // A bag is used, meaning the same item can be put in multiple times.
     int32_t             lastItem;        // Index of the last item added to the control
     uint32_t            id;              // Resouce ID of the control
     oodControl_t        controlType;     // Enum value for control type
