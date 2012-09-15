@@ -96,6 +96,7 @@
 ::method createBlackFrame external "LIBRARY oodialog dyndlg_createStaticFrame"
 ::method createEtchedHorizontal external "LIBRARY oodialog dyndlg_createStaticFrame"
 ::method createEtchedVertical external "LIBRARY oodialog dyndlg_createStaticFrame"
+::method createEtchedFrame external "LIBRARY oodialog dyndlg_createStaticFrame"
 
 ::method createPushButton external "LIBRARY oodialog dyndlg_createPushButton"
 ::method createRadioButton external "LIBRARY oodialog dyndlg_createRadioButton"
@@ -1042,7 +1043,7 @@
 
 ::method addGrayRect
    use strict arg x, y, cx, cy, opts = "", id = (-1)
-   return self~createRectRect(id, x, y, cx, cy, opts)
+   return self~createGrayRect(id, x, y, cx, cy, opts)
 
 ::method addBlackRect
    use strict arg x, y, cx, cy, opts = "", id = (-1)
