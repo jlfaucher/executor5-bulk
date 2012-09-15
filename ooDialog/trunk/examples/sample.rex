@@ -106,7 +106,7 @@
    self~loadApp("propertySheet.tabs\ticketWizard.rex")
 
 ::method tree
-   self~loadApp("oodtree.rex")
+   self~loadApp("treeViewCustomDraw.rex")
 
 ::method list
    self~loadApp("propertySheet.tabs\oodListViews.rex")
