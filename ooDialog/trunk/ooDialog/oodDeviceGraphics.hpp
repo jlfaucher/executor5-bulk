@@ -53,7 +53,7 @@ typedef enum
 extern uint32_t      parseShowOptions(CSTRING options);
 extern RexxObjectPtr oodGetClientRect(RexxMethodContext *, HWND hwnd, PRECT);
 extern RexxObjectPtr oodGetWindowRect(RexxMethodContext *, HWND hwnd);
-extern logical_t     oodColorTable(RexxMethodContext *, pCPlainBaseDialog, uint32_t, int32_t, int32_t, bool);
+extern logical_t     oodColorTable(RexxMethodContext *, pCPlainBaseDialog, uint32_t, uint32_t, uint32_t, bool);
 extern HFONT         oodGenericFont(const char *, uint32_t, const char *);
 extern logical_t     oodWriteToWindow(RexxMethodContext *, HWND, int32_t, int32_t, CSTRING, CSTRING, uint32_t, CSTRING, int32_t, int32_t);
 extern HBRUSH        oodCreateBrush(RexxMethodContext *, uint32_t, CSTRING);
@@ -63,9 +63,11 @@ extern int           getHeightFromFontSize(int fontSize);
 extern void          maybeSetColorPalette(RexxMethodContext *, HBITMAP, CSTRING, pCPlainBaseDialog);
 extern LPBITMAPINFO  loadDIB(const char *szFile, uint32_t *);
 extern WORD          numDIBColorEntries(LPBITMAPINFO lpBmpInfo);
-extern BOOL          drawBackgroundBmp(pCPlainBaseDialog, HWND);
-extern BOOL          drawBitmapButton(pCPlainBaseDialog, LPARAM, bool);
-extern bool          getSystemColor(RexxMethodContext *c, RexxObjectPtr clr, int32_t *color, size_t argPos);
+extern LRESULT       drawBackgroundBmp(pCPlainBaseDialog, HWND);
+extern LRESULT       drawBitmapButton(pCPlainBaseDialog, LPARAM, bool);
+extern LRESULT       handleDlgColor(pCPlainBaseDialog pcpbd);
+extern LRESULT       handleCtlColor(pCPlainBaseDialog pcpbd, HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+extern bool          getSystemColor(RexxMethodContext *c, RexxObjectPtr clr, uint32_t *color, size_t argPos);
 
 extern bool  parseFontStyleArg(CSTRING fontStyle, int *weight, BOOL *italic, BOOL *underline, BOOL *strikeout);
 extern bool  getTextSize(RexxMethodContext *, CSTRING, CSTRING, uint32_t, HWND, RexxObjectPtr, PSIZE);

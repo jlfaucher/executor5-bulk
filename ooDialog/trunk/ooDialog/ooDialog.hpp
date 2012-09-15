@@ -79,6 +79,7 @@
 #define DEF_MAX_MISC_MSGS            50
 
 /* User defined window messages used for RexxDlgProc() */
+#define WM_USER_REXX_FIRST             WM_USER + 0x0601
 #define WM_USER_CREATECHILD            WM_USER + 0x0601
 #define WM_USER_INTERRUPTSCROLL        WM_USER + 0x0602
 #define WM_USER_GETFOCUS               WM_USER + 0x0603
@@ -90,6 +91,7 @@
 #define WM_USER_CREATECONTROL_DLG      WM_USER + 0x0609
 #define WM_USER_CREATECONTROL_RESDLG   WM_USER + 0x060A
 #define WM_USER_CREATEPROPSHEET_DLG    WM_USER + 0x060B
+#define WM_USER_REXX_LAST              WM_USER + 0x060B
 
 // Flags for WM_USER_MOUSE_MISC
 #define MF_GETCAPTURE       0
@@ -356,11 +358,12 @@ typedef struct {
 } BITMAPTABLEENTRY;
 
 typedef struct {
-   bool isSysBrush;
-   ULONG itemID;
-   INT ColorBk;
-   INT ColorFG;
-   HBRUSH ColorBrush;
+    HBRUSH   ColorBrush;
+    COLORREF ColorBk;
+    COLORREF ColorFG;
+    uint32_t itemID;
+    bool     isSysBrush;
+    bool     useSysColors;
 } COLORTABLEENTRY;
 
 typedef struct {
@@ -620,23 +623,24 @@ typedef struct _pbdCSelf {
     DWORD                dlgProcThreadID;
     uint32_t             fontSize;
     bool                 onTheTop;
-    bool                 isCategoryDlg;   // Need to use IsNestedDialogMessage()
-    bool                 isControlDlg;    // Dialog was created as DS_CONTROL | WS_CHILD
-    bool                 isOwnedDlg;      // Dialog has an owner dialog
-    bool                 isManagedDlg;    // Dialog has an owner dialog, which is a tab owner dialog
-    bool                 isPageDlg;       // Dialog is a property sheet page dialog
-    bool                 isPropSheetDlg;  // Dialog is a property sheet dialog
-    bool                 isTabOwnerDlg;   // Dialog is a tab owner dialog
-    bool                 isCustomDrawDlg; // Dialog inherited CustomDraw
+    bool                 isCategoryDlg;    // Need to use IsNestedDialogMessage()
+    bool                 isControlDlg;     // Dialog was created as DS_CONTROL | WS_CHILD
+    bool                 isOwnedDlg;       // Dialog has an owner dialog
+    bool                 isManagedDlg;     // Dialog has an owner dialog, which is a tab owner dialog
+    bool                 isPageDlg;        // Dialog is a property sheet page dialog
+    bool                 isPropSheetDlg;   // Dialog is a property sheet dialog
+    bool                 isTabOwnerDlg;    // Dialog is a tab owner dialog
+    bool                 isCustomDrawDlg;  // Dialog inherited CustomDraw
     bool                 idsNotChecked;
     bool                 badIDs;
-    bool                 isDlgHwndSet;    // Has setDlgHandle() been executed
+    bool                 isDlgHwndSet;     // Has setDlgHandle() been executed
     bool                 sharedIcon;
     bool                 didChangeIcon;
     bool                 isActive;
     bool                 dlgAllocated;
     bool                 abnormalHalt;
-    bool                 scrollNow;      // For scrolling text in windows.
+    bool                 scrollNow;        // For scrolling text in windows.
+    bool                 bkgBrushIsSystem; // Do not delete brush if true.
 } CPlainBaseDialog;
 typedef CPlainBaseDialog *pCPlainBaseDialog;
 

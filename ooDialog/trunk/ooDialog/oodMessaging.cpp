@@ -213,28 +213,21 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
     }
 
+    if ( uMsg >= WM_USER_REXX_FIRST && uMsg <= WM_USER_REXX_LAST )
+    {
+        return handleWmUser(pcpbd, hDlg, uMsg, wParam, lParam, false);
+    }
+
     switch ( uMsg )
     {
         case WM_PAINT:
-            if ( pcpbd->bkgBitmap != NULL )
-            {
-                drawBackgroundBmp(pcpbd, hDlg);
-            }
-            break;
+            return drawBackgroundBmp(pcpbd, hDlg);
 
         case WM_DRAWITEM:
-            if ( lParam != 0 )
-            {
-                return drawBitmapButton(pcpbd, lParam, msgEnabled);
-            }
-            break;
+            return drawBitmapButton(pcpbd, lParam, msgEnabled);
 
         case WM_CTLCOLORDLG:
-            if ( pcpbd->bkgBrush )
-            {
-                return(LRESULT)pcpbd->bkgBrush;
-            }
-            break;
+            return handleDlgColor(pcpbd);
 
         case WM_CTLCOLORSTATIC:
         case WM_CTLCOLORBTN:
@@ -242,80 +235,187 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_CTLCOLORLISTBOX:
         case WM_CTLCOLORMSGBOX:
         case WM_CTLCOLORSCROLLBAR:
-        {
-            HBRUSH hbrush = NULL;
-
-            if ( pcpbd->CT_nextIndex > 0 )
-            {
-                // See of the user has set the dialog item with a different
-                // color.
-                long id = GetWindowLong((HWND)lParam, GWL_ID);
-                if ( id > 0 )
-                {
-                    register size_t i = 0;
-                    while ( i < pcpbd->CT_nextIndex && pcpbd->ColorTab[i].itemID != id )
-                    {
-                        i++;
-                    }
-                    if ( i < pcpbd->CT_nextIndex )
-                    {
-                        hbrush = pcpbd->ColorTab[i].ColorBrush;
-                    }
-
-                    if ( hbrush )
-                    {
-                        if ( pcpbd->ColorTab[i].isSysBrush )
-                        {
-                            SetBkColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                        else
-                        {
-                            SetBkColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                    }
-                }
-            }
-            if ( hbrush )
-                return(LRESULT)hbrush;
-            else
-                return DefWindowProc(hDlg, uMsg, wParam, lParam);
-        }
-
-        case WM_COMMAND:
-            switch ( LOWORD(wParam) )
-            {
-                case IDOK:
-                case IDCANCEL:
-
-                    // For both IDOK and IDCANCEL, the notification code
-                    // (the high word value) must be 0.
-                    if ( HIWORD(wParam) == 0 )
-                    {
-                        // We should never get here because both IDOK and
-                        // IDCANCEL should have be interecepted in
-                        // searchMessageTables().  But - sometimes we do, very
-                        // rarely.  It is on some abnormal error. See the
-                        // comments above for the WM_DESTROY message.
-                        pcpbd->abnormalHalt = true;
-                        DestroyWindow(hDlg);
-
-                        return TRUE;
-                    }
-            }
-            break;
+            return handleCtlColor(pcpbd, hDlg, uMsg, wParam, lParam);
 
         case WM_QUERYNEWPALETTE:
         case WM_PALETTECHANGED:
             return paletteMessage(pcpbd, hDlg, uMsg, wParam, lParam);
 
+        default:
+            break;
+    }
+
+    return FALSE;
+}
+
+/**
+ * The dialog procedure for control dialogs, i.e. those created with the
+ * DS_CONTROL.
+ *
+ * These are 'nested' dialogs, or dialogs within a top-level dialog.  For the
+ * most part, the procedure is exactly the same as for top-level dialogs.
+ *
+ * @param hDlg
+ * @param uMsg
+ * @param wParam
+ * @param lParam
+ *
+ * @return LRESULT CALLBACK
+ */
+LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    if ( uMsg == WM_INITDIALOG )
+    {
+        pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)lParam;
+        if ( pcpbd == NULL )
+        {
+            // Theoretically impossible.  But ... if it should happen, abort.
+            return endDialogPremature(pcpbd, hDlg, NoPCPBDpased);
+        }
+
+        pcpbd->hDlg = hDlg;
+        setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)pcpbd);
+
+        if ( pcpbd->isCustomDrawDlg && pcpbd->idsNotChecked )
+        {
+            // We don't care what the outcome of this is, customDrawCheckIDs
+            // will take care of aborting this dialog if the IDs are bad.
+            customDrawCheckIDs(pcpbd);
+        }
+
+        return TRUE;
+    }
+
+    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)getWindowPtr(hDlg, GWLP_USERDATA);
+    if ( pcpbd == NULL )
+    {
+        // A number of messages arrive before WM_INITDIALOG, we just ignore them.
+        return FALSE;
+    }
+
+    if ( pcpbd->dlgProcContext == NULL )
+    {
+        if ( ! pcpbd->isActive )
+        {
+            return FALSE;
+        }
+
+        // Once again, theoretically impossible ...
+        return endDialogPremature(pcpbd, hDlg, NoThreadContext);
+    }
+
+    // Don't process WM_DESTROY messages.
+
+    bool msgEnabled = IsWindowEnabled(hDlg) ? true : false;
+
+    // Do not search message table for WM_PAINT to improve redraw.
+    if ( msgEnabled && uMsg != WM_PAINT && uMsg != WM_NCPAINT )
+    {
+        MsgReplyType searchReply = searchMessageTables(uMsg, wParam, lParam, pcpbd);
+        if ( searchReply != ContinueProcessing )
+        {
+            // Note pre 4.0.1, we always returned FALSE, (pass on to the system
+            // to process.) But, post 4.0.1 we sometimes reply TRUE, the message
+            // has been handled.
+            return (searchReply == ReplyTrue ? TRUE : FALSE);
+        }
+    }
+
+    if ( uMsg >= WM_USER_REXX_FIRST && uMsg <= WM_USER_REXX_LAST )
+    {
+        return handleWmUser(pcpbd, hDlg, uMsg, wParam, lParam, true);
+    }
+
+    switch ( uMsg )
+    {
+        case WM_PAINT:
+            return drawBackgroundBmp(pcpbd, hDlg);
+
+        case WM_DRAWITEM:
+            return drawBitmapButton(pcpbd, lParam, msgEnabled);
+
+        case WM_CTLCOLORDLG:
+            return handleDlgColor(pcpbd);
+
+        case WM_CTLCOLORSTATIC:
+        case WM_CTLCOLORBTN:
+        case WM_CTLCOLOREDIT:
+        case WM_CTLCOLORLISTBOX:
+        case WM_CTLCOLORMSGBOX:
+        case WM_CTLCOLORSCROLLBAR:
+            return handleCtlColor(pcpbd, hDlg, uMsg, wParam, lParam);
+
+        case WM_QUERYNEWPALETTE:
+        case WM_PALETTECHANGED:
+            return paletteMessage(pcpbd, hDlg, uMsg, wParam, lParam);
+
+        case WM_COMMAND:
+            return handleWmCommand(pcpbd, hDlg, wParam, lParam, true);
+
+        default:
+            break;
+    }
+
+    return FALSE;
+}
+
+
+/**
+ * Checks if the specified message is one that we don't allow in a nested
+ * dialog.
+ *
+ * @param uMsg
+ *
+ * @return bool
+ *
+ * @remarks  For now, we don't let the user created nested, nested dialogs.  In
+ *           addition, keyboard hooks should only be created in a top-level
+ *           dialog.
+ */
+inline bool isRestrictedUserMsg(uint32_t uMsg)
+{
+    if ( uMsg == WM_USER_CREATECHILD          ||
+         uMsg == WM_USER_CREATECONTROL_DLG    ||
+         uMsg == WM_USER_CREATECONTROL_RESDLG ||
+         uMsg == WM_USER_HOOK )
+    {
+        return true;
+    }
+    return false;
+}
+
+
+/**
+ *  Handles all our WM_USER_xxx messages for any Rexx dialog procedure.
+ *
+ *  Note that we check if the message is from a nested dialog procedure, like a
+ *  property sheet page dialog, and don't allow certain of the messages.
+ *
+ * @param pcpbd
+ * @param hDlg
+ * @param uMsg
+ * @param wParam
+ * @param lParam
+ * @param isNestedDlg
+ *
+ * @return LRESULT
+ *
+ * @remarks  We are only in this functrion for our own Rexx user messages, and
+ *           we process all of them.  So, we always return true.  If we add a
+ *           message and forget to process it, returning true will do no harm.
+ *           It should be easy enough to find the bug when we look at why the
+ *           new message doesn't work.
+ */
+LRESULT handleWmUser(pCPlainBaseDialog pcpbd, HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam, bool isNestedDlg)
+{
+    if ( isNestedDlg && isRestrictedUserMsg(uMsg) )
+    {
+        ReplyMessage((LRESULT)NULL);
+        return TRUE;
+    }
+
+    switch ( uMsg )
+    {
         case WM_USER_CREATECHILD:
         {
             HWND hChild = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)lParam, hDlg, (DLGPROC)RexxDlgProc,
@@ -328,17 +428,17 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             pCPlainBaseDialog p = (pCPlainBaseDialog)wParam;
             HWND hChild = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)lParam, p->hOwnerDlg, (DLGPROC)RexxChildDlgProc,
-                                                    wParam);
+                                                    (LPARAM)p);
             ReplyMessage((LRESULT)hChild);
             return TRUE;
         }
 
         case WM_USER_CREATECONTROL_RESDLG:
         {
-            pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)wParam;
+            pCPlainBaseDialog p = (pCPlainBaseDialog)wParam;
 
-            HWND hChild = CreateDialogParam(pcpbd->hInstance, MAKEINTRESOURCE((uint32_t)lParam), pcpbd->hOwnerDlg,
-                                            (DLGPROC)RexxChildDlgProc, (LPARAM)pcpbd);
+            HWND hChild = CreateDialogParam(p->hInstance, MAKEINTRESOURCE((uint32_t)lParam), p->hOwnerDlg,
+                                            (DLGPROC)RexxChildDlgProc, (LPARAM)p);
 
             ReplyMessage((LRESULT)hChild);
             return TRUE;
@@ -348,7 +448,7 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             pCPropertySheetDialog pcpsd = (pCPropertySheetDialog)lParam;
 
-            assignPSDThreadContext(pcpsd, pcpbd->dlgProcContext, pcpbd->dlgProcThreadID);
+            assignPSDThreadContext(pcpsd, pcpbd->dlgProcContext, GetCurrentThreadId());
 
             if ( setPropSheetHook(pcpsd) )
             {
@@ -458,257 +558,56 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
     }
 
-    return FALSE;
+    //
+    return TRUE;
 }
 
+
 /**
- * The dialog procedure for control dialogs, i.e. those created with the
- * DS_CONTROL.
+ * Handles the WM_COMMAND message in the dialog window procedure.  Called from
+ * any of the various Rexx dialog procedures in ooDialog.
  *
- * These are 'nested' dialogs, or dialogs within a top-level dialog.  For the
- * most part, the procedure is exactly the same as for top-level dialogs.
- *
+ * @param pcpbd
  * @param hDlg
- * @param uMsg
  * @param wParam
  * @param lParam
+ * @param isNestedDlg
  *
- * @return LRESULT CALLBACK
+ * @return LRESULT
+ *
+ * @remarks  Note that for nested dialogs, we have always returned false since
+ *           they were introduced.  Not sure if it might not be better to return
+ *           true.
+ *
+ *           We only process the IDOK and IDCANCEL identifier when the high
+ *           word is 0.  The high work being 0 would indicate that it was a
+ *           button click (BN_CLICK is 0) or sent from a menu command.
+ *
+ *           However, we should never actually get to process anything here
+ *           because both IDOK and IDCANCEL should have been interecepted in
+ *           searchMessageTables().  But - sometimes we do get one or the other,
+ *           very rarely.  It is on some abnormal error.  The processing seems
+ *           to handle that error.
  */
-LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT handleWmCommand(pCPlainBaseDialog pcpbd, HWND hDlg, WPARAM wParam, LPARAM lParam, bool isNestedDlg)
 {
-    if ( uMsg == WM_INITDIALOG )
+    if ( isNestedDlg )
     {
-        pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)lParam;
-        if ( pcpbd == NULL )
-        {
-            // Theoretically impossible.  But ... if it should happen, abort.
-            return endDialogPremature(pcpbd, hDlg, NoPCPBDpased);
-        }
-
-        pcpbd->hDlg = hDlg;
-        setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)pcpbd);
-
-        if ( pcpbd->isCustomDrawDlg && pcpbd->idsNotChecked )
-        {
-            // We don't care what the outcome of this is, customDrawCheckIDs
-            // will take care of aborting this dialog if the IDs are bad.
-            customDrawCheckIDs(pcpbd);
-        }
-
-        return TRUE;
-    }
-
-    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)getWindowPtr(hDlg, GWLP_USERDATA);
-    if ( pcpbd == NULL )
-    {
-        // A number of messages arrive before WM_INITDIALOG, we just ignore them.
         return FALSE;
     }
 
-    if ( pcpbd->dlgProcContext == NULL )
+    switch ( LOWORD(wParam) )
     {
-        if ( ! pcpbd->isActive )
-        {
-            return FALSE;
-        }
-
-        // Once again, theoretically impossible ...
-        return endDialogPremature(pcpbd, hDlg, NoThreadContext);
-    }
-
-    // Don't process WM_DESTROY messages.
-
-    bool msgEnabled = IsWindowEnabled(hDlg) ? true : false;
-
-    // Do not search message table for WM_PAINT to improve redraw.
-    if ( msgEnabled && uMsg != WM_PAINT && uMsg != WM_NCPAINT )
-    {
-        MsgReplyType searchReply = searchMessageTables(uMsg, wParam, lParam, pcpbd);
-        if ( searchReply != ContinueProcessing )
-        {
-            // Note pre 4.0.1, we always returned FALSE, (pass on to the system
-            // to process.) But, post 4.0.1 we sometimes reply TRUE, the message
-            // has been handled.
-            return (searchReply == ReplyTrue ? TRUE : FALSE);
-        }
-    }
-
-    switch ( uMsg )
-    {
-        case WM_PAINT:
-            if ( pcpbd->bkgBitmap != NULL )
+        case IDOK:
+        case IDCANCEL:
+            if ( HIWORD(wParam) == 0 )
             {
-                drawBackgroundBmp(pcpbd, hDlg);
+                //
+                pcpbd->abnormalHalt = true;
+                DestroyWindow(hDlg);
+
+                return TRUE;
             }
-            break;
-
-        case WM_DRAWITEM:
-            if ( lParam != 0 )
-            {
-                return drawBitmapButton(pcpbd, lParam, msgEnabled);
-            }
-            break;
-
-        case WM_CTLCOLORDLG:
-            if ( pcpbd->bkgBrush )
-            {
-                return(LRESULT)pcpbd->bkgBrush;
-            }
-            break;
-
-        case WM_CTLCOLORSTATIC:
-        case WM_CTLCOLORBTN:
-        case WM_CTLCOLOREDIT:
-        case WM_CTLCOLORLISTBOX:
-        case WM_CTLCOLORMSGBOX:
-        case WM_CTLCOLORSCROLLBAR:
-        {
-            HBRUSH hbrush = NULL;
-
-            if ( pcpbd->CT_nextIndex > 0 )
-            {
-                // See of the user has set the dialog item with a different
-                // color.
-                long id = GetWindowLong((HWND)lParam, GWL_ID);
-                if ( id > 0 )
-                {
-                    register size_t i = 0;
-                    while ( i < pcpbd->CT_nextIndex && pcpbd->ColorTab[i].itemID != id )
-                    {
-                        i++;
-                    }
-                    if ( i < pcpbd->CT_nextIndex )
-                    {
-                        hbrush = pcpbd->ColorTab[i].ColorBrush;
-                    }
-
-                    if ( hbrush )
-                    {
-                        if ( pcpbd->ColorTab[i].isSysBrush )
-                        {
-                            SetBkColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                        else
-                        {
-                            SetBkColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                    }
-                }
-            }
-            if ( hbrush )
-                return(LRESULT)hbrush;
-            else
-                return DefWindowProc(hDlg, uMsg, wParam, lParam);
-        }
-
-        case WM_QUERYNEWPALETTE:
-        case WM_PALETTECHANGED:
-            return paletteMessage(pcpbd, hDlg, uMsg, wParam, lParam);
-
-        // For now, don't let the user created nested, nested dialogs.  In
-        // addition, keyboard hooks should only be created in a top-level
-        // dialog.
-        case WM_USER_CREATECHILD:
-        case WM_USER_CREATECONTROL_DLG:
-        case WM_USER_CREATECONTROL_RESDLG:
-        case WM_USER_HOOK:
-            ReplyMessage((LRESULT)NULL);
-            return TRUE;
-
-        case WM_USER_INTERRUPTSCROLL:
-            pcpbd->stopScroll = wParam;
-            return TRUE;
-
-        case WM_USER_GETFOCUS:
-            ReplyMessage((LRESULT)GetFocus());
-            return TRUE;
-
-        case WM_USER_MOUSE_MISC:
-        {
-            switch ( wParam )
-            {
-                case MF_RELEASECAPTURE :
-                {
-                    uint32_t rc = 0;
-                    if ( ReleaseCapture() == 0 )
-                    {
-                        rc = GetLastError();
-                    }
-                    ReplyMessage((LRESULT)rc);
-                    break;
-                }
-
-                case MF_GETCAPTURE :
-                    ReplyMessage((LRESULT)GetCapture());
-                    break;
-
-                case MF_SETCAPTURE :
-                    ReplyMessage((LRESULT)SetCapture((HWND)lParam));
-                    break;
-
-                case MF_BUTTONDOWN :
-                    ReplyMessage((LRESULT)GetAsyncKeyState((int)lParam));
-                    break;
-
-                case MF_SHOWCURSOR :
-                    ReplyMessage((LRESULT)ShowCursor((BOOL)lParam));
-                    break;
-
-                default :
-                    // Maybe we should raise an internal exception here.  But,
-                    // as long as the internal code is consistent, we can not
-                    // get here.
-                    break;
-            }
-            return TRUE;
-        }
-
-        case WM_USER_SUBCLASS:
-        {
-            pSubClassData pData = (pSubClassData)lParam;
-
-            BOOL success = SetWindowSubclass(pData->hCtrl, (SUBCLASSPROC)wParam, pData->id, (DWORD_PTR)pData);
-
-            ReplyMessage((LRESULT)success);
-            return TRUE;
-        }
-
-        case WM_USER_SUBCLASS_REMOVE:
-            ReplyMessage((LRESULT)RemoveWindowSubclass(GetDlgItem(hDlg, (int)lParam), (SUBCLASSPROC)wParam, (int)lParam));
-            return TRUE;
-
-        case WM_USER_CONTEXT_MENU:
-        {
-            PTRACKPOP ptp = (PTRACKPOP)wParam;
-            uint32_t cmd;
-
-            SetLastError(0);
-            cmd = (uint32_t)TrackPopupMenuEx(ptp->hMenu, ptp->flags, ptp->point.x, ptp->point.y,
-                                             ptp->hWnd, ptp->lptpm);
-
-            // If TPM_RETURNCMD is specified, the return is the menu item
-            // selected.  Otherwise, the return is 0 for failure and
-            // non-zero for success.
-            if ( ! (ptp->flags & TPM_RETURNCMD) )
-            {
-                cmd = (cmd == 0 ? FALSE : TRUE);
-                if ( cmd == FALSE )
-                {
-                    ptp->dwErr = GetLastError();
-                }
-            }
-            ReplyMessage((LRESULT)cmd);
-            return TRUE;
-        }
     }
 
     return FALSE;

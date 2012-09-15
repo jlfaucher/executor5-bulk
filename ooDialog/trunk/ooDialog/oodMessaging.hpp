@@ -61,6 +61,8 @@ extern bool parseWinMessageFilter(RexxMethodContext *context, pWinMessageFilter 
 extern BOOL endDialogPremature(pCPlainBaseDialog, HWND, DlgProcErrType);
 
 extern LRESULT       paletteMessage(pCPlainBaseDialog, HWND, UINT, WPARAM, LPARAM);
+extern LRESULT       handleWmCommand(pCPlainBaseDialog pcpbd, HWND hDlg, WPARAM wParam, LPARAM lParam, bool isNestedDlg);
+extern LRESULT       handleWmUser(pCPlainBaseDialog pcpbd, HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam, bool isNestedDlg);
 extern MsgReplyType  searchMessageTables(ULONG message, WPARAM param, LPARAM lparam, pCPlainBaseDialog);
 extern bool          initCommandMessagesTable(RexxMethodContext *c, pCEventNotification pcen, pCPlainBaseDialog pcpbd);
 extern bool          initEventNotification(RexxMethodContext *, pCPlainBaseDialog, RexxObjectPtr, pCEventNotification *);

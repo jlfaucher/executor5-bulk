@@ -1958,8 +1958,19 @@ RexxMethod5(RexxObjectPtr, dlgctrl_getTextSizeDlg, CSTRING, text, OPTIONAL_CSTRI
 
 /** DialogControl::setColor()
  *  DialogControl::setSysColor
+ *
+ *  @remarks  Both setColor() and setSysColor() are enhanced in 4.2.1 to make
+ *            the first argument optional.  If not specified, the background
+ *            brush used is the default dialog color, or the brush used for the
+ *            dialog background color.  This is the 'transparent' text effect
+ *            that Martin Berg has always wanted.
+ *
+ *            setColor() is also enhanced by adding a third argument, isClrRef,
+ *            that allows the user to specify the colors as COLORREFs, not
+ *            pallete indexes.
  */
-RexxMethod4(int32_t, dlgctrl_setColor, RexxObjectPtr, rxBG, OPTIONAL_RexxObjectPtr, rxFG, NAME, method, CSELF, pCSelf)
+RexxMethod5(int32_t, dlgctrl_setColor, OPTIONAL_RexxObjectPtr, rxBG, OPTIONAL_RexxObjectPtr, rxFG,
+            OPTIONAL_logical_t, isClrRef, NAME, method, CSELF, pCSelf)
 {
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
@@ -1968,12 +1979,12 @@ RexxMethod4(int32_t, dlgctrl_setColor, RexxObjectPtr, rxBG, OPTIONAL_RexxObjectP
     }
 
     bool    useSysColor = (method[3] == 'S');
-    int32_t bkColor = 0;
-    int32_t fgColor = -1;
+    uint32_t bkColor = CLR_DEFAULT;
+    uint32_t fgColor = CLR_DEFAULT;
 
     if ( useSysColor )
     {
-        if ( ! getSystemColor(context, rxBG, &bkColor, 1) )
+        if ( argumentExists(1) && ! getSystemColor(context, rxBG, &bkColor, 1) )
         {
             return -1;
         }
@@ -1984,14 +1995,29 @@ RexxMethod4(int32_t, dlgctrl_setColor, RexxObjectPtr, rxBG, OPTIONAL_RexxObjectP
     }
     else
     {
-        if ( ! context->Int32(rxBG, &bkColor) || (argumentExists(2) && ! context->Int32(rxFG, &fgColor)) )
+        if ( argumentExists(1) && ! context->UnsignedInt32(rxBG, &bkColor) )
+        {
+            return -1;
+        }
+        if ( argumentExists(2) && ! context->UnsignedInt32(rxFG, &fgColor) )
         {
             return -1;
         }
     }
 
-    return (int32_t)oodColorTable(context, dlgToCSelf(context, pcdc->oDlg), pcdc->id, bkColor,
-                                  argumentOmitted(2) ? -1 : fgColor, useSysColor);
+    if ( ! (useSysColor || isClrRef) )
+    {
+        if ( bkColor != CLR_DEFAULT )
+        {
+            bkColor = PALETTEINDEX(bkColor);
+        }
+        if ( fgColor != CLR_DEFAULT )
+        {
+            fgColor = PALETTEINDEX(fgColor);
+        }
+    }
+
+    return (int32_t)oodColorTable(context, dlgToCSelf(context, pcdc->oDlg), pcdc->id, bkColor, fgColor, useSysColor);
 }
 
 /** DialogControl::data()

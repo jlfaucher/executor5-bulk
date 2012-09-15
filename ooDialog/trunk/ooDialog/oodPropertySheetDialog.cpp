@@ -1250,7 +1250,8 @@ done_out:
 
 
 /**
- * The dialog procedure for control dialogs used by the PropertySheetDialog.
+ * The dialog procedure for control dialogs used by the PropertySheetDialog
+ * property sheet page dislogs.
  *
  * These are 'nested' dialogs, or dialogs within a top-level dialog.  For the
  * most part, the procedure is exactly the same as for top-level dialogs.  See
@@ -1271,7 +1272,7 @@ done_out:
  *           In WM_DESTROY we do the final steps / clean up normally done in the
  *           execute() method.
  */
-LRESULT CALLBACK RexxPropertySheetDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK RexxPropertySheetPageDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if ( uMsg == WM_INITDIALOG )
     {
@@ -1344,28 +1345,21 @@ LRESULT CALLBACK RexxPropertySheetDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, L
         }
     }
 
+    if ( uMsg >= WM_USER_REXX_FIRST && uMsg <= WM_USER_REXX_LAST )
+    {
+        return handleWmUser(pcpbd, hDlg, uMsg, wParam, lParam, true);
+    }
+
     switch ( uMsg )
     {
         case WM_PAINT:
-            if ( pcpbd->bkgBitmap != NULL )
-            {
-                drawBackgroundBmp(pcpbd, hDlg);
-            }
-            break;
+            return drawBackgroundBmp(pcpbd, hDlg);
 
         case WM_DRAWITEM:
-            if ( lParam != 0 )
-            {
-                return drawBitmapButton(pcpbd, lParam, msgEnabled);
-            }
-            break;
+            return drawBitmapButton(pcpbd, lParam, msgEnabled);
 
         case WM_CTLCOLORDLG:
-            if ( pcpbd->bkgBrush )
-            {
-                return(LRESULT)pcpbd->bkgBrush;
-            }
-            break;
+            return handleDlgColor(pcpbd);
 
         case WM_CTLCOLORSTATIC:
         case WM_CTLCOLORBTN:
@@ -1373,152 +1367,17 @@ LRESULT CALLBACK RexxPropertySheetDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, L
         case WM_CTLCOLORLISTBOX:
         case WM_CTLCOLORMSGBOX:
         case WM_CTLCOLORSCROLLBAR:
-        {
-            HBRUSH hbrush = NULL;
-
-            if ( pcpbd->CT_nextIndex > 0 )
-            {
-                // See of the user has set the dialog item with a different
-                // color.
-                long id = GetWindowLong((HWND)lParam, GWL_ID);
-                if ( id > 0 )
-                {
-                    register size_t i = 0;
-                    while ( i < pcpbd->CT_nextIndex && pcpbd->ColorTab[i].itemID != id )
-                    {
-                        i++;
-                    }
-                    if ( i < pcpbd->CT_nextIndex )
-                    {
-                        hbrush = pcpbd->ColorTab[i].ColorBrush;
-                    }
-
-                    if ( hbrush )
-                    {
-                        if ( pcpbd->ColorTab[i].isSysBrush )
-                        {
-                            SetBkColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                        else
-                        {
-                            SetBkColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                    }
-                }
-            }
-            if ( hbrush )
-                return(LRESULT)hbrush;
-            else
-                return DefWindowProc(hDlg, uMsg, wParam, lParam);
-        }
+            return handleCtlColor(pcpbd, hDlg, uMsg, wParam, lParam);
 
         case WM_QUERYNEWPALETTE:
         case WM_PALETTECHANGED:
             return paletteMessage(pcpbd, hDlg, uMsg, wParam, lParam);
 
-        // For now, don't let the user created nested, nested dialogs.  In
-        // addition, keyboard hooks should only be created in a top-level
-        // dialog.
-        case WM_USER_CREATECHILD:
-        case WM_USER_CREATECONTROL_DLG:
-        case WM_USER_CREATECONTROL_RESDLG:
-        case WM_USER_HOOK:
-            ReplyMessage((LRESULT)NULL);
-            return TRUE;
+        case WM_COMMAND:
+            return handleWmCommand(pcpbd, hDlg, wParam, lParam, true);
 
-        case WM_USER_INTERRUPTSCROLL:
-            pcpbd->stopScroll = wParam;
-            return TRUE;
-
-        case WM_USER_GETFOCUS:
-            ReplyMessage((LRESULT)GetFocus());
-            return TRUE;
-
-        case WM_USER_MOUSE_MISC:
-        {
-            switch ( wParam )
-            {
-                case MF_RELEASECAPTURE :
-                {
-                    uint32_t rc = 0;
-                    if ( ReleaseCapture() == 0 )
-                    {
-                        rc = GetLastError();
-                    }
-                    ReplyMessage((LRESULT)rc);
-                    break;
-                }
-
-                case MF_GETCAPTURE :
-                    ReplyMessage((LRESULT)GetCapture());
-                    break;
-
-                case MF_SETCAPTURE :
-                    ReplyMessage((LRESULT)SetCapture((HWND)lParam));
-                    break;
-
-                case MF_BUTTONDOWN :
-                    ReplyMessage((LRESULT)GetAsyncKeyState((int)lParam));
-                    break;
-
-                case MF_SHOWCURSOR :
-                    ReplyMessage((LRESULT)ShowCursor((BOOL)lParam));
-                    break;
-
-                default :
-                    // Maybe we should raise an internal exception here.  But,
-                    // as long as the internal code is consistent, we can not
-                    // get here.
-                    break;
-            }
-            return TRUE;
-        }
-
-        case WM_USER_SUBCLASS:
-        {
-            pSubClassData pData = (pSubClassData)lParam;
-
-            BOOL success = SetWindowSubclass(pData->hCtrl, (SUBCLASSPROC)wParam, pData->id, (DWORD_PTR)pData);
-
-            ReplyMessage((LRESULT)success);
-            return TRUE;
-        }
-
-        case WM_USER_SUBCLASS_REMOVE:
-            ReplyMessage((LRESULT)RemoveWindowSubclass(GetDlgItem(hDlg, (int)lParam), (SUBCLASSPROC)wParam, (int)lParam));
-            return TRUE;
-
-        case WM_USER_CONTEXT_MENU:
-        {
-            PTRACKPOP ptp = (PTRACKPOP)wParam;
-            uint32_t cmd;
-
-            SetLastError(0);
-            cmd = (uint32_t)TrackPopupMenuEx(ptp->hMenu, ptp->flags, ptp->point.x, ptp->point.y,
-                                             ptp->hWnd, ptp->lptpm);
-
-            // If TPM_RETURNCMD is specified, the return is the menu item
-            // selected.  Otherwise, the return is 0 for failure and
-            // non-zero for success.
-            if ( ! (ptp->flags & TPM_RETURNCMD) )
-            {
-                cmd = (cmd == 0 ? FALSE : TRUE);
-                if ( cmd == FALSE )
-                {
-                    ptp->dwErr = GetLastError();
-                }
-            }
-            ReplyMessage((LRESULT)cmd);
-            return TRUE;
-        }
+        default:
+            break;
     }
 
     return FALSE;
@@ -1920,7 +1779,7 @@ bool initPSP(RexxMethodContext *c, pCPropertySheetDialog pcpsd, PROPSHEETPAGE *p
     }
 
     psp->dwSize      = sizeof(PROPSHEETPAGE);
-    psp->pfnDlgProc  = (DLGPROC)RexxPropertySheetDlgProc;
+    psp->pfnDlgProc  = (DLGPROC)RexxPropertySheetPageDlgProc;
     psp->lParam      = (LPARAM)pcpsp;
     psp->pfnCallback = PropSheetPageCallBack;
 
@@ -5614,28 +5473,21 @@ LRESULT CALLBACK RexxTabOwnerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
         }
     }
 
+    if ( uMsg >= WM_USER_REXX_FIRST && uMsg <= WM_USER_REXX_LAST )
+    {
+        return handleWmUser(pcpbd, hDlg, uMsg, wParam, lParam, false);
+    }
+
     switch ( uMsg )
     {
         case WM_PAINT:
-            if ( pcpbd->bkgBitmap != NULL )
-            {
-                drawBackgroundBmp(pcpbd, hDlg);
-            }
-            break;
+            return drawBackgroundBmp(pcpbd, hDlg);
 
         case WM_DRAWITEM:
-            if ( lParam != 0 )
-            {
-                return drawBitmapButton(pcpbd, lParam, msgEnabled);
-            }
-            break;
+            return drawBitmapButton(pcpbd, lParam, msgEnabled);
 
         case WM_CTLCOLORDLG:
-            if ( pcpbd->bkgBrush )
-            {
-                return(LRESULT)pcpbd->bkgBrush;
-            }
-            break;
+            return handleDlgColor(pcpbd);
 
         case WM_CTLCOLORSTATIC:
         case WM_CTLCOLORBTN:
@@ -5643,222 +5495,17 @@ LRESULT CALLBACK RexxTabOwnerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
         case WM_CTLCOLORLISTBOX:
         case WM_CTLCOLORMSGBOX:
         case WM_CTLCOLORSCROLLBAR:
-        {
-            HBRUSH hbrush = NULL;
-
-            if ( pcpbd->CT_nextIndex > 0 )
-            {
-                // See of the user has set the dialog item with a different
-                // color.
-                long id = GetWindowLong((HWND)lParam, GWL_ID);
-                if ( id > 0 )
-                {
-                    register size_t i = 0;
-                    while ( i < pcpbd->CT_nextIndex && pcpbd->ColorTab[i].itemID != id )
-                    {
-                        i++;
-                    }
-                    if ( i < pcpbd->CT_nextIndex )
-                    {
-                        hbrush = pcpbd->ColorTab[i].ColorBrush;
-                    }
-
-                    if ( hbrush )
-                    {
-                        if ( pcpbd->ColorTab[i].isSysBrush )
-                        {
-                            SetBkColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                        else
-                        {
-                            SetBkColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                    }
-                }
-            }
-            if ( hbrush )
-                return(LRESULT)hbrush;
-            else
-                return DefWindowProc(hDlg, uMsg, wParam, lParam);
-        }
-
-        case WM_COMMAND:
-            switch ( LOWORD(wParam) )
-            {
-                case IDOK:
-                case IDCANCEL:
-
-                    // For both IDOK and IDCANCEL, the notification code
-                    // (the high word value) must be 0.
-                    if ( HIWORD(wParam) == 0 )
-                    {
-                        // We should never get here because both IDOK and
-                        // IDCANCEL should have be interecepted in
-                        // searchMessageTables().  But - sometimes we do, very
-                        // rarely.  It is on some abnormal error. See the
-                        // comments above for the WM_DESTROY message.
-                        pcpbd->abnormalHalt = true;
-                        DestroyWindow(hDlg);
-
-                        return TRUE;
-                    }
-            }
-            break;
+            return handleCtlColor(pcpbd, hDlg, uMsg, wParam, lParam);
 
         case WM_QUERYNEWPALETTE:
         case WM_PALETTECHANGED:
             return paletteMessage(pcpbd, hDlg, uMsg, wParam, lParam);
 
-        case WM_USER_CREATECHILD:
-        {
-            HWND hChild = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)lParam, hDlg, (DLGPROC)RexxDlgProc,
-                                                    (LPARAM)pcpbd);
-            ReplyMessage((LRESULT)hChild);
-            return TRUE;
-        }
+        case WM_COMMAND:
+            return handleWmCommand(pcpbd, hDlg, wParam, lParam, false);
 
-        case WM_USER_CREATECONTROL_DLG:
-        {
-            printf("Enter WM_USER_CREATECONTROL_DLG\n");
-            pCPlainBaseDialog p = (pCPlainBaseDialog)wParam;
-            HWND hChild = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)lParam, p->hOwnerDlg, (DLGPROC)RexxChildDlgProc,
-                                                    wParam);
-            ReplyMessage((LRESULT)hChild);
-            printf("Leave WM_USER_CREATECONTROL_DLG\n");
-            return TRUE;
-        }
-
-        case WM_USER_CREATECONTROL_RESDLG:
-        {
-            pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)wParam;
-
-            HWND hChild = CreateDialogParam(pcpbd->hInstance, MAKEINTRESOURCE((uint32_t)lParam), pcpbd->hOwnerDlg,
-                                            (DLGPROC)RexxChildDlgProc, (LPARAM)pcpbd);
-
-            ReplyMessage((LRESULT)hChild);
-            return TRUE;
-        }
-
-        case WM_USER_CREATEPROPSHEET_DLG:
-        {
-            pCPropertySheetDialog pcpsd = (pCPropertySheetDialog)lParam;
-
-            assignPSDThreadContext(pcpsd, pcpbd->dlgProcContext, GetCurrentThreadId());
-
-            if ( setPropSheetHook(pcpsd) )
-            {
-                SetLastError(0);
-                INT_PTR ret = PropertySheet((PROPSHEETHEADER *)wParam);
-                oodSetSysErrCode(pcpbd->dlgProcContext);
-                ReplyMessage((LRESULT)ret);
-            }
-            else
-            {
-                ReplyMessage((LRESULT)-1);
-            }
-
-            return TRUE;
-        }
-
-        case WM_USER_INTERRUPTSCROLL:
-            pcpbd->stopScroll = wParam;
-            return TRUE;
-
-        case WM_USER_GETFOCUS:
-            ReplyMessage((LRESULT)GetFocus());
-            return TRUE;
-
-        case WM_USER_MOUSE_MISC:
-        {
-            switch ( wParam )
-            {
-                case MF_RELEASECAPTURE :
-                {
-                    uint32_t rc = 0;
-                    if ( ReleaseCapture() == 0 )
-                    {
-                        rc = GetLastError();
-                    }
-                    ReplyMessage((LRESULT)rc);
-                    break;
-                }
-
-                case MF_GETCAPTURE :
-                    ReplyMessage((LRESULT)GetCapture());
-                    break;
-
-                case MF_SETCAPTURE :
-                    ReplyMessage((LRESULT)SetCapture((HWND)lParam));
-                    break;
-
-                case MF_BUTTONDOWN :
-                    ReplyMessage((LRESULT)GetAsyncKeyState((int)lParam));
-                    break;
-
-                case MF_SHOWCURSOR :
-                    ReplyMessage((LRESULT)ShowCursor((BOOL)lParam));
-                    break;
-
-                default :
-                    // Maybe we should raise an internal exception here.  But,
-                    // as long as the internal code is consistent, we can not
-                    // get here.
-                    break;
-            }
-            return TRUE;
-        }
-
-        case WM_USER_SUBCLASS:
-        {
-            pSubClassData pData = (pSubClassData)lParam;
-
-            BOOL success = SetWindowSubclass(pData->hCtrl, (SUBCLASSPROC)wParam, pData->id, (DWORD_PTR)pData);
-
-            ReplyMessage((LRESULT)success);
-            return TRUE;
-        }
-
-        case WM_USER_SUBCLASS_REMOVE:
-            ReplyMessage((LRESULT)RemoveWindowSubclass(GetDlgItem(hDlg, (int)lParam), (SUBCLASSPROC)wParam, (int)lParam));
-            return TRUE;
-
-        case WM_USER_HOOK:
-        {
-            ReplyMessage((LRESULT)SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)wParam, NULL, GetCurrentThreadId()));
-            return TRUE;
-        }
-
-        case WM_USER_CONTEXT_MENU:
-        {
-            PTRACKPOP ptp = (PTRACKPOP)wParam;
-            uint32_t cmd;
-
-            SetLastError(0);
-            cmd = (uint32_t)TrackPopupMenuEx(ptp->hMenu, ptp->flags, ptp->point.x, ptp->point.y,
-                                             ptp->hWnd, ptp->lptpm);
-
-            // If TPM_RETURNCMD is specified, the return is the menu item
-            // selected.  Otherwise, the return is 0 for failure and
-            // non-zero for success.
-            if ( ! (ptp->flags & TPM_RETURNCMD) )
-            {
-                cmd = (cmd == 0 ? FALSE : TRUE);
-                if ( cmd == FALSE )
-                {
-                    ptp->dwErr = GetLastError();
-                }
-            }
-            ReplyMessage((LRESULT)cmd);
-            return TRUE;
-        }
+        default:
+            break;
     }
 
     return FALSE;

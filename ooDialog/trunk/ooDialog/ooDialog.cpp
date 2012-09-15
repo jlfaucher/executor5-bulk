@@ -4323,23 +4323,60 @@ RexxMethod2(RexxObjectPtr, pbdlg_tiledBackgroundBitmap, CSTRING, bitmapFileName,
  *            it did not return a value.  When it was moved to PlainBaseDialog
  *            after 4.0.1, the return was added.
  */
-RexxMethod2(RexxObjectPtr, pbdlg_backgroundColor, uint32_t, colorIndex, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, pbdlg_backgroundColor, RexxObjectPtr, _colorIndex, OPTIONAL_logical_t, _isSys, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
 
-    HBRUSH hBrush = CreateSolidBrush(PALETTEINDEX(colorIndex));
+    uint32_t colorIndex;
+    HBRUSH   hBrush = NULL;
+    bool     isSys  = false;
+
+    RexxMethodContext *c = context;
+    if ( argumentOmitted(2) )
+    {
+        if ( ! c->UnsignedInt32(_colorIndex, &colorIndex) )
+        {
+            oodSetSysErrCode(context->threadContext, ERROR_NOT_SUPPORTED);
+            return TheFalseObj;
+        }
+
+        hBrush = CreateSolidBrush(PALETTEINDEX(colorIndex));
+    }
+    else
+    {
+        isSys = _isSys ? true : false;
+
+        if ( isSys )
+        {
+            if ( ! getSystemColor(context, _colorIndex, &colorIndex, 1) )
+            {
+                return TheFalseObj;
+            }
+        }
+        else if ( ! c->UnsignedInt32(_colorIndex, &colorIndex) )
+        {
+            wrongRangeException(c->threadContext, 1, 0, UINT32_MAX, _colorIndex);
+            return TheFalseObj;
+        }
+
+        hBrush = CreateSolidBrush(colorIndex);
+    }
+
     if ( hBrush == NULL )
     {
         oodSetSysErrCode(context->threadContext);
         return TheFalseObj;
     }
 
-    if ( pcpbd->bkgBrush != NULL )
+    if ( pcpbd->bkgBrush != NULL && ! pcpbd->bkgBrushIsSystem )
     {
         DeleteObject(pcpbd->bkgBrush);
     }
-    pcpbd->bkgBrush = hBrush;
+
+    pcpbd->bkgBrushIsSystem = isSys;
+    pcpbd->bkgBrush        = hBrush;
+
     return TheTrueObj;
 }
 
