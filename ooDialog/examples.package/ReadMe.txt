@@ -35,8 +35,9 @@
   ------
 
   *  Version 0.0.6 of the package requires ooDialog 4.2.0 or later to run
-  all example programs in the package.  This is the same as the previous
-  release.
+  most of the example programs in the package.  Some example programs now
+  require ooDialog 4.2.1.  This is in anticipation of an upcoming release
+  for ooDialog.
 
   *  The release contains around 2 dozen example programs.
 
@@ -49,6 +50,8 @@
   The following examples have been added since v0.0.5:
 
   * Event.Handlers\Edit\LostFocus\
+
+  * Dialogs\color\controlColor.rex              -- requires ooDialog 4.2.1
 
 
 

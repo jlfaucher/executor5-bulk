@@ -206,6 +206,10 @@ Section  installFiles
   ${CreateDirectory} "$INSTDIR\Controls\List-view"
   ${CreateDirectory} "$INSTDIR\Controls\Static"
   ${CreateDirectory} "$INSTDIR\Dialogs"
+  ${CreateDirectory} "$INSTDIR\Dialogs\simple.dialogs"
+  ${CreateDirectory} "$INSTDIR\Dialogs\useful.dialogs"
+  ${CreateDirectory} "$INSTDIR\Event.Handlers"
+  ${CreateDirectory} "$INSTDIR\Event.Handlers\Edit"
   ${CreateDirectory} "$INSTDIR\Menus"
 
   ${SetOutPath} "$INSTDIR\Controls\Edit\Extended"
@@ -269,6 +273,11 @@ Section  installFiles
   ${File} "${SRCDIR}\Dialogs\application.icon\" "ResAppIcon.rex"
   ${File} "${SRCDIR}\Dialogs\application.icon\" "UserRcAppIcon.rex"
   ${File} "${SRCDIR}\Dialogs\application.icon\" "UserRcVariation.rex"
+
+  ${SetOutPath} "$INSTDIR\Dialogs\color"
+  ${File} "${SRCDIR}\Dialogs\color\" "controlColors.h"
+  ${File} "${SRCDIR}\Dialogs\color\" "controlColors.rc"
+  ${File} "${SRCDIR}\Dialogs\color\" "controlColors.rex"
 
   ${SetOutPath} "$INSTDIR\Dialogs\dlgData"
   ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.h"
