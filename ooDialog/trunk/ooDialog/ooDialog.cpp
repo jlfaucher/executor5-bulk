@@ -4302,6 +4302,7 @@ RexxMethod2(RexxObjectPtr, pbdlg_tiledBackgroundBitmap, CSTRING, bitmapFileName,
 }
 
 /** PlainBaseDialog::backgroundColor()
+ *  PlainBaseDialog::backgroundSysColor()
  *
  *  Sets a custom background color for the dialog.
  *
@@ -4311,12 +4312,9 @@ RexxMethod2(RexxObjectPtr, pbdlg_tiledBackgroundBitmap, CSTRING, bitmapFileName,
  *
  *  @param  colorIndex  The color index.
  *
- *  @param  isSys  If used, _colorIndex can be a COLORREF or a system color
- *                 index.  If isSys is true colorIndex refers to a system color,
- *                 if false colorIndex is a COLORREF.  When a system color is
- *                 indicated, colorIndex can be the numeric index, or a keyword.
- *
- *                 If omitted, colorIndex is a palette index.
+ *  @param  isClr  [optional]  For backgroundColor() only. If isClr is true
+ *                 colorIndex refers to a COLORREF color, if false colorIndex is
+ *                 a palette index.  The default is fase.
  *
  *  @return  True on success, false for some error.
  *
@@ -4330,48 +4328,46 @@ RexxMethod2(RexxObjectPtr, pbdlg_tiledBackgroundBitmap, CSTRING, bitmapFileName,
  *            it did not return a value.  When it was moved to PlainBaseDialog
  *            after 4.0.1, the return was added.
  */
-RexxMethod3(RexxObjectPtr, pbdlg_backgroundColor, RexxObjectPtr, _colorIndex, OPTIONAL_logical_t, _isSys, CSELF, pCSelf)
+RexxMethod4(RexxObjectPtr, pbdlg_backgroundColor, RexxObjectPtr, _colorIndex, OPTIONAL_logical_t, isClr,
+            NAME, methName, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
 
     uint32_t colorIndex;
     HBRUSH   hBrush = NULL;
-    bool     isSys  = false;
+    bool     isSys  = (methName[10] == 'S');
 
-    RexxMethodContext *c = context;
-    if ( argumentOmitted(2) )
+    if ( isSys )
     {
-        if ( ! c->UnsignedInt32(_colorIndex, &colorIndex) )
+        if ( argumentExists(2) )
         {
-            oodSetSysErrCode(context->threadContext, ERROR_NOT_SUPPORTED);
+            tooManyArgsException(context->threadContext, 1);
             return TheFalseObj;
         }
 
-        hBrush = CreateSolidBrush(PALETTEINDEX(colorIndex));
+        if ( ! getSystemColor(context, _colorIndex, &colorIndex, 1) )
+        {
+            return TheFalseObj;
+        }
+
+        hBrush = GetSysColorBrush(colorIndex);
     }
     else
     {
-        isSys = _isSys ? true : false;
-
-        if ( isSys )
+        if ( ! context->UnsignedInt32(_colorIndex, &colorIndex) )
         {
-            if ( ! getSystemColor(context, _colorIndex, &colorIndex, 1) )
-            {
-                return TheFalseObj;
-            }
+            wrongRangeException(context->threadContext, 1, (uint32_t)0, UINT32_MAX, _colorIndex);
+            return TheFalseObj;
+        }
 
-            hBrush = GetSysColorBrush(colorIndex);
+        if ( isClr )
+        {
+            hBrush = CreateSolidBrush(colorIndex);
         }
         else
         {
-            if ( ! c->UnsignedInt32(_colorIndex, &colorIndex) )
-            {
-                wrongRangeException(c->threadContext, 1, 0, UINT32_MAX, _colorIndex);
-                return TheFalseObj;
-            }
-
-            hBrush = CreateSolidBrush(colorIndex);
+            hBrush = CreateSolidBrush(PALETTEINDEX(colorIndex));
         }
     }
 

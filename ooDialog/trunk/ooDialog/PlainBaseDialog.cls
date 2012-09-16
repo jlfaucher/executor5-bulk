@@ -449,6 +449,7 @@
 ::method backgroundBitmap external "LIBRARY oodialog pbdlg_backgroundBitmap"
 ::method tiledBackgroundBitmap external "LIBRARY oodialog pbdlg_tiledBackgroundBitmap"
 ::method backgroundColor external "LIBRARY oodialog pbdlg_backgroundColor"
+::method backgroundSysColor external "LIBRARY oodialog pbdlg_backgroundColor"
 
 ::method ensureVisible unguarded
    return self~sendWinIntMsg(self~DM_REPOSITION, 0, 0)

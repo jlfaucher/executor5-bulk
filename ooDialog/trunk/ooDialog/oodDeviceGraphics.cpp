@@ -3351,9 +3351,9 @@ RexxMethod6(int32_t, dlgext_setControlColor, RexxObjectPtr, rxID, OPTIONAL_RexxO
         return -1;
     }
 
-    bool    useSysColor = (method[10] == 'S');
-    uint32_t bkColor = CLR_DEFAULT;
-    uint32_t fgColor = CLR_DEFAULT;
+    uint32_t bkColor     = CLR_DEFAULT;
+    uint32_t fgColor     = CLR_DEFAULT;
+    bool     useSysColor = (method[10] == 'S');
 
     RexxMethodContext *c = context;
     if ( useSysColor )
