@@ -2447,13 +2447,13 @@ Generic form:
 <indexterm><primary>DialogControl class</primary><secondary>setColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setColor(--bk--+-------+--)------------------><
-                   +-,-fg--+
+>>--setColor(--+------+--+-------+--+---------+--)--------------><
+               +-,-bk-+  +-,-fg--+  +-,-isClr-+
 ]]>
 </programlisting>
 
 <para>
-  Sets the background color, and optionally the text color, for this dialog control.
+  Sets the background color or foreground color, or both, for this dialog control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2461,19 +2461,29 @@ Generic form:
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>bk [required]</term>
+      <varlistentry><term>bk [optionaal]</term>
       <listitem>
       <para>
-        The <xref linkend="defColor"/> for the background color of the dialog control.
+        Specifies the the background color for this dialog control. This may either be a palette <xref linkend="defColor"/>,
+        or a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument
+        must be true.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
       <listitem>
       <para>
-        The <xref linkend="defColor"/> for the foreground color of the dialog control. The foreground
-        color is the color that text is written in.
+        Specifies the the foreground color for this dialog control. This may either be a palette <xref linkend="defColor"/>,
+        or a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument
+        must be true. The foreground color is the color that text is written in.
       </para>
       </listitem></varlistentry>
+      <varlistentry><term>isClr [optional]</term>
+      <listitem>
+      <para>
+        Specifies if the <emphasis role="italic">bg</emphasis> and <emphasis role="italic">fg</emphasis> arguments are to be
+        interpreted as palette indexes or COLORREF numbers. The default if omitted is false.
+      </para>
+    </variablelist>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -2486,6 +2496,12 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    The <emphasis role="italic">bk</emphasis> and <emphasis role="italic">fg</emphasis> arguments must be specified in the
+    same way. They must both be either palette indexes or both be COLORREF numbers. If the <emphasis
+    role="italic">bk</emphasis> argument is omitted, the ooDialog framework ensures that the operating system paints the
+    background using the same color as the dialog background.
+  </para>
+  <para>
     Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
     control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
     limit to the number of controls having their color set.
@@ -2494,14 +2510,14 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example changes the background color of a push button in the dialog to red and the text color to yellow:
+    This example changes the text color of a static control in the dialog to a bright red using a COLORREF number:
 <programlisting>
 <![CDATA[
 
 ::method changeColor
-  expose pushButton
+  expose staticText
 
-  pushButton~setColor(2, 4)
+  staticText~setColor( , .Image~colorRef(161, 6, 17), .true)
 
 ]]>
 </programlisting>
@@ -2517,14 +2533,14 @@ Generic form:
 <indexterm><primary>DialogControl class</primary><secondary>setSysColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setSysColor(--bk--+-------+--)---------------><
-                      +-,-fg--+
+>>--setSysColor(--+------+--+-------+--)---------><
+                  +-,-bk-+  +-,-fg--+
 ]]>
 </programlisting>
 
 <para>
-  Sets the background color, and optionally the text color, for this dialog control using the system
-  <link linkend="defSysColor">colors</link>.
+  Sets the background color or foreground color, or both, for this dialog control using the system <link
+  linkend="defSysColor">colors</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2532,11 +2548,11 @@ Generic form:
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>bk [required]</term>
+      <varlistentry><term>bk [optional]</term>
       <listitem>
       <para>
         The system color ID for the background color of the dialog control. This can be either the whole number ID or
-        the keyword ID. IDs can be looked up in the System Color Elements (<link linkend="tblSysColors">table</link>
+        the keyword ID. IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
@@ -2559,6 +2575,11 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    If the <emphasis role="italic">bk</emphasis> is omitted, the ooDialog framework ensures that the operating system paints
+    the background of the control the same color as the background of the dialog. The <emphasis role="italic">bk</emphasis> and <emphasis role="italic">fg</emphasis> arguments must be specified in the
+    same way. They must both be either palette indexes or both be COLORREF numbers.
+  </para>
+  <para>
     Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
     control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
     limit to the number of controls having their color set.
@@ -2567,15 +2588,15 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example changes the background color of the push button in the dialog to the system background color for a
+    This example changes the background color of a static text lable in the dialog to the system background color for a
     menu:
 <programlisting>
 <![CDATA[
 
 ::method changeColor
-  expose pushButton
+  expose label
 
-  pushButton~setSysColor('MENU')
+  label~setSysColor('MENU')
 
 ]]>
 </programlisting>

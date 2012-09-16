@@ -3916,19 +3916,20 @@ Generic form:
 <indexterm><primary>DialogExtensions class</primary><secondary>setControlColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setControlColor(--id--,--bk--+-------+--)----><
-                                 +-,-fg--+
+>>--setControlColor(--id--,--+------+--+-------+--+---------+--)---------------><
+                             +-,-bk-+  +-,-fg--+  +-,-isClr-+
 ]]>
 </programlisting>
 
 <para>
-  Sets the background color, and optionally the text color, for the specified dialog control.
+  Sets the background color or the text color, or both, for the specified dialog control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
       <varlistentry><term>id [required]</term>
       <listitem>
@@ -3937,21 +3938,29 @@ Generic form:
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>bk [required]</term>
+      <varlistentry><term>bk [optional]</term>
       <listitem>
       <para>
-        The <xref linkend="defColor"/> for the background color of the dialog control.
+        Specifies the the background color of the dialog control. This may either be a palette <xref linkend="defColor"/>, or
+        a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument must
+        be true.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
       <listitem>
       <para>
-        The <xref linkend="defColor"/> for the foreground color of the dialog control. The foreground
-        color is the color that text is written in.
+        Specifies the the foreground color of the dialog control. This may either be a palette <xref linkend="defColor"/>, or
+        a <xref linkend="defColorRef"/> number. To use a COLORREF, the <emphasis role="italic">isClr</emphasis> argument must
+        be true. The foreground color is the color that text is written in.
       </para>
       </listitem></varlistentry>
+      <varlistentry><term>isClr [optional]</term>
+      <listitem>
+      <para>
+        Specifies if the <emphasis role="italic">bg</emphasis> and <emphasis role="italic">fg</emphasis> arguments are to be
+        interpreted as palette indexes or COLORREF numbers. The default if omitted is false.
+      </para>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -3963,6 +3972,14 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    If the <emphasis role="italic">bk</emphasis> argument is omitted, then ooDialog ensures that the background of the dialog
+    control is painted with the same color as the dialog background.
+  </para>
+  <para>
+    Both the <emphasis role="italic">bk</emphasis> and <emphasis role="italic">fg</emphasis> arguments must be specified in
+    the same manner. They must both be palette indexes or COLORREF numbers.
+  </para>
+  <para>
     Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
     control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
     limit to the number of controls having their color set.
@@ -3971,11 +3988,11 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example changes the background color of a push button to red and the text color to yellow:
+    This example changes the background color of a static control to red and the text color to yellow using palette indexes:
 <programlisting>
 <![CDATA[
 
-self~setControlColor(IDC_PB_PREVIOUS, 2, 4)
+self~setControlColor(IDC_ST_EDIT_LABEL, 2, 4)
 
 ]]>
 </programlisting>
@@ -4050,14 +4067,14 @@ self~setControlColor(IDC_PB_PREVIOUS, 2, 4)
 <indexterm><primary>DialogExtensions class</primary><secondary>setControlSysColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setControlSysColor(--id--,--bk--+-------+--)-><
-                                    +-,-fg--+
+>>--setControlSysColor(--id--,--+------+--+-------+--)----------><
+                                +-,-bk-+  +-,-fg--+
 ]]>
 </programlisting>
 
 <para>
-  Sets the background color, and optionally the text color, for the specified dialog control using the system
-  <xref linkend="defSysColor"/>s.
+  Sets the background color or foreground color, or both, for the specified dialog control using the specified system <link
+  linkend="defSysColor">color</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4072,19 +4089,19 @@ self~setControlColor(IDC_PB_PREVIOUS, 2, 4)
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>bk [required]</term>
+      <varlistentry><term>bk [optional]</term>
       <listitem>
       <para>
-        The system color ID for the background color of the dialog control. This can be either the whole number ID or
-        the keyword ID. IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>.
+        The system color ID for the background color of the dialog control. This can be either the non-negative whole number
+        ID or the keyword ID. IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>fg [optional]</term>
       <listitem>
       <para>
         The system color for the foreground color of the dialog control. The foreground color is the color that text is
-        written in. This can be either the whole number ID or the keyword ID. IDs can be looked up in the System Color
-        Elements <link linkend="tblSysColors">table</link>.
+        written in. This can be either the non-negative whole number ID or the keyword ID. IDs can be looked up in the System
+        Color Elements <link linkend="tblSysColors">table</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -4100,6 +4117,10 @@ self~setControlColor(IDC_PB_PREVIOUS, 2, 4)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    If the <emphasis role="italic">bk</emphasis> argument is omitted, the ooDialog framework ensures that the operating
+    system paints the background using the background color of the dialog.
+  </para>
+  <para>
     Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
     control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
     limit to the number of controls having their color set.
@@ -4108,11 +4129,11 @@ self~setControlColor(IDC_PB_PREVIOUS, 2, 4)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example changes the background color of a push button to the system background color for a menu:
+    This example changes the background color of a static control to the system background color for a menu:
 <programlisting>
 <![CDATA[
 
-self~setControlSysColor(IDC_PB_NEXT, 'MENU')
+self~setControlSysColor(IDC_ST_STATES, 'MENU')
 
 ]]>
 </programlisting>

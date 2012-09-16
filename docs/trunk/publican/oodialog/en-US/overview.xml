@@ -104,12 +104,11 @@
 
 <section id="defColor" xreflabel="color number"><title>Color</title>
 <para>
-  Each color supported by the Windows operating system is assigned a number. Sample color indexes are 0 (black), 1 (dark
-  red), 2 (dark green), 3 (dark yellow), 4 (dark blue), 5 (purple), 6 (blue grey), 7 (light grey), 8 (pale green), 9
-  (light blue), 10 (white), 11 (grey), 12 (dark grey), 13 (red), 14 (light green), 15 (yellow), 16 (blue), 17 (pink), 18
-  (turquoise).
-</para>
-</section>
+  Windows supports a method of specifying colors by using an index into a <emphasis role="italic">color palette</emphasis>,
+  see below. Palette color indexes are limited in number. The typical palette color indexes are 0 (black), 1 (dark red), 2
+  (dark green), 3 (dark yellow), 4 (dark blue), 5 (purple), 6 (blue grey), 7 (light grey), 8 (pale green), 9 (light blue), 10
+  (white), 11 (grey), 12 (dark grey), 13 (red), 14 (light green), 15 (yellow), 16 (blue), 17 (pink), 18 (turquoise).
+</para> </section>
 
 <section id="defColorPalette" xreflabel="color pallette"><title>Color Palette</title>
 <para>
@@ -131,6 +130,20 @@
   any further action. The default palette typically has 20 entries (colors), but the exact number of entries can vary
   from device to device.  The colors in the default palette depend on the device. Display devices, for example, often
   use the 16 standard colors of the VGA display and 4 other colors defined by Windows.
+</para>
+</section>
+
+<section id="defColorRef" xreflabel="COLORREF"><title>COLORREF</title>
+<para>
+  Windows uses a type named COLORREF to specify colors as RGB values. The RGB color model specifies a color by using a
+  number, 0 to 255, to represent each of the three primary colors, red, green, and blue. A COLORREF is a single number that
+  Windows will interpret as the 3 values for red, green, and blue. Many of the Windows APIs use a COLORREF as an argument
+  when working with colors.
+</para>
+<para>
+  ooDialog provides a number of methods to make it easy for the programmer to create a COLORREF number by specifying the 3
+  red, green, and blue values separately. Among these methods are the <xref linkend="mthColorRef"/> class method of the <xref
+  linkend="clsImage"/> class and the <xref linkend="RGB"/> method of the <xref linkend="clsCustomDraw"/> class.
 </para>
 </section>
 
