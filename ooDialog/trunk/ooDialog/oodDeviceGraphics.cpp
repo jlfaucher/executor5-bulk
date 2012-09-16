@@ -3374,7 +3374,7 @@ RexxMethod6(int32_t, dlgext_setControlColor, RexxObjectPtr, rxID, OPTIONAL_RexxO
         {
             return -1;
         }
-        if ( argumentExists(3) && ! context->UnsignedInt32(rxBG, &fgColor) )
+        if ( argumentExists(3) && ! context->UnsignedInt32(rxFG, &fgColor) )
         {
             return -1;
         }

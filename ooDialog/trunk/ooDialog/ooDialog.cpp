@@ -4309,7 +4309,14 @@ RexxMethod2(RexxObjectPtr, pbdlg_tiledBackgroundBitmap, CSTRING, bitmapFileName,
  *  creates a new brush for the specified color and this brush is then used
  *  whenever the background of the dialog needs to be repainted.
  *
- *  @param  color  The color index.
+ *  @param  colorIndex  The color index.
+ *
+ *  @param  isSys  If used, _colorIndex can be a COLORREF or a system color
+ *                 index.  If isSys is true colorIndex refers to a system color,
+ *                 if false colorIndex is a COLORREF.  When a system color is
+ *                 indicated, colorIndex can be the numeric index, or a keyword.
+ *
+ *                 If omitted, colorIndex is a palette index.
  *
  *  @return  True on success, false for some error.
  *
@@ -4353,14 +4360,19 @@ RexxMethod3(RexxObjectPtr, pbdlg_backgroundColor, RexxObjectPtr, _colorIndex, OP
             {
                 return TheFalseObj;
             }
-        }
-        else if ( ! c->UnsignedInt32(_colorIndex, &colorIndex) )
-        {
-            wrongRangeException(c->threadContext, 1, 0, UINT32_MAX, _colorIndex);
-            return TheFalseObj;
-        }
 
-        hBrush = CreateSolidBrush(colorIndex);
+            hBrush = GetSysColorBrush(colorIndex);
+        }
+        else
+        {
+            if ( ! c->UnsignedInt32(_colorIndex, &colorIndex) )
+            {
+                wrongRangeException(c->threadContext, 1, 0, UINT32_MAX, _colorIndex);
+                return TheFalseObj;
+            }
+
+            hBrush = CreateSolidBrush(colorIndex);
+        }
     }
 
     if ( hBrush == NULL )
@@ -4375,7 +4387,7 @@ RexxMethod3(RexxObjectPtr, pbdlg_backgroundColor, RexxObjectPtr, _colorIndex, OP
     }
 
     pcpbd->bkgBrushIsSystem = isSys;
-    pcpbd->bkgBrush        = hBrush;
+    pcpbd->bkgBrush         = hBrush;
 
     return TheTrueObj;
 }
