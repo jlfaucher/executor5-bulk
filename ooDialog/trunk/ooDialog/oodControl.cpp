@@ -1986,22 +1986,22 @@ RexxMethod5(int32_t, dlgctrl_setColor, OPTIONAL_RexxObjectPtr, rxBG, OPTIONAL_Re
     {
         if ( argumentExists(1) && ! getSystemColor(context, rxBG, &bkColor, 1) )
         {
-            return -1;
+            return 1;
         }
         if ( argumentExists(2) && ! getSystemColor(context, rxFG, &fgColor, 2) )
         {
-            return -1;
+            return 1;
         }
     }
     else
     {
         if ( argumentExists(1) && ! context->UnsignedInt32(rxBG, &bkColor) )
         {
-            return -1;
+            return 1;
         }
         if ( argumentExists(2) && ! context->UnsignedInt32(rxFG, &fgColor) )
         {
-            return -1;
+            return 1;
         }
     }
 
