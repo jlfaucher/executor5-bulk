@@ -7,8 +7,7 @@
     #
     # Description: Open Object Rexx: ooSqlite XML file.
     #
-    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
-    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    # Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -72,7 +71,7 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>recordFormat (<xref linkend="atrRecordFormatClsOOSQLite" />)</entry>
+<entry><link linkend="atrRecordFormatClsOOSQLite">recordFormat</link></entry>
 <entry>Sets or queries the default, process-wide format for returned result sets.</entry>
 </row>
 <row>
@@ -80,63 +79,63 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>compileOptionGet (<xref linkend="mthCompileOptionGet" />)</entry>
+<entry><link linkend="mthCompileOptionGet">compileOptionGet</link></entry>
 <entry>Returns the name of the <emphasis role="italic">nth</emphasis> compile time option if the option was used during the build of ooSQLite.</entry>
 </row>
 <row>
-<entry>compileOptionUsed (<xref linkend="mthCompileOptionUsed" />)</entry>
+<entry><link linkend="mthCompileOptionUsed">compileOptionUsed</link></entry>
 <entry>Determines if the named compile-time option was used during the build of ooSQLite.</entry>
 </row>
 <row>
-<entry>complete (<xref linkend="mthComplete" />)</entry>
+<entry><link linkend="mthComplete">complete</link></entry>
 <entry>Determines if the specified text seems to be a complete SQL statement.</entry>
 </row>
 <row>
-<entry>enquote (<xref linkend="mthEnquote" />)</entry>
+<entry><link linkend="mthEnquote">enquote</link></entry>
 <entry>Converts the supplied Rexx value(s) into SQL literals.</entry>
 </row>
 <row>
-<entry>libVersion (<xref linkend="mthLibVersion" />)</entry>
+<entry><link linkend="mthLibVersion">libVersion</link></entry>
 <entry>Returns the embedded SQLite library version as a string.</entry>
 </row>
 <row>
-<entry>libVersionNumber (<xref linkend="mthLibVersionNumber" />)</entry>
+<entry><link linkend="mthLibVersionNumber">libVersionNumber</link></entry>
 <entry>Returns the embedded SQLite library version as a number..</entry>
 </row>
 <row>
-<entry>memoryHighWater (<xref linkend="mthMemoryHighWater" />)</entry>
+<entry><link linkend="mthMemoryHighWater">memoryHighWater</link></entry>
 <entry>Returns the maximum value of the number of bytes of memory malloced but not freed (memory in use) of the database engine since the high-water mark was last reset.</entry>
 </row>
 <row>
-<entry>memoryUsed (<xref linkend="mthMemoryUsed" />)</entry>
+<entry><link linkend="mthMemoryUsed">memoryUsed</link></entry>
 <entry>Returns the number of bytes of memory currently in use by the database engine.</entry>
 </row>
 <row>
-<entry>releaseMemory (<xref linkend="mthReleaseMemory" />)</entry>
+<entry><link linkend="mthReleaseMemory">releaseMemory</link></entry>
 <entry>Causes the database engine to attempt to free the specified number of bytes of heap memory by deallocating non-essential memory.</entry>
 </row>
 <row>
-<entry>softHeapLimit64 (<xref linkend="mthSoftHeapLimit64" />)</entry>
+<entry><link linkend="mthSoftHeapLimit64">softHeapLimit64</link></entry>
 <entry>Imposes a limit on the heap size, or queries the current size.</entry>
 </row>
 <row>
-<entry>sourceID (<xref linkend="mthSourceID" />)</entry>
+<entry><link linkend="mthSourceID">sourceID</link></entry>
 <entry>Returns the embedded SQLite library source ID string.</entry>
 </row>
 <row>
-<entry>sqlite3Version (<xref linkend="mthSqlite3Version" />)</entry>
+<entry><link linkend="mthSqlite3Version">sqlite3Version</link></entry>
 <entry>Returns the value of the SQLite C code <computeroutput>sqlite3_version[]</computeroutput> string constant.</entry>
 </row>
 <row>
-<entry>status (<xref linkend="mthStatus" />)</entry>
+<entry><link linkend="mthStatus">status</link></entry>
 <entry>Retrieves runtime status information about the performance of the database engine, and optionally resets various highwater marks.</entry>
 </row>
 <row>
-<entry>threadSafe (<xref linkend="mthThreadSafe" />)</entry>
+<entry><link linkend="mthThreadSafe">threadSafe</link></entry>
 <entry>Tests to see if the currently running database engine is using a library that is thread safe.</entry>
 </row>
 <row>
-<entry>version (<xref linkend="mthVersion" />)</entry>
+<entry><link linkend="mthVersion">version</link></entry>
 <entry>Produces a version string in the format specified.</entry>
 </row>
 </tbody></tgroup>
@@ -156,17 +155,17 @@
 </programlisting>
 
 <para>
-  Sets or queries the default format for any result set produced by ooSQLite. The default format on startup is OO_ARRAY_OF_DIRECTORIES (<xref
-  linkend="sctOOSQLiteSpecific" />).
+  Sets or queries the default format for any result set produced by ooSQLite. The default format on startup is <link
+  linkend="sctOOSQLiteSpecific">OO_ARRAY_OF_DIRECTORIES</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">recordFormat get:</emphasis></term>
   <listitem>
   <para>
-    The value of this attribute is one of the ooSQLite Result Set Format Constants (<xref
-    linkend="sctOOSQLiteSpecific" />) that define how a result set is formatted. The default format can be
-    over-ridden at the database connection (<xref linkend="clsOOSQLiteConnection" />), statement (<xref
-    linkend="clsooSQLiteStmt" />), or method level. If not over-ridden, all returned result sets for the
+    The value of this attribute is one of the ooSQLite Result Set Format <link
+    linkend="sctOOSQLiteSpecific">Constants</link> that define how a result set is formatted. The default format can be
+    over-ridden at the database <link linkend="clsooSQLiteConnection">connection</link>, <link
+    linkend="clsOOSQLiteStmt">statment</link>, or method level. If not over-ridden, all returned result sets for the
     entire process will have the format specified by this attribute.
   </para>
   </listitem></varlistentry>
@@ -174,7 +173,7 @@
   <listitem>
   <para>
     The default format of a record set can be changed by setting this attribute to one of the ooSQLite Result Set Format
-    Constants (<xref linkend="sctOOSQLiteSpecific" />).
+    <link linkend="sctOOSQLiteSpecific">Constants</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -214,9 +213,9 @@
   </para>
   <para>
     The format for a result set can also be set for an individual database connection. Use the
-   <computeroutput>ooSQLiteConnection</computeroutput> object's recordFormat (<xref
-   linkend="atrRecordFormatClsConn" />) attribute, or the <emphasis role="italic">defFormat</emphasis>
-   argument in the new (<xref linkend="mthNewClsOOSQLiteConnection" />) method.
+   <computeroutput>ooSQLiteConnection</computeroutput> object's <link
+   linkend="atrRecordFormatClsConn">recordFomat</link> attribute, or the <emphasis role="italic">defFormat</emphasis>
+   argument in the <link linkend="mthNewClsOOSQLiteConnection">new</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -651,7 +650,7 @@ say .ooSQLite~Enquote(str)
     This method can be used to determine exactly which version of the SQLite database engine is in use. It can also be
     used to verify that the <emphasis role="italic">ooSQLite.cls</emphasis> file matches the compiled library file,
     (oosqlite.dll, oosqlite.so, or oosqlite.dylib depending on the operating system.) The value returned by this method
-    should be exactly equal to the the compile-time version VERSION (<xref linkend="sctCompileTimeVersion" />)
+    should be exactly equal to the the compile-time version <link linkend="sctCompileTimeVersion">VERSION</link>
     constant. If it is not, the ooSQLite installation is incorrect.
   </para>
   </listitem></varlistentry>
@@ -714,12 +713,12 @@ say .ooSQLite~Enquote(str)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method is similar to the libVersion (<xref linkend="mthLibVersion" />) method, returning a whole number
+    This method is similar to the <link linkend="mthLibVersion">libVersion</link> method, returning a whole number
     rather than a dotted version string.
   </para>
   <para>
-    The value returned by this method should be exactly equal to the the compile-time version VERSION_NUMBER (<xref
-    linkend="sctCompileTimeVersion" />) constant.
+    The value returned by this method should be exactly equal to the the compile-time version <link
+    linkend="sctCompileTimeVersion">VERSION_NUMBER</link> constant.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1023,13 +1022,13 @@ Current memory used:     0
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method is similar to the libVersion (<xref linkend="mthLibVersion" />) method, but rather than a dotted
+    This method is similar to the <link linkend="mthLibVersion">libVersion</link> method, but rather than a dotted
     version string it returns an unique identifier that contains the date and time of the library source code release
     and a globally unique nubmer hexadecimal number.
   </para>
   <para>
-    The value returned by this method should be exactly equal to the the compile-time version SOURCE_ID (<xref
-    linkend="sctCompileTimeVersion" />) constant.
+    The value returned by this method should be exactly equal to the the compile-time version <link
+    linkend="sctCompileTimeVersion">SOURCE_ID</link> constant.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1091,8 +1090,8 @@ Source ID:              2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839ea
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method is included for completeness. The string returned is exactly the same as the string returned from libVersion (<xref
-    linkend="mthLibVersion" />).
+    This method is included for completeness. The string returned is exactly the same as the string returned from <link
+    linkend="mthLibVersion"></link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1151,7 +1150,7 @@ Constant string value:         3.7.13
       <varlistentry><term>optParam [required]</term>
       <listitem>
       <para>
-        One of the runtime status (<xref linkend="sctStatusParameter" />) parameter constants. This specifies which
+        One of the runtime <link linkend="sctStatusParameter">status</link> parameter constants. This specifies which
         status parameter information is required.
       </para>
       </listitem></varlistentry>
@@ -1189,7 +1188,7 @@ Constant string value:         3.7.13
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns one of the ooSQLite result (<xref linkend="sctResultCode" />) code constants. OK on success, otherwise an
+    Returns one of the ooSQLite <link linkend="sctResultCode">result</link> code constants. OK on success, otherwise an
     error code. On error no indexes of the <emphasis role="italic">result</emphasis> object are set.
   </para>
   </listitem></varlistentry>
@@ -1394,7 +1393,7 @@ Thread safe value: 1
           <listitem>
           <para>
             A version string similar to <computeroutput>3.7.13</computeroutput>. This is the embedded SQLite database
-            engine version and is identical to the output from the libVersion (<xref linkend="mthLibVersion" />)
+            engine version and is identical to the output from the <link linkend="mthLibVersion">libVersion</link>
             method.
           </para>
           </listitem></varlistentry>
@@ -1402,8 +1401,8 @@ Thread safe value: 1
           <listitem>
           <para>
             A version number, similar to <computeroutput>3007013</computeroutput>. This is the embedded SQLite database
-            engine version number and is identical to the output from the libVersionNumber (<xref
-            linkend="mthLibVersionNumber" />) method.
+            engine version number and is identical to the output from the <link
+            linkend="mthLibVersionNumber">libVersionNumber</link> method.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>SourceID</term>
@@ -1411,7 +1410,7 @@ Thread safe value: 1
           <para>
             A version string similar to <computeroutput>2012-06-11 02:05:22
             f5b5a13f7394dc143aa136f1d4faba6839eaa6dc</computeroutput>. This is the embedded SQLite database engine
-            source ID and is identical to the output from the sourceID (<xref linkend="mthSourceID" />) method.
+            source ID and is identical to the output from the <link linkend="mthSourceID">sourceID</link> method.
             text
           </para>
           </listitem></varlistentry>

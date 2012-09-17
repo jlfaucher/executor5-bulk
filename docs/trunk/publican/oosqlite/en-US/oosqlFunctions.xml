@@ -7,8 +7,7 @@
     #
     # Description: Open Object Rexx: ooSqlite XML file.
     #
-    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
-    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    # Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -293,8 +292,8 @@ say ooSQLiteEnquote(str)
 </programlisting>
 
 <para>
-  Called to release all resources associated with the backup operation. This function is part of the support (<xref
-  linkend="sct-onlineBackup" />) for the online backup feature of SQLite.
+  Called to release all resources associated with the backup operation. This function is part of the <link
+  linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -305,7 +304,7 @@ say ooSQLiteEnquote(str)
       <varlistentry><term>buHandle [required]</term>
       <listitem>
       <para>
-        The non-null handle to the backup returned from oosqlBackupInit (<xref linkend="rtn-oosqlBackupInit" />).
+        The non-null handle to the backup returned from <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -314,19 +313,19 @@ say ooSQLiteEnquote(str)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns .ooSQLite~OK if no errors occurred during a call to oosqlBackupStep (<xref
-    linkend="rtn-oosqlBackupStep" />), whether or not the backup operation completed. If
+    Returns .ooSQLite~OK if no errors occurred during a call to <link
+    linkend="rtn-oosqlBackupStep">oosqlBackupStep</link>, whether or not the backup operation completed. If
     an out-of-memory condition or IO error occurred during any prior call of <emphasis
     role="italic">oosqlBackupStep</emphasis> using the <emphasis role="italic">buHandle</emphasis> argument, then
-    <emphasis role="italic">oosqlBackupFinish</emphasis> returns the corresponding error (<xref
-    linkend="sctResultCode" />) code.
+    <emphasis role="italic">oosqlBackupFinish</emphasis> returns the corresponding <link
+    linkend="sctResultCode">error</link> code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
     There should be exactly one call to <emphasis role="italic">oosqlBackupFinish</emphasis> for each successful call of
-    oosqlBackupInit (<xref linkend="rtn-oosqlBackupInit" />). Once <emphasis
+    <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>. Once <emphasis
     role="italic">oosqlBackupFinish</emphasis> has been called, <emphasis role="italic">buHandle</emphasis> is no longer
     valid and must not be used in any other call to a function.
   </para>
@@ -402,8 +401,8 @@ say ooSQLiteEnquote(str)
 </programlisting>
 
 <para>
-  Called once to initialize an online backup. This function is part of the support (<xref
-  linkend="sct-onlineBackup" />) for the online backup feature of SQLite.
+  Called once to initialize an online backup. This function is part of the <link
+  linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -414,14 +413,14 @@ say ooSQLiteEnquote(str)
       <varlistentry><term>dstConn [required]</term>
       <listitem>
       <para>
-        An open database connection (<xref linkend="rtn-oosqlOpen" />).  This database is used as the destination of
+        An open database <link linkend="rtn-oosqlOpen">connection</link>.  This database is used as the destination of
         the backup.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>srcConn [required]</term>
       <listitem>
       <para>
-        An open database connection (<xref linkend="rtn-oosqlOpen" />).  This database is used as the source of the
+        An open database <link linkend="rtn-oosqlOpen">connection</link>.  This database is used as the source of the
         backup.
       </para>
       </listitem></varlistentry>
@@ -447,7 +446,7 @@ say ooSQLiteEnquote(str)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns a handle (<xref linkend="defHandle" />) that is used in the calls to other functions that are part of the
+    Returns a <link linkend="defHandle">handle</link> that is used in the calls to other functions that are part of the
     online backup feature. This handle may be null if an error ocurred. See the remarks for a discussion on this.
   </para>
   </listitem></varlistentry>
@@ -455,15 +454,15 @@ say ooSQLiteEnquote(str)
   <listitem>
   <para>
     If an error occurs within the call to <emphasis role="italic">oosqlBackupInit</emphasis>, then the handle returned
-    will be null. Use the oosqlIsHandleNull (<xref linkend="rtn-oosqlIsHandleNull" />) routine to check for this. On
+    will be null. Use the <link linkend="rtn-oosqlIsHandleNull">oosqlIsHandleNull</link> routine to check for this. On
     error, an error code and error message are stored in the destination database connection. This error code and
-    message can be retrieved using the oosqlErrCode (<xref linkend="rtn-oosqlErrCode" /> and oosqlErrMsg (<xref
-    linkend="rtn-oosqlErrMsg" />) functions A successful call to <emphasis
-    role="italic">oosqlBackupInit</emphasis> returns a non-null handle. The handle may be used with the oosqlBackupStep (<xref
-    linkend="rtn-oosqlBackupStep" /> and oosqlBackupFinish (<xref
-    linkend="rtn-oosqlBackupFinish" />), functions to perform the specified backup operation. The
-    non-null handle is also used in the oosqlBackupPageCount (<xref linkend="rtn-oosqlBackupPageCount" />) and oosqlBackupRemaining (<xref
-    linkend="rtn-oosqlBackupRemaining" />) functions.
+    message can be retrieved using the <link linkend="rtn-oosqlErrCode">oosqlErrCode</link> and <link
+    linkend="rtn-oosqlErrMsg">oosqlErrMsg</link> functions A successful call to <emphasis
+    role="italic">oosqlBackupInit</emphasis> returns a non-null handle. The handle may be used with the <link
+    linkend="rtn-oosqlBackupStep">oosqlBackupStep</link> and <link
+    linkend="rtn-oosqlBackupFinish">oosqlBackupFinish</link>, functions to perform the specified backup operation. The
+    non-null handle is also used in the <link linkend="rtn-oosqlBackupPageCount">oosqlBackupPageCount</link> and <link
+    linkend="rtn-oosqlBackupRemaining">oosqlBackupRemaining</link> functions.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -506,8 +505,8 @@ say ooSQLiteEnquote(str)
 </programlisting>
 
 <para>
-  Returns the total number of pages in the source database file. This function is part of the support (<xref
-  linkend="sct-onlineBackup" />) for the online backup feature of SQLite.
+  Returns the total number of pages in the source database file. This function is part of the <link
+  linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -518,7 +517,7 @@ say ooSQLiteEnquote(str)
       <varlistentry><term>buHandle [required]</term>
       <listitem>
       <para>
-        The non-null handle to the backup returned from oosqlBackupInit (<xref linkend="rtn-oosqlBackupInit" />).
+        The non-null handle to the backup returned from <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -553,8 +552,8 @@ say ooSQLiteEnquote(str)
 </programlisting>
 
 <para>
-  Returns the number of pages still to be backed up in the source database file. This function is part of the support (<xref
-  linkend="sct-onlineBackup" />) for the online backup feature of SQLite.
+  Returns the number of pages still to be backed up in the source database file. This function is part of the <link
+  linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -565,7 +564,7 @@ say ooSQLiteEnquote(str)
       <varlistentry><term>buHandle [required]</term>
       <listitem>
       <para>
-        The non-null handle to the backup returned from oosqlBackupInit (<xref linkend="rtn-oosqlBackupInit" />).
+        The non-null handle to the backup returned from <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -631,8 +630,8 @@ say ooSQLiteEnquote(str)
 
  <para>
    Copies up to <emphasis role="italic">count</emphasis> pages between the source and destination databases specified by
-   the <emphasis role="italic">buHandle</emphasis> argument. This function is part of the support (<xref
-   linkend="sct-onlineBackup" />) for the online backup feature of SQLite.
+   the <emphasis role="italic">buHandle</emphasis> argument. This function is part of the <link
+   linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
  </para>
  <variablelist>
    <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -643,7 +642,7 @@ say ooSQLiteEnquote(str)
        <varlistentry><term>buHandle [required]</term>
        <listitem>
        <para>
-         The non-null handle to the backup returned from oosqlBackupInit (<xref linkend="rtn-oosqlBackupInit" />).
+         The non-null handle to the backup returned from <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>.
        </para>
        </listitem></varlistentry>
        <varlistentry><term>count</term>
@@ -674,7 +673,7 @@ say ooSQLiteEnquote(str)
      NOMEM, READONLY, or one of the IO_ERR_XXX codes. After BUSY or LOCKED, <emphasis
      role="italic">oosqlBackupStep</emphasis> can be tried again. But NOMEM, READONLY, and IO_ERR_XXX are considered
      fatal. There is no point in retrying if any of those codes are returned. The application must accept that the
-     backup operation has failed and call finish (<xref linkend="rtn-oosqlBackupFinish" />) to release associated
+     backup operation has failed and call <link linkend="rtn-oosqlBackupFinish">finish</link> to release associated
      resources.
    </para>
    </listitem></varlistentry>
@@ -2088,9 +2087,9 @@ say ooSQLiteEnquote(str)
       <varlistentry><term>stmt [required]</term>
       <listitem>
       <para>
-        The handle (<xref linkend="defHandle" />) to the prepared (<xref linkend="rtn-oosqlPrepare" />) statement to
-        be queried. The handle must not be null (<xref linkend="rtn-oosqlIsHandleNull" />) and the statement must not
-        have been finalized (<xref linkend="rtn-oosqlFinalize" />).
+        The <link linkend="defHandle">handle</link> to the <link linkend="rtn-oosqlPrepare">prepared</link> statement to
+        be queried. The handle must not be <link linkend="rtn-oosqlIsHandleNull">null</link> and the statement must not
+        have been <link linkend="rtn-oosqlFinalize">finalized</link>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>colName [required]</term>
@@ -3802,7 +3801,7 @@ say ooSQLiteEnquote(str)
 </programlisting>
 
 <para>
-  This routine provides a way for the programmer to check if a handle (<xref linkend="defHandle" />) is null. The
+  This routine provides a way for the programmer to check if a <link linkend="defHandle">handle</link> is null. The
   functions in ooSQLite that return handles will return a null handle on error. A null handle should never be used as an
   argument to any function.
 </para>
@@ -3830,8 +3829,8 @@ say ooSQLiteEnquote(str)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The oosqlBackupInit (<xref linkend="rtn-oosqlBackupInit" />, oosqlOpen (<xref linkend="rtn-oosqlOpen" />,
-    oosqlPrepare (<xref linkend="rtn-oosqlPrepare" />) and several other functions return handles. These handles
+    The <link linkend="rtn-oosqlBackupInit">oosqlBackupInit()</link>, <link linkend="rtn-oosqlOpen">oosqlOpen()</link>,
+    <link linkend="rtn-oosqlPrepare">oosqlPrepare()</link> and several other functions return handles. These handles
     will be null on error.
   </para>
   <para>
@@ -4639,16 +4638,16 @@ say ooSQLiteEnquote(str)
       <listitem>
       <para>
         The string <emphasis role="italic">name</emphasis> of a variable in the Rexx program that will be set to the
-        handle (<xref linkend="defHandle" />) to the database connection. Note that this is the string name of the
+        <link linkend="defHandle">handle</link> to the database connection. Note that this is the string name of the
         variable, not the variable itself. The variable may, but does not need to, already exist in the program.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>openFlags [optional]</term>
       <listitem>
       <para>
-        One or more of the file open (<xref linkend="sctFileOpen" />) constants. This flag controls how the database
-        is opened. Do not use any constant marked as <emphasis role="italic">VFS only</emphasis>.  Use ooSQLiteMerge() (<xref
-        linkend="rtn-ooSQLiteMerge" />) to merge two or more of the constant values to together, if
+        One or more of the file <link linkend="sctFileOpen">open</link> constants. This flag controls how the database
+        is opened. Do not use any constant marked as <emphasis role="italic">VFS only</emphasis>.  Use <link
+        linkend="rtn-ooSQLiteMerge">ooSQLiteMerge()</link> to merge two or more of the constant values to together, if
         needed.
       </para>
       <para>
@@ -4668,7 +4667,7 @@ say ooSQLiteEnquote(str)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns one of the SQLite result (<xref linkend="sctResultCode" />) codes.  OK on success, otherwise an error
+    Returns one of the SQLite <link linkend="sctResultCode">result</link> codes.  OK on success, otherwise an error
     code.
   </para>
   <para>
@@ -4680,20 +4679,20 @@ say ooSQLiteEnquote(str)
   <listitem>
   <para>
     On success, the database connection handle can be used as an argument in any other function that requires a
-    database connection handle. To prevent resource leaks, oosqlClose (<xref linkend="rtn-oosqlClose" />) must be
+    database connection handle. To prevent resource leaks, <link linkend="rtn-oosqlClose">oosqlClose</link> must be
     called on each database connection returned by <emphasis role="italic">oosqlOpen</emphasis>. This is true even if
     <emphasis role="italic">oosqlOpen</emphasis> returns an error. Never use the database connection after <emphasis
     role="italic">oosqlClose</emphasis> has been called. This many crash the SQLite database engine.
   </para>
   <para>
-    On error, the handle can be used in the oosqlErrMsg (<xref linkend="rtn-oosqlErrMsg" />) function to obtain a
-    description of the error. It can also be used in the oosqlErrCode (<xref linkend="rtn-oosqlErrCode" />) function,
+    On error, the handle can be used in the <link linkend="rtn-oosqlErrMsg">oosqlErrMsg</link> function to obtain a
+    description of the error. It can also be used in the <link linkend="rtn-oosqlErrCode">oosqlErrCode</link> function,
     although at this point the return from <emphasis role="italic">oosqlErrCode</emphasis> will be the same as the
     return code from <emphasis role="italic">oosqlOpen</emphasis>. There is one exception to this. If the error return
     is NOMEM the handle will be null. Do not use a null handle in any other function.
   </para>
   <para>
-    The oosqlIsHandleNull (<xref linkend="rtn-oosqlIsHandleNull" />) function can be used to test for a null
+    The <link linkend="rtn-oosqlIsHandleNull">oosqlIsHandleNull()</link> function can be used to test for a null
     handle. However testing for a return of NOMEM is sufficient. The handle will always be null when the return is
     NOMEM and not null for any other return.
   </para>
@@ -4764,8 +4763,8 @@ say ooSQLiteEnquote(str)
       <varlistentry><term>db [required]</term>
       <listitem>
       <para>
-        The handle (<xref linkend="defHandle" />) to an open (<xref linkend="rtn-oosqlOpen" />) database connection.
-        The handle can not be null and the connection can not have been closed (<xref linkend="rtn-oosqlClose" />).
+        The <link linkend="defHandle">handle</link> to an <link linkend="rtn-oosqlOpen">open</link> database connection.
+        The handle can not be null and the connection can not have been <link linkend="rtn-oosqlClose">closed</link>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>sql [required]</term>
@@ -4778,7 +4777,7 @@ say ooSQLiteEnquote(str)
       <listitem>
       <para>
         The string <emphasis role="italic">name</emphasis> of a variable in the Rexx program that will be set to the
-        handle (<xref linkend="defHandle" />) to the prepared statement. Note that this is the string name of the
+        <link linkend="defHandle">handle</link> to the prepared statement. Note that this is the string name of the
         variable, not the variable itself. The variable may, but does not need to, already exist in the program.
       </para>
       </listitem></varlistentry>
@@ -4803,7 +4802,7 @@ say ooSQLiteEnquote(str)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns one of the SQLite result (<xref linkend="sctResultCode" />) codes.  OK on success, otherwise an error
+    Returns one of the SQLite <link linkend="sctResultCode">result</link> codes.  OK on success, otherwise an error
   code.
   </para>
   </listitem></varlistentry>
@@ -4815,8 +4814,8 @@ say ooSQLiteEnquote(str)
     a prepared statement. On an error return this handle will always be null. Never use a null handle in any function.
   </para>
   <para>
-    Each successful call to <emphasis role="italic">oosqlPrepare</emphasis> must be matched with a call to finalize (<xref
-    linkend="rtn-oosqlFinalize" />) to prevent resource leaks. <emphasis
+    Each successful call to <emphasis role="italic">oosqlPrepare</emphasis> must be matched with a call to <link
+    linkend="rtn-oosqlFinalize">finalize</link> to prevent resource leaks. <emphasis
     role="italic">oosqlFinalize</emphasis> can be called at any time after <emphasis
     role="italic">oosqlPrepare</emphasis>. Normally it would be called when the program is done with the prepared
     statement. Note that <emphasis role="italic">oosqlFinalize</emphasis> is one exception to never use a null handle in
@@ -4843,8 +4842,8 @@ say ooSQLiteEnquote(str)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example creates a handle to a prepared statement and, if there is no error, executes it using the oosqlStep (<xref
-    linkend="rtn-oosqlStep" />) function:
+    This example creates a handle to a prepared statement and, if there is no error, executes it using the <link
+    linkend="rtn-oosqlStep">oosqlStep</link> function:
 <programlisting>
 <![CDATA[
 
