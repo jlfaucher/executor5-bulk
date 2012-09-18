@@ -176,7 +176,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetDestConn">getDestConn</link></entry>
-<entry>Retrievs the destination database <link linkend="clsooSQLiteConnection">connection</link> after the backup has finished..</entry>
+<entry>Retrievs the destination database <link linkend="clsOOSQLiteConnection">connection</link> after the backup has finished..</entry>
 </row>
 <row>
 <entry><link linkend="mthStepClsBackup">step</link></entry>
@@ -209,7 +209,7 @@
       <listitem>
       <para>
         Specifies the source database for the backup. This argument must be a database <link
-        linkend="clsooSQLiteConnection">connection</link> object that is open and not in an error state.
+        linkend="clsOOSQLiteConnection">connection</link> object that is open and not in an error state.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>dstDb [required]</term>
@@ -218,7 +218,7 @@
         Specifies the destination database. This argument can either be an open database <emphasis
         role="italic">connection</emphasis> or the file name for the database. If the argument is a database connection,
         it must be an open connection that is not in an error state. If the argument is a file name, then a destination
-        database <link linkend="clsooSQLiteConnection">connection</link> object is instantiated using the specified
+        database <link linkend="clsOOSQLiteConnection">connection</link> object is instantiated using the specified
         name.
       </para>
       <para>
@@ -289,7 +289,7 @@
     deadlock.</emphasis>
   </para>
   <para>
-    In ooSQLite, the destination database <link linkend="clsooSQLiteConnection">connection</link> object will raise a
+    In ooSQLite, the destination database <link linkend="clsOOSQLiteConnection">connection</link> object will raise a
     syntax condition if any of the methods of the object are invoked between the time the <emphasis
     role="italic">new</emphasis> method of the <computeroutput>ooSQLiteBackup</computeroutput> object is invoked and the
     <link linkend="mthFinish">finish</link> method is invoked. This prevents malfunctions and deadlock.
@@ -910,7 +910,7 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
 
 <para>
   The <emphasis role="italic">getDestConn</emphasis> method can be used to obtain the destination database <link
-  linkend="clsooSQLiteConnection">connection</link>, under certain circumstances, after the backup has finished.
+  linkend="clsOOSQLiteConnection">connection</link>, under certain circumstances, after the backup has finished.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>

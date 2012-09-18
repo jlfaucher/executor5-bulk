@@ -42,7 +42,7 @@
     #
     #########################################################################
 -->
-<section id="clsooSQLiteConnection"><title>The ooSQLiteConnection Class</title>
+<section id="clsOOSQLiteConnection"><title>The ooSQLiteConnection Class</title>
 <indexterm><primary>ooSQLiteConnection class</primary></indexterm>
 <para>
   text
@@ -163,7 +163,7 @@
 </row>
 <row>
 <entry><link linkend="mthExec">exec</link></entry>
-<entry>.</entry>
+<entry>Executes the specified SQL statement(s). A callback is invoked for each result row coming out of the evaluated SQL statements.</entry>
 </row>
 <row>
 <entry><link linkend="mthExtendedErrCode">extendedErrCode</link></entry>
@@ -599,7 +599,7 @@
     the message that goes with the error code.
   </para>
   <para>
-    Each of the three major ooSQLite objects, an <link linkend="clsooSQLiteConnection">ooSQLiteConnection</link>, an
+    Each of the three major ooSQLite objects, an <link linkend="clsOOSQLiteConnection">ooSQLiteConnection</link>, an
     <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link>, and an <link
     linkend="clsOOSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
     a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
@@ -665,7 +665,7 @@
     updated together. The error message is always the message that goes with the error code.
   </para>
   <para>
-    Each of the three major ooSQLite objects, an <link linkend="clsooSQLiteConnection">ooSQLiteConnection</link>, an
+    Each of the three major ooSQLite objects, an <link linkend="clsOOSQLiteConnection">ooSQLiteConnection</link>, an
     <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link>, and an <link
     linkend="clsOOSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
     a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
@@ -1469,13 +1469,15 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>exec</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--exec(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--exec(--sql-+---------+-+----------+-+---------+-+-----------+-+---------+--)---><
+               +-,-useCB-+ +-,-format-+ +-,-cbObj-+ +-,-mthName-+ +-,-uData-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Executes the specified SQL statement(s). A callback is invoked for each result row coming out of the evaluated SQL
+  statements. This callback can either be a callback internal to the ooSQLite framework, or a callback to a method in an
+  object supplied by the programmer.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1483,10 +1485,74 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>sql [required]</term>
       <listitem>
       <para>
-        xx
+        A string containing the SQL statement, or statements, to execute. More than 1 statement can be executed by including
+        semi-colons in the string. Each SQL statement is ended with a semi-colon.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>useCB [optional]</term>
+      <listitem>
+      <para>
+        True or false to indicate if the callback feature should be used or not.
+      </para>
+      <para>
+        If this argument is false, the <emphasis role="italic">sql</emphasis> is simply executed and a result code returned.
+        The other arguments are ignored. The default if this argument is omitted is false.
+      </para>
+      <para>
+        If this argument is true, then the callback feature is used. If the <emphasis role="italic">cbObj</emphasis> arg is
+        omitted then an internal callback of the ooSQLite framework is used and a result set is returned. The result set
+        could be empty if the sql does not produce a result set. The format for the returned result set will the format
+        specified by the <link linkend="atrRecordFormatClsConn">recordFomat</link> attribute of this database connection.
+        However, the default format can be overridden for this invocation of exec() through the optional <emphasis
+        role="italic">format</emphasis> argument.
+      </para>
+      <para>
+        Otherwise, if <emphasis role="italic">cbObj</emphasis> is not omitted, then the call back method of that object is
+        invoked for each result row coming out of the evaluated SQL statements. In this case the return is the result code
+        from the database engine's execution.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>format [optional]</term>
+      <listitem>
+      <para>
+        This argument can be used to specify the format of the result row(s) coming out of the evaluated SQL statements. If
+        this argument is omitted the default <link linkend="atrRecordFormatClsConn">format</link> value for this connection
+        is used. If specified, it must be one of the ooSQLite Result Set Format <link
+        linkend="sctOOSQLiteSpecific">Constants</link> that define how a result set is formatted. The format effects the
+        result set if a result set is returned, and the format of the result row sent to a user defined callback when a user
+        defined callback is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cbObj [optional]</term>
+      <listitem>
+      <para>
+        Specifies that a user defined callback should be used rather than the ooSQLite internal callback. A callback method
+        in this object is inovked for each row coming out of the evaluated SQL statement(s). By default the method invoked in
+        the object will be <computeroutput>execCallBack</computeroutput>. However the optional <emphasis
+        role="italic">mthName</emphasis> argument can be used to change this.
+      </para>
+      <para>
+        If this argument omitted, the internal ooSQLite callback is used. This argument is ignored if <emphasis
+        role="italic">useCB</emphasis> is false.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mthName [optional]</term>
+      <listitem>
+      <para>
+        Names the method to be invoked in <emphasis role="italic">cbObj</emphasis>. This argument is ignored if <emphasis
+        role="italic">cbObj</emphasis> is omitted, or <emphasis role="italic">useCB</emphasis> is false. By default the
+        method invoked in <emphasis role="italic">cbObj</emphasis> is <computeroutput>execCallBack</computeroutput>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>uData [optional]</term>
+      <listitem>
+      <para>
+        User data that is passed to the user defined callback method. This can be any Rexx object the programmer wishes to
+        use. The object is passed as the third argument to the callback method. This argument is ignored if <emphasis
+        role="italic">useCB</emphasis> is false, or if <emphasis role="italic">cbObj</emphasis> is omitted.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1495,33 +1561,183 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return value is dependent on whether the internal ooSQLite callback is used or not. When the internal callback is
+    used, a result set is returned containing all the result rows produced by the SQL statement(s). In all other cases a
+    result <link linkend="rowSQLiteResultCode">code</link> is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The easiest approach to using this method is to use the internal callback of the ooSQLite framework. However, it is
+    possible that more control might be desired in the processing of the result rows than the internal callback provides. In
+    this case, a user defined callback can be used. The <link linkend="mthExecCallBack">execCallBack</link> method explains
+    the details of a user defined callback method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Anything ?
+    The functionality of the <emphasis role="italic">exec</emphasis> method is similar to that of the <ulink
+    url="http://www.sqlite.org/c3ref/exec.html">sqlite3_exec</ulink> SQLite API.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the <emphasis role="italic">exec</emphasis> method invoction to use the internal callback of the
+    ooSQLite framework. The format of the returned result set is specified to be an array of arrays:
 <programlisting>
 <![CDATA[
+
+	dbName = 'ooFoods.rdbx'
+
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  sql = 'SELECT * FROM foods ORDER BY name;'
+  resultSet = dbConn~exec(sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
+
+  z = printResultSet(resultSet)
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="mthExecCallBack"><title>execCallBack</title>
+<indexterm><primary>execCallBack</primary></indexterm>
+<indexterm><primary>Callback Methods</primary><secondary>execCallBack</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--execCallBack(--row--,--rowNum--,--userData--)---------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">execCallBack</emphasis> method is an example of a user callback method for the <link
+  linkend="mthExec">exec</link> method. Here the method name of <emphasis role="italic">execCallBack</emphasis> is used,
+  because it is the default method name if the programmer does not specify her own name in the <emphasis
+  role="italic">exec</emphasis> method. Any method name can be used by specifying it as the fifth argument to <emphasis
+  role="italic">exec</emphasis>.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> there is no <emphasis role="italic">execCallBack</emphasis> method in any ooSQLite
+  class. This method is just used to illustrate how to define a user callback method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments sent to the callback method are:
+    <variablelist>
+      <varlistentry><term>row</term>
+      <listitem>
+      <para>
+        The current result row produced by executing the SQL statement(s) passed to the <emphasis
+        role="italic">exec</emphasis> method. The exact format of this argument is dependent on the result set format in use.
+        See the remarks for details.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rowNum</term>
+      <listitem>
+      <para>
+        The current result row number.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData</term>
+      <listitem>
+      <para>
+        The user data object specified by the programmer as the sixth argument to the <emphasis role="italic">exec</emphasis>
+        method. If the programmer did not specify a user data argument, this argument is omitted when invoking the callback.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer must return a value from the callback. This value can by any of the ooSQLite result <link
+    linkend="rowSQLiteResultCode">code</link> constants, but if it is not the <computeroutput>OK</computeroutput> constant,
+    then the SQLite database engine aborts without invoking the callback again and without running any subsequent SQL
+    statements. Note that returning some other result code than <computeroutput>OK</computeroutput> allows the callback to
+    halt the processing of the result rows at an early stage.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The value of the <emphasis role="italic">row</emphasis> argument is dependent on the default result set format in use for
+    the invocation of the <link linkend="mthExec">exec</link> method that generates the callback invocation. These are the
+    possible formats:
+  </para>
+
+  <variablelist>
+    <varlistentry><term>OO_ARRAY_OF_ARRAYS:</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">row</emphasis> argume will be an array with exactly 2 indexes. Index 1 will be an array of
+      the column names for the result row. Index 2 will be an array for the corresponding values of the column.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>OO_ARRAY_OF_DIRECTORIES:</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">row</emphasis> argument will be a <computeroutput>Directory</computeroutput> object where
+      the indexes of the directory are the column names and the value of the index is the value of the column.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>OO_STEM_OF_STEMS:</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">row</emphasis> argument will be a <computeroutput>Stem</computeroutput> object where
+      the indexes of the stem are the column names and the value of the index is the value of the column.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is just used to show the principles of a user defined callback. The actual processing has no benefit over
+    usin the internal callback. A user class is defined with a callback method. This is passed to the <emphasis
+    role="italic">exec</emphasis> method. The default record format is OO_OO_ARRAY_OF_DIRECTORIES. In the callback method,
+    each record is added to the user data object, which in this case is an array. On return from the <emphasis
+    role="italic">exec</emphasis> method, if there were no errors, the <emphasis role="italic">resultObj</emphasis> array
+    will contain all the result rows produced by executing the SQL statement:
+<programlisting>
+<![CDATA[
+
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  resultObj = .array~new(500)
+  cbObj = .UserCallBack~new
+
+  sql = 'SELECT * FROM foods ORDER BY name;'
+  ret = dbConn~exec(sql, .true, , cbObj, , resultObj)
+
+  ,,,
+
+
+::class 'UserCallBack' inherit ooSQLiteConstants
+
+::method execCallBack
+  use arg row, rowNum, userObj
+
+  userObj[rowNum] = row
+
+  return self~OK
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteConnection::execCallBack() -->
+
 </section>  <!-- End ooSQLiteConnection::exec() -->
 
 
