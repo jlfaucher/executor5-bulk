@@ -45,14 +45,20 @@
 <section id="clsOOSQLiteConstants"><title>The ooSQLiteConstants Class</title>
 <indexterm><primary>ooSQLiteConstants class</primary></indexterm>
 <para>
-  text
+  The <computeroutput>ooSQLiteConstants</computeroutput> class a mixin class that provides <emphasis
+  role="italic">constant</emphasis> values defined using the <computeroutput>::constant</computeroutput> directive. Each
+  constant maps to a SQLite constant and all SQLite constants have a corresponding ooSQLite constant.
 </para>
-
 <para>
-  text
+  Each ooSQLite constant is named the same as the SQLite constant, minus the <emphasis role="italic">SQLITE_</emphasis> part
+  of the name.  For instance, the SQLite constant, <emphasis role="italic">SQLITE_OK</emphasis> is the <emphasis
+  role="italic">OK</emphasis> constant in the <computeroutput>ooSQLiteConstant</computeroutput> class.
+</para>
+<para>
+  All of the ooSQLite objects supplied by ooSQLite inherit the <computeroutput>ooSQLiteConstant</computeroutput> class.
 </para>
 
-<section id="sctMethodsOOSQLiteConstants"><title>Constant Table</title>
+<section id="sctMethodsOOSQLiteConstants"><title>All Constants Table</title>
 <para>
   The following table lists <emphasis role="italic">all</emphasis> of the constant values provided by the
   ooSQLiteConstants class. Additional tables list subsets of the constant values grouped by purpose.
@@ -60,8 +66,8 @@
 <table id="tblOOSQLiteConstants" frame="all">
 <title>The ooSQLite Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="10*" />
+<colspec colwidth="14*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -76,15 +82,15 @@
 </row>
 <row>
 <entry>VERSION</entry>
-<entry>"3.7.13" The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
+<entry>"3.7.14" The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
 </row>
 <row>
 <entry>VERSION_NUMBER</entry>
-<entry>3007013 The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
+<entry>3007014 The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
 </row>
 <row>
 <entry>SOURCE_ID</entry>
-<entry>"2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc" The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
+<entry>"2012-09-03 15:42:36 c0d89d4a9752922f9e367362366efde4f1b06f2a" The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
 </row>
 
 <row>
@@ -1185,8 +1191,8 @@
 <table id="tblCompileTimeVersion" frame="all">
 <title>The Compile Time Version Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -1197,15 +1203,15 @@
 <!-- NOTE these 3 constants should maybe be updated each time a new version of SQLite is used? ... -->
 <row>
 <entry>VERSION</entry>
-<entry>"3.7.13" The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
+<entry>"3.7.14" The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
 </row>
 <row>
 <entry>VERSION_NUMBER</entry>
-<entry>3007013 The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
+<entry>3007014 The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
 </row>
 <row>
 <entry>SOURCE_ID</entry>
-<entry>"2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc" The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
+<entry>"2012-09-03 15:42:36 c0d89d4a9752922f9e367362366efde4f1b06f2a" The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite.</entry>
 </row>
 
 </tbody></tgroup>
@@ -1220,8 +1226,8 @@
 <table id="tblOOSQLiteSpecific" frame="all">
 <title>The ooSQLite Specific Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -1286,8 +1292,8 @@
 <table id="tblResultCode" frame="all">
 <title>The Result Code Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -1796,8 +1802,8 @@
 <table id="tblAuthorizerReturnCode" frame="all">
 <title>The Authorizer Return Code Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="7*" />
+<colspec colwidth="17*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -1979,8 +1985,8 @@
 <table id="tblDBConnectionConfiguration" frame="all">
 <title>The DB Connection Configuration Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2012,8 +2018,8 @@
 <table id="tblDBStatusParameter" frame="all">
 <title>The DB Status Parameter Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="5*" />
+<colspec colwidth="7*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2077,8 +2083,8 @@
 <table id="tblFileControlOpcode" frame="all">
 <title>The File Control Opcode Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="10*" />
+<colspec colwidth="14*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2154,8 +2160,8 @@
 <table id="tblFundamentalDatatype" frame="all">
 <title>The Fundamental Datatype Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2196,8 +2202,8 @@
 <table id="tblDeviceCharacteristic" frame="all">
 <title>The Device Characteristic Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="10*" />
+<colspec colwidth="14*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2269,8 +2275,8 @@
 <table id="tblRunTimeLimit" frame="all">
 <title>The Run-Time Limit Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2334,8 +2340,8 @@
 <table id="tblFileLocking" frame="all">
 <title>The File Locking Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2428,8 +2434,8 @@
 <table id="tblXShmLockVFS" frame="all">
 <title>The xShmLock VFS Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2465,8 +2471,8 @@
 <table id="tblDestructorBehavior" frame="all">
 <title>The Destructor Behavior Open Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="5*" />
+<colspec colwidth="19*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2494,8 +2500,8 @@
 <table id="tblStatusParameter" frame="all">
 <title>The Status Parameter Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="10*" />
+<colspec colwidth="14*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2556,8 +2562,8 @@
 <table id="tblStatusParameterStmt" frame="all">
 <title>The Status Parameter (stmt) Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2589,8 +2595,8 @@
 <table id="tblSynchronization" frame="all">
 <title>The Synchronization Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2622,8 +2628,8 @@
 <table id="tblTextEncoding" frame="all">
 <title>The Text Encoding Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="18*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2667,8 +2673,8 @@
 <table id="tblVirtualTableConfigOption" frame="all">
 <title>The Virtual Table Config Option Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="2*" />
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -2690,13 +2696,15 @@
 <indexterm><primary>ooSQLiteConstant class</primary><secondary>merge</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--merge(--+--------+--)---------------------------------------------><
-                  +--type--+
+             +--,--+
+             V     |
+>>--merge(--value--+--)--------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Performs a bit-wise <emphasis role="italic">or</emphasis> operation on the arguments and returns the result.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2704,10 +2712,13 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>value</term>
       <listitem>
       <para>
-        xx
+        One or more whole numbers that will be <emphasis role="italic">merged</emphasis> together. The <emphasis
+        role="italic">value</emphasis> argument can repeat any number of times, but the series of values can not omit an
+        argument in the middle of the series.  Although this method will work with any numbers, it is intended to be used
+        with values that are <computeroutput>ooSQLiteConstant</computeroutput> values.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2716,27 +2727,31 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the result of performing a bit-wise <emphasis role="italic">or</emphasis> operation on the supplied numbers.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Anything?
+    In some cases when the SQLite constants are used as arguments to a method or function, the constants are actually bit flags
+    that are meant to be <emphasis role="italic">or'd</emphasis> together. The <emphasis role="italic">opts</emphasis> argument
+    in the <link linkend="mthNewClsOOSQLiteConnection">new</link> method of the
+    <computeroutput>ooSqliteConnection</computeroutput> class is an example of this. This is a common practice in C / C++
+    programming, not so common in Rexx. The <emphasis role="italic">merge</emphasis> method is provided as a convenience to
+    the Rexx programmer.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example
 <programlisting>
 <![CDATA[
+
+	dbName = 'ooFoods.rdbx'
+  openOpts = .ooSQLite~merge(.ooSQLite~OPEN_READWRTITE, .ooSQLite~OPEN_CREATE)
+
+  dbConn = .ooSQLiteConnection~new(dbName, openOpts)
 
 ]]>
 </programlisting>
@@ -2744,7 +2759,6 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ooSQLiteConstant::merge() -->
-
 
 
 </section>
