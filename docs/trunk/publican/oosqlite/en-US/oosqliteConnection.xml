@@ -1563,7 +1563,7 @@
   <para>
     The return value is dependent on whether the internal ooSQLite callback is used or not. When the internal callback is
     used, a result set is returned containing all the result rows produced by the SQL statement(s). In all other cases a
-    result <link linkend="rowSQLiteResultCode">code</link> is returned.
+    result <link linkend="sctResultCode">code</link> is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1660,7 +1660,7 @@
   <listitem>
   <para>
     The programmer must return a value from the callback. This value can by any of the ooSQLite result <link
-    linkend="rowSQLiteResultCode">code</link> constants, but if it is not the <computeroutput>OK</computeroutput> constant,
+    linkend="sctResultCode">code</link> constants, but if it is not the <computeroutput>OK</computeroutput> constant,
     then the SQLite database engine aborts without invoking the callback again and without running any subsequent SQL
     statements. Note that returning some other result code than <computeroutput>OK</computeroutput> allows the callback to
     halt the processing of the result rows at an early stage.
