@@ -41,11 +41,43 @@
 <section id="clsooSQLiteStmt"><title>The ooSQLiteStmt Class</title>
 <indexterm><primary>ooSQLiteStmt class</primary></indexterm>
 <para>
-  text
+  The <computeroutput>ooSQLiteStmt</computeroutput> class represents a prepared statement in SQLite. An instance of this
+  object represents a single SQL statement. This object is usually referred to as a <emphasis
+  role="italic">prepared statement</emphasis>, a <emphasis role="italic">compiled SQL statement</emphasis> or simply as a
+  <emphasis role="italic">statement</emphasis>.
 </para>
-
 <para>
-  text
+  The life time of a statement object generally goes like this:
+  <itemizedlist>
+  <listitem>
+  <para>
+    Instantiate a <link linkend="mthNewClsStmt">new</link> statement.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Bind values to host parameters using one of the <emphasis role="italic">bind</emphasis> methods such as <link
+    linkend="mthBindText">bindText</link>, <link linkend="mthBindInt">bindInt</link>, or <link
+    linkend="mthBindNull">bindNull</link>.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+   Execute the SQL by <link linkend="mthStepClsStmt">step</link> one or more times.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Possibly, reset the statement using <link linkend="mthReset">reset</link>, then go back to step 2. Do this zero or more
+    times.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Release the system resources used by the statement by invoking <link linkend="mthFinalize">finalize</link>.
+  </para>
+  </listitem>
+  </itemizedlist>
 </para>
 
 <section id="sctMethodsOOSQLiteStmt"><title>Method Table</title>
@@ -77,6 +109,10 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="atrFinalized">finalized</link></entry>
+<entry>Reflects the finialized state of this statement.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
@@ -89,13 +125,13 @@
 <indexterm><primary>ooSQLiteStmt class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new(--dbConn--,--sql--+----------+--)--------><
+                          +-,-format-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>ooSQLiteStmt</computeroutput> object and prepares the statement SQL to be executed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -103,10 +139,29 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>dbConn [required]</term>
       <listitem>
       <para>
-        xx
+        The open <link linkend="clsOOSQLiteConnection">connection</link> to the database that the statement will be executed
+        on.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>sql</term>
+      <listitem>
+      <para>
+        The SQL statement to be prepared for execution
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>format [optional]</term>
+      <listitem>
+      <para>
+        This argument can be used to specify the default format of the result row(s) coming out of the execution of this
+        statement. This argument sets the <link linkend="atrRecordFormatClsStmt">recordFormat</link> attribute. If this
+        argument is omitted the default <link linkend="atrRecordFormatClsConn">format</link> value of the <emphasis
+        role="italic">dbConn</emphasis> argument is used to set the attribute.
+      <para>
+        If specified, it must be one of the ooSQLite Result Set Format <link linkend="sctOOSQLiteSpecific">Constants</link>
+        that define how a result set is formatted.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -115,7 +170,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a newly instatiated <computeroutput>ooSQLiteConnection</computeroutput>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -214,13 +269,13 @@
 </programlisting>
 
 <para>
-  xx
+  Reflects the finialized state of this statement.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">finalized get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns true if this statement has been finialized, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">finalized set:</emphasis></term>
