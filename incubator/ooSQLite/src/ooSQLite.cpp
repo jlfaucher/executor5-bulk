@@ -3783,14 +3783,15 @@ RexxMethod1(RexxObjectPtr, oosqlconn_errMsg, CSELF, pCSelf)
  *                       are ignored, and the return from exec() is a return
  *                       code. The defualt if this argument is omitted is false.
  *
- *                       If true *and* the callBackObj arg is omitted then a
- *                       result set is returned, which could be empty if the sql
- *                       does not produce a result set.  The format for the
- *                       returned result set will the format specified by the
- *                       recordFomat attribute of this database connection.
- *                       However, the default format can be overridden for this
- *                       invocation of exec() through the optional format
- *                       argument.
+ *                       If true *and* the callBackObj arg is omitted then an
+ *                       internal callback of the ooSQLite framework is used and
+ *                       a result set is returned.  The result set could be
+ *                       empty if the sql does not produce a result set.  The
+ *                       format for the returned result set will the format
+ *                       specified by the recordFomat attribute of this database
+ *                       connection. However, the default format can be
+ *                       overridden for this invocation of exec() through the
+ *                       optional format argument.
  *
  *                       Otherwise, if callBackObj is not omitted, then the call
  *                       back method of that object is invoked for each result
