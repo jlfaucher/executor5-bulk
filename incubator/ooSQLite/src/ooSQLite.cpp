@@ -3460,9 +3460,9 @@ RexxMethod1(RexxObjectPtr, oosqlconn_uninit, CSELF, pCSelf)
  *
  *  Installs a user defined busy handler.
  *
- *  @param  callbackObj  [required]  An instantiated class object with a method
- *                       that may be invoked whenever an attempt is made to open
- *                       a database table that another thread or process has
+ *  @param  callbackObj  [required]  An instantiated object with a method that
+ *                       may be invoked whenever an attempt is made to open a
+ *                       database table that another thread or process has
  *                       locked.
  *
  *                       However, this argument can also be .nil to indicate
@@ -3489,8 +3489,8 @@ RexxMethod1(RexxObjectPtr, oosqlconn_uninit, CSELF, pCSelf)
  *
  *          There can only be one busy handler installed.  Setting a new busy
  *          handler automatically clears any previously installed handler.  Note
- *          that invoking ooSQLiteConnection::busyTimeOut() can also set or clear the
- *          busy handler.
+ *          that invoking ooSQLiteConnection::busyTimeOut() can also set or
+ *          clear the busy handler.
  *
  *          The busy handler should not take any actions which modify the
  *          database connection that invoked the busy handler. Any such actions
