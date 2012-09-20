@@ -123,6 +123,7 @@
 ::method rollbackHook external "LIBRARY oosqlite oosqlconn_rollbackHook"
 ::method setAuthorizer external "LIBRARY oosqlite oosqlconn_setAuthorizer"
 ::method tableColumnMetadata external "LIBRARY oosqlite oosqlconn_tableColumnMetadata"
+::method totalChanges external "LIBRARY oosqlite oosqlconn_totalChanges"
 ::method trace external "LIBRARY oosqlite oosqlconn_trace"
 ::method updateHook external "LIBRARY oosqlite oosqlconn_updateHook"
 
