@@ -45,17 +45,32 @@
 <section id="clsOOSQLiteConnection"><title>The ooSQLiteConnection Class</title>
 <indexterm><primary>ooSQLiteConnection class</primary></indexterm>
 <para>
-  text
+  An <computeroutput>ooSQLiteConnection</computeroutput> object represents a SQLite database, or to be more precise a
+  connection to a SQLite database file. Each database in SQLite is contained in a single file. The files are platform
+  independent, that is a database created and used on a Windows system can be moved to a Linux or Mac OS X system and will
+  work unchanged.
 </para>
-
 <para>
-  text
+  Instantiating a connection object implicitly opens the SQLite database. SQLite supports multiple open connections to the
+  same database. The Rexx programmer can open up multiple connections by instantiating multiple
+  <computeroutput>ooSQLiteConnection</computeroutput> objects using the same database file name. The ooSQLite native
+  extension builds the SQLite database engine in <emphasis role="italic">serialized multi-threading</emphasis> mode. In this
+  mode the database engine can be safely used by multiple threads with no restriction. Therefore a connection object can be
+  used in any thread in the Rexx program.
+</para>
+<para>
+  The <link linkend="mthClose">close</link> method should always be invoked when the connection object is no longer needed.
+  This frees up the system resources used by the connection. The <emphasis role="italic">close</emphasis> method should be
+  invoked even if an error ocurred during instantiation. Once <emphasis role="italic">close</emphasis> is invoked,
+  the object can no longer be used to work with the database. It is an error to inovke database methods with a closed
+  connection object. However, the <emphasis role="italic">close</emphasis> method can always be invoked. The method is a
+  harmless nop if the connection has already been closed.
 </para>
 
 <section id="sctMethodsOOSQLiteConnection"><title>Method Table</title>
 <para>
   The following table provides links to the documentation for the primary methods and attributes used in working
-  with database connection objects using the ooSQLiteConnection class.
+  with database connection objects using the <computeroutput>ooSQLiteConnection</computeroutput> class.
 </para>
 <table id="tblOOSQLiteConnectionMethods" frame="all">
 <title>ooSQLiteConnection Methods and Attributes</title>
@@ -360,7 +375,7 @@
 <![CDATA[
 >>--backupDestination----------------------------><
 
->>--backupDestination-=-varName------------------><
+>>--backupDestination = varName------------------><
 ]]>
 </programlisting>
 
@@ -419,43 +434,35 @@
 <![CDATA[
 >>--closed---------------------------------------><
 
->>--closed-=-varName-----------------------------><
+>>--closed = varName-----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the open or closed state of this database connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">closed get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    If the database connection has been closed the value of the <emphasis role="italic">closed</emphasis> attribute is true,
+    otherwise it is false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">closed set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The Rexx programmer can not set the value of this attribute. It is set internally by the ooSQLite framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    It is an error to invoke most methods of the connection object once the connection is closed. The only exceptions to this
+    are the attributes of the <computeroutput>ooSQLiteConnection</computeroutput> object and the <link
+    linkend="mthClose">close</link> method. The <emphasis role="italic">closed</emphasis> attribute can be used to check if
+    the connection has already been closed.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -469,43 +476,32 @@
 <![CDATA[
 >>--fileName-----------------------------------------------------><
 
->>--fileName-=-varName-------------------------------------------><
+>>--fileName = varName-------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the database file name used to instantiate this connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">fileName get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the file name used to open up the database connection in the <link
+    linkend="mthNewClsOOSQLiteConnection">new</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">fileName set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The programmer can not set this attribute, it is set internally by the ooSQLite framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    The file name is set during initialization of the connection object. It never changed after that.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -519,40 +515,61 @@
 <![CDATA[
 >>--initCode-----------------------------------------------------><
 
->>--initCode-=-varName-------------------------------------------><
+>>--initCode = varName-------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the status of the initialization of the database connection. Any value other than 0, (<emphasis
+  role="italic">.ooSQLite~OK</emphasis>,) indicates that an error ocurred during intialization and that the connection is not
+  open.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">initCode get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">initCode</emphasis> is one of the result <link
+    linkend="sctResultCode">code</link> constants and indicates the status of the attempt to open the connection to the
+    database.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">initCode set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The Rexx programmer can not set the value of this attribute, it is set internally by the ooSQLite framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Errors can ocurr during instantiation of a database connection object. The <emphasis role="italic">initCode</emphasis>
+    attribute can be checked to determine if an error ocurred. The cautious programmer would always check the init code after
+    instantiating a connection ojbect to ensure that the connections was opened without error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example attempts to open up a connection to the <computeroutput>ooFoods.rdbx</computeroutput> database and checks
+    that the connection was opened successfully, aborting if it was not:
 <programlisting>
 <![CDATA[
 
+  dbName =  'ooFotods.rdbx'
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  if dbConn~initCode <> 0 then do
+    errRC  = dbConn~lastErrCode
+    errMsg = dbConn~lastErrMsg
+
+    say 'ooSQLiteConnection initialization error:' dbConn~initCode
+    say '  Error code:' errRC '('errMsg')'
+
+    dbConn~close
+    return errRC
+  end
+  ...
 
 ]]>
 </programlisting>
@@ -569,31 +586,33 @@
 <![CDATA[
 >>--lastErrCode-----------------------------------------------------><
 
->>--lastErrCode-=-varName-------------------------------------------><
+>>--lastErrCode = varName-------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the last error code set by for the <computeroutput>ooSQLiteConnection</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">lastErrCode get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">lastErrCode</emphasis> attribute will be a SQLite result <link
+    linkend="sctResultCode">code</link> or one of the ooSQLite specific result <link
+    linkend="sctOOSQLiteSpecific">codes</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">lastErrCode set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The programmer can not set the value of this attribute, it is set internally by the ooSQLite framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The last error code attribute is similar to the <link linkend="atrLastErrMsgClsStmt">lastErrMsg</link> attribute.
+    The last error code attribute is similar to the <link linkend="atrLastErrMsgClsConn">lastErrMsg</link> attribute.
     Its value is the last status code recorded by ooSQLite. The <emphasis role="italic">lastErrCode</emphasis> and the
     <emphasis role="italic">lastErrMsg</emphasis> attributes are always updated together. The error message is always
     the message that goes with the error code.
@@ -615,10 +634,26 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the <emphasis role="italic">lastErrCode</emphasis> attribute to produce a meaningful error message when
+    a database connection fails to open:
 <programlisting>
 <![CDATA[
 
+
+  dbName =  'ooFotods.rdbx'
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  if dbConn~initCode <> 0 then do
+    errRC  = dbConn~lastErrCode
+    errMsg = dbConn~lastErrMsg
+
+    say 'ooSQLiteConnection initialization error:' dbConn~initCode
+    say '  Error code:' errRC '('errMsg')'
+
+    dbConn~close
+    return errRC
+  end
+  ...
 
 ]]>
 </programlisting>
@@ -635,31 +670,31 @@
 <![CDATA[
 >>--lastErrMsg-----------------------------------------------------><
 
->>--lastErrMsg-=-varName-------------------------------------------><
+>>--lastErrMsg = varName-------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects a human readable explanation, a message, of the last error code recorded by the connection object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">lastErrMsg get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns a string message that corresponds to the last error code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">lastErrMsg set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The programmer can not set this attribute, it is set internally by the ooSQLite framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The last error message attribute is similar to the <link linkend="atrLastErrCodeClsStmt">lastErrCode</link>
+    The last error message attribute is similar to the <link linkend="atrLastErrCodeClsConn">lastErrCode</link>
     attribute. Its value is the last status message recorded by ooSQLite. The <emphasis
     role="italic">lastErrCode</emphasis> and the <emphasis role="italic">lastErrMsg</emphasis> attributes are always
     updated together. The error message is always the message that goes with the error code.
@@ -681,10 +716,26 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the <emphasis role="italic">lastErrMsg</emphasis> attribute to produce a meaningful error message when
+    a database connection fails to open:
 <programlisting>
 <![CDATA[
 
+
+  dbName =  'ooFotods.rdbx'
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  if dbConn~initCode <> 0 then do
+    errRC  = dbConn~lastErrCode
+    errMsg = dbConn~lastErrMsg
+
+    say 'ooSQLiteConnection initialization error:' dbConn~initCode
+    say '  Error code:' errRC '('errMsg')'
+
+    dbConn~close
+    return errRC
+  end
+  ...
 
 ]]>
 </programlisting>
@@ -700,20 +751,24 @@
 <![CDATA[
 >>--recordFormat-----------------------------------------------------><
 
->>--recordFormat-=-varName-------------------------------------------><
+>>--recordFormat = varName-------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Over-rides the process-wide default record format set through the OOSQLite <link
+  Over-rides the process-wide default record format set through the ooSQLite <link
   linkend="atrRecordFormatClsOOSQLite">class</link> for this database connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">recordFormat get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of this attribute is one of the ooSQLite Result Set Format <link
+    linkend="sctOOSQLiteSpecific">Constants</link> that define how a result set is formatted. This value defines the format
+    of all result sets produced by this connection. If the programmer has not changed the value of the attribute explicitly,
+    its value is the same as the default value set by the <computeroutput>ooSQLite</computeroutput> classes <link
+    linkend="atrRecordFormatClsOOSQLite">recordFormat</link> attribute.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">recordFormat set:</emphasis></term>
@@ -757,53 +812,179 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>busyHandler</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--busyHandler(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--busyHandler(--callBackOj--+------------+--+------------+--)----------------><
+                              +-,-mthName--+  +-,-userData-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Installs a user defined busy handler.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>callBackObj [required]</term>
       <listitem>
       <para>
-        xx
+        An instantiated object with a method that might be invoked whenever an attempt is made to open a database table that
+        another thread or process has locked.
+      </para>
+      <para>
+        However, this argument can also be .nil to indicate that any installed busy handler is to be removed.  When no busy
+        handler is installed then BUSY or IOERR_BLOCKED is returned immediately upon encountering the lock.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mthName [optional]</term>
+      <listitem>
+      <para>
+        The method name that will be invoked during a call back.  By default, the method invoked will be <emphasis
+        role="italic">busyCallBack()</emphasis>. However, the user can specify an alternative method if desired.  This
+        argument is ignored when the <emphasis role="italic">callbackObj</emphasis> argument is .nil.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optional]</term>
+      <listitem>
+      <para>
+        This can be any Rexx object the user desires. The object will be sent as the second argument to the busy callback
+        method when it is invoked.  This argument is ignored when the callbackObj argument is .nil.
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a SQLite result <link linkend="sctResultCode">code</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    By default, there is no busy handler installed.
+  </para>
+  <para>
+    There can only be one busy handler installed. Setting a new busy handler automatically clears any previously installed
+    handler.  Note that invoking <link linkend="mthBusyTimeOut">busyTimeOut</link> can also set or clear the busy handler.
+  </para>
+  <para>
+    The busy handler should not take any actions which modify the database connection that invoked the busy handler. Any such
+    actions result in undefined behavior.
+  </para>
+  <para>
+    A busy handler must not close the database connection or prepared statement that invoked the busy handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">busyHandler</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/busy_handler.html">sqlite3_busy_handler</ulink> API.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example installs a busy handler with a <emphasis role="italic">onTimeOut</emphasis> method that is to be invoked. It
+    passes the busy handler object itself as the <emphasis role="italic">userData</emphasis> argument:
+
 <programlisting>
 <![CDATA[
+
+  helper = .MyHelperClass~new
+
+  db = .ooSQLiteConnection~new('phoneBook.rdbx')
+  if db~initCode <> 0 then return db~lastErrCode
+
+  db~busyHandler(helper, onTimeOut, helper)
+  ...
+
+::class 'MyHelperClass
+
+::method onTimeOut unguarded
+  use arg count, helperObj
+
+  if helperObj~query(count) == "ABANDON_TIMEOUT" then return 0
+  else return 1
+
+::method query private unguarded
+  use strict arg count
+
+  { code that determines what to return }
+  ...
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="mthBusyCallBack"><title>busyCallBack</title>
+<indexterm><primary>busyCallBack</primary></indexterm>
+<indexterm><primary>Callback Methods</primary><secondary>busyCallBack</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--execCallBack(--countInvoked,--userData--)----><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">busyCallBack</emphasis> method is an example of a user callback method for the <link
+  linkend="mthBusyHandler">busyHandler</link> method. Here the method name of <emphasis role="italic">busyCallBack</emphasis>
+  is used, because it is the default method name if the programmer does not specify his own name in the <emphasis
+  role="italic">busyHandler</emphasis> method. Any method name can be used by specifying it as the second argument to
+  <emphasis role="italic">busyHandler</emphasis>.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> there is no <emphasis role="italic">busyCallBack</emphasis> method in any ooSQLite
+  class. This method is just used to illustrate how to define a user callback method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments sent to the callback method are:
+  </para>
+    <variablelist>
+      <varlistentry><term>countInvoked [required]</term>
+      <listitem>
+      <para>
+        The number of times that the busy handler has been invoked for this locking event.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optional]</term>
+      <listitem>
+      <para>
+        The user data object specified by the programmer as the third argument to the <emphasis
+        role="italic">busyHandler</emphasis> method. If the programmer did not specify a user data argument, this argument is
+        omitted when the callback is invoked.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer must return a value from the callback. If the method returns 0, then no additional attempts are made to
+    access the database by the SQLite database engine and SQLITE_BUSY or SQLITE_IOERR_BLOCKED is returned. If the callback
+    returns non-zero, then another attempt is made to open the database for reading and the cycle repeats.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The implementation of a <emphasis role="italic">busy handler</emphasis> method is is discussed on the SQLite <ulink
+    url="http://www.sqlite.org/c3ref/busy_handler.html">sqlite3_busy_handler</ulink> page.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteConnection::busyCallBack() -->
+
+
 </section>  <!-- End ooSQLiteConnection::busyHandler() -->
 
 
