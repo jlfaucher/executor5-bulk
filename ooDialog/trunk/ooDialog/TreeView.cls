@@ -220,6 +220,7 @@
 ::attribute clrTextBk set external "LIBRARY oodialog tvcds_setClrTextBk"
 ::attribute drawStage get external "LIBRARY oodialog tvcds_getDrawStage"
 ::attribute font set external      "LIBRARY oodialog tvcds_setFont"
+::attribute id get external        "LIBRARY oodialog tvcds_getID"
 ::attribute item get external      "LIBRARY oodialog tvcds_getItem"
 ::attribute reply set external     "LIBRARY oodialog tvcds_setReply"
 ::attribute level get external     "LIBRARY oodialog tvcds_getLevel"

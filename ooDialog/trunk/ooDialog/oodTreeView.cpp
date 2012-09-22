@@ -874,7 +874,7 @@ RexxMethod2(RexxObjectPtr, tvcds_setReply, uint32_t, reply, CSELF, pCSelf)
     return NULLOBJECT;
 }
 
-/** TvCustomDrawSimple::level    [attribute]
+/** TvCustomDrawSimple::level      [attribute]
  */
 RexxMethod1(uint32_t, tvcds_getLevel, CSELF, pCSelf)
 {
