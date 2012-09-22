@@ -613,7 +613,8 @@ static RexxObjectPtr enquoteN(RexxThreadContext *c, RexxArrayObject v, size_t si
  * @param _count  [IN/OUT] The column count is returned here.
  *
  * @return An array of the column names, all upper-cased on success.  Null on
- *         error.  On error an exception has been raised.
+ *         error.  On error an exception has been raised, with one exception see
+ *         the remarks.
  *
  * @remarks  Assumes the statement is valid.  The caller is repsonisible for
  *           freeing memory in the returned array, which inlcudes freeing the
@@ -622,11 +623,25 @@ static RexxObjectPtr enquoteN(RexxThreadContext *c, RexxArrayObject v, size_t si
  *           Memory is allocated using sqlite3_malloc() so the returned array
  *           must be freed with sqlite3_free().  Note that it is safe to pass a
  *           null pointer to sqlite3_free().
+ *
+ *           NOTE: It is always possible that the statment has SQL errors or is
+ *           one that returns no data, in which case there are no columns.  We
+ *           do not want to raise an exception for this, but we still return
+ *           null. However, for this case we set _count to -1.  In the current
+ *           code, this function is only called when preparing a result set and
+ *           all cases simply return an empty result set.  So, simply not
+ *           raising an exception for a column count of 0 is sufficient.
  */
 static char **getHeadersUpper(RexxThreadContext *c, sqlite3_stmt *stmt, int *_count)
 {
     int    count = sqlite3_column_count(stmt);
     int    i     = 0;
+
+    if ( count < 1 )
+    {
+        *_count = -1;
+        return NULL;
+    }
 
     char **headers = (char **)sqlite3_malloc(count * sizeof(char *));
     if ( headers == NULL )
