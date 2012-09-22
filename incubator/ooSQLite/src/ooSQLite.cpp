@@ -1664,12 +1664,14 @@ static int execCallBackDirectory(void *data, int ncols, char **values, char **he
 
     for ( int i = 0; i < ncols; i++ )
     {
-        strupper(headers[i], strlen(headers[i]));
+        CSTRING index = strdupupr(headers[i]);
+        if ( index != NULL )
+        {
+            RexxObjectPtr value = (values[i] == NULL) ? TheNilObj : c->String(values[i]);
 
-        CSTRING       index = headers[i];
-        RexxObjectPtr value = (values[i] == NULL) ? TheNilObj : c->String(values[i]);
-
-        c->DirectoryPut(record, value, index);
+            c->DirectoryPut(record, value, index);
+            sqlite3_free((void *)index);
+        }
     }
 
     wholenumber_t rc = SQLITE_OK;
@@ -1709,12 +1711,14 @@ static int execCallBackStem(void *data, int ncols, char **values, char **headers
 
     for ( int i = 0; i < ncols; i++ )
     {
-        strupper(headers[i], strlen(headers[i]));
+        CSTRING index = strdupupr(headers[i]);
+        if ( index != NULL )
+        {
+            RexxObjectPtr value = (values[i] == NULL) ? TheNilObj : c->String(values[i]);
 
-        CSTRING       index = headers[i];
-        RexxObjectPtr value = (values[i] == NULL) ? TheNilObj : c->String(values[i]);
-
-        c->SetStemElement(record, index, value);
+            c->SetStemElement(record, index, value);
+            sqlite3_free((void *)index);
+        }
     }
 
     wholenumber_t rc = SQLITE_OK;
