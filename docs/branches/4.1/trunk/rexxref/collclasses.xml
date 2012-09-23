@@ -988,7 +988,8 @@ values.
 </programlisting>
 
 <para>Appends an item to the array after the last item (the item with the
-highest index).  The return value is the index of newly added item.
+highest index). The return value is the index of newly added item. The append method is only valid with single-dimension
+arrays.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -1101,8 +1102,7 @@ determined, <computeroutput>0</computeroutput> is returned.</para>
 </programlisting>
 
 <para>Returns the index of the first item in the array or the Nil object if the
-array is empty.  For multi-dimention arrays, the index is returned as an array
-of index values.
+array is empty.  For multi-dimension arrays, the index is returned as an array of index values.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -1286,7 +1286,7 @@ index items.
 ]]>
 </programlisting>
 
-<para>Returns a single-index array with the same number of items as the receiver
+<para>Returns a single-dimension array with the same number of items as the receiver
 object. Any index with no associated item is omitted from the new array.
 Items in the new array will have the same order as the source array.
 Multi-dimension arrays arrays will be converted into a non-sparse single
@@ -1341,9 +1341,8 @@ end separator.</para>
 <para>Returns the index of the item that
 follows the array item having index <emphasis role="italic">index</emphasis>
 or returns the Nil object if the item having that index is last in the array.
-For multi-dimention arrays, the same ordering used by the
-<link linkend="mthArrayAllItems">allItems</link> method is used to determine the
-next position and the index is returned as an array of index values.
+For multi-dimension arrays, the same ordering used by the <link linkend="mthArrayAllItems">allItems</link> method is used to
+determine the next position and the index is returned as an array of index values.
 </para>
 <para>
   Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
@@ -1374,9 +1373,8 @@ next position and the index is returned as an array of index values.
 <emphasis role="italic">index</emphasis> or the Nil object if the
 item having that index is first in the
 array.
-For multi-dimention arrays, the same ordering used by the
-<link linkend="mthArrayAllItems">allItems</link> method is used to determine the
-previous position and the index is returned as an array of index values.</para>
+For multi-dimension arrays, the same ordering used by the <link linkend="mthArrayAllItems">allItems</link> method is used to
+determine the previous position and the index is returned as an array of index values.</para>
 <para>
   Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
   indexes.
