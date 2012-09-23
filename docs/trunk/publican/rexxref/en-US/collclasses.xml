@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>                                                  
+<?xml version='1.0' encoding='utf-8' ?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY % BOOK_ENTITIES SYSTEM "rexxref.ent">
 %BOOK_ENTITIES;
@@ -1251,7 +1251,8 @@ end
 </programlisting>
 
 <para>Appends an item to the array after the last item (the item with the
-highest index).  The return value is the index of newly added item.
+highest index). The return value is the index of newly added item. The append method is only valid with single-dimension
+arrays.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>append method</secondary></indexterm>
@@ -1323,8 +1324,7 @@ moved up in the array ordering and the item indexes will adjusted for the deleti
 reduced by 1 element.
 </para>
 <para>
-The delete method is only valid with single-dimension arrays.  The
-The index argument may also be specified as an array of
+The delete method is only valid with single-dimension arrays.  The index argument may also be specified as an array of
 indexes.
 </para>
 <indexterm><primary>examples</primary>
@@ -1412,8 +1412,7 @@ a~empty  -- a = .array~new
 </programlisting>
 
 <para>Returns the index of the first item in the array or the Nil object if the
-array is empty.  For multi-dimention arrays, the index is returned as an array
-of index values.
+array is empty.  For multi-dimension arrays, the index is returned as an array of index values.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
@@ -1453,8 +1452,7 @@ item=musketeers~firstItem                         /* Gives first item in array  
 </example>
 
 <para>Returns the index of the first item in the array or the Nil object if the
-array is empty.  For multi-dimention arrays, the index is returned as an array
-of index values.
+array is empty.  For multi-dimension arrays, the index is returned as an array of index values.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
@@ -1676,7 +1674,7 @@ item=musketeers~lastItem                          /* Gives last item in array   
 ]]>
 </programlisting>
 
-<para>Returns a single-index array with the same number of items as the receiver
+<para>Returns a single-dimension array with the same number of items as the receiver
 object. Any index with no associated item is omitted from the new array.
 Items in the new array will have the same order as the source array.
 Multi-dimension arrays arrays will be converted into a non-sparse single
@@ -1733,9 +1731,8 @@ end separator.</para>
 <para>Returns the index of the item that
 follows the array item having index <emphasis role="italic">index</emphasis>
 or returns the Nil object if the item having that index is last in the array.
-For multi-dimention arrays, the same ordering used by the
-allitems() (<xref linkend="mthArrayAllItems" />) method is used to determine the
-next position and the index is returned as an array of index values.
+For multi-dimension arrays, the same ordering used by the allitems() (<xref linkend="mthArrayAllItems" />) method is used to
+determine the next position and the index is returned as an array of index values.
 </para>
 <para>
   Note that the index argument may also be specified as an array of
@@ -1768,9 +1765,8 @@ say a~next(3)  -- says: 5
 <emphasis role="italic">index</emphasis> or the Nil object if the
 item having that index is first in the
 array.
-For multi-dimention arrays, the same ordering used by the
-allitems() (<xref linkend="mthArrayAllItems" />) method is used to determine the
-previous position and the index is returned as an array of index values.</para>
+For multi-dimension arrays, the same ordering used by the allitems() (<xref linkend="mthArrayAllItems" />) method is used to
+determine the previous position and the index is returned as an array of index values.</para>
 <para>
   Note that the index argument may also be specified as an array of
   indexes.
