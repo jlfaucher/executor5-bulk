@@ -2942,7 +2942,6 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
                     result = getRecordsArray(c->threadContext, stmt);
                     break;
                 case anArrayOfDirectories :
-                    printf("Executing pragmaTrigger() using array of directories\n");
                     result = getRecordsDirectory(c->threadContext, stmt);
                     break;
                 default :
