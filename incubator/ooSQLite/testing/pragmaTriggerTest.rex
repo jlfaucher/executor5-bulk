@@ -67,9 +67,10 @@
     say 'ooSQLiteConnection initialization err:' db~initCode
     say '  Error code:' db~lastErrCode '('db~lastErrMsg')'
     if db~initCode == db~CANTOPEN then do
-    say '  Database file name:' db~fileName '(Is this the correct database?)'
+      say '  Database file name:' db~fileName '(Is this the correct database?)'
     end
     say;say;say
+    db~close
     return 99
   end
 
