@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY % BOOK_ENTITIES SYSTEM "unixextensions.ent">
 %BOOK_ENTITIES;
 ]>
@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Unix Extensions XML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2012-2012, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -43,19 +43,39 @@
     #
     #########################################################################
 -->
-<book>
-	<xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="Preface.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="intro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="process.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="usergrps.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="files.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="xattr.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="namelookup.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="misc.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="Common_Content/Notices.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="Common_Content/CPLv1.0.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="Revision_History.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<index />
-</book>
+<chapter id="intro"><title >Introduction</title>
+
+<para>The RxUnixSys library provides access to some common native Unix APIs.
+Most of the function provided by this library should be available on most
+Unix/Linux systems. However, there are exceptions. For instance, the 
+extended attribute function are not available on AIX or on any system that
+uses the JFS file system.
+</para>
+
+<para>All the functions available in the RxUnixSys library require the program
+to contain a <computeroutput>::requires</computeroutput> directive
+in the source code for the program using the function(s). The statement should be
+coded as follows:
+</para>
+
+<example id="rxunixsys_requires">
+<title>::Requires Directive</title>
+<programlisting>
+<![CDATA[
+::requires "rxunixsys" LIBRARY
+]]>
+</programlisting>
+</example>
+
+<para>This will provide access to all the functions in the library.
+</para>
+
+<note>
+<para>The examples contained in this book do not show the
+<computeroutput>::requires</computeroutput> directive. It is assumed that
+in a complete program the sample code and the directive will appear together.
+</para>
+</note>
+
+</chapter>
 
