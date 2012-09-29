@@ -3396,14 +3396,9 @@ RexxMethod1(RexxObjectPtr, pbdlg_getFinished, CSELF, pCSelf)
  */
 RexxMethod2(RexxObjectPtr, pbdlg_setFinished, logical_t, val, CSELF, pCSelf)
 {
-    if ( val )
-    {
-        context->SetObjectVariable("FINISHED", TheTrueObj);
-    }
-    else
-    {
-        context->SetObjectVariable("FINISHED", TheFalseObj);
-    }
+    ((pCPlainBaseDialog)pCSelf)->isFinished = val ? true : false;
+
+    context->SetObjectVariable("FINISHED", val ? TheTrueObj : TheFalseObj);
 
     return NULLOBJECT;
 }
@@ -4729,7 +4724,7 @@ RexxMethod1(RexxObjectPtr, pbdlg_isDialogActive, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = getPBDCSelf(context, pCSelf);
     if ( pcpbd != NULL )
     {
-        if ( pcpbd->hDlg != NULL && pcpbd->isActive && IsWindow(pcpbd->hDlg) )
+        if ( ! pcpbd->isFinished && pcpbd->hDlg != NULL && pcpbd->isActive && IsWindow(pcpbd->hDlg) )
         {
             return TheTrueObj;
         }

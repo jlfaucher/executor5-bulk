@@ -637,6 +637,7 @@ typedef struct _pbdCSelf {
     bool                 sharedIcon;
     bool                 didChangeIcon;
     bool                 isActive;
+    bool                 isFinished;       // The value of the finished attribute
     bool                 dlgAllocated;
     bool                 abnormalHalt;
     bool                 scrollNow;        // For scrolling text in windows.
