@@ -177,12 +177,9 @@ return 0
     end
 
     -- Read the file containing the tree input data and build the tree.
-    counter = 0
     do while lines(self~TREE_FILE)
         args = self~makeArgs(linein(self~TREE_FILE))
-        hItem = tv~sendWith('add', args)
-        counter += 1
-        tv~setItemData(hItem, counter)
+        tv~sendWith('add', args)
     end
 
     -- Select the item with the text of Computers.
@@ -469,14 +466,6 @@ return 0
  * is no help.
  */
 ::method help unguarded
-    expose tv
-    item = tv~selected
-    say 'selected:' item 'user data:' tv~getItemData(item)
-    old = tv~setItemData(item)
-    say 'removed old data:' old 'error code:' .systemErrorCode
-    say 'deleting all'
-    ret = tv~deleteAll
-    say 'ret:' ret
     title = self~APPLICATION_TITLE
     msg   = "There is no help available for this example program."
     ret =  MessageDialog(msg, self~hwnd, title, "OK", "INFORMATION")
