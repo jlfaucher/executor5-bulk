@@ -324,7 +324,7 @@
 <entry>Retrieves the current image list for the image list type specified.</entry>
 </row>
 <row>
-<entry><xref linkend="mthGetItemData"/></entry>
+<entry><xref linkend="mthGetItemDataClsListView"/></entry>
 <entry>Retrieves the user data associated with the specified list-view item.</entry>
 </row>
 <row>
@@ -444,7 +444,7 @@
 <entry>Forces a list-view control to redraw a range of items.</entry>
 </row>
 <row>
-<entry><xref linkend="mthRemoveItemData"/></entry>
+<entry><xref linkend="mthRemoveItemDataClsListView"/></entry>
 <entry>Removes and returns the user data associated with the specified list-view item.</entry>
 </row>
 <row>
@@ -504,7 +504,7 @@
 <entry>Assigns, or removes, an image list for the list-view control.</entry>
 </row>
 <row>
-<entry><xref linkend="mthSetItemData"/></entry>
+<entry><xref linkend="mthSetItemDataClsListView"/></entry>
 <entry>Sets the user data associated for the specified list-view item.</entry>
 </row>
 <row>
@@ -2760,8 +2760,8 @@ incremented or decremented by .1 of a second.
 </variablelist>
 </section>  <!-- End ListControl::getImageList() -->
 
-<section id="mthGetItemData" xreflabel="getItemData"><title>getItemData</title>
-<indexterm><primary>getItemData</primary></indexterm>
+<section id="mthGetItemDataClsListView" xreflabel="getItemData"><title>getItemData</title>
+<indexterm><primary>getItemData</primary><secondary>ListView class</secondary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>getItemData</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2800,8 +2800,8 @@ incremented or decremented by .1 of a second.
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
     list-view items. The data value can be any ooRexx object. The data value is set using the
-    <xref linkend="mthSetItemData"/> method. If needed the data value can be removed from a list-view item
-    through the <xref linkend="mthRemoveItemData"/> method.  Storing a user value for each item can
+    <xref linkend="mthSetItemDataClsListView"/> method. If needed the data value can be removed from a list-view item
+    through the <xref linkend="mthRemoveItemDataClsListView"/> method.  Storing a user value for each item can
     be useful in any number of ways. One specific use is in the <xref linkend="mthSortItems"/> method.
   </para>
   </listitem></varlistentry>
@@ -4631,8 +4631,8 @@ to redraw a range of items.</para>
 </variablelist>
 </section>
 
-<section id="mthRemoveItemData" xreflabel="removeItemData"><title>removeItemData</title>
-<indexterm><primary>removeItemData</primary></indexterm>
+<section id="mthRemoveItemDataClsListView" xreflabel="removeItemData"><title>removeItemData</title>
+<indexterm><primary>removeItemData</primary><secondary>ListView class</secondary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>removeItemData</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4671,8 +4671,8 @@ to redraw a range of items.</para>
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
     list-view items. The data value can be any ooRexx object. The data value is set using the
- <xref linkend="mthSetItemData"/> method. The data value can be retrieved without removing it from a
-    list-view item through the <xref linkend="mthGetItemData"/> method.  Storing a user value for each
+ <xref linkend="mthSetItemDataClsListView"/> method. The data value can be retrieved without removing it from a
+    list-view item through the <xref linkend="mthGetItemDataClsListView"/> method.  Storing a user value for each
     item can be useful in any number of ways. One specific use is in the <xref linkend="mthSortItems"/>
     method.
   </para>
@@ -4681,9 +4681,6 @@ to redraw a range of items.</para>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <xref linkend="dotSystemErrorCode"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5723,8 +5720,8 @@ second the row is automatically selected.
 </variablelist>
 </section>  <!-- End ListView::setImageList() -->
 
-<section id="mthSetItemData" xreflabel="setItemData"><title>setItemData</title>
-<indexterm><primary>setItemData</primary></indexterm>
+<section id="mthSetItemDataClsListView" xreflabel="setItemData"><title>setItemData</title>
+<indexterm><primary>setItemData</primary><secondary>ListView class</secondary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>setItemData</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5769,8 +5766,8 @@ second the row is automatically selected.
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
     list-view items. The data value can be any ooRexx object. The data value can be retrieved without removing it from a
-    list-view item through the <xref linkend="mthGetItemData"/> method, or it can be removed through
-    the <xref linkend="mthRemoveItemData"/>. Storing a user value for each item can be useful in any
+    list-view item through the <xref linkend="mthGetItemDataClsListView"/> method, or it can be removed through
+    the <xref linkend="mthRemoveItemDataClsListView"/>. Storing a user value for each item can be useful in any
     number of ways. One specific use is in the <xref linkend="mthSortItems"/> method.
   </para>
   </listitem></varlistentry>
@@ -6151,7 +6148,7 @@ grid position.</para>
   <listitem>
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a user
-    <link linkend="mthSetItemData">data</link> value with any, or all, of the list-view items. The data value can be any
+    <link linkend="mthSetItemDataClsListView">data</link> value with any, or all, of the list-view items. The data value can be any
     ooRexx object. For the <emphasis role="italic">sortItems</emphasis> method to work correctly, the programmer must
     associate a data value with each list-view item.
   </para>
@@ -6192,7 +6189,7 @@ grid position.</para>
       <listitem>
       <para>
         The <emphasis role="italic">data value</emphasis> assigned to the first list-view item to be compared. This data
-        value is the value the programmer assigned to the item using the <xref linkend="mthSetItemData"/> method.
+        value is the value the programmer assigned to the item using the <xref linkend="mthSetItemDataClsListView"/> method.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>data2</term>
@@ -6227,7 +6224,7 @@ grid position.</para>
     When an internal sort is used, the work of the sort is done in the native API implementation code. In essence, within
     the ooDialog framework. To use this sort, the user data assigned to each list-view item must be a <xref
     linkend="clsLvFullRow"/> object. The user data can be assigned to each item either through the <xref
-    linkend="mthSetItemData"/> method, or during the <link linkend="mthNewClsLvFullRow">instantiation</link> of the
+    linkend="mthSetItemDataClsListView"/> method, or during the <link linkend="mthNewClsLvFullRow">instantiation</link> of the
     <computeroutput>LvFullRow</computeroutput> object. The sort will not work correctly if any item in the list-view does not
     have a <computeroutput>LvFullRow</computeroutput> object assigned as its user data value.
   </para>
@@ -9269,7 +9266,7 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     The list-view allows the programmer to associate a value with any list-view item. This user data value is sent by the
     list-view in the event notification information. The programmer can set the user data for a list-view item in several
-    ways. The <xref linkend="mthSetItemData"/> of the <xref linkend="clsListView"/> class, the <emphasis
+    ways. The <xref linkend="mthSetItemDataClsListView"/> of the <xref linkend="clsListView"/> class, the <emphasis
     role="italic">userData</emphasis> argument of the <xref linkend="mthNewClsLvItem"/> method of the <xref
     linkend="clsLvItem"/> class, or the <xref linkend="atrUserDataClsLvi"/> attribute of the
     <computeroutput>LvItem</computeroutput> class are all used to set the user data value for an item.

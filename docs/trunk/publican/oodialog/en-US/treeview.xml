@@ -180,6 +180,10 @@
 <entry>Retrieves the tree-view's image list for the type specified.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetItemDataClsTreeView"/></entry>
+<entry>Gets the user data associated with the specified tree-view item.</entry>
+</row>
+<row>
 <entry>HitTest</entry>
 <entry><xref linkend="hittest"/></entry>
 </row>
@@ -244,6 +248,10 @@
 <entry><xref linkend="previousvisible"/></entry>
 </row>
 <row>
+<entry><xref linkend="mthRemoveItemDataClsTreeView"/></entry>
+<entry>Removes and returns the user data associated with the specified tree-view item.</entry>
+</row>
+<row>
 <entry>restoreEditClass</entry>
 <entry><xref linkend="restoreeditclasstrc"/></entry>
 </row>
@@ -262,6 +270,10 @@
 <row>
 <entry><xref linkend="mthSetImageListClsTreeView"/></entry>
 <entry>Assigns, or removes, an image list for the tree-view control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetItemDataClsTreeView"/></entry>
+<entry>Sets the user data associated with the specified tree-view item.</entry>
 </row>
 <row>
 <entry>SortChildren</entry>
@@ -1074,6 +1086,62 @@ item in the client window of a tree-view control.</para>
 </variablelist>
 </section>  <!-- End TreeView::getImageList() -->
 
+
+<section id="mthGetItemDataClsTreeView" xreflabel="getItemData"><title>getItemData</title>
+<indexterm><primary>getItemData</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>getItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemData(--hItem--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the user data associated with the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The tree-view item to retrieve the user data from.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the user data associated with the specified item, or the <computeroutput>.nil</computeroutput> object if
+    there is no data associated with the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the tree-view
+    items. The data value can be any ooRexx object. The data value is set using the <xref
+    linkend="mthSetItemDataClsTreeView"/> method. If needed the data value can be removed from a list-view item through the
+    <xref linkend="mthRemoveItemDataClsTreeView"/> method. Storing a user value for each item can be useful in any number of
+    ways.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getItemData() -->
+
+
 <section id="hittest"><title>HitTest</title>
 <indexterm><primary>HitTest</primary></indexterm>
 <programlisting>
@@ -1085,7 +1153,7 @@ item in the client window of a tree-view control.</para>
 </programlisting>
 
 <para>The HitTest method determines the location of the
-specified point relative to the client area of a tree-view control.</para>
+specified point relative to the <xref linkend="defClientArea"/> of a tree-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -1168,7 +1236,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Determines the location of a point relative to the tree-view control.
+  Determines the location of a point relative to the <xref linkend="defClientArea"/> of the tree-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2046,6 +2114,60 @@ in all other cases.
 </variablelist>
 </section>
 
+<section id="mthRemoveItemDataClsTreeView" xreflabel="removeItemData"><title>removeItemData</title>
+<indexterm><primary>removeItemData</primary><secondary>TreeViewClass</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>removeItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeItemData(--hItem--)--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Removes and returns the user data associated with the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The the tree-view item whose data value is being removed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the user data value associated with the specified item, or <computeroutput>.nil</computeroutput> if there is
+    no data associated with the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the tree-view
+    items. The data value can be any ooRexx object. The data value is set using the <xref
+    linkend="mthSetItemDataClsTreeView"/> method. The data value can be retrieved without removing it from a tree-view item
+    through the <xref linkend="mthGetItemDataClsTreeView"/> method.  Storing a user value for each item can be useful in any
+    number of ways.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::removeItemData() -->
+
+
 <section id="restoreeditclasstrc"><title>restoreEditClass</title>
 <indexterm><primary>restoreEditClass</primary>
 <secondary>TreeView class</secondary></indexterm>
@@ -2254,6 +2376,82 @@ item.</para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TreeView::setImageList() -->
+
+
+<section id="mthSetItemDataClsTreeView" xreflabel="setItemData"><title>setItemData</title>
+<indexterm><primary>setItemData</primary><secondary>TreeView class</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>setItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setItemData(--hItem,--+--------+--)----------><
+                          +-,-data-+
+]]>
+</programlisting>
+
+<para>
+  Sets the user data associated with the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The the tree-view item the data value is associated with.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>data [optional]</term>
+      <listitem>
+      <para>
+        The data value to store for the list-view item. This can be any Rexx object. (Recall that in ooRexx numbers and
+        strings are also objects.) If this argument is omitted, the current user data, if any, is removed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous user data associated with the tree-view item, or <computeroutput>.nil</computeroutput> if there was
+    no previous data. On error, <computeroutput>.nil</computeroutput> is returned and the <xref
+    linkend="dotSystemErrorCode"/> is set. An error is highly unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
+    list-view items. The data value can be any ooRexx object. The data value can be retrieved without removing it from a
+    list-view item through the <xref linkend="mthGetItemDataClsListView"/> method, or it can be removed through
+    the <xref linkend="mthRemoveItemDataClsListView"/>. Storing a user value for each item can be useful in any
+    number of ways. One specific use is in the <xref linkend="mthSortItems"/> method.
+  </para>
+  <para>
+    It is possible, although very unlikely, that there will be an error in the tree-view control when setting the user data.
+    In this case <computeroutput>.nil</computeroutput> is returned and the <computeroutput>.systemErrorCode</computeroutput>
+    is set to 156  ERROR_SIGNAL_REFUSED <emphasis role="italic">The recipient process has refused the signal</emphasis>.
+  </para>
+  <para>
+    This is not a system error, the code is just used here to indicate a tree-view error when setting the user data. The
+    tree-view provides no information on why it failed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::setItemData() -->
+
 
 <section id="sortchildren"><title>SortChildren</title>
 <indexterm><primary>SortChildren</primary></indexterm>
