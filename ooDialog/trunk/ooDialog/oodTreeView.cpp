@@ -214,9 +214,91 @@ HTREEITEM tvFindItem(HWND hTv, CSTRING text)
     return NULL;
 }
 
-RexxMethod8(RexxObjectPtr, tv_insert, OPTIONAL_CSTRING, _hItem, OPTIONAL_CSTRING, _hAfter, OPTIONAL_CSTRING, label,
+/**
+ * Returns the lParam user data for the specified tree-view item as a Rexx
+ * object
+ *
+ * @param hTree
+ *
+ * @return The Rexx object set as the user data, or the .nil object if no user
+ *         data is set.
+ */
+static RexxObjectPtr getCurrentTviUserData(HWND hTree, HTREEITEM hTreeItem)
+{
+    TVITEMEX      tvi    = {LVIF_PARAM, hTreeItem};
+    RexxObjectPtr result = TheNilObj;
+
+    if ( TreeView_GetItem(hTree, &tvi) != 0 )
+    {
+        if ( tvi.lParam != 0 )
+        {
+            result = (RexxObjectPtr)tvi.lParam;
+        }
+    }
+    return result;
+}
+
+
+/** TreeView::delete()
+ *
+ *
+ *  @returns  0 on sucees, 1 on error, and -1 if hItem is not valid.
+ *
+ *  @remarks  The return codes for this are not optimal.  But they are what was
+ *            documented and used in the original ooDialog from IBM.
+ *
+ */
+RexxMethod2(RexxObjectPtr, tv_delete, CSTRING, _hItem, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheNegativeOneObj;
+    }
+
+    HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
+    if ( hItem == NULL )
+    {
+        return TheNegativeOneObj;
+    }
+    if ( TreeView_GetCount(pcdc->hCtrl) < 1 )
+    {
+        return TheNegativeOneObj;
+    }
+
+    unProtectControlUserData(context, pcdc, getCurrentTviUserData(pcdc->hCtrl, hItem));
+
+    return TreeView_DeleteItem(pcdc->hCtrl, hItem) ? TheZeroObj : TheOneObj;
+}
+
+/** TreeView::deleteAll()
+ *
+ *  @returns  0 on success, 1 on error.  These are the original ooDialog return
+ *            codes
+ *
+ */
+RexxMethod1(RexxObjectPtr, tv_deleteAll, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheOneObj;
+    }
+
+    if ( pcdc->rexxBag != NULL )
+    {
+        context->SendMessage0(pcdc->rexxBag, "EMPTY");
+    }
+
+    return TreeView_DeleteAllItems(pcdc->hCtrl) ? TheZeroObj : TheOneObj;
+}
+
+/** TreeView::insert()
+ *
+ */
+RexxMethod9(RexxObjectPtr, tv_insert, OPTIONAL_CSTRING, _hItem, OPTIONAL_CSTRING, _hAfter, OPTIONAL_CSTRING, label,
             OPTIONAL_int32_t, imageIndex, OPTIONAL_int32_t, selectedImage, OPTIONAL_CSTRING, opts, OPTIONAL_uint32_t, children,
-            CSELF, pCSelf)
+            OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
     HWND hwnd  = getDChCtrl(pCSelf);
 
@@ -288,12 +370,166 @@ RexxMethod8(RexxObjectPtr, tv_insert, OPTIONAL_CSTRING, _hItem, OPTIONAL_CSTRING
         tvi->cChildren = children;
         tvi->mask |= TVIF_CHILDREN;
     }
+    if ( argumentExists(8) && userData != TheNilObj)
+    {
+        protectControlUserData(context, (pCDialogControl)pCSelf, userData);
+
+        tvi->lParam = (LPARAM)userData;
+        tvi->mask |= TVIF_PARAM;
+    }
 
     return pointer2string(context, TreeView_InsertItem(hwnd, &ins));
 }
 
-RexxMethod7(int32_t, tv_modify, OPTIONAL_CSTRING, _hItem, OPTIONAL_CSTRING, label, OPTIONAL_int32_t, imageIndex,
-            OPTIONAL_int32_t, selectedImage, OPTIONAL_CSTRING, opts, OPTIONAL_uint32_t, children, CSELF, pCSelf)
+
+/** TreeView::itemInfo()
+ *
+ */
+RexxMethod2(RexxObjectPtr, tv_itemInfo, CSTRING, _hItem, CSELF, pCSelf)
+{
+    HWND hwnd  = getDChCtrl(pCSelf);
+
+    TVITEM tvi = {0};
+    char buf[256];
+
+    tvi.hItem = (HTREEITEM)string2pointer(_hItem);
+    tvi.mask = TVIF_HANDLE | TVIF_TEXT | TVIF_STATE | TVIF_IMAGE | TVIF_CHILDREN | TVIF_SELECTEDIMAGE | TVIF_PARAM;
+    tvi.pszText = buf;
+    tvi.cchTextMax = 255;
+    tvi.stateMask = TVIS_EXPANDED | TVIS_BOLD | TVIS_SELECTED | TVIS_EXPANDEDONCE | TVIS_DROPHILITED | TVIS_CUT;
+
+    if ( TreeView_GetItem(hwnd, &tvi) == 0 )
+    {
+        return TheNegativeOneObj;
+    }
+
+    RexxStemObject stem = context->NewStem("InternalTVItemInfo");
+
+    context->SetStemElement(stem, "!TEXT", context->String(tvi.pszText));
+    context->SetStemElement(stem, "!CHILDREN", (tvi.cChildren > 0 ? TheTrueObj : TheFalseObj));
+    context->SetStemElement(stem, "!IMAGE", context->Int32(tvi.iImage));
+    context->SetStemElement(stem, "!SELECTEDIMAGE", context->Int32(tvi.iSelectedImage));
+
+    *buf = '\0';
+    if ( tvi.state & TVIS_EXPANDED     ) strcat(buf, "EXPANDED ");
+    if ( tvi.state & TVIS_BOLD         ) strcat(buf, "BOLD ");
+    if ( tvi.state & TVIS_SELECTED     ) strcat(buf, "SELECTED ");
+    if ( tvi.state & TVIS_EXPANDEDONCE ) strcat(buf, "EXPANDEDONCE ");
+    if ( tvi.state & TVIS_DROPHILITED  ) strcat(buf, "INDROP ");
+    if ( tvi.state & TVIS_CUT          ) strcat(buf, "CUT ");
+    if ( *buf != '\0' )
+    {
+        *(buf + strlen(buf) - 1) = '\0';
+    }
+    context->SetStemElement(stem, "!STATE", context->String(buf));
+
+    context->SetStemElement(stem, "!USERDATA", tvi.lParam ? (RexxObjectPtr)tvi.lParam : TheNilObj);
+
+    return stem;
+}
+
+
+/** TreeView::getImageList()
+ *
+ *  Gets the tree-view's specifed image list.
+ *
+ *  @param  type [optional] Identifies which image list to get, normal, or
+ *               state. Normal is the default.
+ *
+ *  @return  The image list, if it exists, otherwise .nil.
+ */
+RexxMethod2(RexxObjectPtr, tv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
+{
+    if ( argumentOmitted(1) )
+    {
+        type = TVSIL_NORMAL;
+    }
+    else if ( type != TVSIL_STATE && type != TVSIL_NORMAL )
+    {
+        return invalidTypeException(context->threadContext, 2, "TVSIL_XXX flag");
+    }
+
+    RexxObjectPtr result = context->GetObjectVariable(tvGetAttributeName(type));
+    if ( result == NULLOBJECT )
+    {
+        result = TheNilObj;
+    }
+    return result;
+}
+
+
+/** TreeView::getItemData()
+ *
+ *  Returns the user data associated with the specified tree-view item, or .nil
+ *  if there is no user data associated.
+ *
+ *  @param  hItem  [required]  The handle of the item whose user data is to be
+ *                 retrieved.
+ *
+ *  @return  Returns the associated user data, or .nil if there is no associated
+ *           data.
+ */
+RexxMethod2(RexxObjectPtr, tv_getItemData, CSTRING, _hItem, CSELF, pCSelf)
+{
+    HWND      hwnd  = getDChCtrl(pCSelf);
+    HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
+
+    return getCurrentTviUserData(hwnd, hItem);
+}
+
+
+RexxMethod2(RexxObjectPtr, tv_getSpecificItem, NAME, method, CSELF, pCSelf)
+{
+    HWND hwnd = getDChCtrl(pCSelf);
+    HTREEITEM result = NULL;
+
+    switch ( *method )
+    {
+        case 'R' :
+            result = TreeView_GetRoot(hwnd);
+            break;
+        case 'S' :
+            result = TreeView_GetSelection(hwnd);
+            break;
+        case 'D' :
+            result = TreeView_GetDropHilight(hwnd);
+            break;
+        case 'F' :
+            result = TreeView_GetFirstVisible(hwnd);
+            break;
+    }
+    return pointer2string(context, result);
+}
+
+
+/** TreeView::getNextItem()
+ *
+ *
+ */
+RexxMethod3(RexxObjectPtr, tv_getNextItem, CSTRING, _hItem, NAME, method, CSELF, pCSelf)
+{
+    HWND      hwnd  = getDChCtrl(pCSelf);
+    HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
+    uint32_t  flag  = TVGN_PARENT;
+
+    if ( strcmp(method, "PARENT")               == 0 ) flag = TVGN_PARENT;
+    else if ( strcmp(method, "CHILD")           == 0 ) flag = TVGN_CHILD;
+    else if ( strcmp(method, "NEXT")            == 0 ) flag = TVGN_NEXT;
+    else if ( strcmp(method, "NEXTVISIBLE")     == 0 ) flag = TVGN_NEXTVISIBLE;
+    else if ( strcmp(method, "PREVIOUS")        == 0 ) flag = TVGN_PREVIOUS;
+    else if ( strcmp(method, "PREVIOUSVISIBLE") == 0 ) flag = TVGN_PREVIOUSVISIBLE;
+
+    return pointer2string(context, TreeView_GetNextItem(hwnd, hItem, flag));
+}
+
+
+/** TreeView::modify()
+ *
+ *
+ */
+RexxMethod8(int32_t, tv_modify, OPTIONAL_CSTRING, _hItem, OPTIONAL_CSTRING, label, OPTIONAL_int32_t, imageIndex,
+            OPTIONAL_int32_t, selectedImage, OPTIONAL_CSTRING, opts, OPTIONAL_uint32_t, children,
+            OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
     HWND hwnd  = getDChCtrl(pCSelf);
 
@@ -325,7 +561,7 @@ RexxMethod7(int32_t, tv_modify, OPTIONAL_CSTRING, _hItem, OPTIONAL_CSTRING, labe
         tvi.iImage = imageIndex;
         tvi.mask |= TVIF_IMAGE;
     }
-    if ( argumentExists(4) && imageIndex > -1 )
+    if ( argumentExists(4) && selectedImage > -1 )
     {
         tvi.iSelectedImage = selectedImage;
         tvi.mask |= TVIF_SELECTEDIMAGE;
@@ -339,97 +575,24 @@ RexxMethod7(int32_t, tv_modify, OPTIONAL_CSTRING, _hItem, OPTIONAL_CSTRING, labe
         tvi.cChildren = (children > 0 ? 1 : 0);
         tvi.mask |= TVIF_CHILDREN;
     }
+    if ( argumentExists(7) && userData != TheNilObj)
+    {
+        RexxObjectPtr oldData = getCurrentTviUserData(hwnd, tvi.hItem);
+
+        unProtectControlUserData(context, (pCDialogControl)pCSelf, oldData);
+        protectControlUserData(context, (pCDialogControl)pCSelf, userData);
+
+        tvi.lParam = (LPARAM)userData;
+        tvi.mask |= TVIF_PARAM;
+    }
 
     return (TreeView_SetItem(hwnd, &tvi) == 0 ? 1 : 0);
 }
 
 
-RexxMethod2(RexxObjectPtr, tv_itemInfo, CSTRING, _hItem, CSELF, pCSelf)
-{
-    HWND hwnd  = getDChCtrl(pCSelf);
-
-    TVITEM tvi = {0};
-    char buf[256];
-
-    tvi.hItem = (HTREEITEM)string2pointer(_hItem);
-    tvi.mask = TVIF_HANDLE | TVIF_TEXT | TVIF_STATE | TVIF_IMAGE | TVIF_CHILDREN | TVIF_SELECTEDIMAGE;
-    tvi.pszText = buf;
-    tvi.cchTextMax = 255;
-    tvi.stateMask = TVIS_EXPANDED | TVIS_BOLD | TVIS_SELECTED | TVIS_EXPANDEDONCE | TVIS_DROPHILITED | TVIS_CUT;
-
-    if ( TreeView_GetItem(hwnd, &tvi) == 0 )
-    {
-        return TheNegativeOneObj;
-    }
-
-    RexxStemObject stem = context->NewStem("InternalTVItemInfo");
-
-    context->SetStemElement(stem, "!TEXT", context->String(tvi.pszText));
-    context->SetStemElement(stem, "!CHILDREN", (tvi.cChildren > 0 ? TheTrueObj : TheFalseObj));
-    context->SetStemElement(stem, "!IMAGE", context->Int32(tvi.iImage));
-    context->SetStemElement(stem, "!SELECTEDIMAGE", context->Int32(tvi.iSelectedImage));
-
-    *buf = '\0';
-    if ( tvi.state & TVIS_EXPANDED     ) strcat(buf, "EXPANDED ");
-    if ( tvi.state & TVIS_BOLD         ) strcat(buf, "BOLD ");
-    if ( tvi.state & TVIS_SELECTED     ) strcat(buf, "SELECTED ");
-    if ( tvi.state & TVIS_EXPANDEDONCE ) strcat(buf, "EXPANDEDONCE ");
-    if ( tvi.state & TVIS_DROPHILITED  ) strcat(buf, "INDROP ");
-    if ( tvi.state & TVIS_CUT          ) strcat(buf, "CUT ");
-    if ( *buf != '\0' )
-    {
-        *(buf + strlen(buf) - 1) = '\0';
-    }
-    context->SetStemElement(stem, "!STATE", context->String(buf));
-
-    return stem;
-}
-
-
-RexxMethod2(RexxObjectPtr, tv_getSpecificItem, NAME, method, CSELF, pCSelf)
-{
-    HWND hwnd = getDChCtrl(pCSelf);
-    HTREEITEM result = NULL;
-
-    switch ( *method )
-    {
-        case 'R' :
-            result = TreeView_GetRoot(hwnd);
-            break;
-        case 'S' :
-            result = TreeView_GetSelection(hwnd);
-            break;
-        case 'D' :
-            result = TreeView_GetDropHilight(hwnd);
-            break;
-        case 'F' :
-            result = TreeView_GetFirstVisible(hwnd);
-            break;
-    }
-    return pointer2string(context, result);
-}
-
-
-RexxMethod3(RexxObjectPtr, tv_getNextItem, CSTRING, _hItem, NAME, method, CSELF, pCSelf)
-{
-    HWND      hwnd  = getDChCtrl(pCSelf);
-    HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
-    uint32_t  flag  = TVGN_PARENT;
-
-    if ( strcmp(method, "PARENT")               == 0 ) flag = TVGN_PARENT;
-    else if ( strcmp(method, "CHILD")           == 0 ) flag = TVGN_CHILD;
-    else if ( strcmp(method, "NEXT")            == 0 ) flag = TVGN_NEXT;
-    else if ( strcmp(method, "NEXTVISIBLE")     == 0 ) flag = TVGN_NEXTVISIBLE;
-    else if ( strcmp(method, "PREVIOUS")        == 0 ) flag = TVGN_PREVIOUS;
-    else if ( strcmp(method, "PREVIOUSVISIBLE") == 0 ) flag = TVGN_PREVIOUSVISIBLE;
-
-    return pointer2string(context, TreeView_GetNextItem(hwnd, hItem, flag));
-}
-
-
-/** TreeView::select()
+/** TreeView::dropHighLight()
  *  TreeView::makeFirstVisible()
- *  TreeView::dropHighLight()
+ *  TreeView::select()
  */
 RexxMethod3(RexxObjectPtr, tv_selectItem, OPTIONAL_CSTRING, _hItem, NAME, method, CSELF, pCSelf)
 {
@@ -483,7 +646,6 @@ RexxMethod3(RexxObjectPtr, tv_expand, CSTRING, _hItem, NAME, method, CSELF, pCSe
 /** TreeView::find()
  *
  *  Finds the first item with the specified text.
- *
  *
  */
 RexxMethod2(RexxObjectPtr, tv_find, CSTRING, text, CSELF, pCSelf)
@@ -573,6 +735,40 @@ RexxMethod2(RexxObjectPtr, tv_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
 }
 
 
+/** TreeView::removeItemData()
+ *
+ */
+RexxMethod2(RexxObjectPtr, tv_removeItemData, CSTRING, _hItem, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheNilObj;
+    }
+
+    HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
+
+    RexxObjectPtr oldUserData = getCurrentTviUserData(pcdc->hCtrl, hItem);
+
+    RexxObjectPtr result = getCurrentTviUserData(pcdc->hCtrl, hItem);
+    if ( result != TheNilObj )
+    {
+        TVITEMEX tvi = {TVIF_PARAM, hItem};
+
+        if ( TreeView_SetItem(pcdc->hCtrl, &tvi) )
+        {
+            unProtectControlUserData(context, pcdc, result);
+        }
+        else
+        {
+            // Not removed, set result back to the .nil ojbect.
+            result = TheNilObj;
+        }
+    }
+
+    return result;
+}
+
 /** TreeView::setImageList()
  *
  *  Sets or removes one of a tree-view's image lists.
@@ -661,32 +857,80 @@ err_out:
     return NULLOBJECT;
 }
 
-/** TreeView::getImageList()
+
+/** TreeView::setItemData()
  *
- *  Gets the tree-view's specifed image list.
+ *  Assigns a user data value to the specified tree-view item.
  *
- *  @param  type [optional] Identifies which image list to get, normal, or
- *               state. Normal is the default.
+ *  @param  hItem  [required]  The handle of the item whose user data is to be
+ *                 set.
  *
- *  @return  The image list, if it exists, otherwise .nil.
+ *  @param  data   [optional]  The user data to be set. If this argument is
+ *                 omitted, the current user data, if any, is removed.
+ *
+ *  @return  Returns the previous user data object for the specified tree-view
+ *           item, if there was a user data object, or .nil if there wasn't.
+ *
+ *           On error, .nil is returned.  An error is very unlikely.  An error
+ *           can be checked for by examining the .systemErrorCode object.
+ *
+ *  @notes  Sets the .systemErrorCode.  On error set to:
+ *
+ *          156  ERROR_SIGNAL_REFUSED The recipient process has refused the
+ *          signal.
+ *
+ *          This is not a system error, the code is just used here to indicate a
+ *          tree-view error when setting the user data.  The tree-view provides
+ *          no information on why it failed.
  */
-RexxMethod2(RexxObjectPtr, tv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
+RexxMethod3(RexxObjectPtr, tv_setItemData, CSTRING, _hItem, OPTIONAL_RexxObjectPtr, data, CSELF, pCSelf)
 {
-    if ( argumentOmitted(1) )
+    oodResetSysErrCode(context->threadContext);
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
     {
-        type = TVSIL_NORMAL;
-    }
-    else if ( type != TVSIL_STATE && type != TVSIL_NORMAL )
-    {
-        return invalidTypeException(context->threadContext, 2, "TVSIL_XXX flag");
+        return TheNilObj;
     }
 
-    RexxObjectPtr result = context->GetObjectVariable(tvGetAttributeName(type));
-    if ( result == NULLOBJECT )
+    HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
+
+    RexxObjectPtr oldUserData = getCurrentTviUserData(pcdc->hCtrl, hItem);
+
+    TVITEMEX tvi = {0};
+    tvi.hItem  = hItem;
+    tvi.mask   = TVIF_PARAM;
+
+    if ( argumentExists(2) )
     {
-        result = TheNilObj;
+        tvi.lParam = (LPARAM)data;
+
+        if ( TreeView_SetItem(pcdc->hCtrl, &tvi) )
+        {
+            unProtectControlUserData(context, pcdc, oldUserData);
+            protectControlUserData(context, pcdc, data);
+        }
+        else
+        {
+            oldUserData = TheNilObj;
+            oodSetSysErrCode(context->threadContext, 156);
+        }
     }
-    return result;
+    else
+    {
+        if ( TreeView_SetItem(pcdc->hCtrl, &tvi) )
+        {
+            unProtectControlUserData(context, pcdc, oldUserData);
+        }
+        else
+        {
+            oldUserData = TheNilObj;
+            oodSetSysErrCode(context->threadContext, 156);
+        }
+
+    }
+
+    return oldUserData;
 }
 
 
@@ -757,6 +1001,7 @@ MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
         pctvcds->item      = (HTREEITEM)tvcd->nmcd.dwItemSpec;
         pctvcds->id        = (uint32_t)((NMHDR *)lParam)->idFrom;
         pctvcds->level     = tvcd->iLevel;
+        pctvcds->userData  = tvcd->nmcd.lItemlParam ? (RexxObjectPtr)tvcd->nmcd.lItemlParam : TheNilObj;
 
         RexxObjectPtr custDrawSimple = c->SendMessage1(TheTvCustomDrawSimpleClass, "NEW", tvcdsBuf);
         if ( custDrawSimple != NULLOBJECT )
@@ -773,7 +1018,7 @@ MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
                 {
                     // An example I've seen deletes the old font.  Doesn't seem
                     // appropriate for ooRexx.  The user would need to save the
-                    // list-view font and then add it back in.  Not sure if
+                    // tree-view font and then add it back in.  Not sure if
                     // there is a resource leak here.
                     HFONT hOldFont = (HFONT)SelectObject(tvcd->nmcd.hdc, pctvcds->hFont);
                 }
@@ -883,9 +1128,10 @@ RexxMethod1(uint32_t, tvcds_getLevel, CSELF, pCSelf)
 
 /** TvCustomDrawSimple::userData   [attribute]
  */
-RexxMethod2(RexxObjectPtr, tvcds_getUserData, uint32_t, reply, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, tvcds_getUserData, CSELF, pCSelf)
 {
-    return ((pCTvCustomDrawSimple)pCSelf)->userData;
+    RexxObjectPtr data = (RexxObjectPtr)((pCTvCustomDrawSimple)pCSelf)->userData;
+    return data == NULLOBJECT ? TheNilObj : data;
 }
 
 

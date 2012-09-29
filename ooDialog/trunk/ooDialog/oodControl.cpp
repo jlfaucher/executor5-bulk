@@ -682,6 +682,52 @@ done_out:
 
 
 /**
+ * Removes a Rexx object from the dialog control's Rexx bag.
+ *
+ * @param c
+ * @param pcdc
+ * @param oldUserData
+ */
+void unProtectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr oldUserData)
+{
+    if ( oldUserData != TheNilObj && oldUserData != NULLOBJECT && pcdc->rexxBag != NULLOBJECT )
+    {
+        c->SendMessage1(pcdc->rexxBag, "REMOVE", oldUserData);
+    }
+}
+
+
+/**
+ *  If the user stores a Rexx object in the user data storage of a dialog
+ *  control, the Rexx object could be garbage collected because no Rexx object
+ *  has a reference to it.  To prevent that we put the Rexx object in a bag that
+ *  is an attribute of the dialog control object.
+ *
+ * @param c
+ * @param pcdc
+ * @param data
+ *
+ * @notes  This function could have been called maybeProtectControlUserData()
+ *         because it only stores a Rexx object if the data is not .nil and not
+ *         null.
+ */
+void protectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr data)
+{
+    if ( data != TheNilObj && data != NULLOBJECT )
+    {
+        if ( pcdc->rexxBag == NULL )
+        {
+            c->SendMessage1(pcdc->rexxSelf, "PUTINBAG", data);
+        }
+        else
+        {
+            c->SendMessage1(pcdc->rexxBag, "PUT", data);
+        }
+    }
+}
+
+
+/**
  *  Methods for the .DialogControl class.
  */
 #define DIALOGCONTROL_CLASS        "DialogControl"

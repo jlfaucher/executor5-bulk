@@ -182,7 +182,7 @@ extern MsgReplyType  lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName
 typedef struct _tvCDSimple
 {
     HFONT             hFont;
-    RexxObjectPtr     userData;    // Not used in 4.2.1, will be used when TreeView is updated
+    RexxObjectPtr     userData;
     HTREEITEM         item;
     COLORREF          clrText;
     COLORREF          clrTextBk;
@@ -227,6 +227,8 @@ extern RexxObjectPtr      createControlFromHwnd(RexxMethodContext *, pCDialogCon
 extern RexxObjectPtr      createControlFromHwnd(RexxMethodContext *, pCPlainBaseDialog, HWND, oodControl_t, bool);
 extern RexxObjectPtr      createControlFromHwnd(RexxThreadContext *, pCPlainBaseDialog, HWND, oodControl_t, bool);
 extern bool               addSubclassMessage(RexxMethodContext *c, pCDialogControl pcdc, pWinMessageFilter pwmf);
+extern void               unProtectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr oldUserData);
+extern void               protectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr data);
 
 #define ButtonAtom           0x0080
 #define EditAtom             0x0081

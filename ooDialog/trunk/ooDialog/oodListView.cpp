@@ -678,37 +678,15 @@ static LPARAM getLParamUserData(RexxMethodContext *c, RexxObjectPtr data)
  * @notes  This function could have been called maybeProtectLvUserData() because
  *         it only stores a Rexx object if the lParam member of the list view
  *         item struct is not null.
+ *
+ *         With list-views, we have special handling of the lParam user data to
+ *         optimize internal sorting.  Because of this we can not call
+ *         protectControlUserData() directly, we first need to handle the
+ *         possibility that the lParam is a C struct and not a Rexx object.
  */
 static void protectLviUserData(RexxMethodContext *c, pCDialogControl pcdc, LVITEM *lvi)
 {
-    RexxObjectPtr data = getLviUserData(lvi);
-
-    if ( data != TheNilObj )
-    {
-        if ( pcdc->rexxBag == NULL )
-        {
-            c->SendMessage1(pcdc->rexxSelf, "PUTINBAG", data);
-        }
-        else
-        {
-            c->SendMessage1(pcdc->rexxBag, "PUT", data);
-        }
-    }
-}
-
-/**
- * Removes a Rexx object from the Rexx bag.
- *
- * @param c
- * @param pcdc
- * @param oldUserData
- */
-static void unProtectLviUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr oldUserData)
-{
-    if ( oldUserData != TheNilObj && oldUserData != NULLOBJECT && pcdc->rexxBag != NULLOBJECT )
-    {
-        c->SendMessage1(pcdc->rexxBag, "REMOVE", oldUserData);
-    }
+    protectControlUserData(c, pcdc, getLviUserData(lvi));
 }
 
 /**
@@ -1538,7 +1516,7 @@ RexxMethod2(RexxObjectPtr, lv_delete, int32_t, index, CSELF, pCSelf)
         return TheOneObj;
     }
 
-    unProtectLviUserData(context, pcdc, getCurrentLviUserData(pcdc->hCtrl, index));
+    unProtectControlUserData(context, pcdc, getCurrentLviUserData(pcdc->hCtrl, index));
 
     return ListView_DeleteItem(pcdc->hCtrl, index) ? TheZeroObj : TheOneObj;
 }
@@ -2743,14 +2721,14 @@ RexxMethod2(logical_t, lv_modifyItem, RexxObjectPtr, lvItem, CSELF, pCSelf)
         {
             if ( lParamIsModified )
             {
-                unProtectLviUserData(context, pcdc, oldUserData);
+                unProtectControlUserData(context, pcdc, oldUserData);
             }
         }
         else
         {
             if ( lParamIsModified )
             {
-                unProtectLviUserData(context, pcdc, oldUserData);
+                unProtectControlUserData(context, pcdc, oldUserData);
             }
             else
             {
@@ -2872,7 +2850,7 @@ RexxMethod2(RexxObjectPtr, lv_removeItemData, uint32_t, index, CSELF, pCSelf)
 
         if ( ListView_SetItem(pcdc->hCtrl, &lvi) )
         {
-            unProtectLviUserData(context, pcdc, result);
+            unProtectControlUserData(context, pcdc, result);
         }
         else
         {
@@ -3131,7 +3109,7 @@ RexxMethod3(RexxObjectPtr, lv_setItemData, uint32_t, index, RexxObjectPtr, data,
     if ( ListView_SetItem(pcdc->hCtrl, &lvi) != 0 )
     {
         protectLviUserData(context, pcdc, &lvi);
-        unProtectLviUserData(context, pcdc, oldUserData);
+        unProtectControlUserData(context, pcdc, oldUserData);
         return TheTrueObj;
     }
     return TheFalseObj;

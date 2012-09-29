@@ -88,14 +88,8 @@
 ::method child unguarded external "LIBRARY oodialog tv_getNextItem"
 ::method collapse unguarded external "LIBRARY oodialog tv_expand"
 ::method collapseAndReset unguarded external "LIBRARY oodialog tv_expand"
-::method delete unguarded
-   use strict arg hItem
-   return self~sendWinHandle2Msg(self~TVM_DELETEITEM, 0, hItem)
-
-::method deleteAll unguarded
-   use strict arg
-   return self~sendWinIntMsg(self~TVM_DELETEITEM, 0, 0)
-
+::method delete unguarded external "LIBRARY oodialog tv_delete"
+::method deleteAll unguarded external "LIBRARY oodialog tv_deleteAll"
 ::method dropHighlight unguarded external "LIBRARY oodialog tv_selectItem"
 ::method dropHighlighted unguarded external "LIBRARY oodialog tv_getSpecificItem"
 ::method edit unguarded
@@ -115,6 +109,7 @@
 ::method find unguarded external "LIBRARY oodialog tv_find"
 ::method firstVisible unguarded external "LIBRARY oodialog tv_getSpecificItem"
 ::method getImageList unguarded external "LIBRARY oodialog tv_getImageList"
+::method getItemData unguarded external "LIBRARY oodialog tv_getItemData"
 ::method hitTest unguarded
    forward message "hitTestInfo" continue
    info = result
@@ -184,11 +179,13 @@
 ::method parent unguarded external "LIBRARY oodialog tv_getNextItem"
 ::method previous unguarded external "LIBRARY oodialog tv_getNextItem"
 ::method previousVisible unguarded external "LIBRARY oodialog tv_getNextItem"
+::method removeItemData external "LIBRARY oodialog tv_removeItemData"
 ::method restoreEditClass external "LIBRARY oodialog generic_subclassEdit"
 ::method root unguarded external "LIBRARY oodialog tv_getSpecificItem"
 ::method select unguarded external "LIBRARY oodialog tv_selectItem"
 ::method selected unguarded external "LIBRARY oodialog tv_getSpecificItem"
 ::method setImageList unguarded external "LIBRARY oodialog tv_setImageList"
+::method setItemData unguarded external "LIBRARY oodialog tv_setItemData"
 
 -- The old code did not have recurse arg and had a comment saying "recursive not yet supported"
 -- Although MSDN documents this message as recursively sorting the children if WPARAM is true,
