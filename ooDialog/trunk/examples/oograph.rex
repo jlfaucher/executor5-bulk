@@ -174,7 +174,7 @@
    self~waitForEvent
 
    -- While the user has not closed the dialog, scroll the instruction text.
-   do while \ self~isDialogActive
+   do while self~isDialogActive
       text = "... please press Bitmap-Viewer or Draw-Color-Demo buttons to run graphical applications ..."
       m = self~start("scrollInButton", IDC_PB_OWNERDRAW, text, "Arial", 32, "SEMIBOLD", 0, 2, 4)
       m~notify(.message~new(self, "scrollingFinished"))

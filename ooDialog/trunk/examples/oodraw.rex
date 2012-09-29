@@ -224,7 +224,7 @@ doRectangles:
       self~objectToDC(dc, myBrush)
       self~rectangle(dc, 7 * x, 7 * y, 193 * x, 193 * y, 'FILL')
 
-      do k = 1 to 25
+      do k = 1 to 25 while \ self~interrupted
          brushcol = random(1, 18)
          brush = self~createBrush(brushcol)
          if recThick // 3 = 0 then pencol = brushcol
