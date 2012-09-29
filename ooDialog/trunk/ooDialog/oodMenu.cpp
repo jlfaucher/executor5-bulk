@@ -2528,7 +2528,6 @@ BOOL setSingleState(CppMenu *cMenu, RexxObjectPtr rxItemIDs, logical_t byPositio
                 break;
 
             default :
-                printf("SEVERE ERROR HERE\n");
                 goto done_out;
                 break;
         }
@@ -2966,8 +2965,10 @@ RexxMethod1(RexxObjectPtr, menu_uninit, CSELF, cMenuPtr)
 {
     CppMenu *cMenu = (CppMenu *)cMenuPtr;
 
+#ifdef _DEBUG
 #if 1
     printf("In UNINIT() of Menu class cMenu=%p\n", cMenu);
+#endif
 #endif
 
     if ( cMenu != NULL )
