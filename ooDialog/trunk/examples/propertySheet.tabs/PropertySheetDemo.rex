@@ -274,7 +274,7 @@
        else label~setText(i * step)
 
        call msSleep tsleep
-       if self~finished | \ self~isDialogActive then return
+       if \ self~isDialogActive then return
    end
 
 -- The following 5 methods are started asynchronously to animate the progress

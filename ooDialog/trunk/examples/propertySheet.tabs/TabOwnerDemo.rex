@@ -398,7 +398,7 @@
        else label~setText(i * step)
 
        call msSleep tsleep
-       if self~finished | \ self~isDialogActive then return
+       if \ self~isDialogActive then return
    end
 
 ::method tabPageKillActive unguarded

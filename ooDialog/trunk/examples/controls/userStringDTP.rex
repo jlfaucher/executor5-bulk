@@ -377,7 +377,7 @@ return 0
   expose curDate curTime updateAlarm
 
   -- If the dialog is ended, quit.
-  if self~finished then return
+  if \ self~isDialogActive then return
 
   parse value .DateTime~new with yy '-' mm '-' dd 'T' time '.' junk
   curDate~setText(mm'/'dd'/'yy)
