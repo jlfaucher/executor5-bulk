@@ -200,8 +200,8 @@
 <entry><xref linkend="indentnew"/></entry>
 </row>
 <row>
-<entry>insert</entry>
-<entry><xref linkend="inserttrc"/></entry>
+<entry><xref linkend="mthInsertClsTreeView"/></entry>
+<entry>Inserts a new item into the tree-view control.</entry>
 </row>
 <row>
 <entry>IsAncestor</entry>
@@ -1439,125 +1439,184 @@ minimum.
 </variablelist>
 </section>
 
-<section id="inserttrc"><title>insert</title>
-<indexterm><primary>insert</primary>
-<secondary>TreeView class</secondary></indexterm>
+<section id="mthInsertClsTreeView" xreflabel="insert"><title>insert</title>
+<indexterm><primary>insert</primary></indexterm><secondary>TreeView class</secondary>
+<indexterm><primary>TreeView class</primary><secondary>insert</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                        +-"LAST"--+     +-""---+     +-0-----+
->>--insert(--parent--,--+-after---+--,--+------+--,--+-------+--,-->
-                        +-"FIRST"-+     +-text-+     +-image-+
-                        +-"SORT"--+
+>>--insert(--+----------+-+---------+-+-------+-+-------+-+----------+--------->
+             +--parent--+ +-,-after-+ +-,-txt-+ +-,-img-+ +-,-selImg-+
 
-                                                   +-"0"-+
->--+----------+--,--+------------------------+--,--+-----+--)--><
-   +-selImage-+     |    +--------------+    |     +-"1"-+
-                    |    V              |    |
-                    +-"----+-EXPANDED-+-+--"-+
-                           +-BOLD-----+
-
-
+>------------+---------+-+------------+-+------------+-------------------------><
+             +-,-state-+ +-,-children-+ +-,-userData-+
 ]]>
 </programlisting>
 
-<para>The insert method inserts a new item in a tree
-view control.</para>
+<para>
+  Inserts a new item into the tree-view control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:</para>
-<variablelist>
-<varlistentry><term>parent</term>
-<listitem><para>The handle to the parent item. If you specify &quot;ROOT&quot;,
-the item is inserted at the root of the tree-view control.
-</para></listitem></varlistentry>
-<varlistentry><term>after</term>
-<listitem><para>The handle to the item after which the new item is to be inserted or
-one of the following values:</para>
-<variablelist>
-<varlistentry><term>&quot;FIRST&quot;</term>
-<listitem><para>Inserts the item at the beginning of the list.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;LAST&quot;</term>
-<listitem><para>Inserts the item at the end of the list. This is the default.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;SORT&quot;</term>
-<listitem><para>Inserts the item into the list in alphabetical order.
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The text for the item. If you omit this argument, &quot;&quot; is assumed.
-</para></listitem></varlistentry>
-<varlistentry><term>image</term>
-<listitem><para>The index of the icon image in the tree-view control's bitmap file
-to be used when the item is in the non-selected state. If you omit this argument,
-the icon with index 0 is used.
-</para></listitem></varlistentry>
-<varlistentry><term>selImage</term>
-<listitem><para>The index of the icon image in the tree-view control's bitmap file
-to be used when the item is in the selected state. If you omit this argument,
-the icon specified for <emphasis role="italic">image</emphasis> is used.
-</para></listitem></varlistentry>
-<varlistentry><term>state</term>
-<listitem><para>Specifies the appearance and functionality of the item. It can be a
-combination of the following values, separated by a blank:</para>
-<variablelist>
-<varlistentry><term>EXPANDED</term>
-<listitem><para>The item is currently expanded with all child items visible. This only
-applies to parent items.
-</para></listitem></varlistentry>
-<varlistentry><term>BOLD</term>
-<listitem><para>The item is shown in bold.</para>
-</listitem></varlistentry>
-</variablelist>
-<para>If you omit this argument, the item is inserted in collapsed and normal
-form.</para>
-</listitem></varlistentry>
-<varlistentry><term>children</term>
-<listitem><para>Indicates whether the item has child items associated with it:</para>
-<variablelist>
-<varlistentry><term>&quot;0&quot;</term>
-<listitem><para>The item has no child items, which is the default.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;1&quot;</term>
-<listitem><para>The item has one or more child items.</para>
-<para>You can use this argument to
-show an item that does not have any child items, with an expand button. This
-allows you to save memory usage by dynamically loading and displaying the
-child items only when the user expands the item.</para>
-</listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the new item, or 0 for all other cases.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example inserts child items when a specific root item
-is expanded. The text strings for the items are loaded from a file.
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>parent [optional]</term>
+      <listitem>
+      <para>
+        Handle of the parent to the new item. If this argument is omitted, or is the keyword <emphasis
+        role="italic">root</emphasis>, case insignificant, then the new item is inserted a the root of the tree-view.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>after [optional]</term>
+      <listitem>
+      <para>
+        Either a tree-view item handler, or one of the following keywords separated by spaces, case is not significant. This
+        specifies where the new item will be inserted. When <emphasis role="italic">after</emphasis> is an item handle, the
+        new item is inserted after the specified item. Otherwise the item is inserted as explained for each keyword:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>FIRST</member>
+          <member>LAST </member>
+          <member>SORT </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>FIRST</term>
+          <listitem>
+          <para>
+            Inserts the item at the beginning of the list.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LAST</term>
+          <listitem>
+          <para>
+            Inserts the item at the end of the list. This is the default if the <emphasis role="italic">after</emphasis>
+            argument is omitted
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SORT</term>
+          <listitem>
+          <para>
+            Inserts the item into the list in alphabetical order.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt [optional]</term>
+      <listitem>
+      <para>
+        The text for the label of the item. If this arugment is omitted then the empty string is used as the text.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>img [optional]</term>
+      <listitem>
+      <para>
+        Index in the tree-view control's normal <link linkend="mthSetImageListClassTreeView">image</link> list of the icon
+        image to use when the item is in the nonselected state.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>selImg [optional]</term>
+      <listitem>
+      <para>
+        Index in the tree-view control's normal <link linkend="mthSetImageListClassTreeView">image</link> list of the icon
+        image to use when the item is in the selected state.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>state [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. If this argument is
+        omitted the item state will be normal, not expanded:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BOLD    </member>
+          <member>EXPANDED</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BOLD</term>
+          <listitem>
+          <para>
+            The item is shown bolded.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>EXPANDED</term>
+          <listitem>
+          <para>
+            The item's list of child items is currently expanded, that is, the child items are visible. Only parent items can
+            have this state.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>children [optional]</term>
+      <listitem>
+      <para>
+        Used to signal the underlying tree-view control that the item has children, even if no children are inserted. Specify
+        1 to signal that the item does have children. This is really only useful if the tree-view has the <xref
+        linkend="styButtonsClsTreeView"/> style, see the remarks section. When this argument is omitted or less than 1, it is
+        in effect ignored.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optional]</term>
+      <listitem>
+      <para>
+        Associates the specified value with the tree-view item being inserted. This can be any Rexx object that the
+        programmer wants to use.  The <link linkend="mthGetItemDataClsTreeView">getItemData</link> method can be used to
+        retrieve this value.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the handle of the newly inserted item on success, or zero on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a tree-view controls has the BUTTONS style, it displays plus and minus buttons next to <emphasis
+    role="italic">parent</emphasis> items. It does not display the buttons for any item that has no children. However, it is
+    sometimes useful to dynamically insert child items when the button is clicked. Specifying 1 for the <emphasis
+    role="italic">children</emphasis> argument forces the tree-view control to use a plus button for the item, even if the
+    item has no children.
+  </para>
+  <para>
+    Associating a user data value with some or all of a tree-view items can be useful in a number of ways. The <emphasis
+    role="italic">userData</emphasis> argument allows the programme to assoicate the value at the time the item in added to the
+    tree-view. The <xref linkend="mthSetItemDataClsTreeView"/> method can be used to assign a data value at any time.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example inserts a new folder tree-view item as a sibling of the currently selected item. It also assigns both a
+    selected and unselected icon to the item from the tree-view's image list by specifying the index in the image list for
+    the incons:
 <programlisting>
 <![CDATA[
-::method OnExpanding_IDC_TREE
-  use arg tree, item
-  itemFile = "root6.inp"
-  curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~itemInfo(item)
 
-  if itemInfo.!TEXT = "Root 6" & \itemInfo.!STATE~POS("EXPANDED") then
-  do
-    do while lines(itemFile)
-      line = linein(itemFile)
-      command = "curTree~insert(item, ,"||line||")"
-      interpret command
-    end
-    curTree~Expand(item)
-  end
+::constant UNSELECTED_FOLDER  0         -- Index for the icon of an unselected folder item
+::constant SELECTED_FOLDER    1         -- Index for the icon of a selected folder item
+::constant UNSELECTED_LEAF    2         -- Index for the icon of an unselected leaf item
+::constant SELECTED_LEAF      3         -- Index for the icon of a selected leaf item
+
+...
+
+treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER)
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End TreeView::insert() -->
 
 <section id="isancestor"><title>IsAncestor</title>
 <indexterm><primary>IsAncestor</primary></indexterm>
