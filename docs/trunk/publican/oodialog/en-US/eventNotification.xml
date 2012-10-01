@@ -7011,8 +7011,34 @@ trackbar position by extracting the high-oder word. Example:
   </listitem>
   <listitem>
   <para>
-    The event-handling method connected to EXPANDED or EXPANDING receives three arguments: the control ID of the tree
-    view control, the tree item expanded or collapsed, and a string that indicates whether the item was expanded or
+    The event-handling method connected to the EXPANDED event receives three arguments: the control ID of the tree view
+    control, the tree item expanded or collapsed, and a string that indicates whether the item was expanded or collapsed.
+    Recall that the EXPANDED notification is sent <emphasis role="italic">after</emphasis> the item has been expanded or
+    collapsed. Example:
+
+  <programlisting>
+  <![CDATA[
+  ::method onExpanded unguarded
+    use arg id, item, what
+    say "The item with handle" item "has been" what
+
+    return 0
+
+  /*
+    Possible output:
+
+    The item with handle 0x00000000001AD3E0 has been COLLAPSED
+  */
+  ]]>
+  </programlisting>
+
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The event-handling method connected to the EXPANDING event receives three arguments: the control ID of the tree view
+    control, the tree item expanded or collapsed, and a string that indicates whether the item was expanded or collapsed.
+    Recall that the EXPANDING notification is sent <emphasis role="italic">before</emphasis> the item has been expanded or
     collapsed. Example:
 
   <programlisting>
@@ -7022,6 +7048,12 @@ trackbar position by extracting the high-oder word. Example:
     say "Item with handle" item "is going to be" what
 
     return 0
+
+    /*
+      Possible output:
+
+      The item with handle 0x00000000001AD680 has been EXPANDED
+    */
   ]]>
   </programlisting>
 
