@@ -2054,41 +2054,33 @@ items fit in the dialog.</para>
       </listitem></varlistentry>
     </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns one of the following values:
   </para>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      The item has been modified.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term></term>
+    <listitem>
+    <para>
+      The tree-view control reported an error when modifying the item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">hItem</emphasis> argument was not valid.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     The following example changes the text of the item to bold when it is selected:
