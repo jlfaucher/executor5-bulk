@@ -173,7 +173,7 @@
 </row>
 <row>
 <entry><xref linkend="mthAddExtendedStyle"/></entry>
-<entry>adds one or more of the extended list-view styles to a list-view control.</entry>
+<entry>Adds one or more of the extended list-view styles to a list-view control.</entry>
 </row>
 <row>
 <entry><link linkend="mthAddFullRow">addFullRow</link></entry>
@@ -580,30 +580,40 @@
 
 </section>
 
-<section id="viewstyles"><title>View Styles</title>
+<section id="sctViewStyles"><title>View Styles</title>
 <indexterm><primary>view styles</primary></indexterm>
-<para>List view controls can display their contents in different views. The current
-view is specified by the window style of the control. Additional window styles
-define the alignment of the items and the functionality of the list-view control.
-The different views are:</para>
+<para>
+  List view controls can display their contents in different views. The current view is specified by the window style of the
+  control. Additional window styles define the alignment of the items and the functionality of the list-view control. The
+  different views are:
+</para>
 <variablelist>
-<varlistentry><term>Icon view</term>
-<listitem><para>Each item appears as a full-sized icon with a label below it. The user
-can drag the items to any location in the list view.
-</para></listitem></varlistentry>
-<varlistentry><term>Small-icon view</term>
-<listitem><para>Each item appears as a small icon with a label to the left of it. The
-user can drag the items to any location.
-</para></listitem></varlistentry>
-<varlistentry><term>List view</term>
-<listitem><para>Each item appears as a small icon with a label to the left of it. The
-user cannot drag the items.
-</para></listitem></varlistentry>
-<varlistentry><term>Report view</term>
-<listitem><para>Each item appears on a separate line with information arranged in columns.
-The leftmost column contains the small icon and the label. All following columns
-contain subitems as specified by the application.
-</para></listitem></varlistentry>
+  <varlistentry><term>Icon view</term>
+  <listitem>
+  <para>
+    Each item appears as a full-sized icon with a label below it. The user can drag the items to any location in the list
+    view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Small-icon view</term>
+  <listitem>
+  <para>
+    Each item appears as a small icon with a label to the left of it. The user can drag the items to any location.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>List view</term>
+  <listitem>
+  <para>
+    Each item appears as a small icon with a label to the left of it. The user cannot drag the items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Report view</term>
+  <listitem>
+  <para>
+    Each item appears on a separate line with information arranged in columns. The leftmost column contains the small icon
+    and the label. All following columns contain subitems as specified by the application.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -652,8 +662,8 @@ contain subitems as specified by the application.
 </section>  <!-- End connectListViewEvent() [EventNotification method] -->
 
 <section id="mthAddClsListview" xreflabel="add"><title>add</title>
-<indexterm><primary>add</primary>
-<secondary>ListView class</secondary></indexterm>
+<indexterm><primary>add</primary><secondary>ListView class</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>add</secondary></indexterm>
 <programlisting>
 <![CDATA[
           +-------+
@@ -690,260 +700,324 @@ contain subitems as specified by the application.
   list-view.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>,</term>
-<listitem><para>
-  As explained above, this argument determines if an item is added to the list-view, or if the text of a
-  subitem is defined.
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>
-  The text for the item label, or the text for the subitem of a item, depending on whether an item is
-  being added or the text for a subitem is being defined.
-</para></listitem></varlistentry>
-<varlistentry><term>icon</term>
-<listitem><para>
-  Specifies the index within the image list for the icon for this item. Image lists are assigned to a
-  list-view by using the <xref linkend="mthSetImageListClsListView"/>() method. With
-  the <computeroutput>setImageList</computeroutput>() method, use the LVSIL_NORMAL flag for the icon view
-  icons and the LVSIL_SMALL flag for the list, report, and small-icon view icons.
-</para>
-<para>
-  Use -1 or simply omit this argument to indicate there is no icon for the item being added. This
-  argument is ignored completely when the text for a subitem is being defined.
-</para>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-  The following example adds three columns and two items to a report list control. To get the following
-  result:
-</para>
-<informaltable frame="all">
-<tgroup cols="3">
-<thead>
-<row>
-<entry>First Name</entry>
-<entry>Last Name</entry>
-<entry>Age</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry>Mike</entry>
-<entry>Miller</entry>
-<entry>30</entry>
-</row>
-<row>
-<entry>Sue</entry>
-<entry>Thaxtor</entry>
-<entry>29</entry>
-</row>
-</tbody></tgroup>
-</informaltable>
-<para>
-  using the <computeroutput>add</computeroutput>() method you must specify something similar to the
-  following:
-</para>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>, [optional]</term>
+    <listitem>
+    <para>
+      As explained above, this argument determines if an item is added to the list-view, or if the text of a
+      subitem is defined.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The text for the item label, or the text for the subitem of a item, depending on whether an item is
+      being added or the text for a subitem is being defined.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>icon [optional]</term>
+    <listitem>
+    <para>
+      Specifies the index within the image list for the icon for this item. Image lists are assigned to a
+      list-view by using the <xref linkend="mthSetImageListClsListView"/>() method. With
+      the <computeroutput>setImageList</computeroutput>() method, use the LVSIL_NORMAL flag for the icon view
+      icons and the LVSIL_SMALL flag for the list, report, and small-icon view icons.
+    </para>
+    <para>
+      Use -1 or simply omit this argument to indicate there is no icon for the item being added. This
+      argument is ignored completely when the text for a subitem is being defined.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>
+    The following example adds three columns and two items to a report list control. To get the following
+    result:
+  </para>
+  <informaltable frame="all">
+  <tgroup cols="3">
+  <thead>
+  <row>
+  <entry>First Name</entry>
+  <entry>Last Name</entry>
+  <entry>Age</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+  <entry>Mike</entry>
+  <entry>Miller</entry>
+  <entry>30</entry>
+  </row>
+  <row>
+  <entry>Sue</entry>
+  <entry>Thaxtor</entry>
+  <entry>29</entry>
+  </row>
+  </tbody></tgroup>
+  </informaltable>
+  <para>
+    using the <emphasis role="italic">add</emphasis> method you must specify something similar to the following:
+  </para>
 <programlisting>
 <![CDATA[
 ::method initDialog
 
-  curList = self~newListView(IDC_LIST_REP)
-  if curList \= .nil then do
+  list = self~newListView(IDC_LIST_REP)
+  if list \= .nil then do
     imageList = .ImageList~create(.Size~new(16), .Image~toID(ILC_COLOR24), 9, 0)
     imageList~add(.Image~getImage("E:\oodlist\oodlist.BMP"))
     list~setImageList(imageList, .Image~toID(LVSIL_SMALL))
 
-    curList~insertColumn(0,"First Name",50)
-    curList~insertColumn(1,"Last Name",50)
-    curList~insertColumn(2,"Age",50)
+    list~insertColumn(0,"First Name",50)
+    list~insertColumn(1,"Last Name",50)
+    list~insertColumn(2,"Age",50)
 
     -- 3 is the index in the image list for the icon for item 0
-    curList~add("Mike", 3)
-    curList~add(,"Miller")
-    curList~add(, ,"30")
+    list~add("Mike", 3)
+    list~add(,"Miller")
+    list~add(, ,"30")
 
     -- 0 is the index in the image list for the icon for item 1
-    curList~~add("Sue", 0)~~add(,"Thaxton")~~add(, ,"29")
+    list~~add("Sue", 0)~~add(,"Thaxton")~~add(, ,"29")
   end
 
 ]]>
 </programlisting>
-</listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="mthAddExtendedStyle" xreflabel="addExtendedStyle"><title>addExtendedStyle</title>
 <indexterm><primary>addExtendedStyle</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>addExtendedStyle</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                     +--------------------+
-                                     V                    |
->>-aListControl~addExtendedStyle(--"---+-BORDERSELECT-----+--"--)------------><
-                                       +-CHECKBOXES-------+
-                                       +-DOUBLEBUFFER-----+
-                                       +-FLATSB-----------+
-                                       +-FULLROWSELECT----+
-                                       +-GRIDLINES--------+
-                                       +-HEADERDRAGDROP---+
-                                       +-INFOTIP----------+
-                                       +-LABELTIP---------+
-                                       +-MULTIWORKAREAS---+
-                                       +-ONECLICKACTIVATE-+
-                                       +-REGIONAL---------+
-                                       +-SIMPLESELECT-----+
-                                       +-SUBITEMIMAGES----+
-                                       +-TRACKSELECT------+
-                                       +-TWOCLICKACTIVATE-+
-                                       +-UNDERLINECOLD----+
-                                       +-UNDERLINEHOT-----+
-
+>>-addExtendedStyle(--style--)-------------------><
 ]]>
 </programlisting>
 
-<para>The <computeroutput>addExtendedStyle</computeroutput> method adds one or
-more of the <link linkend="listControlExtendedStyles">extended</link> List-View styles to a ListControl. These styles can
-not be added until the underlying Windows List-View control has been created.  They can be added in the
-<computeroutput>initDialog</computeroutput> method or any time thereafter. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>style</term>
-<listitem><para>The extended styles to be added.  This argument is a list
-containing one or more of the following style keywords, separated by blanks.
-Invalid words in the list are ignored.  If there are no valid keywords at all in
-the list, then an error is returned.
-<variablelist>
-<varlistentry><term>BORDERSELECT</term>
-<listitem><para>When an item is selected the border color of the item changes
-rather than the item being highlighted.
-</para></listitem></varlistentry>
-<varlistentry><term>CHECKBOXES</term>
-<listitem><para>Check boxes are visible and functional in all list-view modes
-except tile mode.
-</para></listitem></varlistentry>
-<varlistentry><term>DOUBLEBUFFER</term>
-<listitem><para>Windows XP or later only.  The list-view control is painted
-using double buffering.  This reduces flicker.
-</para></listitem></varlistentry>
-<varlistentry><term>FLATSB</term>
-<listitem><para>Enables flat scroll bars.
-</para></listitem></varlistentry>
-<varlistentry><term>FULLROWSELECT</term>
-<listitem><para>Report view only.  When a row is selected, the whole row is
-highlighted rather than just the first column.
-</para></listitem></varlistentry>
-<varlistentry><term>GRIDLINES</term>
-<listitem><para>Report view only.  Gridlines are drawn around all items and
-sub-items.  This gives a spreadsheet-like appearance to the list-view control.
-</para></listitem></varlistentry>
-<varlistentry><term>HEADERDRAGDROP</term>
-<listitem><para>Report view only. The user can drag and drop the headers to
-rearrange the columns.
-</para></listitem></varlistentry>
-<varlistentry><term>INFOTIP</term>
-<listitem><para>With this style a notification is sent to the parent window
-before displaying an item's tooltip.  (The current version of ooDialog can not
-take advantage of this style.  It is planned for a future enhancement.)
-</para></listitem></varlistentry>
-<varlistentry><term>LABELTIP</term>
-<listitem><para>Windows XP or later only.  In any list-view mode, if an item's
-label is only partially visible, the complete label will be displayed in a
-fashion similar to a tool tip.
-</para></listitem></varlistentry>
-<varlistentry><term>MULTIWORKAREAS</term>
-<listitem><para>The current version of ooDialog can not take advantage of this
-style.  It is planned for a future enhancement.
-</para></listitem></varlistentry>
-<varlistentry><term>ONECLICKACTIVATE</term>
-<listitem><para>Enables the list-view control to send an item activate
-notification when the user clicks one time on an item.  It also enables hot
-tracking in the list-view control. Both the underline cold and the underline hot
-styles need either one click activate or two click activate styles to be
-enabled.
-</para></listitem></varlistentry>
-<varlistentry><term>REGIONAL</term>
-<listitem><para>Icon view only.  Sets the window region to only include an
-item's icon and text.
-</para></listitem></varlistentry>
-<varlistentry><term>SIMPLESELECT</term>
-<listitem><para>Windows XP and later only.  Icon view only.  Moves the state
-image to the top right of the icon image. If the user changes the state using
-the space bar, all the selected items cycle, not just the item with the focus.
-</para></listitem></varlistentry>
-<varlistentry><term>SUBITEMIMAGES</term>
-<listitem><para>Report view only.  Allows images to be displayed for subitems.
-</para></listitem></varlistentry>
-<varlistentry><term>TRACKSELECT</term>
-<listitem><para>Enables hot track selection.  The user can select an item by
-leaving the mouse over an item for a certain period of time, the
-&quot;hover&quot; time.  This period of time can be changed from the default by
-using the <xref linkend="mthSetHoverTime"/>  method.
-</para></listitem></varlistentry>
-<varlistentry><term>TWOCLICKACTIVATE</term>
-<listitem><para>Enables the list-view control to send an item activate
-notification when the user clicks on an item after it has been selected. When
-the user clicks on an item it will be selected. At that point, if the user
-clicks on the item a second time, the item will be activated. Note that this is
-different from double-clicking to activate.  Any amount of time can pass between
-the click that selects the item and the click that activates the item.
-(Provided the item remains selected of course.)
+<para>
+  The <emphasis role="italic">addExtendedStyle</emphasis> method adds one or more of the <link
+  linkend="listControlExtendedStyles">extended</link> list-view styles to a list-view. These styles can not be added until
+  the underlying Windows list-view control has been created. They can be added in the <xref linkend="mthInitDialog"/>
+  method, or any time thereafter.
 </para>
-<para> It also works with track select. If track select is enabled, the user can
-select an item by pausing the mouse over the item.  At that point, if the user
-then clicks on the item it will be activated.
-</para></listitem></varlistentry>
-<varlistentry><term>UNDERLINECOLD</term>
-<listitem><para>Underlining gives the user a visual clue that a single click on
-an item will activate it.  Underlining requires either
-<computeroutput>ONECLICKACTIVATE</computeroutput> or
-<computeroutput>TWOCLICKACTIVE</computeroutput> to also be enabled.  An item
-becomes hot when the mouse is over it.  Underline cold underlines all the cold
-items when a single click will activate them.  When one click activate is
-enabled, this would then be all items.  When two click activate is enabled this
-would then be only those items that were selected.
-</para></listitem></varlistentry>
-<varlistentry><term>UNDERLINEHOT</term>
-<listitem><para>The underline hot style is similar to the underline cold style.
-See that style above for the explanation of some of the terms.  With underline
-hot, the item is underlined when the mouse is over it, if one click will
-activate the item.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return values are:
 <variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>An (internal) problem with the control's window handle.
-</para></listitem></varlistentry>
-<varlistentry><term>-3</term>
-<listitem><para>The style argument did not contain any of the extended style
-keywords.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how to initially add the extended
-styles to a list-view control.  This is done in the
-<computeroutput>initDialog</computeroutput> method, which executes after the
-underlying Windows dialog has been created, but before it is displayed on the
-screen.  This is the earliest point in time that the extended style methods can
-be used.  The list-view is in the report view and will have check boxes and grid
-lines.  The user will be able to use drag and drop to rearrange the columns.
-When a row is selected, the full row will be highlighted rather than just the
-first column.
-<programlisting> <![CDATA[
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>style [required]</term>
+    <listitem>
+    <para>
+      The extended style to be added. A list of 1 or more of the following keywords separated by spaces, case is not
+      significant. Invalid words in the list are ignored. If there are no valid keywords at all in the list, then an error
+      is returned:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>BORDERSELECT    </member>
+        <member>CHECKBOXES      </member>
+        <member>DOUBLEBUFFER    </member>
+        <member>FLATSB          </member>
+        <member>FULLROWSELECT   </member>
+        <member>GRIDLINES       </member>
+        <member>HEADERDRAGDROP  </member>
+        <member>INFOTIP         </member>
+        <member>LABELTIP        </member>
+        <member>MULTIWORKAREAS  </member>
+        <member>ONECLICKACTIVATE</member>
+        <member>REGIONAL        </member>
+        <member>SIMPLESELECT    </member>
+        <member>SUBITEMIMAGES   </member>
+        <member>TRACKSELECT     </member>
+        <member>TWOCLICKACTIVATE</member>
+        <member>UNDERLINECOLD   </member>
+        <member>UNDERLINEHOT    </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>BORDERSELECT</term>
+        <listitem>
+        <para>
+          When an item is selected the border color of the item changes rather than the item being highlighted.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CHECKBOXES</term>
+        <listitem>
+        <para>
+          Check boxes are visible and functional in all list-view modes except tile mode.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DOUBLEBUFFER</term>
+        <listitem>
+        <para>
+          Windows XP or later only.  The list-view control is painted using double buffering.  This reduces flicker.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FLATSB</term>
+        <listitem>
+        <para>
+          Enables flat scroll bars.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FULLROWSELECT</term>
+        <listitem>
+        <para>
+          Report view only.  When a row is selected, the whole row is highlighted rather than just the first column.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GRIDLINES</term>
+        <listitem>
+        <para>
+          Report view only. Gridlines are drawn around all items and sub-items. This gives a spreadsheet-like appearance to
+          the list-view control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HEADERDRAGDROP</term>
+        <listitem>
+        <para>
+          Report view only. The user can drag and drop the headers to rearrange the columns.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INFOTIP</term>
+        <listitem>
+        <para>
+          With this style a notification is sent to the parent window before displaying an item's tooltip.  (The current
+          version of ooDialog can not take advantage of this style.  It is planned for a future enhancement.)
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LABELTIP</term>
+        <listitem>
+        <para>
+          Windows XP or later only. In any list-view mode, if an item's label is only partially visible, the complete label
+          will be displayed in a fashion similar to a tool tip.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MULTIWORKAREAS</term>
+        <listitem>
+        <para>
+          The current version of ooDialog can not take advantage of this style. It is planned for a future enhancement.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ONECLICKACTIVATE</term>
+        <listitem>
+        <para>
+          Enables the list-view control to send an item activate notification when the user clicks one time on an item.  It
+          also enables hot tracking in the list-view control. Both the underline cold and the underline hot styles need
+          either one click activate or two click activate styles to be enabled.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>REGIONAL</term>
+        <listitem>
+        <para>
+          Icon view only. Sets the window region to only include an item's icon and text.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SIMPLESELECT</term>
+        <listitem>
+        <para>
+                    Windows XP and later only.  Icon view only.  Moves the state
+        image to the top right of the icon image. If the user changes the state using
+        the space bar, all the selected items cycle, not just the item with the focus.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SUBITEMIMAGES</term>
+        <listitem>
+        <para>
+          Report view only. Allows images to be displayed for subitems.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TRACKSELECT</term>
+        <listitem>
+        <para>
+          Enables hot track selection. The user can select an item by leaving the mouse over an item for a certain period of
+          time, the &quot;hover&quot; time.  This period of time can be changed from the default by using the <xref
+          linkend="mthSetHoverTime"/> method.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TWOCLICKACTIVATE</term>
+        <listitem>
+        <para>
+          Enables the list-view control to send an item activate notification when the user clicks on an item after it has
+          been selected. When the user clicks on an item it will be selected. At that point, if the user
+          clicks on the item a second time, the item will be activated. Note that this is different from double-clicking to
+          activate.  Any amount of time can pass between the click that selects the item and the click that activates the
+          item. (Provided the item remains selected of course.)
+        </para>
+        <para>
+          It also works with track select. If track select is enabled, the user can select an item by pausing the mouse over
+          the item.  At that point, if the user then clicks on the item it will be activated.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UNDERLINECOLD</term>
+        <listitem>
+        <para>
+          Underlining gives the user a visual clue that a single click on an item will activate it.  Underlining requires
+          either ONECLICKACTIVATE or TWOCLICKACTIVE to also be enabled.  An item becomes hot when the mouse is over it.
+          Underline cold underlines all the cold items when a single click will activate them.  When one click activate is
+          enabled, this would then be all items.  When two click activate is enabled this would then be only those items that
+          were selected.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UNDERLINEHOT</term>
+        <listitem>
+        <para>
+          The underline hot style is similar to the underline cold style. See that style above for the explanation of some of
+          the terms.  With underline hot, the item is underlined when the mouse is over it, if one click will activate the
+          item.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  </para>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      An (internal) problem with the control's window handle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-3</term>
+    <listitem>
+    <para>
+      The style argument did not contain any of the extended style keywords.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows how to initially add the extended styles to a list-view control.  This is done in the
+    <xref linkend="mthInitDialog"/> method, which executes after the underlying Windows dialog has been created, but before
+    it is displayed on the screen.  This is the earliest point in time that the extended style methods can be used.  The
+    list-view is in the report view and will have check boxes and grid lines.  The user will be able to use drag and drop to
+    rearrange the columns. When a row is selected, the full row will be highlighted rather than just the first column.
+
+<programlisting>
+<![CDATA[
 
 ::method initDialog
   expose listView
@@ -957,7 +1031,8 @@ first column.
 
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1025,12 +1100,13 @@ first column.
 
 <section id="mthAddRow" xreflabel="addRow"><title>addRow</title>
 <indexterm><primary>addRow</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>addRow</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                   +-,----+
-                                   V      |
->>--addRow(--+------+--,--icon--,----text-+--)---><
-             +-item-+
+                                     +-,----+
+                                     V      |
+>>--addRow(--+------+--,--------+--+--------+--)---><
+             +-item-+  +-,-icon-+  +-,-text-+
 
 ]]>
 </programlisting>
@@ -1044,49 +1120,63 @@ first column.
   Remember that in a list-view, items and columns use a 0-based index. Subitems use a 1-based index.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>item</term>
-<listitem><para>
-  The index of the item. If you omit this argument, the item is added immediately after the last item
-  added or inserted in the list-view. That is, the index defaults to the index of the last item added
-  plus 1. If there are no items in the list-view then the item is added at index 0.
-</para></listitem></varlistentry>
-<varlistentry><term>icon</term>
-<listitem><para>
-  The index within the image list for the icon for this item. Image lists are assigned to a list-view by
-  using the <xref linkend="mthSetImageListClsListView"/>() method. With the
-  <computeroutput>setImageList</computeroutput>() method, use the LVSIL_NORMAL flag for the icon view
-  icons and the LVSIL_SMALL flag for the list, report, and small-icon views icons.
-</para>
-</listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>
-  Any number of text strings. The first text string is used for the label of the item. Successive strings
-  are used for the text of subitems of the item. For example, the text of the second string is used for
-  the text of subitem 1. The text of the third string is used for the text of subitem 2, and so on. If
-  the first string is omitted, then the empty string is used for the item label. If other strings are
-  omitted, than no text is set for the corresponding subitem. If you specify more text entries than there
-  are columns, the extra entries are ignored.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The index of the new item, or -1 in all other cases.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example adds three items to a report list with two columns:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>item [optional]</term>
+    <listitem>
+    <para>
+      The index of the item. If you omit this argument, the item is added immediately after the last item added or inserted
+      in the list-view. That is, the index defaults to the index of the last item added plus 1. If there are no items in the
+      list-view then the item is added at index 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>icon [optional]</term>
+    <listitem>
+    <para>
+      The index within the image list for the icon for this item. Image lists are assigned to a list-view by
+      using the <xref linkend="mthSetImageListClsListView"/>() method. With the <emphasis
+      role="italic">setImageList</emphasis> method, use the LVSIL_NORMAL flag for the icon view icons and the LVSIL_SMALL
+      flag for the list, report, and small-icon views icons. If this argument is omitted, no icon index is assigned to the
+      itme
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [optional]</term>
+    <listitem>
+    <para>
+      Any number of text strings. The first text string is used for the label of the item. Successive strings are used for
+      the text of subitems of the item. For example, the text of the second string is used for the text of subitem 1. The
+      text of the third string is used for the text of subitem 2, and so on. If the first string is omitted, then the empty
+      string is used for the item label. If other strings are omitted, than no text is set for the corresponding subitem. If
+      you specify more text entries than there are columns, the extra entries are ignored.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The index of the new item, or -1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example adds three items to a report list with two columns:
 <programlisting>
 <![CDATA[
 ::method InitList
-  curList = self~newListView(101)
-  curList~addRow(, ,"Mike","Miller")
-  curList~addRow(, ,"Sue","Muller")
-  curList~addRow(, ,"Chris","Watson")
+  lv = self~newListView(IDC_LV_CONTACTS)
+  lv~addRow(, ,"Mike","Miller")
+  lv~addRow(, ,"Sue","Muller")
+  lv~addRow(, ,"Chris","Watson")
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
