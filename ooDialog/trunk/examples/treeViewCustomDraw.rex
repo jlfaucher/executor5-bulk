@@ -130,7 +130,7 @@ return info.!Image == self~UNSELECTED_LEAF
     end
 
     -- Connect dialog control events to methods in the Rexx dialog.
-    self~connectTreeViewEvent(IDC_TREE, "EXPANDING", "onExpanding")
+    self~connectTreeViewEvent(IDC_TREE, "EXPANDING", "onExpanding", .true)
     self~connectTreeViewEvent(IDC_TREE, "DEFAULTEDIT")
     self~connectTreeViewEvent(IDC_TREE, "BEGINDRAG", "DefTreeDragHandler")
     self~connectTreeViewEvent(IDC_TREE, "KEYDOWN",   "onKeyDown")
@@ -256,28 +256,35 @@ return 0
  * added here.  The items are loaded from a file in the same manner as the
  * original items are loaded from a file to build the tree.
  *
- * When the user collapses the node, all its children items are removed.
+ * Note that the fourth argument to connectTreeViewEvent() was used for the
+ * EXPANDING event and set to true. This causes the interpreter to wait for the
+ * reply from this event handler, before it replies to the operating system. If
+ * the interpreter were to not wait for the reply, the tree-view control would
+ * immediately expand the item before the children were added.
+ *
+ * When the user collapses the node, all its children items are removed.  This
+ * is done through the collapseAndReset method, which collapse the item and also
+ * tells the tree-view control to deallocate the children.
  */
 ::method onExpanding unguarded
     expose tv
-    use arg tree, item, what
+    use arg tree, item, what, extra
 
     itemInfo. = tv~itemInfo(item)
 
     if itemInfo.!TEXT = "Special Offers" then do
-        if what == "COLLAPSED", tv~child(item) == 0 then do
+        if what == "EXPANDED", tv~child(item) == 0 then do
             do while lines(self~ITEM_FILE)
                 args = self~makeArgs(item, , linein(self~ITEM_FILE))
                 tv~sendWith('insert', args)
             end
-            tv~expand(item)
         end
-        else if what == "EXPANDED", tv~child(item) <> 0 then do
+        else if what == "COLLAPSED", tv~child(item) \== 0 then do
             tv~collapseAndReset(item)
         end
     end
 
-return 0
+return .true
 
 
 /** onKeyDown()

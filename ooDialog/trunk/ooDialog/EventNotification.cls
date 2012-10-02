@@ -248,7 +248,7 @@
 
 
 ::method connectTreeViewEvent
-   use strict arg id, type, msgToRise = ""
+   use strict arg id, type, msgToRise = "", willReply = .false
    if \ id~dataType("W") then id = self~resolveSymbolicId(id)
    if id = -1 then return -1
    if msgToRise == "" then msgToRise = "on" || type
@@ -271,7 +271,14 @@
        when type = "KEYDOWN" then lp = -412
        otherwise return -1
    end
-   return self~addUserMsg(msgToRise, 0x0000004E, "0xFFFFFFFF", id, "0xFFFFFFFF", lp, "0xFFFFFFFF")
+
+   tag = 0
+   if lp == -405 | lp == -406 then do
+     if willReply then tag = 0x02000006
+     else tag = 0x00000006
+   end
+
+   return self~addUserMsg(msgToRise, 0x0000004E, "0xFFFFFFFF", id, "0xFFFFFFFF", lp, "0xFFFFFFFF", tag)
 
 
 ::method connectTabEvent

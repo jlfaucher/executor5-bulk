@@ -1981,6 +1981,113 @@ MsgReplyType processTCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     return genericNotifyInvoke(c, pcpbd, methodName, idFrom, hwndFrom);
 }
 
+
+/**
+ * Handles, some of, the tree-vien event notifications.
+ *
+ * The tag code must have included the TAG_TREEVIEW flag for this function to be
+ * invoked.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param code
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  Note that most of the tree-view notifications are still handled
+ *           using the old IBM ooDialog code.  Currently only the
+ *           TVN_ITEMEXPANDING and TVn_ITEMEXPANDED notifications are tagged
+ *           with TAG_TREEVIEW.
+ *
+ *           TVN_ITEMEXPANDING: The Rexx programmer returns .true expanding /
+ *           collapsing the item is okay, or .false do not allow the expansion /
+ *           collapse.
+ *
+ *           TVN_ITEMEXPANDED: If the Rexx programmer sets 'willReply' to true,
+ *           we wait for the reply, but discard the actual.  This then has the
+ *           'sync' effect.
+ */
+MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+
+    switch ( code )
+    {
+        case TVN_ITEMEXPANDED :
+        case TVN_ITEMEXPANDING :
+        {
+            NMTREEVIEW *nmtv = (NM_TREEVIEW *)lParam;
+
+            // The arguements are the same whether we wait for the reply or not.
+            RexxObjectPtr handle = pointer2string(c, nmtv->itemNew.hItem);
+            RexxObjectPtr extra  = c->String("");
+            CSTRING       _what  = "ERROR";
+
+            if ( (nmtv->action & 0xf) == TVE_COLLAPSE )
+            {
+                _what = "COLLAPSED";
+                if ( nmtv->action & TVE_COLLAPSERESET )
+                {
+                    extra = c->String("RESET");
+                }
+            }
+            else if ( (nmtv->action & 0xf) == TVE_EXPAND )
+            {
+                _what = "EXPANDED";
+                if ( nmtv->action & TVE_EXPANDPARTIAL )
+                {
+                    extra = c->String("PARTIAL");
+                }
+            }
+            else if ( nmtv->action == TVE_TOGGLE )
+            {
+                _what = (nmtv->itemNew.state & TVIS_EXPANDED) ? "COLLAPSED" : "EXPANDED";
+            }
+            RexxStringObject what = c->String(_what);
+
+            RexxArrayObject args = c->ArrayOfFour(idFrom, handle, what, extra);
+
+            if ( (tag & TAG_EXTRAMASK) == TAG_REPLYFROMREXX )
+            {
+                RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+                if ( code == TVN_ITEMEXPANDING )
+                {
+                    msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+                    if ( msgReply == TheTrueObj || msgReply == TheFalseObj )
+                    {
+                        // Return true to prevent the item from expanding / collapsing.
+                        setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? FALSE : TRUE);
+                    }
+                }
+            }
+            else
+            {
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+
+            }
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(handle);
+            c->ReleaseLocalReference(what);
+            c->ReleaseLocalReference(extra);
+            c->ReleaseLocalReference(args);
+
+            return ReplyTrue;
+        }
+
+        default :
+            break;
+    }
+
+
+    // This should never happen, we can't get here.
+    return ReplyTrue;
+}
+
 MsgReplyType processMCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
     RexxObjectPtr rexxReply;
@@ -2253,6 +2360,9 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
                 // We could let the user decide through use of the .application
                 // object.
 
+                case TAG_TREEVIEW :
+                    return processTVN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
+
                 case TAG_TAB :
                     return processTCN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
 
@@ -2279,13 +2389,6 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
             {
                 np = ((LV_DISPINFO *)lParam)->item.pszText;
                 item = ((LV_DISPINFO *)lParam)->item.iItem;
-            }
-            /* do we have a tree expand/collapse? */
-            else if ( (code == TVN_ITEMEXPANDED) || (code == TVN_ITEMEXPANDING) )
-            {
-                handle = ((NM_TREEVIEW *)lParam)->itemNew.hItem;
-                if ( ((NM_TREEVIEW *)lParam)->itemNew.state & TVIS_EXPANDED ) np = "EXPANDED";
-                else np = "COLLAPSED";
             }
             /* do we have a key_down? */
             else if ( (code == TVN_KEYDOWN) || (code == LVN_KEYDOWN) || (code == TCN_KEYDOWN) )

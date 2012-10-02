@@ -133,6 +133,15 @@ static void parseTvModifyOpts(CSTRING opts, TVITEMEX *tvi)
         tvi->state |= TVIS_EXPANDED;
         tvi->stateMask |= TVIS_EXPANDED;
     }
+    else if ( StrStrI(opts, "NOTEXPANDPARTIAL") != NULL )
+    {
+        tvi->stateMask |= TVIS_EXPANDPARTIAL;
+    }
+    else if ( StrStrI(opts, "EXPANDPARTIAL") != NULL )
+    {
+        tvi->state |= TVIS_EXPANDPARTIAL;
+        tvi->stateMask |= TVIS_EXPANDPARTIAL;
+    }
 
     if ( tvi->state != 0 || tvi->stateMask != 0 )
     {
@@ -396,7 +405,7 @@ RexxMethod2(RexxObjectPtr, tv_itemInfo, CSTRING, _hItem, CSELF, pCSelf)
     tvi.mask = TVIF_HANDLE | TVIF_TEXT | TVIF_STATE | TVIF_IMAGE | TVIF_CHILDREN | TVIF_SELECTEDIMAGE | TVIF_PARAM;
     tvi.pszText = buf;
     tvi.cchTextMax = 255;
-    tvi.stateMask = TVIS_EXPANDED | TVIS_BOLD | TVIS_SELECTED | TVIS_EXPANDEDONCE | TVIS_DROPHILITED | TVIS_CUT;
+    tvi.stateMask = TVIS_EXPANDED | TVIS_BOLD | TVIS_SELECTED | TVIS_EXPANDEDONCE | TVIS_DROPHILITED | TVIS_CUT | TVIS_EXPANDPARTIAL;
 
     if ( TreeView_GetItem(hwnd, &tvi) == 0 )
     {
@@ -417,6 +426,7 @@ RexxMethod2(RexxObjectPtr, tv_itemInfo, CSTRING, _hItem, CSELF, pCSelf)
     if ( tvi.state & TVIS_EXPANDEDONCE ) strcat(buf, "EXPANDEDONCE ");
     if ( tvi.state & TVIS_DROPHILITED  ) strcat(buf, "INDROP ");
     if ( tvi.state & TVIS_CUT          ) strcat(buf, "CUT ");
+    if ( tvi.state & TVIS_EXPANDPARTIAL) strcat(buf, "EXPANDPARTIAL ");
     if ( *buf != '\0' )
     {
         *(buf + strlen(buf) - 1) = '\0';
