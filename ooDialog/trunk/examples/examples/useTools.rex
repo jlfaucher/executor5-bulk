@@ -223,7 +223,7 @@
   count += 1
 
   -- Now size the dialog to exactly fit the buttons
-  self~create(0, 30, count * s~width, s~height, "Tool Pallete", "NOMENU")
+  self~create(0, 30, count * s~width, s~height, "Tool Palette", "NOMENU")
 
 ::method defineDialog
   expose s buttonIDs

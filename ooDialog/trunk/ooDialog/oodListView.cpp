@@ -3093,8 +3093,7 @@ err_out:
  */
 RexxMethod3(RexxObjectPtr, lv_setItemData, uint32_t, index, RexxObjectPtr, data, CSELF, pCSelf)
 {
-    LVITEM        lvi = {LVIF_PARAM, index};
-    RexxObjectPtr result = TheNilObj;
+    LVITEM lvi = {LVIF_PARAM, index};
 
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )

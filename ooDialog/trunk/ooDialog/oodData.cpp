@@ -461,7 +461,7 @@ static bool setTreeViewData(HWND hDlg, const char * ldat, uint32_t ctrlID)
    if ( hCtrl != NULL )
    {
        HTREEITEM hItem = tvFindItem(hCtrl, ldat);
-       printf("setTreeViewData() text=%s hItem=%p\n", ldat, hItem);
+
        if ( hItem != NULL )
        {
            return (TreeView_SelectItem(hCtrl, hItem) ? true : false);
