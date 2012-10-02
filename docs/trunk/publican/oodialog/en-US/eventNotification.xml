@@ -6845,8 +6845,8 @@ trackbar position by extracting the high-oder word. Example:
 <indexterm><primary>connectTreeViewEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-connectTreeViewEvent(--id--,--event--+----------------+--)---><
-                                        +-,--methodName--+
+>>-connectTreeViewEvent(--id--,--event--+-------------+--+-------------+--)----><
+                                        +-,--mthName--+  +-,-willReply-+
 
 ]]>
 </programlisting>
@@ -6928,13 +6928,29 @@ trackbar position by extracting the high-oder word. Example:
       </variablelist>
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>methodName</term>
+    <varlistentry><term>mthName</term>
     <listitem>
     <para>
       The name of the event handling method. This method is invoked each time the specified event occurs for the tree
       view control. If you omit this argument, the method name is generated for you. This name will be the event
       keyword, preceded by <computeroutput>on</computeroutput>. For example: <emphasis
       role="italic">onExpanded</emphasis>. The method name can not be the empty string.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The value of the <emphasis role="italic">willReply</emphasis> argument must be true or false. The arugment controls
+      whether the interpreter <link linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler. The
+      default is <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. If <emphasis
+      role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
+      event handling method returns a value.
+    </para>
+    <para>
+      <emphasis role="bold">Note:</emphasis> Currently the <emphasis role="italic">willReply</emphasis> argument is ignored
+      for all events except the EXPANDING and EXPANDED events. For all other events, the interpreter never waits for the
+      reply from the event handler. Future enhancements to the <computeroutput>TreeView</computeroutput> class may allow the
+      <emphasis role="italic">willReply</emphasis> to have effect for all tree-view event notifications.
     </para>
     </listitem></varlistentry>
   </variablelist> </listitem></varlistentry>
@@ -7011,15 +7027,33 @@ trackbar position by extracting the high-oder word. Example:
   </listitem>
   <listitem>
   <para>
-    The event-handling method connected to the EXPANDED event receives three arguments: the control ID of the tree view
-    control, the tree item expanded or collapsed, and a string that indicates whether the item was expanded or collapsed.
-    Recall that the EXPANDED notification is sent <emphasis role="italic">after</emphasis> the item has been expanded or
-    collapsed. Example:
+    The event-handling method connected to the EXPANDED event receives four arguments: the control ID of the tree view
+    control, the handle of the tree item that expanded or collapsed, a string that indicates whether the item was expanded or
+    collapsed, and a string with possible extra information.. Recall that the EXPANDED notification is sent <emphasis
+    role="italic">after</emphasis> the item has been expanded or collapsed.
+  </para>
+  <para>
+    The <emphasis role="italic">what</emphasis> argument will be either <emphasis role="italic">EXPANDED</emphasis> or
+    <emphasis role="italic">COLLAPSED</emphasis>. The <emphasis role="italic">extra</emphasis> arugment will usually be the
+    empty string. The Microsoft documentation seems to indicate that when an item is expanded, the action may be expanded
+    partial and when the action is collapsed, it may be collapsed and reset. If expanded partial is detected, the <emphasis
+    role="italic">extra</emphasis> argument will be <emphasis role="italic">PARTIAL</emphasis>. If collapse and reset is
+    detected, the <emphasis role="italic">extra</emphasis> argument will be <emphasis role="italic">RESET</emphasis>.
+    However, in testing, neither of these 2 actions were every detected and the Microsoft documentation is unclear here. It
+    may be that the <emphasis role="italic">extra</emphasis> argument will always be the empty string.
+  </para>
+  <para>
+    If the <emphasis role="italic">willReply</emphasis> argument to <emphasis role="italic">connectTreeViewEvent</emphasis>
+    is true, the interpreter will wait for the reply from the event handler. However Windows ignores the reply, so returning
+    any value is sufficient.
+  </para>
+  <para>
+    Example:
 
   <programlisting>
   <![CDATA[
   ::method onExpanded unguarded
-    use arg id, item, what
+    use arg id, item, what, extra
     say "The item with handle" item "has been" what
 
     return 0
@@ -7036,10 +7070,30 @@ trackbar position by extracting the high-oder word. Example:
   </listitem>
   <listitem>
   <para>
-    The event-handling method connected to the EXPANDING event receives three arguments: the control ID of the tree view
-    control, the tree item expanded or collapsed, and a string that indicates whether the item was expanded or collapsed.
-    Recall that the EXPANDING notification is sent <emphasis role="italic">before</emphasis> the item has been expanded or
-    collapsed. Example:
+    The event-handling method connected to the EXPANDING event receives four arguments: the control ID of the tree view
+    control, the handle of the tree item that is about to be expanded or collapsed, a string that indicates whether the item
+    will be expanded or collapsed, and a string with possible extra information.. Recall that the EXPANDING notification is
+    sent <emphasis role="italic">before</emphasis> the item is expanded or collapsed.
+  </para>
+  <para>
+    The <emphasis role="italic">what</emphasis> argument will be either <emphasis role="italic">EXPANDED</emphasis> or
+    <emphasis role="italic">COLLAPSED</emphasis>. The <emphasis role="italic">extra</emphasis> arugment will usually be the
+    empty string. The Microsoft documentation seems to indicate that when an item is about to be expanded, the action may be
+    expanded partial and when the action is about to be collapsed, it may be collapsed and reset. If expanded partial is
+    detected, the <emphasis role="italic">extra</emphasis> argument will be <emphasis role="italic">PARTIAL</emphasis>. If
+    collapse and reset is detected, the <emphasis role="italic">extra</emphasis> argument will be <emphasis
+    role="italic">RESET</emphasis>. However, in testing, neither of these 2 actions were every detected and the Microsoft
+    documentation is unclear here. It may be that the <emphasis role="italic">extra</emphasis> argument will always be the
+    empty string.
+  </para>
+  <para>
+    If the <emphasis role="italic">willReply</emphasis> argument to <emphasis role="italic">connectTreeViewEvent</emphasis>
+    is true, the interpreter will wait for the reply from the event handler. The programmer <emphasis
+    role="italic">must</emphasis> return either true or false. The programmer can prevent the expansion or collapse for the
+    item by returning false. To allow the expansion or collapse to take place, the programmer must return true.
+  </para>
+  <para>
+    Example:
 
   <programlisting>
   <![CDATA[
@@ -7047,7 +7101,7 @@ trackbar position by extracting the high-oder word. Example:
     use arg id, item, what
     say "Item with handle" item "is going to be" what
 
-    return 0
+    return .true
 
     /*
       Possible output:
