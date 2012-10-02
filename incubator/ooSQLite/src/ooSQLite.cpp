@@ -1123,6 +1123,15 @@ static int authorizerCallback(void *data, int op, const char *str1, const char *
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
+    if ( d->initialThreadID != GetCurrentThreadId() )
+    {
+        if ( ! d->interpreter->AttachThread(&c) )
+        {
+            // There is nothing to be done about this, need to just quit.
+            return SQLITE_OK;
+        }
+    }
+
     args = c->ArrayOfFour(c->WholeNumber(op), c->String(str1), c->String(str2), c->String(str3));
 
     c->ArrayPut(args, c->String(str4), 5);
@@ -1153,6 +1162,10 @@ static int authorizerCallback(void *data, int op, const char *str1, const char *
         rc = SQLITE_DENY;
     }
 
+    if ( c != d->callbackContext )
+    {
+        c->DetachThread();
+    }
     return (int)rc;
 }
 
@@ -1162,12 +1175,24 @@ static int authorizerCallback(void *data, int op, const char *str1, const char *
  *
  * @param data
  *
- * @return int
+ * @return If the busy callback returns 0, then no additional attempts are made
+ *         to access the database and SQLITE_BUSY or SQLITE_IOERR_BLOCKED is
+ *         returned. If the callback returns non-zero, then another attempt is
+ *         made to open the database for reading and the cycle repeats
  */
 static int busyCallBack(void *data, int countInvoked)
 {
     pCGenericCallback  d = (pCGenericCallback)data;
     RexxThreadContext *c = d->callbackContext;
+
+    if ( d->initialThreadID != GetCurrentThreadId() )
+    {
+        if ( ! d->interpreter->AttachThread(&c) )
+        {
+            // There is nothing to be done about this, need to just quit.
+            return SQLITE_OK;
+        }
+    }
 
     RexxArrayObject args;
     RexxObjectPtr   reply = NULLOBJECT;
@@ -1199,6 +1224,10 @@ static int busyCallBack(void *data, int countInvoked)
         rc = 0;
     }
 
+    if ( c != d->callbackContext )
+    {
+        c->DetachThread();
+    }
     return (int)rc;
 }
 
@@ -1226,6 +1255,15 @@ static int commitHookCallback(void *data)
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
+    if ( d->initialThreadID != GetCurrentThreadId() )
+    {
+        if ( ! d->interpreter->AttachThread(&c) )
+        {
+            // There is nothing to be done about this, need to just quit.
+            return SQLITE_OK;
+        }
+    }
+
     if ( d->userData == NULL )
     {
         args = c->ArrayOfOne(TheNilObj);
@@ -1249,6 +1287,10 @@ static int commitHookCallback(void *data)
         rc = 1;
     }
 
+    if ( c != d->callbackContext )
+    {
+        c->DetachThread();
+    }
     return (int)rc;
 }
 
@@ -1278,6 +1320,15 @@ static void profileHookCallback(void *data, const char *statement, sqlite3_uint6
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
+    if ( d->initialThreadID != GetCurrentThreadId() )
+    {
+        if ( ! d->interpreter->AttachThread(&c) )
+        {
+            // There is nothing to be done about this, need to just quit.
+            return;
+        }
+    }
+
     if ( d->userData == NULL )
     {
         args = c->ArrayOfThree(c->String(statement), c->UnsignedInt64(nanosecs), TheNilObj);
@@ -1299,6 +1350,11 @@ static void profileHookCallback(void *data, const char *statement, sqlite3_uint6
     // We just check this, which may raise an exception, but don't do anything
     // else.
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
+
+    if ( c != d->callbackContext )
+    {
+        c->DetachThread();
+    }
 }
 
 
@@ -1319,6 +1375,15 @@ static int progressCallback(void *data)
     wholenumber_t   rc    = 0;
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
+
+    if ( d->initialThreadID != GetCurrentThreadId() )
+    {
+        if ( ! d->interpreter->AttachThread(&c) )
+        {
+            // There is nothing to be done about this, need to just quit.
+            return SQLITE_OK;
+        }
+    }
 
     if ( d->userData == NULL )
     {
@@ -1345,6 +1410,10 @@ static int progressCallback(void *data)
         rc = 1;
     }
 
+    if ( c != d->callbackContext )
+    {
+        c->DetachThread();
+    }
     return (int)rc;
 }
 
@@ -1371,6 +1440,15 @@ static void rollbackHookCallback(void *data)
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
+    if ( d->initialThreadID != GetCurrentThreadId() )
+    {
+        if ( ! d->interpreter->AttachThread(&c) )
+        {
+            // There is nothing to be done about this, need to just quit.
+            return;
+        }
+    }
+
     if ( d->userData == NULL )
     {
         args = c->ArrayOfOne(TheNilObj);
@@ -1392,13 +1470,18 @@ static void rollbackHookCallback(void *data)
     // We just check this, which may raise an exception, but don't do anything
     // else.
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
+
+    if ( c != d->callbackContext )
+    {
+        c->DetachThread();
+    }
 }
 
 
 /**
  * The call back function for sqlite3_trace()
  *
- * @param data  A poitner to our callback struct
+ * @param data  A pointer to our callback struct
  *
  * @param statement  A UTF-8 rendering of the SQL statement text or a UTF-8 SQL
  *                   comment that identifies the trigger if the callback is
@@ -1421,6 +1504,15 @@ static void traceHookCallback(void *data, const char *statement)
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
+    if ( d->initialThreadID != GetCurrentThreadId() )
+    {
+        if ( ! d->interpreter->AttachThread(&c) )
+        {
+            // There is nothing to be done about this, need to just quit.
+            return;
+        }
+    }
+
     if ( d->userData == NULL )
     {
         args = c->ArrayOfTwo(c->String(statement), TheNilObj);
@@ -1442,6 +1534,11 @@ static void traceHookCallback(void *data, const char *statement)
     // We just check this, which may raise an exception, but don't do anything
     // else.
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
+
+    if ( c != d->callbackContext )
+    {
+        c->DetachThread();
+    }
 }
 
 
@@ -1471,6 +1568,15 @@ static void updateHookCallback(void *data, int op, const char *dbName, const cha
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
+    if ( d->initialThreadID != GetCurrentThreadId() )
+    {
+        if ( ! d->interpreter->AttachThread(&c) )
+        {
+            // There is nothing to be done about this, need to just quit.
+            return;
+        }
+    }
+
     args = c->ArrayOfFour(c->WholeNumber(op), c->String(dbName), c->String(tableName), c->Int64(rowID));
 
     if ( d->userData == NULL )
@@ -1494,6 +1600,11 @@ static void updateHookCallback(void *data, int op, const char *dbName, const cha
     // We just check this, which may raise an exception if the Rexx method or
     // routine has problems, but don't do anything else.
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
+
+    if ( c != d->callbackContext )
+    {
+        c->DetachThread();
+    }
 }
 
 
@@ -1509,8 +1620,8 @@ static void updateHookCallback(void *data, int op, const char *dbName, const cha
  */
 wholenumber_t genExecCall2Rexx(pCGenericCallback d, RexxObjectPtr record)
 {
-    RexxThreadContext *c  = d->callbackContext;
     wholenumber_t      rc = SQLITE_OK;
+    RexxThreadContext *c = d->callbackContext;
 
     d->count++;
 
@@ -1557,6 +1668,9 @@ wholenumber_t genExecCall2Rexx(pCGenericCallback d, RexxObjectPtr record)
  * @param headers
  *
  * @return int
+ *
+ * @notes  This callback is always executing under the same thread as the
+ *         callbackContext thread.
  */
 static int execCallBackArray(void *data, int ncols, char **values, char **headers)
 {
@@ -1654,6 +1768,9 @@ static int execCallBackArray(void *data, int ncols, char **values, char **header
  * @param headers
  *
  * @return int
+ *
+ * @note  This callback is always running on the same therea as the
+ *        callbackContext thread
  */
 static int execCallBackDirectory(void *data, int ncols, char **values, char **headers)
 {
@@ -1701,6 +1818,9 @@ static int execCallBackDirectory(void *data, int ncols, char **values, char **he
  * @param headers
  *
  * @return int
+ *
+ * @note  This callback is always running on the same thread as the
+ *        callbackContext thread.
  */
 static int execCallBackStem(void *data, int ncols, char **values, char **headers)
 {
@@ -2166,6 +2286,8 @@ static void cleanupThisCallback(RexxThreadContext *c, RexxBufferObject buf)
     if ( buf != NULLOBJECT && buf != TheNilObj )
     {
         pCGenericCallback cbc = (pCGenericCallback)c->BufferData(buf);
+
+        c->ReleaseGlobalReference(cbc->callbackObj);
 
         if ( cbc->userData != NULL )
         {
@@ -2766,6 +2888,11 @@ static RexxObjectPtr installCallback(RexxMethodContext *c, sqlite3 *db, pCGeneri
  * @param cbt        Identifies which callback registration this is for.
  *
  * @return RexxObjectPtr
+ *
+ * @notes  We request a global reference for both the user data *and* the call
+ *         back oject.  The Rexx programmer may not keep a reference to either
+ *         of them and we don't want them garbage collected out from under us
+ *         during a callback.
  */
 static RexxObjectPtr doCallbackSetup(RexxMethodContext *c, sqlite3 *db, RexxObjectPtr callbackObj,
                                      CSTRING mthName, RexxObjectPtr userData, CallbackType cbt, int instructions)
@@ -2788,8 +2915,10 @@ static RexxObjectPtr doCallbackSetup(RexxMethodContext *c, sqlite3 *db, RexxObje
     pCGenericCallback cbc = (pCGenericCallback)c->BufferData(cbcBuffer);
     memset(cbc, 0, sizeof(CGenericCallback));
 
-    cbc->callbackObj     = callbackObj;
+    cbc->callbackObj     = c->RequestGlobalReference(callbackObj);
     cbc->callbackContext = c->threadContext;
+    cbc->interpreter     = c->threadContext->instance;
+    cbc->initialThreadID = GetCurrentThreadId();
 
     if ( mthName != NULL )
     {
@@ -3463,10 +3592,12 @@ RexxMethod1(RexxObjectPtr, oosqlconn_uninit, CSELF, pCSelf)
                 pConn->db = NULL;
                 pConn->closed = true;
             }
+#ifdef OOSQLDBG
             else
             {
                 printf("ooSQLiteConnection::uninit() database connection not closed successfully. rc=%d\n", rc);
             }
+#endif
         }
     }
 
@@ -3609,10 +3740,12 @@ RexxMethod1(int, oosqlconn_close, CSELF, pCSelf)
             pConn->db     = NULL;
             pConn->closed = true;
         }
+#ifdef OOSQLDBG
         else if ( rc == SQLITE_BUSY )
         {
             printf("Database busy. Sleep here or let user deal with this??\n");
         }
+#endif
     }
 
     return rc;
@@ -3849,6 +3982,12 @@ RexxMethod1(RexxObjectPtr, oosqlconn_errMsg, CSELF, pCSelf)
  *
  *         In addition, if the user specifies a callback object they could end
  *         the exec processing once they got all the data they needed.
+ *
+ *         The exec() callback is always running on this thread, so the thread
+ *         context for this method is always valid.  Contrast this with some of
+ *         the other callbacks like trace(), commitHook(), etc., where the
+ *         callback could end up running under a different thread.  We do not
+ *         need to worry about the thread context for the exec() method.
  */
 RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doCallback,
             OPTIONAL_uint32_t, format, OPTIONAL_RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
@@ -3947,7 +4086,6 @@ RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
     {
         if ( errMsg != NULL )
         {
-            printf("SQL error: %s\n", errMsg);
             ooSQLiteErr(context, pConn, rc, errMsg, true);
             sqlite3_free(errMsg);
         }
@@ -4249,8 +4387,8 @@ RexxMethod4(RexxObjectPtr, oosqlconn_profile, RexxObjectPtr, callbackObj, OPTION
  *  database connection. An example use for this interface is to keep a GUI
  *  updated during a large query.
  *
- *  @param  callbackObj  [required]  An instantiated class object with a method
- *                       that is invoked periodically as described above.
+ *  @param  callbackObj  [required]  An instantiated object with a method that
+ *                       is invoked periodically as described above.
  *
  *                       This argument can also be .nil to indicate that any
  *                       installed callback is to be removed.
@@ -4466,9 +4604,9 @@ RexxMethod1(int, oosqlconn_totalChanges, CSELF, pCSelf)
  *
  *  Registers an user callback method used for tracing.
  *
- *  @param  callbackObj  [required]  An instantiated class object with a method
- *                       that is invoked at various times when an SQL statement
- *                       is being run by ooSQLiteStmt::step(). The callback is
+ *  @param  callbackObj  [required]  An instantiated object with a method that
+ *                       is invoked at various times when an SQL statement is
+ *                       being run by ooSQLiteStmt::step(). The callback is
  *                       invoked with a UTF-8 rendering of the SQL statement
  *                       text as the statement first begins executing.
  *                       Additional callbacks might occur as each triggered
@@ -4494,7 +4632,7 @@ RexxMethod1(int, oosqlconn_totalChanges, CSELF, pCSelf)
  *  @notes  By default, there is no trace callback installed.
  *
  *          There can only be one trace callback per database connection.
- *          Setting a new profile callback automatically clears any previously
+ *          Setting a new trace callback automatically clears any previously
  *          installed callback.
  *
  *          The first argument sent to the callback is the original SQL
@@ -6873,6 +7011,8 @@ static RexxObjectPtr doCallbackSetupRtn(RexxCallContext *c, sqlite3 *db, CSTRING
     cbc->callbackContext = c->threadContext;
     cbc->routineName     = rtnName;
     cbc->callbackRtn     = getCallerRoutine(c, rtnName);
+    cbc->interpreter     = c->threadContext->instance;
+    cbc->initialThreadID = GetCurrentThreadId();
 
     if ( cbc->callbackRtn == NULLOBJECT )
     {
@@ -8112,6 +8252,10 @@ RexxRoutine1(RexxObjectPtr, oosqlErrMsg_rtn, POINTER, _db)
  *
  *  @return  A result code, one of the .ooSQLiteConstants constants, or a result set as
  *           described above.
+ *
+ *  @note The callback routine runs in this same thread, so we do not have to
+ *        worry about garbage collection of the objects or an incorrect thread
+ *        context.
  */
 RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_logical_t, doCallback,
              OPTIONAL_uint32_t, format, OPTIONAL_CSTRING, rtnName)
@@ -9286,11 +9430,24 @@ RexxMethod1(RexxObjectPtr, hlpr_init_cls, OSELF, self)
 RexxMethod1(int, db_cb_releaseBuffer, RexxObjectPtr, buffer)
 {
     pCGenericCallback cbc = (pCGenericCallback)context->BufferData((RexxBufferObject)buffer);
-    printf("db_cb_releaseBuffer routine name=%s\n", cbc->routineName);
 
-    if ( cbc->userData != NULLOBJECT )
+#ifdef OOSQLDBG
+    if ( cbc == NULL )
     {
-        context->ReleaseGlobalReference(cbc->userData);
+        printf("db_cb_releaseBuffer cbc=%p, is NULL\n", cbc);
+    }
+    else
+    {
+        printf("db_cb_releaseBuffer routine name=%s\n", cbc->routineName);
+    }
+#endif
+
+    if ( cbc != NULL )
+    {
+        if ( cbc->userData != NULLOBJECT )
+        {
+            context->ReleaseGlobalReference(cbc->userData);
+        }
     }
 
     return 0;

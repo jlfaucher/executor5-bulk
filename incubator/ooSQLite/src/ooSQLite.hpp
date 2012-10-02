@@ -200,6 +200,7 @@ typedef struct _genericCallback {
     RexxRoutineObject    callbackRtn;     // Rexx routine to call.
     RexxObjectPtr        callbackObj;     // Rexx object to invoke the callback() method on.
     RexxObjectPtr        userData;        // A Rexx object that the user wants sent to its Rexx callback.
+    RexxInstance        *interpreter;
     RexxThreadContext   *callbackContext;
     CSTRING              callbackMethod;
     CSTRING              routineName;     // The name of the Rexx routine, needed for exception messages.
@@ -207,6 +208,7 @@ typedef struct _genericCallback {
     RexxStemObject       rsStem;          // When creating a result set and format is stemOfStems
     ResultSetType        format;          // Format of a record, array, stem, or directory.
     uint32_t             count;
+    uint32_t             initialThreadID;
     bool                 createRS;        // Determines if we are creating a record set or invoking a Rexx callback.
 } CGenericCallback;
 typedef CGenericCallback *pCGenericCallback;
