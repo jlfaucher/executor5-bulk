@@ -1123,7 +1123,7 @@ static int authorizerCallback(void *data, int op, const char *str1, const char *
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
-    if ( d->initialThreadID != GetCurrentThreadId() )
+    if ( d->initialThreadID != oosqlGetCurrentThreadId() )
     {
         if ( ! d->interpreter->AttachThread(&c) )
         {
@@ -1185,7 +1185,7 @@ static int busyCallBack(void *data, int countInvoked)
     pCGenericCallback  d = (pCGenericCallback)data;
     RexxThreadContext *c = d->callbackContext;
 
-    if ( d->initialThreadID != GetCurrentThreadId() )
+    if ( d->initialThreadID != oosqlGetCurrentThreadId() )
     {
         if ( ! d->interpreter->AttachThread(&c) )
         {
@@ -1255,7 +1255,7 @@ static int commitHookCallback(void *data)
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
-    if ( d->initialThreadID != GetCurrentThreadId() )
+    if ( d->initialThreadID != oosqlGetCurrentThreadId() )
     {
         if ( ! d->interpreter->AttachThread(&c) )
         {
@@ -1320,7 +1320,7 @@ static void profileHookCallback(void *data, const char *statement, sqlite3_uint6
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
-    if ( d->initialThreadID != GetCurrentThreadId() )
+    if ( d->initialThreadID != oosqlGetCurrentThreadId() )
     {
         if ( ! d->interpreter->AttachThread(&c) )
         {
@@ -1376,7 +1376,7 @@ static int progressCallback(void *data)
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
-    if ( d->initialThreadID != GetCurrentThreadId() )
+    if ( d->initialThreadID != oosqlGetCurrentThreadId() )
     {
         if ( ! d->interpreter->AttachThread(&c) )
         {
@@ -1440,7 +1440,7 @@ static void rollbackHookCallback(void *data)
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
-    if ( d->initialThreadID != GetCurrentThreadId() )
+    if ( d->initialThreadID != oosqlGetCurrentThreadId() )
     {
         if ( ! d->interpreter->AttachThread(&c) )
         {
@@ -1504,7 +1504,7 @@ static void traceHookCallback(void *data, const char *statement)
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
-    if ( d->initialThreadID != GetCurrentThreadId() )
+    if ( d->initialThreadID != oosqlGetCurrentThreadId() )
     {
         if ( ! d->interpreter->AttachThread(&c) )
         {
@@ -1568,7 +1568,7 @@ static void updateHookCallback(void *data, int op, const char *dbName, const cha
 
     bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
-    if ( d->initialThreadID != GetCurrentThreadId() )
+    if ( d->initialThreadID != oosqlGetCurrentThreadId() )
     {
         if ( ! d->interpreter->AttachThread(&c) )
         {
@@ -2918,7 +2918,7 @@ static RexxObjectPtr doCallbackSetup(RexxMethodContext *c, sqlite3 *db, RexxObje
     cbc->callbackObj     = c->RequestGlobalReference(callbackObj);
     cbc->callbackContext = c->threadContext;
     cbc->interpreter     = c->threadContext->instance;
-    cbc->initialThreadID = GetCurrentThreadId();
+    cbc->initialThreadID = oosqlGetCurrentThreadId();
 
     if ( mthName != NULL )
     {
@@ -7012,7 +7012,7 @@ static RexxObjectPtr doCallbackSetupRtn(RexxCallContext *c, sqlite3 *db, CSTRING
     cbc->routineName     = rtnName;
     cbc->callbackRtn     = getCallerRoutine(c, rtnName);
     cbc->interpreter     = c->threadContext->instance;
-    cbc->initialThreadID = GetCurrentThreadId();
+    cbc->initialThreadID = oosqlGetCurrentThreadId();
 
     if ( cbc->callbackRtn == NULLOBJECT )
     {

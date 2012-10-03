@@ -208,7 +208,7 @@ typedef struct _genericCallback {
     RexxStemObject       rsStem;          // When creating a result set and format is stemOfStems
     ResultSetType        format;          // Format of a record, array, stem, or directory.
     uint32_t             count;
-    uint32_t             initialThreadID;
+    thread_id_t          initialThreadID;
     bool                 createRS;        // Determines if we are creating a record set or invoking a Rexx callback.
 } CGenericCallback;
 typedef CGenericCallback *pCGenericCallback;

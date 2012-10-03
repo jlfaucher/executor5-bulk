@@ -39,6 +39,7 @@
 #define unixOS_Included
 
 #include <ctype.h>
+#include <pthread.h>
 
 #define TRUE   1
 #define FALSE  0
@@ -48,5 +49,6 @@ sqlite3_mutex *crit_sec = (sqlite3_mutex *)0;
 #define CRITICAL_SECTION_ENTER sqlite3_mutex_enter(crit_sec);
 #define CRITICAL_SECTION_LEAVE sqlite3_mutex_leave(crit_sec);
 
+#define oosqlGetCurrentThreadId()  pthread_self()
 
 #endif

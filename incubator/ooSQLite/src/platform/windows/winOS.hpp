@@ -57,6 +57,8 @@ CRITICAL_SECTION     crit_sec = {0};
 #define CRITICAL_SECTION_ENTER EnterCriticalSection(&crit_sec);
 #define CRITICAL_SECTION_LEAVE LeaveCriticalSection(&crit_sec);
 
+#define oosqlGetCurrentThreadId()  GetCurrentThreadId()
+
 #ifdef __cplusplus
 extern "C" {
 #endif
