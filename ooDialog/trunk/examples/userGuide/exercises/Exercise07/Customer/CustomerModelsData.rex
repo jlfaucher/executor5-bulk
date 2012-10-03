@@ -74,7 +74,8 @@
   ::METHOD newInstance CLASS PUBLIC
     expose noDataError
     use strict arg instanceName
-    -- Get my data via my superclass@
+    say ".CustomerModel-newInstance-01; class name =" self~objectName
+    -- Get my data via my superclass:
     forward class (super) continue
     customerId = RESULT
     return customerId
@@ -216,7 +217,7 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD newInstance CLASS PUBLIC		-- Invoked by ObjectMgr
-    use strict arg instanceName
+    --use strict arg instanceName
     if self~created = "CREATED" then do		-- If this is first time
       say ".CustomerData-newInstance-01."
       customerDataId = self~new()

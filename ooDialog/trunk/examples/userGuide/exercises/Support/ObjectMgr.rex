@@ -256,6 +256,7 @@ call "RequiresList.rex"
   ::METHOD removeView PUBLIC
     expose objectBag
     use arg viewClass, viewInstance
+    viewClass = viewClass~upper()	-- View class was uppered in addView method.
     viewClassInst = viewClass||"-"||viewInstance
     say "ObjectMgr-removeView-01: viewClassInst:" viewClassInst
     --say "ObjectMgr-removeView-02: ObjectBag List:"

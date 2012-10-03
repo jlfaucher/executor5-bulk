@@ -65,6 +65,8 @@
     -- Now get the name of the Data component (FredModel or FredListModel --> FredData):
     -- Get my root name (i.e. the root name of the subclass):
     className = self~objectName		-- objectName for a class Foo is "The Foo class"
+    className = className~upper()	-- When class name is in quotes, then it's mixed case.
+    	    				-- Upper here tp make everthing upper case for parse var.
     -- If there's  "LIST" in the name, then set "get all" for the file access
     --  (as opposed to the default of "get 1 record")
     getAllRecords = .false
@@ -110,7 +112,7 @@
 
 
   /*----------------------------------------------------------------------------
-    query - returns Customer data.
+    query - returns a Model's data.
             Standard protocol:
             Accept a .nil, directory, array, or string of names.
             if .nil then return all fields; else return values for the names in
