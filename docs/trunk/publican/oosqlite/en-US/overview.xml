@@ -193,6 +193,24 @@ C:\>
   familiar to the average Rexx programmer.
 </para>
 
+<section id="defDatabaseName"><title>Database Name</title>
+<para>
+  The SQLite database engine tracks the databases opened on a database connection by internal names. The main database file
+  opened on a connection has the name &quot;main&quot; and the name &quot;temp&quot; refers to the database used for
+  temporary tables. However, SQLite also has the concept of <emphasis role="italic">attaching</emphasis> another database
+  file to the current database connection. Attaching a database uses a SQL statement with the format of
+  <computeroutput>ATTACH DATABASE expr AS database-name</computeroutput>. The expression after the AS keyword is the name
+  useded internally by the database engine for the attached database.
+</para>
+<para>
+  Many of the ooSQLite methods and functions have as an argument the database <emphasis role="italic">name</emphasis>. In
+  these methods and functions, the <emphasis role="italic">name</emphasis> refers to the internal name used by SQLite, not
+  the <emphasis role="italic">file</emphasis> name of the database. This documentation attempts to distinguish between a
+  database <emphasis role="italic">file</emphasis> name and the internal database <emphasis role="italic">name</emphasis> by
+  always using <emphasis role="italic">file name</emphasis> when refering to the actual database file.
+</para>
+</section>
+
 <section id="defHandle"><title>Handle</title>
 <para>
   A unique reference to a data structure assigned by the SQLite database engine to manage its databases. It can be a
@@ -201,6 +219,49 @@ C:\>
   handle is an opaque type, the Rexx programmer need not be aware of the specific format of a handle. The ooSQLite
   package provides functions that return handles. When a function requires a handle as an argument, the Rexx programmer
   needs to obtain the handle from one of those provided functions.
+</para>
+</section>
+
+<section id="defThreadingMode"><title>Threading Mode</title>
+<para>
+  SQLite itself supports three different threading modes:
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Single-thread:</emphasis></term>
+  <listitem>
+  <para>
+    In this mode, all mutexes are disabled and SQLite is unsafe to use in more than a single thread at once.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Multi-thread:</emphasis></term>
+  <listitem>
+  <para>
+    In this mode, SQLite can be safely used by multiple threads provided that no single database connection is used
+    simultaneously in two or more threads.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Serialized:</emphasis></term>
+  <listitem>
+  <para>
+    In serialized mode, SQLite can be safely used by multiple threads with no restriction.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  SQLite allows the threading mode to be determined at compile-time, start-time, and run-time. However, the ooSQLite
+  framework is compiled in serialized threading mode and, currently, provides no way to change this at start-time. Therefore,
+  for all intents and purposes, ooSQLite uses the serialized threading mode.
+</para>
+<para>
+  It is possible to change the threading mode to multi-thread for individual database connections when <link
+  linkend="mthNewClsOOSQLiteConnection">instantiating</link> a new connection object or <link
+  linkend="rtn-oosqlOpen">opening</link> the connection using the classic Rexx interface. However, this is stongly advised
+  against. The ooSQLite implementation is done using the assumption that the threading mode is always serialized.
+</para>
+<para>
+  Consult the SQLite documentation on the <ulink url="http://www.sqlite.org/threadsafe.html">threading mode</ulink> for
+  more information.
 </para>
 </section>
 

@@ -154,19 +154,19 @@
 </row>
 <row>
 <entry><link linkend="mthDbMutex">dbMutex</link></entry>
-<entry>.</entry>
+<entry>Retrieves an <link linkend="clsOOSQLiteMutex">ooSQLitMutex</link> object that represents the SQLite mutex that serializes access to this database connection.</entry>
 </row>
 <row>
 <entry><link linkend="mthDbReadOnly">dbReadOnly</link></entry>
-<entry>.</entry>
+<entry>Determines if the named database on this connection is read only.</entry>
 </row>
 <row>
 <entry><link linkend="mthDbReleaseMemory">dbReleaseMemory</link></entry>
-<entry>.</entry>
+<entry>Causes the SQLite database engine to attempt to free as much heap memory as possible from this database connection.</entry>
 </row>
 <row>
 <entry><link linkend="mthDbStatus">dbStatus</link></entry>
-<entry>.</entry>
+<entry>Retrieves runtime status information about this database connection.</entry>
 </row>
 <row>
 <entry><link linkend="mthErrCode">errCode</link></entry>
@@ -339,7 +339,7 @@
     during <emphasis role="italic">new</emphasis>.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">new</emphasis> method is similar to that of the SQLite
@@ -417,7 +417,7 @@
     role="italic">backupDestination</emphasis> attribute can be used to determine the state.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     This attribute is provided by ooSQLite, there is no applicable API provided by SQLite.
@@ -435,7 +435,6 @@
 >>--closed---------------------------------------><
 
 >>--closed = varName-----------------------------><
-
 ]]>
 </programlisting>
 
@@ -474,10 +473,9 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>fileName</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--fileName-----------------------------------------------------><
+>>--fileName-------------------------------------><
 
->>--fileName = varName-------------------------------------------><
-
+>>--fileName = varName---------------------------><
 ]]>
 </programlisting>
 
@@ -513,10 +511,9 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>initCode</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--initCode-----------------------------------------------------><
+>>--initCode-------------------------------------><
 
->>--initCode = varName-------------------------------------------><
-
+>>--initCode = varName---------------------------><
 ]]>
 </programlisting>
 
@@ -584,10 +581,9 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>lastErrCode</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--lastErrCode-----------------------------------------------------><
+>>--lastErrCode----------------------------------><
 
->>--lastErrCode = varName-------------------------------------------><
-
+>>--lastErrCode = varName------------------------><
 ]]>
 </programlisting>
 
@@ -668,10 +664,9 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>lastErrMsg</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--lastErrMsg-----------------------------------------------------><
+>>--lastErrMsg-----------------------------------><
 
->>--lastErrMsg = varName-------------------------------------------><
-
+>>--lastErrMsg = varName-------------------------><
 ]]>
 </programlisting>
 
@@ -749,10 +744,9 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>recordFormat</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--recordFormat-----------------------------------------------------><
+>>--recordFormat---------------------------------><
 
->>--recordFormat = varName-------------------------------------------><
-
+>>--recordFormat = varName-----------------------><
 ]]>
 </programlisting>
 
@@ -855,7 +849,7 @@
     A busy handler must not close the database connection or prepared statement that invoked the busy handler.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">busyHandler</emphasis> method is similar to that of the SQLite
@@ -905,7 +899,6 @@
 <programlisting>
 <![CDATA[
 >>--busyCallBack(--countInvoked,--userData--)----><
-
 ]]>
 </programlisting>
 
@@ -951,7 +944,7 @@
     returns non-zero, then another attempt is made to open the database for reading and the cycle repeats.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The implementation of a <emphasis role="italic">busy handler</emphasis> method is is discussed on the SQLite <ulink
@@ -971,7 +964,6 @@
 <programlisting>
 <![CDATA[
 >>--busyTimeOut(--milliseconds--)----------------><
-
 ]]>
 </programlisting>
 
@@ -1011,7 +1003,7 @@
     linkend="mthBusyHandler">busyHandler</link>, prior to calling this routine, that other busy handler is cleared.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">busyTimeOut</emphasis> method is similar to that of the SQLite
@@ -1044,7 +1036,6 @@
 <programlisting>
 <![CDATA[
 >>--changes--------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -1073,7 +1064,7 @@
     find the total number of changes including changes caused by triggers and foreign key actions.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">changes</emphasis> method is similar to that of the SQLite
@@ -1090,7 +1081,6 @@
 <programlisting>
 <![CDATA[
 >>--close----------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -1124,7 +1114,7 @@
     still valid after the connection is closed, but invoking other methods of a closed connection object is an error.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">close</emphasis> method is similar to that of the SQLite
@@ -1216,7 +1206,7 @@
     invocation or the <emphasis role="italic">userData</emphasis> argument was not used on the previous invocation.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">commitHook</emphasis> method is similar to that of the SQLite
@@ -1283,7 +1273,7 @@
     object, or executing another <emphasis role="italic">step</emphasis> method will modify the database connection.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The implementation of a <emphasis role="italic">commit hook</emphasis> method is is discussed on the SQLite <ulink
@@ -1318,8 +1308,8 @@
       <varlistentry><term>name [required]</term>
       <listitem>
       <para>
-        The name of the database to get the file name for. The main database file has the name <emphasis
-        role="italic">main</emphasis>. Attached database names can also be used for <emphasis role="italic">name</emphasis>.
+        The database <link linkend="defDatabaseName">name</link>, as known internally by the SQLite database engine, of the
+        database to get the file name for.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1328,16 +1318,23 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The file name of the database specified by <emphasis role="italic">name</emphasis>. If there is no attached database
-    <emphasis role="italic">name</emphasis> on the database connection, or if database <emphasis
-    role="italic">name</emphasis> is a temporary or in-memory database, then the empty string is returned.
+    The file name of the database specified by <emphasis role="italic">name</emphasis> on success. If there is no <emphasis
+    role="italic">name</emphasis> database on the database connection, or if <emphasis role="italic">name</emphasis> is a
+    temporary or in-memory database, then the empty string is returned.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The filename returned will be an absolute pathname, even if the filename used to open the database originally was a URI
+    or relative pathname.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">dbFileName</emphasis> method is similar to that of the SQLite
-        <ulink url="http://www.sqlite.org/c3ref/db_filename.html">sqlite3_db_filename</ulink> API.
+    <ulink url="http://www.sqlite.org/c3ref/db_filename.html">sqlite3_db_filename</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1349,56 +1346,52 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>dbMutex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--dbMutex(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--dbMutex--------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves an <link linkend="clsOOSQLiteMutex">ooSQLitMutex</link> object that represents the SQLite mutex that serializes
+  access to this database connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    An <computeroutput>ooSQLiteMutex</computeroutput> object that gives access to the underlying SQLite mutex serializing
+    acces to this database connection. The mutex object could be a <link linkend="atrClosedClsMutex">closed</link> <link
+    linkend="atrIsNull">null</link> mutex, see the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If the threading <link linkend="defThreadMode">mode</link> for this database connection is not serialized, then the
+    returned mutex object will be a closed, null, mutex. This is not likely.
+  </para>
+  <para>
+    The <emphasis role="italic">dbMutex</emphasis> method is provided for completeness. It is expected that Rexx programmers
+    who do not understand mutexes well and / or do not understand how SQLite itself works with respect to the mutex that
+    serializes access to the database connection, will not use this method.
+  </para>
+  <para>
+    Since the <computeroutput>ooSQLiteMutex</computeroutput> object returned by the <emphasis
+    role="italic">dbMutex</emphasis> method represents a mutex in use by the SQLite database engine, invoking <link
+    linkend="mthFree">free</link> on the object closes the Rexx object, but does not actually close the underlying SQLite
+    mutex.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">dbMutex</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/db_mutex.html">sqlite3_db_mutex</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1410,24 +1403,24 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>dbReadOnly</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--dbReadOnly(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--dbReadOnly(--name--)-------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if the named database on this connection is read only.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>name [required]</term>
       <listitem>
       <para>
-        xx
+        The database <link linkend="defDatabaseName">name</link>, as known internally by the SQLite database engine, of the
+        database to check for read only.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1436,7 +1429,8 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 1 if the database is read only, 0 if the database is read / write, and -1 if <emphasis
+    role="italic">name</emphasis> is not an opened database on this connection.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1445,19 +1439,47 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
+    The functionality of the <emphasis role="italic">dbReadOnly</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/db_readonly.html">sqlite3_db_readonly</ulink> API.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example illustrates the <emphasis role="italic">dbReadOnly</emphasis> method:
 <programlisting>
 <![CDATA[
 
+  dbName = 'ooFoods.rdbx'
+
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READONLY)
+
+  if dbConn~initCode <> 0 then do
+    -- Do error stuff and return
+  end
+
+  dbConn~exec("ATTACH DATABASE 'phonebook.db' AS phone;", .true)
+
+  dbConn~exec("ATTACH DATABASE 'ooFoodsCopy.rdbx' AS dupe;", .true)
+
+  say 'Read only? main: ' dbConn~dbReadOnly('main')
+  say 'Read only? phone:' dbConn~dbReadOnly('phone')
+  say 'Read only? dupe: ' dbConn~dbReadOnly('dupe')
+  say 'Read only? temp: ' dbConn~dbReadOnly('temp')
+
+  ret = dbConn~close
+
+  /* Output might be:
+
+  Read only? main:  1
+  Read only? phone: 1
+  Read only? dupe:  1
+  Read only? temp:  -1
+
+  */
 ]]>
 </programlisting>
   </para>
@@ -1471,56 +1493,39 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>dbReleaseMemory</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--dbReleaseMemory(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--dbReleaseMemory------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Causes the SQLite database engine to attempt to free as much heap memory as possible from this database connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns an ooSQLite <link linkend="sctResultCode">result</link> code. Although the SQLite documentation does not
+    explicitly state this, it seems likely that OK is always returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    See also the <link linkend="mthReleaseMemory">releaseMemory</link> method of the <link
+    linkend="clsOOSQLite">ooSQLite</link> class.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">DbReleaseMemoyr</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/db_release_memory.html">sqlite3_db_release_memory</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1532,13 +1537,13 @@
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>dbStatus</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--dbStatus(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--dbStatus(--opt--,--result--+----------+--)---><
+                               +-,-reset--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves runtime status information about this database connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1546,10 +1551,40 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>opt [required]</term>
       <listitem>
       <para>
-        xx
+        A DB status parameter <link linkend="sctDBStatusParameter">constant</link> that specifies what status information is
+        requested.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>result [required]</term>
+      <listitem>
+      <para>
+        A <computeroutput>Directory</computeroutput> object whose indexes will hold the requestion information on return. On
+        success the following indexes in the object will be valid:
+      </para>
+
+      <variablelist>
+        <varlistentry><term><emphasis role="bold">CURRENT</emphasis></term>
+        <listitem>
+        <para>
+          This index will contain the current value for the status information queried.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">HIGHWATER</emphasis></term>
+        <listitem>
+        <para>
+          This index will hold the high water mark for the status information queried.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term>reset [optional]</term>
+      <listitem>
+      <para>
+        Must be true or false to specify whether the high water mark should be reset, or not. The default if this argument is
+        omitted is false, do not reset the high water mark.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1558,19 +1593,24 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a SQLite result <link linkend="sctResultCode">code</link>, <computeroutput>OK</computeroutput> on success
+    otherwise an error code on failure.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If the high water mark is reset, it is reset to the current value of the status information. The ooSQLite DB status
+    constants reflect the currently available SQLite DB status options. The set of SQLilte DB status options is likely to
+    grow in future releases of SQLite. When, or if, those options grow, the ooSQLite constants will be updated to reflect the
+    new options
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
+    The functionality of the <emphasis role="italic">dbStatus</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/db_status.html">sqlite3_db_status</ulink> API.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1579,6 +1619,34 @@
     This example ...
 <programlisting>
 <![CDATA[
+
+  dbName = 'ooFoods.rdbx'
+
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  if dbConn~initCode <> 0 then do
+      -- do error handling and return
+  end
+
+  values = .directory~new
+
+  ret = dbConn~dbStatus(.ooSQLite~DBSTATUS_CACHE_USED, values, .false)
+  if ret == .dbConn~OK then do
+      say 'Bytes of page memory used by all caches on this database connection:'
+      say '  Current:' values~current '  High water:' values~highWater
+      say
+  end
+  else do
+      say 'Error returned from dbStatus():' ret
+      say
+  end
+
+/* Output might be:
+
+Bytes of page memory used by all caches on this database connection:
+  Current: 16824   High water: 0
+
+*/
 
 ]]>
 </programlisting>
@@ -1628,7 +1696,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -1689,7 +1757,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -1821,7 +1889,7 @@
     the details of a user defined callback method.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">exec</emphasis> method is similar to that of the <ulink
@@ -2027,7 +2095,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -2088,7 +2156,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -2149,7 +2217,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -2210,7 +2278,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -2271,7 +2339,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -2332,7 +2400,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -2393,7 +2461,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -2481,7 +2549,7 @@
     linkend="mthProfileCallBack">profileCallBack</link> method has complete details.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details;</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">profile</emphasis> method is similar to that of the SQLite
@@ -2558,7 +2626,7 @@
     change in future versions of SQLite.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The implementation of a <emphasis role="italic">profile</emphasis> callback method is is discussed on the SQLite <ulink
@@ -2641,7 +2709,7 @@
     Setting a new progress handler automatically clears any previously installed handler.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">progressHandler</emphasis> method is similar to that of the SQLite
@@ -2707,7 +2775,7 @@
     linkend="mthStepClsStmt">step</link> method modify their database connections.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The implementation of a <emphasis role="italic">progressHandler</emphasis> callback method is is discussed on the SQLite <ulink
@@ -3245,7 +3313,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -3306,7 +3374,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -3367,7 +3435,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
@@ -3427,7 +3495,7 @@
     completion of a single SQL statement.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details;</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">totalChanges</emphasis> method is similar to that of the SQLite
@@ -3506,7 +3574,7 @@
     subprogram is entered. The callbacks for triggers contain a SQL comment that identifies the trigger.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The functionality of the <emphasis role="italic">trace</emphasis> method is similar to that of the SQLite
@@ -3567,7 +3635,7 @@
     The programmer must return a whole number value from the callback, the exact number does not matter.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The implementation of a <emphasis role="italic">trace</emphasis> callback method is is discussed on the SQLite <ulink
@@ -3621,7 +3689,7 @@
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Anything ?
