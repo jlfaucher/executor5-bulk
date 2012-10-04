@@ -763,7 +763,7 @@ done_out:
 
 
 /**
- * Returns a new LvSubItem object for the sprecified subitem in the list-view.
+ * Returns a new LvSubItem object for the specified subitem in the list-view.
  *
  * @param c
  * @param hList
@@ -1457,36 +1457,6 @@ RexxMethod2(int32_t, lv_getColor, NAME, method, CSELF, pCSelf)
     return -1;
 }
 
-/** ListView::BkColor=
- *  ListView::TextColor=
- *  ListView::TextBkColor=
- *
- *
- *  @remarks.  This method is hopelessly outdated.  It should take a COLORREF so
- *             that the user has access to all available colors rather than be
- *             limited to 18 colors out of a 256 color display.
- */
-RexxMethod3(RexxObjectPtr, lv_setColor, uint32_t, color, NAME, method, CSELF, pCSelf)
-{
-    HWND hList = getDChCtrl(pCSelf);
-
-    COLORREF ref = PALETTEINDEX(color);
-
-    if ( *method == 'B' )
-    {
-        ListView_SetBkColor(hList, ref);
-    }
-    else if ( method[4] == 'C' )
-    {
-        ListView_SetTextColor(hList, ref);
-    }
-    else
-    {
-        ListView_SetTextBkColor(hList, ref);
-    }
-    return NULLOBJECT;
-}
-
 /** ListView::check()
  ** ListView::uncheck()
  *
@@ -2132,6 +2102,88 @@ RexxMethod2(RexxObjectPtr, lv_getItemPos, uint32_t, index, CSELF, pCSelf)
     return rxNewPoint(context, p.x, p.y);
 }
 
+/** ListView::next()
+ *  ListView::nextSelected()
+ *  ListView::nextLeft()
+ *  ListView::nextRight()
+ *  ListView::previous()
+ *  ListView::previousSelected()
+ *
+ *
+ *  @remarks  For the next(), nextLeft(), nextRight(), and previous() methods,
+ *            we had this comment:
+ *
+ *            The Windows API appears to have a bug when the list contains a
+ *            single item, insisting on returning 0.  This, rather
+ *            unfortunately, can cause some infinite loops because iterating
+ *            code is looking for a -1 value to mark the iteration end.
+ *
+ *            And in the method did: if self~Items < 2 then return -1
+ *
+ *            In this code, that check is not added yet, and the whole premise
+ *            needs to be tested.  I find no mention of this bug in any Google
+ *            searches I have done, and it seems odd that we are the only people
+ *            that know about the bug?
+ */
+RexxMethod3(int32_t, lv_getNextItem, OPTIONAL_int32_t, startItem, NAME, method, CSELF, pCSelf)
+{
+    uint32_t flag;
+
+    if ( *method == 'N' )
+    {
+        switch ( method[4] )
+        {
+            case '\0' :
+                flag = LVNI_BELOW | LVNI_TORIGHT;
+                break;
+            case 'S' :
+                flag = LVNI_BELOW | LVNI_TORIGHT | LVNI_SELECTED;
+                break;
+            case 'L' :
+                flag = LVNI_TOLEFT;
+                break;
+            default :
+                flag = LVNI_TORIGHT;
+                break;
+        }
+    }
+    else
+    {
+        flag = (method[8] == 'S' ? LVNI_ABOVE | LVNI_TOLEFT | LVNI_SELECTED : LVNI_ABOVE | LVNI_TOLEFT);
+    }
+
+    if ( argumentOmitted(1) )
+    {
+        startItem = -1;
+    }
+    return ListView_GetNextItem(getDChCtrl(pCSelf), startItem, flag);
+}
+
+/** ListView::selected()
+ *  ListView::focused()
+ *  ListView::dropHighlighted()
+ *
+ *
+ */
+RexxMethod2(int32_t, lv_getNextItemWithState, NAME, method, CSELF, pCSelf)
+{
+    uint32_t flag;
+
+    if ( *method == 'S' )
+    {
+        flag = LVNI_SELECTED;
+    }
+    else if ( *method == 'F' )
+    {
+        flag = LVNI_FOCUSED;
+    }
+    else
+    {
+        flag = LVNI_DROPHILITED;
+    }
+    return ListView_GetNextItem(getDChCtrl(pCSelf), -1, flag);
+}
+
 /** ListView::getSubitem()
  *
  *  Returns a LvSubItem object for the item and subitem indexes specified.
@@ -2743,92 +2795,6 @@ err_out:
     return FALSE;
 }
 
-/** ListView::next()
- *  ListView::nextSelected()
- *  ListView::nextLeft()
- *  ListView::nextRight()
- *  ListView::previous()
- *  ListView::previousSelected()
- *
- *
- *  @remarks  For the next(), nextLeft(), nextRight(), and previous() methods,
- *            we had this comment:
- *
- *            The Windows API appears to have a bug when the list contains a
- *            single item, insisting on returning 0.  This, rather
- *            unfortunately, can cause some infinite loops because iterating
- *            code is looking for a -1 value to mark the iteration end.
- *
- *            And in the method did: if self~Items < 2 then return -1
- *
- *            In this code, that check is not added yet, and the whole premise
- *            needs to be tested.  I find no mention of this bug in any Google
- *            searches I have done, and it seems odd that we are the only people
- *            that know about the bug?
- */
-RexxMethod3(int32_t, lv_getNextItem, OPTIONAL_int32_t, startItem, NAME, method, CSELF, pCSelf)
-{
-    uint32_t flag;
-
-    if ( *method == 'N' )
-    {
-        switch ( method[4] )
-        {
-            case '\0' :
-                flag = LVNI_BELOW | LVNI_TORIGHT;
-                break;
-            case 'S' :
-                flag = LVNI_BELOW | LVNI_TORIGHT | LVNI_SELECTED;
-                break;
-            case 'L' :
-                flag = LVNI_TOLEFT;
-                break;
-            default :
-                flag = LVNI_TORIGHT;
-                break;
-        }
-    }
-    else
-    {
-        flag = (method[8] == 'S' ? LVNI_ABOVE | LVNI_TOLEFT | LVNI_SELECTED : LVNI_ABOVE | LVNI_TOLEFT);
-    }
-
-    if ( argumentOmitted(1) )
-    {
-        startItem = -1;
-    }
-    return ListView_GetNextItem(getDChCtrl(pCSelf), startItem, flag);
-}
-
-/** ListView::replaceExtendedStyle()
- *
- *
- */
-RexxMethod3(int32_t, lv_replaceExtendStyle, CSTRING, remove, CSTRING, add, CSELF, pCSelf)
-{
-    uint32_t removeStyles = parseExtendedStyle(remove);
-    uint32_t addStyles = parseExtendedStyle(add);
-    if ( removeStyles == 0 || addStyles == 0  )
-    {
-        return -3;
-    }
-
-    HWND hList = getDChCtrl(pCSelf);
-    ListView_SetExtendedListViewStyleEx(hList, removeStyles, 0);
-    ListView_SetExtendedListViewStyleEx(hList, addStyles, addStyles);
-    return 0;
-}
-
-/** ListView::replaceStyle()
- *
- *
- *  @note  Sets the .SystemErrorCode.
- */
-RexxMethod3(uint32_t, lv_replaceStyle, CSTRING, removeStyle, CSTRING, additionalStyle, CSELF, pCSelf)
-{
-    return changeStyle(context, (pCDialogControl)pCSelf, removeStyle, additionalStyle, true);
-}
-
 /** ListView::removeItemData()
  *
  * @remarks  Note that if the lParam user data is a LvFullRow object, there is
@@ -2862,6 +2828,35 @@ RexxMethod2(RexxObjectPtr, lv_removeItemData, uint32_t, index, CSELF, pCSelf)
     return result;
 }
 
+/** ListView::replaceExtendedStyle()
+ *
+ *
+ */
+RexxMethod3(int32_t, lv_replaceExtendStyle, CSTRING, remove, CSTRING, add, CSELF, pCSelf)
+{
+    uint32_t removeStyles = parseExtendedStyle(remove);
+    uint32_t addStyles = parseExtendedStyle(add);
+    if ( removeStyles == 0 || addStyles == 0  )
+    {
+        return -3;
+    }
+
+    HWND hList = getDChCtrl(pCSelf);
+    ListView_SetExtendedListViewStyleEx(hList, removeStyles, 0);
+    ListView_SetExtendedListViewStyleEx(hList, addStyles, addStyles);
+    return 0;
+}
+
+/** ListView::replaceStyle()
+ *
+ *
+ *  @note  Sets the .SystemErrorCode.
+ */
+RexxMethod3(uint32_t, lv_replaceStyle, CSTRING, removeStyle, CSTRING, additionalStyle, CSELF, pCSelf)
+{
+    return changeStyle(context, (pCDialogControl)pCSelf, removeStyle, additionalStyle, true);
+}
+
 /** ListView::select()
  *  ListView::deselect()
  *  ListView::focus()
@@ -2891,31 +2886,6 @@ RexxMethod3(RexxObjectPtr, lv_setSpecificState, uint32_t, index, NAME, method, C
     return TheZeroObj;
 }
 
-/** ListView::selected()
- *  ListView::focused()
- *  ListView::dropHighlighted()
- *
- *
- */
-RexxMethod2(int32_t, lv_getNextItemWithState, NAME, method, CSELF, pCSelf)
-{
-    uint32_t flag;
-
-    if ( *method == 'S' )
-    {
-        flag = LVNI_SELECTED;
-    }
-    else if ( *method == 'F' )
-    {
-        flag = LVNI_FOCUSED;
-    }
-    else
-    {
-        flag = LVNI_DROPHILITED;
-    }
-    return ListView_GetNextItem(getDChCtrl(pCSelf), -1, flag);
-}
-
 /** ListView::prependFullRow()
  *
  *  Adds an item to the list view at the beginning of the list using a LvFullRow
@@ -2925,6 +2895,36 @@ RexxMethod2(int32_t, lv_getNextItemWithState, NAME, method, CSELF, pCSelf)
 RexxMethod2(int32_t, lv_prependFullRow, RexxObjectPtr, row, CSELF, pCSelf)
 {
     return fullRowOperation(context, row, lvfrInsert, pCSelf);
+}
+
+/** ListView::BkColor=
+ *  ListView::TextColor=
+ *  ListView::TextBkColor=
+ *
+ *
+ *  @remarks.  This method is hopelessly outdated.  It should take a COLORREF so
+ *             that the user has access to all available colors rather than be
+ *             limited to 18 colors out of a 256 color display.
+ */
+RexxMethod3(RexxObjectPtr, lv_setColor, uint32_t, color, NAME, method, CSELF, pCSelf)
+{
+    HWND hList = getDChCtrl(pCSelf);
+
+    COLORREF ref = PALETTEINDEX(color);
+
+    if ( *method == 'B' )
+    {
+        ListView_SetBkColor(hList, ref);
+    }
+    else if ( method[4] == 'C' )
+    {
+        ListView_SetTextColor(hList, ref);
+    }
+    else
+    {
+        ListView_SetTextBkColor(hList, ref);
+    }
+    return NULLOBJECT;
 }
 
 /** ListView::setColumnOrder()
