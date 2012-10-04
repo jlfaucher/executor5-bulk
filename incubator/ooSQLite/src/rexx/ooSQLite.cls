@@ -217,6 +217,8 @@
  */
 ::class 'ooSQLiteMutex' public inherit ooSQLiteConstants
 
+::method init class external "LIBRARY oosqlite oosqlmtx_init_cls"
+
 ::attribute closed get unguarded external "LIBRARY oosqlite oosqlmtx_getClosed_atr"
 ::attribute isNull get unguarded external "LIBRARY oosqlite oosqlmtx_getIsNull_atr"
 

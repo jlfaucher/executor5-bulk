@@ -9789,6 +9789,8 @@ REXX_METHOD_PROTOTYPE(oosqlbu_getDestConn);
 REXX_METHOD_PROTOTYPE(oosqlbu_step);
 
 // .ooSQLiteMutex
+REXX_METHOD_PROTOTYPE(oosqlmtx_init_cls);
+
 REXX_METHOD_PROTOTYPE(oosqlmtx_getClosed_atr);
 REXX_METHOD_PROTOTYPE(oosqlmtx_getIsNull_atr);
 
@@ -9950,6 +9952,8 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlbu_step,                         oosqlbu_step),
 
     // .ooSQLiteMutex
+    REXX_METHOD(oosqlmtx_init_cls,                    oosqlmtx_init_cls),
+
     REXX_METHOD(oosqlmtx_getClosed_atr,               oosqlmtx_getClosed_atr),
     REXX_METHOD(oosqlmtx_getIsNull_atr,               oosqlmtx_getIsNull_atr),
 
