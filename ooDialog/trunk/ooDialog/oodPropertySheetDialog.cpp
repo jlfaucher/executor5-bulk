@@ -1772,9 +1772,12 @@ bool initPSP(RexxMethodContext *c, pCPropertySheetDialog pcpsd, PROPSHEETPAGE *p
     bool                success = false;
 
     RexxObjectPtr result = c->SendMessage0(dlg, "INITTEMPLATE");
-    if ( result == TheFalseObj )
+    if ( result != TheTrueObj )
     {
-        noWindowsPageDlgException(c, i + 1);
+        if ( ! c->CheckCondition() )
+        {
+            noWindowsPageDlgException(c, i + 1);
+        }
         goto done_out;
     }
 
@@ -1893,6 +1896,7 @@ PROPSHEETPAGE *initPropSheetPages(RexxMethodContext *c, pCPropertySheetDialog pc
         {
             LocalFree(psp);
             psp = NULL;
+            goto done_out;
         }
     }
 
@@ -3782,6 +3786,32 @@ RexxMethod1(RexxObjectPtr, psdlg_test, CSELF, pCSelf)
 
 
 /**
+ * Ensures that a dialog CSelf pointer is not null.  This can happen if the user
+ * does something wrong in their use of the PropertySheetPag class so that the
+ * proper initialization is bypassed.
+ *
+ * Unfortunately users do this. ;-(  Before the conversion to the C++ API,
+ * things whould not work as the user expected, but no "real bad" things
+ * happened.  Now, this causes a null point derefernce unless we check first.
+ *
+ * @param c       Method context we are operating.
+ * @param pCSelf  CSelf pointer for the property sheet page object.
+ *
+ * @return The CSelf pointer cast to a pCPropertySheetPage, or null if pCSelf is
+ *         null.
+ *
+ * @note  The whole point of this is to raise the exception if pCSelf is null.
+ */
+static inline pCPropertySheetPage getPSPCSelf(RexxMethodContext *c, void * pCSelf)
+{
+    if ( pCSelf == NULL )
+    {
+        baseClassInitializationException(c, "PropertySheetPage");
+    }
+    return (pCPropertySheetPage)pCSelf;
+}
+
+/**
  * Performs the initialization of the PropertySheetPage mixin class.
  *
  * We create the CSelf struct for the class and then send the struct to the
@@ -4086,7 +4116,11 @@ RexxMethod2(uint32_t, psp_getcx, NAME, name, CSELF, pCSelf)
  */
 RexxMethod3(RexxObjectPtr, psp_setcx, uint32_t, dlgUnit, NAME, name, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
 
     *(name + 1) == 'X' ? pcpsp->cx = dlgUnit : pcpsp->cy = dlgUnit;
     return NULLOBJECT;
@@ -4098,7 +4132,12 @@ RexxMethod3(RexxObjectPtr, psp_setcx, uint32_t, dlgUnit, NAME, name, CSELF, pCSe
  */
 RexxMethod1(POINTER, psp_pageID_atr, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
+
     return (POINTER)pcpsp->pageID;
 }
 
@@ -4108,7 +4147,12 @@ RexxMethod1(POINTER, psp_pageID_atr, CSELF, pCSelf)
  */
 RexxMethod1(uint32_t, psp_pageNumber_atr, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return 0;
+    }
+
     return pcpsp->pageNumber + 1;
 }
 
@@ -4119,7 +4163,11 @@ RexxMethod1(uint32_t, psp_pageNumber_atr, CSELF, pCSelf)
  */
 RexxMethod2(RexxObjectPtr, psp_getPageTitle, NAME, name, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
 
     switch ( *(name + 7) )
     {
@@ -4138,7 +4186,11 @@ RexxMethod2(RexxObjectPtr, psp_getPageTitle, NAME, name, CSELF, pCSelf)
  */
 RexxMethod3(RexxObjectPtr, psp_setPageTitle, CSTRING, text, NAME, name, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
 
     switch ( *(name + 7) )
     {
@@ -4163,7 +4215,12 @@ RexxMethod3(RexxObjectPtr, psp_setPageTitle, CSTRING, text, NAME, name, CSELF, p
  */
 RexxMethod1(RexxObjectPtr, psp_propSheet_atr, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
+
     return pcpsp->rexxPropSheet;
 }
 
@@ -4173,7 +4230,11 @@ RexxMethod1(RexxObjectPtr, psp_propSheet_atr, CSELF, pCSelf)
  */
 RexxMethod2(RexxObjectPtr, psp_setResources_atr, RexxObjectPtr, resourceImage, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
 
     PRESOURCEIMAGE ri = rxGetResourceImage(context, resourceImage, 1);
     if ( ri != NULL )
@@ -4196,7 +4257,11 @@ RexxMethod2(RexxObjectPtr, psp_setResources_atr, RexxObjectPtr, resourceImage, C
  */
 RexxMethod2(RexxObjectPtr, psp_setTabIcon_atr, RexxObjectPtr, icon, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
 
     bool    isImage;
     uint8_t type;
@@ -4232,7 +4297,12 @@ done_out:
  */
 RexxMethod2(RexxObjectPtr, psp_getWantNotification, NAME, methName, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
+
     RexxObjectPtr result = TheFalseObj;
 
     if ( *(methName + 4) == 'A' )
@@ -4253,7 +4323,11 @@ RexxMethod2(RexxObjectPtr, psp_getWantNotification, NAME, methName, CSELF, pCSel
  */
 RexxMethod3(RexxObjectPtr, psp_setWantNotification, logical_t, want, NAME, methName, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
 
     if ( *(methName + 4) == 'A' )
     {
@@ -4272,7 +4346,12 @@ RexxMethod3(RexxObjectPtr, psp_setWantNotification, logical_t, want, NAME, methN
  */
 RexxMethod1(RexxObjectPtr, psp_wasActivated_atr, CSELF, pCSelf)
 {
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
+
     return pcpsp->activated ? TheTrueObj : TheFalseObj;
 }
 
@@ -4300,12 +4379,19 @@ RexxMethod1(logical_t, psp_init_propertySheetPage, RexxObjectPtr, cSelf)
 
 /** PropertySheetPage::initTemplate()
  *
- *
+ *  @remarks  Users have been known to screw up the initialization of the
+ *            property sheet page dialog and we could get here with pCSelf not
+ *            really a valid pCPropertySheetPage struct.  Or at least not a
+ *            properly filled in one.  switch ( pcpsp->pageType ) will detect
+ *            this.
  */
 RexxMethod1(RexxObjectPtr, psp_initTemplate, CSELF, pCSelf)
 {
-    // TODO validate CSelf.
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
 
     PageDialogInfo pdi = {0};
     pdi.pageTitle  = pcpsp->pageTitle;
@@ -4337,6 +4423,7 @@ RexxMethod1(RexxObjectPtr, psp_initTemplate, CSELF, pCSelf)
             break;
 
         default :
+            baseClassInitializationException(context, "PropertySheetPage");
             break;
     }
 
@@ -4365,8 +4452,11 @@ RexxMethod1(RexxObjectPtr, psp_initTemplate, CSELF, pCSelf)
  */
 RexxMethod2(RexxObjectPtr, psp_setSize, ARGLIST, args, CSELF, pCSelf)
 {
-    // TODO validate CSelf.
-    pCPropertySheetPage pcpsp = (pCPropertySheetPage)pCSelf;
+    pCPropertySheetPage pcpsp = getPSPCSelf(context, pCSelf);
+    if ( pcpsp == NULL )
+    {
+        return NULLOBJECT;
+    }
 
     size_t arraySize;
     size_t argsUsed;
@@ -4384,13 +4474,18 @@ RexxMethod2(RexxObjectPtr, psp_setSize, ARGLIST, args, CSELF, pCSelf)
 
 
 
-
 /**
  *  Methods for the .UserPSPDialog class.
  */
 #define USERPSPDIALOG_CLASS  "UserPSPDialog"
 
 
+/** UserPSPDialog::init()
+ *
+ *  The init() method of the super class, UserDialog, returns the zero object,
+ *  so we check for that after forwarding to the super class init().
+ *
+ */
 RexxMethod9(RexxObjectPtr, userpspdlg_init, OPTIONAL_RexxObjectPtr, dlgData, OPTIONAL_RexxObjectPtr, includeFile,
             OPTIONAL_CSTRING, opts, OPTIONAL_CSTRING, title, OPTIONAL_CSTRING, fontName, OPTIONAL_uint32_t, fontSize,
             OPTIONAL_uint32_t, expected, SUPER, super, OSELF, self)
@@ -4407,8 +4502,7 @@ RexxMethod9(RexxObjectPtr, userpspdlg_init, OPTIONAL_RexxObjectPtr, dlgData, OPT
     }
 
     RexxObjectPtr result = context->ForwardMessage(NULL, NULL, super, newArgs);
-
-    if ( isInt(0, result, context->threadContext) )
+    if (result == TheZeroObj )
     {
         pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)context->GetCSelf();
         pCDynamicDialog pcdd = (pCDynamicDialog)context->ObjectToCSelf(self, TheDynamicDialogClass);
@@ -4458,6 +4552,10 @@ RexxMethod9(RexxObjectPtr, userpspdlg_init, OPTIONAL_RexxObjectPtr, dlgData, OPT
         }
         result = TheZeroObj;
         pcpbd->wndBase->initCode = 0;
+    }
+    else
+    {
+        baseClassInitializationException(context, USERPSPDIALOG_CLASS);
     }
 
 done_out:
@@ -4514,6 +4612,10 @@ RexxMethod9(RexxObjectPtr, rcpspdlg_init, RexxStringObject, scriptFile, RexxObje
         {
             pcpsp->extraOpts = connectOpts;
         }
+    }
+    else
+    {
+        baseClassInitializationException(context, RCPSPDIALOG_CLASS);
     }
 
 done_out:
@@ -4617,6 +4719,10 @@ RexxMethod7(RexxObjectPtr, respspdlg_init, RexxStringObject, dllFile, RexxObject
         parsePageOpts(context, pcpsp, pageOpts);
 
         pcpbd->isPageDlg = true;
+    }
+    else
+    {
+        baseClassInitializationException(context, RESPSPDIALOG_CLASS);
     }
 
 done_out:
