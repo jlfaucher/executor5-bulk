@@ -170,11 +170,11 @@
 </row>
 <row>
 <entry><link linkend="mthErrCode">errCode</link></entry>
-<entry>.</entry>
+<entry>Returns the numeric result <link linkend="sctResultCode">code</link> for the most recent failed SQLite API call associated with this database connection.</entry>
 </row>
 <row>
 <entry><link linkend="mthErrMsg">errMsg</link></entry>
-<entry>.</entry>
+<entry>Returns the English-language text that describes the current<link linkend="mthErrCode">errCode</link> value.</entry>
 </row>
 <row>
 <entry><link linkend="mthExec">exec</link></entry>
@@ -182,11 +182,11 @@
 </row>
 <row>
 <entry><link linkend="mthExtendedErrCode">extendedErrCode</link></entry>
-<entry>.</entry>
+<entry>Returns the numeric result <link linkend="sctResultCode">code</link> for the most recent failed SQLite API call associated with this database connection.</entry>
 </row>
 <row>
 <entry><link linkend="mthExtendedResultCodes">extendedResultCodes</link></entry>
-<entry>.</entry>
+<entry>This is a nop in ooSQLite, extended result codes are always on.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetAutocommit">getAutocommit</link></entry>
@@ -1616,7 +1616,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example checks the values of the page memory useed by the caches for the database connection and does not reset the
+    high water mark:
 <programlisting>
 <![CDATA[
 
@@ -1661,56 +1662,49 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>errCode</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--errCode(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--errCode--------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the numeric result <link linkend="sctResultCode">code</link> for the most recent failed SQLite API call associated
+  with this database connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method has no arguments
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a numeric result code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="mthErrMsg">errMsg</link> method provides an English-language description of the current value of
+    <emphasis role="italic">errCode</emphasis>. If a previous SQLite API call failed, but the most recent call succeeded, the
+    return from <emphasis role="italic">errCode</emphasis> and <emphasis role="italic">errMsg</emphasis> is undefined. If a
+    SQLite API fails with a result code of MISUSE, that means the API was invoked incorrectly by the program. In that case,
+    the error code and message may or may not be set.
+  </para>
+  <para>
+    In SQLite, extended result codes are turned off by default, so the SQLite API provides an extended error code API that
+    returns the extended result codes even if extended result codes are turned off. In ooSQLite however, the extended result
+    codes are turned on during compilation. This makes the <emphasis role="italic">errCode</emphasis> method and the <link
+    linkend="mthExtendedErrCode">extendedErrCode</link> method exactly equivalent. The <emphasis
+    role="italic">extendedErrCode</emphasis> method is provided for completeness
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">errCode</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/errcode.html">sqlite3_errcode</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1722,56 +1716,48 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>errMsg</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--errMsg(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--errMsg---------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the English-language text that describes the current<link linkend="mthErrCode">errCode</link> value.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A string describing the current <emphasis role="italic">errCode</emphasis> value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">errMsg</emphasis> method provides an English-language description of the current value of
+    <link linkend="mthErrCode">errCode</link>. If a previous SQLite API call failed, but the most recent call succeeded, the
+    return from <emphasis role="italic">errCode</emphasis> and <emphasis role="italic">errMsg</emphasis> is undefined. If a
+    SQLite API fails with a result code of MISUSE, that means the API was invoked incorrectly by the program. In that case,
+    the error code and message may or may not be set.
+  </para>
+  <para>
+    In SQLite, extended result codes are turned off by default, so the SQLite API provides an extended error code API that
+    returns the extended result codes even if extended result codes are turned off. In ooSQLite however, the extended result
+    codes are turned on during compilation. This makes the <emphasis role="italic">errCode</emphasis> method and the <link
+    linkend="mthExtendedErrCode">extendedErrCode</link> method exactly equivalent. The <emphasis
+    role="italic">extendedErrCode</emphasis> method is provided for completeness
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">errMsg</emphasis> method is similar to that of the SQLite <ulink
+    url="http://www.sqlite.org/c3ref/errcode.html">sqlite3_errmsg</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2060,56 +2046,50 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>extendedErrCode</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--extendedErrCode(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--extendedErrCode------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the numeric result <link linkend="sctResultCode">code</link> for the most recent failed SQLite API call associated
+  with this database connection. The <emphasis role="italic">extendedErrCode</emphasis> and the <link
+  linkend="mthErrCode">errCode</link> methods are functionally equivalent, see the remarks.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method takes no arugments
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a numeric result code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="mthErrMsg">errMsg</link> method provides an English-language description of the current value of
+    <emphasis role="italic">extendedErrCode</emphasis>. If a previous SQLite API call failed, but the most recent call
+    succeeded, the return from <emphasis role="italic">extendedErrCode</emphasis> and <emphasis
+    role="italic">errMsg</emphasis> is undefined. If a SQLite API fails with a result code of MISUSE, that means the API was
+    invoked incorrectly by the program. In that case, the error code and message may or may not be set.
+  </para>
+  <para>
+    In SQLite, extended result codes are turned off by default, so the SQLite API provides an extended error code API that
+    returns the extended result codes even if extended result codes are turned off. In ooSQLite however, the extended result
+    codes are turned on during compilation. This makes the <emphasis role="italic">errCode</emphasis> method and the
+    <emphasis role="italic">extendedErrCode</emphasis> method exactly equivalent. The <emphasis
+    role="italic">extendedErrCode</emphasis> method is provided for completeness.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">extendedErrCode</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/errcode.html">sqlite3_extended_errcode</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2121,24 +2101,24 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>extendedResultCodes</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--extendedResultCodes(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--extendedResultCodes(--onOff--)---------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  This is a nop in ooSQLite, extended result codes are always on.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>onOff</term>
       <listitem>
       <para>
-        xx
+        True or false to turn extended result codes on or off. However, this arugment is currently ignored, extended result
+        codes are always on in ooSQLite.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2147,30 +2127,21 @@ Bytes of page memory used by all caches on this database connection:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns OK, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The method is provided for completeness. In SQLite, extended result code are off by default for historical reasons.
+    ooSQLite, however, has no history to make this applicable, so extended result code are always on.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">extendedResultCode</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/extended_result_codes.html">sqlite3_extended_result_codes</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>

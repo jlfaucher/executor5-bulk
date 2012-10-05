@@ -2029,43 +2029,49 @@
 <tbody>
 <row>
 <entry>DBSTATUS_LOOKASIDE_USED</entry>
-<entry></entry>
-</row>
-<row>
-<entry>DBSTATUS_CACHE_USED</entry>
-<entry></entry>
-</row>
-<row>
-<entry>DBSTATUS_SCHEMA_USED</entry>
-<entry></entry>
-</row>
-<row>
-<entry>DBSTATUS_STMT_USED</entry>
-<entry></entry>
+<entry>The number of lookaside memory slots currently checked out.</entry>
 </row>
 <row>
 <entry>DBSTATUS_LOOKASIDE_HIT</entry>
-<entry></entry>
+<entry>The number of malloc attempts that were satisfied using lookaside memory. Only the high-water value is meaningful; the current value is always zero.</entry>
 </row>
 <row>
 <entry>DBSTATUS_LOOKASIDE_MISS_SIZE</entry>
-<entry></entry>
+<entry>The number malloc attempts that might have been satisfied using lookaside memory but failed due to the amount of memory requested being larger than the lookaside slot size. Only the high-water value is meaningful, the current value is always zero.</entry>
 </row>
 <row>
 <entry>DBSTATUS_LOOKASIDE_MISS_FULL</entry>
-<entry></entry>
+<entry>The number malloc attempts that might have been satisfied using lookaside memory but failed due to all lookaside memory already being in use. Only the high-water value is meaningful, the current value is always zero.</entry>
+</row>
+<row>
+<entry>DBSTATUS_CACHE_USED</entry>
+<entry>The approximate number of of bytes of heap memory used by all pager caches associated with the database connection. The highwater mark associated with DBSTATUS_CACHE_USED is always 0.</entry>
+</row>
+<row>
+<entry>DBSTATUS_SCHEMA_USED</entry>
+<entry>
+  The approximate number of of bytes of heap memory used to store the schema for all databases associated with the connection, main, temp, and any ATTACH-ed databases. The full amount of memory used by the schemas is reported, even if the schema memory is shared with other database connections due to shared cache mode being enabled. The highwater mark associated with
+  DBSTATUS_SCHEMA_USED is always 0.
+</entry>
+</row>
+<row>
+<entry>DBSTATUS_STMT_USED</entry>
+<entry>the approximate number of of bytes of heap and lookaside memory used by all prepared statements associated with the database connection. The highwater mark associated with DBSTATUS_STMT_USED is always 0.</entry>
 </row>
 <row>
 <entry>DBSTATUS_CACHE_HIT</entry>
-<entry></entry>
+<entry>The number of pager cache hits that have occurred. The highwater mark associated with DBSTATUS_CACHE_HIT is always 0.</entry>
 </row>
 <row>
 <entry>DBSTATUS_CACHE_MISS</entry>
-<entry></entry>
+<entry>The number of pager cache misses that have occurred. The highwater mark associated with DBSTATUS_CACHE_MISS is always 0.</entry>
 </row>
 <row>
 <entry>DBSTATUS_CACHE_WRITE</entry>
-<entry></entry>
+<entry>
+  The number of dirty cache entries that have been written to disk. Specifically, the number of pages written to the wal file in wal mode databases, or the number of pages written to the database file in rollback mode databases. Any pages written as part of transaction rollback or database recovery operations are not included. If an IO or other error occurs while writing a
+  page to disk, the effect on subsequent DBSTATUS_CACHE_WRITE requests is undefined. The highwater mark associated with DBSTATUS_CACHE_WRITE is always 0.
+</entry>
 </row>
 <row>
 <entry>DBSTATUS_MAX</entry>
