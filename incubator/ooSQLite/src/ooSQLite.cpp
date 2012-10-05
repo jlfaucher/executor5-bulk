@@ -4121,7 +4121,7 @@ RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
  *  result codes are always turned on in the init() method for each database
  *  connection.
  */
-RexxMethod0(int, oosqlconn_extendedResultCodes)
+RexxMethod1(int, oosqlconn_extendedResultCodes, logical_t, onOff)
 {
     return SQLITE_OK;
 }
@@ -8381,7 +8381,7 @@ RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
  *  The _db and onOff parameters are only present to make the routine look the
  *  same as sqlite3_extended_result_codes()
  */
-RexxRoutine2(int, oosqlExtendedResultCodes_rtn, POINTER, _db, int, onOff)
+RexxRoutine2(int, oosqlExtendedResultCodes_rtn, POINTER, _db, logical_t, onOff)
 {
     return SQLITE_OK;
 }
