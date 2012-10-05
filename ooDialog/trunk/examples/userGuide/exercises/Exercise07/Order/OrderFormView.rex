@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: The OrderFormView class				  v01-00 07Jun12
+   Exercise 07: The OrderFormView class				  v02-00 05Oct12
    OrderFormView.rex
 
    Contains: class "OrderFormView", class "HRSofv".
@@ -43,6 +43,7 @@
 
    Changes:
      v01-00 07Jun12: First version.
+     v02-00 05Oct12: OrderFormView Modified to use the Model-View Framework (MVF).
 
 ------------------------------------------------------------------------------*/
 
@@ -50,26 +51,28 @@
 .Application~addToConstDir("Order\OrderFormView.h")
 
 
-::requires "ooDialog.cls"
-
+::REQUIRES "ooDialog.cls"
+::REQUIRES "..\support\RcView.rex"
 
 /*==============================================================================
-  OrderFormView							  v01-00 07Jun12
+  OrderFormView							  v02-00 05Oct12
   -------------
   The "view" (or "gui") Data Entry part of the Sales Order component.
 
   Changes:
   v01-00 07Jun12: First Version
+  v02-00 05Oct12: Modified to use the Model-View Framework (MVF).
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderFormView SUBCLASS RcDialog PUBLIC
+::CLASS OrderFormView SUBCLASS RcView PUBLIC
 
   ::METHOD newInstance CLASS PUBLIC
-    use arg rootDlg, orderNo
+    use strict arg idModel, rootDlg
     dlg = self~new("Order\OrderFormView.rc", "IDD_ORDFORM_DIALOG")
     --say ".OrderFormView-newInstance: rootDlg =" rootDlg
-    dlg~activate(rootDlg, orderNo)
+    dlg~activate(idModel, rootDlg)
+    return dlg
 
   /*----------------------------------------------------------------------------
     Dialog Setup Methods
@@ -101,9 +104,11 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate unguarded
-    use arg rootDlg
-    -- Shows the Dialog - i.e. makes it visible to the user.
-    say "OrderFormView-activate-01"
+    expose rootDlg idModelInstance orderData
+    use strict arg idModelInstance, rootDlg
+    forward class (super) continue
+    orderData = RESULT
+    say "OrderFormView-activate-01: modelData, orderNum =" orderData||"," orderData[formNumber]
     if rootDlg = "SA" then self~execute("SHOWTOP","IDI_ORDFORM_DLGICON")
     else self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_ORDFORM_DLGICON")
     return
@@ -112,17 +117,31 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
     -- Called by ooDialog after SHOWTOP.
-    expose menuBar custControls
+    expose menuBar ecOrderNo orderData
     say "OrderFormView-initDialog-01"
 
     menuBar~attachTo(self)
-
+trace i
+    ecOrderNo         = self~newEdit("IDC_ORDFORM_ORDNO")
+    say "OrderFormView-initDialog-01: ecOrderNo =" ecOrderNo
+trace off
     btnCancelOrder = self~newPushButton("IDC_CANCEL")
     btnPlaceOrder = self~newPushButton("IDC_ORDFORM_PLACEORDER")
     self~connectButtonEvent("IDC_CANCEL","CLICKED",cancel)
     self~connectButtonEvent("IDC_ORDFORM_PLACEORDER","CLICKED",placeOrderBtn)
 
-    return
+    self~setMyData(orderData)
+
+
+  /*----------------------------------------------------------------------------
+    setData - sets (or "populates") controls with data provided in the
+              method's argument.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD setMyData
+    expose ecOrderNo
+    use strict arg orderData
+    ecOrderNo~setText(        orderData[formNumber])
+
 
   /*----------------------------------------------------------------------------
     Event-Handler Methods - Menu Events

@@ -111,6 +111,68 @@
 
 
 
+/*//////////////////////////////////////////////////////////////////////////////
+  ==============================================================================
+  OrderFormModel						  v01-00 04Oct12
+  --------------
+  The model component for the OrderForm business component.
+
+  Changes:
+   v01-00 04Oct12.
+
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+::CLASS OrderFormModel SUBCLASS Model PUBLIC
+
+  ::ATTRIBUTE nextOrderNumber CLASS
+
+/*----------------------------------------------------------------------------
+    Class Methods
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    newInstance -
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -.*/
+  ::METHOD newInstance CLASS PUBLIC
+    use strict arg instanceName				-- invoked by ObjectMgr
+    say ".OrderFormModel-newInstanceName-01."
+    forward class (super) continue					--Ex07
+    modelId = RESULT							--Ex07
+    return modelId							--Ex07
+
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    getInstanceName - over-rides super's method.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -.*/
+  ::METHOD getInstanceName CLASS PUBLIC
+    say ".OrderFormModel-getInstanceName-01."
+    if self~nextOrderNumber = "NEXTORDERNUMBER" then do	-- No instance name set
+      self~nextOrderNumber = "SO-4999"
+    end
+    number = self~nextOrderNumber~right(4)
+    number += 1
+    self~nextOrderNumber = "SO-"||number
+    say ".OrderFormModel-getInstanceName-02: instanceName =" self~nextOrderNumber
+    return self~nextOrderNumber
+
+
+  /*----------------------------------------------------------------------------
+    Instance Methods
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    init -
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -.*/
+  ::METHOD init
+    expose orderData
+    use strict arg orderData				-- Ex07: data provided by Superclass.
+    self~myData = orderData				-- Ex07: store in superclass's attribute.
+    say "OrderModel-init-01: orderData =" orderData
+    return self
+
+/*============================================================================*/
+
+
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================

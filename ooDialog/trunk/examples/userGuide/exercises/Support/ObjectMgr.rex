@@ -178,7 +178,8 @@ call "RequiresList.rex"
     say "ObjectMgr-showModel-01a - modelNames:" modelClass modelInstance
     say "ObjectMgr-showModel-01b - parentDlg: " parentDlg
     --say "ObjectMgr-showModel-02 - modelClass: '"||modelClass||"';  modelInstance: '"||modelInstance||"'"
-    -- If this is an "anonymous" component (instance name "A"|"a"), ask it for an instance name:
+    -- If this is an "anonymous" component (instance name "A"|"a"), ask its
+    -- class object for an instance name:
     if modelInstance = "A" | modelInstance = "a" then do
       anonModelClass = "."||modelClass
       interpret "modelInstance = "||anonModelClass||"~getInstanceName"

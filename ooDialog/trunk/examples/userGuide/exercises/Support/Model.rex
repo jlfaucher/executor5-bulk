@@ -59,14 +59,29 @@
   ::METHOD newInstance CLASS PUBLIC
     expose noDataError				-- .true if data not found.
     use strict arg instanceName
-    say ".Model-newInstance-01."
+    say ".Model-newInstance-01: instanceName =" instanceName
     -- Check that the model's Data object is up and running. If not, then return .false:
     if noDataError = .true then return .false
     -- Now get the name of the Data component (FredModel or FredListModel --> FredData):
     -- Get my root name (i.e. the root name of the subclass):
     className = self~objectName		-- objectName for a class Foo is "The Foo class"
     className = className~upper()	-- When class name is in quotes, then it's mixed case.
-    	    				-- Upper here tp make everthing upper case for parse var.
+    	    				-- Upper here to make everthing upper case for parse var.
+-- Addition of Forms
+    -- If this is a "Form" then there's no data to get (the user will provide
+    -- the data). So just create the Form Model and return.
+    -- Assume that the instance name is the Form Number (e.g. for an OrderForm,
+    -- the Form Number will be the new Order Number).
+    p = className~pos("FORM")
+    if p > 0 then do	-- if this is a "Form" component.
+      myData = .Directory~new
+      myData[formNumber] = instanceName
+      formObject = self~new(myData)
+      say ".Model-newInstance-011: formObj, instanceName =" formObject||"," instanceName
+      return formObject
+    end
+-- End of addition for Forms.
+
     -- If there's  "LIST" in the name, then set "get all" for the file access
     --  (as opposed to the default of "get 1 record")
     getAllRecords = .false
