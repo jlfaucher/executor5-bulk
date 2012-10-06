@@ -190,23 +190,23 @@
 </row>
 <row>
 <entry><link linkend="mthGetAutocommit">getAutocommit</link></entry>
-<entry>.</entry>
+<entry>Determines if this database connection is, or is not, in autocommit mode.</entry>
 </row>
 <row>
 <entry><link linkend="mthInterrupt">interrupt</link></entry>
-<entry>.</entry>
+<entry>Causes any pending database operation on this database connection to abort and return at the earliest opportunity.</entry>
 </row>
 <row>
 <entry><link linkend="mthLastInsertRowID">lastInsertRowID</link></entry>
-<entry>.</entry>
+<entry>Returns the rowid of the most recent successful INSERT into the database from this database connection.</entry>
 </row>
 <row>
 <entry><link linkend="mthLimit">limit</link></entry>
-<entry>.</entry>
+<entry>Queries or sets the limiting size of various constructs on this database connection.</entry>
 </row>
 <row>
 <entry><link linkend="mthNextStmt">nextStmt</link></entry>
-<entry>.</entry>
+<entry>Returns the next prepared statement <link linkend="clsOOSQLiteStmt">object</link> after the specified statement, or the first prepared statement if <emphasis role="italic">stmt</emphasis> is omitted or the <computeroutput>.nil</computeroutput> object.</entry>
 </row>
 <row>
 <entry><link linkend="mthProfile">profile</link></entry>
@@ -218,19 +218,23 @@
 </row>
 <row>
 <entry><link linkend="mthPragma">pragma</link></entry>
-<entry>.</entry>
+<entry>Executes a PRAGMA statement. A <emphasis role="italic">PRAGMA</emphasis> statement is a SQLite specific SQL extension, probably unknown to any other database engine.</entry>
 </row>
 <row>
 <entry><link linkend="mthRollbackHook">rollbackHook</link></entry>
-<entry>.</entry>
+<entry>Registers a callback method to be invoked whenever a transaction is rolled back.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetAuthorizer">setAuthorizer</link></entry>
-<entry>.</entry>
+<entry>Registers an authorizer callback method that is invoked as SQL statements are being compiled by instantiating an <link linkend="clsOOSLiteStmt">ooSQLiteStmt</link> object.</entry>
 </row>
 <row>
 <entry><link linkend="mthTableColumnMetadata">tableColumnMetadata</link></entry>
-<entry>.</entry>
+<entry>Retrieves metadata about a specific column of a specific table of this database connection.</entry>
+</row>
+<row>
+<entry><link linkend="mthTotalChanges">totalChanges</link></entry>
+<entry>Determines the number of row changes caused by INSERT, UPDATE or DELETE statements since the database connection was opened.</entry>
 </row>
 <row>
 <entry><link linkend="mthTrace">trace</link></entry>
@@ -238,7 +242,7 @@
 </row>
 <row>
 <entry><link linkend="mthUpdateHook">updateHook</link></entry>
-<entry>.</entry>
+<entry>Registers a callback method to be invoked whenever a row is updated, inserted, or deleted.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -1241,7 +1245,7 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The sintle argument sent to the callback method is:
+    The single argument sent to the callback method is:
   </para>
     <variablelist>
       <varlistentry><term>userData [required]</term>
@@ -2153,56 +2157,40 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>getAutocommit</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getAutocommit(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getAutocommit--------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if this database connection is, or is not, in autocommit mode.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method does not take any arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if the connection is in autocommit mode, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Autocommit mode is on by default. Autocommit mode is disabled by a BEGIN statement. Autocommit mode is re-enabled by a
+    COMMIT or ROLLBACK. If certain kinds of errors happen on a statement within a multi-statement transaction then the
+    transaction might be rolled back automatically. The only way to find out whether SQLite automatically rolled back the
+    transaction after an error is to use this function.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">getAutoCommit</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/get_autocommit.html">sqlite3_get_autocommit</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2214,27 +2202,19 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>interrupt</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--interrupt(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--interrupt------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  <emphasis role="italic">Interrupt</emphasis> causes any pending database operation to abort and return at the earliest
+  opportunity.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -2246,24 +2226,33 @@ Bytes of page memory used by all caches on this database connection:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method is safe to call from a different thread than the thread that is currently running the database
+    operation. But it is not safe to call this routine with a database connection that might close before <emphasis
+    role="italic">interrupt</emphasis> returns. If a SQL operation is very nearly finished at the time when <emphasis
+    role="italic">interrupt</emphasis> is invoked, then it might not have an opportunity to be interrupted and might continue
+    to completion. A SQL operation that is interrupted will return INTERRUPT result code. If the interrupted SQL operation is
+    an INSERT, UPDATE, or DELETE that is inside an explicit transaction, then the entire transaction will be rolled back
+    automatically.
+  </para>
+  <para>
+    The <emphasis role="italic">interrupt</emphasis> call is in effect until all currently running SQL statements on this
+    database connection complete. Any new SQL statements that are started after the <emphasis
+    role="italic">interrupt</emphasis> call and before the running statement count reaches zero are interrupted as if they
+    had been running prior to the <emphasis role="italic">interrupt</emphasis> call. New SQL statements that are started
+    after the running statement count reaches zero are not effected by the <emphasis role="italic">interrupt</emphasis>. A
+    call to <emphasis role="italic">interrupt</emphasis> that occurs when there are no running SQL statements is a no-op and
+    has no effect on SQL statements that are started after the <emphasis role="italic">interrupt</emphasis> call returns.
+  </para>
+  <para>
+    If this database connection closes while <emphasis role="italic">interrupt</emphasis> is running then bad things will
+    likely happen.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">interrupt</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/interrupt.html">sqlite3_interrupt</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2275,56 +2264,49 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>lastInsertRowID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--lastInsertRowID(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--lastInsertRowID------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the rowid of the most recent successful INSERT into the database from this database connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the unique whole number <emphasis role="italic">rowid</emphasis> of the most recent, successful INSERT statement
+    on this database connection
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Every row of every SQLite table has a 64-bit signed integer key that uniquely identifies the row within its table. This
+    integer is usually called the <emphasis role="italic">rowid</emphasis>. The rowid value can be accessed using one of the
+    special case-independent names <emphasis role="italic">rowid</emphasis>, <emphasis role="italic">oid</emphasis>, or
+    <emphasis role="italic">_rowid_</emphasis> in place of a column name. If a table contains a user defined column named
+    using any of these 3 special names, then that name always refers the explicitly declared column and cannot be used to
+    retrieve the integer rowid value.
+  </para>
+  <para>
+    The SQLite documentation contains very detailed and complete documentation concerning the <ulink
+    url="http://www.sqlite.org/c3ref/last_insert_rowid.html">last</ulink> rowid and the <ulink
+    url="http://www.sqlite.org/lang_createtable.html#rowid">rowid</ulink> itself. That documentation should be consulted to
+    fully understand the rowid concept.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">lastInsertRowID</emphasis> method is similar to that of the SQLite
+    <ulink url="">sqlite3_last_insert_rowid</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2336,13 +2318,12 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>limit</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--limit(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--limit(--id--,--value--)----------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Queries or sets the limiting size of various constructs on this database connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2350,10 +2331,17 @@ Bytes of page memory used by all caches on this database connection:
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        xx
+        One of the run time limit<link linkend="sctRunTimeLimit">constants</link>. This identifies the limit construct that
+        is to be size limited.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>value [required]</term>
+      <listitem>
+      <para>
+        The new value of the limit. If this value is negative, then the limit is unchanged.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2362,30 +2350,31 @@ Bytes of page memory used by all caches on this database connection:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the exsiting limit at the time <emphasis role="italic">limit</emphasis> is invoked, even if the invocation does
+    not change the limit. Because of this, the way to query the current value of a limit is to invoke the method with a
+    negative number.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    For each limit there is a hard upper bound set when ooSQLite is built. Attempts to increase a limit above its hard upper
+    bound are silently truncated by the database engine to the hard upper bound. The <emphasis
+    role="italic">limit</emphasis> method can be used by an application that allows an untrusted source to enter data into
+    the database to lower the built in limits. Perhaps to prevent denial of service attacks. Programmers may also want to use
+    the <link linkend="mthSetAuthorizer">setAuthorizer</link> method and / or limiting database size using the <emphasis
+    role="italic">max_page_count</emphasis> <link linkend="mthPragma">PRAGMA</link> when the application works with
+    untrusted sources.
+  </para>
+  <para>
+    New run time limits may be introduced by SQLite in the future.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">limit</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/limit.html">sqlite3_limit</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2397,24 +2386,28 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>nextStmt</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--nextStmt(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--nextStmt(--+--------+--)---------------------><
+               +--stmt--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the next prepared statement <link linkend="clsOOSQLiteStmt">object</link> after the specified statement, or the
+  first prepared statement if <emphasis role="italic">stmt</emphasis> is omitted or the <computeroutput>.nil</computeroutput>
+  object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>stmt [optional]</term>
       <listitem>
       <para>
-        xx
+        A <computeroutput>ooSQLiteStmt</computeroutput> object specifying the starting point of the search. If this argument
+        is omitted, or the <computeroutput>.nil</computeroutput> object then the search starts from the beginnging of the
+        prepared statement list.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2423,30 +2416,23 @@ Bytes of page memory used by all caches on this database connection:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the found statement, or <computeroutput>.nil</computeroutput> if no next prepared statement is found.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The search finds the first statement <emphasis role="italic">after</emphasis> the specified <emphasis
+    role="italic">stmt</emphasis>. It is okay to use a statement that has been <link linkend="mthFinalize">finalized</link>
+    as the starting point of the search. Omitting the <emphasis role="italic">stmt</emphasis> argument or using
+    <computeroutput>.nil</computeroutput> essentially finds the <emphasis role="italic">first</emphasis> prepared statement.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">nextStmt</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/next_stmt.html">sqlite3_next_stmt</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2771,7 +2757,7 @@ Bytes of page memory used by all caches on this database connection:
 </programlisting>
 
 <para>
-  Executes a PRAGMA statement.  A '<emphasis role="italic">PRAGMA</emphasis> statement is a SQLite specific SQL extension,
+  Executes a PRAGMA statement.  A <emphasis role="italic">PRAGMA</emphasis> statement is a SQLite specific SQL extension,
   probably unknown to any other database engine. The <emphasis role="italic">pragma</emphasis> method implements the
   functionality of the SQLite <ulink url="http://www.sqlite.org/pragma.html">PRAGMA</ulink> statement. The SQLite
   documentation should be read to understand how PRAGMAs work
@@ -3249,59 +3235,136 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>rollbackHook</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--rollbackHook(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--rollbackHook(--callBackObj--+------------+--+------------+--)----------------><
+                                +-,-mthName--+  +-,-userData-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Registers a callback method to be invoked whenever a transaction is rolled back.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>callBackObj [required]</term>
       <listitem>
       <para>
-        xx
+        An instantiated object with a method that will be invoked whenever a transaction is rolled back.
+      </para>
+      <para>
+        However, this argument can also be .nil to indicate that any installed rollback hook is to be removed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mthName [optional]</term>
+      <listitem>
+      <para>
+        The method name that will be invoked during a call back.  By default, the method invoked will be <emphasis
+        role="italic">rollbackHookCallBack()</emphasis>. However, the user can specify an alternative method if desired. This
+        argument is ignored when the <emphasis role="italic">callbackObj</emphasis> argument is .nil.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optional]</term>
+      <listitem>
+      <para>
+        This can be any Rexx object the user desires. The object will be sent as the first and only argument to the rollback
+        hook callback method when it is invoked.  This argument is ignored when the callbackObj argument is .nil.
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The <emphasis role="italic">userData</emphasis> argument to a previous invocation of the <emphasis
+    role="italic">rollbackHook</emphasis> method on this database connection, or .nil if there has not been a previous
+    invocation or the <emphasis role="italic">userData</emphasis> argument was not used on the previous invocation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">rollbackHook</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/commit_hook.html">sqlite3_rollback_hook</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="mthRollbackHookCallBack"><title>rollbackHookCallBack</title>
+<indexterm><primary>rollbackHookCallBack</primary></indexterm>
+<indexterm><primary>Callback Methods</primary><secondary>rollbackHookCallBack</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--rollbackHookCallBack(--userData--)------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">rollbackHookCallBack</emphasis> method is an example of a user callback method for the <link
+  linkend="mthRollbackHook">rollbackHook</link> method. Here the method name of <emphasis
+  role="italic">rollbackHookCallBack</emphasis> is used, because it is the default method name if the programmer does not
+  specify his own name in the <emphasis role="italic">rollbackHook</emphasis> method. Any method name can be used by
+  specifying it as the second argument to the <emphasis role="italic">rollbackHook</emphasis> method.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> there is no <emphasis role="italic">rollbackHookCallBack</emphasis> method in any
+  ooSQLite class. This method is just used to illustrate how to define a user callback method to be used with the rollback
+  hook.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument sent to the callback method is:
+  </para>
+    <variablelist>
+      <varlistentry><term>userData [required]</term>
+      <listitem>
+      <para>
+        The user data object specified by the programmer as the third argument to the <emphasis
+        role="italic">rollbackHook</emphasis> method. If the programmer did not specify a user data argument, this will be the
+        <computeroutput>.nil</computeroutput> object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer must return a whole number value from the callback. However, the actual value returned makes no difference
+    to the SQLite database engine. Typically, the programmer would just return 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The callback method must not do anything that will modify the database connection that invoked the callback. Any actions
+    to modify the database connection must be deferred until after the completion of the <link
+    linkend="mthStepClsStmt">step</link> invocation that triggered the rollback hook to begin with. Running any other SQL
+    statements, including SELECT statements, or merely instantiating a new <link linkend="mthNewClsStmt">statement</link>
+    object, or executing another <emphasis role="italic">step</emphasis> method will modify the database connection.
+  </para>
+  <para>
+    For the purposes of this method, a transaction is said to have been rolled back if an explicit ROLLBACK statement is
+    executed, or an error or constraint causes an implicit rollback to occur. However, the callback is not invoked if a
+    transaction is automatically rolled back because the database connection is closed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    The implementation of a <emphasis role="italic">rollback hook</emphasis> method is is discussed on the SQLite <ulink
+    url="http://www.sqlite.org/c3ref/commit_hook.html">sqlite3_rollback_hook</ulink> page.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteConnection::rollbackHookCallBack() -->
+
+
 </section>  <!-- End ooSQLiteConnection::rollbackHook() -->
 
 
@@ -3310,59 +3373,326 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>setAuthorizer</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setAuthorizer(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setAuthorizer(--callBackObj--+------------+--+------------+--)-------------><
+                                 +-,-mthName--+  +-,-userData-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Registers an authorizer callback method that is invoked as SQL statements are being compiled by instantiating an <link
+  linkend="clsOOSLiteStmt">ooSQLiteStmt</link> object. The callback allows the Rexx program to disallow certain actions of
+  the SQL, or reject the SQL statemen entirely.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>callBackObj [required]</term>
       <listitem>
       <para>
-        xx
+        An instantiated object with a method that will be invoked during the compilation of a SQL statement
+      </para>
+      <para>
+        However, this argument can also be .nil to indicate that any installed update hook is to be removed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mthName [optional]</term>
+      <listitem>
+      <para>
+        The method name that will be invoked during a call back.  By default, the method invoked will be <emphasis
+        role="italic">authorizerCallBack()</emphasis>. However, the user can specify an alternative method if desired. This
+        argument is ignored when the <emphasis role="italic">callbackObj</emphasis> argument is .nil.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optional]</term>
+      <listitem>
+      <para>
+        This can be any Rexx object the user desires. The object will be sent as the last argument to the authorizer callback
+        method when it is invoked.  This argument is ignored when the callbackObj argument is .nil.
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a SQLite result <link linkend="sctResultCode">code</link>. Currently, it appears that the SQLite database engine
+    always returns OK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    At various points during the compilation process of a statement, as logic is being created to perform various actions,
+    the authorizer callback is invoked to see if those actions are allowed. The authorizer callback should return OK to
+    allow the action, IGNORE to disallow the specific action but allow the SQL statement to continue to be compiled, or DENY
+    to cause the entire SQL statement to be rejected with an error. If the authorizer callback returns any value other than
+    IGNORE, OK, or DENY then the instantiation of the <computeroutput>ooSQLiteStmt</computeroutput> object that triggered the
+    authorizer will fail with an error <link linkend="mthLastErrMsgClsOOSQLiteStmt">message</link> .
+  </para>
+  <para>
+    An authorizer is used when preparing SQL statements from an untrusted source, to ensure that the SQL statements do not
+    try to access data they are not allowed to see, or that they do not try to execute malicious statements that damage the
+    database. For example, an application may allow a user to enter arbitrary SQL queries for evaluation by a database. But
+    the application does not want the user to be able to make arbitrary changes to the database. An authorizer could then be
+    put in place while the user-entered SQL is being prepared that disallows everything except SELECT statements.
+  </para>
+  <para>
+    Programs that need to process SQL from untrusted sources might also consider lowering resource limits using the <link
+    linkend="mthLimit">limit</link> method and / or limiting database size using the <emphasis
+    role="italic">max_page_count</emphasis> <link linkend="mthPragma">PRAGMA</link> in addition to using an authorizer.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">setAuthorizer</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/set_authorizer.html">sqlite3_set_authorizer</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="mthAuthorizerCallBack"><title>authorizerCallBack</title>
+<indexterm><primary>authorizerCallBack</primary></indexterm>
+<indexterm><primary>Callback Methods</primary><secondary>authorizerCallBack</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--authorizerCallBack(--code--,--str1--,--str2--,--str3--,--str4--,--userData--)-><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">authorizerCallBack</emphasis> method is an example of a user callback method for the <link
+  linkend="mthSetAuthorizer">setAuthorizer</link> method. Here the method name of <emphasis
+  role="italic">authorizerCallBack</emphasis> is used, because it is the default method name if the programmer does not
+  specify his own name in the <emphasis role="italic">setAuthorizer</emphasis> method. Any method name can be used by
+  specifying it as the second argument to the <emphasis role="italic">setAuthorizer</emphasis> method.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> there is no <emphasis role="italic">authorizerCallBack</emphasis> method in any
+  ooSQLite class. This method is just used to illustrate how to define a user callback method to be used with the update
+  hook.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments sent to the callback method are:
+  </para>
+    <variablelist>
+      <varlistentry><term>code [required]</term>
+      <listitem>
+      <para>
+        One of the authorizer <link linkend="sctAuthorizerAction">constants</link> that specifies the particular action to be
+        authorized.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>str1 [required]</term>
+      <listitem>
+      <para>
+        String 1 that contains additional details about the action to be authorized. The string varies depending on the
+        action that triggered the callback. See the table in the Remarks section for possible values.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>str2 [required]</term>
+      <listitem>
+      <para>
+        String 2 that contains additional details about the action to be authorized. The string varies depending on the
+        action that triggered the callback. See the table in the Remarks section for possible values.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>str3 [required]</term>
+      <listitem>
+      <para>
+        The <link linkend="defDatabaseName">name</link> of the database (<emphasis role="italic">main</emphasis>, <emphasis
+        role="italic">temp</emphasis>, etc.,) if applicable. If not applicable, the empty string.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>str4 [required]</term>
+      <listitem>
+      <para>
+        The name of the inner-most trigger or view that is responsible for the access attempt or the empty string if this
+        access attempt is directly from top-level SQL code.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [required]</term>
+      <listitem>
+      <para>
+        The user data object specified by the programmer as the third argument to the <emphasis
+        role="italic">setAuthorizer</emphasis> method. If the programmer did not specify a user data argument, this will be the
+        <computeroutput>.nil</computeroutput> object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer must return 1 of the 3 authorizer return code <link linkend="sctAuthorizerReturnCode">constants</link>.
+    Any other reuturn will cause the instantiation of the <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link> object to fail
+    with an error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    At various points during the compilation process of a statement, as logic is being created to perform various actions,
+    the authorizer callback is invoked to see if those actions are allowed. In ooSQLite, the compilation process of a
+    statement takes place during the initialization of an <link linkend="mthNewClsStmt">ooSQLiteStmt</link> object.
+  </para>
+  <para>
+    The authorizer callback should return OK to allow the action, IGNORE to disallow the specific action but allow the SQL
+    statement to continue to be compiled, or DENY to cause the entire SQL statement to be rejected with an error. If the
+    authorizer callback returns any value other than IGNORE, OK, or DENY then the instantiation of the
+    <computeroutput>ooSQLiteStmt</computeroutput> object that triggered the authorizer will fail with an error <link
+    linkend="mthLastErrMsgClsOOSQLiteStmt">message</link> .
+  </para>
+  <para>
+    If the action code is READ and the callback returns IGNORE then the prepared statement statement is constructed to
+    substitute a NULL value in place of the table column that would have been read if OK had been returned. The IGNORE
+    return can be used to deny an untrusted user access to individual columns of a table. If the action code is DELETE and
+    the callback returns IGNORE then the DELETE operation proceeds but the truncate optimization is disabled and all rows
+    are deleted individually.
+  </para>
+  <para>
+    The callback method must not do anything that will modify the database connection that invoked the callback. Any actions
+    to modify the database connection must be deferred until after the completion of the <link
+    linkend="mthStepClsStmt">step</link> invocation that triggered the update hook to begin with. Running any other SQL
+    statements, including SELECT statements, or merely instantiating a new <link linkend="mthNewClsStmt">statement</link>
+    object, or executing another <emphasis role="italic">step</emphasis> method will modify the database connection.
+  </para>
+  <para>
+    The following table lists the values for <emphasis role="italic">str1</emphasis> and <emphasis
+    role="italic">str2</emphasis> for each of the possible action codes, the value of the <emphasis
+    role="italic">code</emphasis> argument
+  </para>
+  <table id="tblAuthorizerCallbackArgs" frame="all">
+  <title>The Authorizer Callback Arguments</title>
+  <tgroup cols="3">
+  <colspec colwidth="3*" />
+  <colspec colwidth="6*" />
+  <colspec colwidth="6*" />
+  <thead>
+  <row>
+  <entry>Code</entry>
+  <entry>Str1</entry>
+  <entry>Str2</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+  <entry>CREATE_INDEX</entry>       <entry>Index Name   </entry><entry>Table Name                  </entry>
+  </row>
+  <row>
+  <entry>CREATE_TABLE</entry>       <entry>Table Name   </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>CREATE_TEMP_INDEX</entry>  <entry>Index Name   </entry><entry>Table Name                  </entry>
+  </row>
+  <row>
+  <entry>CREATE_TEMP_TABLE</entry>  <entry>Table Name   </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>CREATE_TEMP_TRIGGER</entry><entry>Trigger Name </entry><entry>Table Name                  </entry>
+  </row>
+  <row>
+  <entry>CREATE_TEMP_VIEW</entry>   <entry>View Name    </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>CREATE_TRIGGER</entry>     <entry>Trigger Name </entry><entry>Table Name                  </entry>
+  </row>
+  <row>
+  <entry>CREATE_VIEW</entry>        <entry>View Name    </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>DELETE</entry>             <entry>Table Name   </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>DROP_INDEX</entry>         <entry>Index Name   </entry><entry>Table Name                  </entry>
+  </row>
+  <row>
+  <entry>DROP_TABLE</entry>         <entry>Table Name   </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>DROP_TEMP_INDEX</entry>    <entry>Index Name   </entry><entry>Table Name                  </entry>
+  </row>
+  <row>
+  <entry>DROP_TEMP_TABLE</entry>    <entry>Table Name   </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>DROP_TEMP_TRIGGER</entry>  <entry>Trigger Name </entry><entry>Table Name                  </entry>
+  </row>
+  <row>
+  <entry>DROP_TEMP_VIEW</entry>     <entry>View Name    </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>DROP_TRIGGER</entry>       <entry>Trigger Name </entry><entry>Table Name                  </entry>
+  </row>
+  <row>
+  <entry>DROP_VIEW</entry>          <entry>View Name    </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>INSERT</entry>             <entry>Table Name   </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>PRAGMA</entry>             <entry>Pragma Name  </entry><entry>userData arg or Empty String</entry>
+  </row>
+  <row>
+  <entry>READ</entry>               <entry>Table Name   </entry><entry>Column Name                 </entry>
+  </row>
+  <row>
+  <entry>SELECT</entry>             <entry>Empty String </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>TRANSACTION</entry>        <entry>Operation    </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>UPDATE</entry>             <entry>Table Name   </entry><entry>Column Name                 </entry>
+  </row>
+  <row>
+  <entry>ATTACH</entry>             <entry>Filename     </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>DETACH</entry>             <entry>Database Name</entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>ALTER_TABLE</entry>        <entry>Database Name</entry><entry>Table Name                  </entry>
+  </row>
+  <row>
+  <entry>REINDEX</entry>            <entry>Index Name   </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>ANALYZE</entry>            <entry>Table Name   </entry><entry>Empty String                </entry>
+  </row>
+  <row>
+  <entry>CREATE_VTABLE</entry>      <entry>Table Name   </entry><entry>Module Name                 </entry>
+  </row>
+  <row>
+  <entry>DROP_VTABLE</entry>        <entry>Table Name   </entry><entry>Module Name                 </entry>
+  </row>
+  <row>
+  <entry>FUNCTION</entry>           <entry>Empty String </entry><entry>Function Name               </entry>
+  </row>
+  <row>
+  <entry>SAVEPOINT</entry>          <entry>Operation    </entry><entry>Savepoint Name              </entry>
+  </row>
+  </tbody></tgroup>
+  </table>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    The implementation of an <emphasis role="italic">authorizer</emphasis> callback method is is discussed on the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/set_authorizer.html">sqlite3_set_authorizer</ulink> page.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteConnection::setAuthorizerCallBack() -->
+
 </section>  <!-- End ooSQLiteConnection::setAuthorizer() -->
 
 
@@ -3371,13 +3701,13 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>tableColumnMetadata</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--tableColumnMetadata(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--tableColumnMetadata(--tableName--,--colName--,--results--+-----------+--)--><
+                                                             +-,-dbName--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves metadata about a specific column of a specific table of this database connection.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3385,10 +3715,63 @@ Bytes of page memory used by all caches on this database connection:
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>tableName [required]</term>
       <listitem>
       <para>
-        xx
+        The name of the table containing the column whose metadata is being sought.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>[required]</term>
+      <listitem>
+      <para>
+        The name of the column whose metadata is being sought.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>results [required]</term>
+      <listitem>
+      <para>
+        A <computeroutput>Directory</computeroutput> object whose indexes will hold the metadata on return. On
+        success the following indexes in the object will be valid:
+      </para>
+      <variablelist>
+        <varlistentry><term><emphasis role="bold">DATATYPE</emphasis></term>
+        <listitem>
+        <para>
+          The datatype of the column.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">COLLATIONSEQUNCE</emphasis></term>
+        <listitem>
+        <para>
+          The name of the default collation sequence for the column.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">NOTNULL</emphasis></term>
+        <listitem>
+        <para>
+          True if the column has a NOT NULL constraint, otherwise false.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">PRIMARYKEY</emphasis></term>
+        <listitem>
+        <para>
+          True if the column is part of the PRIMARY KEY, otherwise false.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">AUTOINCREMENT</emphasis></term>
+        <listitem>
+        <para>
+          True if the column is AUTOINCREMENT, otherwise false.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term>dbName[optional]</term>
+      <listitem>
+      <para>
+        The <link linkend="defDatabaseName">name</link> of the database (<emphasis role="italic">main</emphasis>, <emphasis
+        role="italic">temp</emphasis>, etc..) If this argument is omitted, then all attached databases are searched for the
+        table by the database engine, using the same algorithm as is used by SQLite to resolve unqualified table references.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3397,30 +3780,36 @@ Bytes of page memory used by all caches on this database connection:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a SQLite result <link linkend="sctResultCode">code</link>, OK on success, otherwise an error code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If this methods fails, the <emphasis role="italic">results</emphasis> object is unchanged.
   </para>
+  <para>
+    If the specified table is actually a view, an error code is returned.  If the specified column is <emphasis
+    role="italic">rowid</emphasis>, <emphasis role="italic">oid</emphasis>, or <emphasis
+    role="italic">_rowid_</emphasis> and an INTEGER PRIMARY KEY column has been explicitly declared, then the output
+    parameters are set for the explicitly declared column. If there is no explicitly declared INTEGER PRIMARY KEY column,
+    then the output parameters are set as follows:
+  </para>
+  <simplelist type='vert' columns=''>
+    <member>Data type:</member><member>&quot;INTEGER&quot;</member>
+    <member>Collation sequenc:</member><member>&quot;BINARY&quot;</member>
+    <member>Not null:</member><member>false</member>
+    <member>Primary key:</member><member>true</member>
+    <member>Auto increment:</member><member>false</member>
+  </simplelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">tableColumnMetadata</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/table_column_metadata.html">sqlite3_table_column_metadata</ulink> API. Note that
+    the arguments to <emphasis role="italic">tableColumnMetadata</emphasis> are in a slightly different order than in the
+    SQLite API. This is to place the optional database name at the end of the argument list.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3625,61 +4014,163 @@ Bytes of page memory used by all caches on this database connection:
 <indexterm><primary>ooSQLiteConnection class</primary><secondary>updateHook</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--updateHook(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--updateHook(--callBackObj--+------------+--+------------+--)----------------><
+                              +-,-mthName--+  +-,-userData-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Registers a callback method to be invoked whenever a row is updated, inserted, or deleted.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>callBackObj [required]</term>
       <listitem>
       <para>
-        xx
+        An instantiated object with a method that will be invoked whenever a row is updated, inserted, or deleted.
+      </para>
+      <para>
+        However, this argument can also be .nil to indicate that any installed update hook is to be removed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mthName [optional]</term>
+      <listitem>
+      <para>
+        The method name that will be invoked during a call back.  By default, the method invoked will be <emphasis
+        role="italic">updateHookCallBack()</emphasis>. However, the user can specify an alternative method if desired. This
+        argument is ignored when the <emphasis role="italic">callbackObj</emphasis> argument is .nil.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optional]</term>
+      <listitem>
+      <para>
+        This can be any Rexx object the user desires. The object will be sent as the last argument to the update hook
+        callback method when it is invoked.  This argument is ignored when the callbackObj argument is .nil.
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The <emphasis role="italic">userData</emphasis> argument to a previous invocation of the <emphasis
+    role="italic">updateHook</emphasis> method on this database connection, or .nil if there has not been a previous
+    invocation or the <emphasis role="italic">userData</emphasis> argument was not used on the previous invocation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Anything ?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">updateHook</emphasis> method is similar to that of the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/commit_hook.html">sqlite3_update_hook</ulink> API.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ooSQLiteConnection::updateHook() -->
 
+<section id="mthUpdateHookCallBack"><title>updateHookCallBack</title>
+<indexterm><primary>updateHookCallBack</primary></indexterm>
+<indexterm><primary>Callback Methods</primary><secondary>updateHookCallBack</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--updateHookCallBack(--op--,--dbName--,--tableName--,--rowID--,--userData--)-><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">updateHookCallBack</emphasis> method is an example of a user callback method for the <link
+  linkend="mthUpdateHook">updateHook</link> method. Here the method name of <emphasis
+  role="italic">updateHookCallBack</emphasis> is used, because it is the default method name if the programmer does not
+  specify his own name in the <emphasis role="italic">updateHook</emphasis> method. Any method name can be used by
+  specifying it as the second argument to the <emphasis role="italic">updateHook</emphasis> method.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> there is no <emphasis role="italic">updateHookCallBack</emphasis> method in any
+  ooSQLite class. This method is just used to illustrate how to define a user callback method to be used with the update
+  hook.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments sent to the callback method are:
+  </para>
+    <variablelist>
+      <varlistentry><term>op [required]</term>
+      <listitem>
+      <para>
+        One of 3 authorizer <link linkend="sctAuthorizerAction">constants</link> that indicate what the update operation was.
+        Either INSERT, DELETE, or UPDATE.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>dbName [required]</term>
+      <listitem>
+      <para>
+        The database <link linkend="defDatabaseName">name</link> of the database containing the affected row.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>tableName [required]</term>
+      <listitem>
+      <para>
+        The table name of the table containing the affected row.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rowID [required]</term>
+      <listitem>
+      <para>
+        The row ID of the affected row. Every row of every SQLite table has a whole number key that uniquely identifies the
+        row within its table. In the case of an update, this is the rowid after the update takes place.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [required]</term>
+      <listitem>
+      <para>
+        The user data object specified by the programmer as the third argument to the <emphasis
+        role="italic">updateHook</emphasis> method. If the programmer did not specify a user data argument, this will be the
+        <computeroutput>.nil</computeroutput> object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer must return a whole number value from the callback. However, the actual value returned makes no difference
+    to the SQLite database engine. Typically, the programmer would just return 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The callback method must not do anything that will modify the database connection that invoked the callback. Any actions
+    to modify the database connection must be deferred until after the completion of the <link
+    linkend="mthStepClsStmt">step</link> invocation that triggered the update hook to begin with. Running any other SQL
+    statements, including SELECT statements, or merely instantiating a new <link linkend="mthNewClsStmt">statement</link>
+    object, or executing another <emphasis role="italic">step</emphasis> method will modify the database connection.
+  </para>
+  <para>
+    The update hook is not invoked when internal SQLite system tables are modified (i.e. sqlite_master and sqlite_sequence).
+    In the current SQLite database enginge implementation, the update hook is not invoked when duplicate rows are deleted
+    because of an ON CONFLICT REPLACE clause. Nor is the update hook invoked when rows are deleted using the truncate
+    optimization. The exceptions defined in this paragraph might change in a future release of SQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    The implementation of a <emphasis role="italic">update hook</emphasis> method is is discussed on the SQLite <ulink
+    url="http://www.sqlite.org/c3ref/update_hook.html">sqlite3_update_hook</ulink> page.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteConnection::updateHookCallBack() -->
+
+</section>  <!-- End ooSQLiteConnection::updateHook() -->
 
 
 </section>
