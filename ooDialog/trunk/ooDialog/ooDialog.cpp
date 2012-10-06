@@ -188,8 +188,8 @@ bool loadResourceDLL(pCPlainBaseDialog pcpbd, CSTRING library)
         CHAR msg[256];
         sprintf(msg,
                 "Failed to load Dynamic Link Library (resource DLL.)\n"
-                "  File name:\t\t\t%s\n"
-                "  Windows System Error Code:\t%d\n", library, GetLastError());
+                "  Windows System Error Code:\t%d\n"
+                "  File name:\t\t%s\n", GetLastError(), library);
         MessageBox(0, msg, "ooDialog DLL Load Error", MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
         return false;
     }
