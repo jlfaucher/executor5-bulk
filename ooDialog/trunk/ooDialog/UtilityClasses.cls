@@ -66,12 +66,13 @@
   use strict arg hFile
 
   if \ SysIsFile(hFile) then do
-    hFile = SysSearchPath("PATH", hFile)
-    if hFile == "" then do
+    foundFile = SysSearchPath("PATH", hFile)
+    if foundFile == "" then do
       msg = 'Unable to find header file "'hFile'"'
       j = MessageDialog(msg, 0, "File Not Found Error", "OK", "WARNING", "SYSTEMMODAL")
       return .false
     end
+    hFile = foundFile
   end
 
   f = .stream~new(hFile)
