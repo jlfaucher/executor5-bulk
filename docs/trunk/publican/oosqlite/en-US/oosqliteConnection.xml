@@ -226,7 +226,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetAuthorizer">setAuthorizer</link></entry>
-<entry>Registers an authorizer callback method that is invoked as SQL statements are being compiled by instantiating an <link linkend="clsOOSLiteStmt">ooSQLiteStmt</link> object.</entry>
+<entry>Registers an authorizer callback method that is invoked as SQL statements are being compiled by instantiating an <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link> object.</entry>
 </row>
 <row>
 <entry><link linkend="mthTableColumnMetadata">tableColumnMetadata</link></entry>
@@ -3380,7 +3380,7 @@ Bytes of page memory used by all caches on this database connection:
 
 <para>
   Registers an authorizer callback method that is invoked as SQL statements are being compiled by instantiating an <link
-  linkend="clsOOSLiteStmt">ooSQLiteStmt</link> object. The callback allows the Rexx program to disallow certain actions of
+  linkend="clsOOSQLiteStmt">ooSQLiteStmt</link> object. The callback allows the Rexx program to disallow certain actions of
   the SQL, or reject the SQL statemen entirely.
 </para>
 <variablelist>
@@ -3431,7 +3431,7 @@ Bytes of page memory used by all caches on this database connection:
     allow the action, IGNORE to disallow the specific action but allow the SQL statement to continue to be compiled, or DENY
     to cause the entire SQL statement to be rejected with an error. If the authorizer callback returns any value other than
     IGNORE, OK, or DENY then the instantiation of the <computeroutput>ooSQLiteStmt</computeroutput> object that triggered the
-    authorizer will fail with an error <link linkend="mthLastErrMsgClsOOSQLiteStmt">message</link> .
+    authorizer will fail with an error <link linkend="atrLastErrMsgClsOOSQLiteStmt">message</link> .
   </para>
   <para>
     An authorizer is used when preparing SQL statements from an untrusted source, to ensure that the SQL statements do not
@@ -3549,7 +3549,7 @@ Bytes of page memory used by all caches on this database connection:
     statement to continue to be compiled, or DENY to cause the entire SQL statement to be rejected with an error. If the
     authorizer callback returns any value other than IGNORE, OK, or DENY then the instantiation of the
     <computeroutput>ooSQLiteStmt</computeroutput> object that triggered the authorizer will fail with an error <link
-    linkend="mthLastErrMsgClsOOSQLiteStmt">message</link> .
+    linkend="atrLastErrMsgClsOOSQLiteStmt">message</link> .
   </para>
   <para>
     If the action code is READ and the callback returns IGNORE then the prepared statement statement is constructed to
