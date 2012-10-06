@@ -973,15 +973,74 @@ wholenumber_t genMerge(RexxThreadContext *c, RexxArrayObject args)
 }
 
 
-int genDbStatus(RexxThreadContext *c, sqlite3 *db, int param, RexxObjectPtr _result, logical_t reset, size_t pos)
+int genStatus(RexxThreadContext *c, int param, RexxObjectPtr _result, logical_t reset, size_t pos, bool isMethod)
 {
-    if ( ! c->IsDirectory(_result) )
+    if ( isMethod && ! c->IsDirectory(_result) )
     {
         wrongClassException(c, pos, "Directory", _result);
         return SQLITE_MISUSE;
     }
+    else if ( ! c->IsStem(_result) )
+    {
+        wrongClassException(c, pos, "Stem", _result);
+        return SQLITE_MISUSE;
+    }
 
-    RexxDirectoryObject result = (RexxDirectoryObject)_result;
+    int cur;
+    int hiwtr;
+
+    int rc = sqlite3_status(param, &cur, &hiwtr, (int)reset);
+
+    if ( rc == SQLITE_OK )
+    {
+        if ( isMethod )
+        {
+            RexxDirectoryObject result = (RexxDirectoryObject)_result;
+
+            c->DirectoryPut(result, c->StringSize(cur), "CURRENT");
+            c->DirectoryPut(result, c->StringSize(hiwtr), "HIGHWATER");
+        }
+        else
+        {
+            RexxStemObject result = (RexxStemObject)_result;
+
+            c->SetStemElement(result, "CURRENT",   c->StringSize(cur));
+            c->SetStemElement(result, "HIGHWATER", c->StringSize(hiwtr));
+        }
+    }
+
+    return rc;
+}
+
+/**
+ * Generic implementation of sqlite3_db_status for the OO and classic
+ * interfaces.
+ *
+ * @param c
+ * @param db
+ * @param param
+ * @param _result
+ * @param reset
+ * @param pos
+ *
+ * @return int
+ *
+ * @remarks  We cheat here in determining if we are called by a routine or a
+ *           method.  We know that the arg pos is 2 for a method and 3 for a
+ *           routine.
+ */
+int genDbStatus(RexxThreadContext *c, sqlite3 *db, int param, RexxObjectPtr _result, logical_t reset, size_t pos)
+{
+    if ( pos == 2 && ! c->IsDirectory(_result) )
+    {
+        wrongClassException(c, pos, "Directory", _result);
+        return SQLITE_MISUSE;
+    }
+    else if ( ! c->IsStem(_result) )
+    {
+        wrongClassException(c, pos, "Stem", _result);
+        return SQLITE_MISUSE;
+    }
 
     int cur;
     int hiwtr;
@@ -990,23 +1049,58 @@ int genDbStatus(RexxThreadContext *c, sqlite3 *db, int param, RexxObjectPtr _res
 
     if ( rc == SQLITE_OK )
     {
-        c->DirectoryPut(result, c->StringSize(cur), "CURRENT");
-        c->DirectoryPut(result, c->StringSize(hiwtr), "HIGHWATER");
+        if ( pos == 2 )
+        {
+            RexxDirectoryObject result = (RexxDirectoryObject)_result;
+
+            c->DirectoryPut(result, c->StringSize(cur), "CURRENT");
+            c->DirectoryPut(result, c->StringSize(hiwtr), "HIGHWATER");
+        }
+        else
+        {
+            RexxStemObject result = (RexxStemObject)_result;
+
+            c->SetStemElement(result, "CURRENT",   c->StringSize(cur));
+            c->SetStemElement(result, "HIGHWATER", c->StringSize(hiwtr));
+        }
     }
 
     return rc;
 }
 
+/**
+ * Generic implemenation of tableColumnMetaData used for either the object
+ * orientated interface, or the classic Rexx interface.
+ *
+ * @param c
+ * @param db
+ * @param dbName
+ * @param tableName
+ * @param colName
+ * @param _results
+ * @param pos
+ *
+ * @return int
+ *
+ * @note  dbName can be NULL, this is acceptable to SQLite.
+ *
+ * @remarks  We cheat here in the test for classic Rexx or not.  We know that
+ *           the 'results' object is at arg position 3 if called from a method
+ *           and at arg position 4 if called from a routine.
+ */
 int genTableColumnMetadata(RexxThreadContext *c, sqlite3 *db, CSTRING dbName, CSTRING tableName,
                            CSTRING colName, RexxObjectPtr _results, size_t pos)
 {
-    if ( ! c->IsDirectory(_results) )
+    if ( pos == 3 && ! c->IsDirectory(_results) )
     {
         wrongClassException(c, pos, "Directory", _results);
         return SQLITE_MISUSE;
     }
-
-    RexxDirectoryObject results = (RexxDirectoryObject)_results;
+    else if ( ! c->IsStem(_results) )
+    {
+        wrongClassException(c, pos, "Stem", _results);
+        return SQLITE_MISUSE;
+    }
 
     char const *dataType;
     char const *collSeq;
@@ -1028,11 +1122,26 @@ int genTableColumnMetadata(RexxThreadContext *c, sqlite3 *db, CSTRING dbName, CS
 
     if ( rc == SQLITE_OK )
     {
-        c->DirectoryPut(results, c->String(dataType),     "DATATYPE");
-        c->DirectoryPut(results, c->String(collSeq),      "COLLATIONSEQUENCE");
-        c->DirectoryPut(results, c->Logical(notNull),     "NOTNULL");
-        c->DirectoryPut(results, c->Logical(primaryKey),  "PRIMARYKEY");
-        c->DirectoryPut(results, c->Logical(autoInc),     "AUTOINCREMENT");
+        if ( pos == 3 )
+        {
+            RexxDirectoryObject results = (RexxDirectoryObject)_results;
+
+            c->DirectoryPut(results, c->String(dataType),     "DATATYPE");
+            c->DirectoryPut(results, c->String(collSeq),      "COLLATIONSEQUENCE");
+            c->DirectoryPut(results, c->Logical(notNull),     "NOTNULL");
+            c->DirectoryPut(results, c->Logical(primaryKey),  "PRIMARYKEY");
+            c->DirectoryPut(results, c->Logical(autoInc),     "AUTOINCREMENT");
+        }
+        else
+        {
+            RexxStemObject results = (RexxStemObject)_results;
+
+            c->SetStemElement(results, "DATATYPE",          c->String(dataType));
+            c->SetStemElement(results, "COLLATIONSEQUENCE", c->String(collSeq));
+            c->SetStemElement(results, "NOTNULL",           c->Logical(notNull));
+            c->SetStemElement(results, "PRIMARYKEY",        c->Logical(primaryKey));
+            c->SetStemElement(results, "AUTOINCREMENT",     c->Logical(autoInc));
+        }
     }
 
     return rc;
@@ -2535,26 +2644,7 @@ RexxMethod0(RexxStringObject, oosql_sqlite3Version_cls)
  */
 RexxMethod3(int, oosql_status_cls, int, param, RexxObjectPtr, _result, OPTIONAL_logical_t, reset)
 {
-    if ( ! context->IsDirectory(_result) )
-    {
-        wrongClassException(context->threadContext, 2, "Directory", _result);
-        return SQLITE_MISUSE;
-    }
-
-    RexxDirectoryObject result = (RexxDirectoryObject)_result;
-
-    int cur    = -1;
-    int hiwtr  = -1;
-
-    int rc = sqlite3_status(param, &cur, &hiwtr, (int)reset);
-
-    if ( rc == SQLITE_OK )
-    {
-        context->DirectoryPut(result, context->WholeNumber(cur), "CURRENT");
-        context->DirectoryPut(result, context->WholeNumber(hiwtr), "HIGHWATER");
-    }
-
-    return rc;
+    return genStatus(context->threadContext, param, _result, reset, 2, true);
 }
 
 /** ooSQLite::threadSafe()
@@ -4570,9 +4660,12 @@ RexxMethod4(RexxObjectPtr, oosqlconn_setAuthorizer, RexxObjectPtr, callbackObj,
 /** ooSQLiteConnection::tableColumnMetadata()
  *
  *
+ *  @note The parameter order here is slightly switched from
+ *        sqlite3_table_column_metadata() to put the opitonal dbName after
+ *        results, so that optional arguments are placed at the end.
  */
-RexxMethod5(int, oosqlconn_tableColumnMetadata, CSTRING, dbName, CSTRING, tableName, CSTRING, colName,
-            RexxObjectPtr, results, CSELF, pCSelf)
+RexxMethod5(int, oosqlconn_tableColumnMetadata, CSTRING, tableName, CSTRING, colName,
+            RexxObjectPtr, results, OPTIONAL_CSTRING, dbName, CSELF, pCSelf)
 {
     pCooSQLiteConn pConn = requiredDB(context, pCSelf);
     if ( pConn == NULL )
@@ -4580,7 +4673,12 @@ RexxMethod5(int, oosqlconn_tableColumnMetadata, CSTRING, dbName, CSTRING, tableN
         return SQLITE_MISUSE;
     }
 
-    return genTableColumnMetadata(context->threadContext, pConn->db, dbName, tableName, colName, results, 4);
+    if ( argumentOmitted(4) || strlen(dbName) < 1 )
+    {
+        dbName = NULL;
+    }
+
+    return genTableColumnMetadata(context->threadContext, pConn->db, dbName, tableName, colName, results, 3);
 }
 
 
@@ -8156,8 +8254,7 @@ RexxRoutine1(int, oosqlDbReleaseMemory_rtn, POINTER, _db)
 /** oosqlDbStatus()
  *
  */
-RexxRoutine5(int, oosqlDbStatus_rtn, POINTER, _db, int, param, OPTIONAL_CSTRING, _cur, OPTIONAL_CSTRING, _hiwtr,
-             OPTIONAL_logical_t, reset)
+RexxRoutine4(int, oosqlDbStatus_rtn, POINTER, _db, int, param, RexxObjectPtr, _result, OPTIONAL_logical_t, reset)
 {
     sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
@@ -8165,21 +8262,7 @@ RexxRoutine5(int, oosqlDbStatus_rtn, POINTER, _db, int, param, OPTIONAL_CSTRING,
         return SQLITE_MISUSE;
     }
 
-    int cur;
-    int hiwtr;
-
-    if ( argumentOmitted(3) ) _cur   = "__current";
-    if ( argumentOmitted(4) ) _hiwtr = "__highWater";
-
-    int rc = sqlite3_db_status(db, param, &cur, &hiwtr, (int)reset);
-
-    if ( rc == SQLITE_OK )
-    {
-        context->SetContextVariable(_cur, context->WholeNumber(cur));
-        context->SetContextVariable(_hiwtr, context->WholeNumber(hiwtr));
-    }
-
-    return rc;
+    return genDbStatus(context->threadContext, db, param, _result, reset, 3);
 }
 
 /** oosqlErrCode()
@@ -8245,7 +8328,7 @@ RexxRoutine1(RexxObjectPtr, oosqlErrMsg_rtn, POINTER, _db)
  *                       arrays or an array of directories. This argument is
  *                       ignored if doCallback is false.
  *
- *  @param  mthName      The routine name in the Rexx progarm that will be
+ *  @param  rtnName      The routine name in the Rexx progarm that will be
  *                       called each time the SQL produces a row.  This argument
  *                       is ignored unless doCallBack is not omitted and is
  *                       true.
@@ -9115,23 +9198,9 @@ RexxRoutine1(RexxObjectPtr, oosqlSql_rtn, POINTER, _stmt)
  *  Retrieves runtime status information about the performance of SQLite, and
  *  optionally resets various highwater marks.
  */
-RexxRoutine4(int, oosqlStatus_rtn, int, param, OPTIONAL_CSTRING, _cur, OPTIONAL_CSTRING, _hiwtr, OPTIONAL_logical_t, reset)
+RexxRoutine3(int, oosqlStatus_rtn, int, param, RexxObjectPtr, result, OPTIONAL_logical_t, reset)
 {
-    int cur    = -1;
-    int hiwtr  = -1;
-
-    if ( argumentOmitted(2) ) _cur   = "__current";
-    if ( argumentOmitted(3) ) _hiwtr = "__highWater";
-
-    int rc = sqlite3_status(param, &cur, &hiwtr, (int)reset);
-
-    if ( rc == SQLITE_OK )
-    {
-        context->SetContextVariable(_cur, context->WholeNumber(cur));
-        context->SetContextVariable(_hiwtr, context->WholeNumber(hiwtr));
-    }
-
-    return rc;
+    return genStatus(context->threadContext, param, result, reset, 2, false);
 }
 
 /** oosqlStep()
@@ -9201,14 +9270,16 @@ RexxRoutine3(int, oosqlStmtStatus_rtn, POINTER, _stmt, int, param, OPTIONAL_logi
 
 /** oosqlTableColumnMetadata()
  *
+ *  @param  results  A Stem object in which the metadata is returned.
+ *
+ *  @return  OK on success, othewise an error code.
  *
  *  @note The parameter order here is slightly switched from
  *        sqlite3_table_column_metadata() to put the opitonal dbName after
- *        colName so that all the optional parameters are placed at the end.
+ *        results, so that optional arguments are placed at the end.
  */
-RexxRoutine9(int, oosqlTableColumnMetadata_rtn, POINTER, _db, CSTRING, tableName, CSTRING, colName,
-             OPTIONAL_CSTRING, dbName, OPTIONAL_CSTRING, _dataType, OPTIONAL_CSTRING, _collationSequence,
-             OPTIONAL_CSTRING, _notNull, OPTIONAL_CSTRING, _primaryKey, OPTIONAL_CSTRING, _autoIncrement)
+RexxRoutine5(int, oosqlTableColumnMetadata_rtn, POINTER, _db, CSTRING, tableName, CSTRING, colName, RexxObjectPtr, results,
+             OPTIONAL_CSTRING, dbName)
 {
     sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
@@ -9216,46 +9287,12 @@ RexxRoutine9(int, oosqlTableColumnMetadata_rtn, POINTER, _db, CSTRING, tableName
         return SQLITE_MISUSE;
     }
 
-    if ( argumentOmitted(4) || strlen(dbName) < 1 )
+    if ( argumentOmitted(5) || strlen(dbName) < 1 )
     {
         dbName = NULL;
     }
 
-    char const *dataType;
-    char const *collSeq;
-    int         notNull;
-    int         primaryKey;
-    int         autoInc;
-
-    int rc = sqlite3_table_column_metadata(
-      db,           /* Connection handle */
-      dbName,       /* Database name or NULL */
-      tableName,    /* Table name */
-      colName,      /* Column name */
-      &dataType,    /* OUTPUT: Declared data type */
-      &collSeq,     /* OUTPUT: Collation sequence name */
-      &notNull,     /* OUTPUT: True if NOT NULL constraint exists */
-      &primaryKey,  /* OUTPUT: True if column part of PK */
-      &autoInc      /* OUTPUT: True if column is auto-increment */
-    );
-
-
-    if ( rc == SQLITE_OK )
-    {
-        if ( argumentOmitted(5) ) _dataType          = "__dataType";
-        if ( argumentOmitted(6) ) _collationSequence = "__collationSequence";
-        if ( argumentOmitted(7) ) _notNull           = "__notNull";
-        if ( argumentOmitted(8) ) _primaryKey        = "__primaryKey";
-        if ( argumentOmitted(9) ) _autoIncrement     = "__autoIncrement";
-
-        context->SetContextVariable(_dataType         , context->String(dataType)   );
-        context->SetContextVariable(_collationSequence, context->String(collSeq)    );
-        context->SetContextVariable(_notNull          , context->Logical(notNull)   );
-        context->SetContextVariable(_primaryKey       , context->Logical(primaryKey));
-        context->SetContextVariable(_autoIncrement    , context->Logical(autoInc)   );
-    }
-
-    return rc;
+    return genTableColumnMetadata(context->threadContext, db, dbName, tableName, colName, results, 4);
 }
 
 /** oosqlThreadSafe()
