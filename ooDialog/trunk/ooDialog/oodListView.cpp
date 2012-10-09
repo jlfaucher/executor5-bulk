@@ -1048,8 +1048,7 @@ int32_t CALLBACK LvRexxCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParam
         wrongReplyRangeException(c, pcrs->method, INT32_MIN, INT32_MAX, reply);
         c->ReleaseLocalReference(reply);
 
-        pCPlainBaseDialog pcpbd = dlgToCSelf(c, pcrs->rexxDlg);
-        endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+        endDialogPremature(pcrs->pcpbd, pcrs->pcpbd->hDlg, RexxConditionRaised);
     }
     else
     {
@@ -1202,7 +1201,7 @@ logical_t rexxListViewSort(RexxMethodContext *context, CSTRING method, RexxObjec
     strcpy(pcrs->method, method);
     pcrs->pcpbd         = pcdc->pcpbd;
     pcrs->rexxDlg       = pcdc->pcpbd->rexxSelf;
-    pcrs->rexxLV        = pcdc->rexxSelf;
+    pcrs->rexxCtrl      = pcdc->rexxSelf;
     pcrs->threadContext = pcdc->pcpbd->dlgProcContext;
     pcrs->param         = (argumentExists(2) ? sortInfo : TheNilObj);
 

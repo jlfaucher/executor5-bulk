@@ -72,13 +72,14 @@
           if arg(i + 2, 'E') then selImage = arg(i + 2); else selImage = image
           if arg(i + 3, 'E') then opts     = arg(i + 3); else opts = ""
           if arg(i + 4, 'E') then children = arg(i + 4); else children = 0
+          if arg(i + 5, 'E') then userData = arg(i + 5); else userData = .nil
           if i = 1 then do
-              self~rootArray[i] = self~insert("ROOT", , arg(i), image, selimage, opts~translate, children)
+              self~rootArray[i] = self~insert("ROOT", , arg(i), image, selimage, opts~translate, children, userData)
               return self~rootArray[i]
           end
           else if self~rootArray~hasIndex(i - 1) then do
               if i = 1 then parent = "ROOT"; else parent = self~rootArray[i - 1]
-              self~rootArray[i] = self~insert(parent, , arg(i), image, selimage, opts~translate, children)
+              self~rootArray[i] = self~insert(parent, , arg(i), image, selimage, opts~translate, children, userData)
               return self~rootArray[i]
           end
           else return 0
@@ -110,6 +111,7 @@
 ::method firstVisible unguarded external "LIBRARY oodialog tv_getSpecificItem"
 ::method getImageList unguarded external "LIBRARY oodialog tv_getImageList"
 ::method getItemData unguarded external "LIBRARY oodialog tv_getItemData"
+::method getItemText unguarded external "LIBRARY oodialog tv_getItemText"
 ::method hitTest unguarded
    forward message "hitTestInfo" continue
    info = result
@@ -153,7 +155,8 @@
    extended = extended~translate
    if hItem = hNewParent | hNewParent = self~parent(hItem) | self~isAncestor(hItem, hNewParent) then return 0
    iinfo. = self~itemInfo(hItem)
-   newRoot = self~insert(hNewParent, , iinfo.!Text, iinfo.!Image, iinfo.!SelectedImage, iinfo.!State, iinfo.!Children)
+   newRoot = self~insert(hNewParent, , iinfo.!Text, iinfo.!Image, iinfo.!SelectedImage, iinfo.!State, iinfo.!Children, -
+                         iinfo.!userData)
 
    if iinfo.!Children = 1 then do
       child = self~child(hItem)
@@ -194,6 +197,7 @@
    use strict arg hitem, recurse = .false
    return self~sendWinHandle2Msg(self~TVM_SORTCHILDREN, recurse, hItem)
 
+::method sortChildrenCB external "LIBRARY oodialog tv_sortChildrenCB"
 ::method subclassEdit external "LIBRARY oodialog generic_subclassEdit"
 ::method toggle unguarded external "LIBRARY oodialog tv_expand"
 

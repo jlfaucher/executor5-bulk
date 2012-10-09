@@ -47,6 +47,7 @@
 #define IDC_PB_INFO                             114
 #define IDC_TREE                                120
 #define IDC_CHK_FOLDER                          1001
+#define IDC_PB_SORT                             1002
 #define IDC_RB_SIBLING                          1004
 #define IDC_RB_CHILD                            1006
 #define IDC_EDIT_NAME                           1007

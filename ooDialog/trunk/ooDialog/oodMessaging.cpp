@@ -2478,7 +2478,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                             np = (phi->iContextType == HELPINFO_WINDOW ? "WINDOW" : "MENU");
 
                             args = c->ArrayOfFour(c->Int32(phi->iCtrlId), c->String(np),
-                                                  c->Int32(phi->MousePos.x), c->Int32(phi->MousePos.x));
+                                                  c->Int32(phi->MousePos.x), c->Int32(phi->MousePos.y));
                             c->ArrayPut(args, c->Uintptr(phi->dwContextId), 5);
 
                             return invokeDispatch(c, pcpbd->rexxSelf, c->String(method), args);

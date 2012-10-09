@@ -234,7 +234,7 @@ HTREEITEM tvFindItem(HWND hTv, CSTRING text)
  */
 static RexxObjectPtr getCurrentTviUserData(HWND hTree, HTREEITEM hTreeItem)
 {
-    TVITEMEX      tvi    = {LVIF_PARAM, hTreeItem};
+    TVITEMEX      tvi    = {TVIF_PARAM, hTreeItem};
     RexxObjectPtr result = TheNilObj;
 
     if ( TreeView_GetItem(hTree, &tvi) != 0 )
@@ -247,6 +247,141 @@ static RexxObjectPtr getCurrentTviUserData(HWND hTree, HTREEITEM hTreeItem)
     return result;
 }
 
+
+/**
+ * A tree view item sort callback function that works by invoking a method in
+ * the Rexx dialog that does the actual comparison.
+ *
+ * @param lParam1
+ * @param lParam2
+ * @param lParamSort
+ *
+ * @return int32_t
+ *
+ * @remarks  The Rexx programmer will have had to set the lParam user data field
+ *           for each tree view item of this to work.  If either lParam1 or
+ *           lParam2 is null, indicating the user did not set a data value for
+ *           the item, we simpley return 0.
+ *
+ *           Testing shows that this call back is always invoked on the dialog's
+ *           window message processing thread, so we do no need to worry about
+ *           doing an AttachThread().
+ *
+ *           Testing with the list-view compare function shows that doing
+ *           ReleaseLocalReference, significantly increases the time it takes to
+ *           sort 1000 items. Using the elapsed time count in the the Rexx shows
+ *           shows an increase from 4.9 seconds to 6.9 seconds.  Testing with
+ *           the tree-view sort function has not been doen.
+ */
+int32_t CALLBACK TvRexxCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+{
+    if ( lParam1 == NULL || lParam2 == NULL )
+    {
+        return 0;
+    }
+
+    pCRexxSort pcrs = (pCRexxSort)lParamSort;
+    RexxThreadContext *c = pcrs->threadContext;
+
+    RexxArrayObject args = c->ArrayOfThree((RexxObjectPtr)lParam1, (RexxObjectPtr)lParam2, pcrs->param);
+
+    RexxObjectPtr reply = c->SendMessage(pcrs->rexxDlg, pcrs->method, args);
+    c->ReleaseLocalReference(args);
+
+    if ( msgReplyIsGood(c, pcrs->pcpbd, reply, pcrs->method, false) )
+    {
+        int32_t answer;
+        if ( c->Int32(reply, &answer) )
+        {
+            c->ReleaseLocalReference(reply);
+            return answer;
+        }
+
+        // We end the dialog on this error.
+        wrongReplyRangeException(c, pcrs->method, INT32_MIN, INT32_MAX, reply);
+        c->ReleaseLocalReference(reply);
+
+        endDialogPremature(pcrs->pcpbd, pcrs->pcpbd->hDlg, RexxConditionRaised);
+    }
+    else
+    {
+        if ( reply != NULLOBJECT )
+        {
+            c->ReleaseLocalReference(reply);
+        }
+    }
+
+    // There was some error if we are here ...
+    return 0;
+}
+
+/**
+ * Sets things up for a tree-view sort when the comparison function will invoke
+ * a method in the Rexx dialog to do the actual sorting.
+ *
+ * @param context
+ * @param sortInfo
+ * @param pcdc
+ *
+ * @return logical_t
+ *
+ * @note Testing shows that using a method in the Rexx dialog to do the sort
+ *       works well and seems fast with a smallish number of tree-view items.
+ *
+ *       However, the similar list-view sort, with large lists it is slow.  This
+ *       can be seen with lists containing a 1000 item.  Haven't done any
+ *       testing with a tree-view yet.
+ *
+ * @remarks  The TreeView_SortChildrenCB() documentes the third argument as
+ *           being: fRecurse Reserved. Must be zero.  However, if it is 0 then
+ *           the children of the item do not sort if the item is expanded.  They
+ *           do sort if the item is closed up.  Testing shows that the compare
+ *           function is never invoked.
+ *
+ *           But, if I make the 3rd argument TRUE, the the items always sort,
+ *           whether the parent is closed or expanded.  Not sure what the deal
+ *           is there, if it is just a MS doc problem, or what.
+ */
+logical_t rexxTreeViewSort(RexxMethodContext *context, HTREEITEM hItem, CSTRING method,
+                           RexxObjectPtr sortInfo, pCDialogControl pcdc)
+{
+    pCRexxSort pcrs = pcdc->pcrs;
+    if ( pcrs == NULL )
+    {
+        pcrs = (pCRexxSort)LocalAlloc(LPTR, sizeof(CRexxSort));
+        if ( pcrs == NULL )
+        {
+            outOfMemoryException(context->threadContext);
+            return FALSE;
+        }
+        pcdc->pcrs = pcrs;
+    }
+
+    safeLocalFree(pcrs->method);
+    memset(pcrs, 0, sizeof(CRexxSort));
+
+    pcrs->method = (char *)LocalAlloc(LPTR, strlen(method) + 1);
+    if ( pcrs->method == NULL )
+    {
+        outOfMemoryException(context->threadContext);
+        return FALSE;
+    }
+
+    strcpy(pcrs->method, method);
+    pcrs->pcpbd         = pcdc->pcpbd;
+    pcrs->rexxDlg       = pcdc->pcpbd->rexxSelf;
+    pcrs->rexxCtrl      = pcdc->rexxSelf;
+    pcrs->threadContext = pcdc->pcpbd->dlgProcContext;
+    pcrs->hItem         = hItem;
+    pcrs->param         = (argumentExists(3) ? sortInfo : TheNilObj);
+
+    TVSORTCB tvscb;
+    tvscb.hParent     = hItem;
+    tvscb.lParam      = (LPARAM)pcrs;
+    tvscb.lpfnCompare = TvRexxCompareFunc;
+
+    return TreeView_SortChildrenCB(pcdc->hCtrl, &tvscb, TRUE);
+}
 
 /** TreeView::delete()
  *
@@ -485,6 +620,35 @@ RexxMethod2(RexxObjectPtr, tv_getItemData, CSTRING, _hItem, CSELF, pCSelf)
     HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
 
     return getCurrentTviUserData(hwnd, hItem);
+}
+
+
+/** TreeView::getItemText()
+ *
+ *
+ *
+ *  @note  Although the tree-view allows any length of text to be stored for an
+ *         item, it only displays the first 260 characters.  So, here that is
+ *         all we return.
+ */
+RexxMethod2(RexxObjectPtr, tv_getItemText, CSTRING, _hItem, CSELF, pCSelf)
+{
+    char buf[261];
+    HWND  hwnd = getDChCtrl(pCSelf);
+
+    TVITEMEX tvi   = {0};
+    tvi.hItem      = (HTREEITEM)string2pointer(_hItem);
+    tvi.mask       = TVIF_HANDLE | TVIF_TEXT;
+    tvi.pszText    = buf;
+    tvi.cchTextMax = 261;
+
+    RexxObjectPtr result = context->NullString();
+    if ( TreeView_GetItem(hwnd, &tvi) != 0 )
+    {
+        result = context->String(tvi.pszText);
+    }
+
+    return result;
 }
 
 
@@ -941,6 +1105,31 @@ RexxMethod3(RexxObjectPtr, tv_setItemData, CSTRING, _hItem, OPTIONAL_RexxObjectP
     }
 
     return oldUserData;
+}
+
+
+/** TreeView::sortChildrenCB()
+ *
+ *  Tells the tree-view to sort the children of the specified parent item using
+ *  a call back into a compare function in the Rexx dialog.
+ *
+ *  @param hParent   The parent item whose children will be sorted.
+ *
+ *  @param method    The name of the method in the Rexx dialog that will be
+ *                   invoked by the tree-view control.
+ *
+ */
+RexxMethod4(logical_t, tv_sortChildrenCB, CSTRING, _hItem, CSTRING, method, OPTIONAL_RexxObjectPtr, param, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return FALSE;
+    }
+
+    HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
+
+    return rexxTreeViewSort(context, hItem, method, param, pcdc);
 }
 
 

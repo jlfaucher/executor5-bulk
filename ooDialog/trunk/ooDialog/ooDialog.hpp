@@ -653,14 +653,15 @@ typedef struct {
     char              *method;          /* Name of method to invoke. */
 } CHAREVENTDATA;
 
-// Struct for sorting list view items when the sorting is done by invoking a
-// method in the Rexx dialog.
+// Struct for sorting list-view or tree-view items when the sorting is done by
+// invoking a method in the Rexx dialog.
 typedef struct _lvRexxSort{
     pCPlainBaseDialog    pcpbd;            // The Rexx owner dialog CSelf
     RexxThreadContext   *threadContext;    // Thread context of the sort function
     RexxObjectPtr        rexxDlg;          // The Rexx dialog object
-    RexxObjectPtr        rexxLV;           // The Rexx list view object
+    RexxObjectPtr        rexxCtrl;         // The Rexx control object
     RexxObjectPtr        param;            // An optional parameter the Rexx programmer can have passed to his method.
+    HTREEITEM            hItem;
     char                *method;           // Name of the comparsion method to invoke.
 } CRexxSort;
 typedef CRexxSort *pCRexxSort;

@@ -42,7 +42,8 @@
  * This example demonstrates many of the features of a tree-view control.
  * Including, but not limited to: drag and drop of items, label editing of
  * items, custom draw, using image lists to supply the icons for tree-view
- * items, etc..
+ * items, using a custom compare function in the Rexx dialog to sort the
+ * tree-view items, etc..
  */
 
     -- Use the global .constDir for symbolic IDs and turn automatic data
@@ -137,6 +138,7 @@ return info.!Image == self~UNSELECTED_LEAF
 
     self~connectButtonEvent(IDC_PB_NEW,     "CLICKED", "onNewItem")
     self~connectButtonEvent(IDC_PB_DELETE,  "CLICKED", "onDeleteItem")
+    self~connectButtonEvent(IDC_PB_SORT,    "CLICKED", "onSortChildren")
     self~connectButtonEvent(IDC_PB_EXP_ALL, "CLICKED", "onExpandAll")
     self~connectButtonEvent(IDC_PB_COL_ALL, "CLICKED", "onCollapseAll")
     self~connectButtonEvent(IDC_PB_INFO,    "CLICKED", "onItemInfo")
@@ -276,7 +278,7 @@ return 0
         if what == "EXPANDED", tv~child(item) == 0 then do
             do while lines(self~ITEM_FILE)
                 args = self~makeArgs(item, , linein(self~ITEM_FILE))
-                tv~sendWith('insert', args)
+                newItem = tv~sendWith('insert', args)
             end
         end
         else if what == "COLLAPSED", tv~child(item) \== 0 then do
@@ -351,6 +353,59 @@ return 0
 
     tv~delete(selected)
 return 0
+
+
+/** onSortChildre()
+ *
+ * This is the event handler for the 'Reverse Sort' push button.  This method is
+ * invoked when the user pushes that button.
+ *
+ * Note that the tree-view provides a function to sort the children of an item,
+ * but it only sorts in ascending alphabetical order of the item text.  The
+ * ooDialog TreeView class provides that function in the sortChildren() method.
+ *
+ * To sort in any other order requires using the sortChildrenCB() method.  With
+ * this method, the programmer names a 'call back' method in the Rexx dialog.
+ * This method is then invoked by the tree-view for each item it needs to
+ * determine the order of.
+ *
+ * This is what we do here, we use the sortChildrenCB method and provide on own
+ * comparsion method, rexxSort().
+ *
+ * We sort the children of the selected item.  If no item is selected we sort
+ * the children of the root item.  Note that only the direct children of the
+ * parent item are sorted.  To sort all items, the programmer would need to
+ * implement a recursive function, similar to the expandAll() or collapseAll()
+ * functions.
+ */
+::method onSortChildren unguarded
+    expose tv
+
+    selectedItem = tv~selected
+    if selectedItem == 0 then selectedItem = tv~root
+
+    ret = tv~sortChildrenCB(selectedItem, rexxSort)
+
+
+/** rexxSort()
+ *
+ * This is our comparison callback function.  We are passed the user item data
+ * for the first tree-view item and the user item data for the second tree-view
+ * item.  The method needs to return 1 if the first item is greater than the
+ * second, -1 if the first item is less than the second, and 0 if the two items
+ * are equivalent.
+ *
+ * In this program, for every tree-view item inserted, we set the item data for
+ * that item to be the text of the item.  Then, in our comparison function here,
+ * we just do a reverse comparison of that text.  This orders the items in
+ * descending order rather than ascending order.  The userParam argument is
+ * ignored here.
+ */
+::method rexxSort unguarded
+    use arg itemData1, itemData2, userParam
+
+    -- Reverse sort:
+    return itemData2~compareTo(itemData1)
 
 
 /** onExpandAll()
@@ -480,6 +535,7 @@ return 0
 
 
 /*- - - - - - - - - - Helper Methods - - - - - - - - - - - - - - - - - - - - -*/
+
 
 /** expandAll()
  *
@@ -742,15 +798,16 @@ return 0
     addAsFolder = folderChk~checked
 
     -- Now insert the item either as a child or a sibling depending on what the
-    -- user requested.
+    -- user requested. Note that we set the item data on each insert to the text
+    -- of the inserted item.
     if childRB~checked then do
-        if addAsFolder then newItem = treeControl~insert(selected, , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER)
-        else newItem = treeControl~insert(selected, , text, self~UNSELECTED_LEAF, self~SELECTED_LEAF)
+        if addAsFolder then newItem = treeControl~insert(selected, , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER, , , text)
+        else newItem = treeControl~insert(selected, , text, self~UNSELECTED_LEAF, self~SELECTED_LEAF, , , text)
         treeControl~expand(treeControl~parent(newItem))
     end
     else do
-        if addAsFolder then treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER)
-        else treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_LEAF, self~SELECTED_LEAF)
+        if addAsFolder then treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER, , , text)
+        else treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_LEAF, self~SELECTED_LEAF, , , text)
     end
 
     -- Finally, quit by invoking the super class ok() method.
