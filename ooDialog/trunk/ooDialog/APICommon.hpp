@@ -77,6 +77,8 @@ extern void  missingIndexInDirectoryException(RexxThreadContext *c, int argPos, 
 extern void  directoryIndexExceptionMsg(RexxThreadContext *c, size_t pos, CSTRING index, CSTRING msg, CSTRING actual);
 extern void  directoryIndexExceptionList(RexxThreadContext *, size_t pos, CSTRING index, CSTRING list, CSTRING actual);
 extern void  missingIndexesInDirectoryException(RexxThreadContext *c, int argPos, CSTRING indexes);
+extern void  missingIndexInStemException(RexxThreadContext *c, int argPos, CSTRING index);
+extern void  stemIndexZeroException(RexxMethodContext *c, size_t pos);
 extern void  emptyArrayException(RexxThreadContext *c, int argPos);
 extern void  arrayToLargeException(RexxThreadContext *c, uint32_t found, uint32_t max, int argPos);
 extern void  sparseArrayException(RexxThreadContext *c, size_t argPos, size_t index);

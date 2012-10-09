@@ -354,7 +354,7 @@
    if nob = 0 then return self~createGroupBox(idstat, x, y, mx+cx, highy-y+(stepy % 2), newopts, "")
    else return 0
 
-::method createPushButtonGroup  -- TODO this doesn't support symbolic IDs.
+::method createPushButtonGroup
    use arg x, y, cx, cy, inp, bottom, opts = ""
    parse var inp bt bid bfnk newinp
 
@@ -378,6 +378,7 @@
    return 0
 
 
+::method createPushButtonStem external "LIBRARY oodialog dyndlg_createPushButtonStem"
 ::method createOkCancelRightBottom
    return self~createPushButtonGroup(self~sizeX-95, self~sizeY - 15,,, "&Ok 1 OK &Cancel 2 CANCEL", 1, "DEFAULT")
 

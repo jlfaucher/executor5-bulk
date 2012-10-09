@@ -667,6 +667,7 @@ REXX_METHOD_PROTOTYPE(dyndlg_createStaticText);
 REXX_METHOD_PROTOTYPE(dyndlg_createStaticImage);
 REXX_METHOD_PROTOTYPE(dyndlg_createStaticFrame);
 REXX_METHOD_PROTOTYPE(dyndlg_createPushButton);
+REXX_METHOD_PROTOTYPE(dyndlg_createPushButtonStem);
 REXX_METHOD_PROTOTYPE(dyndlg_createRadioButton);
 REXX_METHOD_PROTOTYPE(dyndlg_createGroupBox);
 REXX_METHOD_PROTOTYPE(dyndlg_createEdit);
@@ -1623,6 +1624,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dyndlg_createStaticImage,       dyndlg_createStaticImage),
     REXX_METHOD(dyndlg_createStaticFrame,       dyndlg_createStaticFrame),
     REXX_METHOD(dyndlg_createPushButton,        dyndlg_createPushButton),
+    REXX_METHOD(dyndlg_createPushButtonStem,    dyndlg_createPushButtonStem),
     REXX_METHOD(dyndlg_createRadioButton,       dyndlg_createRadioButton),
     REXX_METHOD(dyndlg_createGroupBox,          dyndlg_createGroupBox),
     REXX_METHOD(dyndlg_createEdit,              dyndlg_createEdit),

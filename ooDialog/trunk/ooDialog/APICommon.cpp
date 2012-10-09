@@ -449,7 +449,7 @@ void missingIndexInDirectoryException(RexxThreadContext *c, int argPos, CSTRING 
 }
 
 /**
- * Aargument <pos> must contain at least one of the indexes: <indexes>"
+ * Argument <pos> must contain at least one of the indexes: <indexes>"
  *
  * Argument 1 must contain at least one of the indexes: constDirUsage,
  * symbolSrc, autoDetction, fontName, or fontSize
@@ -511,6 +511,40 @@ void directoryIndexExceptionMsg(RexxThreadContext *c, size_t pos, CSTRING index,
               "Index, %s, of argument %d %s; found \"%s\"", index, pos, msg, actual);
     userDefinedMsgException(c, buffer);
 }
+
+/**
+ * The wording of this exception is exactly the same for a Directory or a Stem
+ * object.
+ *
+ * @param c
+ * @param argPos
+ * @param index
+ */
+void missingIndexInStemException(RexxThreadContext *c, int argPos, CSTRING index)
+{
+    return missingIndexInDirectoryException(c, argPos, index);
+}
+
+/**
+ *  Raises 93.900
+ *
+ * Method argument <pos>, the Stem object, must have an index "0" containing a
+ * non-negative whole number value.
+ *
+ * Method argument 5, the Stem object, must have an index "0' containing a
+ * positive whold number value.
+ *
+ * @param c
+ * @param pos
+ */
+void stemIndexZeroException(RexxMethodContext *c, size_t pos)
+{
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer),
+             "Method argument %d, the Stem object, must have an index \"0\" containing a non-negative whole number value", pos);
+    userDefinedMsgException(c, buffer);
+}
+
 
 void emptyArrayException(RexxThreadContext *c, int argPos)
 {

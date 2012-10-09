@@ -80,6 +80,8 @@ extern HFONT createFontFromName(int logicalPixelsY, CSTRING name, uint32_t size)
 extern HFONT createFontFromName(CSTRING name, uint32_t size);
 extern bool  mapPixelToDu(RexxMethodContext *c, RexxObjectPtr dlg, PPOINT p, size_t count);
 extern bool  mapDuToPixel(RexxMethodContext *c, RexxObjectPtr dlg, PRECT r);
+extern bool  getTextSizeDuActiveDlg(RexxMethodContext *c, pCPlainBaseDialog pcpbd, CSTRING text, SIZE *textSize);
+extern bool  getTextSizeDuInactiveDlg(RexxMethodContext *c, pCPlainBaseDialog pcpbd, CSTRING text, SIZE *textSize);
 
 inline void du2pixel(POINT *point, int baseUnitX, int baseUnitY)
 {

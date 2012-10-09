@@ -3658,55 +3658,23 @@ RexxMethod2(RexxObjectPtr, pbdlg_getTextSizeDu, CSTRING, text, CSELF, pCSelf)
 {
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
 
-    HWND hDlg     = pcpbd->hDlg;
     SIZE textSize = {0};
 
-    // If hwnd is null, this will get a DC for the entire screen and that should be ok.
-    HDC hdc = GetDC(hDlg);
-    if ( hdc == NULL )
+    if ( pcpbd->hDlg == NULL )
     {
-        systemServiceExceptionCode(context->threadContext, API_FAILED_MSG, "GetDC");
-        goto error_out;
-    }
-
-    HFONT dlgFont = NULL;
-    bool createdFont = false;
-
-    if ( hDlg == NULL )
-    {
-        dlgFont = createFontFromName(hdc, pcpbd->fontName, pcpbd->fontSize);
-        if ( dlgFont != NULL )
+        if ( ! getTextSizeDuInactiveDlg(context, pcpbd, text, &textSize) )
         {
-            createdFont = true;
+            goto error_out;
         }
     }
     else
     {
-        dlgFont = (HFONT)SendMessage(hDlg, WM_GETFONT, 0, 0);
+        if ( ! getTextSizeDuActiveDlg(context, pcpbd, text, &textSize) )
+        {
+            goto error_out;
+        }
     }
 
-    // If the font is still null we use the stock system font.  Even if we have
-    // the dialog handle, the font could be null if WM_SETFONT was not used.  In
-    // this case the stock system font will be correct.  If the
-    // createFontFromName() failed, well that is unlikely.  Just use the stock
-    // system font in that case.
-    if ( dlgFont == NULL )
-    {
-        dlgFont = (HFONT)GetStockObject(SYSTEM_FONT);
-    }
-
-    HFONT hOldFont = (HFONT)SelectObject(hdc, dlgFont);
-
-    GetTextExtentPoint32(hdc, text, (int)strlen(text), &textSize);
-    screenToDlgUnit(hdc, (POINT *)&textSize, 1);
-
-    SelectObject(hdc, hOldFont);
-    ReleaseDC(hDlg, hdc);
-
-    if ( createdFont )
-    {
-        DeleteObject(dlgFont);
-    }
     return rxNewSize(context, textSize.cx, textSize.cy);
 
 error_out:

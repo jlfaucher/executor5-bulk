@@ -4168,3 +4168,89 @@ error_out:
     return false;
 }
 
+
+bool getTextSizeDuActiveDlg(RexxMethodContext *c, pCPlainBaseDialog pcpbd, CSTRING text, SIZE *textSize)
+{
+    HWND hDlg = pcpbd->hDlg;
+
+    HDC hdc = GetDC(hDlg);
+    if ( hdc == NULL )
+    {
+        systemServiceExceptionCode(c->threadContext, API_FAILED_MSG, "GetDC");
+        return false;
+    }
+
+    HFONT dlgFont = (HFONT)SendMessage(hDlg, WM_GETFONT, 0, 0);
+
+    // Even if we have the dialog handle, the font could be null if WM_SETFONT
+    // was not used.  In this case the stock system font will be correct.
+    if ( dlgFont == NULL )
+    {
+        dlgFont = (HFONT)GetStockObject(SYSTEM_FONT);
+    }
+
+    HFONT hOldFont = (HFONT)SelectObject(hdc, dlgFont);
+
+    GetTextExtentPoint32(hdc, text, (int)strlen(text), textSize);
+    screenToDlgUnit(hdc, (POINT *)&textSize, 1);
+
+    SelectObject(hdc, hOldFont);
+    ReleaseDC(hDlg, hdc);
+
+    return true;
+}
+/**
+ * Gets the text size of the specified string when we have the CSELF of a
+ * dialog, but the underlying dialog has not been created.  This calculates the
+ * size using the current assigned font in the CSELF.
+ *
+ * @param c
+ * @param pcpbd
+ * @param text
+ * @param textSize
+ *
+ * @return bool
+ *
+ * @assumes  The caller has already checked that pcpbd->hDlg is null.
+ */
+bool getTextSizeDuInactiveDlg(RexxMethodContext *c, pCPlainBaseDialog pcpbd, CSTRING text, SIZE *textSize)
+{
+    // With a null hwnd, this will get a DC for the entire screen and that
+    // should be ok.
+    HDC hdc = GetDC(NULL);
+    if ( hdc == NULL )
+    {
+        systemServiceExceptionCode(c->threadContext, API_FAILED_MSG, "GetDC");
+        return false;
+    }
+
+    bool  createdFont = false;
+    HFONT dlgFont     = createFontFromName(hdc, pcpbd->fontName, pcpbd->fontSize);
+    if ( dlgFont != NULL )
+    {
+        createdFont = true;
+    }
+
+    // If the createFontFromName() failed, well that is unlikely.  Just use the
+    // stock system font in that case.
+    if ( dlgFont == NULL )
+    {
+        dlgFont = (HFONT)GetStockObject(SYSTEM_FONT);
+    }
+
+    HFONT hOldFont = (HFONT)SelectObject(hdc, dlgFont);
+
+    GetTextExtentPoint32(hdc, text, (int)strlen(text), textSize);
+    screenToDlgUnit(hdc, (POINT *)textSize, 1);
+
+    SelectObject(hdc, hOldFont);
+    ReleaseDC(NULL, hdc);
+
+    if ( createdFont )
+    {
+        DeleteObject(dlgFont);
+    }
+    return true;
+}
+
+
