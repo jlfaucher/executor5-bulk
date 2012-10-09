@@ -252,6 +252,10 @@
 <entry>Creates any number of push buttons in the dialog template at one time.</entry>
 </row>
 <row>
+<entry><xref linkend="mthCreatePushButtonStem"/></entry>
+<entry>Creates any number of push buttons in the dialog template at one time, using a <computeroutput>Stem</computeroutput> to specify the details for each button.</entry>
+</row>
+<row>
 <entry><xref linkend="mthCreateRadioButton"/></entry>
 <entry>Creates a radio button control in the dialog template.</entry>
 </row>
@@ -2734,6 +2738,886 @@ self~objectrexx = 1
 </variablelist>
 </section>
 
+<section id="mthCreatePushButton" xreflabel="createPushButton"><title>createPushButton</title>
+<indexterm><primary>createPushButton</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>createPushButton</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+---------+-+-------+-+-------+-)-><
+                                             +-,-style-+ +-,-txt-+ +-,-mth-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">createPushButton</emphasis> method creates a push <xref linkend="clsButton"/>
+  in the dialog template and optionally connects it with a method that is invoked whenever the button is clicked.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The <xref linkend="idArgument"/> for the button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy [required]</term>
+      <listitem>
+      <para>
+        The  control <xref linkend="paraControlCoordinates"/>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
+        separated by spaces:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFAULT  </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+          <para>
+            The button becomes the default button in the dialog.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+          <para>
+            The programmer is completely responsible for drawing the button when the dialog receives
+            the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+            implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
+            list with the button.  See the
+ <xref linkend="mthSetImageList"/>() method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
+          <para>
+            The button displays an icon image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
+          <para>
+            The button displays a bitmap image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+          <para>
+            Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+            the text is centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+          <para>
+            Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+            the text is centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
+          <para>
+            The button has its text centered horizontally in the button rectangle.  This is the default
+            if neither LEFT nor RIGHT are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
+            specified the text is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
+            specified the text is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectangle.  This is the default if neither
+            TOP nor BOTTOM are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle,
+            the operating system will word wrap the text producing more than one line.  The height of
+            the button rectangle has to be sufficient to display the extra line(s) or the text is
+            clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click
+            events.  This is only necessary when the
+            <xref linkend="mthConnectButtonEvent"/> method is used, and only for
+            the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
+            text inside the rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The not <xref linkend="wsvisible"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsdisabled"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsborder"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsgroup"/> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The no <xref linkend="wstabstop"/> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt [optional]</term>
+      <listitem>
+      <para>
+        The text for the label of the button.  The default is the empty string.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mth [optional]</term>
+      <listitem>
+      <para>
+        The name of a method of the Rexx dialog that is to be invoked each time the button is clicked.  This serves the
+        same purpose as the <xref linkend="mthConnectButtonEvent"/> method for the CLICKED
+        event.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The dialog template has either not been started or is complete.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        A symbolic ID was used, but it could not be resolved correctly.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example creates a push button with a label of "Get new Info" at position x=100, y=80 and
+    size width=40, height=15. The button's ID is 555, and if the button is clicked, the <emphasis
+    role="italic">getInfo</emphasis> method in the Rexx dialog is invoked. The button is created without the tabstop
+    style.  If the user navigates the dialog using the keyboard, the tab key will skip over the button.
+<programlisting>
+<![CDATA[
+MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getInfo")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCreatePushButtonGroup" xreflabel="createPushButtonGroup"><title>createPushButtonGroup</title>
+<indexterm><primary>createPushButtonGroup</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>createPushButtonGroup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                                      +-----------+
+                                                      V           |
+>>--createPushButtonGroup(-x-,-y-+------+-+------+-,-txt- -id- -m-+--+-----+-+-----+-)-><
+                                 +-,-cx-+ +-,-cy-+                   +-,-r-+ +-,-o-+
+]]>
+</programlisting>
+
+<para>
+  Use the <emphasis role="italic">createPushButtonGroup</emphasis> method to create more than one push button in the
+  dialog template at one time. The buttons are arranged in a row or in a column.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>x, y [required]</term>
+      <listitem>
+      <para>
+        The <xref linkend="paraControlCoordinates"/> of the position of the upper left corner of the
+        button group.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cx, cy [optional]</term>
+      <listitem>
+      <para>
+        The width and height <xref linkend="paraControlCoordinates"/> of a single button. Both cx and
+        cy are optional. The default for cx is 40 and for cy 12.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt ID m [required]</term>
+      <listitem>
+      <para>
+        A single string containing <emphasis role="italic">txt ID m</emphasis> triplets (separated by blanks) for each
+        button.
+      </para>
+      <para>
+        The first part of the triplet is the text that is displayed on the button. This must either be a single word, or, if
+        the text is more than 1 word, the words must be enclosed in quotes within the string. The second part of the triplet
+        is the <xref linkend="idArgument"/> of the button. This is of course a single word or number. The third part of the
+        triplet is the name of a method in the Rexx dialog object that is connected to the button clicked <xref
+        linkend="ovvEvents"/>. This is also a single word.
+      </para>
+      <para>
+        The <emphasis role="italic">txt id m</emphasis> triplet can repeat as many times as desired, and determines how many
+        buttons are created, one button for each triplet.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>r [optional]</term>
+      <listitem>
+      <para>
+        This is a flag to switch between horizontal or vertical placement of the buttons. If <emphasis
+        role="italic">r</emphasis> is true, the buttons are placed in a row, or horizontal. If <emphasis
+        role="italic">r</emphasis> is false, the buttons are placed in a column, or vertically.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>o [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by
+        spaces. Each button is given the same set of styles, except for the DEFAULT style. If the style arg contains the
+        DEFAULT keyword, it is only given to the first button:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFAULT  </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+          <para>
+            The button becomes the default button in the dialog.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+          <para>
+            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
+            message.  Currently this would be difficult (but not impossible) to implement in ooDialog.  A simpler
+            approach for an owner drawn button is to use a bitmap button.  See the
+            <xref linkend="mthCreateBitmapButton"/> method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
+          <para>
+            The button displays an icon image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
+          <para>
+            The button displays a bitmap image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+          <para>
+            Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified the text is
+            centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+          <para>
+            Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+            the text is centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
+          <para>
+            The button has its text centered horizontally in the button rectangle.  This is the default if neither
+            LEFT nor RIGHT are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
+            vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
+            is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
+            specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle, the operating
+            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
+            sufficient to display the extra line(s) or the text is clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click events.  This is
+            only necessary when the <xref linkend="mthConnectButtonEvent"/> method is used, and
+            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
+            buttons and owner-drawn buttons will receive the DBLCLK event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The not <xref linkend="wsvisible"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsdisabled"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsborder"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsgroup"/> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The no <xref linkend="wstabstop"/> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The dialog template has either not been started or is complete.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        A symbolic ID was used, but it could not be resolved correctly.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example creates three buttons (Add Record, Delete Record, and Update Record.) The buttons are placed in a
+    column alongside the right edge of the dialog.  The upper left corner of the button group is at 20, 235. Note that the
+    multi-word text labels for the buttons are enclosed in single quotes within the entire string
+  </para>
+
+<programlisting>
+<![CDATA[
+self~createPushButtonGroup(20, 235, , ,                       -
+                          "'Add Record' 301 AddItem "         -
+                          "'&Delete Record' 302 DeleteItem "  -
+                          "'&Update Record' 303 UpdateItem")
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCreatePushButtonStem" xreflabel="createPushButtonStem"><title>createPushButtonStem</title>
+<indexterm><primary>createPushButtonStem</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>createPushButtonStem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createPushButtonStem(-+---+-+-----+-+------+-+------+-,-inp.-+-----+-+---------+-)-><
+                          +-x-+ +-,-y-+ +-,-cx-+ +-,-cy-+        +-,-r-+ +-,-align-+
+]]>
+</programlisting>
+
+<para>
+  Use the <emphasis role="italic">createPushButtonStem</emphasis> method to create more than one push button in the dialog
+  template at one time, using a <computeroutput>Stem</computeroutput> to input the individual button details. The buttons
+  are arranged in a row or in a column.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>x, y [optional]</term>
+    <listitem>
+    <para>
+      The <xref linkend="paraControlCoordinates"/> of the position of the upper left corner of the
+      button group. If either x or y is omitted, then the position of the upper left corner is calculated. The calculated
+      position takes into account the size of the buttons along with the <emphasis role="italic">r</emphasis> and <emphasis
+      role="italic">align</emphasis> arguments. See the remarks section for details.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cx, cy [optional]</term>
+    <listitem>
+    <para>
+      The width and height <xref linkend="paraControlCoordinates"/> of a single button. Both cx and
+      cy are optional. If either cx or cy is omitted, then both cx and cy are calculated. The calculation is based on the
+      size taken up by the largest label in all the buttons.
+    </para>
+    <para>
+      The Microsoft documentation specifies the minimal size for a push button to be 50 dialog units for cx and 14 dialog
+      units for cy. When cx and cy are calculated they are never set smaller than the mimimum recommended size. This implies
+      that to have smaller buttons than the minimum, the programmer must specify both cx and cy.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>inp. [required]</term>
+    <listitem>
+    <para>
+      A <computeroutput>Stem</computeroutput> whose indexes specify the details for each button. The possible indexes are as
+      follows. Note that some indexes are required and some are optional. The stem indexes are structured in a way where
+      <computeroutput>inp.0</computeroutput> specifies the number of buttons and <computeroutput>inp.1</computeroutput>
+      handles the data for button one, <computeroutput>inp.2</computeroutput> handles the data for button two, up to
+      <computeroutput>inp.0</computeroutput> buttons.
+    </para>
+    <para>
+      <emphasis role="bold">Note</emphasis> that there are two possible ways to construct the indexes, the tails, that
+      specify the data for each button. One way is to explicity name the tails, like this:
+<programlisting>
+<![CDATA[
+  inp.0 = 4
+  inp.1.id     = IDC_PB_PUSHME
+  inp.1.text   = "Push"
+  inp.1.method = onPushMe
+  inp.2.id     = IDOK
+  inp.2.text   = "Ok"
+  inp.2.method = ok
+  inp.2.opts   = 'DEFAULT'
+  inp.3.id     = IDCANCEL
+  inp.3.text   = "Cancel"
+  inp.3.method = cancel
+]]>
+</programlisting>
+      or the data for a single button could be specified as a stem itself, lik the following:
+<programlisting>
+<![CDATA[
+  inp.0 = 4
+  ...
+  btn.id   = IDHELP
+  btn.text = 'Help'
+  inp.4    = btn.
+]]>
+</programlisting>
+
+    </para>
+    <para>
+      The stem indexes are as follows:
+    </para>
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">0</emphasis> [required]</term>
+      <listitem>
+      <para>
+        The value of this index must be a non-negative whole number that specifies the number of buttons in the group.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.ID</emphasis> [required]</term>
+      <listitem>
+      <para>
+        This index specifies the <xref linkend="idArgument"/> of the button. This index must be specified for each button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.TEXT</emphasis> [optional]</term>
+      <listitem>
+      <para>
+        This index specifies the text, the label, of the button. If this index is missing, the empty string is used for the
+        button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.METHOD</emphasis> [optional]</term>
+      <listitem>
+      <para>
+        This index specifies the name of a method in the Rexx dialog object that is connected to the button CLICKED <xref
+        linkend="ovvEvents"/>. If this index is missing, then no method is connected to the CLICKED event.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.OPTS</emphasis> [optional]</term>
+      <listitem>
+      <para>
+        This index specifes the <xref linkend="paraStyleExplanation"/> for the button. The value of the index is a list of 0
+        or more of the following keywords separated by spaces. If this index is omitted for any button, the empty string is
+        used:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFAULT  </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+          <para>
+            The button becomes the default button in the dialog.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+          <para>
+            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
+            message.  Currently this would be difficult (but not impossible) to implement in ooDialog.  A simpler
+            approach for an owner drawn button is to use a bitmap button.  See the
+            <xref linkend="mthCreateBitmapButton"/> method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
+          <para>
+            The button displays an icon image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
+          <para>
+            The button displays a bitmap image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+          <para>
+            Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified the text is
+            centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+          <para>
+            Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+            the text is centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
+          <para>
+            The button has its text centered horizontally in the button rectangle.  This is the default if neither
+            LEFT nor RIGHT are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
+            vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
+            is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
+            specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle, the operating
+            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
+            sufficient to display the extra line(s) or the text is clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click events.  This is
+            only necessary when the <xref linkend="mthConnectButtonEvent"/> method is used, and
+            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
+            buttons and owner-drawn buttons will receive the DBLCLK event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The not <xref linkend="wsvisible"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsdisabled"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsborder"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsgroup"/> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The no <xref linkend="wstabstop"/> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>r [optional]</term>
+    <listitem>
+    <para>
+      True or false to switch between horizontal or vertical placement of the buttons. If <emphasis
+      role="italic">r</emphasis> is true, the buttons are placed in a row, or horizontally. If <emphasis
+      role="italic">r</emphasis> is false, the buttons are placed in a column, or vertically. If <emphasis
+      role="italic">r</emphasis> is omitted, the default is true.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>align [optional]</term>
+    <listitem>
+    <para>
+      By default, when the button positioning is calculate, the button row or column is aligned so that the bottom right
+      corner of the is at the lower right margin of the dialog. Note that Microsoft recommends that all dialogs have a margin
+      of 7 dialog units.
+    </para>
+    <para>
+      This default can be changed using the <emphasis role="italic">align</emphasis> string argument. If the string contains
+      the keyword TOP, then the default is to align the buttons at the top margin. If the sting contains the keyword LEFT,
+      then the default is to align the button at the left margin. Both keywords are case insensitive and can be used
+      separately or together. Any other words in the string are ignored. However, when both the <emphasis
+      role="italic">x</emphasis> and <emphasis role="italic">y</emphasis> arguments are specified, the <emphasis
+      role="italic">align</emphasis> argument is ignored completely.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The dialog template has either not been started or is complete. Or the <emphasis role="italic">inp.</emphasis> stem
+        was not formed correctly.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        A symbolic ID was used, but it could not be resolved correctly.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
+      <para>
+        Some other error ocurred.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example creates three buttons (Add Record, Delete Record, and Update Record.) The buttons are placed in a
+    column alongside the upper right margin of the dialog. Both the proper size for the buttons and the correct x, y
+    co-ordinates of the button group are calculated:
+  </para>
+
+<programlisting>
+<![CDATA[
+inp.0 = 3
+inp.1.id     = IDC_PB_ADD
+inp.1.text   = "Add Record"
+inp.1.method = addItem
+inp.2.id     = IDC_PB_DEL
+inp.2.text   = "Delete Record"
+inp.2.method = deleteItem
+inp.3.id     = IDC_PB_UPDATE
+inp.3.text   = "Update Record"
+inp.3.method = updateItem
+
+self~createPushButtonStem( , , , , inp., .false, "TOP")
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthCreateRadioButton" xreflabel="createRadioButton"><title>createRadioButton</title>
 <indexterm><primary>createRadioButton</primary></indexterm>
 <indexterm><primary>UserDialog class</primary><secondary>createRadioButton</secondary></indexterm>
@@ -3594,518 +4478,6 @@ MyDialog~execute
 
 </section>
 
-<section id="mthCreatePushButton" xreflabel="createPushButton"><title>createPushButton</title>
-<indexterm><primary>createPushButton</primary></indexterm>
-<indexterm><primary>UserDialog class</primary><secondary>createPushButton</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+---------+-+-------+-+-------+-)-><
-                                             +-,-style-+ +-,-txt-+ +-,-mth-+
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">createPushButton</emphasis> method creates a push <xref linkend="clsButton"/>
-  in the dialog template and optionally connects it with a method that is invoked whenever the button is clicked.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The <xref linkend="idArgument"/> for the button.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>x, y, cx, cy [required]</term>
-      <listitem>
-      <para>
-        The  control <xref linkend="paraControlCoordinates"/>
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>style [optional]</term>
-      <listitem>
-      <para>
-        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords
-        separated by spaces:
-      </para>
-      <para>
-        <simplelist type='vert' columns='3'>
-          <member>DEFAULT  </member>
-          <member>OWNER    </member>
-          <member>BITMAP   </member>
-          <member>ICON     </member>
-          <member>LEFT     </member>
-          <member>RIGHT    </member>
-          <member>HCENTER  </member>
-          <member>TOP      </member>
-          <member>BOTTOM   </member>
-          <member>VCENTER  </member>
-          <member>MULTILINE</member>
-          <member>NOTIFY   </member>
-          <member>FLAT     </member>
-          <member>HIDDEN   </member>
-          <member>DISABLED </member>
-          <member>BORDER   </member>
-          <member>GROUP    </member>
-          <member>NOTAB    </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>DEFAULT</term>
-          <listitem>
-          <para>
-            The button becomes the default button in the dialog.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>OWNER</term>
-          <listitem>
-          <para>
-            The programmer is completely responsible for drawing the button when the dialog receives
-            the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-            implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
-            list with the button.  See the
- <xref linkend="mthSetImageList"/>() method.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>ICON</term>
-          <listitem>
-          <para>
-            The button displays an icon image.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BITMAP</term>
-          <listitem>
-          <para>
-            The button displays a bitmap image.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LEFT</term>
-          <listitem>
-          <para>
-            Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-            the text is centered in the button rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RIGHT</term>
-          <listitem>
-          <para>
-            Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-            the text is centered in the button rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HCENTER</term>
-          <listitem>
-          <para>
-            The button has its text centered horizontally in the button rectangle.  This is the default
-            if neither LEFT nor RIGHT are specified.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>TOP</term>
-          <listitem>
-          <para>
-            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-            specified the text is vertically centered in the button rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BOTTOM</term>
-          <listitem>
-          <para>
-            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-            specified the text is vertically centered in the button rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>VCENTER</term>
-          <listitem>
-          <para>
-            The text is vertically centered in the button rectangle.  This is the default if neither
-            TOP nor BOTTOM are specified.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MULTILINE</term>
-          <listitem>
-          <para>
-            If the text for the label of the button is longer than the width of the button rectangle,
-            the operating system will word wrap the text producing more than one line.  The height of
-            the button rectangle has to be sufficient to display the extra line(s) or the text is
-            clipped.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTIFY</term>
-          <listitem>
-          <para>
-            Enables the button to send notifications for the gained focus,lost focus, and double click
-            events.  This is only necessary when the
- <xref linkend="mthConnectButtonEvent"/> method is used, and only for
-            the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>FLAT</term>
-          <listitem>
-          <para>
-            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-            text inside the rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-          <para>
-            The not <xref linkend="wsvisible"/> window style.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-          <para>
-            The <xref linkend="wsdisabled"/> window style.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BORDER</term>
-          <listitem>
-          <para>
-            The <xref linkend="wsborder"/> window style.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-          <para>
-            The <xref linkend="wsgroup"/> control style.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-          <para>
-            The no <xref linkend="wstabstop"/> control style.
-          </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>txt [optional]</term>
-      <listitem>
-      <para>
-        The text for the label of the button.  The default is the empty string.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>mth [optional]</term>
-      <listitem>
-      <para>
-        The name of a method of the Rexx dialog that is to be invoked each time the button is clicked.  This serves the
-        same purpose as the <xref linkend="mthConnectButtonEvent"/> method for the CLICKED
-        event.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-      <varlistentry><term>-2</term>
-      <listitem>
-      <para>
-        The dialog template has either not been started or is complete.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-      <para>
-        A symbolic ID was used, but it could not be resolved correctly.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>0</term>
-      <listitem>
-      <para>
-        Success.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example creates a push button with a label of "Get new Info" at position x=100, y=80 and
-    size width=40, height=15. The button's ID is 555, and if the button is clicked, the <emphasis
-    role="italic">getInfo</emphasis> method in the Rexx dialog is invoked. The button is created without the tabstop
-    style.  If the user navigates the dialog using the keyboard, the tab key will skip over the button.
-<programlisting>
-<![CDATA[
-MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getInfo")
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthCreatePushButtonGroup" xreflabel="createPushButtonGroup"><title>createPushButtonGroup</title>
-<indexterm><primary>createPushButtonGroup</primary></indexterm>
-<indexterm><primary>UserDialog class</primary><secondary>createPushButtonGroup</secondary></indexterm>
-<programlisting>
-<![CDATA[
-                                                      +-----------+
-                                                      V           |
->>--createPushButtonGroup(-x-,-y-+------+-+------+-,-txt- -id- -m-+--+-----+-+-----+-)-><
-                                 +-,-cx-+ +-,-cy-+                   +-,-r-+ +-,-o-+
-]]>
-</programlisting>
-
-<para>
-  Use the <emphasis role="italic">createPushButtonGroup</emphasis> method to create more than one push button in the
-  dialog template at one time. The buttons are arranged in a row or in a column.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>x, y [required]</term>
-      <listitem>
-      <para>
-        The <xref linkend="paraControlCoordinates"/> of the position of the upper left corner of the
-        button group.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>cx, cy [optional]</term>
-      <listitem>
-      <para>
-        The width and height <xref linkend="paraControlCoordinates"/> of a single button. Both cx and
-        cy are optional. The default for cx is 40 and for cy 12.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>txt ID m [required]</term>
-      <listitem>
-      <para>
-        A single string containing three words (separated by blanks) for each button. The first word is the text that is
-        displayed on the button. The second is the <xref linkend="idArgument"/> of the button, and the
-        third is the name of a method in the Rexx dialog object that is connected to the button clicked
-        <xref linkend="ovvEvents"/>. The fourth to sixth words are for the next button, and so forth. The <emphasis
-        role="italic">txt id m</emphasis> triplet can repeat any number of times and determines how many buttons are
-        created, one button for each triplet.
-      </para>
-      <para>
-        <emphasis role="bold">Note:</emphasis> Currently symbolic IDs are not supported for the resource ID of the
-        buttons.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>r [optional]</term>
-      <listitem>
-      <para>
-        This is a flag to switch between horizontal or vertical placement of the buttons. If <emphasis
-        role="italic">r</emphasis> is true, the buttons are placed in a row, or horizontal. If <emphasis
-        role="italic">r</emphasis> is false, the buttons are placed in a column, or vertically.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>o [optional]</term>
-      <listitem>
-      <para>
-        A list of 0 or more of the following <xref linkend="paraStyleExplanation"/> keywords separated by
-        spaces. Each button is given the same set of styles, except for the DEFAULT style. If the style arg contains the
-        DEFAULT keyword, it is only given to the first button:
-      </para>
-      <para>
-        <simplelist type='vert' columns='3'>
-          <member>DEFAULT  </member>
-          <member>OWNER    </member>
-          <member>BITMAP   </member>
-          <member>ICON     </member>
-          <member>LEFT     </member>
-          <member>RIGHT    </member>
-          <member>HCENTER  </member>
-          <member>TOP      </member>
-          <member>BOTTOM   </member>
-          <member>VCENTER  </member>
-          <member>MULTILINE</member>
-          <member>NOTIFY   </member>
-          <member>FLAT     </member>
-          <member>HIDDEN   </member>
-          <member>DISABLED </member>
-          <member>BORDER   </member>
-          <member>GROUP    </member>
-          <member>NOTAB    </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>DEFAULT</term>
-          <listitem>
-          <para>
-            The button becomes the default button in the dialog.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>OWNER</term>
-          <listitem>
-          <para>
-            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
-            message.  Currently this would be difficult (but not impossible) to implement in ooDialog.  A simpler
-            approach for an owner drawn button is to use a bitmap button.  See the
- <xref linkend="mthCreateBitmapButton"/> method.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>ICON</term>
-          <listitem>
-          <para>
-            The button displays an icon image.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BITMAP</term>
-          <listitem>
-          <para>
-            The button displays a bitmap image.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LEFT</term>
-          <listitem>
-          <para>
-            Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified the text is
-            centered in the button rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RIGHT</term>
-          <listitem>
-          <para>
-            Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-            the text is centered in the button rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HCENTER</term>
-          <listitem>
-          <para>
-            The button has its text centered horizontally in the button rectangle.  This is the default if neither
-            LEFT nor RIGHT are specified.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>TOP</term>
-          <listitem>
-          <para>
-            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
-            vertically centered in the button rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BOTTOM</term>
-          <listitem>
-          <para>
-            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
-            is vertically centered in the button rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>VCENTER</term>
-          <listitem>
-          <para>
-            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
-            specified.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MULTILINE</term>
-          <listitem>
-          <para>
-            If the text for the label of the button is longer than the width of the button rectangle, the operating
-            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
-            sufficient to display the extra line(s) or the text is clipped.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTIFY</term>
-          <listitem>
-          <para>
-            Enables the button to send notifications for the gained focus,lost focus, and double click events.  This is
-            only necessary when the <xref linkend="mthConnectButtonEvent"/> method is used, and
-            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
-            buttons and owner-drawn buttons will receive the DBLCLK event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>FLAT</term>
-          <listitem>
-          <para>
-            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
-            rectangle.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-          <para>
-            The not <xref linkend="wsvisible"/> window style.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-          <para>
-            The <xref linkend="wsdisabled"/> window style.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BORDER</term>
-          <listitem>
-          <para>
-            The <xref linkend="wsborder"/> window style.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-          <para>
-            The <xref linkend="wsgroup"/> control style.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-          <para>
-            The no <xref linkend="wstabstop"/> control style.
-          </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-      <varlistentry><term>-2</term>
-      <listitem>
-      <para>
-        The dialog template has either not been started or is complete.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-      <para>
-        A symbolic ID was used, but it could not be resolved correctly.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>0</term>
-      <listitem>
-      <para>
-        Success.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example creates three buttons (Add, Delete, and Update.) The buttons are placed in a column alongside
-    the right edge of the dialog.  The upper left corner of the button group is at 20, 235.
-  </para>
-
-<programlisting>
-<![CDATA[
-self~createPushButtonGroup(20, 235, , ,              -
-                          "&Add 301 AddItem "        -
-                          "&Delete 302 DeleteItem "  -
-                          "&Update 303 UpdateItem")
-]]>
-</programlisting>
-  </listitem></varlistentry>
-</variablelist>
-
-</section>
 
 </section> <!-- End Create Button Controls section -->
 
