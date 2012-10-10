@@ -391,9 +391,9 @@ return 0
  *
  * This is our comparison callback function.  We are passed the user item data
  * for the first tree-view item and the user item data for the second tree-view
- * item.  The method needs to return 1 if the first item is greater than the
- * second, -1 if the first item is less than the second, and 0 if the two items
- * are equivalent.
+ * item.  The method needs to return a positive number if the first item is
+ * greater than the second, a negative number if the first item is less than the
+ * second, and 0 if the two items are equivalent.
  *
  * In this program, for every tree-view item inserted, we set the item data for
  * that item to be the text of the item.  Then, in our comparison function here,
