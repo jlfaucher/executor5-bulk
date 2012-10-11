@@ -7117,7 +7117,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <listitem>
           <para>
             The list-view does not take ownership of the image lists assigned to it. This option enables an
- <xref linkend="clsImageList"/> list to be used with several list controls.
+            <xref linkend="clsImageList"/> list to be used with several list controls.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>HIDDEN</term>
@@ -10632,6 +10632,7 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
         <member>HSCROLL      </member>
         <member>VSCROLL      </member>
         <member>SHOWSELALWAYS</member>
+        <member>INFOTIP      </member>
         <member>ALL          </member>
         <member>NODRAG       </member>
         <member>HIDDEN       </member>
@@ -10678,6 +10679,13 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
         <listitem>
         <para>
           The tree view supports a vertical scroll bar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id='styTreeViewInfoTip'><term>INFOTIP</term>
+        <listitem>
+        <para>
+          The tree-view will request info tip text by sending the <link linkend="evtTreeViewGETINFOTIP">GETINFOTIP</link>
+          notification. If the tree-view does not have the INFOTIP style, GETINFOTIP notifications are not sent.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>SHOWSELALWAYS</term>

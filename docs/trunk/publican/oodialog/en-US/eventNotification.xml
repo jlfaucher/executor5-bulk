@@ -4142,7 +4142,7 @@ incorrect.
       <listitem>
       <para>
         A drag-and-drop operation involving the right mouse button was initiated. See
- <xref linkend="mthDefListDragHandler"/> for information on how to implement a drag-and-drop
+        <xref linkend="mthDefListDragHandler"/> for information on how to implement a drag-and-drop
         handler.
       </para>
       </listitem></varlistentry>
@@ -4170,7 +4170,8 @@ incorrect.
       <para>
         When you specify this event, omit the <emphasis role="italic">methodName</emphasis> argument. This keyword
         tells the ooDialog framework to use its default methods for both the begin and end edit events.
-      </para> </listitem></varlistentry>
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>CHANGING</term>
       <listitem>
       <para>
@@ -4196,7 +4197,7 @@ incorrect.
       <para>
         This event is generated when the list-view is clicked with the left mouse button. However, in report view only,
         this excludes the column headers. Connecting the CLICK event is a replacement for the
- <xref linkend="mthConnectNotifyEvent"/> method's CLICK event.
+        <xref linkend="mthConnectNotifyEvent"/> method's CLICK event.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>DBLCLK</term>
@@ -4204,7 +4205,7 @@ incorrect.
       <para>
         This event is generated when the list-view is double-clicked with the left mouse button. However, in
         report view only, this excludes the column headers. Connecting the DBLCLK event is a replacement for the
- <xref linkend="mthConnectNotifyEvent"/> method's DBLCLK event.
+        <xref linkend="mthConnectNotifyEvent"/> method's DBLCLK event.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>COLUMNCLICK</term>
@@ -4230,6 +4231,14 @@ incorrect.
       <para>
         The focus state of an item changed.  (The item gained or lost the focus.) Use this keyword instead of the
         CHANGED keyword.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id='evtListViewGETINFOTIP'><term>GETINFOTIP</term>
+      <listitem>
+      <para>
+        The list-view control is requesting text to display an info tip. The notification is only sent when the list-view
+        control has the extended <link linkend="styListViewInfoTip">INFOTIP</link> style. The extended list-view styles must
+        be set using the <link linkend="mthAddExtendedStyle">addExtendedStyle</link> method.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>INSERTED</term>
@@ -4641,6 +4650,108 @@ incorrect.
 </programlisting>
 
 </section>
+
+
+<section id="evtListViewGETINFOTIP"><title>GetInfoTip Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>GETINFOTIP</secondary></indexterm>
+<para>
+  The event handler method connected to the get info tip event is invoked when the list-view control requests the text to
+  display in the info tip. The programmer must return a string value and the interpreter waits for this return. The <emphasis
+  role="italic">willRepy</emphasis> argument of the <link linkend="mthConnectListViewEvent">connectListViewEvent</link>
+  method is ignored for this event.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onGetInfoTip unguarded
+  use arg id, itemIndex, text, maxLen
+
+  return infoText
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 4 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the list-view control requesting the info tip text.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemIndex</term>
+    <listitem>
+    <para>
+      The index of the list-view item that the info tip is for.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text</term>
+    <listitem>
+    <para>
+      The current text the list-view intends to display. Note that most often this is the empty string. However, in some
+      cases it will not be the empty string. For instance, in report view, if the column is not wide enough to display the
+      entire text for the item, the <emphasis role="italic">text</emphasis> argument will contain the entire item's text.
+      Microsoft suggests that if <emphasis role="italic">text</emphasis> is not the empty string, the application should
+      append its text to the end of the string.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>maxLen</term>
+    <listitem>
+    <para>
+      The maximum length of the string that will be displayed. The programmer should not assume what this length is. However,
+      testing shows that it is usually 1023. If the returned text is longer than the <emphasis
+      role="italic">maxLen</emphasis> value, the text will automatically be truncated to <emphasis
+      role="italic">maxLen</emphasis> characters.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler must return a string value. If the string is not the empty string, it will be displayed as the info
+    tip. If the empty string is returned, then the the previous value of <emphasis role="italic">text</emphasis> is
+    displayed. That is, if <emphasis role="italic">text</emphasis> is the empty string, no info tip will be shown. However,
+    if <emphasis role="italic">text</emphasis> is not the empty string, that text will be displayed unchanged.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example example displays an info tip that shows expanded record information for the list-view item. The
+    <emphasis role="italic">useInfoTips</emphasis> variable is used to determine if an info tip should be displayed or not.
+    If <emphasis role="italic">useInfoTips</emphasis> is false, no tip is displayed. If true the record information is
+    formatted and returned. Note that new line characters are used to break up the information into lines:
+
+<programlisting>
+<![CDATA[
+
+::method onGetInfoTip unguarded
+  expose lv records useInfoTips
+  use arg id, item, text, maxLen
+
+  text = ''
+
+  if useInfoTips then do
+    r = records[item + 1]
+    text = r~firstName r~lastName '('r~age')' || .endOfLine || -
+           r~street                           || .endOfLine || -
+           r~city',' r~state r~zipcode
+  end
+
+  return text
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End GetInfoTip Event Handler -->
+
 
 <section id="evtListViewKEYDOWN" xreflabel="KEYDOWN"><title>KeyDown Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>KEYDOWN</secondary></indexterm>
@@ -6890,41 +7001,66 @@ trackbar position by extracting the high-oder word. Example:
         <listitem><para>Editing a label has been started.
         </para></listitem></varlistentry>
         <varlistentry id="evtTreeViewENDEDIT"><term>ENDEDIT</term>
-        <listitem><para>Label editing has ended.
-        </para></listitem></varlistentry>
+        <listitem>
+        <para>
+          Label editing has ended.
+        </para>
+        </listitem></varlistentry>
         <varlistentry id="evtTreeViewDEFAULTEDIT"><term>DEFAULTEDIT</term>
-        <listitem><para>This event connects the notification that label editing has been started
-        and ended with a predefined event-handling method. This method extracts the
-        newly entered text from the notification and modifies the item of which the
-        label was edited. If this event is not connected you must provide your own
-        event-handling method and connect it with the BEGINEDIT and ENDEDIT events.
-        Otherwise, the edited text is lost and the item remains unchanged.</para>
-        <para>When
-        you specify this event, omit the <emphasis role="italic">msgToRaise</emphasis> argument.</para>
+        <listitem>
+        <para>
+          This event connects the notification that label editing has been started and ended with a predefined event-handling
+          method. This method extracts the newly entered text from the notification and modifies the item of which the label
+          was edited. If this event is not connected you must provide your own event-handling method and connect it with the
+          BEGINEDIT and ENDEDIT events. Otherwise, the edited text is lost and the item remains unchanged.
+        </para>
+        <para>
+          When you specify this event, the <emphasis role="italic">msgToRaise</emphasis> argument is ignored.
+        </para>
         </listitem></varlistentry>
         <varlistentry><term>EXPANDING</term>
-        <listitem><para>An item is about to expand or collapse. This notification is sent before
-        the item has expanded or collapsed.
-        </para></listitem></varlistentry>
+        <listitem>
+        <para>
+          An item is about to expand or collapse. This notification is sent before the item has expanded or collapsed.
+        </para>
+        </listitem></varlistentry>
         <varlistentry><term>EXPANDED</term>
-        <listitem><para>An item has expanded or collapsed. This notification is sent after the
-        item expanded or collapsed.
-        </para></listitem></varlistentry>
+        <listitem>
+        <para>
+          An item has expanded or collapsed. This notification is sent after the item expanded or collapsed.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id='evtTreeViewGETINFOTIP'><term>GETINFOTIP</term>
+        <listitem>
+        <para>
+          The tree-view control is requesting text to display an info tip. The notification is only sent when the tree-view
+          control has the <link linkend="styTreeViewInfoTip">INFOTIP</link> style.
+        </para>
+        </listitem></varlistentry>
         <varlistentry><term>DELETE</term>
-        <listitem><para>An item has been deleted.
-        </para></listitem></varlistentry>
+        <listitem>
+        <para>
+          An item has been deleted.
+        </para>
+        </listitem></varlistentry>
         <varlistentry><term>KEYDOWN</term>
-        <listitem><para>A key was pressed inside the tree view. This notification is not sent
-        while a label is being edited.
-        </para></listitem></varlistentry>
+        <listitem>
+        <para>
+          A key was pressed inside the tree view. This notification is not sent while a label is being edited.
+        </para>
+        </listitem></varlistentry>
         <varlistentry><term>SELCHANGING</term>
-        <listitem><para>Another item is about to be selected. This notification is sent before
-        the selection has changed.
-        </para></listitem></varlistentry>
+        <listitem>
+        <para>
+          Another item is about to be selected. This notification is sent before the selection has changed.
+        </para>
+        </listitem></varlistentry>
         <varlistentry><term>SELCHANGED</term>
-        <listitem><para>Another item was selected. This notification is sent after the selection
-        was changed.
-        </para></listitem></varlistentry>
+        <listitem>
+        <para>
+          Another item was selected. This notification is sent after the selection was changed.
+        </para>
+        </listitem></varlistentry>
       </variablelist>
     </para>
     </listitem></varlistentry>
@@ -7176,6 +7312,103 @@ trackbar position by extracting the high-oder word. Example:
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="evtTreeViewGETINFOTIP"><title>GetInfoTip Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>GETINFOTIP</secondary></indexterm>
+<para>
+  The event handler method connected to the get info tip event is invoked when the tree-view control requests the text to
+  display in the info tip. The programmer must return a string value and the interpreter waits for this return. The <emphasis
+  role="italic">willRepy</emphasis> argument of the <link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>
+  method is ignored for this event. The event handler must always return a value.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onGetInfoTip unguarded
+  use arg id, hItem, text, maxLen, userData
+
+  return infoText
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 5 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the tree-view control requesting the info tip text.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hItem</term>
+    <listitem>
+    <para>
+      The handle of the tree-view item that the info tip is for.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text</term>
+    <listitem>
+    <para>
+      The current text the tree-view intends to display. Note that most often this is the empty string. However, in some
+      cases it might not be the empty string. Microsoft suggests that if <emphasis role="italic">text</emphasis> is not the
+      empty string, the application should append its text to the end of the string.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>maxLen</term>
+    <listitem>
+    <para>
+      The maximum length of the string that will be displayed. The programmer should not assume what this length is. However,
+      testing shows that it is usually 1023. If the returned text is longer than the <emphasis
+      role="italic">maxLen</emphasis> value, the text will automatically be truncated to <emphasis
+      role="italic">maxLen</emphasis> characters.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>userData</term>
+    <listitem>
+    <para>
+      The user <link linkend="mthSetItemDataClsTreeView">data</link> associated with the tree-view item that the info tip is
+      for. If no user data has been associated with the item, then this argument will be the
+      <computeroutput>.nil</computeroutput> object.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler must return a string value. If the string is not the empty string, it will be displayed as the info
+    tip. If the empty string is returned, then the the previous value of <emphasis role="italic">text</emphasis> is
+    displayed. That is, if <emphasis role="italic">text</emphasis> is the empty string, no info tip will be shown. However,
+    if <emphasis role="italic">text</emphasis> is not the empty string, that text will be displayed unchanged.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    In the following example, the user data associated with the tree-view item tht the info tip is for, is inspected to see
+    if it is the string: '...'  If it is, then a info tip is displayed, otherwise no tip is displayed.
+
+<programlisting>
+<![CDATA[
+
+::method onGetInfoTip unguarded
+    expose tv
+    use arg id, hItem, text, maxLen, userData
+
+    if userData == '...' then return 'There are too many books to list'
+    else return ''
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End GetInfoTip Event Handler -->
+
 
 </section>
 
