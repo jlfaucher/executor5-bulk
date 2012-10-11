@@ -247,40 +247,6 @@
 ::method connectAllSBEvents external "LIBRARY oodialog en_connectAllSBEvents"
 
 
-::method connectTreeViewEvent
-   use strict arg id, type, msgToRise = "", willReply = .false
-   if \ id~dataType("W") then id = self~resolveSymbolicId(id)
-   if id = -1 then return -1
-   if msgToRise == "" then msgToRise = "on" || type
-   type = type~translate
-   select
-       when type = "SELCHANGING" then lp = -401
-       when type = "SELCHANGED"  then lp = -402
-       when type = "EXPANDING"   then lp = -405
-       when type = "EXPANDED"    then lp = -406
-       when type = "BEGINDRAG"   then lp = -407
-       when type = "BEGINRDRAG"  then lp = -408
-       when type = "DELETE"      then lp = -409
-       when type = "BEGINEDIT"   then lp = -410
-       when type = "ENDEDIT"     then lp = -411
-       when type = "DEFAULTEDIT" then do
-            self~addUserMsg("DefTreeEditStarter", 0x0000004E, "0xFFFFFFFF", id, "0xFFFFFFFF", -410, "0xFFFFFFFF")
-            lp = -411
-            msgToRise = "DefTreeEditHandler"
-       end
-       when type = "KEYDOWN" then lp = -412
-       otherwise return -1
-   end
-
-   tag = 0
-   if lp == -405 | lp == -406 then do
-     if willReply then tag = 0x02000006
-     else tag = 0x00000006
-   end
-
-   return self~addUserMsg(msgToRise, 0x0000004E, "0xFFFFFFFF", id, "0xFFFFFFFF", lp, "0xFFFFFFFF", tag)
-
-
 ::method connectTabEvent
    use strict arg id, type, msgToRise = "", willReply = .false
    if \ id~dataType("W") then id = self~resolveSymbolicId(id)
@@ -326,6 +292,7 @@
    return self~addUserMsg(msgToRise, 0x00000115, "0xFFFFFFFF", wp, "0x0000FFFF", hwnd, "0xFFFFFFFF")  /* WM_VSCROLL */
 
 
+::method connectTreeViewEvent external "LIBRARY oodialog en_connectTreeViewEvent"
 ::method connectListViewEvent external "LIBRARY oodialog en_connectListViewEvent"
 ::method connectDateTimePickerEvent external "LIBRARY oodialog en_connectDateTimePickerEvent"
 ::method connectMonthCalendarEvent external "LIBRARY oodialog en_connectMonthCalendarEvent"

@@ -896,20 +896,23 @@ done_out:
  * @param t      Error type.
  *
  * @return False always.
- *                                                      TODO this doc is not
- *                                                      correct, need to edit.
+ *
  * @remarks  For all the original types of ooDialog dialogs (4.0.1 and
  *           previous,) DestroyWindow() causes a WM_DESTROY message to reach
  *           RexxDlgProc(). The dialog procedure then posts a quit message, we
  *           fall out of the message loop and things unwind cleanly.
  *
- *           Setting abnormalHalt causes ensureFinished() to be invoked which
+ *           Setting abnormalHalt to true ensures we don't invoke leaving() and
+ *           that the dialog return gets set to 2.  Calling ensureFinished()
  *           terminates the thread waiting on the finished instance variable.
  *
  *           This works fine for modeless property sheets, but modal property
  *           sheets hang.  The abortPropertySheet() essentially does a
  *           programmatic close and prevents any of the property sheet pages
  *           from nixing the close.
+ *
+ *           Note that if we do not call ensureFinished here, we get a crash in
+ *           the Window message processing loop.
  */
 BOOL endDialogPremature(pCPlainBaseDialog pcpbd, HWND hDlg, DlgProcErrType t)
 {
@@ -955,7 +958,7 @@ BOOL endDialogPremature(pCPlainBaseDialog pcpbd, HWND hDlg, DlgProcErrType t)
             abortPropertySheet((pCPropertySheetDialog)pcpbd->dlgPrivate, hDlg, t);
             return FALSE;
         }
-        //ensureFinished(pcpbd, pcpbd->dlgProcContext, TheTrueObj);
+        ensureFinished(pcpbd, pcpbd->dlgProcContext, TheTrueObj);
     }
 
     DestroyWindow(hDlg);
@@ -1692,6 +1695,36 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             break;
         }
 
+        case LVN_GETINFOTIP :
+        {
+            NMLVGETINFOTIP *tip = (LPNMLVGETINFOTIP)lParam;
+
+            RexxObjectPtr item = c->Int32(tip->iItem);
+            RexxObjectPtr text = tip->dwFlags == 0 ? c->String(tip->pszText) : c->NullString();
+            RexxObjectPtr len  = c->Int32(tip->cchTextMax - 1);
+
+            RexxArrayObject args = c->ArrayOfFour(idFrom, item, text, len);
+
+            RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+            if ( msgReplyIsGood(c, pcpbd, msgReply, methodName, false) )
+            {
+                CSTRING newText = c->ObjectToStringValue(msgReply);
+                if ( strlen(newText) > 0 )
+                {
+                    _snprintf(tip->pszText, tip->cchTextMax - 1, "%s", newText);
+                }
+            }
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(item);
+            c->ReleaseLocalReference(text);
+            c->ReleaseLocalReference(len);
+            c->ReleaseLocalReference(args);
+
+            return ReplyTrue;
+        }
+
         case LVN_KEYDOWN :
         {
             RexxObjectPtr rxLV = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winListView, true);
@@ -2074,6 +2107,39 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             c->ReleaseLocalReference(handle);
             c->ReleaseLocalReference(what);
             c->ReleaseLocalReference(extra);
+            c->ReleaseLocalReference(args);
+
+            return ReplyTrue;
+        }
+
+        case TVN_GETINFOTIP :
+        {
+            NMTVGETINFOTIP *tip = (LPNMTVGETINFOTIP)lParam;
+
+            RexxObjectPtr handle   = pointer2string(c, tip->hItem);
+            RexxObjectPtr userData = tip->lParam ? (RexxObjectPtr)tip->lParam : TheNilObj;
+            RexxObjectPtr text     = c->String(tip->pszText - 1);
+            RexxObjectPtr len      = c->Int32(tip->cchTextMax);
+
+            RexxArrayObject args = c->ArrayOfFour(idFrom, handle, text, len);
+            c->ArrayPut(args, userData, 5);
+
+            RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+            if ( msgReplyIsGood(c, pcpbd, msgReply, methodName, false) )
+            {
+                CSTRING newText = c->ObjectToStringValue(msgReply);
+                if ( strlen(newText) > 0 )
+                {
+                    _snprintf(tip->pszText, tip->cchTextMax - 1, "%s", newText);
+                }
+            }
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(handle);
+            c->ReleaseLocalReference(userData);
+            c->ReleaseLocalReference(text);
+            c->ReleaseLocalReference(len);
             c->ReleaseLocalReference(args);
 
             return ReplyTrue;
@@ -3095,6 +3161,89 @@ inline CSTRING sbn2name(uint32_t sbn)
 
 
 /**
+ * Convert a keyword to the proper tree-view notification code.
+ *
+ *
+ */
+static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, uint32_t *tag, bool *isDefEdit, logical_t willReply)
+{
+    uint32_t tvn = 0;
+
+    *isDefEdit = false;
+    *tag = 0;
+
+    if ( StrCmpI(keyword,      "SELCHANGING") == 0 ) tvn = TVN_SELCHANGING;
+    else if ( StrCmpI(keyword, "SELCHANGED" ) == 0 ) tvn = TVN_SELCHANGED;
+    else if ( StrCmpI(keyword, "BEGINDRAG"  ) == 0 ) tvn = TVN_BEGINDRAG;
+    else if ( StrCmpI(keyword, "BEGINRDRAG" ) == 0 ) tvn = TVN_BEGINRDRAG;
+    else if ( StrCmpI(keyword, "DELETE"     ) == 0 ) tvn = TVN_DELETEITEM;
+    else if ( StrCmpI(keyword, "BEGINEDIT"  ) == 0 ) tvn = TVN_BEGINLABELEDIT;
+    else if ( StrCmpI(keyword, "ENDEDIT"    ) == 0 ) tvn = TVN_ENDLABELEDIT;
+    else if ( StrCmpI(keyword, "KEYDOWN"    ) == 0 ) tvn = TVN_KEYDOWN;
+    else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 ) *isDefEdit = true;
+    else if ( StrCmpI(keyword, "EXPANDING"  ) == 0 )
+    {
+        tvn = TVN_ITEMEXPANDING;
+        *tag = TAG_TREEVIEW;
+    }
+    else if ( StrCmpI(keyword, "EXPANDED") == 0 )
+    {
+        tvn = TVN_ITEMEXPANDED;
+        *tag = TAG_TREEVIEW;
+    }
+    else if ( StrCmpI(keyword, "GETINFOTIP") == 0 )
+    {
+        tvn = TVN_GETINFOTIP;
+        *tag = TAG_TREEVIEW | TAG_REPLYFROMREXX;
+    }
+    else
+    {
+        return false;
+    }
+
+    if ( *tag != 0 && willReply )
+    {
+        *tag = *tag | TAG_REPLYFROMREXX;
+    }
+
+    *code = tvn;
+    return true;
+}
+
+
+/**
+ * Convert a tree view notification code and tag to a method name.
+ */
+inline CSTRING tvn2name(uint32_t tvn, uint32_t tag)
+{
+    switch ( tvn )
+    {
+        case TVN_SELCHANGING    : return "onSelChanging";
+        case TVN_SELCHANGED     : return "onSelChanged";
+        case TVN_BEGINDRAG      : return "onBeginDrag";
+        case TVN_BEGINRDRAG     : return "onBeginRDrag";
+        case TVN_DELETEITEM     : return "onDeleteItem";
+        case TVN_BEGINLABELEDIT : return "onBeginLabelEdit";
+        case TVN_ENDLABELEDIT   : return "onEndLabelEdit";
+        case TVN_ITEMEXPANDING  : return "onItemExpanding";
+        case TVN_ITEMEXPANDED   : return "onItemExpanded";
+        case TVN_GETINFOTIP     : return "onGetInfoTip";
+        case TVN_KEYDOWN        :
+            if ( tag & TAG_TREEVIEW )
+            {
+                return "onKeyDownEx";
+            }
+            else
+            {
+                return "onKeydown";
+            }
+
+    }
+    return "onTVN";
+}
+
+
+/**
  * Convert a keyword to the proper list view notification code.
  *
  *
@@ -3158,6 +3307,11 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
         lvn = LVN_ITEMCHANGED;
         *tag = TAG_LISTVIEW | TAG_STATECHANGED | TAG_SELECTCHANGED | TAG_FOCUSCHANGED;
     }
+    else if ( StrCmpI(keyword, "GETINFOTIP") == 0 )
+    {
+        lvn = LVN_GETINFOTIP;
+        *tag = TAG_LISTVIEW | TAG_REPLYFROMREXX;
+    }
     else
     {
         return false;
@@ -3190,6 +3344,7 @@ inline CSTRING lvn2name(uint32_t lvn, uint32_t tag)
         case LVN_BEGINDRAG      : return "onBegindrag";
         case LVN_BEGINRDRAG     : return "onBeginrdrag";
         case LVN_ITEMACTIVATE   : return "onActivate";
+        case LVN_GETINFOTIP     : return "onGetInfoTip";
         case NM_CLICK           : return "onClick";
         case LVN_KEYDOWN :
             if ( tag & TAG_LISTVIEW )
@@ -4852,6 +5007,110 @@ RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING
     if ( argumentOmitted(3) || *methodName == '\0' )
     {
         methodName = lvn2name(notificationCode, tag);
+    }
+
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    {
+        return TheZeroObj;
+    }
+
+    return TheOneObj;
+}
+
+
+/** EventNotification::connectTreeViewEvent()
+ *
+ *  Connects a Rexx dialog method with a tree-view event.
+ *
+ *  @param  rxID        The resource ID of the dialog control.  Can be numeric
+ *                      or symbolic.
+ *
+ *  @param  event       Keyword specifying which event to connect.  Keywords at
+ *                      this time:
+ *
+ *                      SELCHANGING
+ *                      SELCHANGED
+ *                      EXPANDING
+ *                      EXPANDED
+ *                      BEGINDRAG
+ *                      BEGINRDRAG
+ *                      DELETE
+ *                      BEGINEDIT
+ *                      ENDEDIT
+ *                      DEFAULTEDIT
+ *                      KEYDOWN
+ *                      GETINFOTIP
+ *
+ *
+ *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
+ *                      Rexx dialog.  If this argument is omitted then the
+ *                      method name is constructed by prefixing the event
+ *                      keyword with 'on'.  For instance onExpanding.
+ *
+ *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
+ *                      direct or indirect. With a direct invocation, the
+ *                      interpreter waits in the Windows message loop for the
+ *                      return from the Rexx method. With indirect, the Rexx
+ *                      method is invoked through ~startWith(), which of course
+ *                      returns immediately.
+ *
+ *                      For tree-views, at this time, the default is false, i.e.
+ *                      the Rexx programmer needs to specify that she wants to
+ *                      reply.  This could change if new key words are added.
+ *
+ *  @return 0 for no error, -1 for a bad resource ID or incorrect event keyword,
+ *          1 if the event could not be connected.  The event can not be
+ *          connected if there is a problem with the message table, full or out
+ *          of memory error.
+ *
+ *  @remarks   For the current keywords, if a symbolic ID is  used and it can
+ *             not be resolved to a numeric number -1 has to be returned for
+ *             backwards compatibility.  Essentially, except for the keywords
+ *             listed below, for this method, all behaviour needs to be
+ *             pre-4.2.0.
+ *
+ *             EXPANDING / EXPANDED  The willReply request is honored
+ *
+ *             INFOTIP  new keyword - will reply is always set to true for this
+ *             keyword.
+ */
+RexxMethod5(RexxObjectPtr, en_connectTreeViewEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+{
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
+    {
+        return TheNegativeOneObj;
+    }
+
+    uint32_t tag = 0;
+    bool     isDefEdit = false;
+    uint32_t notificationCode;
+
+    if ( ! keyword2tvn(context, event, &notificationCode, &tag, &isDefEdit, willReply) )
+    {
+        return TheNegativeOneObj;
+    }
+
+    // Deal with DEFAULTEDIT separately.
+    if ( isDefEdit )
+    {
+        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, TVN_BEGINLABELEDIT, 0xFFFFFFFF, "DefTreeEditStarter", 0) )
+        {
+            return TheNegativeOneObj;
+        }
+        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, TVN_ENDLABELEDIT, 0xFFFFFFFF, "DefTreeEditHandler", 0) )
+        {
+            return TheNegativeOneObj;
+        }
+        return TheZeroObj;
+    }
+
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = tvn2name(notificationCode, tag);
     }
 
     if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )

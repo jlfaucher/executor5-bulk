@@ -718,6 +718,7 @@ uint32_t treeViewStyle(CSTRING opts, uint32_t style)
     if ( StrStrI(opts, "EDIT"         ) != NULL ) style |= TVS_EDITLABELS;
     if ( StrStrI(opts, "BUTTONS"      ) != NULL ) style |= TVS_HASBUTTONS;
     if ( StrStrI(opts, "LINES"        ) != NULL ) style |= TVS_HASLINES;
+    if ( StrStrI(opts, "INFOTIP"      ) != NULL ) style |= TVS_INFOTIP;
     if ( StrStrI(opts, "ATROOT"       ) != NULL ) style |= TVS_LINESATROOT;
     if ( StrStrI(opts, "SHOWSELALWAYS") != NULL ) style |= TVS_SHOWSELALWAYS;
     return style;

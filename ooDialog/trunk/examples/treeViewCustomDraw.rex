@@ -43,7 +43,7 @@
  * Including, but not limited to: drag and drop of items, label editing of
  * items, custom draw, using image lists to supply the icons for tree-view
  * items, using a custom compare function in the Rexx dialog to sort the
- * tree-view items, etc..
+ * tree-view items, displaying info tips, etc..
  */
 
     -- Use the global .constDir for symbolic IDs and turn automatic data
@@ -135,6 +135,7 @@ return info.!Image == self~UNSELECTED_LEAF
     self~connectTreeViewEvent(IDC_TREE, "DEFAULTEDIT")
     self~connectTreeViewEvent(IDC_TREE, "BEGINDRAG", "DefTreeDragHandler")
     self~connectTreeViewEvent(IDC_TREE, "KEYDOWN",   "onKeyDown")
+    self~connectTreeViewEvent(IDC_TREE, "GETINFOTIP", "onGetInfoTip")
 
     self~connectButtonEvent(IDC_PB_NEW,     "CLICKED", "onNewItem")
     self~connectButtonEvent(IDC_PB_DELETE,  "CLICKED", "onDeleteItem")
@@ -353,6 +354,24 @@ return 0
 
     tv~delete(selected)
 return 0
+
+
+/** onGetInfoTip()
+ *
+ * This is the event handler for the INFOTIP event.  It is invoked when the
+ * tree-view wants the text to display in the info tip.
+ *
+ * If we return the empty string, then no info tip is displayed.  Otherwise, the
+ * text returned is displayed.  Here, we only return text when the userData is
+ * the string: '...'  In that case we return some text.  In all other cases we
+ * return the empty string and no info tip is displayed.
+ */
+::method onGetInfoTip unguarded
+    expose tv
+    use arg id, hItem, text, maxLen, userData
+
+    if userData == '...' then return 'There are too many books to list'
+    else return ''
 
 
 /** onSortChildre()

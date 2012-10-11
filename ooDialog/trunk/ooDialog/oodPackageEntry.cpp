@@ -537,6 +537,7 @@ REXX_METHOD_PROTOTYPE(en_connectScrollBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectEachSBEvent);
 REXX_METHOD_PROTOTYPE(en_connectAllSBEvents);
 REXX_METHOD_PROTOTYPE(en_connectListViewEvent);
+REXX_METHOD_PROTOTYPE(en_connectTreeViewEvent);
 REXX_METHOD_PROTOTYPE(en_connectDateTimePickerEvent);
 REXX_METHOD_PROTOTYPE(en_connectMonthCalendarEvent);
 REXX_METHOD_PROTOTYPE(en_connectUpDownEvent);
@@ -1507,6 +1508,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(en_connectEachSBEvent,          en_connectEachSBEvent),
     REXX_METHOD(en_connectAllSBEvents,          en_connectAllSBEvents),
     REXX_METHOD(en_connectListViewEvent,        en_connectListViewEvent),
+    REXX_METHOD(en_connectTreeViewEvent,        en_connectTreeViewEvent),
     REXX_METHOD(en_connectDateTimePickerEvent,  en_connectDateTimePickerEvent),
     REXX_METHOD(en_connectMonthCalendarEvent,   en_connectMonthCalendarEvent),
     REXX_METHOD(en_connectUpDownEvent,          en_connectUpDownEvent),

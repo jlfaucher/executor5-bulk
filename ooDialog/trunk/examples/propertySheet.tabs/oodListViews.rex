@@ -45,7 +45,8 @@
  *
  *    Demonstrates the different views possible in the list-view control.  Shows
  *    how to use the ControlDialog class to populate each page in a tab
- *    control.
+ *    control.  Demonstrates some other list-view features, such as info tips,
+ *    etc..
  *
  */
 
@@ -89,11 +90,17 @@
   self~connectButtonEvent(IDC_PB_FORWARD,   "CLICKED", "onForward")
   self~connectButtonEvent(IDC_PB_BACKWARD,  "CLICKED", "onBackward")
 
+  self~connectButtonEvent(IDC_CK_INFOTIPS, "CLICKED", onCheckClicked)
+
   self~connectTabEvent(IDC_TAB, 'SELCHANGE', 'onNewTab')
 
 
 ::method initDialog
-  expose tabControl pageDialog smallIcons normalIcons records pbBackward pbForward
+  expose tabControl pageDialog smallIcons normalIcons records pbBackward pbForward ckInfoTips
+
+  -- Set the Use Info Tips check box.
+  ckInfoTips = self~newCheckBox(IDC_CK_INFOTIPS)
+  ckInfoTips~check
 
   -- Save a reference to the push buttons.
   pbBackward = self~newPushButton(IDC_PB_BACKWARD)
@@ -116,6 +123,7 @@
   tabControl~setMinTabWidth(w)
 
   pageDialog = .PageDialog~new("rc\oodListViews.rc", IDD_PAGE, , , , , self)
+  pageDialog~useInfoTips = .true
   pageDialog~initialize(smallIcons, normalIcons, records)
 
   -- Use execute() to properly start a ControlDialog.
@@ -196,6 +204,18 @@
   -- area.  We need to position the control dialog *above* the tab control in
   -- the Z-order so that it shows.
   dlg~setWindowPos(tabControl~hwnd, displayRect, "SHOWWINDOW NOOWNERZORDER")
+
+
+/** onCheckClicked()
+ *
+ * This is the event handler for the CLICKED event of the Use Info Tips check
+ * box.  Each time it is clicked, we update the Page dialog with its state.
+ */
+::method onCheckClicked unguarded
+  expose ckInfoTips pageDialog
+
+  if ckInfoTips~checked then pageDialog~useInfoTips = .true
+  else pageDialog~useInfoTips = .false
 
 
 /** onNewTab()
@@ -307,6 +327,13 @@
   pageDialog~endExecution(.true)
   return self~ok:super
 
+
+/** initAutoDetection()
+ *
+ * We turn off auto detection for this dialog.
+ */
+::method initAutoDetection
+  self~noAutoDetection
 
 /** checkButtons()
  *
@@ -424,6 +451,11 @@
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'PageDialog' subclass RcControlDialog
 
+-- This attribute allows the parent dialog to notify us if the Use Info Tips
+-- check box is checked or not.  When it is not checked, we don't display any
+-- info tips.
+::attribute useInfoTips
+
 ::method initialize
   expose smallIcons normalIcons records
   use strict arg smallIcons, normalIcons, records
@@ -432,11 +464,12 @@
   self~connectListViewEvent(IDC_LISTVIEW, "ACTIVATE", "onDoubleClick")
   self~connectListViewEvent(IDC_LISTVIEW, "BEGINDRAG", "DefListDragHandler")
   self~connectListViewEvent(IDC_LISTVIEW, "DEFAULTEDIT")
+  self~connectListViewEvent(IDC_LISTVIEW, "GETINFOTIP")
 
   self~initUpdateListView(IDC_LISTVIEW)
 
 ::method initDialog
-  expose lv smallIcons normalIcons records
+  expose lv smallIcons normalIcons records ckInfoTips useInfoTips
 
   lv = self~newListView(IDC_LISTVIEW)
 
@@ -454,7 +487,7 @@
     self~addRecord(r, .false)
   end
 
-  lv~addExtendedStyle("FULLROWSELECT DOUBLEBUFFER GRIDLINES")
+  lv~addExtendedStyle("FULLROWSELECT DOUBLEBUFFER GRIDLINES INFOTIP")
 
 
 /** refreshView()
@@ -576,6 +609,35 @@
   lv~focus(0)
 
 
+/** onGetInfoTip()
+ *
+ * This is the event handler for the INFOTIP event.  This method is invoked when
+ * the list-view wants the text for an info tip.
+ *
+ * If this method returns the empty string then no info tip will be shown.
+ * Otherwise, the info tip will contain the text sent back.
+ *
+ * The maxLen argument will be the maximum length allowed for the returned text.
+ * You should never assume what this lenght is, although it appears to usually
+ * be 1023.  If the text sent back is longer than maxLen, it will automatically
+ * be truncated.
+ */
+::method onGetInfoTip unguarded
+  expose lv records useInfoTips
+  use arg id, item, text, maxLen
+
+  text = ''
+
+  if useInfoTips then do
+    r = records[item + 1]
+    text = r~firstName r~lastName '('r~age')' || .endOfLine || -
+           r~street                           || .endOfLine || -
+           r~city',' r~state r~zipcode
+  end
+
+  return text
+
+
 /** addRecord()
  *
  * Used to add an item to the list view.
@@ -592,7 +654,8 @@
   iconSex = 0
   if rec~sex = "F" then iconSex = 1
 
-  lv~addRow(, iconSex, rec~lastName', 'rec~firstName, rec~street, rec~city, rec~state, rec~ZipCode, rec~age)
+  index = lv~addRow(, iconSex, rec~lastName', 'rec~firstName, rec~street, rec~city, rec~state, rec~ZipCode, rec~age)
+  lv~setItemData(index, rec~firstName rec~lastName)
 
   if newRecord then records~append(rec)
 

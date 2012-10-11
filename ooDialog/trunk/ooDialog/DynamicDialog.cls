@@ -920,6 +920,7 @@
       if style~wordpos("TVS_EDITLABELS") > 0 then ret = ret || " EDIT"
       if style~wordpos("TVS_HASBUTTONS") > 0 then ret = ret || " BUTTONS"
       if style~wordpos("TVS_HASLINES") > 0 then ret = ret || " LINES"
+      if style~wordpos("TVS_INFOTIP") > 0 then ret = ret || " INFOTIP"
       if style~wordpos("TVS_LINESATROOT") > 0 then ret = ret || " ATROOT"
       if style~wordpos("TVS_SHOWSELALWAYS") > 0 then ret = ret || " SHOWSELALWAYS"
       if style~wordpos("WS_BORDER") = 0 then ret = ret || " NOBORDER"
