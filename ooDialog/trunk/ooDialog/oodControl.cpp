@@ -101,6 +101,7 @@ const char *controlType2className(oodControl_t control)
         case winMonthCalendar :        return "MONTHCALENDAR";
         case winDateTimePicker :       return "DATETIMEPICKER";
         case winUpDown :               return "UPDOWN";
+        case winToolTip :              return "TOOLTIP";
         default :                      return "";
     }
 }
@@ -127,6 +128,7 @@ const char *controlType2controlName(oodControl_t control)
         case winMonthCalendar :        return "MonthCalendar";
         case winDateTimePicker :       return "DateTimePicker";
         case winUpDown :               return "UpDown";
+        case winToolTip :              return "ToolTip";
         default :                      return "";
     }
 }
@@ -148,6 +150,7 @@ oodControl_t winName2controlType(const char *className)
     else if ( strcmp(className, MONTHCAL_CLASS    ) == 0 ) return winMonthCalendar;
     else if ( strcmp(className, DATETIMEPICK_CLASS) == 0 ) return winDateTimePicker;
     else if ( strcmp(className, UPDOWN_CLASS      ) == 0 ) return winUpDown;
+    else if ( strcmp(className, TOOLTIPS_CLASS    ) == 0 ) return winToolTip;
     else
     {
         return winUnknown;
@@ -202,6 +205,7 @@ oodControl_t controlName2controlType(CSTRING name)
     else if ( StrCmpI(name, "TRACKBAR"      ) == 0 ) return winTrackBar;
     else if ( StrCmpI(name, "TREEVIEW"      ) == 0 ) return winTreeView;
     else if ( StrCmpI(name, "UPDOWN"        ) == 0 ) return winUpDown;
+    else if ( StrCmpI(name, "TOOLTIP"       ) == 0 ) return winToolTip;
     else return winUnknown;
 }
 
@@ -320,6 +324,7 @@ oodControl_t oodName2controlType(CSTRING name)
     else if ( StrCmpN(name, "SCROLLBAR", 2     ) == 0 ) return winScrollBar;
     else if ( StrCmpN(name, "STATIC", 2        ) == 0 ) return winStatic;
     else if ( StrCmpN(name, "TAB", 3           ) == 0 ) return winTab;
+    else if ( StrCmpN(name, "TOOLT", 5         ) == 0 ) return winToolTip;
     else if ( StrCmpN(name, "TRACKBAR", 3      ) == 0 ) return winTrackBar;
     else if ( StrCmpN(name, "TREEVIEW", 3      ) == 0 ) return winTreeView;
     else if ( StrCmpN(name, "UPDOWN", 1        ) == 0 ) return winUpDown;

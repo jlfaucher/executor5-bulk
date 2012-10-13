@@ -1098,6 +1098,14 @@ REXX_METHOD_PROTOTYPE(lvfr_removeSubitem);
 REXX_METHOD_PROTOTYPE(lvfr_subitem);
 REXX_METHOD_PROTOTYPE(lvfr_subitems);
 
+// ToolTip
+REXX_METHOD_PROTOTYPE(tt_activate);
+REXX_METHOD_PROTOTYPE(tt_addTool);
+REXX_METHOD_PROTOTYPE(tt_addToolEx);
+REXX_METHOD_PROTOTYPE(tt_addToolRect);
+REXX_METHOD_PROTOTYPE(tt_getToolInfo);
+REXX_METHOD_PROTOTYPE(tt_setMaxTipWidth);
+
 // TreeView
 REXX_METHOD_PROTOTYPE(tv_delete);
 REXX_METHOD_PROTOTYPE(tv_deleteAll);
@@ -2032,6 +2040,14 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lvfr_removeSubitem,             lvfr_removeSubitem),
     REXX_METHOD(lvfr_subitem,                   lvfr_subitem),
     REXX_METHOD(lvfr_subitems,                  lvfr_subitems),
+
+    // ToolTip
+    REXX_METHOD(tt_activate,                    tt_activate),
+    REXX_METHOD(tt_addTool,                     tt_addTool),
+    REXX_METHOD(tt_addToolEx,                   tt_addToolEx),
+    REXX_METHOD(tt_addToolRect,                 tt_addToolRect),
+    REXX_METHOD(tt_getToolInfo,                 tt_getToolInfo),
+    REXX_METHOD(tt_setMaxTipWidth,              tt_setMaxTipWidth),
 
     // TreeView
     REXX_METHOD(tv_delete,                      tv_delete),

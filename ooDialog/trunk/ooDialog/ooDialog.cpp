@@ -3113,8 +3113,6 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
     strcpy(pcpbd->fontName, pcpbdc->fontName);
     pcpbd->fontSize = pcpbdc->fontSize;
 
-    // TODO at this point calculate the true dialog base units and set them into CPlainBaseDialog.
-
     if ( ! (pcpbd->isControlDlg || pcpbd->isPageDlg) )
     {
         pcpbd->previous = TopDlg;
@@ -3122,6 +3120,7 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
         CountDialogs++;
         DialogTable[pcpbd->tableIndex] = pcpbd;
     }
+
     pcpbd->dlgAllocated = true;
 
     // Now process the arguments and do the rest of the initialization.
@@ -4955,10 +4954,11 @@ RexxMethod2(int32_t, pbdlg_stopIt, OPTIONAL_RexxObjectPtr, caller, CSELF, pCSelf
  *          catPage) would assign the parent dialog as the oDlg (owner dialog)
  *          of dialog controls on any of the category pages.  This seems
  *          technically wrong, but the same thing is done here. Need to
- *          investigate whether this ever makes a difference?
+ *          investigate whether this ever makes a difference?  CategoryDialog is
+ *          deprecated and no further work will be donwe with it.
  */
-RexxMethod5(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint32_t, categoryPageID,
-            NAME, msgName, OSELF, self, CSELF, pCSelf)
+RexxMethod6(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint32_t, categoryPageID,
+            OPTIONAL_CSTRING, styleFlags, NAME, msgName, OSELF, self, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
     RexxObjectPtr result = TheNilObj;
@@ -4970,6 +4970,14 @@ RexxMethod5(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint3
     if ( hDlg == NULL )
     {
         return result;
+    }
+
+    // Get the control type early.
+    oodControl_t controlType = oodName2controlType(msgName + 3);
+
+    if ( controlType == winToolTip )
+    {
+        return createToolTip(context, rxID, styleFlags, (pCPlainBaseDialog)pCSelf);
     }
 
     if ( c->IsOfType(self, "CATEGORYDIALOG") )
@@ -5021,7 +5029,6 @@ RexxMethod5(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint3
 
     // Check that the underlying Windows control is the control type requested
     // by the programmer.  Return .nil if this is not true.
-    oodControl_t controlType = oodName2controlType(msgName + 3);
     if ( ! isControlMatch(hControl, controlType) )
     {
         goto out;

@@ -465,6 +465,21 @@ LRESULT handleWmUser(pCPlainBaseDialog pcpbd, HWND hDlg, UINT uMsg, WPARAM wPara
             return TRUE;
         }
 
+        case WM_USER_CREATETOOLTIP:
+        {
+            PCREATETOOLTIP ctt = (PCREATETOOLTIP)wParam;
+
+            HWND hToolTip = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, NULL, ctt->style, CW_USEDEFAULT, CW_USEDEFAULT,
+                                           CW_USEDEFAULT, CW_USEDEFAULT, hDlg, NULL, ctt->hInstance, NULL);
+
+            if ( hToolTip == NULL )
+            {
+                ctt->errRC = GetLastError();
+            }
+            ReplyMessage((LRESULT)hToolTip);
+            return TRUE;
+        }
+
         case WM_USER_INTERRUPTSCROLL:
             pcpbd->stopScroll = wParam;
             return TRUE;
@@ -2388,10 +2403,9 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
         return ContinueProcessing;
     }
 
-    uint32_t code = ((NMHDR *)lParam)->code;
-    size_t tableSize = pcpbd->enCSelf->nmNextIndex;
+    uint32_t code     = ((NMHDR *)lParam)->code;
+    size_t tableSize  = pcpbd->enCSelf->nmNextIndex;
     register size_t i = 0;
-
     for ( i = 0; i < tableSize; i++ )
     {
         if ( ((wParam & m[i].wpFilter) == m[i].wParam) && ((code & m[i].lpfilter) == (uint32_t)m[i].lParam) )

@@ -230,6 +230,8 @@ extern bool               addSubclassMessage(RexxMethodContext *c, pCDialogContr
 extern void               unProtectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr oldUserData);
 extern void               protectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr data);
 
+extern RexxObjectPtr      createToolTip(RexxMethodContext *context, RexxObjectPtr rxID, CSTRING styleFlags, pCPlainBaseDialog pcpbd);
+
 #define ButtonAtom           0x0080
 #define EditAtom             0x0081
 #define StaticAtom           0x0082

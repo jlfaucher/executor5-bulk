@@ -74,6 +74,7 @@
 #define DEF_MAX_DT_ENTRIES          100
 #define DEF_MAX_CT_ENTRIES          100
 #define DEF_MAX_IT_ENTRIES           20
+#define DEF_MAX_TTT_ENTRIES          3
 #define DEF_MAX_NOTIFY_MSGS         100
 #define DEF_MAX_COMMAND_MSGS        100
 #define DEF_MAX_MISC_MSGS            50
@@ -91,7 +92,8 @@
 #define WM_USER_CREATECONTROL_DLG      WM_USER + 0x0609
 #define WM_USER_CREATECONTROL_RESDLG   WM_USER + 0x060A
 #define WM_USER_CREATEPROPSHEET_DLG    WM_USER + 0x060B
-#define WM_USER_REXX_LAST              WM_USER + 0x060B
+#define WM_USER_CREATETOOLTIP          WM_USER + 0x060C
+#define WM_USER_REXX_LAST              WM_USER + 0x060C
 
 // Flags for WM_USER_MOUSE_MISC
 #define MF_GETCAPTURE       0
@@ -273,6 +275,7 @@ typedef enum
     winDateTimePicker      = 15,
     winMonthCalendar       = 16,
     winUpDown              = 17,
+    winToolTip             = 18,
 
     // A special value used by the data table / data table connection functions.
     winNotAControl         = 42,
@@ -287,7 +290,7 @@ typedef enum
     oodPlainBaseDialog, oodCategoryDialog,    oodUserDialog,      oodRcDialog,         oodResDialog,
     oodControlDialog,   oodUserControlDialog, oodRcControlDialog, oodResControlDialog, oodUserPSPDialog,
     oodRcPSPDialog,     oodResPSPDialog,      oodDialogControl,   oodStaticControl,    oodButtonControl,
-    oodEditControl,     oodListBox,           oodProgressBar,     oodUnknown
+    oodEditControl,     oodListBox,           oodProgressBar,     oodToolTip,          oodUnknown
 } oodClass_t;
 
 // How the Global constDir is to be used
@@ -367,9 +370,20 @@ typedef struct {
 } COLORTABLEENTRY;
 
 typedef struct {
-   ULONG iconID;
-   PCHAR fileName;
+    uint32_t  iconID;
+    char     *fileName;
 } ICONTABLEENTRY;
+
+typedef struct {
+    RexxObjectPtr  rexxSelf;
+    uint32_t       id;
+} TOOLTIPTABLEENTRY;
+
+typedef struct _createToolTip {
+    HINSTANCE   hInstance;
+    uint32_t    style;
+    uint32_t    errRC;
+} CREATETOOLTIP, *PCREATETOOLTIP;
 
 // Structure used for context menus
 typedef struct {
@@ -607,10 +621,13 @@ typedef struct _pbdCSelf {
     ICONTABLEENTRY      *IconTab;
     COLORTABLEENTRY     *ColorTab;
     BITMAPTABLEENTRY    *BmpTab;
+    TOOLTIPTABLEENTRY   *ToolTipTab;
     size_t               DT_nextIndex;
     size_t               DT_size;
     size_t               IT_nextIndex;
     size_t               IT_size;
+    size_t               TTT_nextIndex;
+    size_t               TTT_size;
     size_t               CT_nextIndex;
     size_t               CT_size;
     size_t               BT_nextIndex;

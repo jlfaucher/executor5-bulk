@@ -37,102 +37,16 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- * Purpose: Builds the ooDialog package file: ooDialog.cls from the individual
- *          *.cls files that make up the implementation code.
+ * Windows Dialog Interface for Open Object Rexx (ooRexx.)
  *
- * Note that the code for reading the input files assumes that each file starts
- * with the license / copyright header, which is 36 or 37 lines long.
+ * ToolTip Class.
  */
 
-use arg outdir
-if arg() = 0 then do
-  outdir = value("OR_OUTDIR","","ENVIRONMENT")
-  if outdir \== "" & outdir~right(1) \== '\' then outdir ||= '\'
-end
-else do
-  if outdir~right(1) \== '\' then outdir ||= '\'
-end
+::class 'ToolTip' subclass DialogControl public
 
-parse source . . progname
-inpdir = left(progname, progname~lastpos("\"))
-
-outname = .array~new(3)
-outname[1] = "oodPlain.cls"
-outname[2] = "oodWin32.cls"
-outname[3] = "ooDialog.cls"
-
-do i = 1 to 2
-  ret = writeStubFile(outdir, outname[i])
-  if ret <> 0 then do
-    say 'Error writing' outname[i] 'aborting.'
-    return 9
-  end
-end
-
--- Files are in the order they are read and written out. UtilityClasses.cls must be kept first, otherwise
--- the order should not make any difference.
-srcFiles = .array~of("UtilityClasses.cls",   "AnimatedButton.cls",    "BaseDialog.cls",        "ControlDialog.cls",     -
-                     "DialogControls.cls",   "ListView.cls",          "TreeView.cls",          "ToolTip.cls",           -
-                     "DialogExtensions.cls", "DynamicDialog.cls",     "EventNotification.cls", "PlainBaseDialog.cls",   -
-                     "RcDialog.cls",         "Menu.cls",              "ResDialog.cls",         "UserDialog.cls",        -
-                     "DeprecatedClasses.cls")
-
-outFile = .stream~new(outdir || outname[3])
-if outFile~open("WRITE REPLACE") \= "READY:" then return 9
-
-signal on notready
-
-do i = 1 to 37
-  outFile~lineout(sourceLine(i))
-end
-outFile~lineout("")
-outFile~lineout("::requires 'oodialog' LIBRARY")
-outFile~lineout("")
-
-do inFile over srcFiles
-  inputFile = inpdir || inFile
-  say inputFile
-  readFile = .stream~new(inputFile)
-  readFile~open("READ")
-
-  -- Skip the header, with a little leeway.
-  do 35
-    readFile~linein
-  end
-
-  line = readFile~linein~strip
-  do while line~left(2) == '/*', line~right(2) == '*/', readFile~lines() > 0
-    line = readFile~linein
-  end
-
-  outFile~lineout("")
-
-  do while readFile~lines() > 0
-    line = readFile~linein
-    if line~pos('::requires') > 0 then iterate
-    else outFile~lineout(line)
-  end
-  readFile~close
-end
-outFile~close
-
-return 0
-
-notready:
-  say "Stream I/O error while creating ooDialog.cls"
-return 9
-
-::routine writeStubFile
-  use strict arg outDir, outFileName
-
-  stubFile = .stream~new(outdir || outFileName)
-  if stubFile~open("WRITE REPLACE") \= "READY:" then return 9
-
-  do i = 1 to 37
-    stubFile~lineout(sourceLine(i))
-  end
-  stubFile~lineout("")
-  stubFile~lineout("::requires 'ooDialog.cls'")
-  stubFile~close
-
-  return 0
+::method activate unguarded external "LIBRARY oodialog tt_activate"
+::method addTool unguarded external "LIBRARY oodialog tt_addTool"
+::method addToolEx unguarded external "LIBRARY oodialog tt_addToolEx"
+::method addToolRect unguarded external "LIBRARY oodialog tt_addToolRect"
+::method getToolInfo unguarded external "LIBRARY oodialog tt_getToolInfo"
+::method setMaxTipWidth unguarded external "LIBRARY oodialog tt_setMaxTipWidth"
