@@ -6830,6 +6830,210 @@ incorrect.
 
 </section>
 
+
+<section id="mthConnectToolTipEvent" xreflabel="connectToolTipEvent"><title>connectToolTipEvent</title>
+<indexterm><primary>connectToolTipEvent</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectToolTipEvent</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>connectToolTipEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectToolTipEvent(--id--,--event--+-----------+--+-------------+--)------><
+                                        +-,-mthName-+  +-,-willReply-+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectUpDownEvent</emphasis> method connects an <xref linkend="ovvEvents"/>
+  notification message from a <xref linkend="clsUpDown"/> control to a method in the Rexx dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the up-down control whose notification message is to be connected to a Rexx dialog's method.
+        May be numeric or <xref linkend="defSymbolicId"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>event [required]</term>
+      <listitem>
+      <para>
+        Exactly one of the following keywords. The keyword specifies the event to be connected and case is not
+        significant. Unlike most controls, the up-down control only has one event notification.
+      </para>
+      <variablelist>
+        <varlistentry><term>DELTAPOS</term>
+        <listitem>
+        <para>
+           Sent when the position of the control is about to change. This happens when the user requests a change in the
+           value by pressing the control's up or down arrow. The event handler must
+           <link linkend="sctCodingEventHandlers">return</link> a reply for this event. The interpreter waits for that reply.
+        </para>
+        <para>
+          The DELTAPOS notification is sent before the scroll message which actually changes the control's position.
+          This allows the programmer to examine, allow, modify, or disallow the change in position.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        The name of the method that is to be invoked whenever the specified notification is received from the up-down
+        control. The programmer defines this method. If this argument is omitted, a method name is automatically
+        generated that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
+        <computeroutput>onDeltaPos</computeroutput>. The method name can not be the empty string.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the event was connected correctly, otherwise
+   <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
+    role="italic">connectUpDownEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link> to
+    code event handlers are included in the documentation for the
+    <xref linkend="clsEventNotification"/> class.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Syntax errors are raised when incorrect usage is detected, including the use of an invalid symbolic ID or an
+    unrecognized event keyword.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
+    connected event happens.
+  </para>
+  <para>
+    The underlying dialog receives the UDN_* messages as the notifications for the up-down events.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+
+<section id="evtToolTipSHOW" xreflabel="SHOW"><title>Show Event Handler</title>
+<indexterm><primary>ToolTip class</primary><secondary>events</secondary><tertiary>SHOW</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+::method onShow unguarded
+  use arg what
+
+  return what
+]]>
+</programlisting>
+
+<para>
+  The event handler for the up-down DELTAPOS event is invoked when when the position of the control is about to change.
+  The arguments the event handler receives allow the programmer to examine the proposed change in position, to modify
+  the change, or to cancel the change all together.
+</para>
+<para>
+  The programmer must return a value from the event handler and the interpreter waits for this return. The
+ <xref linkend="mthDeltaPosReply"/> class method of the <xref linkend="clsUpDown"/> class is
+  used to properly construct the return value from the event handler.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method receives four arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>pos</term>
+    <listitem>
+    <para>
+      A signed whole number that contains the up-down control's current position.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>delta</term>
+    <listitem>
+    <para>
+      A signed whole number that contains the proposed change in the up-down control's position. This is positive if the
+      user has clicked the up button or used the up arrow key. If the user has clicked the down button or used the down
+      arrow key, this number will be negative.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the up-down control whose position is about to change.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the up-down control whose position is about to change.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    A delta position buffer must be returned by the event handler.  This buffer can only be constructed properly by
+    using the <xref linkend="clsUpDown"/> class's <xref linkend="mthDeltaPosReply"/>
+    method. The arguments to <emphasis role="italic">deltaPosReply</emphasis> allow the programmer to return a value
+    that makes no change to the new position, cancels altogether the change in position, or modifies the resulting new
+    position.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example examines the change in position in the up-down control and modifies it so that the position in
+    the up-down control is always an even number. Note that the <emphasis role="italic">deltaPosReply</emphasis> method
+    ignores the second and third arguments when the first argument is <computeroutput>.false</computeroutput>. So, in
+    the code below, if <emphasis role="italic">change</emphasis> remains <computeroutput>.false</computeroutput>, then
+    the values of <emphasis role="italic">cancel</emphasis> and <emphasis role="italic">delta</emphasis> do not matter.
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+...
+  self~connectUpDownEvent(IDC_UPD, "DELTAPOS", onPosChange)
+...
+
+::method onPosChange unguarded
+  use arg pos, delta, id, hwnd
+
+  change = .false
+  cancel = .false
+
+  if ((pos + delta) // 2) <> 0 then do
+    change = .true
+    if delta > 0 then delta += 1
+    else delta -= 1
+  end
+
+  return .UpDown~deltaPosReply(change, cancel, delta)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Sjpw Event Handler -->
+
+</section>  <!-- End EventNotification::connectToolTipEvent() -->
+
+
 <section id="mthConnectTrackBarEvent" xreflabel="connectTrackBarEvent"><title>connectTrackBarEvent</title>
 <indexterm><primary>connectTrackBarEvent</primary></indexterm>
 <programlisting>
@@ -7613,6 +7817,7 @@ trackbar position by extracting the high-oder word. Example:
 </section>  <!-- End DeltaPos Event Handler -->
 
 </section>  <!-- End EventNotification::connectUpDownEvent() -->
+
 
 <section id="mthDefListDragHandler" xreflabel="defListDragHandler"><title>defListDragHandler</title>
 <indexterm><primary>defListDragHandler</primary></indexterm>
