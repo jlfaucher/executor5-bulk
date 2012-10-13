@@ -152,7 +152,7 @@
   use strict arg numericID
   if \ numericID~datatype('W') then return -1
 
-  if self~isA(.ApplicationManger) | .constDirUsage == "use only" then do
+  if self~isA(.ApplicationManager) | .constDirUsage == "use only" then do
     symbol = .constDir~index(numericID)
   end
   else do
