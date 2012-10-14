@@ -324,6 +324,47 @@ RexxObjectPtr wrongClassException(RexxThreadContext *c, size_t pos, const char *
 }
 
 /**
+ *  Argument 'argument' must be of the 'list' class; found 'actual'
+ *
+ *  Argument 1 must be of the ToolInfo, PlainBaseDialog, or DialogControl class;
+ *  found a Stem
+ *
+ *  Similar to 88.914
+ *  Raises 88.900
+ *
+ * @param c       The thread context we are operating under.
+ * @param pos     The 'argument' position.
+ * @param n       The list of the classes expected.
+ * @param actual  Some Rexx object.
+ *
+ * @return Pointer to void, could be used in the return statement of a method
+ *         to return NULLOBJECT after the exeception is raised.
+ *
+ * @remarks  If _actual is a stem object without an assigned name, then
+ *           ObjectToStringValue() will return the empty string, which is
+ *           confusing in the error message.  Hence the work around.  What would
+ *           be better is to use the real class name for _actual, but currently
+ *           I get Stem, rather than 'a Stem' or Array rather than 'an Array'.
+ *           Need to figure out how to get an Array.
+ */
+RexxObjectPtr wrongClassListException(RexxThreadContext *c, size_t pos, const char *n, RexxObjectPtr _actual)
+{
+    char    buffer[256];
+
+    CSTRING actual = c->ObjectToStringValue(_actual);
+    if ( strlen(actual) == 0 )
+    {
+        actual = strPrintClassID(c, _actual);
+    }
+
+    snprintf(buffer, sizeof(buffer), "Argument %d must be of the %s class; found %s",
+             pos, n, actual);
+
+    userDefinedMsgException(c, buffer);
+    return NULLOBJECT;
+}
+
+/**
  * Argument 'argument' is not a valid 'msg'
  *
  * Argument 3 is not a valid menu handle

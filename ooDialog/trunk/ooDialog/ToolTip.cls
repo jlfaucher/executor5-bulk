@@ -64,3 +64,12 @@
 
 ::attribute flags get external "LIBRARY oodialog ti_flags"
 ::attribute flags set external "LIBRARY oodialog ti_setFlags"
+::attribute hwndObj get external "LIBRARY oodialog ti_hwndObj"
+::attribute idObj get external "LIBRARY oodialog ti_idObj"
+::attribute rect get external "LIBRARY oodialog ti_rect"
+::attribute rect set external "LIBRARY oodialog ti_setRect"
+::attribute resource get external "LIBRARY oodialog ti_resource"
+::attribute text get external "LIBRARY oodialog ti_text"
+::attribute text set external "LIBRARY oodialog ti_setText"
+::attribute userData get external "LIBRARY oodialog ti_userData"
+::attribute userData set external "LIBRARY oodialog ti_setUserData"

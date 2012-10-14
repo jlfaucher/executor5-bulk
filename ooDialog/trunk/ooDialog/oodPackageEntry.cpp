@@ -1117,6 +1117,15 @@ REXX_METHOD_PROTOTYPE(ti_init);
 REXX_METHOD_PROTOTYPE(ti_unInit);
 REXX_METHOD_PROTOTYPE(ti_flags);
 REXX_METHOD_PROTOTYPE(ti_setFlags);
+REXX_METHOD_PROTOTYPE(ti_hwndObj);
+REXX_METHOD_PROTOTYPE(ti_idObj);
+REXX_METHOD_PROTOTYPE(ti_rect);
+REXX_METHOD_PROTOTYPE(ti_setRect);
+REXX_METHOD_PROTOTYPE(ti_resource);
+REXX_METHOD_PROTOTYPE(ti_text);
+REXX_METHOD_PROTOTYPE(ti_setText);
+REXX_METHOD_PROTOTYPE(ti_userData);
+REXX_METHOD_PROTOTYPE(ti_setUserData);
 
 // TreeView
 REXX_METHOD_PROTOTYPE(tv_delete);
@@ -2072,6 +2081,15 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(ti_unInit,                      ti_unInit),
     REXX_METHOD(ti_flags,                       ti_flags),
     REXX_METHOD(ti_setFlags,                    ti_setFlags),
+    REXX_METHOD(ti_hwndObj,                     ti_hwndObj),
+    REXX_METHOD(ti_idObj,                       ti_idObj),
+    REXX_METHOD(ti_rect,                        ti_rect),
+    REXX_METHOD(ti_setRect,                     ti_setRect),
+    REXX_METHOD(ti_resource,                    ti_resource),
+    REXX_METHOD(ti_text,                        ti_text),
+    REXX_METHOD(ti_setText,                     ti_setText),
+    REXX_METHOD(ti_userData,                    ti_userData),
+    REXX_METHOD(ti_setUserData,                 ti_setUserData),
 
     // TreeView
     REXX_METHOD(tv_delete,                      tv_delete),

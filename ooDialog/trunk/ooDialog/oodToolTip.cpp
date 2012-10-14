@@ -57,6 +57,8 @@
 #define TOOLTIP_CLASS             "ToolTip"
 
 
+#define MAX_TOOLINFO_TEXT_LENGTH  1023
+
 static bool lazyInitToolTipTable(RexxMethodContext *c, pCPlainBaseDialog pcpbd)
 {
     pcpbd->ToolTipTab = (TOOLTIPTABLEENTRY *)LocalAlloc(LPTR, sizeof(TOOLTIPTABLEENTRY) * DEF_MAX_TTT_ENTRIES);
@@ -380,11 +382,12 @@ RexxMethod2(uint32_t, tt_activate, OPTIONAL_logical_t, activate, CSELF, pCSelf)
  *
  *  @return  True on success, false on error.
  *
- *  @notes    Many methods require the indentity of the tool.  A tool is id is
+ *  @notes    Many methods require the indentity of the tool.  A tool id is
  *            defined by a hwnd and a unique ID. For addTool(), the identity
- *            will always be the hwnd of the dialog and the unique ID is always
- *            the hwnd of the tool (the dialog control passed in as the tool
- *            arg.)
+ *            will always be the hwnd of the owner dialog of the tool (the
+ *            dialog control passed in as the tool arg) and the unique ID is
+ *            always the hwnd of the tool (the dialog control passed in as the
+ *            tool arg.)
  */
 RexxMethod5(logical_t, tt_addTool, RexxObjectPtr, tool, OPTIONAL_CSTRING, _flags, OPTIONAL_CSTRING, text,
             OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
@@ -417,9 +420,9 @@ RexxMethod5(logical_t, tt_addTool, RexxObjectPtr, tool, OPTIONAL_CSTRING, _flags
     }
 
     size_t l = strlen(text);
-    if ( l >= 1024 )
+    if ( l > MAX_TOOLINFO_TEXT_LENGTH )
     {
-        stringTooLongException(context->threadContext, 3, 1024, l);
+        stringTooLongException(context->threadContext, 3, MAX_TOOLINFO_TEXT_LENGTH, l);
         return false;
     }
     if ( l == 0 || StrCmpI("TEXTCALLBACK", text) == 0 )
@@ -467,8 +470,8 @@ RexxMethod2(logical_t, tt_addToolEx, RexxObjectPtr, toolInfo, CSELF, pCSelf)
  *
  *
  */
-RexxMethod5(logical_t, tt_addToolRect, RexxObjectPtr, tool, OPTIONAL_CSTRING, flags, OPTIONAL_CSTRING, text,
-            OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
+RexxMethod7(logical_t, tt_addToolRect, RexxObjectPtr, dlg, RexxObjectPtr, rxID, RexxObjectPtr, _rect,
+            OPTIONAL_CSTRING, _flags, OPTIONAL_CSTRING, text, OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
@@ -476,21 +479,58 @@ RexxMethod5(logical_t, tt_addToolRect, RexxObjectPtr, tool, OPTIONAL_CSTRING, fl
         return FALSE;
     }
 
-    if ( ! requiredClass(context->threadContext, tool, "DIALOGCONTROL", 1) )
+    if ( ! requiredClass(context->threadContext, dlg, "PLAINBASEDIALOG", 1) )
+    {
+        return FALSE;
+    }
+    pCPlainBaseDialog pcpbd = dlgToCSelf(context, dlg);
+
+    uint32_t id = oodResolveSymbolicID(context->threadContext, pcpbd->rexxSelf, rxID, -1, 1, false);
+    if ( id == OOD_ID_EXCEPTION  )
     {
         return FALSE;
     }
 
-    pCDialogControl pcdcTool = controlToCSelf(context, tool);
+    PRECT pRect = rxGetRect(context, _rect, 2);
+    if ( pRect == NULL )
+    {
+        return FALSE;
+    }
 
-    TOOLINFO ti = {0};
+    uint32_t flags = TTF_SUBCLASS;
+    if ( argumentExists(4) )
+    {
+        flags |= keyword2ttfFlags(_flags);
+        flags &= ~TTF_IDISHWND;
+    }
 
-    ti.cbSize   = sizeof(ti);
-    ti.uFlags   = TTF_IDISHWND | TTF_SUBCLASS;
-    ti.uId      = (UINT_PTR)pcdcTool->hCtrl;
+    if ( argumentOmitted(5) )
+    {
+        text = "";
+    }
+
+    size_t l = strlen(text);
+    if ( l > MAX_TOOLINFO_TEXT_LENGTH )
+    {
+        stringTooLongException(context->threadContext, 3, MAX_TOOLINFO_TEXT_LENGTH, l);
+        return false;
+    }
+    if ( l == 0 || StrCmpI("TEXTCALLBACK", text) == 0 )
+    {
+        text = LPSTR_TEXTCALLBACK;
+    }
+
+    TOOLINFO ti = {sizeof(ti)};
+
+    ti.uFlags   = flags;
     ti.hwnd     = pcdc->hDlg;
+    ti.uId      = id;
     ti.lpszText = (LPSTR)text;
-    ti.lParam   = (LPARAM)(argumentOmitted(4) ? TheNilObj : userData);
+
+    if ( argumentExists(6) )
+    {
+        ti.lParam   = (LPARAM)userData;
+    }
 
     return SendMessage(pcdc->hCtrl, TTM_ADDTOOL, 0, (LPARAM)&ti);
 }
@@ -504,63 +544,22 @@ RexxMethod5(logical_t, tt_addToolRect, RexxObjectPtr, tool, OPTIONAL_CSTRING, fl
  *            fails.  Not sure how to have the user convey this info to this
  *            method ??
  */
-RexxMethod2(logical_t, tt_getToolInfo, RexxObjectPtr, toolID, CSELF, pCSelf)
+RexxMethod2(logical_t, tt_getToolInfo, RexxObjectPtr, toolInfo, CSELF, pCSelf)
 {
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
     {
         return FALSE;
     }
-    RexxMethodContext *c = context;
-    uint32_t        resourceID = 0;
-    pCDialogControl pcdcTool   = NULL;
 
-    if ( c->IsOfType(toolID, "DIALOGCONTROL") )
+    if ( ! requiredClass(context->threadContext, toolInfo, "TOOLINFO", 1) )
     {
-        printf("Tool ID is a dialog control\n");
-        pcdcTool = controlToCSelf(context, toolID);
-    }
-    else if ( c->IsOfType(toolID, "PLAINBASEDIALOG") )
-    {
-        printf("Tool ID is a dialog\n");
-    }
-    else if ( c->UnsignedInt32(toolID, &resourceID))
-    {
-        printf("Tool ID is an id=%d\n", resourceID);
-    }
-    else
-    {
-        CSTRING str = c->ObjectToStringValue(toolID);
-        HWND hwnd = (HWND)string2pointer(str);
-        if ( IsWindow(hwnd) )
-        {
-            printf("Tool ID is a window handle=%p\n", hwnd);
-
-        }
-        else
-        {
-            printf("Tool ID is NOT recognized (%s)\n", str);
-        }
+        return FALSE;
     }
 
-    char buf[1024];
-    TOOLINFO ti = {0};
+    LPTOOLINFO pTI = (LPTOOLINFO)context->ObjectToCSelf(toolInfo);
 
-    ti.cbSize   = sizeof(ti);
-    ti.uId      = (UINT_PTR)pcdcTool->hCtrl;
-    ti.hwnd     = pcdcTool->pcpbd->hDlg;
-    ti.lpszText = buf;
-
-    if ( SendMessage(pcdc->hCtrl, TTM_GETTOOLINFO, 0, (LPARAM)&ti) )
-    {
-        printf("Found tool text=%s hinst=%p lParam=%p hwnd=%p uFlags=0x%x uId=%p, rect.top=%d\n",
-              ti.lpszText, ti.hinst, ti.lParam, ti.hwnd, ti.uFlags, ti.uId, ti.rect.top);
-    }
-    else
-    {
-        printf("TTM_GETTOOLINFO message failed\n");
-    }
-    return true;
+    return SendMessage(pcdc->hCtrl, TTM_GETTOOLINFO, 0, (LPARAM)pTI);
 }
 
 
@@ -601,7 +600,7 @@ RexxMethod2(int32_t, tt_setMaxTipWidth, int32_t, max, CSELF, pCSelf)
  *
  *
  */
-RexxMethod3(uint32_t, tt_trackActivate, RexxObjectPtr, tool, OPTIONAL_logical_t, activate, CSELF, pCSelf)
+RexxMethod3(uint32_t, tt_trackActivate, RexxObjectPtr, toolID, OPTIONAL_logical_t, activate, CSELF, pCSelf)
 {
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
@@ -609,24 +608,34 @@ RexxMethod3(uint32_t, tt_trackActivate, RexxObjectPtr, tool, OPTIONAL_logical_t,
         return FALSE;
     }
 
-    if ( ! requiredClass(context->threadContext, tool, "DIALOGCONTROL", 1) )
-    {
-        return FALSE;
-    }
-
-    pCDialogControl pcdcTool = controlToCSelf(context, tool);
-
     if ( argumentOmitted(2) )
     {
         activate = TRUE;
     }
 
-    TOOLINFO ti = { sizeof(ti) };
+    if ( context->IsOfType(toolID, "TOOLINFO") )
+    {
+        LPTOOLINFO pTI = (LPTOOLINFO)context->ObjectToCSelf(toolID);
 
-    ti.uId      = (UINT_PTR)pcdcTool->hCtrl;
-    ti.hwnd     = pcdc->hDlg;
+        SendMessage(pcdc->hCtrl, TTM_TRACKACTIVATE, activate, (LPARAM)pTI);
+    }
+    else if ( context->IsOfType(toolID, "DIALOGCONTROL") )
+    {
+        pCDialogControl pcdcTool = controlToCSelf(context, toolID);
 
-    SendMessage(pcdc->hCtrl, TTM_TRACKACTIVATE, activate, (LPARAM)&ti);
+        TOOLINFO ti = { sizeof(ti) };
+
+        ti.uId      = (UINT_PTR)pcdcTool->hCtrl;
+        ti.hwnd     = pcdc->hDlg;
+
+        SendMessage(pcdc->hCtrl, TTM_TRACKACTIVATE, activate, (LPARAM)&ti);
+    }
+    else
+    {
+        wrongClassListException(context->threadContext, 1, "ToolInfo or DialogControl", toolID);
+        return false;
+    }
+
 
     return 0;
 }
@@ -656,7 +665,11 @@ RexxMethod3(uint32_t, tt_trackPosition, int32_t, x, int32_t, y, CSELF, pCSelf)
  */
 #define TOOLINFO_CLASS            "ToolInfo"
 
-#define TOOLINFO_MEMALLOCATED     "TEXT_MEMORY_IS_ALLOCATED"
+// The context variable names used by the ToolInfo object to keep track of
+// things.
+#define TOOLINFO_MEMALLOCATED_VAR     "TEXT_MEMORY_IS_ALLOCATED"
+#define TOOLINFO_HWND_OBJECT_VAR      "HWND_SUPPLYING_OBJECT"
+#define TOOLINFO_UID_OBJECT_VAR       "UID_SUPPLYING_OBJECT"
 
 
 /**
@@ -673,7 +686,8 @@ RexxMethod3(uint32_t, tt_trackPosition, int32_t, x, int32_t, y, CSELF, pCSelf)
  *
  * @return bool
  */
-bool genericToolID(RexxMethodContext *c, RexxObjectPtr hwndObj, RexxObjectPtr uID, LPTOOLINFO pTI)
+bool genericToolID(RexxMethodContext *c, RexxObjectPtr hwndObj, RexxObjectPtr uID, LPTOOLINFO pTI,
+                   RexxObjectPtr *hwndSupplier, RexxObjectPtr *uIDSupplier)
 {
     bool success = false;
 
@@ -693,6 +707,12 @@ bool genericToolID(RexxMethodContext *c, RexxObjectPtr hwndObj, RexxObjectPtr uI
 
         pTI->hwnd = pcpbd->hDlg;
         pTI->uId  = id;
+
+        if ( hwndSupplier != NULL )
+        {
+            *hwndSupplier = hwndObj;
+            *uIDSupplier  = uID;
+        }
     }
     else
     {
@@ -704,6 +724,12 @@ bool genericToolID(RexxMethodContext *c, RexxObjectPtr hwndObj, RexxObjectPtr uI
 
         pTI->hwnd = pcdc->hDlg;
         pTI->uId  = (UINT_PTR)pcdc->hCtrl;
+
+        if ( hwndSupplier != NULL )
+        {
+            *hwndSupplier = pcdc->oDlg;
+            *uIDSupplier  = hwndObj;
+        }
     }
 
     success = true;
@@ -711,6 +737,50 @@ bool genericToolID(RexxMethodContext *c, RexxObjectPtr hwndObj, RexxObjectPtr uI
 done_out:
     return success;
 }
+
+/**
+ * Allocates a buffer for the tool info struct and copies the specified text
+ * into it.
+ *
+ * @param c
+ * @param pTI
+ * @param text
+ * @param argPos
+ *
+ * @return bool
+ */
+static bool setToolInfoText(RexxMethodContext *c, LPTOOLINFO pTI, CSTRING text, size_t argPos)
+{
+    size_t l = strlen(text);
+    if ( l > MAX_TOOLINFO_TEXT_LENGTH )
+    {
+        stringTooLongException(c->threadContext, argPos, MAX_TOOLINFO_TEXT_LENGTH, l);
+        return false;
+    }
+    if ( l == 0 )
+    {
+        nullStringMethodException(c, argPos);
+        return false;
+    }
+
+    if ( StrCmpI("TEXTCALLBACK", text) == 0 )
+    {
+        pTI->lpszText = LPSTR_TEXTCALLBACK;
+    }
+    else
+    {
+        pTI->lpszText = (LPSTR)LocalAlloc(LPTR, MAX_TOOLINFO_TEXT_LENGTH + 1);
+        if ( pTI->lpszText == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            return false;
+        }
+        c->SetObjectVariable(TOOLINFO_MEMALLOCATED_VAR, TheTrueObj);
+        strcpy(pTI->lpszText, text);
+    }
+    return true;
+}
+
 
 /** ToolInfo::fromID()     [class]
  *
@@ -729,12 +799,20 @@ RexxMethod3(RexxObjectPtr, ti_fromID_cls, RexxObjectPtr, hwndObj, OPTIONAL_RexxO
     memset(pTI, 0, sizeof(TOOLINFO));
     pTI->cbSize = sizeof(TOOLINFO);
 
-    if ( ! genericToolID(context, hwndObj, _uID, pTI) )
+    RexxObjectPtr hwndSupplier;
+    RexxObjectPtr uIDSupplier;
+
+    if ( ! genericToolID(context, hwndObj, _uID, pTI, &hwndSupplier, &uIDSupplier) )
     {
         goto done_out;
     }
 
-    result = context->SendMessage2(self, "NEW", tiBuf, TheTrueObj);
+    RexxArrayObject args = context->NewArray(5);
+    context->ArrayPut(args, tiBuf, 1);
+    context->ArrayPut(args, uIDSupplier, 2);
+    context->ArrayPut(args, hwndSupplier, 5);
+
+    result = context->SendMessage(self, "NEW", args);
 
 done_out:
     return result;
@@ -759,15 +837,13 @@ RexxMethod1(RexxObjectPtr, ti_unInit, CSELF, pCSelf)
     printf("In ti_unInit() lpszText=%p\n", pTI->lpszText != NULL ? pTI->lpszText : "null" );
 #endif
 
-        RexxObjectPtr memAllocated = context->GetObjectVariable(TOOLINFO_MEMALLOCATED);
-        if ( memAllocated == TheTrueObj )
+        if ( context->GetObjectVariable(TOOLINFO_MEMALLOCATED_VAR) == TheTrueObj )
         {
             safeLocalFree(pTI->lpszText);
         }
     }
     return NULLOBJECT;
 }
-
 
 /** ToolInfo::init()
  *
@@ -782,8 +858,12 @@ RexxMethod1(RexxObjectPtr, ti_unInit, CSELF, pCSelf)
  *                     that time, if _resource is used, text will be assumed to
  *                     be a resource identifier.  For now it is ignored.
  *
- *  @remarks  When creating from native code, remember to use 2nd arg, but it
- *            will be ignored.
+ *  @remarks  When creating from native code, set arg 1 to the TOOLINFO buffer,
+ *            arg 2 to the object supplying the uID field of the struct, and
+ *            arg 5 to the object supplying the hwnd field of the struct. The
+ *            hwnd and uID supplying objects are set as context variables so
+ *            that they can be returned from the attributes of the ToolInfo
+ *            object.
  */
 RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, dlg, OPTIONAL_RexxObjectPtr, _uID, OPTIONAL_CSTRING, _flags, OPTIONAL_CSTRING, text,
             OPTIONAL_RexxObjectPtr, userData, OPTIONAL_RexxObjectPtr, _rect, OPTIONAL_RexxObjectPtr, _resource)
@@ -791,6 +871,8 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, dlg, OPTIONAL_RexxObjectPtr, 
     if ( context->IsBuffer(dlg) )
     {
         context->SetObjectVariable("CSELF", dlg);
+        context->SetObjectVariable(TOOLINFO_HWND_OBJECT_VAR, userData);
+        context->SetObjectVariable(TOOLINFO_UID_OBJECT_VAR, _uID);
         goto done_out;
     }
 
@@ -801,10 +883,15 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, dlg, OPTIONAL_RexxObjectPtr, 
     LPTOOLINFO pTI = (LPTOOLINFO)context->BufferData(obj);
     memset(pTI, 0, sizeof(TOOLINFO));
 
-    if ( ! genericToolID(context, dlg, _uID, pTI) )
+    RexxObjectPtr hwndSupplier;
+    RexxObjectPtr uIDSupplier;
+
+    if ( ! genericToolID(context, dlg, _uID, pTI, &hwndSupplier, &uIDSupplier) )
     {
         goto done_out;
     }
+    context->SetObjectVariable(TOOLINFO_HWND_OBJECT_VAR, hwndSupplier);
+    context->SetObjectVariable(TOOLINFO_UID_OBJECT_VAR, uIDSupplier);
 
     if ( argumentExists(3) )
     {
@@ -813,20 +900,9 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, dlg, OPTIONAL_RexxObjectPtr, 
 
     if ( argumentExists(4) )
     {
-        size_t l = strlen(text);
-        if ( l >= 1024 )
+        if ( ! setToolInfoText(context, pTI, text, 4) )
         {
-            stringTooLongException(context->threadContext, 3, 1024, l);
             goto done_out;
-        }
-
-        if ( l == 0 || StrCmpI("TEXTCALLBACK", text) == 0 )
-        {
-            pTI->lpszText = LPSTR_TEXTCALLBACK;
-        }
-        else
-        {
-            pTI->lpszText = (LPSTR)text;
         }
     }
 
@@ -858,6 +934,119 @@ RexxMethod1(RexxStringObject, ti_flags, CSELF, pTI)
 RexxMethod2(RexxObjectPtr, ti_setFlags, CSTRING, flags, CSELF, pTI)
 {
     ((LPTOOLINFO)pTI)->uFlags = keyword2ttfFlags(flags);
+    return NULLOBJECT;
+}
+
+/** ToolInfo::hwndObj                [attribute]
+ *
+ *  Note, no setter for this attribute.
+ */
+RexxMethod1(RexxObjectPtr, ti_hwndObj, CSELF, pTI)
+{
+    RexxObjectPtr hwndObj = context->GetObjectVariable(TOOLINFO_HWND_OBJECT_VAR);
+    return (hwndObj ? hwndObj : TheNilObj);
+}
+
+/** ToolInfo::idObj                [attribute]
+ *
+ *  Note, no setter for this attribute.
+ */
+RexxMethod1(RexxObjectPtr, ti_idObj, CSELF, pTI)
+{
+    RexxObjectPtr idObj = context->GetObjectVariable(TOOLINFO_UID_OBJECT_VAR);
+    return (idObj ? idObj : TheNilObj);
+}
+
+/** ToolInfo::rect                [attribute]
+ *
+ *  Note that currently we are returning .nil for an empty rect.  But, maybe we
+ *  should just always return a Rect object, and let the user decide what to do
+ *  with an empty Rect?
+ */
+RexxMethod1(RexxObjectPtr, ti_rect, CSELF, cSelf)
+{
+    LPTOOLINFO pTI = (LPTOOLINFO)cSelf;
+    PRECT pRect = &pTI->rect;
+
+    if ( IsRectEmpty(pRect) )
+    {
+        return TheNilObj;
+    }
+    else
+    {
+        return rxNewRect(context, pRect);
+    }
+}
+RexxMethod2(RexxObjectPtr, ti_setRect, RexxObjectPtr, rect, CSELF, cSelf)
+{
+    LPTOOLINFO pTI = (LPTOOLINFO)cSelf;
+    PRECT pRect = &pTI->rect;
+
+    PRECT r = rxGetRect(context, rect, 1);
+    if ( r != NULL )
+    {
+        CopyRect(&pTI->rect, r);
+    }
+    return NULLOBJECT;
+}
+
+/** ToolInfo::resource                [attribute]
+ *
+ *  Note that the resource attribute is reserved at this time.  If the .Resource
+ *  class is enhanced to work with string resources (a good possibility) then
+ *  this attribute will be used for th hinst field of the tool info struct.
+ *
+ *  For now, we always return .nil and do not allow the user to set the
+ *  attribute.
+ */
+RexxMethod1(RexxObjectPtr, ti_resource, CSELF, cSelf)
+{
+    return TheNilObj;
+}
+
+/** ToolInfo::text                [attribute]
+ *
+ *  @note  When getting the text attribute we need to determine if the call back
+ *         feature is in use.
+ *
+ *         When setting the text attribute, it could be that new text is
+ *         replacing existing text.  In that case, we need to determine if the
+ *         old text was allocated, and if so, free the old text buffer.
+ */
+RexxMethod1(RexxObjectPtr, ti_text, CSELF, cSelf)
+{
+    LPTOOLINFO pTI = (LPTOOLINFO)cSelf;
+
+    if ( pTI->lpszText == LPSTR_TEXTCALLBACK )
+    {
+        return context->String("TextCallBack");
+    }
+    else
+    {
+        return context->String(pTI->lpszText);
+    }
+}
+RexxMethod2(RexxObjectPtr, ti_setText, CSTRING, text, CSELF, cSelf)
+{
+    LPTOOLINFO pTI = (LPTOOLINFO)cSelf;
+
+    if ( context->GetObjectVariable(TOOLINFO_MEMALLOCATED_VAR) == TheTrueObj )
+    {
+        safeLocalFree(pTI->lpszText);
+    }
+    setToolInfoText(context, pTI, text, 1);
+    return NULLOBJECT;
+}
+
+/** ToolInfo::userData                [attribute]
+ */
+RexxMethod1(RexxObjectPtr, ti_userData, CSELF, pTI)
+{
+    return ( ((LPTOOLINFO)pTI)->lParam ? (RexxObjectPtr)((LPTOOLINFO)pTI)->lParam : TheNilObj );
+}
+RexxMethod2(RexxObjectPtr, ti_setUserData, RexxObjectPtr, userData, CSELF, pTI)
+{
+    ((LPTOOLINFO)pTI)->lParam = (LPARAM)userData;
     return NULLOBJECT;
 }
 
