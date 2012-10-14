@@ -292,6 +292,7 @@
    return self~addUserMsg(msgToRise, 0x00000115, "0xFFFFFFFF", wp, "0x0000FFFF", hwnd, "0xFFFFFFFF")  /* WM_VSCROLL */
 
 
+::method connectToolTipEvent external "LIBRARY oodialog en_connectToolTipEvent"
 ::method connectTreeViewEvent external "LIBRARY oodialog en_connectTreeViewEvent"
 ::method connectListViewEvent external "LIBRARY oodialog en_connectListViewEvent"
 ::method connectDateTimePickerEvent external "LIBRARY oodialog en_connectDateTimePickerEvent"

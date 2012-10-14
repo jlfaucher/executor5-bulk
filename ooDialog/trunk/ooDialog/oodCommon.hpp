@@ -332,6 +332,28 @@ inline bool isDlgThread(pCPlainBaseDialog pcpbd)
     return pcpbd->dlgProcThreadID == GetCurrentThreadId();
 }
 
+/**
+ * Searches the tool tip table for the tool tip matching id.
+ *
+ * @param pcpbd
+ * @param id
+ *
+ * @return  a pointer to the tool tip entry on success, null if there is no such
+ *          tool tip.
+ */
+inline PTOOLTIPTABLEENTRY findToolTipForID(pCPlainBaseDialog pcpbd, uint32_t id)
+{
+    for ( register size_t i = 0; i < pcpbd->TTT_nextIndex; i++ )
+    {
+        if ( pcpbd->ToolTipTab[i].id == id )
+        {
+            return &pcpbd->ToolTipTab[i];
+        }
+    }
+    return NULL;
+}
+
+
 extern void           ooDialogInternalException(RexxMethodContext *, char *, int, char *, char *);
 extern void           systemServiceExceptionCode(RexxThreadContext *context, const char *msg, const char *arg1);
 extern void           systemServiceExceptionComCode(RexxThreadContext *context, const char *msg, const char *arg1, HRESULT hr);
@@ -444,7 +466,7 @@ inline RexxObjectPtr noOwnerRexxDialogException(RexxMethodContext *c, RexxObject
  *  The "methName" method can not be invoked on "objectName" when the window
  *  handle is not valid.
  *
- *  The getMaxSelection method can not be invoked on a MontnCalendar when the
+ *  The getMaxSelection method can not be invoked on a MonthCalendar when the
  *  window handle is not valid.
  *
  * @param c
@@ -453,6 +475,26 @@ inline RexxObjectPtr noOwnerRexxDialogException(RexxMethodContext *c, RexxObject
 inline RexxObjectPtr invalidWindowException(RexxMethodContext *c, RexxObjectPtr rxObj)
 {
     return methodCanNotBeInvokedException(c, rxObj, "window handle is not valid");
+}
+
+/**
+ *  93.900
+ *  Error 93 - Incorrect call to method
+ *        The specified method, built-in function, or external routine exists,
+ *        but you used it incorrectly.
+ *
+ *  The "methName" method can not be invoked on "objectName" when the tool tip
+ *  control does not exist.
+ *
+ *  The connectToolTipEvent method can not be invoked on a SimpleDialog when
+ *  the tool tip control does not exist.
+ *
+ * @param c
+ * @param rxObj
+ */
+inline RexxObjectPtr noToolTipException(RexxMethodContext *c, RexxObjectPtr rxObj)
+{
+    return methodCanNotBeInvokedException(c, rxObj, "tool tip control does not exist");
 }
 
 /**

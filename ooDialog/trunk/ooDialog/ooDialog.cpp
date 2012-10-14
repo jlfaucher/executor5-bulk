@@ -3120,7 +3120,6 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
         CountDialogs++;
         DialogTable[pcpbd->tableIndex] = pcpbd;
     }
-
     pcpbd->dlgAllocated = true;
 
     // Now process the arguments and do the rest of the initialization.
@@ -4957,8 +4956,8 @@ RexxMethod2(int32_t, pbdlg_stopIt, OPTIONAL_RexxObjectPtr, caller, CSELF, pCSelf
  *          investigate whether this ever makes a difference?  CategoryDialog is
  *          deprecated and no further work will be donwe with it.
  */
-RexxMethod6(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint32_t, categoryPageID,
-            OPTIONAL_CSTRING, styleFlags, NAME, msgName, OSELF, self, CSELF, pCSelf)
+RexxMethod5(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint32_t, categoryPageID,
+            NAME, msgName, OSELF, self, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
     RexxObjectPtr result = TheNilObj;
@@ -4970,14 +4969,6 @@ RexxMethod6(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint3
     if ( hDlg == NULL )
     {
         return result;
-    }
-
-    // Get the control type early.
-    oodControl_t controlType = oodName2controlType(msgName + 3);
-
-    if ( controlType == winToolTip )
-    {
-        return createToolTip(context, rxID, styleFlags, (pCPlainBaseDialog)pCSelf);
     }
 
     if ( c->IsOfType(self, "CATEGORYDIALOG") )
@@ -5029,6 +5020,7 @@ RexxMethod6(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint3
 
     // Check that the underlying Windows control is the control type requested
     // by the programmer.  Return .nil if this is not true.
+    oodControl_t controlType = oodName2controlType(msgName + 3);
     if ( ! isControlMatch(hControl, controlType) )
     {
         goto out;
@@ -5136,7 +5128,7 @@ void dumpMsgTable(MESSAGETABLEENTRY *msgTable, size_t count, CSTRING title)
         printf("0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x %s\n",
                msgTable[i].msg, msgTable[i].msgFilter,
                msgTable[i].wParam, msgTable[i].wpFilter,
-               msgTable[i].lParam, msgTable[i].lpfilter,
+               msgTable[i].lParam, msgTable[i].lpFilter,
                msgTable[i].tag, msgTable[i].rexxMethod);
     }
     printf("\n");

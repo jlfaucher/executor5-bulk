@@ -147,6 +147,7 @@
 #define TAG_UPDOWN                0x0000000A
 #define TAG_DATETIMEPICKER        0x0000000B
 #define TAG_MONTHCALENDAR         0x0000000C
+#define TAG_TOOLTIP               0x0000000D
 #define TAG_CUSTOMDRAW            0x000000FF
 
 /**
@@ -336,7 +337,7 @@ typedef struct {
    WPARAM     wParam;
    ULONG_PTR  wpFilter;
    LPARAM     lParam;
-   ULONG_PTR  lpfilter;
+   ULONG_PTR  lpFilter;
    uint32_t   msg;
    uint32_t   msgFilter;
    uint32_t   tag;
@@ -376,8 +377,9 @@ typedef struct {
 
 typedef struct {
     RexxObjectPtr  rexxSelf;
+    HWND           hToolTip;
     uint32_t       id;
-} TOOLTIPTABLEENTRY;
+} TOOLTIPTABLEENTRY, *PTOOLTIPTABLEENTRY;
 
 typedef struct _createToolTip {
     HINSTANCE   hInstance;
@@ -564,6 +566,7 @@ typedef struct _enCSelf {
     HHOOK               hHook;
     void               *pHookData;
     void               *pCustomDraw;
+    void               *pDlgCSelf;
 } CEventNotification;
 typedef CEventNotification *pCEventNotification;
 

@@ -1049,7 +1049,7 @@ LRESULT CALLBACK ControlSubclassProc(HWND hwnd, uint32_t msg, WPARAM wParam, LPA
     {
         if ( (msg    & m[i].msgFilter) == m[i].msg    &&
              (wParam & m[i].wpFilter)  == m[i].wParam &&
-             (lParam & m[i].lpfilter)  == m[i].lParam )
+             (lParam & m[i].lpFilter)  == m[i].lParam )
         {
             return processControlMsg(hwnd, msg, wParam, lParam, pData, m[i].rexxMethod, m[i].tag);
         }
@@ -1191,7 +1191,7 @@ bool addSubclassMessage(RexxMethodContext *c, pCDialogControl pcdc, pWinMessageF
     pscd->msgs[index].wParam    = pwmf->wp;
     pscd->msgs[index].wpFilter  = pwmf->wpFilter;
     pscd->msgs[index].lParam    = pwmf->lp;
-    pscd->msgs[index].lpfilter  = pwmf->lpFilter;
+    pscd->msgs[index].lpFilter  = pwmf->lpFilter;
     pscd->msgs[index].tag       = pwmf->tag;
 
     pscd->mNextIndex++;

@@ -796,6 +796,23 @@ inline bool matchFocus(uint32_t tag, LPNMLISTVIEW p)
     return ((tag & TAG_FOCUSCHANGED) && !(tag & TAG_SELECTCHANGED)) && (focusDidChange(p));
 }
 
+/**
+ * Return true if code is a tool tip notification codes.  TTN_*
+ */
+inline bool isTTN(uint32_t code)
+{
+    return (code >= TTN_LAST && code <= TTN_FIRST);
+}
+
+/**
+ * Return true if code matches the lpFilter / lParam combination in a message
+ * table entry.
+ */
+inline bool isCodeMatch(MESSAGETABLEENTRY *m, uint32_t code, register size_t i)
+{
+    return ((code & m[i].lpFilter) == (uint32_t)m[i].lParam);
+}
+
 
 /**
  *  Converts arguments to a Rexx method to their C values when adding a window
@@ -1254,7 +1271,11 @@ static MsgReplyType genericCommandInvoke(RexxThreadContext *c, pCPlainBaseDialog
 bool invokeDirect(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args)
 {
     RexxObjectPtr rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
-    return msgReplyIsGood(c, pcpbd, rexxReply, methodName, false);
+
+    bool isGood = msgReplyIsGood(c, pcpbd, rexxReply, methodName, false);
+    c->ReleaseLocalReference(rexxReply);
+
+    return isGood;
 }
 
 /**
@@ -1444,7 +1465,7 @@ MsgReplyType searchCommandTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog 
 
     for ( i = 0; i < tableSize; i++ )
     {
-        if ( ((wParam & m[i].wpFilter) == m[i].wParam) && ((lParam & m[i].lpfilter) == m[i].lParam) )
+        if ( ((wParam & m[i].wpFilter) == m[i].wParam) && ((lParam & m[i].lpFilter) == m[i].lParam) )
         {
             return genericCommandInvoke(pcpbd->dlgProcContext, pcpbd, m[i].rexxMethod, m[i].tag, wParam, lParam);
         }
@@ -2030,6 +2051,108 @@ MsgReplyType processTCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 }
 
 
+MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, WPARAM wParam, LPARAM lParam,
+                        pCPlainBaseDialog pcpbd)
+{
+    RexxObjectPtr rexxReply = NULLOBJECT;
+    RexxObjectPtr idFrom    = NULLOBJECT;
+    RexxObjectPtr hwndFrom  = hwndFrom2rexxArg(c, lParam);
+    bool          willReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
+
+    printf("\nprocessTTN()  wParam as int=0x%x\n\n", (int)wParam);
+    switch ( code )
+    {
+        case TTN_LINKCLICK :
+        {
+            printf("GPT LINKCLICK\n");
+            // Temp converting to Uintptr to see what it is
+            idFrom = pointer2string(c, (void *)((NMHDR *)lParam)->idFrom);
+
+            RexxArrayObject args = c->ArrayOfTwo(idFrom, hwndFrom);
+            if ( willReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                RexxStringObject mthName = c->String(methodName);
+
+                invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+                c->ReleaseLocalReference(mthName);
+            }
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(args);
+            break;
+        }
+
+        case TTN_NEEDTEXT :
+        {
+            LPNMTTDISPINFO nmtdi = (LPNMTTDISPINFO)lParam;
+
+            break;
+        }
+
+        case TTN_POP :
+        {
+            printf("TTN_POP wParam=0x%x idFrom=%p\n", (int)wParam, (UINT_PTR)((NMHDR *)lParam)->idFrom);
+            // Temp converting to Uintptr to see what it is
+            idFrom = pointer2string(c, (void *)((NMHDR *)lParam)->idFrom);
+
+            //RexxObjectPtr   idTT = c->Int32((int)wParam);
+            RexxObjectPtr   idTT = pointer2string(c, (void *)wParam);
+            RexxArrayObject args = c->ArrayOfThree(idFrom, hwndFrom, idTT);
+
+            if ( willReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                RexxStringObject mthName = c->String(methodName);
+
+                invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+                c->ReleaseLocalReference(mthName);
+            }
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(idTT);
+            c->ReleaseLocalReference(args);
+
+            break;
+        }
+
+        case TTN_SHOW :
+        {
+            printf("TTN_SHOW wParam=0x%x idFrom=%p\n", (int)wParam, (UINT_PTR)((NMHDR *)lParam)->idFrom);
+            // Temp converting to Uintptr to see what it is
+            idFrom = pointer2string(c, (void *)((NMHDR *)lParam)->idFrom);
+
+            RexxObjectPtr   idTT = pointer2string(c, (void *)wParam);
+            RexxArrayObject args = c->ArrayOfThree(idFrom, hwndFrom, idTT);
+
+            rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+            rexxReply = requiredBooleanReply(c, pcpbd, rexxReply, methodName, false);
+            setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TRUE);
+            // Need work....
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(idTT);
+            c->ReleaseLocalReference(args);
+
+            break;
+        }
+
+        default :
+            // Theoretically we can not get here because all tool tip
+            // notification codes that have a tag are accounted for.
+            break;
+    }
+
+    c->ReleaseLocalReference(hwndFrom);
+    return ReplyTrue;
+}
+
 /**
  * Handles, some of, the tree-vien event notifications.
  *
@@ -2380,7 +2503,6 @@ MsgReplyType processCustomDraw(RexxThreadContext *c, CSTRING methodName, uint32_
     return ReplyTrue;
 }
 
-
 /**
  * Searches through the notify (WM_NOTIFY) message table for a table entry that
  * matches the parameters of a WM_NOTIFY message.  If found the matching method
@@ -2404,11 +2526,14 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
     }
 
     uint32_t code     = ((NMHDR *)lParam)->code;
+    HWND     hwndFrom = ((NMHDR *)lParam)->hwndFrom;
     size_t tableSize  = pcpbd->enCSelf->nmNextIndex;
+
     register size_t i = 0;
     for ( i = 0; i < tableSize; i++ )
     {
-        if ( ((wParam & m[i].wpFilter) == m[i].wParam) && ((code & m[i].lpfilter) == (uint32_t)m[i].lParam) )
+        if ( (((wParam & m[i].wpFilter) == m[i].wParam) && isCodeMatch(m, code, i)) ||
+             (isTTN(code) && isCodeMatch(m, code, i) && (((WPARAM)hwndFrom & m[i].wpFilter) == m[i].wParam)) )
         {
             RexxThreadContext *c = pcpbd->dlgProcContext;
 
@@ -2436,10 +2561,6 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
                     return ret;
                 }
 
-                // TODO should we terminate the interpreter if checkForCondition() returns true??
-                // We could let the user decide through use of the .application
-                // object.
-
                 case TAG_TREEVIEW :
                     return processTVN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
 
@@ -2454,6 +2575,9 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
 
                 case TAG_DATETIMEPICKER :
                     return processDTN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
+
+                case TAG_TOOLTIP :
+                    return processTTN(c, m[i].rexxMethod, m[i].tag, code, wParam, lParam, pcpbd);
 
                 default :
                     break;
@@ -2533,7 +2657,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
 
     for ( i = 0; i < tableSize; i++ )
     {
-        if ( (msg & m[i].msgFilter) == m[i].msg && (wParam & m[i].wpFilter) == m[i].wParam && (lParam & m[i].lpfilter) == m[i].lParam )
+        if ( (msg & m[i].msgFilter) == m[i].msg && (wParam & m[i].wpFilter) == m[i].wParam && (lParam & m[i].lpFilter) == m[i].lParam )
         {
             RexxThreadContext *c = pcpbd->dlgProcContext;
             RexxArrayObject args;
@@ -2860,7 +2984,7 @@ bool addCommandMessage(pCEventNotification pcen, RexxMethodContext *c, WPARAM wP
     pcen->commandMsgs[index].wParam = wParam;
     pcen->commandMsgs[index].wpFilter = wpFilter;
     pcen->commandMsgs[index].lParam = lParam;
-    pcen->commandMsgs[index].lpfilter = lpFilter;
+    pcen->commandMsgs[index].lpFilter = lpFilter;
     pcen->commandMsgs[index].tag = tag;
 
     pcen->cmNextIndex++;
@@ -2936,7 +3060,7 @@ bool addNotifyMessage(pCEventNotification pcen, RexxMethodContext *c, WPARAM wPa
     pcen->notifyMsgs[index].wParam = wParam;
     pcen->notifyMsgs[index].wpFilter = wpFilter;
     pcen->notifyMsgs[index].lParam = lParam;
-    pcen->notifyMsgs[index].lpfilter = lpFilter;
+    pcen->notifyMsgs[index].lpFilter = lpFilter;
     pcen->notifyMsgs[index].tag = tag;
 
     pcen->nmNextIndex++;
@@ -3014,7 +3138,7 @@ bool addMiscMessage(pCEventNotification pcen, RexxMethodContext *c, uint32_t win
     pcen->miscMsgs[index].wParam = wParam;
     pcen->miscMsgs[index].wpFilter = wpFilter;
     pcen->miscMsgs[index].lParam = lParam;
-    pcen->miscMsgs[index].lpfilter = lpFilter;
+    pcen->miscMsgs[index].lpFilter = lpFilter;
     pcen->miscMsgs[index].tag = tag;
 
     pcen->mmNextIndex++;
@@ -3085,8 +3209,9 @@ bool initEventNotification(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxOb
     pCEventNotification pcen = (pCEventNotification)c->BufferData(obj);
     memset(pcen, 0, sizeof(pCEventNotification));
 
-    pcen->magic    = EVENTNOTIFICATION_MAGIC;
-    pcen->rexxSelf = self;
+    pcen->magic     = EVENTNOTIFICATION_MAGIC;
+    pcen->rexxSelf  = self;
+    pcen->pDlgCSelf = pcpbd;
 
     if ( ! initCommandMessagesTable(c, pcen, pcpbd) )
     {
@@ -3108,6 +3233,7 @@ bool initEventNotification(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxOb
 
 #define DTPN_KEYWORDS                 "CloseUp, DateTimeChange, DropDown, FormatQuery, Format, KillFocus, SetFocus, UserString, or KeyDown"
 #define MCN_KEYWORDS                  "GetDayState, Released, SelChange, Select, or ViewChange"
+#define TTN_KEYWORDS                  "LinkClick, NeedText, Pop, or Show"
 
 /**
  * Convert a keyword to the proper scroll bar notification code.
@@ -3392,6 +3518,46 @@ inline CSTRING lvn2name(uint32_t lvn, uint32_t tag)
             }
     }
     return "onLVN";
+}
+
+
+/**
+ * Convert a keyword to the proper tool tip notification code.
+ *
+ * We know the keyword arg position is 2.  The ToolTip control is post
+ * ooRexx 4.0.1 so we raise an exception on error.
+ */
+static bool keyword2ttn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
+{
+    uint32_t ttn;
+
+    if ( StrCmpI(keyword,      "LINKCLICK") == 0 ) ttn = TTN_LINKCLICK;
+    else if ( StrCmpI(keyword, "NEEDTEXT")  == 0 ) ttn = TTN_NEEDTEXT;
+    else if ( StrCmpI(keyword, "POP")       == 0 ) ttn = TTN_POP;
+    else if ( StrCmpI(keyword, "SHOW")      == 0 ) ttn = TTN_SHOW;
+    else
+    {
+        wrongArgValueException(c->threadContext, 2, TTN_KEYWORDS, keyword);
+        return false;
+    }
+    *flag = ttn;
+    return true;
+}
+
+
+/**
+ * Convert a tool tip notification code to a method name.
+ */
+inline CSTRING ttn2name(uint32_t ttn)
+{
+    switch ( ttn )
+    {
+        case TTN_LINKCLICK : return "onLinkClick";
+        case TTN_NEEDTEXT  : return "onNeedText";
+        case TTN_POP       : return "onPop";
+        case TTN_SHOW      : return "onShow";
+    }
+    return "onTTN";
 }
 
 
@@ -4927,6 +5093,93 @@ err_out:
 }
 
 
+/** EventNotification::connectDateTimePickerEvent()
+ *
+ *  Connects a Rexx dialog method with a date time picker control event.
+ *
+ *  @param  rxID        The resource ID of the dialog control.  Can be numeric
+ *                      or symbolic.
+ *
+ *  @param  event       Keyword specifying which event to connect.  Keywords at
+ *                      this time:
+ *
+ *                      CLOSEUP
+ *                      DATETIMECHANGE
+ *                      DROPDOWN
+ *                      FORMAT
+ *                      FORMATQUERY
+ *                      USERSTRING
+ *                      KEYDOWN
+ *                      KILLFOCUS
+ *                      SETFOCUS
+ *
+ *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
+ *                      Rexx dialog.  If this argument is omitted then the
+ *                      method name is constructed by prefixing the event
+ *                      keyword with 'on'.  For instance onUserString.
+ *
+ *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
+ *                      direct or indirect. With a direct invocation, the
+ *                      interpreter waits in the Windows message loop for the
+ *                      return from the Rexx method. With indirect, the Rexx
+ *                      method is invoked through ~startWith(), which of course
+ *                      returns immediately. The default is true, i.e. the Rexx
+ *                      programmer is always expected to reply.
+ *
+ *  @note   If a symbolic ID is  used and it can not be resolved to a numeric
+ *          number an exception is raised.
+ *
+ *          willReply is ignored for USERSTRING, KEYDOWN, FORMAT, and
+ *          FORMATQUERY, the programmer must always reply in the event handler
+ *          for those events.
+ *
+ *  @remarks  This method is new since the 4.0.0 release, therefore an exception
+ *            is raised for a bad resource ID rather than returning -1.
+ */
+RexxMethod5(RexxObjectPtr, en_connectDateTimePickerEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
+{
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto err_out;
+    }
+
+    uint32_t notificationCode;
+    if ( ! keyword2dtpn(context, event, &notificationCode) )
+    {
+        goto err_out;
+    }
+
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = dtpn2name(notificationCode);
+    }
+
+    uint32_t tag = TAG_DATETIMEPICKER;
+    bool willReply = argumentOmitted(4) || _willReply;
+
+    if ( dtpnReplySignificant(notificationCode) )
+    {
+        tag |= TAG_REPLYFROMREXX;
+    }
+    else
+    {
+          tag |= willReply ? TAG_REPLYFROMREXX : 0;
+    }
+
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    {
+        return TheTrueObj;
+    }
+
+err_out:
+    return TheFalseObj;
+}
+
+
 /** EventNotification::connectListViewEvent()
  *
  *  Connects a Rexx dialog method with a list view event.
@@ -5029,6 +5282,194 @@ RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING
     }
 
     return TheOneObj;
+}
+
+
+/** EventNotification::connectMonthCalendarEvent()
+ *
+ *  Connects a Rexx dialog method with a month calendar control event.
+ *
+ *  @param  rxID        The resource ID of the dialog control.  Can be numeric
+ *                      or symbolic.
+ *
+ *  @param  event       Keyword specifying which event to connect.  Keywords at
+ *                      this time:
+ *
+ *                      GETDAYSTATE
+ *                      SELCHANGE
+ *                      SELECT
+ *                      VIEWCHANGE
+ *                      RELEASED
+ *
+ *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
+ *                      Rexx dialog.  If this argument is omitted then the
+ *                      method name is constructed by prefixing the event
+ *                      keyword with 'on'.  For instance onGetDayState.
+ *
+ *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
+ *                      direct or indirect. With a direct invocation, the
+ *                      interpreter waits in the Windows message loop for the
+ *                      return from the Rexx method. With indirect, the Rexx
+ *                      method is invoked through ~startWith(), which of course
+ *                      returns immediately.
+ *
+ *  @return  True if the event notification was connected, otherwsie false.
+ *
+ *  @note   If a symbolic ID is  used and it can not be resolved to a numeric
+ *          number an exception is raised.
+ *
+ *  @remarks  This method is new since the 4.0.0 release, therefore an exception
+ *            is raised for a bad resource ID rather than returning -1.
+ *
+ *            For controls new since 4.0.0, event notifications that have a
+ *            reply are documented as always being 'direct' reply and
+ *            notifications that ignore the return are documented as allowing
+ *            the programmer to specify.  This means that willReply is ignored
+ *            for MCN_GETDAYSTATE and not ignored for all other notifications.
+ */
+RexxMethod5(RexxObjectPtr, en_connectMonthCalendarEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
+{
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto err_out;
+    }
+
+    uint32_t notificationCode;
+    if ( ! keyword2mcn(context, event, &notificationCode) )
+    {
+        goto err_out;
+    }
+    if ( notificationCode == MCN_VIEWCHANGE && ! requiredOS(context, Vista_OS, "ViewChange notification", "Vista") )
+    {
+        goto err_out;
+    }
+
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = mcn2name(notificationCode);
+    }
+
+    uint32_t tag = TAG_MONTHCALENDAR;
+    bool willReply = argumentOmitted(4) || _willReply;
+
+    if ( notificationCode == MCN_GETDAYSTATE )
+    {
+        tag |= TAG_REPLYFROMREXX;
+    }
+    else
+    {
+        tag |= willReply ? TAG_REPLYFROMREXX : 0;
+    }
+
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    {
+        return TheTrueObj;
+    }
+
+err_out:
+    return TheFalseObj;
+}
+
+
+/** EventNotification::connectToolTipEvent()
+ *
+ *  Connects a Rexx dialog method with a tool tip control event.
+ *
+ *  @param  rxID        The resource ID of the tool tip control.  Can be numeric
+ *                      or symbolic.
+ *
+ *  @param  event       Keyword specifying which event to connect.  Keywords at
+ *                      this time:
+ *
+ *                      LINKCLICK
+ *                      NEEDTEXT
+ *                      POP
+ *                      SHOW
+ *
+ *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
+ *                      Rexx dialog.  If this argument is omitted then the
+ *                      method name is constructed by prefixing the event
+ *                      keyword with 'on'.  For instance onPop.
+ *
+ *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
+ *                      direct or indirect. With a direct invocation, the
+ *                      interpreter waits in the Windows message loop for the
+ *                      return from the Rexx method. With indirect, the Rexx
+ *                      method is invoked through ~startWith(), which of course
+ *                      returns immediately.
+ *
+ *  @return  True if the event notification was connected, otherwsie false.
+ *
+ *  @note   If a symbolic ID is  used and it can not be resolved to a numeric
+ *          number an exception is raised.
+ *
+ *  @remarks  This method is new since the 4.0.0 release, therefore an exception
+ *            is raised for a bad resource ID rather than returning -1.
+ *
+ *            For controls new since 4.0.0, event notifications that have a
+ *            reply are documented as always being 'direct' reply and
+ *            notifications that ignore the return are documented as allowing
+ *            the programmer to specify.  This means that willReply is ignored
+ *            for TTN_NEEDTEXT and TTN_SHOW and not ignored for TTN_LINKCLICK
+ *            and TTNPOP.
+ *
+ *            Note that the underlying tool tip does not have a ID.  We require
+ *            the user to supply an ID when instantiating a tool tip.  We then
+ *            maintain a table for all tool tips for the dialog and use the ID
+ *            to do table look ups.  In addition
+ */
+RexxMethod5(RexxObjectPtr, en_connectToolTipEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
+{
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto err_out;
+    }
+
+    PTOOLTIPTABLEENTRY ptte = findToolTipForID((pCPlainBaseDialog)pcen->pDlgCSelf, id);
+    if ( ptte == NULL )
+    {
+        noToolTipException(context, pcen->rexxSelf);
+        goto err_out;
+    }
+
+    uint32_t notificationCode;
+    if ( ! keyword2ttn(context, event, &notificationCode) )
+    {
+        goto err_out;
+    }
+
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = ttn2name(notificationCode);
+    }
+
+    uint32_t tag = TAG_TOOLTIP;
+    bool willReply = argumentOmitted(4) || _willReply;
+
+    if ( notificationCode == TTN_NEEDTEXT || notificationCode == TTN_SHOW )
+    {
+        tag |= TAG_REPLYFROMREXX;
+    }
+    else
+    {
+        tag |= (willReply ? TAG_REPLYFROMREXX : 0);
+    }
+
+    if ( addNotifyMessage(pcen, context, (WPARAM)ptte->hToolTip, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    {
+        return TheTrueObj;
+    }
+
+err_out:
+    return TheFalseObj;
 }
 
 
@@ -5205,183 +5646,6 @@ RexxMethod4(RexxObjectPtr, en_connectUpDownEvent, RexxObjectPtr, rxID, CSTRING, 
     }
 
     if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, TAG_UPDOWN) )
-    {
-        return TheTrueObj;
-    }
-
-err_out:
-    return TheFalseObj;
-}
-
-
-/** EventNotification::connectDateTimePickerEvent()
- *
- *  Connects a Rexx dialog method with a date time picker control event.
- *
- *  @param  rxID        The resource ID of the dialog control.  Can be numeric
- *                      or symbolic.
- *
- *  @param  event       Keyword specifying which event to connect.  Keywords at
- *                      this time:
- *
- *                      CLOSEUP
- *                      DATETIMECHANGE
- *                      DROPDOWN
- *                      FORMAT
- *                      FORMATQUERY
- *                      USERSTRING
- *                      KEYDOWN
- *                      KILLFOCUS
- *                      SETFOCUS
- *
- *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
- *                      Rexx dialog.  If this argument is omitted then the
- *                      method name is constructed by prefixing the event
- *                      keyword with 'on'.  For instance onUserString.
- *
- *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
- *                      direct or indirect. With a direct invocation, the
- *                      interpreter waits in the Windows message loop for the
- *                      return from the Rexx method. With indirect, the Rexx
- *                      method is invoked through ~startWith(), which of course
- *                      returns immediately. The default is true, i.e. the Rexx
- *                      programmer is always expected to reply.
- *
- *  @note   If a symbolic ID is  used and it can not be resolved to a numeric
- *          number an exception is raised.
- *
- *          willReply is ignored for USERSTRING, KEYDOWN, FORMAT, and
- *          FORMATQUERY, the programmer must always reply in the event handler
- *          for those events.
- *
- *  @remarks  This method is new since the 4.0.0 release, therefore an exception
- *            is raised for a bad resource ID rather than returning -1.
- */
-RexxMethod5(RexxObjectPtr, en_connectDateTimePickerEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
-{
-    pCEventNotification pcen = (pCEventNotification)pCSelf;
-
-    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
-    if ( id == OOD_ID_EXCEPTION )
-    {
-        goto err_out;
-    }
-
-    uint32_t notificationCode;
-    if ( ! keyword2dtpn(context, event, &notificationCode) )
-    {
-        goto err_out;
-    }
-
-    if ( argumentOmitted(3) || *methodName == '\0' )
-    {
-        methodName = dtpn2name(notificationCode);
-    }
-
-    uint32_t tag = TAG_DATETIMEPICKER;
-    bool willReply = argumentOmitted(4) || _willReply;
-
-    if ( dtpnReplySignificant(notificationCode) )
-    {
-        tag |= TAG_REPLYFROMREXX;
-    }
-    else
-    {
-          tag |= willReply ? TAG_REPLYFROMREXX : 0;
-    }
-
-    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
-    {
-        return TheTrueObj;
-    }
-
-err_out:
-    return TheFalseObj;
-}
-
-
-/** EventNotification::connectMonthCalendarEvent()
- *
- *  Connects a Rexx dialog method with a month calendar control event.
- *
- *  @param  rxID        The resource ID of the dialog control.  Can be numeric
- *                      or symbolic.
- *
- *  @param  event       Keyword specifying which event to connect.  Keywords at
- *                      this time:
- *
- *                      GETDAYSTATE
- *                      SELCHANGE
- *                      SELECT
- *                      VIEWCHANGE
- *                      RELEASED
- *
- *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
- *                      Rexx dialog.  If this argument is omitted then the
- *                      method name is constructed by prefixing the event
- *                      keyword with 'on'.  For instance onGetDayState.
- *
- *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
- *                      direct or indirect. With a direct invocation, the
- *                      interpreter waits in the Windows message loop for the
- *                      return from the Rexx method. With indirect, the Rexx
- *                      method is invoked through ~startWith(), which of course
- *                      returns immediately.
- *
- *  @return  True if the event notification was connected, otherwsie false.
- *
- *  @note   If a symbolic ID is  used and it can not be resolved to a numeric
- *          number an exception is raised.
- *
- *  @remarks  This method is new since the 4.0.0 release, therefore an exception
- *            is raised for a bad resource ID rather than returning -1.
- *
- *            For controls new since 4.0.0, event notifications that have a
- *            reply are documented as always being 'direct' reply and
- *            notifications that ignore the return are documented as allowing
- *            the programmer to specify.  This means that willReply is ignored
- *            for MCN_GETDAYSTATE and not ignored for all other notifications.
- */
-RexxMethod5(RexxObjectPtr, en_connectMonthCalendarEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
-{
-    pCEventNotification pcen = (pCEventNotification)pCSelf;
-
-    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
-    if ( id == OOD_ID_EXCEPTION )
-    {
-        goto err_out;
-    }
-
-    uint32_t notificationCode;
-    if ( ! keyword2mcn(context, event, &notificationCode) )
-    {
-        goto err_out;
-    }
-    if ( notificationCode == MCN_VIEWCHANGE && ! requiredOS(context, Vista_OS, "ViewChange notification", "Vista") )
-    {
-        goto err_out;
-    }
-
-    if ( argumentOmitted(3) || *methodName == '\0' )
-    {
-        methodName = mcn2name(notificationCode);
-    }
-
-    uint32_t tag = TAG_MONTHCALENDAR;
-    bool willReply = argumentOmitted(4) || _willReply;
-
-    if ( notificationCode == MCN_GETDAYSTATE )
-    {
-        tag |= TAG_REPLYFROMREXX;
-    }
-    else
-    {
-        tag |= willReply ? TAG_REPLYFROMREXX : 0;
-    }
-
-    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
     {
         return TheTrueObj;
     }

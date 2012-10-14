@@ -536,10 +536,11 @@ REXX_METHOD_PROTOTYPE(en_connectCommandEvents);
 REXX_METHOD_PROTOTYPE(en_connectScrollBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectEachSBEvent);
 REXX_METHOD_PROTOTYPE(en_connectAllSBEvents);
-REXX_METHOD_PROTOTYPE(en_connectListViewEvent);
-REXX_METHOD_PROTOTYPE(en_connectTreeViewEvent);
 REXX_METHOD_PROTOTYPE(en_connectDateTimePickerEvent);
+REXX_METHOD_PROTOTYPE(en_connectListViewEvent);
 REXX_METHOD_PROTOTYPE(en_connectMonthCalendarEvent);
+REXX_METHOD_PROTOTYPE(en_connectToolTipEvent);
+REXX_METHOD_PROTOTYPE(en_connectTreeViewEvent);
 REXX_METHOD_PROTOTYPE(en_connectUpDownEvent);
 REXX_METHOD_PROTOTYPE(en_addUserMessage);
 
@@ -605,6 +606,7 @@ REXX_METHOD_PROTOTYPE(pbdlg_getControlData);
 REXX_METHOD_PROTOTYPE(pbdlg_setControlData);
 REXX_METHOD_PROTOTYPE(pbdlg_getTextSizeDlg);
 REXX_METHOD_PROTOTYPE(pbdlg_newControl);
+REXX_METHOD_PROTOTYPE(pbdlg_newToolTip);
 REXX_METHOD_PROTOTYPE(pbdlg_getNewControl);
 REXX_METHOD_PROTOTYPE(pbdlg_putControl);
 REXX_METHOD_PROTOTYPE(pbdlg_dumpMessageTable);
@@ -1104,7 +1106,17 @@ REXX_METHOD_PROTOTYPE(tt_addTool);
 REXX_METHOD_PROTOTYPE(tt_addToolEx);
 REXX_METHOD_PROTOTYPE(tt_addToolRect);
 REXX_METHOD_PROTOTYPE(tt_getToolInfo);
+REXX_METHOD_PROTOTYPE(tt_popUp);
 REXX_METHOD_PROTOTYPE(tt_setMaxTipWidth);
+REXX_METHOD_PROTOTYPE(tt_trackActivate);
+REXX_METHOD_PROTOTYPE(tt_trackPosition);
+
+// ToolInfo
+REXX_METHOD_PROTOTYPE(ti_fromID_cls);
+REXX_METHOD_PROTOTYPE(ti_init);
+REXX_METHOD_PROTOTYPE(ti_unInit);
+REXX_METHOD_PROTOTYPE(ti_flags);
+REXX_METHOD_PROTOTYPE(ti_setFlags);
 
 // TreeView
 REXX_METHOD_PROTOTYPE(tv_delete);
@@ -1515,10 +1527,11 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(en_connectScrollBarEvent,       en_connectScrollBarEvent),
     REXX_METHOD(en_connectEachSBEvent,          en_connectEachSBEvent),
     REXX_METHOD(en_connectAllSBEvents,          en_connectAllSBEvents),
-    REXX_METHOD(en_connectListViewEvent,        en_connectListViewEvent),
-    REXX_METHOD(en_connectTreeViewEvent,        en_connectTreeViewEvent),
     REXX_METHOD(en_connectDateTimePickerEvent,  en_connectDateTimePickerEvent),
+    REXX_METHOD(en_connectListViewEvent,        en_connectListViewEvent),
     REXX_METHOD(en_connectMonthCalendarEvent,   en_connectMonthCalendarEvent),
+    REXX_METHOD(en_connectToolTipEvent,         en_connectToolTipEvent),
+    REXX_METHOD(en_connectTreeViewEvent,        en_connectTreeViewEvent),
     REXX_METHOD(en_connectUpDownEvent,          en_connectUpDownEvent),
     REXX_METHOD(en_addUserMessage,              en_addUserMessage),
 
@@ -1579,6 +1592,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbdlg_setTabGroup,              pbdlg_setTabGroup),
     REXX_METHOD(pbdlg_stopIt,                   pbdlg_stopIt),
     REXX_METHOD(pbdlg_newControl,               pbdlg_newControl),
+    REXX_METHOD(pbdlg_newToolTip,               pbdlg_newToolTip),
     REXX_METHOD(pbdlg_getNewControl,            pbdlg_getNewControl),
     REXX_METHOD(pbdlg_putControl,               pbdlg_putControl),
     REXX_METHOD(pbdlg_dumpMessageTable,         pbdlg_dumpMessageTable),
@@ -2047,7 +2061,17 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tt_addToolEx,                   tt_addToolEx),
     REXX_METHOD(tt_addToolRect,                 tt_addToolRect),
     REXX_METHOD(tt_getToolInfo,                 tt_getToolInfo),
+    REXX_METHOD(tt_popUp,                       tt_popUp),
     REXX_METHOD(tt_setMaxTipWidth,              tt_setMaxTipWidth),
+    REXX_METHOD(tt_trackActivate,               tt_trackActivate),
+    REXX_METHOD(tt_trackPosition,               tt_trackPosition),
+
+    // ToolInfo
+    REXX_METHOD(ti_fromID_cls,                  ti_fromID_cls),
+    REXX_METHOD(ti_init,                        ti_init),
+    REXX_METHOD(ti_unInit,                      ti_unInit),
+    REXX_METHOD(ti_flags,                       ti_flags),
+    REXX_METHOD(ti_setFlags,                    ti_setFlags),
 
     // TreeView
     REXX_METHOD(tv_delete,                      tv_delete),
