@@ -636,24 +636,45 @@ RexxMethod3(uint32_t, tt_trackActivate, RexxObjectPtr, toolID, OPTIONAL_logical_
         return false;
     }
 
-
     return 0;
 }
 
 
 /** ToolTip::trackPosition()
  *
+ *  Sets the position of a tracking ToolTip.
+ *
+ *  @param  coordinates  The position (x, y) to set.
+ *
+ *      Form 1:  A .Point object.
+ *      Form 2:  x, y
+ *
+ *  @return  0, always.
  *
  */
-RexxMethod3(uint32_t, tt_trackPosition, int32_t, x, int32_t, y, CSELF, pCSelf)
+RexxMethod2(uint32_t, tt_trackPosition, ARGLIST, args, CSELF, pCSelf)
 {
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
     {
-        return FALSE;
+        return 0;;
     }
 
-    SendMessage(pcdc->hCtrl, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(x, y));
+    size_t countArgs;
+    size_t argsUsed;
+    POINT  point;
+    if ( ! getPointFromArglist(context, args, &point, 1, 2, &countArgs, &argsUsed) )
+    {
+        return 0;
+    }
+
+    if ( countArgs > argsUsed )
+    {
+        tooManyArgsException(context->threadContext, argsUsed + 1);
+        return 0;
+    }
+
+    SendMessage(pcdc->hCtrl, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(point.x, point.y));
 
     return 0;
 }
