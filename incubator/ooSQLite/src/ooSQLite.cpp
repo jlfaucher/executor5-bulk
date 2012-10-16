@@ -975,15 +975,21 @@ wholenumber_t genMerge(RexxThreadContext *c, RexxArrayObject args)
 
 int genStatus(RexxThreadContext *c, int param, RexxObjectPtr _result, logical_t reset, size_t pos, bool isMethod)
 {
-    if ( isMethod && ! c->IsDirectory(_result) )
+    if ( isMethod )
     {
-        wrongClassException(c, pos, "Directory", _result);
-        return SQLITE_MISUSE;
+        if ( ! c->IsDirectory(_result) )
+        {
+            wrongClassException(c, pos, "Directory", _result);
+            return SQLITE_MISUSE;
+        }
     }
-    else if ( ! c->IsStem(_result) )
+    else
     {
-        wrongClassException(c, pos, "Stem", _result);
-        return SQLITE_MISUSE;
+        if (  ! c->IsStem(_result) )
+        {
+            wrongClassException(c, pos, "Stem", _result);
+            return SQLITE_MISUSE;
+        }
     }
 
     int cur;
@@ -1031,15 +1037,21 @@ int genStatus(RexxThreadContext *c, int param, RexxObjectPtr _result, logical_t 
  */
 int genDbStatus(RexxThreadContext *c, sqlite3 *db, int param, RexxObjectPtr _result, logical_t reset, size_t pos)
 {
-    if ( pos == 2 && ! c->IsDirectory(_result) )
+    if ( pos == 2 )
     {
-        wrongClassException(c, pos, "Directory", _result);
-        return SQLITE_MISUSE;
+        if ( ! c->IsDirectory(_result) )
+        {
+            wrongClassException(c, pos, "Directory", _result);
+            return SQLITE_MISUSE;
+        }
     }
-    else if ( ! c->IsStem(_result) )
+    else
     {
-        wrongClassException(c, pos, "Stem", _result);
-        return SQLITE_MISUSE;
+        if ( ! c->IsStem(_result) )
+        {
+            wrongClassException(c, pos, "Stem", _result);
+            return SQLITE_MISUSE;
+        }
     }
 
     int cur;
