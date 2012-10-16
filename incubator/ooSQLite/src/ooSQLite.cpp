@@ -1762,7 +1762,46 @@ wholenumber_t genExecCall2Rexx(pCGenericCallback d, RexxObjectPtr record)
         rc = SQLITE_ABORT;
     }
 
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
+    c->ReleaseLocalReference(count);
+
     return rc;
+}
+
+/**
+ * A generic function to produce the index names for each column in a result
+ * set.  This is used by execCallBackDirectory() and execCallBackStem().
+ *
+ * @param d
+ * @param ncols
+ * @param headers
+ *
+ * @return bool
+ */
+static bool genCreateIndexes(pCGenericCallback d, int ncols, char **headers)
+{
+    RexxThreadContext *c = d->callbackContext;
+
+    d->indexes = (char **)sqlite3_malloc(ncols * sizeof(char **));
+    if ( d->indexes == NULL )
+    {
+        outOfMemoryException(c);
+        return false;
+    }
+
+    for ( int i = 0; i < ncols; i++ )
+    {
+        char *index = strdupupr(headers[i]);
+        if ( index == NULL )
+        {
+            outOfMemoryException(c);
+            return false;
+        }
+        d->indexes[i] = index;
+        d->countIndexes++;
+    }
+    return true;
 }
 
 
@@ -1786,8 +1825,7 @@ static int execCallBackArray(void *data, int ncols, char **values, char **header
     pCGenericCallback  d = (pCGenericCallback)data;
     RexxThreadContext *c = d->callbackContext;
 
-    RexxArrayObject record = c->NewArray(5);
-    RexxArrayObject header = c->NewArray(5);
+    RexxArrayObject record = c->NewArray(ncols);
 
     for ( int i = 0; i < ncols; i++ )
     {
@@ -1807,6 +1845,8 @@ static int execCallBackArray(void *data, int ncols, char **values, char **header
     {
         if ( d->count == 0 )
         {
+            RexxArrayObject header = c->NewArray(ncols);
+
             for ( int i = 0; i < ncols; i++ )
             {
                 c->ArrayAppendString(header, headers[i], strlen(headers[i]));
@@ -1814,6 +1854,8 @@ static int execCallBackArray(void *data, int ncols, char **values, char **header
 
             c->ArrayPut(d->rsArray, header, 1);
             d->count = 1;
+
+            c->ReleaseLocalReference(header);
         }
 
         d->count++;
@@ -1823,6 +1865,7 @@ static int execCallBackArray(void *data, int ncols, char **values, char **header
     {
         RexxObjectPtr   reply    = NULLOBJECT;
         RexxArrayObject rows     = c->NewArray(2);
+        RexxArrayObject header   = c->NewArray(ncols);
         bool            isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
 
         for ( int i = 0; i < ncols; i++ )
@@ -1860,8 +1903,15 @@ static int execCallBackArray(void *data, int ncols, char **values, char **header
         {
             rc = SQLITE_ABORT;
         }
+
+        c->ReleaseLocalReference(reply);
+        c->ReleaseLocalReference(rows);
+        c->ReleaseLocalReference(header);
+        c->ReleaseLocalReference(args);
+        c->ReleaseLocalReference(count);
     }
 
+    c->ReleaseLocalReference(record);
     return (int)rc;
 }
 
@@ -1888,15 +1938,33 @@ static int execCallBackDirectory(void *data, int ncols, char **values, char **he
 
     RexxDirectoryObject record = c->NewDirectory();
 
+    if ( d->indexes == NULL )
+    {
+        if ( ! genCreateIndexes(d, ncols, headers) )
+        {
+            return SQLITE_ERROR;
+        }
+    }
+
     for ( int i = 0; i < ncols; i++ )
     {
-        CSTRING index = strdupupr(headers[i]);
-        if ( index != NULL )
-        {
-            RexxObjectPtr value = (values[i] == NULL) ? TheNilObj : c->String(values[i]);
+        CSTRING idx = d->indexes[i];
 
-            c->DirectoryPut(record, value, index);
-            sqlite3_free((void *)index);
+        RexxObjectPtr value;
+        if ( values[i] == NULL )
+        {
+            value = TheNilObj;
+        }
+        else
+        {
+            value = c->String(values[i]);
+        }
+
+        c->DirectoryPut(record, value, idx);
+
+        if ( value != TheNilObj )
+        {
+            c->ReleaseLocalReference(value);
         }
     }
 
@@ -1912,9 +1980,9 @@ static int execCallBackDirectory(void *data, int ncols, char **values, char **he
         rc = genExecCall2Rexx(d, record);
     }
 
+    c->ReleaseLocalReference(record);
     return (int)rc;
 }
-
 
 /**
  * The call back function for sqlite3_exec() when the format of a record is a
@@ -1938,15 +2006,33 @@ static int execCallBackStem(void *data, int ncols, char **values, char **headers
 
     RexxStemObject record = c->NewStem("record");
 
+    if ( d->indexes == NULL )
+    {
+        if ( ! genCreateIndexes(d, ncols, headers) )
+        {
+            return SQLITE_ERROR;
+        }
+    }
+
     for ( int i = 0; i < ncols; i++ )
     {
-        CSTRING index = strdupupr(headers[i]);
-        if ( index != NULL )
-        {
-            RexxObjectPtr value = (values[i] == NULL) ? TheNilObj : c->String(values[i]);
+        CSTRING idx = d->indexes[i];
 
-            c->SetStemElement(record, index, value);
-            sqlite3_free((void *)index);
+        RexxObjectPtr value;
+        if ( values[i] == NULL )
+        {
+            value = TheNilObj;
+        }
+        else
+        {
+            value = c->String(values[i]);
+        }
+
+        c->SetStemElement(record, idx, value);
+
+        if ( value != TheNilObj )
+        {
+            c->ReleaseLocalReference(value);
         }
     }
 
@@ -1955,14 +2041,19 @@ static int execCallBackStem(void *data, int ncols, char **values, char **headers
     if ( d->createRS )
     {
         d->count++;
+        RexxObjectPtr num = c->UnsignedInt32(d->count);
+
         c->SetStemArrayElement(d->rsStem, d->count, record);
-        c->SetStemArrayElement(d->rsStem, 0, c->UnsignedInt32(d->count));
+        c->SetStemArrayElement(d->rsStem, 0, num);
+
+        c->ReleaseLocalReference(num);
     }
     else
     {
         rc = genExecCall2Rexx(d, record);
     }
 
+    c->ReleaseLocalReference(record);
     return (int)rc;
 }
 
@@ -4164,7 +4255,15 @@ RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
             default :
                 rc = sqlite3_exec(pConn->db, sql, execCallBackStem, (void *)&cbc, &errMsg);
                 break;
+        }
 
+        if ( cbc.indexes != NULL )
+        {
+            for ( uint32_t i = 0; i < cbc.countIndexes; i++ )
+            {
+                sqlite3_free(cbc.indexes[i]);
+            }
+            sqlite3_free(cbc.indexes);
         }
     }
     else

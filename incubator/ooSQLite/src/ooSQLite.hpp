@@ -202,12 +202,14 @@ typedef struct _genericCallback {
     RexxObjectPtr        userData;        // A Rexx object that the user wants sent to its Rexx callback.
     RexxInstance        *interpreter;
     RexxThreadContext   *callbackContext;
+    char               **indexes;
     CSTRING              callbackMethod;
     CSTRING              routineName;     // The name of the Rexx routine, needed for exception messages.
     RexxArrayObject      rsArray;         // When creating a result set and format is arrayOfArrays or arrayOfDirectories
     RexxStemObject       rsStem;          // When creating a result set and format is stemOfStems
     ResultSetType        format;          // Format of a record, array, stem, or directory.
-    uint32_t             count;
+    uint32_t             count;           // This is the record count, updated as each record is produced.
+    uint32_t             countIndexes;    // This is the count of allocated strings in the indexes array.
     thread_id_t          initialThreadID;
     bool                 createRS;        // Determines if we are creating a record set or invoking a Rexx callback.
 } CGenericCallback;
