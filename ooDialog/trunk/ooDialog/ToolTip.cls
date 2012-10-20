@@ -48,12 +48,12 @@
 ::method addTool unguarded external "LIBRARY oodialog tt_addTool"
 ::method addToolEx unguarded external "LIBRARY oodialog tt_addToolEx"
 ::method addToolRect unguarded external "LIBRARY oodialog tt_addToolRect"
+::method getCurrentToolInfo unguarded external "LIBRARY oodialog tt_getCurrentToolInfo"
 ::method getToolInfo unguarded external "LIBRARY oodialog tt_getToolInfo"
 ::method popUp unguarded external "LIBRARY oodialog tt_popUp"
 ::method setMaxTipWidth unguarded external "LIBRARY oodialog tt_setMaxTipWidth"
 ::method trackActivate unguarded external "LIBRARY oodialog tt_trackActivate"
 ::method trackPosition unguarded external "LIBRARY oodialog tt_trackPosition"
-
 
 
 ::class 'ToolInfo' public
@@ -73,3 +73,7 @@
 ::attribute text set external "LIBRARY oodialog ti_setText"
 ::attribute userData get external "LIBRARY oodialog ti_userData"
 ::attribute userData set external "LIBRARY oodialog ti_setUserData"
+
+::attribute textMemoryIsAllocated set external "LIBRARY oodialog ti_setTextMemoryIsAllocated"  -- Internal use only.
+
+

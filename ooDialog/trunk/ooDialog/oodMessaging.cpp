@@ -2051,24 +2051,81 @@ MsgReplyType processTCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 }
 
 
+inline RexxObjectPtr getToolTipFromLParam(LPARAM lParam)
+{
+
+    return (RexxObjectPtr)getWindowPtr(((NMHDR *)lParam)->hwndFrom, GWLP_USERDATA);
+
+}
+
+/**
+ * Attempts to get the proper ID for a tool tip tool.
+ *
+ * @param c
+ * @param lParam
+ *
+ * @return RexxObjectPtr
+ *
+ * @remarks  The tool tip tool ID can either be a dialog control window handle,
+ *           or a unique number.  There is no real way to tell whether the
+ *           number in idFrom is a HWND or a number.
+ */
+RexxObjectPtr getToolIDFromLParam(RexxThreadContext *c, LPARAM lParam)
+{
+    RexxObjectPtr rxID = TheNilObj;
+    UINT_PTR      id   = ((NMHDR *)lParam)->idFrom;
+
+    SetLastError(0);
+    if ( IsWindow((HWND)id) && GetDlgCtrlID((HWND)id) != 0 && GetLastError() == 0 )
+    {
+        rxID = (RexxObjectPtr)getWindowPtr((HWND)id, GWLP_USERDATA);
+        if ( rxID == NULLOBJECT )
+        {
+            rxID = c->Uintptr(id);
+        }
+    }
+    else
+    {
+        rxID = c->Uintptr(id);
+    }
+    return rxID;
+}
+
+
+/**
+ * Process tool tip notification messages.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param code
+ * @param wParam
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  Testing has shown that wParam, what the MSDN doc labels as idTT, is
+ *           the uId field of the TOOLINFO struct. In addition, wParam and
+ *           ((NMHDR *)lParam)->idFrom seem to always have the same value.
+ *
+ *           However, for the TTN_LINKCLICK notification, this value is always
+ *           0.  (Seems to be always 0, and this sort of matches MSDN.)
+ */
 MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, WPARAM wParam, LPARAM lParam,
                         pCPlainBaseDialog pcpbd)
 {
     RexxObjectPtr rexxReply = NULLOBJECT;
-    RexxObjectPtr idFrom    = NULLOBJECT;
-    RexxObjectPtr hwndFrom  = hwndFrom2rexxArg(c, lParam);
     bool          willReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
 
-    printf("\nprocessTTN()  wParam as int=0x%x\n\n", (int)wParam);
+    RexxObjectPtr   rxToolTip = getToolTipFromLParam(lParam);
+    RexxObjectPtr   rxToolID  = getToolIDFromLParam(c, lParam);
+
     switch ( code )
     {
         case TTN_LINKCLICK :
         {
-            printf("GPT LINKCLICK\n");
-            // Temp converting to Uintptr to see what it is
-            idFrom = pointer2string(c, (void *)((NMHDR *)lParam)->idFrom);
-
-            RexxArrayObject args = c->ArrayOfTwo(idFrom, hwndFrom);
+            RexxArrayObject args = c->ArrayOfTwo(rxToolID, rxToolTip);
             if ( willReply )
             {
                 invokeDirect(c, pcpbd, methodName, args);
@@ -2081,7 +2138,6 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                 c->ReleaseLocalReference(mthName);
             }
 
-            c->ReleaseLocalReference(idFrom);
             c->ReleaseLocalReference(args);
             break;
         }
@@ -2090,18 +2146,59 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         {
             LPNMTTDISPINFO nmtdi = (LPNMTTDISPINFO)lParam;
 
+            RexxDirectoryObject info = c->NewDirectory();
+
+            nmtdi->lpszText = (LPSTR)LocalAlloc(LPTR, MAX_TOOLINFO_TEXT_LENGTH + 1);
+            if ( nmtdi->lpszText == NULL )
+            {
+                outOfMemoryException(c);
+                checkForCondition(c, false);
+                endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+                break;
+            }
+
+            c->DirectoryPut(info, c->NullString(), "TEXT");
+
+            RexxObjectPtr    userData = nmtdi->lParam == NULL ? TheNilObj : (RexxObjectPtr)nmtdi->lParam;
+            RexxStringObject flags    = ttdiFlags2keyword(c, nmtdi->uFlags);
+            RexxArrayObject  args     = c->ArrayOfFour(rxToolID, rxToolTip, info, userData);
+
+            c->ArrayPut(args, flags, 5);
+
+            rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+            rexxReply = requiredBooleanReply(c, pcpbd, rexxReply, methodName, false);
+            if ( rexxReply != NULLOBJECT )
+            {
+                RexxObjectPtr _text = c->DirectoryAt(info, "TEXT");
+                CSTRING       text  = c->ObjectToStringValue(_text);
+
+                size_t len = strlen(text);
+                if ( len > MAX_TOOLINFO_TEXT_LENGTH )
+                {
+                    stringTooLongException(c, 1, MAX_TOOLINFO_TEXT_LENGTH, len);
+                    checkForCondition(c, false);
+                    endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+                    break;
+                }
+
+                strcpy(nmtdi->lpszText, text);
+
+                if ( rexxReply == TheTrueObj )
+                {
+                    nmtdi->uFlags |= TTF_DI_SETITEM;
+                }
+                c->ReleaseLocalReference(_text);
+            }
+
+            c->ReleaseLocalReference(flags);
+            c->ReleaseLocalReference(info);
+            c->ReleaseLocalReference(args);
             break;
         }
 
         case TTN_POP :
         {
-            printf("TTN_POP wParam=0x%x idFrom=%p\n", (int)wParam, (UINT_PTR)((NMHDR *)lParam)->idFrom);
-            // Temp converting to Uintptr to see what it is
-            idFrom = pointer2string(c, (void *)((NMHDR *)lParam)->idFrom);
-
-            //RexxObjectPtr   idTT = c->Int32((int)wParam);
-            RexxObjectPtr   idTT = pointer2string(c, (void *)wParam);
-            RexxArrayObject args = c->ArrayOfThree(idFrom, hwndFrom, idTT);
+            RexxArrayObject args = c->ArrayOfTwo(rxToolID, rxToolTip);
 
             if ( willReply )
             {
@@ -2115,8 +2212,6 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                 c->ReleaseLocalReference(mthName);
             }
 
-            c->ReleaseLocalReference(idFrom);
-            c->ReleaseLocalReference(idTT);
             c->ReleaseLocalReference(args);
 
             break;
@@ -2124,20 +2219,15 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
         case TTN_SHOW :
         {
-            printf("TTN_SHOW wParam=0x%x idFrom=%p\n", (int)wParam, (UINT_PTR)((NMHDR *)lParam)->idFrom);
-            // Temp converting to Uintptr to see what it is
-            idFrom = pointer2string(c, (void *)((NMHDR *)lParam)->idFrom);
-
-            RexxObjectPtr   idTT = pointer2string(c, (void *)wParam);
-            RexxArrayObject args = c->ArrayOfThree(idFrom, hwndFrom, idTT);
+            RexxArrayObject args = c->ArrayOfTwo(rxToolID, rxToolTip);
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
             rexxReply = requiredBooleanReply(c, pcpbd, rexxReply, methodName, false);
-            setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TRUE);
-            // Need work....
+            if ( rexxReply == TheTrueObj )
+            {
+                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TRUE);
+            }
 
-            c->ReleaseLocalReference(idFrom);
-            c->ReleaseLocalReference(idTT);
             c->ReleaseLocalReference(args);
 
             break;
@@ -2149,7 +2239,9 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             break;
     }
 
-    c->ReleaseLocalReference(hwndFrom);
+    c->ReleaseLocalReference(rxToolTip);
+    c->ReleaseLocalReference(rxToolID);
+
     return ReplyTrue;
 }
 

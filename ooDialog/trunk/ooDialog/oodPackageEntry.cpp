@@ -1105,6 +1105,7 @@ REXX_METHOD_PROTOTYPE(tt_activate);
 REXX_METHOD_PROTOTYPE(tt_addTool);
 REXX_METHOD_PROTOTYPE(tt_addToolEx);
 REXX_METHOD_PROTOTYPE(tt_addToolRect);
+REXX_METHOD_PROTOTYPE(tt_getCurrentToolInfo);
 REXX_METHOD_PROTOTYPE(tt_getToolInfo);
 REXX_METHOD_PROTOTYPE(tt_popUp);
 REXX_METHOD_PROTOTYPE(tt_setMaxTipWidth);
@@ -1126,6 +1127,8 @@ REXX_METHOD_PROTOTYPE(ti_text);
 REXX_METHOD_PROTOTYPE(ti_setText);
 REXX_METHOD_PROTOTYPE(ti_userData);
 REXX_METHOD_PROTOTYPE(ti_setUserData);
+
+REXX_METHOD_PROTOTYPE(ti_setTextMemoryIsAllocated);
 
 // TreeView
 REXX_METHOD_PROTOTYPE(tv_delete);
@@ -2069,6 +2072,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tt_addTool,                     tt_addTool),
     REXX_METHOD(tt_addToolEx,                   tt_addToolEx),
     REXX_METHOD(tt_addToolRect,                 tt_addToolRect),
+    REXX_METHOD(tt_getCurrentToolInfo,          tt_getCurrentToolInfo),
     REXX_METHOD(tt_getToolInfo,                 tt_getToolInfo),
     REXX_METHOD(tt_popUp,                       tt_popUp),
     REXX_METHOD(tt_setMaxTipWidth,              tt_setMaxTipWidth),
@@ -2090,6 +2094,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(ti_setText,                     ti_setText),
     REXX_METHOD(ti_userData,                    ti_userData),
     REXX_METHOD(ti_setUserData,                 ti_setUserData),
+
+    REXX_METHOD(ti_setTextMemoryIsAllocated,    ti_setTextMemoryIsAllocated),
 
     // TreeView
     REXX_METHOD(tv_delete,                      tv_delete),

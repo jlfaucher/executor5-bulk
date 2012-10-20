@@ -85,6 +85,12 @@ typedef map<string, int, less<string> > String2Int;
 #define OOD_NO_ERROR                0
 #define OOD_DATATABLE_FULL          1
 
+// Tool tip stuff
+#define MAX_TOOLINFO_TEXT_LENGTH  1023
+extern uint32_t         keyword2ttdiFlags(CSTRING flags);
+extern RexxStringObject ttdiFlags2keyword(RexxThreadContext *c, uint32_t flags);
+
+
 /* Struct for a reply to the UDN_DELTAPOS notification message. (Up-down control.) */
 typedef struct _DELTAPOS_REPLY {
     bool      change;
@@ -170,6 +176,7 @@ extern bool              getPointFromArglist(RexxMethodContext *, RexxArrayObjec
 // These functions are defined in oodUser.cpp.
 extern bool getCategoryHDlg(RexxMethodContext *, RexxObjectPtr, uint32_t *, HWND *, int);
 extern uint32_t getCategoryNumber(RexxMethodContext *, RexxObjectPtr);
+
 
 // These functions are defined in oodUtilities.cpp
 extern RexxObjectPtr makeDayStateBuffer(RexxMethodContext *c, RexxArrayObject list, size_t count, LPMONTHDAYSTATE *ppmds);
