@@ -1,0 +1,442 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 3371 $
+  Change Date:  $Date: 2008-09-21 00:33:29 -0400 (Sun, 21 Sep 2008) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.ATTRIBUTE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+
+::class "ATTRIBUTE.testGroup" subclass ooTestCase public
+
+::method test001
+
+  -- test how the methods are created
+  getmethod = .test~instanceMethod("V1")
+  setmethod = .test~instanceMethod("V1=")
+  self~assertFalse(getMethod~isPrivate)
+  self~assertTrue(getMethod~isGuarded)
+  self~assertTrue(getMethod~isProtected)
+  self~assertFalse(setMethod~isPrivate)
+  self~assertTrue(setMethod~isGuarded)
+  self~assertTrue(setMethod~isProtected)
+
+  -- test how the methods are created
+  getmethod = .test~new~instanceMethod("V1")
+  setmethod = .test~new~instanceMethod("V1=")
+  self~assertFalse(getMethod~isPrivate)
+  self~assertFalse(getMethod~isGuarded)
+  self~assertFalse(getMethod~isProtected)
+  self~assertFalse(setMethod~isPrivate)
+  self~assertFalse(setMethod~isGuarded)
+  self~assertFalse(setMethod~isProtected)
+
+  getmethod = .test~instanceMethod("V2")
+  setmethod = .test~instanceMethod("V2=")
+  self~assertFalse(getMethod~isPrivate)
+  self~assertFalse(getMethod~isGuarded)
+  self~assertTrue(getMethod~isProtected)
+  self~assertFalse(setMethod~isPrivate)
+  self~assertFalse(setMethod~isGuarded)
+  self~assertTrue(setMethod~isProtected)
+
+  -- test how the methods are created
+  getmethod = .test~new~instanceMethod("V2")
+  setmethod = .test~new~instanceMethod("V2=")
+  self~assertFalse(getMethod~isPrivate)
+  self~assertFalse(getMethod~isGuarded)
+  self~assertTrue(getMethod~isProtected)
+  self~assertFalse(setMethod~isPrivate)
+  self~assertFalse(setMethod~isGuarded)
+  self~assertTrue(setMethod~isProtected)
+
+  test = .test~new
+  self~assertSame("Fred", .test~v1)
+  self~assertSame("Rick", test~v1)
+  .test~v1 = "Joe"
+  self~assertSame("Joe", .test~v1)
+  self~assertSame("Rick", test~v1)
+  test~v1 = "Larry"
+  self~assertSame("Joe", .test~v1)
+  self~assertSame("Larry", test~v1)
+
+  self~assertSame("George", .test~v2)
+  self~assertSame("David", test~v2)
+  .test~v2 = "Curly"
+  self~assertSame("Curly", .test~v2)
+  self~assertSame("David", test~v2)
+  test~v2 = "Moe"
+  self~assertSame("Curly", .test~v2)
+  self~assertSame("Moe", test~v2)
+
+  self~assertSame("Mike", .test~v3)
+  self~assertSame("Mark", test~v3)
+  .test~v3 = "Chip"
+  self~assertSame("Chip", .test~v3)
+  self~assertSame("Mark", test~v3)
+  test~v3 = "Walter"
+  self~assertSame("Chip", .test~v3)
+  self~assertSame("Walter", test~v3)
+
+  self~assertSame("V4", .test~v4)
+  self~assertSame("V4", test~v4)
+  .test~v4 = "Jon"
+  self~assertSame("Jon", .test~v4)
+  self~assertSame("V4", test~v4)
+  test~v4 = "Brandon"
+  self~assertSame("Jon", .test~v4)
+  self~assertSame("Brandon", test~v4)
+
+::method test002
+  self~expectSyntax(93.965)
+  .test~v5
+
+::method test003
+  self~expectSyntax(93.965)
+  .test~new~v5
+
+::method test004
+  self~expectSyntax(93.965)
+  .test~v5 = 123
+
+::method test005
+  self~expectSyntax(93.965)
+  .test~new~v5 = 123
+
+::method test006
+  x = .test~v6
+  self~expectSyntax(93.965)
+  .test~v6 = 123
+
+::method test007
+  x = .test~new~v6
+  self~expectSyntax(93.965)
+  .test~new~v6 = 123
+
+::method test008
+  .test~v7 = 123
+  self~expectSyntax(93.965)
+  x = .test~v7
+
+::method test009
+  .test~new~v7 = 123
+  self~expectSyntax(93.965)
+  x = .test~new~v7
+
+
+
+/** The following are tests syntax errors with the attribute directive.  Since
+ *  putting incorrect syntax for the directive in this file would cause the test
+ *  group to not run, the bad syntax tests are done by using the .Package class.
+ *  A package is created with the code for the test.  The syntax errors are then
+ *  raised during the instantiation of the Package object, when the code is
+ *  parsed.
+ */
+::method test_dup_abstract
+  self~assertSyntaxError(25.925, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo abstract abstract")
+
+::method test_bad_name
+  self~assertSyntaxError(99.925, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute 1234")
+
+::method test_dup_attr
+  self~assertSyntaxError(99.931, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo", -
+     "::attribute foo")
+
+::method test_dup_attr_2
+  self~assertSyntaxError(99.931, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo get", -
+     "::attribute foo")
+
+::method test_dup_attr_3
+  self~assertSyntaxError(99.931, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo set", -
+     "::attribute foo")
+
+::method test_dup_attr_4
+  self~assertSyntaxError(99.931, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::method foo", -
+     "::attribute foo get")
+
+::method test_dup_attr_5
+  self~assertSyntaxError(99.931, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::method 'foo='", -
+     "::attribute foo set")
+
+::method test_bad_code_body
+  self~assertSyntaxError(99.937, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo", -
+     "  return .true")
+
+::method test_private_1
+  test = .test~new
+  test~v8set(123)
+  self~assertSame(123, test~v8get)
+  self~expectSyntax(97.1)
+  test~v8 = 123
+
+::method test_private_2
+  test = .test~new
+  test~v8set(123)
+  self~assertSame(123, test~v8get)
+  self~expectSyntax(97.1)
+  x = test~v8
+
+::method test_private_3
+  test = .test~new
+  test~v9 = 123
+  self~assertSame(123, test~v9get)
+  self~expectSyntax(97.1)
+  x = test~v9
+
+::method test_private_4
+  test = .test~new
+  test~v10set(123)
+  self~assertSame(123, test~v10)
+  self~expectSyntax(97.1)
+  test~v10 = 123
+
+::method test_external_1
+  self~assertSyntaxError(19.905, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external")
+
+::method test_external_2
+  self~assertSyntaxError(19.905, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external mylib")
+
+::method test_external_3
+  self~assertSyntaxError(99.917, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external 'mylib'")
+
+::method test_external_4
+  self~assertSyntaxError(99.917, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external 'library'")
+
+::method test_external_5
+  self~assertSyntaxError(98.903, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external 'library mylib'")
+
+::method test_external_6
+  self~assertSyntaxError(90.998, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external 'library rxsock'")
+
+::method test_external_7
+  self~assertSyntaxError(90.998, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo get external 'library rxsock'")
+
+::method test_external_8
+  self~assertSyntaxError(90.998, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo get external 'library rxsock whatever'")
+
+::method test_external_9
+  self~assertSyntaxError(90.998, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external 'library rxsock whatever'")
+
+::method test_external_10
+  self~assertSyntaxError(90.998, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo set external 'library rxsock'")
+
+::method test_external_11
+  self~assertSyntaxError(90.998, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo set external 'library rxsock whatever'")
+
+::method test_external_12
+  self~assertSyntaxError(99.917, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external 'library rxsock whatever junk'")
+
+::method test_external_13
+  self~assertSyntaxError(25.925, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo abstract external 'library rxsock whatever'")
+
+::method test_external_14
+  self~assertSyntaxError(25.925, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external 'library rxsock whatever' abstract")
+
+::method test_external_15
+  self~assertSyntaxError(99.937, -
+     "return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo external 'library rxsock whatever'", -
+     " return .false")
+
+::method assertSyntaxError
+  use arg syntax
+
+  src = arg(2, 'array')
+
+  self~expectSyntax(syntax)
+  p = .Package~new("constant_TestGroup", src)
+
+::class test mixinclass object
+-- initialize some class variables for test usage
+::method init class
+  expose v1 v2 v3
+  v1 = "Fred"
+  v2 = "George"
+  v3 = "Mike"
+-- instance variables...same variable names, different scope
+::method init
+  expose v1 v2 v3
+  v1 = "Rick"
+  v2 = "David"
+  v3 = "Mark"
+
+-- instance and class versions of the attributes
+::attribute v1 class guarded public protected
+::attribute v1 unguarded public unprotected
+
+::attribute v2 class get unguarded protected
+::attribute v2 class set unguarded protected
+  expose v2
+  use strict arg v2
+
+::attribute v2 get unguarded protected
+::attribute v2 set unguarded protected
+  expose v2
+  use strict arg v2
+
+::attribute v3 class get
+  expose v3
+  return v3
+::attribute v3 class set
+
+::attribute v3 get
+  expose v3
+  return v3
+::attribute v3 set
+
+-- these will be uninitialied initially
+::attribute v4
+::attribute v4 class
+
+-- different abstract combos
+
+::attribute v5 abstract
+::attribute v5 class abstract
+
+::attribute v6 abstract set
+::attribute v6 class abstract set
+-- non-abstract getters to show no effect on the other side
+::attribute v6 get
+::attribute v6 class get
+
+::attribute v7 abstract get
+::attribute v7 class abstract get
+::attribute v7 set
+::attribute v7 class set
+
+-- private attribute tests...some methods are to demonstrate
+-- that the method can be reached via private means
+
+::attribute v8 private
+::attribute v9 get private
+::attribute v9 set
+::attribute v10 set private
+::attribute v10 get
+
+::method v8get
+  return self~v8
+
+::method v8set
+  use arg value
+  self~v8 = value
+
+::method v9get
+  return self~v9
+
+::method v10set
+  use arg value
+  self~v10 = value
+
