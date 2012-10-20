@@ -8466,7 +8466,7 @@ RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
 
     if ( doCallback )
     {
-        if ( argumentExists(3) )
+        if ( argumentExists(4) )
         {
             if ( format < anArrayOfArrays || format > aStemOfStems )
             {
@@ -8486,7 +8486,7 @@ RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
 
         cbc.callbackContext = context->threadContext;
 
-        if ( argumentExists(4) )
+        if ( argumentExists(5) )
         {
             cbc.callbackRtn = getCallerRoutine(context, rtnName);
             if ( cbc.callbackRtn == NULLOBJECT )
