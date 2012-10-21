@@ -1,0 +1,599 @@
+                  ooSQLite Version 1.0.0.8514 (Preview)
+                  ========================================
+
+ooSQLite is an ooRexx extension that provides an interface to the SQLite
+database engine.  For complete details on SQLite, go to:
+
+http://www.sqlite.org
+
+The SQLite database engine is embedded in the ooSQLite extension.
+Therefore, the ooSQLite extension provides everything needed to create,
+modify, and query SQL based databases in an ooRexx program.
+
+ooSQLite will work on any system that has an installed ooRexx
+interpreter, version 4.1.0 or later.  ooSQLite is completely platform
+agnostic.  That is, all ooSQLite code and the database files themselves
+will work unchanged on any platform ooRexx is supported on.  A complete
+database is stored in a single cross-platform disk file.
+
+ooSQLite provides both an object-orientated interface and a 'classic
+Rexx' interface to SQLite.  That is, the object-orientated interface
+encapsulates the SQLite provided APIs using different classes and
+methods of those classes.  The 'classic Rexx' interface provides a
+procedural interface where all SQLite APIs are accessed using function
+calls.
+
+
+IMPORTANT NOTE
+==============
+
+NOTE: The "Preview" version is provided so that ooRexx developers and
+users have something concrete to refer to in discussions of how ooSQLite
+should be implemented.  Some class and method names are likely to
+change.  Classes and / or methods may be removed, and / or added.
+Arguments to methods may be changed.
+
+Note:
+-----
+
+Cumulative changes are located towards the bottom of this file.
+
+
+To use ooSQLite in an ooRexx program:
+-------------------------------------
+
+Simply add this requires statement to the program:
+
+::requires 'ooSQLite.cls'
+
+and ensure that the ooSQLite.cls file and the implementation library
+file are somewhere in the path on your system.
+
+The implementation library file is oosqlite.dll on Windows and
+oosqlite.so on Unix-like systems.
+
+
+Documentation:
+--------------
+
+The primary source of documentation for ooSQLite is, and will always be,
+the SQLite project itself:
+
+http://www.sqlite.org/docs.html
+
+The ooSQLite reference manual will document the class and methods
+available in the object-orientated interface, and the functions
+available in the 'classic Rexx' interface.  The reference manual will
+note exactly which SQLite API the method or function accesses.  But the
+in-depth details of: how SQLite works, how to use SQLite, what SQL
+SQLite supports, how to write SQL statements will be left to the SQLite
+documentation.
+
+Because of this, it is easy to get started with ooSQLite, even though
+the documentation is currently light, by referring to the SQLite
+website.
+
+
+Distribution:
+-------------
+
+ooSQLite is currently distributed as a compressed archive file, with
+separate files for 32-bit, 64-bit, Windows, or Linux.  The future intent
+is to add ooSQLite to the ooRexx distribution.
+
+Pick the distribution file to match the bitness, 32-bit or 64-bit, of
+the ooRexx interpreter installed on the system.  Pick the *.zip file for
+Windows and the *.tar.gz file for Linux:
+
+ooSQLite_1_0_0_xxxx_x86_32.zip     <- Windows 32-bit binaries
+ooSQLite_1_0_0_xxxx_x86_64.zip     <- Windows 64-bit binaries
+ooSQLite_1_0_0_xxxx_x86_32.tgz     <- Linux 32-bit binaries
+ooSQLite_1_0_0_xxxx_x86_32.tgz     <- Linux 64-bit binaries
+
+The 'xxxx' in the file name will be the svn revision number, which may
+vary slightly depending on the exact time the distribution file is
+built.
+
+Mac OS X, and hopefully AIX, pre-compiled binaries will be added
+shortly.  Unfortunately, this is dependent on a developer willing to
+build the binaries stepping forward.
+
+
+Installation:
+-------------
+
+* Down load the appropriate distribution file to a directory of your
+  choice on your system.
+
+* Unpack the file using a suitable tool for the type of compressed file.
+  Tar for a *.tar.gz file.  Zip, WinZip, etc., for a *.zip file.
+
+* Unpacking the distribution file will create a subdirectory tree that
+  looks like this:
+
+ooSQLite.1.0.0.xxxx
+   |
+   *---bin
+   |
+   *---doc
+   |
+   *---examples
+   |     |
+   |     *---classic.rexx
+   |
+   *---misc
+   |
+   *---testing
+
+The bin subdirectory contains the files that need to be included in the
+path.  Either add bin to your path or copy the files in bin to a
+directory already in the path on your system.  ooSQLite is now ready for
+use.
+
+The root of the subdirectory tree (ooSQLite.1.0.0.xxxx) contains a few
+text documents, including this ReleaseNotes file, that are typically
+found in an open source software distribution.
+
+In addition it contains a .bat file and a .sh file that can be used to
+temporarily set up ooSQLite for use on the system.  The files simply add
+the bin directory to the path.
+
+On Windows execute setOOSQLiteEnv.bat:
+
+C:\Users\miesfeld\ooSQLite.1.0.0.7817>setOOSQLiteEnv.bat
+
+On Linux, if bash is your shell, source the setOOSQLiteEnv.sh file:
+
+ooSQLite.1.0.0.7817# . ./setOOSQLiteEnv.sh
+
+The doc subdirectory contains documentation files for ooSQLite.
+Currently the documentation is meager.  The directory also contains an
+excel spreadsheet, StatusAllSQLiteFunctions.xlsx, that lists every
+SQLite API and notes its implementation status in ooSQLite.
+
+The examples subdirectory contains example programs showing how to use
+ooSQLite.  At this time only a few examples are available.
+
+The misc subdirectory contains a binary database file that is used in
+some of the example programs and some of the testing programs.  Please
+read the ReadMe file in that directory for information.
+
+The testing subdirectory contains some programs used in the original
+development of ooSQLite.  These programs are currently meant to
+supplement the example programs, since there are only a few examples.
+
+In the future, the testing subdirectory will be removed from the
+distribution.  The testing programs will either remain in the source
+repository to be used as development aids, or enhanced to example
+programs and moved to the examples subdirectory.
+
+The "Preview" version of ooSQLite
+=================================
+
+The preview version of ooSQLite is being provided to give anyone
+interested in an extension for ooRexx that provides database access to
+ooRexx programs, a chance to see what ooSQLite can provide.  And to
+contribute to the direction for ooSQLite.
+
+Anyone can check out the entire, current, ooSQLite source tree from its
+location in the ooRexx repository using this svn command:
+
+svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/incubator/ooSQLite  ooSQLite
+
+However, it seems that many ooRexx users are unwilling to do that.  So,
+a preview distribution is being put on SourceForge to allow anyone to
+easily get their hands on a current version of ooSQLite.
+
+The point of making a preview version of ooSQLite is to solicit input
+from users on what ooSQLite should or shouldn't do.  What classes should
+or shouldn't be named, should or shouldn't be included.  What methods
+and functions should or shouldn't be included.  Etc., etc..
+
+In other words, to discuss the implementation of ooSQLite at its start.
+
+In addition, it would be highly appreciated if users would contribute to
+the testing of ooSQLite by writing test programs.  If users would
+contribute to the ooSQLite package by writing and submitting example
+programs to the ooRexx project.
+
+Please join in and participate in discussions concerning ooSQLite on the
+ooRexx users list, which can be subscribed to at:
+
+https://sourceforge.net/mail/?group_id=119701
+
+Discussion of ooSQLite is encouraged at any of the lists used by ooRexx
+users, RexxLa, the developers list, etc., but the user list is the one
+place that all users of ooRexx can access.  This makes it the ideal
+place to carry out discussions of things related to ooRexx, that include
+the entire user community.
+
+
+                          Cumulative Changes:
+                          ===================
+
+
+Changes since ooSQLite Version 1.0.0.8472 (Preview)
+------------------------------------------------------------------------
+
+The SQLite library is updated to 3.7.14.1.
+
+Some optimizations have been added to the creation of the result sets
+during the running of the exec() method of the ooSQLiteConnection class.
+This results in a small performance gain of about 10%.
+
+  Documentation:
+  --------------
+
+  Some small progress has been made on the docs.
+
+
+
+Changes since ooSQLite Version 1.0.0.8435 (Preview)
+------------------------------------------------------------------------
+
+
+  Bugs:
+  ----
+
+  The following bugs reported on SourceForge have been fixed:
+
+  * #1119 ooSQLite - some callback methods do not execute
+
+  Documentation:
+  --------------
+
+  Some small progress has been made on the docs.
+
+
+
+Changes since ooSQLite Version 1.0.0.8000 (Preview)
+------------------------------------------------------------------------
+
+
+  Bugs:
+  ----
+
+  The following bugs reported on SourceForge have been fixed:
+
+  * 1114	ooSQLite causes rexxpaws abnormal termination
+
+  * 1115	ooSQLite: pragma method cannot handle non-existing table
+
+
+
+
+Changes since ooSQLite Version 1.0.0.7964 (Preview)
+------------------------------------------------------------------------
+
+The SQLite library is updated to 3.7.14.  This is the only change.
+
+
+
+Changes since ooSQLite Version 1.0.0.7925 (Preview)
+------------------------------------------------------------------------
+
+  *
+
+  Documentation:
+  --------------
+
+  * The first chapter in the reference manual, About This Book, is
+  finished.
+
+  * The second chapter in the reference manual, Brief Overview, is
+  finished.
+
+  * The documentation in the reference manual for the .ooSQLite class is
+  finished.
+
+
+
+  Examples (examples directory):
+  -----------------------------
+
+  * createDatabase.rex is enhanced to use foreign keys when creating the
+  tables.
+
+  * insertIntoDatebase.rex now inserts records into all of the tables
+  in the database.
+
+  * A new example, insertNull.rex is added.
+
+  * A new example, insertNullTwo.rex is added.
+
+  * A new example, insertNullThree.rex is added.
+
+  * A new example, printTableWithNulls.rex is added.
+
+  * A new example, enquote.rex is added.
+
+
+  Examples (testing directory):
+  -----------------------------
+
+  The examples in the testing directory have been used by the developers
+  during implementation.  A few of these programs are made available to
+  help people get started with ooSQLite.  In general these are not well
+  documented and will eventually be removed from the distribution as
+  more examples are added to the examples directory.
+
+  The following programs have been added to the testing subdirectory:
+
+  * (none)
+
+  The following changes were made to the testing subdirectory:
+
+  * (none)
+
+
+
+  Bugs:
+  ----
+
+  *
+
+
+  * No bugs were reported on SourceForge in this cycle.
+
+
+  Changes in implementation:
+  --------------------------
+
+  * The argument to ooSQLite::memoryHighWater was intended to be
+  optional, but it was not.  The argument has been changed to be
+  optional.
+
+  * The argument to the oosqlMemoryHighWater() function was intended to
+  be optional, but it was not.  The argument has been changed to be
+  optional.
+
+  * Both ooSQLite::threadSafe() and oosqlThreadSafe() were returning
+  true or false, but they actually should return one of 0, 1, or 2.
+  Forcing the return to a logical prevented 2 from being returned.  This
+  was changed to return a number.
+
+
+  Enhancements:
+  -------------
+
+  * Foreign key support is enabled for each database connection
+  automatically.
+
+  * The command line shell, oosqlite3 has several startup defauts
+  changed.  The .mode on startup is now column rather than list. .header
+  is now ON by default instead of OFF.
+
+  * The enquote() method is added to the .ooSQLite class.
+
+  * The ooSQLiteEnquote() function is added to the classic Rexx
+  interface.
+
+
+
+
+Changes since ooSQLite Version 1.0.0.7864 (Preview)
+------------------------------------------------------------------------
+
+  * The embedded SQLite database engine is now version 3.7.13
+
+  Documentation:
+  --------------
+
+  * The changes, including the interfaces to the SQLite online backup
+  feature, are fully documented in the ooSQLite Reference Manual.
+
+
+  Examples (examples directory):
+  -----------------------------
+
+  * The classic.rexx subdirectory was added to contain examples of using
+  the 'classic Rexx' interface to SQLite.
+
+  * The preparedStmtTestRtn.rex program in the testing directory was
+  renamed to preparedStmtRtn.rex and moved from the testing subdirectory
+  to the examples\classic.rexx subdirectory.  The program was enhanced
+  with many comments.
+
+  * The pullColumnDataRtn.rex example was added to the
+  examples\classic.rexx subdirectory.
+
+  * The backupDB.rex example was added to the examples\classic.rexx
+  subdirectory.
+
+
+  Examples (testing directory):
+  -----------------------------
+
+  The examples in the testing directory have been used by the developers
+  during implementation.  A few of these programs are made available to
+  help people get started with ooSQLite.  In general these are not well
+  documented and will eventually be removed from the distribution as
+  more examples are added to the examples directory.
+
+  The following programs have been added to the testing subdirectory:
+
+  * (none)
+
+  The following changes were made to the testing subdirectory:
+
+  * The preparedStmtTestRtn.rex program was enhanced, renamed, and moved
+  to the examples\classic.rexx subdirectoy with the name of
+  preparedStmtRtn.rex.
+
+
+
+  Bugs:
+  ----
+
+  * Two trivial bugs bugs were found internally and fixed.
+
+  * Fixed crash when result set format was an array of directories or an
+  a stem of stems when using ooSQLiteConnection::pragma(). This crash
+  was exhibited in the pragmaTriggerTest.rex
+
+  * No bugs were reported on SourceForge in this cycle.
+
+
+  Changes in implementation:
+  --------------------------
+
+  * The 'classic Rexx' interface is intended for use by Rexx programmers
+  that are uncomfortable with 'objects.'  However, in a very few cases
+  an object such as a .Directory object was used as an IN/OUT parameter
+  for functions that needed to return multiple values.
+
+  This has been fixed in all cases to use a purely 'classic Rexx'
+  paradigm.  Since these functions were not documented yet, and there
+  were no examples of their usage, this change should be invisible.
+
+  * The oosqlPrepare() method has been changed to return a result code
+  rather than a handle to the prepared statement.  The arguments to the
+  function are also changed.  This makes the function totally 'classic
+  Rexx.'  The usage of this function was visible in the program:
+
+  testing\preparedStmtTestRtn.rex
+
+  To understand the new usage examine the programs:
+
+  examples\classic.rexx\preparedStmtRtn.rex
+  examples\classic.rexx\pullColumnDataRtn.rex
+
+  both of which are heavily commented.
+
+  * The oosqlOpen() method has been changed to return a result code
+  rather than a handle to the database connection.  The arguments to the
+  function are also changed.  This makes the function totally 'classic
+  Rexx.' The usage of this function was visible in the program:
+
+  testing\preparedStmtTestRtn.rex
+
+  To understand the new usage examine the programs:
+
+  examples\classic.rexx\preparedStmtRtn.rex
+  examples\classic.rexx\pullColumnDataRtn.rex
+
+  both of which are heavily commented.
+
+  * The first argument to ooSQLitleMutex::new(), the mutex type
+  argument, was required.  This has changed to be optional, with
+  MUTEX_FAST being the default.
+
+  * The ooSQLiteStmt::errMsg attribute has been renamed to lastErrMsg.
+
+
+  Enhancements:
+  -------------
+
+  * The .ooSQLiteBackup class has been added.
+
+  * The ooSQLiteConnection::backupDestination attribute has been added.
+
+  * The ooSQLiteStmt::lastErrCode attribute has been added.
+
+  * The oosqlBackupInit(), oosqlBackupFinish(), oosqlBackupPageCount(),
+  oosqlRemaining(), and oosqlBackupStep() functions have been added.
+  This gives the Rexx programmer using the 'classic Rexx' interface
+  complete access to the SQLite online backup API.
+
+  * The oosqlIsHandleNull() function has been added.
+
+  * The oosqlColumnIndex() function has been added.
+
+
+
+Changes since ooSQLite Version 1.0.0.7833 (Preview)
+------------------------------------------------------------------------
+
+  Documentation:
+  --------------
+
+  A rough draft of the ooSQLite Reference manual is now available in the
+  doc directory.  The reference lists all classes, methods, constants,
+  and public routines in ooSQLite.  The entries are almost all
+  "template" entries, not yet filled in.
+
+
+  Examples (examples directory):
+  -----------------------------
+
+  * The pullColumnData.rex example is added.
+
+
+  Examples (testing directory):
+  -----------------------------
+
+  The examples in the testing directory have been used by the developers
+  during implementation.  A few of these programs are made available to
+  help people get started with ooSQLite.  In general these are not well
+  documented and will eventually be removed from the distribution as
+  more examples are added to the examples directory.
+
+  The following programs have been added to the testing directory:
+
+  * execTestA.rex
+
+  * execTestD.rex
+
+  * execTestNoExec.rex
+
+  * execTestS.rex
+
+  * pragmaGetTest.rex
+
+  * pragmaSetTest.rex
+
+  * pragmaSpecialTest.rex
+
+  * pragmaTriggerTest.rex
+
+  * statusTest.rex
+
+  * versionTest.rex
+
+
+  Bugs:
+  ----
+
+  No bugs found in this cycle.
+
+
+  Changes in implementation:
+  --------------------------
+
+  * The ooSQLiteDB class is renamed to the ooSQLiteConnection class.
+
+  * The ooSQL class is renamed to the ooSQLiteConstants class.
+
+
+  Enhancements:
+  -------------
+
+  * The ooSQLiteConstants class is made a mixin class and is inherited
+  by the ooSQLite, ooSQLiteConnection, ooSQLiteStmt, and ooSQLiteMutex
+  classes.
+
+  * Functionality is added that allows the programmer to specify the
+  format of the result set returned from a SELECT query.  These 3
+  formats are currently available: an Array of Directories, an Array of
+  Arrays, or a Stem of Stems.
+
+  The default is an Array of Directories.  The programmer can change the
+  default format on a process-wide, database-wide, or prepared-statement
+  wide basis.
+
+  The default format can be over-ridden using an argument to the
+  ooSQLiteConnection::exec() method and by an argument to the
+  oosqlExec() public routine.
+
+  * The ooSQLiteStmt::columnIndex() has been added
+
+
+
+                 ooSQLite Version 1.0.0.7833 (Preview)
+                 =====================================
+
+
+Changes ... No changes, 1.0.0.7833 was first available version.
+------------------------------------------------------------------------
+
+
