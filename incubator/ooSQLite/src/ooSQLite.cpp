@@ -4362,6 +4362,46 @@ RexxMethod1(int, oosqlconn_interrupt, CSELF, pCSelf)
 }
 
 
+#ifdef SQLITE_HAS_CODEC
+/** ooSQLiteConnection::key()
+ *
+ *  @param key      [required]   The encryption key to use.
+ *
+ *  @return  Returns one of the SQLite status code constants.
+ */
+RexxMethod2(int, oosqlconn_key, CSTRING, key, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return SQLITE_ERROR;
+    }
+
+    return sqlite3_key(pConn->db, key, (int)strlen(key));
+}
+
+#else
+
+/** ooSQLiteConnection::key()
+ *
+ *  @param key      [required]   The encryption key to use.
+ *
+ *  @return  Returns one of the SQLite status code constants.
+ */
+RexxMethod2(int, oosqlconn_key, CSTRING, key, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return SQLITE_ERROR;
+    }
+
+    // Think we should raise an exception here.
+    return SQLITE_ERROR;
+}
+#endif
+
+
 /** ooSQLiteConnection::lastInsertRowID()
  *
  *
@@ -4645,6 +4685,45 @@ RexxMethod5(RexxObjectPtr, oosqlconn_progressHandler, RexxObjectPtr, callbackObj
 
     return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, progressHandler, instructions);
 }
+
+
+#ifdef SQLITE_HAS_CODEC
+/** ooSQLiteConnection::rekey()
+ *
+ *  @param key      [required]   The new encryption key to use.
+ *
+ *  @return  Returns one of the SQLite status code constants.
+ */
+RexxMethod2(int, oosqlconn_rekey, CSTRING, key, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return SQLITE_ERROR;
+    }
+
+    return sqlite3_rekey(pConn->db, key, (int)strlen(key));
+}
+
+#else
+
+/** ooSQLiteConnection::rekey()
+ *
+ *  @param key      [required]   The new encryption key to use.
+ *
+ *  @return  Returns one of the SQLite status code constants.
+ */
+RexxMethod2(int, oosqlconn_rekey, CSTRING, key, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return SQLITE_ERROR;
+    }
+
+    return SQLITE_ERROR;
+}
+#endif
 
 
 /** ooSQLiteConnection::rollbackHook()
@@ -8646,6 +8725,42 @@ RexxRoutine1(logical_t, oosqlIsHandleNull_rtn, POINTER, handle)
     return 0;
 }
 
+#ifdef SQLITE_HAS_CODEC
+/** oosqlKey()
+ *
+ *  Provides an encryption key for use to access a database.
+ *
+ *  @param db     [required] The database connection the statement is for.
+ *
+ *  @param key    [required] The encryption key to use.
+ *
+ *  @return  Returns one of the SQLite status code constants.
+ */
+RexxRoutine2(int, oosqlKey_rtn, POINTER, _db, CSTRING, key)
+{
+    sqlite3 *db = routineDB(context, _db, 1);
+    if ( db == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_key(db, key, (int)strlen(key));
+}
+
+#else
+
+RexxRoutine2(int, oosqlKey_rtn, POINTER, _db, CSTRING, key)
+{
+    sqlite3 *db = routineDB(context, _db, 1);
+    if ( db == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return SQLITE_MISUSE;
+}
+#endif
+
 /** oosqlLastInsertRowID()
  *
  *
@@ -9139,6 +9254,53 @@ RexxRoutine4(RexxObjectPtr, oosqlProgressHandler_rtn, POINTER, _db, CSTRING, rtn
 
     return doCallbackSetupRtn(context, db, rtnName, userData, progressHandler, instructions);
 }
+
+
+#ifdef SQLITE_HAS_CODEC
+/** oosqlRekey()
+ *
+ *  Prevides a new encryption key for use to access a database.
+ *
+ *  @param db     [required] The database connection the statement is for.
+ *
+ *  @param key    [required] The new encryption key to use.
+ *
+ *  @return  Returns one of the SQLite status code constants.
+ */
+RexxRoutine2(int, oosqlRekey_rtn, POINTER, _db, CSTRING, key)
+{
+    sqlite3 *db = routineDB(context, _db, 1);
+    if ( db == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_rekey(db, key, (int)strlen(key));
+}
+
+#else
+
+/** oosqlRekey()
+ *
+ *  Prevides a new encryption key for use to access a database.
+ *
+ *  @param db     [required] The database connection the statement is for.
+ *
+ *  @param key    [required] The new encryption key to use.
+ *
+ *  @return  Returns one of the SQLite status code constants.
+ */
+RexxRoutine2(int, oosqlRekey_rtn, POINTER, _db, CSTRING, key)
+{
+    sqlite3 *db = routineDB(context, _db, 1);
+    if ( db == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return SQLITE_MISUSE;
+}
+#endif
 
 /** oosqlReleaseMemory()
  *
@@ -9663,6 +9825,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlFinalize_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlGetAutocommit_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlInterrupt_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlIsHandleNull_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlKey_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLastInsertRowID_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLibVersion_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLimit_rtn);
@@ -9678,6 +9841,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlOpen_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlPrepare_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlProfile_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlProgressHandler_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlRekey_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlReleaseMemory_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlReset_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlRollbackHook_rtn);
@@ -9757,6 +9921,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlGetAutocommit_rtn,        oosqlGetAutocommit_rtn),
     REXX_TYPED_ROUTINE(oosqlInterrupt_rtn,            oosqlInterrupt_rtn),
     REXX_TYPED_ROUTINE(oosqlIsHandleNull_rtn,         oosqlIsHandleNull_rtn),
+    REXX_TYPED_ROUTINE(oosqlKey_rtn,                  oosqlKey_rtn),
     REXX_TYPED_ROUTINE(oosqlLastInsertRowID_rtn,      oosqlLastInsertRowID_rtn),
     REXX_TYPED_ROUTINE(oosqlLibVersion_rtn,           oosqlLibVersion_rtn),
     REXX_TYPED_ROUTINE(oosqlLimit_rtn,                oosqlLimit_rtn),
@@ -9772,6 +9937,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlPrepare_rtn,              oosqlPrepare_rtn),
     REXX_TYPED_ROUTINE(oosqlProfile_rtn,              oosqlProfile_rtn),
     REXX_TYPED_ROUTINE(oosqlProgressHandler_rtn,      oosqlProgressHandler_rtn),
+    REXX_TYPED_ROUTINE(oosqlRekey_rtn,                oosqlRekey_rtn),
     REXX_TYPED_ROUTINE(oosqlReleaseMemory_rtn,        oosqlReleaseMemory_rtn),
     REXX_TYPED_ROUTINE(oosqlReset_rtn,                oosqlReset_rtn),
     REXX_TYPED_ROUTINE(oosqlRollbackHook_rtn,         oosqlRollbackHook_rtn),
@@ -9853,12 +10019,14 @@ REXX_METHOD_PROTOTYPE(oosqlconn_exec);
 REXX_METHOD_PROTOTYPE(oosqlconn_extendedResultCodes);
 REXX_METHOD_PROTOTYPE(oosqlconn_getAutoCommit);
 REXX_METHOD_PROTOTYPE(oosqlconn_interrupt);
+REXX_METHOD_PROTOTYPE(oosqlconn_key);
 REXX_METHOD_PROTOTYPE(oosqlconn_lastInsertRowID);
 REXX_METHOD_PROTOTYPE(oosqlconn_limit);
 REXX_METHOD_PROTOTYPE(oosqlconn_nextStmt);
 REXX_METHOD_PROTOTYPE(oosqlconn_pragma);
 REXX_METHOD_PROTOTYPE(oosqlconn_profile);
 REXX_METHOD_PROTOTYPE(oosqlconn_progressHandler);
+REXX_METHOD_PROTOTYPE(oosqlconn_rekey);
 REXX_METHOD_PROTOTYPE(oosqlconn_rollbackHook);
 REXX_METHOD_PROTOTYPE(oosqlconn_setAuthorizer);
 REXX_METHOD_PROTOTYPE(oosqlconn_tableColumnMetadata);
@@ -10015,12 +10183,14 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlconn_extendedResultCodes,        oosqlconn_extendedResultCodes),
     REXX_METHOD(oosqlconn_getAutoCommit,              oosqlconn_getAutoCommit),
     REXX_METHOD(oosqlconn_interrupt,                  oosqlconn_interrupt),
+    REXX_METHOD(oosqlconn_key,                        oosqlconn_key),
     REXX_METHOD(oosqlconn_lastInsertRowID,            oosqlconn_lastInsertRowID),
     REXX_METHOD(oosqlconn_limit,                      oosqlconn_limit),
     REXX_METHOD(oosqlconn_nextStmt,                   oosqlconn_nextStmt),
     REXX_METHOD(oosqlconn_pragma,                     oosqlconn_pragma),
     REXX_METHOD(oosqlconn_profile,                    oosqlconn_profile),
     REXX_METHOD(oosqlconn_progressHandler,            oosqlconn_progressHandler),
+    REXX_METHOD(oosqlconn_rekey,                      oosqlconn_rekey),
     REXX_METHOD(oosqlconn_rollbackHook,               oosqlconn_rollbackHook),
     REXX_METHOD(oosqlconn_setAuthorizer,              oosqlconn_setAuthorizer),
     REXX_METHOD(oosqlconn_tableColumnMetadata,        oosqlconn_tableColumnMetadata),
