@@ -1403,6 +1403,9 @@ static char zHelp[] =
 #ifdef SQLITE_ENABLE_IOTRACE
   ".iotrace FILE          Enable I/O diagnostic logging to FILE\n"
 #endif
+#ifdef SQLITE_HAS_CODEC
+  ".key STRING            Encryption key\n"
+#endif
 #ifndef SQLITE_OMIT_LOAD_EXTENSION
   ".load FILE ?ENTRY?     Load an extension library\n"
 #endif
@@ -1422,6 +1425,9 @@ static char zHelp[] =
   ".prompt MAIN CONTINUE  Replace the standard prompts\n"
   ".quit                  Exit this program\n"
   ".read FILENAME         Execute SQL in FILENAME\n"
+#ifdef SQLITE_HAS_CODEC
+  ".rekey STRING          New encryption key\n"
+#endif
   ".restore ?DB? FILE     Restore content of DB (default \"main\") from FILE\n"
   ".schema ?TABLE?        Show the CREATE statements\n"
   "                         If TABLE specified, only show tables matching\n"
@@ -1969,6 +1975,21 @@ static int do_meta_command(char *zLine, struct callback_data *p){
   }else
 #endif
 
+#ifdef SQLITE_HAS_CODEC
+  if( c=='k' && strncmp(azArg[0], "key", n)==0 && nArg==2 ){
+    const char *zKey;
+    char *zErrMsg = 0;
+    open_db(p);
+    zKey = azArg[1];
+    rc = sqlite3_key(p->db, azArg[1], (int)strlen(zKey));
+    if( rc!=SQLITE_OK ){
+      fprintf(stderr, "Error: %s\n", zErrMsg);
+      sqlite3_free(zErrMsg);
+      rc = 1;
+    }
+  }else
+#endif
+
 #ifndef SQLITE_OMIT_LOAD_EXTENSION
   if( c=='l' && strncmp(azArg[0], "load", n)==0 && nArg>=2 ){
     const char *zFile, *zProc;
@@ -2093,6 +2114,21 @@ static int do_meta_command(char *zLine, struct callback_data *p){
       fclose(alt);
     }
   }else
+
+#ifdef SQLITE_HAS_CODEC
+  if( c=='r' && strncmp(azArg[0], "rekey", n)==0 && nArg==2 ){
+    const char *zKey;
+    char *zErrMsg = 0;
+    open_db(p);
+    zKey = azArg[1];
+    rc = sqlite3_rekey(p->db, azArg[1], (int)strlen(zKey));
+    if( rc!=SQLITE_OK ){
+      fprintf(stderr, "Error: %s\n", zErrMsg);
+      sqlite3_free(zErrMsg);
+      rc = 1;
+    }
+  }else
+#endif
 
   if( c=='r' && n>=3 && strncmp(azArg[0], "restore", n)==0 && nArg>1 && nArg<4){
     const char *zSrcFile;

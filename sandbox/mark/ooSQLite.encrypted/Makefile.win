@@ -56,10 +56,10 @@
 
 #REXX_HOME = C:\work.ooRexx\wc\main\Win32Dbg   # For example
 
-# Define RELEASE on the command line, or here, to build a non-debug version.  By
-# default debug versions are built.  I.e. nMake RELEASE=1 /F Makefile.win
+# Define DEBUG on the command line, or here, to build a debug version.  By
+# default non-debug (release) versions are built.
+# I.e. nMake DEBUG=1 /F Makefile.win
 #RELEASE = 1
-
 
 !IF DEFINED(REXX_HOME)
 INCLUDE = $(INCLUDE);$(REXX_HOME)\api
@@ -67,7 +67,7 @@ LIB = $(LIB);$(REXX_HOME)\api
 !ENDIF
 
 REXX_LIBS = rexx.lib rexxapi.lib
-WIN_LIBS  = user32.lib
+WIN_LIBS  = user32.lib Advapi32.lib
 
 # Generate and include the version information.  Quit if there is an error.
 !IF [src\platform\windows\generateVersionFile.bat] != 0
@@ -106,42 +106,54 @@ WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 VERDEFS = /DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) /DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) /DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) /DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) /DOOSQLITE_VER_STRING=$(OOSQLITE_VER_STR) /DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
 EXTRAINCLUDE = /I src\sqlite
 
-SQLITEFLAGS=/DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_MEMORY_MANAGEMENT
+SQLITEFLAGS=/DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_MEMORY_MANAGEMENT /DSQLITE_HAS_CODEC=1
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS)
 
 # The linker flag /OPT:REF removes unreferenced functions and data.  In order for
 # /OPT:REF to work, the code must be compiled with /Gy.  /Gy is automatically turned
 # on with /Zi.  /OPT:REF is the default unless /DEBUG is specified.
-!IF DEFINED(RELEASE)
-
-OUT_DIR = build\release
-BIN_DIR = bin\windows
-
-MISCDEFS = /D:_X86_ /DWIN32 /DNDEBUG /DNULL=0
-CFLAGS = /nologo /EHsc /O2 /Gr /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) $(MISCDEFS) /c
-LFLAGS_EXE = /nologo /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
-LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooSQLite.def /DLL
-
-!ELSE
+!IF DEFINED(DEBUG)
 
 OUT_DIR = build\debug
 BIN_DIR = bin.dbg
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNULL=0 /DOOSQLDBG
 CFLAGS =  /nologo /EHsc /Zi /Od /Gr /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb $(BASEFLAGS) $(MISCDEFS) /c
+BOTAN_CFLAGS =  /nologo /EHs /Zi /Od /Gr /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
+
 LFLAGS_EXE = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
 LFLAGS_DLL = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooSQLite.def /DLL
+
+!ELSE
+
+OUT_DIR = build\release
+BIN_DIR = bin\windows
+
+MISCDEFS = /D:_X86_ /DWIN32 /DNDEBUG /DNULL=0
+CFLAGS = /nologo /EHsc /O2 /Gr /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) $(MISCDEFS) /c
+BOTAN_CFLAGS = /nologo /EHs /O2 /Gr /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
+
+LFLAGS_EXE = /nologo /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
+LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooSQLite.def /DLL
 
 !ENDIF
 
 # What we want to build.  ooSQLite3.exe is the command line version of SQLite.
 # ooSQLite3.exe should be no different than what you can download from the
-# SQLite website as sqlite3.exe, it has no ooRexx addtitions.
+# SQLite website as sqlite3.exe, except that it has a few defaults changed.
 all: $(BIN_DIR)\oosqlite.dll $(BIN_DIR)\ooSQLite3.exe $(BIN_DIR)\ooSQLite.cls
 
 
 $(OUT_DIR)\sqlite3.obj: src\sqlite\sqlite3.c src\sqlite\sqlite3.hpp Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\sqlite3.c
+
+# The encryption codec
+$(OUT_DIR)\codec.obj: src\sqlite\codec.cpp src\sqlite\codec.h src\sqlite\botan_all.h Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\codec.cpp
+
+# The botan library as an amalgamation file
+$(OUT_DIR)\botan_all.obj: src\sqlite\botan_all.cpp src\sqlite\botan_all.h Makefile.win
+  cl $(BOTAN_CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\botan_all.cpp
 
 $(OUT_DIR)\shell.obj: src\sqlite\shell.c src\sqlite\sqlite3.hpp Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\shell.c
@@ -152,11 +164,11 @@ $(OUT_DIR)\ooSQLite.obj: src\ooSQLite.cpp src\ooSQLite.hpp src\APICommon.hpp src
 $(OUT_DIR)\APICommon.obj: src\APICommon.cpp src\APICommon.hpp Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\APICommon.cpp
 
-$(OUT_DIR)\oosqlite.dll: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj
-    link $(LFLAGS_DLL) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj -out:$(OUT_DIR)\oosqlite.dll
+$(OUT_DIR)\oosqlite.dll: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\codec.obj $(OUT_DIR)\botan_all.obj
+    link $(LFLAGS_DLL) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\codec.obj $(OUT_DIR)\botan_all.obj -out:$(OUT_DIR)\oosqlite.dll
 
-$(OUT_DIR)\ooSQLite3.exe: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\shell.obj
-    link $(LFLAGS_EXE) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\shell.obj -out:$(OUT_DIR)\ooSQLite3.exe
+$(OUT_DIR)\ooSQLite3.exe: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\shell.obj $(OUT_DIR)\codec.obj $(OUT_DIR)\botan_all.obj
+    link $(LFLAGS_EXE) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\shell.obj $(OUT_DIR)\codec.obj $(OUT_DIR)\botan_all.obj -out:$(OUT_DIR)\ooSQLite3.exe
 
 $(BIN_DIR)\oosqlite.dll: $(OUT_DIR)\oosqlite.dll
     copy $(OUT_DIR)\oosqlite.dll $(BIN_DIR) 1>nul 2>&1
