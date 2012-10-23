@@ -19,11 +19,11 @@
 #include <utility>
 
 /*
-* This file was automatically generated Sun Oct 21 15:32:42 2012 UTC by
+* This file was automatically generated Mon Oct 22 12:21:39 2012 UTC by
 * Administrator@Kite running 'configure.py --cc=msvc --cpu=amd64 --disable-shared --gen-amalgamation'
 *
 * Target
-*  - Compiler: cl /MD /O2
+*  - Compiler: cl /MD /O2 
 *  - Arch: x86_64/x86_64
 *  - OS: windows
 */
@@ -38,7 +38,7 @@
 #define BOTAN_DISTRIBUTION_INFO "unspecified"
 
 #ifndef BOTAN_DLL
-  #define BOTAN_DLL
+  #define BOTAN_DLL 
 #endif
 
 /* Chunk sizes */

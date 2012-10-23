@@ -885,20 +885,28 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
     char buf[512];
 
     size_t bits = 32;
-    char   *encrypt = "Encryption disabled";
+    char   *encrypt = "";
 
 #ifdef __REXX64__
     bits = 64;
 #endif
 
 #ifdef SQLITE_HAS_CODEC
-    encrypt = "Encryption enabled";
+    encrypt = "(Encryption enabled)";
 #endif
 
     if ( full )
     {
-        snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%d bit) (%s)\n",
-                 OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
+        if ( strlen(encrypt) > 0 )
+        {
+            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%d bit) %s\n",
+                     OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
+        }
+        else
+        {
+            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%d bit)\n",
+                     OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
+        }
 
         char buf1[256];
 
@@ -926,8 +934,16 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
         }
         else
         {
-            snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%d bit) (%s)\n",
-                     OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
+            if ( strlen(encrypt) > 0 )
+            {
+                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%d bit) %s\n",
+                         OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
+            }
+            else
+            {
+                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%d bit)\n",
+                         OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
+            }
         }
     }
 
@@ -2628,7 +2644,7 @@ RexxMethod0(logical_t, oosql_encryptionAvailable_cls)
 #ifdef SQLITE_HAS_CODEC
     return 1;
 #else
-    return 0:
+    return 0;
 #endif
 }
 
@@ -7347,7 +7363,7 @@ RexxRoutine0(logical_t, ooSQLiteEncryptionAvailable_rtn)
 #ifdef SQLITE_HAS_CODEC
     return 1;
 #else
-    return 0:
+    return 0;
 #endif
 }
 

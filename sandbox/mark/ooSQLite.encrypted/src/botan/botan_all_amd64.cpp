@@ -21454,7 +21454,9 @@ void Buffered_Filter::write(const byte input[], size_t input_size)
       input_size -= to_copy;
 
       size_t total_to_consume =
-         round_down(std::min(buffer_pos, buffer_pos + input_size - final_minimum), main_block_mod);
+         round_down(std::min(buffer_pos,
+                             buffer_pos + input_size - final_minimum),
+                    main_block_mod);
 
       buffered_block(&buffer[0], total_to_consume);
 

@@ -43,16 +43,32 @@
 # automatically added to the LIB and INCLUDE environment variables by this make
 # file.
 #
-# Otherwise, either uncomment the next line and define the correct REXX_HOME, or
-# be sure the LIB and INCLUDE environment variables allow the compiler to find
-# the ooRexx native API headers and libraries.
+# Otherwise, either uncomment the REXX_HOME line and define the correct
+# REXX_HOME, or be sure the LIB and INCLUDE environment variables allow the
+#compiler to find  the ooRexx native API headers and libraries.
 #
 # On a build system for ooRexx, you can set REXX_HOME to point to Win32Dbg or
 # Win32Rel, as appropriate, in your build directory.  For this to work, you
 # will have to have built the interpreter.
 #
+# A command line svn is needed to automatically get the correct svn revision
+# into the compiled binary.  If a command line svn is not available, the build
+# will work, but the svn revision will be 0.  If you are building yourself, you
+# can build one time, will which generate a file: src\ooSQLite.ver.incl.  You
+# can then edit this file manually to set the svn revision number.  Edit:
+#
+#   OOSQLITE_VER_STR="1.0.0.0"
+#   SVN_REVSION=0
+#
+# to, for example:
+#
+#   OOSQLITE_VER_STR="1.0.0.8524"
+#   SVN_REVSION=8524
+#
 # A working Rexx and zip.exe is needed on the system to build the distribution
 # file.  (The target is 'dist')
+#
+# Unncomment the next line and define the correct REXX_HOME, if needed:
 
 #REXX_HOME = C:\work.ooRexx\wc\main\Win32Dbg   # For example
 
@@ -75,6 +91,12 @@ WIN_LIBS  = user32.lib Advapi32.lib
 !ENDIF
 
 !include "src\ooSQLite.ver.incl"
+
+# Generate the correct botan_all.* files.  Quit if there is an error.
+!IF [src\platform\windows\fixUpBotanFiles.bat] != 0
+!  ERROR Build error: could not pick correct botan_all.* files.
+!ENDIF
+
 
 PLATFORM_DIR = src\platform\windows
 
@@ -119,7 +141,7 @@ BIN_DIR = bin.dbg
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNULL=0 /DOOSQLDBG
 CFLAGS =  /nologo /EHsc /Zi /Od /Gr /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb $(BASEFLAGS) $(MISCDEFS) /c
-BOTAN_CFLAGS =  /nologo /EHs /Zi /Od /Gr /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
+BOTAN_CFLAGS =  /nologo /EHs /Zi /Od /Gr /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb /wd4244 /wd4267 $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
 
 LFLAGS_EXE = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
 LFLAGS_DLL = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooSQLite.def /DLL
@@ -131,7 +153,7 @@ BIN_DIR = bin\windows
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNDEBUG /DNULL=0
 CFLAGS = /nologo /EHsc /O2 /Gr /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) $(MISCDEFS) /c
-BOTAN_CFLAGS = /nologo /EHs /O2 /Gr /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
+BOTAN_CFLAGS = /nologo /EHs /O2 /Gr /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT /wd4244 /wd4267 $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
 
 LFLAGS_EXE = /nologo /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
 LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooSQLite.def /DLL
