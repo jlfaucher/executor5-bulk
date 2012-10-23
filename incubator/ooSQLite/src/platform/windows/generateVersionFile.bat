@@ -59,9 +59,9 @@ for /F "eol=# delims== tokens=1,2,3*" %%i in (ooSQLite.ver) do (
 set SVN_REV=NONE
 
 for /F "usebackq tokens=1,2,3,4*" %%i in (`svn info`) do if (%%i) == (Revision:) set SVN_REV=%%j
-echo SVN_REV %SVN_REV%
 
-if %SVN_REV% == "NONE" goto NOSVN
+REM If we didn't get a svn revision number, go to NOSVN and fake it.
+if %SVN_REV% == NONE goto NOSVN
 
 REM  Now write out ooSQLite.ver.incl
 if exist ooSQLite.ver.incl del /F /Q ooSQLite.ver.incl
@@ -85,19 +85,23 @@ echo SVN_REVSION=%SVN_REV%>> ooSQLite.ver.incl
 goto DONE_OK
 
 :NOSVN
-echo In nosvn label
-if exist ooSQLite.ver.incl dir ooSQLite.ver.incl
-if exist ooSQLite.ver.incl (
-   echo In if exist part
-   for /F "eol=# delims== tokens=1,2,3*" %%i in (ooSQLite.ver.incl) do (
-    if %%i == OOSQLITE_BLD_LVL set BLD_NUM=%%j
-    if %%i == SVN_REVISION set SVN_REV=%%j
-   )
-) else (
-  echo should be copying file
-  copy ooSQLite.ver ooSQLite.ver.incl 1>nul 2>&1
-  set SVN_REV=%BLD_NUM%
-  echo SVN_REVSION=%SVN_REV%>> ooSQLite.ver.incl
+if NOT exist ooSQLite.ver.incl (
+  for /F "delims== tokens=1,2,3*" %%i in (ooSQLite.ver) do (
+    if %%i == OOSQLITE_BLD_LVL (
+      echo %%i=%%j>> ooSQLite.ver.incl
+    ) else (
+      if %%i == OOSQLITE_VER_STR (
+        echo %%i="%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%">> ooSQLite.ver.incl
+      ) else (
+        if %%jx == x (
+          echo %%i>> ooSQLite.ver.incl
+        ) else (
+          echo %%i=%%j>> ooSQLite.ver.incl
+        )
+      )
+    )
+  )
+  echo SVN_REVSION=0 >> ooSQLite.ver.incl
 )
 
 goto DONE_OK

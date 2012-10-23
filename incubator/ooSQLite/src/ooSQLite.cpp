@@ -885,15 +885,28 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
     char buf[512];
 
     size_t bits = 32;
+    char   *encrypt = "";
 
 #ifdef __REXX64__
     bits = 64;
 #endif
 
+#ifdef SQLITE_HAS_CODEC
+    encrypt = "(Encryption enabled)";
+#endif
+
     if ( full )
     {
-        snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%d bit)\n",
-                 OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
+        if ( strlen(encrypt) > 0 )
+        {
+            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%d bit) %s\n",
+                     OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
+        }
+        else
+        {
+            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%d bit)\n",
+                     OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
+        }
 
         char buf1[256];
 
@@ -921,8 +934,16 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
         }
         else
         {
-            snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%d bit)\n",
-                     OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
+            if ( strlen(encrypt) > 0 )
+            {
+                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%d bit) %s\n",
+                         OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
+            }
+            else
+            {
+                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%d bit)\n",
+                         OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
+            }
         }
     }
 
@@ -2611,6 +2632,20 @@ RexxMethod1(logical_t, oosql_compileOptionUsed_cls, CSTRING, name)
 RexxMethod1(logical_t, oosql_complete_cls, CSTRING, sql)
 {
     return sqlite3_complete(sql);
+}
+
+/** ooSQLite::encryptionAvailable()  [class method]
+ *
+ *  Returns true if the Boton crypto library is built in, otherwise false.
+ *
+ */
+RexxMethod0(logical_t, oosql_encryptionAvailable_cls)
+{
+#ifdef SQLITE_HAS_CODEC
+    return 1;
+#else
+    return 0;
+#endif
 }
 
 /** ooSQLite::enquote  [class method]
@@ -7318,6 +7353,20 @@ static RexxObjectPtr doCallbackSetupRtn(RexxCallContext *c, sqlite3 *db, CSTRING
 
 
 
+/** ooSQLiteEncryptionAvailable()
+ *
+ *  Returns true if the Boton crypto library is built in, otherwise false.
+ *
+ */
+RexxRoutine0(logical_t, ooSQLiteEncryptionAvailable_rtn)
+{
+#ifdef SQLITE_HAS_CODEC
+    return 1;
+#else
+    return 0;
+#endif
+}
+
 /** ooSQLiteMerge()
  *
  *  Performs a bitwise or ( a | b ) on the arguments provided.
@@ -9862,9 +9911,10 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlTest_rtn);
 
 RexxRoutineEntry ooSQLite_functions[] =
 {
-    REXX_TYPED_ROUTINE(ooSQLiteEnquote_rtn,           ooSQLiteEnquote_rtn),
-    REXX_TYPED_ROUTINE(ooSQLiteMerge_rtn,             ooSQLiteMerge_rtn),
-    REXX_TYPED_ROUTINE(ooSQLiteVersion_rtn,           ooSQLiteVersion_rtn),
+    REXX_TYPED_ROUTINE(ooSQLiteEncryptionAvailable_rtn, ooSQLiteEncryptionAvailable_rtn),
+    REXX_TYPED_ROUTINE(ooSQLiteEnquote_rtn,             ooSQLiteEnquote_rtn),
+    REXX_TYPED_ROUTINE(ooSQLiteMerge_rtn,               ooSQLiteMerge_rtn),
+    REXX_TYPED_ROUTINE(ooSQLiteVersion_rtn,             ooSQLiteVersion_rtn),
 
     REXX_TYPED_ROUTINE(oosqlBackupFinish_rtn,         oosqlBackupFinish_rtn),
     REXX_TYPED_ROUTINE(oosqlBackupInit_rtn,           oosqlBackupInit_rtn),
@@ -9973,6 +10023,7 @@ REXX_METHOD_PROTOTYPE(oosql_setRecordFormat_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionGet_cls);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionUsed_cls);
 REXX_METHOD_PROTOTYPE(oosql_complete_cls);
+REXX_METHOD_PROTOTYPE(oosql_encryptionAvailable_cls);
 REXX_METHOD_PROTOTYPE(oosql_enquote_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersion_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersionNumber_cls);
@@ -10137,6 +10188,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosql_compileOptionGet_cls,           oosql_compileOptionGet_cls),
     REXX_METHOD(oosql_compileOptionUsed_cls,          oosql_compileOptionUsed_cls),
     REXX_METHOD(oosql_complete_cls,                   oosql_complete_cls),
+    REXX_METHOD(oosql_encryptionAvailable_cls,        oosql_encryptionAvailable_cls),
     REXX_METHOD(oosql_enquote_cls,                    oosql_enquote_cls),
     REXX_METHOD(oosql_libVersion_cls,                 oosql_libVersion_cls),
     REXX_METHOD(oosql_libVersionNumber_cls,           oosql_libVersionNumber_cls),
