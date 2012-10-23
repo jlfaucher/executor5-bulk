@@ -48,6 +48,7 @@
 ::method addTool unguarded external "LIBRARY oodialog tt_addTool"
 ::method addToolEx unguarded external "LIBRARY oodialog tt_addToolEx"
 ::method addToolRect unguarded external "LIBRARY oodialog tt_addToolRect"
+::method adjustRect unguarded external "LIBRARY oodialog tt_adjustRect"
 ::method getCurrentToolInfo unguarded external "LIBRARY oodialog tt_getCurrentToolInfo"
 ::method getToolInfo unguarded external "LIBRARY oodialog tt_getToolInfo"
 ::method popUp unguarded external "LIBRARY oodialog tt_popUp"

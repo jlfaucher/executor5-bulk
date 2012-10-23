@@ -246,6 +246,100 @@ static uint32_t keyword2ttfFlags(CSTRING flags)
 
 
 /**
+ * Generic function to fill in the hwnd and uID fields of the tool info struct.
+ * Called from several of the methods that deal with tool tips.
+ *
+ * If rxObj is a ToolInfo object, then we have all the information we need.
+ *
+ * When rxObj is not a ToolInfo object, then if uID is present than we assume
+ * rxObj is a dialog object and uID is some type of resource ID. Otherwise rxObj
+ * must be a dialog control.
+ *
+ * @param c
+ * @param rxObj
+ * @param uID
+ * @param pTI
+ * @param hwndSupplier
+ * @param uIDSupplier
+ *
+ * @return True on success, false on failure.
+ *
+ * @remarks  In some cases this function is invoked when instantiating a new
+ *           ToolInfo object.  In those cases, it is convenient to return the
+ *           hwndSupplier and uIDSupplier, and rxObj will never be a Rexx
+ *           ToolInfo object.
+ *
+ *           When rxObj is already a Rexx ToolInfo, then the caller has no need
+ *           of hwndSupplier or uIDSupplier and so we completely ignore
+ *           hwndSupplier and uIDSupplier.
+ */
+bool genericToolID(RexxMethodContext *c, RexxObjectPtr rxObj, RexxObjectPtr uID, LPTOOLINFO pTI,
+                   RexxObjectPtr *hwndSupplier, RexxObjectPtr *uIDSupplier)
+{
+    bool success = false;
+
+    if ( c->IsOfType(rxObj, "TOOLINFO") )
+    {
+        LPTOOLINFO pToolInfo = (LPTOOLINFO)c->ObjectToCSelf(rxObj);
+
+        pTI->hwnd = pToolInfo->hwnd;
+        pTI->uId  = pToolInfo->uId;
+
+        success = true;
+        goto done_out;
+    }
+    else
+    {
+        if ( uID != NULLOBJECT )
+        {
+            if ( ! requiredClass(c->threadContext, rxObj, "PLAINBASEDIALOG", 1) )
+            {
+                goto done_out;
+            }
+            pCPlainBaseDialog pcpbd = dlgToCSelf(c, rxObj);
+
+            uint32_t id = oodResolveSymbolicID(c->threadContext, pcpbd->rexxSelf, uID, -1, 2, false);
+            if ( id == OOD_ID_EXCEPTION  )
+            {
+                goto done_out;
+            }
+
+            pTI->hwnd = pcpbd->hDlg;
+            pTI->uId  = id;
+
+            if ( hwndSupplier != NULL )
+            {
+                *hwndSupplier = rxObj;
+                *uIDSupplier  = uID;
+            }
+        }
+        else
+        {
+            if ( ! requiredClass(c->threadContext, rxObj, "DIALOGCONTROL", 1) )
+            {
+                goto done_out;
+            }
+            pCDialogControl pcdc = controlToCSelf(c, rxObj);
+
+            pTI->hwnd = pcdc->hDlg;
+            pTI->uId  = (UINT_PTR)pcdc->hCtrl;
+
+            if ( hwndSupplier != NULL )
+            {
+                *hwndSupplier = pcdc->oDlg;
+                *uIDSupplier  = rxObj;
+            }
+        }
+
+        success = true;
+    }
+
+done_out:
+    return success;
+}
+
+
+/**
  * Attempts to return a Rexx object that represens the proper ID for a tool tip
  * tool.
  *
@@ -536,13 +630,12 @@ RexxMethod2(logical_t, tt_addToolEx, RexxObjectPtr, toolInfo, CSELF, pCSelf)
         return FALSE;
     }
 
-    RexxMethodContext *c = context;
     if ( ! requiredClass(context->threadContext, toolInfo, "ToolInfo", 1) )
     {
         return FALSE;
     }
 
-    LPTOOLINFO pTI = (LPTOOLINFO)c->ObjectToCSelf(toolInfo);
+    LPTOOLINFO pTI = (LPTOOLINFO)context->ObjectToCSelf(toolInfo);
 
     return SendMessage(pcdc->hCtrl, TTM_ADDTOOL, 0, (LPARAM)pTI);
 }
@@ -625,6 +718,43 @@ RexxMethod7(logical_t, tt_addToolRect, RexxObjectPtr, dlg, RexxObjectPtr, rxID, 
         ti.lParam   = (LPARAM)userData;
     }
     return SendMessage(pcdc->hCtrl, TTM_ADDTOOL, 0, (LPARAM)&ti);
+}
+
+
+/** ToolTip::adjustRect()
+ *
+ *  Calculates a ToolTip control's text display rectangle from its window
+ *  rectangle, or the ToolTip window rectangle needed to display a specified
+ *  text display rectangle.
+ *
+ *  @param rect  [required] A Rectangle object used to specify the rectangle to
+ *               adjust.  On a successful return, the co-ordinates in the
+ *               rectangle will be adjusted as scecified byt the larger arguent.
+ *
+ *  @param larger  [optional] True or false to specify how the rectangle is
+ *                 adjusted.  If omitted, the default is false.
+ *
+ *                 If true, rect is used to specify a text-display rectangle and
+ *                 it receives the corresponding window rectangle.  The received
+ *                 rectangle is *larger* in this case.  If false, rect is used
+ *                 to specify a window rectangle and it receives the
+ *                 corresponding text display rectangle.
+ */
+RexxMethod3(logical_t, tt_adjustRect, RexxObjectPtr, _rect, logical_t, larger, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return FALSE;
+    }
+
+    PRECT r = rxGetRect(context, _rect, 1);
+    if ( r == NULL )
+    {
+        return FALSE;
+    }
+
+    return SendMessage(pcdc->hCtrl, TTM_ADJUSTRECT, larger, (LPARAM)r);
 }
 
 
@@ -765,42 +895,30 @@ RexxMethod2(int32_t, tt_setMaxTipWidth, int32_t, max, CSELF, pCSelf)
  *
  *
  */
-RexxMethod3(uint32_t, tt_trackActivate, RexxObjectPtr, toolID, OPTIONAL_logical_t, activate, CSELF, pCSelf)
+RexxMethod4(uint32_t, tt_trackActivate, RexxObjectPtr, toolID, OPTIONAL_RexxObjectPtr, uID,
+            OPTIONAL_logical_t, activate, CSELF, pCSelf)
 {
+    TOOLINFO ti = { sizeof(ti) };
+
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
     {
-        return FALSE;
+        goto done_out;
     }
 
-    if ( argumentOmitted(2) )
+    if ( ! genericToolID(context, toolID, uID, &ti, NULL, NULL) )
+    {
+        goto done_out;
+    }
+
+    if ( argumentOmitted(3) )
     {
         activate = TRUE;
     }
 
-    if ( context->IsOfType(toolID, "TOOLINFO") )
-    {
-        LPTOOLINFO pTI = (LPTOOLINFO)context->ObjectToCSelf(toolID);
+    SendMessage(pcdc->hCtrl, TTM_TRACKACTIVATE, activate, (LPARAM)&ti);
 
-        SendMessage(pcdc->hCtrl, TTM_TRACKACTIVATE, activate, (LPARAM)pTI);
-    }
-    else if ( context->IsOfType(toolID, "DIALOGCONTROL") )
-    {
-        pCDialogControl pcdcTool = controlToCSelf(context, toolID);
-
-        TOOLINFO ti = { sizeof(ti) };
-
-        ti.uId      = (UINT_PTR)pcdcTool->hCtrl;
-        ti.hwnd     = pcdc->hDlg;
-
-        SendMessage(pcdc->hCtrl, TTM_TRACKACTIVATE, activate, (LPARAM)&ti);
-    }
-    else
-    {
-        wrongClassListException(context->threadContext, 1, "ToolInfo or DialogControl", toolID);
-        return false;
-    }
-
+done_out:
     return 0;
 }
 
@@ -857,72 +975,6 @@ RexxMethod2(uint32_t, tt_trackPosition, ARGLIST, args, CSELF, pCSelf)
 #define TOOLINFO_HWND_OBJECT_VAR      "HWND_SUPPLYING_OBJECT"
 #define TOOLINFO_UID_OBJECT_VAR       "UID_SUPPLYING_OBJECT"
 
-
-/**
- * Generic function to fill in the hwnd and uID fiels of the tool info struct.
- * Called from several of the methods that deal with tool tips.
- *
- * If uID is present than we assume hwndObj is a dialog object and uID is some
- * type of resource ID.  Otherwise hwndObj must be a dialog control.
- *
- * @param c
- * @param hwndObj
- * @param uID
- * @param pTI
- *
- * @return bool
- */
-bool genericToolID(RexxMethodContext *c, RexxObjectPtr hwndObj, RexxObjectPtr uID, LPTOOLINFO pTI,
-                   RexxObjectPtr *hwndSupplier, RexxObjectPtr *uIDSupplier)
-{
-    bool success = false;
-
-    if ( uID != NULLOBJECT )
-    {
-        if ( ! requiredClass(c->threadContext, hwndObj, "PLAINBASEDIALOG", 1) )
-        {
-            goto done_out;
-        }
-        pCPlainBaseDialog pcpbd = dlgToCSelf(c, hwndObj);
-
-        uint32_t id = oodResolveSymbolicID(c->threadContext, pcpbd->rexxSelf, uID, -1, 2, false);
-        if ( id == OOD_ID_EXCEPTION  )
-        {
-            goto done_out;
-        }
-
-        pTI->hwnd = pcpbd->hDlg;
-        pTI->uId  = id;
-
-        if ( hwndSupplier != NULL )
-        {
-            *hwndSupplier = hwndObj;
-            *uIDSupplier  = uID;
-        }
-    }
-    else
-    {
-        if ( ! requiredClass(c->threadContext, hwndObj, "DIALOGCONTROL", 1) )
-        {
-            goto done_out;
-        }
-        pCDialogControl pcdc = controlToCSelf(c, hwndObj);
-
-        pTI->hwnd = pcdc->hDlg;
-        pTI->uId  = (UINT_PTR)pcdc->hCtrl;
-
-        if ( hwndSupplier != NULL )
-        {
-            *hwndSupplier = pcdc->oDlg;
-            *uIDSupplier  = hwndObj;
-        }
-    }
-
-    success = true;
-
-done_out:
-    return success;
-}
 
 /**
  * Allocates a buffer for the tool info struct and copies the specified text

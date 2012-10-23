@@ -1105,6 +1105,7 @@ REXX_METHOD_PROTOTYPE(tt_activate);
 REXX_METHOD_PROTOTYPE(tt_addTool);
 REXX_METHOD_PROTOTYPE(tt_addToolEx);
 REXX_METHOD_PROTOTYPE(tt_addToolRect);
+REXX_METHOD_PROTOTYPE(tt_adjustRect);
 REXX_METHOD_PROTOTYPE(tt_getCurrentToolInfo);
 REXX_METHOD_PROTOTYPE(tt_getToolInfo);
 REXX_METHOD_PROTOTYPE(tt_popUp);
@@ -2072,6 +2073,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tt_addTool,                     tt_addTool),
     REXX_METHOD(tt_addToolEx,                   tt_addToolEx),
     REXX_METHOD(tt_addToolRect,                 tt_addToolRect),
+    REXX_METHOD(tt_adjustRect,                  tt_adjustRect),
     REXX_METHOD(tt_getCurrentToolInfo,          tt_getCurrentToolInfo),
     REXX_METHOD(tt_getToolInfo,                 tt_getToolInfo),
     REXX_METHOD(tt_popUp,                       tt_popUp),
