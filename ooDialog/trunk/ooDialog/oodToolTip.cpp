@@ -758,6 +758,34 @@ RexxMethod3(logical_t, tt_adjustRect, RexxObjectPtr, _rect, logical_t, larger, C
 }
 
 
+/** ToolTip::delTool()
+ *
+ *
+ *  @return  Returns 0 always.
+ *
+ */
+RexxMethod3(uint32_t, tt_delTool, RexxObjectPtr, toolID, OPTIONAL_RexxObjectPtr, uID, CSELF, pCSelf)
+{
+    TOOLINFO ti = { sizeof(ti) };
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    if ( ! genericToolID(context, toolID, uID, &ti, NULL, NULL) )
+    {
+        goto done_out;
+    }
+
+    SendMessage(pcdc->hCtrl, TTM_DELTOOL, 0, (LPARAM)&ti);
+
+done_out:
+    return 0;
+}
+
+
 /** ToolTip::getCurrentToolInfo()
  *
  *
