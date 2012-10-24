@@ -157,7 +157,7 @@ const char* Codec::GetAndResetError()
 #include "codec_c_interface.h"
 
 void InitializeBotan() {
-    LibraryInitializer::initialize();
+    LibraryInitializer::initialize("thread_safe");
 }
 void* InitializeNewCodec(void *db) {
     return new Codec(db);

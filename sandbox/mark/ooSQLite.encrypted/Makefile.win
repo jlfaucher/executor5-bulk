@@ -75,7 +75,7 @@
 # Define DEBUG on the command line, or here, to build a debug version.  By
 # default non-debug (release) versions are built.
 # I.e. nMake DEBUG=1 /F Makefile.win
-#RELEASE = 1
+#DEBUG = 1
 
 !IF DEFINED(REXX_HOME)
 INCLUDE = $(INCLUDE);$(REXX_HOME)\api
@@ -122,13 +122,16 @@ PLATFORM_DIR = src\platform\windows
 #	  cl /EHsc /nologo $(VERDEFS) $(WARNINGFLAGS) $(MISCDEFS) -c -O2 /Gr /MT /Gs /FAcs /FaC:\work.ooRexx\wc\main\Win32Rel\ASM\oodMessaging.asm  /FoC:\work.ooRexx\wc\main\Win32Rel\oodMessaging.obj -IC:\work.ooRexx\wc\main\lib\ -IC:\work.ooRexx\wc\main\common\ -IC:\work.ooRexx\wc\main\common\platform\windows\ -IC:\work.ooRexx\wc\main\api\ -IC:\work.ooRexx\wc\main\api\platform\windows\ -IC:\work.ooRexx\wc\main\interpreter\ -IC:\work.ooRexx\wc\main\interpreter\classes\ -IC:\work.ooRexx\wc\main\interpreter\classes\support\ -IC:\work.ooRexx\wc\main\interpreter\runtime\ -IC:\work.ooRexx\wc\main\interpreter\behaviour\ -IC:\work.ooRexx\wc\main\interpreter\concurrency\ -IC:\work.ooRexx\wc\main\interpreter\execution\ -IC:\work.ooRexx\wc\main\interpreter\memory\ -IC:\work.ooRexx\wc\main\interpreter\package\ -IC:\work.ooRexx\wc\main\interpreter\expression\ -IC:\work.ooRexx\wc\main\interpreter\instructions\ -IC:\work.ooRexx\wc\main\interpreter\parser\ -IC:\work.ooRexx\wc\main\interpreter\platform\windows\ -IC:\work.ooRexx\wc\main\interpreter\streamLibrary\ -IC:\work.ooRexx\wc\main\interpreter\messages\ -IC:\work.ooRexx\wc\main\platform\windows\ -IC:\work.ooRexx\wc\main\rexutils\windows -IC:\work.ooRexx\wc\main\extensions\platform\windows\oodialog\ -I\ -IC:\work.ooRexx\wc\main\extensions\platform\windows\ole\ -IC:\work.ooRexx\wc\main\extensions\platform\windows\orxscrpt\ -IC:\work.ooRexx\wc\main\interpreter\messages\ -IC:\work.ooRexx\wc\main\extensions\hostemu\  C:\work.ooRexx\wc\main\extensions\platform\windows\oodialog\oodMessaging.cpp
 #
 #	  link  $(objs) $(res)  /MAP /NOLOGO  /SUBSYSTEM:Windows  $(winlibs) /DLL $(rexxlibs)  -def:ooDialog.def  -out:oodialog.dll
+#
+# Note that /Gr is not compatible with SQLITE_ENABLE_FTS3, so it is removed.
+#
 
 
 WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 VERDEFS = /DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) /DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) /DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) /DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) /DOOSQLITE_VER_STRING=$(OOSQLITE_VER_STR) /DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
 EXTRAINCLUDE = /I src\sqlite
 
-SQLITEFLAGS=/DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_MEMORY_MANAGEMENT /DSQLITE_HAS_CODEC=1
+SQLITEFLAGS=/DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_MEMORY_MANAGEMENT /DSQLITE_ENABLE_FTS3 /DSQLITE_ENABLE_FTS3_PARENTHESIS /DSQLITE_HAS_CODEC=1
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS)
 
 # The linker flag /OPT:REF removes unreferenced functions and data.  In order for
@@ -140,7 +143,7 @@ OUT_DIR = build\debug
 BIN_DIR = bin.dbg
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNULL=0 /DOOSQLDBG
-CFLAGS =  /nologo /EHsc /Zi /Od /Gr /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb $(BASEFLAGS) $(MISCDEFS) /c
+CFLAGS =  /nologo /EHsc /Zi /Od /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb $(BASEFLAGS) $(MISCDEFS) /c
 BOTAN_CFLAGS =  /nologo /EHs /Zi /Od /Gr /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb /wd4244 /wd4267 $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
 
 LFLAGS_EXE = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
@@ -152,8 +155,8 @@ OUT_DIR = build\release
 BIN_DIR = bin\windows
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNDEBUG /DNULL=0
-CFLAGS = /nologo /EHsc /O2 /Gr /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) $(MISCDEFS) /c
-BOTAN_CFLAGS = /nologo /EHs /O2 /Gr /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT /wd4244 /wd4267 $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
+CFLAGS = /nologo /EHsc /O2 /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) $(MISCDEFS) /c
+BOTAN_CFLAGS = /nologo /EHs /O2 /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT /wd4244 /wd4267 $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
 
 LFLAGS_EXE = /nologo /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
 LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooSQLite.def /DLL
