@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodguide.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file
+    #
+    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<!-- Chapter07 - A Working Application		 		  v00-01 25Oct12
+
+    Changes:
+     v00-01 25Oct12: First version.
+
+    7     "A Working Application"	chapSeven
+    7.1     Introduction                chap07-intro
+    7.2     A 'Model-View Framework'    chap07-MVF
+    7.2.1     Objectives		chap07-MVFObjs
+    7.2.2     Fitting In / using MVF - diff kinds of component; how different kinds use MVF.
+              Ref "samples\person". Ref appendix for detail of MVF.
+    7.2.3     Underlying operations provided by MVF (i.e. overview of how MVF works).
+    7.2.4     New superclasses and MVF objects. (mention the "requires list")
+    7.3     Message Sender - get rid of "stand-alone" testing code.
+    7.4     Order Form -
+
+Things to add:
+     - Show an example of ReportView with small icons in Ex 7.
+       Have say 3 different ones in a single bitmap.
+     - Talk about dialog offsetting.
+
+
+
+-->
+
+<chapter id="chapSeven"><title>A Working Application</title>
+<para>
+</para>
+
+<section id="chap07-intro"><title>Introduction</title>  <!-- Section 7.1 -->
+<para>
+Try it out. Change some data. Explore. Message Sender discussed in section 7.3.
+Here's what we'll cover: (include why standalone testing removed).
+</para>
+</section>
+
+<section id="chap07-struc"><title id="ch7-amvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
+
+<section id="chap07-MVFobj"><title id="ch7-amvf-obj.title">MVF Objective</title>		<!-- Section 7.2.1 -->
+<para>
+Maybe not a separate section - maybe just an intro para after chap title -
+refers (and links) to sub sections.
+</para>
+</section>	<!-- End of Section 7.2.1 -->
+
+<section id="chap07-MVFuse"><title id="ch7-amvf-use.title">Using the MVF</title>		<!-- Section 7.2.2 -->
+<para>
+- diff kinds of component; how different kinds use MVF.
+- Ref "samples\person".
+- Ref appendix for detail of MVF (Or leave it for people to look at the code?).
+</para>
+<para>
+    <programlisting>
+<![CDATA[
+</programlisting>
+    
+     Model-View Framework
+
+     showModel(class-inst)  ->  ObjectMgr
+     				self~getcreate model
+
+
+     View components:		subclass RcView
+     - newInstance [class method]:
+         use arg modelInsanceName, rootDlg
+         dlg = .ModelView~new(rc-file, "IDD_...")
+         dlg~activate(modelInstancName,rootDlg)
+         return dlg
+
+     - activate
+         expose modelData
+         use arg modelInstanceName, rootDlg
+         forward class (super) continue		 Required for MVF
+         modelData = RESULT			- personData returned by super
+    						- ('forward' returns any result via 'RESULT'.)
+         self~popUpAsChild(rootDlg,"SHOWTOP,,icon-resource-id>)
+
+     - initDialog
+         expose modelData
+
+
+     Model components:
+     - newInstance (class method):
+         use strict arg instanceName
+         check id data component is up and running
+         get component id of data component from objectMgr
+         send "find(instanceName)" to data component - returns "dirData"
+         modelId = self~new(dirData)
+         return modelId
+
+     - init (instance Method)
+         - since no separate setup, 'activate' is same as 'init' so just use 'init'.
+
+     Data components:				- subclassed from GenericFile
+     - newInstance (class method):
+         use strict arg instanceName		- instanceName is "The".
+         dataId = self~new(instanceName)
+         return dataId
+
+     - init
+         use arg instanceName
+         filename = "file-name"; columns = num-columns
+         records = self~init:super(fileName, columns)
+
+
+
+     Some component X wants to send 'query' to PersonModel. So:
+     (a) X sends getComponentId('PersonModel PA150') to ObjectMgr.
+     (b) ObjMgr: if exists, then return cmptId
+     (c) Else
+     Sends 'query' to a PersonModel on Message Sender.
+     Messagesender asks ObjectMgr for id of the PersonModel
+     If not in object bag, ObjMgr sends 'newInstance' to Model with inst name
+     as param.
+     .Model~newInstance asks ObjMgr for id for "PersonData The"
+     If not found, then set noDataError to .true.
+     Else do
+       send a "find" to "PersonData The"
+       "PersonData The" returns the Model's instance's data.
+       If data found, then id = .PersonModel~new(data)
+       Return Id (to ObjectMgr)
+     end
+]]>
+    </programlisting>
+</para>
+</section>	<!-- End of Section 7.2.2 -->
+
+<section id="chap07-MVFops"><title id="ch7-amvf-ops.title">MVF Underlying Operations</title>	<!-- Section 7.2.3 -->
+<para>
+- Underlying operations provided by MVF (i.e. overview of how MVF works).
+- Ref appendix for detail.
+</para>
+</section>	<!-- End of Section 7.2.3 -->
+
+<section id="chap07-MVFsupers"><title id="ch7-amvf-supers.title">MVF Superclasses</title>	<!-- Section 7.2.4 -->
+    <para><!--  New superclasses and MVF objects. (mention the "requires list") --></para>
+</section>	<!-- End of Section 7.2.4 -->
+
+</section>	<!-- End of Section 7.2 -->
+
+<section id="chap07-MsgSender"><title id="ch7-amvf-msgsndr.title">The Message Sender</title>	<!-- Section 7.3 -->
+<para>
+Message Sender - get rid of "stand-alone" testing code.
+</para>
+</section>	<!-- End of Section 7.3 -->
+
+<section id="chap07-OrderForm"><title id="ch7-orderform.title">The Order Form</title>		<!-- Section 7.4 -->
+<para>
+Order Form - use of ControlObjects - multiple dialogs, one main one, one for each tab. Why? To allow controls on
+the form itself.
+</para>
+</section>	<!-- End of Section 7.4 -->
+
+</chapter>
