@@ -842,20 +842,18 @@ call SysCls
 ]]>
 </programlisting>
 
-<para>Creates or opens an event semaphore. It returns an event semaphore
+<para>Creates an event semaphore. It returns an event semaphore
 handle that can be used with SysCloseEventSem, SysOpenEventSem,
 SysResetEventSem, SysPostEventSem, and SysWaitEventSem. SysCreateEventSem
 returns a null string (&quot;&quot;) if the semaphore cannot be created or
-opened.</para>
+already exists.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">name</emphasis></term>
 <listitem><para>The optional event semaphore name. If you omit
 <emphasis role="italic">name</emphasis>,
-SysCreateEventSem creates an unnamed, shared event semaphore. If you specify
-<emphasis role="italic">name</emphasis>, SysCreateEventSem opens the semaphore
-if the semaphore has already
-been created. A semaphore name can be MAX_PATH long, and
+SysCreateEventSem creates an unnamed, shared event semaphore.
+A semaphore name can be MAX_PATH long, and
 can contain any character except the backslash (\) path-separator character.
 Semaphore names are case-sensitive.
 </para></listitem></varlistentry>
@@ -878,10 +876,10 @@ semaphore is reset automatically by SysWaitEventSem.
 ]]>
 </programlisting>
 
-<para>Creates or opens a mutex semaphore. Returns a mutex semaphore handle that
+<para>Creates a mutex semaphore. Returns a mutex semaphore handle that
 can be used with SysCloseMutexSem, SysRequestMutexSem, and SysReleaseMutexSem.
 SysCreateMutexSem returns a null string (&quot;&quot;) if the semaphore cannot
-be created or opened.</para>
+be created or already exists.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">name</emphasis></term>
@@ -889,7 +887,6 @@ be created or opened.</para>
 <emphasis role="italic">name</emphasis>, SysCreateMutexSem
 creates an unnamed, shared mutex semaphore. If you specify
 <emphasis role="italic">name</emphasis>,
-SysCreateMutexSem opens the semaphore if the mutex has already been created.
 The semaphore names cannot be longer than 63 characters. Semaphore names are
 case-sensitive.
 </para></listitem></varlistentry>
