@@ -1139,12 +1139,12 @@ REXX_METHOD_PROTOTYPE(tv_expand);
 REXX_METHOD_PROTOTYPE(tv_find);
 REXX_METHOD_PROTOTYPE(tv_getImageList);
 REXX_METHOD_PROTOTYPE(tv_getItemData);
-REXX_METHOD_PROTOTYPE(tv_getItemText);
 REXX_METHOD_PROTOTYPE(tv_getNextItem);
 REXX_METHOD_PROTOTYPE(tv_getSpecificItem);
 REXX_METHOD_PROTOTYPE(tv_hitTestInfo);
 REXX_METHOD_PROTOTYPE(tv_insert);
 REXX_METHOD_PROTOTYPE(tv_itemInfo);
+REXX_METHOD_PROTOTYPE(tv_itemText);
 REXX_METHOD_PROTOTYPE(tv_modify);
 REXX_METHOD_PROTOTYPE(tv_removeItemData);
 REXX_METHOD_PROTOTYPE(tv_selectItem);
@@ -2108,11 +2108,11 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tv_find,                        tv_find),
     REXX_METHOD(tv_getImageList,                tv_getImageList),
     REXX_METHOD(tv_getItemData,                 tv_getItemData),
-    REXX_METHOD(tv_getItemText,                 tv_getItemText),
     REXX_METHOD(tv_getNextItem,                 tv_getNextItem),
     REXX_METHOD(tv_getSpecificItem,             tv_getSpecificItem),
     REXX_METHOD(tv_hitTestInfo,                 tv_hitTestInfo),
     REXX_METHOD(tv_insert,                      tv_insert),
+    REXX_METHOD(tv_itemText,                    tv_itemText),
     REXX_METHOD(tv_itemInfo,                    tv_itemInfo),
     REXX_METHOD(tv_modify,                      tv_modify),
     REXX_METHOD(tv_removeItemData,              tv_removeItemData),

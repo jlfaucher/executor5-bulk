@@ -111,7 +111,6 @@
 ::method firstVisible unguarded external "LIBRARY oodialog tv_getSpecificItem"
 ::method getImageList unguarded external "LIBRARY oodialog tv_getImageList"
 ::method getItemData unguarded external "LIBRARY oodialog tv_getItemData"
-::method getItemText unguarded external "LIBRARY oodialog tv_getItemText"
 ::method hitTest unguarded
    forward message "hitTestInfo" continue
    info = result
@@ -141,6 +140,7 @@
    else return .false
 
 ::method itemInfo unguarded external "LIBRARY oodialog tv_itemInfo"
+::method itemText unguarded external "LIBRARY oodialog tv_itemText"
 ::method items unguarded
    use strict arg
    return self~sendWinIntMsg(self~TVM_GETCOUNT, 0, 0)

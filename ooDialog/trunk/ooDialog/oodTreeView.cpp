@@ -631,7 +631,7 @@ RexxMethod2(RexxObjectPtr, tv_getItemData, CSTRING, _hItem, CSELF, pCSelf)
  *         item, it only displays the first 260 characters.  So, here that is
  *         all we return.
  */
-RexxMethod2(RexxObjectPtr, tv_getItemText, CSTRING, _hItem, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, tv_itemText, CSTRING, _hItem, CSELF, pCSelf)
 {
     char buf[261];
     HWND  hwnd = getDChCtrl(pCSelf);

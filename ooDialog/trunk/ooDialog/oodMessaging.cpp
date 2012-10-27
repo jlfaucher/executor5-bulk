@@ -2277,6 +2277,9 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 {
     RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
 
+    MsgReplyType  msgReply = ReplyFalse;
+    bool          expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
+
     switch ( code )
     {
         case TVN_ITEMEXPANDED :
@@ -2313,19 +2316,21 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             RexxArrayObject args = c->ArrayOfFour(idFrom, handle, what, extra);
 
-            if ( (tag & TAG_EXTRAMASK) == TAG_REPLYFROMREXX )
+            if ( expectReply )
             {
-                RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+                RexxObjectPtr rxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
                 if ( code == TVN_ITEMEXPANDING )
                 {
-                    msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
-                    if ( msgReply == TheTrueObj || msgReply == TheFalseObj )
+                    rxReply = requiredBooleanReply(c, pcpbd, rxReply, methodName, false);
+                    if ( rxReply == TheTrueObj || rxReply == TheFalseObj )
                     {
                         // Return true to prevent the item from expanding / collapsing.
-                        setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? FALSE : TRUE);
+                        setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT,rxReply == TheTrueObj ? FALSE : TRUE);
                     }
                 }
+
+                c->ReleaseLocalReference(rxReply);
             }
             else
             {
@@ -2354,11 +2359,11 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             RexxArrayObject args = c->ArrayOfFour(idFrom, handle, text, len);
             c->ArrayPut(args, userData, 5);
 
-            RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+            RexxObjectPtr rxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
-            if ( msgReplyIsGood(c, pcpbd, msgReply, methodName, false) )
+            if ( msgReplyIsGood(c, pcpbd, rxReply, methodName, false) )
             {
-                CSTRING newText = c->ObjectToStringValue(msgReply);
+                CSTRING newText = c->ObjectToStringValue(rxReply);
                 if ( strlen(newText) > 0 )
                 {
                     _snprintf(tip->pszText, tip->cchTextMax - 1, "%s", newText);
@@ -2370,7 +2375,29 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             c->ReleaseLocalReference(userData);
             c->ReleaseLocalReference(text);
             c->ReleaseLocalReference(len);
+            c->ReleaseLocalReference(rxReply);
             c->ReleaseLocalReference(args);
+
+            return ReplyTrue;
+        }
+
+        case TVN_KEYDOWN :
+        {
+            RexxObjectPtr rxTV = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winTreeView, true);
+            uint16_t      vKey = ((NMLVKEYDOWN *)lParam)->wVKey;
+
+            // The third argument is whether it is an extended key or not.  That
+            // is the only way to tell between ...
+            RexxArrayObject args  = getKeyEventRexxArgs(c, (WPARAM)vKey, false, rxTV);
+
+            if ( expectReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+            }
 
             return ReplyTrue;
         }
@@ -3428,6 +3455,11 @@ static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
         tvn = TVN_GETINFOTIP;
         *tag = TAG_TREEVIEW | TAG_REPLYFROMREXX;
     }
+    else if ( StrCmpI(keyword, "KEYDOWNEX") == 0 )
+    {
+        tvn = TVN_KEYDOWN;
+        *tag = TAG_TREEVIEW;
+    }
     else
     {
         return false;
@@ -3454,11 +3486,11 @@ inline CSTRING tvn2name(uint32_t tvn, uint32_t tag)
         case TVN_SELCHANGED     : return "onSelChanged";
         case TVN_BEGINDRAG      : return "onBeginDrag";
         case TVN_BEGINRDRAG     : return "onBeginRDrag";
-        case TVN_DELETEITEM     : return "onDeleteItem";
-        case TVN_BEGINLABELEDIT : return "onBeginLabelEdit";
-        case TVN_ENDLABELEDIT   : return "onEndLabelEdit";
-        case TVN_ITEMEXPANDING  : return "onItemExpanding";
-        case TVN_ITEMEXPANDED   : return "onItemExpanded";
+        case TVN_DELETEITEM     : return "onDelete";
+        case TVN_BEGINLABELEDIT : return "onBeginEdit";
+        case TVN_ENDLABELEDIT   : return "onEndEdit";
+        case TVN_ITEMEXPANDING  : return "onExpanding";
+        case TVN_ITEMEXPANDED   : return "onExpanded";
         case TVN_GETINFOTIP     : return "onGetInfoTip";
         case TVN_KEYDOWN        :
             if ( tag & TAG_TREEVIEW )
