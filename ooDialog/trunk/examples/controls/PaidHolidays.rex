@@ -201,7 +201,7 @@ return 0
 
 -- This function returns an array of .DayState objects for the specified months.
 -- A day state object specifies which days in a month should be bolded.
-::method getDayStateArray private
+::method getDayStateArray private unguarded
   use strict arg startMonth, count
 
   -- Create the array to hold the .DayState objects.
@@ -227,7 +227,7 @@ return 0
 
 -- This function initalizes a .DayState object to the proper value depending on
 -- the month specified.
-::method getDayState private
+::method getDayState private unguarded
   use strict arg month
 
   select
