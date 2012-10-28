@@ -1194,7 +1194,7 @@ item in the client window of a tree-view control.</para>
   <para>
     The tree-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the tree-view
     items. The data value can be any ooRexx object. The data value is set using the <xref
-    linkend="mthSetItemDataClsTreeView"/> method. If needed the data value can be removed from a list-view item through the
+    linkend="mthSetItemDataClsTreeView"/> method. If needed the data value can be removed from a tree-view item through the
     <xref linkend="mthRemoveItemDataClsTreeView"/> method. Storing a user value for each item can be useful in any number of
     ways.
   </para>
@@ -2894,10 +2894,6 @@ was not specified or is 0.
     ooRexx object. For the <emphasis role="italic">sortChildrenCB</emphasis> method to work correctly, the programmer must
     associate a data value with each tree-view item.
   </para>
-  <para>
-    The specifics on the user data value and what the programmer needs to do are dependent on the type of sort specified. See
-    the relevant section below for a Rexx sort or an internal sort.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">The onSortChildrenCB method</emphasis></term>
   <listitem>
@@ -2913,7 +2909,7 @@ was not specified or is 0.
   </para>
   <para>
     The arguments passed to the comparsion method are the user data items associated with the two items beig compared. This
-    is why the sore will not work correctly if tree-view items are not assigned a user data item. The comparison method
+    is why the sort will not work correctly if tree-view items are not assigned a user data item. The comparison method
     should be coded as follows:
   </para>
 
