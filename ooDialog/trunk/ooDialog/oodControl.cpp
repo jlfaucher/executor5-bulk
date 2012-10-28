@@ -743,7 +743,6 @@ void protectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObje
  *
  * Note that PageUp is VK_PRIOR and PageDown is VK_NEXT.
  *
- *
  * @param wParam
  *
  * @return bool
@@ -860,22 +859,39 @@ bool parseTagOpts(RexxThreadContext *c, CSTRING opts, uint32_t *pTag, size_t arg
     return foundKeyWord;
 }
 
+/**
+ *
+ *
+ * @param pData
+ * @param method
+ * @param args
+ * @param hwnd
+ * @param msg
+ * @param wParam
+ * @param lParam
+ *
+ * @return LRESULT
+ *
+ * @note  We are responsible for releasing the local references in args.
+ */
 static LRESULT charReply(pSubClassData pData, char *method, RexxArrayObject args,
                          HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM lParam)
 {
     RexxThreadContext *c = pData->pcpbd->dlgProcContext;
 
+    LRESULT ret;
+
     RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
     if ( ! checkForCondition(c, false) && reply != NULLOBJECT )
     {
-        if ( reply == TheFalseObj )
+        if ( reply == TheFalseObj || isInt(0, reply, c) )
         {
             // Swallow the message.
-            return 0;
+            ret = 0;
         }
-        else if ( reply == TheTrueObj )
+        else if ( reply == TheTrueObj || isInt(1, reply, c) )
         {
-            return DefSubclassProc(hwnd, msg, wParam, lParam);
+            ret = DefSubclassProc(hwnd, msg, wParam, lParam);
         }
         else
         {
@@ -886,11 +902,24 @@ static LRESULT charReply(pSubClassData pData, char *method, RexxArrayObject args
             {
                 return DefSubclassProc(hwnd, msg, (WPARAM)chr, lParam);
             }
+            else
+            {
+                ret = DefSubclassProc(hwnd, msg, wParam, lParam);
+            }
         }
     }
+    {
+        // On errors:
+        ret = DefSubclassProc(hwnd, msg, wParam, lParam);
+    }
 
-    // On errors:
-    return DefSubclassProc(hwnd, msg, wParam, lParam);
+    if ( reply != NULLOBJECT )
+    {
+        c->ReleaseLocalReference(reply);
+    }
+    releaseKeyEventRexxArgs(c, args);
+
+    return ret;
 }
 
 /**
@@ -985,7 +1014,9 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
         // we return 0, which means the message was processed for most messages.
         // Oherwise we again drop through and DefSubclassProc() is invoked.
 
-        RexxArrayObject args = c->ArrayOfThree(c->Uintptr(wParam), c->Intptr(lParam), pData->pcdc->rexxSelf);
+        RexxObjectPtr   _wP  = c->Uintptr(wParam);
+        RexxObjectPtr   _lP  = c->Intptr(lParam);
+        RexxArrayObject args = c->ArrayOfThree(_wP, _lP, pData->pcdc->rexxSelf);
 
         if ( tag & CTRLTAG_REPLYFROMREXX )
         {
@@ -994,15 +1025,31 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
             {
                 if ( isInt(0, reply, c) )
                 {
+                    c->ReleaseLocalReference(_wP);
+                    c->ReleaseLocalReference(_lP);
+                    c->ReleaseLocalReference(args);
+                    c->ReleaseLocalReference(reply);
+
                     // Swallow the message.
                     return 0;
                 }
             }
+
+            if ( reply != NULLOBJECT )
+            {
+                c->ReleaseLocalReference(reply);
+            }
         }
         else
         {
-            invokeDispatch(c, pData->pcpbd->rexxSelf, c->String(method), args);
+            RexxStringObject mth = c->String(method);
+            invokeDispatch(c, pData->pcpbd->rexxSelf, mth, args);
+            c->ReleaseLocalReference(mth);
         }
+
+        c->ReleaseLocalReference(_wP);
+        c->ReleaseLocalReference(_lP);
+        c->ReleaseLocalReference(args);
     }
 
     return DefSubclassProc(hwnd, msg, wParam, lParam);

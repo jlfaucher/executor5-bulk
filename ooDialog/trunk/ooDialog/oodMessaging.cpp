@@ -1519,6 +1519,47 @@ static void getItemIndexFromHitPoint(LPNMITEMACTIVATE pIA, HWND hwnd)
     }
 }
 
+inline RexxObjectPtr getToolTipFromLParam(LPARAM lParam)
+{
+
+    return (RexxObjectPtr)getWindowPtr(((NMHDR *)lParam)->hwndFrom, GWLP_USERDATA);
+
+}
+
+/**
+ * Attempts to get the proper ID for a tool tip tool.
+ *
+ * @param c
+ * @param lParam
+ *
+ * @return RexxObjectPtr
+ *
+ * @remarks  The tool tip tool ID can either be a dialog control window handle,
+ *           or a unique number.  There is no real way to tell whether the
+ *           number in idFrom is a HWND or a number.
+ */
+RexxObjectPtr getToolIDFromLParam(RexxThreadContext *c, LPARAM lParam)
+{
+    RexxObjectPtr rxID = TheNilObj;
+    UINT_PTR      id   = ((NMHDR *)lParam)->idFrom;
+
+    SetLastError(0);
+    if ( IsWindow((HWND)id) && GetDlgCtrlID((HWND)id) != 0 && GetLastError() == 0 )
+    {
+        rxID = (RexxObjectPtr)getWindowPtr((HWND)id, GWLP_USERDATA);
+        if ( rxID == NULLOBJECT )
+        {
+            rxID = c->Uintptr(id);
+        }
+    }
+    else
+    {
+        rxID = c->Uintptr(id);
+    }
+    return rxID;
+}
+
+
 MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
     char          tmpBuffer[20];
@@ -1766,8 +1807,11 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             RexxObjectPtr rxLV = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winListView, true);
             uint16_t      vKey = ((NMLVKEYDOWN *)lParam)->wVKey;
 
-            // The third argument is whether it is an extended key or not.  That
-            // is the only way to tell between ...
+            // The third argument is whether it is an extended key or not. This
+            // is needed for processing WM_CHAR, which getKeyEventRexxArgs() is
+            // also used for.  For WM_CHAR it is the only way to tell between
+            // the extended DELETE key and the '.' character.  For key down we
+            // just say false.
             RexxArrayObject args  = getKeyEventRexxArgs(c, (WPARAM)vKey, false, rxLV);
 
             if ( expectReply )
@@ -1776,9 +1820,12 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             }
             else
             {
-                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+                RexxStringObject mth = c->String(methodName);
+                invokeDispatch(c, pcpbd->rexxSelf, mth, args);
+                c->ReleaseLocalReference(mth);
             }
 
+            releaseKeyEventRexxArgs(c, args);
             msgReply = ReplyTrue;
 
             break;
@@ -2048,47 +2095,6 @@ MsgReplyType processTCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     }
 
     return genericNotifyInvoke(c, pcpbd, methodName, idFrom, hwndFrom);
-}
-
-
-inline RexxObjectPtr getToolTipFromLParam(LPARAM lParam)
-{
-
-    return (RexxObjectPtr)getWindowPtr(((NMHDR *)lParam)->hwndFrom, GWLP_USERDATA);
-
-}
-
-/**
- * Attempts to get the proper ID for a tool tip tool.
- *
- * @param c
- * @param lParam
- *
- * @return RexxObjectPtr
- *
- * @remarks  The tool tip tool ID can either be a dialog control window handle,
- *           or a unique number.  There is no real way to tell whether the
- *           number in idFrom is a HWND or a number.
- */
-RexxObjectPtr getToolIDFromLParam(RexxThreadContext *c, LPARAM lParam)
-{
-    RexxObjectPtr rxID = TheNilObj;
-    UINT_PTR      id   = ((NMHDR *)lParam)->idFrom;
-
-    SetLastError(0);
-    if ( IsWindow((HWND)id) && GetDlgCtrlID((HWND)id) != 0 && GetLastError() == 0 )
-    {
-        rxID = (RexxObjectPtr)getWindowPtr((HWND)id, GWLP_USERDATA);
-        if ( rxID == NULLOBJECT )
-        {
-            rxID = c->Uintptr(id);
-        }
-    }
-    else
-    {
-        rxID = c->Uintptr(id);
-    }
-    return rxID;
 }
 
 
@@ -2386,18 +2392,39 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             RexxObjectPtr rxTV = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winTreeView, true);
             uint16_t      vKey = ((NMLVKEYDOWN *)lParam)->wVKey;
 
-            // The third argument is whether it is an extended key or not.  That
-            // is the only way to tell between ...
+            // The third argument is whether it is an extended key or not. This
+            // is needed for processing WM_CHAR, which getKeyEventRexxArgs() is
+            // also used for.  For WM_CHAR it is the only way to tell between
+            // the extended DELETE key and the '.' character.  For key down we
+            // just say false.
             RexxArrayObject args  = getKeyEventRexxArgs(c, (WPARAM)vKey, false, rxTV);
 
             if ( expectReply )
             {
-                invokeDirect(c, pcpbd, methodName, args);
+                RexxObjectPtr rxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+                rxReply = requiredBooleanReply(c, pcpbd, rxReply, methodName, false);
+                if ( rxReply == NULL )
+                {
+                    return ReplyFalse;
+                }
+
+                /* Rexx: return true to allow character to be added to
+                 * incrmental search.
+                 *
+                 * Windows: return 0 to allow character to be added to
+                 * incremental search
+                 */
+                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, rxReply == TheTrueObj ? FALSE : TRUE);
             }
             else
             {
-                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+                RexxStringObject mth = c->String(methodName);
+                invokeDispatch(c, pcpbd->rexxSelf, mth, args);
+                c->ReleaseLocalReference(mth);
             }
+
+            releaseKeyEventRexxArgs(c, args);
 
             return ReplyTrue;
         }
@@ -3849,6 +3876,29 @@ RexxArrayObject getKeyEventRexxArgs(RexxThreadContext *c, WPARAM wParam, bool is
 
 
 /**
+ * Releases the local references to the arg array created in
+ * getKeyEventRexxArgs().  We cheat here and use our knowledge of the function
+ * above and release the first 5 args in the array.  The 6th arg is either
+ * TheNilObj, or a dialog control ojbect.  Neither one of these should be
+ * released.
+ *
+ * @param c
+ * @param args
+ */
+void releaseKeyEventRexxArgs(RexxThreadContext *c, RexxArrayObject args)
+{
+    printf("Entered releaseKeyEventRexxArgs()\n");
+    for ( size_t i = 1; i <= 5; i++ )
+    {
+        RexxObjectPtr o = c->ArrayAt(args, i);
+        c->ReleaseLocalReference(o);
+    }
+    c->ReleaseLocalReference(args);
+    printf("Leaving releaseKeyEventRexxArgs()\n");
+}
+
+
+/**
  * The keyboard hook procedure.
  *
  * This is a thread specific hook, not a global hook. This function executes in
@@ -4126,10 +4176,15 @@ void processKeyPress(pSubClassData pSCData, WPARAM wParam, LPARAM lParam)
     {
         RexxThreadContext *c = pSCData->pcpbd->dlgProcContext;
 
-        RexxArrayObject args = getKeyEventRexxArgs(c, wParam,
-                                                   lParam & KEY_ISEXTENDED ? true : false,
-                                                   pSCData->pcdc == NULL   ? NULL : pSCData->pcdc->rexxSelf);
-        invokeDispatch(c, pSCData->pcpbd->rexxSelf, c->String(pMethod), args);
+        RexxStringObject mth  = c->String(pMethod);
+        RexxArrayObject  args = getKeyEventRexxArgs(c, wParam,
+                                                    lParam & KEY_ISEXTENDED ? true : false,
+                                                    pSCData->pcdc == NULL   ? NULL : pSCData->pcdc->rexxSelf);
+
+        invokeDispatch(c, pSCData->pcpbd->rexxSelf, mth, args);
+
+        c->ReleaseLocalReference(mth);
+        releaseKeyEventRexxArgs(c, args);
     }
 }
 
