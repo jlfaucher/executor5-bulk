@@ -184,7 +184,7 @@
 <entry>Gets the user data associated with the specified tree-view item.</entry>
 </row>
 <row>
-<entry><xref linkend="mthGetItemTextClsTreeView"/></entry>
+<entry><xref linkend="mthItemTextClsTreeView"/></entry>
 <entry>Gets the text, the label, of the specified tree-view item.</entry>
 </row>
 <row>
@@ -1209,64 +1209,6 @@ item in the client window of a tree-view control.</para>
 </section>  <!-- End TreeView::getItemData() -->
 
 
-<section id="mthGetItemTextClsTreeView" xreflabel="getItemText"><title>getItemText</title>
-<indexterm><primary>getItemText</primary></indexterm>
-<indexterm><primary>TreeView class</primary><secondary>getItemText</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getItemText(--hItem--)-----------------------><
-]]>
-</programlisting>
-
-<para>
-  Retrieves the text of the specified tree-view item.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-  </para>
-    <variablelist>
-      <varlistentry><term>hItem [required]</term>
-      <listitem>
-      <para>
-        The tree-view item to retrieve the text from.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The return is the text assigned to the specified tree-view item.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example retrieves the text of the selected item:
-<programlisting>
-<![CDATA[
-
-  tv = self~newTreeVies(IDC_TV_BOOK)
-
-  selectedItem = tv~selected
-  if selectedItem == 0 then do
-      say 'No item is selected'
-  end
-  else do
-      say 'The text for the selected item is:' tv~getItemText(selectedItem)
-  end
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End TreeView::getItemText() -->
-
-
 <section id="hittest"><title>HitTest</title>
 <indexterm><primary>HitTest</primary></indexterm>
 <programlisting>
@@ -1952,6 +1894,64 @@ in a tree-view control.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthItemTextClsTreeView" xreflabel="itemText"><title>itemText</title>
+<indexterm><primary>itemText</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>itemText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemText(--hItem--)--------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the text of the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The tree-view item to retrieve the text from.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the text assigned to the specified tree-view item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example retrieves the text of the selected item:
+<programlisting>
+<![CDATA[
+
+  tv = self~newTreeVies(IDC_TV_BOOK)
+
+  selectedItem = tv~selected
+  if selectedItem == 0 then do
+      say 'No item is selected'
+  end
+  else do
+      say 'The text for the selected item is:' tv~itemText(selectedItem)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::itemText() -->
+
 
 <section id="makefirstvisibletrc"><title>MakeFirstVisible</title>
 <indexterm><primary>MakeFirstVisible</primary>
@@ -2764,11 +2764,11 @@ item.</para>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
-    list-view items. The data value can be any ooRexx object. The data value can be retrieved without removing it from a
-    list-view item through the <xref linkend="mthGetItemDataClsListView"/> method, or it can be removed through
-    the <xref linkend="mthRemoveItemDataClsListView"/>. Storing a user value for each item can be useful in any
-    number of ways. One specific use is in the <xref linkend="mthSortItems"/> method.
+    The tree-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the tree-view
+    items. The data value can be any ooRexx object. The data value can be retrieved without removing it from a
+    list-view item through the <xref linkend="mthGetItemDataClsTreeView"/> method, or it can be removed through the <xref
+    linkend="mthRemoveItemDataClsTreeView"/>. Storing a user value for each item can be useful in any number of ways. One
+    specific use is in the <xref linkend="mthSortChildrenCB"/> method.
   </para>
   <para>
     It is possible, although very unlikely, that there will be an error in the tree-view control when setting the user data.

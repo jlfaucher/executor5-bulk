@@ -4124,6 +4124,31 @@ incorrect.
     <listitem>
     <para>
       The event keyword. Use exactly one of the following keywords, case is not significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>ACTIVATE</member>
+        <member>BEGINDRAG</member>
+        <member>BEGINEDIT</member>
+        <member>BEGINRDRAG</member>
+        <member>ENDEDIT</member>
+        <member>CHANGING</member>
+        <member>CHANGED</member>
+        <member>CHECKBOXCHANGED</member>
+        <member>CLICK</member>
+        <member>COLUMNCLICK</member>
+        <member>DBLCLK</member>
+        <member>DELETE</member>
+        <member>DELETEALL</member>
+        <member>FOCUSCHANGED</member>
+        <member>GETINFOTIP</member>
+        <member>INSERTED</member>
+        <member>KEYDOWN</member>
+        <member>KEYDOWNEX</member>
+        <member>SELECTCHANGED</member>
+        <member>SELECTFOCUSCHANGED</member>
+      </simplelist>
+    </para>
     <variablelist>
       <varlistentry><term>ACTIVATE</term>
       <listitem>
@@ -4138,18 +4163,18 @@ incorrect.
         information on how to implement a drag-and-drop handler.
       </para>
       </listitem></varlistentry>
+      <varlistentry><term>BEGINEDIT</term>
+      <listitem>
+      <para>
+        Editing a label has been started. Do not connect this event if you are using the DEFAULTEDIT keyword.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>BEGINRDRAG</term>
       <listitem>
       <para>
         A drag-and-drop operation involving the right mouse button was initiated. See
         <xref linkend="mthDefListDragHandler"/> for information on how to implement a drag-and-drop
         handler.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>BEGINEDIT</term>
-      <listitem>
-      <para>
-        Editing a label has been started. Do not connect this event if you are using the DEFAULTEDIT keyword.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>ENDEDIT</term>
@@ -4200,18 +4225,18 @@ incorrect.
         <xref linkend="mthConnectNotifyEvent"/> method's CLICK event.
       </para>
       </listitem></varlistentry>
+      <varlistentry><term>COLUMNCLICK</term>
+      <listitem>
+      <para>
+        In report view only, a column header has been clicked.  Contrast this with the CLICK keyword.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>DBLCLK</term>
       <listitem>
       <para>
         This event is generated when the list-view is double-clicked with the left mouse button. However, in
         report view only, this excludes the column headers. Connecting the DBLCLK event is a replacement for the
         <xref linkend="mthConnectNotifyEvent"/> method's DBLCLK event.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>COLUMNCLICK</term>
-      <listitem>
-      <para>
-        In report view only, a column header has been clicked.  Contrast this with the CLICK keyword.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>DELETE</term>
@@ -4253,6 +4278,18 @@ incorrect.
         A key was pressed inside the list view. This notification is not sent while a label is being edited.
       </para>
       </listitem></varlistentry>
+      <varlistentry><term>KEYDOWNEX</term>
+      <listitem>
+      <para>
+        A key was pressed inside the list view. This notification is not sent while a label is being edited.
+      </para>
+      <para>
+        This event is exactly the same as the KEYDOWN event. Except, when this keyword is used, the ooDialog framework sends
+        a different set of arguments to the event handler. The additional arguments provide more information to the
+        programmer than the
+        arguments sent when the KEYDOWN keyword is used. The two keywords are needed to provide backwards compatibility.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>SELECTCHANGED</term>
       <listitem>
       <para>
@@ -4270,7 +4307,6 @@ incorrect.
       </para>
       </listitem></varlistentry>
     </variablelist>
-    </para>
     </listitem></varlistentry>
     <varlistentry><term>methodName</term>
     <listitem>
@@ -4365,62 +4401,42 @@ incorrect.
   </listitem></varlistentry>
 </variablelist>
 
-<section id="evtListViewCLICK" xreflabel="CLICK"><title>Click / Double Click Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>CLICK</secondary></indexterm>
-<indexterm><primary>ListView Event</primary><secondary>DBLCLK</secondary></indexterm>
+<section id="evtListViewBEGINDRAG" xreflabel="BEGINDRAG"><title>BeginDrag Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>BEGINDRAG</secondary></indexterm>
+
 <para>
-  The event handling method for the CLICK event is invoked when the user clicks on the list-view with the left mouse.
-  The event handler for the DBLCLK is invoked when the user double clicks on the list-view. This excludes the column
-  headers in report view. Both event handlers receive the same arguments.
-</para>
-<para>
-  Note that the user can click on a list-view item, or on the background of the list view. When the click is on the
-  background of the list-view then both the <emphasis role="italic">itemIndex</emphasis> and <emphasis
-  role="italic">columnIndex</emphasis> will be -1. The method will receive four arguments:
+  The event-handling method connected to BEGINDRAG receives three arguments: the control ID of the list-view control,
+  the index of the list item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
+  separated by a blank).
 </para>
 
 <programlisting>
 <![CDATA[
-  ::method onClick unguarded
-    use arg id, itemIndex, columnIndex, keyState
+::method onBeginDrag unguarded
+  use arg id, item, where
 
-    return 0
+  return 0
 ]]>
 </programlisting>
+</section>
 
-<variablelist>
-  <varlistentry><term>id</term>
-  <listitem>
-  <para>
-    The resource ID of the list-view control whose item was clicked.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>itemIndex</term>
-  <listitem>
-  <para>
-    The zero-based index of the item that was clicked, or -1 if the background of the list-view was clicked. In report
-    view this is often thought of as the row index.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>columnIndex</term>
-  <listitem>
-  <para>
-    The zero-based index of the subitem that was clicked, or -1 if the click was on the background of the list view. In
-    report view this is often thought of as the column of row. In all views other than report view, this arg will always
-    be 0.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>keyState</term>
-  <listitem>
-  <para>
-    This argument reports the state of the shift, control, and alt keys at the time of the mouse click.  The argument is
-    a string of keywords separated by blanks.  The keywords consist of: SHIFT, CONTROL, ALT, or NONE. The presence of a
-    keyword indicates the key was held down when the user clicked on the list-view control.  NONE of course indicates
-    that none of the keys were down.  If the user managed to hold all three of the keys down at the time of the mouse
-    click, the argument would be the string: <emphasis role="italic">SHIFT CONTROL ALT</emphasis>.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
+<section id="evtListViewBEGINRDRAG" xreflabel=""><title>BeginRDrag Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
+
+<para>
+  The event-handling method connected to BEGINRDRAG receives three arguments: the control ID of the list-view control,
+  the index of the list item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
+  separated by a blank).
+</para>
+
+<programlisting>
+<![CDATA[
+::method onBeginRightDrag unguarded
+  use arg id, item, where
+
+  return 0
+]]>
+</programlisting>
 </section>
 
 <section id="evtListViewCHECKBOXCHANGED" xreflabel="CHECKBOXCHANGED"><title>CheckBoxChanged Event Handler</title>
@@ -4495,19 +4511,26 @@ incorrect.
 
 </section>  <!-- End CheckBoxChanged Event Handler -->
 
-<section id="evtListViewSELECTCHANGE" xreflabel="SELECTCHANGE"><title>SelectChange Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>SELECTCHANGE</secondary></indexterm>
+<section id="evtListViewCLICK" xreflabel="CLICK"><title>Click / Double Click Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>CLICK</secondary></indexterm>
+<indexterm><primary>ListView Event</primary><secondary>DBLCLK</secondary></indexterm>
 <para>
-  The event handler for the selection changed event is invoked when the selection state of an item changes. The method
-  receives three arguments:
+  The event handling method for the CLICK event is invoked when the user clicks on the list-view with the left mouse.
+  The event handler for the DBLCLK is invoked when the user double clicks on the list-view. This excludes the column
+  headers in report view. Both event handlers receive the same arguments.
+</para>
+<para>
+  Note that the user can click on a list-view item, or on the background of the list view. When the click is on the
+  background of the list-view then both the <emphasis role="italic">itemIndex</emphasis> and <emphasis
+  role="italic">columnIndex</emphasis> will be -1. The method will receive four arguments:
 </para>
 
 <programlisting>
 <![CDATA[
-::method onSelectChanged unguarded
-  use arg id, itemIndex, state
+  ::method onClick unguarded
+    use arg id, itemIndex, columnIndex, keyState
 
-  return 0
+    return 0
 ]]>
 </programlisting>
 
@@ -4515,122 +4538,35 @@ incorrect.
   <varlistentry><term>id</term>
   <listitem>
   <para>
-    The resource ID of the list-view control whose item had the selection changed.
+    The resource ID of the list-view control whose item was clicked.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>itemIndex</term>
   <listitem>
   <para>
-    The index of the item whose selection was changed.
+    The zero-based index of the item that was clicked, or -1 if the background of the list-view was clicked. In report
+    view this is often thought of as the row index.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term>state</term>
+  <varlistentry><term>columnIndex</term>
   <listitem>
   <para>
-    This argument reports whether the item was selected or unselected.  Its value will be either
-    &quot;SELECTED&quot; or &quot;UNSELECTED&quot;
+    The zero-based index of the subitem that was clicked, or -1 if the click was on the background of the list view. In
+    report view this is often thought of as the column of row. In all views other than report view, this arg will always
+    be 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>keyState</term>
+  <listitem>
+  <para>
+    This argument reports the state of the shift, control, and alt keys at the time of the mouse click.  The argument is
+    a string of keywords separated by blanks.  The keywords consist of: SHIFT, CONTROL, ALT, or NONE. The presence of a
+    keyword indicates the key was held down when the user clicked on the list-view control.  NONE of course indicates
+    that none of the keys were down.  If the user managed to hold all three of the keys down at the time of the mouse
+    click, the argument would be the string: <emphasis role="italic">SHIFT CONTROL ALT</emphasis>.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
-
-<section id="evtListViewFOCUSCHANGED" xreflabel="FOCUSCHANGED"><title>FocusChanged Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>FOCUSCHANGED</secondary></indexterm>
-<para>
-  The event handler for the focus changed event is invoked when an item gains or loses focus. The method receives three
-  arguments:
-</para>
-
-<programlisting>
-<![CDATA[
-::method onFocusChanged unguarded
-  use arg id, itemIndex, state
-
-  return 0
-]]>
-</programlisting>
-<variablelist>
-  <varlistentry><term>id</term>
-  <listitem>
-  <para>
-    The resource ID of the list-view control whose item had the focus changed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>itemIndex</term>
-  <listitem>
-  <para>
-    The index of the item which gained or lost the focus.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>state</term>
-  <listitem>
-  <para>
-    This argument reports whether the focus was gained or lost.  Its value will be either &quot;FOCUSED&quot; or
-    &quot;UNFOCUSED&quot;
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="evtListViewSELECTFOCUSCHANGED" xreflabel="SELECTFOCUSCHANGED"><title>SelectFocusChanged Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>SELECTFOCUSCHANGED</secondary></indexterm>
-<para>
-  The event handle for the selection or focus changed event is invoked when either the selection or the focus of an item
-  changes. The method receives 3 arguments:
-</para>
-
-<programlisting>
-<![CDATA[
-::method onSelectFocusChanged unguarded
-  use arg id, itemIndex, state
-
-  return 0
-]]>
-</programlisting>
-
-<variablelist>
-  <varlistentry><term>id</term>
-  <listitem>
-  <para>
-    The resource ID of the list-view control whose item had the either the focus or the selection changed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>itemIndex</term>
-  <listitem>
-  <para>
-    The index of the item where the state was changed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>state</term>
-  <listitem>
-  <para>
-    This argument reports whether the focus was gained or lost and whether the selection was gained or lost. Its
-    value will contain at least one of the keywords: &quot;SELECTED&quot;, &quot;UNSELECTED&quot;,
-    &quot;FOCUSED&quot; or &quot;UNFOCUSED&quot;.  It is possible for both the selection and focus changed to be
-    reported at once, however sometimes each change is reported separately. (This has nothing to do with ooDialog,
-    it is how the operating system sends the messages.)
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-
-</section>
-
-<section id="evtListViewENDEDIT" xreflabel="ENDEDIT"><title>EndEdit Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>ENDEDIT</secondary></indexterm>
-<para>
-  The event-handling method connected to ENDEDIT receives two arguments: the item ID of which the label has been edited
-  and the newly entered text.
-</para>
-
-<programlisting>
-<![CDATA[
-::method onEndEdit unguarded
-  use arg item, newText
-
-  return 0
-]]>
-</programlisting>
-
 </section>
 
 <section id="evtListViewCOLUMNCLICK" xreflabel="COLUMNCLICK"><title>ColumnClick Event Handler</title>
@@ -4651,6 +4587,24 @@ incorrect.
 
 </section>
 
+
+<section id="evtListViewENDEDIT" xreflabel="ENDEDIT"><title>EndEdit Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>ENDEDIT</secondary></indexterm>
+<para>
+  The event-handling method connected to ENDEDIT receives two arguments: the item ID of which the label has been edited
+  and the newly entered text.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onEndEdit unguarded
+  use arg item, newText
+
+  return 0
+]]>
+</programlisting>
+
+</section>
 
 <section id="evtListViewGETINFOTIP"><title>GetInfoTip Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>GETINFOTIP</secondary></indexterm>
@@ -4773,42 +4727,328 @@ incorrect.
 
 </section>
 
-<section id="evtListViewBEGINDRAG" xreflabel="BEGINDRAG"><title>BeginDrag Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>BEGINDRAG</secondary></indexterm>
-
+<section id="evtListViewKEYDOWNEX" xreflabel="KEYDOWNEX"><title>KeyDown (extended) Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>KEYDOWNEX</secondary></indexterm>
 <para>
-  The event-handling method connected to BEGINDRAG receives three arguments: the control ID of the list-view control,
-  the index of the list item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
-  separated by a blank).
+  The event-handling method connected through the KEYDOWNEX keyword is similar to the event handler for the <link
+  linkend="evtListViewKEYDOWN">KeyDown</link> event handler. It is invoked for the same event, when the user presses a key
+  within the list-view. However, it receives a different set of arguments than that provided when the KEYDOWN keyword is
+  used.
 </para>
 
 <programlisting>
 <![CDATA[
-::method onBeginDrag unguarded
-  use arg id, item, where
+::method onKeyDownEx unguarded
+  use arg vKey, isShift, isCtrl, isAlt, extraInfo, listViewObj
+
+  return response
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method receives 6 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>vKey</term>
+    <listitem>
+    <para>
+      The virtual key code of of the key pressed. Use the <xref linkend="mthKey2Name"/> method of the <xref linkend="clsVK"/>
+      class to determine which key was pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isShift</term>
+    <listitem>
+    <para>
+      A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
+      be true if a shift key was down and false if the shift key was not down.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isCtrl</term>
+    <listitem>
+    <para>
+      True if a control key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isAlt</term>
+    <listitem>
+    <para>
+      True if an alt key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>extraInfo</term>
+    <listitem>
+    <para>
+      This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
+      time of a key press event. The string will contain some combination of these keywords
+      <variablelist>
+        <varlistentry><term>extended</term>
+        <listitem>
+        <para>
+          The character event is for one of the extended keys previously mentioned, INS, DEL, HOME, END, PAGE UP, PAGE
+          DOWN, or one of the arrow keys.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>numOn</term>
+        <listitem>
+        <para>
+          Num Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>numOff</term>
+        <listitem>
+        <para>
+          Num Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOn</term>
+        <listitem>
+        <para>
+          Caps Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOff</term>
+        <listitem>
+        <para>
+          Caps Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOn</term>
+        <listitem>
+        <para>
+          Scroll Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOff</term>
+        <listitem>
+        <para>
+          Scroll Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lShift</term>
+        <listitem>
+        <para>
+          The left shift key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rShift</term>
+        <listitem>
+        <para>
+          The right shift key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lControl</term>
+        <listitem>
+        <para>
+          The left control key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rControl</term>
+        <listitem>
+        <para>
+          The right control key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lAlt</term>
+        <listitem>
+        <para>
+          The left alt key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rAlt</term>
+        <listitem>
+        <para>
+          The right alt key was down.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listViewObj</term>
+    <listitem>
+    <para>
+      The Rexx <computeroutput>ListView</computeroutput> object whose underlying Windows list-view had the keydown event.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    When the <emphasis role="italic">willReply</emphasis> argument to the <link linkend="mthConnectListViewEvent"></link>
+    method is true, the event handler must return a value. However, the operating system ignores the return value, so any
+    value can be used. 0 makes a good return.
+  </para>
+  <para>
+    If <emphasis role="italic">willReply</emphasis> is false, the event handler does not <emphasis
+    role="italic">have</emphasis> to return a value, but good practice would be to always return a value from an event
+    handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example uses an event handler that deletes the selected item if the user presses the DEL key while holding
+    down the control key. The next item following the deleted item is then selected. However, if the deleted item is the last
+    item in the last, then the previous item is selected.  If the deleted item is the last item in the list, then nothing is
+    selected:
+
+<programlisting>
+<![CDATA[
+
+::method onKeyDownEx unguarded
+    use arg vKey, isShift, isCtrl, isAlt, extraInfo, listViewObj
+
+    if vKey == .VK~DELETE & isCtrl then do
+        selectedIndex = listView~selected
+        if selectedIndex <> -1 then do
+            listView~delete(selectedIndex)
+            if selectedIndex == listView~items then do
+                if selectedIndex == 0 then do
+                    -- Do nothing, there are no items in the list-view now.
+                    nop
+                end
+                else do
+                    listView~select(selectedIndex - 1)
+                end
+            end
+            else do
+                listView~select(selectedIndex)
+            end
+          end
+    end
 
   return 0
 ]]>
 </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
 </section>
 
-<section id="evtListViewBEGINRDRAG" xreflabel=""><title>BeginRDrag Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
 
+<section id="evtListViewFOCUSCHANGED" xreflabel="FOCUSCHANGED"><title>FocusChanged Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>FOCUSCHANGED</secondary></indexterm>
 <para>
-  The event-handling method connected to BEGINRDRAG receives three arguments: the control ID of the list-view control,
-  the index of the list item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
-  separated by a blank).
+  The event handler for the focus changed event is invoked when an item gains or loses focus. The method receives three
+  arguments:
 </para>
 
 <programlisting>
 <![CDATA[
-::method onBeginRightDrag unguarded
-  use arg id, item, where
+::method onFocusChanged unguarded
+  use arg id, itemIndex, state
 
   return 0
 ]]>
 </programlisting>
+<variablelist>
+  <varlistentry><term>id</term>
+  <listitem>
+  <para>
+    The resource ID of the list-view control whose item had the focus changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>itemIndex</term>
+  <listitem>
+  <para>
+    The index of the item which gained or lost the focus.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>state</term>
+  <listitem>
+  <para>
+    This argument reports whether the focus was gained or lost.  Its value will be either &quot;FOCUSED&quot; or
+    &quot;UNFOCUSED&quot;
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="evtListViewSELECTCHANGE" xreflabel="SELECTCHANGE"><title>SelectChange Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>SELECTCHANGE</secondary></indexterm>
+<para>
+  The event handler for the selection changed event is invoked when the selection state of an item changes. The method
+  receives three arguments:
+</para>
+
+<programlisting>
+<![CDATA[
+::method onSelectChanged unguarded
+  use arg id, itemIndex, state
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term>id</term>
+  <listitem>
+  <para>
+    The resource ID of the list-view control whose item had the selection changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>itemIndex</term>
+  <listitem>
+  <para>
+    The index of the item whose selection was changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>state</term>
+  <listitem>
+  <para>
+    This argument reports whether the item was selected or unselected.  Its value will be either
+    &quot;SELECTED&quot; or &quot;UNSELECTED&quot;
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="evtListViewSELECTFOCUSCHANGED" xreflabel="SELECTFOCUSCHANGED"><title>SelectFocusChanged Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>SELECTFOCUSCHANGED</secondary></indexterm>
+<para>
+  The event handle for the selection or focus changed event is invoked when either the selection or the focus of an item
+  changes. The method receives 3 arguments:
+</para>
+
+<programlisting>
+<![CDATA[
+::method onSelectFocusChanged unguarded
+  use arg id, itemIndex, state
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term>id</term>
+  <listitem>
+  <para>
+    The resource ID of the list-view control whose item had the either the focus or the selection changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>itemIndex</term>
+  <listitem>
+  <para>
+    The index of the item where the state was changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>state</term>
+  <listitem>
+  <para>
+    This argument reports whether the focus was gained or lost and whether the selection was gained or lost. Its
+    value will contain at least one of the keywords: &quot;SELECTED&quot;, &quot;UNSELECTED&quot;,
+    &quot;FOCUSED&quot; or &quot;UNFOCUSED&quot;.  It is possible for both the selection and focus changed to be
+    reported at once, however sometimes each change is reported separately. (This has nothing to do with ooDialog,
+    it is how the operating system sends the messages.)
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
 </section>
 
 </section>
@@ -7183,7 +7423,28 @@ trackbar position by extracting the high-oder word. Example:
     <varlistentry><term>event</term>
     <listitem>
     <para>
-      A keyword indicating which event is to be connected. The keyword must be one of the following:
+      A keyword indicating which event is to be connected. Case is not significant. The keyword must be one of the following:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>BEGINDRAG</member>
+        <member>BEGINEDIT</member>
+        <member>BEGINRDRAG</member>
+        <member>DEFAULTEDIT</member>
+        <member>CHECKBOXCHANGED</member>
+        <member>CLICK</member>
+        <member>COLUMNCLICK</member>
+        <member>DELETE</member>
+        <member>ENDEDIT</member>
+        <member>EXPANDING</member>
+        <member>EXPANDED</member>
+        <member>GETINFOTIP</member>
+        <member>KEYDOWN</member>
+        <member>KEYDOWNEX</member>
+        <member>SELECTCHANGED</member>
+        <member>SELECTCHANGING</member>
+      </simplelist>
+    </para>
       <variablelist>
         <varlistentry><term>BEGINDRAG</term>
         <listitem>
@@ -7193,21 +7454,18 @@ trackbar position by extracting the high-oder word. Example:
           implement a drag-and-drop handler.
         </para>
         </listitem></varlistentry>
+        <varlistentry><term>BEGINEDIT</term>
+        <listitem>
+        <para>
+          Editing a label has been started.
+        </para>
+        </listitem></varlistentry>
         <varlistentry><term>BEGINRDRAG</term>
         <listitem>
         <para>
           A drag-and-drop operation involving the right mouse button was initiated. The documentation for the
           <xref linkend="mthDefTreeDragHandler"/>() method contains further information on how to
           implement a drag-and-drop handler. handler.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>BEGINEDIT</term>
-        <listitem><para>Editing a label has been started.
-        </para></listitem></varlistentry>
-        <varlistentry id="evtTreeViewENDEDIT"><term>ENDEDIT</term>
-        <listitem>
-        <para>
-          Label editing has ended.
         </para>
         </listitem></varlistentry>
         <varlistentry id="evtTreeViewDEFAULTEDIT"><term>DEFAULTEDIT</term>
@@ -7220,6 +7478,18 @@ trackbar position by extracting the high-oder word. Example:
         </para>
         <para>
           When you specify this event, the <emphasis role="italic">msgToRaise</emphasis> argument is ignored.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="evtTreeViewENDEDIT"><term>ENDEDIT</term>
+        <listitem>
+        <para>
+          Label editing has ended.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DELETE</term>
+        <listitem>
+        <para>
+          An item has been deleted.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>EXPANDING</term>
@@ -7241,22 +7511,22 @@ trackbar position by extracting the high-oder word. Example:
           control has the <link linkend="styTreeViewInfoTip">INFOTIP</link> style.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>DELETE</term>
-        <listitem>
-        <para>
-          An item has been deleted.
-        </para>
-        </listitem></varlistentry>
         <varlistentry><term>KEYDOWN</term>
         <listitem>
         <para>
           A key was pressed inside the tree view. This notification is not sent while a label is being edited.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>SELCHANGING</term>
+        <varlistentry><term>KEYDOWNEX</term>
         <listitem>
         <para>
-          Another item is about to be selected. This notification is sent before the selection has changed.
+          A key was pressed inside the tree view. This notification is not sent while a label is being edited.
+        </para>
+        <para>
+          This event is exactly the same as the KEYDOWN event. Except, when this keyword is used, the ooDialog framework sends
+          a different set of arguments to the event handler. The additional arguments provide more information to the
+          programmer than the arguments sent when the KEYDOWN keyword is used. The two keywords are needed to provide
+          backwards compatibility.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>SELCHANGED</term>
@@ -7265,8 +7535,13 @@ trackbar position by extracting the high-oder word. Example:
           Another item was selected. This notification is sent after the selection was changed.
         </para>
         </listitem></varlistentry>
+        <varlistentry><term>SELCHANGING</term>
+        <listitem>
+        <para>
+          Another item is about to be selected. This notification is sent before the selection has changed.
+        </para>
+        </listitem></varlistentry>
       </variablelist>
-    </para>
     </listitem></varlistentry>
     <varlistentry><term>mthName</term>
     <listitem>
@@ -7288,9 +7563,10 @@ trackbar position by extracting the high-oder word. Example:
     </para>
     <para>
       <emphasis role="bold">Note:</emphasis> Currently the <emphasis role="italic">willReply</emphasis> argument is ignored
-      for all events except the EXPANDING and EXPANDED events. For all other events, the interpreter never waits for the
-      reply from the event handler. Future enhancements to the <computeroutput>TreeView</computeroutput> class may allow the
-      <emphasis role="italic">willReply</emphasis> to have effect for all tree-view event notifications.
+      for all events except the EXPANDING, EXPANDED, and KEYDOWNEX events. For the GETINFOTIP event, the interpreter always
+      waits for the reply. For all other events, the interpreter never waits for the reply from the event handler. Future
+      enhancements to the <computeroutput>TreeView</computeroutput> class may allow the <emphasis
+      role="italic">willReply</emphasis> to have effect for all tree-view event notifications.
     </para>
     </listitem></varlistentry>
   </variablelist> </listitem></varlistentry>
@@ -7614,7 +7890,200 @@ trackbar position by extracting the high-oder word. Example:
 </section>  <!-- End GetInfoTip Event Handler -->
 
 
-</section>
+<section id="evtTreeViewKEYDOWNEX" xreflabel="KEYDOWNEX"><title>KeyDown (extended) Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>KEYDOWNEX</secondary></indexterm>
+<para>
+  The event-handling method connected through the KEYDOWNEX keyword is similar to the event handler for the KEYDOWN event
+  handler. It is invoked for the same event, when the user presses a key within the tree-view. However, it receives a
+  different set of arguments than that provided when the KEYDOWN keyword is used.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onKeyDownEx unguarded
+  use arg vKey, isShift, isCtrl, isAlt, extraInfo, treeViewObj
+
+  return response
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method receives 6 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>vKey</term>
+    <listitem>
+    <para>
+      The virtual key code of of the key pressed. Use the <xref linkend="mthKey2Name"/> method of the <xref linkend="clsVK"/>
+      class to determine which key was pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isShift</term>
+    <listitem>
+    <para>
+      A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
+      be true if a shift key was down and false if the shift key was not down.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isCtrl</term>
+    <listitem>
+    <para>
+      True if a control key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isAlt</term>
+    <listitem>
+    <para>
+      True if an alt key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>extraInfo</term>
+    <listitem>
+    <para>
+      This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
+      time of a key press event. The string may be the empty string, otherwise it will contain some combination of these
+      keywords:
+      <variablelist>
+        <varlistentry><term>extended</term>
+        <listitem>
+        <para>
+          The key down event is for one of the extended keys.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>numOn</term>
+        <listitem>
+        <para>
+          Num Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>numOff</term>
+        <listitem>
+        <para>
+          Num Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOn</term>
+        <listitem>
+        <para>
+          Caps Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOff</term>
+        <listitem>
+        <para>
+          Caps Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOn</term>
+        <listitem>
+        <para>
+          Scroll Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOff</term>
+        <listitem>
+        <para>
+          Scroll Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lShift</term>
+        <listitem>
+        <para>
+          The left shift key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rShift</term>
+        <listitem>
+        <para>
+          The right shift key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lControl</term>
+        <listitem>
+        <para>
+          The left control key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rControl</term>
+        <listitem>
+        <para>
+          The right control key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lAlt</term>
+        <listitem>
+        <para>
+          The left alt key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rAlt</term>
+        <listitem>
+        <para>
+          The right alt key was down.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>treeViewObj</term>
+    <listitem>
+    <para>
+      The Rexx <computeroutput>TreeView</computeroutput> object whose underlying Windows tree-view had the key down event.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    When the <emphasis role="italic">willReply</emphasis> argument to the <link linkend="mthConnectTreeViewEvent"></link>
+    method is true, the event handler must return a value.
+  </para>
+  <para>
+    If the key pressed was a character key, the character is used as part of an incremental search. The event handler returns
+    true to allow the character to be added to the incremental search and false to prevent the character from being added. If
+    the key pressed was not a character key, then the return is ignored by the operating system. 0 makes a good return when
+    the operating system ingores the return value.
+  </para>
+  <para>
+    If <emphasis role="italic">willReply</emphasis> is false, the event handler does not <emphasis
+    role="italic">have</emphasis> to return a value, but good practice would be to always return a value from an event
+    handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example allows the user to type Ctrl-Ins (control insert) to add a new item to the tree view:
+
+<programlisting>
+<![CDATA[
+
+::method onKeyDownEx unguarded
+    use arg vKey, isShift, isCtrl, isAlt, extraInfo, treeViewObj
+
+    if vKey == .VK~INSERT, isCtrl then do
+        reply .false
+
+        self~addNewItem(treeViewObj)
+        return
+    end
+
+    return .true
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End KeyDownEx Event Handler -->
+
+</section>  <!-- End EventNotification::connectTreeViewEvent() -->
+
 
 <section id="mthConnectUpDownEvent" xreflabel="connectUpDownEvent"><title>connectUpDownEvent</title>
 <indexterm><primary>connectUpDownEvent</primary></indexterm>
