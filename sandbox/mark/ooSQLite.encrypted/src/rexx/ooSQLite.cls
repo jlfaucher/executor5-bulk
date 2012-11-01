@@ -393,6 +393,7 @@
 ::constant OO_ARRAY_OF_ARRAYS               1
 ::constant OO_ARRAY_OF_DIRECTORIES          2
 ::constant OO_STEM_OF_STEMS                 3
+::constant OO_CLASSIC_STEM                  4
 
 
 -- Beginning of SQLite constants

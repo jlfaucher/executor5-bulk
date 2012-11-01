@@ -868,6 +868,58 @@ static RexxStemObject getRecordsStem(RexxThreadContext *c, sqlite3_stmt *stmt)
 
 
 /**
+ * Returns a result set in the "classic stem" format
+ *
+ * @param c     Thread context we are operating in.
+ * @param stmt  A prepared sqlite3 statemnt.
+ *
+ * @return A stem containing the records produced by the statement.  Each record
+ *         is a stem object.
+ *
+ * @assumes  The specified statement is valid, that the return from
+ *           sqlite3_prepare_v2() has already been checked.  Also assumes that
+ *           sqlite3_step() has not been called yet.
+ *
+ * @note  If there are no rows returned by stepping the statement, then a stem
+ *        with stem.0 equal to zero is returned.
+ */
+static RexxStemObject getRecordsClassicStem(RexxThreadContext *c, sqlite3_stmt *stmt)
+{
+    RexxStemObject records = c->NewStem("records");  // A stem containing records.
+    c->SetStemArrayElement(records, 0, TheZeroObj);
+
+    int    count;
+    char **headers = getHeadersUpper(c, stmt, &count);
+    if ( headers == NULL )
+    {
+        return records;
+    }
+
+    size_t item = 1;                                 // Current record index.
+
+    while ( sqlite3_step(stmt) == SQLITE_ROW )
+    {
+        char buf[1024] = {0};
+
+        for ( int i = 0; i < count; i++ )
+        {
+            snprintf(buf, sizeof(buf) - 1, "%d.%s", i + 1, headers[i]);
+
+            CSTRING       data  = (CSTRING)sqlite3_column_text(stmt, i);
+            RexxObjectPtr value = (data == NULL) ? TheNilObj : c->String(data);
+
+            c->SetStemElement(records, buf, value);
+        }
+
+        c->SetStemArrayElement(records, 0, c->StringSize(item));  // Update number of records in the stem.
+    }
+
+    freeHeadersUpper(headers, count);
+    return records;
+}
+
+
+/**
  * Generic function to return either the compact or full version for the
  * ooSQLite extension.
  *
@@ -2019,7 +2071,7 @@ static int execCallBackDirectory(void *data, int ncols, char **values, char **he
 
 /**
  * The call back function for sqlite3_exec() when the format of a record is a
- * stem.
+ * stem of stems.
  *
  *
  * @param data
@@ -2087,6 +2139,105 @@ static int execCallBackStem(void *data, int ncols, char **values, char **headers
     }
 
     c->ReleaseLocalReference(record);
+    return (int)rc;
+}
+
+
+/**
+ * The call back function for sqlite3_exec() when the format of a record is a
+ * classic stem.
+ *
+ *
+ * @param data
+ * @param ncols
+ * @param values
+ * @param headers
+ *
+ * @return int
+ *
+ * @note  This callback is always running on the same thread as the
+ *        callbackContext thread.
+ */
+static int execCallBackClassicStem(void *data, int ncols, char **values, char **headers)
+{
+    pCGenericCallback  d = (pCGenericCallback)data;
+    RexxThreadContext *c = d->callbackContext;
+
+    if ( d->indexes == NULL )
+    {
+        if ( ! genCreateIndexes(d, ncols, headers) )
+        {
+            return SQLITE_ERROR;
+        }
+    }
+
+    wholenumber_t rc = SQLITE_OK;
+
+    if ( d->createRS )
+    {
+        d->count++;
+
+        char buf[1024] = {0};
+        for ( int i = 0; i < ncols; i++ )
+        {
+            CSTRING idx = d->indexes[i];
+
+            snprintf(buf, sizeof(buf) - 1, "%d.%s", d->count, idx);
+
+            RexxObjectPtr value;
+            if ( values[i] == NULL )
+            {
+                value = TheNilObj;
+            }
+            else
+            {
+                value = c->String(values[i]);
+            }
+
+            c->SetStemElement(d->rsStem, buf, value);
+
+            if ( value != TheNilObj )
+            {
+                c->ReleaseLocalReference(value);
+            }
+        }
+
+        RexxObjectPtr num = c->UnsignedInt32(d->count);
+        c->SetStemArrayElement(d->rsStem, 0, num);
+
+        c->ReleaseLocalReference(num);
+    }
+    else
+    {
+        RexxStemObject record = c->NewStem("record");
+
+        for ( int i = 0; i < ncols; i++ )
+        {
+            CSTRING idx = d->indexes[i];
+
+            RexxObjectPtr value;
+            if ( values[i] == NULL )
+            {
+                value = TheNilObj;
+            }
+            else
+            {
+                value = c->String(values[i]);
+            }
+
+            c->SetStemElement(record, idx, value);
+
+            if ( value != TheNilObj )
+            {
+                c->ReleaseLocalReference(value);
+            }
+        }
+
+        rc = genExecCall2Rexx(d, record);
+
+        c->ReleaseLocalReference(record);
+    }
+
     return (int)rc;
 }
 
@@ -2589,7 +2740,7 @@ RexxMethod1(uint32_t, oosql_getRecordFormat_atr_cls, CSELF, pCSelf)
  */
 RexxMethod2(RexxObjectPtr, oosql_setRecordFormat_atr_cls, uint32_t, format, CSELF, pCSelf)
 {
-    if ( format < anArrayOfArrays || format > aStemOfStems )
+    if ( format < anArrayOfArrays || format > aClassicStem )
     {
         wrongArgValueException(context->threadContext, 1, RECORD_FORMATS_LIST, context->UnsignedInt32(format));
     }
@@ -3301,6 +3452,9 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
                 case anArrayOfDirectories :
                     result = getRecordsDirectory(c->threadContext, stmt);
                     break;
+                case aClassicStem :
+                    result = getRecordsClassicStem(c->threadContext, stmt);
+                    break;
                 default :
                     result = getRecordsStem(c->threadContext, stmt);
                     break;
@@ -3315,7 +3469,7 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
         if ( pragma != shrinkMemory )
         {
             // But, if not shrinkMemory we want to return an empty result set:
-            if ( pConn->format == aStemOfStems )
+            if ( pConn->format == aStemOfStems || pConn->format == aClassicStem )
             {
                 RexxStemObject r = c->NewStem("records");
                 c->SetStemArrayElement(r, 0, TheZeroObj);
@@ -3383,6 +3537,9 @@ RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING nam
             case anArrayOfDirectories :
                 result = getRecordsDirectory(c->threadContext, stmt);
                 break;
+            case aClassicStem :
+                result = getRecordsClassicStem(c->threadContext, stmt);
+                break;
             default :
                 result = getRecordsStem(c->threadContext, stmt);
                 break;
@@ -3394,7 +3551,7 @@ RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING nam
         ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
 
         // Return an empty result set.
-        if ( pConn->format == aStemOfStems )
+        if ( pConn->format == aStemOfStems || pConn->format == aClassicStem )
         {
             RexxStemObject r = c->NewStem("records");
             c->SetStemArrayElement(r, 0, TheZeroObj);
@@ -3679,7 +3836,7 @@ RexxMethod2(RexxObjectPtr, oosqlconn_setRecordFormat_atr, uint32_t, format, CSEL
     {
         return NULLOBJECT;
     }
-    else if ( format < anArrayOfArrays || format > aStemOfStems )
+    else if ( format < anArrayOfArrays || format > aClassicStem )
     {
         wrongArgValueException(context->threadContext, 1, RECORD_FORMATS_LIST, context->UnsignedInt32(format));
     }
@@ -3743,7 +3900,7 @@ RexxMethod5(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _fla
     {
         if ( argumentExists(3) )
         {
-            if ( defFormat < anArrayOfArrays || defFormat > aStemOfStems )
+            if ( defFormat < anArrayOfArrays || defFormat > aClassicStem )
             {
                 wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
                                        context->UnsignedInt32(defFormat));
@@ -4236,7 +4393,7 @@ RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
     {
         if ( argumentExists(3) )
         {
-            if ( format < anArrayOfArrays || format > aStemOfStems )
+            if ( format < anArrayOfArrays || format > aClassicStem )
             {
                 wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
                                        context->UnsignedInt32(format));
@@ -4276,7 +4433,7 @@ RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
         {
             cbc.createRS = true;
 
-            if ( cbc.format == aStemOfStems )
+            if ( cbc.format == aStemOfStems || cbc.format == aClassicStem )
             {
                 RexxStemObject st = context->NewStem("records");
                 context->SetStemArrayElement(st, 0, TheZeroObj);  // No records to start with.
@@ -4297,6 +4454,10 @@ RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
 
             case anArrayOfDirectories :
                 rc = sqlite3_exec(pConn->db, sql, execCallBackDirectory, (void *)&cbc, &errMsg);
+                break;
+
+            case aClassicStem :
+                rc = sqlite3_exec(pConn->db, sql, execCallBackClassicStem, (void *)&cbc, &errMsg);
                 break;
 
             default :
@@ -4337,7 +4498,7 @@ RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
 
     if ( cbc.createRS )
     {
-        if ( cbc.format == aStemOfStems )
+        if ( cbc.format == aStemOfStems || cbc.format == aClassicStem )
         {
             return cbc.rsStem;
         }
@@ -5167,7 +5328,7 @@ RexxMethod2(RexxObjectPtr, oosqlstmt_setRecordFormat_atr, uint32_t, format, CSEL
     {
         return NULLOBJECT;
     }
-    else if ( format < anArrayOfArrays || format > aStemOfStems )
+    else if ( format < anArrayOfArrays || format > aClassicStem )
     {
         wrongArgValueException(context->threadContext, 1, RECORD_FORMATS_LIST, context->UnsignedInt32(format));
     }
@@ -5213,7 +5374,7 @@ RexxMethod4(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OPTI
 
     if ( argumentExists(3) )
     {
-        if ( defFormat < anArrayOfArrays || defFormat > aStemOfStems )
+        if ( defFormat < anArrayOfArrays || defFormat > aClassicStem )
         {
             wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
                                    context->UnsignedInt32(defFormat));
@@ -8596,7 +8757,7 @@ RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
     {
         if ( argumentExists(4) )
         {
-            if ( format < anArrayOfArrays || format > aStemOfStems )
+            if ( format < anArrayOfArrays || format > aClassicStem )
             {
                 wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
                                        context->UnsignedInt32(format));
@@ -8626,7 +8787,7 @@ RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
         {
             cbc.createRS = true;
 
-            if ( cbc.format == aStemOfStems )
+            if ( cbc.format == aStemOfStems || cbc.format == aClassicStem )
             {
                 RexxStemObject st = context->NewStem("records");
                 context->SetStemArrayElement(st, 0, TheZeroObj);  // No records to start with.
@@ -8649,10 +8810,13 @@ RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
                 rc = sqlite3_exec(db, sql, execCallBackDirectory, (void *)&cbc, &errMsg);
                 break;
 
+            case aClassicStem :
+                rc = sqlite3_exec(db, sql, execCallBackClassicStem, (void *)&cbc, &errMsg);
+                break;
+
             default :
                 rc = sqlite3_exec(db, sql, execCallBackStem, (void *)&cbc, &errMsg);
                 break;
-
         }
     }
     else
@@ -8678,7 +8842,7 @@ RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
 
     if ( cbc.createRS )
     {
-        if ( cbc.format == aStemOfStems )
+        if ( cbc.format == aStemOfStems || cbc.format == aClassicStem )
         {
             return cbc.rsStem;
         }
