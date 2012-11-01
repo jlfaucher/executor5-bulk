@@ -149,7 +149,6 @@ BIN_DIR = bin\windows
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNDEBUG /DNULL=0
 CFLAGS = /nologo /EHsc /O2 /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) $(MISCDEFS) /c
-BOTAN_CFLAGS = /nologo /EHs /O2 /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT /wd4244 /wd4267 $(BASEFLAGS) /DNOMINMAX $(MISCDEFS) /c
 
 LFLAGS_EXE = /nologo /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
 LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooSQLite.def /DLL

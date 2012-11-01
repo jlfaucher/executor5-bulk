@@ -46,7 +46,7 @@
 #define OO_BACKUP_DB_ERRSTATE            1004
 
 #define VALID_VERSION_TYPES "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
-#define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, or OO_STEM_OF_STEMS"
+#define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, OO_STEM_OF_STEMS, or OO_CLASSIC_STEM"
 
 // Buffer size must be plus one -> 4096
 #define MAX_ENQUOTE_STRING  4095
@@ -117,7 +117,8 @@ typedef enum
 {
     anArrayOfArrays      = 1,
     anArrayOfDirectories = 2,
-    aStemOfStems         = 3
+    aStemOfStems         = 3,
+    aClassicStem         = 4
 } ResultSetType;
 
 
