@@ -179,7 +179,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    There are currently 3 formats defined:
+    There are currently 4 formats defined:
     <itemizedlist>
     <listitem>
     <para>
@@ -207,6 +207,18 @@
       the tail is the name of the column and the value of that tail is the value of the column. The returned stem has
       tails 0 through N, N equal to the number of rows in the result set. The value at tail 0 is the count of rows in
       the result set. The values at tail 1 through N are the stems for row 1 through N in the result set..
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      OO_STEM_CLASSIC - The result set is returned in a <computeroutput>Stem</computeroutput> object. The returned stem has
+      tails 0 through N, N equal to the number of rows in the result set. The value at tail 0 is the count of rows in the
+      result set. Each tail 1 through N are compound tails that represent the rows in the result set. Each compound tail is
+      the row number combined with a column name in the row. The value at that compound tail is the value of the named column
+      in that row. E.g., for a result set that contains the 3 columns, <computeroutput>id</computeroutput>,
+      <computeroutput>name</computeroutput>, and <computeroutput>type_id</computeroutput>, the values for row 1 in the result
+      set would be at the stem variables <computeroutput>id</computeroutput>, <computeroutput>stm.1.name</computeroutput>,
+      and <computeroutput>stm.1.type_id</computeroutput>.
     </para>
     </listitem>
     </itemizedlist>
