@@ -111,6 +111,7 @@
 ::method firstVisible unguarded external "LIBRARY oodialog tv_getSpecificItem"
 ::method getImageList unguarded external "LIBRARY oodialog tv_getImageList"
 ::method getItemData unguarded external "LIBRARY oodialog tv_getItemData"
+::method getToolTips unguarded external "LIBRARY oodialog generic_getToolTips"
 ::method hitTest unguarded
    forward message "hitTestInfo" continue
    info = result
@@ -183,12 +184,12 @@
 ::method previous unguarded external "LIBRARY oodialog tv_getNextItem"
 ::method previousVisible unguarded external "LIBRARY oodialog tv_getNextItem"
 ::method removeItemData external "LIBRARY oodialog tv_removeItemData"
-::method restoreEditClass external "LIBRARY oodialog generic_subclassEdit"
 ::method root unguarded external "LIBRARY oodialog tv_getSpecificItem"
 ::method select unguarded external "LIBRARY oodialog tv_selectItem"
 ::method selected unguarded external "LIBRARY oodialog tv_getSpecificItem"
 ::method setImageList unguarded external "LIBRARY oodialog tv_setImageList"
 ::method setItemData unguarded external "LIBRARY oodialog tv_setItemData"
+::method setToolTips unguarded external "LIBRARY oodialog generic_setToolTips"
 
 -- The old code did not have recurse arg and had a comment saying "recursive not yet supported"
 -- Although MSDN documents this message as recursively sorting the children if WPARAM is true,
@@ -198,7 +199,6 @@
    return self~sendWinHandle2Msg(self~TVM_SORTCHILDREN, recurse, hItem)
 
 ::method sortChildrenCB external "LIBRARY oodialog tv_sortChildrenCB"
-::method subclassEdit external "LIBRARY oodialog generic_subclassEdit"
 ::method toggle unguarded external "LIBRARY oodialog tv_expand"
 
 ::method visibleItems unguarded
@@ -207,11 +207,17 @@
 
 
 -- DEPRECATED
+::method removeImages unguarded
+   return self~setImageList(.nil, 0)
+
+-- DEPRECATED
+::method restoreEditClass
+
+-- DEPRECATED
 ::method setImages unguarded external "LIBRARY oodialog tv_setImageList"
 
 -- DEPRECATED
-::method removeImages unguarded
-   return self~setImageList(.nil, 0)
+::method subclassEdit
 
 
 ::class 'TvCustomDrawSimple' public

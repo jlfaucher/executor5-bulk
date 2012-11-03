@@ -179,6 +179,11 @@
 #define TAG_CD_TRACKBAR           0x00002000
 #define TAG_CD_TREEVIEW           0x00004000
 
+// When combined with the CTRL flag of a dialog control, (nothing else,)
+// indicates the event handler should be invoked exactly the same as in old
+// ooDialog (pre 4.2.0.)
+#define TAG_PRESERVE_OLD          0x00100000
+
 /**
  * The last byte is for, well 'extra' information.  Use TAG_EXTRAMASK to
  * isolate the byte.
@@ -744,6 +749,20 @@ typedef struct _subClassData {
     uint32_t            id;              // Resource ID of subclassed control.
 } SubClassData;
 typedef SubClassData *pSubClassData;
+
+
+// A specific structure used for subclassing controls to use with the tool tip
+// relay event.
+typedef struct _relayEventData {
+    pCPlainBaseDialog   pcpbd;           // The Rexx owner dialog CSelf
+    pCDialogControl     pcdc;            // The Rexx control dialog CSelf
+    HWND                hCtrl;           // Window handle of subclassed control.
+    HWND                hToolTip;        // Window handle of tool tip
+    RexxObjectPtr       rxToolTip;
+    char               *method;          // Rexx method to invoke
+    uint32_t            id;              // Resource ID of subclassed control.
+} RelayEventData;
+typedef RelayEventData *pRelayEventData;
 
 
 /* Struct for the DynamicDialog object CSelf. */

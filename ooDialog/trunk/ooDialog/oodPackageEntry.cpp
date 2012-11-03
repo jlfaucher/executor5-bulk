@@ -612,8 +612,6 @@ REXX_METHOD_PROTOTYPE(pbdlg_putControl);
 REXX_METHOD_PROTOTYPE(pbdlg_dumpMessageTable);
 REXX_METHOD_PROTOTYPE(pbdlg_unInit);
 
-REXX_METHOD_PROTOTYPE(generic_setListTabulators);
-REXX_METHOD_PROTOTYPE(generic_subclassEdit);
 REXX_METHOD_PROTOTYPE(global_resolveSymbolicID);
 
 // DialogExtensions
@@ -899,6 +897,12 @@ REXX_METHOD_PROTOTYPE(dlgctrl_tabGroup);
 REXX_METHOD_PROTOTYPE(dlgctrl_textSize);
 REXX_METHOD_PROTOTYPE(dlgctrl_putInBag);
 
+// Generic methods for dialog controls
+REXX_METHOD_PROTOTYPE(generic_getToolTips);
+REXX_METHOD_PROTOTYPE(generic_setListTabulators);
+REXX_METHOD_PROTOTYPE(generic_subclassEdit);
+REXX_METHOD_PROTOTYPE(generic_setToolTips);
+
 // Static
 REXX_METHOD_PROTOTYPE(stc_getIcon);
 REXX_METHOD_PROTOTYPE(stc_setIcon);
@@ -1107,15 +1111,19 @@ REXX_METHOD_PROTOTYPE(tt_addToolEx);
 REXX_METHOD_PROTOTYPE(tt_addToolRect);
 REXX_METHOD_PROTOTYPE(tt_adjustRect);
 REXX_METHOD_PROTOTYPE(tt_delTool);
+REXX_METHOD_PROTOTYPE(tt_enumTools);
 REXX_METHOD_PROTOTYPE(tt_getCurrentToolInfo);
+REXX_METHOD_PROTOTYPE(tt_getToolCount);
 REXX_METHOD_PROTOTYPE(tt_getToolInfo);
 REXX_METHOD_PROTOTYPE(tt_popUp);
 REXX_METHOD_PROTOTYPE(tt_setMaxTipWidth);
 REXX_METHOD_PROTOTYPE(tt_trackActivate);
 REXX_METHOD_PROTOTYPE(tt_trackPosition);
+REXX_METHOD_PROTOTYPE(tt_useRelayEvent);
 
 // ToolInfo
 REXX_METHOD_PROTOTYPE(ti_fromID_cls);
+REXX_METHOD_PROTOTYPE(ti_fromIdEx_cls);
 REXX_METHOD_PROTOTYPE(ti_init);
 REXX_METHOD_PROTOTYPE(ti_unInit);
 REXX_METHOD_PROTOTYPE(ti_flags);
@@ -1612,8 +1620,6 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbdlg_dumpMessageTable,         pbdlg_dumpMessageTable),
     REXX_METHOD(pbdlg_unInit,                   pbdlg_unInit),
 
-    REXX_METHOD(generic_setListTabulators,      generic_setListTabulators),
-    REXX_METHOD(generic_subclassEdit,           generic_subclassEdit),
     REXX_METHOD(global_resolveSymbolicID,       global_resolveSymbolicID),
 
     REXX_METHOD(dlgext_setWindowRect,           dlgext_setWindowRect),
@@ -1682,27 +1688,6 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dyndlg_startParentDialog,       dyndlg_startParentDialog),
     REXX_METHOD(dyndlg_startChildDialog,        dyndlg_startChildDialog),
     REXX_METHOD(dyndlg_stop,                    dyndlg_stop),
-
-    REXX_METHOD(dlgctrl_new_cls,                dlgctrl_new_cls),
-    REXX_METHOD(dlgctrl_init_cls,               dlgctrl_init_cls),
-    REXX_METHOD(dlgctrl_init,                   dlgctrl_init),
-    REXX_METHOD(dlgctrl_unInit,                 dlgctrl_unInit),
-    REXX_METHOD(dlgctrl_addUserSubclass,        dlgctrl_addUserSubclass),
-    REXX_METHOD(dlgctrl_assignFocus,            dlgctrl_assignFocus),
-    REXX_METHOD(dlgctrl_clearRect,              dlgctrl_clearRect),
-    REXX_METHOD(dlgctrl_connectEvent,           dlgctrl_connectEvent),
-    REXX_METHOD(dlgctrl_connectFKeyPress,       dlgctrl_connectFKeyPress),
-    REXX_METHOD(dlgctrl_connectKeyPress,        dlgctrl_connectKeyPress),
-    REXX_METHOD(dlgctrl_data,                   dlgctrl_data),
-    REXX_METHOD(dlgctrl_dataEquals,             dlgctrl_dataEquals),
-    REXX_METHOD(dlgctrl_disconnectKeyPress,     dlgctrl_disconnectKeyPress),
-    REXX_METHOD(dlgctrl_getTextSizeDlg,         dlgctrl_getTextSizeDlg),
-    REXX_METHOD(dlgctrl_hasKeyPressConnection,  dlgctrl_hasKeyPressConnection),
-    REXX_METHOD(dlgctrl_redrawRect,             dlgctrl_redrawRect),
-    REXX_METHOD(dlgctrl_setColor,               dlgctrl_setColor),
-    REXX_METHOD(dlgctrl_tabGroup,               dlgctrl_tabGroup),
-    REXX_METHOD(dlgctrl_textSize,               dlgctrl_textSize),
-    REXX_METHOD(dlgctrl_putInBag,               dlgctrl_putInBag),
 
     REXX_METHOD(window_init,                    window_init),
     REXX_METHOD(window_unInit,                  window_unInit),
@@ -1855,6 +1840,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(winex_textBkMode,               winex_textBkMode),
     REXX_METHOD(winex_getSetArcDirection,       winex_getSetArcDirection),
 
+    // ResourceImage
     REXX_METHOD(ri_init,                        ri_init),
     REXX_METHOD(ri_release,                     ri_release),
     REXX_METHOD(ri_handle,                      ri_handle),
@@ -1863,6 +1849,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(ri_getImage,                    ri_getImage),
     REXX_METHOD(ri_getImages,                   ri_getImages),
 
+    // Image
     REXX_METHOD(image_toID_cls,                 image_toID_cls),
     REXX_METHOD(image_getImage_cls,             image_getImage_cls),
     REXX_METHOD(image_fromFiles_cls,            image_fromFiles_cls),
@@ -1878,6 +1865,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(image_systemErrorCode,          image_systemErrorCode),
     REXX_METHOD(image_handle,                   image_handle),
 
+    // ImageList
     REXX_METHOD(il_create_cls,                  il_create_cls),
     REXX_METHOD(il_init,                        il_init),
     REXX_METHOD(il_release,                     il_release),
@@ -1892,6 +1880,33 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(il_remove,                      il_remove),
     REXX_METHOD(il_isNull,                      il_isNull),
     REXX_METHOD(il_handle,                      il_handle),
+
+    // DialogControl
+    REXX_METHOD(dlgctrl_new_cls,                dlgctrl_new_cls),
+    REXX_METHOD(dlgctrl_init_cls,               dlgctrl_init_cls),
+    REXX_METHOD(dlgctrl_init,                   dlgctrl_init),
+    REXX_METHOD(dlgctrl_unInit,                 dlgctrl_unInit),
+    REXX_METHOD(dlgctrl_addUserSubclass,        dlgctrl_addUserSubclass),
+    REXX_METHOD(dlgctrl_assignFocus,            dlgctrl_assignFocus),
+    REXX_METHOD(dlgctrl_clearRect,              dlgctrl_clearRect),
+    REXX_METHOD(dlgctrl_connectEvent,           dlgctrl_connectEvent),
+    REXX_METHOD(dlgctrl_connectFKeyPress,       dlgctrl_connectFKeyPress),
+    REXX_METHOD(dlgctrl_connectKeyPress,        dlgctrl_connectKeyPress),
+    REXX_METHOD(dlgctrl_data,                   dlgctrl_data),
+    REXX_METHOD(dlgctrl_dataEquals,             dlgctrl_dataEquals),
+    REXX_METHOD(dlgctrl_disconnectKeyPress,     dlgctrl_disconnectKeyPress),
+    REXX_METHOD(dlgctrl_getTextSizeDlg,         dlgctrl_getTextSizeDlg),
+    REXX_METHOD(dlgctrl_hasKeyPressConnection,  dlgctrl_hasKeyPressConnection),
+    REXX_METHOD(dlgctrl_redrawRect,             dlgctrl_redrawRect),
+    REXX_METHOD(dlgctrl_setColor,               dlgctrl_setColor),
+    REXX_METHOD(dlgctrl_tabGroup,               dlgctrl_tabGroup),
+    REXX_METHOD(dlgctrl_textSize,               dlgctrl_textSize),
+    REXX_METHOD(dlgctrl_putInBag,               dlgctrl_putInBag),
+
+    // Generic methods for dialog control
+    REXX_METHOD(generic_getToolTips,            generic_getToolTips),
+    REXX_METHOD(generic_setListTabulators,      generic_setListTabulators),
+    REXX_METHOD(generic_setToolTips,            generic_setToolTips),
 
     // Static
     REXX_METHOD(stc_getIcon,                    stc_getIcon),
@@ -2076,15 +2091,19 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tt_addToolRect,                 tt_addToolRect),
     REXX_METHOD(tt_adjustRect,                  tt_adjustRect),
     REXX_METHOD(tt_delTool,                     tt_delTool),
+    REXX_METHOD(tt_enumTools,                   tt_enumTools),
     REXX_METHOD(tt_getCurrentToolInfo,          tt_getCurrentToolInfo),
+    REXX_METHOD(tt_getToolCount,                tt_getToolCount),
     REXX_METHOD(tt_getToolInfo,                 tt_getToolInfo),
     REXX_METHOD(tt_popUp,                       tt_popUp),
     REXX_METHOD(tt_setMaxTipWidth,              tt_setMaxTipWidth),
     REXX_METHOD(tt_trackActivate,               tt_trackActivate),
     REXX_METHOD(tt_trackPosition,               tt_trackPosition),
+    REXX_METHOD(tt_useRelayEvent,               tt_useRelayEvent),
 
     // ToolInfo
     REXX_METHOD(ti_fromID_cls,                  ti_fromID_cls),
+    REXX_METHOD(ti_fromIdEx_cls,                ti_fromIdEx_cls),
     REXX_METHOD(ti_init,                        ti_init),
     REXX_METHOD(ti_unInit,                      ti_unInit),
     REXX_METHOD(ti_flags,                       ti_flags),

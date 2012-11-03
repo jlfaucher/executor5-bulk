@@ -1772,6 +1772,151 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             break;
         }
 
+        case LVN_BEGINLABELEDIT :
+        {
+            NMLVDISPINFO *pdi = (NMLVDISPINFO *)lParam;
+
+            if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
+            {
+                // To preserve old behavior for DefListEditStater, we don't need
+                // to do anything. Otherwise, we need to invoke the named method
+                // with the old args.
+                if ( toupper(*methodName) == 'B' )
+                {
+                    RexxStringObject mthName = c->String(methodName);
+                    RexxObjectPtr    useLess = c->Intptr(lParam);
+                    RexxArrayObject  args    = c->ArrayOfTwo(idFrom, useLess);
+
+                    invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+
+                    c->ReleaseLocalReference(mthName);
+                    c->ReleaseLocalReference(idFrom);
+                    c->ReleaseLocalReference(useLess);
+                }
+                return ReplyTrue;
+            }
+
+            HWND hLv   = pdi->hdr.hwndFrom;
+            HWND hEdit = ListView_GetEditControl(hLv);
+
+            RexxObjectPtr   itemID = c->UnsignedInt32(pdi->item.iItem);
+            RexxObjectPtr   rxLv   = createControlFromHwnd(c, pcpbd, pdi->hdr.hwndFrom, winListView, true);
+            RexxObjectPtr   rxEdit = createControlFromHwnd(c, pcpbd, hEdit, winEdit, false);
+            RexxArrayObject args   = c->ArrayOfFour(idFrom, itemID, rxEdit, rxLv);
+
+            if ( expectReply )
+            {
+                RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+                msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+                if ( msgReply == NULL )
+                {
+                    return ReplyFalse;
+                }
+
+                // Return false to let the text be edited, true to disallow it.
+                // The return from Rexx is true to allow, false to disallow.
+                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? FALSE : TRUE);
+            }
+            else
+            {
+                RexxStringObject mthName = c->String(methodName);
+                invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+                c->ReleaseLocalReference(mthName);
+            }
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(itemID);
+            if ( rxLv != TheNilObj )
+            {
+                c->ReleaseLocalReference(rxLv);
+            }
+            if ( rxEdit != TheNilObj )
+            {
+                c->ReleaseLocalReference(rxEdit);
+            }
+            c->ReleaseLocalReference(args);
+
+            return ReplyTrue;
+        }
+
+        case LVN_ENDLABELEDIT :
+        {
+            NMLVDISPINFO *pdi = (NMLVDISPINFO *)lParam;
+
+            if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
+            {
+                // To preserve old behaviour for DefListEditHandler, we don't
+                // need to do anything except set the reply value.  Otherwise,
+                // we need to invoke the named method with the old args.
+                if ( toupper(*methodName) == 'B' )
+                {
+                    RexxArrayObject args;
+
+                    RexxStringObject mthName = c->String(methodName);
+                    RexxObjectPtr    itemID  = c->UnsignedInt32(pdi->item.iItem);
+                    RexxObjectPtr    text    = pdi->item.pszText ? c->String(pdi->item.pszText) : NULLOBJECT;
+
+                    if ( text != NULLOBJECT )
+                    {
+                        args = c->ArrayOfThree(idFrom, itemID, text);
+                        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+
+                        c->ReleaseLocalReference(text);
+                    }
+                    else
+                    {
+                        args = c->ArrayOfTwo(idFrom, itemID);
+                        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+                    }
+
+                    c->ReleaseLocalReference(mthName);
+                    c->ReleaseLocalReference(idFrom);
+                    c->ReleaseLocalReference(itemID);
+                }
+
+                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, pdi->item.pszText ? TRUE : FALSE);
+                return ReplyTrue;
+            }
+
+            RexxObjectPtr   itemID = c->UnsignedInt32(pdi->item.iItem);
+            RexxObjectPtr   text   = pdi->item.pszText ? c->String(pdi->item.pszText) : TheNilObj;
+            RexxObjectPtr   rxLV   = createControlFromHwnd(c, pcpbd, pdi->hdr.hwndFrom, winListView, true);
+            RexxArrayObject args   = c->ArrayOfFour(idFrom, itemID, text, rxLV);
+
+            if ( expectReply )
+            {
+                RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+                msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+                if ( msgReply == NULL )
+                {
+                    return ReplyFalse;
+                }
+
+                // Return true to accept the edited text, false to cancel
+                // it.  The return from Rexx is the same.
+                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? TRUE : FALSE);
+            }
+            else
+            {
+                RexxStringObject mthName = c->String(methodName);
+                invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+                c->ReleaseLocalReference(mthName);
+            }
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(itemID);
+            c->ReleaseLocalReference(rxLV);
+            if ( text != TheNilObj )
+            {
+                c->ReleaseLocalReference(text);
+            }
+            c->ReleaseLocalReference(args);
+
+            return ReplyTrue;
+        }
+
         case LVN_GETINFOTIP :
         {
             NMLVGETINFOTIP *tip = (LPNMLVGETINFOTIP)lParam;
@@ -2266,18 +2411,16 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  *
  * @return MsgReplyType
  *
- * @remarks  Note that most of the tree-view notifications are still handled
- *           using the old IBM ooDialog code.  Currently only the
- *           TVN_ITEMEXPANDING and TVn_ITEMEXPANDED notifications are tagged
- *           with TAG_TREEVIEW.
+ * @remarks  Note that some of the tree-view notifications are still handled
+ *           using the old IBM ooDialog code.
  *
  *           TVN_ITEMEXPANDING: The Rexx programmer returns .true expanding /
  *           collapsing the item is okay, or .false do not allow the expansion /
  *           collapse.
  *
  *           TVN_ITEMEXPANDED: If the Rexx programmer sets 'willReply' to true,
- *           we wait for the reply, but discard the actual.  This then has the
- *           'sync' effect.
+ *           we wait for the reply, but discard the actual reply.  This then has
+ *           the 'sync' effect.
  */
 MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
@@ -2291,7 +2434,7 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         case TVN_ITEMEXPANDED :
         case TVN_ITEMEXPANDING :
         {
-            NMTREEVIEW *nmtv = (NM_TREEVIEW *)lParam;
+            NMTREEVIEW *nmtv = (NMTREEVIEW *)lParam;
 
             // The arguements are the same whether we wait for the reply or not.
             RexxObjectPtr handle = pointer2string(c, nmtv->itemNew.hItem);
@@ -2348,6 +2491,165 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             c->ReleaseLocalReference(handle);
             c->ReleaseLocalReference(what);
             c->ReleaseLocalReference(extra);
+            c->ReleaseLocalReference(args);
+
+            return ReplyTrue;
+        }
+
+        case TVN_BEGINLABELEDIT :
+        {
+            NMTVDISPINFO *pdi = (NMTVDISPINFO *)lParam;
+
+            HWND hTv   = pdi->hdr.hwndFrom;
+            HWND hEdit = TreeView_GetEditControl(hTv);
+            tvSubclassEdit(hTv, hEdit, pdi->hdr.idFrom);
+
+            RexxArrayObject args;
+
+            if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
+            {
+                // To preserve old behaviour for DefTreeEditStarter, all that's
+                // needed is to set the subclass.  Otherwise, we also need to
+                // invoke the named method with the old args.
+                if ( toupper(*methodName) == 'B' )
+                {
+                    RexxStringObject mthName = c->String(methodName);
+                    RexxObjectPtr    hItem   = pointer2string(c, pdi->item.hItem);
+
+                    args = c->ArrayOfTwo(idFrom, hItem);
+                    invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+
+                    c->ReleaseLocalReference(mthName);
+                    c->ReleaseLocalReference(hItem);
+                    c->ReleaseLocalReference(args);
+                }
+
+                return ReplyTrue;
+            }
+
+            RexxObjectPtr hItem    = pointer2string(c, pdi->item.hItem);
+            RexxObjectPtr rxTv     = createControlFromHwnd(c, pcpbd, pdi->hdr.hwndFrom, winTreeView, true);
+            RexxObjectPtr rxEdit   = createControlFromHwnd(c, pcpbd, hEdit, winEdit, false);
+            RexxObjectPtr userData = pdi->item.lParam != NULL ? (RexxObjectPtr)pdi->item.lParam : TheNilObj;
+
+            args = c->ArrayOfFour(idFrom, hItem, rxEdit, rxTv);
+            c->ArrayAppend(args, userData);
+
+            if ( expectReply )
+            {
+                RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+                msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+                if ( msgReply == NULL )
+                {
+                    return ReplyFalse;
+                }
+
+                // Return false to let the text be edited, true to disallow it.
+                // The return from Rexx is true to allow, false to disallow.
+                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? FALSE : TRUE);
+            }
+            else
+            {
+                RexxStringObject mthName = c->String(methodName);
+                invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+                c->ReleaseLocalReference(mthName);
+            }
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(hItem);
+            if ( rxTv != TheNilObj )
+            {
+                c->ReleaseLocalReference(rxTv);
+            }
+            if ( rxEdit != TheNilObj )
+            {
+                c->ReleaseLocalReference(rxEdit);
+            }
+            c->ReleaseLocalReference(args);
+
+            return ReplyTrue;
+        }
+
+        case TVN_ENDLABELEDIT :
+        {
+            NMTVDISPINFO *pdi = (NMTVDISPINFO *)lParam;
+
+            RexxArrayObject args;
+
+            if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
+            {
+                // To preserve old behaviour for DefTeeEditHandler, we don't
+                // need to do anything.  Otherwise, we need to invoke the named
+                // method with the old args.
+                if ( toupper(*methodName) == 'B' )
+                {
+                    RexxStringObject mthName = c->String(methodName);
+                    RexxObjectPtr    hItem = pointer2string(c, pdi->item.hItem);
+                    RexxObjectPtr    text    = pdi->item.pszText ? c->String(pdi->item.pszText) : NULLOBJECT;
+
+                    if ( text != NULLOBJECT )
+                    {
+                        args = c->ArrayOfThree(idFrom, hItem, text);
+                        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+
+                        c->ReleaseLocalReference(text);
+                    }
+                    else
+                    {
+                        args = c->ArrayOfTwo(idFrom, hItem);
+                        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+                    }
+
+                    c->ReleaseLocalReference(mthName);
+                    c->ReleaseLocalReference(idFrom);
+                    c->ReleaseLocalReference(hItem);
+                    c->ReleaseLocalReference(args);
+                }
+
+                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, pdi->item.pszText ? TRUE : FALSE);
+                return ReplyTrue;
+            }
+
+            RexxObjectPtr   hItem    = pointer2string(c, pdi->item.hItem);
+            RexxObjectPtr   text     = pdi->item.pszText ? c->String(pdi->item.pszText) : TheNilObj;
+            RexxObjectPtr   rxTv     = createControlFromHwnd(c, pcpbd, pdi->hdr.hwndFrom, winTreeView, true);
+            RexxObjectPtr   userData = pdi->item.lParam != NULL ? (RexxObjectPtr)pdi->item.lParam : TheNilObj;
+
+            args = c->ArrayOfFour(idFrom, hItem, text, rxTv);
+            c->ArrayAppend(args, userData);
+
+            if ( expectReply )
+            {
+                RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+                msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+                if ( msgReply == NULL )
+                {
+                    return ReplyFalse;
+                }
+
+                // Return true to accept the edited text, false to cancel
+                // it.  The return from Rexx is the same.
+                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? TRUE : FALSE);
+            }
+            else
+            {
+                RexxStringObject mthName = c->String(methodName);
+                invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+                c->ReleaseLocalReference(mthName);
+            }
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(hItem);
+            if ( text != TheNilObj )
+            {
+                c->ReleaseLocalReference(text);
+            }
+            if ( rxTv != TheNilObj )
+            {
+                c->ReleaseLocalReference(rxTv);
+            }
             c->ReleaseLocalReference(args);
 
             return ReplyTrue;
@@ -2729,19 +3031,8 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
                     break;
             }
 
-            /* do we have an end label edit for tree or list view? */
-            if ( (code == TVN_ENDLABELEDIT) && ((TV_DISPINFO *)lParam)->item.pszText )
-            {
-                np = ((TV_DISPINFO *)lParam)->item.pszText;
-                handle = ((TV_DISPINFO *)lParam)->item.hItem;
-            }
-            else if ( (code == LVN_ENDLABELEDIT) && ((LV_DISPINFO *)lParam)->item.pszText )
-            {
-                np = ((LV_DISPINFO *)lParam)->item.pszText;
-                item = ((LV_DISPINFO *)lParam)->item.iItem;
-            }
             /* do we have a key_down? */
-            else if ( (code == TVN_KEYDOWN) || (code == LVN_KEYDOWN) || (code == TCN_KEYDOWN) )
+            if ( (code == TVN_KEYDOWN) || (code == LVN_KEYDOWN) || (code == TCN_KEYDOWN) )
             {
                 lParam = (ULONG)((TV_KEYDOWN *)lParam)->wVKey;
             }
@@ -3463,10 +3754,22 @@ static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
     else if ( StrCmpI(keyword, "BEGINDRAG"  ) == 0 ) tvn = TVN_BEGINDRAG;
     else if ( StrCmpI(keyword, "BEGINRDRAG" ) == 0 ) tvn = TVN_BEGINRDRAG;
     else if ( StrCmpI(keyword, "DELETE"     ) == 0 ) tvn = TVN_DELETEITEM;
-    else if ( StrCmpI(keyword, "BEGINEDIT"  ) == 0 ) tvn = TVN_BEGINLABELEDIT;
-    else if ( StrCmpI(keyword, "ENDEDIT"    ) == 0 ) tvn = TVN_ENDLABELEDIT;
     else if ( StrCmpI(keyword, "KEYDOWN"    ) == 0 ) tvn = TVN_KEYDOWN;
-    else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 ) *isDefEdit = true;
+    else if ( StrCmpI(keyword, "BEGINEDIT"  ) == 0 )
+    {
+        tvn = TVN_BEGINLABELEDIT;
+        *tag = TAG_TREEVIEW;
+    }
+    else if ( StrCmpI(keyword, "ENDEDIT"    ) == 0 )
+    {
+        tvn = TVN_ENDLABELEDIT;
+        *tag = TAG_TREEVIEW;
+    }
+    else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 )
+    {
+        *isDefEdit = true;
+        *tag = TAG_TREEVIEW | TAG_PRESERVE_OLD;
+    }
     else if ( StrCmpI(keyword, "EXPANDING"  ) == 0 )
     {
         tvn = TVN_ITEMEXPANDING;
@@ -3551,13 +3854,25 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
     else if ( StrCmpI(keyword, "INSERTED")    == 0 ) lvn = LVN_INSERTITEM;
     else if ( StrCmpI(keyword, "DELETE")      == 0 ) lvn = LVN_DELETEITEM;
     else if ( StrCmpI(keyword, "DELETEALL")   == 0 ) lvn = LVN_DELETEALLITEMS;
-    else if ( StrCmpI(keyword, "BEGINEDIT")   == 0 ) lvn = LVN_BEGINLABELEDIT;
-    else if ( StrCmpI(keyword, "ENDEDIT")     == 0 ) lvn = LVN_ENDLABELEDIT;
     else if ( StrCmpI(keyword, "BEGINDRAG")   == 0 ) lvn = LVN_BEGINDRAG;
     else if ( StrCmpI(keyword, "BEGINRDRAG")  == 0 ) lvn = LVN_BEGINRDRAG;
     else if ( StrCmpI(keyword, "ACTIVATE")    == 0 ) lvn = LVN_ITEMACTIVATE;
     else if ( StrCmpI(keyword, "KEYDOWN")     == 0 ) lvn = LVN_KEYDOWN;
-    else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 ) *isDefEdit = true;
+    else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 )
+    {
+        *isDefEdit = true;
+        *tag = TAG_LISTVIEW | TAG_PRESERVE_OLD;
+    }
+    else if ( StrCmpI(keyword, "BEGINEDIT")   == 0 )
+    {
+        lvn = LVN_BEGINLABELEDIT;
+        *tag = TAG_LISTVIEW;
+    }
+    else if ( StrCmpI(keyword, "ENDEDIT")     == 0 )
+    {
+         lvn = LVN_ENDLABELEDIT;
+         *tag = TAG_LISTVIEW;
+    }
     else if ( StrCmpI(keyword, "CLICK") == 0 )
     {
         lvn = NM_CLICK;
@@ -5415,6 +5730,41 @@ err_out:
  *             backwards compatibility.  Essentially, for this method, all
  *             behaviour needs to be pre-4.2.0.  The only change is that for
  *             tagged list view events, the user can specify to reply directly.
+ *
+ *             The processing for beginlabeledit and endlabeledit that was done
+ *             for the DEFAULTEDIT keyword is not needed for a list-view.
+ *             defListEditStarter and defListEditHandler methods are not needed
+ *             and the methods are removed from the list-view.  For backwards
+ *             compatibility, if the keyword DEFAULTEDIT, we only connect the
+ *             defListEditHandler.  We need that to catch the message.  A tag is
+ *             added for preserve old behavior and within processLVN() we simply
+ *             do what the old defListEditHandler did.  Set the label text if
+ *             the user did not cancel, don't set the label if the user did
+ *             cancel.
+ *
+ *             For reference.  The arguments sent to the event handler for
+ *             LVN_ENDLABELEDIT were never documented correctly, if at all.
+ *             They were as follows.  If the user did *not* cancel the edit:
+ *               arg 1 list-view id                   (from wParam)
+ *               arg 2 item being edited id (0 based)
+ *               arg 3 text user entered.
+ *
+ *             If the user did cancel the edit:
+ *               arg 1 list-view id                   (from wParam)
+ *               arg 2 pointer to the NMLVDISPINFO struct as a decimal value
+ *                                                    (from lParam)
+ *
+ *             Note: it is highly unlikely that anyone ever connected
+ *             LVN_ENDLABELEDIT in the old ooDialog, but if they did, the
+ *             willReply argument would be omitted.  We do a special check for
+ *             this and preserve what would have been the old behaviour.  That
+ *             is: use invoke dispatch and use the arguments listed above.
+ *
+ *             The arguments to the event handler for LVN_BEGINLABELEDIT were
+ *             never documented at all.  For reference they were:
+ *               arg 1 list-view id                   (from wParam)
+ *               arg 2 pointer to the NMLVDISPINFO struct as a decimal value
+ *                                                    (from lParam)
  */
 RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING, event,
             OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
@@ -5436,14 +5786,11 @@ RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING
         return TheNegativeOneObj;
     }
 
-    // Deal with DEFAULTEDIT separately.
+    // Deal with DEFAULTEDIT separately. For LVN_BEGINLABELEDIT, we do not need
+    // to handle the event
     if ( isDefEdit )
     {
-        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, LVN_BEGINLABELEDIT, 0xFFFFFFFF, "DefListEditStarter", 0) )
-        {
-            return TheNegativeOneObj;
-        }
-        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, LVN_ENDLABELEDIT, 0xFFFFFFFF, "DefListEditHandler", 0) )
+        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, LVN_ENDLABELEDIT, 0xFFFFFFFF, "DefListEditHandler", tag) )
         {
             return TheNegativeOneObj;
         }
@@ -5453,6 +5800,11 @@ RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING
     if ( argumentOmitted(3) || *methodName == '\0' )
     {
         methodName = lvn2name(notificationCode, tag);
+    }
+
+    if ( (notificationCode == LVN_BEGINLABELEDIT || notificationCode == LVN_ENDLABELEDIT) && argumentOmitted(4) )
+    {
+        tag |= TAG_PRESERVE_OLD;
     }
 
     if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
@@ -5705,8 +6057,36 @@ err_out:
  *
  *             EXPANDING / EXPANDED  The willReply request is honored
  *
+ *             BEGINLABELEDIT / ENDLABELEDIT
+ *
  *             INFOTIP  new keyword - will reply is always set to true for this
  *             keyword.
+ *
+ *             The processing for beginlabeledit and endlabeledit that was done
+ *             for the DEFAULTEDIT keyword is not all needed for a tree-view.
+ *             This is changed in a similar manner as the list-view was changed.
+ *             However, for a tree-view if we do not subclass the edit control,
+ *             the enter and the esc key close the dialog.  What we do here is
+ *             very similar to what we do in the connect list-view event
+ *             function.  See that header doc if more detail is neede.
+ *
+ *             For reference.  The arguments sent to the event handler for
+ *             TVN_ENDLABELEDIT were never documented correctly, if at all.
+ *             They were as follows.  If the user did *not* cancel the edit:
+ *               arg 1 tree-view id    (from wParam)
+ *               arg 2 handle of item being edited
+ *               arg 3 text user entered.
+ *
+ *             If the user did cancel the edit:
+ *               arg 1 tree-view id    (from wParam)
+ *               arg 2 pointer to the NMLVDISPINFO struct as a decimal value
+ *                                     (from lParam)
+ *
+ *             The arguments to the event handler for TVN_BEGINLABELEDIT were
+ *             never documented at all.  For reference they were:
+ *               arg 1 tree-view id    (from wParam)
+ *               arg 2 pointer to the NMLVDISPINFO struct as a decimal value
+ *                                     (from lParam)
  */
 RexxMethod5(RexxObjectPtr, en_connectTreeViewEvent, RexxObjectPtr, rxID, CSTRING, event,
             OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
@@ -5731,11 +6111,11 @@ RexxMethod5(RexxObjectPtr, en_connectTreeViewEvent, RexxObjectPtr, rxID, CSTRING
     // Deal with DEFAULTEDIT separately.
     if ( isDefEdit )
     {
-        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, TVN_BEGINLABELEDIT, 0xFFFFFFFF, "DefTreeEditStarter", 0) )
+        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, TVN_BEGINLABELEDIT, 0xFFFFFFFF, "DefTreeEditStarter", tag) )
         {
             return TheNegativeOneObj;
         }
-        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, TVN_ENDLABELEDIT, 0xFFFFFFFF, "DefTreeEditHandler", 0) )
+        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, TVN_ENDLABELEDIT, 0xFFFFFFFF, "DefTreeEditHandler", tag) )
         {
             return TheNegativeOneObj;
         }
@@ -5745,6 +6125,11 @@ RexxMethod5(RexxObjectPtr, en_connectTreeViewEvent, RexxObjectPtr, rxID, CSTRING
     if ( argumentOmitted(3) || *methodName == '\0' )
     {
         methodName = tvn2name(notificationCode, tag);
+    }
+
+    if ( notificationCode == TVN_ENDLABELEDIT && argumentOmitted(4) )
+    {
+        tag |= TAG_PRESERVE_OLD;
     }
 
     if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )

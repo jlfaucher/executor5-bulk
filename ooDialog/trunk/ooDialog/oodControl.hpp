@@ -229,8 +229,11 @@ extern RexxObjectPtr      createControlFromHwnd(RexxThreadContext *, pCPlainBase
 extern bool               addSubclassMessage(RexxMethodContext *c, pCDialogControl pcdc, pWinMessageFilter pwmf);
 extern void               unProtectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr oldUserData);
 extern void               protectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr data);
+extern void               protectControlObject(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr obj);
+extern void               unProtectControlObject(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr obj);
 
 extern RexxObjectPtr      createToolTip(RexxMethodContext *context, RexxObjectPtr rxID, CSTRING styleFlags, pCPlainBaseDialog pcpbd);
+extern bool               tvSubclassEdit(HWND hTV, HWND hEdit, uintptr_t tvID);
 
 #define ButtonAtom           0x0080
 #define EditAtom             0x0081

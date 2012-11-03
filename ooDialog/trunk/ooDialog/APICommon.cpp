@@ -716,9 +716,9 @@ RexxObjectPtr wrongRangeException(RexxThreadContext *c, size_t pos, uint32_t min
     return NULLOBJECT;
 }
 
-RexxObjectPtr wrongRangeException(RexxThreadContext *c, size_t pos, uint32_t min, uint32_t max, uint32_t actual)
+RexxObjectPtr wrongRangeException(RexxMethodContext *c, size_t pos, uint32_t min, uint32_t max, uint32_t actual)
 {
-    return wrongRangeException(c, pos, min, max, c->UnsignedInt32(actual));
+    return wrongRangeException(c->threadContext, pos, min, max, c->UnsignedInt32(actual));
 }
 
 RexxObjectPtr wrongArgValueException(RexxThreadContext *c, size_t pos, const char *list, RexxObjectPtr actual)

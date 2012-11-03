@@ -687,22 +687,6 @@ done_out:
 
 
 /**
- * Removes a Rexx object from the dialog control's Rexx bag.
- *
- * @param c
- * @param pcdc
- * @param oldUserData
- */
-void unProtectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr oldUserData)
-{
-    if ( oldUserData != TheNilObj && oldUserData != NULLOBJECT && pcdc->rexxBag != NULLOBJECT )
-    {
-        c->SendMessage1(pcdc->rexxBag, "REMOVE", oldUserData);
-    }
-}
-
-
-/**
  *  If the user stores a Rexx object in the user data storage of a dialog
  *  control, the Rexx object could be garbage collected because no Rexx object
  *  has a reference to it.  To prevent that we put the Rexx object in a bag that
@@ -728,6 +712,71 @@ void protectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObje
         {
             c->SendMessage1(pcdc->rexxBag, "PUT", data);
         }
+    }
+}
+
+
+/**
+ * Removes a Rexx object from the dialog control's Rexx bag.
+ *
+ * @param c
+ * @param pcdc
+ * @param oldUserData
+ */
+void unProtectControlUserData(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr oldUserData)
+{
+    if ( oldUserData != TheNilObj && oldUserData != NULLOBJECT && pcdc->rexxBag != NULLOBJECT )
+    {
+        c->SendMessage1(pcdc->rexxBag, "REMOVE", oldUserData);
+    }
+}
+
+
+/**
+ *  Protects some Rexx object related to a dialog control from garbage
+ *  collection by putting it in a Rexx bag.
+ *
+ *  This is similar to protectControlUserData(), but more generic.  For
+ *  instance, it is used for ToolTip objects of a list-view or tree-view.
+ *
+ * @param c
+ * @param pcdc
+ * @param obj
+ *
+ * @notes
+ */
+void protectControlObject(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr obj)
+{
+    if ( obj != TheNilObj && obj != NULLOBJECT )
+    {
+        if ( pcdc->rexxBag == NULL )
+        {
+            c->SendMessage1(pcdc->rexxSelf, "PUTINBAG", obj);
+        }
+        else
+        {
+            c->SendMessage1(pcdc->rexxBag, "PUT", obj);
+        }
+    }
+}
+
+
+/**
+ * Removes all instances of a single Rexx object from this dialog control's Rexx
+ * bag.
+ *
+ * @param c
+ * @param pcdc
+ * @param oldUserData
+ *
+ * @note  We use remove all here to remove all of the specified items in the
+ *        bag.
+ */
+void unProtectControlObject(RexxMethodContext *c, pCDialogControl pcdc, RexxObjectPtr obj)
+{
+    if ( obj != TheNilObj && obj != NULLOBJECT && pcdc->rexxBag != NULLOBJECT )
+    {
+        c->SendMessage1(pcdc->rexxBag, "REMOVEALL", obj);
     }
 }
 
@@ -2291,4 +2340,119 @@ RexxMethod2(RexxObjectPtr, dlgctrl_putInBag, RexxObjectPtr, object, CSELF, pCSel
 
     return TheNilObj;
 }
+
+
+
+/**
+ *  Generic methods for the dialog control classes.  These are methods that are
+ *  very similar in two or more controls, enough similar that it doesn't make
+ *  sense to have separate method implmentations.
+ */
+#define GENERIC_DIALOGCONTROL_METHODS        "Generic Methods"
+
+
+/** ListView::getToolTips()
+ *  TreeView::getToolTips()
+ *
+ *
+ *  Retrieves the child ToolTip control used by this litst-view or tree-view.
+ *
+ *  @param  None.
+ *
+ *  @return  Returns the tool tip Rexx object, or .nil if there is no tool tip.
+ *
+ *  @remarks  We create a Rexx tool tip object from the returned handle and then
+ *  protect that object.  Rather than store the tool tip object in the dialog's
+ *  bag, we put it in the control's bag. We don't check the return from create
+ *  control for TheNilObj because protectControlObect() does that for us.
+ */
+RexxMethod1(RexxObjectPtr, generic_getToolTips, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    oodControl_t ctrlType = pcdc->controlType;
+    HWND         hTT      = NULL;
+
+    if ( ctrlType == winListView )
+    {
+        hTT = ListView_GetToolTips(pcdc->hCtrl);
+    }
+    else
+    {
+        hTT = TreeView_GetToolTips(pcdc->hCtrl);
+    }
+
+    if ( hTT == NULL )
+    {
+        goto done_out;
+    }
+
+    result = createControlFromHwnd(context, pcdc, hTT, ctrlType, false);
+    protectControlObject(context, pcdc, result);
+
+done_out:
+    return result;
+}
+
+
+/** ListView::setToolTips()
+ *  TreeView::setToolTips()
+ *
+ *  Sets the child ToolTip control used by this list-view or tree-view controls
+ *
+ *  @param  None.
+ *
+ *  @return  Returns the previous tool tip, as a Rexx ToolTip object, or .nil if
+ *           there is no previous tool tip.
+ */
+RexxMethod2(RexxObjectPtr, generic_setToolTips, RexxObjectPtr, toolTip, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+    if ( ! requiredClass(context->threadContext, toolTip, "ToolTip", 1) )
+    {
+        goto done_out;
+    }
+
+    oodControl_t ctrlType = pcdc->controlType;
+    HWND         hOldTT   = NULL;
+
+    // Rather than put the tool tip object in the dialog bag, we put it in this
+    // tree-view's bag.
+    pCDialogControl pcdcTT = controlToCSelf(context, toolTip);
+    protectControlObject(context, pcdc, toolTip);
+
+    if ( ctrlType == winListView )
+    {
+        hOldTT = ListView_SetToolTips(pcdc->hCtrl, pcdcTT->hCtrl);
+    }
+    else
+    {
+        hOldTT = TreeView_SetToolTips(pcdc->hCtrl, pcdcTT->hCtrl);
+    }
+    if ( hOldTT == NULL )
+    {
+        goto done_out;
+    }
+
+    // We don't care if .nil is returned because unprotectControlObject() will
+    // check for TheNilObj and not try to remove it from the bag.
+    result = createControlFromHwnd(context, pcdc, hOldTT, winToolTip, false);
+    unProtectControlObject(context, pcdc, result);
+
+done_out:
+    return result;
+}
+
 

@@ -703,24 +703,36 @@ uint32_t listViewStyle(CSTRING opts, uint32_t style)
 }
 
 
+/**
+ * Parses the tree-view control styles.
+ *
+ * @param opts
+ * @param style
+ *
+ * @return uint32_t
+ *
+ * @note  The original code checked for ALL and then added those style and
+ *        returned.  This had the effect of INFOTIP being ignored in the keyword
+ *        string: "ALL INFOTIP"  Now if we detect ALL, we then drop through and
+ *        look for any other keywords.
+ */
 uint32_t treeViewStyle(CSTRING opts, uint32_t style)
 {
     if ( StrStrI(opts,"ALL") != NULL )
     {
         style |=  TVS_HASLINES | WS_VSCROLL | WS_HSCROLL | TVS_EDITLABELS | TVS_HASBUTTONS |
                   TVS_LINESATROOT | TVS_SHOWSELALWAYS;
-        return style;
     }
 
+    if ( StrStrI(opts, "LINES"        ) != NULL ) style |= TVS_HASLINES;
     if ( StrStrI(opts, "VSCROLL"      ) != NULL ) style |= WS_VSCROLL;
     if ( StrStrI(opts, "HSCROLL"      ) != NULL ) style |= WS_HSCROLL;
-    if ( StrStrI(opts, "NODRAG"       ) != NULL ) style |= TVS_DISABLEDRAGDROP;
     if ( StrStrI(opts, "EDIT"         ) != NULL ) style |= TVS_EDITLABELS;
     if ( StrStrI(opts, "BUTTONS"      ) != NULL ) style |= TVS_HASBUTTONS;
-    if ( StrStrI(opts, "LINES"        ) != NULL ) style |= TVS_HASLINES;
-    if ( StrStrI(opts, "INFOTIP"      ) != NULL ) style |= TVS_INFOTIP;
     if ( StrStrI(opts, "ATROOT"       ) != NULL ) style |= TVS_LINESATROOT;
     if ( StrStrI(opts, "SHOWSELALWAYS") != NULL ) style |= TVS_SHOWSELALWAYS;
+    if ( StrStrI(opts, "NODRAG"       ) != NULL ) style |= TVS_DISABLEDRAGDROP;
+    if ( StrStrI(opts, "INFOTIP"      ) != NULL ) style |= TVS_INFOTIP;
     return style;
 }
 

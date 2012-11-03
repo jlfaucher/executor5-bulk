@@ -156,6 +156,7 @@
 ::method getItemData unguarded external "LIBRARY oodialog lv_getItemData"
 ::method getItemInfo unguarded external "LIBRARY oodialog lv_getItemInfo"
 ::method getItemPos unguarded external "LIBRARY oodialog lv_getItemPos"
+::method getToolTips unguarded external "LIBRARY oodialog generic_getToolTips"
 ::method getSubitem unguarded external "LIBRARY oodialog lv_getSubitem"
 ::method hasCheckBoxes unguarded external "LIBRARY oodialog lv_hasCheckBoxes"
 ::method hitTestInfo unguarded external "LIBRARY oodialog lv_hitTestInfo"
@@ -228,7 +229,6 @@
 ::method removeStyle unguarded external "LIBRARY oodialog lv_addRemoveStyle"
 ::method replaceExtendedStyle unguarded external "LIBRARY oodialog lv_replaceExtendStyle"
 ::method replaceStyle unguarded external "LIBRARY oodialog lv_replaceStyle"
-::method restoreEditClass unguarded external "LIBRARY oodialog generic_subclassEdit"
 ::method scroll unguarded
    use strict arg x = 0, y = 0
    return self~sendWinIntMsg(self~LVM_SCROLL, x, y) <> 0
@@ -255,6 +255,7 @@
 ::method setItemPos unguarded external "LIBRARY oodialog lv_setItemPos"
 ::method setItemState unguarded external "LIBRARY oodialog lv_setItemState"
 ::method setItemText unguarded external "LIBRARY oodialog lv_setItemText"
+::method setToolTips unguarded external "LIBRARY oodialog generic_setToolTips"
 ::method smallSpacing unguarded
    return self~sendWinIntMsg(self~LVM_GETITEMSPACING, 1, 0)
 
@@ -268,7 +269,6 @@
    return self~stringWidthPx(text) / self~factorX
 
 ::method stringWidthPx unguarded external "LIBRARY oodialog lv_stringWidthPx"
-::method subclassEdit unguarded external "LIBRARY oodialog generic_subclassEdit"
 ::method textBkColor unguarded external "LIBRARY oodialog lv_getColor"
 ::method "textBkColor=" unguarded external "LIBRARY oodialog lv_setColor"
 ::method textColor unguarded external "LIBRARY oodialog lv_getColor"
@@ -291,6 +291,9 @@
    return self~removeImageList(.nil, 1)
 
 -- DEPRECATED
+::method restoreEditClass
+
+-- DEPRECATED
 ::method setImages unguarded external "LIBRARY oodialog lv_setImageList"
 
 -- DEPRECATED
@@ -299,6 +302,8 @@
    newArgs[4] = 1
    forward message 'setImageList' arguments (newArgs)
 
+-- DEPRECATED
+::method subclassEdit
 
 ::class 'LvItem' public                                                                -- Do not document for 4.2.0
 ::method init external "LIBRARY oodialog lvi_init"

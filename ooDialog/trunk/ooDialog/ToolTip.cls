@@ -50,16 +50,20 @@
 ::method addToolRect unguarded external "LIBRARY oodialog tt_addToolRect"
 ::method adjustRect unguarded external "LIBRARY oodialog tt_adjustRect"
 ::method delTool unguarded external "LIBRARY oodialog tt_delTool"
+::method enumTools unguarded external "LIBRARY oodialog tt_enumTools"
 ::method getCurrentToolInfo unguarded external "LIBRARY oodialog tt_getCurrentToolInfo"
+::method getToolCount unguarded external "LIBRARY oodialog tt_getToolCount"
 ::method getToolInfo unguarded external "LIBRARY oodialog tt_getToolInfo"
 ::method popUp unguarded external "LIBRARY oodialog tt_popUp"
 ::method setMaxTipWidth unguarded external "LIBRARY oodialog tt_setMaxTipWidth"
 ::method trackActivate unguarded external "LIBRARY oodialog tt_trackActivate"
 ::method trackPosition unguarded external "LIBRARY oodialog tt_trackPosition"
+::method useRelayEvent unguarded external "LIBRARY oodialog tt_useRelayEvent"
 
 
 ::class 'ToolInfo' public
 ::method fromID class external "LIBRARY oodialog ti_fromID_cls"
+::method fromIdEx class external "LIBRARY oodialog ti_fromIdEx_cls"
 
 ::method init external "LIBRARY oodialog ti_init"
 ::method unInit external "LIBRARY oodialog ti_unInit"

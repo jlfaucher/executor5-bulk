@@ -298,23 +298,6 @@
 ::method connectDateTimePickerEvent external "LIBRARY oodialog en_connectDateTimePickerEvent"
 ::method connectMonthCalendarEvent external "LIBRARY oodialog en_connectMonthCalendarEvent"
 ::method connectUpDownEvent external "LIBRARY oodialog en_connectUpDownEvent"
-
-::method defListEditStarter
-    use arg id, dummy, category
-    if arg(3, 'O') then lc = self~newListView(id)
-    else lc = self~newListView(id, category)
-    if lc \= .nil then lc~subclassEdit
-
-::method defListEditHandler
-    use arg id, item, newText, category
-    if arg(3, 'O') then return
-    if arg(4, 'O') then lc = self~newListView(id)
-    else lc = self~newListView(id, category)
-    if lc \= .nil then do
-        lc~modify(item, 0, newText)
-        lc~restoreEditClass
-    end
-
 ::method defListDragHandler
    use arg id, item, pt
    lc = self~newListView(id)

@@ -249,6 +249,69 @@ static RexxObjectPtr getCurrentTviUserData(HWND hTree, HTREEITEM hTreeItem)
 
 
 /**
+ * This is the window procedure used to subclass the edit control used for label
+ * editing for the TreeView.  We need to add the want all keys for
+ * WM_GETDLGCODE, or else ESC and ENTER close the dialog rather than end the
+ * editing session.
+ *
+ * Unlike other ooDialog subclass procedures, we don't need any extra data for
+ * this one.  dwData is null.  The edit control is destroyed by the OS as soon
+ * as the label editing is ended, so this subclass is very transient.  We
+ * recieve the WM_NCDESTROY message and remove the subclass.
+ */
+LRESULT CALLBACK CatchReturnSubProc(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM lParam, UINT_PTR id, DWORD_PTR dwData)
+{
+    switch ( msg )
+    {
+        case WM_GETDLGCODE:
+            return(DLGC_WANTALLKEYS | DefSubclassProc(hwnd, msg, wParam, lParam));
+
+        case WM_NCDESTROY:
+        {
+            RemoveWindowSubclass(hwnd, CatchReturnSubProc, id);
+        }
+    }
+
+    return DefSubclassProc(hwnd, msg, wParam, lParam);
+}
+
+
+/**
+ *  Subclasses the edit control that is created when the user begins editing a
+ *  tree-view item label.  Without the subclass, if the user hits the ENTER or
+ *  ESC key while editing, the dialog is closed.
+ *
+ *  This is an older ooDialog method which used to be used for a list-view also.
+ *  It is not needed for a list-view.
+ *
+ *  @return  True on success, otherwise false.
+ *
+ *  @remarks  We are called from the window message processing loop, so we know
+ *            we are in the proper thread.
+ *
+ *            We try to get the edit contol's ID. If we fail we use the
+ *            tree-view's id.
+ */
+bool tvSubclassEdit(HWND hTV, HWND hEdit, uintptr_t tvID)
+{
+    if ( hEdit == NULL )
+    {
+        return false;
+    }
+
+    int _id      = GetDlgCtrlID(hEdit);
+    uintptr_t id = _id < 1 ? tvID : _id;
+
+    if ( SetWindowSubclass(hEdit, CatchReturnSubProc, id, NULL) == 0 )
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+/**
  * A tree view item sort callback function that works by invoking a method in
  * the Rexx dialog that does the actual comparison.
  *
@@ -623,35 +686,6 @@ RexxMethod2(RexxObjectPtr, tv_getItemData, CSTRING, _hItem, CSELF, pCSelf)
 }
 
 
-/** TreeView::getItemText()
- *
- *
- *
- *  @note  Although the tree-view allows any length of text to be stored for an
- *         item, it only displays the first 260 characters.  So, here that is
- *         all we return.
- */
-RexxMethod2(RexxObjectPtr, tv_itemText, CSTRING, _hItem, CSELF, pCSelf)
-{
-    char buf[261];
-    HWND  hwnd = getDChCtrl(pCSelf);
-
-    TVITEMEX tvi   = {0};
-    tvi.hItem      = (HTREEITEM)string2pointer(_hItem);
-    tvi.mask       = TVIF_HANDLE | TVIF_TEXT;
-    tvi.pszText    = buf;
-    tvi.cchTextMax = 261;
-
-    RexxObjectPtr result = context->NullString();
-    if ( TreeView_GetItem(hwnd, &tvi) != 0 )
-    {
-        result = context->String(tvi.pszText);
-    }
-
-    return result;
-}
-
-
 RexxMethod2(RexxObjectPtr, tv_getSpecificItem, NAME, method, CSELF, pCSelf)
 {
     HWND hwnd = getDChCtrl(pCSelf);
@@ -694,6 +728,35 @@ RexxMethod3(RexxObjectPtr, tv_getNextItem, CSTRING, _hItem, NAME, method, CSELF,
     else if ( strcmp(method, "PREVIOUSVISIBLE") == 0 ) flag = TVGN_PREVIOUSVISIBLE;
 
     return pointer2string(context, TreeView_GetNextItem(hwnd, hItem, flag));
+}
+
+
+/** TreeView::itemText()
+ *
+ *
+ *
+ *  @note  Although the tree-view allows any length of text to be stored for an
+ *         item, it only displays the first 260 characters.  So, here that is
+ *         all we return.
+ */
+RexxMethod2(RexxObjectPtr, tv_itemText, CSTRING, _hItem, CSELF, pCSelf)
+{
+    char buf[261];
+    HWND  hwnd = getDChCtrl(pCSelf);
+
+    TVITEMEX tvi   = {0};
+    tvi.hItem      = (HTREEITEM)string2pointer(_hItem);
+    tvi.mask       = TVIF_HANDLE | TVIF_TEXT;
+    tvi.pszText    = buf;
+    tvi.cchTextMax = 261;
+
+    RexxObjectPtr result = context->NullString();
+    if ( TreeView_GetItem(hwnd, &tvi) != 0 )
+    {
+        result = context->String(tvi.pszText);
+    }
+
+    return result;
 }
 
 
