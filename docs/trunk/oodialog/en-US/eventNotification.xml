@@ -4423,7 +4423,7 @@ incorrect.
 
   ::method columnAction unguarded
     use arg id, column
-    lc = self~mthNewClsListView("EMPLOYEES")
+    lc = self~newListView("EMPLOYEES")
     lc~replaceStyle("REPORT", "SMALLICON EDIT SINGLESEL ASCENDING")
     if column > 0 then ...
 
@@ -4543,9 +4543,9 @@ incorrect.
         <listitem>
         <para>
           The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewClsListView"/>
-          method. Unlike the <emphasis role="italic">editCtrl</emphasis> object, this object is valid as long as the dialog
-          is executing.
+          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          linkend="mthNewListView"/> method. Unlike the <emphasis role="italic">editCtrl</emphasis> object, this object is
+          valid as long as the dialog is executing.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -4695,7 +4695,7 @@ incorrect.
   expose mailList
 
   ...
-  mailList = self~mthNewClsListView(IDC_LV_ADDRESSES)
+  mailList = self~newListView(IDC_LV_ADDRESSES)
   ...
 
   -- Since the methodName argument is omitted, ooDialog will construct a default
@@ -4859,8 +4859,8 @@ incorrect.
         <listitem>
         <para>
           The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewClsListView"/>
-          method.
+          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          linkend="mthNewListView"/> method.
         </para>
         </listitem></varlistentry>
       </variablelist>
