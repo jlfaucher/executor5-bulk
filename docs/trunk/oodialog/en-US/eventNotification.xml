@@ -4423,7 +4423,7 @@ incorrect.
 
   ::method columnAction unguarded
     use arg id, column
-    lc = self~newListView("EMPLOYEES")
+    lc = self~mthNewClsListView("EMPLOYEES")
     lc~replaceStyle("REPORT", "SMALLICON EDIT SINGLESEL ASCENDING")
     if column > 0 then ...
 
@@ -4483,7 +4483,7 @@ incorrect.
 <para>
   In general, the programmer would connect both the BEGINEDIT and <xref linkend="evtListViewENDEDIT"/> notifications. Both of
   these event notifications have been enhanced since the original ooDialog implementation. If the <emphasis
-  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectLiistViewEvent"/> method is omitted the old
+  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectListViewEvent"/> method is omitted the old
   implementation is used. If the argument is not omitted, the new implementation is used. How the two event handlers work is
   described separately.
 </para>
@@ -4543,7 +4543,7 @@ incorrect.
         <listitem>
         <para>
           The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="newListView"/>
+          the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewClsListView"/>
           method. Unlike the <emphasis role="italic">editCtrl</emphasis> object, this object is valid as long as the dialog
           is executing.
         </para>
@@ -4695,7 +4695,7 @@ incorrect.
   expose mailList
 
   ...
-  mailList = self~newListView(IDC_LV_ADDRESSES)
+  mailList = self~mthNewClsListView(IDC_LV_ADDRESSES)
   ...
 
   -- Since the methodName argument is omitted, ooDialog will construct a default
@@ -4804,7 +4804,7 @@ incorrect.
 <para>
   In general, the programmer would connect both the <xref linkend="evtListViewBEGINEDIT"/> and ENDEDIT notifications. Both
   of these event notifications have been enhanced since the original ooDialog implementation. If the <emphasis
-  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectLiistViewEvent"/> method is omitted the old
+  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectListViewEvent"/> method is omitted the old
   implementation is used. If the argument is not omitted, the new implementation is used. How the two event handlers work is
   described separately.
 </para>
@@ -4859,7 +4859,7 @@ incorrect.
         <listitem>
         <para>
           The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="newListView"/>
+          the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewClsListView"/>
           method.
         </para>
         </listitem></varlistentry>
