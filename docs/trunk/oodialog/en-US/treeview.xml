@@ -256,10 +256,6 @@
 <entry>Removes and returns the user data associated with the specified tree-view item.</entry>
 </row>
 <row>
-<entry>restoreEditClass</entry>
-<entry><xref linkend="restoreeditclasstrc"/></entry>
-</row>
-<row>
 <entry>Root</entry>
 <entry><xref linkend="mthRoot"/></entry>
 </row>
@@ -286,10 +282,6 @@
 <row>
 <entry><xref linkend="mthSortChildrenCB"/></entry>
 <entry>Has the tree-view sort the children of the specified item by invoking a custom comparsion method in the Rexx dialog.</entry>
-</row>
-<row>
-<entry>subclassEdit</entry>
-<entry><xref linkend="subclassedittrc"/></entry>
 </row>
 <row>
 <entry>Toggle</entry>
@@ -431,7 +423,7 @@
       <para>
         Used to signal the underlying tree-view control that the item has children, even if no children are inserted. Specify
         1 to signal that the item does have children. This is really only useful if the tree-view has the <xref
-        linkend="styButtonsClsTreeView"/> style, see the remarks section. When this argument is omitted or less than 1, it is
+        linkend="styTreeViewBUTTONS"/> style, see the remarks section. When this argument is omitted or less than 1, it is
         in effect ignored.
       </para>
       </listitem></varlistentry>
@@ -1625,7 +1617,7 @@ minimum.
       <para>
         Used to signal the underlying tree-view control that the item has children, even if no children are inserted. Specify
         1 to signal that the item does have children. This is really only useful if the tree-view has the <xref
-        linkend="styButtonsClsTreeView"/> style, see the remarks section. When this argument is omitted or less than 1, it is
+        linkend="styTreeViewBUTTONS"/> style, see the remarks section. When this argument is omitted or less than 1, it is
         in effect ignored.
       </para>
       </listitem></varlistentry>
@@ -2165,7 +2157,7 @@ items fit in the dialog.</para>
       <para>
         Used to signal the underlying tree-view control that the item has children, even if no children are inserted. Specify
         1 to signal that the item does have children. This is really only useful if the tree-view has the <xref
-        linkend="styButtonsClsTreeView"/> style. When this argument is omitted the item's <emphasis
+        linkend="styTreeViewBUTTONS"/> style. When this argument is omitted the item's <emphasis
         role="italic">children</emphasis> value is not changed.
       </para>
       </listitem></varlistentry>
@@ -2495,22 +2487,6 @@ in all other cases.
 </variablelist>
 </section>  <!-- End TreeView::removeItemData() -->
 
-
-<section id="restoreeditclasstrc"><title>restoreEditClass</title>
-<indexterm><primary>restoreEditClass</primary>
-<secondary>TreeView class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--restoreEditClass-----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The restoreEditClass method is used by the DefTreeEditHandler
-to correct the problem occurring when Esc or the Enter key is pressed in an
-active edit item.</para>
-</section>
 
 <section id="mthRoot"><title>root</title>
 <indexterm><primary>root</primary></indexterm>
@@ -2997,22 +2973,6 @@ was not specified or is 0.
 </variablelist>
 </section>  <!-- End TreeView::sortChildrenCB() -->
 
-
-<section id="subclassedittrc"><title>subclassEdit</title>
-<indexterm><primary>subclassEdit</primary>
-<secondary>TreeView class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--subclassEdit---------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The subclassEdit method is used by the DefTreeEditHandler
-to correct the problem occurring when Esc or the Enter key is pressed in an
-active edit item.</para>
-</section>
 
 <section id="toggle"><title>Toggle</title>
 <indexterm><primary>Toggle</primary></indexterm>

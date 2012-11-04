@@ -4097,8 +4097,8 @@ incorrect.
 <indexterm><primary>connectListViewEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-connectListViewEvent(--id--,--event--+---------------+--)----><
-                                        +-,--methodName-+
+>>-connectListViewEvent(--id--,--event--+---------------+--+-------------+--)--><
+                                        +-,--methodName-+  +-,-willReply-+
 
 ]]>
 </programlisting>
@@ -4131,15 +4131,16 @@ incorrect.
         <member>BEGINDRAG</member>
         <member>BEGINEDIT</member>
         <member>BEGINRDRAG</member>
-        <member>ENDEDIT</member>
         <member>CHANGING</member>
         <member>CHANGED</member>
         <member>CHECKBOXCHANGED</member>
         <member>CLICK</member>
         <member>COLUMNCLICK</member>
         <member>DBLCLK</member>
+        <member>DEFAULTEDIT</member>
         <member>DELETE</member>
         <member>DELETEALL</member>
+        <member>ENDEDIT</member>
         <member>FOCUSCHANGED</member>
         <member>GETINFOTIP</member>
         <member>INSERTED</member>
@@ -4159,14 +4160,22 @@ incorrect.
       <varlistentry><term>BEGINDRAG</term>
       <listitem>
       <para>
-        A drag-and-drop operation was initiated. See <xref linkend="mthDefListDragHandler"/> for
-        information on how to implement a drag-and-drop handler.
+        A drag-and-drop operation was initiated. See <xref linkend="mthDefListDragHandler"/> for information on how to
+        implement a drag-and-drop handler.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>BEGINEDIT</term>
       <listitem>
       <para>
-        Editing a label has been started. Do not connect this event if you are using the DEFAULTEDIT keyword.
+        Editing a label has been started. Do not connect this event if you are using the DEFAULTEDIT keyword. The results are
+        undefined. The list-view must have the <xref linkend="styListViewEDIT"/> style for this notification to be sent.
+      </para>
+      <para>
+        The event notification for this event has been enhanced since the original ooDialog implementation. To use the
+        enhanced event notification, the <emphasis role="italic">willReply</emphasis> argument must be used. The value of the
+        argument, true or false, does not matter. If <emphasis role="italic">willReply</emphasis> is omitted, the old style
+        notification is used. The documentation for the <link linkend="evtListViewBEGINEDIT">BEGINEDIT</link> event handler
+        explains the difference between the two types of notifications.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>BEGINRDRAG</term>
@@ -4177,24 +4186,19 @@ incorrect.
         handler.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>ENDEDIT</term>
+      <varlistentry id="evtListViewDEFAULTEDIT" xreflabel="DEFAULTEDIT"><term>DEFAULTEDIT</term>
       <listitem>
       <para>
-        Label editing has ended. Do not connect this event if you are using the DEFAULTEDIT keyword.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry id="kywListViewDEFAULTEDIT" xreflabel="DEFAULTEDIT"><term>DEFAULTEDIT</term>
-      <listitem>
-      <para>
-        This keyword connects the event that label editing has been started and the ended event with event handling
-        methods supplied by the ooDialog framework. The supplied methods extract the newly entered text from the
-        notification and modifies the item label which was edited. If this keyword is not used you must provide your own
-        event-handling methods and connect them with the begin edit and end edit events. Otherwise, the edited text is
-        lost and the item label remains unchanged.
+        This keyword is used to activate the internal handling of the list-view label editing operation. With this keyword,
+        the ooDialog framework internally handles the BEGINEDIT and ENDEDIT notifications. The list-view must have the <xref
+        linkend="styListViewEDIT"/> style for the BEGINEDIT / ENDEIDT notification to be sent. While using the DEFAULTEDIT
+        connection may seem easier than using the BEGINEDIT / ENDEDIT connections, it does not provide the same flexibility
+        as using the BEGINEDIT / ENDEDIT connections.
       </para>
       <para>
-        When you specify this event, omit the <emphasis role="italic">methodName</emphasis> argument. This keyword
-        tells the ooDialog framework to use its default methods for both the begin and end edit events.
+        When you specify this event connection, omit the <emphasis role="italic">methodName</emphasis> argument, the arugment
+        is ignored. Do not connect either the BEGINEDIT or ENDEDIT events when also using the DEFAULTEDIT connection. The
+        result is undefined.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>CHANGING</term>
@@ -4249,6 +4253,20 @@ incorrect.
       <listitem>
       <para>
         All items have been deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ENDEDIT</term>
+      <listitem>
+      <para>
+        Label editing has ended. Do not connect this event if you are using the DEFAULTEDIT keyword. The results are
+        undefined. The list-view must have the <xref linkend="styListViewEDIT"/> style for this notification to be sent.
+      </para>
+      <para>
+        The event notification for this event has been enhanced since the original ooDialog implementation. To use the
+        enhanced event notification, the <emphasis role="italic">willReply</emphasis> argument must be used. The value of the
+        argument, true or false, does not matter. If <emphasis role="italic">willReply</emphasis> is omitted, the old style
+        notification is used. The documentation for the <link linkend="evtListViewENDEDIT">ENDEDIT</link> event handler
+        explains the difference between the two types of notifications.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>FOCUSCHANGED</term>
@@ -4308,13 +4326,28 @@ incorrect.
       </listitem></varlistentry>
     </variablelist>
     </listitem></varlistentry>
-    <varlistentry><term>methodName</term>
+    <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the event handling method. This method is invoked each time the specified event occurs for the list
       view control. The method name can not be the empty string. If you omit this argument, the event handler method
-      name is generated for you. This name will be the event keyword, preceded by <computeroutput>On</computeroutput>.
-      For example: <emphasis role="italic">onColumnClick</emphasis>.
+      name is generated for you. This name will be the event keyword, preceded by <computeroutput>on</computeroutput>. For
+      example: <emphasis role="italic">onColumnClick</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The value of the <emphasis role="italic">willReply</emphasis> argument must be true or false. The arugment controls
+      whether the interpreter <link linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler. The
+      default is <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. If <emphasis
+      role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
+      event handling method returns a value.
+    </para>
+    <para>
+      <emphasis role="bold">Note:</emphasis> The <emphasis role="italic">willReply</emphasis> argument is ignored for the
+      GETINFOTIP event, the interpreter always waits for the reply. It makes no sense to connect this event when not planning
+      to return a value.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4362,17 +4395,16 @@ incorrect.
   </para>
   <para>
     <emphasis role="bold">Note:</emphasis> If the same event, for the same control, is connected using two different
-    connectXXX methods, only one connection will be in effect.  This will be the connection whose connectXXX method is
-    invoked first.  For example, take a dialog that has a list-view control with resource ID of 109.  If the mouse click
-    event is connected for that control using the <computeroutput>connectNotifyEvent</computeroutput> method and then
-    the mouse click event is also connected using the <computeroutput>connectListViewEvent</computeroutput> method, only
-    one connection will be active.  Which one is active is dependent on the order of invocation of the connectXXX
-    methods.
+    connectXXX methods, only one connection will be in effect. Which connectXXX method is invoked is undefined.  For example,
+    take a dialog that has a list-view control with resource ID of 109.  If the mouse click event is connected for that
+    control using the <computeroutput>connectNotifyEvent</computeroutput> method and then the mouse click event is also
+    connected using the <computeroutput>connectListViewEvent</computeroutput> method, only one connection will be active.
+    Which one is active is undefined.
   </para>
   <para>
     When using <computeroutput>connectListViewEvent</computeroutput> a separate method can be connected to each of the
-    CHECKBOXCHANGED, SELECTIONCHANGED, and FOCUSCHANGED events.  These event connections are all replacements for the
-    CHANGED event.
+    CHECKBOXCHANGED, SELECTIONCHANGED, and FOCUSCHANGED events. These event connections are all replacements for the CHANGED
+    event.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4420,7 +4452,7 @@ incorrect.
 </programlisting>
 </section>
 
-<section id="evtListViewBEGINRDRAG" xreflabel=""><title>BeginRDrag Event Handler</title>
+<section id="evtListViewBEGINRDRAG" xreflabel="BEGINRDRAG"><title>BeginRDrag Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
 
 <para>
@@ -4438,6 +4470,180 @@ incorrect.
 ]]>
 </programlisting>
 </section>
+
+
+<section id="evtListViewBEGINEDIT" xreflabel="BEGINEDIT"><title>BeginEdit Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>BEGINEDIT</secondary></indexterm>
+<para>
+  The event handler for the BEGINEDIT event is invoked when the user begins a label editing operation on an item of the
+  list-view. When label editing begins, an edit control is created by the operating systm, but not positioned or displayed.
+  Before it is displayed, the tree-view control sends a BEGINEDIT notification message. A label editing operation is only
+  available when the list-view has the <xref linkend="styListViewEDIT"/> style.
+</para>
+<para>
+  In general, the programmer would connect both the BEGINEDIT and <xref linkend="evtListViewENDEDIT"/> notifications. Both of
+  these event notifications have been enhanced since the original ooDialog implementation. If the <emphasis
+  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectLiistViewEvent"/> method is omitted the old
+  implementation is used. If the argument is not omitted, the new implementation is used. How the two event handlers work is
+  described separately.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">New event handler description:</emphasis></term>
+  <listitem>
+    <para>
+      Whether the programmer must return a value and if the interpreter waits, or does not wait, for this return is
+      determined by the value of the <emphasis role="italic">willReply</emphasis> argument. If <emphasis
+      role="italic">willReply</emphasis> is true, the programmer must return true or false from the event handler and the
+      interpreter waits for that reply. If <emphasis role="italic">willReply</emphasis> is false the interpreter does not
+      wait for a reply.
+    </para>
+
+    <programlisting>
+    <![CDATA[
+    ::method onBeginEdit unguarded
+      use arg id, itemID, editCtrl, listViewCtrl
+
+      return zz
+    ]]>
+    </programlisting>
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+      <listitem>
+      <para>
+        The event handling method recieves 4 arguments:
+      </para>
+      <variablelist>
+        <varlistentry><term>id</term>
+        <listitem>
+        <para>
+          The resource id of the list-view sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>itemID</term>
+        <listitem>
+        <para>
+          The item index whose label is about to be edited.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>editCtrl</term>
+        <listitem>
+        <para>
+          The Rexx edit control object used for the editing operation. The programmer can customize the editing operation by
+          using the methods of the <link linkend="clsEdit">Edit</link> class.
+        </para>
+        <para>
+          <emphasis role="bold">Note</emphasis> that this object is only valid during the editing operation. When the user
+          ends the editing, the operating system destroys the underlying edit control and the Rexx object is no longer valid.
+          Each time the user starts a new editing operation, the operating system creates a new edit control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>listViewCtrl</term>
+        <listitem>
+        <para>
+          The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
+          the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="newListView"/>
+          method. Unlike the <emphasis role="italic">editCtrl</emphasis> object, this object is valid as long as the dialog
+          is executing.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+      <listitem>
+      <para>
+        When the programmer used true for the <emphasis role="italic">willReply</emphasis> argument, the event handler must
+        return true or false. To allow the editing operation to begin, return true. To cancel the editing operation, return
+        false. Returning a value from the event handler gives the programmer the option determining if the label for the
+        specific list-view item should or should not be edited.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+      <listitem>
+      <para>
+        The following example shows a possible event handler for the BEGINEDIT event.  It uses the <emphasis
+        role="italic">itemIndex</emphasis> argument to determine which it is about the have its label edited, and checks that
+        editing is allowed for that item. If it is, it returns true to allow the operation. If it is not, it returns false to
+        cancel the operation and puts up a message box to inform the user:
+
+<programlisting>
+<![CDATA[
+
+::method onBeginEdit unguarded
+  use arg id, itemIndex, editCtrl, listViewCtrl
+
+  rec = listViewCtrl~getItemData(itemIndex)
+  if rec~isEditable then return .true
+
+  reply .false
+
+  msg = "The record for" rec~FirstName rec~LastName 'can not be changed.'
+  title = "Label Edit Error"
+  j = MessageDialog(msg, self~hwnd, title, , "WARNING")
+
+  return
+
+]]>
+</programlisting>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Old event handler description:</emphasis></term>
+  <listitem>
+  <para>
+    The old style event notification is used when the programmer omits the <emphasis role="italic">willReply</emphasis>
+    argument in the invocation of the <xref linkend="mthConnectListViewEvent"/> method. The return from the event handler is
+    completely ignored, the interpreter does not wait for this return.
+  </para>
+
+  <programlisting>
+  <![CDATA[
+  ::method onBeginEdit unguarded
+    use arg id, useless
+  ]]>
+  </programlisting>
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+    <listitem>
+    <para>
+      The event handling method recieves 2 arguments:
+    </para>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+      <para>
+        The resource id of the list-view sending the notification.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>useless</term>
+      <listitem>
+      <para>
+        This is an operating system value that has no meaning within Rexx code. It can not be used for anything and its value
+        does not correlate with anything accessible to the Rexx programmer.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+    <listitem>
+    <para>
+      Returning, or not returning, a value has no meaning.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+    <listitem>
+    <para>
+      Connecting this event and not using the <emphasis role="italic">willReply</emphasis> argument does not make much sense.
+      The event handler really serves no purpose.
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End BeginEdit Event Handler -->
 
 <section id="evtListViewCHECKBOXCHANGED" xreflabel="CHECKBOXCHANGED"><title>CheckBoxChanged Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>CHECKBOXCHANGED</secondary></indexterm>
@@ -4591,20 +4797,189 @@ incorrect.
 <section id="evtListViewENDEDIT" xreflabel="ENDEDIT"><title>EndEdit Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>ENDEDIT</secondary></indexterm>
 <para>
-  The event-handling method connected to ENDEDIT receives two arguments: the item ID of which the label has been edited
-  and the newly entered text.
+  The event handler for the ENDEDIT event is invoked when the user finishes a label editing operation on an item of the
+  list-view. A label editing operation is only available when the list-view has the <xref linkend="styListViewEDIT"/> style.
 </para>
+<para>
+  In general, the programmer would connect both the <xref linkend="evtListViewBEGINEDIT"/> and ENDEDIT notifications. Both
+  of these event notifications have been enhanced since the original ooDialog implementation. If the <emphasis
+  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectLiistViewEvent"/> method is omitted the old
+  implementation is used. If the argument is not omitted, the new implementation is used. How the two event handlers work is
+  described separately.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">New event handler description:</emphasis></term>
+  <listitem>
+    <para>
+      Whether the programmer must return a value and if the interpreter waits, or does not wait, for this return is
+      determined by the value of the <emphasis role="italic">willReply</emphasis> argument. If <emphasis
+      role="italic">willReply</emphasis> is true, the programmer must return true or false from the event handler and the
+      interpreter waits for that reply. If <emphasis role="italic">willReply</emphasis> is false the interpreter does not
+      wait for a reply.
+    </para>
+
+    <programlisting>
+    <![CDATA[
+    ::method onEndEdit unguarded
+      use arg id, itemID, text, listViewCtrl
+
+      return trueOrFalse
+    ]]>
+    </programlisting>
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+      <listitem>
+      <para>
+        The event handling method recieves 4 arguments:
+      </para>
+      <variablelist>
+        <varlistentry><term>id</term>
+        <listitem>
+        <para>
+          The resource id of the list-view sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>itemID</term>
+        <listitem>
+        <para>
+          The item index whose label being edited.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>text</term>
+        <listitem>
+        <para>
+          If the user canceled the edit operation then the <emphasis role="italic">text</emphasis> argument will be the .nil
+          object. If the edit operation was not canceled then this argument will be the text the user entered.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>listViewCtrl</term>
+        <listitem>
+        <para>
+          The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
+          the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="newListView"/>
+          method.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+      <listitem>
+      <para>
+        When the programmer used true for the <emphasis role="italic">willReply</emphasis> argument, the event handler must
+        return true or false. To accept the edit text, return true. To disallow the the change to the label, return false.
+        If, the edit operation was canceled by the user, the operating system ignores the return from the event handler.
+        Returning a value from the event handler gives the programmer the option of determining if the new label for the
+        specific list-view item is acceptable.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+      <listitem>
+      <para>
+        The following example checks the new text entered by the user. The label for the list-view items is displayed as last
+        name, comma, first name. If the user's text is not in that format, the new text is rejected by returning false:
 
 <programlisting>
 <![CDATA[
-::method onEndEdit unguarded
-  use arg item, newText
 
-  return 0
+::method onEndEdit unguarded
+  use arg id, itemIndex, text, listViewCtrl
+
+  if text == .nil then return .false
+
+  if text~words == 2 & text~word(1)~right(1) == ',' then do
+    reply .true
+
+    rec = listViewCtrl~getItemData(itemIndex)
+    rec~FirstName = text~word(2)
+    rec~LastName  = text~word(1)~strip('T', ',')
+
+    return
+  end
+
+  reply .false
+
+  msg = "The format for a record label must be" || .endOfLine || -
+        "last name, comma, first name.  For"    || .endOfLine || -
+        "example: Swift, Tom"                   || .endOfLine~copies(2) || -
+        "The change is rejected."
+
+  title = "Label Editing Error"
+  j = MessageDialog(msg, self~hwnd, title, , "WARNING")
+
+  return
+
 ]]>
 </programlisting>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Old event handler description:</emphasis></term>
+  <listitem>
+  <para>
+    The old style event notification is used when the programmer omits the <emphasis role="italic">willReply</emphasis>
+    argument in the invocation of the <xref linkend="mthConnectListViewEvent"/> method. The return from the event handler is
+    completely ignored, the interpreter does not wait for this return. If the user canceled the edit operation, the label
+    will be unchanged. If the user did not cancel the edit operation, the label of the item is changed to the text the user
+    entered.
+  </para>
 
-</section>
+  <programlisting>
+  <![CDATA[
+  ::method onBeginEdit unguarded
+    use arg id, itemIndex, maybeText
+  ]]>
+  </programlisting>
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+    <listitem>
+    <para>
+      The event handling method recieves 3 arguments:
+    </para>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+      <para>
+        The resource id of the list-view sending the notification.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>itemIndex</term>
+      <listitem>
+      <para>
+        This index of the list-view item that was edited.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [optional]</term>
+      <listitem>
+      <para>
+        If the user canceled the edit operation, the <emphasis role="italic">text</emphasis> argument is omitted. If the user
+        did not cancel, then the <emphasis role="italic">text</emphasis> argument is the text the user entered.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+    <listitem>
+    <para>
+      Returning, or not returning, a value has no meaning. The interpreter does not wait for the return and its value, if any
+      is discarded.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+    <listitem>
+    <para>
+      When the user does not cancel the edit operation, the operating system automatically changes the label of the item to
+      what the user entered. To prevent this behavior, the programmer needs to use the new style event handler by using the
+      <emphasis role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectListViewEvent"/> method.
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End EndEdit Event Handler -->
 
 <section id="evtListViewGETINFOTIP"><title>GetInfoTip Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>GETINFOTIP</secondary></indexterm>
@@ -7569,7 +7944,8 @@ trackbar position by extracting the high-oder word. Example:
       role="italic">willReply</emphasis> to have effect for all tree-view event notifications.
     </para>
     </listitem></varlistentry>
-  </variablelist> </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
