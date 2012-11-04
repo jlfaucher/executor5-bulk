@@ -46,7 +46,7 @@
  *    Demonstrates the different views possible in the list-view control.  Shows
  *    how to use the ControlDialog class to populate each page in a tab
  *    control.  Demonstrates some other list-view features, such as info tips,
- *    etc..
+ *    user item data, in place label editing, drag and drop in icon view, etc..
  *
  */
 
@@ -86,9 +86,10 @@
   self~createImageLists
   self~initRecords
 
-  self~connectButtonEvent(IDC_PB_ADDRECORD, "CLICKED", "onAdd")
-  self~connectButtonEvent(IDC_PB_FORWARD,   "CLICKED", "onForward")
-  self~connectButtonEvent(IDC_PB_BACKWARD,  "CLICKED", "onBackward")
+  self~connectButtonEvent(IDC_PB_ADDRECORD,  "CLICKED", "onAdd")
+  self~connectButtonEvent(IDC_PB_EDITRECORD, "CLICKED", "onEdit")
+  self~connectButtonEvent(IDC_PB_FORWARD,    "CLICKED", "onForward")
+  self~connectButtonEvent(IDC_PB_BACKWARD,   "CLICKED", "onBackward")
 
   self~connectButtonEvent(IDC_CK_INFOTIPS, "CLICKED", onCheckClicked)
 
@@ -101,6 +102,9 @@
   -- Set the Use Info Tips check box.
   ckInfoTips = self~newCheckBox(IDC_CK_INFOTIPS)
   ckInfoTips~check
+
+  -- Disable the edit record push button.
+  self~newPushButton(IDC_PB_EDITRECORD)~disable
 
   -- Save a reference to the push buttons.
   pbBackward = self~newPushButton(IDC_PB_BACKWARD)
@@ -282,20 +286,60 @@
 
   if dlg~initCode = 0 then do
     if dlg~execute("SHOWTOP") == self~IDOK then do
+
       rec = .directory~new
-      rec~FirstName = dlg~IDC_EDIT_FNAME
-      rec~Lastname  = dlg~IDC_EDIT_LNAME
-      rec~Street    = dlg~IDC_EDIT_STREET
-      rec~City      = dlg~IDC_EDIT_CITY
-      rec~State     = dlg~IDC_EDIT_STATE
-      rec~ZipCode   = dlg~IDC_EDIT_ZIPCODE
-      rec~Age       = dlg~IDC_EDIT_AGE
+      rec~FirstName  = dlg~IDC_EDIT_FNAME
+      rec~Lastname   = dlg~IDC_EDIT_LNAME
+      rec~Street     = dlg~IDC_EDIT_STREET
+      rec~City       = dlg~IDC_EDIT_CITY
+      rec~State      = dlg~IDC_EDIT_STATE
+      rec~ZipCode    = dlg~IDC_EDIT_ZIPCODE
+      rec~Age        = dlg~IDC_EDIT_AGE
+      rec~isEditable = dlg~IDC_CHK_EDITABLE
 
       if dlg~IDC_RB_MALE = 1 then rec~Sex = "M"
       else rec~Sex = "F"
 
       -- Have the page dialog add the record to the list-view.
       pageDialog~addRecord(rec)
+    end
+  end
+
+
+/** onEdit()
+ *
+ * The event handle for the 'Edit' button's CLICKED event.  Here we display the
+ * address dialog, but set its mode to edit, which allows the user to edit an
+ * existing record.
+ *
+ * The address dialog is set in edit mode by passing a record into init().  If
+ * the address dialog is ended with okay, then we update the record with the
+ * values the user entered and have the page dialog update the list-view item.
+ */
+::method onEdit unguarded
+  expose pageDialog
+
+  rec = pageDialog~getSelectedRecord
+
+  dlg = .AddressDialog~new('rc\oodListViews.rc', IDD_ADDRESS, rec)
+
+  if dlg~initCode = 0 then do
+    if dlg~execute("SHOWTOP") == self~IDOK then do
+
+      rec~FirstName  = dlg~IDC_EDIT_FNAME
+      rec~Lastname   = dlg~IDC_EDIT_LNAME
+      rec~Street     = dlg~IDC_EDIT_STREET
+      rec~City       = dlg~IDC_EDIT_CITY
+      rec~State      = dlg~IDC_EDIT_STATE
+      rec~ZipCode    = dlg~IDC_EDIT_ZIPCODE
+      rec~Age        = dlg~IDC_EDIT_AGE
+      rec~isEditable = dlg~IDC_CHK_EDITABLE
+
+      if dlg~IDC_RB_MALE = 1 then rec~Sex = "M"
+      else rec~Sex = "F"
+
+      -- Have the page dialog refresh, update, the item.
+      pageDialog~refreshSelectedItem
     end
   end
 
@@ -412,36 +456,39 @@
   records = .array~new(3)
 
   rec = .directory~new
-  rec~FirstName = "Mike"
-  rec~Lastname  = "Miller"
-  rec~Street    = "432 Fifth Ave"
-  rec~City      = "New York"
-  rec~State     = "NY"
-  rec~ZipCode   = "12897"
-  rec~Age       = "35"
-  rec~Sex       = "M"
+  rec~FirstName  = "Mike"
+  rec~Lastname   = "Miller"
+  rec~Street     = "432 Fifth Ave"
+  rec~City       = "New York"
+  rec~State      = "NY"
+  rec~ZipCode    = "12897"
+  rec~Age        = "35"
+  rec~Sex        = "M"
+  rec~IsEditable = .false
   records[1] = rec
 
   rec = .directory~new
-  rec~FirstName = "Sue"
-  rec~Lastname  = "Thaxton"
-  rec~Street    = "5179 Bellevue St"
-  rec~City      = "Tucson"
-  rec~State     = "AZ"
-  rec~ZipCode   = "87340"
-  rec~Age       = "30"
-  rec~Sex       = "F"
+  rec~FirstName  = "Sue"
+  rec~Lastname   = "Thaxton"
+  rec~Street     = "5179 Bellevue St"
+  rec~City       = "Tucson"
+  rec~State      = "AZ"
+  rec~ZipCode    = "87340"
+  rec~Age        = "30"
+  rec~Sex        = "F"
+  rec~IsEditable = .true
   records[2] = rec
 
   rec = .directory~new
-  rec~FirstName = "Dave"
-  rec~Lastname  = "Hewitt"
-  rec~Street    = "4932 Texas St"
-  rec~City      = "San Diego"
-  rec~State     = "CA"
-  rec~ZipCode   = "92110"
-  rec~Age       = "49"
-  rec~Sex       = "M"
+  rec~FirstName  = "Dave"
+  rec~Lastname   = "Hewitt"
+  rec~Street     = "4932 Texas St"
+  rec~City       = "San Diego"
+  rec~State      = "CA"
+  rec~ZipCode    = "92110"
+  rec~Age        = "49"
+  rec~Sex        = "M"
+  rec~IsEditable = .true
   records[3] = rec
 
 
@@ -457,16 +504,21 @@
 ::attribute useInfoTips
 
 ::method initialize
-  expose smallIcons normalIcons records
+  expose smallIcons normalIcons records haveSelection pbEdit
   use strict arg smallIcons, normalIcons, records
 
   self~connectListViewEvent(IDC_LISTVIEW, "COLUMNCLICK")
   self~connectListViewEvent(IDC_LISTVIEW, "ACTIVATE", "onDoubleClick")
   self~connectListViewEvent(IDC_LISTVIEW, "BEGINDRAG", "DefListDragHandler")
-  self~connectListViewEvent(IDC_LISTVIEW, "DEFAULTEDIT")
+  self~connectListViewEvent(IDC_LISTVIEW, "BEGINEDIT", "onBeginEdit", .true)
+  self~connectListViewEvent(IDC_LISTVIEW, "ENDEDIT", , .true)
   self~connectListViewEvent(IDC_LISTVIEW, "GETINFOTIP")
+  self~connectListViewEvent(IDC_LISTVIEW, "SELECTCHANGED")
 
   self~initUpdateListView(IDC_LISTVIEW)
+
+  haveSelection = .false
+  pbEdit = self~ownerDialog~newPushButton(IDC_PB_EDITRECORD)
 
 ::method initDialog
   expose lv smallIcons normalIcons records ckInfoTips useInfoTips
@@ -535,6 +587,73 @@
   return .true
 
 
+/** onBeginEdit()
+ *
+ * The event handler for the label begin edit event, invoked when the user
+ * initiates a label editing operation.
+ *
+ * When the label editing is initiated, the operating system creates and
+ * postitions a edit control, but doesn't show it.  The system then sends the
+ * label begin edit notification.  Here we have access to the edit control,
+ * which could be customized by using the typical methods of the edit object.
+ *
+ * In addition, the edit operation can be vetoed by returning false.  I.e.,
+ * return true to allow the editing, and false to disallow it.  To demonstrate
+ * this, we check if the record is editable and if it is not we disallow the
+ * label editing operation by returning false from this event handler.
+ */
+::method onBeginEdit unguarded
+  use arg id, itemIndex, editCtrl, listViewCtrl
+
+  rec = listViewCtrl~getItemData(itemIndex)
+  if rec~isEditable then return .true
+
+  reply .false
+
+  msg = "The record for" rec~FirstName rec~LastName 'can not be changed.'
+  title = "Label Edit Error"
+  j = MessageDialog(msg, self~hwnd, title, , "WARNING")
+
+  return
+
+
+/** onEndEdit()
+ *
+ * This is the event handler for the end label edit notification.  It is invoked
+ * when the user ends the label editing operation.  If the user canceled the
+ * operation, then the 'text' argument will be the .nil object.  Otherwise it
+ * will be the text the user entered.
+ *
+ * We use this event to validate the label to a degree and to update the record
+ * for the item when the user edits the label.
+ */
+::method onEndEdit unguarded
+  use arg id, itemIndex, text, listViewCtrl
+
+  if text == .nil then return .false
+
+  if text~words == 2 & text~word(1)~right(1) == ',' then do
+    reply .true
+
+    rec = listViewCtrl~getItemData(itemIndex)
+    rec~FirstName = text~word(2)
+    rec~LastName  = text~word(1)~strip('T', ',')
+
+    return
+  end
+
+  reply .false
+
+  msg = "The format for a record label must be" || .endOfLine || -
+        "last name, comma, first name.  For"    || .endOfLine || -
+        "example: Swift, Tom"                   || .endOfLine~copies(2) || -
+        "The change is rejected."
+
+  title = "Label Editing Error"
+  j = MessageDialog(msg, self~hwnd, title, , "WARNING")
+
+  return
+
 /** onColumnClick()
  *
  * The event handler for a column click event, invoked when the user clicks on a
@@ -579,8 +698,8 @@
   expose lv
   use arg id
 
-  -- Get the index of the item with the focus, use the index to retriev the item
-  -- information and the text associated with it
+  -- Get the index of the item with the focus, use the index to retrieve the
+  -- item information and the text associated with it
   index = lv~focused
 
   -- The item's information is returned in the .directory object passed in to
@@ -600,8 +719,13 @@
 
   ret = MessageDialog(msg, self~hwnd, "Age Increment", YESNO, INFORMATION)
   if ret == self~IDYES then do
-    age = age + 1
+    age += 1
     lv~setItemText(index, 5, age)
+
+    -- Now we need to update the age in the record for this item. We retrieve
+    -- the record from the user item data and update the age.
+    rec = lv~getItemData(index)
+    rec~age = age
   end
 
   -- Deselect the focused item and move the focus to the first item
@@ -618,9 +742,15 @@
  * Otherwise, the info tip will contain the text sent back.
  *
  * The maxLen argument will be the maximum length allowed for the returned text.
- * You should never assume what this lenght is, although it appears to usually
+ * You should never assume what this length is, although it appears to usually
  * be 1023.  If the text sent back is longer than maxLen, it will automatically
  * be truncated.
+ *
+ * Note that the original versions of this example did not use the user item
+ * data feature of the list-view.  Instead they trackd the records through an
+ * array.  When this example was updated to work with the user item data
+ * feature, this method was left as is, to show more than one way of associating
+ * a record with a list-view item.
  */
 ::method onGetInfoTip unguarded
   expose lv records useInfoTips
@@ -636,6 +766,38 @@
   end
 
   return text
+
+
+/** onSelectionChanged()
+ *
+ * This is the event handler for the selection changed event.  It is invoked
+ * each time the selection state of an item changes.  We use this event to
+ * enable or disable the Edit Record push button.  The button is only enabled
+ * when an item is selected, and that item is an editable record.  When no item
+ * is selected, or if the selected item is not editable, then the push button is
+ * disabled.
+ *
+ * The event happens each time a selected item is deselected and each time an
+ * unselected item is selected.  This means that quite often when an item is
+ * selected there are two events, the old selected item losing its selection and
+ * the newly selected item gaining the selection.
+ */
+::method onSelectChanged unguarded
+  expose haveSelection pbEdit lv
+  use arg id, itemIndex, state
+
+  if state == 'SELECTED' then haveSelection = .true
+  else if state == 'UNSELECTED' & lv~selected == -1 then haveSelection = .false
+
+  if \ haveSelection then do
+    pbEdit~disable
+  end
+  else if state == 'SELECTED' then do
+    -- We have a selection and an item was just selected, see if it is editable:
+    rec = lv~getItemData(itemIndex)
+    if rec~isEditable then pbEdit~enable
+    else pbEdit~disable
+  end
 
 
 /** addRecord()
@@ -655,9 +817,58 @@
   if rec~sex = "F" then iconSex = 1
 
   index = lv~addRow(, iconSex, rec~lastName', 'rec~firstName, rec~street, rec~city, rec~state, rec~ZipCode, rec~age)
-  lv~setItemData(index, rec~firstName rec~lastName)
+  lv~setItemData(index, rec)
 
   if newRecord then records~append(rec)
+
+
+/** getSelectedRecord()
+ *
+ * The owner dialog, the top-level dialog, invokes this method to get access to
+ * the data record of the currently selected item.
+ *
+ * Because the program only enables the 'Edit Record' button when an item that
+ * is editable is selected, we do not need to do a lot of checks here.  We
+ * simply get the selected index, get the user item data for that index, and
+ * send the record back.
+ */
+::method getSelectedRecord
+  expose lv
+  return lv~getItemData(lv~selected)
+
+
+/** refreshSelectedRecord()
+ *
+ * This method is invoked by the owner dialog to notify us that the data in a
+ * record has been changed.  We simply get the record for the selected item and
+ * modify the item with the record data.
+ *
+ * Because of the way the program is structured, there must be a selected item.
+ * We check anyway that the selected index is value
+ */
+::method refreshSelectedItem
+  expose lv pbEdit
+
+  index = lv~selected
+  if index == -1 then return .false
+
+  rec = lv~getItemData(index)
+
+  iconSex = 0
+  if rec~sex = "F" then iconSex = 1
+
+  lv~modify(index, 0, rec~lastName', 'rec~firstName, iconSex)
+  lv~modify(index, 1, rec~street)
+  lv~modify(index, 2, rec~city)
+  lv~modify(index, 3, rec~state)
+  lv~modify(index, 4, rec~zipCode)
+  lv~modify(index, 5, rec~age)
+
+  -- The is editable status of the record could have changed.
+  if rec~isEditable then pbEdit~enable
+  else pbEdit~disable
+
+  return .true
 
 
 /** leaving()
@@ -685,22 +896,49 @@
 ::class 'AddressDialog' subclass RcDialog
 
 ::method init
-  forward class (super) continue
+  expose rec
+  self~init:super(arg(1), arg(2))
 
   if self~initCode <> 0 then return self~initCode
+
+  if arg(3, 'E') then rec = arg(3)
+  else rec = .nil
 
   -- Initialize the data attributes. These attributes are added automatically
   -- to this dialog by the ooDialog framework.  The attributes are used to
   -- reflect the state of the underlying dialog controls.
-  self~IDC_RB_MALE=1
-  self~IDC_RB_FEMALE=0
-  self~IDC_EDIT_FNAME= ''
-  self~IDC_EDIT_LNAME= ''
-  self~IDC_EDIT_STREET= ''
-  self~IDC_EDIT_CITY= ''
-  self~IDC_EDIT_STATE= ''
-  self~IDC_EDIT_ZIPCODE= ''
-  self~IDC_EDIT_AGE= ''
+  --
+  -- If we have a record, we are in edit mode, otherwise we are in add mode.
+  if rec == .nil then do
+    self~IDC_RB_MALE = 1
+    self~IDC_RB_FEMALE = 0
+    self~IDC_EDIT_FNAME = ''
+    self~IDC_EDIT_LNAME = ''
+    self~IDC_EDIT_STREET = ''
+    self~IDC_EDIT_CITY = ''
+    self~IDC_EDIT_STATE = ''
+    self~IDC_EDIT_ZIPCODE = ''
+    self~IDC_EDIT_AGE = ''
+    self~IDC_CHK_EDITABLE = 1
+  end
+  else do
+    if rec~Sex == 'M' then do
+      self~IDC_RB_MALE   = 1
+      self~IDC_RB_FEMALE = 0
+    end
+    else do
+      self~IDC_RB_MALE   = 0
+      self~IDC_RB_FEMALE = 1
+    end
+    self~IDC_EDIT_FNAME   = rec~FirstName
+    self~IDC_EDIT_LNAME   = rec~Lastname
+    self~IDC_EDIT_STREET  = rec~Street
+    self~IDC_EDIT_CITY    = rec~City
+    self~IDC_EDIT_STATE   = rec~State
+    self~IDC_EDIT_ZIPCODE = rec~ZipCode
+    self~IDC_EDIT_AGE     = rec~Age
+    self~IDC_CHK_EDITABLE = rec~isEditable
+  end
 
   return self~initCode
 

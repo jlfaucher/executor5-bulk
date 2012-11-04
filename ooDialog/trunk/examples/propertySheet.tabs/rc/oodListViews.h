@@ -56,4 +56,6 @@
 #define IDC_EDIT_AGE                            307
 #define IDC_EDIT_STATE                          308
 #define IDC_EDIT_ZIPCODE                        309
+#define IDC_PB_EDITRECORD                       1001
 #define IDC_CK_INFOTIPS                         1002
+#define IDC_CHK_EDITABLE                        1003

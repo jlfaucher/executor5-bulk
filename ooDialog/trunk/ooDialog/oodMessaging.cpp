@@ -1811,6 +1811,7 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                 msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
                 if ( msgReply == NULL )
                 {
+                    setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TRUE);
                     return ReplyFalse;
                 }
 
