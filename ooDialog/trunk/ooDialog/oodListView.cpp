@@ -2054,9 +2054,12 @@ RexxMethod4(RexxObjectPtr, lv_getItemInfo, uint32_t, index, RexxObjectPtr, _d, O
         return TheFalseObj;
     }
 
-    RexxObjectPtr itemData = TheNilObj;
+    // Set the text index now because we are going to reuse the buffer for the
+    // state text.
+    context->DirectoryPut(d, context->String(lvi.pszText), "TEXT");
 
     *buf = '\0';
+    RexxObjectPtr itemData = TheNilObj;
     if ( subItem == 0 )
     {
         if ( lvi.state & LVIS_CUT)         strcat(buf, "CUT ");
@@ -2078,7 +2081,6 @@ RexxMethod4(RexxObjectPtr, lv_getItemInfo, uint32_t, index, RexxObjectPtr, _d, O
     {
         *(buf + strlen(buf) - 1) = '\0';
     }
-    context->DirectoryPut(d, context->String(lvi.pszText), "TEXT");
     context->DirectoryPut(d, context->Int32(lvi.iImage), "IMAGE");
     context->DirectoryPut(d, context->String(buf), "STATE");
     context->DirectoryPut(d, itemData, "ITEMDATA");
