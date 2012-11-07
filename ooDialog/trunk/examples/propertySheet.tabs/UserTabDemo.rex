@@ -53,9 +53,11 @@
 ::class 'UserTabDialog' public subclass UserDialog
 
 ::method init
-    expose pages
+    expose pages descriptions
 
     self~init:super
+
+    descriptions = self~getDescriptions
 
     title = "Acme Health Clinic Patient Intake Form  Version 1.00.0"
     opts  = 'MINIMIZEBOX MAXIMIZEBOX'
@@ -271,11 +273,11 @@
 
 
 ::method activateHistory private unguarded
-    expose historyDlg dlgRect pages
+    expose historyDlg dlgRect pages descriptions
 
     reply
 
-    historyDlg = .HistoryDlg~new(dlgRect, self)
+    historyDlg = .HistoryDlg~new(dlgRect, self, descriptions)
     historyDlg~execute
 
     pages[4] = historyDlg
@@ -289,22 +291,62 @@
     .Alarm~new(.TimeSpan~fromMicroseconds(microseconds), .message~new(self, "onSelChange"))
 
 
-::method ok
+::method ok unguarded
     expose pages
 
+    .DlgUtil~halt
+    .DlgUtil~halt
+    /*
     do page over pages
       if page \== .nil then page~endExecution(.true)
     end
+    */
     return self~ok:super
 
 
+/** cancel()
+ *
+ * A problem can happen if the user hits cancel immediately after selecting the
+ * History tab.  The initDialog() method may be still executing and a syntax
+ * condition can be raised if the underlying Windows dialog is ended.  To
+ * prevent this we check for that condition and sleep a little bit if it
+ * happens.
+ */
 ::method cancel unguarded
     expose pages
 
     do page over pages
-      if page \== .nil then page~endExecution(.false)
+        if page \== .nil then do
+            if page~isA(.HistoryDlg), \ page~initDialogDone then do while \ page~initDialogDone
+                j = SysSleep(.5)
+            end
+            page~endExecution(.false)
+        end
     end
     return self~cancel:super
+
+
+::method getDescriptions private
+
+    d = .array~new
+    d[ 1] = 'Hearing loss / ringing in ears'
+    d[ 2] = 'Heart diease / circulatory proplems'
+    d[ 3] = 'Liver cancer / lung cancer'
+    d[ 4] = 'Breast cancer / uterine cancer'
+    d[ 5] = 'Jaundice, hepatitis'
+    d[ 6] = 'Kidney stones / kidney failure'
+    d[ 7] = 'High blood pressure / high chorlosterol'
+    d[ 8] = 'Gall bladder trouble (gallstones)'
+    d[ 9] = 'Anemia/blood disorder'
+    d[10] = 'Sugar or albumin in urine'
+    d[11] = 'Frequent or severe headache'
+    d[12] = 'Periods of unconsciousness'
+    d[13] = 'Chronic or frequent colds'
+    d[14] = 'Loss of memory or amnesia'
+    d[15] = 'Depression or excessive worry'
+    d[16] = 'Car, train, sea or air sickness'
+
+    return d
 
 
 
@@ -406,8 +448,6 @@
     self~createEdit(        IDC_EDIT_PHYSICIAN_PHONE, 395, 178,  71,  12, AUTOSCROLLH NUMBER                                      )
 
 
-::method initDialog unguarded
-
 
 ::class 'ContactsDlg' subclass UserControlDialog
 
@@ -490,9 +530,6 @@
 
 
 
-::method initDialog unguarded
-
-
 
 ::class 'InsuranceDlg' subclass UserControlDialog
 
@@ -573,15 +610,18 @@
     self~createEdit(       IDC_EDIT_PHONE2_SI,      390, 112,  58,  12, AUTOSCROLLH NUMBER                               )
 
 
-::method initDialog
-
 
 ::class 'HistoryDlg' subclass UserControlDialog
 
+::attribute initDialogDone unguarded
+
 ::method init
-    use arg r, parent
+    expose descriptions
+    use arg r, parent, descriptions
 
     self~init:super( , , parent)
+
+    self~initDialogDone = .false
     self~create(r~left, r~top, r~right, r~bottom)
 
 ::method defineDialog
@@ -594,12 +634,10 @@
     self~createStaticText( IDC_STATIC   ,   6,  17, 229,  10, CENTER                         , st1Txt)
     self~createListView(   IDC_LV_SELF  ,   5,  30, 229, 167, TAB ALIGNLEFT SINGLESEL REPORT         )
     self~createStaticText( IDC_STATIC   , 241,  17, 229,  10, CENTER                         , st2Txt)
-    self~createListView(   IDC_LV_FAMILY, 241,  30, 229, 167, TAB ALIGNLEFT SINGLESEL REPORT         )
+  	self~createListView(   IDC_LV_FAMILY, 241,  30, 229, 167, TAB ALIGNLEFT SINGLESEL REPORT         )
 
 ::method initDialog unguarded
-    expose lvSelf lvFamily
-
-    descriptions = self~getDescriptions
+    expose lvSelf lvFamily descriptions
 
     lvSelf = self~newListView(IDC_LV_SELF)
 
@@ -627,25 +665,5 @@
       lvFamily~addRow( , , d)
     end
 
+    self~initDialogDone = .true
 
-::method getDescriptions unguarded
-
-    d = .array~new
-    d[ 1] = 'Hearing loss / ringing in ears'
-    d[ 2] = 'Heart diease / circulatory proplems'
-    d[ 3] = 'Liver cancer / lung cancer'
-    d[ 4] = 'Breast cancer / uterine cancer'
-    d[ 5] = 'Jaundice, hepatitis'
-    d[ 6] = 'Kidney stones / kidney failure'
-    d[ 7] = 'High blood pressure / high chorlosterol'
-    d[ 8] = 'Gall bladder trouble (gallstones)'
-    d[ 9] = 'Anemia/blood disorder'
-    d[10] = 'Sugar or albumin in urine'
-    d[11] = 'Frequent or severe headache'
-    d[12] = 'Periods of unconsciousness'
-    d[13] = 'Chronic or frequent colds'
-    d[14] = 'Loss of memory or amnesia'
-    d[15] = 'Depression or excessive worry'
-    d[16] = 'Car, train, sea or air sickness'
-
-    return d
