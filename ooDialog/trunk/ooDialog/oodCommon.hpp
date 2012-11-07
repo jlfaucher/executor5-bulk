@@ -186,7 +186,7 @@ extern void          putDefaultSymbols(RexxMethodContext *c, RexxDirectoryObject
 
 // These functions are defined in ooDialog.cpp
 extern bool          initWindowBase(RexxMethodContext *c, HWND hwndObj, RexxObjectPtr self, pCWindowBase *ppCWB);
-extern void          setDlgHandle(RexxThreadContext *c, pCPlainBaseDialog pcpbd);
+extern void          setDlgHandle(pCPlainBaseDialog pcpbd);
 extern RexxObjectPtr oodSetForegroundWindow(RexxMethodContext *c, HWND hwnd);
 extern RexxObjectPtr oodGetFocus(RexxMethodContext *c, HWND hDlg);
 extern RexxObjectPtr sendWinMsgGeneric(RexxMethodContext *, HWND, CSTRING, RexxObjectPtr, RexxObjectPtr, size_t, bool);
@@ -202,6 +202,8 @@ extern void customDrawCheckIDs(pCPlainBaseDialog pcpbd);
 
 // These functions are defined in oodPropertySheet.cpp
 extern void abortPropertySheet(pCPropertySheetDialog pcpsd, HWND hDlg, DlgProcErrType t);
+extern void abortPropertySheetPage(pCPropertySheetPage page, HWND hDlg, DlgProcErrType t);
+extern void abortOwnedDlg(pCPlainBaseDialog pcpbd, HWND hDlg, DlgProcErrType t);
 
 // This function is defined in oodControl.cpp.  TODO should be in
 // oodControl.hpp, but needed by oodCommon.cpp, need to straighten out all

@@ -617,14 +617,19 @@ typedef struct _pbdCSelf {
     pCEventNotification  enCSelf;
     pCWindowExtensions   weCSelf;
     RexxObjectPtr        rexxSelf;      // This dialog's Rexx dialog object
-    HWND                 hDlg;
-    RexxObjectPtr        rexxOwner;     // This dialog's Rexx owner dialog object
-    HWND                 hOwnerDlg;
     RexxObjectPtr        rexxParent;    // This dialog's Rexx parent dialog object
+    HWND                 hDlg;          // The handle to this dialog's underlying Windows dialog
+    RexxObjectPtr        rexxOwner;     // This dialog's Rexx owner dialog object
+    HWND                 hOwnerDlg;     // Owner dialog window handle
+    void                *ownerCSelf;    // Owner dialog CSelf.
     void                *dlgPrivate;    // Subclasses can store data unique to the subclass
     void                *initPrivate;   // Subclasses can store init data unique to the subclass
     void                *mouseCSelf;
     RexxObjectPtr        rexxMouse;
+    HBRUSH               bkgBrush;
+    HBITMAP              bkgBitmap;
+    WPARAM               stopScroll;
+    HPALETTE             colorPalette;
     DATATABLEENTRY      *DataTab;
     ICONTABLEENTRY      *IconTab;
     COLORTABLEENTRY     *ColorTab;
@@ -640,10 +645,7 @@ typedef struct _pbdCSelf {
     size_t               CT_size;
     size_t               BT_nextIndex;
     size_t               BT_size;
-    HBRUSH               bkgBrush;
-    HBITMAP              bkgBitmap;
-    WPARAM               stopScroll;
-    HPALETTE             colorPalette;
+    size_t               countChilds;
     logical_t            autoDetect;
     DWORD                dlgProcThreadID;
     uint32_t             fontSize;
@@ -651,6 +653,7 @@ typedef struct _pbdCSelf {
     bool                 isCategoryDlg;    // Need to use IsNestedDialogMessage()
     bool                 isControlDlg;     // Dialog was created as DS_CONTROL | WS_CHILD
     bool                 isOwnedDlg;       // Dialog has an owner dialog
+    bool                 isOwnerDlg;       // Dialog is an owner dialog
     bool                 isManagedDlg;     // Dialog has an owner dialog, which is a tab owner dialog
     bool                 isPageDlg;        // Dialog is a property sheet page dialog
     bool                 isPropSheetDlg;   // Dialog is a property sheet dialog

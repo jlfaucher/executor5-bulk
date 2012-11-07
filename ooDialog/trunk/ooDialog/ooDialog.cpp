@@ -1136,10 +1136,22 @@ RexxMethod2(RexxObjectPtr, wb_setInitCode, wholenumber_t, code, CSELF, pCSelf)
 }
 
 /** WindowBase::hwnd  [attribute get]
+ *
+ *  We use a lazy init for the Rexx hwnd object.
  */
 RexxMethod1(RexxObjectPtr, wb_getHwnd, CSELF, pCSelf)
 {
-    return ((pCWindowBase)pCSelf)->rexxHwnd;
+    pCWindowBase pcwb = validateWbCSelf(context, pCSelf);
+    if ( pcwb == NULL )
+    {
+        return TheZeroObj;
+    }
+    if ( pcwb->rexxHwnd == TheZeroObj && pcwb->hwnd != NULL )
+    {
+        pcwb->rexxHwnd = context->RequestGlobalReference(pointer2string(context, pcwb->hwnd));
+    }
+
+    return pcwb->rexxHwnd;
 }
 
 /** WindowBase::factorX  [attribute]
@@ -2726,10 +2738,13 @@ int32_t stopDialog(pCPlainBaseDialog pcpbd, RexxThreadContext *c)
  *  successfully created.  It then sets the dialog handle into the various CSelf
  *  structs that need it.
  *
- * @param c      Method context we are operating in.
  * @param pcpbd  CSelf pointer of the dialog
+ *
+ * @remarks  Originally we created the Rexx hwnd object here and requested a
+ *           global reference for it.  We now skip that and instead do a lazy
+ *           init of the Rexx object in the hwnd attribute get.
  */
-void setDlgHandle(RexxThreadContext *c, pCPlainBaseDialog pcpbd)
+void setDlgHandle(pCPlainBaseDialog pcpbd)
 {
     if ( ! pcpbd->isDlgHwndSet )
     {
@@ -2739,7 +2754,6 @@ void setDlgHandle(RexxThreadContext *c, pCPlainBaseDialog pcpbd)
         pcpbd->weCSelf->hwnd = hDlg;
 
         pcpbd->wndBase->hwnd = hDlg;
-        pcpbd->wndBase->rexxHwnd = c->RequestGlobalReference(pointer2string(c, hDlg));
 
         pcpbd->isDlgHwndSet = true;
     }
@@ -3239,6 +3253,8 @@ RexxMethod1(RexxObjectPtr, pbdlg_getResourceID, CSELF, pCSelf)
 }
 
 /** PlainBaseDialog::dlgHandle  [attribute get] / PlainBaseDialog::getSelf()
+ *
+ *  We use a lazy init for rexxHwnd.
  */
 RexxMethod1(RexxObjectPtr, pbdlg_getDlgHandle, CSELF, pCSelf)
 {
@@ -3247,6 +3263,12 @@ RexxMethod1(RexxObjectPtr, pbdlg_getDlgHandle, CSELF, pCSelf)
     {
         return (RexxObjectPtr)baseClassInitializationException(context);
     }
+
+    if ( pcpbd->wndBase->rexxHwnd == TheZeroObj && pcpbd->wndBase->hwnd != NULL )
+    {
+        pcpbd->wndBase->rexxHwnd = context->RequestGlobalReference(pointer2string(context, pcpbd->wndBase->hwnd));
+    }
+
     return pcpbd->wndBase->rexxHwnd;
 }
 

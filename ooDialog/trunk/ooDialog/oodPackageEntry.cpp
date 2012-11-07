@@ -412,7 +412,9 @@ REXX_METHOD_PROTOTYPE(dlgutil_sShiftRight_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_getSystemMetrics_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_screenSize_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_screenArea_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_halt_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_handleToPointer_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_terminate_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_threadID_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_windowFromPoint_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_test_cls);
@@ -1431,7 +1433,9 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_screenSize_cls,         dlgutil_screenSize_cls),
     REXX_METHOD(dlgutil_screenArea_cls,         dlgutil_screenArea_cls),
     REXX_METHOD(dlgutil_getSystemMetrics_cls,   dlgutil_getSystemMetrics_cls),
+    REXX_METHOD(dlgutil_halt_cls,               dlgutil_halt_cls),
     REXX_METHOD(dlgutil_handleToPointer_cls,    dlgutil_handleToPointer_cls),
+    REXX_METHOD(dlgutil_terminate_cls,          dlgutil_terminate_cls),
     REXX_METHOD(dlgutil_threadID_cls,           dlgutil_threadID_cls),
     REXX_METHOD(dlgutil_windowFromPoint_cls,    dlgutil_windowFromPoint_cls),
     REXX_METHOD(dlgutil_test_cls,               dlgutil_test_cls),

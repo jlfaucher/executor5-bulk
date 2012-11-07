@@ -662,7 +662,7 @@ static void initializePropSheet(HWND hPropSheet)
         pcpbd->isActive = true;
         pcpbd->childDlg[0] = hPropSheet;
 
-        setDlgHandle(c, pcpbd);
+        setDlgHandle(pcpbd);
         setFontAttrib(c, pcpbd);
 
         pcpbd->onTheTop = true;
@@ -699,7 +699,7 @@ static void initializePropSheetPage(HWND hPage, pCPropertySheetPage pcpsp)
     pcpbd->isActive = true;
     pcpbd->childDlg[0] = hPage;
 
-    setDlgHandle(c, pcpbd);
+    setDlgHandle(pcpbd);
     if ( pcpsp->pageType == oodResPSPDialog )
     {
         setFontAttrib(c, pcpbd);
@@ -773,6 +773,27 @@ void abortPropertySheet(pCPropertySheetDialog pcpsd, HWND hDlg, DlgProcErrType t
     }
 
     PropSheet_PressButton(hDlg, PSBTN_CANCEL);
+}
+
+
+void abortPropertySheetPage(pCPropertySheetPage page, HWND hDlg, DlgProcErrType t)
+{
+    RexxThreadContext     *c     = page->dlgProcContext;
+    pCPropertySheetDialog  pcpsd = (pCPropertySheetDialog)page->cppPropSheet;
+    uint32_t               count = pcpsd->pageCount;
+
+    for ( uint32_t i = 0; i < count; i++ )
+    {
+        pCPropertySheetPage pcpsp = pcpsd->cppPages[i];
+        pcpsp->abort = true;
+
+        if ( pcpsp->activated )
+        {
+            ensureFinished(pcpsp->pcpbd, c, TheTrueObj);
+        }
+    }
+
+    PropSheet_PressButton(pcpsd->hDlg, PSBTN_CANCEL);
 }
 
 
@@ -5039,6 +5060,20 @@ DLGTEMPLATEEX *getTemplate(RexxThreadContext *c, pCControlDialog pccd)
  * @param pcpbdOwner
  *
  * @return HWND
+ *
+ * @remarks The childDlg thing was used for the CategoryDialog implementation.
+ *          We now use it so that an owner dialog can keep track of its owned
+ *          control dialogs.  For an owner dialog using control dialogs for
+ *          whatever reason, the maximum number of child dialogs, 20, is
+ *          probably sufficient.
+ *
+ *          For managed tab owner dialogs, that maximum is too small because the
+ *          max page number is set at 100. Since the managed tab owner
+ *          implementation is hazy right now, we just put the first 20 dialogs
+ *          in the child dialog array. In the future we may need to rectify
+ *          this. We probably should just ignore the childDlg array in this
+ *          case.  We are keeping track of the page dialogs in the cppPages
+ *          array.
  */
 HWND createMTPageDlg(RexxThreadContext *c, pCControlDialog pccd, DLGTEMPLATEEX *pTemplate, pCPlainBaseDialog pcpbdOwner)
 {
@@ -5060,16 +5095,13 @@ HWND createMTPageDlg(RexxThreadContext *c, pCControlDialog pccd, DLGTEMPLATEEX *
         pcpbd->isActive = true;
         pccd->activated = true;
 
-        // I don't think this whole childDlg thing is used anymore.  It is a
-        // hold over from the CategoryDialog implementation.  TODO we need to
-        // do away with this.
         pcpbd->childDlg[0] = hPage;
         if ( pccd->pageNumber < MAXCHILDDIALOGS )
         {
             pcpbdOwner->childDlg[pccd->pageNumber + 1] = hPage;
         }
 
-        setDlgHandle(c, pcpbd);
+        setDlgHandle(pcpbd);
 
         if ( pccd->pageType == oodResControlDialog )
         {
@@ -5513,7 +5545,7 @@ LRESULT CALLBACK RexxTabOwnerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
         // the setDlgHandle() function now.
         pcpbd->hDlg = hDlg;
         pcpbd->isActive = true;
-        setDlgHandle(pcpbd->dlgProcContext, pcpbd);
+        setDlgHandle(pcpbd);
 
         if ( pcpbd->isCustomDrawDlg && pcpbd->idsNotChecked )
         {
@@ -6262,6 +6294,25 @@ static inline pCControlDialog validateCdCSelf(RexxMethodContext *c, void *pCSelf
 }
 
 
+void abortOwnedDlg(pCPlainBaseDialog pcpbd, HWND hDlg, DlgProcErrType t)
+{
+    RexxThreadContext *c          = pcpbd->dlgProcContext;
+    pCPlainBaseDialog  ownerCSelf = dlgToCSelf(c, pcpbd->rexxOwner);
+    pCPlainBaseDialog  pcpbdChild;
+
+    for ( size_t i = 1; i <= ownerCSelf->countChilds; i++ )
+    {
+        pcpbdChild = (pCPlainBaseDialog)ownerCSelf->childDlg[i];
+        c->SendMessage1(pcpbdChild->rexxSelf, "ENSUREFINISHED", TheTrueObj);
+    }
+
+    c->SendMessage1(ownerCSelf->rexxSelf, "ENSUREFINISHED", TheTrueObj);
+
+    DestroyWindow(ownerCSelf->hDlg);
+
+}
+
+
 /** ControlDialog::init()  [Class method]
  *
  *  Used to capture the ControlDialog class object.  This is used for scoped
@@ -6535,7 +6586,7 @@ RexxMethod3(RexxObjectPtr, resCtrlDlg_startDialog_pvt, CSTRING, library, RexxObj
         ((pCControlDialog)pcpbd->dlgPrivate)->activated = true;
         pcpbd->childDlg[0] = hChild;
 
-        setDlgHandle(context->threadContext, pcpbd);
+        setDlgHandle(pcpbd);
         setFontAttrib(context->threadContext, pcpbd);
 
         if ( pcpbd->autoDetect )

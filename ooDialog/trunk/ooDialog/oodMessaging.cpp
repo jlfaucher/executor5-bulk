@@ -990,6 +990,17 @@ BOOL endDialogPremature(pCPlainBaseDialog pcpbd, HWND hDlg, DlgProcErrType t)
             abortPropertySheet((pCPropertySheetDialog)pcpbd->dlgPrivate, hDlg, t);
             return FALSE;
         }
+
+        if ( pcpbd->isPageDlg )
+        {
+            abortPropertySheetPage((pCPropertySheetPage)pcpbd->dlgPrivate, hDlg, t);
+            return FALSE;
+        }
+        if ( pcpbd->isOwnedDlg )
+        {
+            abortOwnedDlg(pcpbd, hDlg, t);
+            return FALSE;
+        }
         ensureFinished(pcpbd, pcpbd->dlgProcContext, TheTrueObj);
     }
 
@@ -3092,7 +3103,10 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
 
     size_t tableSize = pcpbd->enCSelf->mmNextIndex;
     register size_t i = 0;
-
+    if ( msg == WM_SYSCOMMAND )
+    {
+        printf("Received Sys command, wParam=0x%08x lParam=0x%08x\n", wParam, lParam);
+    }
     for ( i = 0; i < tableSize; i++ )
     {
         if ( (msg & m[i].msgFilter) == m[i].msg && (wParam & m[i].wpFilter) == m[i].wParam && (lParam & m[i].lpFilter) == m[i].lParam )
@@ -3100,6 +3114,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
             RexxThreadContext *c = pcpbd->dlgProcContext;
             RexxArrayObject args;
 
+            printf("Foundt IT Sys command, tag=0x%08x method=%s\n", m[i].tag, m[i].rexxMethod);
             char  *np = NULL;
             char  *method = m[i].rexxMethod;
             int    item = OOD_INVALID_ITEM_ID;

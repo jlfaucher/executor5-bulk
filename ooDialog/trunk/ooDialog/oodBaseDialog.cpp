@@ -68,6 +68,8 @@ public:
 
 /**
  * Checks that a ControlDialog has a proper, active, running, owner dialog.
+ * Sets that owner dialog information in the CSelf of the control dialog, the
+ * owned dialog.
  *
  * The window message processing function of a control dialog executes in the
  * same thread as the owner dialog, so we copy the thread context and thread ID
@@ -88,6 +90,13 @@ public:
  * @return True if all okay, otherwise false.
  *
  * @note  An exception has been raised if false is returned.
+ *
+ * @remarks  If AttachThread() failed for the parent dialog, that dialog is
+ *           ended prematurely and we couldn't be here.  The control dialog will
+ *           be, has to be, created on the the owner dialog's message
+ *           proccessing thread.  So we can set the dlgProcContext here to the
+ *           thread context of the owner dialog.
+ *
  */
 bool validControlDlg(RexxMethodContext *c, pCPlainBaseDialog pcpbd)
 {
@@ -102,18 +111,30 @@ bool validControlDlg(RexxMethodContext *c, pCPlainBaseDialog pcpbd)
     {
         goto err_out;
     }
-
     if ( ownerPcpbd->hDlg == NULL || ! ownerPcpbd->isActive )
     {
         noParentWindowsDialogException(c, pcpbd->rexxSelf);
         goto err_out;
     }
-    pcpbd->hOwnerDlg = ownerPcpbd->hDlg;
+    if ( ownerPcpbd->countChilds >= MAXCHILDDIALOGS )
+    {
+        char buf[128];
+        _snprintf(buf, sizeof(buf),
+                  "The number of owned dialogs has\n"
+                  "reached the maximum (%d) allowed\n\n"
+                  "No more owned dialogs can be instantiated", MAXCHILDDIALOGS);
+        MessageBox(NULL, buf, "ooDialog Error", MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
 
-    // If AttachThread() failed for the parent dialog, that dialog is ended
-    // prematurely and we couldn't be here.
+        goto err_out;
+    }
+
+    pcpbd->hOwnerDlg      = ownerPcpbd->hDlg;
+    pcpbd->ownerCSelf     = ownerPcpbd;
     pcpbd->dlgProcContext = ownerPcpbd->dlgProcContext;
 
+    ownerPcpbd->countChilds++;
+    ownerPcpbd->isOwnerDlg = true;
+    ownerPcpbd->childDlg[ownerPcpbd->countChilds] = (HWND)pcpbd;
     return true;
 
 err_out:
@@ -158,7 +179,6 @@ bool processOwnedDialog(RexxMethodContext *c, pCPlainBaseDialog pcpbd)
             baseClassInitializationException(c);
             goto err_out;
         }
-
         c->SendMessage1(childList, "INSERT", pcpbd->rexxSelf);
     }
 
@@ -420,7 +440,7 @@ RexxMethod5(logical_t, resdlg_startDialog_pvt, CSTRING, library, RexxObjectPtr, 
 
     if ( pcpbd->hDlg )
     {
-        setDlgHandle(context->threadContext, pcpbd);
+        setDlgHandle(pcpbd);
 
         // Set the thread priority higher for faster drawing.
         SetThreadPriority(pcpbd->hDlgProcThread, THREAD_PRIORITY_ABOVE_NORMAL);

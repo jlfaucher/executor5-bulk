@@ -1488,7 +1488,7 @@ RexxMethod3(logical_t, dyndlg_startParentDialog, uint32_t, iconID, logical_t, mo
 
     if ( pcpbd->hDlg )
     {
-        setDlgHandle(context->threadContext, pcpbd);
+        setDlgHandle(pcpbd);
 
         // Set the thread priority higher for faster drawing.
         SetThreadPriority(pcpbd->hDlgProcThread, THREAD_PRIORITY_ABOVE_NORMAL);
@@ -1596,9 +1596,9 @@ RexxMethod3(RexxObjectPtr, dyndlg_startChildDialog, POINTERSTRING, basePtr, uint
         if ( hChild )
         {
             pcpbd->hDlg = hChild;
+            setDlgHandle(pcpbd);
             pcpbd->isActive = true;
             ((pCControlDialog)pcpbd->dlgPrivate)->activated = true;
-            setDlgHandle(context->threadContext, pcpbd);
         }
     }
     else

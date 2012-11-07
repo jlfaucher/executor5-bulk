@@ -1087,6 +1087,19 @@ RexxMethod0(RexxObjectPtr, dlgutil_screenArea_cls)
     return SPI_getWorkArea(context);
 }
 
+
+/** DlgUtil::halt()  [class method]
+ *
+ *  Uses the Rexx interpreter instance to raise a HALT condition on all threads
+ *  associated with this instance.
+ */
+RexxMethod0(uint32_t, dlgutil_halt_cls)
+{
+    context->threadContext->instance->Halt();
+    return 0;
+}
+
+
 /**
  * A temporary utility to convert from a handle that is still being stored in
  * ooDialog in string form ("0xFFFFAAAA") to its actual pointer value.  The
@@ -1097,6 +1110,17 @@ RexxMethod1(POINTER, dlgutil_handleToPointer_cls, POINTERSTRING, handle)
 {
     return handle;
 }
+
+/** DlgUtil::terminate()  [class method]
+ *
+ *
+ */
+RexxMethod0(uint32_t, dlgutil_terminate_cls)
+{
+    context->threadContext->instance->Terminate();
+    return 0;
+}
+
 
 /** DlgUtil::threadID()  [class method]
  *
