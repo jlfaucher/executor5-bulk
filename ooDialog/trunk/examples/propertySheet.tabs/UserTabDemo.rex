@@ -294,13 +294,10 @@
 ::method ok unguarded
     expose pages
 
-    .DlgUtil~halt
-    .DlgUtil~halt
-    /*
     do page over pages
       if page \== .nil then page~endExecution(.true)
     end
-    */
+
     return self~ok:super
 
 
