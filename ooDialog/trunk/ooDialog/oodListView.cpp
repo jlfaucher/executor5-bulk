@@ -2730,7 +2730,7 @@ err_out:
  *            value, we need to replace the current value with the new value.
  *
  *            3.) There is a current lParam user data set and it is a full row
- *            object.  In this case, if lvItem contains a lParma user data value
+ *            object.  In this case, if lvItem contains a lParm user data value
  *            we need to update the current value with the new value.  If not,
  *            we need to merge the new lvItem into the full row item.
  */

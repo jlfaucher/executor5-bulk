@@ -1,17 +1,26 @@
                  Release Notes ooDialog 4.2.1 (preview)
                  ======================================
 
-NOTE: This preview version is a SNAPSHOT of the current development in
-      ooDialog.  It is not a beta release, or even an alpha release.
-      The build is placed here to allow to interested parties to toy
-      with some of the new features coming up.  Devlopment work is still
-      on-going and new interfaces are not guarenteed.  Method names and
-      or method arguments of features currently in development may
-      change before a final release.
+NOTE:
+------------------------------------------------------------------------
+The ooDialog 4.2.1 preview version is a SNAPSHOT of the current
+development in ooDialog.  It is not a beta release, or even an alpha
+release.  The build is placed here to allow to interested parties to try
+and / or use some of the new features coming up in ooDialog 4.2.1.
+Devlopment work is still on-going and new interfaces are not guarenteed.
+Method names and or method arguments of features currently in
+development may change before a final release.
+
+Please feel free to open bugs on SourceForge for bugs found in this
+preview and / or discuss changes or improvements to the new features on
+the ooRexx User's list.
+------------------------------------------------------------------------
+ENDNOTE:
 
 The ooDialog 4.2.1 release is focused on improvements to the ListView
-class in ooDialog.  In addition to bug fixes, this release contains a
-number of enhancement to the list-view implementation in ooDialog.
+and TreeView classes in ooDialog.  In addition to bug fixes, this
+release contains a number of enhancements to both the list-view and
+tree-view implementations in ooDialog.
 
 ooDialog 4.2.1 can be installed to any ooRexx installation, 4.1.0 or
 later.
@@ -73,6 +82,8 @@ Bug Fixes in ooDialog:
 
 * #1138 MessageDialog: Failure in system service
 
+* #1141 ooDialog - connecting system menu command events can fail
+
 
 Feature Requests in ooDialog:
 -----------------------------
@@ -100,6 +111,10 @@ Feature Requests in ooDialog:
 * #489 ooDialog - TreeView class should support info tips
 
 * #490 ooDialog - ListView class should support info tips
+
+* #493 ooDialog - TreeView begin / end label editing could be improved
+
+* #494 ooDialog - ListView begin / end label editing could be improved
 
 
 New Functionality in ooDialog:
@@ -215,9 +230,17 @@ connectListViewItem()
 
   * the KEYDOWNEX event is added.
 
+  * the BEGINEDIT event is enhanced
+
+  * the ENDEDIT event is enhanced
+
 connectTreeViewItem()
 
   * the KEYDOWNEX event is added.
+
+  * the BEGINEDIT event is enhanced
+
+  * the ENDEDIT event is enhanced
 
 
 New samples:
@@ -242,9 +265,18 @@ Documentation
 -------------
 
 The ListView Control chapter in the ooDialog Reference Manual has been
-reviewed and corrected for accuracy.  The entire chapter has been
-updated to match the format and style that was introduced in the rework
-of the manual done for ooDialog 4.2.0
+partially reviewed and corrected for accuracy.  Parts of the chapter
+have been updated to match the format and style that was introduced in
+the rework of the manual done for ooDialog 4.2.0
+
+
+The TreeView Control chapter in the ooDialog Reference Manual has been
+partially reviewed and corrected for accuracy.  Parts of the chapter
+have been updated to match the format and style that was introduced in
+the rework of the manual done for ooDialog 4.2.0
+
+The documentation for the connectListViewEvent and connectTreeViewEvent
+methods have been enhanced.
 
 
 Known Problems, "Gotchas," and Solutions with Independent Installations
