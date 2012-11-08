@@ -101,8 +101,8 @@
   <computeroutput>UserDialog</computeroutput>, the <xref linkend="mthDefineDialog"/>() method also
   makes a good place for the connect event methods. If the programmer is overriding the <emphasis
   role="italic">init</emphasis>() method, the connect event methods can be placed there.  In this case, do not invoke
-  the connect event method until <emphasis role="bold">after</emphasis> the
- <xref linkend="mthNewDialogObject"/> has been initialized.
+  the connect event method until <emphasis role="bold">after</emphasis> the superclass has been <link
+  linkend="mthNewDialogObject">initialized</link>.
 </para>
 </section>
 
@@ -115,8 +115,8 @@
   The methods in a Rexx dialog object connected to Windows event notifications are commonly called event handlers
   because the method handles the event. In order to properly code an event handler, the Rexx programmer needs to
   understand somewhat the underlying mechanism of event notification. This is particularly important in ooDialog 4.2.0
-  and later with its ability to <xref linkend="ovvEventsDirectReply"/> invoke the event handling method from the window
-  <xref linkend="ovvWindowMessages"/> processing loop.
+  and later with its ability to <link linkend="ovvEventsDirectReply">directly</link> invoke the event handling method from
+  the window <link linkend="ovvWindowMessages">message</link> processing loop.
 </para>
 <para>
   When the operating system sends an event notification to the underlying dialog, the operating system waits for a reply
@@ -759,7 +759,7 @@
       <varlistentry><term>lP [optional]</term>
       <listitem>
       <para>
-        The numeric value of the <link linkend="ovvWindowMessages">LPARAM</link>/>) parameter in the window message to match.
+        The numeric value of the <link linkend="ovvWindowMessages">LPARAM</link> parameter in the window message to match.
         This defaults to 0.
       </para>
       </listitem></varlistentry>
@@ -1490,10 +1490,6 @@
     linkend="sctCreateMethods">create</link> method when the button is defined.  For dialogs created from a compiled resource
     or a resource script file use the BS_NOTIFY style for the button resource.  The other event notifications are always sent
     and it is not necessary to add the NOTIFY style for those events.
-  </para>
-  <para>
-    The <emphasis role="italic">connectButtonEvent</emphasis> method is a member of the
-    <xref linkend="clsEventNotification"/> mixin class.
   </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
@@ -6129,10 +6125,6 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      The <emphasis role="italic">connectNotifyEvent</emphasis> method is a member of the
-      <xref linkend="clsEventNotification"/> mixin class.
-    </para>
-    <para>
       Syntax errors are raised when incorrect usage is detected.
     </para>
     <para>
@@ -6834,8 +6826,8 @@ incorrect.
     raised.
   </para>
   <para>
-    Common guidelines on <link linkend="sctCodingEventHandlers">how</link> to code event handlers are included in the
-    documentation for the <xref linkend="clsEventNotification"/> class.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   <para>
     When the user interacts with a scroll bar, the operating system does not reposition the scroll box (thumb.) Rather,
