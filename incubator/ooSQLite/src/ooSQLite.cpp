@@ -1326,9 +1326,15 @@ static int authorizerCallback(void *data, int op, const char *str1, const char *
         }
     }
 
-    args = c->ArrayOfFour(c->WholeNumber(op), c->String(str1), c->String(str2), c->String(str3));
+    RexxObjectPtr rxOp   = c->WholeNumber(op);
+    RexxObjectPtr rxStr1 = c->String(str1);
+    RexxObjectPtr rxStr2 = c->String(str2);
+    RexxObjectPtr rxStr3 = c->String(str3);
+    RexxObjectPtr rxStr4 = c->String(str4);
 
-    c->ArrayPut(args, c->String(str4), 5);
+    args = c->ArrayOfFour(rxOp, rxStr1, rxStr2, rxStr3);
+
+    c->ArrayPut(args, rxStr4, 5);
 
     if ( d->userData == NULL )
     {
@@ -1355,6 +1361,14 @@ static int authorizerCallback(void *data, int op, const char *str1, const char *
     {
         rc = SQLITE_DENY;
     }
+
+    c->ReleaseLocalReference(rxOp);
+    c->ReleaseLocalReference(rxStr1);
+    c->ReleaseLocalReference(rxStr2);
+    c->ReleaseLocalReference(rxStr3);
+    c->ReleaseLocalReference(rxStr4);
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
 
     if ( c != d->callbackContext )
     {
@@ -1417,6 +1431,10 @@ static int busyCallBack(void *data, int countInvoked)
     {
         rc = 0;
     }
+
+    c->ReleaseLocalReference(count);
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
 
     if ( c != d->callbackContext )
     {
@@ -1481,6 +1499,9 @@ static int commitHookCallback(void *data)
         rc = 1;
     }
 
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
+
     if ( c != d->callbackContext )
     {
         c->DetachThread();
@@ -1523,13 +1544,16 @@ static void profileHookCallback(void *data, const char *statement, sqlite3_uint6
         }
     }
 
+    RexxObjectPtr rxStmt = c->String(statement);
+    RexxObjectPtr rxNano = c->UnsignedInt64(nanosecs);
+
     if ( d->userData == NULL )
     {
-        args = c->ArrayOfThree(c->String(statement), c->UnsignedInt64(nanosecs), TheNilObj);
+        args = c->ArrayOfThree(rxStmt, rxNano, TheNilObj);
     }
     else
     {
-        args = c->ArrayOfThree(c->String(statement), c->UnsignedInt64(nanosecs), d->userData);
+        args = c->ArrayOfThree(rxStmt, rxNano, d->userData);
     }
 
     if ( isMethod )
@@ -1544,6 +1568,11 @@ static void profileHookCallback(void *data, const char *statement, sqlite3_uint6
     // We just check this, which may raise an exception, but don't do anything
     // else.
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
+
+    c->ReleaseLocalReference(rxStmt);
+    c->ReleaseLocalReference(rxNano);
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
 
     if ( c != d->callbackContext )
     {
@@ -1603,6 +1632,9 @@ static int progressCallback(void *data)
     {
         rc = 1;
     }
+
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
 
     if ( c != d->callbackContext )
     {
@@ -1665,6 +1697,9 @@ static void rollbackHookCallback(void *data)
     // else.
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
 
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
+
     if ( c != d->callbackContext )
     {
         c->DetachThread();
@@ -1707,13 +1742,15 @@ static void traceHookCallback(void *data, const char *statement)
         }
     }
 
+    RexxObjectPtr rxStmt = c->String(statement);
+
     if ( d->userData == NULL )
     {
-        args = c->ArrayOfTwo(c->String(statement), TheNilObj);
+        args = c->ArrayOfTwo(rxStmt, TheNilObj);
     }
     else
     {
-        args = c->ArrayOfTwo(c->String(statement), d->userData);
+        args = c->ArrayOfTwo(rxStmt, d->userData);
     }
 
     if ( isMethod )
@@ -1728,6 +1765,10 @@ static void traceHookCallback(void *data, const char *statement)
     // We just check this, which may raise an exception, but don't do anything
     // else.
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
+
+    c->ReleaseLocalReference(rxStmt);
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
 
     if ( c != d->callbackContext )
     {
@@ -1771,7 +1812,12 @@ static void updateHookCallback(void *data, int op, const char *dbName, const cha
         }
     }
 
-    args = c->ArrayOfFour(c->WholeNumber(op), c->String(dbName), c->String(tableName), c->Int64(rowID));
+    RexxObjectPtr rxOp        = c->WholeNumber(op);
+    RexxObjectPtr rxDbName    = c->String(dbName);
+    RexxObjectPtr rxTableName = c->String(tableName);
+    RexxObjectPtr rxRowID     = c->Int64(rowID);
+
+    args = c->ArrayOfFour(rxOp, rxDbName, rxTableName, rxRowID);
 
     if ( d->userData == NULL )
     {
@@ -1794,6 +1840,13 @@ static void updateHookCallback(void *data, int op, const char *dbName, const cha
     // We just check this, which may raise an exception if the Rexx method or
     // routine has problems, but don't do anything else.
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
+
+    c->ReleaseLocalReference(rxOp);
+    c->ReleaseLocalReference(rxDbName);
+    c->ReleaseLocalReference(rxTableName);
+    c->ReleaseLocalReference(rxRowID);
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
 
     if ( c != d->callbackContext )
     {
