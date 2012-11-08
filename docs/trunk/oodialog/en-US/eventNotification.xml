@@ -89,7 +89,12 @@
   events, the connection needs to be made explicitly.  Indeed, except for trivial dialogs, most of the programming is
   deciding which events to be notified of and taking action upon receiving the notification.
 </para>
-<para id="paraGuidelinesWhereToConnect" xreflabel="guidelines on where to">
+
+<section id="sctConnectingEventHandlers"><title>Connecting Event Handlers</title>
+<indexterm><primary>connecting event handlers</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connecting event handlers</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connecting event handlers</secondary></indexterm>
+<para>
   In general, events should be connected before the dialog is shown on the screen, or immediately after the dialog is
   created. There is no reason why the programmer can not place the invocation where ever it makes the most sense.
   Connecting the events in the <xref linkend="mthInitDialog"/>() method is usually sufficient. In a
@@ -99,6 +104,7 @@
   the connect event method until <emphasis role="bold">after</emphasis> the
  <xref linkend="mthNewDialogObject"/> has been initialized.
 </para>
+</section>
 
 <section id="sctCodingEventHandlers"><title>Coding Event Handlers</title>
 <indexterm><primary>coding event handlers</primary></indexterm>
@@ -1061,10 +1067,8 @@
     the window is gaining or losing the activation.
   </para>
   <para>
-    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-    role="italic">connectActivate</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link> to code event
-    handlers are included in the documentation for the
-    <xref linkend="clsEventNotification"/> class.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   <para>
     The interpreter invokes the event handler directly and waits in the window <xref linkend="ovvWindowMessages"/> processing
@@ -1428,10 +1432,8 @@
     <orderedlist>
     <listitem>
     <para>
-      Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-      role="italic">connectComboBoxEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
-      to code event handlers are included in the documentation for the
-      <xref linkend="clsEventNotification"/> class.
+      See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+      linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
     </para>
     </listitem>
     <listitem>
@@ -1612,10 +1614,8 @@ incorrect.
 <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
 <listitem>
 <para>
-  Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-  role="italic">connectComboBoxEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
-  to code event handlers are included in the documentation for the
-  <xref linkend="clsEventNotification"/> class.
+  See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+  linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
 </para>
 <para>
   The event-handling methods receive two arguments: the first is a combination of the ID of the combo box and the ID of
@@ -1948,10 +1948,8 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-    role="italic">connectDateTimePickerEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
-    to code event handlers are included in the documentation for the
-    <xref linkend="clsEventNotification"/> class.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -3188,8 +3186,8 @@ incorrect.
   <orderedlist>
   <listitem>
   <para>
-    There are some common <xref linkend="paraGuidelinesWhereToConnect"/> place the invocation of the event connection
-    methods.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   </listitem>
   <listitem>
@@ -4050,10 +4048,8 @@ incorrect.
 <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
 <listitem>
 <para>
-  Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-  role="italic">connectListBoxEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
-  to code event handlers are included in the documentation for the
-  <xref linkend="clsEventNotification"/> class.
+  See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+  linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
 </para>
 <para>
   The event-handling methods receive two arguments: the first is a combination of the ID of the listbox and the ID of
@@ -4164,7 +4160,7 @@ incorrect.
         implement a drag-and-drop handler.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>BEGINEDIT</term>
+      <varlistentry id="kywListViewBEGINEDIT" xreflabel="BEGINEDIT"><term>BEGINEDIT</term>
       <listitem>
       <para>
         Editing a label has been started. Do not connect this event if you are using the DEFAULTEDIT keyword. The results are
@@ -4186,12 +4182,12 @@ incorrect.
         handler.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="evtListViewDEFAULTEDIT" xreflabel="DEFAULTEDIT"><term>DEFAULTEDIT</term>
+      <varlistentry id="kywListViewDEFAULTEDIT" xreflabel="DEFAULTEDIT"><term>DEFAULTEDIT</term>
       <listitem>
       <para>
         This keyword is used to activate the internal handling of the list-view label editing operation. With this keyword,
         the ooDialog framework internally handles the BEGINEDIT and ENDEDIT notifications. The list-view must have the <xref
-        linkend="styListViewEDIT"/> style for the BEGINEDIT / ENDEIDT notification to be sent. While using the DEFAULTEDIT
+        linkend="styListViewEDIT"/> style for the BEGINEDIT / ENDEDIT notification to be sent. While using the DEFAULTEDIT
         connection may seem easier than using the BEGINEDIT / ENDEDIT connections, it does not provide the same flexibility
         as using the BEGINEDIT / ENDEDIT connections.
       </para>
@@ -4217,7 +4213,7 @@ incorrect.
       <listitem>
       <para>
         The check box state of an item changed.  (The check box was checked or unchecked.) This event can only occur if
-        the list-view has the check box <xref linkend="mthAddExtendedStyle"/> list-view style.  Use this
+        the list-view has the check box <link linkend="mthAddExtendedStyle">extended</link> list-view style.  Use this
         keyword instead of the CHANGED keyword.
       </para>
       </listitem></varlistentry>
@@ -4255,7 +4251,7 @@ incorrect.
         All items have been deleted.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>ENDEDIT</term>
+      <varlistentry id="kywListViewENDEDIT" xreflabel="ENDEDIT"><term>ENDEDIT</term>
       <listitem>
       <para>
         Label editing has ended. Do not connect this event if you are using the DEFAULTEDIT keyword. The results are
@@ -4276,7 +4272,7 @@ incorrect.
         CHANGED keyword.
       </para>
       </listitem></varlistentry>
-      <varlistentry id='kywListViewGETINFOTIP'><term>GETINFOTIP</term>
+      <varlistentry id="kywListViewGETINFOTIP" xreflabel="GETINFOTIP"><term>GETINFOTIP</term>
       <listitem>
       <para>
         The list-view control is requesting text to display an info tip. The notification is only sent when the list-view
@@ -4512,7 +4508,7 @@ incorrect.
       <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
       <listitem>
       <para>
-        The event handling method recieves 4 arguments:
+        The event handling method receives 4 arguments:
       </para>
       <variablelist>
         <varlistentry><term>id</term>
@@ -4563,9 +4559,9 @@ incorrect.
       <listitem>
       <para>
         The following example shows a possible event handler for the BEGINEDIT event.  It uses the <emphasis
-        role="italic">itemIndex</emphasis> argument to determine which it is about the have its label edited, and checks that
-        editing is allowed for that item. If it is, it returns true to allow the operation. If it is not, it returns false to
-        cancel the operation and puts up a message box to inform the user:
+        role="italic">itemIndex</emphasis> argument to determine which item is about the have its label edited, and checks
+        that editing is allowed for that item. If it is, it returns true to allow the operation. If it is not, it returns
+        false to cancel the operation and puts up a message box to inform the user:
 
 <programlisting>
 <![CDATA[
@@ -4609,7 +4605,7 @@ incorrect.
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
     <listitem>
     <para>
-      The event handling method recieves 2 arguments:
+      The event handling method receives 2 arguments:
     </para>
     <variablelist>
       <varlistentry><term>id</term>
@@ -4833,7 +4829,7 @@ incorrect.
       <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
       <listitem>
       <para>
-        The event handling method recieves 4 arguments:
+        The event handling method receives 4 arguments:
       </para>
       <variablelist>
         <varlistentry><term>id</term>
@@ -4929,7 +4925,7 @@ incorrect.
 
   <programlisting>
   <![CDATA[
-  ::method onBeginEdit unguarded
+  ::method onEndEdit unguarded
     use arg id, itemIndex, maybeText
   ]]>
   </programlisting>
@@ -4938,7 +4934,7 @@ incorrect.
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
     <listitem>
     <para>
-      The event handling method recieves 3 arguments:
+      The event handling method receives 3 arguments:
     </para>
     <variablelist>
       <varlistentry><term>id</term>
@@ -4950,7 +4946,7 @@ incorrect.
       <varlistentry><term>itemIndex</term>
       <listitem>
       <para>
-        This index of the list-view item that was edited.
+        The index of the list-view item that was edited.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>text [optional]</term>
@@ -5005,7 +5001,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -5544,10 +5540,8 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-    role="italic">connectMonthCalendarEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
-    to code event handlers are included in the documentation for the
-    <xref linkend="clsEventNotification"/> class.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6489,10 +6483,8 @@ incorrect.
     of the dialog being resized and, if desired, can change its size or position.
   </para>
   <para>
-    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-    role="italic">connectResizing</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
-    to code event handlers are included in the documentation for the
-    <xref linkend="clsEventNotification"/> class.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   <para>
     The interpreter invokes the event handler directly and waits in the window <xref linkend="ovvWindowMessages"/> processing
@@ -7161,8 +7153,8 @@ incorrect.
   <orderedlist>
   <listitem>
   <para>
-    There are some common <xref linkend="paraGuidelinesWhereToConnect"/> place the invocation of the event
-    connection methods.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   </listitem>
   <listitem>
@@ -7327,10 +7319,8 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-    role="italic">connectTabEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
-    to code event handlers are included in the documentation for the
-    <xref linkend="clsEventNotification"/> class.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   <para>
     The event-handling method for the KEYDOWN event receives two arguments: info about the event, the control ID of the
@@ -7519,10 +7509,8 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-    role="italic">connectUpDownEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link> to
-    code event handlers are included in the documentation for the
-    <xref linkend="clsEventNotification"/> class.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -7808,13 +7796,10 @@ trackbar position by extracting the high-oder word. Example:
         <member>BEGINEDIT</member>
         <member>BEGINRDRAG</member>
         <member>DEFAULTEDIT</member>
-        <member>CHECKBOXCHANGED</member>
-        <member>CLICK</member>
-        <member>COLUMNCLICK</member>
         <member>DELETE</member>
         <member>ENDEDIT</member>
-        <member>EXPANDING</member>
         <member>EXPANDED</member>
+        <member>EXPANDING</member>
         <member>GETINFOTIP</member>
         <member>KEYDOWN</member>
         <member>KEYDOWNEX</member>
@@ -7831,10 +7816,18 @@ trackbar position by extracting the high-oder word. Example:
           implement a drag-and-drop handler.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>BEGINEDIT</term>
+        <varlistentry id="kywTreeViewBEGINGEDIT" xreflabel="BEGINEDIT"><term>BEGINEDIT</term>
         <listitem>
         <para>
-          Editing a label has been started.
+          Editing a label has been started. Do not connect this event if you are using the DEFAULTEDIT keyword. The results are
+          undefined. The tree-view must have the <xref linkend="styTreeViewEDIT"/> style for this notification to be sent.
+        </para>
+        <para>
+          The event notification for this event has been enhanced since the original ooDialog implementation. To use the
+          enhanced event notification, the <emphasis role="italic">willReply</emphasis> argument must be used. The value of the
+          argument, true or false, does not matter. If <emphasis role="italic">willReply</emphasis> is omitted, the old style
+          notification is used. The documentation for the <link linkend="evtTreeViewBEGINEDIT">BEGINEDIT</link> event handler
+          explains the difference between the two types of notifications.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BEGINRDRAG</term>
@@ -7845,22 +7838,19 @@ trackbar position by extracting the high-oder word. Example:
           implement a drag-and-drop handler. handler.
         </para>
         </listitem></varlistentry>
-        <varlistentry id="evtTreeViewDEFAULTEDIT"><term>DEFAULTEDIT</term>
+        <varlistentry id="kywTreeViewDEFAULTEDIT" xreflabel="DEFAULTEDIT"><term>DEFAULTEDIT</term>
         <listitem>
         <para>
-          This event connects the notification that label editing has been started and ended with a predefined event-handling
-          method. This method extracts the newly entered text from the notification and modifies the item of which the label
-          was edited. If this event is not connected you must provide your own event-handling method and connect it with the
-          BEGINEDIT and ENDEDIT events. Otherwise, the edited text is lost and the item remains unchanged.
+          This keyword is used to activate the internal handling of the tree-view label editing operation. With this keyword,
+          the ooDialog framework internally handles the BEGINEDIT and ENDEDIT notifications. The tree-view must have the
+          <xref linkend="styTreeViewEDIT"/> style for the BEGINEDIT / ENDEDIT notification to be sent. While using the
+          DEFAULTEDIT connection may seem easier than using the BEGINEDIT / ENDEDIT connections, it does not provide the same
+          flexibility as using the BEGINEDIT / ENDEDIT connections.
         </para>
         <para>
-          When you specify this event, the <emphasis role="italic">msgToRaise</emphasis> argument is ignored.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry id="evtTreeViewENDEDIT"><term>ENDEDIT</term>
-        <listitem>
-        <para>
-          Label editing has ended.
+          When you specify this event connection, omit the <emphasis role="italic">methodName</emphasis> argument, the arugment
+          is ignored. Do not connect either the BEGINEDIT or ENDEDIT events when also using the DEFAULTEDIT connection. The
+          result is undefined.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DELETE</term>
@@ -7869,10 +7859,18 @@ trackbar position by extracting the high-oder word. Example:
           An item has been deleted.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>EXPANDING</term>
+        <varlistentry id="kywTreeViewENDEDIT" xreflabel="ENDEDIT"><term>ENDEDIT</term>
         <listitem>
         <para>
-          An item is about to expand or collapse. This notification is sent before the item has expanded or collapsed.
+          Label editing has ended. Do not connect this event if you are using the DEFAULTEDIT keyword. The results are
+          undefined. The tree-view must have the <xref linkend="styTreeViewEDIT"/> style for this notification to be sent.
+        </para>
+        <para>
+          The event notification for this event has been enhanced since the original ooDialog implementation. To use the
+          enhanced event notification, the <emphasis role="italic">willReply</emphasis> argument must be used. The value of the
+          argument, true or false, does not matter. If <emphasis role="italic">willReply</emphasis> is omitted, the old style
+          notification is used. The documentation for the <link linkend="evtTreeViewENDEDIT">ENDEDIT</link> event handler
+          explains the difference between the two types of notifications.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>EXPANDED</term>
@@ -7881,7 +7879,13 @@ trackbar position by extracting the high-oder word. Example:
           An item has expanded or collapsed. This notification is sent after the item expanded or collapsed.
         </para>
         </listitem></varlistentry>
-        <varlistentry id="kywTreeViewGETINFOTIP"><term>GETINFOTIP</term>
+        <varlistentry><term>EXPANDING</term>
+        <listitem>
+        <para>
+          An item is about to expand or collapse. This notification is sent before the item has expanded or collapsed.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="kywTreeViewGETINFOTIP" xreflabel="GETINFOTIP"><term>GETINFOTIP</term>
         <listitem>
         <para>
           The tree-view control is requesting text to display an info tip. The notification is only sent when the tree-view
@@ -7940,9 +7944,9 @@ trackbar position by extracting the high-oder word. Example:
     </para>
     <para>
       <emphasis role="bold">Note:</emphasis> Currently the <emphasis role="italic">willReply</emphasis> argument is ignored
-      for all events except the EXPANDING, EXPANDED, and KEYDOWNEX events. For the GETINFOTIP event, the interpreter always
-      waits for the reply. For all other events, the interpreter never waits for the reply from the event handler. Future
-      enhancements to the <computeroutput>TreeView</computeroutput> class may allow the <emphasis
+      for all events except the BEGINEDIT, ENDEDIT, EXPANDING, EXPANDED, and KEYDOWNEX events. For the GETINFOTIP event, the
+      interpreter always waits for the reply. For all other events, the interpreter never waits for the reply from the event
+      handler. Future enhancements to the <computeroutput>TreeView</computeroutput> class may allow the <emphasis
       role="italic">willReply</emphasis> to have effect for all tree-view event notifications.
     </para>
     </listitem></varlistentry>
@@ -7977,165 +7981,12 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-    role="italic">connectTreeViewEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
-    to code event handlers are included in the documentation for the
-    <xref linkend="clsEventNotification"/> class.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
-  <orderedlist>
-  <listitem>
-  <para>
-    The event-handling method connected to ENDEDIT receives two arguments: the item handle of which the label has been
-    edited and the newly entered text. Example:
-
-<programlisting>
-<![CDATA[
-
-::method onEndEdit unguarded
-  use arg item, newText
-
-  return 0
-]]>
-</programlisting>
-
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    The event-handling method connected to KEYDOWN receives two arguments: the control ID of the tree view control and the
-    virtual key code pressed. Use the <xref linkend="mthKey2Name"/>method of the
- <xref linkend="clsVK"/> class to determine which key was pressed. Example:
-
-<programlisting>
-<![CDATA[
-
-::method onKeyDown unguarded
-  use arg id, vkey
-  say "Key" .VK~name2key(vkey) "was pressed."
-
-  return 0
-]]>
-</programlisting>
-
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    The event-handling method connected to the EXPANDED event receives four arguments: the control ID of the tree view
-    control, the handle of the tree item that expanded or collapsed, a string that indicates whether the item was expanded or
-    collapsed, and a string with possible extra information.. Recall that the EXPANDED notification is sent <emphasis
-    role="italic">after</emphasis> the item has been expanded or collapsed.
-  </para>
-  <para>
-    The <emphasis role="italic">what</emphasis> argument will be either <emphasis role="italic">EXPANDED</emphasis> or
-    <emphasis role="italic">COLLAPSED</emphasis>. The <emphasis role="italic">extra</emphasis> arugment will usually be the
-    empty string. The Microsoft documentation seems to indicate that when an item is expanded, the action may be expanded
-    partial and when the action is collapsed, it may be collapsed and reset. If expanded partial is detected, the <emphasis
-    role="italic">extra</emphasis> argument will be <emphasis role="italic">PARTIAL</emphasis>. If collapse and reset is
-    detected, the <emphasis role="italic">extra</emphasis> argument will be <emphasis role="italic">RESET</emphasis>.
-    However, in testing, neither of these 2 actions were every detected and the Microsoft documentation is unclear here. It
-    may be that the <emphasis role="italic">extra</emphasis> argument will always be the empty string.
-  </para>
-  <para>
-    If the <emphasis role="italic">willReply</emphasis> argument to <emphasis role="italic">connectTreeViewEvent</emphasis>
-    is true, the interpreter will wait for the reply from the event handler. However Windows ignores the reply, so returning
-    any value is sufficient.
-  </para>
-  <para>
-    Example:
-
-  <programlisting>
-  <![CDATA[
-  ::method onExpanded unguarded
-    use arg id, item, what, extra
-    say "The item with handle" item "has been" what
-
-    return 0
-
-  /*
-    Possible output:
-
-    The item with handle 0x00000000001AD3E0 has been COLLAPSED
-  */
-  ]]>
-  </programlisting>
-
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    The event-handling method connected to the EXPANDING event receives four arguments: the control ID of the tree view
-    control, the handle of the tree item that is about to be expanded or collapsed, a string that indicates whether the item
-    will be expanded or collapsed, and a string with possible extra information.. Recall that the EXPANDING notification is
-    sent <emphasis role="italic">before</emphasis> the item is expanded or collapsed.
-  </para>
-  <para>
-    The <emphasis role="italic">what</emphasis> argument will be either <emphasis role="italic">EXPANDED</emphasis> or
-    <emphasis role="italic">COLLAPSED</emphasis>. The <emphasis role="italic">extra</emphasis> arugment will usually be the
-    empty string. The Microsoft documentation seems to indicate that when an item is about to be expanded, the action may be
-    expanded partial and when the action is about to be collapsed, it may be collapsed and reset. If expanded partial is
-    detected, the <emphasis role="italic">extra</emphasis> argument will be <emphasis role="italic">PARTIAL</emphasis>. If
-    collapse and reset is detected, the <emphasis role="italic">extra</emphasis> argument will be <emphasis
-    role="italic">RESET</emphasis>. However, in testing, neither of these 2 actions were every detected and the Microsoft
-    documentation is unclear here. It may be that the <emphasis role="italic">extra</emphasis> argument will always be the
-    empty string.
-  </para>
-  <para>
-    If the <emphasis role="italic">willReply</emphasis> argument to <emphasis role="italic">connectTreeViewEvent</emphasis>
-    is true, the interpreter will wait for the reply from the event handler. The programmer <emphasis
-    role="italic">must</emphasis> return either true or false. The programmer can prevent the expansion or collapse for the
-    item by returning false. To allow the expansion or collapse to take place, the programmer must return true.
-  </para>
-  <para>
-    Example:
-
-  <programlisting>
-  <![CDATA[
-  ::method onExpanding unguarded
-    use arg id, item, what
-    say "Item with handle" item "is going to be" what
-
-    return .true
-
-    /*
-      Possible output:
-
-      The item with handle 0x00000000001AD680 has been EXPANDED
-    */
-  ]]>
-  </programlisting>
-
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    The event-handling method connected to BEGINDRAG or BEGINRDRAG receives three arguments: the control ID of the tree
-    view control, the tree item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
-    separated by a blank). Example:
-
-  <programlisting>
-  <![CDATA[
-
-  ::method onBeginDrag unguarded
-    use arg id, item, where
-    say "Item with handle" item "is in drag-and-drop mode"
-    parse var where x y
-    say "The drag operation started at point ("x","y")"
-
-    return 0
-  ]]>
-  </programlisting>
-
-  </para>
-  </listitem>
-  </orderedlist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-    <para>
-      The <emphasis role="italic">connectTreeViewEvent</emphasis> method is a member of the
-      <xref linkend="clsEventNotification"/> mixin class.
-    </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
   </para>
@@ -8150,19 +8001,19 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example connects the selection-changed event for the tree view FileTree with method NewTreeSelection
-    and displays the text of the new selection:
+    The following example connects the selection-changed event for the tree-view with the symbolic ID of IDC_TV_FILES with
+    the method newTreeSelection in the Rexx dialog. The event handling method displays the text of the new selection:
   <programlisting>
   <![CDATA[
-  ::class MyDlgClass subclass UserDialog
+  ::class 'FileDlg' subclass UserDialog
 
   ::method init
     self~connectTreeViewEvent(IDC_TV_FILES, "SELCHANGED", "newTreeSelection")
 
   ::method newTreeSelection unguarded
     tc = self~newTreeView(IDC_TV_FILES)
-    info. = tc~itemInfo(tc~selected)
-    say "New selection is:" info.!text
+    text = tc~itemText(tc~selected)
+    say "The label of the new selection is:" text
 
     return 0
   ]]>
@@ -8170,6 +8021,659 @@ trackbar position by extracting the high-oder word. Example:
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="evtTreeViewBEGINDRAG" xreflabel="BEGINDRAG"><title>BeginDrag Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>BEGINDRAG</secondary></indexterm>
+
+<para>
+  The event-handling method connected to BEGINDRAG receives three arguments: the control ID of the tree view control, the
+  tree item to be dragged, and the point where the mouse cursor was pressed (x and y positions, separated by a blank).
+  Example:
+
+<programlisting>
+<![CDATA[
+
+::method onBeginDrag unguarded
+  use arg id, item, where
+  say "Item with handle" item "is in drag-and-drop mode"
+  parse var where x y
+  say "The drag operation started at point ("x","y")"
+
+  return 0
+]]>
+</programlisting>
+
+</para>
+</section>
+
+<section id="evtTreeViewBEGINRDRAG" xreflabel="BEGINRDRAG"><title>BeginRDrag Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
+
+<para>
+  The event-handling method connected to BEGINRDRAG receives three arguments: the control ID of the tree view control, the
+  tree item to be dragged, and the point where the mouse cursor was pressed (x and y positions, separated by a blank).
+  Example:
+
+<programlisting>
+<![CDATA[
+
+::method onBeginDrag unguarded
+  use arg id, item, where
+  say "Item with handle" item "is in drag-and-drop mode"
+  parse var where x y
+  say "The drag operation started at point ("x","y")"
+
+  return 0
+]]>
+</programlisting>
+
+</para>
+</section>
+
+
+<section id="evtTreeViewBEGINEDIT" xreflabel="BEGINEDIT"><title>BeginEdit Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>BEGINEDIT</secondary></indexterm>
+<para>
+  The event handler for the BEGINEDIT event is invoked when the user begins a label editing operation on an item of the
+  tree-view. When label editing begins, an edit control is created by the operating systm, but not positioned or displayed.
+  Before it is displayed, the tree-view control sends a BEGINEDIT notification message. A label editing operation is only
+  available when the tree-view has the <xref linkend="styTreeViewEDIT"/> style.
+</para>
+<para>
+  In general, the programmer would connect both the BEGINEDIT and <xref linkend="kywTreeViewENDEDIT"/> notifications. Both of
+  these event notifications have been enhanced since the original ooDialog implementation. If the <emphasis
+  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectTreeViewEvent"/> method is omitted the old
+  implementation is used. If the argument is not omitted, the new implementation is used. How the two event handlers work is
+  described separately.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">New event handler description:</emphasis></term>
+  <listitem>
+    <para>
+      Whether the programmer must return a value and if the interpreter waits, or does not wait, for this return is
+      determined by the value of the <emphasis role="italic">willReply</emphasis> argument. If <emphasis
+      role="italic">willReply</emphasis> is true, the programmer must return true or false from the event handler and the
+      interpreter waits for that reply. If <emphasis role="italic">willReply</emphasis> is false the interpreter does not
+      wait for a reply.
+    </para>
+
+    <programlisting>
+    <![CDATA[
+    ::method onBeginEdit unguarded
+      use arg id, hItem, editCtrl, treeViewCtrl, userData
+
+      return zz
+    ]]>
+    </programlisting>
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+      <listitem>
+      <para>
+        The event handling method receives 4 arguments:
+      </para>
+      <variablelist>
+        <varlistentry><term>id</term>
+        <listitem>
+        <para>
+          The resource id of the list-view sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>hItem</term>
+        <listitem>
+        <para>
+          The tree-view item handle whose label is about to be edited.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>editCtrl</term>
+        <listitem>
+        <para>
+          The Rexx edit control object used for the editing operation. The programmer can customize the editing operation by
+          using the methods of the <link linkend="clsEdit">Edit</link> class.
+        </para>
+        <para>
+          <emphasis role="bold">Note</emphasis> that this object is only valid during the editing operation. When the user
+          ends the editing, the operating system destroys the underlying edit control and the Rexx object is no longer valid.
+          Each time the user starts a new editing operation, the operating system creates a new edit control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>treeViewCtrl</term>
+        <listitem>
+        <para>
+          The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
+          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          linkend="mthNewTreeView"/> method. Unlike the <emphasis role="italic">editCtrl</emphasis> object, this object is
+          valid as long as the dialog is executing.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>userData</term>
+        <listitem>
+        <para>
+          The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item whose label is
+          about to be edited. If no user data has been assigned, this argument will be the
+          <computeroutput>.nil</computeroutput> object.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+      <listitem>
+      <para>
+        When the programmer used true for the <emphasis role="italic">willReply</emphasis> argument, the event handler must
+        return true or false. To allow the editing operation to begin, return true. To cancel the editing operation, return
+        false. Returning a value from the event handler gives the programmer the option determining if the label for the
+        specific tree-view item should or should not be edited.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+      <listitem>
+      <para>
+        The following example shows a possible event handler for the BEGINEDIT event.  It uses the <emphasis
+        role="italic">hItem</emphasis> argument to determine which item is about the have its label edited, and checks that
+        editing is allowed for that item. If it is, it returns true to allow the operation. If it is not, it returns false to
+        cancel the operation and puts up a message box to inform the user. Note that the <emphasis
+        role="italic">userData</emphasis> argument is assigned to the <emphasis role="italic">rec</emphasis> variable in this
+        example, just to make it clear that the argument sent to the event handler is the user data object. In this
+        particular program the user data object is a record object:
+
+<programlisting>
+<![CDATA[
+
+::method onBeginEdit unguarded
+  use arg id, hItem, editCtrl, treeViewCtrl, userData
+
+  rec = userData
+  if rec~isEditable then return .true
+
+  reply .false
+
+  msg = "The record for" rec~FirstName rec~LastName 'can not be changed.'
+  title = "Label Edit Error"
+  j = MessageDialog(msg, self~hwnd, title, , "WARNING")
+
+  return
+
+]]>
+</programlisting>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Old event handler description:</emphasis></term>
+  <listitem>
+  <para>
+    The old style event notification is used when the programmer omits the <emphasis role="italic">willReply</emphasis>
+    argument in the invocation of the <xref linkend="mthConnectListViewEvent"/> method. The return from the event handler is
+    completely ignored, the interpreter does not wait for this return.
+  </para>
+
+  <programlisting>
+  <![CDATA[
+  ::method onBeginEdit unguarded
+    use arg id, hItem
+  ]]>
+  </programlisting>
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+    <listitem>
+    <para>
+      The event handling method receives 2 arguments:
+    </para>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+      <para>
+        The resource id of the list-view sending the notification.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hItem</term>
+      <listitem>
+      <para>
+        The handle to the tree-view item whose label is about to be edited.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+    <listitem>
+    <para>
+      Returning, or not returning, a value has no meaning.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+    <listitem>
+    <para>
+      Connecting this event and not using the <emphasis role="italic">willReply</emphasis> argument does not make much sense.
+      The event handler really serves no purpose.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End BeginEdit Event Handler -->
+
+<section id="evtTreeViewENDEDIT" xreflabel="ENDEDIT"><title>EndEdit Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>ENDEDIT</secondary></indexterm>
+<para>
+  The event handler for the ENDEDIT event is invoked when the user finishes a label editing operation on an item of the
+  tree-view. A label editing operation is only available when the tree-view has the <xref linkend="styTreeViewEDIT"/> style.
+</para>
+<para>
+  In general, the programmer would connect both the <xref linkend="evtTreeViewBEGINEDIT"/> and ENDEDIT notifications. Both of
+  these event notifications have been enhanced since the original ooDialog implementation. If the <emphasis
+  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectTreeViewEvent"/> method is omitted the old
+  implementation is used. If the argument is not omitted, the new implementation is used. How the two event handlers work is
+  described separately.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">New event handler description:</emphasis></term>
+  <listitem>
+    <para>
+      Whether the programmer must return a value and if the interpreter waits, or does not wait, for this return is
+      determined by the value of the <emphasis role="italic">willReply</emphasis> argument. If <emphasis
+      role="italic">willReply</emphasis> is true, the programmer must return true or false from the event handler and the
+      interpreter waits for that reply. If <emphasis role="italic">willReply</emphasis> is false the interpreter does not
+      wait for a reply.
+    </para>
+
+    <programlisting>
+    <![CDATA[
+    ::method onEndEdit unguarded
+      use arg id, hItem, text, treeViewCtrl, userData
+
+      return trueOrFalse
+    ]]>
+    </programlisting>
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+      <listitem>
+      <para>
+        The event handling method receives 4 arguments:
+      </para>
+      <variablelist>
+        <varlistentry><term>id</term>
+        <listitem>
+        <para>
+          The resource id of the list-view sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>itemID</term>
+        <listitem>
+        <para>
+          The item index whose label being edited.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>text</term>
+        <listitem>
+        <para>
+          If the user canceled the edit operation then the <emphasis role="italic">text</emphasis> argument will be the .nil
+          object. If the edit operation was not canceled then this argument will be the text the user entered.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>listViewCtrl</term>
+        <listitem>
+        <para>
+          The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
+          the programmer. It is the same Rexx object the programmer would recieve through the <xref
+          linkend="mthNewListView"/> method.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>userData</term>
+        <listitem>
+        <para>
+          The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item whose label
+          was edited. If no user data has been assigned, this argument will be the <computeroutput>.nil</computeroutput>
+          object.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+      <listitem>
+      <para>
+        When the programmer used true for the <emphasis role="italic">willReply</emphasis> argument, the event handler must
+        return true or false. To accept the edited text, return true. To disallow the the change to the label, return false.
+        If, the edit operation was canceled by the user, the operating system ignores the return from the event handler.
+        Returning a value from the event handler gives the programmer the option of determining if the new label for the
+        specific tree-view item is acceptable.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+      <listitem>
+      <para>
+        The following example checks the new text entered by the user. The label for each tree-view item is a part number.
+        If the user's text is not a valid part number, the new text is rejected by returning false:
+
+<programlisting>
+<![CDATA[
+
+::method onEndEdit unguarded
+  use arg id, itemIndex, text, treeViewCtrl, userData
+
+  if text == .nil then return .false
+
+  if self~isValidPart(text) then do
+    reply .true
+
+    rec = userData
+    oldPartNo = rec~partNo
+    rec~partNo = text
+    self~updateRecord(oldPartNo, rec)
+
+    return
+  end
+
+  reply .false
+
+  msg = text "is not a valid part number." || .endOfLine~copies(2 || -
+        "The change is rejected."
+
+  title = "Label Editing Error"
+  j = MessageDialog(msg, self~hwnd, title, , "WARNING")
+
+  return
+
+]]>
+</programlisting>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Old event handler description:</emphasis></term>
+  <listitem>
+  <para>
+    The old style event notification is used when the programmer omits the <emphasis role="italic">willReply</emphasis>
+    argument in the invocation of the <xref linkend="mthConnectTreeViewEvent"/> method. The return from the event handler is
+    completely ignored, the interpreter does not wait for this return. If the user canceled the edit operation, the label
+    will be unchanged. If the user did not cancel the edit operation, the label of the item is changed to the text the user
+    entered.
+  </para>
+
+  <programlisting>
+  <![CDATA[
+  ::method onEndEdit unguarded
+    use arg id, hItem, maybeText
+  ]]>
+  </programlisting>
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+    <listitem>
+    <para>
+      The event handling method receives 3 arguments:
+    </para>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+      <para>
+        The resource id of the tree-view sending the notification.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hItem</term>
+      <listitem>
+      <para>
+        The handle of the tree-view item that was edited.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [optional]</term>
+      <listitem>
+      <para>
+        If the user canceled the edit operation, the <emphasis role="italic">text</emphasis> argument is omitted. If the user
+        did not cancel, then the <emphasis role="italic">text</emphasis> argument is the text the user entered.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+    <listitem>
+    <para>
+      Returning, or not returning, a value has no meaning. The interpreter does not wait for the return and its value, if any
+      is discarded.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+    <listitem>
+    <para>
+      When the user does not cancel the edit operation, the operating system automatically changes the label of the item to
+      what the user entered. To prevent this behavior, the programmer needs to use the new style event handler by using the
+      <emphasis role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectTreeViewEvent"/> method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End EndEdit Event Handler -->
+
+
+<section id="evtTreeViewEXPANDED" xreflabel="EXPANDED"><title>Expanded Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>EXPANDED</secondary></indexterm>
+<para>
+  The event handler for the EXPANDED event is invoked when after a tree-view item has been expanded or collapsed.
+</para>
+<para>
+  If the <emphasis role="italic">willReply</emphasis> argument to <xref linkend="mthConnectTreeViewEvent"/> method
+  is true, the interpreter will wait for the reply from the event handler. However Windows ignores the reply, so returning
+  any value is sufficient. If <emphasis role="italic">willReply</emphasis> is false or omitted, the interpreter does not wait
+  for the reply.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onExpanded unguarded
+  use arg id, hItem, what, extra
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 4 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the tree-view control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hItem</term>
+    <listitem>
+    <para>
+      The handle of the tree-view item that expanded or collapsed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>what</term>
+    <listitem>
+    <para>
+      A string that indicates whether the item was expanded or collapsed. The string will be either <emphasis
+      role="italic">EXPANDED</emphasis> or <emphasis role="italic">COLLAPSED</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>extra</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">extra</emphasis> arugment will usually be the empty string. The Microsoft documentation
+      seems to indicate that when an item is expanded, the action may be expanded partial and when the action is collapsed,
+      it may be collapsed and reset. If expanded partial is detected, the <emphasis role="italic">extra</emphasis> argument
+      will be <emphasis role="italic">PARTIAL</emphasis>. If collapse and reset is detected, the <emphasis
+      role="italic">extra</emphasis> argument will be <emphasis role="italic">RESET</emphasis>. However, in testing, neither
+      of these 2 actions were ever detected and the Microsoft documentation is unclear here. It may be that the <emphasis
+      role="italic">extra</emphasis> argument will always be the empty string.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    Since the return from the event handler is ignored by the operating system, any value can be returned. 0 makes a good
+    return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example displays the expanded or collapsed action that has just happened:
+
+<programlisting>
+<![CDATA[
+
+::method onExpanded unguarded
+  use arg id, item, what, extra
+  say "The item with handle" item "has been" what
+
+  return 0
+
+/*
+  Possible output:
+
+  The item with handle 0x00000000001AD3E0 has been COLLAPSED
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Expanded Event Handler -->
+
+
+<section id="evtTreeViewEXPANDING" xreflabel="EXPANDING"><title>Expanding Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>EXPANDING</secondary></indexterm>
+<para>
+  The event-handling method connected to the EXPANDING event receives four arguments: the control ID of the tree view
+  control, the handle of the tree item that is about to be expanded or collapsed, a string that indicates whether the item
+  will be expanded or collapsed, and a string with possible extra information.. Recall that the EXPANDING notification is
+  sent <emphasis role="italic">before</emphasis> the item is expanded or collapsed.
+</para>
+<para>
+  The <emphasis role="italic">what</emphasis> argument will be either <emphasis role="italic">EXPANDED</emphasis> or
+  <emphasis role="italic">COLLAPSED</emphasis>. The <emphasis role="italic">extra</emphasis> arugment will usually be the
+  empty string. The Microsoft documentation seems to indicate that when an item is about to be expanded, the action may be
+  expanded partial and when the action is about to be collapsed, it may be collapsed and reset. If expanded partial is
+  detected, the <emphasis role="italic">extra</emphasis> argument will be <emphasis role="italic">PARTIAL</emphasis>. If
+  collapse and reset is detected, the <emphasis role="italic">extra</emphasis> argument will be <emphasis
+  role="italic">RESET</emphasis>. However, in testing, neither of these 2 actions were every detected and the Microsoft
+  documentation is unclear here. It may be that the <emphasis role="italic">extra</emphasis> argument will always be the
+  empty string.
+</para>
+<para>
+  Example:
+
+<programlisting>
+<![CDATA[
+]]>
+</programlisting>
+
+</para>
+<para>
+  The event handler for the EXPANDING event is invoked <emphasis role="italic">before</emphasis> a tree-view item is
+  going to be expanded or collapsed.
+</para>
+<para>
+  If the <emphasis role="italic">willReply</emphasis> argument to <xref linkend="mthConnectTreeViewEvent"/> method is true,
+  the interpreter will wait for the reply from the event handler. The programmer <emphasis role="italic">must</emphasis>
+  return either true or false. The programmer can prevent the expansion or collapse for the item by returning false. To allow
+  the expansion or collapse to take place, the programmer must return true.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onExpanding unguarded
+  use arg id, hItem, what, extra
+
+  return trueOrFalse
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 4 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the tree-view control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hItem</term>
+    <listitem>
+    <para>
+      The handle of the tree-view item that is about to expand or collapse.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>what</term>
+    <listitem>
+    <para>
+      A string that indicates whether the item is going to expand or collapsd. The string will be either <emphasis
+      role="italic">EXPANDED</emphasis> or <emphasis role="italic">COLLAPSED</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>extra</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">extra</emphasis> arugment will usually be the empty string. The Microsoft documentation
+      seems to indicate that when an item is going to expand, the action may be expanded partial and when the action is
+      collapsed, it may be collapsed and reset. If expanded partial is detected, the <emphasis role="italic">extra</emphasis>
+      argument will be <emphasis role="italic">PARTIAL</emphasis>. If collapse and reset is detected, the <emphasis
+      role="italic">extra</emphasis> argument will be <emphasis role="italic">RESET</emphasis>. However, in testing, neither
+      of these 2 actions were ever detected and the Microsoft documentation is unclear here. It may be that the <emphasis
+      role="italic">extra</emphasis> argument will always be the empty string.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    If the programmer used the <emphasis role="italic">willReply</emphasis> argument with a true value, the event handler
+    must return true or false. Returning true, allows the expansion or collapse to happen. Returning false prevents the
+    expansion or collapse. If the <emphasis role="italic">willReply</emphasis> argument was false or omitted, the interpreter
+    does not wait for the reply. The event handler can return any value, or not return a value at all. Good practice would be
+    to always return a value from an event handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example allows the expansion or collapse to continue and simply prints out what is about to happen:
+
+<programlisting>
+<![CDATA[
+
+::method onExpanding unguarded
+  use arg id, item, what, extra
+  say "Item with handle" item "is going to be" what
+
+  return .true
+
+  /*
+    Possible output:
+
+    Item with handle 0x00000000001AD680 is going to be EXPANDED
+  */
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Expanding Event Handler -->
+
 
 <section id="evtTreeViewGETINFOTIP"><title>GetInfoTip Event Handler</title>
 <indexterm><primary>TreeView Event</primary><secondary>GETINFOTIP</secondary></indexterm>
@@ -8193,7 +8697,7 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments:
+    The event handling method receives 5 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -8266,6 +8770,85 @@ trackbar position by extracting the high-oder word. Example:
 </variablelist>
 
 </section>  <!-- End GetInfoTip Event Handler -->
+
+
+<section id="evtTreeViewKEYDOWN" xreflabel="KEYDOWN"><title>KeyDown Event Handler</title>
+<indexterm><primary>TreeView Event</primary><secondary>KEYDOWN</secondary></indexterm>
+<para>
+  The event handler for the key down event is invoked when the user types a key within the tree-view control. The event
+  handler is similar to the event handler for the <link linkend="evtTreeViewKEYDOWNEX">KEYDOWNEX</link> event, it is invoked
+  for the same event. However, when the KEYDOWN keyword is use, the event handler receives fewer arguments than when the
+  KEYDWONEX key word is used.
+</para>
+<para>
+  The programmer need not return a value from the event handler and the interpreter does not wait for this return. However,
+  good practice would be to always return a value from an event handler.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onKeyDown unguarded
+  use arg id, vKey
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method receives xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the tree-view control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>vKey</term>
+    <listitem>
+    <para>
+      The virtual key code of the key typed.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The interpreter does not wait for the the return from the event handler, so no return is required. Good practice would be
+    to always return a value from an event handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <xref linkend="clsVK"/> class can be used to determine which virtual key was pressed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example simply displays on the screen the key typed by the user:
+
+<programlisting>
+<![CDATA[
+
+::method onKeyDown unguarded
+  use arg id, vkey
+  say "Key" .VK~name2key(vkey) "was pressed."
+
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End KeyDown Event Handler -->
 
 
 <section id="evtTreeViewKEYDOWNEX" xreflabel="KEYDOWNEX"><title>KeyDown (extended) Event Handler</title>
@@ -8418,8 +9001,8 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    When the <emphasis role="italic">willReply</emphasis> argument to the <link linkend="mthConnectTreeViewEvent"></link>
-    method is true, the event handler must return a value.
+    When the <emphasis role="italic">willReply</emphasis> argument to the <link
+    linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link> method is true, the event handler must return a value.
   </para>
   <para>
     If the key pressed was a character key, the character is used as part of an incremental search. The event handler returns
@@ -8534,10 +9117,8 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Common <xref linkend="paraGuidelinesWhereToConnect"/> invoke the <emphasis
-    role="italic">connectUpDownEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link> to
-    code event handlers are included in the documentation for the
-    <xref linkend="clsEventNotification"/> class.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
