@@ -328,6 +328,10 @@
 <entry>Retrieves the current image list for the image list type specified.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetItem"/></entry>
+<entry>Returns a <link linkend="clsLvItem">LvItem</link> object for the item specified.</entry>
+</row>
+<row>
 <entry><xref linkend="mthGetItemDataClsListView"/></entry>
 <entry>Retrieves the user data associated with the specified list-view item.</entry>
 </row>
@@ -338,6 +342,10 @@
 <row>
 <entry><xref linkend="mthGetItemPos"/></entry>
 <entry>Retrieves the client area coordinates of an item in a list-view control as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetToolTipsClsListview"/></entry>
+<entry>Retrieves the child <link linkend="clsToolTip">ToolTip</link> control used by this list-view.</entry>
 </row>
 <row>
 <entry><xref linkend="mthHasCheckBoxes"/></entry>
@@ -1080,9 +1088,23 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows part of an initDialog() method.  The private method createRows() returns an array of
+    <computeroutput>LvFullRow</computeroutput> objects, which are then used to populoate the list-view:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose list
+
+  list = self~newListView(IDC_LV_EMPLOYEES)
+
+  ...
+
+  rows = self~createRows
+  do r over rows
+    list~addFullRow(r)
+  end
+
 
 ]]>
 </programlisting>
@@ -2685,7 +2707,8 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 <indexterm><primary>ListView class</primary><secondary>getFullRow</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getFullRow(--itemIndex--)--------------------><
+>>--getFullRow(--itemIndex--+-----------------+--)--------------><
+                            +-,-useForSorting-+
 ]]>
 </programlisting>
 
@@ -2696,13 +2719,22 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The singel argument is:
+    The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>itemIndex</term>
+      <varlistentry><term>itemIndex [required]</term>
       <listitem>
       <para>
         The index of the list-view item to get the full row for.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>sortable [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">sortable</emphasis> argument must be true or false. If true, the ooDialog framework sets
+        up some internal housekeeping that allows internal sorting of list-view items. If <emphasis
+        role="italic">sortable</emphasis> is false, this internal housekeeping is skipped. The default if <emphasis
+        role="italic">sortable</emphasis> is omitted is false. See the remarks section for more details.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2711,7 +2743,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <listitem>
   <para>
     On success, returns a <computeroutput>LvFullRow</computeroutput> object whose attributes are the attributes of the
-    list-view item specified. On error the <computeroutput>.nil</computeroutput> object is returne.
+    list-view item specified. On error the <computeroutput>.nil</computeroutput> object is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -2721,6 +2753,18 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     that item. It is common to think of a row when the list-view is in report view. However, once the subitems are added to a
     list-view item, they exist even when the view of the list-view is changed to one of the other views, like icon, or small
     icon.
+  </para>
+  <para>
+    The <xref linkend="mthSortItems"/> method is used to do custom sorting of list-view items. The sorting is dependent on
+    the user data <link linkend="mthSetItemDataClsListView">item</link> being set for each list-view item. In addition, the
+    <emphasis role="italic">sortItems</emphasis> method can be used to signal the ooDialog framework to use native internal
+    code for the sorting. For the internal sort to work, the user data item must be a
+    <computeroutput>LvFullRow</computeroutput> object. The returned object from <emphasis role="italic">getFullRow</emphasis>
+    can be set as the user data item to allow the interanl sorting. When invoking <emphasis
+    role="italic">setItemData</emphasis> with a <computeroutput>LvFullRow</computeroutput> object as the argument, the
+    internal house keeping that the ooDialog framework needs to do for internal sorts is done automatically. However, if the
+    returned full row object is instead used to insert or add a new item into the list-view, this internal house keeping may
+    be bypassed. For this case, the <emphasis role="italic">sortable</emphasis> argument should be used and set to true.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2732,9 +2776,40 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example loops through all the items in a list-view, gets a full row for each item, and uses the full row as the user
+    item data. Once this is done, the list-view items can be sorted using ooDialog's internal method. <emphasis
+    role="bold">Note</emphasis> that the <emphasis role="italic">sortable</emphasis> argument is not used here. Invoking
+    <emphasis role="italic">setItemData</emphasis> using the full row object is sufficient:
 <programlisting>
 <![CDATA[
+
+  list = self~newListView(IDC_LV_CONTACTS)
+
+  do i = 1 to list~items
+    j = i - 1
+    row = list~getFullRow(j)
+    list~setItemData(j, row)
+  end
+
+]]>
+</programlisting>
+  </para>
+  <para>
+    This example is similar to the first example, however in addition to setting the item data, the full row object is used
+    to insert a new item into the list-view. <emphasis role="bold">Note</emphasis> that the <emphasis
+    role="italic">sortable</emphasis> argument is used here. Once the loop finishes, the entire list can be sorted using the
+    ooDialog internal sort.
+<programlisting>
+<![CDATA[
+
+  list = self~newListView(IDC_LV_CONTACTS)
+
+  do i = 1 to list~items
+    j = i - 1
+    row = list~getFullRow(j, .true)
+    list~setItemData(j, row)
+    list~addFullRow(row)
+  end
 
 ]]>
 </programlisting>
@@ -2745,38 +2820,42 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 
 <section id="mthGetHoverTime" xreflabel="getHoverTime"><title>getHoverTime</title>
 <indexterm><primary>getHoverTime</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>getFullRow</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~GetHoverTime-----------------------------------><
-
+>>--getHoverTime---------------------------------><
 ]]>
 </programlisting>
 
-<para>This method retrieves the current hover time.  The hover time is expressed
-as milliseconds.  The hover time only affects list-view controls that have the
-track select, one click activate, or two click activate extended list-view
-styles. See the
-<xref linkend="mthAddExtendedStyle"/> for a description of these
-styles.
+<para>
+  This method retrieves the current hover time.  The hover time is expressed as milliseconds.  The hover time only affects
+  list-view controls that have the track select, one click activate, or two click activate extended list-view
+  styles. See the <xref linkend="mthAddExtendedStyle"/> method for a description of these styles.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method takes no arguments
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The hover time.  A value of -1 indicates the hover time is the
-system default hover time.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example comes from a program where the one click
-activate and track select styles are enabled.  Originally the hover time is set
-to .4 seconds.  However the application allows the users to increase or decrease
-this time to match their preference.  A menu item (or a button could be used) is
-connected to the <computeroutput>onIncrement</computeroutput> and
-<computeroutput>onDecrement</computeroutput> methods.  When either of the
-methods is invoked, the current hover time is examined and then either
-incremented or decremented by .1 of a second.
-<programlisting> <![CDATA[
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The hover time for the list-view. A value of -1 indicates the hover time is the system default hover time.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example comes from a program where the one click activate and track select styles are enabled. Originally
+    the hover time is set to .4 seconds. However the application allows the users to increase or decrease this time to match
+    their preference. A menu item (or a button could be used) is connected to the
+    <computeroutput>onIncrement</computeroutput> and <computeroutput>onDecrement</computeroutput> methods. When either of
+    the methods is invoked, the current hover time is examined and then either incremented or decremented by .1 of a second.
+
+<programlisting>
+<![CDATA[
 
 ::method initDilaog
   expose list
@@ -2801,9 +2880,11 @@ incremented or decremented by .1 of a second.
 
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+
+</section>  <!-- End ListView::getHoverTime() -->
 
 <section id="mthGetImageListClsListView" xreflabel="getImageList"><title>getImageList</title>
 <indexterm><primary>getImageList</primary>
@@ -2894,6 +2975,49 @@ incremented or decremented by .1 of a second.
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ListControl::getImageList() -->
+
+<section id="mthGetItem" xreflabel="getItem"><title>getItem</title>
+<indexterm><primary>getItem</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>getItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItem(--itemIndex--)-----------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns a <link linkend="clsLvItem">LvItem</link> object for the item specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>itemIndex [required]</term>
+      <listitem>
+      <para>
+        Specifies which list-view item to get.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, returns a <computeroutput>LvItem</computeroutput> object whose attributes represent the attributes of the
+    list-view item. On error, the <computeroutput>.nil</computeroutput> object is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::getItem() -->
 
 <section id="mthGetItemDataClsListView" xreflabel="getItemData"><title>getItemData</title>
 <indexterm><primary>getItemData</primary><secondary>ListView class</secondary></indexterm>
@@ -3209,6 +3333,108 @@ incremented or decremented by .1 of a second.
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ListView::getItemPos() -->
+
+<section id="mthGetSubitemClsListView" xreflabel="getSubitem"><title>getSubitem</title>
+<indexterm><primary>getSubitem</primary><secondary>ListView class</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>getSubitem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getSubitem(--itemIndex--,--subitemIndex--)---><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the specified subitem as a <link linkend="clsLvSubItem">LvSubItem</link> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>itemIndex [required]</term>
+      <listitem>
+      <para>
+        Specifies the item index whose subitem is to be retrieved.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>subitemIndex</term>
+      <listitem>
+      <para>
+        Specifies the index of the subitem.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, returns a <computeroutput>LvItem</computeroutput> object whose attributes represent the attributes of the
+    list-view item. On error, the <computeroutput>.nil</computeroutput> object is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::getSubitem() -->
+
+
+<section id="mthGetToolTipsClsListview" xreflabel="getToolTips"><title>getToolTips</title>
+<indexterm><primary>getToolTips</primary><secondary>ListView class</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>getToolTips</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getToolTips----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the child <link linkend="clsToolTip">ToolTip</link> control used by this list-view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the child Rexx tool-tip object, or the <computeroutput>.nil</computeroutput> object if the list-view does not
+    have a child tool tip control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::getToolTips() -->
 
 
 <section id="mthHasCheckBoxes" xreflabel="hasCheckBoxes"><title>hasCheckBoxes</title>
@@ -5885,9 +6111,14 @@ second the row is automatically selected.
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
     list-view items. The data value can be any ooRexx object. The data value can be retrieved without removing it from a
-    list-view item through the <xref linkend="mthGetItemDataClsListView"/> method, or it can be removed through
+    list-view item through the <xref linkend="mthGetItemDataClsListView"/> method, or it can be retrieved and removed through
     the <xref linkend="mthRemoveItemDataClsListView"/>. Storing a user value for each item can be useful in any
     number of ways. One specific use is in the <xref linkend="mthSortItems"/> method.
+  </para>
+  <para>
+    For the <emphasis role="italic">sortItems</emphasis> method to work, every list-view item must have the user data item
+    set. When <emphasis role="italic">sortItems</emphasis> is invoked to use the internal ooDialog framework to do the
+    sorting, the user data item must be a <xref linkend="clsLvFullRow"/> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -6941,8 +7172,8 @@ that allows the user to remove the check mark from all the check boxes:
   </para>
   <para>
     This feature is really only of use if the full row object is used to add or insert an item into the list-view. If the
-    full row object is not to be used to add an item to the list-view, then the last argument of true or false should not be
-    used.
+    full row object is not to be used to add an item to the list-view, then there is no reason to use the last argument of
+    true or false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
