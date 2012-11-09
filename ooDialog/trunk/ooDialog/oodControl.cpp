@@ -2393,7 +2393,7 @@ RexxMethod1(RexxObjectPtr, generic_getToolTips, CSELF, pCSelf)
         goto done_out;
     }
 
-    result = createControlFromHwnd(context, pcdc, hTT, ctrlType, false);
+    result = createControlFromHwnd(context, pcdc, hTT, winToolTip, false);
     protectControlObject(context, pcdc, result);
 
 done_out:
@@ -2429,7 +2429,7 @@ RexxMethod2(RexxObjectPtr, generic_setToolTips, RexxObjectPtr, toolTip, CSELF, p
     HWND         hOldTT   = NULL;
 
     // Rather than put the tool tip object in the dialog bag, we put it in this
-    // tree-view's bag.
+    // control's bag, list-view or tree-view.
     pCDialogControl pcdcTT = controlToCSelf(context, toolTip);
     protectControlObject(context, pcdc, toolTip);
 

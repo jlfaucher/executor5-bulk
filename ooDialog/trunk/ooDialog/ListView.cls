@@ -321,6 +321,8 @@
 ::attribute indent set external "LIBRARY oodialog lvi_setIndent"
 ::attribute index get external "LIBRARY oodialog lvi_index"
 ::attribute index set external "LIBRARY oodialog lvi_setIndex"
+::attribute itemData get external "LIBRARY oodialog lvi_itemData"
+::attribute itemData set external "LIBRARY oodialog lvi_setItemData"
 ::attribute itemState get external "LIBRARY oodialog lvi_itemState"
 ::attribute itemState set external "LIBRARY oodialog lvi_setItemState"
 ::attribute itemStateMask get external "LIBRARY oodialog lvi_itemStateMask"
@@ -333,8 +335,6 @@
 ::attribute stateImageIndex set external "LIBRARY oodialog lvi_setStateImageIndex"
 ::attribute text get external "LIBRARY oodialog lvi_text"
 ::attribute text set external "LIBRARY oodialog lvi_setText"
-::attribute userData get external "LIBRARY oodialog lvi_userData"
-::attribute userData set external "LIBRARY oodialog lvi_setUserData"
 
 
 ::class 'LvSubItem' public                                                             -- Do not document for 4.2.0

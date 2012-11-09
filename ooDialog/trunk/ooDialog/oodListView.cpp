@@ -1799,6 +1799,11 @@ RexxMethod2(RexxObjectPtr, lv_getExtendedStyle, NAME, method, CSELF, pCSelf)
  *
  *  Returns a LvFullRow object for the specified item in this list view.
  *
+ *  @param  itemIndex      [required] The index of the item to get the full row
+ *                         for.
+ *
+ *  @param  useForSorting  [optional]  If the full row is going to be used for
+ *                         internal sorting, this must be set to true.
  *
  *  @remarks  We first check to see if a LvFullRow object is the stored user
  *            data for the list-view item.  If it is, we just return that.  When
@@ -1811,14 +1816,14 @@ RexxMethod2(RexxObjectPtr, lv_getExtendedStyle, NAME, method, CSELF, pCSelf)
  *            updateFullRowItemState() to be sure and get the current state.
  *
  *            If there is no LvFullRow object as the user data, the most likely
- *            case, we create the objec here.  We do that by creating Rexx
+ *            case, we create the object here.  We do that by creating Rexx
  *            objects for the item and for any subitems we can detect.
  *            Detecting the subitems is dependent on the coulumn count.  Testing
  *            has shown that once the column is inserted, getColumnCount()
  *            returns the correct number, even if the list-view is not in report
  *            view.
  */
-RexxMethod2(RexxObjectPtr, lv_getFullRow, uint32_t, itemIndex, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, lv_getFullRow, uint32_t, itemIndex, OPTIONAL_logical_t, useForSorting, CSELF, pCSelf)
 {
     HWND hList  = getDChCtrl(pCSelf);
 
@@ -1876,8 +1881,13 @@ RexxMethod2(RexxObjectPtr, lv_getFullRow, uint32_t, itemIndex, CSELF, pCSelf)
     pclvfr->subItems[0]   = lvi;
     pclvfr->rxSubItems[0] = rxItem;
 
+    if ( useForSorting )
+    {
+        pclvfr->subItems[0]->lParam = (LPARAM)pclvfr;
+    }
+
     // Create LvSubItem objects for each column and add them to the struct.
-    for ( size_t i = 1; i <= cCols; i++ )
+    for ( size_t i = 1; i < cCols; i++ )
     {
         RexxObjectPtr rxSubitem = newLvSubitem(context, hList, itemIndex, (uint32_t)i);
 
@@ -1886,7 +1896,7 @@ RexxMethod2(RexxObjectPtr, lv_getFullRow, uint32_t, itemIndex, CSELF, pCSelf)
             goto err_out;
         }
 
-        lvi = (LPLVITEM)context->ObjectToCSelf(rxItem);
+        lvi = (LPLVITEM)context->ObjectToCSelf(rxSubitem);
 
         pclvfr->subItems[i]   = lvi;
         pclvfr->rxSubItems[i] = rxSubitem;
@@ -1946,11 +1956,6 @@ RexxMethod2(RexxObjectPtr, lv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
  *
  *  Returns a LvItem object for the item specified.
  *
- *  @remarks  The ListView_GetItem macro will not fail, even if the subitem
- *            index is greater than any existing subitem.  Text is the empty
- *            string.  Plus, there is no reason that the user could not have
- *            added subitems, but the list-view is not in report view.  So, we
- *            don't check subitemIndex with getColumnCount()
  */
 RexxMethod2(RexxObjectPtr, lv_getItem, uint32_t, itemIndex, CSELF, pCSelf)
 {
@@ -2760,8 +2765,6 @@ RexxMethod2(logical_t, lv_modifyItem, RexxObjectPtr, lvItem, CSELF, pCSelf)
     {
         goto err_out;
     }
-
-    printf("New lv item mask=0x%08x state=0x%08x stateMask=0x%08x\n", lvi->mask, lvi->state, lvi->stateMask);
 
     if ( lParamIsModified )
     {
@@ -4108,13 +4111,13 @@ RexxMethod2(RexxObjectPtr, lvi_setText, CSTRING, text, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvItem::userData               [attribute]
+/** LvItem::itemData               [attribute]
  */
-RexxMethod1(RexxObjectPtr, lvi_userData, CSELF, pLVI)
+RexxMethod1(RexxObjectPtr, lvi_itemData, CSELF, pLVI)
 {
     return getLviUserData((LPLVITEM)pLVI);
 }
-RexxMethod2(RexxObjectPtr, lvi_setUserData, RexxObjectPtr, userData, CSELF, pLVI)
+RexxMethod2(RexxObjectPtr, lvi_setItemData, RexxObjectPtr, userData, CSELF, pLVI)
 {
     return setLviUserData(context, (LPLVITEM)pLVI, userData);
 }

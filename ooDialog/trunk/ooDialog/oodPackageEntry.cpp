@@ -1077,11 +1077,11 @@ REXX_METHOD_PROTOTYPE(lvi_setMask             );
 REXX_METHOD_PROTOTYPE(lvi_overlayImageIndex   );
 REXX_METHOD_PROTOTYPE(lvi_setOverlayImageIndex);
 REXX_METHOD_PROTOTYPE(lvi_stateImageIndex     );
+REXX_METHOD_PROTOTYPE(lvi_itemData            );
+REXX_METHOD_PROTOTYPE(lvi_setItemData         );
 REXX_METHOD_PROTOTYPE(lvi_setStateImageIndex  );
 REXX_METHOD_PROTOTYPE(lvi_text                );
 REXX_METHOD_PROTOTYPE(lvi_setText             );
-REXX_METHOD_PROTOTYPE(lvi_userData            );
-REXX_METHOD_PROTOTYPE(lvi_setUserData         );
 
 // LvSubItem
 REXX_METHOD_PROTOTYPE(lvsi_init           );
@@ -2050,6 +2050,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lvi_setIndent,                  lvi_setIndent),
     REXX_METHOD(lvi_index,                      lvi_index),
     REXX_METHOD(lvi_setIndex,                   lvi_setIndex),
+    REXX_METHOD(lvi_itemData,                   lvi_itemData),
+    REXX_METHOD(lvi_setItemData,                lvi_setItemData),
     REXX_METHOD(lvi_itemState,                  lvi_itemState),
     REXX_METHOD(lvi_setItemState,               lvi_setItemState),
     REXX_METHOD(lvi_itemStateMask,              lvi_itemStateMask),
@@ -2062,8 +2064,6 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lvi_setStateImageIndex,         lvi_setStateImageIndex),
     REXX_METHOD(lvi_text,                       lvi_text),
     REXX_METHOD(lvi_setText,                    lvi_setText),
-    REXX_METHOD(lvi_userData,                   lvi_userData),
-    REXX_METHOD(lvi_setUserData,                lvi_setUserData),
 
     // LvSubItem
     REXX_METHOD(lvsi_init,                      lvsi_init),

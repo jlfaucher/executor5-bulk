@@ -458,8 +458,8 @@ LRESULT CALLBACK RelayEventSubclassProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
                 GetWindowRect(hwndToolTip, &rc);
                 printf("Current rect left=%d top=%d old lParam=%d hwndToolTip=%p\n", rc.left, rc.top, lp, hwndToolTip);
 
-                rc.left -= 35;
-                rc.top  -= 35;
+                rc.left += 35;
+                rc.top  += 35;
                 SetWindowPos(hwndToolTip,
                  NULL,
                  rc.left, rc.top,
@@ -470,14 +470,21 @@ LRESULT CALLBACK RelayEventSubclassProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
 
             case TTN_GETDISPINFOW :
             {
-                LPNMTTDISPINFO nmtdi = (LPNMTTDISPINFO)lParam;
+                NMTTDISPINFO *nmtdi = (NMTTDISPINFO *)lParam;
                 printf("GetDispInfo szText=%s lpszText=%s\n",
                        nmtdi->szText ? nmtdi->szText : "null",
                        nmtdi->lpszText ? nmtdi->lpszText : "null");
-                //nmtdi->lpszText = (LPSTR)ansi2unicode("Test of me");
+
+                RexxThreadContext *c = pData->pcpbd->dlgProcContext;
+
+                RexxObjectPtr rxReply = c->SendMessage0(pData->pcpbd->rexxSelf, "onGetDispInfo");
+                CSTRING newText = c->ObjectToStringValue(rxReply);
+
+
+                nmtdi->lpszText = (LPSTR)ansi2unicode(newText);
                 //nmtdi->lpszText = (LPSTR)L"Test of me";
                 //putUnicodeText((LPWORD)nmtdi->szText, "Test of me");
-                strcpy(nmtdi->szText, "Test of me");
+                //strcpy(nmtdi->szText, "Test of me");
             }   return TRUE;
 
             default :
