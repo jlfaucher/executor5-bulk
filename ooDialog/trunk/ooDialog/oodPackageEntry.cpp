@@ -1114,24 +1114,27 @@ REXX_METHOD_PROTOTYPE(tt_addToolRect);
 REXX_METHOD_PROTOTYPE(tt_adjustRect);
 REXX_METHOD_PROTOTYPE(tt_delTool);
 REXX_METHOD_PROTOTYPE(tt_enumTools);
-REXX_METHOD_PROTOTYPE(tt_getCurrentToolInfo);
+REXX_METHOD_PROTOTYPE(tt_getBubbleSize);
+REXX_METHOD_PROTOTYPE(tt_getCurrentTool);
+REXX_METHOD_PROTOTYPE(tt_getMargin);
 REXX_METHOD_PROTOTYPE(tt_getToolCount);
 REXX_METHOD_PROTOTYPE(tt_getToolInfo);
+REXX_METHOD_PROTOTYPE(tt_hasCurrentTool);
+REXX_METHOD_PROTOTYPE(tt_manageAtypicalTool);
+REXX_METHOD_PROTOTYPE(tt_pop);
 REXX_METHOD_PROTOTYPE(tt_popUp);
 REXX_METHOD_PROTOTYPE(tt_setMaxTipWidth);
 REXX_METHOD_PROTOTYPE(tt_trackActivate);
 REXX_METHOD_PROTOTYPE(tt_trackPosition);
-REXX_METHOD_PROTOTYPE(tt_useRelayEvent);
 
 // ToolInfo
-REXX_METHOD_PROTOTYPE(ti_fromID_cls);
-REXX_METHOD_PROTOTYPE(ti_fromIdEx_cls);
+REXX_METHOD_PROTOTYPE(ti_forID_cls);
 REXX_METHOD_PROTOTYPE(ti_init);
 REXX_METHOD_PROTOTYPE(ti_unInit);
 REXX_METHOD_PROTOTYPE(ti_flags);
 REXX_METHOD_PROTOTYPE(ti_setFlags);
-REXX_METHOD_PROTOTYPE(ti_hwndObj);
-REXX_METHOD_PROTOTYPE(ti_idObj);
+REXX_METHOD_PROTOTYPE(ti_rexxHwnd);
+REXX_METHOD_PROTOTYPE(ti_rexxID);
 REXX_METHOD_PROTOTYPE(ti_rect);
 REXX_METHOD_PROTOTYPE(ti_setRect);
 REXX_METHOD_PROTOTYPE(ti_resource);
@@ -2096,27 +2099,30 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tt_adjustRect,                  tt_adjustRect),
     REXX_METHOD(tt_delTool,                     tt_delTool),
     REXX_METHOD(tt_enumTools,                   tt_enumTools),
-    REXX_METHOD(tt_getCurrentToolInfo,          tt_getCurrentToolInfo),
+    REXX_METHOD(tt_getBubbleSize,               tt_getBubbleSize),
+    REXX_METHOD(tt_getCurrentTool,              tt_getCurrentTool),
+    REXX_METHOD(tt_getMargin,                   tt_getMargin),
     REXX_METHOD(tt_getToolCount,                tt_getToolCount),
     REXX_METHOD(tt_getToolInfo,                 tt_getToolInfo),
+    REXX_METHOD(tt_hasCurrentTool,              tt_hasCurrentTool),
+    REXX_METHOD(tt_manageAtypicalTool,          tt_manageAtypicalTool),
+    REXX_METHOD(tt_pop,                         tt_pop),
     REXX_METHOD(tt_popUp,                       tt_popUp),
     REXX_METHOD(tt_setMaxTipWidth,              tt_setMaxTipWidth),
     REXX_METHOD(tt_trackActivate,               tt_trackActivate),
     REXX_METHOD(tt_trackPosition,               tt_trackPosition),
-    REXX_METHOD(tt_useRelayEvent,               tt_useRelayEvent),
 
     // ToolInfo
-    REXX_METHOD(ti_fromID_cls,                  ti_fromID_cls),
-    REXX_METHOD(ti_fromIdEx_cls,                ti_fromIdEx_cls),
+    REXX_METHOD(ti_forID_cls,                   ti_forID_cls),
     REXX_METHOD(ti_init,                        ti_init),
     REXX_METHOD(ti_unInit,                      ti_unInit),
     REXX_METHOD(ti_flags,                       ti_flags),
     REXX_METHOD(ti_setFlags,                    ti_setFlags),
-    REXX_METHOD(ti_hwndObj,                     ti_hwndObj),
-    REXX_METHOD(ti_idObj,                       ti_idObj),
     REXX_METHOD(ti_rect,                        ti_rect),
     REXX_METHOD(ti_setRect,                     ti_setRect),
     REXX_METHOD(ti_resource,                    ti_resource),
+    REXX_METHOD(ti_rexxHwnd,                    ti_rexxHwnd),
+    REXX_METHOD(ti_rexxID,                      ti_rexxID),
     REXX_METHOD(ti_text,                        ti_text),
     REXX_METHOD(ti_setText,                     ti_setText),
     REXX_METHOD(ti_userData,                    ti_userData),

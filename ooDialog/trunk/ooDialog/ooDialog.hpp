@@ -74,7 +74,7 @@
 #define DEF_MAX_DT_ENTRIES          100
 #define DEF_MAX_CT_ENTRIES          100
 #define DEF_MAX_IT_ENTRIES           20
-#define DEF_MAX_TTT_ENTRIES          3
+#define DEF_MAX_TTT_ENTRIES          20
 #define DEF_MAX_NOTIFY_MSGS         100
 #define DEF_MAX_COMMAND_MSGS        100
 #define DEF_MAX_MISC_MSGS            50
