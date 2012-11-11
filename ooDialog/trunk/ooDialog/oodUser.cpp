@@ -720,19 +720,28 @@ uint32_t treeViewStyle(CSTRING opts, uint32_t style)
 {
     if ( StrStrI(opts,"ALL") != NULL )
     {
-        style |=  TVS_HASLINES | WS_VSCROLL | WS_HSCROLL | TVS_EDITLABELS | TVS_HASBUTTONS |
-                  TVS_LINESATROOT | TVS_SHOWSELALWAYS;
+        style |=  TVS_EDITLABELS    | TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT |
+                  TVS_SHOWSELALWAYS |  WS_VSCROLL    | WS_HSCROLL;
     }
 
-    if ( StrStrI(opts, "LINES"        ) != NULL ) style |= TVS_HASLINES;
-    if ( StrStrI(opts, "VSCROLL"      ) != NULL ) style |= WS_VSCROLL;
-    if ( StrStrI(opts, "HSCROLL"      ) != NULL ) style |= WS_HSCROLL;
-    if ( StrStrI(opts, "EDIT"         ) != NULL ) style |= TVS_EDITLABELS;
-    if ( StrStrI(opts, "BUTTONS"      ) != NULL ) style |= TVS_HASBUTTONS;
     if ( StrStrI(opts, "ATROOT"       ) != NULL ) style |= TVS_LINESATROOT;
-    if ( StrStrI(opts, "SHOWSELALWAYS") != NULL ) style |= TVS_SHOWSELALWAYS;
-    if ( StrStrI(opts, "NODRAG"       ) != NULL ) style |= TVS_DISABLEDRAGDROP;
+    if ( StrStrI(opts, "BUTTONS"      ) != NULL ) style |= TVS_HASBUTTONS;
+    if ( StrStrI(opts, "CHECKBOXES"   ) != NULL ) style |= TVS_CHECKBOXES;
+    if ( StrStrI(opts, "EDIT"         ) != NULL ) style |= TVS_EDITLABELS;
+    if ( StrStrI(opts, "FULLROWSELECT") != NULL ) style |= TVS_FULLROWSELECT;
+    if ( StrStrI(opts, "HSCROLL"      ) != NULL ) style |= WS_HSCROLL;
     if ( StrStrI(opts, "INFOTIP"      ) != NULL ) style |= TVS_INFOTIP;
+    if ( StrStrI(opts, "LINES"        ) != NULL ) style |= TVS_HASLINES;
+    if ( StrStrI(opts, "NODRAG"       ) != NULL ) style |= TVS_DISABLEDRAGDROP;
+    if ( StrStrI(opts, "NOHSCROLL"    ) != NULL ) style |= TVS_NOHSCROLL;
+    if ( StrStrI(opts, "NONEVENHEIGHT") != NULL ) style |= TVS_NONEVENHEIGHT;
+    if ( StrStrI(opts, "NOSCROLL"     ) != NULL ) style |= TVS_NOSCROLL;
+    if ( StrStrI(opts, "NOTOOLTIPS"   ) != NULL ) style |= TVS_NOTOOLTIPS;
+    if ( StrStrI(opts, "RTLREADING"   ) != NULL ) style |= TVS_RTLREADING;
+    if ( StrStrI(opts, "SHOWSELALWAYS") != NULL ) style |= TVS_SHOWSELALWAYS;
+    if ( StrStrI(opts, "SINGLEEXPAND" ) != NULL ) style |= TVS_SINGLEEXPAND;
+    if ( StrStrI(opts, "TRACKSELECT"  ) != NULL ) style |= TVS_TRACKSELECT;
+    if ( StrStrI(opts, "VSCROLL"      ) != NULL ) style |= WS_VSCROLL;
     return style;
 }
 
