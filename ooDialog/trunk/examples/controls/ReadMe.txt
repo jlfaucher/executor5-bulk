@@ -43,22 +43,16 @@
   This directory contains example programs that demonstrate how to use the
   various dialog control objects in ooDialog.  It is intended that,
   eventually there will be an example of all the control objects.  The
-  programs are intended to cover most of the methods of the control objects.
+  programs are intended to several of the methods of the control objects.
   This will probably cause them to be medium complex.
 
-    - upDown.rex
 
-    Demonstrates how to use the UpDown class.  An up down control is a pair
-    of arrow buttons that the user can click to increment or decrement a
-    value, such as a scroll position or a number displayed in a companion
-    control.
+    - customDrawListView.rex
 
-    - paidHolidays.rex
-
-    Shows how to use a MonthCalendar control, including responding to the
-    GETDAYSTATE event.  Also shows how to: restrict the time span shown in
-    the calendar, resize the calendar to the optimal size, and determine
-    which months are currently displayed.
+    Shows how to use a list-view with emphasis on custom draw.  Custom draw
+    with a list-view allows you set the text color, background color, and
+    font for individuals list-view items.  And when the list-view is in
+    report view, this can be done for individual subitems of each row.
 
     - fiscalReports.rex
 
@@ -67,6 +61,27 @@
     DateTimePicker control and how to respond to the FORMATQUERY, FORMAT,
     and KEYDOWN notifications.
 
+    - paidHolidays.rex
+
+    Shows how to use a MonthCalendar control, including responding to the
+    GETDAYSTATE event.  Also shows how to: restrict the time span shown in
+    the calendar, resize the calendar to the optimal size, and determine
+    which months are currently displayed.
+
+    - toolTip.rex
+
+    Shows how to use a ToolTip control, including responding to the SHOW
+    event to position the ToolTip where desired.  Also shows how to:
+    enumerate the tools contained in the ToolTip, add a tool simply to the
+    ToolTip, add a tool as a rectangular area, create a multiline ToolTip,
+    and create a balloon ToolTip
+
+    - upDown.rex
+
+    Demonstrates how to use the UpDown class.  An up down control is a pair
+    of arrow buttons that the user can click to increment or decrement a
+    value, such as a scroll position or a number displayed in a companion
+    control.
 
     - userStringDTP.rex
 
@@ -78,10 +93,3 @@
     control.  The program can then provide a custom response when the user
     has finished typing.
 
-
-    - customDrawListView.rex
-
-    Shows how to use a list-view with emphasis on custom draw.  Custom draw
-    with a list-view allows you set the text color, background color, and
-    font for individuals list-view items.  And when the list-view is in
-    report view, this can be done for individual subitems of each row.
