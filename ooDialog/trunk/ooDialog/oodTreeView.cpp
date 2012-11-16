@@ -686,6 +686,125 @@ RexxMethod2(RexxObjectPtr, tv_getItemData, CSTRING, _hItem, CSELF, pCSelf)
 }
 
 
+/** TreeView::getItemHeight()
+ *
+ *  Returns the current height of the tree-view items
+ *  if there is no user data associated.
+ *
+ *  @return  Returns the current height of the tree-view items in pixels.
+ *
+ *  @remarks  The tree-view uses the value returned for the height of all items.
+ *            The value itself is the height of a single item.  See the
+ *            TreeView::setItemHeight() method.
+ */
+RexxMethod1(int32_t, tv_getItemHeight, CSELF, pCSelf)
+{
+    HWND hwnd  = getDChCtrl(pCSelf);
+    return TreeView_GetItemHeight(hwnd);
+}
+
+
+/** TreeView::getItemRect()
+ *
+ *  Retrieves the bounding rectangle for a tree-view item and indicates whether
+ *  the item is visible.
+ *
+ *  @param  hItem  [required]  The handle of the item whose bounding rectangle
+ *                 is to be retrieved.
+ *
+ *  @param  rect   [required in / out]  A .Rect object used to return the
+ *                 bounding rectangle co-ordinates.  Co-ordinates are client
+ *                 co-ordinaates.
+ *
+ *  @param  textOnly  [optional]  If textOnly is true, the bounding rectangle
+ *                    returned is for the text portion only of the item.  If
+ *                    false, the rectangle includes the entire line the item
+ *                    occupies in the tree-view control.  If the argument is
+ *                    omitted, the default is true.
+ *
+ *  @return  Returns true if the item specified is visible and the bounding
+ *           rectangle is filled in.  Returns false if the item is not visible
+ *           and the bounding rectangle is not filled in.
+ *
+ *  @remarks  The co-ordinates of the bounding rectangle are only filled in if
+ *            the item is visible.
+ */
+RexxMethod4(logical_t, tv_getItemRect, CSTRING, _hItem, RexxObjectPtr, _rect, OPTIONAL_logical_t, textOnly, CSELF, pCSelf)
+{
+    if ( ! context->IsOfType(_rect, "RECT") )
+    {
+        wrongClassException(context->threadContext, 2, "Rect", _rect);
+        return FALSE;
+    }
+
+    if ( argumentOmitted(3) )
+    {
+        textOnly = TRUE;
+    }
+
+    HWND      hwnd  = getDChCtrl(pCSelf);
+    HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
+    PRECT     rect  = (PRECT)context->ObjectToCSelf(_rect);
+
+    return TreeView_GetItemRect(hwnd, hItem, rect, textOnly);
+}
+
+
+/** TreeView::getItemPartRect()
+ *
+ *  Retrieves the largest possible bounding rectangle that constitutes the "hit
+ *  zone" for a specified part of a tree-view item.
+ *
+ *  @param  hItem  [required]  The handle of the item whose bounding rectangle
+ *                 is to be retrieved.
+ *
+ *  @param  rect   [required in / out]  A .Rect object used to return the
+ *                 bounding rectangle co-ordinates.  Co-ordinates are client
+ *                 co-ordinates
+ *
+ *  @param  part   [optional]  A keyword specifying which part of the item the
+ *                 bounding rectangle is to be returned for.  Currently the
+ *                 operating system only supplies one part ID, the button ID.
+ *                 Because of this, the "part" argument is simply ignored and
+ *                 the button ID is used.
+ *
+ *
+ *  @return  Returns true on success, otherwise false.
+ *
+ *  @notes   Requires Windows Vista or later.
+ *
+ *           The largest possible bounding rectangle is such that for every
+ *           (x,y) co-ordinate within the rectangle, a click by the user at that
+ *           co-ordinate would constitute a hit on that part of the item.  Note
+ *           that the only part is the button part.
+ *
+ *  @remarks  This does not work due to a bug in the Windows SDK.  Leaving the
+ *            code here in case the bug is fixed.  If this is added back in,
+ *            then tv_getItemPartRect will need to be added back to
+ *            oodPackageEntry.cpp and TreeView.cls.
+ */
+#if 0
+RexxMethod4(logical_t, tv_getItemPartRect, CSTRING, _hItem, RexxObjectPtr, _rect, OPTIONAL_CSTRING, part, CSELF, pCSelf)
+{
+    if ( ! context->IsOfType(_rect, "RECT") )
+    {
+        wrongClassException(context->threadContext, 2, "Rect", _rect);
+        return FALSE;
+    }
+
+    if ( requiredOS(context, "getItemPartRect", "Vista", Vista_OS) )
+    {
+        HWND      hwnd  = getDChCtrl(pCSelf);
+        HTREEITEM hItem = (HTREEITEM)string2pointer(_hItem);
+        PRECT     rect  = (PRECT)context->ObjectToCSelf(_rect);
+
+        return TreeView_GetItemPartRect(hwnd, hItem, rect, TVGIPR_BUTTON);
+    }
+    return FALSE;
+}
+#endif
+
+
 RexxMethod2(RexxObjectPtr, tv_getSpecificItem, NAME, method, CSELF, pCSelf)
 {
     HWND hwnd = getDChCtrl(pCSelf);
@@ -1168,6 +1287,29 @@ RexxMethod3(RexxObjectPtr, tv_setItemData, CSTRING, _hItem, OPTIONAL_RexxObjectP
     }
 
     return oldUserData;
+}
+
+
+/** TreeView::setItemHeight()
+ *
+ *  Sets the height of the tree-view items.
+ *
+ *  @param   cyItem  [required]  The neew height for every item in the tree
+ *                   view, in pixels.  Heights less than 1 will be set to 1. If
+ *                   this argument is not even, it will be rounded down to the
+ *                   nearest even value. If this argument is -1, the control
+ *                   will revert to using its default item height.
+ *
+ *  @return  Returns the previous height of the tree-view items in pixels.
+ *
+ *  @remarks  The tree-view uses the value for the height of all items. The
+ *            value itself is the height of a single item.  See the
+ *            TreeView::getItemHeight() method.
+ */
+RexxMethod2(int32_t, tv_setItemHeight, int32_t, cyItem, CSELF, pCSelf)
+{
+    HWND hwnd  = getDChCtrl(pCSelf);
+    return TreeView_SetItemHeight(hwnd, cyItem);
 }
 
 
