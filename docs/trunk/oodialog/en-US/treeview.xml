@@ -184,6 +184,14 @@
 <entry>Gets the user data associated with the specified tree-view item.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetItemHeight"/></entry>
+<entry>Gets the height the tree-view control used for each of items items.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetItemRect"/></entry>
+<entry>Retrieves the bounding rectangle for a tree-view item and indicates whether the item is visible.</entry>
+</row>
+<row>
 <entry><xref linkend="mthItemTextClsTreeView"/></entry>
 <entry>Gets the text, the label, of the specified tree-view item.</entry>
 </row>
@@ -274,6 +282,10 @@
 <row>
 <entry><xref linkend="mthSetItemDataClsTreeView"/></entry>
 <entry>Sets the user data associated with the specified tree-view item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetItemHeight"/></entry>
+<entry>Sets the height of the tree-view items.</entry>
 </row>
 <row>
 <entry>SortChildren</entry>
@@ -1199,6 +1211,137 @@ item in the client window of a tree-view control.</para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TreeView::getItemData() -->
+
+<section id="mthGetItemHeight" xreflabel="getItemHeight"><title>getItemHeight</title>
+<indexterm><primary>getItemHeight</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>getItemHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemHeight---------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the current height of the tree-view items.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the current height of the tree-view items in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view uses the value returned for the height of all items. The value itself is the height of a single item.  See
+    the <link linkend="mthSetItemHeight">setItemHeight</link> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getItemHeight() -->
+
+<section id="mthGetItemRect" xreflabel="getItemRect"><title>getItemRect</title>
+<indexterm><primary>getItemRect</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>getItemRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemRect(--hItem--,--rect--+-------------+--)------------><
+                                  +-,-textOnly--+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the bounding rectangle for a tree-view item and indicates whether the item is visible.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>hItem [required]</term>
+      <listitem>
+      <para>
+        The tree-view item to retrieve the bounding rectangle for.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rect [required in / out]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsRect">Rect</link> object used to return the bounding rectangle coordinates. Coordinates are in
+        pixels expressed as <link linkend="defClientArea">client</link> area coordinates.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>textOnly [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">textOnly</emphasis> is true, the bounding rectangle returned is for the text portion only
+        of the item.  If false, the rectangle includes the entire line the item occupies in the tree-view control.  If the
+        argument is omitted, the default is true.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the item specified is visible and the bounding rectangle is filled in. Returns false if the item is not
+    visible and the bounding rectangle is not filled in.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The coordinates of the bounding rectangle are only filled in if the item is visible.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the event handler for a tool tip used for a tree-view. When the tool tip is about to be shown, the
+    bounding rectangle for the text only portion of the item is used to reposition the tool tip so that it is in line with
+    the item and to the right of the item:
+<programlisting>
+<![CDATA[
+
+::method onShow unguarded
+  expose currentItem
+  use arg toolTip, treeView
+
+  pos = toolTip~getRealPos
+
+  r = .Rect~new
+  if treeView~getItemRect(currentItem, r) then do
+    treeView~client2screen(r)
+
+    pos~x = r~right + 5
+    pos~y = r~top
+    toolTip~moveTo(pos)
+    return .true
+  end
+
+  return .false
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getItemRect() -->
 
 
 <section id="hittest"><title>HitTest</title>
@@ -2767,6 +2910,73 @@ item.</para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TreeView::setItemData() -->
+
+
+<section id="mthSetItemHeight" xreflabel="setItemHeight"><title>setItemHeight</title>
+<indexterm><primary>setItemHeight</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>setItemHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setItemHeight(--cyItem--)--------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the height of the tree-view items.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+    <variablelist>
+      <varlistentry><term>cyItem [required]</term>
+      <listitem>
+      <para>
+        The new height for every item in the tree view, in pixels. Heights less than 1 will be set to 1. If this argument is
+        not even, it will be rounded down to the nearest even value. If this argument is -1, the control will
+        revert to using its default item height.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous item height, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view uses the value for the height of all items. The value itself is the height of a single item.  See the <link
+    linkend="mthGetItemHeight">getItemHeight</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the height of each tree-view item to 20 pixels.  (For this specific application the previouse height
+    was 16 pixels.)
+<programlisting>
+<![CDATA[
+
+  tv = self~newTreeView(IDC_TREE)
+  tv~setItemHeight(20)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::setItemHeight() -->
 
 
 <section id="sortchildren"><title>SortChildren</title>

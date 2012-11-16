@@ -48,22 +48,31 @@
 <chapter id="clsToolTip"><title>ToolTip Controls</title>
 <indexterm><primary>ToolTip class</primary></indexterm>
 <para>
-  xx
+  Tooltip controls are pop-up windows that display text. Typically the text describes a <emphasis
+  role="italic">tool</emphasis>. A <emphasis role="italic">tool</emphasis> is either a window or an application define area
+  within a window. Conceptually, a ToolTip is a dialog control that contains tools. A ToolTip with no added tool will never
+  display text. In ooDialog, the tools added to a ToolTip are usually other dialog controls.
 </para>
 <para>
-  xx
+  ToolTips are hidden most of the time. They appear automatically, or pop up, when the user pauses the mouse pointer over a
+  tool. The ToolTip appears near the pointer and disappears when the user clicks a mouse button or moves the pointer away
+  from the tool.
 </para>
 <para>
-  xx
+  ToolTip controls can display single or multiple lines of text. They can have square or rounded corners. They might or might
+  not have a stem that points to the tools like a cartoon balloon. ToolTip text can be stationary or can move with the mouse
+  pointer, called tracking. Stationary text can be displayed adjacent to a tool or it can be displayed over a tool, which is
+  referred to as in-place. Standard ToolTips are stationary, display a single line of text, have square corners, and have no
+  stem pointing to the tool.
 </para>
 <para>
-  The <computeroutput>ToolTip</computeroutput> class provides methods to work with and manipulate the underlying
-  Windows tool tip dialog control which it represents. It is a concrete subclass of the dialog control <link
+  The <computeroutput>ToolTip</computeroutput> class provides methods to work with and manipulate the underlying Windows
+  ToolTip dialog control which it represents. It is a concrete subclass of the dialog control <link
   linkend="chpDialogControlObject">object</link> and therefore has all methods of the of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
-  needed, or are useful, when working with tool tip controls:
+  needed, or are useful, when working with ToolTip controls:
 <variablelist>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
@@ -75,8 +84,8 @@
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    Unlike most other types of dialog controls, a tool tip can not be added to a dialog <link
-    linkend="ovvDialogTemplate">template</link>. Tool tips are created dynamically during the <link
+    Unlike most other types of dialog controls, a ToolTip can not be added to a dialog <link
+    linkend="ovvDialogTemplate">template</link>. ToolTips are created dynamically during the <link
     linkend="tmthNewToolTip">newToolTip</link> method. Therefore there is no equivalent <emphasis
     role="italic">createToolTip</emphasis> method in the <link linkend="clsUserDialog">UserDialog</link> class.
   </para>
@@ -84,8 +93,8 @@
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying tool tip control to a method
-    in the Rexx dialog object use the <link linkend="mthConnectToolTipEvent">connectToolTipEvent</link> method.
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying ToolTip control to a method in
+    the Rexx dialog object use the <link linkend="mthConnectToolTipEvent">connectToolTipEvent</link> method.
   </para>
   </listitem></varlistentry>
 </variablelist> </para>
