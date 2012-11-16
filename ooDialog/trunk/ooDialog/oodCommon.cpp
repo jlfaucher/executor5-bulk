@@ -545,9 +545,6 @@ void customDrawMismatchException(RexxThreadContext *c, uint32_t id, oodControl_t
  * @param os type
  *
  * @return True if the requirement is meet, otherwise false.
- *
- * @remarks Note the switch of the odering of the arguments for this
- *          requiredComCtl32Version() and the one directly above.
  */
 bool requiredOS(RexxMethodContext *context, const char *method, const char *osName, os_name_t os)
 {

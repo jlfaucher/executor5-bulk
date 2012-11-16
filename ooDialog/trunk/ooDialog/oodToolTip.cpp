@@ -807,7 +807,7 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
                         c->ReleaseLocalReference(args);
                         SendMessage(pred->hToolTip, TTM_ACTIVATE, 0, 0);
 
-                        stringTooLongException(c, 1, MAX_TOOLINFO_TEXT_LENGTH, len);
+                        stringTooLongException(c, 1, MAX_TOOLINFO_TEXT_LENGTH + 1, len);
                         checkForCondition(c, false);
                         endDialogPremature(pData->pcpbd, pData->pcpbd->hDlg, RexxConditionRaised);
                         return FALSE;

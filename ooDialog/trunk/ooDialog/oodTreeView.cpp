@@ -688,8 +688,7 @@ RexxMethod2(RexxObjectPtr, tv_getItemData, CSTRING, _hItem, CSELF, pCSelf)
 
 /** TreeView::getItemHeight()
  *
- *  Returns the current height of the tree-view items
- *  if there is no user data associated.
+ *  Returns the current height of the tree-view items.
  *
  *  @return  Returns the current height of the tree-view items in pixels.
  *
@@ -714,7 +713,7 @@ RexxMethod1(int32_t, tv_getItemHeight, CSELF, pCSelf)
  *
  *  @param  rect   [required in / out]  A .Rect object used to return the
  *                 bounding rectangle co-ordinates.  Co-ordinates are client
- *                 co-ordinaates.
+ *                 co-ordinates.
  *
  *  @param  textOnly  [optional]  If textOnly is true, the bounding rectangle
  *                    returned is for the text portion only of the item.  If
@@ -1294,9 +1293,9 @@ RexxMethod3(RexxObjectPtr, tv_setItemData, CSTRING, _hItem, OPTIONAL_RexxObjectP
  *
  *  Sets the height of the tree-view items.
  *
- *  @param   cyItem  [required]  The neew height for every item in the tree
- *                   view, in pixels.  Heights less than 1 will be set to 1. If
- *                   this argument is not even, it will be rounded down to the
+ *  @param   cyItem  [required]  The new height for every item in the tree view,
+ *                   in pixels.  Heights less than 1 will be set to 1. If this
+ *                   argument is not even, it will be rounded down to the
  *                   nearest even value. If this argument is -1, the control
  *                   will revert to using its default item height.
  *
