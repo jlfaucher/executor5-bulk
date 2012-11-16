@@ -1532,9 +1532,7 @@ static void getItemIndexFromHitPoint(LPNMITEMACTIVATE pIA, HWND hwnd)
 
 inline RexxObjectPtr getToolTipFromLParam(LPARAM lParam)
 {
-
     return (RexxObjectPtr)getWindowPtr(((NMHDR *)lParam)->hwndFrom, GWLP_USERDATA);
-
 }
 
 /**
@@ -2274,6 +2272,16 @@ MsgReplyType processTCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  *
  *           However, for the TTN_LINKCLICK notification, this value is always
  *           0.  (Seems to be always 0, and this sort of matches MSDN.)
+ *
+ *           The TTN_NEEDTEXT notification presents a problem.  For strings
+ *           longer than 80 characters, MSDN says you need to point the lpszText
+ *           array to your own private buffer when the text used in the ToolTip
+ *           exceeds 80 TCHARS in length.  If we alloc the memory, when do we
+ *           free it?  Currently, we use a static buffer in the tool tip table
+ *           entry.  We are assuming that only 1 tool tip text can display at
+ *           any one time.  When we get TTN_NEEDTEXT, we copy the text returned
+ *           from the user into this static buffer.  Then we do not need to
+ *           worry about allocing and freeing the memory.
  */
 MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, WPARAM wParam, LPARAM lParam,
                         pCPlainBaseDialog pcpbd)
@@ -2311,15 +2319,6 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             RexxDirectoryObject info = c->NewDirectory();
 
-            nmtdi->lpszText = (LPSTR)LocalAlloc(LPTR, MAX_TOOLINFO_TEXT_LENGTH + 1);
-            if ( nmtdi->lpszText == NULL )
-            {
-                outOfMemoryException(c);
-                checkForCondition(c, false);
-                endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
-                break;
-            }
-
             c->DirectoryPut(info, c->NullString(), "TEXT");
 
             RexxObjectPtr    userData = nmtdi->lParam == NULL ? TheNilObj : (RexxObjectPtr)nmtdi->lParam;
@@ -2330,28 +2329,33 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
             rexxReply = requiredBooleanReply(c, pcpbd, rexxReply, methodName, false);
-            if ( rexxReply != NULLOBJECT )
+            if ( rexxReply == NULLOBJECT )
             {
-                RexxObjectPtr _text = c->DirectoryAt(info, "TEXT");
-                CSTRING       text  = c->ObjectToStringValue(_text);
-
-                size_t len = strlen(text);
-                if ( len > MAX_TOOLINFO_TEXT_LENGTH )
-                {
-                    stringTooLongException(c, 1, MAX_TOOLINFO_TEXT_LENGTH, len);
-                    checkForCondition(c, false);
-                    endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
-                    break;
-                }
-
-                strcpy(nmtdi->lpszText, text);
-
-                if ( rexxReply == TheTrueObj )
-                {
-                    nmtdi->uFlags |= TTF_DI_SETITEM;
-                }
-                c->ReleaseLocalReference(_text);
+                return ReplyFalse;
             }
+
+            RexxObjectPtr _text = c->DirectoryAt(info, "TEXT");
+            CSTRING       text  = c->ObjectToStringValue(_text);
+            size_t        len   = strlen(text);
+
+            if ( len > MAX_TOOLINFO_TEXT_LENGTH )
+            {
+                stringTooLongException(c, 1, MAX_TOOLINFO_TEXT_LENGTH, len);
+                checkForCondition(c, false);
+                endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+                return ReplyFalse;
+            }
+
+            pCDialogControl pcdc = controlToCSelf(c, rxToolTip);
+            strcpy(pcdc->toolTipEntry->textBuf, text);
+
+            nmtdi->lpszText = pcdc->toolTipEntry->textBuf;
+
+            if ( rexxReply == TheTrueObj )
+            {
+                nmtdi->uFlags |= TTF_DI_SETITEM;
+            }
+            c->ReleaseLocalReference(_text);
 
             c->ReleaseLocalReference(flags);
             c->ReleaseLocalReference(info);
@@ -2386,6 +2390,10 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
             rexxReply = requiredBooleanReply(c, pcpbd, rexxReply, methodName, false);
+            if ( rexxReply == NULLOBJECT )
+            {
+                return ReplyFalse;
+            }
             if ( rexxReply == TheTrueObj )
             {
                 setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TRUE);

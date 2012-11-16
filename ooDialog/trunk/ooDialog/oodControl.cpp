@@ -808,6 +808,8 @@ static inline bool isExtendedKeyEvent(WPARAM wParam)
  */
 void freeSubclassData(pSubClassData p)
 {
+    EnterCriticalSection(&crit_sec);
+
     if ( p != NULL )
     {
         if ( p->pData != NULL && p->pfn != NULL )
@@ -823,7 +825,7 @@ void freeSubclassData(pSubClassData p)
             safeLocalFree(p->msgs[i].rexxMethod);
         }
 
-        LocalFree(p->msgs);
+        safeLocalFree(p->msgs);
         p->msgs = NULL;
         p->mSize = 0;
         p->mNextIndex = 0;
@@ -834,6 +836,8 @@ void freeSubclassData(pSubClassData p)
 
         LocalFree(p);
     }
+
+    LeaveCriticalSection(&crit_sec);
 }
 
 /**
@@ -1154,9 +1158,9 @@ LRESULT CALLBACK ControlSubclassProc(HWND hwnd, uint32_t msg, WPARAM wParam, LPA
     if ( msg == WM_NCDESTROY )
     {
         /* The window is being destroyed, remove the subclass, clean up memory.
-         * Note that with the current ooDialog architecture, this message never
-         * gets here.  Freeing the subclass data struct has to be done in the
-         * dialog control uninit().
+         * Note that with the current ooDialog architecture, this message
+         * *usually* never gets here.  Freeing the subclass data struct has to
+         * be done in the dialog control uninit().
          */
         RemoveWindowSubclass(hwnd, ControlSubclassProc, pData->id);
         freeSubclassData(pData);
@@ -1597,6 +1601,15 @@ done_out:
  *            structures in any subclass window procedure.  Instead the pointer
  *            to the struct is placed in the dialog control CSelf and freed here
  *            in uninit().
+ *
+ *            However, when the dialog is terminated abruptly due to conditions
+ *            being raised, we often do get the WM_NCDESTROY message in the
+ *            subclass.  Because of this, we can have the control uninit running
+ *            while the subclass data structure(s) are being freed in the
+ *            subclass procedure.  We need to prevent this uninit() and the
+ *            various subclass data frees in the subclass window procedures from
+ *            running at the same time.  Note that the keypress subclassing does
+ *            not use
  */
 RexxMethod1(RexxObjectPtr, dlgctrl_unInit, CSELF, pCSelf)
 {
@@ -1609,17 +1622,26 @@ RexxMethod1(RexxObjectPtr, dlgctrl_unInit, CSELF, pCSelf)
         pCDialogControl pcdc = (pCDialogControl)pCSelf;
 
 #if 0
-    printf("In dlgctrl_unInit() hCtrl=%p pscd=%p rexxSelf=%p\n", pcdc->hCtrl, pcdc->pscd, pcdc->rexxSelf);
+    printf("In dlgctrl_unInit() hCtrl=%p pscd=%p pRelayEvent=%p rexxSelf=%p\n",
+           pcdc->hCtrl, pcdc->pscd, pcdc->pRelayEvent, pcdc->rexxSelf);
 #endif
+
+        if ( pcdc->pKeyPress != NULL )
+        {
+            freeKeyPressData((pSubClassData)pcdc->pKeyPress);
+        }
+
+        EnterCriticalSection(&crit_sec);
         if ( pcdc->pscd != NULL )
         {
             freeSubclassData((pSubClassData)pcdc->pscd);
         }
 
-        if ( pcdc->pKeyPress != NULL )
+        if ( pcdc->pRelayEvent != NULL )
         {
-            freeKeyPressData((pSubClassData)pcdc->pscd);
+            freeRelayData((pSubClassData)pcdc->pRelayEvent);
         }
+        LeaveCriticalSection(&crit_sec);
 
         if ( pcdc->pcrs != NULL )
         {

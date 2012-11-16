@@ -1,7 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -53,19 +52,29 @@
 ::method enumTools unguarded external "LIBRARY oodialog tt_enumTools"
 ::method getBubbleSize unguarded external "LIBRARY oodialog tt_getBubbleSize"
 ::method getCurrentToolInfo unguarded external "LIBRARY oodialog tt_getCurrentTool"
+::method getDelayTime unguarded external "LIBRARY oodialog tt_getDelayTime"
 ::method getMargin unguarded external "LIBRARY oodialog tt_getMargin"
+::method getMaxTipWidth unguarded external "LIBRARY oodialog tt_getMaxTipWidth"
+::method getText unguarded external "LIBRARY oodialog tt_getText"
+::method getTipBkColor unguarded external "LIBRARY oodialog tt_getTipBkColor"
+::method getTipTextColor unguarded external "LIBRARY oodialog tt_getTipTextColor"
+::method getTitle unguarded external "LIBRARY oodialog tt_getTitle"
 ::method getToolCount unguarded external "LIBRARY oodialog tt_getToolCount"
 ::method getToolInfo unguarded external "LIBRARY oodialog tt_getToolInfo"
 ::method hasCurrentTool unguarded external "LIBRARY oodialog tt_hasCurrentTool"
+::method hitTest unguarded external "LIBRARY oodialog tt_hitTest"
 ::method manageAtypicalTool unguarded external "LIBRARY oodialog tt_manageAtypicalTool"
+::method newToolRect unguarded external "LIBRARY oodialog tt_newToolRect"
 ::method pop unguarded external "LIBRARY oodialog tt_pop"
 ::method popUp unguarded external "LIBRARY oodialog tt_popUp"
 ::method setMaxTipWidth unguarded external "LIBRARY oodialog tt_setMaxTipWidth"
+::method setTitle unguarded external "LIBRARY oodialog tt_setTitle"
 ::method trackActivate unguarded external "LIBRARY oodialog tt_trackActivate"
 ::method trackPosition unguarded external "LIBRARY oodialog tt_trackPosition"
 
 
 ::class 'ToolInfo' public
+::method forHitTest class external "LIBRARY oodialog ti_forHitTest_cls"
 ::method forID class external "LIBRARY oodialog ti_forID_cls"
 
 ::method init external "LIBRARY oodialog ti_init"
@@ -84,5 +93,5 @@
 ::attribute userData set external "LIBRARY oodialog ti_setUserData"
 
 ::attribute textMemoryIsAllocated set external "LIBRARY oodialog ti_setTextMemoryIsAllocated"  -- Internal use only.
-
+::method hitTestHelper external "LIBRARY oodialog ti_hitTestHelper"                            -- Internal use only.
 

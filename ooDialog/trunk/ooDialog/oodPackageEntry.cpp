@@ -1116,18 +1116,28 @@ REXX_METHOD_PROTOTYPE(tt_delTool);
 REXX_METHOD_PROTOTYPE(tt_enumTools);
 REXX_METHOD_PROTOTYPE(tt_getBubbleSize);
 REXX_METHOD_PROTOTYPE(tt_getCurrentTool);
+REXX_METHOD_PROTOTYPE(tt_getDelayTime);
 REXX_METHOD_PROTOTYPE(tt_getMargin);
+REXX_METHOD_PROTOTYPE(tt_getMaxTipWidth);
+REXX_METHOD_PROTOTYPE(tt_getText);
+REXX_METHOD_PROTOTYPE(tt_getTipBkColor);
+REXX_METHOD_PROTOTYPE(tt_getTipTextColor);
+REXX_METHOD_PROTOTYPE(tt_getTitle);
 REXX_METHOD_PROTOTYPE(tt_getToolCount);
 REXX_METHOD_PROTOTYPE(tt_getToolInfo);
 REXX_METHOD_PROTOTYPE(tt_hasCurrentTool);
+REXX_METHOD_PROTOTYPE(tt_hitTest);
 REXX_METHOD_PROTOTYPE(tt_manageAtypicalTool);
+REXX_METHOD_PROTOTYPE(tt_newToolRect);
 REXX_METHOD_PROTOTYPE(tt_pop);
 REXX_METHOD_PROTOTYPE(tt_popUp);
 REXX_METHOD_PROTOTYPE(tt_setMaxTipWidth);
+REXX_METHOD_PROTOTYPE(tt_setTitle);
 REXX_METHOD_PROTOTYPE(tt_trackActivate);
 REXX_METHOD_PROTOTYPE(tt_trackPosition);
 
 // ToolInfo
+REXX_METHOD_PROTOTYPE(ti_forHitTest_cls);
 REXX_METHOD_PROTOTYPE(ti_forID_cls);
 REXX_METHOD_PROTOTYPE(ti_init);
 REXX_METHOD_PROTOTYPE(ti_unInit);
@@ -1144,6 +1154,7 @@ REXX_METHOD_PROTOTYPE(ti_userData);
 REXX_METHOD_PROTOTYPE(ti_setUserData);
 
 REXX_METHOD_PROTOTYPE(ti_setTextMemoryIsAllocated);
+REXX_METHOD_PROTOTYPE(ti_hitTestHelper);
 
 // TreeView
 REXX_METHOD_PROTOTYPE(tv_delete);
@@ -2100,19 +2111,29 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tt_delTool,                     tt_delTool),
     REXX_METHOD(tt_enumTools,                   tt_enumTools),
     REXX_METHOD(tt_getBubbleSize,               tt_getBubbleSize),
+    REXX_METHOD(tt_getDelayTime,                tt_getDelayTime),
     REXX_METHOD(tt_getCurrentTool,              tt_getCurrentTool),
     REXX_METHOD(tt_getMargin,                   tt_getMargin),
+    REXX_METHOD(tt_getMaxTipWidth,              tt_getMaxTipWidth),
+    REXX_METHOD(tt_getText,                     tt_getText),
+    REXX_METHOD(tt_getTipBkColor,               tt_getTipBkColor),
+    REXX_METHOD(tt_getTipTextColor,             tt_getTipTextColor),
+    REXX_METHOD(tt_getTitle,                    tt_getTitle),
     REXX_METHOD(tt_getToolCount,                tt_getToolCount),
     REXX_METHOD(tt_getToolInfo,                 tt_getToolInfo),
     REXX_METHOD(tt_hasCurrentTool,              tt_hasCurrentTool),
+    REXX_METHOD(tt_hitTest,                     tt_hitTest),
     REXX_METHOD(tt_manageAtypicalTool,          tt_manageAtypicalTool),
+    REXX_METHOD(tt_newToolRect,                 tt_newToolRect),
     REXX_METHOD(tt_pop,                         tt_pop),
     REXX_METHOD(tt_popUp,                       tt_popUp),
     REXX_METHOD(tt_setMaxTipWidth,              tt_setMaxTipWidth),
+    REXX_METHOD(tt_setTitle,                    tt_setTitle),
     REXX_METHOD(tt_trackActivate,               tt_trackActivate),
     REXX_METHOD(tt_trackPosition,               tt_trackPosition),
 
     // ToolInfo
+    REXX_METHOD(ti_forHitTest_cls,              ti_forHitTest_cls),
     REXX_METHOD(ti_forID_cls,                   ti_forID_cls),
     REXX_METHOD(ti_init,                        ti_init),
     REXX_METHOD(ti_unInit,                      ti_unInit),
@@ -2129,6 +2150,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(ti_setUserData,                 ti_setUserData),
 
     REXX_METHOD(ti_setTextMemoryIsAllocated,    ti_setTextMemoryIsAllocated),
+    REXX_METHOD(ti_hitTestHelper,               ti_hitTestHelper),
 
     // TreeView
     REXX_METHOD(tv_delete,                      tv_delete),

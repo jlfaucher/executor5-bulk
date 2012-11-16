@@ -380,7 +380,14 @@ typedef struct {
     char     *fileName;
 } ICONTABLEENTRY;
 
+
+// We need to define this here instead of in oodCommon.hpp with the other tool
+// tip stuff.
+#define MAX_TOOLINFO_TEXT_LENGTH    1023
+
 typedef struct {
+    char           textBuf[MAX_TOOLINFO_TEXT_LENGTH + 1];
+    LPWSTR         wcharBuf;
     RexxObjectPtr  rexxSelf;
     HWND           hToolTip;
     uint32_t       id;
@@ -725,10 +732,11 @@ typedef struct _dcCSelf {
     pCWindowBase        wndBase;
     void               *pscd;            // Pointer to general subclass data struct, usually null.
     void               *pKeyPress;       // Pointer to KeyPress subclass data struct, usually null.
+    void               *pRelayEvent;     // Pointer to relay event (tool tips) subclass data struct, usually null.
     void               *mouseCSelf;      // Mouse CSelf struct
     pCRexxSort          pcrs;            // Pointer to Rexx sort struct used for sorting list view items, usually null.
     RexxObjectPtr       rexxMouse;       // Rexx mouse object if there is one.
-
+    PTOOLTIPTABLEENTRY  toolTipEntry;    // The tool tip table entry for this dialog control, if this control is a tool tip.
     // A Rexx bag to put Rexx objects in, used to prevent gc.
     RexxObjectPtr       rexxBag;         // A bag is used, meaning the same item can be put in multiple times.
     int32_t             lastItem;        // Index of the last item added to the control
@@ -753,20 +761,29 @@ typedef struct _subClassData {
 } SubClassData;
 typedef SubClassData *pSubClassData;
 
+// ToolTip relay event stuff:
+#define RE_COUNT_RELAYEVENTS        5
+#define RE_RELAYEVENT_IDX           0
+#define RE_NEEDTEXT_IDX             1
+#define RE_SHOW_IDX                 2
+#define RE_POP_IDX                  3
+#define RE_LINKCLICK_IDX            4
 
 // A specific structure used for subclassing controls to use with the tool tip
-// relay event.
+// relay event.  This structure is allocate and then set as the pData member of
+// the generic SubClassData structure.  The generic SubClassData struct is set
+// as the pRelayEvent in the CDialgControl struct.
+// A function ... TODO finish comment
 typedef struct _relayEventData {
-    pCPlainBaseDialog   pcpbd;           // The Rexx owner dialog CSelf
-    pCDialogControl     pcdc;            // The Rexx control dialog CSelf
-    HWND                hCtrl;           // Window handle of subclassed control.
-    HWND                hToolTip;        // Window handle of tool tip
-    RexxObjectPtr       rxToolTip;
-    char               *method;          // Rexx method to invoke
-    uint32_t            id;              // Resource ID of subclassed control.
+    HWND             hToolTip;        // Window handle of tool tip
+    RexxObjectPtr    rxToolTip;       // Rexx tool tip object.
+    // Rexx methods to invoke, 1 for each possible event.
+    char            *methods[RE_COUNT_RELAYEVENTS];
+    bool             doEvent[RE_COUNT_RELAYEVENTS];
 } RelayEventData;
 typedef RelayEventData *pRelayEventData;
 
+extern void freeRelayData(pSubClassData pSCData);
 
 /* Struct for the DynamicDialog object CSelf. */
 typedef struct _ddCSelf {

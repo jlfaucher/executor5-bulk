@@ -86,7 +86,17 @@ typedef map<string, int, less<string> > String2Int;
 #define OOD_DATATABLE_FULL          1
 
 // Tool tip stuff
-#define MAX_TOOLINFO_TEXT_LENGTH  1023
+#define MAX_TOOLTITLE_TEXT_LENGTH   99
+#define TT_CCH_TOOLTITLE_BUF        MAX_TOOLTITLE_TEXT_LENGTH + 1
+#define TT_MAX_ICON_KEYWORD         TTI_ERROR_LARGE
+#define TT_VALID_ICON_VALUES        "an icon Image object, or keyword: None, Error, ErrorLarge, Info, InfoLarge, Warning, or WarningLarge"
+
+// The context variable names used by the ToolInfo object to keep track of
+// things.
+#define TOOLINFO_MEMALLOCATED_VAR     "TEXT_MEMORY_IS_ALLOCATED"
+#define TOOLINFO_HWND_OBJECT_VAR      "HWND_SUPPLYING_OBJECT"
+#define TOOLINFO_UID_OBJECT_VAR       "UID_SUPPLYING_OBJECT"
+
 extern uint32_t         keyword2ttdiFlags(CSTRING flags);
 extern RexxStringObject ttdiFlags2keyword(RexxThreadContext *c, uint32_t flags);
 
