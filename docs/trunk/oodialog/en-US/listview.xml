@@ -528,6 +528,10 @@
 <entry>Changes the text of an item, or the text of a subitem, of a list-view item.</entry>
 </row>
 <row>
+<entry><xref linkend="mthSetToolTipsClsListView"/></entry>
+<entry>Sets the child <link linkend="clsToolTip">ToolTip</link> control used by this tree-view.</entry>
+</row>
+<row>
 <entry><xref linkend="mthSmalSpacing"/></entry>
 <entry>Determines the spacing between items in a list-view control when it has the  small-icon style.</entry>
 </row>
@@ -3406,31 +3410,8 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the child Rexx tool-tip object, or the <computeroutput>.nil</computeroutput> object if the list-view does not
-    have a child tool tip control.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns the child Rexx <computeroutput>ToolTip</computeroutput> object, or the <computeroutput>.nil</computeroutput>
+    object if the list-view does not have a child tool tip control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -6355,6 +6336,52 @@ and on the system colors used for a selection.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="mthSetToolTipsClsListView" xreflabel="setToolTips"><title>setToolTips</title>
+<indexterm><primary>setToolTips</primary><secondary>ListView class</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>setToolTips</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setToolTips(--toolTip--)---------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the child <link linkend="clsToolTip">ToolTip</link> control used by this list-view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>toolTip [required]</term>
+      <listitem>
+      <para>
+        The Rexx <computeroutput>ToolTip</computeroutput> object that represents the tool tip control the list-view should
+        use.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous tool tip, as a Rexx <computeroutput>ToolTip</computeroutput> object, or the
+    <computeroutput>.nil</computeroutput> object if there is no previous tool tip.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::setToolTips() -->
+
 
 <section id="mthSmalSpacing" xreflabel="smallSpacing"><title>smallSpacing</title>
 <indexterm><primary>smallSpacing</primary></indexterm>
