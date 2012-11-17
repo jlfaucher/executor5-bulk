@@ -2377,7 +2377,7 @@ RexxMethod2(RexxObjectPtr, dlgctrl_putInBag, RexxObjectPtr, object, CSELF, pCSel
  *  TreeView::getToolTips()
  *
  *
- *  Retrieves the child ToolTip control used by this litst-view or tree-view.
+ *  Retrieves the child ToolTip control used by this list-view or tree-view.
  *
  *  @param  None.
  *

@@ -143,11 +143,11 @@
    else return .false
 
 ::method itemInfo unguarded external "LIBRARY oodialog tv_itemInfo"
-::method itemText unguarded external "LIBRARY oodialog tv_itemText"
 ::method items unguarded
    use strict arg
    return self~sendWinIntMsg(self~TVM_GETCOUNT, 0, 0)
 
+::method itemText unguarded external "LIBRARY oodialog tv_itemText"
 ::method makeFirstVisible unguarded external "LIBRARY oodialog tv_selectItem"
 ::method modify unguarded external "LIBRARY oodialog tv_modify"
 ::method moveItem unguarded
