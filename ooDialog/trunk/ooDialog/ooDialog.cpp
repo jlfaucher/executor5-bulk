@@ -996,7 +996,7 @@ static bool getHwndBehind(RexxMethodContext *c, RexxObjectPtr _hwndBehind, HWND 
         {
             size_t len = strlen(str);
 
-            if ( (len == 0 || len == 2) || (len == 1 && *str != '0') || toupper(str[1]) != 'X' )
+            if ( (len == 0 || len == 2) || (len == 1 && *str != '0') || (len > 2 && toupper(str[1]) != 'X') )
             {
                 wrongArgValueException(c->threadContext, 1, "BOTTOM, NOTTOPMOST, TOP, TOPMOST, or a valid window handle", str);
                 return false;
