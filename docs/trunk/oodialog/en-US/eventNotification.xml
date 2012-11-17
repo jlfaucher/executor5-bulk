@@ -7800,12 +7800,13 @@ trackbar position by extracting the high-oder word. Example:
       </simplelist>
     </para>
       <variablelist>
-        <varlistentry><term>BEGINDRAG</term>
+        <varlistentry id="kywTreeViewBEGINDRAG" xreflabel="BEGINDRAG"><term>BEGINDRAG</term>
         <listitem>
         <para>
           A drag-and-drop operation using the left mouse button was initiated. The documentation for the
-          <xref linkend="mthDefTreeDragHandler"/>() method contains further information on how to
-          implement a drag-and-drop handler.
+          <xref linkend="mthDefTreeDragHandler"/>() method contains further information on how to implement a drag-and-drop
+          handler. Not that if the tree-view control is give the <xref linkend="styTreeViewNODRAG"/> style, the BEGINDRAG
+          notification is not sent.
         </para>
         </listitem></varlistentry>
         <varlistentry id="kywTreeViewBEGINEDIT" xreflabel="BEGINEDIT"><term>BEGINEDIT</term>

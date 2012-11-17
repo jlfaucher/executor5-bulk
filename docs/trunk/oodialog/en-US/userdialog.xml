@@ -10641,37 +10641,50 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
       <simplelist type='vert' columns='3'>
         <member>ATROOT       </member>
         <member>BUTTONS      </member>
-        <member>LINES        </member>
+        <member>CHECKBOXES   </member>
         <member>EDIT         </member>
+        <member>FULLROWSELECT</member>
         <member>HSCROLL      </member>
-        <member>VSCROLL      </member>
-        <member>SHOWSELALWAYS</member>
         <member>INFOTIP      </member>
-        <member>ALL          </member>
+        <member>LINES        </member>
         <member>NODRAG       </member>
+        <member>NOHSCROLL    </member>
+        <member>NONEVENHEIGHT</member>
+        <member>NOSCROLL     </member>
+        <member>NOTOOLTIPS   </member>
+        <member>RTLREADING   </member>
+        <member>SHOWSELALWAYS</member>
+        <member>SINGLEEXPAND </member>
+        <member>TRACKSELECT  </member>
+        <member>VSCROLL      </member>
+        <member>ALL          </member>
         <member>HIDDEN       </member>
         <member>DISABLED     </member>
         <member>GROUP        </member>
-        <member>BORDER       </member>
-        <member>TAB          </member>
+        <member>NOBORDER     </member>
+        <member>NOTAB        </member>
       </simplelist>
       <variablelist>
         <varlistentry><term>ATROOT</term>
         <listitem>
         <para>
-          The tree view has lines linking child items to the root of the hierarchy.
+          The tree-view has lines linking child items to the root of the hierarchy.
         </para>
         </listitem></varlistentry>
         <varlistentry id="styTreeViewBUTTONS" xreflabel="BUTTONS"><term>BUTTONS</term>
         <listitem>
         <para>
-          The tree view adds a button to the left of each parent item.
+          Displays plus (+) and minus (-) buttons next to parent items. The user clicks the buttons to expand or collapse a
+          parent item's list of child items. To include buttons with items at the root of the tree view, the LINES style must
+          also be specified.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>LINES</term>
+        <varlistentry id="styTreeViewCHECKBOXES" xreflabel="CHECKBOXES"><term>CHECKBOXES</term>
         <listitem>
         <para>
-          The tree view has lines linking child items to their corresponding parent items.
+           Displays a check box with the item. In earlier versions of Windows, the check box would only be displayed if the
+           tree-view item had an image associated with it. If ooDialog is running on Windows XP or later this earlier
+           behaviour no longer applies.
         </para>
         </listitem></varlistentry>
         <varlistentry id="styTreeViewEDIT" xreflabel="EDIT"><term>EDIT</term>
@@ -10680,9 +10693,17 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
           With this style, the tree-view allows the user to edit the tree-view item labels. To have an edited label take
           effect, the programmer must connect an <link linkend="ovvEvents">event</link> notification using the <xref
           linkend="mthConnectTreeViewEvent"/> method. For the most flexibility with edit labeling, connect both the <xref
-          linkend="kywTreeViewBEGINEDIT"/> and <xref linkend="kywTreeViewENDEDIT"/> notifications.  Alternatively the <xref
+          linkend="kywTreeViewBEGINEDIT"/> and <xref linkend="kywTreeViewENDEDIT"/> notifications. Alternatively the <xref
           linkend="kywTreeViewDEFAULTEDIT"/> event could be connected using the <emphasis
           role="italic">connectListViewEvent</emphasis> method.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="styTreeViewFULLROWSELECT" xreflabel="FULLROWSELECT"><term>FULLROWSELECT</term>
+        <listitem>
+        <para>
+           Enables full-row selection in the tree view. The entire row of the selected item is highlighted, and clicking
+           anywhere on an item's row causes it to be selected. This style cannot be used in conjunction with the LINES
+           style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>HSCROLL</term>
@@ -10691,17 +10712,57 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
           The tree view supports a horizontal scroll bar.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>VSCROLL</term>
-        <listitem>
-        <para>
-          The tree view supports a vertical scroll bar.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry id='styTreeViewInfoTip'><term>INFOTIP</term>
+        <varlistentry id='styTreeViewINFOTIP'><term>INFOTIP</term>
         <listitem>
         <para>
           The tree-view will request info tip text by sending the <link linkend="kywTreeViewGETINFOTIP">GETINFOTIP</link>
           notification. If the tree-view does not have the INFOTIP style, GETINFOTIP notifications are not sent.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LINES</term>
+        <listitem>
+        <para>
+          The tree-view has lines linking child items to their corresponding parent items.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id='styTreeViewNODRAG'><term>NODRAG</term>
+        <listitem>
+        <para>
+          The tree-view is prevented from sending <xref linkend="kywTreeViewBEGINDRAG"/> notifications.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="styTreeViewNOHSCROLL" xreflabel="NOHSCROLL"><term>NOHSCROLL</term>
+        <listitem>
+        <para>
+          Disables horizontal scrolling in the control. The control will not display any horizontal scroll bars.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="styTreeViewNONEVENHEIGHT" xreflabel="NONEVENHEIGHT"><term>NONEVENHEIGHT</term>
+        <listitem>
+        <para>
+          Allows setting the height of the items to an odd height with the <link
+          linkend="mthSetItemHeight">setItemHeight</link>. By default, the height of items must be an even value.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="styTreeViewNOSCROLL" xreflabel="NOSCROLL"><term>NOSCROLL</term>
+        <listitem>
+        <para>
+          Disables both horizontal and vertical scrolling in the tree-view. The control will not display any scroll bars.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="styTreeViewNOTOOLTIPS" xreflabel="NOTOOLTIPS"><term>NOTOOLTIPS</term>
+        <listitem>
+        <para>
+          By default, a tree-view always creates a child ToolTip. This style prevents the creation of a ToolTip.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="styTreeViewRTLREADING" xreflabel="RTLREADING"><term>RTLREADING</term>
+        <listitem>
+        <para>
+          Causes text to be displayed from right-to-left (RTL). Usually, windows display text left-to-right (LTR). Windows
+          can be mirrored to display languages such as Hebrew or Arabic that read RTL. Typically, tree-view text is displayed
+          in the same direction as the text in its parent window. If RTLREADING is set, tree-view text reads in the opposite
+          direction from the text in the parent window.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>SHOWSELALWAYS</term>
@@ -10710,22 +10771,36 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
           A selected item remains selected when the tree view loses focus.
         </para>
         </listitem></varlistentry>
+        <varlistentry id="styTreeViewSINGLEEXPAND" xreflabel="SINGLEEXPAND"><term>SINGLEEXPAND</term>
+        <listitem>
+        <para>
+           Causes the item being selected to expand and the item being unselected to collapse upon selection in the tree
+           view. If the user holds down the CTRL key while selecting an item, the item being unselected will not be
+           collapsed.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="styTreeViewTRACKSELECT" xreflabel="TRACKSELECT"><term>TRACKSELECT</term>
+        <listitem>
+        <para>
+          Enables hot tracking in a tree-view control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VSCROLL</term>
+        <listitem>
+        <para>
+          The tree view supports a vertical scroll bar.
+        </para>
+        </listitem></varlistentry>
         <varlistentry><term>ALL</term>
         <listitem>
         <para>
-          The options ATROOT, BUTTONS, LINES, EDIT, HSCROLL, and SHOWSELALWAYS are all applied.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NODRAG</term>
-        <listitem>
-        <para>
-          e tree view is prevented from sending "begin drag" notifications.
+          The styles ATROOT, BUTTONS, EDIT, HSCROLL, LINES, SHOWSELALWAYS, and VSROLL are all applied.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>HIDDEN</term>
         <listitem>
         <para>
-          The tree view has not <xref linkend="wsvisible"/> window style.
+          The tree view has the not <xref linkend="wsvisible"/> window style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
