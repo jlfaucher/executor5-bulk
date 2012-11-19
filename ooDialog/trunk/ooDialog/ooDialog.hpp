@@ -768,6 +768,7 @@ typedef SubClassData *pSubClassData;
 #define RE_SHOW_IDX                 2
 #define RE_POP_IDX                  3
 #define RE_LINKCLICK_IDX            4
+#define RE_NORELAY_IDX              5
 
 // A specific structure used for subclassing controls to use with the tool tip
 // relay event.  This structure is allocate and then set as the pData member of
@@ -780,6 +781,7 @@ typedef struct _relayEventData {
     // Rexx methods to invoke, 1 for each possible event.
     char            *methods[RE_COUNT_RELAYEVENTS];
     bool             doEvent[RE_COUNT_RELAYEVENTS];
+    bool             skipRelay;
 } RelayEventData;
 typedef RelayEventData *pRelayEventData;
 

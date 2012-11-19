@@ -595,7 +595,7 @@ LRESULT handleWmUser(pCPlainBaseDialog pcpbd, HWND hDlg, UINT uMsg, WPARAM wPara
  *           true.
  *
  *           We only process the IDOK and IDCANCEL identifier when the high
- *           word is 0.  The high work being 0 would indicate that it was a
+ *           word is 0.  The high word being 0 would indicate that it was a
  *           button click (BN_CLICK is 0) or sent from a menu command.
  *
  *           However, we should never actually get to process anything here

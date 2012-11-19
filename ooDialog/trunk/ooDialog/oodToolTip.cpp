@@ -598,6 +598,11 @@ static uint32_t matchEvent2index(RexxMethodContext *c, CSTRING evtName, CSTRING 
         *mthName = "onLinkClick";
         return RE_LINKCLICK_IDX;
     }
+    else if ( StrCmpI(evtName, "NORELAY") == 0 )
+    {
+        *mthName = "";
+        return RE_NORELAY_IDX;
+    }
 
     return OOD_ID_EXCEPTION;
 }
@@ -707,7 +712,7 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
     pRelayEventData    pred  = (pRelayEventData)pData->pData;
     RexxThreadContext *c     = pData->pcpbd->dlgProcContext;
 
-    if ( (msg >= WM_MOUSEFIRST && msg <= WM_MOUSELAST) || msg == WM_NCMOUSEMOVE)
+    if ( (msg >= WM_MOUSEFIRST && msg <= WM_MOUSELAST) || msg == WM_NCMOUSEMOVE && ! pred->skipRelay )
     {
         MSG _msg;
         _msg.hwnd = hwnd;
@@ -723,6 +728,7 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
             RexxArrayObject args  = c->ArrayOfFour(pred->rxToolTip, rxPoint, rxMMsg, pData->pcdc->rexxSelf);
 
             RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
+
             if ( msgReplyIsGood(c, pData->pcpbd, reply, method, false) )
             {
                 c->ReleaseLocalReference(reply);
@@ -750,11 +756,13 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
                     RexxArrayObject args   = c->ArrayOfTwo(pred->rxToolTip, pData->pcdc->rexxSelf);
 
                     RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
+
                     reply = checkForBoolean(c, pData->pcpbd, reply, method, false);
                     if ( reply == NULLOBJECT )
                     {
                         c->ReleaseLocalReference(args);
                         SendMessage(pred->hToolTip, TTM_ACTIVATE, 0, 0);
+
                         endDialogPremature(pData->pcpbd, pData->pcpbd->hDlg, RexxConditionRaised);
                         return FALSE;
                     }
@@ -770,6 +778,7 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
             }
             break;
 
+            case TTN_GETDISPINFOA :
             case TTN_GETDISPINFOW :
             {
                 if ( pred->doEvent[RE_NEEDTEXT_IDX] )
@@ -788,6 +797,7 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
                     c->ArrayPut(args, flags, 5);
 
                     RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
+
                     reply = checkForBoolean(c, pData->pcpbd, reply, method, false);
                     if ( reply == NULLOBJECT )
                     {
@@ -816,11 +826,19 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
                     if ( len > 0 )
                     {
                         pCDialogControl pcdc = controlToCSelf(c, pred->rxToolTip);
-                        safeLocalFree(pcdc->toolTipEntry->wcharBuf);
 
-                        pcdc->toolTipEntry->wcharBuf = ansi2unicode(text);
-                        nmtdi->lpszText = (LPSTR)pcdc->toolTipEntry->wcharBuf;
+                        if ( code == TTN_GETDISPINFOW )
+                        {
+                            safeLocalFree(pcdc->toolTipEntry->wcharBuf);
 
+                            pcdc->toolTipEntry->wcharBuf = ansi2unicode(text);
+                            nmtdi->lpszText = (LPSTR)pcdc->toolTipEntry->wcharBuf;
+                        }
+                        else
+                        {
+                            strcpy(pcdc->toolTipEntry->textBuf, text);
+                            nmtdi->lpszText = pcdc->toolTipEntry->textBuf;
+                        }
                     }
                     if ( reply == TheTrueObj )
                     {
@@ -838,6 +856,57 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
             }
             break;
 
+            case TTN_POP :
+            {
+                if ( pred->doEvent[RE_POP_IDX] )
+                {
+                    CSTRING         method = pred->methods[RE_POP_IDX];
+                    RexxArrayObject args   = c->ArrayOfTwo(pred->rxToolTip, pData->pcdc->rexxSelf);
+
+                    RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
+
+                    if ( ! checkReplyIsGood(c, pData->pcpbd, reply, method, false) )
+                    {
+                        c->ReleaseLocalReference(args);
+                        SendMessage(pred->hToolTip, TTM_ACTIVATE, 0, 0);
+
+                        endDialogPremature(pData->pcpbd, pData->pcpbd->hDlg, RexxConditionRaised);
+                        return 0;
+                    }
+
+                    c->ReleaseLocalReference(args);
+
+                    return 0;
+                }
+            }
+            break;
+
+            case TTN_LINKCLICK :
+            {
+                if ( pred->doEvent[RE_LINKCLICK_IDX] )
+                {
+                    CSTRING         method = pred->methods[RE_LINKCLICK_IDX];
+                    RexxArrayObject args   = c->ArrayOfTwo(pred->rxToolTip, pData->pcdc->rexxSelf);
+
+                    RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
+
+
+                    if ( ! checkReplyIsGood(c, pData->pcpbd, reply, method, false) )
+                    {
+                        c->ReleaseLocalReference(args);
+                        SendMessage(pred->hToolTip, TTM_ACTIVATE, 0, 0);
+
+                        endDialogPremature(pData->pcpbd, pData->pcpbd->hDlg, RexxConditionRaised);
+                        return 0;
+                    }
+
+                    c->ReleaseLocalReference(args);
+
+                    return 0;
+                }
+            }
+            break;
+
             default :
                 break;
         }
@@ -846,7 +915,6 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
     if ( msg == WM_DESTROY )
     {
         SendMessage(pred->hToolTip, TTM_ACTIVATE, 0, 0);
-        //printf("Got WM_DESTROY for tool tip\n");
     }
     if ( msg == WM_NCDESTROY )
     {
@@ -856,9 +924,7 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
          * done in the dialog control uninit() for those cases.  So, we just
          * always do it from the uninit().
          */
-        BOOL success = RemoveWindowSubclass(hwnd, ManageAtypicalToolProc, id);
-        //printf("Got WM_NCDESTROY for tool tip success=%d\n", success);
-        return TRUE;
+        RemoveWindowSubclass(hwnd, ManageAtypicalToolProc, id);
     }
 
     return DefSubclassProc(hwnd, msg, wParam, lParam);
@@ -2075,6 +2141,12 @@ RexxMethod4(logical_t, tt_manageAtypicalTool, RexxObjectPtr, toolObject, OPTIONA
             if ( idx == OOD_ID_EXCEPTION )
             {
                 goto err_out;
+            }
+
+            if ( idx == RE_NORELAY_IDX )
+            {
+                pred->skipRelay = true;
+                continue;
             }
 
             if ( argumentExists(3) )
