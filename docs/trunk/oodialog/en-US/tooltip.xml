@@ -5,7 +5,7 @@
 ]>
 <!--#########################################################################
     #
-    # Description: Open Object Rexx: ooDialog Reference SGML file.
+    # Description: Open Object Rexx: ooDialog Reference XML file.
     #
     # Copyright (c) 2012-2012, Rexx Language Association. All rights reserved.
     #
@@ -40,18 +40,16 @@
     # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     #
-    # Author(s):
-    #      W. David Ashley <dashley@us.ibm.com>
-    #
     #########################################################################
 -->
 <chapter id="clsToolTip"><title>ToolTip Controls</title>
 <indexterm><primary>ToolTip class</primary></indexterm>
 <para>
   Tooltip controls are pop-up windows that display text. Typically the text describes a <emphasis
-  role="italic">tool</emphasis>. A <emphasis role="italic">tool</emphasis> is either a window or an application define area
-  within a window. Conceptually, a ToolTip is a dialog control that contains tools. A ToolTip with no added tool will never
-  display text. In ooDialog, the tools added to a ToolTip are usually other dialog controls.
+  role="italic">tool</emphasis>. A <emphasis role="italic">tool</emphasis> is either a window or an application defined area
+  within a window. Conceptually, a ToolTip is a dialog control that contains tools. Each ToolTip can contain any number of
+  <emphasis role="italic">tools</emphasis>. A ToolTip with no added tool will never display text. In ooDialog, the tools
+  added to a ToolTip are usually other dialog controls.
 </para>
 <para>
   ToolTips are hidden most of the time. They appear automatically, or pop up, when the user pauses the mouse pointer over a
@@ -61,9 +59,9 @@
 <para>
   ToolTip controls can display single or multiple lines of text. They can have square or rounded corners. They might or might
   not have a stem that points to the tools like a cartoon balloon. ToolTip text can be stationary or can move with the mouse
-  pointer, called tracking. Stationary text can be displayed adjacent to a tool or it can be displayed over a tool, which is
-  referred to as in-place. Standard ToolTips are stationary, display a single line of text, have square corners, and have no
-  stem pointing to the tool.
+  pointer, called tracking ToolTips. Stationary text can be displayed adjacent to a tool or it can be displayed over a tool,
+  which is referred to as in-place ToolTips. Standard ToolTips are stationary, display a single line of text, have square
+  corners, and have no stem pointing to the tool.
 </para>
 <para>
   The <computeroutput>ToolTip</computeroutput> class provides methods to work with and manipulate the underlying Windows
@@ -71,9 +69,20 @@
   linkend="chpDialogControlObject">object</link> and therefore has all methods of the of the dialog control object.
 </para>
 <para>
-  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
-  needed, or are useful, when working with ToolTip controls:
+  The following concepts, classes, and methods from other classes are needed, or are useful, when working with ToolTip
+  controls:
+</para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">ToolInfo Class</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="clsToolInfo">ToolInfo</link> class represents the information a ToolTip control uses to manage the
+    <emphasis role="italic">tools</emphasis> it contains. The attributes of a <computeroutput>ToolInfo</computeroutput>
+    object represent the information specific to a single tool within a ToolTip. Many of the methods of the
+    <computeroutput>ToolTip</computeroutput> class require a <computeroutput>ToolInfo</computeroutput> object as an argument,
+    or return information using a <computeroutput>ToolInfo</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
@@ -97,7 +106,54 @@
     the Rexx dialog object use the <link linkend="mthConnectToolTipEvent">connectToolTipEvent</link> method.
   </para>
   </listitem></varlistentry>
-</variablelist> </para>
+</variablelist>
+
+
+<section id="sctToolIdentification"><title>Tool Identification</title>
+<indexterm><primary>ToolTip tool identification</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>tool identification</secondary></indexterm>
+
+<para>
+  Each ToolTip can contain more than one <emphasis role="italic">tool</emphasis>. Becuase of this, the ToolTip control
+  needs a way of uniquely identifying each individual tool. In the operating system, each tool is identified using a
+  combination of a window <link linkend="defHandle">handle</link> and an ID. The ID however, can be either another window
+  handle or a unique number. The number is similar to a resource ID.
+</para>
+<para>
+  The ooDialog framework allows the Rexx programmer to identify an unique tool in several different ways. This
+  documentation refers to a tool identifier as a <emphasis role="italic">Rexx object combination</emphasis>. This can be a
+  combination of two Rexx objects, however quite often only one object is needed to indentify a tool.
+  <computeroutput>ToolTip</computeroutput> methods that require a tool to be identifed, have as their first required
+  argument a <emphasis role="italic">toolHwnd</emphasis> and as a second optional argument a <emphasis
+  role="italic">toolId</emphasis>.
+</para>
+<para>
+  The combination of the two arguments, <emphasis role="italic">toolHwnd</emphasis> and <emphasis
+  role="italic">toolID</emphasis>, is always handled in the same way, which is as follows:
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="italic">hwndTool</emphasis> \== a <computeroutput>ToolInfo</computeroutput> object and <emphasis role="italic">toolID</emphasis> is omitted</term>
+  <listitem>
+  <para>
+    It is very common that a ToolTip tool is a dialog control. For example quite often ToolTips are used for push buttons,
+    so that some label can be displayed when the user hovers the mouser over the button. ooDialog makes it easy for the
+    Rexx programmer to identify this type of tool by using just the dialog control object.  When the <emphasis
+    role="italic">toolHwnd</emphasis> argument is not a <computeroutput>ToolInfo</computeroutput> object, and the <emphasis
+    role="italic">toolID</emphasis> is omitted, then the <emphasis role="italic">toolHwnd</emphasis> argument must be a
+    dialog control object. This dialog control object is the tool identifier.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="italic">hwndTool</emphasis> \== a <computeroutput>ToolInfo</computeroutput> object and <emphasis role="italic">toolID</emphasis> is not omitted</term>
+  <listitem>
+  <para>
+    In this case, <emphasis role="italic">hwndTool</emphasis> can be either a dialog object, or a dialog control object.
+    When <emphasis role="italic">hwndTool</emphasis> is a dialog object, then <emphasis role="italic">toolID</emphasis>
+    must be either a dialog control object or an unique whole number. If <emphasis role="italic">hwndTool</emphasis>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="sctMethodsToolTip"><title>Method Table</title>
 <para>
@@ -121,7 +177,7 @@
 </row>
 <row>
 <entry><link linkend="tmthNewToolTip">newToolTip</link></entry>
-<entry>Returns an <computeroutput>ToolTip</computeroutput> object for the control with the specified ID.</entry>
+<entry>Returns a <computeroutput>ToolTip</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
 <entry><link linkend="tmthConnectToolTipEvent">connectToolTipEvent</link></entry>
@@ -132,16 +188,28 @@
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>PROVIDE LINK</entry>
-<entry>PROVIDE DESCRIPTION</entry>
+<entry><xref linkend="mthActivate"/></entry>
+<entry>x</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>PROVIDE LINK</entry>
-<entry>xx</entry>
+<entry><xref linkend="mthActivate"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddTool"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddToolEx"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddToolRect"/></entry>
+<entry>x</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -242,6 +310,2910 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ToolTip::activate() -->
+
+
+<section id="mthAddTool" xreflabel="addTool"><title>addTool</title>
+<indexterm><primary>addTool</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>addTool</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addTool(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::addTool() -->
+
+
+<section id="mthAddToolEx" xreflabel="addToolEx"><title>addToolEx</title>
+<indexterm><primary>addToolEx</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>addToolEx</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addToolEx(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::addToolEx() -->
+
+
+<section id="mthAddToolRect" xreflabel="addToolRect"><title>addToolRect</title>
+<indexterm><primary>addToolRect</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>addToolRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addToolRect(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::addToolRect() -->
+
+
+<section id="mthAdjustRect" xreflabel="adjustRect"><title>adjustRect</title>
+<indexterm><primary>adjustRect</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>adjustRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--adjustRect(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::adjustRect() -->
+
+
+<section id="mthDelTool" xreflabel="delTool"><title>delTool</title>
+<indexterm><primary>delTool</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>delTool</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--delTool(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::delTool() -->
+
+
+<section id="mthEnumTools" xreflabel="enumTools"><title>enumTools</title>
+<indexterm><primary>enumTools</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>enumTools</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--enumTools(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::enumTools() -->
+
+
+<section id="mthGetBubbleSize" xreflabel="getBubbleSize"><title>getBubbleSize</title>
+<indexterm><primary>getBubbleSize</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getBubbleSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getBubbleSize(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getBubbleSize() -->
+
+
+<section id="mthGetCurrentToolInfo" xreflabel="getCurrentToolInfo"><title>getCurrentToolInfo</title>
+<indexterm><primary>getCurrentToolInfo</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getCurrentToolInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCurrentToolInfo(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getCurrentToolInfo() -->
+
+
+<section id="mthGetDelayTime" xreflabel="getDelayTime"><title>getDelayTime</title>
+<indexterm><primary>getDelayTime</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getDelayTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getDelayTime(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getDelayTime() -->
+
+
+<section id="mthGetMargin" xreflabel="getMargin"><title>getMargin</title>
+<indexterm><primary>getMargin</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getMargin</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMargin(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getMargin() -->
+
+
+<section id="mthGetMaxTipWidth" xreflabel="getMaxTipWidth"><title>getMaxTipWidth</title>
+<indexterm><primary>getMaxTipWidth</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getMaxTipWidth</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMaxTipWidth(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getMaxTipWidth() -->
+
+
+<section id="mthGetText" xreflabel="getText"><title>getText</title>
+<indexterm><primary>getText</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getText(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getText() -->
+
+
+<section id="mthGetTipBkColor" xreflabel="getTipBkColor"><title>getTipBkColor</title>
+<indexterm><primary>getTipBkColor</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getTipBkColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTipBkColor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getTipBkColor() -->
+
+
+<section id="mthGetTipTextColor" xreflabel="getTipTextColor"><title>getTipTextColor</title>
+<indexterm><primary>getTipTextColor</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getTipTextColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTipTextColor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getTipTextColor() -->
+
+
+<section id="mthGetTitle" xreflabel="getTitle"><title>getTitle</title>
+<indexterm><primary>getTitle</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getTitle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTitle(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getTitle() -->
+
+
+<section id="mthGetToolCount" xreflabel="getToolCount"><title>getToolCount</title>
+<indexterm><primary>getToolCount</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getToolCount</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getToolCount(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getToolCount() -->
+
+
+<section id="mthGetToolInfo" xreflabel="getToolInfo"><title>getToolInfo</title>
+<indexterm><primary>getToolInfo</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>getToolInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getToolInfo(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::getToolInfo() -->
+
+
+<section id="mthHasCurrentTool" xreflabel="hasCurrentTool"><title>hasCurrentTool</title>
+<indexterm><primary>hasCurrentTool</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>hasCurrentTool</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hasCurrentTool(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::hasCurrentTool() -->
+
+
+<section id="mthHitTest" xreflabel="hitTest"><title>hitTest</title>
+<indexterm><primary>hitTest</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>hitTest</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hitTest(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::hitTest() -->
+
+
+<section id="mthManageAtypicalTool" xreflabel="manageAtypicalTool"><title>manageAtypicalTool</title>
+<indexterm><primary>manageAtypicalTool</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>manageAtypicalTool</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--manageAtypicalTool(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::manageAtypicalTool() -->
+
+
+<section id="mthNewToolRect" xreflabel="newToolRect"><title>newToolRect</title>
+<indexterm><primary>newToolRect</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>newToolRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--newToolRect(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::newToolRect() -->
+
+
+<section id="mthPop" xreflabel="pop"><title>pop</title>
+<indexterm><primary>pop</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>pop</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--pop(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::pop() -->
+
+
+<section id="mthPopUp" xreflabel="popUp"><title>popUp</title>
+<indexterm><primary>popUp</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>popUp</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--popUp(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::popUp() -->
+
+
+<section id="mthSetDelayTime" xreflabel="setDelayTime"><title>setDelayTime</title>
+<indexterm><primary>setDelayTime</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>setDelayTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDelayTime(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::setDelayTime() -->
+
+
+<section id="mthSetMargin" xreflabel="setMargin"><title>setMargin</title>
+<indexterm><primary>setMargin</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>setMargin</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMargin(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::setMargin() -->
+
+
+<section id="mthSetMaxTipWidth" xreflabel="setMaxTipWidth"><title>setMaxTipWidth</title>
+<indexterm><primary>setMaxTipWidth</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>setMaxTipWidth</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMaxTipWidth(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::setMaxTipWidth() -->
+
+
+<section id="mthSetTipBkColor" xreflabel="setTipBkColor"><title>setTipBkColor</title>
+<indexterm><primary>setTipBkColor</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>setTipBkColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setTipBkColor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::setTipBkColor() -->
+
+
+<section id="mthSetTipTextColor" xreflabel="setTipTextColor"><title>setTipTextColor</title>
+<indexterm><primary>setTipTextColor</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>setTipTextColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setTipTextColor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::setTipTextColor() -->
+
+
+<section id="mthSetTitle" xreflabel="setTitle"><title>setTitle</title>
+<indexterm><primary>setTitle</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>setTitle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setTitle(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::setTitle() -->
+
+
+<section id="mthSetToolInfo" xreflabel="setToolInfo"><title>setToolInfo</title>
+<indexterm><primary>setToolInfo</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>setToolInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setToolInfo(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::setToolInfo() -->
+
+
+<section id="mthSetWindowTheme" xreflabel="setWindowTheme"><title>setWindowTheme</title>
+<indexterm><primary>setWindowTheme</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>setWindowTheme</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setWindowTheme(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::setWindowTheme() -->
+
+
+<section id="mthTrackActivate" xreflabel="trackActivate"><title>trackActivate</title>
+<indexterm><primary>trackActivate</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>trackActivate</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--trackActivate(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::trackActivate() -->
+
+
+<section id="mthTrackPosition" xreflabel="trackPosition"><title>trackPosition</title>
+<indexterm><primary>trackPosition</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>trackPosition</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--trackPosition(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::trackPosition() -->
+
+
+<section id="mthUpdate" xreflabel="update"><title>update</title>
+<indexterm><primary>update</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>update</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--update(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::update() -->
+
+
+<section id="mthUpdateTipText" xreflabel="updateTipText"><title>updateTipText</title>
+<indexterm><primary>updateTipText</primary></indexterm>
+<indexterm><primary>ToolTip class</primary><secondary>updateTipText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--updateTipText(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolTip::updateTipText() -->
+
+
+<section id="clsToolInf" xreflabel="ToolInf"><title>ToolInfo Class</title>
+<indexterm><primary>ToolInfo class</primary></indexterm>
+<para>
+  A <emphasis role="italic">ToolInfo</emphasis> object contains information about a tool in a <xref linkend="clsToolTip"/>
+  control. The attributes of the <computeroutput>ToolInfo</computeroutput> object reflect the information that defines a tool
+  in the ToolTip control.
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsToolInfo"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>ToolInfo</computeroutput> class:
+
+<table id="tblMethodsToolInfo" frame="all"> <title>ToolInfo Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthForHitTest">forHitTest</link></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><link linkend="mthForID">forID</link></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsToolInfo">new</link></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrFlags">flags</link></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><link linkend="atrRect">rect</link></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><link linkend="atrResource">resource</link></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><link linkend="atrRexxHwnd">rexxHwnd</link></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><link linkend="atrRexxID">rexxID</link></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><link linkend="atrText">text</link></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><link linkend="atrUserData">userData</link></entry>
+<entry>x</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+
+<section id="mthForHitTest" xreflabel="forHitTest"><title>forHitTest (Class Method)</title>
+<indexterm><primary>forHitTest</primary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>forHitTest</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--forHitTest(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::forHitTest() -->
+
+
+<section id="mthForID" xreflabel="forID"><title>forID (Class Method)</title>
+<indexterm><primary>forID</primary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>forID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--forID(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::forID() -->
+
+<section id="mthNewClsToolInfo"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>ToolInfo class</secondary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::new() -->
+
+<section id="atrFlags" xreflabel="flags"><title>flags (Attribute)</title>
+<indexterm><primary>flags</primary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>flags</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--flags-----------------------------------------------------><
+
+>>--flags = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">flags get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">flags set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::flags() [attribute]  -->
+
+
+<section id="atrRect" xreflabel="rect"><title>rect (Attribute)</title>
+<indexterm><primary>rect</primary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>rect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--rect-----------------------------------------------------><
+
+>>--rect = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">rect get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">rect set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::rect() [attribute]  -->
+
+
+<section id="atrResource" xreflabel="resource"><title>resource (Attribute)</title>
+<indexterm><primary>resource</primary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>resource</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--resource-----------------------------------------------------><
+
+>>--resource = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">resource get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">resource set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::resource() [attribute]  -->
+
+
+<section id="atrRexxHwnd" xreflabel="rexxHwnd"><title>rexxHwnd (Attribute)</title>
+<indexterm><primary>rexxHwnd</primary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>rexxHwnd</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--rexxHwnd-----------------------------------------------------><
+
+>>--rexxHwnd = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">rexxHwnd get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">rexxHwnd set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::rexxHwnd() [attribute]  -->
+
+
+<section id="atrRexxID" xreflabel="rexxID"><title>rexxID (Attribute)</title>
+<indexterm><primary>rexxID</primary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>rexxID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--rexxID-----------------------------------------------------><
+
+>>--rexxID = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">rexxID get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">rexxID set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::rexxID() [attribute]  -->
+
+
+<section id="atrText" xreflabel="text"><title>text (Attribute)</title>
+<indexterm><primary>text</primary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>text</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--text-----------------------------------------------------><
+
+>>--text = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">text get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">text set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::text() [attribute]  -->
+
+
+<section id="atrUserData" xreflabel="userData"><title>userData (Attribute)</title>
+<indexterm><primary>userData</primary></indexterm>
+<indexterm><primary>ToolInfo class</primary><secondary>userData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--userData-----------------------------------------------------><
+
+>>--userData = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">userData get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">userData set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ToolInfo::userData() [attribute]  -->
+
+</section> <!-- End ToolInfo Class -->
 
 
 </chapter>  <!-- End ToolTip class -->
