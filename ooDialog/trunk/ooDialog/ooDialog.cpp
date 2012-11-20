@@ -395,7 +395,7 @@ int32_t delDialog(pCPlainBaseDialog pcpbd, RexxThreadContext *c)
     EnterCriticalSection(&crit_sec);
 
 #if 0
-    printf("In delDialog() hDlg=%p tabIdx=%d allocate=%d isActive=%d onTop=%d prev=%p abnormalHalt=%d\n",
+    printf("In delDialog() hDlg=%p tabIdx=%d allocated=%d isActive=%d onTop=%d\n               prev=%p abnormalHalt=%d\n",
            pcpbd->hDlg, pcpbd->tableIndex, pcpbd->dlgAllocated, pcpbd->isActive, pcpbd->onTheTop, pcpbd->previous,
            pcpbd->abnormalHalt);
 #endif

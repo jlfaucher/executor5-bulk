@@ -501,6 +501,28 @@ void *wrongReplyNotBooleanException(RexxThreadContext *c, const char *mName, Rex
     return executionErrorException(c, buffer);
 }
 
+/**
+ * The reply from the event handler (<method>)  must be less than <len>
+ * characters in length; length is <realLen>
+ *
+ * The reply from the event handler (onNeedText) must be less than 255
+ * characters in length; length is 260
+ *
+ * Raises 88.900
+ *
+ * @param c        Thread context we are executing in.
+ * @param pos      Argumet position
+ * @param len      Fixed length
+ * @param realLen  Actual length
+ */
+void stringTooLongReplyException(RexxThreadContext *c, CSTRING method, size_t len, size_t realLen)
+{
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "The reply from the event handler (%s) must be less than %d characters in length; length is %d",
+             method, len, realLen);
+    userDefinedMsgException(c, buffer);
+}
+
 void controlFailedException(RexxThreadContext *c, const char *msg, const char *func, const char *control)
 {
     TCHAR buffer[256];

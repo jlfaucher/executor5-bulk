@@ -388,6 +388,7 @@ extern void          *wrongReplyListException(RexxThreadContext *c, const char *
 extern void          *wrongReplyMsgException(RexxThreadContext *c, const char *mName, const char *msg);
 extern void          *wrongReplyRangeException(RexxThreadContext *c, const char *mName, int32_t min, int32_t max, RexxObjectPtr actual);
 extern void          *wrongReplyNotBooleanException(RexxThreadContext *c, const char *mName, RexxObjectPtr actual);
+extern void           stringTooLongReplyException(RexxThreadContext *c, CSTRING method, size_t len, size_t realLen);
 extern void           controlFailedException(RexxThreadContext *, CSTRING, CSTRING, CSTRING);
 extern void           wrongWindowStyleException(RexxMethodContext *c, CSTRING, CSTRING);
 extern void           bitmapTypeMismatchException(RexxMethodContext *c, CSTRING orig, CSTRING found, size_t pos);

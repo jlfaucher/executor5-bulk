@@ -817,7 +817,7 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
                         c->ReleaseLocalReference(args);
                         SendMessage(pred->hToolTip, TTM_ACTIVATE, 0, 0);
 
-                        stringTooLongException(c, 1, MAX_TOOLINFO_TEXT_LENGTH + 1, len);
+                        stringTooLongReplyException(c, method, MAX_TOOLINFO_TEXT_LENGTH + 1, len);
                         checkForCondition(c, false);
                         endDialogPremature(pData->pcpbd, pData->pcpbd->hDlg, RexxConditionRaised);
                         return FALSE;
@@ -865,14 +865,7 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
 
                     RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
 
-                    if ( ! checkReplyIsGood(c, pData->pcpbd, reply, method, false) )
-                    {
-                        c->ReleaseLocalReference(args);
-                        SendMessage(pred->hToolTip, TTM_ACTIVATE, 0, 0);
-
-                        endDialogPremature(pData->pcpbd, pData->pcpbd->hDlg, RexxConditionRaised);
-                        return 0;
-                    }
+                    // ignore return.
 
                     c->ReleaseLocalReference(args);
 
@@ -889,7 +882,6 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
                     RexxArrayObject args   = c->ArrayOfTwo(pred->rxToolTip, pData->pcdc->rexxSelf);
 
                     RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
-
 
                     if ( ! checkReplyIsGood(c, pData->pcpbd, reply, method, false) )
                     {
@@ -2107,7 +2099,7 @@ RexxMethod4(logical_t, tt_manageAtypicalTool, RexxObjectPtr, toolObject, OPTIONA
     pSCData->hCtrl = subClassCtrl->hCtrl;
     pSCData->id    = subClassCtrl->id;
 
-    pcdc->pRelayEvent = pSCData;
+    subClassCtrl->pRelayEvent = pSCData;
 
     pRelayEventData pred = (pRelayEventData)LocalAlloc(LPTR, sizeof(RelayEventData));
     if ( pred == NULL )
@@ -2173,11 +2165,11 @@ RexxMethod4(logical_t, tt_manageAtypicalTool, RexxObjectPtr, toolObject, OPTIONA
     BOOL success;
     if ( isDlgThread(pcdc->pcpbd) )
     {
-        success = SetWindowSubclass(pcdc->hCtrl, ManageAtypicalToolProc, pcdc->id, (DWORD_PTR)pSCData);
+        success = SetWindowSubclass(subClassCtrl->hCtrl, ManageAtypicalToolProc, subClassCtrl->id, (DWORD_PTR)pSCData);
     }
     else
     {
-        success = (BOOL)SendMessage(pcdc->pcpbd->hDlg, WM_USER_SUBCLASS, (WPARAM)ManageAtypicalToolProc, (LPARAM)pSCData);
+        success = (BOOL)SendMessage(subClassCtrl->pcpbd->hDlg, WM_USER_SUBCLASS, (WPARAM)ManageAtypicalToolProc, (LPARAM)pSCData);
     }
 
     if ( ! success )
