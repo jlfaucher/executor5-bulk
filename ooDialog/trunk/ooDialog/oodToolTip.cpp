@@ -278,6 +278,57 @@ done_out:
 }
 
 
+/**
+ * Allocates a buffer for the tool info struct, copies the specified text into
+ * it, and updates the .ToolInfo object if specified.
+ *
+ * @param c
+ * @param pTI
+ * @param text
+ * @param argPos
+ * @param toolInfo  Can be NULLOBJECT, which indicates we are called from within
+ *                  a .ToolInfo object's context.  If not null, we are called
+ *                  from some other context and we need to update the
+ *                  MEMALLOCATED attribute by sending a messag to this object.
+ *
+ * @return bool
+ */
+static bool setToolInfoText(RexxMethodContext *c, LPTOOLINFO pTI, CSTRING text, size_t argPos, RexxObjectPtr toolInfo)
+{
+    size_t l = strlen(text);
+    if ( l > MAX_TOOLINFO_TEXT_LENGTH )
+    {
+        stringTooLongException(c->threadContext, argPos, MAX_TOOLINFO_TEXT_LENGTH, l);
+        return false;
+    }
+
+    if ( l == 0 || StrCmpI("TEXTCALLBACK", text) == 0 )
+    {
+        pTI->lpszText = LPSTR_TEXTCALLBACK;
+    }
+    else
+    {
+        pTI->lpszText = (LPSTR)LocalAlloc(LPTR, MAX_TOOLINFO_TEXT_LENGTH + 1);
+        if ( pTI->lpszText == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            return false;
+        }
+        strcpy(pTI->lpszText, text);
+
+        if ( toolInfo == NULLOBJECT )
+        {
+            c->SetObjectVariable(TOOLINFO_MEMALLOCATED_VAR, TheTrueObj);
+        }
+        else
+        {
+            c->SendMessage1(toolInfo, "SETTEXTMEMORYISALLOCATED", TheTrueObj);
+        }
+    }
+    return true;
+}
+
+
 
 /**
  *  Methods for the .ToolTip class.
@@ -706,6 +757,18 @@ RexxObjectPtr checkForBoolean(RexxThreadContext *c, pCPlainBaseDialog pcpbd, Rex
     return result;
 }
 
+/**
+ * The subclass window procedure for a dialog control tool.
+ *
+ * @param hwnd
+ * @param msg
+ * @param wParam
+ * @param lParam
+ * @param id
+ * @param dwData
+ *
+ * @return LRESULT
+ */
 LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM lParam, UINT_PTR id, DWORD_PTR dwData)
 {
     pSubClassData      pData = (pSubClassData)dwData;
@@ -2026,10 +2089,16 @@ err_out:
  *
  *                      E.g., if at the keyword SHOW is present at index 2 in
  *                      the events array and the programmer wants to over-ride
- *                      the default method name of onNeedText, the this can be
- *                      done by putting the alternative method name at index 2
- *                      in the methods array.  There is no requirement to put
- *                      any name at index 1.
+ *                      the default method name of onShow, the this can be done
+ *                      by putting the alternative method name at index 2 in the
+ *                      methods array.  There is no requirement to put any name
+ *                      at index 1.
+ *
+ *                      In addition to the 5 event keywords, the keyword NORELAY
+ *                      can be used.  This keyword has the effect of turning off
+ *                      the relaying of the mouse messages to the tool.  If this
+ *                      keyword is used, there is no matching method to be
+ *                      invoked in the Rexx dialog.
  *
  *  @param  methods     [optional] Alternative method names to use for the
  *                      matching event in the events arguemnt.  This array can
@@ -2042,8 +2111,10 @@ err_out:
  *          incorrect usage is detected.
  *
  *          The management of the tool *always* relays the mouse events to the
- *          the tool tip control. If the optional events and methods arguments
- *          are omitted, then the only thing done is the relay event.
+ *          the tool tip control, unless the event keyword NoRelay is used. If
+ *          the optional events and methods arguments are omitted, then the only
+ *          thing done is the relay event.
+ *
  *  @remarks
  */
 RexxMethod4(logical_t, tt_manageAtypicalTool, RexxObjectPtr, toolObject, OPTIONAL_RexxArrayObject, events,
@@ -2256,11 +2327,18 @@ RexxMethod1(uint32_t, tt_pop, CSELF, pCSelf)
  *  Causes this ToolTip to display at the coordinates of the last mouse message.
  *
  *  @return  0, always.
+ *
+ *  @notes Requires common control library version 6.
  */
 RexxMethod1(uint32_t, tt_popUp, CSELF, pCSelf)
 {
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
+    {
+        return 0;
+    }
+
+    if ( ! requiredComCtl32Version(context, "popup", COMCTL32_6_0) )
     {
         return 0;
     }
@@ -2271,9 +2349,146 @@ RexxMethod1(uint32_t, tt_popUp, CSELF, pCSelf)
 }
 
 
+/** ToolTip::setDelayTime()
+ *
+ *  Sets the initial, pop-up, and reshow durations for this ToolTip control.
+ *
+ *  @param  which  [optional] Keyword that indicates which time to set.  The
+ *                 keyword can be one of the following:
+ *
+ *                 AUTOPOP   - Set the amount of time a ToolTip window remains
+ *                 visible if the pointer is stationary within a tool's bounding
+ *                 rectangle. To return the autopop delay time to its default
+ *                 value, set <time> to -1.
+ *
+ *                 INITIAL   - Set the amount of time a pointer must remain
+ *                 stationary within a tool's bounding rectangle before the
+ *                 ToolTip window appears. To return the initial delay time to
+ *                 its default value, set <time> to -1.
+ *
+ *                 RESHOW    - Set the amount of time it takes for subsequent
+ *                 ToolTip windows to appear as the pointer moves from one tool
+ *                 to another. To return the reshow delay time to its default
+ *                 value, set iTime to -1.
+ *
+ *                 AUTOMATIC - Sets all 3 delaty times to their default
+ *                 propotions. The autopop time will be ten times the initial
+ *                 time and the reshow time will be one fifth the initial time.
+ *                 When using this keyword, use a positive value for <time> to
+ *                 specify the initial time, in milliseconds.  Use a negative
+ *                 <time> to return all three delay times to their default
+ *                 values.  This is the defualt.
+ *
+ *  @param  time  [optional]  The time in milliseconds to set the specified
+ *                delay time.  The default is -1.
+ *
+ *  @return  0, always.
+ *
+ *  @notes
+ */
+RexxMethod3(uint32_t, tt_setDelayTime, OPTIONAL_CSTRING, which, OPTIONAL_int32_t, time, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+
+    uint32_t flag = TTDT_AUTOMATIC;
+    if ( argumentExists(1) )
+    {
+        if ( StrCmpI(which,      "AUTOPOP"  ) == 0 ) flag = TTDT_AUTOPOP;
+        else if ( StrCmpI(which, "INITIAL"  ) == 0 ) flag = TTDT_INITIAL;
+        else if ( StrCmpI(which, "RESHOW"   ) == 0 ) flag = TTDT_RESHOW;
+        else if ( StrCmpI(which, "AUTOMATIC") == 0 ) flag = TTDT_AUTOMATIC;
+        else
+        {
+            wrongArgValueException(context->threadContext, 1, "AUTOPOP, INITIAL, RESHOW, or AUTOMATIC", which);
+            return 0;
+        }
+    }
+
+    if ( argumentOmitted(2) )
+    {
+        time = -1;
+    }
+
+    SendMessage(pcdc->hCtrl, TTM_SETDELAYTIME, flag, (LPARAM)MAKELONG(time, 0));
+
+    return 0;
+}
+
+
+/** ToolTip::setMargin()
+ *
+ *  Sets the top, left, bottom, and right margins for a ToolTip window. A margin
+ *  is the distance, in pixels, between the ToolTip window border and the text
+ *  contained within the ToolTip window.
+ *
+ *  @param  margins  [Required]  A .Rect object that specifies the margins.
+ *
+ *  @return  0, always.
+ *
+ *  @notes  <margins> does not define a bounding rectangle. For the purpose of
+ *          this method, the attributes of the rectangle are interpreted as
+ *          follows:
+ *
+ *          left   - Distance between left border and left end of ToolTip text,
+ *          in pixels.
+ *
+ *          top    - Distance between top border and top of ToolTip text, in
+ *          pixels.
+ *
+ *          right  - Distance between right border and right end of ToolTip
+ *          text, in pixels.
+ *
+ *          bottom - Distance between bottom border and bottom of ToolTip text,
+ *          in pixels.
+ *
+ */
+RexxMethod2(uint32_t, tt_setMargin, RexxObjectPtr, _r, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+
+    PRECT r = rxGetRect(context, _r, 1);
+    if ( r == NULL )
+    {
+        return 0;
+    }
+
+    SendMessage(pcdc->hCtrl, TTM_SETMARGIN, 0, (LPARAM)r);
+
+    return 0;
+}
+
+
 /** ToolTip::setMaxTipWidth()
  *
+ *  Sets the maximum width for a ToolTip window.
  *
+ *  @param  max  [required] The maximum width for the ToolTip, or -1 to allow
+ *               any width.
+ *
+ *  @return  Returns the previous maximum ToolTip width.
+ *
+ *  @notes  The maximum width value does not indicate a ToolTip window's actual
+ *          width. Rather, if a ToolTip string exceeds the maximum width, the
+ *          control breaks the text into multiple lines, using spaces to
+ *          determine line breaks. If the text cannot be segmented into multiple
+ *          lines, it is displayed on a single line, which may exceed the
+ *          maximum ToolTip width.
+ *
+ *          For instance, if the maximum width is set to 20 and there is a word
+ *          within the text that is longer than 20, the word is not broken in
+ *          two.  It is displayed on a single line, causing that line to be
+ *          longer than 20.
+ *
+ *          The text can contain embedded new line characters and the ToolTip
+ *          will break the text at the new line indicator.
  */
 RexxMethod2(int32_t, tt_setMaxTipWidth, int32_t, max, CSELF, pCSelf)
 {
@@ -2283,6 +2498,52 @@ RexxMethod2(int32_t, tt_setMaxTipWidth, int32_t, max, CSELF, pCSelf)
         return 0;
     }
     return (int32_t)SendMessage(pcdc->hCtrl, TTM_SETMAXTIPWIDTH, 0, max);
+}
+
+
+/** ToolTip::setTipBkColor()
+ *
+ *  Sets the background color for this ToolTip window.
+ *
+ *  @param  color  [required]  The new color for the background of the window.
+ *
+ *  @return  Returns 0, always
+ *
+ *  @notes  The color is expressed as a COLORREF.  See ...
+ */
+RexxMethod2(uint32_t, tt_setTipBkColor, uint32_t, color, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+    SendMessage(pcdc->hCtrl, TTM_SETTIPBKCOLOR, color, 0);
+
+    return 0;
+}
+
+
+/** ToolTip::setTipTextColor()
+ *
+ *  Sets the text color for this ToolTip window.
+ *
+ *  @param  color  [required]  The new color for the text of the window.
+ *
+ *  @return  Returns 0, always
+ *
+ *  @notes  The color is expressed as a COLORREF.  See ...
+ */
+RexxMethod2(uint32_t, tt_setTipTextColor, uint32_t, color, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+    SendMessage(pcdc->hCtrl, TTM_SETTIPTEXTCOLOR, color, 0);
+
+    return 0;
 }
 
 
@@ -2298,6 +2559,8 @@ RexxMethod2(int32_t, tt_setMaxTipWidth, int32_t, max, CSELF, pCSelf)
  *          defaults to NONE.
  *
  *  @return  True on success, othewise false.
+ *
+ *  @notes  The title string can not be longer than 99 characters.
  */
 RexxMethod3(logical_t, tt_setTitle, CSTRING, title, OPTIONAL_RexxObjectPtr, _icon, CSELF, pCSelf)
 {
@@ -2352,11 +2615,114 @@ err_out:
 }
 
 
+/** ToolTip::setToolInfo()
+ *
+ *  Sets the information that this ToolTip control maintains for a tool.
+ *
+ *  @param  toolInfo   [required]  A .ToolInfo object whose attributes specify
+ *                     the information this ToolTip should use for a tool.  See
+ *                     the remarks.
+ *
+ *  @return Returns 0, always.
+ *
+ *  @notes  Some internal properties of a tool are established when the tool is
+ *          created, and are not recomputed by the ToolTip when the
+ *          setToolInfo() method is invoked.  If a .ToolInfo object is simply
+ *          instantiated and its attributes assigned values and passed to the
+ *          ToolTip control through the setToolInfo method, these properties
+ *          may be lost.
+ *
+ *          Instead, the programmer should first request the tool's current
+ *          .ToolInfo object by using the getToolInfo method. Then, modify the
+ *          attributes of this object as needed and pass it back to the ToolTip
+ *          control using the setToolInfo method.
+ */
+RexxMethod2(uint32_t, tt_setToolInfo, RexxObjectPtr, toolInfo, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    if ( ! context->IsOfType(toolInfo, "TOOLINFO") )
+    {
+        wrongClassException(context->threadContext, 1, "ToolInfo", toolInfo);
+        goto done_out;
+    }
+
+    LPTOOLINFO pTI = (LPTOOLINFO)context->ObjectToCSelf(toolInfo);
+
+    SendMessage(pcdc->hCtrl, TTM_SETTOOLINFO, 0, (LPARAM)pTI);
+
+done_out:
+    return 0;
+}
+
+
+/** ToolTip::setWindowTheme()
+ *
+ *  Sets the visual style of a ToolTip control.
+ *
+ *  @param  style  [required]  A string specifying the visual style.
+ *
+ *  @return  0, always.
+ *
+ *  @notes Requires common control library version 6.
+ *
+ *  @remarks  I do not have a clue as to what string to use for the visual
+ *            style.  Some info on the web indicates you might need to use the
+ *            TTS_USEVISUALSTYLE flag the tooltips. Not sure how reliable that
+ *            is.
+ */
+RexxMethod2(uint32_t, tt_setWindowTheme, CSTRING, style, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+
+    if ( ! requiredComCtl32Version(context, "setWindowTheme", COMCTL32_6_0) )
+    {
+        return 0;
+    }
+
+    LPWSTR theme = ansi2unicode(style);
+    if ( theme != NULL )
+    {
+        SendMessage(pcdc->hCtrl, TTM_SETWINDOWTHEME, 0, (LPARAM)theme);
+        LocalFree(theme);
+    }
+
+    return 0;
+}
+
+
 /** ToolTip::trackActivate()
  *
+ *  Activates or deactivates a tracking ToolTip.
  *
+ *  @param  toolHwnd  [required]
+ *
+ *  @param  toolId    [optional]
+ *
+ *  @param  activate  [optional]  If true the ToolTip is activated, if false the
+ *                    ToolTip is deactivated.  If omitted, the default is true.
+ *
+ *  @return  Returns 0 always.
+ *
+ *  @notes  toolHwnd and toolId are the Rexx object combination that uniquely
+ *          specifies a tool to this tool tip.
+ *
+ *          Tracking ToolTips must be manually activated and deactivated by
+ *          using the trackActivate method. Activation or deactivation also
+ *          shows or hides the ToolTip, respectively.
+ *
+ *          While a tracking ToolTip is active, the application must specify
+ *          the location of the ToolTip by invoking the trackPosition method.
  */
-RexxMethod4(uint32_t, tt_trackActivate, RexxObjectPtr, toolID, OPTIONAL_RexxObjectPtr, uID,
+RexxMethod4(uint32_t, tt_trackActivate, RexxObjectPtr, toolHwnd, OPTIONAL_RexxObjectPtr, toolID,
             OPTIONAL_logical_t, activate, CSELF, pCSelf)
 {
     TOOLINFO ti = { sizeof(ti) };
@@ -2367,7 +2733,7 @@ RexxMethod4(uint32_t, tt_trackActivate, RexxObjectPtr, toolID, OPTIONAL_RexxObje
         goto done_out;
     }
 
-    if ( ! genericToolID(context, toolID, uID, &ti, NULL, NULL) )
+    if ( ! genericToolID(context, toolHwnd, toolID, &ti, NULL, NULL) )
     {
         goto done_out;
     }
@@ -2388,13 +2754,26 @@ done_out:
  *
  *  Sets the position of a tracking ToolTip.
  *
- *  @param  coordinates  The position (x, y) to set.
+ *  @param  coordinates  [required] The position (x, y) to set.  The position
+ *                       can either be specified using a .Point object or by
+ *                       using a x and a y arguments.
  *
  *      Form 1:  A .Point object.
  *      Form 2:  x, y
  *
  *  @return  0, always.
  *
+ *  @notes  Tracking ToolTips change position on the screen dynamically.  While
+ *          a tracking ToolTip is active, the application must specify the
+ *          location of the ToolTip by invoking this method.
+ *
+ *          The ToolTip control chooses where to display the ToolTip window
+ *          based on the coordinates provided throug this method. This causes
+ *          the ToolTip window to appear beside the tool to which it
+ *          corresponds. To have ToolTip windows displayed at specific
+ *          coordinates, include the ABSOLUTE keyword in the <flags> argument
+ *          when adding the tool through <addTool>, <addToolEx>, or
+ *          <addToolRect>.
  */
 RexxMethod2(uint32_t, tt_trackPosition, ARGLIST, args, CSELF, pCSelf)
 {
@@ -2424,50 +2803,86 @@ RexxMethod2(uint32_t, tt_trackPosition, ARGLIST, args, CSELF, pCSelf)
 }
 
 
+/** ToolTip::update()
+ *
+ *  Forces the current tool to be redrawn.
+ *
+ *  @return  0, always.
+ */
+RexxMethod1(uint32_t, tt_update, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+
+    SendMessage(pcdc->hCtrl, TTM_UPDATE, 0, 0);
+
+    return 0;
+}
+
+
+/** ToolTip::updateTipText()
+ *
+ *  Sets the ToolTip text for a tool.
+ *
+ *  @param  toolInfo  [required]  A .ToolInfo object that specifies the tool and
+ *                    the text for the update.
+ *
+ *  @return  0, always.
+ *
+ *  @notes  The best way to use this method is to instantiate a new .ToolInfo
+ *          object through the ToolInfo::forID() method and then set the <text>
+ *          attribute of the object to the new text desired.
+ */
+RexxMethod2(uint32_t, tt_updateTipText, RexxObjectPtr, toolInfo, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    if ( ! context->IsOfType(toolInfo, "TOOLINFO") )
+    {
+        wrongClassException(context->threadContext, 1, "ToolInfo", toolInfo);
+        goto done_out;
+    }
+
+    LPTOOLINFO pTI = (LPTOOLINFO)context->ObjectToCSelf(toolInfo);
+
+    SendMessage(pcdc->hCtrl, TTM_UPDATETIPTEXT, 0, (LPARAM)pTI);
+
+done_out:
+    return 0;
+}
+
+
+/** ToolTip::windowFromPoint()
+ *
+ *  Allows a subclass procedure to cause a ToolTip to display text for a window
+ *  other than the one beneath the mouse cursor.
+ *
+ *  This method is not implemented by ooDialog.  Rather, this method header is
+ *  just placed here as a documentation reminder if the ability to subclass a
+ *  ToolTip control is every added to ooDialog.
+ *
+ *  @notes  This message is intended to be processed by an application that
+ *          subclasses a ToolTip. It is not intended to be sent by an
+ *          application. A ToolTip sends this message to itself before
+ *          displaying the text for a window. By changing the coordinates of the
+ *          point specified by lppt, the subclass procedure can cause the
+ *          ToolTip to display text for a window other than the one beneath the
+ *          mouse cursor.
+ */
+
+
 
 /**
  *  Methods for the .ToolInfo class.
  */
 #define TOOLINFO_CLASS            "ToolInfo"
-
-
-/**
- * Allocates a buffer for the tool info struct and copies the specified text
- * into it.
- *
- * @param c
- * @param pTI
- * @param text
- * @param argPos
- *
- * @return bool
- */
-static bool setToolInfoText(RexxMethodContext *c, LPTOOLINFO pTI, CSTRING text, size_t argPos)
-{
-    size_t l = strlen(text);
-    if ( l > MAX_TOOLINFO_TEXT_LENGTH )
-    {
-        stringTooLongException(c->threadContext, argPos, MAX_TOOLINFO_TEXT_LENGTH, l);
-        return false;
-    }
-
-    if ( l == 0 || StrCmpI("TEXTCALLBACK", text) == 0 )
-    {
-        pTI->lpszText = LPSTR_TEXTCALLBACK;
-    }
-    else
-    {
-        pTI->lpszText = (LPSTR)LocalAlloc(LPTR, MAX_TOOLINFO_TEXT_LENGTH + 1);
-        if ( pTI->lpszText == NULL )
-        {
-            outOfMemoryException(c->threadContext);
-            return false;
-        }
-        c->SetObjectVariable(TOOLINFO_MEMALLOCATED_VAR, TheTrueObj);
-        strcpy(pTI->lpszText, text);
-    }
-    return true;
-}
 
 
 /** ToolInfo::forHitTest()     [class]
@@ -2660,7 +3075,7 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, hwndObj, OPTIONAL_RexxObjectP
 
     if ( argumentExists(3) )
     {
-        if ( ! setToolInfoText(context, pTI, text, 3) )
+        if ( ! setToolInfoText(context, pTI, text, 3, NULLOBJECT) )
         {
             goto done_out;
         }
@@ -2799,7 +3214,7 @@ RexxMethod2(RexxObjectPtr, ti_setText, CSTRING, text, CSELF, cSelf)
     {
         safeLocalFree(pTI->lpszText);
     }
-    setToolInfoText(context, pTI, text, 1);
+    setToolInfoText(context, pTI, text, 1, NULLOBJECT);
     return NULLOBJECT;
 }
 

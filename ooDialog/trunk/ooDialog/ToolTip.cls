@@ -67,10 +67,18 @@
 ::method newToolRect unguarded external "LIBRARY oodialog tt_newToolRect"
 ::method pop unguarded external "LIBRARY oodialog tt_pop"
 ::method popUp unguarded external "LIBRARY oodialog tt_popUp"
+::method setDelayTime unguarded external "LIBRARY oodialog tt_setDelayTime"
+::method setMargin unguarded external "LIBRARY oodialog tt_setMargin"
 ::method setMaxTipWidth unguarded external "LIBRARY oodialog tt_setMaxTipWidth"
+::method setTipBkColor unguarded external "LIBRARY oodialog tt_setTipBkColor"
+::method setTipTextColor unguarded external "LIBRARY oodialog tt_setTipTextColor"
 ::method setTitle unguarded external "LIBRARY oodialog tt_setTitle"
+::method setToolInfo unguarded external "LIBRARY oodialog tt_setToolInfo"
+::method setWindowTheme unguarded external "LIBRARY oodialog tt_setWindowTheme"
 ::method trackActivate unguarded external "LIBRARY oodialog tt_trackActivate"
 ::method trackPosition unguarded external "LIBRARY oodialog tt_trackPosition"
+::method update unguarded external "LIBRARY oodialog tt_update"
+::method updateTipText unguarded external "LIBRARY oodialog tt_updateTipText"
 
 
 ::class 'ToolInfo' public
