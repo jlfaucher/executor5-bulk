@@ -69,8 +69,7 @@
   linkend="chpDialogControlObject">object</link> and therefore has all methods of the of the dialog control object.
 </para>
 <para>
-  The following concepts, classes, and methods from other classes are needed, or are useful, when working with ToolTip
-  controls:
+  The following classes, and methods from other classes, are needed, or are useful, when working with ToolTip controls:
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">ToolInfo Class</emphasis></term>
@@ -117,22 +116,38 @@
   Each ToolTip can contain more than one <emphasis role="italic">tool</emphasis>. Becuase of this, the ToolTip control
   needs a way of uniquely identifying each individual tool. In the operating system, each tool is identified using a
   combination of a window <link linkend="defHandle">handle</link> and an ID. The ID however, can be either another window
-  handle or a unique number. The number is similar to a resource ID.
+  handle or a unique number. When the ID is a number, the number is similar to a <xref linkend="defResourceId"/>.
 </para>
 <para>
-  The ooDialog framework allows the Rexx programmer to identify an unique tool in several different ways. This
-  documentation refers to a tool identifier as a <emphasis role="italic">Rexx object combination</emphasis>. This can be a
-  combination of two Rexx objects, however quite often only one object is needed to indentify a tool.
-  <computeroutput>ToolTip</computeroutput> methods that require a tool to be identifed, have as their first required
-  argument a <emphasis role="italic">toolHwnd</emphasis> and as a second optional argument a <emphasis
-  role="italic">toolId</emphasis>.
+  For the operating systm, the first part of the 2-part identifier is the handle of the window that the ToolTip will send
+  notifications to. The second part of the identifier can be a second window handle, if the ToolTip is going to subclass that
+  window, or an unique number if the ToolTip is not going to subclass the tool. This may seem somewhat complicated to the
+  Rexx programmer, especially if the programer has little experience with the underlying details of programming dialog
+  controls.
 </para>
 <para>
-  The combination of the two arguments, <emphasis role="italic">toolHwnd</emphasis> and <emphasis
-  role="italic">toolID</emphasis>, is always handled in the same way, which is as follows:
+  The ooDialog framework attempts to simplify this somewhat by allowing the Rexx programmer to identify an unique tool in
+  several different ways. For the most common use of ToolTips, identifying a tool is simple and can be done with one Rexx
+  object. However, ooDialog also supplies the necessary means to identify a tool for more advanced use of ToolTips.
+</para>
+<para>
+  This documentation refers to a tool identifier as a <emphasis role="italic">Rexx object combination</emphasis>. This can be
+  a combination of two Rexx objects, but quite often only one object is needed to indentify a tool.
+  <computeroutput>ToolTip</computeroutput> methods that require a tool to be identifed, have as their first required argument
+  a <emphasis role="italic">toolHwnd</emphasis> argument and as a second optional argument a <emphasis
+  role="italic">toolId</emphasis> argument. The combination of the two arguments, <emphasis role="italic">toolHwnd</emphasis>
+  and <emphasis role="italic">toolID</emphasis>, is always handled in the same way, which is as follows:
 </para>
 
 <variablelist>
+  <varlistentry><term><emphasis role="italic">hwndTool</emphasis> == a <computeroutput>ToolInfo</computeroutput> object</term>
+  <listitem>
+  <para>
+    A <computeroutput>ToolInfo</computeroutput> object always uniquely identifies a tool. When the <emphasis
+    role="italic">toolHwnd</emphasis> argument is a <computeroutput>ToolInfo</computeroutput> object that is sufficient and
+    the second <emphasis role="italic">toolID</emphasis> argument is ignored.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="italic">hwndTool</emphasis> \== a <computeroutput>ToolInfo</computeroutput> object and <emphasis role="italic">toolID</emphasis> is omitted</term>
   <listitem>
   <para>
@@ -141,19 +156,32 @@
     Rexx programmer to identify this type of tool by using just the dialog control object.  When the <emphasis
     role="italic">toolHwnd</emphasis> argument is not a <computeroutput>ToolInfo</computeroutput> object, and the <emphasis
     role="italic">toolID</emphasis> is omitted, then the <emphasis role="italic">toolHwnd</emphasis> argument must be a
-    dialog control object. This dialog control object is the tool identifier.
+    dialog control object. This dialog control object is the tool identifier. The ooDialog framework deduces the proper
+    values to identify the tool to the operating system.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="italic">hwndTool</emphasis> \== a <computeroutput>ToolInfo</computeroutput> object and <emphasis role="italic">toolID</emphasis> is not omitted</term>
   <listitem>
   <para>
-    In this case, <emphasis role="italic">hwndTool</emphasis> can be either a dialog object, or a dialog control object.
-    When <emphasis role="italic">hwndTool</emphasis> is a dialog object, then <emphasis role="italic">toolID</emphasis>
-    must be either a dialog control object or an unique whole number. If <emphasis role="italic">hwndTool</emphasis>
+    This combination of identifying objects is needed when some more advanced uses of ToolTips are desired. It allows the
+    programmer to specify the exact values that should be passed on to the operarting system to identify the tool.  For this
+    combination, <emphasis role="italic">hwndTool</emphasis> can be either a dialog object, or a dialog control object. When
+    <emphasis role="italic">hwndTool</emphasis> is a dialog object, then <emphasis role="italic">toolID</emphasis> must be
+    either a dialog control object or an unique whole number. The first part of the 2-part operating system ID for the tool
+    is set the the window handle of the Rexx object, the dialog window handle or the dialog control window handle.
+  <para>
+    The <emphasis role="italic">toolID</emphasis> argument can be either a dialog control, or an unique non-negative whole
+    number. If the <emphasis role="italic">toolHwnd</emphasis> argument is a dialog, then <emphasis
+    role="italic">toolID</emphasis> can be a dialog control or a number. However, if <emphasis
+    role="italic">toolHwnd</emphasis> is a dialog control, the <emphasis role="italic">toolID</emphasis> must be a number.
+    The second part of the 2-part operating system identifier is set to the window handle of the dialog control, if <emphasis
+    role="italic">toolID</emphasis> is a dialoog control. Otherwise the second part is set to the number specified. Note that
+    numbers can be specified using <link linkend="defSymbolicId">symbolic</link> IDs just as other types of resource IDs are.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+
+</section>  <!-- End Tool Identification Section -->
 
 <section id="sctMethodsToolTip"><title>Method Table</title>
 <para>
@@ -173,7 +201,15 @@
 <tbody>
 <row>
 <entry align="center"><emphasis role="bold">Useful</emphasis></entry>
-<entry align="center"><emphasis role="bold"> External Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Classes</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="clsToolInfo">ToolInf</link></entry>
+<entry>A <computeroutput>ToolInfo</computeroutput> object is used to supply tool information to, or recieve tool information from, the ToolTip control.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="tmthNewToolTip">newToolTip</link></entry>
@@ -182,14 +218,6 @@
 <row>
 <entry><link linkend="tmthConnectToolTipEvent">connectToolTipEvent</link></entry>
 <entry>Connects tool tip event notifications to a method in the Rexx dialog object</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-</row>
-<row>
-<entry><xref linkend="mthActivate"/></entry>
-<entry>x</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -209,6 +237,134 @@
 </row>
 <row>
 <entry><xref linkend="mthAddToolRect"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthAdjustRect"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthDelTool"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthEnumTools"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetBubbleSize"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthCurrentToolInfo"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetDelayTime"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetMargin"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetMaxTipWidth"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetText"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetTipBkColor"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetTipTextColor"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthTitle"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetToolCount"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetToolInfo"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthHasCurrentTool"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthHitTest"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthMangeAtypicalTool"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthNewToolRect"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthPop"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthPopup"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetDelayTime"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetMargin"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetMaxTipWidth"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthTipBkColor"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetTipTextColor"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetTitle"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetToolInfo"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetWindowTheme"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthTrackActivate"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthTrackPosition"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthUpdate"/></entry>
+<entry>x</entry>
+</row>
+<row>
+<entry><xref linkend="mthUpdateTipText"/></entry>
 <entry>x</entry>
 </row>
 </tbody></tgroup>
