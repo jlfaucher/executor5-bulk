@@ -224,6 +224,23 @@ Changes since ooSQLite Version 1.0.0.8514 (Preview)
   * #1142 ooSQLite callback functions can use larger than needed memory
           resources
 
+  * #1144 OOsqlite3 Foreign_keys
+
+
+
+  Enhancements:
+  -------------
+
+  * Enforcement of foreign key constraints is enabled by default for new
+  database connections, in both ooSQLite and ooSQLite3.  Each database
+  connection can always turn enforcement of foreign key constraints off
+  at run-time using the foreign_keys pragma.  This "enhancement" is a
+  result of bug #1144 listed above.
+
+  In SQLite, enforcement of foreign key constraints is normally off by
+  default.  This is changed in ooSQLite so that enforcement of foreign
+  key constraints will be on by default.
+
 
   Documentation:
   --------------

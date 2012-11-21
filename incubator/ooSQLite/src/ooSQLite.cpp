@@ -321,35 +321,6 @@ static inline RexxStringObject ooSQLiteErr(RexxThreadContext *c, wholenumber_t r
 }
 
 /**
- * Enables foreign key support in the specified database connection.
- *
- * Foreign key support is disabled by default in SQLite 3.7.13 and must be
- * explicitly enabled on each database connection.  In ooSQLite, foreign key
- * support is enabled by default - this function is called for each opened
- * database.
- *
- * @param db
- *
- * @return bool
- */
-static bool enableForeignKeys(sqlite3 *db)
-{
-    sqlite3_stmt *stmt;
-    const char    sql[] = "PRAGMA foreign_keys = ON;";
-
-    int rc = sqlite3_prepare_v2(db, sql, (int)strlen(sql) + 1, &stmt, NULL);
-    if ( rc != SQLITE_OK )
-    {
-        return false;
-    }
-
-    rc = sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
-
-    return rc == SQLITE_DONE;
-}
-
-/**
  * Similar to the other ooSQLiteErr() functions above, but the primary purpose
  * is to set the databas connection last error message and last error code.
  *
@@ -3775,7 +3746,6 @@ static bool setDBInitStatus(RexxMethodContext *c, pCooSQLiteConn pConn, sqlite3 
         // Here we enable things that are enabled / disabled on a per database
         // connection basis that are set by default for ooSQLite.
         sqlite3_extended_result_codes(pConn->db, 1);
-        enableForeignKeys(db);
     }
 
     c->SetObjectVariable("rxLastErrMsg", pConn->lastErrMsg);
@@ -9318,7 +9288,6 @@ RexxRoutine4(int, oosqlOpen_rtn, CSTRING, file, CSTRING, dbConn, OPTIONAL_int32_
         // Here we enable things that are enabled / disabled on a per database
         // connection basis that are set by default for ooSQLite.
         sqlite3_extended_result_codes(db, 1);
-        enableForeignKeys(db);
     }
 
     context->SetContextVariable(dbConn, context->NewPointer(db));
