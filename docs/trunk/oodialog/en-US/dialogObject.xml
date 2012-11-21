@@ -5118,7 +5118,7 @@ center. </para>
 <listitem><para>Shows the dialog
 </para></listitem></varlistentry>
 <varlistentry><term>NOREDRAW</term>
-<listitem><para>Center the dialog without updating the display. Use the <xref linkend="mthUpdate"/> method
+<listitem><para>Center the dialog without updating the display. Use the <xref linkend="mthUpdateClsWindowBase"/> method
 to manually update the display.
 </para></listitem></varlistentry>
 </variablelist>
@@ -5812,7 +5812,7 @@ MyDialog~hideWindow(hwnd)
 <para>The hideWindowFast method is similar to the <xref linkend="mthHideWindow"/> method, but it is faster because the window's
 or item's area is not redrawn. The hideWindowFast method
 is used when more than one state is modified. After the operations, you can
-manually redraw the dialog window, using the <xref linkend="mthUpdate"/> method. </para>
+manually redraw the dialog window, using the <xref linkend="mthUpdateClsWindowBase"/> method. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:

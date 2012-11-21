@@ -265,7 +265,7 @@
 <entry>Sets the text, the caption, of the dialog.</entry>
 </row>
 <row>
-<entry><xref linkend="mthSetTitle"/></entry>
+<entry><xref linkend="mthSetTitleClsWindowBase"/></entry>
 <entry>Sets the text of the dialog.</entry>
 </row>
 <row>
@@ -289,7 +289,7 @@
 <entry>Sets the text of the dialog.</entry>
 </row>
 <row>
-<entry><xref linkend="mthUpdate"/></entry>
+<entry><xref linkend="mthUpdateClsWindowBase"/></entry>
 <entry>Invalidates the entire client area of the dialog.</entry>
 </row>
 <row>
@@ -1294,7 +1294,7 @@ self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
 </programlisting>
 
     This is usually done when there are a number of controls to make visible at one time.  The programmer would make
-    them all visible without redrawing. Then use the <xref linkend="mthUpdate"/> method to schedule
+    them all visible without redrawing. Then use the <xref linkend="mthUpdateClsWindowBase"/> method to schedule
     repainting everything at once.
   </para>
   </listitem></varlistentry>
@@ -1961,8 +1961,8 @@ Tree-view Control styles
 </section>
 
 <section id="mthGetText" xreflabel="getText"><title>getText</title>
-<indexterm><primary>getText</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>getText</secondary></indexterm>
+<indexterm><primary>getText</primary><secondary>WindowBase class</secondary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>getText</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>getText</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>getText</secondary></indexterm>
 <programlisting>
@@ -2311,8 +2311,8 @@ stFont2~setRect(r)
     When a window is marked invisible, the operating system will not draw or redraw the window. It will only draw or
     redraw the area the window covered. For example if the window is part of another window's client area, and the
     client area is redrawn, then the window marked as invisible is not drawn. There are several methods that
-    the programmer can use to cause a window to be redrawn, <xref linkend="mthUpdate"/>),
- <xref linkend="mthDraw"/>, etc..
+    the programmer can use to cause a window to be redrawn, <xref linkend="mthUpdateClsWindowBase"/>,
+    <xref linkend="mthDraw"/>, etc..
   </para>
   <para>
     To restate this for clarity, when the window is marked invisible, having the window update or redraw itself will do
@@ -3916,8 +3916,8 @@ Generic form:
     the user has entered, etc..
   </para>
   <para>
-    The <emphasis role="italic">setText</emphasis>, <xref linkend="mthSetTitle"/>, and <xref linkend="mthTitleEquals"/>
-    methods do exactly the same thing. The methods are interchangeable.
+    The <emphasis role="italic">setText</emphasis>, <xref linkend="mthSetTitleClsWindowBase"/>, and <xref
+    linkend="mthTitleEquals"/> methods do exactly the same thing. The methods are interchangeable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3936,9 +3936,9 @@ Generic form:
 </variablelist>
 </section>  <!-- End WindowBase::setText() -->
 
-<section id="mthSetTitle" xreflabel="setTitle"><title>setTitle</title>
-<indexterm><primary>title=</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>setTitle</secondary></indexterm>
+<section id="mthSetTitleClsWindowBase" xreflabel="setTitle"><title>setTitle</title>
+<indexterm><primary>setTitle</primary><secondary>WindowBase class</secondary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>setTitle</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>setTitle</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>setTitle</secondary></indexterm>
 <programlisting>
@@ -4364,7 +4364,7 @@ Generic form:
   <para>
     When a window is marked visible, the operating system does not redraw the window until necessary. For example if the
     window is covered by another window and then uncovered. There are several methods that the programmer can use to
-    cause a window to be redrawn, <xref linkend="mthUpdate"/>), <xref linkend="mthDraw"/>, etc..
+    cause a window to be redrawn, <xref linkend="mthUpdateClsWindowBase"/>), <xref linkend="mthDraw"/>, etc..
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4694,9 +4694,9 @@ Generic form:
 </para>
 </section>
 
-<section id="mthUpdate" xreflabel="update"><title>update</title>
-<indexterm><primary>update</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>update</secondary></indexterm>
+<section id="mthUpdateClsWindowBase" xreflabel="update"><title>update</title>
+<indexterm><primary>update</primary><secondary>WindowBase class</secondary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>update</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>update</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>update</secondary></indexterm>
 <programlisting>
