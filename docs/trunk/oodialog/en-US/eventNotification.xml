@@ -7450,87 +7450,94 @@ incorrect.
   <listitem>
   <para>
     The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the tool tip control whose notification message is to be connected to a method in the Rexx dialog.
+      May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
+    <listitem>
+    <para>
+      Exactly one of the following keywords. The keyword specifies the event to be connected. Case is not significant.
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>LINKCLICK</member>
+        <member>NEEDTEXT</member>
+        <member>POP</member>
+        <member>SHOW</member>
+      </simplelist>
+    </para>
     <variablelist>
-      <varlistentry><term>id [required]</term>
+      <varlistentry><term>LINKCLICK</term>
       <listitem>
       <para>
-        The resource ID of the tool tip control whose notification message is to be connected to a Rexx dialog's method.
-        May be numeric or <xref linkend="defSymbolicId"/>.
+        Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
       </para>
-      </listitem></varlistentry>
-      <varlistentry><term>event [required]</term>
-      <listitem>
       <para>
-        Exactly one of the following keywords. The keyword specifies the event to be connected and case is not
-        significant.
-      </para>
-      <variablelist>
-        <varlistentry><term>LINKCLICK</term>
-        <listitem>
-        <para>
-          Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
-        </para>
-        <para>
-          This notification is sent when a text link inside a balloon ToolTip is clicked. This is an example of when this
-          notification is sent. Assume that the balloon ToolTip contains the following text:
+        This notification is sent when a text link inside a balloon ToolTip is clicked. MSDN provides this example of when
+        this notification is sent. Assume that the balloon ToolTip contains the following text:
 
 <programlisting>
 <![CDATA[
-          "This is a <A>link</A>".
+        "This is a <A>link</A>".
 ]]>
 </programlisting>
 
-          When <emphasis role="italic">link</emphasis> is clicked, the LINKCLICK notification is sent.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry id="kywToolTipNEEDTEXT" xreflabel="NEEDTEXT"><term>NEEDTEXT</term>
-        <listitem>
-        <para>
-          This notification is sent when the ToolTip control needs to retrieve the text used to display a ToolTip window.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>POP</term>
-        <listitem>
-        <para>
-          This notification is sent when a ToolTip is about to be hidden.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry id="kywToolTipSHOW" xreflabel="SHOW"><term>SHOW</term>
-        <listitem>
-        <para>
-          This notification is sent when a ToolTip control is about to be displayed.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-      </listitem></varlistentry>
-      <varlistentry><term>methodName [optional]</term>
-      <listitem>
-      <para>
-        The name of the method that is to be invoked whenever the specified notification is received from the tool tip
-        control. The programmer defines this method. If this argument is omitted, a method name is automatically generated
-        that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
-        <computeroutput>onNeedText</computeroutput>. The method name can not be the empty string. The empty string is treated
-        as an omitted argument.
+        When <emphasis role="italic">link</emphasis> is clicked, the LINKCLICK notification is sent.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>willReply [optional]</term>
+      <varlistentry id="kywToolTipNEEDTEXT" xreflabel="NEEDTEXT"><term>NEEDTEXT</term>
       <listitem>
       <para>
-        The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
-        linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler, for some of the ToolTip events.
-        The default is <computeroutput>.true</computeroutput>, the interpreter will not wait for the reply. If <emphasis
-        role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
-        event handling method returns a value.
+        This notification is sent when the ToolTip control needs to retrieve the text used to display a ToolTip window.
       </para>
+      </listitem></varlistentry>
+      <varlistentry><term>POP</term>
+      <listitem>
       <para>
-        For the SHOW and NEEDTEXT events, the <emphasis role="italic">willReply</emphasis> argument is ignored. The event
-        handler for those events must always return a value. For the POP and PARSELINKS events, the <emphasis
-        role="italic">willReply</emphasis> argument can be used to specify whether the interpreter requires a reply from the
-        event handler or not.
+        This notification is sent when a ToolTip is about to be hidden.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolTipSHOW" xreflabel="SHOW"><term>SHOW</term>
+      <listitem>
+      <para>
+        This notification is sent when a ToolTip control is about to be displayed.
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method that is to be invoked whenever the specified notification is received from the tool tip
+      control. The programmer defines this method. If this argument is omitted, a method name is automatically generated
+      that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
+      <computeroutput>onNeedText</computeroutput>. The method name can not be the empty string. The empty string is treated
+      as an omitted argument.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
+      linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler, for some of the ToolTip events.
+      The default is <computeroutput>.true</computeroutput>, the interpreter will not wait for the reply. If <emphasis
+      role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
+      event handling method returns a value.
+    </para>
+    <para>
+      For the SHOW and NEEDTEXT events, the <emphasis role="italic">willReply</emphasis> argument is ignored. The event
+      handler for those events must always return a value. For the POP and PARSELINKS events, the <emphasis
+      role="italic">willReply</emphasis> argument can be used to specify whether the interpreter requires a reply from the
+      event handler or not.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>

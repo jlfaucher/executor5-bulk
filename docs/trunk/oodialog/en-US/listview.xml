@@ -56,62 +56,64 @@
   Box</emphasis> control. The ooDialog <xref linkend="clsListBox"/> class provides the interface to the
   Windows List Box control.  In general, the List-View control is more powerful than the List Box control.
 </para>
-<para id="listControlExtendedStyles">
-  List-View <emphasis role="bold">Extended Styles</emphasis>: The List-View control has been updated by Microsoft to
-  include a number of <emphasis role="italic">extended</emphasis> styles. These styles are similar to the styles that
-  can be used to create a ListView, (see the <xref linkend="mthCreateListView"/> method,) like the
-  <computeroutput>NOHEADER</computeroutput> or <computeroutput>SINGLESEL</computeroutput> styles.  However, the way that
-  they are added or removed from the ListView is different.  For instance, the extended styles can not be added to a
-  ListView at the time of creation.  They can only be added after the underlying Windows control has been created.  For
-  all practical purposes this means in the <xref linkend="mthInitDialog"/> method, or at some point in
-  the life cycle of the dialog after that.
-</para>
-<para>
-  Some of the extended styles are only available on later versions of the Windows OS.  As an example, the
-  <computeroutput>LABELTIP</computeroutput> and <computeroutput>SIMPLESELECT</computeroutput> styles are only available
-  on Windows XP.  The documentation on the extended styles will note any requirements for each style.  To work with the
-  extended List-View styles, use the <xref linkend="mthAddExtendedStyle"/>, the
- <xref linkend="mthRemoveExtendedStyle"/>, or the
- <xref linkend="mthReplaceExtendedStyle"/> methods.
-</para>
-<para>
-  There are a number of nuances to the behavior of the different extended styles on the different versions of Windows,
-  far too many to try and detail in this documentation.  The behavior documented here is the general behavior on Windows
-  XP with service pack 2.
-</para>
-<para>
-  If there is a need for detailed information concerning the subtle differences in behavior on earlier versions of
-  Windows, the programmer should consult the Windows <xref linkend="defWindowsDoc"/>.
-</para>
-
+<variablelist>
+  <varlistentry id="varListControlExtendedStyles"><term><emphasis role="bold">Extended Styles</emphasis></term>
+  <listitem>
+  <para>
+    The List-View control has been updated by Microsoft to include a number of <emphasis role="italic">extended</emphasis>
+    styles. These styles are similar to the styles that can be used to create a ListView, (see the <xref
+    linkend="mthCreateListView"/> method,) like the <computeroutput>NOHEADER</computeroutput> or
+    <computeroutput>SINGLESEL</computeroutput> styles.  However, the way that they are added or removed from the ListView is
+    different.  For instance, the extended styles can not be added to a ListView at the time of creation.  They can only be
+    added after the underlying Windows control has been created.  For all practical purposes this means in the <xref
+    linkend="mthInitDialog"/> method, or at some point in the life cycle of the dialog after that.
+  </para>
+  <para>
+    Some of the extended styles are only available on later versions of the Windows OS.  As an example, the
+    <computeroutput>LABELTIP</computeroutput> and <computeroutput>SIMPLESELECT</computeroutput> styles are only available
+    on Windows XP.  The documentation on the extended styles will note any requirements for each style.  To work with the
+    extended List-View styles, use the <xref linkend="mthAddExtendedStyle"/>, the
+   <xref linkend="mthRemoveExtendedStyle"/>, or the
+   <xref linkend="mthReplaceExtendedStyle"/> methods.
+  </para>
+  <para>
+    There are a number of nuances to the behavior of the different extended styles on the different versions of Windows,
+    far too many to try and detail in this documentation.  The behavior documented here is the general behavior on Windows
+    XP with service pack 2.
+  </para>
+  <para>
+    If there is a need for detailed information concerning the subtle differences in behavior on earlier versions of
+    Windows, the programmer should consult the Windows <xref linkend="defWindowsDoc"/>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
   needed, or are useful, when working with list-view controls:
+</para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the <xref linkend="mthNewListView"/> method of the
-    dialog <xref linkend="chpDialogObject"/> to retrieve a list-view object.
+    Use the <xref linkend="mthNewListView"/> method of the dialog <xref linkend="chpDialogObject"/> to retrieve a list-view
+    object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically create a list-view in the dialog template of a <xref linkend="clsUserDialog"/> use
-    the <xref linkend="mthCreateListView"/> method.
+    To dynamically create a list-view in the dialog template of a <xref linkend="clsUserDialog"/> use the <xref
+    linkend="mthCreateListView"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying list-view control to a
-    method in the Rexx dialog object use the <xref linkend="mthConnectListViewEvent"/>
-    method.
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying list-view control to a method in the Rexx
+    dialog object use the <xref linkend="mthConnectListViewEvent"/> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</para>
 
 <section id="sctMethodsListView"><title>Method Table</title>
 <para>
@@ -809,7 +811,7 @@
 
 <para>
   The <emphasis role="italic">addExtendedStyle</emphasis> method adds one or more of the <link
-  linkend="listControlExtendedStyles">extended</link> list-view styles to a list-view. These styles can not be added until
+  linkend="varListControlExtendedStyles">extended</link> list-view styles to a list-view. These styles can not be added until
   the underlying Windows list-view control has been created. They can be added in the <xref linkend="mthInitDialog"/>
   method, or any time thereafter.
 </para>
@@ -2546,7 +2548,7 @@ Current order:
 </programlisting>
 
 <para>The <computeroutput>getExtendedStyle</computeroutput> method returns
-the extended <link linkend="listControlExtendedStyles">styles</link> of a
+the extended <link linkend="varListControlExtendedStyles">styles</link> of a
 <computeroutput>ListView</computeroutput>.  The styles are returned as a
 string of blank delimited style keywords.  These are the same keywords as those
 used to set the styles.
@@ -2644,7 +2646,7 @@ view control does have the style.
 </programlisting>
 
 <para>The <computeroutput>getExtendedStyleRaw</computeroutput> method returns
-the extended <link linkend="listControlExtendedStyles">styles</link> of a
+the extended <link linkend="varListControlExtendedStyles">styles</link> of a
 <computeroutput>ListView</computeroutput> as the numeric value of the
 extended style flags.  This method is provided for programmers familiar with the
 Windows API who may wish to know, or to work with, the actual value of the
@@ -5115,7 +5117,7 @@ return 0
 </programlisting>
 
 <para>The <computeroutput>removeExtendedStyle</computeroutput> method removes
-one or more extended <link linkend="listControlExtendedStyles">styles</link> of
+one or more extended <link linkend="varListControlExtendedStyles">styles</link> of
 a List-View control.
 </para>
 <variablelist>
@@ -5247,7 +5249,7 @@ different styles, refer to <xref linkend="mthCreateListView"/>.
 
 <para>The <computeroutput>replaceExtendedStyle</computeroutput> method removes
 some of the List-View control's
-extended <link linkend="listControlExtendedStyles">styles</link> and adds new
+extended <link linkend="varListControlExtendedStyles">styles</link> and adds new
 extended styles. This is the equivalent of first
 using the <computeroutput>RemoveExtendeStyle</computeroutput> method and then
 using the <computeroutput>addExtendedStyle</computeroutput> method.
