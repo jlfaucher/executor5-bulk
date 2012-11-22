@@ -2271,7 +2271,8 @@ MsgReplyType processTCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  *           ((NMHDR *)lParam)->idFrom seem to always have the same value.
  *
  *           However, for the TTN_LINKCLICK notification, this value is always
- *           0.  (Seems to be always 0, and this sort of matches MSDN.)
+ *           0.  (Seems to be always 0, and this sort of matches what MSDN
+ *           says.)
  *
  *           The TTN_NEEDTEXT notification presents a problem.  For strings
  *           longer than 80 characters, MSDN says you need to point the lpszText
@@ -2319,13 +2320,14 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             RexxDirectoryObject info = c->NewDirectory();
 
-            c->DirectoryPut(info, c->NullString(), "TEXT");
-
             RexxObjectPtr    userData = nmtdi->lParam == NULL ? TheNilObj : (RexxObjectPtr)nmtdi->lParam;
             RexxStringObject flags    = ttdiFlags2keyword(c, nmtdi->uFlags);
-            RexxArrayObject  args     = c->ArrayOfFour(rxToolID, rxToolTip, info, userData);
 
-            c->ArrayPut(args, flags, 5);
+            c->DirectoryPut(info, c->NullString(), "TEXT");
+            c->DirectoryPut(info, userData, "USERDATA");
+            c->DirectoryPut(info, flags, "FLAGS");
+
+            RexxArrayObject args = c->ArrayOfThree(rxToolID, rxToolTip, info);
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
             rexxReply = requiredBooleanReply(c, pcpbd, rexxReply, methodName, false);
@@ -4016,7 +4018,14 @@ static bool keyword2ttn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
 {
     uint32_t ttn;
 
-    if ( StrCmpI(keyword,      "LINKCLICK") == 0 ) ttn = TTN_LINKCLICK;
+    if ( StrCmpI(keyword, "LINKCLICK") == 0 )
+    {
+        if ( ! requiredComCtl32Version(c, "LINKCLICK", COMCTL32_6_0) )
+        {
+            return false;
+        }
+        ttn = TTN_LINKCLICK;
+    }
     else if ( StrCmpI(keyword, "NEEDTEXT")  == 0 ) ttn = TTN_NEEDTEXT;
     else if ( StrCmpI(keyword, "POP")       == 0 ) ttn = TTN_POP;
     else if ( StrCmpI(keyword, "SHOW")      == 0 ) ttn = TTN_SHOW;

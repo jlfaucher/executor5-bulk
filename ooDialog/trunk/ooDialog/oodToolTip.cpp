@@ -857,13 +857,14 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
 
                     RexxDirectoryObject info = c->NewDirectory();
 
-                    c->DirectoryPut(info, c->NullString(), "TEXT");
-
                     RexxObjectPtr    userData = nmtdi->lParam == NULL ? TheNilObj : (RexxObjectPtr)nmtdi->lParam;
                     RexxStringObject flags    = ttdiFlags2keyword(c, nmtdi->uFlags);
-                    RexxArrayObject  args     = c->ArrayOfFour(pred->rxToolTip, pData->pcdc->rexxSelf, info, userData);
 
-                    c->ArrayPut(args, flags, 5);
+                    c->DirectoryPut(info, c->NullString(), "TEXT");
+                    c->DirectoryPut(info, userData, "USERDATA");
+                    c->DirectoryPut(info, flags, "FLAGS");
+
+                    RexxArrayObject args = c->ArrayOfThree(pred->rxToolTip, pData->pcdc->rexxSelf, info);
 
                     RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
 
