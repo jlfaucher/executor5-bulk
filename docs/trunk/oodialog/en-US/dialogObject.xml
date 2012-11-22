@@ -435,12 +435,16 @@
 <entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
 </row>
 <row>
+<entry><xref linkend="wedoCreateFontEx"/></entry>
+<entry>Retrieves a handle to a logical font from the system font manager</entry>
+</row>
+<row>
 <entry><xref linkend="wedoCreatePen"/></entry>
 <entry>Creates a logical pen that has the specified style, width, and color.</entry>
 </row>
 <row>
-<entry><xref linkend="wedoCreateFontEx"/></entry>
-<entry>Retrieves a handle to a logical font from the system font manager</entry>
+<entry><xref linkend="createToolTip"/></entry>
+<entry>Creates the underlying Windows ToolTip control and returns an instantiated Rexx <xref linkend="clsToolTip"/> object.</entry>
 </row>
 <row>
 <entry><xref linkend="enDefListDragHandler"/></entry>
@@ -3102,6 +3106,151 @@ controlObject = dialogObject~new[ControlName](resourceID)
   dialog has been created. For any error, all the methods return the <emphasis role="italic">.nil</emphasis> object.
 </para>
 
+
+<section id="mthCreateToolTip" xreflabel="createToolTip"><title>createToolTip</title>
+<indexterm><primary>createToolTip</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>createToolTip</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createToolTip(--id--+----------+--)-------------><
+                        +-,-style--+
+]]>
+</programlisting>
+
+<para>
+  Creates the underlying Windows ToolTip control and returns an instantiated Rexx <xref linkend="clsToolTip"/> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the ToolTip dialog control. May be numeric or <xref linkend="defSymbolicId"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. If this argument is
+        omitted, the default style is set to NOPREFIX ALWAYSTIP:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>ALWAYSTIP     </member>
+          <member>BALLOON       </member>
+          <member>CLOSE         </member>
+          <member>NOANIMATE     </member>
+          <member>NOFADE        </member>
+          <member>NOPREFIX      </member>
+          <member>USEVISUALSTYLE</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>ALWAYSTIP</term>
+          <listitem>
+          <para>
+            Indicates that the ToolTip control appears when the cursor is on a tool, even if the ToolTip control's owner
+            window is inactive. Without this style, the ToolTip appears only when the tool's owner window is active.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BALLOON</term>
+          <listitem>
+          <para>
+            Indicates that the ToolTip control has the appearance of a cartoon <emphasis role="italic">balloon</emphasis>,
+            with rounded corners and a stem pointing to the item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CLOSE</term>
+          <listitem>
+          <para>
+            Displays a Close button on the ToolTip.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOANIMATE</term>
+          <listitem>
+          <para>
+            Disables sliding ToolTip animation on Microsoft Windows 2000 systems.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOFADE</term>
+          <listitem>
+          <para>
+            Disables fading ToolTip animation on Windows 2000 systems.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOPREFIX</term>
+          <listitem>
+          <para>
+            Prevents the system from stripping the ampersand character from a string. Without this style, the system
+            automatically strips ampersand characters. This allows an application to use the same string as both a menu item
+            and as text in a ToolTip control.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEVISUALSTYLE</term>
+          <listitem>
+          <para>
+            Uses themed hyperlinks. The theme will define the styles for any links in the tooltip. This style always requires
+            <xref linkend="kywToolTipPARSELINKS"/> to be set.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns an instantiated Rexx <xref linkend="clsToolTip"/> object that represents the newly created Windows tool tip. On
+    error, the <computeroutput>.nil</computeroutput> object is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unlike most other dialog controls, the ToolTip control can not be added to the dialog <xref
+    linkend="ovvDialogTemplate"/>. The <emphasis role="italic">createToolTip</emphasis> method creates the underlying ToolTip
+    control, and must be invoked <emphasis role="italic">after</emphasis> the Windows dialog has been created. There is no
+    <xref linkend="clsUserDialog"/> method to create a tool tip in the <xref linkend="mthDefineDialog"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. In some cases, the failure to create the
+    underlying ToolTip control by the operating system can be detected in the ooDialog framework. This will result in the
+    <computeroutput>.SystemErrorCode</computeroutput> being set. However, this type of failure is unlikely to happen.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example creates a ToolTip with the <emphasis role="italic">BALLOON</emphasis> style and a Close button. It then
+    gives the ToolTip a title and an icon:
+<programlisting>
+<![CDATA[
+::method initDialog
+  expose icon
+
+  toolTip = self~createToolTip(IDC_TT_BALLOON, 'BALLOON CLOSE')
+  toolTip~setTitle("Important Message", icon)
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::createToolTip() -->
+
+
 <section id="mthNewCheckBox" xreflabel="newCheckBox"><title>newCheckBox</title>
 <indexterm><primary>newCheckBox</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>newCheckBox</secondary></indexterm>
@@ -3870,125 +4019,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
 </section>
 
 
-<section id="mthNewTab" xreflabel="newTab"><title>newTab</title>
-<indexterm><primary>newTab</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>newTab</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--newTab(--id--)-------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">newTab</emphasis> method returns an object of the
- <xref linkend="clsTab"/> control class. This object represents the tab control in the underlying dialog
-  with the specified resource ID.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-  </para>
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The resource ID of the tab dialog control. May be numeric or <xref linkend="defSymbolicId"/>.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    An object of the tab control class or <emphasis role="italic">.nil</emphasis> on any error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example initializes the tab control with symbolic ID IDC_TAB to have 5 tabs:
-
-<programlisting>
-<![CDATA[
-::class 'MyDlgClass' subclass ResDialog
-
-::method initDialog
-  self~newTab(IDC_TAB)~addSequence("Design", "Implementation", -
-                                   "Test", "Review", "Release")
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthNewToolTip" xreflabel="newToolTip"><title>newToolTip</title>
-<indexterm><primary>newToolTip</primary></indexterm>
-<indexterm><primary>dialog object class</primary><secondary>newToolTip</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--newToolTip(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog object::newToolTip() -->
-
 <section id="mthNewStatic" xreflabel="newStatic"><title>newStatic</title>
 <indexterm><primary>newStatic</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>newStatic</secondary></indexterm>
@@ -4058,6 +4088,148 @@ controlObject = dialogObject~new[ControlName](resourceID)
   </listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthNewTab" xreflabel="newTab"><title>newTab</title>
+<indexterm><primary>newTab</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>newTab</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--newTab(--id--)-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">newTab</emphasis> method returns an object of the
+ <xref linkend="clsTab"/> control class. This object represents the tab control in the underlying dialog
+  with the specified resource ID.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the tab dialog control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An object of the tab control class or <emphasis role="italic">.nil</emphasis> on any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example initializes the tab control with symbolic ID IDC_TAB to have 5 tabs:
+
+<programlisting>
+<![CDATA[
+::class 'MyDlgClass' subclass ResDialog
+
+::method initDialog
+  self~newTab(IDC_TAB)~addSequence("Design", "Implementation", -
+                                   "Test", "Review", "Release")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthNewToolTip" xreflabel="newToolTip"><title>newToolTip</title>
+<indexterm><primary>newToolTip</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>newToolTip</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--newToolTip(--id--)---------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">newToolTip</emphasis> method returns an object of the <xref linkend="clsToolTip"/> class. This
+  object represents the ToolTip control in the underlying dialog with the specified resource ID.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the ToolTip dialog control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the Rexx ToolTip object that represents the Windows ToolTip control with the sepcified resource ID, or the
+    <computeroutput>.nil</computeroutput> object on any error
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">newToolTip</emphasis> method can not be invoked until the underlying ToolTip control has been
+    created using the <xref linkend="mthCreateToolTip"/> method.
+  </para>
+  <para>
+    There is only one Rexx object created for each single Windows dialog control. Once the <emphasis
+    role="italic">createToolTip</emphasis> method has created the underlying ToolTip, each invocation of the <emphasis
+    role="italic">newToolTip</emphasis> method, using the same resource ID, will return the same Rexx object.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example creates a balloon ToolTip that displays an important message. The message is different during different
+    states of the application. When the message text needs to be changed, the updateMsg() method uses the <emphasis
+    role="italic">newToolTip</emphasis> method to get the Rexx object representing the underlying ToolTip and changes the
+    text for the message:
+<programlisting>
+<![CDATA[
+::method initDialog
+  expose icon
+
+  toolTip = self~createToolTip(IDC_TT_BALLOON, 'BALLOON')
+  toolTip~setTitle("Important Message", icon)
+  ...
+
+
+::method updateMsg private
+    use strict arg newMsg
+
+    toolInfo = .ToolInfo~forID(self~newEdit(IDC_EDIT))
+    toolInfo~text = newMsg
+
+    tt = self~newToolTip(IDC_TT_BALLOON)
+    tt~updateTipText(toolInfo)
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::newToolTip() -->
 
 <section id="mthNewTrackBar" xreflabel="newTrackBar"><title>newTrackBar</title>
 <indexterm><primary>newTrackBar</primary></indexterm>

@@ -7442,8 +7442,8 @@ incorrect.
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectUpDownEvent</emphasis> method connects an <xref linkend="ovvEvents"/>
-  notification message from a <xref linkend="clsUpDown"/> control to a method in the Rexx dialog.
+  The <emphasis role="italic">connectToolTipEvent</emphasis> method connects an <xref linkend="ovvEvents"/> notification
+  message from a <xref linkend="clsTooltip"/> control to a method in the Rexx dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7454,7 +7454,7 @@ incorrect.
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the up-down control whose notification message is to be connected to a Rexx dialog's method.
+        The resource ID of the tool tip control whose notification message is to be connected to a Rexx dialog's method.
         May be numeric or <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
@@ -7462,19 +7462,43 @@ incorrect.
       <listitem>
       <para>
         Exactly one of the following keywords. The keyword specifies the event to be connected and case is not
-        significant. Unlike most controls, the up-down control only has one event notification.
+        significant.
       </para>
       <variablelist>
-        <varlistentry><term>DELTAPOS</term>
+        <varlistentry><term>LINKCLICK</term>
         <listitem>
         <para>
-           Sent when the position of the control is about to change. This happens when the user requests a change in the
-           value by pressing the control's up or down arrow. The event handler must
-           <link linkend="sctCodingEventHandlers">return</link> a reply for this event. The interpreter waits for that reply.
+          Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
         </para>
         <para>
-          The DELTAPOS notification is sent before the scroll message which actually changes the control's position.
-          This allows the programmer to examine, allow, modify, or disallow the change in position.
+          This notification is sent when a text link inside a balloon ToolTip is clicked. This is an example of when this
+          notification is sent. Assume that the balloon ToolTip contains the following text:
+
+<programlisting>
+<![CDATA[
+          "This is a <A>link</A>".
+]]>
+</programlisting>
+
+          When <emphasis role="italic">link</emphasis> is clicked, the LINKCLICK notification is sent.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="kywToolTipNEEDTEXT" xreflabel="NEEDTEXT"><term>NEEDTEXT</term>
+        <listitem>
+        <para>
+          This notification is sent when the ToolTip control needs to retrieve the text used to display a ToolTip window.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>POP</term>
+        <listitem>
+        <para>
+          This notification is sent when a ToolTip is about to be hidden.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry id="kywToolTipSHOW" xreflabel="SHOW"><term>SHOW</term>
+        <listitem>
+        <para>
+          This notification is sent when a ToolTip control is about to be displayed.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -7482,10 +7506,27 @@ incorrect.
       <varlistentry><term>methodName [optional]</term>
       <listitem>
       <para>
-        The name of the method that is to be invoked whenever the specified notification is received from the up-down
-        control. The programmer defines this method. If this argument is omitted, a method name is automatically
-        generated that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
-        <computeroutput>onDeltaPos</computeroutput>. The method name can not be the empty string.
+        The name of the method that is to be invoked whenever the specified notification is received from the tool tip
+        control. The programmer defines this method. If this argument is omitted, a method name is automatically generated
+        that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
+        <computeroutput>onNeedText</computeroutput>. The method name can not be the empty string. The empty string is treated
+        as an omitted argument.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>willReply [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
+        linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler, for some of the ToolTip events.
+        The default is <computeroutput>.true</computeroutput>, the interpreter will not wait for the reply. If <emphasis
+        role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
+        event handling method returns a value.
+      </para>
+      <para>
+        For the SHOW and NEEDTEXT events, the <emphasis role="italic">willReply</emphasis> argument is ignored. The event
+        handler for those events must always return a value. For the POP and PARSELINKS events, the <emphasis
+        role="italic">willReply</emphasis> argument can be used to specify whether the interpreter requires a reply from the
+        event handler or not.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -7516,10 +7557,202 @@ incorrect.
     connected event happens.
   </para>
   <para>
-    The underlying dialog receives the UDN_* messages as the notifications for the up-down events.
+    The underlying dialog receives the TTN_* messages as the notifications for the tool tip events.
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+
+<section id="evtToolTipLINKCLICK" xreflabel="LINKCLICK"><title>LinkClick Event Handler</title>
+<indexterm><primary>ToolTip class</primary><secondary>events</secondary><tertiary>LINKCLICK</tertiary></indexterm>
+<para>
+  The event handler for the LINKCLICK event is invoked when the text link inside a Balloon ToolTip is clicked.
+</para>
+<para>
+  By default, the interpreter waits for the return from the event handler for this event and the event handler must return a
+  value. The actual value of the return has no meeting. This behaviour can be changed through the <emphasis
+  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectToolTipEvent"/> method. If <emphasis
+  role="italic">willReply</emphasis> is false, the interpreter does not wait for the return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onLinkClick unguarded
+  use arg rxToolID, rxToolTip
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method receives two arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>rxToolID</term>
+    <listitem>
+    <para>
+      The Rexx object used as the second part of the tool <link linkend="sctToolIdentification">identification</link> the
+      operating system uses. This can be the Rexx dialog control object or the numeric ID that identifies the tool.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rxToolTip</term>
+    <listitem>
+    <para>
+      The Rexx tool tip object.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The actual value of the return has no meaning. 0 makes a good return.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End LinkClick Event Handler -->
+
+
+<section id="evtToolTipNEEDTEXT" xreflabel="NEEDTEXT"><title>NeedText Event Handler</title>
+<indexterm><primary>ToolTip class</primary><secondary>events</secondary><tertiary>NEEDTEXT</tertiary></indexterm>
+<para>
+  The event handler for the xx xx event is invoked when ...
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onNeedText unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End NeedText Event Handler -->
+
+
+<section id="evtToolTipPOP" xreflabel="POP"><title>Pop Event Handler</title>
+<indexterm><primary>ToolTip class</primary><secondary>events</secondary><tertiary>POP</tertiary></indexterm>
+<para>
+  The event handler for the xx xx event is invoked when ...
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onPop unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Pop Event Handler -->
 
 
 <section id="evtToolTipSHOW" xreflabel="SHOW"><title>Show Event Handler</title>
@@ -7528,53 +7761,38 @@ incorrect.
 <programlisting>
 <![CDATA[
 ::method onShow unguarded
-  use arg what
+  use arg rxToolID, rxToolTip
 
-  return what
+  return trueOrFalse
 ]]>
 </programlisting>
 
 <para>
-  The event handler for the up-down DELTAPOS event is invoked when when the position of the control is about to change.
-  The arguments the event handler receives allow the programmer to examine the proposed change in position, to modify
-  the change, or to cancel the change all together.
+  The event handler for the tool tip SHOW event is invoked when the ToolTip is about to display its window.
 </para>
 <para>
-  The programmer must return a value from the event handler and the interpreter waits for this return. The
- <xref linkend="mthDeltaPosReply"/> class method of the <xref linkend="clsUpDown"/> class is
-  used to properly construct the return value from the event handler.
+  The programmer must alwayse return a value from the event handler and the interpreter waits for this return. The <emphasis
+  role="italic">willReply</emphasis> argument of the <xref linkend="mthConnectToolTipEvent"/> method is ignored for this
+  event. If the programmer does not intend to return a value from the event handler, the event should not be connected.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives four arguments:
+    The event handling method receives two arguments:
   </para>
   <variablelist>
-    <varlistentry><term>pos</term>
+    <varlistentry><term>rxToolID</term>
     <listitem>
     <para>
-      A signed whole number that contains the up-down control's current position.
+      The Rexx object used as the second part of the tool <link linkend="sctToolIdentification">identification</link> the
+      operating system uses. This can be the Rexx dialog control object or the numeric ID that identifies the tool.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>delta</term>
+    <varlistentry><term>rxToolTip</term>
     <listitem>
     <para>
-      A signed whole number that contains the proposed change in the up-down control's position. This is positive if the
-      user has clicked the up button or used the up arrow key. If the user has clicked the down button or used the down
-      arrow key, this number will be negative.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>id</term>
-    <listitem>
-    <para>
-      The resource ID of the up-down control whose position is about to change.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>hwnd</term>
-    <listitem>
-    <para>
-      The window <xref linkend="defHandle"/> of the up-down control whose position is about to change.
+      The Rexx tool tip object.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7582,43 +7800,54 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    A delta position buffer must be returned by the event handler.  This buffer can only be constructed properly by
-    using the <xref linkend="clsUpDown"/> class's <xref linkend="mthDeltaPosReply"/>
-    method. The arguments to <emphasis role="italic">deltaPosReply</emphasis> allow the programmer to return a value
-    that makes no change to the new position, cancels altogether the change in position, or modifies the resulting new
-    position.
+    To display the ToolTip in its default position, return false. To customize the position, reposition the window and return
+    true.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The following example examines the change in position in the up-down control and modifies it so that the position in
-    the up-down control is always an even number. Note that the <emphasis role="italic">deltaPosReply</emphasis> method
-    ignores the second and third arguments when the first argument is <computeroutput>.false</computeroutput>. So, in
-    the code below, if <emphasis role="italic">change</emphasis> remains <computeroutput>.false</computeroutput>, then
-    the values of <emphasis role="italic">cancel</emphasis> and <emphasis role="italic">delta</emphasis> do not matter.
+    Writing an event handler for the SHOW event gives the programmer the opportunity to customize the position of the
+    ToolTip. Within the event handler, calculate the desired position of the ToolTip, then use the <xref
+    linkend="mthSetWindowPos"/> to place the ToolTip window in that position. The event handler needs to return true to
+    inform the ToolTip that custom positioning has been performed. Note that MSDN says that only the position of the window
+    should be changed and that trying to change the size of the window will produce unpredictable results.
+  </para>
+  <para>
+    A ToolTip's window rectangle is somewhat larger than its text display rectangle, and its origin is offset up and to the
+    left. If the application needs to accurately position the text display rectangle of a ToolTip, use the <xref
+    linkend="mthAdjustRect"/> mehtod converts a text display rectangle into the corresponding ToolTip window rectangle and
+    vice versa.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example uses the ToolTip ID to determine which ToolTip tool is about to display. It then caclulates the
+    position the ToolTip should be shown at, and uses <emphasis role="italic">setWindowPos</emphasis> to position the window
+    at the point calculated. Finally, true is returned, so the ToolTip knows not to position itself at its default position:
 
 <programlisting>
 <![CDATA[
 
-::method initDialog
-...
-  self~connectUpDownEvent(IDC_UPD, "DELTAPOS", onPosChange)
-...
+::method onShow unguarded
+  expose clRect1 clRect2 clRect3 clRect4
+  use arg toolID, toolTip
 
-::method onPosChange unguarded
-  use arg pos, delta, id, hwnd
-
-  change = .false
-  cancel = .false
-
-  if ((pos + delta) // 2) <> 0 then do
-    change = .true
-    if delta > 0 then delta += 1
-    else delta -= 1
+  select
+    when toolID == .constDir[IDTOOL_DLG_RECT1] then pos = .Point~new(clRect1~left, clRect1~top)
+    when toolID == .constDir[IDTOOL_DLG_RECT2] then pos = .Point~new(clRect2~left, clRect2~top)
+    when toolID == .constDir[IDTOOL_DLG_RECT3] then pos = .Point~new(clRect3~left, clRect3~top)
+    when toolID == .constDir[IDTOOL_DLG_RECT4] then pos = .Point~new(clRect4~left, clRect4~top)
+    otherwise pos = .Point~new
   end
+  -- End select
 
-  return .UpDown~deltaPosReply(change, cancel, delta)
+  self~client2screen(pos)
+  toolTip~setWindowPos(TOPMOST, pos, .Size~new(0, 0), "NOACTIVATE NOSIZE NOZORDER")
+
+  return .true
+
 
 ]]>
 </programlisting>
@@ -7626,7 +7855,9 @@ incorrect.
   </listitem></varlistentry>
 </variablelist>
 
-</section>  <!-- End Sjpw Event Handler -->
+</section>  <!-- End ToolTip SHOW Event Handler -->
+
+
 
 </section>  <!-- End EventNotification::connectToolTipEvent() -->
 

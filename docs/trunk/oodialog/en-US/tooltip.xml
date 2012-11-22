@@ -213,12 +213,16 @@
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="tmthNewToolTip">newToolTip</link></entry>
-<entry>Returns a <computeroutput>ToolTip</computeroutput> object for the control with the specified ID.</entry>
+<entry><link linkend="tmthCreateToolTip">createToolTip</link></entry>
+<entry>Creates the underlying Windows ToolTip control and returns an instantiated Rexx <xref linkend="clsToolTip"/> object.</entry>
 </row>
 <row>
 <entry><link linkend="tmthConnectToolTipEvent">connectToolTipEvent</link></entry>
 <entry>Connects tool tip event notifications to a method in the Rexx dialog object</entry>
+</row>
+<row>
+<entry><link linkend="tmthNewToolTip">newToolTip</link></entry>
+<entry>Returns the Rexx <computeroutput>ToolTip</computeroutput> object for the tool tip control with the specified ID.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -373,21 +377,6 @@
 </section>
 
 
-<section id="tmthNewToolTip"><title>newToolTip (dialog object method)</title>
-<para>
-  ToolTip objects can not be instantiated by the programmer from Rexx code. Rather an ToolTip object is obtained
-  by using the <link linkend="mthNewToolTip">newToolTip</link>() method of the dialog <link
-  linkend="chpDialogObject">object</link>. The syntax is:
-<programlisting>
-<![CDATA[
->>-newToolTip(--id--)---------------------><
-
-]]>
-</programlisting>
-</para>
-</section>  <!-- End newToolTip() [PlainBaseDialog method] -->
-
-
 <section id="tmthConnectToolTipEvent"><title>connectToolTipEvent (dialog object method)</title>
 <para>
   To connect event notifications from an tool tip control use the <link
@@ -404,6 +393,38 @@
 </section>  <!-- End connectToolTipEvent() [EventNotification method] -->
 
 
+<section id="tmthCreateToolTip"><title>createToolTip (dialog object method)</title>
+<para>
+  To create the underlying Windows ToolTip control use the <link linkend="mthCreateToolTip">createToolTip</link> method of
+  the <link linkend="chpDialogObject">dialog</link> object. This method always returns the instantiated Rexx object that
+  represents the created tool tip control. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>--createToolTip(--id--+----------+--)-------------><
+                        +-,-style--+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End createToolTipt() [PlainBaseDialog method] -->
+
+
+<section id="tmthNewToolTip"><title>newToolTip (dialog object method)</title>
+<para>
+  ToolTip objects can not be instantiated by the programmer from Rexx code. Rather a ToolTip object is obtained either by
+  using the <xref linkend="mthCreateToolTip"/> method or the <link linkend="mthNewToolTip">newToolTip</link> method of
+  the dialog <link linkend="chpDialogObject">object</link>. The syntax for the <emphasis role="italic">newToolTip</emphasis>
+  is:
+<programlisting>
+<![CDATA[
+>>-newToolTip(--id--)---------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newToolTip() [PlainBaseDialog method] -->
+
+
 <section id="mthActivate"><title>activate</title>
 <indexterm><primary>activate</primary></indexterm>
 <indexterm><primary>ToolTip class</primary><secondary>activate</secondary></indexterm>
@@ -416,19 +437,19 @@
 </programlisting>
 
 <para>
-  xx
+  Activates or deactivates this tool tip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single optional argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>activate</term>
     <listitem>
     <para>
-      xx
+      If true activates this tool it, if false deactivate this tool tip. The default if the argument is omitted is true.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -436,33 +457,20 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A ToolTip control can be either active or inactive. When it is active, the ToolTip text appears when the mouse pointer is
+    on a tool. When it is inactive, the ToolTip text does not appear, even if the pointer is on a tool.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -474,13 +482,13 @@
 <indexterm><primary>ToolTip class</primary><secondary>addTool</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addTool(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addTool(--tool--+---------+--+---------+--+------------+--)----------------><
+                    +-,-text--+  +-,-flags-+  +-,-userData-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a tool to this tool tip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -489,10 +497,113 @@
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>tool [required]</term>
       <listitem>
       <para>
-        xx
+        The dialog control that defines the tool being added.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [optional]</term>
+      <listitem>
+      <para>
+        Text for the tool. If omitted, or the empty string, or the string: TEXTCALLBACK then the tool tip sends the NEEDTEXT
+        notification and the program supplies the text.
+      </para>
+      <para>
+        The maximum length of the text is 1023 characters, which includes any possible end of line (0x0D0A) sequences.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. If this argument is
+        omitted, the flags are set to ISISHWND SUBCLASS:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>ABSOLUTE   </member>
+          <member>CENTERTIP  </member>
+          <member>IDISHWND   </member>
+          <member>PARSELINKS </member>
+          <member>RTLREADING </member>
+          <member>SUBCLASS   </member>
+          <member>TRACK      </member>
+          <member>TRANSPARENT</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>ABSOLUTE</term>
+          <listitem>
+          <para>
+            Positions the ToolTip window at the same coordinates provided by the <xref linkend="mthTrackPosition"/> method.
+            This flag must be used with the TRACK flag. This flag is not useful for the simple case the <emphasis
+            role="italic">addTool</emphasis> method is designed for.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CENTERTIP</term>
+          <listitem>
+          <para>
+            Centers the ToolTip window below the tool specified by the <emphasis role="italic">tool</emphasis> argument.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>IDISHWND</term>
+          <listitem>
+          <para>
+            Indicates that the ID part of the tool <link linkend="sctToolIdentification">identification</link> is the window
+            handle to the tool. If this flag is not set, the ID part is the tool's identification number. For the <emphasis
+            role="italic">addTool</emphasis> method, the ooDialog framework always sets this flag, it does not need to be
+            specified by the programmer. The window <link linkend="defHandle">handle</link> of the <emphasis
+            role="italic">tool</emphasis> argument is always the ID part of the tool identification.
+          </para> </listitem></varlistentry>
+          <varlistentry id="kywToolTipPARSELINKS" xreflabel="PARSELINKS"><term>PARSELINKS</term>
+          <listitem>
+          <para>
+            Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+          </para>
+          <para>
+            Indicates that links in the ToolTip text should be parsed.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RTLREADING</term>
+          <listitem>
+          <para>
+            Indicates that the ToolTip text will be displayed in the opposite direction to the text in the parent window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SUBCLASS</term>
+          <listitem>
+          <para>
+            Indicates that the ToolTip control should subclass the tool's window to intercept messages, such as WM_MOUSEMOVE.
+            If this flag is not set, the <xref linkend="mthManageAtypicalTool"/> method must be used so the mouse messages
+            are forwarded to the ToolTip control. For the simple case that the <emphasis role="italic">addTool</emphasis>
+            method is designed for, the <emphasis role="italic">manageAtypicalTool</emphasis> method will not work. The
+            ooDialog framwork always sets this flag during the <emphasis role="italic">addTool</emphasis> method, the
+            programmer does not need to include this flag.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TRACK</term>
+          <listitem>
+          <para>
+             Positions the ToolTip window next to the tool to which it corresponds and moves the window according to
+             coordinates supplied by the <xref linkend="mthTrackPosition"/> method. The programmer must activate this
+             type of tool using the <xref linkend="mthTrackActivate"/> method. This flag is not useful for the simple case
+             the <emphasis role="italic">addTool</emphasis> method is designed for.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TRANSPARENT</term>
+          <listitem>
+          <para>
+            Causes the ToolTip control to forward mouse event messages to the parent window. This is limited to mouse events
+            that occur within the bounds of the ToolTip window.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optional]</term>
+      <listitem>
+      <para>
+        A user data value to be associated with the tool. This can be any Rexx object the programmer wants. Note that the
+        value is associated with the tool, not the tool tip.
       </para>
       </listitem></varlistentry>
     </variablelist>
