@@ -607,8 +607,9 @@ REXX_METHOD_PROTOTYPE(pbdlg_putDlgDataInStem_pvt);
 REXX_METHOD_PROTOTYPE(pbdlg_getControlData);
 REXX_METHOD_PROTOTYPE(pbdlg_setControlData);
 REXX_METHOD_PROTOTYPE(pbdlg_getTextSizeDlg);
-REXX_METHOD_PROTOTYPE(pbdlg_newControl);
+REXX_METHOD_PROTOTYPE(pbdlg_createToolTip);
 REXX_METHOD_PROTOTYPE(pbdlg_newToolTip);
+REXX_METHOD_PROTOTYPE(pbdlg_newControl);
 REXX_METHOD_PROTOTYPE(pbdlg_getNewControl);
 REXX_METHOD_PROTOTYPE(pbdlg_putControl);
 REXX_METHOD_PROTOTYPE(pbdlg_dumpMessageTable);
@@ -1642,8 +1643,9 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbdlg_doMinMax,                 pbdlg_doMinMax),
     REXX_METHOD(pbdlg_setTabGroup,              pbdlg_setTabGroup),
     REXX_METHOD(pbdlg_stopIt,                   pbdlg_stopIt),
-    REXX_METHOD(pbdlg_newControl,               pbdlg_newControl),
+    REXX_METHOD(pbdlg_createToolTip,            pbdlg_createToolTip),
     REXX_METHOD(pbdlg_newToolTip,               pbdlg_newToolTip),
+    REXX_METHOD(pbdlg_newControl,               pbdlg_newControl),
     REXX_METHOD(pbdlg_getNewControl,            pbdlg_getNewControl),
     REXX_METHOD(pbdlg_putControl,               pbdlg_putControl),
     REXX_METHOD(pbdlg_dumpMessageTable,         pbdlg_dumpMessageTable),

@@ -335,6 +335,9 @@ static bool setToolInfoText(RexxMethodContext *c, LPTOOLINFO pTI, CSTRING text, 
  */
 #define TOOLTIP_CLASS             "ToolTip"
 
+#define TOOLTIP_CREATED_MSG       "when the underlying Windows ToolTip has already been created"
+#define TOOLTIP_NOT_CREATED_MSG   "when the underlying Windows ToolTip has not been created"
+#define WRONG_EVENT_NAME_MSG      "exactly one of the keywords: RELAY, NEEDTEXT, SHOW, POP, LINKCLICK, or NORELAY"
 
 static bool lazyInitToolTipTable(RexxMethodContext *c, pCPlainBaseDialog pcpbd)
 {
@@ -423,8 +426,8 @@ static uint32_t parseToolTipStyle(CSTRING flags)
 
     if ( StrStrI(flags, "ALWAYSTIP"     ) != NULL ) style |= TTS_ALWAYSTIP;
     if ( StrStrI(flags, "BALLOON"       ) != NULL ) style |= TTS_BALLOON;
-    if ( StrStrI(flags, "NOANIMATE"     ) != NULL ) style |= TTS_NOANIMATE;
     if ( StrStrI(flags, "CLOSE"         ) != NULL ) style |= TTS_CLOSE;
+    if ( StrStrI(flags, "NOANIMATE"     ) != NULL ) style |= TTS_NOANIMATE;
     if ( StrStrI(flags, "NOFADE"        ) != NULL ) style |= TTS_NOFADE;
     if ( StrStrI(flags, "NOPREFIX"      ) != NULL ) style |= TTS_NOPREFIX;
     if ( StrStrI(flags, "USEVISUALSTYLE") != NULL ) style |= TTS_USEVISUALSTYLE;
@@ -622,7 +625,7 @@ done_out:
 }
 
 
-static uint32_t matchEvent2index(RexxMethodContext *c, CSTRING evtName, CSTRING *mthName, size_t i)
+static uint32_t matchEvent2index(RexxMethodContext *c, CSTRING evtName, CSTRING *mthName, size_t i, size_t argPos)
 {
     if ( StrCmpI(evtName, "RELAY") == 0 )
     {
@@ -654,8 +657,11 @@ static uint32_t matchEvent2index(RexxMethodContext *c, CSTRING evtName, CSTRING 
         *mthName = "";
         return RE_NORELAY_IDX;
     }
-
-    return OOD_ID_EXCEPTION;
+    else
+    {
+        wrongObjInArrayException(c->threadContext, argPos, i, WRONG_EVENT_NAME_MSG, evtName);
+        return OOD_ID_EXCEPTION;
+    }
 }
 
 void freeRelayData(pSubClassData pSCData)
@@ -986,15 +992,13 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
 }
 
 
-/** PlainBaseDialog::newToolTip()
+/** PlainBaseDialog::createToolTip()
  *
  * Creates the Windows tool tip control and instantiates the Rexx ToolTip
  * object.
  *
- * @param context
  * @param rxID
  * @param styleFlags
- * @param pcpbd
  *
  * @return The Rexx ToolTip object on success, the .nil object on error.
  *
@@ -1006,28 +1010,34 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
  *
  *        Sets the .systemErrorCode.
  *
- * @note  All other dialog controls are instantiated through pbdlg_newControl
- *        which carries the legacy baggage of having to accomadate the
- *        deprecated CategoryDialog.  The newer ToolTip control has a number of
- *        differences from other dialog controls, so it has its own 'new' method
- *        here.  The newToolTip() method is still a PlainBaseDialog method, we
- *        just put it here to keep the ToolTip stuff together.  We need to
- *        remember that the context is not the DialogControl context, it is the
- *        PlainBaseDialog context.
+ * @remarks  All other dialog controls are instantiated through pbdlg_newControl
+ *           which carries the legacy baggage of having to accomadate the
+ *           deprecated CategoryDialog.  The newer ToolTip control has a number
+ *           of differences from other dialog controls, so it has its own
+ *           'create' method here and its own 'new' method below.  Both methods
+ *           are still a PlainBaseDialog method, we just put them here to keep
+ *           the ToolTip stuff together.  We need to remember that the context
+ *           is not the DialogControl context, it is the PlainBaseDialog
+ *           context.
  *
- *        Tool tip controls are different than most other Window controls in
- *        that they are actually popup windows owned by the dialog, rather than
- *        child windows of the dialog.  Because of this we need to keep track of
- *        them by adding them to a table.
+ *           Tool tip controls are different than most other Window controls in
+ *           that they are actually popup windows owned by the dialog, rather
+ *           than child windows of the dialog.  Because of this we need to keep
+ *           track of them by adding them to a table.
  *
- *        Because they are popup windows, we can not find an existing tool tip
- *        through GetDlgItem().  So, we add each created tool tip to a table and
- *        look up an existing tool tip through its ID.  The sole purpose of this
- *        is to allow the Rexx programmer to do: newToolTip(ID) at any point in
- *        her program and get back the same object, as is possible with other
- *        dialog controls.
+ *           Because they are popup windows, we can not find an existing tool
+ *           tip through GetDlgItem().  So, we add each created tool tip to a
+ *           table in createToolTip() and look up an existing tool tip through
+ *           its ID for the newToolTip() method. The sole purpose of this is to
+ *           allow the Rexx programmer to do: newToolTip(ID) at any point in her
+ *           program and get back the same object, as is possible with other
+ *           dialog controls.
+ *
+ *           We raise a syntax condition if the user invokes createToolTip using
+ *           an already existing ToolTip ID and raise a syntax condition if the
+ *           user invokes newToolTip() on a non-existent ToolTip.
  */
-RexxMethod3(RexxObjectPtr, pbdlg_newToolTip, RexxObjectPtr, rxID, OPTIONAL_CSTRING, styleFlags, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, pbdlg_createToolTip, RexxObjectPtr, rxID, OPTIONAL_CSTRING, styleFlags, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
 
@@ -1040,6 +1050,13 @@ RexxMethod3(RexxObjectPtr, pbdlg_newToolTip, RexxObjectPtr, rxID, OPTIONAL_CSTRI
         goto out;
     }
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
+
+    HWND hDlg = pcpbd->hDlg;
+    if ( hDlg == NULL )
+    {
+        noWindowsDialogException(context, "createToolTip", pcpbd->rexxSelf);
+        goto out;
+    }
 
     uint32_t id = oodResolveSymbolicID(context->threadContext, pcpbd->rexxSelf, rxID, -1, 1, true);
     if ( id == OOD_ID_EXCEPTION  )
@@ -1055,7 +1072,7 @@ RexxMethod3(RexxObjectPtr, pbdlg_newToolTip, RexxObjectPtr, rxID, OPTIONAL_CSTRI
     PTOOLTIPTABLEENTRY ptte = findToolTipForID(pcpbd, id);
     if ( ptte != NULL )
     {
-        toolTip = ptte->rexxSelf;
+        methodCanNotBeInvokedException(context, "createToolTip", pcpbd->rexxSelf, TOOLTIP_CREATED_MSG);
         goto out;
     }
 
@@ -1066,7 +1083,6 @@ RexxMethod3(RexxObjectPtr, pbdlg_newToolTip, RexxObjectPtr, rxID, OPTIONAL_CSTRI
     }
 
     uint32_t style = parseToolTipStyle(styleFlags);
-    HWND hDlg      = pcpbd->hDlg;
     HWND hToolTip  = NULL;
 
     // Tool tips need to be created on the same thread as the dialog window procedure.
@@ -1120,6 +1136,88 @@ out:
 }
 
 
+/** PlainBaseDialog::newToolTip()
+ *
+ * Returns an already instantiated Rexx ToolTip object.
+ *
+ * @param rxID  The resource ID of the ToolTip.
+ *
+ * @return The Rexx ToolTip object on success, the .nil object on error.
+ *
+ * @note  ToolTip controls are somewhat different than other dialog controls in
+ *        that they are not part of the dialog template, but rather independent
+ *        windows owned by the dialog.  Because of this, the underlying ToolTip
+ *        control needs to be created by the programmer using the createToolTip
+ *        method, after the underlying dialog has been created.
+ *
+ *        The createToolTip() method, creates the underlying ToolTip,
+ *        instantiates the Rexx object, and returns it.  The newToolTip() method
+ *        simply returns the alread instantiated Rexx object, as the other newXX
+ *        methods do.
+ *
+ * @note  All other dialog controls are instantiated through pbdlg_newControl
+ *        which carries the legacy baggage of having to accomadate the
+ *        deprecated CategoryDialog.  The newer ToolTip control has a number of
+ *        differences from other dialog controls, so it has its own 'new' method
+ *        here.  The newToolTip() method is still a PlainBaseDialog method, we
+ *        just put it here to keep the ToolTip stuff together.  We need to
+ *        remember that the context is not the DialogControl context, it is the
+ *        PlainBaseDialog context.
+ *
+ *        Because ToolTips are popup windows, we can not find an existing tool
+ *        tip through GetDlgItem().  So, each created tool tip is added to a
+ *        table and here, we look up an existing tool tip through its ID.  The
+ *        sole purpose of this is to allow the Rexx programmer to do:
+ *        newToolTip(ID) at any point in her program and get back the same
+ *        object, as is possible with other dialog controls.
+ */
+RexxMethod2(RexxObjectPtr, pbdlg_newToolTip, RexxObjectPtr, rxID, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    RexxObjectPtr toolTip = TheNilObj;
+    CREATETOOLTIP ctt     = {0};
+
+    if ( pCSelf == NULL )
+    {
+        baseClassInitializationException(context);
+        goto out;
+    }
+    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
+
+    HWND hDlg = pcpbd->hDlg;
+    if ( hDlg == NULL )
+    {
+        noWindowsDialogException(context, "newToolTip", pcpbd->rexxSelf);
+        goto out;
+    }
+
+    uint32_t id = oodResolveSymbolicID(context->threadContext, pcpbd->rexxSelf, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION  )
+    {
+        goto out;
+    }
+
+    if ( pcpbd->ToolTipTab == NULL )
+    {
+        methodCanNotBeInvokedException(context, "newToolTip", pcpbd->rexxSelf, TOOLTIP_NOT_CREATED_MSG);
+        goto out;
+    }
+
+    PTOOLTIPTABLEENTRY ptte = findToolTipForID(pcpbd, id);
+    if ( ptte == NULL )
+    {
+        methodCanNotBeInvokedException(context, "newToolTip", pcpbd->rexxSelf, TOOLTIP_NOT_CREATED_MSG);
+        goto out;
+    }
+
+    toolTip = ptte->rexxSelf;
+
+out:
+    return toolTip;
+}
+
+
 /** ToolTip::activate()
  *
  *  Activates or deactivates this tool tip.
@@ -1166,8 +1264,10 @@ RexxMethod2(uint32_t, tt_activate, OPTIONAL_logical_t, activate, CSELF, pCSelf)
  *  @param flags  [optional] Keywords for the TTF_* flags.  If omitted flags are
  *                automatically set to TTF_IDISHWND | TTF_SUBCLASS.  If not
  *                omitted, flags are set to whatever is specified.  However,
- *                TTF_IDISHWND is always set.  (Because uID is always set to
- *                hwnd of tool.
+ *                TTF_IDISHWND and TTF_SUBCLASS are always set.  (Because uID is
+ *                always set to hwnd of tool, and for the simple case that
+ *                addTool() is intended for, the dialog control should always be
+ *                subclassed.)
  *
  *  @param userData  [optional]  A user data value to be associated with the
  *                   tool.  Note that the value is associated with the tool, not
@@ -1219,12 +1319,8 @@ RexxMethod5(logical_t, tt_addTool, RexxObjectPtr, tool, OPTIONAL_CSTRING, text, 
         text = LPSTR_TEXTCALLBACK;
     }
 
-    uint32_t flags = TTF_IDISHWND;
-    if ( argumentOmitted(3) )
-    {
-        flags |= TTF_SUBCLASS;
-    }
-    else
+    uint32_t flags = TTF_IDISHWND | TTF_SUBCLASS;
+    if ( argumentExists(3) )
     {
         flags |= keyword2ttfFlags(_flags);
     }
@@ -2200,7 +2296,7 @@ RexxMethod4(logical_t, tt_manageAtypicalTool, RexxObjectPtr, toolObject, OPTIONA
 
             CSTRING  mthName;
             CSTRING  evtName = context->ObjectToStringValue(eventName);
-            uint32_t idx     = matchEvent2index(context, evtName, &mthName, i);
+            uint32_t idx     = matchEvent2index(context, evtName, &mthName, i, 2);
             if ( idx == OOD_ID_EXCEPTION )
             {
                 goto err_out;
@@ -3010,14 +3106,18 @@ RexxMethod1(RexxObjectPtr, ti_unInit, CSELF, pCSelf)
 
 /** ToolInfo::init()
  *
- *  @param  dlg    [required]  Dialog ojbect.  May be a Buffer object to create
- *                 a .ToolInfo from native code.  I
+ *  @param  hwndObj  [required]  Tool hwnd object.  May be a Buffer object to
+ *                   create a .ToolInfo from native code.
  *
- *  @param  uID    [optional]
+ *  @param  rxID     [optional]
  *
- *  @param  text   [optional]
+ *  @param  text     [optional]
  *
- *  @param  flags  [optional]
+ *  @param  flags    [optional]
+ *
+ *  @param  rect     [optional]
+ *
+ *  @param  userData [optional]
  *
  *  @param  _resource  [reserved]  This is reserved for a future enhancement.
  *                     If we ever add the ability to use string resources to the
@@ -3027,11 +3127,12 @@ RexxMethod1(RexxObjectPtr, ti_unInit, CSELF, pCSelf)
  *                     be a resource identifier.  For now it is ignored.
  *
  *  @remarks  Note that genericToolID will set the TTF_IDISHWND flag when it
- *            determines that the uID filed of the TOOLINFO struct is the hwnd
- *            of a dialog control.  So, we need to or the return from
- *            keyword2ttfflags() with the existing setting.  It may be that the
- *            user could incorrectly add the TTF_IDISHWND flag and cause a crash
- *            if the uID is not a hwnd.
+ *            determines that the uID field of the TOOLINFO struct is the hwnd
+ *            of a dialog control.  So, we need to || (binary or) the return
+ *            from keyword2ttfflags() with the existing setting.  However, it
+ *            may be that the user incorrectly adds the TTF_IDISHWND flag and
+ *            cause a crash if the uID is not a hwnd.  So, we also try to
+ *            prevent that.
  *
  *            When creating from native code, set arg 1 to the TOOLINFO buffer,
  *            set arg 2 to the object supplying the hwnd field of the struct,
@@ -3041,14 +3142,14 @@ RexxMethod1(RexxObjectPtr, ti_unInit, CSELF, pCSelf)
  *            object.
  */
 RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, hwndObj, OPTIONAL_RexxObjectPtr, rxID, OPTIONAL_CSTRING, text,
-            OPTIONAL_CSTRING, _flags, OPTIONAL_RexxObjectPtr, userData, OPTIONAL_RexxObjectPtr, _rect,
+            OPTIONAL_CSTRING, _flags, OPTIONAL_RexxObjectPtr, _rect, OPTIONAL_RexxObjectPtr, userData,
             OPTIONAL_RexxObjectPtr, _resource)
 {
     if ( context->IsBuffer(hwndObj) )
     {
         context->SetObjectVariable("CSELF", hwndObj);
         context->SetObjectVariable(TOOLINFO_HWND_OBJECT_VAR, rxID);
-        context->SetObjectVariable(TOOLINFO_UID_OBJECT_VAR, userData);
+        context->SetObjectVariable(TOOLINFO_UID_OBJECT_VAR, _rect);
         goto done_out;
     }
 
@@ -3070,9 +3171,6 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, hwndObj, OPTIONAL_RexxObjectP
     context->SetObjectVariable(TOOLINFO_HWND_OBJECT_VAR, hwndSupplier);
     context->SetObjectVariable(TOOLINFO_UID_OBJECT_VAR, uIDSupplier);
 
-    // TODO decide if user must explicitly set this flag or not?  Here we remove it.
-    pTI->uFlags &= ~TTF_IDISHWND;
-
     if ( argumentExists(3) )
     {
         if ( ! setToolInfoText(context, pTI, text, 3, NULLOBJECT) )
@@ -3087,15 +3185,19 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, hwndObj, OPTIONAL_RexxObjectP
 
     if ( argumentExists(4) )
     {
-        pTI->uFlags |= keyword2ttfFlags(_flags);
+        // If genericToolID() determined that ID is not a hwnd, do not let the
+        // user add that flag:
+
+        uint32_t flags = keyword2ttfFlags(_flags);
+        if ( ! (pTI->uFlags & TTF_IDISHWND) )
+        {
+            flags &= ~TTF_IDISHWND;
+        }
+
+        pTI->uFlags |= flags;
     }
 
     if ( argumentExists(5) )
-    {
-        pTI->lParam = (LPARAM)userData;
-    }
-
-    if ( argumentExists(6) )
     {
         PRECT r = rxGetRect(context, _rect, 6);
         if ( r == NULL )
@@ -3105,9 +3207,15 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, hwndObj, OPTIONAL_RexxObjectP
         CopyRect(&pTI->rect, r);
     }
 
+    if ( argumentExists(6) )
+    {
+        pTI->lParam = (LPARAM)userData;
+    }
+
 done_out:
     return NULLOBJECT;
 }
+
 
 /** ToolInfo::flags                [attribute]
  */

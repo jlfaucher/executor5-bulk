@@ -443,6 +443,26 @@ inline RexxObjectPtr noWindowsDialogException(RexxMethodContext *c, RexxObjectPt
  *        The specified method, built-in function, or external routine exists,
  *        but you used it incorrectly.
  *
+ *  The "methName" method can not be invoked on "objectName" when the Windows
+ *  dialog does not exist.
+ *
+ *  The createToolTip method can not be invoked on a StyleDlg when the Windows
+ *  dialog does not exist.
+ *
+ * @param c
+ * @param rxDlg
+ */
+inline RexxObjectPtr noWindowsDialogException(RexxMethodContext *c, CSTRING methName, RexxObjectPtr rxDlg)
+{
+    return methodCanNotBeInvokedException(c, methName, rxDlg, "Windows dialog does not exist");
+}
+
+/**
+ *  93.900
+ *  Error 93 - Incorrect call to method
+ *        The specified method, built-in function, or external routine exists,
+ *        but you used it incorrectly.
+ *
  *  The "methName" method can not be invoked on "objectName" when the parent
  *  Windows dialog does not exist.
  *

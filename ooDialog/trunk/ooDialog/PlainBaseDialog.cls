@@ -836,6 +836,7 @@
 ::method hasMenuBar
   return self~menuBar \== .nil & self~isLinked
 
+::method createToolTip unguarded external "LIBRARY oodialog pbdlg_createToolTip"
 ::method newStatic unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newPushButton unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newRadioButton unguarded external "LIBRARY oodialog pbdlg_newControl"

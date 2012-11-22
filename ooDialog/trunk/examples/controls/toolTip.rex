@@ -77,10 +77,10 @@
 
   count = 0
 
-  ttOk   = self~newToolTip(IDC_TT_Test1, 'BALLOON')
-  ttEsc  = self~newToolTip(IDC_TT_Test2)
-  ttTest = self~newToolTip(IDC_TT_TEST3)
-  tt     = self~newToolTip(IDC_TT_MAIN)
+  ttOk   = self~createToolTip(IDC_TT_Test1, 'BALLOON')
+  ttEsc  = self~createToolTip(IDC_TT_Test2)
+  ttTest = self~createToolTip(IDC_TT_TEST3)
+  tt     = self~createToolTip(IDC_TT_MAIN)
 
   clRect = self~clientRect
   hMidpoint = trunc((clRect~right - clRect~left) / 2) + clRect~left

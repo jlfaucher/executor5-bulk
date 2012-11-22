@@ -456,11 +456,27 @@ RexxObjectPtr notBooleanException(RexxThreadContext *c, size_t pos, RexxObjectPt
     return NULLOBJECT;
 }
 
-void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t index, CSTRING obj, RexxObjectPtr actual)
+/**
+ * Index <index> of the array, argument <argPos>, must be <msg>; found
+ * "<actual>"
+ *
+ * Index 2 of the array, argument 2, must be exactly one of keywords POP or
+ * SHOW; found "POINT"
+ *
+ *
+ * Raises 88.900
+ *
+ * @param c        Thread context we are executing in.
+ * @param argPos   Array argument position.
+ * @param index    Index in array
+ * @param msg      Some string message, or object
+ * @param actual   Actual Rexx object, in string format.
+ */
+void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t index, CSTRING msg, CSTRING actual)
 {
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "Index %d of the array, argument %d, must be %s; found \"%s\"",
-              index, argPos, obj, c->ObjectToStringValue(actual));
+              index, argPos, msg, actual);
     userDefinedMsgException(c, buffer);
 }
 

@@ -67,6 +67,7 @@ extern void  stringTooLongException(RexxThreadContext *c, size_t pos, size_t len
 extern void  numberTooSmallException(RexxThreadContext *c, int pos, int min, RexxObjectPtr actual);
 extern void  notNonNegativeException(RexxThreadContext *c, size_t pos, RexxObjectPtr actual);
 extern void  notPositiveException(RexxThreadContext *c, size_t pos, RexxObjectPtr actual);
+extern void  wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t index, CSTRING msg, CSTRING actual);
 extern void  wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t index, CSTRING obj, RexxObjectPtr actual);
 extern void  wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t index, CSTRING obj);
 extern void  wrongObjInDirectoryException(RexxThreadContext *c, int argPos, CSTRING index, CSTRING needed, RexxObjectPtr actual);
@@ -231,6 +232,27 @@ inline RexxObjectPtr notPositiveArgException(RexxThreadContext *c, size_t argPos
 {
     c->RaiseException2(Rexx_Error_Incorrect_method_nonnegative, c->WholeNumber(argPos), actual);
     return NULLOBJECT;
+}
+
+
+/**
+ * Index <index> of the array, argument <argPos>, must be <msg>; found
+ * "<actual>"
+ *
+ * Index 2 of the array, argument 2, must be exactly one of keywords POP or
+ * SHOW; found "POINT"
+ *
+ * Raises 88.900
+ *
+ * @param c        Thread context we are executing in.
+ * @param argPos   Array argument position.
+ * @param index    Index in array
+ * @param msg      Some string message, or object namee
+ * @param actual   Actual Rexx object,
+ */
+inline void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t index, CSTRING msg, RexxObjectPtr actual)
+{
+    wrongObjInArrayException(c, argPos, index, msg, c->ObjectToStringValue(actual));
 }
 
 /**
