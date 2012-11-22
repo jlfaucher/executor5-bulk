@@ -82,20 +82,21 @@
     or return information using a <computeroutput>ToolInfo</computeroutput> object.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Creation:</emphasis></term>
+  <listitem>
+  <para>
+    Unlike most other types of dialog controls, a ToolTip can not be added to a dialog <link
+    linkend="ovvDialogTemplate">template</link>. ToolTips are created dynamically using the <link
+    linkend="tmthCreateToolTip">createToolTip</link> method. ToolTips can only be created after the underlying Windows dialog
+    exists. Therefore, ToolTips can not be created in the <xref linkend="mthDefineDialog"/> method of the <link
+    linkend="clsUserDialog">UserDialog</link> class.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
     Use the <link linkend="tmthNewToolTip">newToolTip</link> method of the <link linkend="chpDialogObject">dialog</link>
-    object to retrieve a new ToolTip object.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
-  <listitem>
-  <para>
-    Unlike most other types of dialog controls, a ToolTip can not be added to a dialog <link
-    linkend="ovvDialogTemplate">template</link>. ToolTips are created dynamically during the <link
-    linkend="tmthNewToolTip">newToolTip</link> method. Therefore there is no equivalent <emphasis
-    role="italic">createToolTip</emphasis> method in the <link linkend="clsUserDialog">UserDialog</link> class.
+    object to retrieve the Rexx ToolTip object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -109,7 +110,6 @@
 
 
 <section id="sctToolIdentification"><title>Tool Identification</title>
-<indexterm><primary>ToolTip tool identification</primary></indexterm>
 <indexterm><primary>ToolTip class</primary><secondary>tool identification</secondary></indexterm>
 
 <para>
@@ -396,7 +396,7 @@
 <section id="tmthCreateToolTip"><title>createToolTip (dialog object method)</title>
 <para>
   To create the underlying Windows ToolTip control use the <link linkend="mthCreateToolTip">createToolTip</link> method of
-  the <link linkend="chpDialogObject">dialog</link> object. This method always returns the instantiated Rexx object that
+  the <link linkend="chpDialogObject">dialog</link> object. This method also returns the instantiated Rexx object that
   represents the created tool tip control. The basic syntax is:
 
 <programlisting>
@@ -411,10 +411,10 @@
 
 <section id="tmthNewToolTip"><title>newToolTip (dialog object method)</title>
 <para>
-  ToolTip objects can not be instantiated by the programmer from Rexx code. Rather a ToolTip object is obtained either by
-  using the <xref linkend="mthCreateToolTip"/> method or the <link linkend="mthNewToolTip">newToolTip</link> method of
-  the dialog <link linkend="chpDialogObject">object</link>. The syntax for the <emphasis role="italic">newToolTip</emphasis>
-  is:
+  ToolTip objects can not be instantiated by the programmer from Rexx code using the normal <emphasis
+  role="italic">new</emphasis> method. Rather a ToolTip object is obtained either by using the <xref
+  linkend="mthCreateToolTip"/> method or the <link linkend="mthNewToolTip">newToolTip</link> method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax for the <emphasis role="italic">newToolTip</emphasis> is:
 <programlisting>
 <![CDATA[
 >>-newToolTip(--id--)---------------------><
@@ -2820,7 +2820,7 @@
 </section>  <!-- End ToolTip::updateTipText() -->
 
 
-<section id="clsToolInfo" xreflabel="ToolInf"><title>ToolInfo Class</title>
+<section id="clsToolInfo" xreflabel="ToolInfo"><title>ToolInfo Class</title>
 <indexterm><primary>ToolInfo class</primary></indexterm>
 <para>
   A <emphasis role="italic">ToolInfo</emphasis> object contains information about a tool in a <xref linkend="clsToolTip"/>

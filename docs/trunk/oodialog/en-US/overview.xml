@@ -765,35 +765,40 @@ xPixels = xDialogUnits * self~FactorX
   class. The connected methods are often called <emphasis role="italic">event handlers</emphasis> because the code in
   the method handles the event.
 </para>
-<para id="ovvEventsDirectReply" xreflabel="directly">
-  Event notification messages in Windows fall into two groups, messages where the reply is ignored and messages where
-  the reply is significant. Prior to the introduction of the C++ <link linkend="sctHistory">native</link> APIs, there was
-  <emphasis role="bold">no way</emphasis> in ooDialog to <emphasis role="italic">directly</emphasis> reply to the
-  notification message. This placed a severe restriction on ooDialog programs. Many of the features of the operating
-  system could not be used with this restriction. For instance, when a user selects a new tab in a
-  <xref linkend="clsTab"/> control, the operating system sends a SELCHANGING event notification before the selected
-  tab is changed. The programmer can allow or prevent the change by replying true or false to the notification message.
-</para>
-<para>
-  Without the ability to reply directly to the notification, the ooDialog programmer could not take advantage of the
-  SELCHANGING notification. The introduction of the C++ native APIs in ooRexx 4.0.0 removed this restriction. Beginning
-  in ooDialog 4.2.0, the event handling methods in the Rexx dialog object can be directly invoked from the Windows
-  message processing loop. This allows the Rexx dialog object to reply directly to the notification message.
-</para>
-<para>
-  In addition, the underlying Windows message processing loop provides a form of synchronization in Windows
-  applications. Within the loop, a Windows application receives a message, processes it, then receives the next message,
-  processes it, and so on. In older ooDialog programs this syncronization was lost because ooDialog put the recieved
-  message on a queue, recieved the next message, put it on the queue, and continued. This meant that many messages could
-  be recieved in the processing loop before a single message was process by the ooDialog program. This loss of
-  synchronization caused ooDialog applications to perform poorly.
-</para>
-<para>
-  The ability to directly reply to event notifications greatly extends the power of the ooDialog framework. However, it
-  also changes how the ooDialog programmer must write his event handlers. In particular, the event handler must return
-  in a timely manner. This is discussed more <link linkend="sctCodingEventHandlers">fully</link>/> in the
-  <computeroutput>EventNotification</computeroutput> class documentation.
-</para>
+<variablelist>
+  <varlistentry id="ovvEventsDirectReply" xreflabel="directly"><term><emphasis role="bold">Directly Reply</emphasis></term>
+  <listitem>
+  <para>
+    Event notification messages in Windows fall into two groups, messages where the reply is ignored and messages where
+    the reply is significant. Prior to the introduction of the C++ <link linkend="sctHistory">native</link> APIs, there was
+    <emphasis role="bold">no way</emphasis> in ooDialog to <emphasis role="italic">directly</emphasis> reply to the
+    notification message. This placed a severe restriction on ooDialog programs. Many of the features of the operating
+    system could not be used with this restriction. For instance, when a user selects a new tab in a
+    <xref linkend="clsTab"/> control, the operating system sends a SELCHANGING event notification before the selected
+    tab is changed. The programmer can allow or prevent the change by replying true or false to the notification message.
+  </para>
+  <para>
+    Without the ability to reply directly to the notification, the ooDialog programmer could not take advantage of the
+    SELCHANGING notification. The introduction of the C++ native APIs in ooRexx 4.0.0 removed this restriction. Beginning
+    in ooDialog 4.2.0, the event handling methods in the Rexx dialog object can be directly invoked from the Windows
+    message processing loop. This allows the Rexx dialog object to reply directly to the notification message.
+  </para>
+  <para>
+    In addition, the underlying Windows message processing loop provides a form of synchronization in Windows
+    applications. Within the loop, a Windows application receives a message, processes it, then receives the next message,
+    processes it, and so on. In older ooDialog programs this syncronization was lost because ooDialog put the recieved
+    message on a queue, recieved the next message, put it on the queue, and continued. This meant that many messages could
+    be recieved in the processing loop before a single message was process by the ooDialog program. This loss of
+    synchronization caused ooDialog applications to perform poorly.
+  </para>
+  <para>
+    The ability to directly reply to event notifications greatly extends the power of the ooDialog framework. However, it
+    also changes how the ooDialog programmer must write his event handlers. In particular, the event handler must return
+    in a timely manner. This is discussed more <link linkend="sctCodingEventHandlers">fully</link> in the
+    <computeroutput>EventNotification</computeroutput> class documentation.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="ovvInaccurate" xreflabel="inaccurate"><title>factorX / factorY</title>

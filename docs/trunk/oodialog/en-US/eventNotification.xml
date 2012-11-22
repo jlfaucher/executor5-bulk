@@ -7514,11 +7514,10 @@ incorrect.
     <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
-      The name of the method that is to be invoked whenever the specified notification is received from the tool tip
-      control. The programmer defines this method. If this argument is omitted, a method name is automatically generated
-      that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
-      <computeroutput>onNeedText</computeroutput>. The method name can not be the empty string. The empty string is treated
-      as an omitted argument.
+      The name of the method that is to be invoked whenever the specified event happens. The programmer defines this method.
+      If this argument is omitted, a method name is automatically generated that consists of the event keyword preceded by
+      <computeroutput>on</computeroutput>. For instance, <computeroutput>onNeedText</computeroutput>. The method name can not
+      be the empty string. The empty string is treated as an omitted argument.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>willReply [optional]</term>
@@ -7526,9 +7525,9 @@ incorrect.
     <para>
       The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
       linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler, for some of the ToolTip events.
-      The default is <computeroutput>.true</computeroutput>, the interpreter will not wait for the reply. If <emphasis
-      role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
-      event handling method returns a value.
+      The default is <computeroutput>.true</computeroutput>, the interpreter will wait for the reply. If <emphasis
+      role="italic">willReply</emphasis> is <computeroutput>.false</computeroutput>, the interpreter does not wait for the
+      event handling method to return a value.
     </para>
     <para>
       For the SHOW and NEEDTEXT events, the <emphasis role="italic">willReply</emphasis> argument is ignored. The event
@@ -7627,16 +7626,21 @@ incorrect.
 <section id="evtToolTipNEEDTEXT" xreflabel="NEEDTEXT"><title>NeedText Event Handler</title>
 <indexterm><primary>ToolTip class</primary><secondary>events</secondary><tertiary>NEEDTEXT</tertiary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the NEEDTEXT event is invoked when the ToolTip is about to be displayed and the ToolTip needs the
+  text to be displayed. When a tool is <link linkend="mthAddTool">added</link> to a ToolTip, the programmer normally supplies
+  a literal string to be used as the text. However, the ToolTip provides a specical value which essentially tells the ToolTip
+  to call back to the application when it needs the text to be displayed. The ToolTip calls back by sending the NEEDTEXT
+  notification.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The programmer must return a string to be used for the text and the interpreter waits for this return. The returned text is
+  passed back to the ToolTip.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onNeedText unguarded
-  use arg x, y, z
+  use arg
 
   return zz
 ]]>
@@ -7646,43 +7650,150 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 3 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>rxToolID</term>
     <listitem>
     <para>
-      xx
+      The Rexx object used as the second part of the tool <link linkend="sctToolIdentification">identification</link> the
+      operating system uses. This can be the Rexx dialog control object or the numeric ID that identifies the tool.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>rxToolTip</term>
     <listitem>
     <para>
-      xx
+      The Rexx tool tip object.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
+    <varlistentry><term>info</term>
     <listitem>
     <para>
-      xx
+      A <computeroutput>Directory</computeroutput> object whose indexes are used to convey information concerning the event
+      notification to the event handler and with which the event handler returns the requested text. On invocation of the
+      event handler, the <computeroutput>Directory</computeroutput> object will have the following indexes with the
+      corresponding information:
     </para>
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">TEXT</emphasis></term>
+      <listitem>
+      <para>
+        The event handler sets this index to the text to be used for the displayed ToolTip. If this index is set to the
+        empty string, then no ToolTip is displayed. The length of the returned text must be less than 1024 characters. The
+        index is set to the empty string when the <emphasis role="italic">info</emphasis> argument is passed to the event
+        handler.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">USERDATA</emphasis></term>
+      <listitem>
+      <para>
+        This index is set to the <emphasis role="italic">user data</emphasis> specified for the tool. For example, in the
+        <xref linkend="mthAddTool"/>, <xref linkend="mtAddToolEx"/>, or <xref linkend="mthAddToolRect"/> methods. If there is
+        no user data, the index is set to the <computeroutput>.nil</computeroutput> object.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">FLAGS</emphasis></term>
+      <listitem>
+      <para>
+        Zero or more blank separated keywords indicating the tool's flags. The possible flag keywords are:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>ABSOLUTE   </member>
+          <member>CENTERTIP  </member>
+          <member>IDISHWND   </member>
+          <member>PARSELINKS </member>
+          <member>RTLREADING </member>
+          <member>SUBCLASS   </member>
+          <member>TRACK      </member>
+          <member>TRANSPARENT</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>ABSOLUTE</term>
+          <listitem>
+          <para>
+            The ToolTip window is positioned at the same coordinates provided by the <xref linkend="mthTrackPosition"/>
+            method. This flag must be used with the TRACK flag.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CENTERTIP</term>
+          <listitem>
+          <para>
+            Indicates that the ToolTip window is centered below the tool.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>IDISHWND</term>
+          <listitem>
+          <para>
+            Indicates that the ID part of the tool <link linkend="sctToolIdentification">identification</link> is the window
+            handle to the tool. If this flag is not set, the ID part is the tool's identification number.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PARSELINKS</term>
+          <listitem>
+          <para>
+            Indicates that links in the ToolTip text should be parsed.
+          </para>
+          <para>
+            Only available with Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RTLREADING</term>
+          <listitem>
+          <para>
+            Indicates that the ToolTip text will be displayed in the opposite direction to the text in the parent window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SUBCLASS</term>
+          <listitem>
+          <para>
+            Indicates that the ToolTip control should subclass the tool's window to intercept messages, such as WM_MOUSEMOVE.
+            If this flag is not set, the mouse messages must be forwarded to the ToolTip control.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TRACK</term>
+          <listitem>
+          <para>
+             Positions the ToolTip window next to the tool to which it corresponds and moves the window according to
+             coordinates supplied by the <xref linkend="mthTrackPosition"/> method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TRANSPARENT</term>
+          <listitem>
+          <para>
+            Causes the ToolTip control to forward mouse event messages to the parent window. This is limited to mouse events
+            that occur within the bounds of the ToolTip window.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The event handler must return true or false. When false is returned, the ToolTip continues to generate NEEDTEXT
+    notifications each time it is about to display the tool tip window. If true is returned, the ToolTip control stores the
+    information and will not request it again.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following example shows a simple NEEDTEXT event handler that sets the tool tip text when the mouse hovers over a push
+    button. True is returned to indicate that the ToolTip should store the text for that tool and need not ask for it again?
 
 <programlisting>
 <![CDATA[
 
+::method onNeedText unguarded
+    use arg id, toolTip, info
+
+    info~text = 'Press Test to execute the regression test suite ...'
+    return .true
 
 ]]>
 </programlisting>
@@ -7696,18 +7807,21 @@ incorrect.
 <section id="evtToolTipPOP" xreflabel="POP"><title>Pop Event Handler</title>
 <indexterm><primary>ToolTip class</primary><secondary>events</secondary><tertiary>POP</tertiary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the POP event is invoked when the ToolTip is about to hide a displayed tip.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  By default, the interpreter waits for the return from the event handler for this event and the event handler must return a
+  value. The actual value of the return has no meeting. This behaviour can be changed through the <emphasis
+  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectToolTipEvent"/> method. If <emphasis
+  role="italic">willReply</emphasis> is false, the interpreter does not wait for the return.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onPop unguarded
-  use arg x, y, z
+  use arg rxToolID, rxToolTip
 
-  return zz
+  return 0
 ]]>
 </programlisting>
 
@@ -7715,25 +7829,20 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method receives two arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>rxToolID</term>
     <listitem>
     <para>
-      xx
+      The Rexx object used as the second part of the tool <link linkend="sctToolIdentification">identification</link> the
+      operating system uses. This can be the Rexx dialog control object or the numeric ID that identifies the tool.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>rxToolTip</term>
     <listitem>
     <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
-    <listitem>
-    <para>
-      xx
+      The Rexx tool tip object.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7741,20 +7850,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
-  <listitem>
-  <para>
-    The following example ...
-
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    The actual value of the return has no meaning.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7855,7 +7951,6 @@ incorrect.
 
   return .true
 
-
 ]]>
 </programlisting>
   </para>
@@ -7863,8 +7958,6 @@ incorrect.
 </variablelist>
 
 </section>  <!-- End ToolTip SHOW Event Handler -->
-
-
 
 </section>  <!-- End EventNotification::connectToolTipEvent() -->
 
@@ -8254,7 +8347,7 @@ trackbar position by extracting the high-oder word. Example:
 </variablelist>
 
 <section id="evtTreeViewBEGINDRAG" xreflabel="BEGINDRAG"><title>BeginDrag Event Handler</title>
-<indexterm><primary>TreeView Event</primary><secondary>BEGINDRAG</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>BEGINDRAG</tertiary></indexterm>
 
 <para>
   The event-handling method connected to BEGINDRAG receives three arguments: the control ID of the tree view control, the
@@ -8278,7 +8371,7 @@ trackbar position by extracting the high-oder word. Example:
 </section>
 
 <section id="evtTreeViewBEGINRDRAG" xreflabel="BEGINRDRAG"><title>BeginRDrag Event Handler</title>
-<indexterm><primary>TreeView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>BEGINRDRAG</tertiary></indexterm>
 
 <para>
   The event-handling method connected to BEGINRDRAG receives three arguments: the control ID of the tree view control, the
@@ -8303,7 +8396,7 @@ trackbar position by extracting the high-oder word. Example:
 
 
 <section id="evtTreeViewBEGINEDIT" xreflabel="BEGINEDIT"><title>BeginEdit Event Handler</title>
-<indexterm><primary>TreeView Event</primary><secondary>BEGINEDIT</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>BEGINEDIT</tertiary></indexterm>
 <para>
   The event handler for the BEGINEDIT event is invoked when the user begins a label editing operation on an item of the
   tree-view. When label editing begins, an edit control is created by the operating systm, but not positioned or displayed.
@@ -8487,7 +8580,7 @@ trackbar position by extracting the high-oder word. Example:
 </section>  <!-- End BeginEdit Event Handler -->
 
 <section id="evtTreeViewENDEDIT" xreflabel="ENDEDIT"><title>EndEdit Event Handler</title>
-<indexterm><primary>TreeView Event</primary><secondary>ENDEDIT</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>ENDEDIT</tertiary></indexterm>
 <para>
   The event handler for the ENDEDIT event is invoked when the user finishes a label editing operation on an item of the
   tree-view. A label editing operation is only available when the tree-view has the <xref linkend="styTreeViewEDIT"/> style.
@@ -8683,7 +8776,7 @@ trackbar position by extracting the high-oder word. Example:
 
 
 <section id="evtTreeViewEXPANDED" xreflabel="EXPANDED"><title>Expanded Event Handler</title>
-<indexterm><primary>TreeView Event</primary><secondary>EXPANDED</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>EXPANDED</tertiary></indexterm>
 <para>
   The event handler for the EXPANDED event is invoked when after a tree-view item has been expanded or collapsed.
 </para>
@@ -8780,7 +8873,7 @@ trackbar position by extracting the high-oder word. Example:
 
 
 <section id="evtTreeViewEXPANDING" xreflabel="EXPANDING"><title>Expanding Event Handler</title>
-<indexterm><primary>TreeView Event</primary><secondary>EXPANDING</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>EXPANDING</tertiary></indexterm>
 <para>
   The event-handling method connected to the EXPANDING event receives four arguments: the control ID of the tree view
   control, the handle of the tree item that is about to be expanded or collapsed, a string that indicates whether the item
@@ -8907,7 +9000,7 @@ trackbar position by extracting the high-oder word. Example:
 
 
 <section id="evtTreeViewGETINFOTIP"><title>GetInfoTip Event Handler</title>
-<indexterm><primary>TreeView Event</primary><secondary>GETINFOTIP</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>GETINFOTIP</tertiary></indexterm>
 <para>
   The event handler method connected to the get info tip event is invoked when the tree-view control requests the text to
   display in the info tip. The programmer must return a string value and the interpreter waits for this return. The <emphasis
@@ -9004,7 +9097,7 @@ trackbar position by extracting the high-oder word. Example:
 
 
 <section id="evtTreeViewKEYDOWN" xreflabel="KEYDOWN"><title>KeyDown Event Handler</title>
-<indexterm><primary>TreeView Event</primary><secondary>KEYDOWN</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>KEYDOWN</tertiary></indexterm>
 <para>
   The event handler for the key down event is invoked when the user types a key within the tree-view control. The event
   handler is similar to the event handler for the <link linkend="evtTreeViewKEYDOWNEX">KEYDOWNEX</link> event, it is invoked
@@ -9083,7 +9176,7 @@ trackbar position by extracting the high-oder word. Example:
 
 
 <section id="evtTreeViewKEYDOWNEX" xreflabel="KEYDOWNEX"><title>KeyDown (extended) Event Handler</title>
-<indexterm><primary>TreeView Event</primary><secondary>KEYDOWNEX</secondary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>KEYDOWNEX</tertiary></indexterm>
 <para>
   The event-handling method connected through the KEYDOWNEX keyword is similar to the event handler for the KEYDOWN event
   handler. It is invoked for the same event, when the user presses a key within the tree-view. However, it receives a
