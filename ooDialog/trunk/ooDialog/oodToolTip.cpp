@@ -443,18 +443,25 @@ done_out:
  *
  * @return The combined flag value
  */
-static uint32_t keyword2ttfFlags(CSTRING flags)
+static uint32_t keyword2ttfFlags(RexxMethodContext *c, CSTRING flags)
 {
     uint32_t f = 0;
 
     if ( StrStrI(flags, "ABSOLUTE"   ) != NULL ) f |= TTF_ABSOLUTE;
     if ( StrStrI(flags, "CENTERTIP"  ) != NULL ) f |= TTF_CENTERTIP;
     if ( StrStrI(flags, "IDISHWND"   ) != NULL ) f |= TTF_IDISHWND;
-    if ( StrStrI(flags, "PARSELINKS" ) != NULL ) f |= TTF_PARSELINKS;
     if ( StrStrI(flags, "RTLREADING" ) != NULL ) f |= TTF_RTLREADING;
     if ( StrStrI(flags, "SUBCLASS"   ) != NULL ) f |= TTF_SUBCLASS;
     if ( StrStrI(flags, "TRACK"      ) != NULL ) f |= TTF_TRACK;
     if ( StrStrI(flags, "TRANSPARENT") != NULL ) f |= TTF_TRANSPARENT;
+    if ( StrStrI(flags, "PARSELINKS" ) != NULL )
+    {
+        if ( ! requiredComCtl32Version(c, "PARSELINKS", COMCTL32_6_0) )
+        {
+            return OOD_ID_EXCEPTION;
+        }
+        f |= TTF_PARSELINKS;
+    }
 
     return f;
 }
@@ -1323,7 +1330,12 @@ RexxMethod5(logical_t, tt_addTool, RexxObjectPtr, tool, OPTIONAL_CSTRING, text, 
     uint32_t flags = TTF_IDISHWND | TTF_SUBCLASS;
     if ( argumentExists(3) )
     {
-        flags |= keyword2ttfFlags(_flags);
+        uint32_t temp = keyword2ttfFlags(context, _flags);
+        if ( temp == OOD_ID_EXCEPTION )
+        {
+            return false;
+        }
+        flags |= temp;
     }
 
     TOOLINFO ti = { sizeof(ti) };
@@ -1434,7 +1446,12 @@ RexxMethod7(logical_t, tt_addToolRect, RexxObjectPtr, dlg, RexxObjectPtr, rxID, 
     uint32_t flags = TTF_SUBCLASS;
     if ( argumentExists(5) )
     {
-        flags |= keyword2ttfFlags(_flags);
+        uint32_t temp = keyword2ttfFlags(context, _flags);
+        if ( temp == OOD_ID_EXCEPTION )
+        {
+            return FALSE;
+        }
+        flags |= temp;
         flags &= ~TTF_IDISHWND;
     }
 
@@ -3186,10 +3203,15 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, hwndObj, OPTIONAL_RexxObjectP
 
     if ( argumentExists(4) )
     {
+        uint32_t flags = keyword2ttfFlags(context, _flags);
+        if ( flags == OOD_ID_EXCEPTION )
+        {
+            goto done_out;
+        }
+
         // If genericToolID() determined that ID is not a hwnd, do not let the
         // user add that flag:
 
-        uint32_t flags = keyword2ttfFlags(_flags);
         if ( ! (pTI->uFlags & TTF_IDISHWND) )
         {
             flags &= ~TTF_IDISHWND;
@@ -3226,7 +3248,11 @@ RexxMethod1(RexxStringObject, ti_flags, CSELF, pTI)
 }
 RexxMethod2(RexxObjectPtr, ti_setFlags, CSTRING, flags, CSELF, pTI)
 {
-    ((LPTOOLINFO)pTI)->uFlags = keyword2ttfFlags(flags);
+    uint32_t temp = keyword2ttfFlags(context, flags);
+    if ( temp != OOD_ID_EXCEPTION )
+    {
+        ((LPTOOLINFO)pTI)->uFlags = temp;
+    }
     return NULLOBJECT;
 }
 
