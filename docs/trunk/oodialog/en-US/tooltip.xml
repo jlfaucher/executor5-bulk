@@ -119,7 +119,7 @@
   handle or a unique number. When the ID is a number, the number is similar to a <xref linkend="defResourceId"/>.
 </para>
 <para>
-  For the operating systm, the first part of the 2-part identifier is the handle of the window that the ToolTip will send
+  For the operating system, the first part of the 2-part identifier is the handle of the window that the ToolTip will send
   notifications to. The second part of the identifier can be a second window handle, if the ToolTip is going to subclass that
   window, or an unique number if the ToolTip is not going to subclass the tool. This may seem somewhat complicated to the
   Rexx programmer, especially if the programer has little experience with the underlying details of programming dialog
@@ -128,7 +128,7 @@
 <para>
   The ooDialog framework attempts to simplify this somewhat by allowing the Rexx programmer to identify an unique tool in
   several different ways. For the most common use of ToolTips, identifying a tool is simple and can be done with one Rexx
-  object. However, ooDialog also supplies the necessary means to identify a tool for more advanced use of ToolTips.
+  object. However, ooDialog also supplies the means needed to identify a tool when more advanced use of ToolTips is desired.
 </para>
 <para>
   This documentation refers to a tool identifier as a <emphasis role="italic">Rexx object combination</emphasis>. This can be
@@ -140,7 +140,7 @@
 </para>
 
 <variablelist>
-  <varlistentry><term><emphasis role="italic">hwndTool</emphasis> == a <computeroutput>ToolInfo</computeroutput> object</term>
+  <varlistentry><term>if <emphasis role="italic">hwndTool</emphasis> == a <computeroutput>ToolInfo</computeroutput> object</term>
   <listitem>
   <para>
     A <xref linkend="clsToolInfo"/> object always uniquely identifies a tool. When the <emphasis
@@ -148,7 +148,7 @@
     the second <emphasis role="italic">toolID</emphasis> argument is ignored.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="italic">hwndTool</emphasis> \== a <computeroutput>ToolInfo</computeroutput> object and <emphasis role="italic">toolID</emphasis> is omitted</term>
+  <varlistentry><term>if <emphasis role="italic">hwndTool</emphasis> \== a <computeroutput>ToolInfo</computeroutput> object and <emphasis role="italic">toolID</emphasis> is omitted</term>
   <listitem>
   <para>
     It is very common that a ToolTip tool is a dialog control. For example quite often ToolTips are used for push buttons,
@@ -160,7 +160,7 @@
     values to identify the tool to the operating system.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="italic">hwndTool</emphasis> \== a <computeroutput>ToolInfo</computeroutput> object and <emphasis role="italic">toolID</emphasis> is not omitted</term>
+  <varlistentry><term>if <emphasis role="italic">hwndTool</emphasis> \== a <computeroutput>ToolInfo</computeroutput> object and <emphasis role="italic">toolID</emphasis> is not omitted</term>
   <listitem>
   <para>
     This combination of identifying objects is needed when some more advanced uses of ToolTips are desired. It allows the
@@ -749,7 +749,8 @@
       <varlistentry><term>dlg [required]</term>
       <listitem>
       <para>
-        xx
+        The dialog <link linkend="chpDialogObject">object</link> that contains the rectangular area specified by the
+        <emphasis role="italic">rect</emphasis> argument.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>id [required]</term>
@@ -763,7 +764,7 @@
       <listitem>
       <para>
         A <xref linkend="clsRect"/> object that specifies the bounding rectangle coordinates of the tool. The coordinates are
-        in client <link linkend="defScreenCoordinates"></link> of the dialog identified by the <emphasis
+        in client <link linkend="defScreenCoordinates">coordinates</link> of the dialog identified by the <emphasis
         role="italic">dlg</emphasis> argument.
       </para>
       </listitem></varlistentry>
