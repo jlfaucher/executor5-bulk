@@ -653,6 +653,10 @@
 <entry>Connects an event notification from a tab control to a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><xref linkend="mthConnectToolTipEvent"/></entry>
+<entry>Connects an event notification from a ToolTip control to a method in the Rexx dialog.</entry>
+</row>
+<row>
 <entry><xref linkend="mthConnectTrackBarEvent"/></entry>
 <entry>Connects an event notification from a track bar control to a method in the Rexx dialog.</entry>
 </row>
@@ -7576,7 +7580,7 @@ incorrect.
 </para>
 <para>
   By default, the interpreter waits for the return from the event handler for this event and the event handler must return a
-  value. The actual value of the return has no meeting. This behaviour can be changed through the <emphasis
+  value. The actual value of the return has no meaning. This behaviour can be changed through the <emphasis
   role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectToolTipEvent"/> method. If <emphasis
   role="italic">willReply</emphasis> is false, the interpreter does not wait for the return.
 </para>
@@ -7712,8 +7716,9 @@ incorrect.
           <varlistentry><term>ABSOLUTE</term>
           <listitem>
           <para>
-            The ToolTip window is positioned at the same coordinates provided by the <xref linkend="mthTrackPosition"/>
-            method. This flag must be used with the TRACK flag.
+            Positions the ToolTip window at the exact same coordinates specified by the <xref linkend="mthTrackPosition"/>
+            method. Without this flag the ToolTip control chooses where to display the ToolTip window based on the
+            coordinates specified, which places the ToolTip close to the tool. This flag must be used with the TRACK flag.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CENTERTIP</term>
@@ -7784,7 +7789,7 @@ incorrect.
   <listitem>
   <para>
     The following example shows a simple NEEDTEXT event handler that sets the tool tip text when the mouse hovers over a push
-    button. True is returned to indicate that the ToolTip should store the text for that tool and need not ask for it again?
+    button. True is returned to indicate that the ToolTip should store the text for that tool and need not ask for it again:
 
 <programlisting>
 <![CDATA[
@@ -7811,7 +7816,7 @@ incorrect.
 </para>
 <para>
   By default, the interpreter waits for the return from the event handler for this event and the event handler must return a
-  value. The actual value of the return has no meeting. This behaviour can be changed through the <emphasis
+  value. The actual value of the return has no meaning. This behaviour can be changed through the <emphasis
   role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectToolTipEvent"/> method. If <emphasis
   role="italic">willReply</emphasis> is false, the interpreter does not wait for the return.
 </para>
@@ -7850,7 +7855,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The actual value of the return has no meaning.
+    The actual value of the return has no meaning. 0 makes a good return value.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7871,7 +7876,7 @@ incorrect.
 </programlisting>
 
 <para>
-  The event handler for the tool tip SHOW event is invoked when the ToolTip is about to display its window.
+  The event handler for the SHOW event is invoked when the ToolTip is about to display its window.
 </para>
 <para>
   The programmer must alwayse return a value from the event handler and the interpreter waits for this return. The <emphasis
@@ -7919,7 +7924,7 @@ incorrect.
   <para>
     A ToolTip's window rectangle is somewhat larger than its text display rectangle, and its origin is offset up and to the
     left. If the application needs to accurately position the text display rectangle of a ToolTip, use the <xref
-    linkend="mthAdjustRect"/> mehtod converts a text display rectangle into the corresponding ToolTip window rectangle and
+    linkend="mthAdjustRect"/> method converts a text display rectangle into the corresponding ToolTip window rectangle and
     vice versa.
   </para>
   </listitem></varlistentry>
@@ -7934,14 +7939,14 @@ incorrect.
 <![CDATA[
 
 ::method onShow unguarded
-  expose clRect1 clRect2 clRect3 clRect4
+  expose r1 r2 r3 r4
   use arg toolID, toolTip
 
   select
-    when toolID == .constDir[IDTOOL_DLG_RECT1] then pos = .Point~new(clRect1~left, clRect1~top)
-    when toolID == .constDir[IDTOOL_DLG_RECT2] then pos = .Point~new(clRect2~left, clRect2~top)
-    when toolID == .constDir[IDTOOL_DLG_RECT3] then pos = .Point~new(clRect3~left, clRect3~top)
-    when toolID == .constDir[IDTOOL_DLG_RECT4] then pos = .Point~new(clRect4~left, clRect4~top)
+    when toolID == .constDir[IDTOOL_DLG_RECT1] then pos = .Point~new(r1~left, r1~top)
+    when toolID == .constDir[IDTOOL_DLG_RECT2] then pos = .Point~new(r2~left, r2~top)
+    when toolID == .constDir[IDTOOL_DLG_RECT3] then pos = .Point~new(r3~left, r3~top)
+    when toolID == .constDir[IDTOOL_DLG_RECT4] then pos = .Point~new(r4~left, r4~top)
     otherwise pos = .Point~new
   end
   -- End select

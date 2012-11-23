@@ -59,9 +59,9 @@
 <para>
   ToolTip controls can display single or multiple lines of text. They can have square or rounded corners. They might or might
   not have a stem that points to the tools like a cartoon balloon. ToolTip text can be stationary or can move with the mouse
-  pointer, called tracking ToolTips. Stationary text can be displayed adjacent to a tool or it can be displayed over a tool,
-  which is referred to as in-place ToolTips. Standard ToolTips are stationary, display a single line of text, have square
-  corners, and have no stem pointing to the tool.
+  pointer, these are called tracking ToolTips. Stationary text can be displayed adjacent to a tool or it can be displayed
+  over a tool, which is referred to as in-place ToolTips. Standard ToolTips are stationary, display a single line of text,
+  have square corners, and have no stem pointing to the tool.
 </para>
 <para>
   The <computeroutput>ToolTip</computeroutput> class provides methods to work with and manipulate the underlying Windows
@@ -96,7 +96,7 @@
   <listitem>
   <para>
     Use the <link linkend="tmthNewToolTip">newToolTip</link> method of the <link linkend="chpDialogObject">dialog</link>
-    object to retrieve the Rexx ToolTip object.
+    object to retrieve a Rexx ToolTip object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -214,7 +214,7 @@
 </row>
 <row>
 <entry><link linkend="tmthCreateToolTip">createToolTip</link></entry>
-<entry>Creates the underlying Windows ToolTip control and returns an instantiated Rexx <xref linkend="clsToolTip"/> object.</entry>
+<entry>Creates the underlying Windows ToolTip control and returns an instantiated Rexx ToolTip object.</entry>
 </row>
 <row>
 <entry><link linkend="tmthConnectToolTipEvent">connectToolTipEvent</link></entry>
@@ -230,19 +230,19 @@
 </row>
 <row>
 <entry><xref linkend="mthActivate"/></entry>
-<entry>x</entry>
+<entry>Activates or deactivates this ToolTip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthAddTool"/></entry>
-<entry>x</entry>
+<entry>Adds a tool to this ToolTip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthAddToolEx"/></entry>
-<entry>x</entry>
+<entry>Adds the tool, specified by a <computeroutput>ToolInfo</computeroutput> object, to this ToolTip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthAddToolRect"/></entry>
-<entry>x</entry>
+<entry>Adds a tool that uses a rectangular area in the dialog as its trigger point.</entry>
 </row>
 <row>
 <entry><xref linkend="mthAdjustRect"/></entry>
@@ -384,9 +384,8 @@
   linkend="chpDialogObject">dialog</link> object. The basic syntax is:
 
 <programlisting> <![CDATA[
->>-connectToolTipEvent(--id--,--event--+----------------+--)------------><
-                                      +--,-methodName--+
-
+>>--connectToolTipEvent(--id--,--event--+-----------+--+-------------+--)------><
+                                        +-,-mthName-+  +-,-willReply-+
 ]]>
 </programlisting>
 </para>
@@ -425,7 +424,7 @@
 </section>  <!-- End newToolTip() [PlainBaseDialog method] -->
 
 
-<section id="mthActivate"><title>activate</title>
+<section id="mthActivate" xreflabel="activate"><title>activate</title>
 <indexterm><primary>activate</primary></indexterm>
 <indexterm><primary>ToolTip class</primary><secondary>activate</secondary></indexterm>
 <programlisting>
@@ -437,7 +436,7 @@
 </programlisting>
 
 <para>
-  Activates or deactivates this tool tip.
+  Activates or deactivates this ToolTip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -446,10 +445,10 @@
     The single optional argument is:
   </para>
   <variablelist>
-    <varlistentry><term>activate</term>
+    <varlistentry><term>activate [optional]</term>
     <listitem>
     <para>
-      If true activates this tool it, if false deactivate this tool tip. The default if the argument is omitted is true.
+      If true, activates this tool it, if false, deactivate this tool tip. The default if the argument is omitted is true.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -488,7 +487,7 @@
 </programlisting>
 
 <para>
-  Adds a tool to this tool tip.
+  Adds a tool to this ToolTip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -506,18 +505,18 @@
       <varlistentry><term>text [optional]</term>
       <listitem>
       <para>
-        Text for the tool. If omitted, or the empty string, or the string: TEXTCALLBACK then the tool tip sends the NEEDTEXT
-        notification and the program supplies the text.
+        Text for the tool. If omitted, or the empty string, or the string: TEXTCALLBACK, then the tool tip sends the <xref
+        linkend="kywToolTipNEEDTEXT"/> notification and the program supplies the text.
       </para>
       <para>
-        The maximum length of the text is 1023 characters, which includes any possible end of line (0x0D0A) sequences.
+        The length of the text must be less than 1024 characters, which includes any possible end of line (0x0D0A) sequences.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>flags [optional]</term>
       <listitem>
       <para>
         A list of 0 or more of the following keywords separated by spaces, case is not significant. If this argument is
-        omitted, the flags are set to ISISHWND SUBCLASS:
+        omitted, the flags are set to IDISHWND SUBCLASS:
       </para>
       <para>
         <simplelist type='vert' columns='3'>
@@ -534,9 +533,9 @@
           <varlistentry><term>ABSOLUTE</term>
           <listitem>
           <para>
-            Positions the ToolTip window at the same coordinates provided by the <xref linkend="mthTrackPosition"/> method.
-            This flag must be used with the TRACK flag. This flag is not useful for the simple case the <emphasis
-            role="italic">addTool</emphasis> method is designed for.
+            Positions the ToolTip window at the exact same coordinates specified by the <xref linkend="mthTrackPosition"/>
+            method. Without this flag the ToolTip control chooses where to display the ToolTip window based on the
+            coordinates specified, which places the ToolTip close to the tool. This flag must be used with the TRACK flag.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CENTERTIP</term>
@@ -553,7 +552,8 @@
             role="italic">addTool</emphasis> method, the ooDialog framework always sets this flag, it does not need to be
             specified by the programmer. The window <link linkend="defHandle">handle</link> of the <emphasis
             role="italic">tool</emphasis> argument is always the ID part of the tool identification.
-          </para> </listitem></varlistentry>
+          </para>
+          </listitem></varlistentry>
           <varlistentry id="kywToolTipPARSELINKS" xreflabel="PARSELINKS"><term>PARSELINKS</term>
           <listitem>
           <para>
@@ -585,8 +585,7 @@
           <para>
              Positions the ToolTip window next to the tool to which it corresponds and moves the window according to
              coordinates supplied by the <xref linkend="mthTrackPosition"/> method. The programmer must activate this
-             type of tool using the <xref linkend="mthTrackActivate"/> method. This flag is not useful for the simple case
-             the <emphasis role="italic">addTool</emphasis> method is designed for.
+             type of tool using the <xref linkend="mthTrackActivate"/> method.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TRANSPARENT</term>
@@ -611,13 +610,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">addTool</emphasis> method is intended to be a convenient method for use in the most common
+    case of adding a tool.  The case where the tool is a simple dialog control. Use the <xref linkend="mthAddToolRect"/> or
+    the <xref linkend="mthAddToolEx"/> methods to add a tool with characteristics that need to be more explicitly defined.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -625,16 +626,21 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a ToolTip and then adds a tool to it. The tool is defined using a push button dialog control and
+    the text for the tool is specified at the time the tool is added:
 <programlisting>
 <![CDATA[
+
+  pbTest = self~newPushButton(IDC_PB_TEST)
+  count  = 0
+  ...
+
+  ttTest = self~createToolTip(IDC_TT_TEST)
+  ttTest~addTool(pbTest, "Push the Test button to start the regression testing.")
 
 ]]>
 </programlisting>
@@ -649,25 +655,24 @@
 <indexterm><primary>ToolTip class</primary><secondary>addToolEx</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addToolEx(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addToolEx(--tool--)--------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds the specified tool to this ToolTip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>tool [required]</term>
       <listitem>
       <para>
-        xx
+        A <xref linkend="clsToolInfo"/>  object that defines the tool being added.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -675,13 +680,21 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    There are a number of different attributes that can be set when adding a tool to a tool tip. The <emphasis
+    role="italic">addToolEx</emphasis> method is designed to let the programmer specify any valid combination of attributes
+    allowed by the operating system. To do this, it requires the specifier of the tool to be a
+    <computeroutput>ToolInfo</computeroutput> object. The programmer is responsible for setting the tool attriubtes as he
+    wishes.
+  </para>
+  <para>
+    For the simple case of adding a tool that is a dialog control, the <xref linkend="mthAddTool"/> is a more convenient
+    method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -689,16 +702,21 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a ToolTip and then adds a tool that will supply customized tool tips for a tree-view:
 <programlisting>
 <![CDATA[
+
+  tv = self~newTreeView(IDC_TREE)
+  rect = tv~clientRect
+
+  tt = self~createToolTip(IDC_TT)
+
+  toolInfo = .ToolInfo~new(tv, ID_TREE_TOOL, '', 'TRANSPARENT', rect)
+  tt~addToolEx(toolInfo)
 
 ]]>
 </programlisting>
@@ -713,13 +731,13 @@
 <indexterm><primary>ToolTip class</primary><secondary>addToolRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addToolRect(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addToolRect(--dlg-,-id-,-rect--+--------+-+---------+-+------------+--)----><
+                                   +-,-txt--+ +-,-flags-+ +-,-userData-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a tool that uses a rectangular area in the dialog as its trigger point.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -728,10 +746,125 @@
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>dlg [required]</term>
       <listitem>
       <para>
         xx
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        An unique, non-negative, whole number that identifies the tool being added. May be numeric or <xref
+        linkend="defSymbolic"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rect [required]</term>
+      <listitem>
+      <para>
+        A <xref linkend="clsRect"/> object that specifies the bounding rectangle coordinates of the tool. The coordinates are
+        in client <link linkend="defScreenCoordinates"></link> of the dialog identified by the <emphasis
+        role="italic">dlg</emphasis> argument.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt [optional]</term>
+      <listitem>
+      <para>
+        Text for the tool. If omitted, or the empty string, or the string: TEXTCALLBACK, then the ToolTip sends the <xref
+        linkend="kywToolTipNEEDTEXT"/> notification and the program supplies the text.
+      </para>
+      <para>
+        The length of the text must be less than 1024 characters, which includes any possible end of line (0x0D0A) sequences.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. If this argument is
+        omitted, the flags are set to SUBCLASS:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>ABSOLUTE   </member>
+          <member>CENTERTIP  </member>
+          <member>IDISHWND   </member>
+          <member>PARSELINKS </member>
+          <member>RTLREADING </member>
+          <member>SUBCLASS   </member>
+          <member>TRACK      </member>
+          <member>TRANSPARENT</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>ABSOLUTE</term>
+          <listitem>
+          <para>
+            Positions the ToolTip window at the exact same coordinates specified by the <xref linkend="mthTrackPosition"/>
+            method. Without this flag the ToolTip control chooses where to display the ToolTip window based on the
+            coordinates specified, which places the ToolTip close to the tool. This flag must be used with the TRACK flag.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CENTERTIP</term>
+          <listitem>
+          <para>
+            Centers the ToolTip window below the tool specified by the <emphasis role="italic">tool</emphasis> argument.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>IDISHWND</term>
+          <listitem>
+          <para>
+            Indicates that the ID part of the tool <link linkend="sctToolIdentification">identification</link> is the window
+            handle to the tool. This flag can not be used for the <emphasis role="italic">addToolRect</emphasis> method. If
+            it is present, the ooDialog framework removes it.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry id="kywToolTipPARSELINKS" xreflabel="PARSELINKS"><term>PARSELINKS</term>
+          <listitem>
+          <para>
+            Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+          </para>
+          <para>
+            Indicates that links in the ToolTip text should be parsed.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RTLREADING</term>
+          <listitem>
+          <para>
+            Indicates that the ToolTip text will be displayed in the opposite direction to the text in the parent window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SUBCLASS</term>
+          <listitem>
+          <para>
+            Indicates that the ToolTip control should subclass the tool's window to intercept messages, such as WM_MOUSEMOVE.
+            If this flag is not set, some means must be used so that the mouse messages are forwarded to the ToolTip control.
+            For the use case that the <emphasis role="italic">addToolRect</emphasis> method is designed for, this flag
+            should always be set. The ooDialog framwork always sets this flag during the <emphasis
+            role="italic">addToolRect</emphasis> method, the programmer does not need to include this flag.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TRACK</term>
+          <listitem>
+          <para>
+             Positions the ToolTip window next to the tool to which it corresponds and moves the window according to
+             coordinates supplied by the <xref linkend="mthTrackPosition"/> method. The programmer must activate this
+             type of tool using the <xref linkend="mthTrackActivate"/> method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TRANSPARENT</term>
+          <listitem>
+          <para>
+            Causes the ToolTip control to forward mouse event messages to the parent window. This is limited to mouse events
+            that occur within the bounds of the ToolTip window.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optional]</term>
+      <listitem>
+      <para>
+        A user data value to be associated with the tool. This can be any Rexx object the programmer wants. Note that the
+        value is associated with the tool, not the tool tip.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -739,13 +872,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -753,17 +880,37 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example was created solely as a demonstration of how ToolTips work, it has no real practical value. It displays
+    ToolTips as the mouse moves over a dialog:
 <programlisting>
 <![CDATA[
 
+  tt = self~createToolTip(IDC_TT_MAIN)
+
+  clRect = self~clientRect
+  hMidpoint = trunc((clRect~right - clRect~left) / 2) + clRect~left
+  vMidpoint = trunc((clRect~bottom - clRect~top) / 2) + clRect~top
+
+  clRect1 = .Rect~new(clRect~left, clRect~top, hMidpoint, vMidpoint)
+  clRect2 = .Rect~new(hMidpoint + 1, clRect~top, clRect~right, vMidpoint + 1)
+  clRect3 = .Rect~new(clRect~left, vMidpoint + 1, hMidpoint + 1, clRect~bottom)
+  clRect4 = .Rect~new(hMidpoint + 1, vMidpoint + 1, clRect~right, clRect~bottom)
+
+  text1 = 'Over main dialog, top left quadrant'
+  text2 = 'Over main dialog, top right quadrant'
+  text3 = 'Over main dialog, bottom left quadrant'
+  text4 = 'Over main dialog, bottom right quadrant'
+
+  ret = tt~addToolRect(self, IDTOOL_DLG_RECT1, clRect1, text1, 'TRANSPARENT')
+  ret = tt~addToolRect(self, IDTOOL_DLG_RECT2, clRect2, text2, 'TRANSPARENT')
+  ret = tt~addToolRect(self, IDTOOL_DLG_RECT3, clRect3, text3, 'TRANSPARENT')
+  ret = tt~addToolRect(self, IDTOOL_DLG_RECT4, clRect4, text4, 'TRANSPARENT')
+
+  self~connectToolTipEvent(IDC_TT_MAIN, 'SHOW', onShow)
 ]]>
 </programlisting>
   </para>
