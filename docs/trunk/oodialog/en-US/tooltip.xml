@@ -246,11 +246,11 @@
 </row>
 <row>
 <entry><xref linkend="mthAdjustRect"/></entry>
-<entry>x</entry>
+<entry>Calculates a ToolTip control's text display rectangle from its window rectangle, or the ToolTip window rectangle needed to display a specified text display rectangle.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDelTool"/></entry>
-<entry>x</entry>
+<entry>Removes the specified tool from this ToolTip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthEnumTools"/></entry>
@@ -924,13 +924,14 @@
 <indexterm><primary>ToolTip class</primary><secondary>adjustRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--adjustRect(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--adjustRect(--rect--+-----------+--)----------><
+                       +-,-larger--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Calculates a ToolTip control's text display rectangle from its window rectangle, or the ToolTip window rectangle needed to
+  display a specified text display rectangle.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -939,10 +940,24 @@
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>rect [required]</term>
       <listitem>
       <para>
-        xx
+        A <xref linkend="clsRect"/> object used to specify the rectangle to adjust. On a successful return, the coordinates
+        in the rectangle will be adjusted as specified by the <emphasis role="italic">larger</emphasis> arguent.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>larger [optional]</term>
+      <listitem>
+      <para>
+        True or false to specify how the rectangle is adjusted. If omitted, the default is false.
+      </para>
+      <para>
+        If true, <emphasis role="italic">rect</emphasis> is used to specify a text-display rectangle and it is updated to
+        contain the corresponding window rectangle. On return the rectangle is <emphasis role="italic">larger</emphasis> in
+        this case. If false, <emphasis role="italic">rect</emphasis> is used to specify a window rectangle and it is updated
+        to the corresponding text display rectangle. On return, the rectangle is <emphasis role="italic">not</emphasis>
+        larger, (it is smaller,) in this case.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -950,33 +965,34 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if the rectangle was adjusted correctly, and returns false if an error occurred.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method is particularly useful when a ToolTip control is used to display the full text of a string that is truncated.
+    It is commonly used with list-view and tree-view controls. Typically send this method would be used in response to a
+    <xref linkend="kywToolTipSHOW"/> SHOW event notification so that the ToolTip control properly can be positioned properly.
+  </para>
+  <para>
+    The ToolTip's window rectangle is somewhat larger than the text display rectangle that bounds the ToolTip string. The
+    window origin is also offset up and to the left from the origin of the text display rectangle. To position the text
+    display rectangle, the programmer must calculate the corresponding window rectangle and use that rectangle to position
+    the ToolTip. The <emphasis role="italic">adjustRect</emphasis> method handles this calculation for the programmer.
+  </para>
+  <para>
+    If <emphasis role="italic">larger</emphasis> is set to true, <emphasis role="italic">adjustRect</emphasis> takes the size
+    and position of the desired ToolTip text display rectangle, and passes back the size and position of the ToolTip window
+    needed to display the text in the specified position. If <emphasis role="italic">larger</emphasis> is set to false, the
+    programmer can specify a ToolTip window rectangle and the <emphasis role="italic">adjustRect</emphasis> method will
+    return the size and position of its text rectangle.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -988,13 +1004,13 @@
 <indexterm><primary>ToolTip class</primary><secondary>delTool</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--delTool(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--delTool(--toolHwnd--+----------+--)----------><
+                        +-,-toolID-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes the specified tool from this ToolTip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1003,10 +1019,18 @@
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolHwnd [required]</term>
       <listitem>
       <para>
-        xx
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>toolID [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1014,13 +1038,14 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="sctToolIdentification">Tool Identification</link> section explains exactly how the Rexx object
+    combination is used to specify the tool to be deleted.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1028,16 +1053,25 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a tool being added to a ToolTip and then at some later point in the application being deleted.
 <programlisting>
 <![CDATA[
+
+  pbTest = self~newPushButton(IDC_PB_TEST)
+  count  = 0
+  ...
+
+  ttTest = self~createToolTip(IDC_TT_TEST)
+  ttTest~addTool(pbTest, "Push the Test button to start the regression testing.")
+
+  ...
+
+  ttTest~delTool(pbTest)
+
 
 ]]>
 </programlisting>
@@ -2971,11 +3005,13 @@
 <indexterm><primary>ToolInfo class</primary></indexterm>
 <para>
   A <emphasis role="italic">ToolInfo</emphasis> object contains information about a tool in a <xref linkend="clsToolTip"/>
-  control. The attributes of the <computeroutput>ToolInfo</computeroutput> object reflect the information that defines a tool
-  in the ToolTip control.
+  control. The attributes of the <computeroutput>ToolInfo</computeroutput> object reflect the information that defines a
+  specific tool in the ToolTip control.
 </para>
 <para>
-  xx
+  <emphasis role="italic">ToolInfo</emphasis> objects are used in some of the methods of the
+  <computeroutput>ToolTip</computeroutput> class to provide information to the ToolTip control, and / or, to receive
+  information from the ToolTip control.
 </para>
 
 <section id="sctMethodsToolInfo"><title>Method Table</title>
