@@ -113,7 +113,7 @@
 <indexterm><primary>ToolTip class</primary><secondary>tool identification</secondary></indexterm>
 
 <para>
-  Each ToolTip can contain more than one <emphasis role="italic">tool</emphasis>. Becuase of this, the ToolTip control
+  Each ToolTip can contain more than one <emphasis role="italic">tool</emphasis>. Because of this, the ToolTip control
   needs a way of uniquely identifying each individual tool. In the operating system, each tool is identified using a
   combination of a window <link linkend="defHandle">handle</link> and an ID. The ID however, can be either another window
   handle or a unique number. When the ID is a number, the number is similar to a <xref linkend="defResourceId"/>.
@@ -3026,15 +3026,15 @@
 </row>
 <row>
 <entry><link linkend="mthForHitTest">forHitTest</link></entry>
-<entry>x</entry>
+<entry>Returns a new <computeroutput>ToolInfo</computeroutput> object to be used in the <xref linkend="mthHitTestClsToolTip"/> method.</entry>
 </row>
 <row>
 <entry><link linkend="mthForID">forID</link></entry>
-<entry>x</entry>
+<entry>Returns a new <computeroutput>ToolInfo</computeroutput> object to be used for tool <link linkend="sctToolIdentification">indentification.</link></entry>
 </row>
 <row>
 <entry><link linkend="mthNewClsToolInfo">new</link></entry>
-<entry>x</entry>
+<entry>Instantiates a new <computeroutput>ToolInfo</computeroutput> object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
@@ -3042,31 +3042,31 @@
 </row>
 <row>
 <entry><link linkend="atrFlags">flags</link></entry>
-<entry>x</entry>
+<entry>Reflects the flags that define the style and options of the tool.</entry>
 </row>
 <row>
 <entry><link linkend="atrRect">rect</link></entry>
-<entry>x</entry>
+<entry>Reflects the bounding rectangle coordinates of the tool when the tool is an application-defined rectangular area within a window's client area.</entry>
 </row>
 <row>
 <entry><link linkend="atrResource">resource</link></entry>
-<entry>x</entry>
+<entry>Reserved for future enhancement.</entry>
 </row>
 <row>
 <entry><link linkend="atrRexxHwnd">rexxHwnd</link></entry>
-<entry>x</entry>
+<entry>Reflects the Rexx object from which the first part of the 2-part system <link linkend="sctToolIdentification">identification</link> for a tool is derived from.</entry>
 </row>
 <row>
 <entry><link linkend="atrRexxID">rexxID</link></entry>
-<entry>x</entry>
+<entry>Reflects the Rexx object from which the second part of the 2-part system <link linkend="sctToolIdentification">identification</link> for a tool is derived from.</entry>
 </row>
 <row>
 <entry><link linkend="atrText">text</link></entry>
-<entry>x</entry>
+<entry>Reflects the text set for the tool.</entry>
 </row>
 <row>
 <entry><link linkend="atrUserData">userData</link></entry>
-<entry>x</entry>
+<entry>Reflects the application-defined user data value for the tool.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -3079,25 +3079,28 @@
 <indexterm><primary>ToolInfo class</primary><secondary>forHitTest</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--forHitTest(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--forHitTest(--hwndObj--)----------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns a new <computeroutput>ToolInfo</computeroutput> object to be used in the <xref linkend="mthHitTestClsToolTip"/>
+  method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>hwndObj [required]</term>
       <listitem>
       <para>
-        xx
+        The Rexx tool or Rexx object that contains a tool that is going to be hit tested. For example, if the tool to be
+        tested is a rectangular area, <emphasis role="italic">hwndObj</emphasis> should be the Rexx object that represents
+        the window containing the rectangle. If the tool is a dialog control, then <emphasis role="italic">hwndObj</emphasis>
+        should be the Rexx object that represents the dialog control.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3105,13 +3108,18 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a newly instantiated <computeroutput>ToolInfo</computeroutput> object designed to be used as the argument to the
+    <emphasis role="italic">hitTest</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The new <computeroutput>ToolInfo</computeroutput> object is especially constructed to be of use in the <xref
+    linkend="mthHitTestClsToolTip"/> method. To be explicit, the <computeroutput>ToolInfo</computeroutput> object returned is
+    initialized to an empty state and the normal tool indentifiers are not set.  The returned
+    <computeroutput>ToolInfo</computeroutput> object is not suitable to be used in any other methods that required a
+    <computeroutput>ToolInfo</computeroutput> object, except the <emphasis role="italic">hitTest</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3119,16 +3127,54 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from an application that has a number of rectangular tools in a dialog.  An arbitrary point is hit
+    tested and if the hit succeeds, the filled in tool information is printed to the screen:
 <programlisting>
 <![CDATA[
+
+  hitTool = .ToolInfo~forHitTest(self)
+
+  say 'Using' pos
+
+  if tt~hitTest(hitTool, pos) then do
+    say 'Got hit'
+    say 'Tool info  hwnd:    ' hitTool~rexxHwnd
+    say 'Tool info  id:      ' hitTool~rexxID
+    say 'Tool info  text:    ' hitTool~text
+    say 'Tool info  flags:   ' hitTool~flags
+    say 'Tool info  rect:    ' hitTool~rect
+    say 'Tool info  userData:' hitTool~userData
+    say 'Tool info  resource:' hitTool~resource
+    say
+  end
+  else do
+    say 'NO hit'
+  end
+
+/*  Output might be for instance:
+
+Using a Point (220, 101)
+Got hit
+Tool info  hwnd:     a SimpleDialog
+Tool info  id:       777
+Tool info  text:     Over main dialog, bottom right quadrant
+Tool info  flags:    SUBCLASS TRANSPARENT
+Tool info  rect:     a Rect (194, 101, 386, 200)
+Tool info  userData: The NIL object
+Tool info  resource: The NIL object
+
+*/
+
+/* Output from a miss:
+
+Using a Point (220, 301)
+NO hit
+
+*/
 
 ]]>
 </programlisting>
@@ -3143,13 +3189,14 @@
 <indexterm><primary>ToolInfo class</primary><secondary>forID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--forID(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--forID(--toolHwnd--+----------+--)------------><
+                      +-,-toolID-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns a new <computeroutput>ToolInfo</computeroutput> object to be used for tool <link
+  linkend="sctToolIdentification">indentification.</link>
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3158,10 +3205,18 @@
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolHwnd [required]</term>
       <listitem>
       <para>
-        xx
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> a tool to the operating system.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>toolID [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to the operaring system.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3169,13 +3224,18 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a newly instantiated <computeroutput>ToolInfo</computeroutput> object that can be used to identify a specific
+    tool contained within a ToolTip.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Many of the <computeroutput>ToolTip</computeroutput> methods require that the tool the method pertains to be identified.
+    The <computeroutput>ToolInfo</computeroutput> object returned from <emphasis role="italic">forID</emphasis> is useful for
+    those method. In addition, some methods return information by filling in the attributes of a
+    <computeroutput>ToolInfo</computeroutput> object that specifies a tool. This is another good use of the <emphasis
+    role="italic">forID</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3183,17 +3243,20 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a new <computeroutput>ToolInfo</computeroutput> object using the <emphasis
+    role="italic">forID</emphasis> method and then uses the object to change the ToolTip text for a push button tool:
 <programlisting>
 <![CDATA[
 
+  toolInfo = .ToolInfo~forID(self~newPushButton(IDC_PB_TEST))
+  toolInfo~text = "Push the 'Test' button when you are ready to begin the test suite for the final release."
+
+  toolTip~setMaxTipWidth(140)
+  toolTip~updateTipText(toolInfo)
 ]]>
 </programlisting>
   </para>
@@ -3206,24 +3269,146 @@
 <indexterm><primary>ToolInfo class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new(-toolHwnd-+----------+-+-------+-+--------+-+-----+-+---------+-+-------+-)--><
+                  +-,-toolID-+ +-,-txt-+ +-,-flgs-+ +-,-r-+ +-,-uData-+ +-,-rsv-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>ToolInfo</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>toolHwnd [required]</term>
     <listitem>
     <para>
-      xx
+      The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+      object combination that <link linkend="sctToolIdentification">identify</link> a tool to the operating system.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>toolID [optional]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+      object combination that <link linkend="sctToolIdentification">identify</link> the tool to the operaring system.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>txt [optional]</term>
+    <listitem>
+    <para>
+      Text for the tool. If omitted, or the empty string, or the string: TEXTCALLBACK, then the ToolTip sends the <xref
+      linkend="kywToolTipNEEDTEXT"/> notification and the program supplies the text.
+    </para>
+    <para>
+      The length of the text must be less than 1024 characters, which includes any possible end of line (0x0D0A) sequences.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>flags [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant.
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>ABSOLUTE   </member>
+        <member>CENTERTIP  </member>
+        <member>IDISHWND   </member>
+        <member>PARSELINKS </member>
+        <member>RTLREADING </member>
+        <member>SUBCLASS   </member>
+        <member>TRACK      </member>
+        <member>TRANSPARENT</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>ABSOLUTE</term>
+        <listitem>
+        <para>
+          Positions the ToolTip window at the exact same coordinates specified by the <xref linkend="mthTrackPosition"/>
+          method. Without this flag the ToolTip control chooses where to display the ToolTip window based on the
+          coordinates specified, which places the ToolTip close to the tool. This flag must be used with the TRACK flag.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CENTERTIP</term>
+        <listitem>
+        <para>
+          Centers the ToolTip window below the tool.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>IDISHWND</term>
+        <listitem>
+        <para>
+          Indicates that the ID part of the tool <link linkend="sctToolIdentification">identification</link> is the window
+          handle to the tool. In general, the ooDialog framework will set this flag correctly by using knowledge it gains
+          from parsing the <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis>
+          arguments. If the flag is required, the framework will set it, if the flag should not be used, the framework will
+          remove it if it is set.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>PARSELINKS</term>
+        <listitem>
+        <para>
+          Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+        </para>
+        <para>
+          Indicates that links in the ToolTip text should be parsed.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RTLREADING</term>
+        <listitem>
+        <para>
+          Indicates that the ToolTip text will be displayed in the opposite direction to the text in the parent window.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SUBCLASS</term>
+        <listitem>
+        <para>
+          Indicates that the ToolTip control should subclass the tool's window to intercept messages, such as WM_MOUSEMOVE.
+          If this flag is not set, some means must be used so that the mouse messages are forwarded to the ToolTip control,
+          for instance by using the <xref linkend="mthManageAtypicalTool"/> method.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TRACK</term>
+        <listitem>
+        <para>
+           Positions the ToolTip window next to the tool to which it corresponds and moves the window according to
+           coordinates supplied by the <xref linkend="mthTrackPosition"/> method. The programmer must activate this
+           type of tool using the <xref linkend="mthTrackActivate"/> method.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TRANSPARENT</term>
+        <listitem>
+        <para>
+          Causes the ToolTip control to forward mouse event messages to the parent window. This is limited to mouse events
+          that occur within the bounds of the ToolTip window.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>r [optional]</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsRect"/> object that specifies the bounding rectangle coordinates of the tool. The coordinates are
+      in client <link linkend="defScreenCoordinates">coordinates</link> of the tool.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>uData [optional]</term>
+    <listitem>
+    <para>
+      A user data value to be associated with the tool. This can be any Rexx object the programmer wants. Note that the
+      value is associated with the tool, not the tool tip.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rsv [optional]</term>
+    <listitem>
+    <para>
+      Reserved for future enhancement. This argument is completely ignrored in the current implmentation of ooDialog. Future
+      versions may be enhance to use this argument to specify a <xref linkend="clsResourceImage"/> object containing binary
+      resources for the tool.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3232,13 +3417,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a newly instantiated <computeroutput>ToolInfo</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Except for the IDISHWND flag, the returned <computeroutput>ToolInfo</computeroutput> object is constructed exactly as the
+    programmer specifies. This makes the object ideal for use in the <xref linkend="mthAddToolEx"/> method for those cases
+    where the convenience <xref linkend="mthAddTool"/> and <xref linkend="mthAddToolRect"/> are not suitable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3246,16 +3433,30 @@
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the <emphasis role="italic">new</emphasis> method to instantiate a
+    <computeroutput>ToolInfo</computeroutput> object for an implementation of custom ToolTips for a <xref
+    linkend="clsTreeView"/>:
+
 <programlisting>
 <![CDATA[
+
+  tv = self~newTreeView(IDC_TREE)
+  ret = tv~setItemHeight(20)
+  tt = self~createToolTip(IDC_TT)
+
+  rect = tv~clientRect
+
+  toolInfo = .ToolInfo~new(tv, ID_TOOL_TV, '', 'TRANSPARENT', rect, helperObj)
+  tt~addToolEx(toolInfo)
+
+  tt~setMaxTipWidth(250)
+
+  self~populateTree(tv)
+  tt~manageAtypicalTool(tv, .array~of('RELAY', 'NEEDTEXT', 'SHOW'))
 
 ]]>
 </programlisting>
@@ -3277,43 +3478,108 @@
 </programlisting>
 
 <para>
-  xx
+  Reflects the flags that define the style and options of the tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">flags get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns a string of 0 or more keywords separated by a single space that specify the flags set for this tool. If no flags
+    are set, the empty string is returned. See the remarks for the keyword values and meanings.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">flags set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Sets the flags for this tool to those specified by a string of 0 or more space separated keywords. Case is not
+    significant. See the remarks for the possible keywords and their meaning.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The following keywords specify the individual flags that define the style and options for a ToolTip tool. The keywords
+    are case insensitive.
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>ABSOLUTE   </member>
+      <member>CENTERTIP  </member>
+      <member>IDISHWND   </member>
+      <member>PARSELINKS </member>
+      <member>RTLREADING </member>
+      <member>SUBCLASS   </member>
+      <member>TRACK      </member>
+      <member>TRANSPARENT</member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>ABSOLUTE</term>
+      <listitem>
+      <para>
+        Indicates that the ToolTip should position its window at the exact same coordinates specified by the <xref
+        linkend="mthTrackPosition"/> method. Without this flag the ToolTip control chooses where to display the ToolTip
+        window based on the coordinates specified, which places the ToolTip close to the tool. This flag must be used with
+        the TRACK flag.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CENTERTIP</term>
+      <listitem>
+      <para>
+        Indicates that the ToolTip should centers its window below the tool.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>IDISHWND</term>
+      <listitem>
+      <para>
+        Indicates that the ID part of the tool <link linkend="sctToolIdentification">identification</link> is the window
+        handle if the tool. If the programmer sets the <emphasis role="italic">flags</emphasis> attribute, it becomes the
+        programmer's responsibility to set this flag correctly. Failure to do so will result in unpredictable behaviour.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PARSELINKS</term>
+      <listitem>
+      <para>
+        Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+      </para>
+      <para>
+        Indicates that links in the ToolTip text should be parsed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RTLREADING</term>
+      <listitem>
+      <para>
+        Indicates that the ToolTip text will be displayed in the opposite direction to the text in the parent window.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SUBCLASS</term>
+      <listitem>
+      <para>
+        Indicates that the ToolTip control should subclass the tool's window to intercept messages, such as WM_MOUSEMOVE.
+        If this flag is not set, some means must be used so that the mouse messages are forwarded to the ToolTip control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TRACK</term>
+      <listitem>
+      <para>
+        Indicates that the ToolTip should position its window next to the tool to which it corresponds and move the window
+        according to coordinates supplied by the <xref linkend="mthTrackPosition"/> method. The programmer must activate this
+        type of tool using the <xref linkend="mthTrackActivate"/> method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TRANSPARENT</term>
+      <listitem>
+      <para>
+        Causes the ToolTip control to forward mouse event messages to the parent window. This is limited to mouse events
+        that occur within the bounds of the ToolTip window.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3333,43 +3599,36 @@
 </programlisting>
 
 <para>
-  xx
+  Reflects the bounding rectangle coordinates of the tool when the tool is an application-defined rectangular area within a
+  window's client area.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">rect get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the bounding rectangle as a <xref linkend="clsRect"/> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">rect set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Assign a <computeroutput>Rect</computeroutput> object to the <emphasis role="italic">rect</emphasis> attribute to define
+    the tool as a rectangular area within a window.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the tool is not an application-defined rectangular area, the value of the <emphasis role="italic">rect</emphasis>
+    attribute is a <computeroutput>rect</computeroutput> object whose coordinates are all 0. When the <emphasis
+    role="italic">flags</emphasis> attribute includes the IDIHWND keyword, the <emphasis role="italic">rect</emphasis>
+    attriubte is ignored by the ToolTip.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3389,43 +3648,33 @@
 </programlisting>
 
 <para>
-  xx
+  Reserved for future enhancement.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">resource get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the <computeroutput>.nil</computeroutput> object, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">resource set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    This attribute can not be set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If the <xref linkend="clsResourceImage"/> class is enhanced to work with string resources (a good possibility) then this
+    attribute will the <computeroutput>ResourceImage</computeroutput> that contains the string resource to use for the text
+    of the tool.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3445,43 +3694,28 @@
 </programlisting>
 
 <para>
-  xx
+  Reflects the Rexx object from which the first part of the 2-part system <link
+  linkend="sctToolIdentification">identification</link> for a tool is derived from.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">rexxHwnd get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the Rexx object that is used as part of the basis for the tool identification. This will always be either a
+    dialog object or a dialog control object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">rexxHwnd set:</emphasis></term>
   <listitem>
   <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The Rexx programmer can not set this attribute. It is set by the ooDialog framework when the
+    <computeroutput>ToolInfo</computeroutput> object is instantiated and can not be changed after that.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3501,43 +3735,28 @@
 </programlisting>
 
 <para>
-  xx
+  Reflects the Rexx object from which the second part of the 2-part system <link
+  linkend="sctToolIdentification">identification</link> for a tool is derived from.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">rexxID get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the Rexx object used as the ID portion of the tool identifier. This will always be either a dialog control object
+    or a non-negative whole number. (Recall that in ooRexx all numbers are objects.)
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">rexxID set:</emphasis></term>
   <listitem>
   <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The Rexx programmer can not set this attribute. It is set by the ooDialog framework when the
+    <computeroutput>ToolInfo</computeroutput> object is instantiated and can not be changed after that
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3557,43 +3776,43 @@
 </programlisting>
 
 <para>
-  xx
+  Reflects the text set for the tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">text get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the text for the tool, the empty string if the text is not set, or the string <emphasis
+    role="italic">TextCallBack</emphasis> if the tool is set to use the call back feature. See the remarks for details on the
+    call back feature.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">text set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Assign this attribute the text string the ToolTip should display in its window for this tool. To set the ToolTip to use
+    its call back feature, either assign the string <emphasis role="italic">TEXTCALLBACK</emphasis>, case is not significant,
+    or assign the empty string.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+   The ToolTip provides a call back feature that can be used rather than setting a static text string for the tool. With this
+   feature, the ToolTip sends the <xref linkend="kywToolTipNEEDTEXT"/> notification and the program supplies the text
+   supplies the text for the tool by responding to the notification. To use this feature, the programmer should set the
+   <emphasis role="italic">text</emphasis> attribute to either the string, <emphasis role="italic">TextCallBack</emphasis> ro
+   the empty string.
+  </para>
+  <para>
+    The length of the text must be less than 1024 characters, which includes any possible end of line (0x0D0A) sequences. Do
+    not set the <emphasis role="italic">text</emphasis> attriubte to a string longer than 1023 characters.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3613,43 +3832,26 @@
 </programlisting>
 
 <para>
-  xx
+  Reflects the application-defined user data value for the tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">userData get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the user data set for the tool, or the <computeroutput>.nil</computeroutput> object is no user data has been
+    assiged.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">userData set:</emphasis></term>
   <listitem>
   <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The programmer can assign a user data value to the tool. This can be any Rexx object desired.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
