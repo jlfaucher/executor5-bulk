@@ -254,19 +254,19 @@
 </row>
 <row>
 <entry><xref linkend="mthEnumTools"/></entry>
-<entry>x</entry>
+<entry>Retrieves a <xref linkend="clsToolInfo"/> object for the tool at the specified index.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetBubbleSize"/></entry>
-<entry>x</entry>
+<entry>Returns the width and height, as a <xref linkend="clsSize"/> object, of this ToolTip control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetCurrentToolInfo"/></entry>
-<entry>x</entry>
+<entry>Retrieves a <xref linkend="clsToolInfo"/> object whose attributes represent the current tool in this tool tip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetDelayTime"/></entry>
-<entry>x</entry>
+<entry>Retrieves one of the 3 delay times currently set for this ToolTip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetMargin"/></entry>
@@ -1087,25 +1087,25 @@
 <indexterm><primary>ToolTip class</primary><secondary>enumTools</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--enumTools(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--enumTools(--+---------+--)-------------------><
+                +--index--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves a <xref linkend="clsToolInfo"/> object for the tool at the specified index.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index</term>
       <listitem>
       <para>
-        xx
+        The one-based index of the tool to retrieve. If omitted, <emphasis role="italic">index</emphasis> defaults to 1.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1113,13 +1113,14 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the tool, as a <computeroutput>ToolInfo</computeroutput> object, at the index specified, or the
+    <computeroutput>.nil</computeroutput> object if there is no tool at the index.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The Microsoft documentation says nothing about what, if any, order the tools contained in a ToolTip are in.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1127,17 +1128,25 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example <emphasis role="italic">enumerates</emphasis> the tools in a ToolTip:
 <programlisting>
 <![CDATA[
 
+  do i = 1 to toolTip~getToolCount
+    toolInfo = toolTip~enumTools(i)
+    say 'Tool info  hwnd:    ' toolInfo~rexxHwnd
+    say 'Tool info  id:      ' toolInfo~rexxID
+    say 'Tool info  text:    ' toolInfo~text
+    say 'Tool info  flags:   ' toolInfo~flags
+    say 'Tool info  rect:    ' toolInfo~rect
+    say 'Tool info  userData:' toolInfo~userData
+    say 'Tool info  resource:' toolInfo~resource
+    say
+  end
 ]]>
 </programlisting>
   </para>
@@ -1151,13 +1160,13 @@
 <indexterm><primary>ToolTip class</primary><secondary>getBubbleSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getBubbleSize(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getBubbleSize(--toolHwnd--+----------+--)----><
+                              +-,-toolID-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the width and height, as a <xref linkend="clsSize"/> object, of this ToolTip control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1166,10 +1175,18 @@
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolHwnd [required]</term>
       <listitem>
       <para>
-        xx
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>toolID [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1177,33 +1194,20 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A <computeroutput>Size</computeroutput> object specifying the width and height of this tool tip control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="sctToolIdentification">Tool Identification</link> section explains exactly how the Rexx object
+    combination is used to specify the tool to be deleted.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1215,39 +1219,25 @@
 <indexterm><primary>ToolTip class</primary><secondary>getCurrentToolInfo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCurrentToolInfo(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getCurrentToolInfo---------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves a <xref linkend="clsToolInfo"/> object whose attributes represent the current tool in this tool tip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns the current tool as a <xref linkend="clsToolInfo"/>  object, if one exists, or
+    the <computeroutput>.nil</computeroutput> object if there is not a current tool.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1257,17 +1247,6 @@
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1279,25 +1258,56 @@
 <indexterm><primary>ToolTip class</primary><secondary>getDelayTime</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getDelayTime(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getDelayTime(--+---------+--)----------------><
+                   +--which--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves one of the 3 delay times currently set for this ToolTip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>which [optional]</term>
       <listitem>
       <para>
-        xx
+        Exactly one of the following keywords, case is not significant. This specifies which of the 3 possible delay times to
+        retrieve. The default if omitted is AUTOPOP:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>AUTOPOP   </member>
+          <member>INITIAL    </member>
+          <member>RESHOW   </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>AUTOPOP</term>
+          <listitem>
+          <para>
+            The amount of time the ToolTip window remains visible if the pointer is stationary within a tool's bounding
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>INITIAL</term>
+          <listitem>
+          <para>
+            The amount of time the pointer must remain stationary within a tool's bounding rectangle before the ToolTip
+            window appears.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RESHOW</term>
+          <listitem>
+          <para>
+            The amount of time it takes for subsequent ToolTip windows to appear as the pointer moves from one tool to
+            another.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1305,33 +1315,13 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The specified delay time in milliseconds.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
