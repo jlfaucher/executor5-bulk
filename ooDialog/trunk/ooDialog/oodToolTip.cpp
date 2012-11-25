@@ -1491,7 +1491,7 @@ RexxMethod7(logical_t, tt_addToolRect, RexxObjectPtr, dlg, RexxObjectPtr, rxID, 
  *                 to specify a window rectangle and it receives the
  *                 corresponding text display rectangle.
  */
-RexxMethod3(logical_t, tt_adjustRect, RexxObjectPtr, _rect, logical_t, larger, CSELF, pCSelf)
+RexxMethod3(logical_t, tt_adjustRect, RexxObjectPtr, _rect, OPTIONAL_logical_t, larger, CSELF, pCSelf)
 {
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
