@@ -270,7 +270,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetMargin"/></entry>
-<entry>x</entry>
+<entry>Returns a rectangle that describes the margins of the ToolTip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetMaxTipWidth"/></entry>
@@ -1333,60 +1333,59 @@
 <indexterm><primary>ToolTip class</primary><secondary>getMargin</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMargin(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getMargin------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns a rectangle that describes the margins of the ToolTip
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method has no arguments.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A <xref linkend="clsRect"/> object whose attributes specify the margins of the ToolTip.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The attributes of the returned rectangle do not define a bounding rectangle. For the purpose of this method, the
+    attributes are interpreted as follows:
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
 
-]]>
-</programlisting>
-  </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">top:</emphasis></term>
+    <listitem>
+    <para>
+      Distance between top border and top of ToolTip text, in pixels.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">left:</emphasis></term>
+    <listitem>
+    <para>
+      Distance between left border and left end of ToolTip text, in pixels.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">bottom:</emphasis></term>
+    <listitem>
+    <para>
+      Distance between bottom border and bottom of ToolTip text, in pixels.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">right:</emphasis></term>
+    <listitem>
+    <para>
+      Distance between right border and right end of ToolTip text, in pixels.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ToolTip::getMargin() -->
@@ -3425,7 +3424,7 @@ NO hit
   <para>
     Except for the IDISHWND flag, the returned <computeroutput>ToolInfo</computeroutput> object is constructed exactly as the
     programmer specifies. This makes the object ideal for use in the <xref linkend="mthAddToolEx"/> method for those cases
-    where the convenience <xref linkend="mthAddTool"/> and <xref linkend="mthAddToolRect"/> are not suitable.
+    where the convenience <xref linkend="mthAddTool"/> and <xref linkend="mthAddToolRect"/> methods are not suitable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
