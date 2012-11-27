@@ -84,4 +84,25 @@ extern bool          invokeDirect(RexxThreadContext *c, pCPlainBaseDialog pcpbd,
 extern MsgReplyType  invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, RexxStringObject method, RexxArrayObject args);
 extern bool          msgReplyIsGood(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING methodName, bool clear);
 extern RexxObjectPtr requiredBooleanReply(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING method, bool clear);
+
+// Tree-view notification processing functions.  Defined in oodTreeView.cpp:
+extern MsgReplyType  tvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
+extern MsgReplyType  tvnBeginLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern MsgReplyType  tvnDeleteItem(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern MsgReplyType  tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern MsgReplyType  tvnGetInfoTip(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern MsgReplyType  tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
+extern MsgReplyType  tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern MsgReplyType  tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
+
+inline RexxObjectPtr idFrom2rexxArg(RexxThreadContext *c, LPARAM lParam)
+{
+    return c->Uintptr(((NMHDR *)lParam)->idFrom);
+}
+
+inline RexxObjectPtr hwndFrom2rexxArg(RexxThreadContext *c, LPARAM lParam)
+{
+    return pointer2string(c, ((NMHDR *)lParam)->hwndFrom);
+}
+
 #endif

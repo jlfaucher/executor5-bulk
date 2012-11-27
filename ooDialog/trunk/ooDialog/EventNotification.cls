@@ -369,8 +369,9 @@
         tc~RestoreEditClass
     end
 
-::method defTreeDragHandler
+::method defTreeDragHandler unguarded
    use arg id, item, pt
+   reply 0
    tc = self~newTreeView(id)
    hc = tc~Cursor_Cross   /* change cursor and store current */
    parse value tc~GetRect with left top right bottom
