@@ -274,23 +274,23 @@
 </row>
 <row>
 <entry><xref linkend="mthGetMaxTipWidth"/></entry>
-<entry>x</entry>
+<entry>Retrieves the maximum width for this ToolTip window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetTextClsToolTip"/></entry>
-<entry>x</entry>
+<entry>Retrieves the text information this ToolTip control maintains about the specified tool.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetTipBkColor"/></entry>
-<entry>x</entry>
+<entry>Retrieves the background color for this ToolTip's window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetTipTextColor"/></entry>
-<entry>x</entry>
+<entry>Retrieves the text color fot this ToolTip's window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthTitle"/></entry>
-<entry>x</entry>
+<entry>Retrieves information concerning the title and icon of this ToolTip control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetToolCount"/></entry>
@@ -1396,59 +1396,34 @@
 <indexterm><primary>ToolTip class</primary><secondary>getMaxTipWidth</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMaxTipWidth(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getMaxTipWidth-------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the maximum width for this ToolTip window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method has no arguments.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a whole number value that represents the maximum ToolTip width, in pixels. If no maximum width was set
+    previously, this method returns -1.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The maximum ToolTip width value does not indicate a ToolTip window's actual width. Rather, if a ToolTip string exceeds
+    the maximum width, the control breaks the text into multiple lines, using spaces or newline characters to determine line
+    breaks. If the text cannot be segmented into multiple lines, it will be displayed on a single line. The length of this
+    line may exceed the maximum ToolTip width.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1460,13 +1435,13 @@
 <indexterm><primary>ToolTip class</primary><secondary>getText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getText(--toolHwnd--+----------+--)----------><
+                        +-,-toolID-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the text information this ToolTip control maintains about the specified tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1475,10 +1450,18 @@
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolHwnd [required]</term>
       <listitem>
       <para>
-        xx
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>toolID [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1486,13 +1469,14 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The text string for the specified tool
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="sctToolIdentification">Tool Identification</link> section explains exactly how the Rexx object
+    combination is used to specify the tool to get the text for.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1500,17 +1484,21 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example example prints to the screen the text for a tool tip where the tool is a rectangular area in a dialog:
 <programlisting>
 <![CDATA[
 
+      say 'Text for the tool tip:' tt~getText(self, IDTOOL_DLG_RECT1)
+
+/* Output might be:
+
+Text for the tool tip: Over main dialog, top left quadrant
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -1524,59 +1512,24 @@
 <indexterm><primary>ToolTip class</primary><secondary>getTipBkColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getTipBkColor(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getTipBkColor--------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the background color for this ToolTip window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns a <xref linkend="defColorRef"/> value that represents the background color of this ToolTip window.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1588,59 +1541,24 @@
 <indexterm><primary>ToolTip class</primary><secondary>getTipTextColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getTipTextColor(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getTipTextColor------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the text color fot this ToolTip window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method does not have any arguments.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns a <xref linkend="defColorRef"/> value that represents the background color of this ToolTip window.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1652,59 +1570,143 @@
 <indexterm><primary>ToolTip class</primary><secondary>getTitle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getTitle(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getTitle-------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves information concerning the title and icon of this ToolTip control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method takes no arguments.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <computeroutput>.Directory</computeroutput> object whose indexes contain the title and icon information for
+    this ToolTip. Indexes are:
   </para>
+  <variablelist>
+    <varlistentry><term>TITLE</term>
+    <listitem>
+    <para>
+      The title text.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ICON</term>
+    <listitem>
+    <para>
+      The ICON index will be the <xref linkend="clsImage"/> object used for the icon of this ToolTip, or one of the following
+      keywords if a system image is used for the icon:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>NONE        </member>
+        <member>ERROR       </member>
+        <member>ERRORLARGE  </member>
+        <member>INFO        </member>
+        <member>INFOLARGE   </member>
+        <member>WARNING     </member>
+        <member>WARNINGLARGE</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>NONE</term>
+        <listitem>
+        <para>
+          No icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ERROR</term>
+        <listitem>
+        <para>
+          Error icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ERRORLARGE</term>
+        <listitem>
+        <para>
+          Large warning icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INFO</term>
+        <listitem>
+        <para>
+          Info icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INFOLARGE</term>
+        <listitem>
+        <para>
+          Large info icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>WARNING</term>
+        <listitem>
+        <para>
+          Warning icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>WARNINGLARGE</term>
+        <listitem>
+        <para>
+          Large warning icon.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ISKEYWORD</term>
+    <listitem>
+    <para>
+      True if the ICON index is a keyword, false if it is an <computeroutput>Image</computeroutput> object.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
+    The underlying Windows API for <emphasis role="italic">getTitle</emphasis> appears to be rather idiosyncratic.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
+    In testing, when setting the icon to an actual icon image, getting the icon always returns the INFOLARGE keyword, rather
+    than the icon image. In addition, when setting the icon to any of the LARGE keyword values, getting the icon always
+    returns the non-large keyword. This anomaly is mentioned in several places on the web. The following table shows this
+    behaviour:
 
-]]>
-</programlisting>
+  <table id="tblGetTitleReturns" frame="all"> <title>getTitle Anomalies</title>
+  <tgroup cols="2">
+  <colspec colwidth="1*"/>
+  <colspec colwidth="1*"/>
+  <thead>
+  <row>
+  <entry>Actual Icon Value</entry>
+  <entry>getTitle() returns</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+  <entry>hIcon</entry>
+  <entry>INFOLARGE</entry>
+  </row>
+  <row>
+  <entry>INFOLARGE</entry>
+  <entry>INFO</entry>
+  </row>
+  <row>
+  <entry>WARNINGLARGE</entry>
+  <entry>WARNING</entry>
+  </row>
+  <row>
+  <entry>ERRORLARGE</entry>
+  <entry>ERROR</entry>
+  </row>
+  </tbody></tgroup>
+  </table>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3666,8 +3668,8 @@ NO hit
   <listitem>
   <para>
     If the <xref linkend="clsResourceImage"/> class is enhanced to work with string resources (a good possibility) then this
-    attribute will the <computeroutput>ResourceImage</computeroutput> that contains the string resource to use for the text
-    of the tool.
+    attribute will be the <computeroutput>ResourceImage</computeroutput> that contains the string resource to use for the
+    text of the tool.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
