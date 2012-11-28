@@ -353,22 +353,6 @@
    self~setCursorPos(x+1, y+1)  /* move cursor to force redraw */
 
 
-::method defTreeEditStarter
-    use arg id, dummy, category
-    if arg(3,'o') = 1 then tc = self~newTreeView(id)
-    else tc = self~newTreeView(id, category)
-    if tc \= .nil then tc~subclassEdit
-
-::method defTreeEditHandler
-    use arg id, item, newText, category
-    if arg(3,'o') = 1 then return
-    if arg(4,'o') = 1 then tc = self~newTreeView(id)
-    else tc = self~newTreeView(id, category)
-    if tc \= .nil then do
-        tc~Modify(item,newText)
-        tc~RestoreEditClass
-    end
-
 ::method defTreeDragHandler unguarded
    use arg id, item, pt
    reply 0

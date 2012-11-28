@@ -2412,7 +2412,7 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 }
 
 /**
- * Handles, some of, the tree-vien event notifications.
+ * Handles the connected tree-vien event notifications.
  *
  * The tag code must have included the TAG_TREEVIEW flag for this function to be
  * invoked.
@@ -2426,8 +2426,7 @@ MsgReplyType processTTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  *
  * @return MsgReplyType
  *
- * @remarks  Note that some of the tree-view notifications are still handled
- *           using the old IBM ooDialog code.
+ * @remarks
  *
  */
 MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam, pCPlainBaseDialog pcpbd)
@@ -3471,29 +3470,19 @@ static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
 
     *isDefEdit = false;
 
-    if ( StrCmpI(keyword,      "SELCHANGING") == 0 )
-    {
-        tvn = TVN_SELCHANGING;
-        tag = TAG_TREEVIEW;
-
-        if ( ! willReplyUsed )
-        {
-            tag |= TAG_PRESERVE_OLD;
-        }
-    }
-    else if ( StrCmpI(keyword, "SELCHANGED" ) == 0 )
-    {
-        tvn = TVN_SELCHANGED;
-        tag = TAG_TREEVIEW;
-
-        if ( ! willReplyUsed )
-        {
-            tag |= TAG_PRESERVE_OLD;
-        }
-    }
-    else if ( StrCmpI(keyword, "BEGINDRAG"  ) == 0 )
+    if ( StrCmpI(keyword, "BEGINDRAG"  ) == 0 )
     {
         tvn = TVN_BEGINDRAG;
+        tag = TAG_TREEVIEW;
+
+        if ( ! willReplyUsed )
+        {
+            tag |= TAG_PRESERVE_OLD;
+        }
+    }
+    else if ( StrCmpI(keyword, "BEGINEDIT"  ) == 0 )
+    {
+        tvn = TVN_BEGINLABELEDIT;
         tag = TAG_TREEVIEW;
 
         if ( ! willReplyUsed )
@@ -3511,24 +3500,14 @@ static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
             tag |= TAG_PRESERVE_OLD;
         }
     }
+    else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 )
+    {
+        *isDefEdit = true;
+        tag = TAG_TREEVIEW | TAG_PRESERVE_OLD;
+    }
     else if ( StrCmpI(keyword, "DELETE"     ) == 0 )
     {
         tvn = TVN_DELETEITEM;
-        tag = TAG_TREEVIEW;
-
-        if ( ! willReplyUsed )
-        {
-            tag |= TAG_PRESERVE_OLD;
-        }
-    }
-    else if ( StrCmpI(keyword, "KEYDOWN"    ) == 0 )
-    {
-        tvn = TVN_KEYDOWN;
-        tag = TAG_TREEVIEW | TAG_PRESERVE_OLD;
-    }
-    else if ( StrCmpI(keyword, "BEGINEDIT"  ) == 0 )
-    {
-        tvn = TVN_BEGINLABELEDIT;
         tag = TAG_TREEVIEW;
 
         if ( ! willReplyUsed )
@@ -3546,19 +3525,14 @@ static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
             tag |= TAG_PRESERVE_OLD;
         }
     }
-    else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 )
+    else if ( StrCmpI(keyword, "EXPANDED") == 0 )
     {
-        *isDefEdit = true;
-        tag = TAG_TREEVIEW | TAG_PRESERVE_OLD;
+        tvn = TVN_ITEMEXPANDED;
+        tag = TAG_TREEVIEW;
     }
     else if ( StrCmpI(keyword, "EXPANDING"  ) == 0 )
     {
         tvn = TVN_ITEMEXPANDING;
-        tag = TAG_TREEVIEW;
-    }
-    else if ( StrCmpI(keyword, "EXPANDED") == 0 )
-    {
-        tvn = TVN_ITEMEXPANDED;
         tag = TAG_TREEVIEW;
     }
     else if ( StrCmpI(keyword, "GETINFOTIP") == 0 )
@@ -3566,10 +3540,35 @@ static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
         tvn = TVN_GETINFOTIP;
         tag = TAG_TREEVIEW | TAG_REPLYFROMREXX;
     }
+    else if ( StrCmpI(keyword, "KEYDOWN"    ) == 0 )
+    {
+        tvn = TVN_KEYDOWN;
+        tag = TAG_TREEVIEW | TAG_PRESERVE_OLD;
+    }
     else if ( StrCmpI(keyword, "KEYDOWNEX") == 0 )
     {
         tvn = TVN_KEYDOWN;
         tag = TAG_TREEVIEW;
+    }
+    else if ( StrCmpI(keyword, "SELCHANGED" ) == 0 )
+    {
+        tvn = TVN_SELCHANGED;
+        tag = TAG_TREEVIEW;
+
+        if ( ! willReplyUsed )
+        {
+            tag |= TAG_PRESERVE_OLD;
+        }
+    }
+    else if ( StrCmpI(keyword, "SELCHANGING") == 0 )
+    {
+        tvn = TVN_SELCHANGING;
+        tag = TAG_TREEVIEW;
+
+        if ( ! willReplyUsed )
+        {
+            tag |= TAG_PRESERVE_OLD;
+        }
     }
     else
     {
@@ -5855,7 +5854,7 @@ err_out:
  *             However, for a tree-view if we do not subclass the edit control,
  *             the enter and the esc key close the dialog.  What we do here is
  *             very similar to what we do in the connect list-view event
- *             function.  See that header doc if more detail is neede.
+ *             function.  See that header doc if more detail is needed.
  *
  *             For reference.  The arguments sent to the event handler for
  *             TVN_ENDLABELEDIT were never documented correctly, if at all.
