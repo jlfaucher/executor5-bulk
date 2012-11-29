@@ -294,23 +294,23 @@
 </row>
 <row>
 <entry><xref linkend="mthGetToolCount"/></entry>
-<entry>x</entry>
+<entry>Retrieves the number of tools this ToolTip contains.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetToolInfo"/></entry>
-<entry>x</entry>
+<entry>Retrieves the information, as a <xref linkend="clsToolInfo"/> object, that this tool tip control maintains about the specified tool.</entry>
 </row>
 <row>
 <entry><xref linkend="mthHasCurrentTool"/></entry>
-<entry>x</entry>
+<entry>Tests if this ToolTip has a current tool.</entry>
 </row>
 <row>
 <entry><xref linkend="mthHitTestClsToolTip"/></entry>
-<entry>x</entry>
+<entry>Tests a point to determine whether it is within the bounding rectangle of a tool within the window specified and, if it is, retrieves information about the tool.</entry>
 </row>
 <row>
 <entry><xref linkend="mthManageAtypicalTool"/></entry>
-<entry>x</entry>
+<entry>Initiates the management of a ToolTip tool that is a dialog control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthNewToolRect"/></entry>
@@ -1718,57 +1718,51 @@ Text for the tool tip: Over main dialog, top left quadrant
 <indexterm><primary>ToolTip class</primary><secondary>getToolCount</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getToolCount(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getToolCount---------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the number of tools this ToolTip contains.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the number of tools in the ToolTip.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    The <emphasis role="italic">getToolCount</emphasis> method in conjunction with the <xref linkend="mthEnumTools"/> method
+    is useful in enumerating the tools of the ToolTip.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example prints out information for each tool in the ToolTip:
 <programlisting>
 <![CDATA[
 
+  do i = 1 to tt~getToolCount
+    toolInfo = tt~enumTools(i)
+    say 'Tool info  hwnd:    ' toolInfo~rexxHwnd
+    say 'Tool info  id:      ' toolInfo~rexxID
+    say 'Tool info  text:    ' toolInfo~text
+    say 'Tool info  flags:   ' toolInfo~flags
+    say 'Tool info  rect:    ' toolInfo~rect
+    say 'Tool info  userData:' toolInfo~userData
+    say 'Tool info  resource:' toolInfo~resource
+    say
+  end
 ]]>
 </programlisting>
   </para>
@@ -1782,13 +1776,14 @@ Text for the tool tip: Over main dialog, top left quadrant
 <indexterm><primary>ToolTip class</primary><secondary>getToolInfo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getToolInfo(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getToolInfo(--toolHwnd--+----------+--)------><
+                            +-,-toolID-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the information, as a <xref linkend="clsToolInfo"/> object, that this tool tip control maintains about the
+  specified tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1797,10 +1792,18 @@ Text for the tool tip: Over main dialog, top left quadrant
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolHwnd [required]</term>
       <listitem>
       <para>
-        xx
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>toolID [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1808,33 +1811,21 @@ Text for the tool tip: Over main dialog, top left quadrant
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <computeroutput>ToolInfo</computeroutput> object whose attributes reflect the information that this ToolTip
+    maintains about the specified tool. On error, the <computeroutput>.nil</computeroutput> object is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="sctToolIdentification">Tool Identification</link> section explains exactly how the Rexx object
+    combination is used to specify the tool to be deleted.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1846,61 +1837,32 @@ Text for the tool tip: Over main dialog, top left quadrant
 <indexterm><primary>ToolTip class</primary><secondary>hasCurrentTool</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hasCurrentTool(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--hasCurrentTool-------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Tests if this ToolTip has a current tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method has no arguments.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Retunrs true if there is a current tool, false if there is not.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
+    In essence, this convenience method tests if the <xref linkend="mthGetCurrentToolInfo"/> method will return a
+    <computeroutput>ToolInof</computeroutput> object or the <computeroutput>.nil</computeroutput> object.
+  </para> </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ToolTip::hasCurrentTool() -->
 
@@ -1910,13 +1872,23 @@ Text for the tool tip: Over main dialog, top left quadrant
 <indexterm><primary>ToolTip class</primary><secondary>hitTest</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hitTest(--+--------+--)---------------------------------------------><
-                  +--type--+
+Form 1:
+
+>>--hitTest(--toolInfo--,--point--)--------------><
+
+Form 2:
+
+>>--hitTest(--toolInfo--,--x,--y--)--------------><
+
+Generic form:
+
+>>--hitTest(--toolInfo--,--ptToTest--)-----------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Tests a point to determine whether it is within the bounding rectangle of a tool within the window specified and, if it
+  is, retrieves information about the tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1925,10 +1897,26 @@ Text for the tool tip: Over main dialog, top left quadrant
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolInfo [required in / out]</term>
       <listitem>
       <para>
-        xx
+        A <xref linkend="clsToolInfo"/>  object whose <xref linkend="atrRexxHwnd"/> attribute specifies which tool window to test.
+      </para>
+      <para>
+        If the point tested is within a tool of the tool window, the retrieved tool information is returned in this object.
+        The tool info object should be instantiated using the <xref linkend="mthForHitTest"/> class method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ptToTest [required]</term>
+      <listitem>
+      <para>
+        The point to test. The point is specifed in client <link linkend="defScreenCoordinates">coordinates</link> of the
+        window specified by the <emphasis role="italic">toolInfo</emphasis> argument.
+      </para>
+      <para>
+        As indicated by the syntax diagram, the point to test can be specified in two ways. Either as one argument, a <xref
+        linkend="clsPoint"/> object, or as two arguments, the x coordinate of the point followed by the y coordinate of the
+        point.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1936,13 +1924,7 @@ Text for the tool tip: Over main dialog, top left quadrant
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    True if the point being tested is within the window specified, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1950,17 +1932,49 @@ Text for the tool tip: Over main dialog, top left quadrant
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the current cursor position and then hit tests that position for a push button tool:
 <programlisting>
 <![CDATA[
 
+  mouse = .Mouse~new(self)
+  pos = mouse~getCursorPos
+  pbTest~screen2client(pos)
+
+  hitTool = .ToolInfo~forHitTest(pbTest)
+
+  say 'Using' pos
+  if ttTest~hitTest(hitTool, pos) then do
+    say 'Got hit'
+    say 'Tool info  hwnd:    ' hitTool~rexxHwnd
+    say 'Tool info  id:      ' hitTool~rexxID
+    say 'Tool info  text:    ' hitTool~text
+    say 'Tool info  flags:   ' hitTool~flags
+    say 'Tool info  rect:    ' hitTool~rect
+    say 'Tool info  userData:' hitTool~userData
+    say 'Tool info  resource:' hitTool~resource
+    say
+  end
+  else do
+    say 'NO hit'
+    say 'Tool info  hwnd:    ' hitTool~rexxHwnd
+  end
+
+/* Output could be for instantce:
+
+Got hit
+Tool info  hwnd:     a SimpleDialog
+Tool info  id:       a Button
+Tool info  text:     Press Test to execute the regression suite
+Tool info  flags:    IDISHWND SUBCLASS
+Tool info  rect:     a Rect (0, 0, 0, 0)
+Tool info  userData: The NIL object
+Tool info  resource: The NIL object
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -1974,13 +1988,14 @@ Text for the tool tip: Over main dialog, top left quadrant
 <indexterm><primary>ToolTip class</primary><secondary>manageAtypicalTool</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--manageAtypicalTool(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--manageAtypicalTool(--toolObj--+-----------+--+-----------+--)--------------><
+                                  +-,-events--+  +-,-methods-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Initiates the management of a ToolTip tool that is a dialog control. This is for a tool that is not the typical tool used
+  in a TooTip. See the remarks section for details.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1989,7 +2004,21 @@ Text for the tool tip: Over main dialog, top left quadrant
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolObj [required]</term>
+      <listitem>
+      <para>
+        The tool dialog control to be managed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>events [optional]</term>
+      <listitem>
+      <para>
+        An array of keywords for the ToolTip events that should invoke a method in the Rexx dialog.  The array can not be
+        sparse. Each index in the array should contain the keyword for a ToolTip event. If an event keyword is present at an
+        index, then that event is connected to a method in the Rexx dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>methods [optional]</term>
       <listitem>
       <para>
         xx
