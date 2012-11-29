@@ -147,19 +147,19 @@ Section  doInstall
   ; Install the files
   SetOutPath "$INSTDIR"
 
-    DetailPrint "********** ooDialog 4.2.0 Framework **********"
+    DetailPrint "********** ooDialog 4.2.1 Framework **********"
     File "${BinDir}\oodialog.dll"
     File "${BinDir}\ooDialog.cls"
     File "${BinDir}\oodPlain.cls"
     File "${BinDir}\oodWin32.cls"
     DetailPrint ""
 
-    DetailPrint "********** ooDialog 4.2.0 ooRexxTry **********"
+    DetailPrint "********** ooDialog 4.2.1 ooRexxTry **********"
     File "${ExamplesDir}\ooRexxTry\ooRexxTry.rex"
     CreateShortCut "${SMooRexxFolder}\Try Rexx (GUI).lnk" "$INSTDIR\rexx.exe" '"$INSTDIR\ooRexxTry.rex"' "$INSTDIR\rexx.exe"
     DetailPrint ""
 
-    DetailPrint "********** ooDialog 4.2.0 Documentation **********"
+    DetailPrint "********** ooDialog 4.2.1 Documentation **********"
     ; Set the installation directory:
     SetOutPath $INSTDIR\doc
     ; Add the files ...
@@ -172,7 +172,7 @@ Section  doInstall
     CreateShortCut  "${SMooRexxFolder}\Documentation\ooRexxTry Reference.lnk" "$INSTDIR\doc\ooRexxTry.pdf" "" "$INSTDIR\doc\ooRexxTry.pdf" 0
     DetailPrint ""
 
-    DetailPrint "********** ooDialog 4.2.0 Samples **********"
+    DetailPrint "********** ooDialog 4.2.1 Samples **********"
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog
     ; Add the files ...
@@ -194,6 +194,13 @@ Section  doInstall
     File "${ExamplesDir}\controls\*.rc"
     File "${ExamplesDir}\controls\*.h"
     File "${ExamplesDir}\controls\*.txt"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\ToolTip
+    ; Add the files ...
+    File "${ExamplesDir}\controls\ToolTip\*.rex"
+    File "${ExamplesDir}\controls\ToolTip\*.rc"
+    File "${ExamplesDir}\controls\ToolTip\*.h"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\examples
@@ -452,7 +459,7 @@ Section  doInstall
 
 
     ; Create start menu shortcuts
-    DetailPrint "********** ooDialog 4.2.0 Start Menu Shortcuts **********"
+    DetailPrint "********** ooDialog 4.2.1 Start Menu Shortcuts **********"
 
     CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk" "$INSTDIR\rexxpaws.exe" '"$INSTDIR\samples\oodialog\winsystem\eventlog.rex"' "$INSTDIR\rexx.exe"
     CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\winsystem\usewmgr.rex"' "$INSTDIR\rexx.exe"

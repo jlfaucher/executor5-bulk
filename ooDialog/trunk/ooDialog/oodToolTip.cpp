@@ -1927,14 +1927,14 @@ RexxMethod1(uint32_t, tt_getTipTextColor, CSELF, pCSelf)
  *         the icon always returns the INFOLARGE keyword, rather than the icon
  *         image. In addition, when setting the icon to any of the LARGE keyword
  *         values, getting the icon always returns the non-large keyword.  This
- *         anomly is mentioned is several places on the web.  The following
+ *         anomly is mentioned in several places on the web.  The following
  *         shows this behaviour:
  *
  *         setTitle icon value -> hIcon        getTitle -> INFOLARGE
  *
  *         setTitle icon value -> INFOLARGE    getTitle -> INFO
  *
- *         setTitle icon value -> WARNIGNLARGE getTitle -> WARNING
+ *         setTitle icon value -> WARNINGLARGE getTitle -> WARNING
  *
  *         setTitle icon value -> ERRORLARGE   getTitle -> ERROR
  */
@@ -2179,7 +2179,7 @@ err_out:
  *
  *  Initiates the management of a tool tip tool that is a dialog control.
  *
- *  @param  toolObject  [required] The tool dialog control to be managed
+ *  @param  toolObject  [required] The tool dialog control to be managed.
  *
  *  @param  events      [optional] The tool tip events that should invoke a
  *                      method in the Rexx dialog.  The array can not be sparse.

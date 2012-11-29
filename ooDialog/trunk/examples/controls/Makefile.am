@@ -37,6 +37,9 @@
 
 .NOTPARALLEL:
 
+SUBDIRS      = ToolTip
+DIST_SUBDIRS = ToolTip
+
 MAINTAINERCLEANFILES 	= Makefile.in *~
 
 EXTRA_DIST = *.rex *.h *.rc *.txt
