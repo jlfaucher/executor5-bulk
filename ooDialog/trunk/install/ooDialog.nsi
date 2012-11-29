@@ -201,6 +201,7 @@ Section  doInstall
     File "${ExamplesDir}\controls\ToolTip\*.rex"
     File "${ExamplesDir}\controls\ToolTip\*.rc"
     File "${ExamplesDir}\controls\ToolTip\*.h"
+    File "${ExamplesDir}\controls\ToolTip\*.ico"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\examples

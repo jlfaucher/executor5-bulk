@@ -1371,7 +1371,7 @@ RexxMethod2(RexxObjectPtr, tv_itemInfo, CSTRING, _hItem, CSELF, pCSelf)
     }
     context->SetStemElement(stem, "!STATE", context->String(buf));
 
-    context->SetStemElement(stem, "!USERDATA", tvi.lParam ? (RexxObjectPtr)tvi.lParam : TheNilObj);
+    context->SetStemElement(stem, "!ITEMDATA", tvi.lParam ? (RexxObjectPtr)tvi.lParam : TheNilObj);
 
     return stem;
 }
@@ -2254,6 +2254,14 @@ RexxMethod1(RexxStringObject, tvcds_getItem, CSELF, pCSelf)
     return pointer2string(context, ((pCTvCustomDrawSimple)pCSelf)->item);
 }
 
+/** TvCustomDrawSimple::itemData   [attribute]
+ */
+RexxMethod1(RexxObjectPtr, tvcds_getItemData, CSELF, pCSelf)
+{
+    RexxObjectPtr data = (RexxObjectPtr)((pCTvCustomDrawSimple)pCSelf)->userData;
+    return data == NULLOBJECT ? TheNilObj : data;
+}
+
 /** TvCustomDrawSimple::reply      [attribute]
  */
 RexxMethod2(RexxObjectPtr, tvcds_setReply, uint32_t, reply, CSELF, pCSelf)
@@ -2267,14 +2275,6 @@ RexxMethod2(RexxObjectPtr, tvcds_setReply, uint32_t, reply, CSELF, pCSelf)
 RexxMethod1(uint32_t, tvcds_getLevel, CSELF, pCSelf)
 {
     return ((pCTvCustomDrawSimple)pCSelf)->level + 1;
-}
-
-/** TvCustomDrawSimple::userData   [attribute]
- */
-RexxMethod1(RexxObjectPtr, tvcds_getUserData, CSELF, pCSelf)
-{
-    RexxObjectPtr data = (RexxObjectPtr)((pCTvCustomDrawSimple)pCSelf)->userData;
-    return data == NULLOBJECT ? TheNilObj : data;
 }
 
 

@@ -156,8 +156,8 @@
 ::method getItemData unguarded external "LIBRARY oodialog lv_getItemData"
 ::method getItemInfo unguarded external "LIBRARY oodialog lv_getItemInfo"
 ::method getItemPos unguarded external "LIBRARY oodialog lv_getItemPos"
-::method getToolTips unguarded external "LIBRARY oodialog generic_getToolTips"
 ::method getSubitem unguarded external "LIBRARY oodialog lv_getSubitem"
+::method getToolTips unguarded external "LIBRARY oodialog generic_getToolTips"
 ::method hasCheckBoxes unguarded external "LIBRARY oodialog lv_hasCheckBoxes"
 ::method hitTestInfo unguarded external "LIBRARY oodialog lv_hitTestInfo"
 ::method insert unguarded external "LIBRARY oodialog lv_insert"
@@ -283,7 +283,7 @@
 
 
 -- DEPRECATED
-::method removeImages unguarded
+::method removeImages unguarded    -- DEPRECATED
    return self~removeImageList(.nil, 0)
 
 -- DEPRECATED
@@ -304,6 +304,23 @@
 
 -- DEPRECATED
 ::method subclassEdit
+
+
+::class 'LvCustomDrawSimple' public
+::method init class external       "LIBRARY oodialog lvcds_init_cls"
+::method init external             "LIBRARY oodialog lvcds_init"
+
+::attribute clrText set external   "LIBRARY oodialog lvcds_setClrText"
+::attribute clrTextBk set external "LIBRARY oodialog lvcds_setClrTextBk"
+::attribute drawStage get external "LIBRARY oodialog lvcds_getDrawStage"
+::attribute font set external      "LIBRARY oodialog lvcds_setFont"
+::attribute id get external        "LIBRARY oodialog lvcds_getID"
+::attribute item get external      "LIBRARY oodialog lvcds_getItem"
+::attribute itemData get external  "LIBRARY oodialog lvcds_getItemData"
+::attribute reply set external     "LIBRARY oodialog lvcds_setReply"
+::attribute subItem get external   "LIBRARY oodialog lvcds_getSubItem"
+
+
 
 ::class 'LvItem' public                                                                -- Do not document for 4.2.0
 ::method init external "LIBRARY oodialog lvi_init"
@@ -337,6 +354,17 @@
 ::attribute text set external "LIBRARY oodialog lvi_setText"
 
 
+::class 'LvFullRow' public                                                             -- Do not document for 4.2.0
+::method init external "LIBRARY oodialog lvfr_init"
+::method unInit external "LIBRARY oodialog lvfr_unInit"
+
+::method addSubItem external "LIBRARY oodialog lvfr_addSubitem"
+::method item external "LIBRARY oodialog lvfr_item"
+::method removeSubItem external "LIBRARY oodialog lvfr_removeSubitem"
+::method subItem external "LIBRARY oodialog lvfr_subitem"
+::method subItems external "LIBRARY oodialog lvfr_subitems"
+
+
 ::class 'LvSubItem' public                                                             -- Do not document for 4.2.0
 ::method init external "LIBRARY oodialog lvsi_init"
 ::method unInit external "LIBRARY oodialog lvsi_unInit"
@@ -351,31 +379,5 @@
 ::attribute subItem set external "LIBRARY oodialog lvsi_setSubItem"
 ::attribute text get external "LIBRARY oodialog lvsi_text"
 ::attribute text set external "LIBRARY oodialog lvsi_setText"
-
-
-::class 'LvFullRow' public                                                             -- Do not document for 4.2.0
-::method init external "LIBRARY oodialog lvfr_init"
-::method unInit external "LIBRARY oodialog lvfr_unInit"
-
-::method addSubItem external "LIBRARY oodialog lvfr_addSubitem"
-::method item external "LIBRARY oodialog lvfr_item"
-::method removeSubItem external "LIBRARY oodialog lvfr_removeSubitem"
-::method subItem external "LIBRARY oodialog lvfr_subitem"
-::method subItems external "LIBRARY oodialog lvfr_subitems"
-
-
-::class 'LvCustomDrawSimple' public
-::method init class external       "LIBRARY oodialog lvcds_init_cls"
-::method init external             "LIBRARY oodialog lvcds_init"
-
-::attribute clrText set external   "LIBRARY oodialog lvcds_setClrText"
-::attribute clrTextBk set external "LIBRARY oodialog lvcds_setClrTextBk"
-::attribute drawStage get external "LIBRARY oodialog lvcds_getDrawStage"
-::attribute font set external      "LIBRARY oodialog lvcds_setFont"
-::attribute id get external        "LIBRARY oodialog lvcds_getID"
-::attribute item get external      "LIBRARY oodialog lvcds_getItem"
-::attribute reply set external     "LIBRARY oodialog lvcds_setReply"
-::attribute subItem get external   "LIBRARY oodialog lvcds_getSubItem"
-::attribute userData get external  "LIBRARY oodialog lvcds_getUserData"
 
 

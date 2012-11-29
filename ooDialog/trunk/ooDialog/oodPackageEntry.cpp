@@ -1420,9 +1420,9 @@ REXX_METHOD_PROTOTYPE(lvcds_getDrawStage);
 REXX_METHOD_PROTOTYPE(lvcds_setFont     );
 REXX_METHOD_PROTOTYPE(lvcds_getID       );
 REXX_METHOD_PROTOTYPE(lvcds_getItem     );
+REXX_METHOD_PROTOTYPE(lvcds_getItemData );
 REXX_METHOD_PROTOTYPE(lvcds_setReply    );
 REXX_METHOD_PROTOTYPE(lvcds_getSubItem  );
-REXX_METHOD_PROTOTYPE(lvcds_getUserData );
 
 // TvCustomDrawSimple
 REXX_METHOD_PROTOTYPE(tvcds_init_cls    );
@@ -1433,9 +1433,9 @@ REXX_METHOD_PROTOTYPE(tvcds_getDrawStage);
 REXX_METHOD_PROTOTYPE(tvcds_setFont     );
 REXX_METHOD_PROTOTYPE(tvcds_getID       );
 REXX_METHOD_PROTOTYPE(tvcds_getItem     );
+REXX_METHOD_PROTOTYPE(tvcds_getItemData );
 REXX_METHOD_PROTOTYPE(tvcds_setReply    );
 REXX_METHOD_PROTOTYPE(tvcds_getLevel    );
-REXX_METHOD_PROTOTYPE(tvcds_getUserData );
 
 
 RexxMethodEntry oodialog_methods[] = {
@@ -2439,10 +2439,10 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lvcds_getDrawStage,             lvcds_getDrawStage),
     REXX_METHOD(lvcds_setFont,                  lvcds_setFont),
     REXX_METHOD(lvcds_getItem,                  lvcds_getItem),
+    REXX_METHOD(lvcds_getItemData,              lvcds_getItemData),
     REXX_METHOD(lvcds_getID,                    lvcds_getID),
     REXX_METHOD(lvcds_setReply,                 lvcds_setReply),
     REXX_METHOD(lvcds_getSubItem,               lvcds_getSubItem),
-    REXX_METHOD(lvcds_getUserData,              lvcds_getUserData),
 
 // TvCustomDrawSimple
     REXX_METHOD(tvcds_init_cls,                 tvcds_init_cls),
@@ -2453,9 +2453,9 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tvcds_setFont,                  tvcds_setFont),
     REXX_METHOD(tvcds_getID,                    tvcds_getID),
     REXX_METHOD(tvcds_getItem,                  tvcds_getItem),
+    REXX_METHOD(tvcds_getItemData,              tvcds_getItemData),
     REXX_METHOD(tvcds_setReply,                 tvcds_setReply),
     REXX_METHOD(tvcds_getLevel,                 tvcds_getLevel),
-    REXX_METHOD(tvcds_getUserData,              tvcds_getUserData),
 
     REXX_LAST_METHOD()
 };

@@ -527,7 +527,7 @@ static RexxStringObject ttfFlags2keyword(RexxMethodContext *c, uint32_t flags)
  *           hwndSupplier and uIDSupplier.
  */
 static bool genericToolID(RexxMethodContext *c, RexxObjectPtr rxObj, RexxObjectPtr rxID, LPTOOLINFO pTI,
-                          RexxObjectPtr *hwndSupplier, RexxObjectPtr *uIDSupplier)
+                          RexxObjectPtr *hwndSupplier, RexxObjectPtr *uIDSupplier, size_t arg1Pos)
 {
     bool success = false;
 
@@ -544,7 +544,7 @@ static bool genericToolID(RexxMethodContext *c, RexxObjectPtr rxObj, RexxObjectP
 
     if ( rxID == NULLOBJECT )
     {
-        if ( ! requiredClass(c->threadContext, rxObj, "DIALOGCONTROL", 1) )
+        if ( ! requiredClass(c->threadContext, rxObj, "DIALOGCONTROL", arg1Pos) )
         {
             goto done_out;
         }
@@ -584,7 +584,7 @@ static bool genericToolID(RexxMethodContext *c, RexxObjectPtr rxObj, RexxObjectP
         }
         else
         {
-            uint32_t id = oodResolveSymbolicID(c->threadContext, pcpbd->rexxSelf, rxID, -1, 2, false);
+            uint32_t id = oodResolveSymbolicID(c->threadContext, pcpbd->rexxSelf, rxID, -1, arg1Pos + 1, false);
             if ( id == OOD_ID_EXCEPTION  )
             {
                 goto done_out;
@@ -604,7 +604,7 @@ static bool genericToolID(RexxMethodContext *c, RexxObjectPtr rxObj, RexxObjectP
     {
         pCDialogControl pcdc = controlToCSelf(c, rxObj);
 
-        uint32_t id = oodResolveSymbolicID(c->threadContext, pcdc->oDlg, rxID, -1, 2, false);
+        uint32_t id = oodResolveSymbolicID(c->threadContext, pcdc->oDlg, rxID, -1, arg1Pos + 1, false);
         if ( id == OOD_ID_EXCEPTION  )
         {
             goto done_out;
@@ -1533,7 +1533,7 @@ RexxMethod3(uint32_t, tt_delTool, RexxObjectPtr, toolID, OPTIONAL_RexxObjectPtr,
         goto done_out;
     }
 
-    if ( ! genericToolID(context, toolID, uID, &ti, NULL, NULL) )
+    if ( ! genericToolID(context, toolID, uID, &ti, NULL, NULL, 1) )
     {
         goto done_out;
     }
@@ -1632,7 +1632,7 @@ RexxMethod3(RexxObjectPtr, tt_getBubbleSize, RexxObjectPtr, toolHwnd, OPTIONAL_R
     {
         pTI = (LPTOOLINFO)context->ObjectToCSelf(toolHwnd);
     }
-    else if ( ! genericToolID(context, toolHwnd, toolID, pTI, NULL, NULL) )
+    else if ( ! genericToolID(context, toolHwnd, toolID, pTI, NULL, NULL, 1) )
     {
         goto done_out;
     }
@@ -1835,7 +1835,7 @@ RexxMethod3(RexxObjectPtr, tt_getText, RexxObjectPtr, toolID, OPTIONAL_RexxObjec
         goto done_out;
     }
 
-    if ( ! genericToolID(context, toolID, uID, &ti, NULL, NULL) )
+    if ( ! genericToolID(context, toolID, uID, &ti, NULL, NULL, 1) )
     {
         goto done_out;
     }
@@ -2044,7 +2044,7 @@ RexxMethod3(RexxObjectPtr, tt_getToolInfo, RexxObjectPtr, toolHwnd, OPTIONAL_Rex
         goto done_out;
     }
 
-    if ( ! genericToolID(context, toolHwnd, toolID, pTI, NULL, NULL) )
+    if ( ! genericToolID(context, toolHwnd, toolID, pTI, NULL, NULL, 1) )
     {
         goto done_out;
     }
@@ -2375,11 +2375,11 @@ err_out:
  *
  *  Sets a new bounding rectangle for a tool.
  *
+ *  @param rect       [required]  The new bounding rectangle for the tool.
+ *
  *  @param toolHwnd   [required]
  *
  *  @param toolID     [optional]
- *
- *  @param rect       [required]  The new bounding rectangle for the tool.
  *
  *  @return  Returns 0 always.
  *
@@ -2387,7 +2387,7 @@ err_out:
  *          specifies a tool to this tool tip.
  *
  */
-RexxMethod4(uint32_t, tt_newToolRect, RexxObjectPtr, toolID, OPTIONAL_RexxObjectPtr, uID, RexxObjectPtr, r, CSELF, pCSelf)
+RexxMethod4(uint32_t, tt_newToolRect, RexxObjectPtr, r, RexxObjectPtr, toolID, OPTIONAL_RexxObjectPtr, uID, CSELF, pCSelf)
 {
     TOOLINFO ti = { sizeof(ti) };
 
@@ -2397,12 +2397,12 @@ RexxMethod4(uint32_t, tt_newToolRect, RexxObjectPtr, toolID, OPTIONAL_RexxObject
         goto done_out;
     }
 
-    if ( ! genericToolID(context, toolID, uID, &ti, NULL, NULL) )
+    if ( ! genericToolID(context, toolID, uID, &ti, NULL, NULL, 2) )
     {
         goto done_out;
     }
 
-    PRECT pRect = rxGetRect(context, r, 3);
+    PRECT pRect = rxGetRect(context, r, 1);
     if ( pRect == NULL )
     {
         goto done_out;
@@ -2847,7 +2847,7 @@ RexxMethod4(uint32_t, tt_trackActivate, RexxObjectPtr, toolHwnd, OPTIONAL_RexxOb
         goto done_out;
     }
 
-    if ( ! genericToolID(context, toolHwnd, toolID, &ti, NULL, NULL) )
+    if ( ! genericToolID(context, toolHwnd, toolID, &ti, NULL, NULL, 1) )
     {
         goto done_out;
     }
@@ -3076,7 +3076,7 @@ RexxMethod3(RexxObjectPtr, ti_forID_cls, RexxObjectPtr, hwndObj, OPTIONAL_RexxOb
     RexxObjectPtr hwndSupplier;
     RexxObjectPtr uIDSupplier;
 
-    if ( ! genericToolID(context, hwndObj, rxID, pTI, &hwndSupplier, &uIDSupplier) )
+    if ( ! genericToolID(context, hwndObj, rxID, pTI, &hwndSupplier, &uIDSupplier, 1) )
     {
         goto done_out;
     }
@@ -3182,7 +3182,7 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, hwndObj, OPTIONAL_RexxObjectP
     RexxObjectPtr hwndSupplier;
     RexxObjectPtr uIDSupplier;
 
-    if ( ! genericToolID(context, hwndObj, rxID, pTI, &hwndSupplier, &uIDSupplier) )
+    if ( ! genericToolID(context, hwndObj, rxID, pTI, &hwndSupplier, &uIDSupplier, 1) )
     {
         goto done_out;
     }

@@ -72,14 +72,14 @@
           if arg(i + 2, 'E') then selImage = arg(i + 2); else selImage = image
           if arg(i + 3, 'E') then opts     = arg(i + 3); else opts = ""
           if arg(i + 4, 'E') then children = arg(i + 4); else children = 0
-          if arg(i + 5, 'E') then userData = arg(i + 5); else userData = .nil
+          if arg(i + 5, 'E') then itemData = arg(i + 5); else itemData = .nil
           if i = 1 then do
-              self~rootArray[i] = self~insert("ROOT", , arg(i), image, selimage, opts~translate, children, userData)
+              self~rootArray[i] = self~insert("ROOT", , arg(i), image, selimage, opts~translate, children, itemData)
               return self~rootArray[i]
           end
           else if self~rootArray~hasIndex(i - 1) then do
               if i = 1 then parent = "ROOT"; else parent = self~rootArray[i - 1]
-              self~rootArray[i] = self~insert(parent, , arg(i), image, selimage, opts~translate, children, userData)
+              self~rootArray[i] = self~insert(parent, , arg(i), image, selimage, opts~translate, children, itemData)
               return self~rootArray[i]
           end
           else return 0
@@ -159,7 +159,7 @@
    if hItem = hNewParent | hNewParent = self~parent(hItem) | self~isAncestor(hItem, hNewParent) then return 0
    iinfo. = self~itemInfo(hItem)
    newRoot = self~insert(hNewParent, , iinfo.!Text, iinfo.!Image, iinfo.!SelectedImage, iinfo.!State, iinfo.!Children, -
-                         iinfo.!userData)
+                         iinfo.!itemData)
 
    if iinfo.!Children = 1 then do
       child = self~child(hItem)
@@ -232,6 +232,6 @@
 ::attribute font set external      "LIBRARY oodialog tvcds_setFont"
 ::attribute id get external        "LIBRARY oodialog tvcds_getID"
 ::attribute item get external      "LIBRARY oodialog tvcds_getItem"
+::attribute itemData get external  "LIBRARY oodialog tvcds_getItemData"
 ::attribute reply set external     "LIBRARY oodialog tvcds_setReply"
 ::attribute level get external     "LIBRARY oodialog tvcds_getLevel"
-::attribute userData get external  "LIBRARY oodialog tvcds_getUserData"        -- Do not document yet, no way to set user data for tree view

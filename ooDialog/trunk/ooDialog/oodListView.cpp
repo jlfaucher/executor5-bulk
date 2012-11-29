@@ -3790,7 +3790,7 @@ RexxMethod1(RexxObjectPtr, lvi_unInit, CSELF, pCSelf)
  *                      indicate the item does not have an icon in the image
  *                      list.
  *
- *  @param  userData    [optional]  The list-view control can store a single
+ *  @param  itemData    [optional]  The list-view control can store a single
  *                      user value with each list-view item.  The Rexx
  *                      programmer can use this feature to store any single Rexx
  *                      object with each list-view item.
@@ -3843,7 +3843,7 @@ RexxMethod1(RexxObjectPtr, lvi_unInit, CSELF, pCSelf)
  *            valid.
  */
 RexxMethod10(RexxObjectPtr, lvi_init, OPTIONAL_RexxObjectPtr, _index, OPTIONAL_CSTRING, text,
-             OPTIONAL_int32_t, imageIndex, OPTIONAL_RexxObjectPtr, userData, OPTIONAL_CSTRING, mask,
+             OPTIONAL_int32_t, imageIndex, OPTIONAL_RexxObjectPtr, itemData, OPTIONAL_CSTRING, mask,
              OPTIONAL_CSTRING, itemState, OPTIONAL_CSTRING, itemStateMask, OPTIONAL_uint32_t, indent,
              OPTIONAL_int32_t, groupID, OPTIONAL_RexxArrayObject, columns)
 {
@@ -3899,7 +3899,7 @@ RexxMethod10(RexxObjectPtr, lvi_init, OPTIONAL_RexxObjectPtr, _index, OPTIONAL_C
 
     if ( argumentExists(4) )
     {
-        setLviUserData(context, lvi, userData);
+        setLviUserData(context, lvi, itemData);
     }
 
     if ( argumentExists(5) )
@@ -4036,6 +4036,17 @@ RexxMethod2(RexxObjectPtr, lvi_setIndex, int32_t, index, CSELF, pLVI)
     return NULLOBJECT;
 }
 
+/** LvItem::itemData               [attribute]
+ */
+RexxMethod1(RexxObjectPtr, lvi_itemData, CSELF, pLVI)
+{
+    return getLviUserData((LPLVITEM)pLVI);
+}
+RexxMethod2(RexxObjectPtr, lvi_setItemData, RexxObjectPtr, userData, CSELF, pLVI)
+{
+    return setLviUserData(context, (LPLVITEM)pLVI, userData);
+}
+
 /** LvItem::itemState              [attribute]
  */
 RexxMethod1(RexxStringObject, lvi_itemState, CSELF, pLVI)
@@ -4109,17 +4120,6 @@ RexxMethod2(RexxObjectPtr, lvi_setText, CSTRING, text, CSELF, pLVI)
 {
     setLviText(context, (LPLVITEM)pLVI, text, 1);
     return NULLOBJECT;
-}
-
-/** LvItem::itemData               [attribute]
- */
-RexxMethod1(RexxObjectPtr, lvi_itemData, CSELF, pLVI)
-{
-    return getLviUserData((LPLVITEM)pLVI);
-}
-RexxMethod2(RexxObjectPtr, lvi_setItemData, RexxObjectPtr, userData, CSELF, pLVI)
-{
-    return setLviUserData(context, (LPLVITEM)pLVI, userData);
 }
 
 
@@ -4849,6 +4849,13 @@ RexxMethod1(uintptr_t, lvcds_getItem, CSELF, pCSelf)
     return ((pCLvCustomDrawSimple)pCSelf)->item;
 }
 
+/** LvCustomDrawSimple::itemData   [attribute]
+ */
+RexxMethod1(RexxObjectPtr, lvcds_getItemData, CSELF, pCSelf)
+{
+    return ((pCLvCustomDrawSimple)pCSelf)->userData;
+}
+
 /** LvCustomDrawSimple::reply      [attribute]
  */
 RexxMethod2(RexxObjectPtr, lvcds_setReply, uint32_t, reply, CSELF, pCSelf)
@@ -4862,13 +4869,6 @@ RexxMethod2(RexxObjectPtr, lvcds_setReply, uint32_t, reply, CSELF, pCSelf)
 RexxMethod1(uint32_t, lvcds_getSubItem, CSELF, pCSelf)
 {
     return ((pCLvCustomDrawSimple)pCSelf)->subItem;
-}
-
-/** LvCustomDrawSimple::userData   [attribute]
- */
-RexxMethod1(RexxObjectPtr, lvcds_getUserData, CSELF, pCSelf)
-{
-    return ((pCLvCustomDrawSimple)pCSelf)->userData;
 }
 
 
