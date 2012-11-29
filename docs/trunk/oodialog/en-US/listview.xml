@@ -335,7 +335,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetItemDataClsListView"/></entry>
-<entry>Retrieves the user data associated with the specified list-view item.</entry>
+<entry>Retrieves the item data associated with the specified list-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetItemInfo"/></entry>
@@ -459,7 +459,7 @@
 </row>
 <row>
 <entry><xref linkend="mthRemoveItemDataClsListView"/></entry>
-<entry>Removes and returns the user data associated with the specified list-view item.</entry>
+<entry>Removes and returns the item data associated with the specified list-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRemoveExtendedStyle"/></entry>
@@ -515,7 +515,7 @@
 </row>
 <row>
 <entry><xref linkend="mthSetItemDataClsListView"/></entry>
-<entry>Sets the user data associated for the specified list-view item.</entry>
+<entry>Sets the item data associated for the specified list-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetItemPos"/></entry>
@@ -2762,11 +2762,11 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   </para>
   <para>
     The <xref linkend="mthSortItems"/> method is used to do custom sorting of list-view items. The sorting is dependent on
-    the user data <link linkend="mthSetItemDataClsListView">item</link> being set for each list-view item. In addition, the
+    the item data <link linkend="mthSetItemDataClsListView">item</link> being set for each list-view item. In addition, the
     <emphasis role="italic">sortItems</emphasis> method can be used to signal the ooDialog framework to use native internal
-    code for the sorting. For the internal sort to work, the user data item must be a
+    code for the sorting. For the internal sort to work, the item data item must be a
     <computeroutput>LvFullRow</computeroutput> object. The returned object from <emphasis role="italic">getFullRow</emphasis>
-    can be set as the user data item to allow the interanl sorting. When invoking <emphasis
+    can be set as the item data to allow the interanl sorting. When invoking <emphasis
     role="italic">setItemData</emphasis> with a <computeroutput>LvFullRow</computeroutput> object as the argument, the
     internal house keeping that the ooDialog framework needs to do for internal sorts is done automatically. However, if the
     returned full row object is instead used to insert or add a new item into the list-view, this internal house keeping may
@@ -3036,7 +3036,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 </programlisting>
 
 <para>
-  Gets the user data associated with the specified list-view item.
+  Gets the item data associated with the specified list-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3048,7 +3048,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
       <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        The zero-based index of the item to retrieve the user data from.
+        The zero-based index of the item to retrieve the item data from.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3056,7 +3056,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the user data associated with the specified item, or the <computeroutput>.nil</computeroutput> object if
+    Returns the item data associated with the specified item, or the <computeroutput>.nil</computeroutput> object if
     there is no data associated with the item.
   </para>
   </listitem></varlistentry>
@@ -4670,6 +4670,69 @@ column. It can be one of the following values:
 </variablelist>
 </section>  <!-- End ListView::modifyColumnPX() -->
 
+<section id="mthModifyItem" xreflabel="modifyItem"><title>modifyItem</title>
+<indexterm><primary>modifyItem</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>modifyItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--modifyItem(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::modifyItem() -->
+
 
 <section id="mthNext" xreflabel="next"><title>next</title>
 <indexterm><primary>next</primary>
@@ -4975,6 +5038,83 @@ to redraw a range of items.</para>
 </variablelist>
 </section>
 
+<section id="mthRemoveExtendedStyle" xreflabel="removeExtendedStyle"><title>removeExtendedStyle</title>
+<indexterm><primary>removeExtendedStyle</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                         +--------------------+
+                                         V                    |
+>>-aListControl~removeExtendedStyle(--"----+-BORDERSELECT-----+--"--)-------><
+                                           +-CHECKBOXES-------+
+                                           +-DOUBLEBUFFER-----+
+                                           +-FLATSB-----------+
+                                           +-FULLROWSELECT----+
+                                           +-GRIDLINES--------+
+                                           +-HEADERDRAGDROP---+
+                                           +-INFOTIP----------+
+                                           +-LABELTIP---------+
+                                           +-MULTIWORKAREAS---+
+                                           +-ONECLICKACTIVATE-+
+                                           +-REGIONAL---------+
+                                           +-SIMPLESELECT-----+
+                                           +-SUBITEMIMAGES----+
+                                           +-TRACKSELECT------+
+                                           +-TWOCLICKACTIVATE-+
+                                           +-UNDERLINECOLD----+
+                                           +-UNDERLINEHOT-----+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>removeExtendedStyle</computeroutput> method removes
+one or more extended <link linkend="varListControlExtendedStyles">styles</link> of
+a List-View control.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>style</term>
+<listitem><para>The extended style(s) to be removed.  This is one or more of the
+styles listed in the syntax diagram, separated by blanks. For an explanation
+of the different styles, refer to the
+<xref linkend="mthAddExtendedStyle"/> method.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>An (internal) problem with the control's window handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>The style argument did not contain any of the extended style
+keywords.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example removes the check box style from the list
+view.
+<programlisting>
+<![CDATA[
+
+  listView = self~newListView(IDC_LIST)
+  if listView == .nil then return
+
+  listView~removeExtendedStyle("CHECKBOXES")
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
 <section id="mthRemoveItemDataClsListView" xreflabel="removeItemData"><title>removeItemData</title>
 <indexterm><primary>removeItemData</primary><secondary>ListView class</secondary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>removeItemData</secondary></indexterm>
@@ -4986,7 +5126,7 @@ to redraw a range of items.</para>
 </programlisting>
 
 <para>
-  Removes and returns the user data associated with the specified list-view item.
+  Removes and returns the item data associated with the specified list-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5006,7 +5146,7 @@ to redraw a range of items.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the user data value associated with the specified item, or <computeroutput>.nil</computeroutput> if there is
+    Returns the item data value associated with the specified item, or <computeroutput>.nil</computeroutput> if there is
     no data associated with the item.
   </para>
   </listitem></varlistentry>
@@ -5087,82 +5227,6 @@ return 0
 </variablelist>
 </section>  <!-- End ListView::removeItemData() -->
 
-
-<section id="mthRemoveExtendedStyle" xreflabel="removeExtendedStyle"><title>removeExtendedStyle</title>
-<indexterm><primary>removeExtendedStyle</primary></indexterm>
-<programlisting>
-<![CDATA[
-                                         +--------------------+
-                                         V                    |
->>-aListControl~removeExtendedStyle(--"----+-BORDERSELECT-----+--"--)-------><
-                                           +-CHECKBOXES-------+
-                                           +-DOUBLEBUFFER-----+
-                                           +-FLATSB-----------+
-                                           +-FULLROWSELECT----+
-                                           +-GRIDLINES--------+
-                                           +-HEADERDRAGDROP---+
-                                           +-INFOTIP----------+
-                                           +-LABELTIP---------+
-                                           +-MULTIWORKAREAS---+
-                                           +-ONECLICKACTIVATE-+
-                                           +-REGIONAL---------+
-                                           +-SIMPLESELECT-----+
-                                           +-SUBITEMIMAGES----+
-                                           +-TRACKSELECT------+
-                                           +-TWOCLICKACTIVATE-+
-                                           +-UNDERLINECOLD----+
-                                           +-UNDERLINEHOT-----+
-
-]]>
-</programlisting>
-
-<para>The <computeroutput>removeExtendedStyle</computeroutput> method removes
-one or more extended <link linkend="varListControlExtendedStyles">styles</link> of
-a List-View control.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>style</term>
-<listitem><para>The extended style(s) to be removed.  This is one or more of the
-styles listed in the syntax diagram, separated by blanks. For an explanation
-of the different styles, refer to the
-<xref linkend="mthAddExtendedStyle"/> method.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>An (internal) problem with the control's window handle.
-</para></listitem></varlistentry>
-<varlistentry><term>-3</term>
-<listitem><para>The style argument did not contain any of the extended style
-keywords.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example removes the check box style from the list
-view.
-<programlisting>
-<![CDATA[
-
-  listView = self~newListView(IDC_LIST)
-  if listView == .nil then return
-
-  listView~removeExtendedStyle("CHECKBOXES")
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthRemoveStyleClsListView" xreflabel="removeStyle"><title>removeStyle</title>
 <indexterm><primary>removeStyle</primary>
@@ -6059,7 +6123,7 @@ second the row is automatically selected.
 </programlisting>
 
 <para>
-  Sets the user data associated with the specified list-view item.
+  Sets the item data associated with the specified list-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6099,9 +6163,9 @@ second the row is automatically selected.
     number of ways. One specific use is in the <xref linkend="mthSortItems"/> method.
   </para>
   <para>
-    For the <emphasis role="italic">sortItems</emphasis> method to work, every list-view item must have the user data item
-    set. When <emphasis role="italic">sortItems</emphasis> is invoked to use the internal ooDialog framework to do the
-    sorting, the user data item must be a <xref linkend="clsLvFullRow"/> object.
+    For the <emphasis role="italic">sortItems</emphasis> method to work, every list-view item must have the item data set.
+    When <emphasis role="italic">sortItems</emphasis> is invoked to use the internal ooDialog framework to do the sorting,
+    the item data object must be a <xref linkend="clsLvFullRow"/> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -6532,7 +6596,7 @@ grid position.</para>
     associate a data value with each list-view item.
   </para>
   <para>
-    The specifics on the user data value and what the programmer needs to do are dependent on the type of sort specified. See
+    The specifics on the item data value and what the programmer needs to do are dependent on the type of sort specified. See
     the relevant section below for a Rexx sort or an internal sort.
   </para>
   </listitem></varlistentry>
@@ -6592,7 +6656,7 @@ grid position.</para>
     <para>
       The return must be a whole number. Less than 0 places the first list item before the second item, greater than 0
       places the first item after the second. Return 0 if the two items are equivalent. The programmer determines what number
-      to return based on the 2 user data values passed to the method.
+      to return based on the 2 item data values passed to the method.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -6601,11 +6665,11 @@ grid position.</para>
   <listitem>
   <para>
     When an internal sort is used, the work of the sort is done in the native API implementation code. In essence, within
-    the ooDialog framework. To use this sort, the user data assigned to each list-view item must be a <xref
-    linkend="clsLvFullRow"/> object. The user data can be assigned to each item either through the <xref
+    the ooDialog framework. To use this sort, the item data assigned to each list-view item must be a <xref
+    linkend="clsLvFullRow"/> object. The item data can be assigned to each item either through the <xref
     linkend="mthSetItemDataClsListView"/> method, or during the <link linkend="mthNewClsLvFullRow">instantiation</link> of the
     <computeroutput>LvFullRow</computeroutput> object. The sort will not work correctly if any item in the list-view does not
-    have a <computeroutput>LvFullRow</computeroutput> object assigned as its user data value.
+    have a <computeroutput>LvFullRow</computeroutput> object assigned as its item data value.
   </para>
   <para>
     The sort is performed on the text of the item, or the text of the subitems of the item. By default, the sort is an
@@ -6684,7 +6748,7 @@ grid position.</para>
     ...
         -- As each full row object is instantiated, the last argument
         -- is set to .true to indicate the full row object should be
-        -- set as the user data of the list-view item:
+        -- set as the item data of the list-view item:
 
         rows[i] = .LvFullRow~new(lvi, lvsi1, lvsi2, lvsi3, .true)
 
@@ -7071,1709 +7135,6 @@ that allows the user to remove the check mark from all the check boxes:
 </variablelist>
 </section>
 
-<section id="clsLvFullRow" xreflabel="LvFullRow"><title>LvFullRow Class</title>
-<indexterm><primary>LvFullRow class</primary></indexterm>
-<para>
-  A <computeroutput>LvFullRow</computeroutput> object is used in ooDialog to represent a list-view item and all subitems
-  of that item. A <computeroutput>LvFullRow</computeroutput> object is composed of a <xref linkend="clsLvItem"/> object whose
-  attributes reflect the list-view item and zero or more <xref linkend="clsLvSubItem"/> objects that reflect the subitems of
-  the list-view item in the <link linkend="ovvUnderlying">underlying</link> list-view.
-</para>
-<para>
-  Normally, the subitems of a list-view item are only thought about when the list-view is in report view. However, once added
-  to an item, the subitems exist whatever view the list-view is in.  A full row object can be used to add or insert items
-  along with all the subitems of the item, or to query information about an item and its subitems.
-</para>
-
-<section id="sctMethodsLvFullRow"><title>Method Table</title>
-<para>
-  The following table lists the class and instance methods of the <computeroutput>LvFullRow</computeroutput> class:
-
-<table id="tblMethodsLvFullRow" frame="all"> <title>LvFullRow Class Method Reference</title>
-<tgroup cols="2">
-<colspec colwidth="1*"/>
-<colspec colwidth="4*"/>
-<thead>
-<row>
-<entry>Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Class</emphasis></entry>
-<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
-</row>
-<row>
-<entry><xref linkend="mthNewClsLvFullRow"/></entry>
-<entry>Instantiates a new <computeroutput>LvFullRow</computeroutput> object.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance</emphasis></entry>
-<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
-</row>
-</tbody></tgroup>
-</table>
-</para>
-</section>
-
-<section id="mthNewClsLvFullRow" xreflabel="new"><title>new (Class Method)</title>
-<indexterm><primary>new</primary><secondary>LvFullRow class</secondary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>new</secondary></indexterm>
-<programlisting>
-<![CDATA[
-                +--------------+
-                V              |
->>--new(--item--+--------------+--)--------------><
-                +--,--subItem--+
-]]>
-</programlisting>
-
-<para>
-  Instantiates a new <computeroutput>LvFullRow</computeroutput> object.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>item [required]</term>
-    <listitem>
-    <para>
-      A <link linkend="clsLvItem">LvItem</link> object that specifies the attributes of the list-view item being added.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>subItem [optional]</term>
-    <listitem>
-    <para>
-      A <link linkend="clsLvSubItem">LvSubItem</link> object that specifies the attributes of a subitem of the list-view
-      item being added. The argument can repeat has many times as needed to specify all the subitems of the item. The
-      subitems are added to the item in the order of the arguments to the <emphasis role="italic">new</emphasis> method.
-    </para>
-    <para>
-      <emphasis role="bold">Note:</emphasis> The very last argument can optionally be <computeroutput>.true</computeroutput>
-      or <computeroutput>.false</computeroutput> to signal that the <computeroutput>LvFullRow</computeroutput> object
-      itself is to be assigned as the user data value of the list-view items. This usage is explained in the remarks
-      section.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the new <computeroutput>LvFullRow</computeroutput> object.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Each subitem argument must be specified. If a subitem is omitted and a subitem argument follows it, a syntax
-    condition is raised. That is, if a subitem is specified, its preceding subitem must not have been omitted. These
-    statements are acceptable:
-
-<programlisting>
-<![CDATA[
-     row = .LvFullRow~new(item)
-     row = .LvFullRow~new(item, si1, si2)
-     row = .LvFullRow~new(item, si1, si2, si3)
-]]>
-</programlisting>
-
-    These statements will raise a syntax codition:
-
-<programlisting>
-<![CDATA[
-     row = .LvFullRow~new(item, , si2)
-     row = .LvFullRow~new(item, si1, , si3)
-]]>
-</programlisting>
-
-  </para>
-  <para>
-    In addition to specifying <computeroutput>LvSubItem</computeroutput> objects, the last argument can be either true or
-    false. Recall that the list-view control allows the programmer to attach a user data value to any or all of the list-view
-    items. The last argument can be true to specify that the <computeroutput>LvFullRow</computeroutput> object being
-    instantiated should be set as the user data value for the list-view item the <computeroutput>LvFullRow</computeroutput>
-    object represents.
-  </para>
-  <para>
-    This feature is really only of use if the full row object is used to add or insert an item into the list-view. If the
-    full row object is not to be used to add an item to the list-view, then there is no reason to use the last argument of
-    true or false.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example shows a method that creates an array of list-view full rows from NFL football player data. The array is
-    later used to insert the rows into a list-view control.
-<programlisting>
-<![CDATA[
-
-::method getPlayers private
-
-  players = .NFLPlayer~playersFromDataSource("nflPlayers.txt")
-
-  self~masterList = .MasterPlayerList~new(players)
-
-  playerRows = .array~new(players~items)
-  do i = 1 to players~items
-    j = i - 1
-    p = players[i]
-    lvi = .LvItem~new(j, , p~name, , p)
-    lvsi1 = .LvSubItem~new(j, 1, p~team)
-    lvsi2 = .LvSubItem~new(j, 2, p~position)
-    lvsi3 = .LvSubItem~new(j, 3, p~rating)
-
-    r = .LvFullRow~new(lvi, lvsi1, lvsi2, lvsi3)
-    playerRows[i] = r
-  end
-
-  return playerRows
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::new() -->
-
-<section id="mthAddSubItem" xreflabel="addSubItem"><title>addSubItem</title>
-<indexterm><primary>addSubItem</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>addSubItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--addSubItem(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::addSubItem() -->
-
-<section id="mthItem" xreflabel="item"><title>item</title>
-<indexterm><primary>item</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>item</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--item(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::item() -->
-
-<section id="mthRemoveSubItem" xreflabel="removeSubItem"><title>removeSubItem</title>
-<indexterm><primary>removeSubItem</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>removeSubItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--removeSubItem(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::removeSubItem() -->
-
-<section id="mthSubItem" xreflabel="subItem"><title>subItem</title>
-<indexterm><primary>subItem</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>subItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--subItem(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::subItem() -->
-
-<section id="mthSubItems" xreflabel="subItems"><title>subItems</title>
-<indexterm><primary>subItems</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>subItems</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--subItems(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::subItems() -->
-
-</section> <!-- End LvFullRow Class -->
-
-
-<section id="clsLvItem" xreflabel="LvItem"><title>LvItem Class</title>
-<indexterm><primary>LvItem class</primary></indexterm>
-<para>
-  A <computeroutput>LvItem</computeroutput> object represents a single item in a list-view control. List-view items have
-  an icon, a label, a current state, and an application-defined value. The attributes of the
-  <computeroutput>LvItem</computeroutput> object reflect the values the icon, label, state, etc., for the list-view
-  item.
-</para>
-
-<section id="sctMethodsLvItem"><title>Method Table</title>
-<para>
-  The following table lists the class and instance methods of the <computeroutput>LvItem</computeroutput> class:
-
-<table id="tblMethodsLvItem" frame="all"> <title>LvItem Class Method Reference</title>
-<tgroup cols="2">
-<colspec colwidth="1*"/>
-<colspec colwidth="4*"/>
-<thead>
-<row>
-<entry>Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="mthNewClsLvItem">new</link></entry>
-<entry>Instantiates a new <computeroutput>LvItem</computeroutput> object.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
-</row>
-</tbody></tgroup>
-</table>
-</para>
-</section>
-
-<section id="mthNewClsLvItem" xreflabel="new"><title>new (Class Method)</title>
-<indexterm><primary>new</primary><secondary>LvItem class</secondary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>new</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--new(--+--------+--+-------+--+-------------+--+-------+--+---------+-------->
-          +--indx--+  +-,-txt-+  +-,-imageIndx-+  +-,-msk-+  +-,-user-+
-
->---+------------+-+---------------+-+----------+-+-----------+-+--------+--)---><
-    +-,-itmState-+ +-,-itmStateMsk-+ +-,-indent-+ +-,-groupID-+ +-,-cols-+
-]]>
-</programlisting>
-
-<para>
-  Instantiates a new <computeroutput>LvItem</computeroutput> object. <computeroutput>LvItem</computeroutput> objects are
-  used in some <link linkend="clsListView">Listview</link> methods such as <link
-  linkend="mthAddFullRow">addFullRow</link>. It is anticipated that future versions of ooDialog will make more use of
-  <computeroutput>LvItem</computeroutput> objects.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::new() -->
-
-<section id="atrColumnFormatsClsLvi" xreflabel="columnFormats"><title>columnFormats (Attribute)</title>
-<indexterm><primary>columnFormats</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>columnFormats</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--columnFormats-----------------------------------------------------><
-
->>--columnFormats-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">columnFormats get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">columnFormats set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::columnFormats() [attribute]  -->
-
-<section id="atrColumnsClsLvi" xreflabel="columns"><title>columns (Attribute)</title>
-<indexterm><primary>columns</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>columns</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--columns-----------------------------------------------------><
-
->>--columns-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">columns get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">columns set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::columns() [attribute]  -->
-
-<section id="atrGroupIDClsLvi" xreflabel="groupID"><title>groupID (Attribute)</title>
-<indexterm><primary>groupID</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>groupID</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--groupID-----------------------------------------------------><
-
->>--groupID-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">groupID get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">groupID set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::groupID() [attribute]  -->
-
-<section id="atrImageIndexClsLvi" xreflabel="imageIndex"><title>imageIndex (Attribute)</title>
-<indexterm><primary>imageIndex</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>imageIndex</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--imageIndex-----------------------------------------------------><
-
->>--imageIndex-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">imageIndex get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">imageIndex set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::imageIndex() [attribute]  -->
-
-<section id="atrIndentClsLvi" xreflabel="indent"><title>indent (Attribute)</title>
-<indexterm><primary>indent</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>indent</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--indent-----------------------------------------------------><
-
->>--indent-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">indent get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">indent set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::indent() [attribute]  -->
-
-<section id="atrIndexClsLvi" xreflabel="index"><title>index (Attribute)</title>
-<indexterm><primary>index</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>index</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--index-----------------------------------------------------><
-
->>--index-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">index get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">index set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::index() [attribute]  -->
-
-<section id="atrItemStateClsLvi" xreflabel="itemState"><title>itemState (Attribute)</title>
-<indexterm><primary>itemState</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>itemState</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--itemState-----------------------------------------------------><
-
->>--itemState-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">itemState get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">itemState set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::itemState() [attribute]  -->
-
-<section id="atrItemStateMaskClsLvi" xreflabel="itemStateMask"><title>itemStateMask (Attribute)</title>
-<indexterm><primary>itemStateMask</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>itemStateMask</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--itemStateMask-----------------------------------------------------><
-
->>--itemStateMask-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">itemStateMask get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">itemStateMask set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::itemStateMask() [attribute]  -->
-
-<section id="atrMaskClsLvi" xreflabel="mask"><title>mask (Attribute)</title>
-<indexterm><primary>mask</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>mask</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--mask-----------------------------------------------------><
-
->>--mask-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">mask get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">mask set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::mask() [attribute]  -->
-
-<section id="atrOverlayImageIndexClsLvi" xreflabel="overlayImageIndex"><title>overlayImageIndex (Attribute)</title>
-<indexterm><primary>overlayImageIndex</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>overlayImageIndex</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--overlayImageIndex-----------------------------------------------------><
-
->>--overlayImageIndex-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">overlayImageIndex get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">overlayImageIndex set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::overlayImageIndex() [attribute]  -->
-
-<section id="atrStateImageIndexClsLvi" xreflabel="stateImageIndex"><title>stateImageIndex (Attribute)</title>
-<indexterm><primary>stateImageIndex</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>stateImageIndex</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--stateImageIndex-----------------------------------------------------><
-
->>--stateImageIndex-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">stateImageIndex get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">stateImageIndex set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::stateImageIndex() [attribute]  -->
-
-<section id="atrTextClsLvi" xreflabel="text"><title>text (Attribute)</title>
-<indexterm><primary>text</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>text</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--text-----------------------------------------------------><
-
->>--text-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">text get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">text set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::text() [attribute]  -->
-
-<section id="atrUserDataClsLvi" xreflabel="userData"><title>userData (Attribute)</title>
-<indexterm><primary>userData</primary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>userData</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--userData-----------------------------------------------------><
-
->>--userData-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">userData get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">userData set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvItem::userData() [attribute]  -->
-
-</section> <!-- End LvItem Class -->
-
-<section id="clsLvSubItem" xreflabel="LvSubItem"><title>LvSubItem Class</title>
-<indexterm><primary>LvSubItem class</primary></indexterm>
-<para>
-  A LvSubItem object ...
-</para>
-<para>
-  xx
-</para>
-
-<section id="sctMethodsLvSubItem"><title>Method Table</title>
-<para>
-  The following table lists the class and instance methods of the <computeroutput>LvSubItem</computeroutput> class:
-
-<table id="tblMethodsLvSubItem" frame="all"> <title>LvSubItem Class Method Reference</title>
-<tgroup cols="2">
-<colspec colwidth="1*"/>
-<colspec colwidth="4*"/>
-<thead>
-<row>
-<entry>Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-</row>
-<row>
-<entry>new</entry>
-<entry><link linkend="mthNewClsLvSubItem">new</link></entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-</row>
-</tbody></tgroup>
-</table>
-</para>
-</section>
-
-<section id="mthNewClsLvSubItem"><title>new (Class Method)</title>
-<indexterm><primary>new</primary><secondary>LvSubItem class</secondary></indexterm>
-<indexterm><primary>LvSubItem class</primary><secondary>new</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvSubItem::new() -->
-
-<section id="atrImageIndexClsLvSi" xreflabel="imageIndex"><title>imageIndex (Attribute)</title>
-<indexterm><primary>imageIndex</primary></indexterm>
-<indexterm><primary>LvSubItem class</primary><secondary>imageIndex</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--imageIndex-----------------------------------------------------><
-
->>--imageIndex-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">imageIndex get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">imageIndex set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvSubItem::imageIndex() [attribute]  -->
-
-<section id="atrItemClsLvSi" xreflabel="item"><title>item (Attribute)</title>
-<indexterm><primary>item</primary></indexterm>
-<indexterm><primary>LvSubItem class</primary><secondary>item</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--item-----------------------------------------------------><
-
->>--item-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">item get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">item set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvSubItem::item() [attribute]  -->
-
-<section id="atrMaskClsLvSi" xreflabel="mask"><title>mask (Attribute)</title>
-<indexterm><primary>mask</primary></indexterm>
-<indexterm><primary>LvSubItem class</primary><secondary>mask</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--mask-----------------------------------------------------><
-
->>--mask-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">mask get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">mask set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvSubItem::mask() [attribute]  -->
-
-<section id="atrSubItemClsLvSi" xreflabel="subItem"><title>subItem (Attribute)</title>
-<indexterm><primary>subItem</primary></indexterm>
-<indexterm><primary>LvSubItem class</primary><secondary>subItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--subItem-----------------------------------------------------><
-
->>--subItem-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">subItem get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">subItem set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvSubItem::subItem() [attribute]  -->
-
-<section id="atrTextClsLvSi" xreflabel="text"><title>text (Attribute)</title>
-<indexterm><primary>text</primary></indexterm>
-<indexterm><primary>LvSubItem class</primary><secondary>text</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--text-----------------------------------------------------><
-
->>--text-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">text get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">text set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvSubItem::text() [attribute]  -->
-
-</section> <!-- End LvSubItem Class -->
-
 
 <section id="clsLvCustomDrawSimple" xreflabel="LvCustomDrawSimple"><title>LvCustomDrawSimple Class</title>
 <indexterm><primary>LvCustomDrawSimple class</primary></indexterm>
@@ -8990,16 +7351,16 @@ that allows the user to remove the check mark from all the check boxes:
 <entry>Reflects the 0-based index of the list-view item that needs to be drawn.</entry>
 </row>
 <row>
+<entry><xref linkend="atrItemDataClsLvCustomDrawSimple"/></entry>
+<entry>Reflects the <emphasis role="italic">item data</emphasis> for the list-view item that needs to be drawn.</entry>
+</row>
+<row>
 <entry><xref linkend="atrReplyLV"/> </entry>
 <entry>Reflects the <link linkend="sctConstantsClsCustomDraw">CDRF_*</link> response value that is used to reply to the event notification.</entry>
 </row>
 <row>
 <entry><xref linkend="atrSubItem"/> </entry>
 <entry>Reflects the index of the subitem that needs to be drawn.</entry>
-</row>
-<row>
-<entry><xref linkend="atrUserDataClsLvCustomDrawSimple"/> </entry>
-<entry>Reflects the <emphasis role="italic">user data</emphasis> for the list-view item that needs to be drawn.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -9448,6 +7809,82 @@ that allows the user to remove the check mark from all the check boxes:
 </variablelist>
 </section>  <!-- End LvCustomDrawSimple::item() [attribute]  -->
 
+<section id="atrItemDataClsLvCustomDrawSimple" xreflabel="itemData"><title>itemData (Attribute)</title>
+<indexterm><primary>itemData</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>itemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemData-----------------------------------------------------><
+
+>>--itemData-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the item <emphasis role="italic">data</emphasis> for the list-view item that needs to be drawn. This attribute is
+  information sent from the list-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">itemData get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the item data object for the item about to be drawn, or <computeroutput>.nil</computeroutput> if no item data was
+    set for the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">itemData set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the list-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The list-view allows the programmer to associate a value with any list-view item. This item data value is sent by the
+    list-view in the event notification information. The programmer can set the item data for a list-view item in several
+    ways. The <xref linkend="mthSetItemDataClsListView"/> of the <xref linkend="clsListView"/> class, the <emphasis
+    role="italic">itemData</emphasis> argument of the <xref linkend="mthNewClsLvItem"/> method of the <xref
+    linkend="clsLvItem"/> class, or the <xref linkend="atrItemDataClsLvi"/> attribute of the
+    <computeroutput>LvItem</computeroutput> class are all used to set the item data value for an item.
+  </para>
+  <para>
+    The <emphasis role="italic">itemData</emphasis> attribute could be used to help decide how to custom draw the list-view
+    item or subitem, see the example below.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example the color to draw the text for each item is stored in the item data for the item. This makes for a very
+    simple event handler, the text color is just set to whatever value the item data is:
+<programlisting>
+<![CDATA[
+
+::method onCustomDraw unguarded
+    use arg lvcds
+
+    lvcds~clrText   = lvcds~itemData
+    lvcds~clrTextBk = self~CLR_DEFAULT
+    lvcds~reply     = self~CDRF_NEWFONT
+
+    return .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::itemData() [attribute]  -->
+
+
 <section id="atrReplyLV" xreflabel="reply"><title>reply (Attribute)</title>
 <indexterm><primary>reply</primary></indexterm>
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>reply</secondary></indexterm>
@@ -9594,49 +8031,210 @@ that allows the user to remove the check mark from all the check boxes:
 </variablelist>
 </section>  <!-- End LvCustomDrawSimple::subItem() [attribute]  -->
 
-<section id="atrUserDataClsLvCustomDrawSimple" xreflabel="userData"><title>userData (Attribute)</title>
-<indexterm><primary>userData</primary></indexterm>
-<indexterm><primary>LvCustomDrawSimple class</primary><secondary>userData</secondary></indexterm>
+</section> <!-- End LvCustomDrawSimple Class -->
+
+
+<section id="clsLvItem" xreflabel="LvItem"><title>LvItem Class</title>
+<indexterm><primary>LvItem class</primary></indexterm>
+<para>
+  A <computeroutput>LvItem</computeroutput> object represents a single item in a list-view control. List-view items have
+  an icon, a label, a current state, and an application-defined value. The attributes of the
+  <computeroutput>LvItem</computeroutput> object reflect the values the icon, label, state, etc., for the list-view
+  item.
+</para>
+
+<section id="sctMethodsLvItem"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>LvItem</computeroutput> class:
+
+<table id="tblMethodsLvItem" frame="all"> <title>LvItem Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsLvItem">new</link></entry>
+<entry>Instantiates a new <computeroutput>LvItem</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsLvItem" xreflabel="new"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>LvItem class</secondary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--userData-----------------------------------------------------><
+>>--new(--+--------+--+-------+--+-------------+--+-------+--+------------+---->
+          +--indx--+  +-,-txt-+  +-,-imageIndx-+  +-,-msk-+  +-,-itemData-+
 
->>--userData-=-varName-------------------------------------------><
-
+>---+------------+-+---------------+-+----------+-+-----------+-+--------+--)---><
+    +-,-itmState-+ +-,-itmStateMsk-+ +-,-indent-+ +-,-groupID-+ +-,-cols-+
 ]]>
 </programlisting>
 
 <para>
-  Reflects the <emphasis role="italic">user data</emphasis> for the list-view item that needs to be drawn. This attribute is
-  information sent from the list-view control.
+  Instantiates a new <computeroutput>LvItem</computeroutput> object. <computeroutput>LvItem</computeroutput> objects are
+  used in some <link linkend="clsListView">Listview</link> methods such as <link
+  linkend="mthAddFullRow">addFullRow</link>. It is anticipated that future versions of ooDialog will make more use of
+  <computeroutput>LvItem</computeroutput> objects.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">userData get:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    Returns the user data for the item about to be drawn, or <computeroutput>.nil</computeroutput> if no user data was set
-    for the item.
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>indx [optional]</term>
+    <listitem>
+    <para>
+      Sets the <xref linkend="atrIndexClsLvi"/> attribute of this list-view item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>txt [optional]</term>
+    <listitem>
+    <para>
+      Sets the <xref linkend="atrTextClsLvi"/> attribute of this list-view item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>imageIndex [optional]</term>
+    <listitem>
+    <para>
+      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msk [optional]</term>
+    <listitem>
+    <para>
+      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemData[optional]</term>
+    <listitem>
+    <para>
+      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemState [optional]</term>
+    <listitem>
+    <para>
+      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemStateMsk [optional]</term>
+    <listitem>
+    <para>
+      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>indent [optional]</term>
+    <listitem>
+    <para>
+      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>groupID [optional]</term>
+    <listitem>
+    <para>
+      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cols [optional]</term>
+    <listitem>
+    <para>
+      Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+    </para>
+    <para>
+      The <emphasis role="italic">cols</emphasis> argument must be an array of subitem indexes. The indexes in the array
+      specify which columns are displayed for this item, in <emphasis role="italic">Tile</emphasis> view, and the order of
+      those columns.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">userData set:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This is a get-only attribute. It is information sent from the list-view control and can not be changed.
+    xx
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The list-view allows the programmer to associate a value with any list-view item. This user data value is sent by the
-    list-view in the event notification information. The programmer can set the user data for a list-view item in several
-    ways. The <xref linkend="mthSetItemDataClsListView"/> of the <xref linkend="clsListView"/> class, the <emphasis
-    role="italic">userData</emphasis> argument of the <xref linkend="mthNewClsLvItem"/> method of the <xref
-    linkend="clsLvItem"/> class, or the <xref linkend="atrUserDataClsLvi"/> attribute of the
-    <computeroutput>LvItem</computeroutput> class are all used to set the user data value for an item.
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    The <emphasis role="italic">userData</emphasis> attribute could be used to help decide how to custom draw the list-view
-    item or subitem, see the example below.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::new() -->
+
+<section id="atrColumnFormatsClsLvi" xreflabel="columnFormats"><title>columnFormats (Attribute)</title>
+<indexterm><primary>columnFormats</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>columnFormats</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnFormats-----------------------------------------------------><
+
+>>--columnFormats-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">columnFormats get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">columnFormats set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9648,29 +8246,1556 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    In this example the color to draw the text for each item is stored in the user data for the item. This makes for a very
-    simple event handler, the text color is just set to whatever value the user data is:
+    This example ...
 <programlisting>
 <![CDATA[
 
-::method onCustomDraw unguarded
-    use arg lvcds
-
-    lvcds~clrText   = lvcds~userData
-    lvcds~clrTextBk = self~CLR_DEFAULT
-    lvcds~reply     = self~CDRF_NEWFONT
-
-    return .true
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End LvCustomDrawSimple::userData() [attribute]  -->
+</section>  <!-- End LvItem::columnFormats() [attribute]  -->
+
+<section id="atrColumnsClsLvi" xreflabel="columns"><title>columns (Attribute)</title>
+<indexterm><primary>columns</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>columns</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columns-----------------------------------------------------><
+
+>>--columns-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">columns get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">columns set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
 
 
-</section> <!-- End LvCustomDrawSimple Class -->
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::columns() [attribute]  -->
+
+<section id="atrGroupIDClsLvi" xreflabel="groupID"><title>groupID (Attribute)</title>
+<indexterm><primary>groupID</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>groupID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--groupID-----------------------------------------------------><
+
+>>--groupID-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">groupID get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">groupID set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::groupID() [attribute]  -->
+
+<section id="atrImageIndexClsLvi" xreflabel="imageIndex"><title>imageIndex (Attribute)</title>
+<indexterm><primary>imageIndex</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>imageIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--imageIndex-----------------------------------------------------><
+
+>>--imageIndex-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">imageIndex get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">imageIndex set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::imageIndex() [attribute]  -->
+
+<section id="atrIndentClsLvi" xreflabel="indent"><title>indent (Attribute)</title>
+<indexterm><primary>indent</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>indent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--indent-----------------------------------------------------><
+
+>>--indent-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">indent get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">indent set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::indent() [attribute]  -->
+
+<section id="atrIndexClsLvi" xreflabel="index"><title>index (Attribute)</title>
+<indexterm><primary>index</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>index</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--index-----------------------------------------------------><
+
+>>--index-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">index get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">index set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::index() [attribute]  -->
+
+<section id="atrItemDataClsLvi" xreflabel="itemData"><title>itemData (Attribute)</title>
+<indexterm><primary>itemData</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>itemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemData-----------------------------------------------------><
+
+>>--itemData-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">itemData get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">itemData set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::itemData() [attribute]  -->
+
+<section id="atrItemStateClsLvi" xreflabel="itemState"><title>itemState (Attribute)</title>
+<indexterm><primary>itemState</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>itemState</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemState-----------------------------------------------------><
+
+>>--itemState-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">itemState get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">itemState set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::itemState() [attribute]  -->
+
+<section id="atrItemStateMaskClsLvi" xreflabel="itemStateMask"><title>itemStateMask (Attribute)</title>
+<indexterm><primary>itemStateMask</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>itemStateMask</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemStateMask-----------------------------------------------------><
+
+>>--itemStateMask-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">itemStateMask get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">itemStateMask set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::itemStateMask() [attribute]  -->
+
+<section id="atrMaskClsLvi" xreflabel="mask"><title>mask (Attribute)</title>
+<indexterm><primary>mask</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>mask</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--mask-----------------------------------------------------><
+
+>>--mask-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">mask get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">mask set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::mask() [attribute]  -->
+
+<section id="atrOverlayImageIndexClsLvi" xreflabel="overlayImageIndex"><title>overlayImageIndex (Attribute)</title>
+<indexterm><primary>overlayImageIndex</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>overlayImageIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--overlayImageIndex-----------------------------------------------------><
+
+>>--overlayImageIndex-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">overlayImageIndex get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">overlayImageIndex set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::overlayImageIndex() [attribute]  -->
+
+<section id="atrStateImageIndexClsLvi" xreflabel="stateImageIndex"><title>stateImageIndex (Attribute)</title>
+<indexterm><primary>stateImageIndex</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>stateImageIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--stateImageIndex-----------------------------------------------------><
+
+>>--stateImageIndex-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">stateImageIndex get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">stateImageIndex set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::stateImageIndex() [attribute]  -->
+
+<section id="atrTextClsLvi" xreflabel="text"><title>text (Attribute)</title>
+<indexterm><primary>text</primary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>text</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--text-----------------------------------------------------><
+
+>>--text-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">text get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">text set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::text() [attribute]  -->
+
+</section> <!-- End LvItem Class -->
+
+
+<section id="clsLvFullRow" xreflabel="LvFullRow"><title>LvFullRow Class</title>
+<indexterm><primary>LvFullRow class</primary></indexterm>
+<para>
+  A <computeroutput>LvFullRow</computeroutput> object is used in ooDialog to represent a list-view item and all subitems
+  of that item. A <computeroutput>LvFullRow</computeroutput> object is composed of a <xref linkend="clsLvItem"/> object whose
+  attributes reflect the list-view item and zero or more <xref linkend="clsLvSubItem"/> objects that reflect the subitems of
+  the list-view item in the <link linkend="ovvUnderlying">underlying</link> list-view.
+</para>
+<para>
+  Normally, the subitems of a list-view item are only thought about when the list-view is in report view. However, once added
+  to an item, the subitems exist whatever view the list-view is in.  A full row object can be used to add or insert items
+  along with all the subitems of the item, or to query information about an item and its subitems.
+</para>
+
+<section id="sctMethodsLvFullRow"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>LvFullRow</computeroutput> class:
+
+<table id="tblMethodsLvFullRow" frame="all"> <title>LvFullRow Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsLvFullRow"/></entry>
+<entry>Instantiates a new <computeroutput>LvFullRow</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsLvFullRow" xreflabel="new"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>LvFullRow class</secondary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                +--------------+
+                V              |
+>>--new(--item--+--------------+--)--------------><
+                +--,--subItem--+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>LvFullRow</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>item [required]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsLvItem">LvItem</link> object that specifies the attributes of the list-view item being added.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>subItem [optional]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsLvSubItem">LvSubItem</link> object that specifies the attributes of a subitem of the list-view
+      item being added. The argument can repeat has many times as needed to specify all the subitems of the item. The
+      subitems are added to the item in the order of the arguments to the <emphasis role="italic">new</emphasis> method.
+    </para>
+    <para>
+      <emphasis role="bold">Note:</emphasis> The very last argument can optionally be <computeroutput>.true</computeroutput>
+      or <computeroutput>.false</computeroutput> to signal that the <computeroutput>LvFullRow</computeroutput> object
+      itself is to be assigned as the item data value of the list-view items. This usage is explained in the remarks
+      section.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the new <computeroutput>LvFullRow</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Each subitem argument must be specified. If a subitem is omitted and a subitem argument follows it, a syntax
+    condition is raised. That is, if a subitem is specified, its preceding subitem must not have been omitted. These
+    statements are acceptable:
+
+<programlisting>
+<![CDATA[
+     row = .LvFullRow~new(item)
+     row = .LvFullRow~new(item, si1, si2)
+     row = .LvFullRow~new(item, si1, si2, si3)
+]]>
+</programlisting>
+
+    These statements will raise a syntax codition:
+
+<programlisting>
+<![CDATA[
+     row = .LvFullRow~new(item, , si2)
+     row = .LvFullRow~new(item, si1, , si3)
+]]>
+</programlisting>
+
+  </para>
+  <para>
+    In addition to specifying <computeroutput>LvSubItem</computeroutput> objects, the last argument can be either true or
+    false. Recall that the list-view control allows the programmer to attach a item data value to any or all of the list-view
+    items. The last argument can be true to specify that the <computeroutput>LvFullRow</computeroutput> object being
+    instantiated should be set as the item data value for the list-view item the <computeroutput>LvFullRow</computeroutput>
+    object represents.
+  </para>
+  <para>
+    This feature is really only of use if the full row object is used to add or insert an item into the list-view. If the
+    full row object is not to be used to add an item to the list-view, then there is no reason to use the last argument of
+    true or false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a method that creates an array of list-view full rows from NFL football player data. The array is
+    later used to insert the rows into a list-view control.
+<programlisting>
+<![CDATA[
+
+::method getPlayers private
+
+  players = .NFLPlayer~playersFromDataSource("nflPlayers.txt")
+
+  self~masterList = .MasterPlayerList~new(players)
+
+  playerRows = .array~new(players~items)
+  do i = 1 to players~items
+    j = i - 1
+    p = players[i]
+    lvi = .LvItem~new(j, , p~name, , p)
+    lvsi1 = .LvSubItem~new(j, 1, p~team)
+    lvsi2 = .LvSubItem~new(j, 2, p~position)
+    lvsi3 = .LvSubItem~new(j, 3, p~rating)
+
+    r = .LvFullRow~new(lvi, lvsi1, lvsi2, lvsi3)
+    playerRows[i] = r
+  end
+
+  return playerRows
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::new() -->
+
+<section id="mthAddSubItem" xreflabel="addSubItem"><title>addSubItem</title>
+<indexterm><primary>addSubItem</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>addSubItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addSubItem(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::addSubItem() -->
+
+<section id="mthItem" xreflabel="item"><title>item</title>
+<indexterm><primary>item</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>item</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--item(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::item() -->
+
+<section id="mthRemoveSubItem" xreflabel="removeSubItem"><title>removeSubItem</title>
+<indexterm><primary>removeSubItem</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>removeSubItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeSubItem(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::removeSubItem() -->
+
+<section id="mthSubItem" xreflabel="subItem"><title>subItem</title>
+<indexterm><primary>subItem</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>subItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--subItem(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::subItem() -->
+
+<section id="mthSubItems" xreflabel="subItems"><title>subItems</title>
+<indexterm><primary>subItems</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>subItems</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--subItems(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::subItems() -->
+
+</section> <!-- End LvFullRow Class -->
+
+
+<section id="clsLvSubItem" xreflabel="LvSubItem"><title>LvSubItem Class</title>
+<indexterm><primary>LvSubItem class</primary></indexterm>
+<para>
+  A LvSubItem object ...
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsLvSubItem"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>LvSubItem</computeroutput> class:
+
+<table id="tblMethodsLvSubItem" frame="all"> <title>LvSubItem Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsLvSubItem">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsLvSubItem"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>LvSubItem class</secondary></indexterm>
+<indexterm><primary>LvSubItem class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvSubItem::new() -->
+
+<section id="atrImageIndexClsLvSi" xreflabel="imageIndex"><title>imageIndex (Attribute)</title>
+<indexterm><primary>imageIndex</primary></indexterm>
+<indexterm><primary>LvSubItem class</primary><secondary>imageIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--imageIndex-----------------------------------------------------><
+
+>>--imageIndex-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">imageIndex get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">imageIndex set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvSubItem::imageIndex() [attribute]  -->
+
+<section id="atrItemClsLvSi" xreflabel="item"><title>item (Attribute)</title>
+<indexterm><primary>item</primary></indexterm>
+<indexterm><primary>LvSubItem class</primary><secondary>item</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--item-----------------------------------------------------><
+
+>>--item-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">item get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">item set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvSubItem::item() [attribute]  -->
+
+<section id="atrMaskClsLvSi" xreflabel="mask"><title>mask (Attribute)</title>
+<indexterm><primary>mask</primary></indexterm>
+<indexterm><primary>LvSubItem class</primary><secondary>mask</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--mask-----------------------------------------------------><
+
+>>--mask-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">mask get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">mask set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvSubItem::mask() [attribute]  -->
+
+<section id="atrSubItemClsLvSi" xreflabel="subItem"><title>subItem (Attribute)</title>
+<indexterm><primary>subItem</primary></indexterm>
+<indexterm><primary>LvSubItem class</primary><secondary>subItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--subItem-----------------------------------------------------><
+
+>>--subItem-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">subItem get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">subItem set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvSubItem::subItem() [attribute]  -->
+
+<section id="atrTextClsLvSi" xreflabel="text"><title>text (Attribute)</title>
+<indexterm><primary>text</primary></indexterm>
+<indexterm><primary>LvSubItem class</primary><secondary>text</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--text-----------------------------------------------------><
+
+>>--text-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">text get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">text set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvSubItem::text() [attribute]  -->
+
+</section> <!-- End LvSubItem Class -->
 
 
 </chapter>

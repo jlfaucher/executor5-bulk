@@ -181,7 +181,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetItemDataClsTreeView"/></entry>
-<entry>Gets the user data associated with the specified tree-view item.</entry>
+<entry>Gets the item data associated with the specified tree-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetItemHeight"/></entry>
@@ -265,7 +265,7 @@
 </row>
 <row>
 <entry><xref linkend="mthRemoveItemDataClsTreeView"/></entry>
-<entry>Removes and returns the user data associated with the specified tree-view item.</entry>
+<entry>Removes and returns the item data associated with the specified tree-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRoot"/></entry>
@@ -285,7 +285,7 @@
 </row>
 <row>
 <entry><xref linkend="mthSetItemDataClsTreeView"/></entry>
-<entry>Sets the user data associated with the specified tree-view item.</entry>
+<entry>Sets the item data associated with the specified tree-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetItemHeight"/></entry>
@@ -451,11 +451,10 @@
       <listitem>
       <para>
         Associates the specified value with the tree-view item being added. This value is commonly refered to as the
-        <emphasis role="italic">user data</emphasis> for the item, or as the <emphasis role="italic">item data</emphasis>.
-        This can be any Rexx object that the programmer wants to use. The <link
-        linkend="mthGetItemDataClsTreeView">getItemData</link> method can be used to retrieve this value. The <link
-        linkend="mthSetItemDataClsTreeView">setItemData</link> method, and several other methods, can also be used to set the
-        user data for a tree-view item.
+        <emphasis role="italic">item data</emphasis> for the item. This can be any Rexx object that the programmer wants to
+        use. The <link linkend="mthGetItemDataClsTreeView">getItemData</link> method can be used to retrieve this value. The
+        <link linkend="mthSetItemDataClsTreeView">setItemData</link> method, and several other methods, can also be used to
+        set the item data for a tree-view item.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -476,8 +475,8 @@
     item has no children.
   </para>
   <para>
-    Associating a user data value with some or all of a tree-view items can be useful in a number of ways. The <emphasis
-    role="italic">userData</emphasis> argument allows the programmer to assoicate the value at the time the item in added to
+    Associating a item data value with some or all of a tree-view items can be useful in a number of ways. The <emphasis
+    role="italic">itemData</emphasis> argument allows the programmer to assoicate the value at the time the item in added to
     the tree-view. The <xref linkend="mthSetItemDataClsTreeView"/> method can be used to assign a data value at any time. The
     <link linkend="mthModifyClsTreeView">modify</link> method can be used to change an item's attributes, including the user
     data of the item.
@@ -1177,7 +1176,7 @@ item in the client window of a tree-view control.</para>
 </programlisting>
 
 <para>
-  Gets the user data associated with the specified tree-view item.
+  Gets the item data associated with the specified tree-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1189,7 +1188,7 @@ item in the client window of a tree-view control.</para>
       <varlistentry><term>hItem [required]</term>
       <listitem>
       <para>
-        The tree-view item to retrieve the user data from.
+        The tree-view item to retrieve the item data from.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1197,7 +1196,7 @@ item in the client window of a tree-view control.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the user data associated with the specified item, or the <computeroutput>.nil</computeroutput> object if
+    Returns the item data associated with the specified item, or the <computeroutput>.nil</computeroutput> object if
     there is no data associated with the item.
   </para>
   </listitem></varlistentry>
@@ -1685,7 +1684,7 @@ minimum.
              +--parent--+ +-,-after-+ +-,-txt-+ +-,-img-+ +-,-selImg-+
 
 >------------+---------+-+------------+-+------------+-------------------------><
-             +-,-state-+ +-,-children-+ +-,-userData-+
+             +-,-state-+ +-,-children-+ +-,-itemData-+
 ]]>
 </programlisting>
 
@@ -1799,7 +1798,7 @@ minimum.
         in effect ignored.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>userData [optional]</term>
+      <varlistentry><term>itemData [optional]</term>
       <listitem>
       <para>
         Associates the specified value with the tree-view item being inserted. This can be any Rexx object that the
@@ -1825,9 +1824,9 @@ minimum.
     item has no children.
   </para>
   <para>
-    Associating a user data value with some or all of a tree-view items can be useful in a number of ways. The <emphasis
-    role="italic">userData</emphasis> argument allows the programme to assoicate the value at the time the item in added to the
-    tree-view. The <xref linkend="mthSetItemDataClsTreeView"/> method can be used to assign a data value at any time.
+    Associating a item data value with some or all of a tree-view items can be useful in a number of ways. The <emphasis
+    role="italic">itemData</emphasis> argument allows the programme to assoicate the value at the time the item in added to
+    the tree-view. The <xref linkend="mthSetItemDataClsTreeView"/> method can be used to assign a data value at any time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1996,10 +1995,10 @@ of <emphasis role="italic">hItem</emphasis>.
       </listitem></varlistentry>
     </variablelist>
     </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">!USERDATA</emphasis></term>
+    <varlistentry><term><emphasis role="bold">!ITEMDATA</emphasis></term>
     <listitem>
     <para>
-      The user data value, if a value has been assigned to the item. If no user data value has been assigned, the
+      The item data value, if a value has been assigned to the item. If no item data value has been assigned, the
       <computeroutput>.nil</computeroutput> object is returned.
     </para>
     </listitem></varlistentry>
@@ -2008,7 +2007,7 @@ of <emphasis role="italic">hItem</emphasis>.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The user data value can be assigned to a tree-view item through a number of methods, such as the <xref
+    The item data value can be assigned to a tree-view item through a number of methods, such as the <xref
     linkend="mthSetItemDataClsTreeView"/>, <xref linkend="mthInsertClsTreeView"/>, or <xref linkend="mthModifyClsTreeView"/>
     methods.
   </para>
@@ -2027,7 +2026,7 @@ of <emphasis role="italic">hItem</emphasis>.
   say itemInfo.!CHILDREN
   say itemInfo.!IMAGE
   say itemInfo.!STATE
-  say itemInfo.!USERDATA
+  say itemInfo.!ITEMDATA
 ]]>
   </programlisting>
   </para>
@@ -2175,7 +2174,7 @@ items fit in the dialog.</para>
              +--hItem--+ +-,-txt-+ +-,-img-+ +-,-selImg-+
 
 >------------+---------+-+------------+-+------------+-------------------------><
-             +-,-state-+ +-,-children-+ +-,-userData-+
+             +-,-state-+ +-,-children-+ +-,-itemData-+
 ]]>
 </programlisting>
 
@@ -2339,12 +2338,12 @@ items fit in the dialog.</para>
         role="italic">children</emphasis> value is not changed.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>userData [optional]</term>
+      <varlistentry><term>itemData [optional]</term>
       <listitem>
       <para>
         Associates the specified value with the tree-view item being inserted. This can be any Rexx object that the
         programmer wants to use.  The <link linkend="mthGetItemDataClsTreeView">getItemData</link> method can be used to
-        retrieve this value. If this argument is omitted, the item's user data value is not changed.
+        retrieve this value. If this argument is omitted, the item's item data value is not changed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2625,7 +2624,7 @@ in all other cases.
 </programlisting>
 
 <para>
-  Removes and returns the user data associated with the specified tree-view item.
+  Removes and returns the item data associated with the specified tree-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2645,7 +2644,7 @@ in all other cases.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the user data value associated with the specified item, or <computeroutput>.nil</computeroutput> if there is
+    Returns the item data value associated with the specified item, or <computeroutput>.nil</computeroutput> if there is
     no data associated with the item.
   </para>
   </listitem></varlistentry>
@@ -2885,7 +2884,7 @@ item.</para>
 </programlisting>
 
 <para>
-  Sets the user data associated with the specified tree-view item.
+  Sets the item data associated with the specified tree-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2902,8 +2901,8 @@ item.</para>
       <varlistentry><term>data [optional]</term>
       <listitem>
       <para>
-        The data value to store for the list-view item. This can be any Rexx object. (Recall that in ooRexx numbers and
-        strings are also objects.) If this argument is omitted, the current user data, if any, is removed.
+        The data value to store for the tree-view item. This can be any Rexx object. (Recall that in ooRexx numbers and
+        strings are also objects.) If this argument is omitted, the current item data, if any, is removed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2912,7 +2911,7 @@ item.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the previous user data associated with the tree-view item, or <computeroutput>.nil</computeroutput> if there was
+    Returns the previous item data associated with the tree-view item, or <computeroutput>.nil</computeroutput> if there was
     no previous data. On error, <computeroutput>.nil</computeroutput> is returned and the <xref
     linkend="dotSystemErrorCode"/> is set. An error is highly unlikely.
   </para>
@@ -2922,17 +2921,17 @@ item.</para>
   <para>
     The tree-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the tree-view
     items. The data value can be any ooRexx object. The data value can be retrieved without removing it from a
-    list-view item through the <xref linkend="mthGetItemDataClsTreeView"/> method, or it can be removed through the <xref
+    tree-view item through the <xref linkend="mthGetItemDataClsTreeView"/> method, or it can be removed through the <xref
     linkend="mthRemoveItemDataClsTreeView"/>. Storing a user value for each item can be useful in any number of ways. One
     specific use is in the <xref linkend="mthSortChildrenCB"/> method.
   </para>
   <para>
-    It is possible, although very unlikely, that there will be an error in the tree-view control when setting the user data.
+    It is possible, although very unlikely, that there will be an error in the tree-view control when setting the item data.
     In this case <computeroutput>.nil</computeroutput> is returned and the <computeroutput>.systemErrorCode</computeroutput>
     is set to 156  ERROR_SIGNAL_REFUSED <emphasis role="italic">The recipient process has refused the signal</emphasis>.
   </para>
   <para>
-    This is not a system error, the code is just used here to indicate a tree-view error when setting the user data. The
+    This is not a system error, the code is just used here to indicate a tree-view error when setting the item data. The
     tree-view provides no information on why it failed.
   </para>
   </listitem></varlistentry>
@@ -3177,8 +3176,8 @@ was not specified or is 0.
     come after the second item, and 0 if the items are equivalent.
   </para>
   <para>
-    The arguments passed to the comparsion method are the user data items associated with the two items beig compared. This
-    is why the sort will not work correctly if tree-view items are not assigned a user data item. The comparison method
+    The arguments passed to the comparsion method are the item data items associated with the two items beig compared. This
+    is why the sort will not work correctly if tree-view items are not assigned a item data item. The comparison method
     should be coded as follows:
   </para>
 
@@ -3225,7 +3224,7 @@ was not specified or is 0.
     <para>
       The return must be a whole number. Less than 0 places the first item before the second item, greater than 0 places the
       first item after the second. Return 0 if the two items are equivalent. The programmer determines what number to return
-      based on the 2 user data values passed to the method.
+      based on the 2 item data values passed to the method.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3523,6 +3522,10 @@ visible:
 <row>
 <entry><xref linkend="atrItemTV"/></entry>
 <entry>Reflects the <xref linkend="defHandle"/> of the tree-view item that needs to be drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="atrItemDataClsTvCustomDrawSimple"/></entry>
+<entry>Reflects the item <emphasis role="italic">item</emphasis> for the tree-view item that needs to be drawn.</entry>
 </row>
 <row>
 <entry><xref linkend="atrLevel"/></entry>
@@ -3916,6 +3919,81 @@ visible:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TvCustomDrawSimple::item() [attribute]  -->
+
+<section id="atrItemDataClsTvCustomDrawSimple" xreflabel="itemData"><title>itemData (Attribute)</title>
+<indexterm><primary>itemData</primary></indexterm>
+<indexterm><primary>TvCustomDrawSimple class</primary><secondary>itemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemData-----------------------------------------------------><
+
+>>--itemData-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the item <emphasis role="italic">data</emphasis> for the tree-view item that needs to be drawn. This attribute is
+  information sent from the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">itemData get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the item data object for the item about to be drawn, or <computeroutput>.nil</computeroutput> if no item data was
+    set for the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">itemData set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a get-only attribute. It is information sent from the tree-view control and can not be changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view allows the programmer to associate a value with any tree-view item. This item data value is sent by the
+    tree-view in the event notification information. The programmer can set the item data for a tree-view item in several
+    ways, using the <xref linkend="mthSetItemDataClsTreeView"/> of the <xref linkend="clsTreeView"/> class, for example.
+  </para>
+  <para>
+    The <emphasis role="italic">itemData</emphasis> attribute could be used to help decide how to custom draw the tree-view
+    item or subitem, see the example below.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example the color to draw the text for each item is stored in the item data for the item. This makes for a very
+    simple event handler, the text color is just set to whatever value the item data is:
+<programlisting>
+<![CDATA[
+
+::method onCustomDraw unguarded
+    use arg tvcds
+
+    itemData = tvcds~itemData
+
+    tvcds~clrText   = itemData~textColor
+    tvcds~clrTextBk = itemData~backgroundColor
+    tvcds~reply     = self~CDRF_NEWFONT
+
+    return .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TvCustomDrawSimple::itemData() [attribute]  -->
+
 
 <section id="atrLevel" xreflabel="level"><title>level (Attribute)</title>
 <indexterm><primary>level</primary></indexterm>

@@ -133,10 +133,16 @@
 <para>
   This documentation refers to a tool identifier as a <emphasis role="italic">Rexx object combination</emphasis>. This can be
   a combination of two Rexx objects, but quite often only one object is needed to indentify a tool.
-  <computeroutput>ToolTip</computeroutput> methods that require a tool to be identifed, have as their first required argument
-  a <emphasis role="italic">toolHwnd</emphasis> argument and as a second optional argument a <emphasis
-  role="italic">toolID</emphasis> argument. The combination of the two arguments, <emphasis role="italic">toolHwnd</emphasis>
-  and <emphasis role="italic">toolID</emphasis>, is always handled in the same way, which is as follows:
+  <computeroutput>ToolTip</computeroutput> methods that require a tool to be identifed, have a required argument, a <emphasis
+  role="italic">toolHwnd</emphasis> argument, followed by a second optional argument a <emphasis
+  role="italic">toolID</emphasis> argument. The <emphasis role="italic">toolHwnd</emphasis> argument is usually argument 1,
+  followed by the <emphasis role="italic">toolID</emphasis> argument. However, in some cases the <emphasis
+  role="italic">toolHwnd</emphasis> argument may be argument 2 followed by the <emphasis role="italic">toolID</emphasis> as
+  argument 3.
+</para>
+<para>
+  The combination of the two arguments, <emphasis role="italic">toolHwnd</emphasis> and <emphasis
+  role="italic">toolID</emphasis>, is always handled in the same way, which is as follows:
 </para>
 
 <variablelist>
@@ -314,63 +320,63 @@
 </row>
 <row>
 <entry><xref linkend="mthNewToolRect"/></entry>
-<entry>x</entry>
+<entry>Sets a new bounding rectangle for a tool.</entry>
 </row>
 <row>
 <entry><xref linkend="mthPop"/></entry>
-<entry>x</entry>
+<entry>Removes, hides, this ToolTip's display window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthPopup"/></entry>
-<entry>x</entry>
+<entry>Causes this ToolTip to display at the coordinates of the last mouse message.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetDelayTime"/></entry>
-<entry>x</entry>
+<entry>Sets the initial, pop-up, and reshow durations for this ToolTip control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetMargin"/></entry>
-<entry>x</entry>
+<entry>Sets the top, left, bottom, and right margins for this ToolTip window. A margin is the distance, in pixels, between the ToolTip window border and the text contained within the ToolTip window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetMaxTipWidth"/></entry>
-<entry>x</entry>
+<entry>Sets the maximum width, in pixels, for this ToolTip window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetTipBkColor"/></entry>
-<entry>x</entry>
+<entry>Sets the background color for this ToolTip window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetTipTextColor"/></entry>
-<entry>x</entry>
+<entry>Sets the text color for this ToolTip window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetTitleClsToolTip"/></entry>
-<entry>x</entry>
+<entry>Adds a title string and optionally an icon image to this ToolTip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetToolInfo"/></entry>
-<entry>x</entry>
+<entry>Sets the information that this ToolTip control maintains for a tool.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetWindowTheme"/></entry>
-<entry>x</entry>
+<entry>Sets the visual style of a ToolTip control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthTrackActivate"/></entry>
-<entry>x</entry>
+<entry>Activates or deactivates a tracking ToolTip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthTrackPosition"/></entry>
-<entry>x</entry>
+<entry>Sets the position of a tracking ToolTip.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUpdateClsToolTip"/></entry>
-<entry>x</entry>
+<entry>Forces the current tool to be redrawn.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUpdateTipText"/></entry>
-<entry>x</entry>
+<entry>Sets the ToolTip text for a tool.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2022,7 +2028,8 @@ Tool info  resource: The NIL object
       <para>
         An array of keywords for the ToolTip events that should invoke a method in the Rexx dialog.  The array can not be
         sparse. Each index in the array should contain the keyword for a ToolTip event. If an event keyword is present at an
-        index, then that event is connected to a method in the Rexx dialog. The valid keywords are, case is not significant:
+        index, then that event is connected to a method in the Rexx dialog. Case is not significant in the keywords. The
+        valid keywords are:
       </para>
       <para>
         <simplelist type='vert' columns='3'>
@@ -2049,7 +2056,7 @@ Tool info  resource: The NIL object
             Causes the monitoring process to intercept the <xref linkend="kywToolTipNEEDTEXT"/> event notification sent to
             the dialog control, and invoke the connected method in the Rexx dialog. The notifcation is prevented from going
             to the dialog control. By default the method invoked for this keyword is <emphasis
-            role="italic">onRelay</emphasis>.
+            role="italic">onNeedText</emphasis>.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>SHOW</term>
@@ -2057,7 +2064,7 @@ Tool info  resource: The NIL object
           <para>
             Causes the monitoring process to intercept the <xref linkend="kywToolTipSHOW"/> event notification sent to the
             dialog control, and invoke the connected method in the Rexx dialog. The notifcation is prevented from going to
-            the dialog control. By default the method invoked for this keyword is <emphasis role="italic">onRelay</emphasis>.
+            the dialog control. By default the method invoked for this keyword is <emphasis role="italic">onShow</emphasis>.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>POP</term>
@@ -2066,7 +2073,7 @@ Tool info  resource: The NIL object
             Causes the monitoring process to intercept the <xref linkend="kywToolTipPOP"/> event notification sent to the
             dialog control and invoke the connected method in the Rexx dialog. The notifcation is prevented from going to
             the dialog control. By default the method invoked for this keyword is <emphasis
-            role="italic">onRelay</emphasis>.
+            role="italic">onPop</emphasis>.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>LINKCLICK</term>
@@ -2074,7 +2081,8 @@ Tool info  resource: The NIL object
           <para>
             Causes the monitoring process to intercept the <xref linkend="kywToolTipLINKCLICK"/> event notification sent to
             the dialog control and invoke the connected method in the Rexx dialog. The notifcation is prevented from going to
-            the dialog control. By default the method invoked for this keyword is <emphasis role="italic">onRelay</emphasis>.
+            the dialog control. By default the method invoked for this keyword is <emphasis
+            role="italic">onLinkClick</emphasis>.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NORELAY</term>
@@ -2096,7 +2104,7 @@ Tool info  resource: The NIL object
         event keyword's index in the <emphasis role="italic">events</emphasis> array.
       </para>
       <para>
-        E.g., if at the keyword SHOW is present at index 2 in the <emphasis role="italic">events</emphasis> array and the
+        E.g., if the keyword SHOW is present at index 2 in the <emphasis role="italic">events</emphasis> array and the
         programmer wants to over-ride the default method name of <emphasis role="italic">onShow</emphasis>, then this can be
         done by putting the alternative method name at index 2 in the <emphasis role="italic">methods</emphasis> array. There
         is no requirement to put any name at index 1. That is, the <emphasis role="italic">methods</emphasis> array can be
@@ -2141,16 +2149,16 @@ Tool info  resource: The NIL object
     that the ToolTip was created by and is owned by a dialog control.
   </para>
   <para>
-    Two example programs are provided with the ooDialog distribution that explore the use of the <emphasis
-    role="italic">manageAtypicalTool</emphasis> method in these two situations. The are the
+    There are two example programs provided with the ooDialog distribution that explore the use of the <emphasis
+    role="italic">manageAtypicalTool</emphasis> method in these two situations. They are in the
     <computeroutput>samples\controls\ToolTip</computeroutput> subdirectories. One program is the
     <computeroutput>manageControlTool.rex</computeroutput> example. The other is the
     <computeroutput>customPositionToolTip.rex</computeroutput> example.
   </para>
   <para>
     Note that when the <emphasis role="italic">manageAtypicalTool</emphasis> method starts the monitoring process, it
-    <emphasis role="italic">always</emphasis> forwards all mouse messages to the ToolTip, even if no both optional arugments
-    are ommitted. This is not always desirable. To prevent this, use the NORELAY keyword.
+    <emphasis role="italic">always</emphasis> forwards all mouse messages to the ToolTip, even if both optional arugments are
+    ommitted. This is not always desirable. To prevent this, use the NORELAY keyword.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2165,8 +2173,15 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example sets up a customized ToolTip for a tree-view control and uses the <emphasis
-    role="italic">manageAtypicalTool</emphasis> method to allow the customization:
+    This example sets up a customized ToolTip for a tree-view control. The <emphasis
+    role="italic">manageAtypicalTool</emphasis> method is used because the customization requires that the application takes
+    action before the mouse move messages are seen by the ToolTip. The RELAY keyword invokes the <emphasis
+    role="italic">onRelay</emphasis> method in the dialog for every mouse move message. The application examines the mouse
+    messages and determines what action to take. When the method returns, the mouse messages are relayed to the ToolTip.
+  </para>
+  <para>
+    Note that the third optional argument is an array with no values at index 1 and index 2. The <emphasis
+    role="italic">onShowToolTip</emphasis> value at index 3 is the altenative method name to invoke for the SHOW event:
 <programlisting>
 <![CDATA[
 
@@ -2180,7 +2195,7 @@ Tool info  resource: The NIL object
 
   ...
 
-  tt~manageAtypicalTool(tv, .array~of('RELAY', 'NEEDTEXT', 'SHOW'))
+  tt~manageAtypicalTool(tv, .array~of('RELAY', 'NEEDTEXT', 'SHOW'), .array~of( , , 'onShowToolTp'))
 
 ]]>
 </programlisting>
@@ -2195,13 +2210,13 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>newToolRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newToolRect(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--newToolRect(--rect-,-toolHwnd--+----------+--)--------------><
+                                   +-,-toolID-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets a new bounding rectangle for a tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2210,10 +2225,24 @@ Tool info  resource: The NIL object
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>rect [required]</term>
       <listitem>
       <para>
-        xx
+        A <xref linkend="clsRect"/> object that specifies the new bounding rectangle of the tool.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>toolHwnd [required]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>toolID [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2221,33 +2250,20 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="sctToolIdentification">Tool Identification</link> section explains exactly how the Rexx object
+    combination is used to specify the tool the new bounding rectangle is assigned to.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2259,59 +2275,24 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>pop</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--pop(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--pop------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes, hides, this ToolTip's display window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method has no arguments.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2323,59 +2304,33 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>popUp</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--popUp(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--popUp----------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Causes this ToolTip to display at the coordinates of the last mouse message.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+  </para>
+  <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2387,13 +2342,13 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>setDelayTime</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDelayTime(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setDelayTime(--+---------+--+---------+--)---><
+                   +--which--+  +-,-time--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the initial, pop-up, and reshow durations for this ToolTip control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2402,10 +2357,58 @@ Tool info  resource: The NIL object
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>which [optional]</term>
       <listitem>
       <para>
-        xx
+        Exactly one of the following keywords, case is not significant. This specifies which of the 3, or all of the 3,
+        possible delay times to set. The default if omitted is AUTOMATIC:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>AUTOPOP  </member>
+          <member>INITIAL  </member>
+          <member>RESHOW   </member>
+          <member>AUTOMATIC</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>AUTOPOP</term>
+          <listitem>
+          <para>
+            The amount of time the ToolTip window remains visible if the pointer is stationary within a tool's bounding
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>INITIAL</term>
+          <listitem>
+          <para>
+            The amount of time the pointer must remain stationary within a tool's bounding rectangle before the ToolTip
+            window appears.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RESHOW</term>
+          <listitem>
+          <para>
+            The amount of time it takes for subsequent ToolTip windows to appear as the pointer moves from one tool to
+            another.
+          </para>
+          <varlistentry><term>AUTOMATIC</term>
+          <listitem>
+          <para>
+            Sets all 3 delaty times to their default propotions. The autopop time will be ten times the initial time and the
+            reshow time will be one fifth the initial time. When using this keyword, use a positive value for <emphasis
+            role="italic">time</emphasis> to specify the initial time, in milliseconds.  Use a negative <emphasis
+            role="italic">time</emphasis> to return all three delay times to their default values. This is the default if the
+            <emphasis role="italic">which</emphasis> argument is omitted.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>time [optional]</term>
+      <listitem>
+      <para>
+        The time, in milliseconds to set the specified delay time to. A negative time sets the specified time back to its
+        default value. If this argument is omitted, the default is -1.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2413,33 +2416,13 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2451,25 +2434,25 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>setMargin</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setMargin(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setMargin(--margins--)-----------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the top, left, bottom, and right margins for a ToolTip window. A margin is the distance, in pixels, between the
+  ToolTip window border and the text contained within the ToolTip window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>margins [required]</term>
       <listitem>
       <para>
-        xx
+        A <xref linkend="clsRect"/> object that specifies the margins.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2477,30 +2460,58 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The attributes of the returned rectangle do not define a bounding rectangle. For the purpose of this method, the
+    attributes are interpreted as follows:
   </para>
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">top:</emphasis></term>
+    <listitem>
+    <para>
+      Distance between top border and top of ToolTip text, in pixels.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">left:</emphasis></term>
+    <listitem>
+    <para>
+      Distance between left border and left end of ToolTip text, in pixels.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">bottom:</emphasis></term>
+    <listitem>
+    <para>
+      Distance between bottom border and bottom of ToolTip text, in pixels.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">right:</emphasis></term>
+    <listitem>
+    <para>
+      Distance between right border and right end of ToolTip text, in pixels.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the margins for a ToolTip to 2 pixels on the sides and 4 pixels on the top and bottom:
 <programlisting>
 <![CDATA[
+
+  margins = .Rect~new(2, 4, 2, 4)
+  toolTip~setMargins(margins)
 
 ]]>
 </programlisting>
@@ -2515,25 +2526,24 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>setMaxTipWidth</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setMaxTipWidth(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setMaxTipWidth(--max--)---------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the maximum width, in pixels, for this ToolTip window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>max [required]</term>
       <listitem>
       <para>
-        xx
+        The maximum width for the ToolTip, or -1 to allow any width.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2541,13 +2551,22 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous maximum width for this ToolTip.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The maximum width value does not indicate a ToolTip window's actual width. Rather, if a ToolTip string exceeds the
+     maximum width, the control breaks the text into multiple lines, using spaces to determine line breaks. If the text
+     cannot be segmented into multiple lines, it is displayed on a single line, which may exceed the maximum ToolTip width.
+  </para>
+  <para>
+    For instance, if the maximum width is set to 20 and there is a word within the text that is longer than 20, the word is
+    not broken in two. It is displayed on a single line, causing that line to be longer than 20.
+  </para>
+  <para>
+    The text can contain embedded new line characters and the ToolTip will break the text at the new line indicator.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2555,16 +2574,23 @@ Tool info  resource: The NIL object
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a tool for a push button with a relatively long string for the tool's text. It then gets the size
+    for a portion of the text in pixels and sets the max tip width to the width of the portion. This causes the ToolTip to
+    create a multi-line display window:
 <programlisting>
 <![CDATA[
+
+  tt = self~createToolTip(IDC_TT_MAIN)
+
+  text = "Push the 'Test' button to run the current regression test for ooRexx..."
+  tt~addTool(self~newPushButton(IDC_PB_TEST), text)
+
+  s = self~getTextSizePX("Push the 'Test' button")
+  tt~setMaxTipWidth(s~width)
 
 ]]>
 </programlisting>
@@ -2579,25 +2605,25 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>setTipBkColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setTipBkColor(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setTipBkColor(--color--)---------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the background color for this ToolTip window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>color [required]</term>
       <listitem>
       <para>
-        xx
+        The new color for the background of the ToolTip window. The color is expressed as a <xref linkend="defColorRef"/>
+        value.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2605,33 +2631,21 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method is included for completeness. As is the case for most dialog controls that have set color methods, the dialog
+    control ignores a color change if visual themes are in effect. Most systems on XP and later have visual themes on by
+    default.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2643,25 +2657,24 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>setTipTextColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setTipTextColor(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setTipTextColor(--color--)---------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the text color for this ToolTip window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>color [required]</term>
       <listitem>
       <para>
-        xx
+        The new color for the text of the ToolTip window. The color is expressed as a <xref linkend="defColorRef"/> value.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2669,33 +2682,21 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method is included for completeness. As is the case for most dialog controls that have set color methods, the dialog
+    control ignores a color change if visual themes are in effect. Most systems on XP and later have visual themes on by
+    default.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2707,13 +2708,13 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>setTitle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setTitle(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setTitle(--title--+---------+--)-------------><
+                      +-,-icon--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a title string and optionally an icon image to this ToolTip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2722,24 +2723,85 @@ Tool info  resource: The NIL object
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>title [required]</term>
       <listitem>
       <para>
-        xx
+        The title for this ToolTip.
       </para>
       </listitem></varlistentry>
-    </variablelist>
+      <varlistentry><term>icon [optional]</term>
+      <listitem>
+      <para>
+        Either an icon <xref linkend="clsImage"/> object, or one of the following keywords to use a system icon. Case is not
+        significant in the keywords. The default if the keyword is omitted is NONE:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>NONE</member>
+          <member>ERROR</member>
+          <member>ERRORLARGE</member>
+          <member>INFO</member>
+          <member>INFOLARGE</member>
+          <member>WARNING</member>
+          <member>WARNINGLARGE</member>
+        </simplelist>
+      <variablelist>
+        <varlistentry><term>NONE</term>
+        <listitem>
+        <para>
+          No icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ERROR</term>
+        <listitem>
+        <para>
+          Error icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ERRORLARGE</term>
+        <listitem>
+        <para>
+          Large warning icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INFO</term>
+        <listitem>
+        <para>
+          Info icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INFOLARGE</term>
+        <listitem>
+        <para>
+          Large info icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>WARNING</term>
+        <listitem>
+        <para>
+          Warning icon.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>WARNINGLARGE</term>
+        <listitem>
+        <para>
+          Large warning icon.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">title</emphasis> string can not be longer than 99 characters. If an <xref
+    linkend="clsImage"/> object is used, the image must actually be an icon. The operating system will not display a bitmap
+    when an icon is called for.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2747,16 +2809,18 @@ Tool info  resource: The NIL object
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a balloon ToolTip with a title and an icon;
 <programlisting>
 <![CDATA[
+
+  icon = .Image~getImage("musicNote.ico", .Image~toID(IMAGE_ICON), .size~new(16, 16))
+
+  tt = self~createToolTip(IDC_TT_BALLOON, 'BALLOON CLOSE')
+  tt~setTitle("Important Message", icon)
 
 ]]>
 </programlisting>
@@ -2771,25 +2835,25 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>setToolInfo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setToolInfo(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setToolInfo(--toolInfo--)--------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the information that this ToolTip control maintains for a tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolInfo [required]</term>
       <listitem>
       <para>
-        xx
+        A <xref linkend="clsToolInfo"/> object whose attributes specify the information this ToolTip should use for a tool.
+        See the remarks.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2797,13 +2861,21 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Some internal properties of a tool are established when the tool is created, and are not recomputed by the ToolTip when
+    the <emphasis role="italic">setToolInfo</emphasis> method is invoked.  If a <computeroutput>ToolInfo</computeroutput>
+    object is simply instantiated, its attributes assigned values, and is then passed to the ToolTip control through the
+    <emphasis role="italic">setToolInfo</emphasis> method, these properties may be lost.
+  </para>
+  <para>
+    Instead, the programmer should first request the tool's current <computeroutput>ToolIno</computeroutput> object by using
+    the <xref linkend="mthGetToolInfo"/> method. Then, modify the attributes of this object as needed and pass it back to
+    the ToolTip control using the <emphasis role="italic">setToolInfo</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2811,16 +2883,21 @@ Tool info  resource: The NIL object
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example modifies the text, bounding rectangle, and flags of a tool:
 <programlisting>
 <![CDATA[
+
+  toolInfo = ttEsc~getToolInfo(self~newPushButton(IDCANCEL))
+
+  toolInfo~text  = "Only push the cancel button if you want, or need, to end the dialog"
+  toolInfo~rect  = .Rect~new(3, 2, 44, 11)
+  toolInfo~flags = toolInfo~flags 'CENTERTIP'
+
+  ttEsc~setToolInfo(toolInfo)
 
 ]]>
 </programlisting>
@@ -2835,25 +2912,24 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>setWindowTheme</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setWindowTheme(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setWindowTheme(--style--)--------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the visual style of a ToolTip control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>style [required]</term>
       <listitem>
       <para>
-        xx
+        A string specifying the visual style.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2861,33 +2937,24 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method is included for completeness. The Windows <xref linkend="defWindowsDoc"/> is very sparse on this topic. It
+    simply says a string specifying the style, but doesn't say what styles are available. Currently, the ooDialog developers
+    are not certain what string to use to get this method to work.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+  </para>
+  <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2899,13 +2966,13 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>trackActivate</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--trackActivate(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--trackActivate(--toolHwnd--+----------+--+-------------+--)--><
+                              +-,-toolID-+  +-,-activate--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Activates or deactivates a tracking ToolTip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2914,10 +2981,24 @@ Tool info  resource: The NIL object
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolHwnd [required]</term>
       <listitem>
       <para>
-        xx
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>toolID [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">toolHwnd</emphasis> and <emphasis role="italic">toolID</emphasis> arguments are the Rexx
+        object combination that <link linkend="sctToolIdentification">identify</link> the tool to be deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>activate</term>
+      <listitem>
+      <para>
+        Must be true or false, use true to activate the ToolTip, false to deactivate it. If omitted, the default is true.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2925,33 +3006,28 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="sctToolIdentification">Tool Identification</link> section explains exactly how the Rexx object
+    combination is used to specify the tool to be deleted.
+  </para>
+  <para>
+    Tracking ToolTips must be manually activated and deactivated by using the <emphasis
+    role="italic">trackActivate</emphasis> method. Activation or deactivation also shows or hides the ToolTip, respectively.
+  </para>
+  <para>
+     While a tracking ToolTip is active, the application must specify the location of the ToolTip by invoking the
+     <xref linkend="mthTrackPosition"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2963,13 +3039,22 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>trackPosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--trackPosition(--+--------+--)---------------------------------------------><
-                  +--type--+
+Form 1:
+
+>>--trackPosition(--point--)---------------------><
+
+Form 2:
+
+>>--trackPosition(--x,--y--)---------------------><
+
+Generic form:
+
+>>--trackPosition(--pt--)------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the position of a tracking ToolTip.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2978,10 +3063,11 @@ Tool info  resource: The NIL object
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>pt [required]</term>
       <listitem>
       <para>
-        xx
+        The (x, y) coordinates of the position to set. As the syntax diagram indicates, the coordinates can be specified
+        either as a single <xref linkend="clsPoint"/> object, or as two arguments, a separate x and a y coordinate.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2989,33 +3075,27 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Tracking ToolTips change position on the screen dynamically.  While a tracking ToolTip is active, the application must
+    specify the location of the ToolTip by invoking the <emphasis role="italic">trackPosition</emphasis> method.
+  </para>
+  <para>
+    The ToolTip control chooses where to display the ToolTip window based on the coordinates provided through the <emphasis
+    role="italic">trackPosition</emphasis> method. This causes the ToolTip window to appear beside the tool to which it
+    corresponds. To have ToolTip windows displayed at specific coordinates, include the ABSOLUTE keyword in the <emphasis
+    role="italic">flags</emphasis> argument when adding the tool through the <xref linkend="mthAddTool"/>, <xref
+    linkend="addToolEx"/>, or <xref linkend="mthAddToolRect"/> methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3027,59 +3107,24 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>update</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--update(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--update---------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Forces the current tool to be redrawn.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3091,13 +3136,12 @@ Tool info  resource: The NIL object
 <indexterm><primary>ToolTip class</primary><secondary>updateTipText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--updateTipText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--updateTipText(--toolInfo--)------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the ToolTip text for a tool.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3106,10 +3150,10 @@ Tool info  resource: The NIL object
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>toolInfo [required]</term>
       <listitem>
       <para>
-        xx
+        A <xref linkend="clsToolInfo"/> object that specifies the tool and the text for the update.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3117,13 +3161,15 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The best way to use this method is to instantiate a new <computeroutput>ToolInfo</computeroutput> object through the
+    <xref linkend="forID"/> method and then set the <emphasis role="italic">text</emphasis> attribute of the object to the
+    new text desired.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3131,17 +3177,18 @@ Tool info  resource: The NIL object
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example updates the text for a tool:
 <programlisting>
 <![CDATA[
 
+  toolInfo = .ToolInfo~forID(self~newPushButton(IDCANCEL))
+  toolInfo~text  = "Only push the cancel button if you want, or need, to end the dialog"
+
+  toolTip~updateTipText(toolInfo)
 ]]>
 </programlisting>
   </para>

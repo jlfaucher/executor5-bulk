@@ -7501,7 +7501,7 @@ incorrect.
         This notification is sent when the ToolTip control needs to retrieve the text used to display a ToolTip window.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywToolTipPOP" xreflabel="POS"><term>POP</term>
+      <varlistentry id="kywToolTipPOP" xreflabel="POP"><term>POP</term>
       <listitem>
       <para>
         This notification is sent when a ToolTip is about to be hidden.
@@ -8396,7 +8396,7 @@ trackbar position by extracting the high-oder word. Example:
     <programlisting>
     <![CDATA[
     ::method onBeginDrag unguarded
-      use arg id, hItem, pos, treeView, userData
+      use arg id, hItem, pos, treeView, itemData
 
       return 0
     ]]>
@@ -8436,11 +8436,11 @@ trackbar position by extracting the high-oder word. Example:
           linkend="mthNewTreeView"/> method.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>userData</term>
+        <varlistentry><term>itemData</term>
         <listitem>
         <para>
-          The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item being dragged.
-          If no user data has been assigned, this argument will be the <computeroutput>.nil</computeroutput> object.
+          The item <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item being dragged.
+          If no item data has been assigned, this argument will be the <computeroutput>.nil</computeroutput> object.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -8571,7 +8571,7 @@ trackbar position by extracting the high-oder word. Example:
     <programlisting>
     <![CDATA[
     ::method onBeginEdit unguarded
-      use arg id, hItem, editCtrl, treeViewCtrl, userData
+      use arg id, hItem, editCtrl, treeViewCtrl, itemData
 
       return zz
     ]]>
@@ -8617,11 +8617,11 @@ trackbar position by extracting the high-oder word. Example:
           valid as long as the dialog is executing.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>userData</term>
+        <varlistentry><term>itemData</term>
         <listitem>
         <para>
-          The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item whose label is
-          about to be edited. If no user data has been assigned, this argument will be the
+          The item <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item whose label is
+          about to be edited. If no item data has been assigned, this argument will be the
           <computeroutput>.nil</computeroutput> object.
         </para>
         </listitem></varlistentry>
@@ -8643,17 +8643,17 @@ trackbar position by extracting the high-oder word. Example:
         role="italic">hItem</emphasis> argument to determine which item is about the have its label edited, and checks that
         editing is allowed for that item. If it is, it returns true to allow the operation. If it is not, it returns false to
         cancel the operation and puts up a message box to inform the user. Note that the <emphasis
-        role="italic">userData</emphasis> argument is assigned to the <emphasis role="italic">rec</emphasis> variable in this
-        example, just to make it clear that the argument sent to the event handler is the user data object. In this
-        particular program the user data object is a record object:
+        role="italic">itemData</emphasis> argument is assigned to the <emphasis role="italic">rec</emphasis> variable in this
+        example, just to make it clear that the argument sent to the event handler is the item data object. In this
+        particular program the item data object is a record object:
 
 <programlisting>
 <![CDATA[
 
 ::method onBeginEdit unguarded
-  use arg id, hItem, editCtrl, treeViewCtrl, userData
+  use arg id, hItem, editCtrl, treeViewCtrl, itemData
 
-  rec = userData
+  rec = itemData
   if rec~isEditable then return .true
 
   reply .false
@@ -8768,7 +8768,7 @@ trackbar position by extracting the high-oder word. Example:
     <programlisting>
     <![CDATA[
     ::method onDelete unguarded
-      use arg, id, hItem, rxTv, userData
+      use arg, id, hItem, rxTv, itemData
 
       return 0
     ]]>
@@ -8801,11 +8801,11 @@ trackbar position by extracting the high-oder word. Example:
           linkend="mthNewTreeView"/> method.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>userData</term>
+        <varlistentry><term>itemData</term>
         <listitem>
         <para>
-          The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item that is being
-          deleted. If no user data has been assigned, this argument will be the <computeroutput>.nil</computeroutput> object.
+          The item <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item that is being
+          deleted. If no item data has been assigned, this argument will be the <computeroutput>.nil</computeroutput> object.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -8900,7 +8900,7 @@ trackbar position by extracting the high-oder word. Example:
     <programlisting>
     <![CDATA[
     ::method onEndEdit unguarded
-      use arg id, hItem, text, treeViewCtrl, userData
+      use arg id, hItem, text, treeViewCtrl, itemData
 
       return trueOrFalse
     ]]>
@@ -8940,11 +8940,11 @@ trackbar position by extracting the high-oder word. Example:
           linkend="mthNewListView"/> method.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>userData</term>
+        <varlistentry><term>itemData</term>
         <listitem>
         <para>
-          The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item whose label
-          was edited. If no user data has been assigned, this argument will be the <computeroutput>.nil</computeroutput>
+          The item <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item whose label
+          was edited. If no item data has been assigned, this argument will be the <computeroutput>.nil</computeroutput>
           object.
         </para>
         </listitem></varlistentry>
@@ -8970,14 +8970,14 @@ trackbar position by extracting the high-oder word. Example:
 <![CDATA[
 
 ::method onEndEdit unguarded
-  use arg id, itemIndex, text, treeViewCtrl, userData
+  use arg id, itemIndex, text, treeViewCtrl, itemData
 
   if text == .nil then return .false
 
   if self~isValidPart(text) then do
     reply .true
 
-    rec = userData
+    rec = itemData
     oldPartNo = rec~partNo
     rec~partNo = text
     self~updateRecord(oldPartNo, rec)
@@ -9292,7 +9292,7 @@ trackbar position by extracting the high-oder word. Example:
 <programlisting>
 <![CDATA[
 ::method onGetInfoTip unguarded
-  use arg id, hItem, text, maxLen, userData
+  use arg id, hItem, text, maxLen, itemData
 
   return infoText
 ]]>
@@ -9334,11 +9334,11 @@ trackbar position by extracting the high-oder word. Example:
       role="italic">maxLen</emphasis> characters.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>userData</term>
+    <varlistentry><term>itemData</term>
     <listitem>
     <para>
-      The user <link linkend="mthSetItemDataClsTreeView">data</link> associated with the tree-view item that the info tip is
-      for. If no user data has been associated with the item, then this argument will be the
+      The item <link linkend="mthSetItemDataClsTreeView">data</link> associated with the tree-view item that the info tip is
+      for. If no item data has been associated with the item, then this argument will be the
       <computeroutput>.nil</computeroutput> object.
     </para>
     </listitem></varlistentry>
@@ -9356,7 +9356,7 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    In the following example, the user data associated with the tree-view item tht the info tip is for, is inspected to see
+    In the following example, the item data associated with the tree-view item that the info tip is for, is inspected to see
     if it is the string: '...'  If it is, then a info tip is displayed, otherwise no tip is displayed.
 
 <programlisting>
@@ -9364,9 +9364,9 @@ trackbar position by extracting the high-oder word. Example:
 
 ::method onGetInfoTip unguarded
     expose tv
-    use arg id, hItem, text, maxLen, userData
+    use arg id, hItem, text, maxLen, itemData
 
-    if userData == '...' then return 'There are too many books to list'
+    if itemData == '...' then return 'There are too many books to list'
     else return ''
 ]]>
 </programlisting>
@@ -9711,7 +9711,7 @@ trackbar position by extracting the high-oder word. Example:
         <listitem>
         <para>
           The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item that lost the
-          selection. If no user data has been assigned to that item, of if <emphasis role="italic">hItemOld</emphasis> is 0,
+          selection. If no item data has been assigned to that item, of if <emphasis role="italic">hItemOld</emphasis> is 0,
           this argument will be the <computeroutput>.nil</computeroutput> object.
         </para>
         </listitem></varlistentry>
@@ -9725,7 +9725,7 @@ trackbar position by extracting the high-oder word. Example:
         <listitem>
         <para>
           The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item that gained
-          the selection. If no user data has been assigned to that item, this argument will be the
+          the selection. If no item data has been assigned to that item, this argument will be the
           <computeroutput>.nil</computeroutput> object.
         </para>
         </listitem></varlistentry>
@@ -9891,7 +9891,7 @@ trackbar position by extracting the high-oder word. Example:
         <listitem>
         <para>
           The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item that is about
-          to lose the selection. If no user data has been assigned to that item, of if <emphasis
+          to lose the selection. If no item data has been assigned to that item, of if <emphasis
           role="italic">hItemOld</emphasis> is 0, this argument will be the <computeroutput>.nil</computeroutput> object.
         </para>
         </listitem></varlistentry>
@@ -9905,7 +9905,7 @@ trackbar position by extracting the high-oder word. Example:
         <listitem>
         <para>
           The user <link linkend="mthSetItemDataClsTreeView">data</link> object assigned to the tree-view item that will
-          gain the selection. If no user data has been assigned to that item, this argument will be the
+          gain the selection. If no item data has been assigned to that item, this argument will be the
           <computeroutput>.nil</computeroutput> object.
         </para>
         </listitem></varlistentry>
