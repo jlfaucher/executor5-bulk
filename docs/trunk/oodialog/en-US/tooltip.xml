@@ -1995,7 +1995,14 @@ Tool info  resource: The NIL object
 
 <para>
   Initiates the management of a ToolTip tool that is a dialog control. This is for a tool that is not the typical tool used
-  in a TooTip. See the remarks section for details.
+  in ooDialog. See the remarks section for details.
+</para>
+<para>
+  The <emphasis role="italic">manageAtypicalTool</emphasis> initiates a process that monitors every window <link
+  linkend="ovvWindowMessages">message</link> sent to the <emphasis role="italic">toolObj</emphasis>, (which is a dialog
+  control.) This allows the process to relay all mouse messages to the tool and to intercept all event notifications sent by
+  the ToolTip to the <emphasis role="italic">toolObj</emphasis>. Why this is necessary is explained in more detail in the
+  remarks section.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2015,13 +2022,85 @@ Tool info  resource: The NIL object
       <para>
         An array of keywords for the ToolTip events that should invoke a method in the Rexx dialog.  The array can not be
         sparse. Each index in the array should contain the keyword for a ToolTip event. If an event keyword is present at an
-        index, then that event is connected to a method in the Rexx dialog.
+        index, then that event is connected to a method in the Rexx dialog. The valid keywords are, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>RELAY    </member>
+          <member>NEEDTEXT </member>
+          <member>SHOW     </member>
+          <member>POP      </member>
+          <member>LINKCLICK</member>
+          <member>NORELAY  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>RELAY</term>
+          <listitem>
+          <para>
+            Causes the monitoring process to invoke the connected method in the Rexx dialog for every mouse message sent to
+            the dialog control. The method is invoked <emphasis role="italic">before</emphasis> the monitoring process relays
+            the message to the ToolTip. By default the method invoked for this keyword is <emphasis
+            role="italic">onRelay</emphasis>.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NEEDTEXT</term>
+          <listitem>
+          <para>
+            Causes the monitoring process to intercept the <xref linkend="kywToolTipNEEDTEXT"/> event notification sent to
+            the dialog control, and invoke the connected method in the Rexx dialog. The notifcation is prevented from going
+            to the dialog control. By default the method invoked for this keyword is <emphasis
+            role="italic">onRelay</emphasis>.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SHOW</term>
+          <listitem>
+          <para>
+            Causes the monitoring process to intercept the <xref linkend="kywToolTipSHOW"/> event notification sent to the
+            dialog control, and invoke the connected method in the Rexx dialog. The notifcation is prevented from going to
+            the dialog control. By default the method invoked for this keyword is <emphasis role="italic">onRelay</emphasis>.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>POP</term>
+          <listitem>
+          <para>
+            Causes the monitoring process to intercept the <xref linkend="kywToolTipPOP"/> event notification sent to the
+            dialog control and invoke the connected method in the Rexx dialog. The notifcation is prevented from going to
+            the dialog control. By default the method invoked for this keyword is <emphasis
+            role="italic">onRelay</emphasis>.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LINKCLICK</term>
+          <listitem>
+          <para>
+            Causes the monitoring process to intercept the <xref linkend="kywToolTipLINKCLICK"/> event notification sent to
+            the dialog control and invoke the connected method in the Rexx dialog. The notifcation is prevented from going to
+            the dialog control. By default the method invoked for this keyword is <emphasis role="italic">onRelay</emphasis>.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NORELAY</term>
+          <listitem>
+          <para>
+            Prevents the monitoring process from automatically forwarding the mouse messages to the ToolTip. There is no
+            method connection associated with this keyword.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
       <varlistentry><term>methods [optional]</term>
       <listitem>
       <para>
-        xx
+        An array of alternative method names for each connected event. If the default method name is not suitable, for whatever
+        reason, then the programmer can supply her own name in the <emphasis role="italic">methods</emphasis> array. The
+        alternative method name must be at the same index in the <emphasis role="italic">methods</emphasis> array as the
+        event keyword's index in the <emphasis role="italic">events</emphasis> array.
+      </para>
+      <para>
+        E.g., if at the keyword SHOW is present at index 2 in the <emphasis role="italic">events</emphasis> array and the
+        programmer wants to over-ride the default method name of <emphasis role="italic">onShow</emphasis>, then this can be
+        done by putting the alternative method name at index 2 in the <emphasis role="italic">methods</emphasis> array. There
+        is no requirement to put any name at index 1. That is, the <emphasis role="italic">methods</emphasis> array can be
+        sparse.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2029,30 +2108,79 @@ Tool info  resource: The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The ooDialog framework provides the <emphasis role="italic">manageAtypicalTool</emphasis> method to allow more advanced
+    usage of ToolTips. For a ToolTip to work properly, it needs two things. One, it needs to be aware of every mouse message
+    sent to the window that is the tool. Two, it needs to send event notifications to the owner window of the tool.
+  </para>
+  <para>
+    In the typical use case in ooDialog, the window that the ToolTip sends the notifications to is the dialog, (where they
+    are handled by the Rexx dialog through the event connections.) When the SUBCLASS flag is used for the tool, the ToolTip
+    sets up its own internal process to monitor all the mouse messages sent to the tool window. In this typical use case,
+    there is no need for the <emphasis role="italic">manageAtypicalTool</emphasis> method.
+  </para>
+  <para>
+    However there are two basic situations that are not the typical use case. The first is when the SUBCLASS flag can not be
+    used. In this situation there needs to be some way to <emphasis role="italic">relay</emphasis> the mouse messages to the
+    ToolTip. The problem with mouse messages is that they are sent to the window the mouse is over. If the mouse messages are
+    sent to the dialog window, ooDialog would have no problem. It could intercept the mouse messages through event
+    connections and then relay the message to the ToolTip. However, when the mouse is over a dialog control, the dialog
+    window has no knowledge of the mouse messages.
+  </para>
+  <para>
+    The other situation is when the dialog window is not sent the ToolTip event notifications. If the event notifications are
+    sent to a dialog control, then there is no way to handle the events through connected methods in the Rexx dialog. Both of
+    these situations can arise when more advanced usage of ToolTips is tried. A common reason why the SUBCLASS flag can not
+    be used is because the application needs to take some action <emphasis role="italic">before</emphasis> the ToolTip is
+    aware of the mouse message. A common reason why the ToolTip event notifications can not be sent to the dialog window is
+    that the ToolTip was created by and is owned by a dialog control.
+  </para>
+  <para>
+    Two example programs are provided with the ooDialog distribution that explore the use of the <emphasis
+    role="italic">manageAtypicalTool</emphasis> method in these two situations. The are the
+    <computeroutput>samples\controls\ToolTip</computeroutput> subdirectories. One program is the
+    <computeroutput>manageControlTool.rex</computeroutput> example. The other is the
+    <computeroutput>customPositionToolTip.rex</computeroutput> example.
+  </para>
+  <para>
+    Note that when the <emphasis role="italic">manageAtypicalTool</emphasis> method starts the monitoring process, it
+    <emphasis role="italic">always</emphasis> forwards all mouse messages to the ToolTip, even if no both optional arugments
+    are ommitted. This is not always desirable. To prevent this, use the NORELAY keyword.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect usage is detected.
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets up a customized ToolTip for a tree-view control and uses the <emphasis
+    role="italic">manageAtypicalTool</emphasis> method to allow the customization:
 <programlisting>
 <![CDATA[
+
+  tv = self~newTreeView(IDC_TREE)
+  rect = tv~clientRect
+
+  tt = self~createToolTip(IDC_TT)
+
+  toolInfo = .ToolInfo~new(tv, 10, '', 'TRANSPARENT', rect)
+  tt~addToolEx(toolInfo)
+
+  ...
+
+  tt~manageAtypicalTool(tv, .array~of('RELAY', 'NEEDTEXT', 'SHOW'))
 
 ]]>
 </programlisting>
