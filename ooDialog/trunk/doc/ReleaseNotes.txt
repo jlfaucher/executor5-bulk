@@ -87,6 +87,8 @@ Bug Fixes in ooDialog:
 * #1145 TimedMessage dialog remains on screen after ok() method is
         invoked
 
+* #1146 Return code from ListView::deleteColumn() not as documented
+
 
 Feature Requests in ooDialog:
 -----------------------------
@@ -94,6 +96,8 @@ Feature Requests in ooDialog:
 * #42 OODialog List Control Class (report) format individual lines
 
 * #130 OODialog List Control Class Activate sort headers
+
+* #419 Add Tooltip control
 
 * #420 Would like to have an AddButtonStem method.
 
@@ -125,6 +129,7 @@ Feature Requests in ooDialog:
 
 * #499 ooDialog connectTreeViewEvent CHANGING veto
 
+
 New Functionality in ooDialog:
 ------------------------------
 
@@ -138,6 +143,7 @@ individual list-view items.  Etc., etc..
 
 The CustomDraw class has been added to ooDialog and is the means to
 access the Custom Draw facilities.
+
 
 New ListView support classes:
 -----------------------------
@@ -168,12 +174,14 @@ LvCustomDrawSimple class:
 The LvCustomDrawSimple class is used in conjuction with the custom draw
 facility for ListView controls.
 
+
 New ListView methods:
 ---------------------
 
 addFullRow()
 insertFullRow()
 prependFullRow()
+
 
 New dialog classes:
 -------------------
@@ -258,6 +266,25 @@ oodialog\controls\customDrawListView.rex
 
 The customDrawListView example demonstrates how to change the text, text
 color, and background color of individual rows in a list-view.
+
+oodialog\controls\ToolTip\toolTip.rex
+
+The toolTip.rex example demonstrates the basics of using ToolTips in
+ooDialog.  It includes the usage of a number of the ToolTip methods.
+
+oodialog\controls\ToolTip\customPositionToolTip.rex
+
+The customPositionToolTip.rex example shows how to use the ToolTip class
+to do custom positioning of the info tips provided by the tree-view.
+
+oodialog\controls\ToolTip\manageControlTool.rex
+
+The manageControlTool.rex example shows how to use some advanced
+features of the ToolTip class to provide completely customized ToolTips
+for a dialog control.  This example uses a tree-view control, but the
+techniques could be applied to any dialog control.
+
+
 
 Enhanced samples:
 -----------------
