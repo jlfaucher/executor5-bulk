@@ -8180,8 +8180,8 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvItem class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--+-------+--+-------------+--+-------+--+------------+---->
-          +--indx--+  +-,-txt-+  +-,-imageIndx-+  +-,-msk-+  +-,-itemData-+
+>>--new(--+--------+--+-------+--+-------------+--+------------+--r-->
+          +--indx--+  +-,-txt-+  +-,-imageIndx-+  +-,-itemData-+  r
 
 >---+------------+-+---------------+-+----------+-+-----------+-+--------+--)--><
     +-,-itmState-+ +-,-itmStateMsk-+ +-,-indent-+ +-,-groupID-+ +-,-cols-+
@@ -8259,6 +8259,13 @@ that allows the user to remove the check mark from all the check boxes:
       this list-view item.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>itemData[optional]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">itemData</emphasis> argument sets the <xref linkend="atrItemDataClsLvi"/> attribute of this
+      list-view item.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>msk [optional]</term>
     <listitem>
     <para>
@@ -8304,13 +8311,6 @@ that allows the user to remove the check mark from all the check boxes:
     </para>
     <para>
       The <emphasis role="italic">msk</emphasis> argument sets the <xref linkend="atrMaskClsLvi"/> attribute of this
-      list-view item.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>itemData[optional]</term>
-    <listitem>
-    <para>
-      The <emphasis role="italic">itemData</emphasis> argument sets the <xref linkend="atrItemDataClsLvi"/> attribute of this
       list-view item.
     </para>
     </listitem></varlistentry>
