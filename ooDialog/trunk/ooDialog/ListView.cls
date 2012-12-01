@@ -111,10 +111,7 @@
 
 ::method delete unguarded external "LIBRARY oodialog lv_delete"
 ::method deleteAll unguarded external "LIBRARY oodialog lv_deleteAll"
-::method deleteColumn unguarded
-   use strict arg index
-   return self~sendWinIntMsg(self~LVM_DELETECOLUMN, index, 0) <> 0
-
+::method deleteColumn unguarded external "LIBRARY oodialog lv_deleteColumn"
 ::method deselect unguarded external "LIBRARY oodialog lv_setSpecificState"
 ::method deselectAll unguarded external "LIBRARY oodialog lv_deselectAll"
 ::method dropHighlighted unguarded external "LIBRARY oodialog lv_getNextItemWithState"
@@ -322,7 +319,13 @@
 
 
 
-::class 'LvItem' public                                                                -- Do not document for 4.2.0
+::class 'LvItem' public
+
+::constant GROUPIDCALLBACK  -1
+::constant GROUPIDNONE      -2
+::constant IMAGECALLBACK    -1
+::constant IMAGENONE        -2
+
 ::method init external "LIBRARY oodialog lvi_init"
 ::method unInit external "LIBRARY oodialog lvi_unInit"
 

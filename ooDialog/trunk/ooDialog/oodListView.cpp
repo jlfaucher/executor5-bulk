@@ -59,6 +59,8 @@
 #define LVSTATE_ATTRIBUTE         "LV!STATEIMAGELIST"
 #define LVSMALL_ATTRIBUTE         "LV!SMALLIMAGELIST"
 #define LVNORMAL_ATTRIBUTE        "LV!NORMALIMAGELIST"
+
+#define LVITEM_ALL_MASK           LVIF_TEXT   | LVIF_IMAGE   | LVIF_PARAM | LVIF_STATE | LVIF_INDENT | LVIF_COLUMNS | LVIF_COLFMT | LVIF_GROUPID | LVIF_NORECOMPUTE
 #define LVITEM_TEXT_MAX           260
 #define LVITEM_TILECOLUMN_MAX     20   // According to MSDN
 
@@ -307,6 +309,188 @@ static int getColumnWidthArg(RexxMethodContext *context, RexxObjectPtr _width, s
 }
 
 /**
+ * Allocates memory for the text buffer in a list-view item structure.
+ *
+ * This should only be used for Rexx objects such as a LvItem or LvSubItem,
+ * etc., where the uninit method of the object will free the buffer.
+ *
+ * @param c
+ * @param pLVI
+ *
+ * @return True on success, false on memory allocation failure.
+ */
+static bool allocLviTextBuf(RexxMethodContext *c, LPLVITEM pLVI)
+{
+    char *pszText = (char *)LocalAlloc(LPTR, LVITEM_TEXT_MAX + 1);
+    if ( pszText == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    safeLocalFree(pLVI->pszText);
+    pLVI->pszText = pszText;
+
+    pLVI->cchTextMax = (LVITEM_TEXT_MAX + 1);
+    return true;
+}
+
+/**
+ * Allocates a buffer for the LISTITEM.puColumns field to recieve data.  The
+ * buffer is set big enough for the maximum number of columns.
+ *
+ * @param c
+ * @param pLVI
+ *
+ * @return bool
+ */
+static bool allocLviColumns(RexxMethodContext *c, LPLVITEM pLVI)
+{
+    uint32_t *puColumns = (uint32_t *)LocalAlloc(LPTR, LVITEM_TILECOLUMN_MAX * sizeof(uint32_t *));
+    if ( puColumns == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    safeLocalFree(pLVI->puColumns);
+    pLVI->puColumns = puColumns;
+    pLVI->cColumns = LVITEM_TILECOLUMN_MAX;
+
+    return true;
+}
+
+/**
+ * Allocates a buffer for the LISTITEM.piColFmt field to recieve data.  The
+ * buffer is set big enough for the maximum number of columns.
+ *
+ * @param c
+ * @param pLVI
+ *
+ * @return bool
+ */
+static bool allocLviColFmt(RexxMethodContext *c, LPLVITEM pLVI)
+{
+    int32_t *piColFmt = (int32_t *)LocalAlloc(LPTR, LVITEM_TILECOLUMN_MAX * sizeof(uint32_t *));
+    if ( piColFmt == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    safeLocalFree(pLVI->piColFmt);
+    pLVI->piColFmt = piColFmt;
+    pLVI->cColumns = LVITEM_TILECOLUMN_MAX;
+
+    return true;
+}
+
+/**
+ * Allocates memory for the tile column buffers in a list-view item structure.
+ *
+ * This should only be used for the LvItem Rexx objects, where the uninit method
+ * of the object will free the buffers.
+ *
+ * @param c
+ * @param pLVI
+ *
+ * @return True on success, false on memory allocation failure.
+ *
+ * @remarks  If possible, we don't want to change the existing LVITEM struct
+ *           until we are sure things succeed.
+ */
+static bool allocLviTileCols(RexxMethodContext *c, LPLVITEM pLVI)
+{
+    uint32_t *puColumns = (uint32_t *)LocalAlloc(LPTR, LVITEM_TILECOLUMN_MAX * sizeof(uint32_t *));
+    if ( puColumns == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    int32_t *piColFmt = (int32_t *)LocalAlloc(LPTR, LVITEM_TILECOLUMN_MAX * sizeof(uint32_t *));
+    if ( piColFmt == NULL )
+    {
+        safeLocalFree(puColumns);
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    safeLocalFree(pLVI->puColumns);
+    pLVI->puColumns = puColumns;
+
+    safeLocalFree(pLVI->piColFmt);
+    pLVI->piColFmt = piColFmt;
+
+    pLVI->cColumns = LVITEM_TILECOLUMN_MAX;
+
+    return true;
+}
+
+/**
+ * Ensures that the buffers in a LVITEM structure are allocated to recieve
+ * information.
+ *
+ * @param c
+ * @param pLVI
+ *
+ * @return bool
+ *
+ * @remarks  There is a vague assumption here that the LVITEM struct is only
+ *           going to be used for a ListView_GetItem() call.  For a
+ *           ListView_SetItem() call, the buffers would have been allocated as
+ *           the Rexx object attributes were set.
+ *
+ *           However, this is also called when an LvItem in a LvFullRow is going
+ *           to be updated.  It doesn't seem like having a too big buffer should
+ *           be a problem ...
+ *
+ *           We don't want to change anything in the existing LVITEM struct, if
+ *           at all possible.  So rather than call allocLviTextBuf() and
+ *           allocLvitTileCols() individually, we duplicate their code here.
+ */
+static bool ensureLvItemBuffers(RexxMethodContext *c, LPLVITEM pLVI)
+{
+    char *pszText = (char *)LocalAlloc(LPTR, LVITEM_TEXT_MAX + 1);
+    if ( pszText == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    uint32_t *puColumns = (uint32_t *)LocalAlloc(LPTR, LVITEM_TILECOLUMN_MAX * sizeof(uint32_t *));
+    if ( puColumns == NULL )
+    {
+        safeLocalFree(pszText);
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    int32_t *piColFmt = (int32_t *)LocalAlloc(LPTR, LVITEM_TILECOLUMN_MAX * sizeof(uint32_t *));
+    if ( piColFmt == NULL )
+    {
+        safeLocalFree(pszText);
+        safeLocalFree(puColumns);
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    safeLocalFree(pLVI->pszText);
+    pLVI->pszText = pszText;
+
+    safeLocalFree(pLVI->puColumns);
+    pLVI->puColumns = puColumns;
+
+    safeLocalFree(pLVI->piColFmt);
+    pLVI->piColFmt = piColFmt;
+
+    pLVI->cchTextMax = LVITEM_TEXT_MAX + 1;
+    pLVI->cColumns   = LVITEM_TILECOLUMN_MAX;
+
+    return true;
+}
+
+/**
  * Uses MapIDToIndex and the unique ID stored with a LvFullRow object to correct
  * the item index in the LPLVITEM structs within the full row item and subitems
  *
@@ -334,21 +518,44 @@ static void updateFullRowIndexes(pCLvFullRow pclvfr)
  * @param pclvfr
  *
  * @assumes updateFullRowIndexes() has already been invoked.
+ *
+ * @remarks  Originally, this function just updated the state member of the
+ *           struct.  But now it does a fresh ListView_Item() with all flags for
+ *           the mask being set.  This should make sure the Rexx LvItem object
+ *           accurately reflects the current state of underlying list-view item.
+ *
+ *           But, it is changing what the mask value is from what the Rexx user
+ *           may have set.  I think this is okay, but it sort of depends on how
+ *           well the list-view implementation follows what the MSDN docs say
+ *           ...
+ *
+ *           There is one problem with the groupId field of the LVITEM struct.
+ *           If the LVIF_GROUPID flag is set and there is no group ID in the
+ *           item, the OS does not seem to update the groupId field to
+ *           I_GROUPIDNONE (-2). If the LVITEM struct is then used to insert the
+ *           item with LVIF_GROUPID still set and the groupId field set to 0,
+ *           the insert field fails.  If the field is already set to -2, things
+ *           are okay.  Have not had a chance to test when the field is say 2.
+ *           For now, if the field comes back 0, we change it to I_GROUPID_NONE.
  */
-static void updateFullRowItemState(pCLvFullRow pclvfr)
+static void updateFullRowItemState(RexxMethodContext *c, pCLvFullRow pclvfr)
 {
     if ( pclvfr->hList != NULL )
     {
         LPLVITEM pLvi = pclvfr->subItems[0];
-        LVITEM   lvi  = {0};
 
-        lvi.iItem     = pLvi->iItem;
-        lvi.mask      = LVIF_STATE;
-        lvi.stateMask = (uint32_t)-1;
-
-        if ( ListView_GetItem(pclvfr->hList, &lvi) )
+        if ( ! ensureLvItemBuffers(c, pLvi) )
         {
-            pLvi->state = lvi.state;
+            return;
+        }
+
+        pLvi->mask      = LVITEM_ALL_MASK;
+        pLvi->stateMask = (uint32_t)-1;
+
+        ListView_GetItem(pclvfr->hList, pLvi);
+        if ( pLvi->iGroupId == 0 )
+        {
+            pLvi->iGroupId = I_GROUPIDNONE;
         }
     }
 }
@@ -393,63 +600,6 @@ static void resetFullRowText(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t 
         lvi->pszText    = newText;
         lvi->cchTextMax = (int)len;
     }
-}
-
-/**
- * Allocates memory for the text buffer in a list-view item structure.
- *
- * This should only be used for Rexx objects such as a LvItem or LvSubItem,
- * etc., where the uninit method of the object will free the buffer.
- *
- * @param c
- * @param pLVI
- *
- * @return True on success, false on memory allocation failure.
- */
-static bool allocLviTextBuf(RexxMethodContext *c, LPLVITEM pLVI)
-{
-
-    pLVI->pszText = (char *)LocalAlloc(LPTR, LVITEM_TEXT_MAX + 1);
-    if ( pLVI->pszText == NULL )
-    {
-        outOfMemoryException(c->threadContext);
-        return false;
-    }
-
-    pLVI->cchTextMax = (LVITEM_TEXT_MAX + 1);
-    return true;
-}
-
-/**
- * Allocates memory for the tile column buffers in a list-view item structure.
- *
- * This should only be used for the LvItem Rexx objects, where the uninit method
- * of the object will free the buffers.
- *
- * @param c
- * @param pLVI
- *
- * @return True on success, false on memory allocation failure.
- */
-static bool allocLviTileCols(RexxMethodContext *c, LPLVITEM pLVI)
-{
-
-    pLVI->puColumns = (uint32_t *)LocalAlloc(LPTR, LVITEM_TILECOLUMN_MAX * sizeof(uint32_t *));
-    if ( pLVI->puColumns == NULL )
-    {
-        outOfMemoryException(c->threadContext);
-        return false;
-    }
-
-    pLVI->piColFmt = (int32_t *)LocalAlloc(LPTR, LVITEM_TILECOLUMN_MAX * sizeof(uint32_t *));
-    if ( pLVI->piColFmt == NULL )
-    {
-        safeLocalFree(pLVI->puColumns);
-        outOfMemoryException(c->threadContext);
-        return false;
-    }
-
-    return true;
 }
 
 /**
@@ -697,6 +847,15 @@ static void protectLviUserData(RexxMethodContext *c, pCDialogControl pcdc, LVITE
  * @param itemIndex
  *
  * @return RexxObjectPtr
+ *
+ * @remarks  Note that the iGroupId field of the LVITEM struct is a little
+ *           hokey.  If we set the LVIF_GROUPID flag in the mask to retrieve
+ *           the group ID and there is no group ID, the OS returns 0, instead of
+ *           I_GROUPIDNONE (-2).  If we keep the LVIF_GROUPID flag set, and try
+ *           to insert the item with the groupId set to 0, the insert fails.
+ *
+ *           I don't know if this is because groups are not available or what.
+ *           For new, we check for a 0 value and change it to I_GROUPIDNONE.
  */
 static RexxObjectPtr newLvItem(RexxMethodContext *c, HWND hList, uint32_t itemIndex)
 {
@@ -712,25 +871,22 @@ static RexxObjectPtr newLvItem(RexxMethodContext *c, HWND hList, uint32_t itemIn
     LPLVITEM lvi = (LPLVITEM)c->BufferData(obj);
     memset(lvi, 0, sizeof(LVITEM));
 
-    // setLviText() will allocate the buffer for us.
-    if ( ! allocLviTextBuf(c, lvi) )
-    {
-        goto err_out;
-    }
-
-    if ( ! allocLviTileCols(c, lvi) )
+    if ( ! ensureLvItemBuffers(c, lvi) )
     {
         goto err_out;
     }
 
     lvi->iItem     = itemIndex;
     lvi->stateMask = (uint32_t)-1;
-    lvi->cColumns  = LVITEM_TILECOLUMN_MAX;
-    lvi->mask      = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM | LVIF_STATE | LVIF_INDENT | LVIF_COLUMNS | LVIF_COLFMT | LVIF_GROUPID;
+    lvi->mask      = LVITEM_ALL_MASK;
 
     if ( ! ListView_GetItem(hList, lvi) )
     {
         goto err_out;
+    }
+    if ( lvi->iGroupId == 0 )
+    {
+        lvi->iGroupId = I_GROUPIDNONE;
     }
 
     RexxClassObject rxLvI = rxGetContextClass(c, "LVITEM");
@@ -1510,6 +1666,29 @@ RexxMethod1(RexxObjectPtr, lv_deleteAll, CSELF, pCSelf)
     return ListView_DeleteAllItems(pcdc->hCtrl) ? TheZeroObj : TheOneObj;
 }
 
+/** ListView::deleteColumn()
+ *
+ *  Delectes the specified column.
+ *
+ *  @param index  [required]  The zero-based index of the column to delete
+ *
+ *  @return 0 on success, 1 on error.
+ *
+ *  @notes  Column 0 can not be deleted.  If column 0 must be deleted, MSDN
+ *          suggests inserting a dummy column at index 0 and then deleting
+ *          column 1.
+ */
+RexxMethod2(RexxObjectPtr, lv_deleteColumn, uint32_t, index, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheOneObj;
+    }
+
+    return ListView_DeleteColumn(pcdc->hCtrl, index) ? TheZeroObj : TheOneObj;
+}
+
 /** ListView::deselectAll()
  *
  *
@@ -1676,31 +1855,31 @@ RexxMethod3(RexxObjectPtr, lv_getColumnInfo, uint32_t, index, RexxObjectPtr, _d,
 
     HWND hList = getDChCtrl(pCSelf);
 
-    LVCOLUMN lvi;
+    LVCOLUMN lvc;
     char buf[256];
 
-    lvi.mask = LVCF_TEXT | LVCF_SUBITEM | LVCF_FMT | LVCF_WIDTH;
-    lvi.pszText = buf;
-    lvi.cchTextMax = 255;
+    lvc.mask = LVCF_TEXT | LVCF_SUBITEM | LVCF_FMT | LVCF_WIDTH;
+    lvc.pszText = buf;
+    lvc.cchTextMax = 255;
 
-    if ( ! ListView_GetColumn(hList, index, &lvi) )
+    if ( ! ListView_GetColumn(hList, index, &lvc) )
     {
         return TheFalseObj;
     }
 
     char *align = "LEFT";
-    if ( (LVCFMT_JUSTIFYMASK & lvi.fmt) == LVCFMT_CENTER )
+    if ( (LVCFMT_JUSTIFYMASK & lvc.fmt) == LVCFMT_CENTER )
     {
         align = "CENTER";
     }
-    else if ( (LVCFMT_JUSTIFYMASK & lvi.fmt) == LVCFMT_RIGHT )
+    else if ( (LVCFMT_JUSTIFYMASK & lvc.fmt) == LVCFMT_RIGHT )
     {
         align = "RIGHT";
     }
 
-    context->DirectoryPut(d, context->String(lvi.pszText), "TEXT");
-    context->DirectoryPut(d, context->Int32(lvi.iSubItem), "SUBITEM");
-    context->DirectoryPut(d, context->Int32(lvi.cx), "WIDTH");
+    context->DirectoryPut(d, context->String(lvc.pszText), "TEXT");
+    context->DirectoryPut(d, context->Int32(lvc.iSubItem), "SUBITEM");
+    context->DirectoryPut(d, context->Int32(lvc.cx), "WIDTH");
     context->DirectoryPut(d, context->String(align), "FMT");
 
     return TheTrueObj;
@@ -1814,6 +1993,7 @@ RexxMethod2(RexxObjectPtr, lv_getExtendedStyle, NAME, method, CSELF, pCSelf)
  *            maybeGetFullRow() updates the item index in the Rexx objects to
  *            the correct index.  But we also need to do
  *            updateFullRowItemState() to be sure and get the current state.
+ *            TODO !!! we also need a updateFullRowSubItemStates().  Maybe ??
  *
  *            If there is no LvFullRow object as the user data, the most likely
  *            case, we create the object here.  We do that by creating Rexx
@@ -1831,7 +2011,7 @@ RexxMethod3(RexxObjectPtr, lv_getFullRow, uint32_t, itemIndex, OPTIONAL_logical_
     pCLvFullRow pclvfr = maybeGetFullRow(hList, itemIndex);
     if ( pclvfr != NULL )
     {
-        updateFullRowItemState(pclvfr);
+        updateFullRowItemState(context, pclvfr);
         return pclvfr->rexxSelf;
     }
 
@@ -1954,22 +2134,49 @@ RexxMethod2(RexxObjectPtr, lv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
 
 /** ListView::getItem()
  *
- *  Returns a LvItem object for the item specified.
+ *  Returns, or fills in, a LvItem object for the item specified.
+ *
+ *  @param _item  [required] Can be a LvItem object or the item index.  If it is
+ *                a LvItem, we just fill it in.  If it is an index and we have
+ *                no LvFullRow, we return a new, filled in, LvItem object.  If
+ *                we do have a LvFullRow, we update the LVITEM struct for the
+ *                item and then return the Rexx LvItem.
+ *
+ *  @remarks  If we have a LvFullRow object assigned to the user data, we use
+ *  the Rexx item in the full row.  maybeGetFullRow() will update the item
+ *  index, and then updateFullRowItemState will sync the LVITEM struct by doing
+ *  a fresh ListView_GetItem() which will ensure things are correct.
  *
  */
-RexxMethod2(RexxObjectPtr, lv_getItem, uint32_t, itemIndex, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, lv_getItem, RexxObjectPtr, _item, CSELF, pCSelf)
 {
     RexxObjectPtr result = TheNilObj;
     HWND          hList  = getDChCtrl(pCSelf);
 
-    // If we have a LvFullRow object assigned to the user data, we use the Rexx
-    // item in the full row.  maybeGetFullRow() will update the item index,
-    // which will ensure things are correct.
+    if ( context->IsOfType(_item, "LVITEM") )
+    {
+        LPLVITEM plvi = (LPLVITEM)context->ObjectToCSelf(_item);
+
+        BOOL success = ListView_GetItem(hList, plvi);
+        if ( success && (plvi->mask & LVIF_GROUPID) && plvi->iGroupId )
+        {
+            plvi->iGroupId = I_GROUPIDNONE;
+        }
+
+        return success ? TheTrueObj : TheFalseObj;
+    }
+
+    uint32_t itemIndex;
+    if ( ! context->UnsignedInt32(_item, &itemIndex) )
+    {
+        wrongArgValueException(context->threadContext, 1, "a LvItem object or valid item index", _item);
+        return TheNilObj;
+    }
 
     pCLvFullRow pclvfr = maybeGetFullRow(hList, itemIndex);
     if ( pclvfr != NULL )
     {
-        updateFullRowItemState(pclvfr);
+        updateFullRowItemState(context, pclvfr);
         result = pclvfr->rxSubItems[0];
     }
     else
@@ -2078,7 +2285,7 @@ RexxMethod4(RexxObjectPtr, lv_getItemInfo, uint32_t, index, RexxObjectPtr, _d, O
     {
         if ( ! subitemImages )
         {
-            lvi.iImage = -1;
+            lvi.iImage = I_IMAGENONE;
         }
     }
 
@@ -3354,14 +3561,23 @@ uint32_t keyword2lvcfmt(RexxMethodContext *c, CSTRING flag)
  * @param flags
  *
  * @return uint32_t
+ *
+ * @remarks  The special keyword ALL adds, almose, all flags. LVIF_DI_SETITEM is
+ *           only valid in an event notification, so that should be skipped.  I
+ *           am not sure about LVIF_NORECOMPUTE though?  Adding it for now.
  */
 uint32_t keyword2lvif(CSTRING flags)
 {
     uint32_t val = 0;
 
+    if ( StrCmpI(flags, "ALL") == 0 )
+    {
+        val = LVITEM_ALL_MASK;
+        return val;
+    }
+
     if ( StrStrI(flags, "COLFMT")      != NULL ) val |= LVIF_COLFMT;
     if ( StrStrI(flags, "COLUMNS")     != NULL ) val |= LVIF_COLUMNS;
-    if ( StrStrI(flags, "DI_SETITEM")  != NULL ) val |= LVIF_DI_SETITEM;
     if ( StrStrI(flags, "GROUPID")     != NULL ) val |= LVIF_GROUPID;
     if ( StrStrI(flags, "IMAGE")       != NULL ) val |= LVIF_IMAGE;
     if ( StrStrI(flags, "INDENT")      != NULL ) val |= LVIF_INDENT;
@@ -3480,8 +3696,12 @@ uint32_t keyword2lvis(CSTRING flags, bool isStateMask)
     return c->String(buf);
 }
 
-RexxStringObject getLviText(RexxMethodContext *c, LPLVITEM pLVI)
+RexxObjectPtr getLviText(RexxMethodContext *c, LPLVITEM pLVI)
 {
+    if ( pLVI->pszText == NULL )
+    {
+        return TheNilObj;
+    }
     return c->String(pLVI->pszText);
 }
 
@@ -3547,11 +3767,23 @@ RexxObjectPtr setLviUserData(RexxMethodContext *c, LPLVITEM lvi, RexxObjectPtr d
     return NULLOBJECT;
 }
 
+/**
+ * Gets the group ID of this item.
+ *
+ * Note that group IDs are sort of like resource IDs, they are not the index of
+ * a group.  A group at index 3, might have a group ID of 101.  All items with a
+ * group ID of 101 belong to that group at index 3.
+ *
+ * @param c
+ * @param pLVI
+ *
+ * @return int32_t
+ */
 int32_t getLviGroupID(RexxMethodContext *c, LPLVITEM pLVI)
 {
     if ( ! requiredComCtl32Version(c, "LvItem::groupID", COMCTL32_6_0) )
     {
-        return 0;
+        return I_GROUPIDNONE;
     }
     return pLVI->iGroupId;
 }
@@ -3562,8 +3794,12 @@ RexxObjectPtr setLviGroupID(RexxMethodContext *c, LPLVITEM pLVI, int32_t id)
     {
         return NULLOBJECT;
     }
+    if ( id < I_GROUPIDNONE )
+    {
+        id = I_GROUPIDNONE;
+    }
 
-    pLVI->iGroupId = id < I_GROUPIDNONE ? I_GROUPIDNONE : id;
+    pLVI->iGroupId = id;
     pLVI->mask |= LVIF_GROUPID;
 
     return NULLOBJECT;
@@ -3788,7 +4024,8 @@ RexxMethod1(RexxObjectPtr, lvi_unInit, CSELF, pCSelf)
  *
  *                      This attribute can be set to the constant I_IMAGENONE to
  *                      indicate the item does not have an icon in the image
- *                      list.
+ *                      list. If this argument is omitted, it defaults to
+ *                      I_IMAGENONE.
  *
  *  @param  itemData    [optional]  The list-view control can store a single
  *                      user value with each list-view item.  The Rexx
@@ -3859,6 +4096,19 @@ RexxMethod10(RexxObjectPtr, lvi_init, OPTIONAL_RexxObjectPtr, _index, OPTIONAL_C
     LPLVITEM lvi = (LPLVITEM)context->BufferData(obj);
     memset(lvi, 0, sizeof(LVITEM));
 
+    // We check if the user is setting the mask, and what values she sets,
+    // first.  This allows use to allocate the needed buffers if the LvItem
+    // object is going to be used to retrieve information.
+    if ( argumentExists(5) )
+    {
+        uint32_t flags = keyword2lvif(mask);
+        if ( flags == (uint32_t)-1 )
+        {
+            return NULLOBJECT;
+        }
+        lvi->mask = flags;
+    }
+
     if ( argumentExists(1) )
     {
         int32_t index;
@@ -3882,34 +4132,32 @@ RexxMethod10(RexxObjectPtr, lvi_init, OPTIONAL_RexxObjectPtr, _index, OPTIONAL_C
             return NULLOBJECT;
         }
     }
-    else if ( lvi->mask & LVIF_TEXT )
+    else
     {
-        // The empty string tells setLviText() to allocate a buffer.
-        if ( ! setLviText(context, lvi, "", 2) )
+        // Check if the user has set the LVIF_TEXT flag.
+        if ( lvi->mask & LVIF_TEXT )
         {
-            return NULLOBJECT;
+            // The empty string tells setLviText() to allocate a buffer.
+            if ( ! setLviText(context, lvi, "", 2) )
+            {
+                return NULLOBJECT;
+            }
         }
     }
 
+    lvi->mask |= LVIF_IMAGE;
     if ( argumentExists(3) )
     {
         lvi->iImage = imageIndex < I_IMAGENONE ? I_IMAGENONE : imageIndex;
-        lvi->mask |= LVIF_IMAGE;
+    }
+    else
+    {
+        lvi->iImage = I_IMAGENONE;
     }
 
     if ( argumentExists(4) )
     {
         setLviUserData(context, lvi, itemData);
-    }
-
-    if ( argumentExists(5) )
-    {
-        uint32_t flags = keyword2lvif(mask);
-        if ( flags == (uint32_t)-1 )
-        {
-            return NULLOBJECT;
-        }
-        lvi->mask = flags;
     }
 
     if ( argumentExists(6) )
@@ -3935,10 +4183,39 @@ RexxMethod10(RexxObjectPtr, lvi_init, OPTIONAL_RexxObjectPtr, _index, OPTIONAL_C
     {
         setLviGroupID(context, lvi, groupID);
     }
+    else
+    {
+        if ( ComCtl32Version >= COMCTL32_6_0 )
+        {
+            lvi->iGroupId = I_GROUPIDNONE;
+            lvi->mask |= LVIF_GROUPID;
+        }
+    }
 
     if ( argumentExists(10) )
     {
         setLviColumns(context, lvi, columns, 10);
+    }
+    else
+    {
+        // Check if the user has set the LVIF_COLUMNS flag.
+        if ( lvi->mask & LVIF_COLUMNS )
+        {
+            if ( ! allocLviColumns(context, lvi) )
+            {
+                return NULLOBJECT;
+            }
+        }
+    }
+
+    // We want the user to be able to create the LvItem object to recieve data.
+    // So we check if the user has set the LVIF_COLFMT flag.
+    if ( lvi->mask & LVIF_COLFMT )
+    {
+        if ( ! allocLviColFmt(context, lvi) )
+        {
+            return NULLOBJECT;
+        }
     }
 
     return NULLOBJECT;
@@ -3994,7 +4271,6 @@ RexxMethod2(RexxObjectPtr, lvi_setGroupIndex, int32_t, id, CSELF, pLVI)
         return 0;
     }
     ((LPLVITEM)pLVI)->iGroup  = id;
-    ((LPLVITEM)pLVI)->mask   |= LVIF_GROUPID;
     return NULLOBJECT;
 }
 
@@ -4088,7 +4364,7 @@ RexxMethod2(RexxObjectPtr, lvi_setMask, CSTRING, mask, CSELF, pLVI)
  */
 RexxMethod1(int32_t, lvi_overlayImageIndex, CSELF, pLVI)
 {
-    return LVIS_OVERLAYMASK & ((LPLVITEM)pLVI)->state;
+    return (LVIS_OVERLAYMASK & ((LPLVITEM)pLVI)->state) >> 8;
 }
 RexxMethod2(RexxObjectPtr, lvi_setOverlayImageIndex, int32_t, index, CSELF, pLVI)
 {
@@ -4101,7 +4377,7 @@ RexxMethod2(RexxObjectPtr, lvi_setOverlayImageIndex, int32_t, index, CSELF, pLVI
  */
 RexxMethod1(int32_t, lvi_stateImageIndex, CSELF, pLVI)
 {
-    return LVIS_STATEIMAGEMASK & ((LPLVITEM)pLVI)->state;
+    return (LVIS_STATEIMAGEMASK & ((LPLVITEM)pLVI)->state) >> 12;
 }
 RexxMethod2(RexxObjectPtr, lvi_setStateImageIndex, int32_t, index, CSELF, pLVI)
 {
@@ -4112,7 +4388,7 @@ RexxMethod2(RexxObjectPtr, lvi_setStateImageIndex, int32_t, index, CSELF, pLVI)
 
 /** LvItem::text                   [attribute]
  */
-RexxMethod1(RexxStringObject, lvi_text, CSELF, pLVI)
+RexxMethod1(RexxObjectPtr, lvi_text, CSELF, pLVI)
 {
     return getLviText(context, (LPLVITEM)pLVI);
 }
@@ -4257,7 +4533,7 @@ RexxMethod2(RexxObjectPtr, lvsi_setSubItem, int32_t, subItem, CSELF, pLVI)
 
 /** LvSubItem::text                [attribute]
  */
-RexxMethod1(RexxStringObject, lvsi_text, CSELF, pLVI)
+RexxMethod1(RexxObjectPtr, lvsi_text, CSELF, pLVI)
 {
     return getLviText(context, (LPLVITEM)pLVI);
 }
