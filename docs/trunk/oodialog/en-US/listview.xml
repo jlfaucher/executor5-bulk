@@ -8037,10 +8037,17 @@ that allows the user to remove the check mark from all the check boxes:
 <section id="clsLvItem" xreflabel="LvItem"><title>LvItem Class</title>
 <indexterm><primary>LvItem class</primary></indexterm>
 <para>
-  A <computeroutput>LvItem</computeroutput> object represents a single item in a list-view control. List-view items have
-  an icon, a label, a current state, and an application-defined value. The attributes of the
-  <computeroutput>LvItem</computeroutput> object reflect the values the icon, label, state, etc., for the list-view
-  item.
+  A <computeroutput>LvItem</computeroutput> object represents a single item in a list-view control. List-view items can have
+  a label, an icon, a current state, an application-defined value, a group ID, a set of columns to display in Tile view,
+  column format definitions, a state icon, and an overlay icon. The attributes of the <computeroutput>LvItem</computeroutput>
+  object reflect the values of the label, icon, state, etc., for the list-view item.
+</para>
+<para>
+  Note that ooDialog does not currently support some of the newer features in list-views. The
+  <computeroutput>LvItem</computeroutput> class is part of the first steps to enhance ooDialog to support all the list-view
+  features. The <computeroutput>LvItem</computeroutput> class has support for attributes that will become important in an
+  enhanced <xref linkend="clsListView"/> class, but are not currently relevant. Support for list-view groups, Tile view, and
+  columns, is part of a planned enhancement.
 </para>
 
 <section id="sctMethodsLvItem"><title>Method Table</title>
@@ -8059,6 +8066,10 @@ that allows the user to remove the check mark from all the check boxes:
 </thead>
 <tbody>
 <row>
+<entry><link linkend="sctLvItemConstantMethods">Constant Methods</link></entry>
+<entry>The <computeroutput>LvItem</computeroutput> class provides several <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput>directive.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
@@ -8070,9 +8081,98 @@ that allows the user to remove the check mark from all the check boxes:
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
 </row>
+<row>
+<entry><xref linkend="atrColumnFormatsClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrColumnsClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrGroupIDClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrImageIndexClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrIndentClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrIndexClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrItemDataClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrItemStateClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrItemStateMaskClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrMaskClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrOverlayImageIndexClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrStateImageIndexClsLvi"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrTextClsLvi"/></entry>
+<entry></entry>
+</row>
 </tbody></tgroup>
 </table>
 </para>
+</section>
+
+<section id="sctLvItemConstantMethods"><title>Constant Methods</title>
+<indexterm><primary>constant methods</primary><secondary>LvItem class</secondary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>constant methods</secondary></indexterm>
+<para>
+  The <computeroutput>LvItem</computeroutput> class provides the following <emphasis role="italic">constant</emphasis>
+  values through the use of the <computeroutput>::constant</computeroutput> directive.
+</para>
+<table id="tblConstantsLvItem" frame="all"> <title>LvItem Class Constant Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" /><colspec colwidth="3*" />
+<thead>
+<row>
+<entry>Constant Symbol</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>GROUPIDCALLBACK</entry>
+<entry>A group ID index value that indicates the list-view control should send the GETDISPINFO notification message to retrieve the item's group index.</entry>
+</row>
+<row>
+<entry>GROUPIDNONE</entry>
+<entry>A group ID value that indicates the list-view item does not belong to a group.</entry>
+</row>
+<row>
+<entry>IMAGECALLBACK</entry>
+<entry>An index value for the item's icon in the control's image list that indicates the list-view control should send the GETDISPINFO notification message to retrieve the item's icon index when it needs to display the image.</entry>
+</row>
+<row>
+<entry>IMAGENONE</entry>
+<entry>An index value for the item's icon in the control's image list  that indicates the list-view item does not have an icon.</entry>
+</row>
+</tbody></tgroup>
+</table>
 </section>
 
 <section id="mthNewClsLvItem" xreflabel="new"><title>new (Class Method)</title>
@@ -8083,7 +8183,7 @@ that allows the user to remove the check mark from all the check boxes:
 >>--new(--+--------+--+-------+--+-------------+--+-------+--+------------+---->
           +--indx--+  +-,-txt-+  +-,-imageIndx-+  +-,-msk-+  +-,-itemData-+
 
->---+------------+-+---------------+-+----------+-+-----------+-+--------+--)---><
+>---+------------+-+---------------+-+----------+-+-----------+-+--------+--)--><
     +-,-itmState-+ +-,-itmStateMsk-+ +-,-indent-+ +-,-groupID-+ +-,-cols-+
 ]]>
 </programlisting>
@@ -8091,8 +8191,12 @@ that allows the user to remove the check mark from all the check boxes:
 <para>
   Instantiates a new <computeroutput>LvItem</computeroutput> object. <computeroutput>LvItem</computeroutput> objects are
   used in some <link linkend="clsListView">Listview</link> methods such as <link
-  linkend="mthAddFullRow">addFullRow</link>. It is anticipated that future versions of ooDialog will make more use of
+  linkend="mthAddFullRow">addFullRow</link>. It is anticipated that future enhancements of ooDialog will make more use of
   <computeroutput>LvItem</computeroutput> objects.
+</para>
+<para>
+  Some of the uses for <computeroutput>LvItem</computeroutput> objects are to set or retrieve some, or all, of the
+  information the underlying list-view control maintains for each list-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8103,31 +8207,111 @@ that allows the user to remove the check mark from all the check boxes:
     <varlistentry><term>indx [optional]</term>
     <listitem>
     <para>
-      Sets the <xref linkend="atrIndexClsLvi"/> attribute of this list-view item.
+      The zero-based index of this item. The argument can not be less than 0. If this arugment is omitted it defaults to 0.
+      The <emphasis role="italic">indx</emphasis> argument sets the <xref linkend="atrIndexClsLvi"/> attribute of this
+      list-view item.
+    </para>
+    <para>
+      Note that depending on the use of this list-view item, the ooDialog framework may modify the index attribute. For
+      instance if the <computeroutput>LvItem</computeroutput> is contained in a <xref linkend="clsFullRow"/> object and the
+      row is added to a list-view, the ooDialog framework will adjust the <emphasis role="italic">index</emphasis> attribute
+      to reflect the actual index of the added item.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>txt [optional]</term>
     <listitem>
     <para>
-      Sets the <xref linkend="atrTextClsLvi"/> attribute of this list-view item.
+      Sets the text, or label, for this list-view item. The <emphasis role="italic">txt</emphasis> argument sets the <xref
+      linkend="atrTextClsLvi"/> attribute of this list-view item.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>imageIndex [optional]</term>
     <listitem>
     <para>
-      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+      The zero-based index of the item's icon in the control's <link linkend="mthSetImageListClsListView">image</link> list.
+      This applies to both the large and small image list. The <emphasis role="italic">imageIndex</emphasis> argument can
+      also be one of the following <computeroutput>LvItem</computeroutput> constants. If this argument is omitted, the
+      default is IMAGENONE:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>IMAGECALLBACK</member>
+        <member>IMAGENONE    </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>IMAGECALLBACK</term>
+        <listitem>
+        <para>
+          Indicates the list-view control should send the GETDISPINFO notification message to retrieve the icon index for the
+          item.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>IMAGENONE</term>
+        <listitem>
+        <para>
+          The item does not have an icon. This is the default if this argument omitted.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    <para>
+      The <emphasis role="italic">imageIndex</emphasis> argument sets the <xref linkend="atrImageIndexClsLvi"/> attribute of
+      this list-view item.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>msk [optional]</term>
     <listitem>
     <para>
-      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+      A list of blank separate keywords that specify which attributes of this <computeroutput>LvItem</computeroutput> object
+      contain data to be set or which attriubtes are being requested. In general, the ooDialog framework will try to set the <xref
+      linkend="atrMaskClsLvi"/> attribute correctly without the programmer having to worry about this argument. As each
+      attribute of the <computeroutput>LvItem</computeroutput> object is set, the appropriate keyword is added to the
+      <emphasis role="italic">mask</emphasis> attribute. However, if this object is going to be used to retrieve information
+      about the underlying list-view item, the ooDialog framwork has no way to know what attributes the programmer wishes to
+      retrieve. For this use of the <computeroutput>LvItem</computeroutput> object, the programmer should set the mask to the
+      value she wants.
+    </para>
+    <para>
+      The <emphasis role="italic">msk</emphasis> argument can have zero or more of the following keywords, case is not
+      significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member></member>
+        <member></member>
+        <member></member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>T1</term>
+        <listitem>
+        <para>
+          text
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>T2</term>
+        <listitem>
+        <para>
+          text
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>T3</term>
+        <listitem>
+        <para>
+          text
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    <para>
+      The <emphasis role="italic">msk</emphasis> argument sets the <xref linkend="atrMaskClsLvi"/> attribute of this
+      list-view item.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>itemData[optional]</term>
     <listitem>
     <para>
-      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+      The <emphasis role="italic">itemData</emphasis> argument sets the <xref linkend="atrItemDataClsLvi"/> attribute of this
+      list-view item.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>itemState [optional]</term>
@@ -8145,13 +8329,45 @@ that allows the user to remove the check mark from all the check boxes:
     <varlistentry><term>indent [optional]</term>
     <listitem>
     <para>
-      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+      The number of image widths to indent the item. A single indentation equals the width of an item image. Therefore, the
+      value 1 indents the item by the width of one image, the value 2 indents by two images, and so on. If this argument is
+      omitted, the indent is set to 0. The <emphasis role="italic">indent</emphasis>argument sets the <xref
+      linkend="atrIndentClsLvi"/> attribute of this list-view item.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>groupID [optional]</term>
     <listitem>
     <para>
-      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+      Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+    </para>
+    <para>
+      The group ID this item belongs to, or one of the following <computeroutput>LvItem</computeroutput> constants. If this
+      argument is omitted, the default is the GROUPIDNONE constant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>GROUPIDCALLBACK</member>
+        <member>GROUPIDNONE    </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>GROUPIDCALLBACK</term>
+        <listitem>
+        <para>
+          Indicates the list-view control should send the GETDISPINFO notification message to retrieve the group index of the
+          item.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUPIDNONE</term>
+        <listitem>
+        <para>
+          The item does not belong to a group. If you omit this argument, this is the default
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    <para>
+      The <emphasis role="italic">groupID</emphasis> argument sets the <xref linkend="atrGroupIDClsLvi"/> attribute of this
+      list-view item.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>cols [optional]</term>
@@ -8162,7 +8378,8 @@ that allows the user to remove the check mark from all the check boxes:
     <para>
       The <emphasis role="italic">cols</emphasis> argument must be an array of subitem indexes. The indexes in the array
       specify which columns are displayed for this item, in <emphasis role="italic">Tile</emphasis> view, and the order of
-      those columns.
+      those columns. The array can not be sparse. The <emphasis role="italic">cols</emphasis> argument sets the <xref
+      linkend="atrColumnsClsLvi"/> attribute of this list-view item.
     </para>
     </listitem></varlistentry>
   </variablelist>
