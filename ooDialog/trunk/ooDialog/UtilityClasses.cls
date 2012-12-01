@@ -807,22 +807,27 @@
 ::method initAutoDetection
    self~noAutoDetection
 
-::method execute
+::method execute unguarded
    expose message title sleeping earlyReply sx sy pos
 
    s = self~getTextSizeDu(message)
    sx = s~width
    sy = s~height
    self~createCenter(sx+20, sy + 20, title,"NOMENU", , , , 1)
-   self~startIt
-   if pos \== .nil then self~moveTo(pos)
-   self~show("SHOWTOP")
+   self~executeAsync( , 'SHOWTOP')
    if sleeping >= 0 then do
       if earlyReply then reply
       ret = msSleep(sleeping)
-      self~finished = .true
-      self~stopit
+      self~start("endAsyncExection")
+      self~ok:super
    end
+   else do
+      self~start("endAsyncExecution")
+   end
+
+::method initDialog
+   expose pos
+   if pos \== .nil then self~moveTo(pos)
 
 
 -- This class provides a simple dialog with a title, a message, one entry line,
@@ -965,7 +970,7 @@
 ::method initDialog
    expose count input.
    do i = 1 to count
-      self~AddListEntry(101, input.i)
+      self~addListEntry(101, input.i)
    end
    self~setListBoxData(101, "")
 
