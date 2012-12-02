@@ -350,6 +350,10 @@
 <entry>Retrieves the child <link linkend="clsToolTip">ToolTip</link> control used by this list-view.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetView"/></entry>
+<entry>Gets the current view of this list-view.</entry>
+</row>
+<row>
 <entry><xref linkend="mthHasCheckBoxes"/></entry>
 <entry>Determines if a list-view control has the CHECKBOXES extended list-view style.</entry>
 </row>
@@ -528,6 +532,10 @@
 <row>
 <entry><xref linkend="mthSetItemText"/></entry>
 <entry>Changes the text of an item, or the text of a subitem, of a list-view item.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetView"/></entry>
+<entry>Sets the view of this list-view.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetToolTipsClsListView"/></entry>
@@ -3418,6 +3426,84 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ListView::getToolTips() -->
+
+<section id="mthGetView" xreflabel="getView"><title>getView</title>
+<indexterm><primary>getView</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>getView</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getView--------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrievs the current view of this list-view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a keyword indicating the current view of this list-view.
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>ICON     </member>
+      <member>SMALLICON</member>
+      <member>LIST     </member>
+      <member>REPORT   </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>ICON</term>
+      <listitem>
+      <para>
+        The list-view is in icon view. Each item appears as a full-sized icon with a label below it.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SMALLICON</term>
+      <listitem>
+      <para>
+        The list-view is in small icon view.  Each item appears as a small icon with the label to the right of it.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LIST</term>
+      <listitem>
+      <para>
+        The list-view is in list view. Each item appears as a small icon with a label to the right of it. Items are arranged
+        in columns.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>REPORT</term>
+      <listitem>
+      <para>
+        The list-view is in report view. Each item appears on its own line, with information arranged in columns.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <xref linkend="mthSetView"/> method to change the current view in the list-view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::getView() -->
 
 
 <section id="mthHasCheckBoxes" xreflabel="hasCheckBoxes"><title>hasCheckBoxes</title>
@@ -6449,6 +6535,114 @@ and on the system colors used for a selection.
 </section>  <!-- End ListView::setToolTips() -->
 
 
+<section id="mthSetView" xreflabel="setView"><title>setView</title>
+<indexterm><primary>setView</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>setView</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setView(--view--)----------------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the view of this list-view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>view [required]</term>
+    <listitem>
+    <para>
+      Exactly one of the following keywords that specifies which view to set. Case in not significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>ICON     </member>
+        <member>SMALLICON</member>
+        <member>LIST     </member>
+        <member>REPORT   </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>ICON</term>
+        <listitem>
+        <para>
+          Set the list-view to icon view. Each item appears as a full-sized icon with a label below it.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SMALLICON</term>
+        <listitem>
+        <para>
+          Set the list-view to small icon view. Each item appears as a small icon with the label to the right of it.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LIST</term>
+        <listitem>
+        <para>
+          Set the list-view to list view. Each item appears as a small icon with a label to the right of it. Items are
+          arranged in columns.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>REPORT</term>
+        <listitem>
+        <para>
+          Set thhe list-view to report view. Each item appears on its own line, with information arranged in columns.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the view of the list-view at the time this method was invoked. The view is returned as one of the keywords listed
+    for the <emphasis role="italic">view</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a method that switches the view of the list-view to that specified by the index:
+<programlisting>
+<![CDATA[
+
+::method refreshView unguarded
+  expose lv
+  use strict arg index
+
+  select
+    when index == 1 then lv~setView("LIST")
+    when index == 2 then lv~setView("REPORT")
+    when index == 3 then lv~setView("ICON")
+    when index == 4 then lv~setView("SMALLICON")
+    otherwise return .false
+  end
+  -- End select
+
+  return .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::setView() -->
+
+
 <section id="mthSmalSpacing" xreflabel="smallSpacing"><title>smallSpacing</title>
 <indexterm><primary>smallSpacing</primary></indexterm>
 <programlisting>
@@ -8189,10 +8383,10 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  Instantiates a new <computeroutput>LvItem</computeroutput> object. <computeroutput>LvItem</computeroutput> objects are
-  used in some <link linkend="clsListView">Listview</link> methods such as <link
-  linkend="mthAddFullRow">addFullRow</link>. It is anticipated that future enhancements of ooDialog will make more use of
-  <computeroutput>LvItem</computeroutput> objects.
+  Instantiates a new <computeroutput>LvItem</computeroutput> object. <computeroutput>LvItem</computeroutput> objects can be
+  used in some <link linkend="clsListView">Listview</link> methods such as <xref linkend="mthGetItem"/>.
+  <computeroutput>LvItem</computeroutput> objects are used in <xref linkend="clsLvFullRow"/> . It is anticipated that future
+  enhancements of ooDialog will make more use of <computeroutput>LvItem</computeroutput> objects.
 </para>
 <para>
   Some of the uses for <computeroutput>LvItem</computeroutput> objects are to set or retrieve some, or all, of the
