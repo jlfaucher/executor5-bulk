@@ -559,31 +559,14 @@
   use strict arg index
 
   select
-    when index == 1 then do
-      oldStyle = "REPORT ICON SMALLICON"
-      newStyle = "LIST"
-    end
-
-    when index == 2 then do
-      oldStyle = "LIST ICON SMALLICON"
-      newStyle = "REPORT"
-    end
-
-    when index == 3 then do
-      oldStyle = "LIST REPORT SMALLICON"
-      newStyle = "ICON"
-    end
-
-    when index == 4 then do
-      oldStyle = "LIST REPORT ICON"
-      newStyle = "SMALLICON"
-    end
-
+    when index == 1 then lv~setView("LIST")
+    when index == 2 then lv~setView("REPORT")
+    when index == 3 then lv~setView("ICON")
+    when index == 4 then lv~setView("SMALLICON")
     otherwise return .false
   end
   -- End select
 
-  lv~replaceStyle(oldStyle, newStyle)
   return .true
 
 

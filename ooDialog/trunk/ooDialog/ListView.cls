@@ -155,6 +155,7 @@
 ::method getItemPos unguarded external "LIBRARY oodialog lv_getItemPos"
 ::method getSubitem unguarded external "LIBRARY oodialog lv_getSubitem"
 ::method getToolTips unguarded external "LIBRARY oodialog generic_getToolTips"
+::method getView unguarded external "LIBRARY oodialog lv_getView"
 ::method hasCheckBoxes unguarded external "LIBRARY oodialog lv_hasCheckBoxes"
 ::method hitTestInfo unguarded external "LIBRARY oodialog lv_hitTestInfo"
 ::method insert unguarded external "LIBRARY oodialog lv_insert"
@@ -253,6 +254,7 @@
 ::method setItemState unguarded external "LIBRARY oodialog lv_setItemState"
 ::method setItemText unguarded external "LIBRARY oodialog lv_setItemText"
 ::method setToolTips unguarded external "LIBRARY oodialog generic_setToolTips"
+::method setView unguarded external "LIBRARY oodialog lv_setView"
 ::method smallSpacing unguarded
    return self~sendWinIntMsg(self~LVM_GETITEMSPACING, 1, 0)
 
@@ -276,31 +278,29 @@
 
 ::method updateItem unguarded
    use strict arg index
-   return self~sendWinIntMsg(self~LVM_UPDATE, index, 0) <> 0
+   return self~sendWinIntMsg(self~LVM_UPDATE, index, 0) == 0
 
 
--- DEPRECATED
-::method removeImages unguarded    -- DEPRECATED
+::method zTest unguarded external "LIBRARY oodialog lv_zTest"
+
+-- DEPRECATED to end of Class
+::method removeImages unguarded                                           -- DEPRECATED
    return self~removeImageList(.nil, 0)
 
--- DEPRECATED
-::method removeSmallImages unguarded
+
+::method removeSmallImages unguarded                                      -- DEPRECATED
    return self~removeImageList(.nil, 1)
 
--- DEPRECATED
-::method restoreEditClass
+::method restoreEditClass                                                 -- DEPRECATED
 
--- DEPRECATED
-::method setImages unguarded external "LIBRARY oodialog lv_setImageList"
+::method setImages unguarded external "LIBRARY oodialog lv_setImageList"  -- DEPRECATED
 
--- DEPRECATED
-::method setSmallImages unguarded
+::method setSmallImages unguarded                                         -- DEPRECATED
    newArgs = arg(1, 'A')
    newArgs[4] = 1
    forward message 'setImageList' arguments (newArgs)
 
--- DEPRECATED
-::method subclassEdit
+::method subclassEdit                                                     -- DEPRECATED
 
 
 ::class 'LvCustomDrawSimple' public
@@ -357,7 +357,7 @@
 ::attribute text set external "LIBRARY oodialog lvi_setText"
 
 
-::class 'LvFullRow' public                                                             -- Do not document for 4.2.0
+::class 'LvFullRow' public
 ::method init external "LIBRARY oodialog lvfr_init"
 ::method unInit external "LIBRARY oodialog lvfr_unInit"
 
@@ -368,7 +368,7 @@
 ::method subItems external "LIBRARY oodialog lvfr_subitems"
 
 
-::class 'LvSubItem' public                                                             -- Do not document for 4.2.0
+::class 'LvSubItem' public
 ::method init external "LIBRARY oodialog lvsi_init"
 ::method unInit external "LIBRARY oodialog lvsi_unInit"
 

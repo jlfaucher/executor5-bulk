@@ -247,6 +247,17 @@ err_out:
 }
 
 
+static RexxStringObject view2keyword(RexxMethodContext *c, uint32_t view)
+{
+    if (      view == LV_VIEW_ICON      ) return c->String("ICON");
+    else if ( view == LV_VIEW_SMALLICON ) return c->String("SMALLICON");
+    else if ( view == LV_VIEW_LIST      ) return c->String("LIST");
+    else if ( view == LV_VIEW_DETAILS   ) return c->String("REPORT");
+
+    return c->NullString();
+}
+
+
 /**
  * Produce a string representation of a List-View's extended styles.
  */
@@ -518,44 +529,21 @@ static void updateFullRowIndexes(pCLvFullRow pclvfr)
  * @param pclvfr
  *
  * @assumes updateFullRowIndexes() has already been invoked.
- *
- * @remarks  Originally, this function just updated the state member of the
- *           struct.  But now it does a fresh ListView_Item() with all flags for
- *           the mask being set.  This should make sure the Rexx LvItem object
- *           accurately reflects the current state of underlying list-view item.
- *
- *           But, it is changing what the mask value is from what the Rexx user
- *           may have set.  I think this is okay, but it sort of depends on how
- *           well the list-view implementation follows what the MSDN docs say
- *           ...
- *
- *           There is one problem with the groupId field of the LVITEM struct.
- *           If the LVIF_GROUPID flag is set and there is no group ID in the
- *           item, the OS does not seem to update the groupId field to
- *           I_GROUPIDNONE (-2). If the LVITEM struct is then used to insert the
- *           item with LVIF_GROUPID still set and the groupId field set to 0,
- *           the insert field fails.  If the field is already set to -2, things
- *           are okay.  Have not had a chance to test when the field is say 2.
- *           For now, if the field comes back 0, we change it to I_GROUPID_NONE.
  */
-static void updateFullRowItemState(RexxMethodContext *c, pCLvFullRow pclvfr)
+static void updateFullRowItemState(pCLvFullRow pclvfr)
 {
     if ( pclvfr->hList != NULL )
     {
         LPLVITEM pLvi = pclvfr->subItems[0];
+        LVITEM   lvi  = {0};
 
-        if ( ! ensureLvItemBuffers(c, pLvi) )
+        lvi.iItem     = pLvi->iItem;
+        lvi.mask      = LVIF_STATE;
+        lvi.stateMask = (uint32_t)-1;
+
+        if ( ListView_GetItem(pclvfr->hList, &lvi) )
         {
-            return;
-        }
-
-        pLvi->mask      = LVITEM_ALL_MASK;
-        pLvi->stateMask = (uint32_t)-1;
-
-        ListView_GetItem(pclvfr->hList, pLvi);
-        if ( pLvi->iGroupId == 0 )
-        {
-            pLvi->iGroupId = I_GROUPIDNONE;
+            pLvi->state = lvi.state;
         }
     }
 }
@@ -580,7 +568,7 @@ static void updateFullRowItemState(RexxMethodContext *c, pCLvFullRow pclvfr)
  *
  *           If subitem is out of bounds then we just do nothing.
  */
-static void resetFullRowText(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t subitem, CSTRING text)
+static void updateFullRowText(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t subitem, CSTRING text)
 {
     if ( subitem <= pclvfr->subItemCount )
     {
@@ -714,7 +702,7 @@ void mergeLviState(RexxMethodContext *c, pCLvFullRow pclvfr, LPLVITEM existingLv
     }
     if ( LVIF_TEXT & lvi->mask )
     {
-        resetFullRowText(c, pclvfr, 0, lvi->pszText);
+        updateFullRowText(c, pclvfr, 0, lvi->pszText);
     }
     if ( LVIF_STATE & lvi->mask )
     {
@@ -1538,10 +1526,10 @@ RexxMethod3(uint32_t, lv_addRemoveStyle, CSTRING, style, NAME, method, CSELF, pC
     return changeStyle(context, (pCDialogControl)pCSelf, style, NULL, (*method == 'R'));
 }
 
-/** ListView::arrange()
- *  ListView::snaptoGrid()
- *  ListView::alignLeft()
+/** ListView::alignLeft()
+ *  ListView::arrange()
  *  Listview::alignTop()
+ *  ListView::snaptoGrid()
  *
  *  @remarks  MSDN says of ListView_Arrange():
  *
@@ -1610,6 +1598,36 @@ RexxMethod2(int32_t, lv_getColor, NAME, method, CSELF, pCSelf)
         }
     }
     return -1;
+}
+
+/** ListView::BkColor=
+ *  ListView::TextColor=
+ *  ListView::TextBkColor=
+ *
+ *
+ *  @remarks.  This method is hopelessly outdated.  It should take a COLORREF so
+ *             that the user has access to all available colors rather than be
+ *             limited to 18 colors out of a 256 color display.
+ */
+RexxMethod3(RexxObjectPtr, lv_setColor, uint32_t, color, NAME, method, CSELF, pCSelf)
+{
+    HWND hList = getDChCtrl(pCSelf);
+
+    COLORREF ref = PALETTEINDEX(color);
+
+    if ( *method == 'B' )
+    {
+        ListView_SetBkColor(hList, ref);
+    }
+    else if ( method[4] == 'C' )
+    {
+        ListView_SetTextColor(hList, ref);
+    }
+    else
+    {
+        ListView_SetTextBkColor(hList, ref);
+    }
+    return NULLOBJECT;
 }
 
 /** ListView::check()
@@ -1985,23 +2003,52 @@ RexxMethod2(RexxObjectPtr, lv_getExtendedStyle, NAME, method, CSELF, pCSelf)
  *                         internal sorting, this must be set to true.
  *
  *  @remarks  We first check to see if a LvFullRow object is the stored user
- *            data for the list-view item.  If it is, we just return that.  When
- *            we have a LvFullRow object as the item user data, we have code
- *            that keeps the LvFullRow object updated when changes are made to
- *            the item.  We need to be sure and maintain that.
+ *            data for the list-view item.  If it is, we just return that.
  *
- *            maybeGetFullRow() updates the item index in the Rexx objects to
- *            the correct index.  But we also need to do
- *            updateFullRowItemState() to be sure and get the current state.
- *            TODO !!! we also need a updateFullRowSubItemStates().  Maybe ??
+ *            ------------------------------------------------------------
+ *
+ *            IMPORTANT:  The current approach we take for LvFullRow objects set
+ *            as the item's lParam (user data) is this:  For each ListView
+ *            method that alters (modifies) a list-view item's data, we check if
+ *            we have a LvFullRow object as the item user data. If so, we update
+ *            the LvFullRow object with the modified data. We need to be sure
+ *            and maintain that.
+ *
+ *            Item indexes.  Inserting and deleting items will change the item
+ *            index in the LvFullRow objects.  Rather than trying to fix up the
+ *            indexes for all LvFullRow objects during an insert of delete, we
+ *            just fix up the index at the time the user requests a full row, or
+ *            a full row object.  The maybeGetFullRow() method updates the item
+ *            index in the Rexx objects to the correct index, if needed.  (We
+ *            are using ListView_MapIDToIndex() and ListView_MapIndexToID() to
+ *            keep indexes correct.)
+ *
+ *            Transitory state.  State such as selected, focused, etc., can be
+ *            changed and can not be managed by monitoring ListView methods. For
+ *            this we the use the updateFullRowItemState() method to get the
+ *            current transitory item state before we return a full row object
+ *            to the user.
+ *
+ *            This same basic principle is used for the objects a full row
+ *            contains, LvItem and LvSubItem objects.
+ *
+ *            The one remaining problem is if the user deletes or inserts new
+ *            columns.  If this happens, the LvFullRow objects all need to be
+ *            fixed up.  We could either monitor the deleteColumn() and
+ *            insertColumn() methods and fix all LvFullRow objects during those
+ *            methods, or add some method that allows the user to trigger a fix
+ *            up.  ?  Undecided.  Fix ups during deleteColumn() / insertColumn()
+ *            may be time consuming and for insertColumn() will involve creating
+ *            a bunch of LvSubItem objects with no state ...
+ *
+ *            -----------------------------------------------------------
  *
  *            If there is no LvFullRow object as the user data, the most likely
  *            case, we create the object here.  We do that by creating Rexx
- *            objects for the item and for any subitems we can detect.
- *            Detecting the subitems is dependent on the coulumn count.  Testing
- *            has shown that once the column is inserted, getColumnCount()
- *            returns the correct number, even if the list-view is not in report
- *            view.
+ *            objects for the item and for any subitems we can detect. Detecting
+ *            the subitems is dependent on the coulumn count.  Testing has shown
+ *            that once the column is inserted, getColumnCount() returns the
+ *            correct number, even if the list-view is not in report view.
  */
 RexxMethod3(RexxObjectPtr, lv_getFullRow, uint32_t, itemIndex, OPTIONAL_logical_t, useForSorting, CSELF, pCSelf)
 {
@@ -2011,11 +2058,12 @@ RexxMethod3(RexxObjectPtr, lv_getFullRow, uint32_t, itemIndex, OPTIONAL_logical_
     pCLvFullRow pclvfr = maybeGetFullRow(hList, itemIndex);
     if ( pclvfr != NULL )
     {
-        updateFullRowItemState(context, pclvfr);
+        updateFullRowItemState(pclvfr);
         return pclvfr->rexxSelf;
     }
 
-    // Okay, create a LvFullRow object from the current state of the item:
+    // Okay, no LvFullRow object as the user data (lParam), so create a
+    // LvFullRow object from the current state of the item:
 
     // Create a LvItem
     RexxObjectPtr rxItem = newLvItem(context, hList, itemIndex);
@@ -2136,11 +2184,18 @@ RexxMethod2(RexxObjectPtr, lv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
  *
  *  Returns, or fills in, a LvItem object for the item specified.
  *
- *  @param _item  [required] Can be a LvItem object or the item index.  If it is
- *                a LvItem, we just fill it in.  If it is an index and we have
- *                no LvFullRow, we return a new, filled in, LvItem object.  If
- *                we do have a LvFullRow, we update the LVITEM struct for the
- *                item and then return the Rexx LvItem.
+ *  @param _item  [required] Can be a LvItem object or the item index.
+ *
+ *                If it is a LvItem, we just fill it in.
+ *
+ *                If it is an index and we have no LvFullRow, we return a new,
+ *                instantiated, LvItem object that reflects the item and the
+ *                item's current state.
+ *
+ *                If we do have a LvFullRow, we ensure the LvFullRow objects
+ *                have the item indexes in sync and update the LvItem with the
+ *                current transitory state, and then return the Rexx LvItem from
+ *                the full row.
  *
  *  @remarks  If we have a LvFullRow object assigned to the user data, we use
  *  the Rexx item in the full row.  maybeGetFullRow() will update the item
@@ -2158,7 +2213,7 @@ RexxMethod2(RexxObjectPtr, lv_getItem, RexxObjectPtr, _item, CSELF, pCSelf)
         LPLVITEM plvi = (LPLVITEM)context->ObjectToCSelf(_item);
 
         BOOL success = ListView_GetItem(hList, plvi);
-        if ( success && (plvi->mask & LVIF_GROUPID) && plvi->iGroupId )
+        if ( success && (plvi->mask & LVIF_GROUPID) && plvi->iGroupId == 0 )
         {
             plvi->iGroupId = I_GROUPIDNONE;
         }
@@ -2176,7 +2231,7 @@ RexxMethod2(RexxObjectPtr, lv_getItem, RexxObjectPtr, _item, CSELF, pCSelf)
     pCLvFullRow pclvfr = maybeGetFullRow(hList, itemIndex);
     if ( pclvfr != NULL )
     {
-        updateFullRowItemState(context, pclvfr);
+        updateFullRowItemState(pclvfr);
         result = pclvfr->rxSubItems[0];
     }
     else
@@ -2315,94 +2370,12 @@ RexxMethod2(RexxObjectPtr, lv_getItemPos, uint32_t, index, CSELF, pCSelf)
     return rxNewPoint(context, p.x, p.y);
 }
 
-/** ListView::next()
- *  ListView::nextSelected()
- *  ListView::nextLeft()
- *  ListView::nextRight()
- *  ListView::previous()
- *  ListView::previousSelected()
- *
- *
- *  @remarks  For the next(), nextLeft(), nextRight(), and previous() methods,
- *            we had this comment:
- *
- *            The Windows API appears to have a bug when the list contains a
- *            single item, insisting on returning 0.  This, rather
- *            unfortunately, can cause some infinite loops because iterating
- *            code is looking for a -1 value to mark the iteration end.
- *
- *            And in the method did: if self~Items < 2 then return -1
- *
- *            In this code, that check is not added yet, and the whole premise
- *            needs to be tested.  I find no mention of this bug in any Google
- *            searches I have done, and it seems odd that we are the only people
- *            that know about the bug?
- */
-RexxMethod3(int32_t, lv_getNextItem, OPTIONAL_int32_t, startItem, NAME, method, CSELF, pCSelf)
-{
-    uint32_t flag;
-
-    if ( *method == 'N' )
-    {
-        switch ( method[4] )
-        {
-            case '\0' :
-                flag = LVNI_BELOW | LVNI_TORIGHT;
-                break;
-            case 'S' :
-                flag = LVNI_BELOW | LVNI_TORIGHT | LVNI_SELECTED;
-                break;
-            case 'L' :
-                flag = LVNI_TOLEFT;
-                break;
-            default :
-                flag = LVNI_TORIGHT;
-                break;
-        }
-    }
-    else
-    {
-        flag = (method[8] == 'S' ? LVNI_ABOVE | LVNI_TOLEFT | LVNI_SELECTED : LVNI_ABOVE | LVNI_TOLEFT);
-    }
-
-    if ( argumentOmitted(1) )
-    {
-        startItem = -1;
-    }
-    return ListView_GetNextItem(getDChCtrl(pCSelf), startItem, flag);
-}
-
-/** ListView::selected()
- *  ListView::focused()
- *  ListView::dropHighlighted()
- *
- *
- */
-RexxMethod2(int32_t, lv_getNextItemWithState, NAME, method, CSELF, pCSelf)
-{
-    uint32_t flag;
-
-    if ( *method == 'S' )
-    {
-        flag = LVNI_SELECTED;
-    }
-    else if ( *method == 'F' )
-    {
-        flag = LVNI_FOCUSED;
-    }
-    else
-    {
-        flag = LVNI_DROPHILITED;
-    }
-    return ListView_GetNextItem(getDChCtrl(pCSelf), -1, flag);
-}
-
 /** ListView::getSubitem()
  *
  *  Returns a LvSubItem object for the item and subitem indexes specified.
  *
  *  @remarks  The ListView_GetItem macro will not fail, even if the subitem
- *            index is greater than any existing subitem.  Text is the empty
+ *            index is greater than any existing subitem.
  *            string.  Plus, there is no reason that the user could not have
  *            added subitems, but the list-view is not in report view.  So, we
  *            don't check subitemIndex with getColumnCount()
@@ -2435,6 +2408,25 @@ RexxMethod3(RexxObjectPtr, lv_getSubitem, uint32_t, itemIndex, uint32_t, subitem
 
 done_out:
     return result;
+}
+
+/** ListView::getView()
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, lv_getView, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return context->NullString();
+    }
+    if ( ! requiredComCtl32Version(context, "ListView::setView", COMCTL32_6_0) )
+    {
+        return context->NullString();
+    }
+
+    return view2keyword(context, ListView_GetView(pcdc->hCtrl));
 }
 
 /** ListView::hasCheckBoxes()
@@ -2799,37 +2791,27 @@ RexxMethod3(RexxStringObject, lv_itemText, uint32_t, index, OPTIONAL_uint32_t, s
     return context->String(buf);
 }
 
-/** ListView::setColumnWidthPX()
- *
- *
- */
-RexxMethod3(RexxObjectPtr, lv_setColumnWidthPx, uint32_t, index, OPTIONAL_RexxObjectPtr, _width, CSELF, pCSelf)
-{
-    HWND hList = getDChCtrl(pCSelf);
-
-    int width = getColumnWidthArg(context, _width, 2);
-    if ( width == OOD_BAD_WIDTH_EXCEPTION )
-    {
-        return TheOneObj;
-    }
-
-    if ( width == LVSCW_AUTOSIZE || width == LVSCW_AUTOSIZE_USEHEADER )
-    {
-        if ( !isInReportView(hList) )
-        {
-            userDefinedMsgException(context->threadContext, 2, "can not be AUTO or AUTOHEADER if not in report view");
-            return TheOneObj;
-        }
-    }
-
-    return (ListView_SetColumnWidth(hList, index, width) ? TheZeroObj : TheOneObj);
-}
-
 /** ListView::modify()
  *
+ *  Modifies the text and or image index for an item.  Or the text only for a
+ *  subitem.
+ *
+ *  @remarks  The docs for the imageIndex argument have read:  Use -1 or simply
+ *            omit this argument to leave the icon index unchanged. If subitem
+ *            is greater than 0, this argument is ignored.  So, we want to
+ *            preserve that, which means this method can not be used to update
+ *            the image index for subitems.
  *
  *  @remarks  If the user has a LvFullRox object as the user data, we update the
- *            values in that object after a successful modify().
+ *            values in that object after a successful modify().  The user can
+ *            only change text and image index in the item here.  And only text
+ *            in a subitem.
+ *
+ *            Testing has shown that if subItemIndex is greater than the column
+ *            count, then ListView_SetItem() will fail.  MSDN says that all
+ *            items in a list-view have the same number of subitems.  So, we do
+ *            not test that the subitemIndex is within the number of columns.
+ *            If it is not, the ListView_SetItem() call will fail.
  */
 RexxMethod5(RexxObjectPtr, lv_modify, OPTIONAL_uint32_t, itemIndex, OPTIONAL_uint32_t, subitemIndex, CSTRING, text,
             OPTIONAL_int32_t, imageIndex, CSELF, pCSelf)
@@ -2847,7 +2829,7 @@ RexxMethod5(RexxObjectPtr, lv_modify, OPTIONAL_uint32_t, itemIndex, OPTIONAL_uin
         }
     }
     itemIndex  = (argumentOmitted(1) ? getSelected(hList) : itemIndex);
-    imageIndex = (argumentOmitted(4) ? -1 : imageIndex);
+    imageIndex = (argumentExists(4) && subitemIndex == 0 ? imageIndex : -1);
 
     if ( itemIndex < 0 )
     {
@@ -2873,7 +2855,7 @@ RexxMethod5(RexxObjectPtr, lv_modify, OPTIONAL_uint32_t, itemIndex, OPTIONAL_uin
         pCLvFullRow pclvfr = maybeGetFullRow(hList, itemIndex);
         if ( pclvfr != NULL )
         {
-            resetFullRowText(context, pclvfr, subitemIndex, text);
+            updateFullRowText(context, pclvfr, subitemIndex, text);
 
             if ( imageIndex > -1 && subitemIndex <= pclvfr->subItemCount )
             {
@@ -3006,6 +2988,74 @@ err_out:
     return FALSE;
 }
 
+/** ListView::next()
+ *  ListView::nextSelected()
+ *  ListView::nextLeft()
+ *  ListView::nextRight()
+ *  ListView::previous()
+ *  ListView::previousSelected()
+ *
+ *
+ *  @remarks  For the next(), nextLeft(), nextRight(), and previous() methods,
+ *            we had this comment:
+ *
+ *            The Windows API appears to have a bug when the list contains a
+ *            single item, insisting on returning 0.  This, rather
+ *            unfortunately, can cause some infinite loops because iterating
+ *            code is looking for a -1 value to mark the iteration end.
+ *
+ *            And in the method did: if self~Items < 2 then return -1
+ *
+ *            In this code, that check is not added yet, and the whole premise
+ *            needs to be tested.  I find no mention of this bug in any Google
+ *            searches I have done, and it seems odd that we are the only people
+ *            that know about the bug?
+ */
+RexxMethod3(int32_t, lv_getNextItem, OPTIONAL_int32_t, startItem, NAME, method, CSELF, pCSelf)
+{
+    uint32_t flag;
+
+    if ( *method == 'N' )
+    {
+        switch ( method[4] )
+        {
+            case '\0' :
+                flag = LVNI_BELOW | LVNI_TORIGHT;
+                break;
+            case 'S' :
+                flag = LVNI_BELOW | LVNI_TORIGHT | LVNI_SELECTED;
+                break;
+            case 'L' :
+                flag = LVNI_TOLEFT;
+                break;
+            default :
+                flag = LVNI_TORIGHT;
+                break;
+        }
+    }
+    else
+    {
+        flag = (method[8] == 'S' ? LVNI_ABOVE | LVNI_TOLEFT | LVNI_SELECTED : LVNI_ABOVE | LVNI_TOLEFT);
+    }
+
+    if ( argumentOmitted(1) )
+    {
+        startItem = -1;
+    }
+    return ListView_GetNextItem(getDChCtrl(pCSelf), startItem, flag);
+}
+
+/** ListView::prependFullRow()
+ *
+ *  Adds an item to the list view at the beginning of the list using a LvFullRow
+ *  object.
+ *
+ */
+RexxMethod2(int32_t, lv_prependFullRow, RexxObjectPtr, row, CSELF, pCSelf)
+{
+    return fullRowOperation(context, row, lvfrInsert, pCSelf);
+}
+
 /** ListView::removeItemData()
  *
  * @remarks  Note that if the lParam user data is a LvFullRow object, there is
@@ -3081,61 +3131,45 @@ RexxMethod3(RexxObjectPtr, lv_setSpecificState, uint32_t, index, NAME, method, C
 
     if ( *method == 'S' )
     {
-        mask |= LVIS_SELECTED;
-        state |= LVIS_SELECTED;
+        mask  = LVIS_SELECTED;
+        state = LVIS_SELECTED;
     }
     else if ( *method == 'D' )
     {
-        mask |= LVIS_SELECTED;
+        mask = LVIS_SELECTED;
     }
     else
     {
-        mask |= LVIS_FOCUSED;
-        state |= LVIS_FOCUSED;
+        mask  = LVIS_FOCUSED;
+        state = LVIS_FOCUSED;
     }
     ListView_SetItemState(getDChCtrl(pCSelf), index, state, mask);
     return TheZeroObj;
 }
 
-/** ListView::prependFullRow()
+/** ListView::selected()
+ *  ListView::focused()
+ *  ListView::dropHighlighted()
  *
- *  Adds an item to the list view at the beginning of the list using a LvFullRow
- *  object.
  *
  */
-RexxMethod2(int32_t, lv_prependFullRow, RexxObjectPtr, row, CSELF, pCSelf)
+RexxMethod2(int32_t, lv_getNextItemWithState, NAME, method, CSELF, pCSelf)
 {
-    return fullRowOperation(context, row, lvfrInsert, pCSelf);
-}
+    uint32_t flag;
 
-/** ListView::BkColor=
- *  ListView::TextColor=
- *  ListView::TextBkColor=
- *
- *
- *  @remarks.  This method is hopelessly outdated.  It should take a COLORREF so
- *             that the user has access to all available colors rather than be
- *             limited to 18 colors out of a 256 color display.
- */
-RexxMethod3(RexxObjectPtr, lv_setColor, uint32_t, color, NAME, method, CSELF, pCSelf)
-{
-    HWND hList = getDChCtrl(pCSelf);
-
-    COLORREF ref = PALETTEINDEX(color);
-
-    if ( *method == 'B' )
+    if ( *method == 'S' )
     {
-        ListView_SetBkColor(hList, ref);
+        flag = LVNI_SELECTED;
     }
-    else if ( method[4] == 'C' )
+    else if ( *method == 'F' )
     {
-        ListView_SetTextColor(hList, ref);
+        flag = LVNI_FOCUSED;
     }
     else
     {
-        ListView_SetTextBkColor(hList, ref);
+        flag = LVNI_DROPHILITED;
     }
-    return NULLOBJECT;
+    return ListView_GetNextItem(getDChCtrl(pCSelf), -1, flag);
 }
 
 /** ListView::setColumnOrder()
@@ -3193,6 +3227,32 @@ RexxMethod2(logical_t, lv_setColumnOrder, RexxArrayObject, order, CSELF, pCSelf)
 done:
     safeFree(pOrder);
     return success;
+}
+
+/** ListView::setColumnWidthPX()
+ *
+ *
+ */
+RexxMethod3(RexxObjectPtr, lv_setColumnWidthPx, uint32_t, index, OPTIONAL_RexxObjectPtr, _width, CSELF, pCSelf)
+{
+    HWND hList = getDChCtrl(pCSelf);
+
+    int width = getColumnWidthArg(context, _width, 2);
+    if ( width == OOD_BAD_WIDTH_EXCEPTION )
+    {
+        return TheOneObj;
+    }
+
+    if ( width == LVSCW_AUTOSIZE || width == LVSCW_AUTOSIZE_USEHEADER )
+    {
+        if ( !isInReportView(hList) )
+        {
+            userDefinedMsgException(context->threadContext, 2, "can not be AUTO or AUTOHEADER if not in report view");
+            return TheOneObj;
+        }
+    }
+
+    return (ListView_SetColumnWidth(hList, index, width) ? TheZeroObj : TheOneObj);
 }
 
 /** ListView::setImageList()
@@ -3458,11 +3518,45 @@ RexxMethod4(RexxObjectPtr, lv_setItemText, uint32_t, index, OPTIONAL_uint32_t, s
     pCLvFullRow pclvfr = maybeGetFullRow(hList, index);
     if ( pclvfr != NULL )
     {
-        resetFullRowText(context, pclvfr, subitem, text);
+        updateFullRowText(context, pclvfr, subitem, text);
     }
 
     ListView_SetItemText(hList, index, subitem, (LPSTR)text);
     return TheZeroObj;
+}
+
+/** ListView::setView()
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, lv_setView, CSTRING, view, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return context->NullString();
+    }
+    if ( ! requiredComCtl32Version(context, "ListView::setView", COMCTL32_6_0) )
+    {
+        return context->NullString();
+    }
+
+    uint32_t style = 0;
+    uint32_t old   = ListView_GetView(pcdc->hCtrl);
+
+    if ( StrCmpI(view, "ICON"          ) == 0 ) style = LV_VIEW_ICON;
+    else if ( StrCmpI(view, "SMALLICON") == 0 ) style = LV_VIEW_SMALLICON;
+    else if ( StrCmpI(view, "LIST"     ) == 0 ) style = LV_VIEW_LIST;
+    else if ( StrCmpI(view, "REPORT"   ) == 0 ) style = LV_VIEW_DETAILS;
+    else
+    {
+        wrongArgValueException(context->threadContext, 1, "Icon, SmallIcon, List, or Report", view);
+        return context->NullString();
+    }
+
+    ListView_SetView(pcdc->hCtrl, style);
+
+    return view2keyword(context, old);
 }
 
 /** ListView::sortItems()
@@ -3494,6 +3588,74 @@ RexxMethod3(logical_t, lv_sortItems, CSTRING, method, OPTIONAL_RexxObjectPtr, pa
 RexxMethod2(int, lv_stringWidthPx, CSTRING, text, CSELF, pCSelf)
 {
     return ListView_GetStringWidth(getDChCtrl(pCSelf), text);
+}
+
+/** ListView::zTest()
+ *
+ *  An undocumented method to make it easier to do development testing
+ *
+ */
+RexxMethod3(RexxObjectPtr, lv_zTest, uint32_t, itemIndex, uint32_t, subItemIndex, CSELF, pCSelf)
+{
+    printf("zTest() itemIndex=%d subItemIndex=%d\n", itemIndex, subItemIndex);
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheFalseObj;
+    }
+
+    /*
+    LVCOLUMN lvc = { 0 };
+    lvc.mask = LVCF_WIDTH | LVCF_SUBITEM;
+    if ( ListView_GetColumn(pcdc->hCtrl, subItemIndex, &lvc) )
+    {
+        printf("ListView_GetColumn() returns TRUE lvc.iSubItem=%d\n", lvc.iSubItem);
+    }
+    else
+    {
+        printf("ListView_GetColumn() returns FALSE lvc.iSubItem=%d\n", lvc.iSubItem);
+    }
+    */
+
+
+    LVITEM lvi = { 0 };
+    lvi.iItem = itemIndex;
+    lvi.iSubItem = subItemIndex;
+    lvi.mask = LVIF_TEXT | LVIF_IMAGE;
+
+    //char buf[1024] = { '\0' };
+    char buf[1024] = "My subitem text";
+    lvi.pszText = buf;
+    lvi.cchTextMax = 1024;
+
+    printf("pszText=%p\n", lvi.pszText);
+    /*
+    if ( ListView_GetItem(pcdc->hCtrl, &lvi) )
+    {
+        printf("ListView_GetItem() returns TRUE imageIndex=%d pszText=%p pszText == LPSTR_TEXTCALLBACK=%d\n",
+               lvi.iImage, lvi.pszText, lvi.pszText == LPSTR_TEXTCALLBACK);
+        if ( lvi.pszText != NULL && lvi.pszText != LPSTR_TEXTCALLBACK )
+        {
+            printf("Got text=%s\n", lvi.pszText);
+        }
+    }
+    else
+    {
+        printf("ListView_GetItem() returns FALSE\n");
+    }
+    */
+
+    if ( ListView_SetItem(pcdc->hCtrl, &lvi) )
+    {
+        printf("ListView_SetItem() returns TRUE\n");
+    }
+    else
+    {
+        printf("ListView_SetItem() returns FALSE\n");
+    }
+
+    return TheTrueObj;
 }
 
 
@@ -3702,6 +3864,11 @@ RexxObjectPtr getLviText(RexxMethodContext *c, LPLVITEM pLVI)
     {
         return TheNilObj;
     }
+    else if ( pLVI->pszText == LPSTR_TEXTCALLBACK )
+    {
+        return c->String("lpStrTextCallBack");
+    }
+
     return c->String(pLVI->pszText);
 }
 
@@ -3717,6 +3884,8 @@ RexxObjectPtr getLviText(RexxMethodContext *c, LPLVITEM pLVI)
  * simplier, we only allow the Rexx programmer to use a string up to 260 TCHARS.
  * This is only enforced here, not currently enforced in the ListView class.
  *
+ * We use lpStrTextCallBack as the string to indicate the call back value.
+ *
  * @param c
  * @param pLVI
  * @param text
@@ -3725,6 +3894,13 @@ RexxObjectPtr getLviText(RexxMethodContext *c, LPLVITEM pLVI)
  */
 bool setLviText(RexxMethodContext *c, LPLVITEM pLVI, CSTRING text, size_t argPos)
 {
+    if ( StrCmpI(text, "lpStrTextCallBack") == 0 )
+    {
+        pLVI->pszText    = LPSTR_TEXTCALLBACK;
+        pLVI->cchTextMax = 0;
+        return true;
+    }
+
     size_t len = strlen(text);
 
     bool receiving = (len == 0 ? true : false);

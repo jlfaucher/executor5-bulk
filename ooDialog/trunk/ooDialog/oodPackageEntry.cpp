@@ -1028,6 +1028,7 @@ REXX_METHOD_PROTOTYPE(lv_getItemPos);
 REXX_METHOD_PROTOTYPE(lv_getNextItem);
 REXX_METHOD_PROTOTYPE(lv_getNextItemWithState);
 REXX_METHOD_PROTOTYPE(lv_getSubitem);
+REXX_METHOD_PROTOTYPE(lv_getView);
 REXX_METHOD_PROTOTYPE(lv_hasCheckBoxes);
 REXX_METHOD_PROTOTYPE(lv_hitTestInfo);
 REXX_METHOD_PROTOTYPE(lv_insert);
@@ -1052,8 +1053,10 @@ REXX_METHOD_PROTOTYPE(lv_setItemPos);
 REXX_METHOD_PROTOTYPE(lv_setItemState);
 REXX_METHOD_PROTOTYPE(lv_setItemText);
 REXX_METHOD_PROTOTYPE(lv_setSpecificState);
+REXX_METHOD_PROTOTYPE(lv_setView);
 REXX_METHOD_PROTOTYPE(lv_sortItems);
 REXX_METHOD_PROTOTYPE(lv_stringWidthPx);
+REXX_METHOD_PROTOTYPE(lv_zTest);
 
 // LvItem
 REXX_METHOD_PROTOTYPE(lvi_init                );
@@ -2037,6 +2040,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_getNextItem,                 lv_getNextItem),
     REXX_METHOD(lv_getNextItemWithState,        lv_getNextItemWithState),
     REXX_METHOD(lv_getSubitem,                  lv_getSubitem),
+    REXX_METHOD(lv_getView,                     lv_getView),
     REXX_METHOD(lv_hasCheckBoxes,               lv_hasCheckBoxes),
     REXX_METHOD(lv_hitTestInfo,                 lv_hitTestInfo),
     REXX_METHOD(lv_insert,                      lv_insert),
@@ -2063,6 +2067,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_setSpecificState,            lv_setSpecificState),
     REXX_METHOD(lv_sortItems,                   lv_sortItems),
     REXX_METHOD(lv_stringWidthPx,               lv_stringWidthPx),
+    REXX_METHOD(lv_setView,                     lv_setView),
+    REXX_METHOD(lv_zTest,                       lv_zTest),
 
     // LvItem
     REXX_METHOD(lvi_init,                       lvi_init),
