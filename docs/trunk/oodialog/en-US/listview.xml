@@ -346,6 +346,10 @@
 <entry>Retrieves the client area coordinates of an item in a list-view control as a <computeroutput>Point</computeroutput> object.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetSubitemClsListView"/></entry>
+<entry>Receives some, or all, of the information of a subitem of a list-view item. The information is returned as a <link linkend="clsLvSubItem">LvSubItem</link> object.</entry>
+</row>
+<row>
 <entry><xref linkend="mthGetToolTipsClsListview"/></entry>
 <entry>Retrieves the child <link linkend="clsToolTip">ToolTip</link> control used by this list-view.</entry>
 </row>
@@ -424,6 +428,14 @@
 <row>
 <entry><xref linkend="mthModifyColumnPX"/></entry>
 <entry>Sets new attributes for a column of a list-view control when it has the report or list style.</entry>
+</row>
+<row>
+<entry><xref linkend="mthModifyItem"/></entry>
+<entry>xxx</entry>
+</row>
+<row>
+<entry><xref linkend="mthModifySubitem"/></entry>
+<entry>xxx</entry>
 </row>
 <row>
 <entry><xref linkend="mthNext"/></entry>
@@ -3353,12 +3365,15 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 <indexterm><primary>ListView class</primary><secondary>getSubitem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getSubitem(--itemIndex--,--subitemIndex--)---><
+>>--getSubitem(--_item--+----------------+--)----><
+                        +-,-subItemIndex-+
 ]]>
 </programlisting>
 
 <para>
-  Retrieves the specified subitem as a <link linkend="clsLvSubItem">LvSubItem</link> object.
+  Receives some, or all, of the information of a subitem of a list-view item. The information is returned as a <link
+  linkend="clsLvSubItem">LvSubItem</link> object. The subitem is specified by either a
+  <computeroutput>LvSubItem</computeroutput> object, or by a item index / subitem index combination.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3367,16 +3382,31 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     The arguments are:
   </para>
     <variablelist>
-      <varlistentry><term>itemIndex [required]</term>
+      <varlistentry><term>_item [required]</term>
       <listitem>
       <para>
-        Specifies the item index whose subitem is to be retrieved.
+        Specifies the item whose subitem information is to be retrieved.
+      </para>
+      <para>
+        If <emphasis role="italic">_item</emphasis> is a <computeroutput>LvSubItem</computeroutput> object, then the
+        <emphasis role="italic">item</emphasis> and <emphasis role="italic">subItem</emphasis> attributes of the
+        <computeroutput>LvSubItem</computeroutput> object specify which subitem to query. The <emphasis
+        role="italic">mask</emphasis> attribute specifies which information is desired.
+      </para>
+      <para>
+        If the <emphasis role="italic">_item</emphasis> argument is not a <computeroutput>LvSubItem</computeroutput> object,
+        then it must be the zero-based index of the item to query and the <emphasis role="italic">subItemIndex</emphasis>
+        argument must be the one-based index of the subitem.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>subitemIndex</term>
+      <varlistentry><term>subitemIndex [optional]</term>
       <listitem>
       <para>
-        Specifies the index of the subitem.
+        Specifies the index of the subitem. If <emphasis role="italic">_item</emphasis> is a
+        <computeroutput>LvSubItem</computeroutput> object then the <emphasis role="italic">subitemIndex</emphasis> is
+        ignored. If <emphasis role="italic">_item</emphasis> is not a <computeroutput>LvSubItem</computeroutput> object then
+        <emphasis role="italic">subitemIndex</emphasis> is required and specifies the one-based index of the subitem to be
+        qureied.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3384,14 +3414,62 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    On success, returns a <computeroutput>LvItem</computeroutput> object whose attributes represent the attributes of the
-    list-view item. On error, the <computeroutput>.nil</computeroutput> object is returned.
+    When the <emphasis role="italic">_item</emphasis> argument is a <computeroutput>LvSubItem</computeroutput> object then
+    this method returns true on success and false on error. On success, the attributes of <emphasis
+    role="italic">_item</emphasis> reflect the information queried of the subitem.  On error, the value of the attributes of
+    <emphasis role="italic">_item</emphasis> are undefined.
+  </para>
+  <para>
+    When the <emphasis role="italic">_item</emphasis> argument is not a <computeroutput>LvSubItem</computeroutput> object
+    then, on success, this method returns a <computeroutput>LvItem</computeroutput> object whose attributes reflect the
+    attributes of the list-view subitem. On error, the <computeroutput>.nil</computeroutput> object is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+  <listitem>
+  <para>
+    xxx
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example queries subitem 2 of the item at index 8 of the list-view for just its image index. On return, the <emphasis
+    role="italic">imageIndex</emphasis> attribute of the <xref linkend="clsLvSubItem"/> object will reflect the image index
+    of the specified subitem.  The value of the <emphasis role="italic">text</emphasis> attribute is undefined:
+
+<programlisting>
+<![CDATA[
+
+  lvSubItem = .LvSubItem~new(8, 2, , , 'IMAGE')
+  if list~getSubItem(lvSubItem) then do
+      -- Do something with the information.
+      ...
+  end
+]]>
+</programlisting>
+  </para>
+
+<para>
+  This example queries the same subitem by using the item / subitem indexes. On success a <xref linkend="clsLvSubItem"/>
+  object is returned that reflects all the information for the subitem.
+
+<programlisting>
+<![CDATA[
+
+  lvSubItem = list~getSubItem(8, 2)
+  if lvSubItem \== .nil then do
+      -- Do something with the LvSubItem object.
+      ...
+  end
+]]>
+</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4507,9 +4585,11 @@ item selected last.</para>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>item</term>
-<listitem><para>
+<listitem>
+<para>
   The index of the item to be modified. If you omit this argument, the selected item is used.
-</para></listitem></varlistentry>
+</para>
+</listitem></varlistentry>
 <varlistentry><term>subitem</term>
 <listitem><para>
   This method works in a similar manner as the <xref linkend="mthInsertClsListControl"/>()
@@ -4818,6 +4898,70 @@ column. It can be one of the following values:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ListView::modifyItem() -->
+
+
+<section id="mthModifySubItem" xreflabel="modifySubitem"><title>modifySubitem</title>
+<indexterm><primary>modifySubitem</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>modifySubitem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--modifySubitem(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::modifySubitem() -->
 
 
 <section id="mthNext" xreflabel="next"><title>next</title>
