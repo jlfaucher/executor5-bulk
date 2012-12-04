@@ -54,18 +54,31 @@
 /**
  *  Methods for the .ListView class.
  */
-#define LISTVIEW_CLASS            "ListView"
+#define LISTVIEW_CLASS               "ListView"
 
-#define LVSTATE_ATTRIBUTE         "LV!STATEIMAGELIST"
-#define LVSMALL_ATTRIBUTE         "LV!SMALLIMAGELIST"
-#define LVNORMAL_ATTRIBUTE        "LV!NORMALIMAGELIST"
+#define LVSTATE_ATTRIBUTE            "LV!STATEIMAGELIST"
+#define LVSMALL_ATTRIBUTE            "LV!SMALLIMAGELIST"
+#define LVNORMAL_ATTRIBUTE           "LV!NORMALIMAGELIST"
 
-#define LVITEM_ALL_MASK           LVIF_TEXT   | LVIF_IMAGE   | LVIF_PARAM | LVIF_STATE | LVIF_INDENT | LVIF_COLUMNS | LVIF_COLFMT | LVIF_GROUPID | LVIF_NORECOMPUTE
-#define LVITEM_TEXT_MAX           260
-#define LVITEM_TILECOLUMN_MAX     20   // According to MSDN
+#define LVITEM_ALL_MASK              LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM | LVIF_STATE | LVIF_INDENT | LVIF_COLUMNS | LVIF_COLFMT | LVIF_GROUPID | LVIF_NORECOMPUTE
+#define LVITEM_TEXT_MAX              260
+#define LVITEM_TILECOLUMN_MAX        20   // According to MSDN
+#define LPSTR_TEXTCALLBACK_STRING    "lpStrTextCallBack"
 
-#define LVITEM_OBJ_MAGIC          "mv12fa2t@"
-#define LVSUBITEM_OBJ_MAGIC       "L1sw2h2ww"
+#define LVITEM_OBJ_MAGIC             "mv12fa2t@"
+#define LVSUBITEM_OBJ_MAGIC          "L1sw2h2ww"
+
+/**
+ * Prototypes for local functions that are too hard to move around to eliminate
+ * the need for the prototypes.
+ *
+ */
+static bool          validColumnIndex(pCLvFullRow pclvfr, bool removed, uint32_t colIndex);
+static RexxObjectPtr removeSubItemFromRow(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t index);
+static RexxObjectPtr insertSubItemIntoRow(RexxMethodContext *c, RexxObjectPtr lvSubitem, pCLvFullRow pclvfr, uint32_t index);
+
+
+
 
 inline bool hasCheckBoxes(HWND hList)
 {
@@ -320,6 +333,51 @@ static int getColumnWidthArg(RexxMethodContext *context, RexxObjectPtr _width, s
 }
 
 /**
+ * Checks for a LPSTR_TEXTCALLBACK in the pszText field of a LVITEM struct.
+ *
+ * @param lvi       Pointer to struct we are checking.
+ * @param temp      Pointer to buffer originally set as pszText field
+ * @param freeTemp  True if we should free temp, false is we should not
+ *
+ * @remarks  When doing a ListView_GetItem() MSDN says that the programmer
+ *           should not rely on the pszText field pointing to the same buffer on
+ *           return, that the list-view may change the pointer to point to the
+ *           new text rather than place it in the buffer.
+ *
+ *           For certain, if the mask for the ListView_GetItem() contains
+ *           LVIF_NORECOMPUTE, then pszText is changed to LPSTR_TEXTCALLBACK.
+ *           This function checks for that.  I've never seen the pointer changed
+ *           to 'new text' but we check for that also, and NULL.
+ *
+ * @assumes  That temp is pointing to a buffer at least LVITEM_TEXT_MAX + 1 in
+ *           size.  All buffers being allocated for pszText in our code are
+ *           that size.  Do not call this function if the size of temp is
+ *           unknown, or less than LVITEM_TEXT_MAX + 1 in size.
+ */
+static void checkForCallBack(LPLVITEM lvi, char *temp, bool freeTemp)
+{
+    if ( lvi->pszText != temp )
+    {
+        if ( lvi->pszText == LPSTR_TEXTCALLBACK || lvi->pszText == NULL )
+        {
+            lvi->cchTextMax = 0;
+            if ( freeTemp )
+            {
+                LocalFree(temp);
+            }
+        }
+        else
+        {
+            StrCpyN(temp, lvi->pszText, LVITEM_TEXT_MAX);
+            temp[LVITEM_TEXT_MAX] = '\0';
+
+            lvi->cchTextMax = LVITEM_TEXT_MAX + 1;
+            lvi->pszText    = temp;
+        }
+    }
+}
+
+/**
  * Allocates memory for the text buffer in a list-view item structure.
  *
  * This should only be used for Rexx objects such as a LvItem or LvSubItem,
@@ -339,10 +397,14 @@ static bool allocLviTextBuf(RexxMethodContext *c, LPLVITEM pLVI)
         return false;
     }
 
-    safeLocalFree(pLVI->pszText);
-    pLVI->pszText = pszText;
+    if ( pLVI->pszText != LPSTR_TEXTCALLBACK )
+    {
+        safeLocalFree(pLVI->pszText);
+    }
 
     pLVI->cchTextMax = (LVITEM_TEXT_MAX + 1);
+    pLVI->pszText    = pszText;
+
     return true;
 }
 
@@ -566,28 +628,108 @@ static void updateFullRowItemState(pCLvFullRow pclvfr)
  * @remarks  If a memory allocation error happens, we raise an exception, but
  *           leave the current text alone.  No errors are reported.
  *
- *           If subitem is out of bounds then we just do nothing.
+ *           If subitem is out of bounds then we just do nothing.  We need to
+ *           account for LPSTR_TEXTCALLBACK.
  */
 static void updateFullRowText(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t subitem, CSTRING text)
 {
     if ( subitem <= pclvfr->subItemCount )
     {
-        size_t len = strlen(text) + 1;
+        size_t  len = 0;
+        char   *newText;
 
-        char *newText = (char *)LocalAlloc(LPTR, len);
-        if ( newText == NULL )
+        if ( text == LPSTR_TEXTCALLBACK )
         {
-            outOfMemoryException(c->threadContext);
-            return;
+            newText = LPSTR_TEXTCALLBACK;
         }
-        memcpy(newText, text, len);
+        else
+        {
+            len = strlen(text) + 1;
+
+            char *newText = (char *)LocalAlloc(LPTR, len);
+            if ( newText == NULL )
+            {
+                outOfMemoryException(c->threadContext);
+                return;
+            }
+            memcpy(newText, text, len);
+        }
 
         LPLVITEM lvi = pclvfr->subItems[subitem];
 
-        safeLocalFree(lvi->pszText);
+        if ( lvi->pszText != LPSTR_TEXTCALLBACK )
+        {
+            safeLocalFree(lvi->pszText);
+        }
+
         lvi->pszText    = newText;
         lvi->cchTextMax = (int)len;
     }
+}
+
+/**
+ * Checks if the user data for a list-view item has bee set to a LvFullRow
+ * object.
+ *
+ * @param hList
+ * @param itemIndex
+ *
+ * @return The CSelf struct for a LvFullRow object if the user data of the
+ *         list-view item has been set to a LvFullRow object, otherwise null.
+ *
+ * @note The item indexes in the full row struct are updated if the full row
+ *       object is found.
+ */
+static pCLvFullRow maybeGetFullRow(HWND hList, uint32_t itemIndex)
+{
+    LVITEM      lvi    = {LVIF_PARAM, itemIndex};
+    pCLvFullRow pclvfr = NULL;
+
+    if ( ListView_GetItem(hList, &lvi) != 0 )
+    {
+        if ( isLvFullRowStruct((void *)(lvi.lParam)) )
+        {
+            pclvfr = (pCLvFullRow)lvi.lParam;
+            updateFullRowIndexes(pclvfr);
+        }
+    }
+    return pclvfr;
+}
+
+static bool reasonableColumnFix(RexxMethodContext *c, HWND hList, uint32_t colIndex, bool removed)
+{
+    uint32_t cItems = ListView_GetItemCount(hList);
+
+    if ( cItems == 0 )
+    {
+        return false;
+    }
+
+    for ( uint32_t i = 0; i < cItems, i < 3; i++ )
+    {
+        char buff[128];
+
+        pCLvFullRow pclvfr = maybeGetFullRow(hList, i);
+        if ( pclvfr == NULL )
+        {
+            _snprintf(buff, sizeof(buff), "the item data of list-view item %d is not a LvFullRow object", i);
+
+            executionErrorException(c->threadContext, buff);
+            return false;
+        }
+
+        if ( ! validColumnIndex(pclvfr, removed, colIndex) )
+        {
+            _snprintf(buff, sizeof(buff),
+                     "LvFullRow object at list-view item %d; invalid column %s (subitem columns=%d column=%d)",
+                     i, removed ? "delete" : "insert", pclvfr->subItemCount, colIndex);
+
+            executionErrorException(c->threadContext, buff);
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -843,7 +985,7 @@ static void protectLviUserData(RexxMethodContext *c, pCDialogControl pcdc, LVITE
  *           to insert the item with the groupId set to 0, the insert fails.
  *
  *           I don't know if this is because groups are not available or what.
- *           For new, we check for a 0 value and change it to I_GROUPIDNONE.
+ *           For now, we check for a 0 value and change it to I_GROUPIDNONE.
  */
 static RexxObjectPtr newLvItem(RexxMethodContext *c, HWND hList, uint32_t itemIndex)
 {
@@ -868,6 +1010,8 @@ static RexxObjectPtr newLvItem(RexxMethodContext *c, HWND hList, uint32_t itemIn
     lvi->stateMask = (uint32_t)-1;
     lvi->mask      = LVITEM_ALL_MASK;
 
+    char *temp = lvi->pszText;
+
     if ( ! ListView_GetItem(hList, lvi) )
     {
         goto err_out;
@@ -876,6 +1020,7 @@ static RexxObjectPtr newLvItem(RexxMethodContext *c, HWND hList, uint32_t itemIn
     {
         lvi->iGroupId = I_GROUPIDNONE;
     }
+    checkForCallBack(lvi, temp, true);
 
     RexxClassObject rxLvI = rxGetContextClass(c, "LVITEM");
     if ( rxLvI == NULLOBJECT )
@@ -939,13 +1084,15 @@ static RexxObjectPtr newLvSubitem(RexxMethodContext *c, HWND hList, uint32_t ite
         goto done_out;
     }
 
-    lvi->mask = LVIF_TEXT | LVIF_IMAGE;
+    char *temp = lvi->pszText;
+    lvi->mask  = LVIF_TEXT | LVIF_IMAGE | LVIF_NORECOMPUTE;
 
     if ( ! ListView_GetItem(hList, lvi) )
     {
         safeLocalFree(lvi->pszText);
         goto done_out;
     }
+    checkForCallBack(lvi, temp, true);
 
     RexxClassObject rxLvSi = rxGetContextClass(c, "LVSUBITEM");
     if ( rxLvSi == NULLOBJECT )
@@ -963,33 +1110,67 @@ done_out:
 }
 
 /**
- * Checks if the user data for a list-view item has bee set to a LvFullRow
- * object.
+ * Iterates through all LvFullRow objects assigned as the item data of a
+ * list-view item and adds or removes the specified subitem column.
  *
+ * @param c
  * @param hList
- * @param itemIndex
+ * @param colIndex
+ * @param removed
  *
- * @return The CSelf struct for a LvFullRow object if the user data of the
- *         list-view item has been set to a LvFullRow object, otherwise null.
+ * @return The true or false object.
  *
- * @note The item indexes in the full row struct are updated if the full row
- *       object is found.
+ * @remarks  Theoretically this should only be invoked when all list-view items
+ *           have a full row object assigned as the item data for the item, and
+ *           the column index is valid for all full rows.  We check for this,
+ *           but allow a few errors before we quit.
+ *
+ *           But, even one error indicates the user has something screwed up, so
+ *           I'm not sure that we shouldn't be rasing an error condition ...
  */
-static pCLvFullRow maybeGetFullRow(HWND hList, uint32_t itemIndex)
+static RexxObjectPtr fixColumns(RexxMethodContext *c, HWND hList, uint32_t colIndex, bool removed)
 {
-    LVITEM      lvi    = {LVIF_PARAM, itemIndex};
-    pCLvFullRow pclvfr = NULL;
+    uint32_t cItems = ListView_GetItemCount(hList);
+    uint32_t cErrs  = 0;
+    uint32_t i      = 0;
 
-    if ( ListView_GetItem(hList, &lvi) != 0 )
+    for ( i = 0; i < cItems && cErrs < 3; i++ )
     {
-        if ( isLvFullRowStruct((void *)(lvi.lParam)) )
+        pCLvFullRow pclvfr = maybeGetFullRow(hList, i);
+        if ( pclvfr == NULL )
         {
-            pclvfr = (pCLvFullRow)lvi.lParam;
-            updateFullRowIndexes(pclvfr);
+            cErrs++;
+            continue;
+        }
+
+        if ( ! validColumnIndex(pclvfr, removed, colIndex) )
+        {
+            cErrs++;
+            continue;
+        }
+
+        if ( removed )
+        {
+            removeSubItemFromRow(c, pclvfr, colIndex);
+        }
+        else
+        {
+            RexxObjectPtr lvSubItem = newLvSubitem(c, hList, i, colIndex);
+            if ( lvSubItem == TheNilObj )
+            {
+                break;
+            }
+
+            if ( ! insertSubItemIntoRow(c, lvSubItem, pclvfr, colIndex) )
+            {
+                break;
+            }
         }
     }
-    return pclvfr;
+
+    return (i == cItems ? TheTrueObj : TheFalseObj);
 }
+
 
 /**
  * Adds an item to the list view using a LvFullRow object.  The item is
@@ -1690,13 +1871,28 @@ RexxMethod1(RexxObjectPtr, lv_deleteAll, CSELF, pCSelf)
  *
  *  @param index  [required]  The zero-based index of the column to delete
  *
+ *  @param adjustFullRows  [optional]  If true attempts to fix up the LvFullRow
+ *                         objects assigned to the item data of each list-view
+ *                         item.  Does nothing if false.  The default is false.
+ *
  *  @return 0 on success, 1 on error.
  *
- *  @notes  Column 0 can not be deleted.  If column 0 must be deleted, MSDN
- *          suggests inserting a dummy column at index 0 and then deleting
+ *  @notes  MSDN says column 0 can not be deleted.  If column 0 must be deleted,
+ *          MSDN suggests inserting a dummy column at index 0 and then deleting
  *          column 1.
+ *
+ *          However, this is not true, column 0 can be deleted.  What can not be
+ *          deleted is the list-view item information for column 0.  When a
+ *          column for a subitem is deleted, the subitem information is deleted.
+ *          But, when column 0 is deleted the item inforation is not deleted.
+ *
+ *          Only adjust the LvFullRow objects if every list-view item has a
+ *          LvFullRow item assigned as the item data, and the programmer has
+ *          kept the LVFullRows consistent with changes to the column count of
+ *          this list-view.  If these conditions are not met, this method will
+ *          return an error, even if the column was deleted successfully.
  */
-RexxMethod2(RexxObjectPtr, lv_deleteColumn, uint32_t, index, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, lv_deleteColumn, uint32_t, index, OPTIONAL_logical_t, adjustFullRows, CSELF, pCSelf)
 {
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
@@ -1704,7 +1900,25 @@ RexxMethod2(RexxObjectPtr, lv_deleteColumn, uint32_t, index, CSELF, pCSelf)
         return TheOneObj;
     }
 
-    return ListView_DeleteColumn(pcdc->hCtrl, index) ? TheZeroObj : TheOneObj;
+    RexxObjectPtr result = ListView_DeleteColumn(pcdc->hCtrl, index) ? TheZeroObj : TheOneObj;
+
+    if ( result == TheZeroObj && index > 0 && adjustFullRows )
+    {
+        if ( ! reasonableColumnFix(context, pcdc->hCtrl, index, true) )
+        {
+            context->ClearCondition();
+            result = TheOneObj;
+        }
+        else
+        {
+            if ( fixColumns(context, pcdc->hCtrl, index, true) == TheFalseObj )
+            {
+                result = TheOneObj;
+            }
+        }
+    }
+
+    return result;
 }
 
 /** ListView::deselectAll()
@@ -1828,6 +2042,63 @@ RexxMethod2(int32_t, lv_findNearestXY, ARGLIST, args, CSELF, pCSelf)
 
 err_out:
     return -1;
+}
+
+
+/** ListView::fixFullRowColumns()
+ *
+ *
+ */
+RexxMethod3(RexxObjectPtr, lv_fixFullRowColumns, uint32_t, colIndex, logical_t, removed, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheFalseObj;
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    bool     isRemove = removed ? true : false;
+    uint32_t cColumns = (uint32_t)getColumnCount(pcdc->hCtrl);
+    if ( cColumns == (uint32_t)-1 )
+    {
+        severeErrorException(context->threadContext, "the list-view control reports it has no columns; can not continue");
+        goto done_out;
+    }
+
+    if ( colIndex == 0 )
+    {
+        userDefinedMsgException(context->threadContext, 2, "can not be column 0");
+        goto done_out;
+    }
+
+    if ( isRemove )
+    {
+        if ( colIndex > cColumns )
+        {
+            wrongRangeException(context->threadContext, 2, 1, cColumns, colIndex);
+            goto done_out;
+        }
+    }
+    else
+    {
+        if ( colIndex >= cColumns )
+        {
+            wrongRangeException(context->threadContext, 2, 1, cColumns - 1, colIndex);
+            goto done_out;
+        }
+    }
+
+    if ( ! reasonableColumnFix(context, pcdc->hCtrl, colIndex, isRemove) )
+    {
+        goto done_out;
+    }
+
+    result = fixColumns(context, pcdc->hCtrl, colIndex, isRemove);
+
+done_out:
+    return result;
 }
 
 /** ListView::getCheck()
@@ -2186,7 +2457,8 @@ RexxMethod2(RexxObjectPtr, lv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
  *
  *  @param _item  [required] Can be a LvItem object or the item index.
  *
- *                If it is a LvItem, we just fill it in.
+ *                If it is a LvItem, we just do ListView_GetItem() to fill it in
+ *                as specified.
  *
  *                If it is an index and we have no LvFullRow, we return a new,
  *                instantiated, LvItem object that reflects the item and the
@@ -2196,6 +2468,20 @@ RexxMethod2(RexxObjectPtr, lv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
  *                have the item indexes in sync and update the LvItem with the
  *                current transitory state, and then return the Rexx LvItem from
  *                the full row.
+ *
+ *  @return  When _item is a LvItem object, returns true on success and false on
+ *           error.
+ *
+ *           When the item to get is specified as an index, returns a LvItem
+ *           object on success, or the .nil object on error.
+ *
+ *  @notes  If _item is a LvItem, some, or all, of the information the list-view
+ *          maintains on the item is returned by the attributes of the LvItem.
+ *          The mask attribute of the LvItem specifies which attributes are set
+ *          to the current information of the item.
+ *
+ *          If _item is the item index, then the attributes of the returned
+ *          LvItem object are all set to reflect the current state of the item.
  *
  *  @remarks  If we have a LvFullRow object assigned to the user data, we use
  *  the Rexx item in the full row.  maybeGetFullRow() will update the item
@@ -2210,12 +2496,21 @@ RexxMethod2(RexxObjectPtr, lv_getItem, RexxObjectPtr, _item, CSELF, pCSelf)
 
     if ( context->IsOfType(_item, "LVITEM") )
     {
-        LPLVITEM plvi = (LPLVITEM)context->ObjectToCSelf(_item);
+        LPLVITEM  plvi = (LPLVITEM)context->ObjectToCSelf(_item);
+        char     *temp = plvi->pszText;
 
         BOOL success = ListView_GetItem(hList, plvi);
-        if ( success && (plvi->mask & LVIF_GROUPID) && plvi->iGroupId == 0 )
+        if ( success )
         {
-            plvi->iGroupId = I_GROUPIDNONE;
+            if ( (plvi->mask & LVIF_GROUPID) && plvi->iGroupId == 0 )
+            {
+                plvi->iGroupId = I_GROUPIDNONE;
+            }
+
+            if ( (plvi->mask & LVIF_TEXT) && temp != NULL && plvi->cchTextMax == LVITEM_TEXT_MAX + 1 )
+            {
+                checkForCallBack(plvi, temp, true);
+            }
         }
 
         return success ? TheTrueObj : TheFalseObj;
@@ -2293,7 +2588,7 @@ RexxMethod4(RexxObjectPtr, lv_getItemInfo, uint32_t, index, RexxObjectPtr, _d, O
     HWND hList = getDChCtrl(pCSelf);
 
     LVITEM lvi = {0};
-    char buf[256];
+    char buf[LVITEM_TEXT_MAX + 1];
 
     bool subitemImages = hasSubitemImages(hList);
 
@@ -2301,7 +2596,7 @@ RexxMethod4(RexxObjectPtr, lv_getItemInfo, uint32_t, index, RexxObjectPtr, _d, O
     lvi.iSubItem   = subItem;
     lvi.mask       = LVIF_TEXT;
     lvi.pszText    = buf;
-    lvi.cchTextMax = 255;
+    lvi.cchTextMax = LVITEM_TEXT_MAX + 1;
 
     if ( subItem == 0 )
     {
@@ -2321,9 +2616,18 @@ RexxMethod4(RexxObjectPtr, lv_getItemInfo, uint32_t, index, RexxObjectPtr, _d, O
         return TheFalseObj;
     }
 
+    checkForCallBack(&lvi, buf, false);
+
     // Set the text index now because we are going to reuse the buffer for the
     // state text.
-    context->DirectoryPut(d, context->String(lvi.pszText), "TEXT");
+    if ( lvi.pszText == LPSTR_TEXTCALLBACK )
+    {
+        context->DirectoryPut(d, context->String(LPSTR_TEXTCALLBACK_STRING), "TEXT");
+    }
+    else
+    {
+        context->DirectoryPut(d, context->String(lvi.pszText), "TEXT");
+    }
 
     *buf = '\0';
     RexxObjectPtr itemData = TheNilObj;
@@ -2372,27 +2676,113 @@ RexxMethod2(RexxObjectPtr, lv_getItemPos, uint32_t, index, CSELF, pCSelf)
 
 /** ListView::getSubitem()
  *
- *  Returns a LvSubItem object for the item and subitem indexes specified.
+ *  Returns, or fills in, a LvSubItem object for the subitem specified.
+ *
+ *  @param _item  [required] Can be a LvSubItem object or the item index.
+ *
+ *                If it is a LvSubItem, we just do ListView_GetItem() to fill it
+ *                in as specified.
+ *
+ *                If it is an index and we have no LvFullRow, we return a new,
+ *                instantiated, LvSubItem object that reflects the item and the
+ *                item's current state.
+ *
+ *                If we do have a LvFullRow, we ensure the LvFullRow objects
+ *                have the item indexes in sync, and then return the Rexx
+ *                LvSubItem from the full row.
+ *
+ *  @return  When _item is a LvSubItem object, returns true on success and false
+ *           on error.
+ *
+ *           When the subitem to get is specified as an index, returns a
+ *           LvSubItem object on success, or the .nil object on error.
+ *
+ *  @notes  If _item is a LvSubItem, some, or all, of the information the
+ *          list-view maintains on the item is returned by the attributes of the
+ *          LvSubItem. The mask attribute of the LvSubItem specifies which
+ *          attributes are set to the current information of the item.
+ *
+ *          If _item is the item index, then the attributes of the returned
+ *          LvSubItem object are all set to reflect the current state of the
+ *          subitem.
+ *
+ *          All list-view items have the same number of subitems. The number of
+ *          subitems depends on the number of columns the list-view has.  If the
+ *          index of the subitem is not valid, this method will fail.
  *
  *  @remarks  The ListView_GetItem macro will not fail, even if the subitem
- *            index is greater than any existing subitem.
- *            string.  Plus, there is no reason that the user could not have
- *            added subitems, but the list-view is not in report view.  So, we
- *            don't check subitemIndex with getColumnCount()
+ *            index is greater than any existing subitem.  So, we check the
+ *            subitemIndex with getColumnCount() and fail the method if it is
+ *            not valid.
+ *
+ *            If we have a LvFullRow object assigned to the user data, we use
+ *            the Rexx subitem in the full row, if it exists.  maybeGetFullRow()
+ *            will update the item index, which will ensure things are correct.
+ *
+ *  NOTE: remarks from getItemInfo()  we need to test what happens here
+ *
+ *  @remarks  ListView_GetItem() returns some bogus information if a subitem
+ *            index is used.  For example, if the list-view does not have the
+ *            SUBITEMIMAGES extended style, it does not update the iImage field.
+ *            Subitems can not have a state, but values for the item state are
+ *            returned.
+ *
+ *            So, if the user specifies a subitem index we adjust the return to
+ *            be correct.  For a subitem, state is always the empty string,
+ *            image is always -1 if the SUBITEMIMAGES style is absent, itemData
+ *            is always .nil
  */
-RexxMethod3(RexxObjectPtr, lv_getSubitem, uint32_t, itemIndex, uint32_t, subitemIndex, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, lv_getSubitem, RexxObjectPtr, _item, OPTIONAL_uint32_t, subitemIndex, CSELF, pCSelf)
 {
     RexxObjectPtr result = TheNilObj;
-    HWND          hList  = getDChCtrl(pCSelf);
 
-    if ( subitemIndex == 0 )
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
     {
         goto done_out;
     }
 
-    // If we have a LvFullRow object assigned to the user data, we use the Rexx
-    // subitem in the full row, if it exists.  maybeGetFullRow() will update the
-    // item index, which will ensure things are correct.
+    HWND    hList = pcdc->hCtrl;
+    int32_t count = getColumnCount(hList);
+
+    if ( context->IsOfType(_item, "LVSUBITEM") )
+    {
+        LPLVITEM plvi = (LPLVITEM)context->ObjectToCSelf(_item);
+
+        if ( count == -1 || plvi->iSubItem == 0 || plvi->iSubItem >= count )
+        {
+            result = TheFalseObj;
+            goto done_out;
+        }
+
+        char *temp = plvi->pszText;
+
+        result = ListView_GetItem(hList, plvi) ? TheTrueObj : TheFalseObj;
+
+        if ( result == TheTrueObj && (plvi->mask & LVIF_TEXT) && temp != NULL && plvi->cchTextMax == LVITEM_TEXT_MAX + 1 )
+        {
+            checkForCallBack(plvi, temp, true);
+        }
+
+        goto done_out;
+    }
+
+    uint32_t itemIndex;
+    if ( ! context->UnsignedInt32(_item, &itemIndex) )
+    {
+        wrongArgValueException(context->threadContext, 1, "a LvSubItem object or valid item index", _item);
+        goto done_out;
+    }
+    if ( argumentOmitted(2) )
+    {
+        missingArgException(context->threadContext, 2);
+        goto done_out;
+    }
+
+    if ( count < 1 || subitemIndex == 0 || subitemIndex >= (uint32_t)count )
+    {
+        goto done_out;
+    }
 
     pCLvFullRow pclvfr = maybeGetFullRow(hList, itemIndex);
     if ( pclvfr != NULL )
@@ -2659,10 +3049,20 @@ done_out:
  *  @param text
  *  @param width   The width of the column in pixels
  *
+ *  @param adjustFullRows  [optional]  If true attempts to fix up the LvFullRow
+ *                         objects assigned to the item data of each list-view
+ *                         item.  Does nothing if false.  The default is false.
  *
- *  @note  Even though the width argument in insertColumn() was documented as
- *         being in pixels, the code actually converted it to dialog units.
- *         This method is provided to really use pixels.
+ *
+ *  @note   Only adjust the LvFullRow objects if every list-view item has a
+ *          LvFullRow item assigned as the item data, and the programmer has
+ *          kept the LVFullRows consistent with changes to the column count of
+ *          this list-view.  If these conditions are not met, this method will
+ *          return an error, even if the column was deleted successfully.
+ *
+ *  @remarks  Even though the width argument in insertColumn() was documented as
+ *            being in pixels, the code actually converted it to dialog units.
+ *            This method is provided to really use pixels.
  *
  *  @remarks  Not sure why there is a restriction on the length of the column
  *            label, or why the passed text is copied to a buffer.  The
@@ -2670,8 +3070,8 @@ done_out:
  *            and just asks for a pointer to a string.  Both the length
  *            restriction and the copy are probably not needed.
  */
-RexxMethod5(int, lv_insertColumnPx, OPTIONAL_uint16_t, column, CSTRING, text, uint16_t, width,
-            OPTIONAL_CSTRING, fmt, CSELF, pCSelf)
+RexxMethod6(int, lv_insertColumnPx, OPTIONAL_uint16_t, column, CSTRING, text, uint16_t, width,
+            OPTIONAL_CSTRING, fmt, OPTIONAL_logical_t, adjustFullRows, CSELF, pCSelf)
 {
     HWND hwnd = getDChCtrl(pCSelf);
 
@@ -2720,6 +3120,24 @@ RexxMethod5(int, lv_insertColumnPx, OPTIONAL_uint16_t, column, CSTRING, text, ui
         ListView_InsertColumn(hwnd, lvi.iSubItem, &lvi);
         ListView_DeleteColumn(hwnd, 0);
     }
+
+    if ( retVal > 0 && adjustFullRows )
+    {
+        // retVal is the inserted column indext
+        if ( ! reasonableColumnFix(context, hwnd, retVal, false) )
+        {
+            context->ClearCondition();
+            retVal = -1;
+        }
+        else
+        {
+            if ( fixColumns(context, hwnd, retVal, false) == TheFalseObj )
+            {
+                retVal = -1;
+            }
+        }
+    }
+
     return retVal;
 }
 
@@ -2962,27 +3380,61 @@ RexxMethod2(logical_t, lv_modifyItem, RexxObjectPtr, lvItem, CSELF, pCSelf)
 
     if ( oldUserData != TheNilObj )
     {
-        if ( pclvfr == NULL )
+        if ( lParamIsModified )
         {
-            if ( lParamIsModified )
-            {
-                unProtectControlUserData(context, pcdc, oldUserData);
-            }
+            unProtectControlUserData(context, pcdc, oldUserData);
         }
-        else
+        else if ( pclvfr != NULL )
         {
-            if ( lParamIsModified )
-            {
-                unProtectControlUserData(context, pcdc, oldUserData);
-            }
-            else
-            {
-                mergeLviState(context, pclvfr, pclvfr->subItems[0], lvi);
-            }
+            mergeLviState(context, pclvfr, pclvfr->subItems[0], lvi);
         }
     }
 
     return TRUE;
+
+err_out:
+    return FALSE;
+}
+
+/** ListView::modifySubitem()
+ *
+ *
+ */
+RexxMethod2(logical_t, lv_modifySubitem, RexxObjectPtr, lvSubItem, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+
+    if ( pcdc == NULL )
+    {
+        goto err_out;
+    }
+
+    if ( ! context->IsOfType(lvSubItem, "LVSUBITEM") )
+    {
+        wrongClassException(context->threadContext, 1, "LvSubItem");
+        goto err_out;
+    }
+
+    LPLVITEM lvi = (LPLVITEM)context->ObjectToCSelf(lvSubItem);
+
+    if ( ListView_SetItem(pcdc->hCtrl, lvi) )
+    {
+        pCLvFullRow pclvfr = maybeGetFullRow(pcdc->hCtrl, lvi->iItem);
+
+        if ( pclvfr != NULL && pclvfr->subItemCount >= (uint32_t)lvi->iSubItem )
+        {
+            if ( lvi->mask & LVIF_TEXT )
+            {
+                updateFullRowText(context, pclvfr, lvi->iSubItem, lvi->pszText);
+            }
+
+            if ( lvi->mask & LVIF_IMAGE )
+            {
+                pclvfr->subItems[lvi->iSubItem]->iImage = lvi->iImage;
+            }
+        }
+        return TRUE;
+    }
 
 err_out:
     return FALSE;
@@ -3597,12 +4049,29 @@ RexxMethod2(int, lv_stringWidthPx, CSTRING, text, CSELF, pCSelf)
  */
 RexxMethod3(RexxObjectPtr, lv_zTest, uint32_t, itemIndex, uint32_t, subItemIndex, CSELF, pCSelf)
 {
+    printf("zTest() no test at this time\n");
+
+#if 0
     printf("zTest() itemIndex=%d subItemIndex=%d\n", itemIndex, subItemIndex);
 
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
     {
         return TheFalseObj;
+    }
+
+    uint32_t count = ListView_GetItemCount(pcdc->hCtrl);
+    for ( uint32_t i = 0; i < count; i++ )
+    {
+        pCLvFullRow pclvfr = maybeGetFullRow(pcdc->hCtrl, i);
+        printf("Item=%d subitem count=%d\n", i, pclvfr->subItemCount);
+
+        for ( uint32_t j = 1; j <= pclvfr->subItemCount; j++ )
+        {
+            printf(" subitem=%d\n    imageIndex=%d\n   cchTextMax=%d\n    text=%s\n", j, pclvfr->subItems[j]->iImage,
+                   pclvfr->subItems[j]->cchTextMax,
+                   pclvfr->subItems[j]->pszText == LPSTR_TEXTCALLBACK ? "textCallBack" : pclvfr->subItems[j]->pszText);
+        }
     }
 
     /*
@@ -3618,7 +4087,7 @@ RexxMethod3(RexxObjectPtr, lv_zTest, uint32_t, itemIndex, uint32_t, subItemIndex
     }
     */
 
-
+    /*
     LVITEM lvi = { 0 };
     lvi.iItem = itemIndex;
     lvi.iSubItem = subItemIndex;
@@ -3630,6 +4099,8 @@ RexxMethod3(RexxObjectPtr, lv_zTest, uint32_t, itemIndex, uint32_t, subItemIndex
     lvi.cchTextMax = 1024;
 
     printf("pszText=%p\n", lvi.pszText);
+    */
+
     /*
     if ( ListView_GetItem(pcdc->hCtrl, &lvi) )
     {
@@ -3646,6 +4117,7 @@ RexxMethod3(RexxObjectPtr, lv_zTest, uint32_t, itemIndex, uint32_t, subItemIndex
     }
     */
 
+    /*
     if ( ListView_SetItem(pcdc->hCtrl, &lvi) )
     {
         printf("ListView_SetItem() returns TRUE\n");
@@ -3654,6 +4126,8 @@ RexxMethod3(RexxObjectPtr, lv_zTest, uint32_t, itemIndex, uint32_t, subItemIndex
     {
         printf("ListView_SetItem() returns FALSE\n");
     }
+    */
+#endif
 
     return TheTrueObj;
 }
@@ -3866,7 +4340,7 @@ RexxObjectPtr getLviText(RexxMethodContext *c, LPLVITEM pLVI)
     }
     else if ( pLVI->pszText == LPSTR_TEXTCALLBACK )
     {
-        return c->String("lpStrTextCallBack");
+        return c->String(LPSTR_TEXTCALLBACK_STRING);
     }
 
     return c->String(pLVI->pszText);
@@ -4214,7 +4688,7 @@ RexxMethod1(RexxObjectPtr, lvi_unInit, CSELF, pCSelf)
  *                         retrieved or modified.  The keyword ALL can be used
  *                         to specify all state values.
  *
- *  @remarks  In general, if the LvItem object is going to be used to set an
+ *  @notes    In general, if the LvItem object is going to be used to set an
  *            item, the user does not need to specify the mask value, the proper
  *            mask is created depending on what attributes the user assigned
  *            values to.  I.e., if the user assigns some text to the text
@@ -4229,17 +4703,31 @@ RexxMethod1(RexxObjectPtr, lvi_unInit, CSELF, pCSelf)
  *            columnFormats, and groupIndex attributes are set through their
  *            attribute methods.
  *
- *  @notes    We allow a new LvItem to be instantiated internally by allocating
+ *  @remarks  We allow a new LvItem to be instantiated internally by allocating
  *            the CSelf buffer for the object and passing it in as the first
  *            argument.  We check for this by checking if the first argument is
  *            a Rexx buffer object and the second argument is the "magic" string
  *            value.
  *
- *            Although not implemented yet, we plan on adding a getItem() method
- *            that will take a LvItem object as input.  The user could then set
- *            the mask to specify what information is to be gotten.  Because of
- *            this, if the text argument is omitted, we need to check the mask
- *            and set up a buffer to recieve the text if LVIF_TEXT is specified.
+ *            The getItem() method will take a LvItem object as input.  The user
+ *            can then set the mask to specify what information is to be gotten.
+ *            Because of this, if the text argument is omitted, we need to check
+ *            the mask and set up a buffer to recieve the text if LVIF_TEXT is
+ *            specified.  The same thing applies to columns and colFormat
+ *            attributes, we need to allocate the buffers to receive the
+ *            inofmation
+ *
+ *            We have one problem.  If the user is constucting this LvItem to
+ *            receive information we would like to not set any attriubtes, allow
+ *            them to be filled in as specified by the mask.  But, if the user
+ *            is constructing this LvItem to set the item and just omits the
+ *            imageIndex arg, we would like to set imageIndex to I_IMAGENONE.
+ *            Same thing applies to the group ID.
+ *
+ *            But, we don't know what the user's intent is ... so, for now we
+ *            are setting the image index to I_IMAGENONE if the imageIndex arg
+ *            is omitted and the group ID to I_GROUPIDNONE if the groupID arg is
+ *            omitted..
  *
  *            The 'itemState' argument - Although the item state member in the
  *            LVITEM struct is a single value for the state, the overlay image
@@ -4277,12 +4765,7 @@ RexxMethod10(RexxObjectPtr, lvi_init, OPTIONAL_RexxObjectPtr, _index, OPTIONAL_C
     // object is going to be used to retrieve information.
     if ( argumentExists(5) )
     {
-        uint32_t flags = keyword2lvif(mask);
-        if ( flags == (uint32_t)-1 )
-        {
-            return NULLOBJECT;
-        }
-        lvi->mask = flags;
+        lvi->mask = keyword2lvif(mask);
     }
 
     if ( argumentExists(1) )
@@ -4631,6 +5114,20 @@ RexxMethod1(RexxObjectPtr, lvsi_unInit, CSELF, pCSelf)
 /** LvSubItem::init()
  *
  *
+ *
+ *  @remarks  We check if the user is setting the mask, and what values he sets,
+ *            first. This allows use to allocate the needed text buffer if the
+ *            LvSubItem object is going to be used to retrieve information.
+ *
+ *            We have one problem.  If the user is constucting this LvSubItem to
+ *            receive information we would like to not set any attriubtes, allow
+ *            them to be filled in as specified by the mask.  But, if the user
+ *            is constructing this LvSubItem to set the item and just omits the
+ *            imageIndex arg, we would like to set imageIndex to I_IMAGENONE.
+ *
+ *            But, we don't know what the user's intent is ... so, for now we
+ *            are setting the image index to I_IMAGENONE if the imageIndex arg
+ *            is omitted.
  */
 RexxMethod5(RexxObjectPtr, lvsi_init, RexxObjectPtr, _item, uint32_t, subItem, OPTIONAL_CSTRING, text,
              OPTIONAL_int32_t, imageIndex, OPTIONAL_CSTRING, mask)
@@ -4654,30 +5151,48 @@ RexxMethod5(RexxObjectPtr, lvsi_init, RexxObjectPtr, _item, uint32_t, subItem, O
         wrongRangeException(context->threadContext, 1, 0, INT_MAX, _item);
         return NULLOBJECT;
     }
+    if ( subItem == 0 )
+    {
+        wrongRangeException(context->threadContext, 2, 1, INT_MAX, subItem);
+        return NULLOBJECT;
+    }
 
     lvi->iItem    = item;
     lvi->iSubItem = subItem;
 
-    if ( ! argumentExists(3) )
-    {
-        // Sending setLviText the empty string will cause it to set up the
-        // buffer to receive information.
-        text = "";
-    }
-    if ( ! setLviText(context, lvi, text, 3) )
-    {
-        return NULLOBJECT;
-    }
-
-    if ( argumentExists(4) )
-    {
-        lvi->iImage = imageIndex < I_IMAGENONE ? I_IMAGENONE : imageIndex;
-        lvi->mask |= LVIF_IMAGE;
-    }
-
     if ( argumentExists(5) )
     {
         lvi->mask = keyword2lvifSub(mask);
+    }
+
+    if ( argumentExists(3) )
+    {
+        if ( ! setLviText(context, lvi, text, 3) )
+        {
+            return NULLOBJECT;
+        }
+    }
+    else
+    {
+        // Check if the user has set the LVIF_TEXT flag.
+        if ( lvi->mask & LVIF_TEXT )
+        {
+            // The empty string tells setLviText() to allocate a buffer.
+            if ( ! setLviText(context, lvi, "", 3) )
+            {
+                return NULLOBJECT;
+            }
+        }
+    }
+
+    lvi->mask |= LVIF_IMAGE;
+    if ( argumentExists(4) )
+    {
+        lvi->iImage = imageIndex < I_IMAGENONE ? I_IMAGENONE : imageIndex;
+    }
+    else
+    {
+        lvi->iImage = I_IMAGENONE;
     }
 
     return NULLOBJECT;
@@ -4771,6 +5286,39 @@ inline void adjustSubItemIndexes(pCLvFullRow pclvfr)
 }
 
 /**
+ * Checks that a subitem column being added or removed from a full row stuct is
+ * valid.
+ *
+ * A column that does not exist already in the struct can not be removed.  A
+ * column being added or inserted can not result is a sparse array.
+ *
+ *
+ * @param pclvfr
+ * @param colIndex
+ *
+ * @return bool
+ */
+static bool validColumnIndex(pCLvFullRow pclvfr, bool removed, uint32_t colIndex)
+{
+    if ( removed )
+    {
+        if ( colIndex > pclvfr->subItemCount )
+        {
+            return false;
+        }
+    }
+    else
+    {
+        if ( colIndex > pclvfr->subItemCount + 1 )
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
  *  For a LvFullRow object, we put the Rexx item and subitems in a Rexx bag and
  *  save the bag as an object variable to prevent GC of the items.
  *
@@ -4828,6 +5376,106 @@ static bool expandSubItems(RexxMethodContext *c, pCLvFullRow pclvfr)
 
     return true;
 }
+
+/**
+ * Removes a subitem column from the full row struct.
+ *
+ * @param c
+ * @param pclvfr
+ * @param index
+ *
+ * @return RexxObjectPtr
+ *
+ * @assumes   That updateFullRowIndexes() has already been called to ensure that
+ *            the item indexes in the current row are correct.
+ *
+ *            That index is valid for the full row, i.e., it must be an existing
+ *            column in the full row.
+ */
+static RexxObjectPtr removeSubItemFromRow(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t index)
+{
+    RexxObjectPtr subItem = pclvfr->rxSubItems[index];
+
+    if ( index < pclvfr->subItemCount )
+    {
+        size_t count = (pclvfr->subItemCount - index) * sizeof(void *);
+
+        memmove(&pclvfr->rxSubItems[index], &pclvfr->rxSubItems[index + 1], count);
+        memmove(&pclvfr->subItems[index],   &pclvfr->subItems[index + 1],   count);
+    }
+
+    pclvfr->subItemCount--;
+
+    adjustSubItemIndexes(pclvfr);
+
+    return lvfrUnStoreItem(c, pclvfr, subItem);
+}
+
+
+/**
+ * Inserts the specified LvSubItem into a LvFullRow object.
+ *
+ * @param c
+ * @param lvSubitem
+ * @param pclvfr
+ * @param index
+ *
+ * @return true on success, false on error.
+ *
+ * @assumes updateFullRowIndexes() has already been called to ensure that the
+ *          item indexes in the current row are correct.
+ *
+ *          That the index is within the bounds of the current subitems array,
+ *          plus one. I.e., the subitem can be appended to the current array,
+ *          but it can not be added such that the array becomes sparse.
+ *
+ *          If the current subitem array has 4 subitems, the subitem can be
+ *          'inserted' as the 5th subitem, but not as the 6th or greate subitem.
+ *
+ * @remarks  The subitem arrays are expanded if needed.  The subitem indexes of
+ *           all the subitems are adjusted for the insertion.
+ */
+static RexxObjectPtr insertSubItemIntoRow(RexxMethodContext *c, RexxObjectPtr lvSubitem, pCLvFullRow pclvfr, uint32_t index)
+{
+    uint32_t i = pclvfr->subItemCount + 1;
+
+    // Be sure we have room in the arrays for the new column.
+    if ( i >= pclvfr->size )
+    {
+        if ( ! expandSubItems(c, pclvfr) )
+        {
+            return TheFalseObj;
+        }
+    }
+
+    // If the new column is not being appended, then we need to shift the
+    // exising columns up one slot.
+    if ( index < i )
+    {
+        size_t count = (pclvfr->subItemCount - index + 1) * sizeof(void *);
+
+        memmove(&pclvfr->rxSubItems[index + 1], &pclvfr->rxSubItems[index], count);
+        memmove(&pclvfr->subItems[index + 1],   &pclvfr->subItems[index],   count);
+    }
+
+    // Add the new subitem at its column
+    pclvfr->subItemCount           = i;
+    pclvfr->rxSubItems[index]      = lvSubitem;
+    pclvfr->subItems[index]        = (LPLVITEM)c->ObjectToCSelf(lvSubitem);
+    pclvfr->subItems[index]->iItem = pclvfr->subItems[0]->iItem;
+
+    // Adjust the subitem indexes from the new subitem to the end of columns
+    for ( uint32_t j = index; j <= i; j++)
+    {
+        pclvfr->subItems[j]->iSubItem = j;
+    }
+
+    // Protect the new subitem from GC.
+    lvfrStoreItem(c, pclvfr, index);
+
+    return TheTrueObj;
+}
+
 
 /** LvFullRow::uninit()
  *
@@ -5020,27 +5668,61 @@ RexxMethod2(uint32_t, lvfr_addSubitem, RexxObjectPtr, subitem, CSELF, pCSelf)
         return 0;
     }
 
-    uint32_t i = pclvfr->subItemCount + 1;
+    updateFullRowIndexes(pclvfr);
 
-    if ( i >= pclvfr->size )
+    uint32_t newColumn = pclvfr->subItemCount + 1;
+    if ( ! insertSubItemIntoRow(context, subitem, pclvfr, newColumn) )
     {
-        if ( ! expandSubItems(context, pclvfr) )
-        {
-            return 0;
-        }
+        return 0;
+    }
+
+    return newColumn;
+}
+
+/** LvFullRow::insertSubitem()
+ *
+ *  Inserts a new subitem into this full row and adjusts the subitem indexes for
+ *  all existing subitems when needed.
+ *
+ *  @param  subitem   The subitem to insert.
+ *
+ *  @param  colIndex  The insertion index for the subitem.
+ *
+ *  @return  True on success, false on error.
+ */
+RexxMethod3(RexxObjectPtr, lvfr_insertSubitem, RexxObjectPtr, subitem, uint32_t, colIndex, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheFalseObj;
+
+    pCLvFullRow pclvfr = (pCLvFullRow)pCSelf;
+
+    if ( ! context->IsOfType(subitem, "LVSUBITEM") )
+    {
+        wrongClassException(context->threadContext, 1, "LvSubItem");
+        goto done_out;
+    }
+
+    if ( colIndex == 0 )
+    {
+        userDefinedMsgException(context->threadContext, 2, "can not be column 0");
+        goto done_out;
+    }
+
+    if ( colIndex > pclvfr->subItemCount + 1 )
+    {
+        wrongRangeException(context, 2, 1, pclvfr->subItemCount + 1, colIndex);
+        goto done_out;
     }
 
     updateFullRowIndexes(pclvfr);
 
-    pclvfr->subItemCount          = i;
-    pclvfr->rxSubItems[i]         = subitem;
-    pclvfr->subItems[i]           = (LPLVITEM)context->ObjectToCSelf(subitem);
-    pclvfr->subItems[i]->iSubItem = i;
-    pclvfr->subItems[i]->iItem    = pclvfr->subItems[0]->iItem;
+    if ( insertSubItemIntoRow(context, subitem, pclvfr, colIndex) )
+    {
+        result = TheTrueObj;
+    }
 
-    lvfrStoreItem(context, pclvfr, i);
-
-    return i;
+done_out:
+    return result;
 }
 
 /** LvFullRow::item()
@@ -5078,23 +5760,7 @@ RexxMethod2(RexxObjectPtr, lvfr_removeSubitem, uint32_t, index, CSELF, pCSelf)
     }
 
     updateFullRowIndexes(pclvfr);
-    RexxObjectPtr subItem = pclvfr->rxSubItems[index];
-
-    if ( index < pclvfr->subItemCount )
-    {
-        size_t count = (pclvfr->subItemCount - index) * sizeof(void *);
-
-        memmove(&pclvfr->rxSubItems[index], &pclvfr->rxSubItems[index + 1], count);
-        memmove(&pclvfr->subItems[index],   &pclvfr->subItems[index + 1],   count);
-    }
-
-    pclvfr->subItemCount--;
-
-    adjustSubItemIndexes(pclvfr);
-
-    subItem = lvfrUnStoreItem(context, pclvfr, subItem);
-
-    return subItem;
+    return removeSubItemFromRow(context, pclvfr, index);
 }
 
 /** LvFullRow::subItem()

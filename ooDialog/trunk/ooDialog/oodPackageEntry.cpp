@@ -1012,6 +1012,7 @@ REXX_METHOD_PROTOTYPE(lv_deleteColumn);
 REXX_METHOD_PROTOTYPE(lv_deselectAll);
 REXX_METHOD_PROTOTYPE(lv_find);
 REXX_METHOD_PROTOTYPE(lv_findNearestXY);
+REXX_METHOD_PROTOTYPE(lv_fixFullRowColumns);
 REXX_METHOD_PROTOTYPE(lv_getCheck);
 REXX_METHOD_PROTOTYPE(lv_getColor);
 REXX_METHOD_PROTOTYPE(lv_getColumnCount);
@@ -1040,6 +1041,7 @@ REXX_METHOD_PROTOTYPE(lv_itemText);
 REXX_METHOD_PROTOTYPE(lv_modify);
 REXX_METHOD_PROTOTYPE(lv_modifyColumnPx);
 REXX_METHOD_PROTOTYPE(lv_modifyItem);
+REXX_METHOD_PROTOTYPE(lv_modifySubitem);
 REXX_METHOD_PROTOTYPE(lv_prependFullRow);
 REXX_METHOD_PROTOTYPE(lv_removeItemData);
 REXX_METHOD_PROTOTYPE(lv_replaceExtendStyle);
@@ -1106,6 +1108,7 @@ REXX_METHOD_PROTOTYPE(lvsi_setImageIndex  );
 REXX_METHOD_PROTOTYPE(lvfr_init);
 REXX_METHOD_PROTOTYPE(lvfr_unInit);
 REXX_METHOD_PROTOTYPE(lvfr_addSubitem);
+REXX_METHOD_PROTOTYPE(lvfr_insertSubitem);
 REXX_METHOD_PROTOTYPE(lvfr_item);
 REXX_METHOD_PROTOTYPE(lvfr_removeSubitem);
 REXX_METHOD_PROTOTYPE(lvfr_subitem);
@@ -2024,6 +2027,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_deselectAll,                 lv_deselectAll),
     REXX_METHOD(lv_find,                        lv_find),
     REXX_METHOD(lv_findNearestXY,               lv_findNearestXY),
+    REXX_METHOD(lv_fixFullRowColumns,           lv_fixFullRowColumns),
     REXX_METHOD(lv_getCheck,                    lv_getCheck),
     REXX_METHOD(lv_getColor,                    lv_getColor),
     REXX_METHOD(lv_getColumnCount,              lv_getColumnCount),
@@ -2052,6 +2056,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_modify,                      lv_modify),
     REXX_METHOD(lv_modifyColumnPx,              lv_modifyColumnPx),
     REXX_METHOD(lv_modifyItem,                  lv_modifyItem),
+    REXX_METHOD(lv_modifySubitem,               lv_modifySubitem),
     REXX_METHOD(lv_prependFullRow,         	    lv_prependFullRow),
     REXX_METHOD(lv_removeItemData,   	        lv_removeItemData),
     REXX_METHOD(lv_replaceExtendStyle,          lv_replaceExtendStyle),
@@ -2118,6 +2123,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lvfr_init,                      lvfr_init),
     REXX_METHOD(lvfr_unInit,                    lvfr_unInit),
     REXX_METHOD(lvfr_addSubitem,                lvfr_addSubitem),
+    REXX_METHOD(lvfr_insertSubitem,             lvfr_insertSubitem),
     REXX_METHOD(lvfr_item,                      lvfr_item),
     REXX_METHOD(lvfr_removeSubitem,             lvfr_removeSubitem),
     REXX_METHOD(lvfr_subitem,                   lvfr_subitem),

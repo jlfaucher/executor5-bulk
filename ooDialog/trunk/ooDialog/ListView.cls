@@ -135,6 +135,7 @@
 ::method firstVisible unguarded
    return self~sendWinIntMsg(self~LVM_GETTOPINDEX , 0, 0)
 
+::method fixFullRowColumns unguarded external "LIBRARY oodialog lv_fixFullRowColumns"
 ::method focus unguarded external "LIBRARY oodialog lv_setSpecificState"
 ::method focused unguarded external "LIBRARY oodialog lv_getNextItemWithState"
 ::method getCheck unguarded external "LIBRARY oodialog lv_getCheck"
@@ -160,9 +161,9 @@
 ::method hitTestInfo unguarded external "LIBRARY oodialog lv_hitTestInfo"
 ::method insert unguarded external "LIBRARY oodialog lv_insert"
 ::method insertColumn unguarded -- Dialog units, not accurate.
-   use strict arg nr = 0, text, width, fmt = "L"
+   use strict arg nr = 0, text, width, fmt = "L", adjustFullRows = .false
    width = trunc(width * self~factorX)
-   return self~insertColumnPx(nr, text, width, fmt)
+   return self~insertColumnPx(nr, text, width, fmt, adjustFullRows)
 
 ::method insertColumnPx unguarded external "LIBRARY oodialog lv_insertColumnPx"
 ::method insertFullRow unguarded external "LIBRARY oodialog lv_insertFullRow"
@@ -207,6 +208,7 @@
 
 ::method modifyColumnPx unguarded external "LIBRARY oodialog lv_modifyColumnPx"
 ::method modifyItem unguarded external "LIBRARY oodialog lv_modifyItem"
+::method modifySubitem unguarded external "LIBRARY oodialog lv_modifySubitem"
 ::method next unguarded external "LIBRARY oodialog lv_getNextItem"
 ::method nextLeft unguarded external "LIBRARY oodialog lv_getNextItem"
 ::method nextRight unguarded external "LIBRARY oodialog lv_getNextItem"
@@ -362,6 +364,7 @@
 ::method unInit external "LIBRARY oodialog lvfr_unInit"
 
 ::method addSubItem external "LIBRARY oodialog lvfr_addSubitem"
+::method insertSubitem external "LIBRARY oodialog lvfr_insertSubitem"
 ::method item external "LIBRARY oodialog lvfr_item"
 ::method removeSubItem external "LIBRARY oodialog lvfr_removeSubitem"
 ::method subItem external "LIBRARY oodialog lvfr_subitem"

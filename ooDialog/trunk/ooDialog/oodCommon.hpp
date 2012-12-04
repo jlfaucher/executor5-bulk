@@ -243,7 +243,7 @@ inline int32_t oodResolveSymbolicID(RexxMethodContext *c, RexxObjectPtr oodObj, 
 
 inline void safeLocalFree(void *p)
 {
-    if (p != NULL)
+    if ( p != NULL && p != LPSTR_TEXTCALLBACK )
     {
         LocalFree(p);
     }
@@ -251,7 +251,7 @@ inline void safeLocalFree(void *p)
 
 inline void safeFree(void *p)
 {
-    if (p != NULL)
+    if ( p != NULL )
     {
         free(p);
     }
@@ -259,7 +259,7 @@ inline void safeFree(void *p)
 
 inline void safeDeleteObject(HANDLE h)
 {
-    if (h != NULL)
+    if ( h != NULL )
     {
         DeleteObject(h);
     }
