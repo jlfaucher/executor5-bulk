@@ -44,10 +44,11 @@
     #########################################################################
 -->
 
-<!-- Chapter07 - A Working Application		 		  v00-01 25Oct12
+<!-- Chapter07 - A Working Application		 		  v00-02 04Dec12
 
     Changes:
      v00-01 25Oct12: First version.
+     v00-02 04Dec12: Intro completed.
 
     7     "A Working Application"	chapSeven
     7.1     Introduction                chap07-intro
@@ -74,10 +75,42 @@ Things to add:
 </para>
 
 <section id="chap07-intro"><title>Introduction</title>  <!-- Section 7.1 -->
-<para>
-Try it out. Change some data. Explore. Message Sender discussed in section 7.3.
-Here's what we'll cover: (include why standalone testing removed).
-</para>
+<para> Open the <computeroutput>Exercise07</computeroutput> folder and start the Order Management
+            application by double-clicking on <computeroutput>startup.rex</computeroutput>. Try it
+            out. Change some data. Explore the function which, while not complete, is much more
+            complete than in the previous exercise. In particular, note that application data is
+            read from files - for example, the Customer data is read from the file
+                <computeroutput>CustomerFile.txt</computeroutput> (in which fields in a record are
+            separated by a vertical bar character, and field names are defined in the first line of
+            the file). However, although the data can be changed in dialogs, the changed data does
+            not (in this exercise) update the files. </para>
+        <para>Finally, note that the "Help" menu on the main "Sales Order Management" dialog now
+            includes an option "Message Sender" (discussed in more detail in section 7.3. . Click
+            this and a "Message Sender" dialog opens. This can be used to send messages to (invoke
+            methods on) the various components, and is a very useful debugging tool.  For example,
+            try sending a "query" message to the Customer number BA0314. To do this, key
+            "CustomerModel BA0314" in the "Target" field, "query" in the Method field, and then
+            press the "Send" button. The customer's data is returned in the "Reply" field in a
+            name-value string.  </para>
+        <para>Now try using the Message Sender to surface a Product dialog - say the view for
+            Product CU003.  To do this, enter "ObjectMgr The" in the Target field of the Message
+            Sender, enter "showModel" in the "method" field, enter "ProductModel CU003" in the Data
+            field, and then press the "Send" button. The Product dialog for instance CU003 appears.
+            (The Message Sender is discussed in <xref linkend="chap07-MsgSender"/>.)
+        </para>
+        <para>Consider now what has to happen to display the Product View. First, a
+                <computeroutput>ProductData</computeroutput> instance is created, and its data read
+            from disk (in this exercise, the whole file is read in by the data components). Then the
+            appropriate <computeroutput>ProductModel</computeroutput> component is instantiated and
+            its data retrieved from the <computeroutput>ProductData</computeroutput> component.
+            Finally, an instance of <computeroutput>ProductView</computeroutput> is created and its
+            data retrieved from the <computeroutput>ProductModel</computeroutput> component by
+            invoking its <emphasis>query</emphasis> method. </para>
+        <para>This sequence is a pattern that can be applied to most business components, and hence
+            can be placed in superclasses so that the application components do not each have to
+            provide the same duplicated code. The pattern is called the "Model-View Framework",
+            which is discussed in the next section. After that,  the Message Sender is briefly
+            discussed, following which the details of the Order Form component are addressed.  </para>
 </section>
 
 <section id="chap07-struc"><title id="ch7-amvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
@@ -99,7 +132,7 @@ refers (and links) to sub sections.
     <programlisting>
 <![CDATA[
 </programlisting>
-    
+
      Model-View Framework
 
      showModel(class-inst)  ->  ObjectMgr
