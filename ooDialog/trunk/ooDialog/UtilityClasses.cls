@@ -230,6 +230,8 @@
 ::attribute mouseHoverTime set class external "LIBRARY oodialog spi_getMouseHoverTime_cls"
 ::attribute mouseHoverWidth get class external "LIBRARY oodialog spi_getMouseHoverWidth_cls"
 ::attribute mouseHoverWidth set class external "LIBRARY oodialog spi_getMouseHoverWidth_cls"
+::attribute nonClientMetrics get class external "LIBRARY oodialog spi_getNonClientMetrics_cls"
+::attribute nonClientMetrics set class external "LIBRARY oodialog spi_setNonClientMetrics_cls"
 
 ::attribute updateFlag get class external "LIBRARY oodialog spi_getUpdateFlag_cls"
 ::attribute updateFlag set class external "LIBRARY oodialog spi_setUpdateFlag_cls"
@@ -245,6 +247,8 @@
 ::attribute cxDrag get class external        "LIBRARY oodialog sm_cyDrag_cls"
 ::attribute cxFixedFrame get class external  "LIBRARY oodialog sm_cxFixedFrame_cls"
 ::attribute cxScreen get class external      "LIBRARY oodialog sm_cxScreen_cls"
+::attribute cxSize get class external        "LIBRARY oodialog sm_cxSize_cls"
+::attribute cxSmIcon get class external      "LIBRARY oodialog sm_cxSmIcon_cls"
 ::attribute cxVscroll get class external     "LIBRARY oodialog sm_cxVScroll_cls"
 ::attribute cyCaption get class external     "LIBRARY oodialog sm_cyCaption_cls"
 ::attribute cyCursor get class external      "LIBRARY oodialog sm_cyCursor_cls"
@@ -818,7 +822,7 @@
    if sleeping >= 0 then do
       if earlyReply then reply
       ret = msSleep(sleeping)
-      self~start("endAsyncExection")
+      self~start("endAsyncExecution")
       self~ok:super
    end
    else do
@@ -1096,66 +1100,107 @@
    return self~initCode
 
 
+
 ::class 'SingleSelection' subclass UserDialog public
 
-::method Init
-   expose message title entries. len datas. prev max
-   use arg message, title, entries., prev, len, max
-   if arg(5,"o") = 1 then len = 0
-   if arg(6,"o") = 1 then max = 0
-   if arg(4,"o") = 1 then prev = 1
+::constant  MIN_DLGCX   110  -- minimum size to accomdate ok / cancel buttons
+::constant  MIN_RB_ID   101  -- first radio button resource ID
+
+::method init
+   expose message title entries. preSel len max enhanced
+   use strict arg  message, title, entries., preSel = 1, len = 0, max = 0
+
    self~init:super(datas.)
 
 ::method defineDialog
-   expose message sx sy len dlgx dlgy entries. placex max
-   self~createStaticText(-1, 10, 10, sx+2, sy, , message)
-   self~createRadioButtonStem(101, placex, sy+4+10, len, entries., max)
-   self~createPushButtonGroup(dlgx-100, dlgy - 18, 0, 0, "&Ok 1 OK &Cancel 2 CANCEL", 1, "DEFAULT")
+   expose entries. dlgCX dlgCY msgCX msgCY message groupBoxX staticX len max
+
+   buttonTxt = "&Ok 1 OK &Cancel 2 CANCEL"
+
+   self~createStaticText(-1, staticX, 10, msgCX + 2, msgCY, , message)
+   self~createRadioButtonStem(self~MIN_RB_ID, groupBoxX, msgCY + 4 + 10, len, entries., max)
+   self~createPushButtonGroup(dlgCX - 100, dlgCY - 18, 0, 0, buttonTxt, 1, "DEFAULT")
 
 ::method execute
-   expose message title sx sy datas. dlgx dlgy len entries. placex prev max
+   expose enhanced dlgCX dlgCY title count
+   datas. = self~dlgData
+
+   self~calcSizes
+
+   self~createCenter(dlgCX, dlgCY, title, , , , , count + 5)
+
+   self~execute:super("SHOWTOP")
+   if self~initCode = 1 then do
+      offSet = self~MIN_RB_ID - 1
+      do i = self~MIN_RB_ID to offset + count
+         if datas.i = 1 then return i - offset
+      end
+      return 0
+   end
+   else do
+      return ""
+   end
+
+::method calcSizes private
+   expose entries. max preSel message len msgCX msgCy count dlgCX dlgCY groupBoxX staticX
+
+   datas.   = self~dlgData
 
    s = self~getTextSizeDu(message)
-   sx = s~width
-   sy = s~height
+   msgCX = s~width
+   msgCY = s~height
    ll = 0; count = 0
-   do while var("entries."count+1) = 1
-      count = count + 1
-      s = self~getTextSizeDu(entries.count)
-      if s~width > ll then ll = s~width
+   do while var("entries."count + 1) = 1
+      count += 1
+      if len == 0 then do
+          s = self~getTextSizeDu(entries.count)
+          if s~width > ll then ll = s~width
+      end
    end
+   if len <> 0 then ll = len
+   else ll += 20
 
    if max = 0 then max = count
-   dlgy = max * trunc(sy * 1.5) + sy + 60
-   placex = 10
+   dlgCY = max * trunc(msgCY * 1.5) + msgCY + 60
+   dlgCX = self~getMinDlgCX
+   groupBoxX = 10
+   staticX = 10
    columns = (count % max)
-   if  (count // max) > 0 then columns = columns +1
+   if  (count // max) > 0 then columns = columns + 1
 
-   if sx >= (ll + 20) * columns then
-   do
-      dlgx = (sx+24)
-      if columns = 1 then placex = trunc((dlgx - ll - 20) /2)
+   groupBoxCX = ll * columns
+   if msgCX >= groupBoxCX then do
+      if (msgCX + 24) > dlgCX then dlgCX = (msgCX + 24)
    end
-   else dlgx = (ll + 20) * columns + 24
-   if dlgx < 110 then dlgx = 110
+   else do
+      if groupBoxCX + 24 > dlgCX then dlgCX = groupBoxCX + 24
+   end
 
-   do i = 101 to 100+count
+   if groupBoxCX + 4 < dlgCX then do
+      groupBoxX = trunc((dlgCX - groupBoxCX) / 2)
+      if groupBoxCX >= msgCX then staticX = groupBoxX
+      else staticX = trunc((dlgCX - msgCX) / 2)
+   end
+
+   offset = self~MIN_RB_ID - 1
+   do i = self~MIN_RB_ID to offset + count
       datas.i = 0
    end
-   pr = (100+prev)
+   pr = (offset + preSel)
    datas.pr = 1
 
-   self~createCenter(dlgx, dlgy, title,,,,, count+5)
-   self~execute:super("SHOWTOP")
-   if self~initCode = 1 then
-   do
-     do i = 101 to 100+count
-      if datas.i = 1 then return i-100
-     end
-     return 0
-   end
-   else
-    return ""
+::method getMinDlgCX private
+    expose title
+
+    s = self~getTextSizeTitleBar(title)
+
+    padding = 18
+    s~width += (2 * .SM~cxFixedFrame) + .SM~cxSize + .SM~cxSmIcon + padding
+    self~pixel2dlgUnit(s)
+
+    if self~MIN_DLGCX < s~width then return s~width
+    else return self~MIN_DLGCX
+
 
 
 -- Never documented and does not work well.  Could be usefull if fixed.

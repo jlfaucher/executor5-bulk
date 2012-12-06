@@ -631,7 +631,7 @@ static void updateFullRowItemState(pCLvFullRow pclvfr)
  *           If subitem is out of bounds then we just do nothing.  We need to
  *           account for LPSTR_TEXTCALLBACK.
  */
-static void updateFullRowText(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t subitem, CSTRING text)
+static void updateFullRowText(RexxThreadContext *c, pCLvFullRow pclvfr, uint32_t subitem, CSTRING text)
 {
     if ( subitem <= pclvfr->subItemCount )
     {
@@ -646,10 +646,10 @@ static void updateFullRowText(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t
         {
             len = strlen(text) + 1;
 
-            char *newText = (char *)LocalAlloc(LPTR, len);
+            newText = (char *)LocalAlloc(LPTR, len);
             if ( newText == NULL )
             {
-                outOfMemoryException(c->threadContext);
+                outOfMemoryException(c);
                 return;
             }
             memcpy(newText, text, len);
@@ -657,10 +657,7 @@ static void updateFullRowText(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t
 
         LPLVITEM lvi = pclvfr->subItems[subitem];
 
-        if ( lvi->pszText != LPSTR_TEXTCALLBACK )
-        {
-            safeLocalFree(lvi->pszText);
-        }
+        safeLocalFree(lvi->pszText);
 
         lvi->pszText    = newText;
         lvi->cchTextMax = (int)len;
@@ -844,7 +841,7 @@ void mergeLviState(RexxMethodContext *c, pCLvFullRow pclvfr, LPLVITEM existingLv
     }
     if ( LVIF_TEXT & lvi->mask )
     {
-        updateFullRowText(c, pclvfr, 0, lvi->pszText);
+        updateFullRowText(c->threadContext, pclvfr, 0, lvi->pszText);
     }
     if ( LVIF_STATE & lvi->mask )
     {
@@ -1169,6 +1166,20 @@ static RexxObjectPtr fixColumns(RexxMethodContext *c, HWND hList, uint32_t colIn
     }
 
     return (i == cItems ? TheTrueObj : TheFalseObj);
+}
+
+void maybeUpdateFullRowText(RexxThreadContext *c, NMLVDISPINFO *pdi)
+{
+    if ( pdi->item.lParam != 0 )
+    {
+        if ( isLvFullRowStruct((void *)pdi->item.lParam) )
+        {
+            pCLvFullRow pclvfr = (pCLvFullRow)pdi->item.lParam;
+
+            updateFullRowIndexes(pclvfr);
+            updateFullRowText(c, pclvfr, 0, pdi->item.pszText);
+        }
+    }
 }
 
 
@@ -3273,7 +3284,7 @@ RexxMethod5(RexxObjectPtr, lv_modify, OPTIONAL_uint32_t, itemIndex, OPTIONAL_uin
         pCLvFullRow pclvfr = maybeGetFullRow(hList, itemIndex);
         if ( pclvfr != NULL )
         {
-            updateFullRowText(context, pclvfr, subitemIndex, text);
+            updateFullRowText(context->threadContext, pclvfr, subitemIndex, text);
 
             if ( imageIndex > -1 && subitemIndex <= pclvfr->subItemCount )
             {
@@ -3425,7 +3436,7 @@ RexxMethod2(logical_t, lv_modifySubitem, RexxObjectPtr, lvSubItem, CSELF, pCSelf
         {
             if ( lvi->mask & LVIF_TEXT )
             {
-                updateFullRowText(context, pclvfr, lvi->iSubItem, lvi->pszText);
+                updateFullRowText(context->threadContext, pclvfr, lvi->iSubItem, lvi->pszText);
             }
 
             if ( lvi->mask & LVIF_IMAGE )
@@ -3970,7 +3981,7 @@ RexxMethod4(RexxObjectPtr, lv_setItemText, uint32_t, index, OPTIONAL_uint32_t, s
     pCLvFullRow pclvfr = maybeGetFullRow(hList, index);
     if ( pclvfr != NULL )
     {
-        updateFullRowText(context, pclvfr, subitem, text);
+        updateFullRowText(context->threadContext, pclvfr, subitem, text);
     }
 
     ListView_SetItemText(hList, index, subitem, (LPSTR)text);

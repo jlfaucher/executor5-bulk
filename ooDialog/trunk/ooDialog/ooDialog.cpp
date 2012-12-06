@@ -3771,6 +3771,75 @@ RexxMethod5(RexxObjectPtr, pbdlg_getTextSizeDlg, CSTRING, text, OPTIONAL_CSTRING
 }
 
 
+/** PlainBaseDialog::getTextSizeTitleBar()
+ *
+ *  Gets the size, width and height, of a string used in the caption bar for the
+ *  title.
+ *
+ *  @param  text  [required]  The text to get the dimensions for.
+ *
+ *  @return  A .Size object that reflects the width and height of the string if
+ *           it were used in the caption bar.
+ *
+ *  @notes  This method can be invoked before the underlying dialog is created,
+ *          and will return the dimensions as it does after the dialog is
+ *          created.
+ *
+ *  @remarks  For GetWindowDC(), if the HWND passed to it is NULL, it returns a
+ *            DC for the screen.  This works fine for our needs.  Testing shows
+ *            the same dimensions are returned with a NULL HWND as with the
+ *            created dialog's HWND.
+ */
+RexxMethod2(RexxObjectPtr, pbdlg_getTextSizeTitleBar, CSTRING, text, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    uint32_t errCode = 0;
+    SIZE     size    = {0};
+
+    NONCLIENTMETRICS ncm = { 0 };
+    ncm.cbSize = sizeof(NONCLIENTMETRICS );
+
+    pCPlainBaseDialog pcpbd = getPBDCSelf(context, pCSelf);
+    if ( pcpbd == NULL )
+    {
+        goto done_out;
+    }
+
+    // First get the LOGFONT for the caption.
+    if ( ! SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS ), &ncm, 0) )
+    {
+        errCode = GetLastError();
+        goto done_out;
+    }
+
+    HDC hDC = GetWindowDC(pcpbd->hDlg);
+    if ( hDC == NULL )
+    {
+        errCode = GetLastError();
+        goto done_out;
+    }
+
+    HFONT hFont = CreateFontIndirect(&ncm.lfCaptionFont);
+    if ( hFont == NULL )
+    {
+        errCode = GetLastError();
+        goto done_out;
+    }
+
+    // This could fail, in which case the next steps are exactly the same, we
+    // release the DC and set the system error code.  So we don't check for an
+    // error.
+    getTextExtent(hFont, hDC, text, &size);
+
+    DeleteObject(hFont);
+    ReleaseDC(pcpbd->hDlg, hDC);
+
+done_out:
+    oodSetSysErrCode(context->threadContext, errCode);
+    return rxNewSize(context, size.cx, size.cy);
+}
+
 /** PlainBaseDialog::show()
  *
  *  Shows the dialog in the manner specified by the keyword option.  The dialog

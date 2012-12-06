@@ -1378,6 +1378,54 @@ RexxMethod2(RexxObjectPtr, spi_setMouseHoverWidth_cls, uint32_t, pixels, CSELF, 
 }
 
 
+/** SPI::nonClientMetrics  [class attribute get]
+ */
+RexxMethod0(RexxObjectPtr, spi_getNonClientMetrics_cls)
+{
+    RexxMethodContext *c = context;
+    oodResetSysErrCode(context->threadContext);
+
+    RexxDirectoryObject result = c->NewDirectory();
+    NONCLIENTMETRICS    ncm    = { 0 };
+
+    ncm.cbSize = sizeof(NONCLIENTMETRICS );
+
+    if ( ! SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS ), &ncm, 0) )
+    {
+        oodSetSysErrCode(context->threadContext);
+    }
+    else
+    {
+        ; // Not implemented.
+    }
+    return result;
+}
+
+/** SPI::nonClientMetrics  [class attribute set]
+ */
+RexxMethod2(RexxObjectPtr, spi_setNonClientMetrics_cls, RexxObjectPtr, data, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    NONCLIENTMETRICS ncm    = { 0 };
+    ncm.cbSize = sizeof(NONCLIENTMETRICS );
+
+    // First get the current values.  We are not going to allow changing the
+    // LOGFONT fields.
+    if ( ! SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS ), &ncm, 0) )
+    {
+        oodSetSysErrCode(context->threadContext);
+    }
+    else
+    {
+        // Now take the indexes from the directory object and set the
+        // appropriate fields in ncm.  Then do a SPI_SETNONCLIENTMETRICS.
+        ;  // Not implemented.
+    }
+    return NULLOBJECT;
+}
+
+
 /** SPI::updateFlag  [class attribute get]
  *
  */
@@ -1516,6 +1564,14 @@ RexxMethod0(int32_t, sm_cxFixedFrame_cls)
 RexxMethod0(int32_t, sm_cxScreen_cls)
 {
     return GetSystemMetrics(SM_CXSCREEN);
+}
+RexxMethod0(int32_t, sm_cxSize_cls)
+{
+    return GetSystemMetrics(SM_CXSIZE);
+}
+RexxMethod0(int32_t, sm_cxSmIcon_cls)
+{
+    return GetSystemMetrics(SM_CXSMICON);
 }
 RexxMethod0(int32_t, sm_cxVScroll_cls)
 {

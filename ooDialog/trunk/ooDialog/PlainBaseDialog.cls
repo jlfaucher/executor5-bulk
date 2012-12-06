@@ -444,6 +444,7 @@
 ::method getControlHandle unguarded external "LIBRARY oodialog pbdlg_getControlHandle"
 ::method getTextSizeDu unguarded external "LIBRARY oodialog pbdlg_getTextSizeDu"
 ::method getTextSizeDlg unguarded external "LIBRARY oodialog pbdlg_getTextSizeDlg"
+::method getTextSizeTitleBar unguarded external "LIBRARY oodialog pbdlg_getTextSizeTitleBar"
 ::method pixel2dlgUnit external "LIBRARY oodialog pbdlg_pixel2dlgUnit"
 ::method dlgUnit2pixel external "LIBRARY oodialog pbdlg_dlgUnit2pixel"
 ::method backgroundBitmap external "LIBRARY oodialog pbdlg_backgroundBitmap"

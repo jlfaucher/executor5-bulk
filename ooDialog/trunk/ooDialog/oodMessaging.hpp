@@ -85,6 +85,9 @@ extern MsgReplyType  invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, Rex
 extern bool          msgReplyIsGood(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING methodName, bool clear);
 extern RexxObjectPtr requiredBooleanReply(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING method, bool clear);
 
+// List-view functions.  Defined in oodListView.cpp:
+extern void maybeUpdateFullRowText(RexxThreadContext *c, NMLVDISPINFO *pdi);
+
 // Tree-view notification processing functions.  Defined in oodTreeView.cpp:
 extern MsgReplyType  tvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
 extern MsgReplyType  tvnBeginLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);

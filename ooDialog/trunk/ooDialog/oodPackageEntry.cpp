@@ -453,6 +453,8 @@ REXX_METHOD_PROTOTYPE(spi_getMouseHoverWidth_cls);
 REXX_METHOD_PROTOTYPE(spi_setMouseHoverWidth_cls);
 REXX_METHOD_PROTOTYPE(spi_getMouseHoverHeight_cls);
 REXX_METHOD_PROTOTYPE(spi_setMouseHoverHeight_cls);
+REXX_METHOD_PROTOTYPE(spi_getNonClientMetrics_cls);
+REXX_METHOD_PROTOTYPE(spi_setNonClientMetrics_cls);
 REXX_METHOD_PROTOTYPE(spi_getUpdateFlag_cls);
 REXX_METHOD_PROTOTYPE(spi_setUpdateFlag_cls);
 REXX_METHOD_PROTOTYPE(spi_getWorkArea_cls);
@@ -466,6 +468,8 @@ REXX_METHOD_PROTOTYPE(sm_cxCursor_cls);
 REXX_METHOD_PROTOTYPE(sm_cxDrag_cls);
 REXX_METHOD_PROTOTYPE(sm_cxFixedFrame_cls);
 REXX_METHOD_PROTOTYPE(sm_cxScreen_cls);
+REXX_METHOD_PROTOTYPE(sm_cxSize_cls);
+REXX_METHOD_PROTOTYPE(sm_cxSmIcon_cls);
 REXX_METHOD_PROTOTYPE(sm_cxVScroll_cls);
 REXX_METHOD_PROTOTYPE(sm_cyCaption_cls);
 REXX_METHOD_PROTOTYPE(sm_cyCursor_cls);
@@ -594,6 +598,7 @@ REXX_METHOD_PROTOTYPE(pbdlg_getControlHandle);
 REXX_METHOD_PROTOTYPE(pbdlg_getWindowText);
 REXX_METHOD_PROTOTYPE(pbdlg_setWindowText);
 REXX_METHOD_PROTOTYPE(pbdlg_getTextSizeDu);
+REXX_METHOD_PROTOTYPE(pbdlg_getTextSizeTitleBar);
 REXX_METHOD_PROTOTYPE(pbdlg_getControlText);
 REXX_METHOD_PROTOTYPE(pbdlg_setControlText);
 REXX_METHOD_PROTOTYPE(pbdlg_enableDisableControl);
@@ -1504,6 +1509,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(spi_setMouseHoverTime_cls,      spi_setMouseHoverTime_cls),
     REXX_METHOD(spi_getMouseHoverWidth_cls,     spi_getMouseHoverWidth_cls),
     REXX_METHOD(spi_setMouseHoverWidth_cls,     spi_setMouseHoverWidth_cls),
+    REXX_METHOD(spi_getNonClientMetrics_cls,    spi_getNonClientMetrics_cls),
+    REXX_METHOD(spi_setNonClientMetrics_cls,    spi_setNonClientMetrics_cls),
     REXX_METHOD(spi_getUpdateFlag_cls,          spi_getUpdateFlag_cls),
     REXX_METHOD(spi_setUpdateFlag_cls,          spi_setUpdateFlag_cls),
     REXX_METHOD(spi_getWorkArea_cls,            spi_getWorkArea_cls),
@@ -1517,6 +1524,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(sm_cxDrag_cls,                  sm_cxDrag_cls),
     REXX_METHOD(sm_cxFixedFrame_cls,            sm_cxFixedFrame_cls),
     REXX_METHOD(sm_cxScreen_cls,                sm_cxScreen_cls),
+    REXX_METHOD(sm_cxSize_cls,                  sm_cxSize_cls),
+    REXX_METHOD(sm_cxSmIcon_cls,                sm_cxSmIcon_cls),
     REXX_METHOD(sm_cxVScroll_cls,               sm_cxVScroll_cls),
     REXX_METHOD(sm_cyCaption_cls,               sm_cyCaption_cls),
     REXX_METHOD(sm_cyCursor_cls,                sm_cyCursor_cls),
@@ -1644,6 +1653,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbdlg_setControlText,           pbdlg_setControlText),
     REXX_METHOD(pbdlg_getTextSizeDu,            pbdlg_getTextSizeDu),
     REXX_METHOD(pbdlg_getTextSizeDlg,           pbdlg_getTextSizeDlg),
+    REXX_METHOD(pbdlg_getTextSizeTitleBar,      pbdlg_getTextSizeTitleBar),
     REXX_METHOD(pbdlg_enableDisableControl,     pbdlg_enableDisableControl),
     REXX_METHOD(pbdlg_getControlID,             pbdlg_getControlID),
     REXX_METHOD(pbdlg_center,                   pbdlg_center),

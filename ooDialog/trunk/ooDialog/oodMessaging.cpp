@@ -1783,7 +1783,7 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                 // To preserve old behavior for DefListEditStater, we don't need
                 // to do anything. Otherwise, we need to invoke the named method
                 // with the old args.
-                if ( toupper(*methodName) == 'B' )
+                if ( StrCmpI(methodName, "DefListEditStarter") != 0 )
                 {
                     RexxStringObject mthName = c->String(methodName);
                     RexxObjectPtr    useLess = c->Intptr(lParam);
@@ -1846,13 +1846,13 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         case LVN_ENDLABELEDIT :
         {
             NMLVDISPINFO *pdi = (NMLVDISPINFO *)lParam;
-
+            printf("Got LVN_ENDLABELEDIT methodName=%s pszText=%s\n", methodName, pdi->item.pszText ? pdi->item.pszText : "null");
             if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
             {
                 // To preserve old behaviour for DefListEditHandler, we don't
                 // need to do anything except set the reply value.  Otherwise,
                 // we need to invoke the named method with the old args.
-                if ( toupper(*methodName) == 'B' )
+                if ( StrCmpI(methodName, "DefListEditHandler") != 0 )
                 {
                     RexxArrayObject args;
 
@@ -1878,6 +1878,11 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                     c->ReleaseLocalReference(itemID);
                 }
 
+                if ( pdi->item.pszText )
+                {
+                    maybeUpdateFullRowText(c, pdi);
+                }
+
                 setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, pdi->item.pszText ? TRUE : FALSE);
                 return ReplyTrue;
             }
@@ -1897,9 +1902,19 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                     return ReplyFalse;
                 }
 
-                // Return true to accept the edited text, false to cancel
-                // it.  The return from Rexx is the same.
-                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? TRUE : FALSE);
+                // From Rexx, return true to accept the edited text, false to
+                // cancel it.  The return to Windows is the same.  But, if the
+                // user canceled the edit and the Rexx programmer returns true,
+                // we ignore the Rexx programmer's reply and return FALSE to
+                // Windows.
+                BOOL windowsReply = (msgReply == TheTrueObj && pdi->item.pszText != NULL) ? TRUE : FALSE;
+
+                if ( windowsReply )
+                {
+                    maybeUpdateFullRowText(c, pdi);
+                }
+
+                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, windowsReply);
             }
             else
             {
@@ -3641,6 +3656,7 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
     else if ( StrCmpI(keyword, "KEYDOWN")     == 0 ) lvn = LVN_KEYDOWN;
     else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 )
     {
+        printf("Found defaultEdit\n");
         *isDefEdit = true;
         *tag = TAG_LISTVIEW | TAG_PRESERVE_OLD;
     }
@@ -5572,10 +5588,13 @@ RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING
         return TheNegativeOneObj;
     }
 
-    // Deal with DEFAULTEDIT separately. For LVN_BEGINLABELEDIT, we do not need
-    // to handle the event
+    // Deal with DEFAULTEDIT separately.
     if ( isDefEdit )
     {
+        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, LVN_BEGINLABELEDIT, 0xFFFFFFFF, "DefListEditStarter", tag) )
+        {
+            return TheNegativeOneObj;
+        }
         if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, LVN_ENDLABELEDIT, 0xFFFFFFFF, "DefListEditHandler", tag) )
         {
             return TheNegativeOneObj;
