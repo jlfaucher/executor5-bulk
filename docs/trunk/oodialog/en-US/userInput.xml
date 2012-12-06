@@ -913,12 +913,12 @@ if s <> "" then do while s \= ""
 </section>
 
 <section id="clsSingleSelection" xreflabel="SingleSelection"><title>SingleSelection Class</title>
-<indexterm><primary>SingleSelection</primary>
-<secondary>class</secondary></indexterm>
-<indexterm><primary>standard dialogs</primary>
-<secondary>SingleSelection</secondary></indexterm>
-<para>The SingleSelection class shows a dialog that has
-a group of radio buttons. The user can select only one item of the group. </para>
+<indexterm><primary>SingleSelection</primary><secondary>standard dialogs</secondary></indexterm>
+<indexterm><primary>standard dialogs</primary><secondary>SingleSelection</secondary></indexterm>
+<para>
+  The <computeroutput>SingleSelection</computeroutput> class presents a dialog that has a group of radio buttons. The user
+  can select only one item of the group.
+</para>
 <variablelist>
 <varlistentry><term>Execute:</term>
 <listitem><para>Returns the number of the radio button selected
@@ -926,73 +926,133 @@ a group of radio buttons. The user can select only one item of the group. </para
 </variablelist>
 <para>The method listed below is defined by this class.</para>
 
-<section id="initSingleSelection" xreflabel="init"><title>init</title>
-<indexterm><primary>init</primary>
-<secondary>SingleList class</secondary></indexterm>
+<section id="mthNewClsSingleSelection" xreflabel="new"><title>new</title>
+<indexterm><primary>new</primary><secondary>SingleSelection class</secondary></indexterm>
+<indexterm><primary>SingleSelection class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSingleSelection~init(--message--,--title--,--labels.--,--data-->
-
->--+------------------------+--)-------------------------------><
-   +-,--+-----+--+--------+-+
-        +-len-+  +-,--max-+
-
-
+>>-new(--msg--,--title--,--labels.--,--+----------+--+---------+--+-------+--)--><
+                                       +-,-preSel-+  +-,-rbLen-+  +-,-max-+
 ]]>
 </programlisting>
+<para>
 
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>message</term>
-<listitem><para>A text string that is displayed on top of the radio button group.  Use
-it to give the user advice on what to do.
-</para></listitem></varlistentry>
-<varlistentry><term>title</term>
-<listitem><para>A text string for the title bar
-</para></listitem></varlistentry>
-<varlistentry><term>labels.</term>
-<listitem><para>This argument is a stem variable containing all labels for the radio
-buttons
-</para></listitem></varlistentry>
-<varlistentry><term>data</term>
-<listitem><para>You can use this argument to preselect one radio button. A value of
-1 selects the first radio button, a value of 2 selects the second, and so
-on.
-</para></listitem></varlistentry>
-<varlistentry><term>len</term>
-<listitem><para>Determines the length of the check boxes and labels. If omitted, the
-size is calculated to fit the largest label.
-</para></listitem></varlistentry>
-<varlistentry><term>max</term>
-<listitem><para>The maximum number of radio buttons in one column. If there are more
-radio buttons than max - that is, labels. has more items than the value of max
-- this method continues with a new column.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates and executes a dialog that contains a
-two-column radio button group. The fifth radio button (the button with the
-label May) is preselected.
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+  <varlistentry><term>message</term>
+  <listitem><para>A text string that is displayed on top of the radio button group.  Use
+  it to give the user advice on what to do.
+  </para></listitem></varlistentry>
+  <varlistentry><term>title</term>
+  <listitem><para>A text string for the title bar
+  </para></listitem></varlistentry>
+  <varlistentry><term>labels.</term>
+  <listitem><para>This argument is a stem variable containing all labels for the radio
+  buttons
+  </para></listitem></varlistentry>
+  <varlistentry><term>data</term>
+  <listitem><para>You can use this argument to preselect one radio button. A value of
+  1 selects the first radio button, a value of 2 selects the second, and so
+  on.
+  </para></listitem></varlistentry>
+  <varlistentry><term>len</term>
+  <listitem><para>Determines the length of the check boxes and labels. If omitted, the
+  size is calculated to fit the largest label.
+  </para></listitem></varlistentry>
+  <varlistentry><term>max</term>
+  <listitem><para>The maximum number of radio buttons in one column. If there are more
+  radio buttons than max - that is, labels. has more items than the value of max
+  - this method continues with a new column.
+  </para></listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>The following example creates and executes a dialog that contains a
+  two-column radio button group. The fifth radio button (the button with the
+  label May) is preselected.
 
-<programlisting>
-<![CDATA[
-mon.1 = "January" ; mon.2 = "February" ; mon.3 = "March"
-mon.4 = "April"   ; mon.5 = "May"      ; mon.6 = "June"
-mon.7 = "July"    ; mon.8 = "August"   ; mon.9 = "September"
-mon.10= "October" ; mon.11= "November" ; mon.12= "December"
+  <programlisting>
+  <![CDATA[
+  mon.1 = "January" ; mon.2 = "February" ; mon.3 = "March"
+  mon.4 = "April"   ; mon.5 = "May"      ; mon.6 = "June"
+  mon.7 = "July"    ; mon.8 = "August"   ; mon.9 = "September"
+  mon.10= "October" ; mon.11= "November" ; mon.12= "December"
 
-dlg = .SingleSelection~new("Please select a month!", ,
-                           "Single Selection", mon., 5, , 6)
-s = dlg~execute
-say  "You Selected the month: " mon.s
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+  dlg = .SingleSelection~new("Please select a month!", ,
+                             "Single Selection", mon., 5, , 6)
+  s = dlg~execute
+  say  "You Selected the month: " mon.s
+  ]]>
+  </programlisting>
+  </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthExecuteClsSingleSelection" xreflabel="execute"><title>execute</title>
+<indexterm><primary>execute</primary><secondary>SingleSelection class</secondary></indexterm>
+<indexterm><primary>SingleSelection class</primary><secondary>execute</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--execute(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SingleSelection::execute() -->
 
 </section>
 
@@ -2180,12 +2240,10 @@ box was checked by the user or will contain <computeroutput>.false
 </section>
 
 <section id="rtnSingleSelection" xreflabel="SingleSelection"><title>SingleSelection Routine</title>
-<indexterm><primary>SingleSelection</primary>
-<secondary>function</secondary></indexterm>
-<indexterm><primary>public routines</primary>
-<secondary>SingleSelection</secondary></indexterm>
+<indexterm><primary>SingleSelection</primary><secondary>function</secondary></indexterm>
+<indexterm><primary>public routines</primary><secondary>SingleSelection</secondary></indexterm>
 <para>
-  The SingleSelection function provides a shortcut means to invoke a<xref linkend="clsSingleSelection"/> dialog
+  The SingleSelection function provides a shortcut means to invoke a <xref linkend="clsSingleSelection"/> dialog
 </para>
 <programlisting>
 <![CDATA[
@@ -2207,7 +2265,7 @@ else
 ]]>
 </programlisting>
 <para>
-  The parameters are described in the <xref linkend="initSingleSelection"/>) method of the
+  The parameters are described in the <xref linkend="mthNewClsSingleSelection"/>) method of the
   <computeroutput>SingleSelection</computeroutput> class. However, instead of an input stem an array is passed into the
   function.
 </para>

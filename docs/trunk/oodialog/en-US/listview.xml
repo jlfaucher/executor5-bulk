@@ -9551,9 +9551,50 @@ that allows the user to remove the check mark from all the check boxes:
 </para>
 <para>
   Normally, the subitems of a list-view item are only thought about when the list-view is in report view. However, once added
-  to an item, the subitems exist whatever view the list-view is in.  A full row object can be used to add or insert items
-  along with all the subitems of the item, or to query information about an item and its subitems.
+  to an item, the subitems exist whatever view the list-view is in.  A full row object can be used to add or insert list-view
+  items along with all the subitems of the item, or to query information about a list-view item and its subitems.
 </para>
+<para>
+  <computeroutput>LvFullRow</computeroutput> objects also provide the infrastructure that allows the ooDialog framework to
+  <link linkend="mthSortItems">internally</link> sort list-view items.
+</para>
+
+
+<section id="sctInternalSorting"><title>Internal Sorting Considerations</title>
+<indexterm><primary>internal sorting</primary><secondary>LvFullRow Class</secondary></indexterm>
+<indexterm><primary>internal sorting</primary><secondary>ListView Class</secondary></indexterm>
+<para>
+  The <xref linkend="mthSortItems"/> method is used to sort list-view items. One option of this method is to have the
+  ooDialog framework implement the sort internally. The internal sort can be significantly faster, for large lists, than
+  implementing the sort in Rexx. However, the internal sorting is dependent on the <computeroutput>LvFullRow</computeroutput>
+  class. There are a few things the Rexx programmer needs to be aware of that effect the ability of the ooDialog framework to
+  do an internal sort.
+</para>
+<para>
+  Any sorting of the list-view items, whether it is through a sort implemented in Rexx or the internal sort, is dependent on
+  <link linkend="mthSetItemDataClsListView">setting</link> a value for the item data of every list-view item. For the
+  internal sort to work, the item data value must be a <computeroutput>LvFullRow</computeroutput> object. There are several
+  approaches that could be used to assign a full row object to the item data of every list-view item. One approach would be
+  to iterate through all the list-view items, for each item, instantiate a full row object for the item and use the <xref
+  linkend="mthSetItemDataClsListView"/> method to assign the object to the item.
+</para>
+<para>
+  However, full row objects can also be used to add items to the list-view through one the <xref linkend="mthAddFullRow"/>,
+  <xref linkend="mthInsertFullRow"/>, or <xref linkend="mthPrependFullRow"/> methods. A second approach is to add all
+  list-view items using full row objects and have the ooDialog framework set the full row object as the item data when the
+  item is added to the list-view. To use this technique, the programmer should set the <emphasis
+  role="italic">sorting</emphasis> argument to true when <link linkend="mthNewClsLvFullRow">instantiating</link> the full row
+  object.
+</para>
+<para>
+  In a way, a full row object is a snapshot of the information the list-view control maintains about a specific item in the
+  list. This information can change over time as the application is used. For instance, the text of an item could be changed.
+  When a full row object is assigned as the item data of a list-view item, the ooDialog framework does its best to keep the
+  full row object updated with any changes made to the information of the list-view item. But, there are a few scenarios
+  where this is not always possibile. The Rexx programmer needs to be aware of these scenarios and take the proper steps to
+  keep the full row object in synch with the list-view item.
+</para>
+</section>
 
 <section id="sctMethodsLvFullRow"><title>Method Table</title>
 <para>
@@ -9618,8 +9659,8 @@ that allows the user to remove the check mark from all the check boxes:
 <![CDATA[
                 +--------------+
                 V              |
->>--new(--item--+--------------+--)--------------><
-                +--,--subItem--+
+>>--new(--item--+--------------+--+-----------+--)--------------><
+                +--,--subItem--+  +-,-sorting-+
 ]]>
 </programlisting>
 
@@ -9645,11 +9686,13 @@ that allows the user to remove the check mark from all the check boxes:
       item being added. The argument can repeat has many times as needed to specify all the subitems of the item. The
       subitems are added to the item in the order of the arguments to the <emphasis role="italic">new</emphasis> method.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>sorting [optional]</term>
+    <listitem>
     <para>
-      <emphasis role="bold">Note:</emphasis> The very last argument can optionally be <computeroutput>.true</computeroutput>
-      or <computeroutput>.false</computeroutput> to signal that the <computeroutput>LvFullRow</computeroutput> object
-      itself is to be assigned as the item data value of the list-view items. This usage is explained in the remarks
-      section.
+      The very last argument can optionally be <computeroutput>.true</computeroutput> or
+      <computeroutput>.false</computeroutput> to signal that the <computeroutput>LvFullRow</computeroutput> object itself is
+      to be assigned as the item data value of the list-view items. This usage is explained in the remarks section.
     </para>
     </listitem></varlistentry>
   </variablelist>
