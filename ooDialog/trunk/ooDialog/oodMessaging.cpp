@@ -1846,7 +1846,7 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         case LVN_ENDLABELEDIT :
         {
             NMLVDISPINFO *pdi = (NMLVDISPINFO *)lParam;
-            printf("Got LVN_ENDLABELEDIT methodName=%s pszText=%s\n", methodName, pdi->item.pszText ? pdi->item.pszText : "null");
+
             if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
             {
                 // To preserve old behaviour for DefListEditHandler, we don't
@@ -3656,7 +3656,6 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
     else if ( StrCmpI(keyword, "KEYDOWN")     == 0 ) lvn = LVN_KEYDOWN;
     else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 )
     {
-        printf("Found defaultEdit\n");
         *isDefEdit = true;
         *tag = TAG_LISTVIEW | TAG_PRESERVE_OLD;
     }
@@ -4120,6 +4119,9 @@ static keyPressErr_t installKBHook(pCEventNotification pcen, CSTRING method, CST
     }
     else
     {
+        // To safely use freeKeyPressData() to clean up we need to set pData to
+        // pKeyData.
+        pSCData->pData = pKeyData;
         freeKeyPressData(pSCData);
     }
 
