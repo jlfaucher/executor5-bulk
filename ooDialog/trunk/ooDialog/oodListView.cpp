@@ -1198,14 +1198,25 @@ void maybeUpdateFullRowText(RexxThreadContext *c, NMLVDISPINFO *pdi)
  * @remarks  The LvItem object in the row has its item index updated to what is
  *           actually assigned by the list view.
  *
- *           Likewise, the item index in the LvSubItem object is updated to the
- *           the item index. This updating is done before the subitem is set, so
- *           that it is always set correctly.
+ *           Likewise, the item index in the LvSubItem object(s) is updated to
+ *           the the item index. This updating is done before the subitem is
+ *           set, so that it is always set correctly.
  *
  *           If the operation is append or prepend, the item index in the LvItem
  *           object is ignored.  Instead it is set to an index that will ensure
  *           the item is inserted at the front of the list or at the end of the
  *           list.
+ *
+ *           If there are no columns in the list-view, the item insert will
+ *           succeed. If column 0 is then inserted late, the item information
+ *           shows up correctly.  But, ListView_SetItem() will fail for a
+ *           subitem if there is no column for that subitem.  To prevent things
+ *           getting hopelessly out of sync, if the user tries to add a full row
+ *           with more subitems than columns, we raise a syntax condition.
+ *
+ *           On the other hand, if there is a column for the subitem, I've never
+ *           seen ListView_SetItem() fail.  We check for a failure, and if one
+ *           is detected, we deleted the aready inserted item and return -1.
  */
 int32_t fullRowOperation(RexxMethodContext *c, RexxObjectPtr row, FullRowOp type, void *pCSelf)
 {
@@ -1246,12 +1257,33 @@ int32_t fullRowOperation(RexxMethodContext *c, RexxObjectPtr row, FullRowOp type
         pcdc->lastItem             = itemIndex;
         protectLviUserData(c, pcdc, pclvfr->subItems[0]);
 
+        uint32_t cColumns = (uint32_t)getColumnCount(pcdc->hCtrl);
+        if ( cColumns == (uint32_t)-1 )
+        {
+            severeErrorException(c->threadContext, "the list-view control reports it has no columns; can not continue");
+            goto done_out;
+        }
+
         size_t count = pclvfr->subItemCount;
+
+        if ( count >= cColumns )
+        {
+            char buffer[256];
+            _snprintf(buffer, sizeof(buffer), "subitem count (%d) is invalid for column count(%d)", count, cColumns);
+            userDefinedMsgException(c, buffer);
+
+            goto done_out;
+        }
+
         for ( size_t i = 1; i <= count; i++)
         {
             LPLVITEM subItem = pclvfr->subItems[i];
             subItem->iItem = itemIndex;
-            ListView_SetItem(hwnd, subItem);
+            if ( ! ListView_SetItem(hwnd, subItem) )
+            {
+                ListView_DeleteItem(hwnd, itemIndex);
+                itemIndex = -1;
+            }
         }
     }
 
@@ -2331,17 +2363,23 @@ RexxMethod2(RexxObjectPtr, lv_getExtendedStyle, NAME, method, CSELF, pCSelf)
  *            the subitems is dependent on the coulumn count.  Testing has shown
  *            that once the column is inserted, getColumnCount() returns the
  *            correct number, even if the list-view is not in report view.
+ *
+ *            Note that if userForSorting is true, we always create a new item.
  */
 RexxMethod3(RexxObjectPtr, lv_getFullRow, uint32_t, itemIndex, OPTIONAL_logical_t, useForSorting, CSELF, pCSelf)
 {
-    HWND hList  = getDChCtrl(pCSelf);
+    pCLvFullRow pclvfr = NULL;
+    HWND        hList  = getDChCtrl(pCSelf);
 
-    // If we have a full row, update it and return it.
-    pCLvFullRow pclvfr = maybeGetFullRow(hList, itemIndex);
-    if ( pclvfr != NULL )
+    if ( ! useForSorting )
     {
-        updateFullRowItemState(pclvfr);
-        return pclvfr->rexxSelf;
+        // If we have a full row, update it and return it.
+        pclvfr = maybeGetFullRow(hList, itemIndex);
+        if ( pclvfr != NULL )
+        {
+            updateFullRowItemState(pclvfr);
+            return pclvfr->rexxSelf;
+        }
     }
 
     // Okay, no LvFullRow object as the user data (lParam), so create a
@@ -4058,87 +4096,9 @@ RexxMethod2(int, lv_stringWidthPx, CSTRING, text, CSELF, pCSelf)
  *  An undocumented method to make it easier to do development testing
  *
  */
-RexxMethod3(RexxObjectPtr, lv_zTest, uint32_t, itemIndex, uint32_t, subItemIndex, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, lv_zTest, CSELF, pCSelf)
 {
     printf("zTest() no test at this time\n");
-
-#if 0
-    printf("zTest() itemIndex=%d subItemIndex=%d\n", itemIndex, subItemIndex);
-
-    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
-    if ( pcdc == NULL )
-    {
-        return TheFalseObj;
-    }
-
-    uint32_t count = ListView_GetItemCount(pcdc->hCtrl);
-    for ( uint32_t i = 0; i < count; i++ )
-    {
-        pCLvFullRow pclvfr = maybeGetFullRow(pcdc->hCtrl, i);
-        printf("Item=%d subitem count=%d\n", i, pclvfr->subItemCount);
-
-        for ( uint32_t j = 1; j <= pclvfr->subItemCount; j++ )
-        {
-            printf(" subitem=%d\n    imageIndex=%d\n   cchTextMax=%d\n    text=%s\n", j, pclvfr->subItems[j]->iImage,
-                   pclvfr->subItems[j]->cchTextMax,
-                   pclvfr->subItems[j]->pszText == LPSTR_TEXTCALLBACK ? "textCallBack" : pclvfr->subItems[j]->pszText);
-        }
-    }
-
-    /*
-    LVCOLUMN lvc = { 0 };
-    lvc.mask = LVCF_WIDTH | LVCF_SUBITEM;
-    if ( ListView_GetColumn(pcdc->hCtrl, subItemIndex, &lvc) )
-    {
-        printf("ListView_GetColumn() returns TRUE lvc.iSubItem=%d\n", lvc.iSubItem);
-    }
-    else
-    {
-        printf("ListView_GetColumn() returns FALSE lvc.iSubItem=%d\n", lvc.iSubItem);
-    }
-    */
-
-    /*
-    LVITEM lvi = { 0 };
-    lvi.iItem = itemIndex;
-    lvi.iSubItem = subItemIndex;
-    lvi.mask = LVIF_TEXT | LVIF_IMAGE;
-
-    //char buf[1024] = { '\0' };
-    char buf[1024] = "My subitem text";
-    lvi.pszText = buf;
-    lvi.cchTextMax = 1024;
-
-    printf("pszText=%p\n", lvi.pszText);
-    */
-
-    /*
-    if ( ListView_GetItem(pcdc->hCtrl, &lvi) )
-    {
-        printf("ListView_GetItem() returns TRUE imageIndex=%d pszText=%p pszText == LPSTR_TEXTCALLBACK=%d\n",
-               lvi.iImage, lvi.pszText, lvi.pszText == LPSTR_TEXTCALLBACK);
-        if ( lvi.pszText != NULL && lvi.pszText != LPSTR_TEXTCALLBACK )
-        {
-            printf("Got text=%s\n", lvi.pszText);
-        }
-    }
-    else
-    {
-        printf("ListView_GetItem() returns FALSE\n");
-    }
-    */
-
-    /*
-    if ( ListView_SetItem(pcdc->hCtrl, &lvi) )
-    {
-        printf("ListView_SetItem() returns TRUE\n");
-    }
-    else
-    {
-        printf("ListView_SetItem() returns FALSE\n");
-    }
-    */
-#endif
 
     return TheTrueObj;
 }

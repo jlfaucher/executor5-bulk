@@ -89,6 +89,10 @@ Bug Fixes in ooDialog:
 
 * #1146 Return code from ListView::deleteColumn() not as documented
 
+* #1147 SingleSelection class
+
+* #1149 Potential crash in ooDialog connectKeyPress() method
+
 
 Feature Requests in ooDialog:
 -----------------------------
@@ -164,7 +168,7 @@ LvFullRow class:
 
 List-view items can contain subitems.  This is most apparent in the row
 view of a list-vies where the subitems are displayed in columns next to
-the item.  However, the subitems, once added to an item,  are always
+the item.  However, the subitems, once added to an item, are always
 present, even if the list-view is in another view, such as icon view.
 
 The LvFullRow class represents the list-view item and all its subitems.
@@ -209,6 +213,10 @@ facility for TreeView controls.
 New Methods:
 ------------
 
+In the PlainBaseDialog class:
+
+getTextSizeTitleBar()
+
 In the DialogControl class:
 
 useVersion()
@@ -221,6 +229,16 @@ getItemData()
 itemText()
 removeItemData()
 setItemData()
+
+
+New Attributes:
+---------------
+
+In the SM (system metrics) class:
+
+cxSize
+cxSmIcon
+cyMenu
 
 
 Enhanced Methods:

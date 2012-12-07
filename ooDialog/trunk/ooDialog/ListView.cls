@@ -283,7 +283,7 @@
    return self~sendWinIntMsg(self~LVM_UPDATE, index, 0) == 0
 
 
-::method zTest unguarded external "LIBRARY oodialog lv_zTest"
+::method zTest unguarded external "LIBRARY oodialog lv_zTest"             -- internal use only
 
 -- DEPRECATED to end of Class
 ::method removeImages unguarded                                           -- DEPRECATED

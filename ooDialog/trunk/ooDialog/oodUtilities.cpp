@@ -1379,13 +1379,18 @@ RexxMethod2(RexxObjectPtr, spi_setMouseHoverWidth_cls, uint32_t, pixels, CSELF, 
 
 
 /** SPI::nonClientMetrics  [class attribute get]
+ *
+ *  Not implemented, perhaps for 4.2.2.
  */
 RexxMethod0(RexxObjectPtr, spi_getNonClientMetrics_cls)
 {
     RexxMethodContext *c = context;
     oodResetSysErrCode(context->threadContext);
 
-    RexxDirectoryObject result = c->NewDirectory();
+    context->RaiseException0(Rexx_Error_Unsupported_method);
+    return TheNilObj;
+
+    RexxDirectoryObject result = context->NewDirectory();
     NONCLIENTMETRICS    ncm    = { 0 };
 
     ncm.cbSize = sizeof(NONCLIENTMETRICS );
@@ -1402,10 +1407,15 @@ RexxMethod0(RexxObjectPtr, spi_getNonClientMetrics_cls)
 }
 
 /** SPI::nonClientMetrics  [class attribute set]
+ *
+ *  Not implemented, perhaps for 4.2.2.
  */
 RexxMethod2(RexxObjectPtr, spi_setNonClientMetrics_cls, RexxObjectPtr, data, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
+
+    context->RaiseException0(Rexx_Error_Unsupported_method);
+    return NULLOBJECT;
 
     NONCLIENTMETRICS ncm    = { 0 };
     ncm.cbSize = sizeof(NONCLIENTMETRICS );

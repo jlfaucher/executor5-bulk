@@ -3785,10 +3785,10 @@ RexxMethod5(RexxObjectPtr, pbdlg_getTextSizeDlg, CSTRING, text, OPTIONAL_CSTRING
  *          and will return the dimensions as it does after the dialog is
  *          created.
  *
- *  @remarks  For GetWindowDC(), if the HWND passed to it is NULL, it returns a
- *            DC for the screen.  This works fine for our needs.  Testing shows
- *            the same dimensions are returned with a NULL HWND as with the
- *            created dialog's HWND.
+ *  @remarks  For GetWindowDC(), if the window handle passed to it is NULL, it
+ *            returns a DC for the screen.  This works fine for our needs.
+ *            Testing shows the same dimensions are returned with a NULL window
+ *            handle as with the actual dialog's window handle.
  */
 RexxMethod2(RexxObjectPtr, pbdlg_getTextSizeTitleBar, CSTRING, text, CSELF, pCSelf)
 {

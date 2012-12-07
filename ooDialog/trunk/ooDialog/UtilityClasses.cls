@@ -230,8 +230,8 @@
 ::attribute mouseHoverTime set class external "LIBRARY oodialog spi_getMouseHoverTime_cls"
 ::attribute mouseHoverWidth get class external "LIBRARY oodialog spi_getMouseHoverWidth_cls"
 ::attribute mouseHoverWidth set class external "LIBRARY oodialog spi_getMouseHoverWidth_cls"
-::attribute nonClientMetrics get class external "LIBRARY oodialog spi_getNonClientMetrics_cls"
-::attribute nonClientMetrics set class external "LIBRARY oodialog spi_setNonClientMetrics_cls"
+::attribute nonClientMetrics get class external "LIBRARY oodialog spi_getNonClientMetrics_cls"  -- For 4.2.2
+::attribute nonClientMetrics set class external "LIBRARY oodialog spi_setNonClientMetrics_cls"  -- For 4.2.2
 
 ::attribute updateFlag get class external "LIBRARY oodialog spi_getUpdateFlag_cls"
 ::attribute updateFlag set class external "LIBRARY oodialog spi_setUpdateFlag_cls"
@@ -255,7 +255,7 @@
 ::attribute cyDrag get class external        "LIBRARY oodialog sm_cyDrag_cls"
 ::attribute cyFixedFrame get class external  "LIBRARY oodialog sm_cyFixedFrame_cls"
 ::attribute cyHscroll get class external     "LIBRARY oodialog sm_cyHScroll_cls"
-::attribute cyMenu get class external        "LIBRARY oodialog sm_cyMenu_cls"    -- Document in 4.2.1, not 4.2.0
+::attribute cyMenu get class external        "LIBRARY oodialog sm_cyMenu_cls"
 ::attribute cyScreen get class external      "LIBRARY oodialog sm_cyScreen_cls"
 ::attribute menuDropAlignment get class external "LIBRARY oodialog sm_menuDropAlignment_cls"
 
@@ -1509,14 +1509,12 @@
    return ret
 
 ::routine SingleSelection public
-   use arg msg, title, labels, data, lx, max
-   if arg(5,"o") = 1 then lx = 0
-   if arg(6,"o") = 1 then max= 0
-   num = labels~items
-   do i=1 to num
+   use strict arg msg, title, labels, preSel = 1, rbWidth = 0, max = 0
+
+   do i = 1 to labels~items
       lab.i = labels[i]
    end
-   dlg = .SingleSelection~new(msg, title, lab., data, lx, max)
+   dlg = .SingleSelection~new(msg, title, lab., preSel, rbWidth, max)
    res = dlg~execute
    drop dlg
    return res
