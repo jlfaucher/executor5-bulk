@@ -6842,6 +6842,14 @@ s2: a Size (2, 3)
 <entry>The width of the primary monitor in pixels.</entry>
 </row>
 <row>
+<entry><xref linkend="atrCxSize"/></entry>
+<entry>Reflects the width of a button in a window caption or title bar, in pixels.</entry>
+</row>
+<row>
+<entry><xref linkend="atrCxSmIcon"/></entry>
+<entry>Reflects the recommended width of a small icon, in pixels. Small icons typically appear in window captions and in small icon view.</entry>
+</row>
+<row>
 <entry><xref linkend="atrCxVscroll"/></entry>
 <entry>The width of a vertical scroll bar in pixels.</entry>
 </row>
@@ -6866,6 +6874,10 @@ s2: a Size (2, 3)
 <entry>The height of a horizontal scroll bar in pixels.</entry>
 </row>
 <row>
+<entry><xref linkend="atrCyMenu"/></entry>
+<entry>The height of a single-line menu bar, in pixels.</entry>
+</row>
+<row>
 <entry><xref linkend="atrCyScreen"/></entry>
 <entry>The height of the primary monitor in pixles.</entry>
 </row>
@@ -6885,7 +6897,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cMouseButtons--------------------------------><
-
 ]]>
 </programlisting>
 
@@ -6916,7 +6927,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cxCursor-------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -6947,7 +6957,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cxDrag---------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -6982,7 +6991,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cxFixedFrame---------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7015,7 +7023,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cxScreen-------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7040,13 +7047,74 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cxScreen() [attribute]  -->
 
 
+<section id="atrCxSize" xreflabel="cxSize"><title>cxSize (Attribute)</title>
+<indexterm><primary>cxSize</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cxSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cxSize---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the width of a button in a window caption or title bar, in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cxSize get:</emphasis></term>
+  <listitem>
+  <para>
+    The width of a button in the title bar, such as the close button, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxSize set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cxSize</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cxSize() [attribute]  -->
+
+
+<section id="atrCxSmIcon" xreflabel="cxSmIcon"><title>cxSmIcon (Attribute)</title>
+<indexterm><primary>cxSmIcon</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cxSmIcon</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cxSmIcon-------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reflects the recommended width of a small icon, in pixels. Small icons typically appear in window captions and in small
+  icon view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cxSmIcon get:</emphasis></term>
+  <listitem>
+  <para>
+    The recommended width of a small icon, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxSmIcon set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cxSmIcon</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cxSmIcon() [attribute]  -->
+
+
 <section id="atrCxVscroll" xreflabel="cxVscroll"><title>cxVscroll (Attribute)</title>
 <indexterm><primary>cxVscroll</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cxVscroll</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--cxVscroll------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7077,7 +7145,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cyCaption------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7108,7 +7175,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cyCursor-------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7139,7 +7205,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cyDrag---------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7174,7 +7239,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cyFixedFrame---------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7207,7 +7271,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--cyHscroll------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7232,13 +7295,42 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cyHscroll() [attribute]  -->
 
 
+<section id="atrCyMenu" xreflabel="cyMenu"><title>cyMenu (Attribute)</title>
+<indexterm><primary>cyMenu</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cyMenu</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cyMenu---------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  ReflectsThe height of a single-line menu bar.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cyMenu get:</emphasis></term>
+  <listitem>
+  <para>
+    The height of a single-line menu bar, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cyMenu set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cyMenu</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cyMenu() [attribute]  -->
+
+
 <section id="atrCyScreen" xreflabel="cyScreen"><title>cyScreen (Attribute)</title>
 <indexterm><primary>cyScreen</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cyScreen</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--cyScreen-------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7269,7 +7361,6 @@ s2: a Size (2, 3)
 <programlisting>
 <![CDATA[
 >>--menuDropAlignment-------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -7594,56 +7685,6 @@ s2: a Size (2, 3)
 </variablelist>
 </section>  <!-- End SPI::menuFade() [attribute]  -->
 
-<section id="atrMouseHoverTime" xreflabel="mouseHoverTime"><title>mouseHoverTime (Attribute)</title>
-<indexterm><primary>mouseHoverTime</primary></indexterm>
-<indexterm><primary>SPI class</primary><secondary>mouseHoverTime</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--mouseHoverTime-------------------------------><
-
->>--mouseHoverTime=milliseconds------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Reflects the time, in milliseconds the mouse must remain in the hover rectangle to generate a MOUSEHOVER notification.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">mouseHoverTime get:</emphasis></term>
-  <listitem>
-  <para>
-    Retrieves the system wide default hover time out value in milliseconds
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">mouseHoverTime set:</emphasis></term>
-  <listitem>
-  <para>
-    Sets the time, in milliseconds, for the hover time out. The <emphasis role="italic">milliseconds</emphasis> must be
-    a non-negative whole number within the range of 10 to 2147483647.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The hover rectangle is the rectangle within which the mouse pointer has to stay for the operating system to generate
-    a <xref linkend="mthConnectEvent"/> notification. The time out value is the number of milliseconds
-    the mouse has to remain in the rectangle. Normally the mouse hover event is not generated. The
- <xref linkend="mthTrackEvent"/> method must be invoked to request hover tracking before the
-    operating system will generate the hover notification.
-  </para> </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Sets the <xref linkend="dotSystemErrorCode"/>.
-  </para>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End SPI::mouseHoverHeight() [attribute]  -->
-
 <section id="atrMouseHoverHeight" xreflabel="mouseHoverHeight"><title>mouseHoverHeight (Attribute)</title>
 <indexterm><primary>mouseHoverHeight</primary></indexterm>
 <indexterm><primary>SPI class</primary><secondary>mouseHoverHeight</secondary></indexterm>
@@ -7683,6 +7724,56 @@ s2: a Size (2, 3)
     operating system will generate the hover notification.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::mouseHoverHeight() [attribute]  -->
+
+<section id="atrMouseHoverTime" xreflabel="mouseHoverTime"><title>mouseHoverTime (Attribute)</title>
+<indexterm><primary>mouseHoverTime</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>mouseHoverTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--mouseHoverTime-------------------------------><
+
+>>--mouseHoverTime=milliseconds------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the time, in milliseconds the mouse must remain in the hover rectangle to generate a MOUSEHOVER notification.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">mouseHoverTime get:</emphasis></term>
+  <listitem>
+  <para>
+    Retrieves the system wide default hover time out value in milliseconds
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">mouseHoverTime set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the time, in milliseconds, for the hover time out. The <emphasis role="italic">milliseconds</emphasis> must be
+    a non-negative whole number within the range of 10 to 2147483647.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The hover rectangle is the rectangle within which the mouse pointer has to stay for the operating system to generate
+    a <xref linkend="mthConnectEvent"/> notification. The time out value is the number of milliseconds
+    the mouse has to remain in the rectangle. Normally the mouse hover event is not generated. The
+ <xref linkend="mthTrackEvent"/> method must be invoked to request hover tracking before the
+    operating system will generate the hover notification.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>

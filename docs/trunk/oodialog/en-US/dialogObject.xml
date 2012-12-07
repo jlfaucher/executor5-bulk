@@ -807,6 +807,10 @@
 <entry>Calculates the size needed for a string in pixels.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetTextSizeTitleBar"/></entry>
+<entry>Gets the size, width and height, of a string used in the caption bar for the title.</entry>
+</row>
+<row>
 <entry><xref linkend="deGetWindowDC"/></entry>
 <entry>Returns the device context of a window.</entry>
 </row>
@@ -9275,6 +9279,72 @@ var2  "09"x  ,
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PlainBaseDialog::getTextSizeDlg() -->
+
+<section id="mthGetTextSizeTitleBar" xreflabel="getTextSizeTitleBar"><title>getTextSizeTitleBar</title>
+<indexterm><primary>getTextSizeTitleBar</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getTextSizeTitleBar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextSizeTitleBar(--text--)----------------><
+]]>
+</programlisting>
+
+<para>
+  Gets the size, width and height, of a string used in the caption bar for the title.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The string to get the size of. This can be any string, it does not have to be the actual string used for the title.
+      This method returns the size for the string, if it were to be used in the caption bar.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="clsSize"/> object containing the width and height of a rectangle that would contain the string.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method can be used before the underlying Windows dialog is created. The returned size is identical whether the
+    dialog has been created by the operating system or not.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example calculates the width, in dialog units, that is required for a dialog such that the title fits without the
+    operating system clipping it:
+<programlisting>
+<![CDATA[
+
+::method getMinDlgCX private
+    use strict arg title
+
+    s = self~getTextSizeTitleBar(title)
+
+    padding = 18
+    s~width += (2 * .SM~cxFixedFrame) + .SM~cxSize + .SM~cxSmIcon + padding
+    self~pixel2dlgUnit(s)
+
+    return s~width
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PlainBaseDialog::getTextSizeTitleBar() -->
 
 
 <section id="mthPixel2dlgUnit" xreflabel="pixel2dlgUnit"><title>pixel2dlgUnit</title>

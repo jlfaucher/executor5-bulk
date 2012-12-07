@@ -124,8 +124,8 @@
 <table id="tblListViewMethods" frame="all">
 <title>ListView Instance Methods</title>
 <tgroup cols="2">
-<colspec colwidth="2*" />
 <colspec colwidth="7*" />
+<colspec colwidth="21*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -1063,7 +1063,7 @@
 </variablelist>
 </section>
 
-<section id="mthAddFullRow"><title>addFullRow</title>
+<section id="mthAddFullRow" xreflabel="addFullRow"><title>addFullRow</title>
 <indexterm><primary>addFullRow</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>addFullRow</secondary></indexterm>
 <programlisting>
@@ -1080,6 +1080,7 @@
   <listitem>
   <para>
     The single argument is:
+  </para>
     <variablelist>
       <varlistentry><term>row [required]</term>
       <listitem>
@@ -1088,7 +1089,6 @@
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -4238,7 +4238,7 @@ column. It can be one of the following values:
 </section>  <!-- End ListView::insertColumnPX() -->
 
 
-<section id="mthInsertFullRow"><title>insertFullRow</title>
+<section id="mthInsertFullRow" xreflabel="getFullRow"><title>insertFullRow</title>
 <indexterm><primary>insertFullRow</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>insertFullRow</secondary></indexterm>
 <programlisting>
@@ -5174,7 +5174,7 @@ control for adding a large number of items.</para>
 </variablelist>
 </section>
 
-<section id="mthPrependFullRow"><title>prependFullRow</title>
+<section id="mthPrependFullRow" xreflabel="prependFullRow"><title>prependFullRow</title>
 <indexterm><primary>prependFullRow</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>prependFullRow</secondary></indexterm>
 <programlisting>
@@ -9560,42 +9560,6 @@ that allows the user to remove the check mark from all the check boxes:
 </para>
 
 
-<section id="sctInternalSorting"><title>Internal Sorting Considerations</title>
-<indexterm><primary>internal sorting</primary><secondary>LvFullRow Class</secondary></indexterm>
-<indexterm><primary>internal sorting</primary><secondary>ListView Class</secondary></indexterm>
-<para>
-  The <xref linkend="mthSortItems"/> method is used to sort list-view items. One option of this method is to have the
-  ooDialog framework implement the sort internally. The internal sort can be significantly faster, for large lists, than
-  implementing the sort in Rexx. However, the internal sorting is dependent on the <computeroutput>LvFullRow</computeroutput>
-  class. There are a few things the Rexx programmer needs to be aware of that effect the ability of the ooDialog framework to
-  do an internal sort.
-</para>
-<para>
-  Any sorting of the list-view items, whether it is through a sort implemented in Rexx or the internal sort, is dependent on
-  <link linkend="mthSetItemDataClsListView">setting</link> a value for the item data of every list-view item. For the
-  internal sort to work, the item data value must be a <computeroutput>LvFullRow</computeroutput> object. There are several
-  approaches that could be used to assign a full row object to the item data of every list-view item. One approach would be
-  to iterate through all the list-view items, for each item, instantiate a full row object for the item and use the <xref
-  linkend="mthSetItemDataClsListView"/> method to assign the object to the item.
-</para>
-<para>
-  However, full row objects can also be used to add items to the list-view through one the <xref linkend="mthAddFullRow"/>,
-  <xref linkend="mthInsertFullRow"/>, or <xref linkend="mthPrependFullRow"/> methods. A second approach is to add all
-  list-view items using full row objects and have the ooDialog framework set the full row object as the item data when the
-  item is added to the list-view. To use this technique, the programmer should set the <emphasis
-  role="italic">sorting</emphasis> argument to true when <link linkend="mthNewClsLvFullRow">instantiating</link> the full row
-  object.
-</para>
-<para>
-  In a way, a full row object is a snapshot of the information the list-view control maintains about a specific item in the
-  list. This information can change over time as the application is used. For instance, the text of an item could be changed.
-  When a full row object is assigned as the item data of a list-view item, the ooDialog framework does its best to keep the
-  full row object updated with any changes made to the information of the list-view item. But, there are a few scenarios
-  where this is not always possibile. The Rexx programmer needs to be aware of these scenarios and take the proper steps to
-  keep the full row object in synch with the list-view item.
-</para>
-</section>
-
 <section id="sctMethodsLvFullRow"><title>Method Table</title>
 <para>
   The following table lists the class and instance methods of the <computeroutput>LvFullRow</computeroutput> class:
@@ -9650,6 +9614,95 @@ that allows the user to remove the check mark from all the check boxes:
 </tbody></tgroup>
 </table>
 </para>
+</section>
+
+<section id="sctInternalSorting"><title>Internal Sorting Considerations</title>
+<indexterm><primary>internal sorting</primary><secondary>LvFullRow Class</secondary></indexterm>
+<indexterm><primary>internal sorting</primary><secondary>ListView Class</secondary></indexterm>
+<para>
+  The <xref linkend="mthSortItems"/> method is used to sort list-view items. One option of this method is to have the
+  ooDialog framework implement the sort internally. The internal sort can be significantly faster, for large lists, than
+  implementing the sort in Rexx. However, the internal sorting is dependent on the <computeroutput>LvFullRow</computeroutput>
+  class. There are a few things the Rexx programmer needs to be aware of that effect the ability of the ooDialog framework to
+  do an internal sort.
+</para>
+<para>
+  Any sorting of the list-view items, whether it is through a sort implemented in Rexx or the internal sort, is dependent on
+  <link linkend="mthSetItemDataClsListView">setting</link> a value for the item data of every list-view item. For the
+  internal sort to work, the item data value must be a <computeroutput>LvFullRow</computeroutput> object. There are several
+  approaches that could be used to assign a full row object to the item data of every list-view item. One approach would be
+  to iterate through all the list-view items, for each item, instantiate a full row object for the item and use the <xref
+  linkend="mthSetItemDataClsListView"/> method to assign the object to the item.
+</para>
+<para>
+  However, full row objects can also be used to add items to the list-view through one the <xref linkend="mthAddFullRow"/>,
+  <xref linkend="mthInsertFullRow"/>, or <xref linkend="mthPrependFullRow"/> methods. A second approach is to add all
+  list-view items using full row objects and have the ooDialog framework set the full row object as the item data when the
+  item is added to the list-view. To use this technique, the programmer should set the <emphasis
+  role="italic">sorting</emphasis> argument to true when <link linkend="mthNewClsLvFullRow">instantiating</link> the full row
+  object.
+</para>
+<para>
+  In a way, a full row object is a snapshot of the information the list-view control maintains about a specific item in the
+  list. This information can change over time as the application is used. For instance, the text of an item could be changed.
+  When a full row object is assigned as the item data of a list-view item, the ooDialog framework does its best to keep the
+  full row object updated with any changes made to the information of the list-view item. But, there is one scenario where
+  this is not always possibile. The Rexx programmer needs to be aware of this and take the proper steps to keep the full row
+  object in synch with the list-view item.
+</para>
+<para>
+  When a column in the list-view is <link linkend="mthInsertColumnPX">inserted</link>
+  or <link linkend="mthDeleteColumn">deleted</link>, the list-view control adds or deletes the subitems of all
+  items that corresponds to the colum. Every item in a list-view always has the same number of subitems. If all items in the
+  list-view have a <computeroutput>LvFullRow</computeroutput> object set as the item data, when a column is deleted, the full
+  row object will have one too many subitems. The same if a column is added, the full row object will have no knowledge of
+  the new subitem. <emphasis role="bold">Note</emphasis> that there is no problem the very first time a column is inserted
+  in a list-view. In addition, this discussion only concerns the case where <computeroutput>LvFullRow</computeroutput>
+  objects have been assigned to the item data of each item to faciliate internal sorting.
+</para>
+<para>
+  Most ooDialog programs that use a list-view do not involve inserting or removing columns after the list-view items have
+  been added. But, for programs that do <emphasis role="italic">and</emphasis> use <computeroutput>LvFullRow</computeroutput>
+  objects to allow internal sorting, the programmer must take an additional step when a column is inserted or deleted. This
+  ensures the integrity of the full row objects. ooDialog provides 3 methods to ensure integrity when a column is inserted or
+  deleted:
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">The fixFullRowColumns method:</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog provides the <xref linkend="mthFixFullRowColumns"/> method, !xr
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">The adjustFullRows argument:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Manual update</emphasis></term>
+  <listitem>
+  <para>
+    With this method, after the column insert or delete, the programmer iterates through all the list-view items, removes the
+    old invalid item data, creates a valid full row object, and sets the item data to the new full row object. The following
+    code snippet shows the procedure:
+  </para>
+  </listitem></varlistentry>
+<programlisting>
+<![CDATA[
+
+    list~deleteColumn(delCol)
+
+    do i = 0 to list~items
+      list~removeItemData(i)
+      lvFullRow = list~getFullRow(i, .true)
+      list~setItemData(i, lvFullRow)
+    end
+
+]]>
+</programlisting>
+</variablelist>
 </section>
 
 <section id="mthNewClsLvFullRow" xreflabel="new"><title>new (Class Method)</title>
