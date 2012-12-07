@@ -9651,14 +9651,16 @@ that allows the user to remove the check mark from all the check boxes:
   object in synch with the list-view item.
 </para>
 <para>
-  When a column in the list-view is <link linkend="mthInsertColumnPX">inserted</link>
+  When a subitem column in the list-view is <link linkend="mthInsertColumnPX">inserted</link>
   or <link linkend="mthDeleteColumn">deleted</link>, the list-view control adds or deletes the subitems of all
   items that corresponds to the colum. Every item in a list-view always has the same number of subitems. If all items in the
   list-view have a <computeroutput>LvFullRow</computeroutput> object set as the item data, when a column is deleted, the full
   row object will have one too many subitems. The same if a column is added, the full row object will have no knowledge of
   the new subitem. <emphasis role="bold">Note</emphasis> that there is no problem the very first time a column is inserted
-  in a list-view. In addition, this discussion only concerns the case where <computeroutput>LvFullRow</computeroutput>
-  objects have been assigned to the item data of each item to faciliate internal sorting.
+  in a list-view and this only applies to <emphasis role="italic">subitem</emphasis> columns. The information for a
+  list-view item is not deleted by deleting its column, column 0. In addition, this discussion only concerns the case where
+  <computeroutput>LvFullRow</computeroutput> objects have been assigned to the item data of each item to faciliate internal
+  sorting.
 </para>
 <para>
   Most ooDialog programs that use a list-view do not involve inserting or removing columns after the list-view items have
@@ -9672,13 +9674,34 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">The fixFullRowColumns method:</emphasis></term>
   <listitem>
   <para>
-    ooDialog provides the <xref linkend="mthFixFullRowColumns"/> method, !xr
+    ooDialog provides the <xref linkend="mthFixFullRowColumns"/> method of the <computeroutput>ListView</computeroutput>
+    which can be used to bring all the full row objects back in sync. It must be invoked after each individual column insert
+    and delete to work correctly. That is, the programmer can not delete 2 columns and then invoke the <emphasis
+    role="italic">fixFullRowColumns</emphasis> twice. The method is invoked with the column index that was removed or added
+    and a second argument that signals whether the specified column was deleted. The following code snippet gives an
+    example:
+<programlisting>
+<![CDATA[
+    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT")
+    list~fixFullRowColumns(, .false)
+
+]]>
+</programlisting>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">The adjustFullRows argument:</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    The methods that insert oR delete columns in the list-view have an optional second argument, <emphasis
+    role="italic">adjustFullRows</emphasis>. If this argument is true, then the ooDialog framework is signaled to fix up the
+    full row objects internally when the column is added or deleted. The default for the argument is false. This is perhaps
+    the easist process for the programmer to use. The above example would be altered like this:
+<programlisting>
+<![CDATA[
+    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT", .true)
+
+]]>
+</programlisting>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Manual update</emphasis></term>
@@ -9692,7 +9715,7 @@ that allows the user to remove the check mark from all the check boxes:
 
     list~deleteColumn(delCol)
 
-    do i = 0 to list~items
+    do i = 0 to list~items - 1
       list~removeItemData(i)
       lvFullRow = list~getFullRow(i, .true)
       list~setItemData(i, lvFullRow)
@@ -9784,10 +9807,12 @@ that allows the user to remove the check mark from all the check boxes:
   </para>
   <para>
     In addition to specifying <computeroutput>LvSubItem</computeroutput> objects, the last argument can be either true or
-    false. Recall that the list-view control allows the programmer to attach a item data value to any or all of the list-view
-    items. The last argument can be true to specify that the <computeroutput>LvFullRow</computeroutput> object being
-    instantiated should be set as the item data value for the list-view item the <computeroutput>LvFullRow</computeroutput>
-    object represents.
+    false. Recall that the list-view control allows the programmer to <link linkend="mthSetItemDataClsListView">attach</link>
+    an item data value to any or all of the list-view items. If the item data for every list-view item is a
+    <computeroutput>LvFullRow</computeroutput> object, the ooDialog framework can perform internal <link
+    linkend="mthSortItems">sorting</link> of the list-view items. The last argument can be true to specify that the
+    <computeroutput>LvFullRow</computeroutput> object being instantiated should be set as the item data value for the
+    list-view item the <computeroutput>LvFullRow</computeroutput> object represents.
   </para>
   <para>
     This feature is really only of use if the full row object is used to add or insert an item into the list-view. If the
