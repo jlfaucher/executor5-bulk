@@ -5595,6 +5595,7 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
                 if ( logical == 1 )
                 {
                     pclvfr->subItems[0]->lParam = (LPARAM)pclvfr;
+                    pclvfr->subItems[0]->mask  |= LVIF_PARAM;
                 }
                 goto done;
             }
