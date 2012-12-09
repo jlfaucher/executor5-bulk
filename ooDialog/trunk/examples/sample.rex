@@ -103,19 +103,19 @@
    self~loadApp("oostddlg.rex", 2800)
 
 ::method wiz97
-   self~loadApp("propertySheet.tabs\ticketWizard.rex")
+   self~loadApp("propertySheet.tabControls\ticketWizard.rex")
 
 ::method tree
-   self~loadApp("treeViewCustomDraw.rex")
+   self~loadApp("controls\TreeView\treeViewCustomDraw.rex")
 
 ::method list
-   self~loadApp("propertySheet.tabs\oodListViews.rex")
+   self~loadApp("propertySheet.tabControls\oodListViews.rex")
 
 ::method progress
    self~loadApp("oodpbar.rex")
 
 ::method property
-   self~loadApp("propertySheet.tabs\PropertySheetDemo.rex")
+   self~loadApp("propertySheet.tabControls\PropertySheetDemo.rex")
 
 
 ::method cancel

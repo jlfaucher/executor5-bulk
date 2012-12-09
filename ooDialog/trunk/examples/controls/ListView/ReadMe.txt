@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2012 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2009-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -37,38 +37,29 @@
 
   	ReadMe
 
-  1.  ooDialog Example Programs
-  -------------------------------
+  1.  ooDialog - Dialog Control Example Programs
+  -----------------------------------------------
 
-  This directory contains example ooDialog programs.  They are intended to
-  be relatively short and simple programs that demonstrate how to use some
-  feature of ooDialog.
+  This directory contains example programs that demonstrate how to use the
+  list-view control in ooDialog.  The examples range from simple to medium
+  complex.
 
-    - publicRoutines_demo.rex
+    - columnClickListView.rex
 
-    ooDialog contains a number of standard dialog and public routines.  The
-    standard dialogs and public routines are designed to be easy to use.
-    They allow a programmer to added simple graphical elements to a program
-    without any detailed knowledge of the ooDialog framework.  The
-    publicRoutines_demo program demonstrates how to use these public
-    routines.
+    An example program that shows how to determine which row and which
+    column in a list view control the user has clicked on.
 
-    - fileNameDialog_demo.rex
+    - customDrawListView.rex
 
-    The FileNameDialog public routine allows a programmer to present the
-    user with the standard Windows Open or Save file dialog.  The
-    fileNameDialog_demo program demonstrates how to use this routine.
+    Shows how to use a list-view with emphasis on custom draw.  Custom
+    draw with a list-view allows you set the text color, background color,
+    and font for individuals list-view items.  And when the list-view is
+    in report view, this can be done for individual subitems of each row.
 
-    - imageButton.rex
+    - columnIcons.rex
 
-    This example program demonstrates some of the new features introduced
-    in ooRexx 4.0.0, including the .Image, .Imagelist classes, and the
-    setImageList() method of the button class.
-
-    - useTools.rex
-
-    This example program shows how to use a dialog that is an "owned"
-    window.  Owned windows have several constraints, one of which is that
-    they always remain above their owner window.  This makes them useful to
-    create "tool palette" types of programs.  The example program does just
-    that, demonstrates a main dialog with a tool palette.
+    This example shows how to use icons for all columns in a list-view,
+    how to use LvFullRow objects to populate a list-view, and how to use
+    the internal sorting feature of the ooDialog framework.  In report
+    view, the columns can be drag and droppred to arrange the order.
+    Clicking on a column sorts the column.

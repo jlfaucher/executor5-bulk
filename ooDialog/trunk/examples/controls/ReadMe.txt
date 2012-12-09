@@ -40,19 +40,15 @@
   1.  ooDialog - Dialog Control Example Programs
   -----------------------------------------------
 
-  This directory contains example programs that demonstrate how to use the
-  various dialog control objects in ooDialog.  It is intended that,
-  eventually there will be an example of all the control objects.  The
-  programs are intended to several of the methods of the control objects.
-  This will probably cause them to be medium complex.
+  This directory and subdirectory contain example programs that demonstrate
+  how to use the various dialog control objects in ooDialog.  It is intended
+  that, eventually there will be an example of all the control objects.  The
+  programs are intended to show several of the methods of the control
+  objects. This will probably cause them to be medium complex.
 
-
-    - customDrawListView.rex
-
-    Shows how to use a list-view with emphasis on custom draw.  Custom draw
-    with a list-view allows you set the text color, background color, and
-    font for individuals list-view items.  And when the list-view is in
-    report view, this can be done for individual subitems of each row.
+  Many of the example programs are in dialog control subdirectories to make
+  it easy to find examples of a specific control.  List-view examples in the
+  ListView subdirectory, ToolTip examples in the ToolTip subdirectory, etc..
 
     - fiscalReports.rex
 
@@ -67,14 +63,6 @@
     GETDAYSTATE event.  Also shows how to: restrict the time span shown in
     the calendar, resize the calendar to the optimal size, and determine
     which months are currently displayed.
-
-    - toolTip.rex
-
-    Shows how to use a ToolTip control, including responding to the SHOW
-    event to position the ToolTip where desired.  Also shows how to:
-    enumerate the tools contained in the ToolTip, add a tool simply to the
-    ToolTip, add a tool as a rectangular area, create a multiline ToolTip,
-    and create a balloon ToolTip
 
     - upDown.rex
 

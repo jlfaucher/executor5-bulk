@@ -37,8 +37,8 @@
 
 .NOTPARALLEL:
 
-SUBDIRS      = ToolTip
-DIST_SUBDIRS = ToolTip
+SUBDIRS      = ListView ToolTip TreeView
+DIST_SUBDIRS = ListView ToolTip TreeView
 
 MAINTAINERCLEANFILES 	= Makefile.in *~
 

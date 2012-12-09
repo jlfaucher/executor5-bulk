@@ -39,7 +39,8 @@
 
 rcflags_common = /DWIN32 /v
 
-all:  oowalk2.dll AnimalGame.dll ..\propertySheet.tabs\rc\PropertySheetDemo.dll ..\propertySheet.tabs\rc\TabOwnerDemo.dll
+all:  oowalk2.dll AnimalGame.dll ..\propertySheet.tabControls\rc\PropertySheetDemo.dll \
+      ..\propertySheet.tabControls\rc\TabOwnerDemo.dll
 
 oowalk2.dll: oowalk2.res
     link /NOLOGO  $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) -out:$(@B).dll
@@ -47,11 +48,11 @@ oowalk2.dll: oowalk2.res
 AnimalGame.dll: AnimalGame.res
     link /NOLOGO $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) -out:$(@B).dll
 
-..\propertySheet.tabs\rc\PropertySheetDemo.dll: PropertySheetDemo.res
-    link /NOLOGO $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) -out:..\propertySheet.tabs\rc\$(@B).dll
+..\propertySheet.tabControls\rc\PropertySheetDemo.dll: PropertySheetDemo.res
+    link /NOLOGO $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) -out:..\propertySheet.tabControls\rc\$(@B).dll
 
-..\propertySheet.tabs\rc\TabOwnerDemo.dll: TabOwnerDemo.res
-    link /NOLOGO $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) -out:..\propertySheet.tabs\rc\$(@B).dll
+..\propertySheet.tabControls\rc\TabOwnerDemo.dll: TabOwnerDemo.res
+    link /NOLOGO $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) -out:..\propertySheet.tabControls\rc\$(@B).dll
 
 # Create .res from .rc
 oowalk2.res: ..\rc\walker.rc
@@ -60,8 +61,8 @@ oowalk2.res: ..\rc\walker.rc
 AnimalGame.res: ..\rc\AnimalGame.rc
         rc $(rcflags_common) -r -fo$(@B).res ..\rc\AnimalGame.rc
 
-PropertySheetDemo.res: ..\propertySheet.tabs\rc\PropertySheetDemo.rc
-        rc $(rcflags_common) -r -fo$(@B).res ..\propertySheet.tabs\rc\PropertySheetDemo.rc
+PropertySheetDemo.res: ..\propertySheet.tabControls\rc\PropertySheetDemo.rc
+        rc $(rcflags_common) -r -fo$(@B).res ..\propertySheet.tabControls\rc\PropertySheetDemo.rc
 
-TabOwnerDemo.res: ..\propertySheet.tabs\rc\TabOwnerDemo.rc
-        rc $(rcflags_common) -r -fo$(@B).res ..\propertySheet.tabs\rc\TabOwnerDemo.rc
+TabOwnerDemo.res: ..\propertySheet.tabControls\rc\TabOwnerDemo.rc
+        rc $(rcflags_common) -r -fo$(@B).res ..\propertySheet.tabControls\rc\TabOwnerDemo.rc

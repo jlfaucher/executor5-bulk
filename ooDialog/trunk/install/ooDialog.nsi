@@ -179,7 +179,6 @@ Section  doInstall
     File "${SrcDir}\oodialog.ico"
     File "${ExamplesDir}\*.rex"
     File "${ExamplesDir}\*.h"
-    File "${ExamplesDir}\*.inp"
     File "${ExamplesDir}\*.ico"
 
     ; Set the installation directory:
@@ -196,12 +195,41 @@ Section  doInstall
     File "${ExamplesDir}\controls\*.txt"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\ListView
+    ; Add the files ...
+    File "${ExamplesDir}\controls\ListView\*.rex"
+    File "${ExamplesDir}\controls\ListView\*.txt"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\ListView\rc
+    ; Add the files ...
+    File "${ExamplesDir}\controls\ListView\rc\*.rc"
+    File "${ExamplesDir}\controls\ListView\rc\*.h"
+    File "${ExamplesDir}\controls\ListView\rc\*.bmp"
+    File "${ExamplesDir}\controls\ListView\rc\*.dll"
+    File "${ExamplesDir}\controls\ListView\rc\res.mak"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\controls\ToolTip
     ; Add the files ...
     File "${ExamplesDir}\controls\ToolTip\*.rex"
     File "${ExamplesDir}\controls\ToolTip\*.rc"
     File "${ExamplesDir}\controls\ToolTip\*.h"
     File "${ExamplesDir}\controls\ToolTip\*.ico"
+    File "${ExamplesDir}\controls\ToolTip\*.txt"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\TreeView
+    ; Add the files ...
+    File "${ExamplesDir}\controls\TreeView\*.rex"
+    File "${ExamplesDir}\controls\TreeView\*.inp"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\TreeView\rc
+    ; Add the files ...
+    File "${ExamplesDir}\controls\TreeView\rc\*.rc"
+    File "${ExamplesDir}\controls\TreeView\rc\*.h"
+    File "${ExamplesDir}\controls\ListView\rc\*.bmp"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\examples
@@ -249,25 +277,25 @@ Section  doInstall
     ; Add the files ...
     File "${ExamplesDir}\ooRexxTry\doc\ooRexxTry.pdf"
 
-    SetOutPath $INSTDIR\samples\oodialog\propertySheet.tabs
+    SetOutPath $INSTDIR\samples\oodialog\propertySheet.tabControls
     ; Add the files ...
-    File "${ExamplesDir}\propertySheet.tabs\*.cls"
-    File "${ExamplesDir}\propertySheet.tabs\oodListViews.rex"
-    File "${ExamplesDir}\propertySheet.tabs\PropertySheetDemo.rex"
-    File "${ExamplesDir}\propertySheet.tabs\TabDemo.rex"
-    ; File "${ExamplesDir}\propertySheet.tabs\TabOwnerDemo.rex"   ; Do not expose this example yet
-    File "${ExamplesDir}\propertySheet.tabs\ticketWizard.rex"
-    File "${ExamplesDir}\propertySheet.tabs\UserTabDemo.rex"
+    File "${ExamplesDir}\propertySheet.tabControls\*.cls"
+    File "${ExamplesDir}\propertySheet.tabControls\oodListViews.rex"
+    File "${ExamplesDir}\propertySheet.tabControls\PropertySheetDemo.rex"
+    File "${ExamplesDir}\propertySheet.tabControls\TabDemo.rex"
+    ; File "${ExamplesDir}\propertySheet.tabControls\TabOwnerDemo.rex"   ; Do not expose this example yet
+    File "${ExamplesDir}\propertySheet.tabControls\ticketWizard.rex"
+    File "${ExamplesDir}\propertySheet.tabControls\UserTabDemo.rex"
 
 
-    SetOutPath $INSTDIR\samples\oodialog\propertySheet.tabs\rc
+    SetOutPath $INSTDIR\samples\oodialog\propertySheet.tabControls\rc
     ; Add the files ...
-    File "${ExamplesDir}\propertySheet.tabs\rc\oodListViews*"
-    File "${ExamplesDir}\propertySheet.tabs\rc\PropertySheetDemo*"
-    ; File "${ExamplesDir}\propertySheet.tabs\rc\TabOwnerDemo*"   ; Do not expose this example yet
-    File "${ExamplesDir}\propertySheet.tabs\rc\ticketWizard*"
-    File "${ExamplesDir}\propertySheet.tabs\rc\UserTabDemo.h"
-    ; File "${ExamplesDir}\propertySheet.tabs\rc\UserTabDemo.rc"  ; Do not included in distribution, maybe in the future.
+    File "${ExamplesDir}\propertySheet.tabControls\rc\oodListViews*"
+    File "${ExamplesDir}\propertySheet.tabControls\rc\PropertySheetDemo*"
+    ; File "${ExamplesDir}\propertySheet.tabControls\rc\TabOwnerDemo*"   ; Do not expose this example yet
+    File "${ExamplesDir}\propertySheet.tabControls\rc\ticketWizard*"
+    File "${ExamplesDir}\propertySheet.tabControls\rc\UserTabDemo.h"
+    ; File "${ExamplesDir}\propertySheet.tabControls\rc\UserTabDemo.rc"  ; Do not included in distribution, maybe in the future.
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\rc
@@ -415,6 +443,59 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Exercise06\Product\res\*.bmp"
     File "${ExamplesDir}\userGuide\exercises\Exercise06\Product\res\*.dll"
     File "${ExamplesDir}\userGuide\exercises\Exercise06\Product\res\res.mak"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Customer
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\*.txt"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Customer\bmp
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\bmp\*.ico"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\bmp\*.bmp"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Order
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Order\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Order\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Order\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Order\*.txt"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Order\bmp
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Order\bmp\*.ico"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Order\bmp\*.bmp"
+
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\OrderMgr
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\OrderMgr\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\OrderMgr\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\OrderMgr\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Product
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\*.txt"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Product\res
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\res\*.ico"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\res\*.bmp"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples

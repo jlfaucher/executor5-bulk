@@ -40,11 +40,15 @@
  * treeViewCustomDraw.rex
  *
  * This example demonstrates many of the features of a tree-view control.
- * Including, but not limited to: drag and drop of items, label editing of
- * items, custom draw, using image lists to supply the icons for tree-view
- * items, using a custom compare function in the Rexx dialog to sort the
- * tree-view items, displaying info tips, etc..
+ * Including, but not limited to: label editing of items, custom draw, using
+ * image lists to supply the icons for tree-view items, using a custom compare
+ * function in the Rexx dialog to sort the tree-view items, displaying info
+ * tips, etc..
  */
+
+    -- A directory manager saves the current directory and can later go back to
+    -- that directory.  The class itself is located in DirectoryManaager.cls
+    mgr = .DirectoryManager~new()
 
     -- Use the global .constDir for symbolic IDs and turn automatic data
     -- detection off.
@@ -55,9 +59,11 @@
         ret = dlg~execute("SHOWTOP")
     end
 
+    mgr~goBack
+
 return 0
 
-::requires "ooDialog.cls"  -- Require the ooDialog framework.
+::requires "ooDialog.cls"          -- Require the ooDialog framework.
 
 
 /*- TreeViewConstants - Class - - - - - - - - - - - - - - - - - - - - - - - - *\
@@ -67,7 +73,7 @@ return 0
 
 \*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 ::class 'TreeViewConstants' mixinclass Object
-::constant BMP_FILE  "bmp\treeViewCustomDraw.bmp"  -- Icons for selected/not-selected items.
+::constant BMP_FILE  "rc\treeViewCustomDraw.bmp"  -- Icons for selected/not-selected items.
 ::constant TREE_FILE "treeViewCustomDraw.inp"      -- Input file with the items to build the tree.
 ::constant ITEM_FILE "treeViewCustomDrawi.inp"     -- Input file with dynamically added items.
 
@@ -133,7 +139,6 @@ return info.!Image == self~UNSELECTED_LEAF
     -- Connect dialog control events to methods in the Rexx dialog.
     self~connectTreeViewEvent(IDC_TREE, "EXPANDING", "onExpanding", .true)
     self~connectTreeViewEvent(IDC_TREE, "DEFAULTEDIT")
-    self~connectTreeViewEvent(IDC_TREE, "BEGINDRAG", "DefTreeDragHandler")
     self~connectTreeViewEvent(IDC_TREE, "KEYDOWN",   "onKeyDown")
     self~connectTreeViewEvent(IDC_TREE, "GETINFOTIP", "onGetInfoTip")
 
@@ -832,3 +837,29 @@ return 0
     -- Finally, quit by invoking the super class ok() method.
 return self~ok:super
 
+
+/*- DirectoryManager Class- - - - - - - - - - - - - - - - - - - - - - - - - - *\
+
+   This class allows this program to be called from different direcorty than the
+   directory this program is located in.
+
+\*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+::class 'DirectoryManager'
+
+::method init
+  expose originalDirectory
+
+  -- Save our current directory.
+  originalDirectory = directory()
+
+  -- Get the full path to this program file.
+  parse source . . pgmFile
+
+  -- Get the directory this program file is located in, and then cd to it.
+  pgmDir = pgmFile~left(pgmFile~lastpos('\') - 1)
+  pgmDir = directory(pgmDir)
+
+
+::method goBack
+  expose originalDirectory
+  ret = directory(originalDirectory)

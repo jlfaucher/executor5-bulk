@@ -1,6 +1,6 @@
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
-#/* Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.    */
+#/* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
@@ -34,13 +34,17 @@
 #/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 #/*                                                                            */
 #/*----------------------------------------------------------------------------*/
+# NMAKE-compatible MAKE file for ooDialog resource DLLs
 
-.NOTPARALLEL:
+rcflags_common = /DWIN32 /v
 
-SUBDIRS      = bmp controls examples menus mouse oleinfo ooRexxTry propertySheet.tabControls rc res simple sysinfo tutorial userGuide wav winsystem
-DIST_SUBDIRS = bmp controls examples menus mouse oleinfo ooRexxTry propertySheet.tabControls rc res simple sysinfo tutorial userGuide wav winsystem
+all:  columnIcons.dll
 
-MAINTAINERCLEANFILES = Makefile.in *~
+columnIcons.dll: columnIcons.res
+    link /NOLOGO  $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) -out:$(@B).dll
 
-EXTRA_DIST = *.rex *.h *.ico
+
+# Create .res from .rc
+columnIcons.res: columnIcons.rc
+        rc $(rcflags_common) -r -fo$(@B).res columnIcons.rc
 

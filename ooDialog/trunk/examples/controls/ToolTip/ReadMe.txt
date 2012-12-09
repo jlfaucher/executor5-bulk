@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2012 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -37,38 +37,34 @@
 
   	ReadMe
 
-  1.  ooDialog Example Programs
-  -------------------------------
+  1.  ooDialog - ToolTip Example Programs
+  ---------------------------------------
 
-  This directory contains example ooDialog programs.  They are intended to
-  be relatively short and simple programs that demonstrate how to use some
-  feature of ooDialog.
+  This directory contains example programs that demonstrate how to use the
+  ToolTip control in ooDialog.  It is intended that the examples range from
+  simple programs to medium complex programs, and cover most of the
+  important methods of the ToolTip class.
 
-    - publicRoutines_demo.rex
 
-    ooDialog contains a number of standard dialog and public routines.  The
-    standard dialogs and public routines are designed to be easy to use.
-    They allow a programmer to added simple graphical elements to a program
-    without any detailed knowledge of the ooDialog framework.  The
-    publicRoutines_demo program demonstrates how to use these public
-    routines.
+    - toolTip.rex
 
-    - fileNameDialog_demo.rex
+    Shows how to use a ToolTip control, including responding to the SHOW
+    event to position the ToolTip where desired.  Also shows how to:
+    enumerate the tools contained in the ToolTip, add a tool simply to the
+    ToolTip, add a tool as a rectangular area, create a multiline ToolTip,
+    and create a balloon ToolTip
 
-    The FileNameDialog public routine allows a programmer to present the
-    user with the standard Windows Open or Save file dialog.  The
-    fileNameDialog_demo program demonstrates how to use this routine.
+    - customPositionToolTip.rex
 
-    - imageButton.rex
+    Demonstrates how to do custom positioning of the info tip in a
+    tree-view control.  If the program is just displayed, it appears to be
+    exactly the same as the manageControlTool.rex example.  The source
+    code for both examples needs to be examined to see the differences.
 
-    This example program demonstrates some of the new features introduced
-    in ooRexx 4.0.0, including the .Image, .Imagelist classes, and the
-    setImageList() method of the button class.
+    - manageControlTool.rex
 
-    - useTools.rex
+    Demonstrates how create a completely custom ToolTip for a dialog
+    control.  If the program is just displayed, it appears to be exactly
+    the same as the manageControlTool.rex example.  The source code for
+    both examples needs to be examined to see the differences.
 
-    This example program shows how to use a dialog that is an "owned"
-    window.  Owned windows have several constraints, one of which is that
-    they always remain above their owner window.  This makes them useful to
-    create "tool palette" types of programs.  The example program does just
-    that, demonstrates a main dialog with a tool palette.
