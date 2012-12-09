@@ -766,7 +766,7 @@ MsgReplyType tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
 
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
-        if ( StrStrI(methodName, "DEFTREEEDITHANDLER") != 0 )
+        if ( StrCmpI(methodName, "DEFTREEEDITHANDLER") != 0 )
         {
             RexxStringObject mthName = c->String(methodName);
             RexxObjectPtr    hItem   = pointer2string(c, pdi->item.hItem);
