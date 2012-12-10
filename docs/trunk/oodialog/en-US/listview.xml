@@ -1737,42 +1737,86 @@ when the column is clicked on:
 
 <section id="mthDeleteColumn" xreflabel="deleteColumn"><title>deleteColumn</title>
 <indexterm><primary>deleteColumn</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>deleteColumn</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~deleteColumn(--column--)-----------------------><
-
-
+>>--deleteColumn(--colIndex--+------------------+--)------------><
+                             +-,-adjustFullRows-+
 ]]>
 </programlisting>
 
-<para>The deleteColumn method removes a column from a
-list-view control.</para>
+<para>
+  Deletes the specified column in this list-view.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>column</term>
-<listitem><para>The number of the column to be deleted. The first column must be deleted
-last.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>colIndex [required]</term>
+    <listitem>
+    <para>
+      The zero-based index of the column to delete.
+    </para>
+    <varlistentry><term>adjustFullRows [optional]</term>
+    <listitem>
+    <para>
+      If true attempts to fix up the <xref linkend="clsLvFullRow"/> objects assigned to the item <link
+      linkend="mthSetItemDataClsListView">data</link> of each list-view item. Does nothing if false. The default is false.
+      This argument is only used to support internal sorting.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    <link linkend="defWindowsDocumentation">MSDN</link> says column 0 can not be deleted. If column 0 must be deleted, MSDN
+    suggests inserting a dummy column at index 0 and then deleting column 1.
+  </para>
+  <para>
+    However, this is not true, deleting column 0 will succeed if all the other columns are deleted first. What can not be
+    deleted is the list-view item information for column 0. When a column for a subitem is deleted, the subitem information
+    is deleted. But, when column 0 is deleted the item inforation is not deleted. If, after deleting column 0, the
+    application switches the view from report to one of the other views, like icon, the information for each item will
+    display. In report view, nothing will show if all columns have been delteted.
+  </para>
+  <para>
+    Only use the <emphasis role="italic">adjustFullRows</emphasis> argument to <link
+    linkend="sctInternalSorting">adjust</link> the <computeroutput>LvFullRow</computeroutput> objects if every list-view item
+    has a <computeroutput>LvFullRow</computeroutput> item assigned as the item data, and the programmer has kept the full
+    rows consistent with changes to the column count of this list-view. If these conditions are not met, this method will
+    return an error code, even if the column was deleted successfully.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The column was deleted.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>You did not specify <emphasis role="italic">column</emphasis>.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>For all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End ListView::deleteColumn() -->
+
 
 <section id="mthDeselect" xreflabel="deselect"><title>deselect</title>
 <indexterm><primary>deselect</primary></indexterm>
@@ -7108,7 +7152,7 @@ grid position.</para>
   names = self~getFirstLastNames
 
   do i = 1 to names~items
-    list~setItemData(i - 0, names[i])
+    list~setItemData(i - 1, names[i])
   end
   ...
 
