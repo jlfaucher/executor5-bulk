@@ -115,6 +115,43 @@
   </listitem></varlistentry>
 </variablelist>
 
+<section id="sctViewStyles"><title>View Styles</title>
+<indexterm><primary>view styles</primary></indexterm>
+<para>
+  List view controls can display their contents in different views. The current view is specified by the window style of the
+  control. Additional window styles define the alignment of the items and the functionality of the list-view control. The
+  different views are:
+</para>
+<variablelist>
+  <varlistentry><term>Icon view</term>
+  <listitem>
+  <para>
+    Each item appears as a full-sized icon with a label below it. The user can drag the items to any location in the list
+    view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Small-icon view</term>
+  <listitem>
+  <para>
+    Each item appears as a small icon with a label to the left of it. The user can drag the items to any location.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>List view</term>
+  <listitem>
+  <para>
+    Each item appears as a small icon with a label to the left of it. The user cannot drag the items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Report view</term>
+  <listitem>
+  <para>
+    Each item appears on a separate line with information arranged in columns. The leftmost column contains the small icon
+    and the label. All following columns contain subitems as specified by the application.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="sctMethodsListView"><title>Method Table</title>
 <para>
   The following table provides links to the documentation for the primary methods and attributes used in working
@@ -279,7 +316,11 @@
 </row>
 <row>
 <entry><xref linkend="mthFirstVisible"/></entry>
-<entry>Retrieves the index of the first item visible in list-view control with the report or list style.</entry>
+<entry>Retrieves the index of the topmost visible item when in this list-view is in list or report view.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFixFullRowColumns"/></entry>
+<entry>A convenience method used to adjust the subitem columns in the <xref linkend="clsLvFullRow"/> objects used for <link linkend="sctInternalSorting">internal</link> sorting when a column has been deleted or inserted in this list-view.</entry>
 </row>
 <row>
 <entry><xref linkend="mthFocus"/></entry>
@@ -331,7 +372,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetItem"/></entry>
-<entry>Returns a <link linkend="clsLvItem">LvItem</link> object for the item specified.</entry>
+<entry>Returns some, or all, of the information the list-view maintains on the specified item. The information is returned as a <link linkend="clsLvItem">LvItem</link> object. The item is specified by either a <computeroutput>LvItem</computeroutput> object or by the item's index.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetItemDataClsListView"/></entry>
@@ -367,67 +408,67 @@
 </row>
 <row>
 <entry><xref linkend="mthInsertClsListControl"/></entry>
-<entry>Inserts a new item into the list-view, or inserts a new subitem into in an existing list-view item.</entry>
+<entry>Inserts a new item into this list-view, or inserts a new subitem into in an existing list-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthInsertColumn"/></entry>
-<entry>Inserts a new column into the list-view control using dialog units for the width. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
+<entry>Inserts a new column into this list-view control using dialog units for the width. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthInsertColumnPX"/></entry>
-<entry>Inserts a new column into a list-view control using pixels for the width</entry>
+<entry>Inserts a new column into this list-view specifying the column width in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="mthInsertFullRow">insertFullRow</link></entry>
-<entry>Adds a new item to a list-view at the position specified using a <link linkend="clsLvFullRow">LvFullRow</link> object.</entry>
+<entry>Adds a new item to this list-view at the position specified using a <link linkend="clsLvFullRow">LvFullRow</link> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIsCheckedClsListControl"/></entry>
-<entry>Determines if a check box for a list-view item is checked or not.</entry>
+<entry>Determines if a check box for this list-view item is checked or not.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItemInfo"/></entry>
-<entry>Retrieves the attributes of a list-view item in a <computeroutput>Stem</computeroutput> object.</entry>
+<entry>Retrieves the attributes of this list-view item in a <computeroutput>Stem</computeroutput> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItemPos"/></entry>
-<entry>Retrieves the client area coordinates of an item in a list-view control as a <computeroutput>String</computeroutput> object.</entry>
+<entry>Retrieves the client area coordinates of an item in this list-view control as a <computeroutput>String</computeroutput> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItemsClsListView"/></entry>
-<entry>Retrieves the number of items in a list-view control.</entry>
+<entry>Retrieves the number of items in this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItemState"/></entry>
-<entry>Retrieves the state of a list-view item, focused, selected, etc.</entry>
+<entry>Retrieves the state of this list-view item, focused, selected, etc.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItemText"/></entry>
-<entry>Retrieves the text of a list-view item or subitem.</entry>
+<entry>Retrieves the text of this list-view item or subitem.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItemsPerPage"/></entry>
-<entry>Calculates the number of items that vertically fit the visible area of a list-view control that has the report or list style.</entry>
+<entry>Calculates the number of items that vertically fit the visible area of this list-view control that has the report or list style.</entry>
 </row>
 <row>
 <entry><xref linkend="mthLast"/></entry>
-<entry>Retrieves the index of the last item in a list-view control.</entry>
+<entry>Retrieves the index of the last item in this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthLastSelected"/></entry>
-<entry>Returns the index of the selected item with the highest index in a list-view control.</entry>
+<entry>Returns the index of the selected item with the highest index in this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthModify"/></entry>
-<entry>Modifies the text or icon for an item, or the text for a subitem, for a list-view item</entry>
+<entry>Modifies the text or icon for an item, or the text for a subitem, for this list-view item</entry>
 </row>
 <row>
 <entry><xref linkend="mthModifyColumn"/></entry>
-<entry>Sets new attributes for a column of a list-view control when it has the report or list style. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
+<entry>Sets new attributes for a column of this list-view control when it has the report or list style. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthModifyColumnPX"/></entry>
-<entry>Sets new attributes for a column of a list-view control when it has the report or list style.</entry>
+<entry>Sets new attributes for a column of this list-view control when it has the report or list style.</entry>
 </row>
 <row>
 <entry><xref linkend="mthModifyItem"/></entry>
@@ -459,7 +500,7 @@
 </row>
 <row>
 <entry><link linkend="mthPrependFullRow">prependFullRow</link></entry>
-<entry>Adds a new item to a list-view at the beginning of the list using a <link linkend="clsLvFullRow">LvFullRow</link> object.</entry>
+<entry>Adds a new item to this list-view at the beginning of the list using a <link linkend="clsLvFullRow">LvFullRow</link> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthPrevious"/></entry>
@@ -471,7 +512,7 @@
 </row>
 <row>
 <entry><xref linkend="mthRedrawItems"/></entry>
-<entry>Forces a list-view control to redraw a range of items.</entry>
+<entry>Forces this list-view control to redraw a range of items.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRemoveItemDataClsListView"/></entry>
@@ -479,11 +520,11 @@
 </row>
 <row>
 <entry><xref linkend="mthRemoveExtendedStyle"/></entry>
-<entry>Removes one or more extended styles of a list-view control.</entry>
+<entry>Removes one or more extended styles of this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRemoveStyleClsListView"/></entry>
-<entry>Removes one or more window styles of a list-view control.</entry>
+<entry>Removes one or more window styles of this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthReplaceExtendedStyle"/></entry>
@@ -491,7 +532,7 @@
 </row>
 <row>
 <entry><xref linkend="mthReplaceStyleClsListView"/></entry>
-<entry>Removes some of the window styles of a list-view control and sets new styles.</entry>
+<entry>Removes some of the window styles of this list-view control and sets new styles.</entry>
 </row>
 <row>
 <entry><xref linkend="mthScrollClsListview"/></entry>
@@ -507,19 +548,19 @@
 </row>
 <row>
 <entry><xref linkend="mthSelectedItemsClsListView"/></entry>
-<entry>Determines the count of selected items in a list-view control.</entry>
+<entry>Determines the count of selected items in this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetColumnOrder"/></entry>
-<entry>Changes the column order of a list-view control to some other order.</entry>
+<entry>Changes the column order of this list-view control to some other order.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetColumnWidth"/></entry>
-<entry>Sets the width, in dialog units, of a column in a list-view control that has the report or list style. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
+<entry>Sets the width, in dialog units, of a column in this list-view control that has the report or list style. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthSetColumnWidthPX"/></entry>
-<entry>Sets the width, in pixels, of a column in a list-view control that has the report or list style.</entry>
+<entry>Sets the width, in pixels, of a column in this list-view control that has the report or list style.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetHoverTime"/></entry>
@@ -535,15 +576,15 @@
 </row>
 <row>
 <entry><xref linkend="mthSetItemPos"/></entry>
-<entry>Moves an item to a specified position in a list-view control that has the icon or small-icon style.</entry>
+<entry>Moves an item to a specified position in this list-view control that has the icon or small-icon style.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetItemState"/></entry>
-<entry>Sets the state of a list-view item.</entry>
+<entry>Sets the state of this list-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetItemText"/></entry>
-<entry>Changes the text of an item, or the text of a subitem, of a list-view item.</entry>
+<entry>Changes the text of an item, or the text of a subitem, of this list-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetView"/></entry>
@@ -555,7 +596,7 @@
 </row>
 <row>
 <entry><xref linkend="mthSmalSpacing"/></entry>
-<entry>Determines the spacing between items in a list-view control when it has the  small-icon style.</entry>
+<entry>Determines the spacing between items in this list-view control when it has the  small-icon style.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSnapToGrid"/></entry>
@@ -579,19 +620,19 @@
 </row>
 <row>
 <entry><xref linkend="mthTextBkColor"/></entry>
-<entry>Retrieves the background color of the text in a list-view control.</entry>
+<entry>Retrieves the background color of the text in this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthTextBkColorEquals"/></entry>
-<entry>Sets the background color for the text in a list-view control.</entry>
+<entry>Sets the background color for the text in this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthTextColor"/></entry>
-<entry>Retrieves the text color of a list-view control.</entry>
+<entry>Retrieves the text color of this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthTextColorEquals"/></entry>
-<entry>Sets the text color of a list-view control.</entry>
+<entry>Sets the text color of this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUncheckClsListControl"/></entry>
@@ -603,48 +644,11 @@
 </row>
 <row>
 <entry><xref linkend="mthUpdateItem"/></entry>
-<entry>Updates a list-view item.</entry>
+<entry>Updates this list-view item.</entry>
 </row>
 </tbody></tgroup>
 </table>
 
-</section>
-
-<section id="sctViewStyles"><title>View Styles</title>
-<indexterm><primary>view styles</primary></indexterm>
-<para>
-  List view controls can display their contents in different views. The current view is specified by the window style of the
-  control. Additional window styles define the alignment of the items and the functionality of the list-view control. The
-  different views are:
-</para>
-<variablelist>
-  <varlistentry><term>Icon view</term>
-  <listitem>
-  <para>
-    Each item appears as a full-sized icon with a label below it. The user can drag the items to any location in the list
-    view.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>Small-icon view</term>
-  <listitem>
-  <para>
-    Each item appears as a small icon with a label to the left of it. The user can drag the items to any location.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>List view</term>
-  <listitem>
-  <para>
-    Each item appears as a small icon with a label to the left of it. The user cannot drag the items.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>Report view</term>
-  <listitem>
-  <para>
-    Each item appears on a separate line with information arranged in columns. The leftmost column contains the small icon
-    and the label. All following columns contain subitems as specified by the application.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="tmthNewListView" xreflabel="newListview"><title>newListView (dialog object method)</title>
@@ -1765,7 +1769,8 @@ when the column is clicked on:
     <para>
       If true attempts to fix up the <xref linkend="clsLvFullRow"/> objects assigned to the item <link
       linkend="mthSetItemDataClsListView">data</link> of each list-view item. Does nothing if false. The default is false.
-      This argument is only used to support internal sorting.
+      This argument is only used to support <link linkend="sctInternalSorting">internal</link> sorting. If the application is
+      not using internal sorting then this argument should just be ignored.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1794,7 +1799,8 @@ when the column is clicked on:
     linkend="sctInternalSorting">adjust</link> the <computeroutput>LvFullRow</computeroutput> objects if every list-view item
     has a <computeroutput>LvFullRow</computeroutput> item assigned as the item data, and the programmer has kept the full
     rows consistent with changes to the column count of this list-view. If these conditions are not met, this method will
-    return an error code, even if the column was deleted successfully.
+    return an error code, even if the column was deleted successfully. However, no harm is done, it will just make it hard
+    to tell between a successful execution of the method and an error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1806,9 +1812,12 @@ when the column is clicked on:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example deletes the column for the first subitem of the list-view items:
 <programlisting>
 <![CDATA[
+
+  list = self~newListView(IDC_LV_CONTACTS)
+  list~deleteColumn(1)
 
 ]]>
 </programlisting>
@@ -2130,25 +2139,40 @@ end of the list.
 </section>
 
 <section id="mthFirstVisible" xreflabel="firstVisible"><title>firstVisible</title>
-<indexterm><primary>firstVisible</primary>
-<secondary>ListView class</secondary></indexterm>
+<indexterm><primary>firstVisible</primary><secondary>ListView class</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>firstVisible</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~FirstVisible-----------------------------------><
-
-
+>>--firstVisible---------------------------------><
 ]]>
 </programlisting>
 
-<para>The firstVisible method retrieves the number of
-the first item visible in a list or report view.</para>
+<para>
+  Retrieves the index of the topmost visible item when in this list-view is in list or report view.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of the first item visible, or 0 if the list-view control
-is in icon or small-icon view.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the zero-based index of the topmost visible item when the list-view is in list or report view. Returns 0 if the
+    list-view is in icon or small icon view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    There is no way to distinguish between a return of 0 because the list-view is not in list or report view and a 0 because
+    the topmost visible item is index 0 when the list-view is in list or report view.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End ListView::firstVisible() -->
 
 
 <section id="mthFixFullRowColumns" xreflabel="fixFullRowColumns"><title>fixFullRowColumns</title>
@@ -2156,13 +2180,14 @@ is in icon or small-icon view.
 <indexterm><primary>ListView class</primary><secondary>fixFullRowColumns</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--fixFullRowColumns(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--fixFullRowColumns(--colIndex--+-------------+--)------------><
+                                  +-,-inserted--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  A convenience method used to adjust the subitem columns in the <xref linkend="clsLvFullRow"/> objects used for <link
+  linkend="sctInternalSorting">internal</link> sorting when a column has been deleted or inserted in this list-view.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2171,10 +2196,17 @@ is in icon or small-icon view.
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>colIndex [required]</term>
     <listitem>
     <para>
-      xx
+      The one-based index of the <emphasis role="italic">subitem</emphasis> column that was inserted or deleted.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>inserted [optional]</term>
+    <listitem>
+    <para>
+      True or false to specify if the column was inserted or removed. The default is false, the column was deleted. Set this
+      argument to true to specify the column was inserted.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2182,13 +2214,26 @@ is in icon or small-icon view.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    As explained in the <link linkend="sctInternalSorting">section</link> on internal sorting considerations, the ooDialog
+    framework does its best to keep the full row objects assigned as the <link
+    linkend="mthSetItemDataClsListView">item</link> data of each list-view item in sync with the actual item. However, when a
+    column is deleted or insterted, the programmer needs to take some action to alert the framework that the full row objects
+    need to be updated. The <emphasis role="italic">fixFullRowColumns</emphasis> is provided as one option the programmer can
+    use to take action. The other options are to manually update the item data of each list-view item, or to use the
+    <emphasis role="italic">adjustFullRows</emphasis> argument of the <xref linkend="mthDeleteColumn"/> or <xref
+    linkend="mthInsertColumn"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">fixFullRowColumns</emphasis> method has to be used after each individual delete or insert of
+    a column. I.e., the programmer can not delete 2 rows and then call <emphasis role="italic">fixFullRowColumns</emphasis>
+    twice in a row. The <emphasis role="italic">colIndex</emphasis> argument value must be within a valid range. It can not
+    be 0, or greater than the count of current columns plus 1.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2196,16 +2241,19 @@ is in icon or small-icon view.
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the <emphasis role="italic">fixFullRowColumns</emphasis> method to notify the ooDialog framework that
+    a column has been deleted in the list-view. The framework then updates all the <computeroutput>LvFullRow</computeroutput>
+    objects assigned as the item data of each list-view item:
 <programlisting>
 <![CDATA[
+
+  list = self~newListView(IDC_LV_CONTACTS)
+  list~deleteColumn(1)
+  list~fixFullRowColumns(1)
 
 ]]>
 </programlisting>
@@ -2891,15 +2939,18 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   </para>
   <para>
     The <xref linkend="mthSortItems"/> method is used to do custom sorting of list-view items. The sorting is dependent on
-    the item data <link linkend="mthSetItemDataClsListView">item</link> being set for each list-view item. In addition, the
+    the item <link linkend="mthSetItemDataClsListView">data</link> being set for each list-view item. In addition, the
     <emphasis role="italic">sortItems</emphasis> method can be used to signal the ooDialog framework to use native internal
-    code for the sorting. For the internal sort to work, the item data item must be a
-    <computeroutput>LvFullRow</computeroutput> object. The returned object from <emphasis role="italic">getFullRow</emphasis>
-    can be set as the item data to allow the interanl sorting. When invoking <emphasis
-    role="italic">setItemData</emphasis> with a <computeroutput>LvFullRow</computeroutput> object as the argument, the
-    internal house keeping that the ooDialog framework needs to do for internal sorts is done automatically. However, if the
-    returned full row object is instead used to insert or add a new item into the list-view, this internal house keeping may
-    be bypassed. For this case, the <emphasis role="italic">sortable</emphasis> argument should be used and set to true.
+    code for the sorting. For the internal sort to work, the item data item <link linkend="sctInternalSorting">must</link> be
+    a <computeroutput>LvFullRow</computeroutput> object.
+  </para>
+  <para>
+    The returned object from <emphasis role="italic">getFullRow</emphasis> can be set as the item data to allow the interanl
+    sorting. When invoking the <emphasis role="italic">setItemData</emphasis> method with a
+    <computeroutput>LvFullRow</computeroutput> object as the argument, the internal house keeping that the ooDialog framework
+    needs to do for internal sorts is done automatically. However, if the returned full row object is instead used to insert
+    or add a new item into the list-view, this internal house keeping may be bypassed. For this case, the <emphasis
+    role="italic">sortable</emphasis> argument should be used and set to true.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2930,10 +2981,9 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 </programlisting>
   </para>
   <para>
-    This example is similar to the first example, however in addition to setting the item data, the full row object is used
-    to insert a new item into the list-view. <emphasis role="bold">Note</emphasis> that the <emphasis
-    role="italic">sortable</emphasis> argument is used here. Once the loop finishes, the entire list can be sorted using the
-    ooDialog internal sort.
+    This example is similar to the first example, however, the full row object is used to insert a new item into the
+    list-view. <emphasis role="bold">Note</emphasis> that the <emphasis role="italic">sortable</emphasis> argument is used
+    here. Once the loop finishes, the entire list can be sorted using the ooDialog internal sort.
 <programlisting>
 <![CDATA[
 
@@ -2942,7 +2992,6 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   do i = 1 to list~items
     j = i - 1
     row = list~getFullRow(j, .true)
-    list~setItemData(j, row)
     list~addFullRow(row)
   end
 
@@ -3116,12 +3165,14 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 <indexterm><primary>ListView class</primary><secondary>getItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getItem(--itemIndex--)-----------------------><
+>>--getItem(--_item--)---------------------------><
 ]]>
 </programlisting>
 
 <para>
-  Returns a <link linkend="clsLvItem">LvItem</link> object for the item specified.
+  Returns some, or all, of the information the list-view maintains on the specified item. The information is returned as a
+  <link linkend="clsLvItem">LvItem</link> object. The item is specified by either a <computeroutput>LvItem</computeroutput>
+  object or by the item's index.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3130,10 +3181,23 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     The single argument is:
   </para>
     <variablelist>
-      <varlistentry><term>itemIndex [required]</term>
+      <varlistentry><term>_item [required]</term>
       <listitem>
       <para>
-        Specifies which list-view item to get.
+        Specifies the list-view item whose information is required. <emphasis role="italic">_item</emphasis> can either be a
+        <xref linkend="clsLvItem"/> object, or the zero-based index of the item.
+      </para>
+      <para>
+        When <emphasis role="italic">_item</emphasis> is a <computeroutput>LvItem</computeroutput> object then it can be
+        used to only retrieve some of the list-view item's information. The value of the <xref linkend="atrMaskClsLvi"/>
+        attribute determines which information is retrieved. The attributes of the <computeroutput>LvItem</computeroutput>
+        specified by the mask are set to the current value of that information in the list-view's item. Attrbibutes not
+        specified by the mask are ignored.
+      </para>
+      <para>
+        When <emphasis role="italic">_item</emphasis> is the index of a list-view item, then a new
+        <computeroutput>LvItem</computeroutput> object is returned. The attributes of this object reflect all the information
+        of the list-view's item.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3141,15 +3205,83 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    On success, returns a <computeroutput>LvItem</computeroutput> object whose attributes represent the attributes of the
-    list-view item. On error, the <computeroutput>.nil</computeroutput> object is returned.
+    When <emphasis role="italic">_item</emphasis> is a <computeroutput>LvItem</computeroutput> object, this method returns
+    true on success and false on error. On success the atributes of the <emphasis role="italic">_item</emphasis> object,
+    which is a <computeroutput>LvItem</computeroutput> object reflect the information requested. On error, the value of the
+    attrbiutes are undefined.
   </para>
+  <para>
+    When <emphasis role="italic">_item</emphasis> is the index of a list-view item, then on success, this method returns a
+    <computeroutput>LvItem</computeroutput> object whose attributes represent the attributes of the list-view item. On error,
+    the <computeroutput>.nil</computeroutput> object is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+    <para>
+      Whether to use a <computeroutput>LvItem</computeroutput> object or an item index for the <emphasis
+      role="italic">_item</emphasis> argument is dependent on what the programmer sees as the most convenient. If the
+      programmer only wishes to determine the group ID of the item and does not need any other information on the item, it
+      may be more convenient to use a <computeroutput>LvItem</computeroutput> object with the <emphasis
+      role="italic">mask</emphasis> attribute set to just <emphasis role="italic">GROUPID</emphasis>. On the other hand, if
+      the programmer wants all the current information for a list-view item, it may be more convenient to specify the index
+      of the item and get back a new <computeroutput>LvItem</computeroutput> object.
+    </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example shows a generic method in a dialog to get the group ID of any, arbitrary, item in a list-view:
+
+<programlisting>
+<![CDATA[
+
+::method getGroupID private
+    expose list
+    use strict arg itemIndex
+
+    lvItem = .LvItem~new(itemIndex, , , , 'GROUPID')
+
+    if list~getItem(lvItem) then do
+        return lvItem~groupID
+    end
+    else do
+        -- Some error happened, very unlikely.
+        -- Handle the error
+    end
+
+]]>
+</programlisting>
+    </para>
+    <para>
+      This example shows a generic method for producing a new <computeroutput>LvItem</computeroutput> object for any item in
+      a list-view:
+
+<programlisting>
+<![CDATA[
+
+::method getLvItem
+    use strict arg listView, itemIndex
+
+    lvItem = listView~getItem(itemIndex)
+
+    if lvItem == .nil then do
+        -- Some error happened, very unlikely.
+        -- Handle the error
+    end
+    else do
+        return lvItem
+    end
+
+]]>
+</programlisting>
+    </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ListView::getItem() -->
@@ -3537,7 +3669,9 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
   <listitem>
   <para>
-    xxx
+    The choice of whether to use a <computeroutput>LvItem</computeroutput> object or an item index / subitem index
+    combination to specify which subitem to query is up to the programmer. It is dependent on which seems the most convenient
+    to the programmer for the task.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4101,71 +4235,137 @@ Generic Form:
 
 <section id="mthInsertColumn" xreflabel="insertColumn"><title>insertColumn</title>
 <indexterm><primary>insertColumn</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>insertColumn</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                               +-0------+
->>-aListControl~insertColumn(--+--------+--,--text--,-->
-                               +-column-+
-
->--,--width--+---------------------+--)---------------><
-             |       +-LEFT---+    |
-             +-,--"--+-CENTER-+--"-+
-                     +-RIGHT--+
-
-
+>>--insertColumn(--+----------+-txt-,-width-+-------+-+------------------+--)--><
+                   +--colIdx--+             +-,-fmt-+ +-,-adjustFullRows-+
 ]]>
 </programlisting>
 
-<para>The insertColumn method sets the attributes of
-a report list-view column.</para>
+<para>
+  Inserts a new column into this list-view, using <link linkend="defDialogUnit">dialog</link> units to specify the width.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>column</term>
-<listitem><para>The number of the column. 0 is the first column and the default.
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The text of the column heading.
-</para></listitem></varlistentry>
-<varlistentry><term>width</term>
-<listitem><para>The width of the column, in dialog units.
-</para></listitem></varlistentry>
-<varlistentry><term>align</term>
-<listitem><para>The alignment of the column heading and the subitem text within the
-column. It can be one of the following values:
-<variablelist>
-<varlistentry><term>CENTER</term>
-<listitem><para>The text is centered.
-</para></listitem></varlistentry>
-<varlistentry><term>LEFT</term>
-<listitem><para>The text is left-aligned, which is the default.
-</para></listitem></varlistentry>
-<varlistentry><term>RIGHT</term>
-<listitem><para>The text is right-aligned.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>colIdx [optional]</term>
+    <listitem>
+    <para>
+      The zero-based index of the column to insert. The default if this argument is omitted is 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>txt [required]</term>
+    <listitem>
+    <para>
+      The text, the label, for the column
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>width [required]</term>
+    <listitem>
+    <para>
+      The width, in dialog units, for the inserted column.
+    </para>
+    <para>
+      The width value will usually produce <xref linkend="ovvInaccurate"/> results because it is converted to pixels using
+      <xref linkend="atrFactorX"/>. The operating system requires the width be specified in pixels. The programmer is advised
+      to use the <xref linkend="mthInsertColumnPX"/> method instead, which will correctly assign the width.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ftn [optional]</term>
+    <listitem>
+    <para>
+      A keyword specifying the format for the column. Use exactly one of the following keywords:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>CENTER</member>
+        <member>LEFT  </member>
+        <member>RIGHT </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>CENTER</term>
+        <listitem>
+        <para>
+          Text of the column is center aligned
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LEFT</term>
+        <listitem>
+        <para>
+          Text of the column is left aligned. This is the default if the <emphasis role="italic">fmt</emphasis> argument is
+          omitted.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          Text of the column is right aligned.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>adjustFullRows [optional]</term>
+    <listitem>
+    <para>
+      If true attempts to fix up the <xref linkend="clsLvFullRow"/> objects assigned to the item <link
+      linkend="mthSetItemDataClsListView">data</link> of each list-view item. Does nothing if false. The default is false.
+      This argument is only used to support <link linkend="sctInternalSorting">internal</link> sorting. If the application is
+      not using internal sorting then this argument should just be ignored.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the column index of the inserted column on success, -1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If <emphasis role="italic">colIdx</emphasis> is greater than the current number of columns then the method does not
+    fail. Rather, the operating system adds the column as the last column rather that at the index specified. I.e., if
+    there currently are 2 columns, (column 0 and column 1,) and <emphasis role="italic">colIndex</emphasis> is 3, the
+    operating system adds the column at index 2 rathr than index 3.
+  </para>
+  <para>
+    Only use the <emphasis role="italic">adjustFullRows</emphasis> argument to adjust the
+    <computeroutput>LvFullRow</computeroutput> objects if every list-view item has a
+    <computeroutput>LvFullRow</computeroutput> item assigned as the item data, and the programmer has kept the full rows
+    consistent with changes to the column count of this list-view. If these conditions are not met, this method will return
+    an error code, even if the column was inserted successfully. However, no harm is done, it will just make it hard to tell
+    between a successful execution of the method and an error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of the new column, or 0 if this method fails.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End ListView::insertColumn() -->
+
 
 <section id="mthInsertColumnPX" xreflabel="insertColumnPX"><title>insertColumnPX</title>
 <indexterm><primary>insertColumnPX</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>insertColumnPX</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--insertColumnPX(--+----------+--,--text--,--width--+--------+--)------------><
-                     +--colNum--+                     +-,-fmt--+
+>>--insertColumnPX(-+--------+-,-txt-,-width-+-------+-+------------------+-)--><
+                    +-colIdx-+               +-,-fmt-+ +-,-adjustFullRows-+
 ]]>
 </programlisting>
 
 <para>
-  Inserts a new column into the list-view.
+  Inserts a new column into the list-view specifying the column width in pixels.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4173,14 +4373,14 @@ column. It can be one of the following values:
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>colNum [optional]</term>
+      <varlistentry><term>colIdx [optional]</term>
       <listitem>
       <para>
         The zero-based index for the column being inserted. Columns are numbered from the left to the right. The default
         if this argument is omitted is column 0.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>text [required]</term>
+      <varlistentry><term>txt [required]</term>
       <listitem>
       <para>
         The text (label) for the column.
@@ -4225,6 +4425,15 @@ column. It can be one of the following values:
           </para>
           </listitem></varlistentry>
         </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>adjustFullRows [optional]</term>
+      <listitem>
+      <para>
+        If true attempts to fix up the <xref linkend="clsLvFullRow"/> objects assigned to the item <link
+        linkend="mthSetItemDataClsListView">data</link> of each list-view item. Does nothing if false. The default is false.
+        This argument is only used to support <link linkend="sctInternalSorting">internal</link> sorting. If the application is
+        not using internal sorting then this argument should just be ignored.
       </para>
       </listitem></varlistentry>
     </variablelist>
