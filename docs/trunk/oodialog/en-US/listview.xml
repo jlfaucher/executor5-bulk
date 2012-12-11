@@ -192,7 +192,7 @@
 </row>
 <row>
 <entry><link linkend="clsLvFullRow">LvFullRow</link></entry>
-<entry>The <computeroutput>LvFullRow</computeroutput> class represents a single item and its subitems in a list-view and contains the completed set of data pertaining to that item.</entry>
+<entry>The <computeroutput>LvFullRow</computeroutput> class represents a single item and its subitems in a list-view and contains the complete set of data pertaining to that item.</entry>
 </row>
 <row>
 <entry><link linkend="clsLvItem">LvItem</link></entry>
@@ -201,6 +201,14 @@
 <row>
 <entry><link linkend="clsLvSubItem">LvSubItem</link></entry>
 <entry>The <computeroutput>LvSubItem</computeroutput> class represents a single subitem of a list-view item and the data for that subitem.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="sctListViewConstantMethods">Constant Methods</link></entry>
+<entry>The <computeroutput>ListView</computeroutput> class provides several <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput>directive.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -220,7 +228,7 @@
 </row>
 <row>
 <entry><xref linkend="mthAddRow"/></entry>
-<entry>Adds a new item to a list-view.</entry>
+<entry>Adds a new item to this list-view.</entry>
 </row>
 <row>
 <entry><xref linkend="mthAddStyleClsListView"/></entry>
@@ -244,11 +252,11 @@
 </row>
 <row>
 <entry><xref linkend="mthBkColorEquals"/></entry>
-<entry>Sets the background color of a list view-control.</entry>
+<entry>Sets the background color of this list-view control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthCheckClsListControl"/></entry>
-<entry>Sets the check mark for this list-view item.</entry>
+<entry>Sets the check mark for a single list-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthCheckAll"/></entry>
@@ -280,11 +288,11 @@
 </row>
 <row>
 <entry><xref linkend="mthDeselect"/></entry>
-<entry>Deselects an item in the list-view.</entry>
+<entry>Deselects an item in this list-view.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDeselectAll"/></entry>
-<entry>Deselects all items in the list-view.</entry>
+<entry>Deselects all items in this list-view.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDropHighLighted"/></entry>
@@ -300,7 +308,7 @@
 </row>
 <row>
 <entry><xref linkend="mthEnsureVisible"/></entry>
-<entry>Ensures that a list-view item is entirely or partially visible by scrolling the list-view control, if necessary.</entry>
+<entry>Ensures that a list-view item is entirely or partially visible by scrolling this list-view control, if necessary.</entry>
 </row>
 <row>
 <entry><xref linkend="mthFindClsListView"/></entry>
@@ -356,7 +364,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetExtendedStyleRaw"/></entry>
-<entry>Returns the extended styles of this list-view cont control as the numeric value of the extended style flags.</entry>
+<entry>Returns the extended styles of this list-view control as the numeric value of the extended style flags.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFullRow"/></entry>
@@ -372,7 +380,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetItem"/></entry>
-<entry>Returns some, or all, of the information the list-view maintains on the specified item. The information is returned as a <link linkend="clsLvItem">LvItem</link> object. The item is specified by either a <computeroutput>LvItem</computeroutput> object or by the item's index.</entry>
+<entry>Returns some, or all, of the information this list-view maintains on the specified item. The information is returned as a <link linkend="clsLvItem">LvItem</link> object. The item is specified by either a <computeroutput>LvItem</computeroutput> object or by the item's index.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetItemDataClsListView"/></entry>
@@ -472,11 +480,11 @@
 </row>
 <row>
 <entry><xref linkend="mthModifyItem"/></entry>
-<entry>xxx</entry>
+<entry>Modifies some or all of the data this list-view maintains for an item using a <xref linkend="clsLvItem"/> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthModifySubitem"/></entry>
-<entry>xxx</entry>
+<entry>Modifies some or all of the data this list-view maintains for a subitem of an item using a <xref linkend="clsLvSubItem"/> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthNext"/></entry>
@@ -500,7 +508,7 @@
 </row>
 <row>
 <entry><link linkend="mthPrependFullRow">prependFullRow</link></entry>
-<entry>Adds a new item to this list-view at the beginning of the list using a <link linkend="clsLvFullRow">LvFullRow</link> object.</entry>
+<entry>Adds an item to this list-view at the first position in the list using a <xref linkend="clsLvFullRow"/> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthPrevious"/></entry>
@@ -649,6 +657,63 @@
 </tbody></tgroup>
 </table>
 
+</section>
+
+<section id="sctListViewConstantMethods"><title>Constant Methods</title>
+<indexterm><primary>constant methods</primary><secondary>ListView class</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>constant methods</secondary></indexterm>
+<para>
+  The <computeroutput>ListView</computeroutput> class provides the following <emphasis role="italic">constant</emphasis>
+  values through the use of the <computeroutput>::constant</computeroutput> directive.
+</para>
+<table id="tblConstantsListview" frame="all"> <title>ListView Class Constant Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" /><colspec colwidth="3*" />
+<thead>
+<row>
+<entry>Constant Symbol</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>GROUPIDCALLBACK</entry>
+<entry>A group ID index value that indicates the list-view control should send the GETDISPINFO notification message to retrieve the item's group index.</entry>
+</row>
+<row>
+<entry>GROUPIDNONE</entry>
+<entry>A group ID value that indicates the list-view item does not belong to a group.</entry>
+</row>
+<row>
+<entry>IMAGECALLBACK</entry>
+<entry>An index value for the item's icon in the control's image list that indicates the list-view control should send the GETDISPINFO notification message to retrieve the item's icon index when it needs to display the image.</entry>
+</row>
+<row>
+<entry>IMAGENONE</entry>
+<entry>An index value for the item's icon in the control's image list that indicates the list-view item does not have an icon.</entry>
+</row>
+<row>
+<entry>LVCFMT_FILL</entry>
+<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. Fill the remainder of the tile area. Might have a title. Only valid in extended tile view. The LVCFMT_FILL flag forces the column to fill the remainder of the tile area.</entry>
+</row>
+<row>
+<entry>LVCFMT_LINE_BREAK</entry>
+<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. Move to the top of the next list of columns. Only valid in extend tile view, The LVCFMT_LINE_BREAK flag forces the column to wrap to the top of the next list of columns.</entry>
+</row>
+<row>
+<entry>LVCFMT_NO_TITLE</entry>
+<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. This subitem does not have a title. Only valid in extended tile view. The LVCFMT_NO_TITLE flag indicates that the column should not display a title.</entry>
+</row>
+<row>
+<entry>LVCFMT_TILE_PLACEMENTMASK</entry>
+<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. This is a combination of the LVCFMT_LINE_BREAK and LVCFMT_FILL constants.</entry>
+</row>
+<row>
+<entry>LVCFMT_WRAP</entry>
+<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. This subitem can be wrapped. Only valid in extended tile view. The LVCFMT_WRAP flag allows the column to wrap within the remaining space in its list of columns.</entry>
+</row>
+</tbody></tgroup>
+</table>
 </section>
 
 <section id="tmthNewListView" xreflabel="newListview"><title>newListView (dialog object method)</title>
@@ -1150,7 +1215,7 @@
 <![CDATA[
                                      +-,----+
                                      V      |
->>--addRow(--+------+--,--------+--+--------+--)---><
+>>--addRow(--+------+--,--------+--+--------+--)-><
              +-item-+  +-,-icon-+  +-,-text-+
 ]]>
 </programlisting>
@@ -1413,7 +1478,7 @@ yellow:
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~check(--index--)--------------------------------------------><
+>>-aListControl~check(--index--)-----------------><
 
 ]]>
 </programlisting>
@@ -1481,7 +1546,7 @@ with a specified zip code.
 <indexterm><primary>checkAll</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~CheckAll----------------------------------------------------><
+>>-aListControl~CheckAll-------------------------><
 
 ]]>
 </programlisting>
@@ -1532,7 +1597,7 @@ that allows the user to check all the check boxes:
 <indexterm><primary>columnInfo</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~columnInfo(--column--)-------------------------><
+>>-aListControl~columnInfo(--column--)-----------><
 
 
 ]]>
@@ -1576,7 +1641,7 @@ RetStem.!WIDTH variable will be set to 0.
 <indexterm><primary>columnWidth</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~columnWidth(--column--)------------------------><
+>>-aListControl~columnWidth(--column--)----------><
 
 
 ]]>
@@ -1832,7 +1897,7 @@ when the column is clicked on:
 <indexterm><primary>deselect</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~deselect(--item--)-----------------------------><
+>>-aListControl~deselect(--item--)---------------><
 
 
 ]]>
@@ -1912,7 +1977,7 @@ when the column is clicked on:
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~DropHighlighted--------------------------------><
+>>-aListControl~DropHighlighted------------------><
 
 
 ]]>
@@ -1932,7 +1997,7 @@ is highlighted as a drag-and-drop target.</para>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~edit(--item--)---------------------------------><
+>>-aListControl~edit(--item--)-------------------><
 
 
 ]]>
@@ -1961,7 +2026,7 @@ other cases.
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~EndEdit----------------------------------------><
+>>-aListControl~EndEdit--------------------------><
 
 
 ]]>
@@ -2269,7 +2334,7 @@ end of the list.
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~focus(--item--)--------------------------------><
+>>-aListControl~focus(--item--)------------------><
 
 
 ]]>
@@ -2309,7 +2374,7 @@ than one item can be selected, only one item can have the focus.</para>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~Focused----------------------------------------><
+>>-aListControl~Focused--------------------------><
 
 
 ]]>
@@ -2328,7 +2393,7 @@ item that has currently the focus.</para>
 <indexterm><primary>getCheck</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~getCheck(--index--)-----------------------------------------><
+>>-aListControl~getCheck(--index--)--------------><
 
 ]]>
 </programlisting>
@@ -2397,7 +2462,7 @@ determine if a list-view control currently has the check box extended style.
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getColumnCount----------------------------------------------------><
+>>--getColumnCount-------------------------------><
 
 ]]>
 </programlisting>
@@ -2559,7 +2624,7 @@ colCount = list~getColumnCount
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getColumnOrder----------------------------------------------------><
+>>--getColumnOrder-------------------------------><
 
 ]]>
 </programlisting>
@@ -2720,7 +2785,7 @@ Current order:
 <indexterm><primary>getExtendedStyle</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~GetExtendedStyle---------------------------------------------><
+>>-aListControl~GetExtendedStyle-----------------><
 
 ]]>
 </programlisting>
@@ -2818,7 +2883,7 @@ view control does have the style.
 <indexterm><primary>getExtendedStyleRaw</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~GetExtendedStyleRaw------------------------------------------><
+>>-aListControl~GetExtendedStyleRaw--------------><
 
 ]]>
 </programlisting>
@@ -3076,7 +3141,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getImageList(--+--------+--)------------------------------------><
+>>--getImageList(--+--------+--)-----------------><
                    +--type--+
 ]]>
 </programlisting>
@@ -4263,7 +4328,7 @@ Generic Form:
     <varlistentry><term>txt [required]</term>
     <listitem>
     <para>
-      The text, the label, for the column
+      The text, the label, for the column. The text for the column must be less than 256 characters long.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>width [required]</term>
@@ -4314,10 +4379,11 @@ Generic Form:
     <varlistentry><term>adjustFullRows [optional]</term>
     <listitem>
     <para>
-      If true attempts to fix up the <xref linkend="clsLvFullRow"/> objects assigned to the item <link
-      linkend="mthSetItemDataClsListView">data</link> of each list-view item. Does nothing if false. The default is false.
-      This argument is only used to support <link linkend="sctInternalSorting">internal</link> sorting. If the application is
-      not using internal sorting then this argument should just be ignored.
+      If <emphasis role="italic">adjustFullRows</emphasis> is true, the ooDialog framework attempts to fix up the <xref
+      linkend="clsLvFullRow"/> objects assigned to the item <link linkend="mthSetItemDataClsListView">data</link> of each
+      list-view item. Nothing is done if the arguemnt is false. The default is false. This argument is only used to support
+      <link linkend="sctInternalSorting">internal</link> sorting. If the application is not using internal sorting then this
+      argument should just be ignored.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4334,7 +4400,7 @@ Generic Form:
     If <emphasis role="italic">colIdx</emphasis> is greater than the current number of columns then the method does not
     fail. Rather, the operating system adds the column as the last column rather that at the index specified. I.e., if
     there currently are 2 columns, (column 0 and column 1,) and <emphasis role="italic">colIndex</emphasis> is 3, the
-    operating system adds the column at index 2 rathr than index 3.
+    operating system adds the column at index 2 rather than index 3.
   </para>
   <para>
     Only use the <emphasis role="italic">adjustFullRows</emphasis> argument to adjust the
@@ -4373,6 +4439,7 @@ Generic Form:
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
       <varlistentry><term>colIdx [optional]</term>
       <listitem>
@@ -4384,7 +4451,7 @@ Generic Form:
       <varlistentry><term>txt [required]</term>
       <listitem>
       <para>
-        The text (label) for the column.
+        The text (label) for the column. The text for the column must be less than 256 characters long.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>width [required]</term>
@@ -4431,14 +4498,14 @@ Generic Form:
       <varlistentry><term>adjustFullRows [optional]</term>
       <listitem>
       <para>
-        If true attempts to fix up the <xref linkend="clsLvFullRow"/> objects assigned to the item <link
-        linkend="mthSetItemDataClsListView">data</link> of each list-view item. Does nothing if false. The default is false.
-        This argument is only used to support <link linkend="sctInternalSorting">internal</link> sorting. If the application is
-        not using internal sorting then this argument should just be ignored.
+        If <emphasis role="italic">adjustFullRows</emphasis> is true, the ooDialog framework attempts to fix up the <xref
+        linkend="clsLvFullRow"/> objects assigned to the item <link linkend="mthSetItemDataClsListView">data</link> of each
+        list-view item. Nothing is done if the arguemnt is false. The default is false. This argument is only used to support
+        <link linkend="sctInternalSorting">internal</link> sorting. If the application is not using internal sorting then this
+        argument should just be ignored.
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -4449,15 +4516,14 @@ Generic Form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The text for the column must be less than 256 characters long. The inserted columns are only visible when the
-    list-view is in report view, but, columns can be inserted into the list-view control when it is in any view.
+     The inserted columns are only visible when the list-view is in report view, but, columns can be inserted into the
+     list-view control when it is in any view.
   </para>
   <para>
     This method and the <xref linkend="mthInsertColumn"/> method are virtually the same, except that
     in this method the width of the column is specified in pixels. The <emphasis role="italic">insertColumn</emphasis>
-    method takes dialog units for the width and then converts them to pixels using
- <xref linkend="ovvInaccurate"/>. This makes the width used by the <emphasis
-    role="italic">insertColumn</emphasis> method inaccurate.
+    method takes dialog units for the width and then converts them to pixels using an <xref linkend="ovvInaccurate"/> method.
+    This makes the width used by the <emphasis role="italic">insertColumn</emphasis> method inaccurate.
   </para>
   <para>
     <emphasis role="bold">Note</emphasis> that previous versions of this documentation incorrectly stated that the
@@ -4532,7 +4598,7 @@ Generic Form:
     When a full row object is used to add an item to the list view, all the subitems are also added. The <emphasis
     role="italic">insertFullRow</emphasis> method always inserts the item into the list at the position specified in the
     full row object. The item index in the subitems in the full row object are ignored. After the item is inserted, the
-    item index in the subitems is updated to the correct value of the newly added item.
+    item indexes in the subitems are updated to the correct value of the newly added item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4544,9 +4610,17 @@ Generic Form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example constructs a full row object and inserts it into the list-view. The row is inserted at index 120 of the
+    list-view:
 <programlisting>
 <![CDATA[
+
+  lvItem = .LvItem~new(120, "Business manager", 6)
+  lvSub1 = .LvSubItem~new(120, 1, "Tom", 14)
+  lvSub2  = .LvSubItem~new(120, 2, "Sawyer", 26)
+  lvSub3  = .LvSubItem~new(120, 3, "ts@google.com", 11)
+  lvFullRow = .LvFullRow~new(lvItem, lvSub1, lvSub2, lvSub3, .true)
+  list~insertFullRow(lvFullRow)
 
 ]]>
 </programlisting>
@@ -4560,7 +4634,7 @@ Generic Form:
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~isChecked(--index--)----------------------------------------><
+>>-aListControl~isChecked(--index--)-------------><
 
 ]]>
 </programlisting>
@@ -4692,7 +4766,7 @@ and on the system colors used for a selection.
 <indexterm><primary>itemPos</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~itemPos(--item--)------------------------------><
+>>-aListControl~itemPos(--item--)----------------><
 
 
 ]]>
@@ -4730,7 +4804,7 @@ self~connectListViewEvent(104,"BEGINDRAG","mthDefListDragHandler")
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~Items------------------------------------------><
+>>-aListControl~Items----------------------------><
 
 
 ]]>
@@ -4749,7 +4823,7 @@ in a list-view control.</para>
 <indexterm><primary>itemsPerPage</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~ItemsPerPage-----------------------------------><
+>>-aListControl~ItemsPerPage---------------------><
 
 
 ]]>
@@ -4771,7 +4845,7 @@ view control.
 <indexterm><primary>itemState</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~itemState(--item--)----------------------------><
+>>-aListControl~itemState(--item--)--------------><
 
 
 ]]>
@@ -4847,7 +4921,7 @@ view item or a column.</para>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~Last-------------------------------------------><
+>>-aListControl~Last-----------------------------><
 
 
 ]]>
@@ -4866,7 +4940,7 @@ item in a list-view control.</para>
 <indexterm><primary>lastSelected</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~LastSelected-----------------------------------><
+>>-aListControl~LastSelected---------------------><
 
 
 ]]>
@@ -4900,83 +4974,88 @@ item selected last.</para>
   Remember that in a list-view, items and columns use a 0-based index. Subitems use a 1-based index.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>item</term>
-<listitem>
-<para>
-  The index of the item to be modified. If you omit this argument, the selected item is used.
-</para>
-</listitem></varlistentry>
-<varlistentry><term>subitem</term>
-<listitem><para>
-  This method works in a similar manner as the <xref linkend="mthInsertClsListControl"/>()
-  method. The use of the <emphasis role="italic">subitem</emphasis> argument controls whether the
-  <emphasis role="italic">text</emphasis> argument applies to the label of the item or the text of a
-  subitem. When <emphasis role="italic">subitem</emphasis> is omitted or 0, then the label of the item is
-  set to <emphasis role="italic">text</emphasis>. When <emphasis role="italic">subitem</emphasis> is
-  greater than 0, then the text of that subitem is set to <emphasis role="italic">text</emphasis>.
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>
-  The new text for the item label, or the new text for the subitem of the item, depending on the value of
-  <emphasis role="italic">subitem</emphasis>.
-</para></listitem></varlistentry>
-<varlistentry><term>icon</term>
-<listitem><para>
-  The new index of the icon for the item within the image list assigned to the list-view. Image lists are
-  assigned with the <xref linkend="mthSetImageListClsListView"/>() method. When
-  assigning the image list with <computeroutput>setImageList</computeroutput>(), use the LVSIL_NORMAL
-  flag for the icon view icons and the LVSIL_SMALL flag for the list, report, and small-icon view icons.
-</para>
-<para>
-  Use -1 or simply omit this argument to leave the icon index unchanged. If <emphasis
-  role="italic">subitem</emphasis> is greater than 0, this argument is ignored.
-</para>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The modification was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>For all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-  The following example modifies the icon for an item when it is activated. A method,
-  <computeroutput>onActivate</computeroutput>, is connected to the ACTIVATE notification. When an item is
-  activated it also gains the focus. The <computeroutput>onActivate</computeroutput>() method is invoked
-  when an item is activated, and the example determines which item was activated by seeing which item has
-  the focus.
-<programlisting>
-<![CDATA[
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>item [optional]</term>
+    <listitem>
+    <para>
+      The index of the item to be modified. If this argument is omitted, the selected item is used.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>subitem [optional]</term>
+    <listitem>
+    <para>
+      This method works in a similar manner as the <xref linkend="mthInsertClsListControl"/>()
+      method. The use of the <emphasis role="italic">subitem</emphasis> argument controls whether the
+      <emphasis role="italic">text</emphasis> argument applies to the label of the item or the text of a
+      subitem. When <emphasis role="italic">subitem</emphasis> is omitted or 0, then the label of the item is
+      set to <emphasis role="italic">text</emphasis>. When <emphasis role="italic">subitem</emphasis> is
+      greater than 0, then the text of that subitem is set to <emphasis role="italic">text</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The new text for the item label, or the new text for the subitem of the item, depending on the value of
+      <emphasis role="italic">subitem</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>icon [optional]</term>
+    <listitem>
+    <para>
+      The new index of the icon for the item within the image list assigned to the list-view. Image lists are
+      assigned with the <xref linkend="mthSetImageListClsListView"/>() method. When
+      assigning the image list with <computeroutput>setImageList</computeroutput>(), use the LVSIL_NORMAL
+      flag for the icon view icons and the LVSIL_SMALL flag for the list, report, and small-icon view icons.
+    </para>
+    <para>
+      Use -1 or simply omit this argument to leave the icon index unchanged. If <emphasis
+      role="italic">subitem</emphasis> is greater than 0, this argument is ignored.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 for all errors.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example modifies the icon for an item when it is activated. A method,
+    <computeroutput>onActivate</computeroutput>, is connected to the ACTIVATE notification. When an item is activated it also
+    gains the focus. The <computeroutput>onActivate</computeroutput> method is invoked when an item is activated, and the
+    example determines which item was activated by seeing which item has the focus:
 
-::method initDialog
-  expose list
+  <programlisting>
+  <![CDATA[
 
-  list  = self~newListView(IDC_LV_VIEWS)
-  self~connectListViewEvent(IDC_LV_VIEWS, 'ACTIVATE', 'onActivate')
+  ::method initDialog
+    expose list
 
-  ...
+    list  = self~newListView(IDC_LV_VIEWS)
+    self~connectListViewEvent(IDC_LV_VIEWS, 'ACTIVATE', 'onActivate')
 
-::method onActivate
-  expose list
+    ...
 
-  focusedItem = list~focused
-  text = list~itemText(focusedItem)
+  ::method onActivate
+    expose list
 
-  list~modify(focusedItem, , text, 2)
+    focusedItem = list~focused
+    text = list~itemText(focusedItem)
 
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+    list~modify(focusedItem, , text, 2)
+
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -5160,25 +5239,25 @@ column. It can be one of the following values:
 <indexterm><primary>ListView class</primary><secondary>modifyItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--modifyItem(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--modifyItem(--lvItem--)-----------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Modifies some or all of the data this list-view maintains for an item using a <xref linkend="clsLvItem"/> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>lvItem [required]</term>
     <listitem>
     <para>
-      xx
+      A <computeroutput>LvItem</computeroutput> object that specifies which item to modify, what data to modify, and the new
+      data for the item.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5186,33 +5265,64 @@ column. It can be one of the following values:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success and false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <xref linkend="atrIndexClsLvi"/> attribute of the <emphasis role="italic">lvItem</emphasis> object specifies which
+    item to modify. The <xref linkend="atrMaskClsLvi"/> and <xref linkend="atrItemStateMaskClsLvi"/> attributes specify
+    which attributes are valid, and the value of those attriubtes specifies the new data for the list-view item.
   </para>
-  </listitem></varlistentry>
+  <para>
+    For instance to modify the group ID and image index only of the list-view item at index 17, the programmer would use a
+    <computeroutput>LvItem</computeroutput> object and set the <emphasis role="italic">index</emphasis> attribute to 17, set
+    the <emphasis role="italic">mask</emphasis> attribute to GROUPID IMAGE, set the GroupID attribute to the new value for
+    the group ID, and set the <emphasis role="italic">imageIndex</emphasis> to the new index for the image.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the process outlined in the remarks section for changing some information for the list-view item at
+    index 17:
 <programlisting>
 <![CDATA[
 
+  lvItem = .LvItem~new(17)
+  lvItem~imageIndex = 8
+  lvItem~groupID    = 101
+  lvItem~mask       = "GROUPID IMAGE"
+
+  list = self~newListView(IDC_LV_CLIENTS)
+
+  list~modifyItem(lvItem)
+
 ]]>
 </programlisting>
+    Note that the <computeroutput>LvItem</computeroutput> class will automatically set the <emphasis
+    role="italic">mask</emphasis> attribute correctly as the attribute values are added. So, the above code could have simply
+    been:
+<programlisting>
+<![CDATA[
+
+  lvItem = .LvItem~new(17)
+  lvItem~imageIndex = 8
+  lvItem~groupID    = 101
+
+  list = self~newListView(IDC_LV_CLIENTS)
+
+  list~modifyItem(lvItem)
+]]>
+</programlisting>
+    The <emphasis role="italic">mask</emphasis> attribute was set explicitly in the first example for clarity, to show that
+    only the image index and group ID would be modified.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5224,25 +5334,26 @@ column. It can be one of the following values:
 <indexterm><primary>ListView class</primary><secondary>modifySubitem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--modifySubitem(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--modifySubitem(--lvSubitem--)-----------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Modifies some or all of the data this list-view maintains for a subitem of an item using a <xref linkend="clsLvSubItem"/>
+  object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>lvSubitem [required]</term>
     <listitem>
     <para>
-      xx
+      A <computeroutput>LvSubItem</computeroutput> object that specifies which subitem to modify, what data to modify, and
+      the new data for the subitem.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5250,13 +5361,16 @@ column. It can be one of the following values:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success and false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To modify a subitem, set the <xref linkend="atrItemClsLvSi"/> and <xref linkend="atrSubItemClsLvSi"/> attributes of a
+    <computeroutput>LvSubItem</computeroutput> object to identify which subitem is to be modified. Then set the <xref
+    linkend="atrMaskClsLvSi"/> attribute to specify what values of the subitem are to be changed, and set either or both
+    of the <xref linkend="atrTextClsLvSi"/> and <xref linkend="atrImageIndexClsLvSi"/> attributes to the new information.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5264,19 +5378,36 @@ column. It can be one of the following values:
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example updates the image index of the second subitem in the list-view item with index 17.
 <programlisting>
 <![CDATA[
 
+  lvSubitem = .LvSubItem~new(17, 2, , 16, 'IMAGE')
+
+  list = self~newListView(IDC_LV_CLIENTS)
+
+  list~modifySubitem(lvSubitem)
 ]]>
 </programlisting>
+    Note that the <xref linkend="mthNewClsLvSubItem"/> method of the <computeroutput>LvSubItem</computeroutput> will
+    automatically set the <emphasis role="italic">mask</emphasis> attribute correctly. So, the above code could have simply
+    been:
+<programlisting>
+<![CDATA[
+
+  lvSubitem = .LvSubItem~new(17, 2, , 16)
+
+  list = self~newListView(IDC_LV_CLIENTS)
+
+  list~modifySubitem(lvSubitem)
+]]>
+</programlisting>
+    The <emphasis role="italic">mask</emphasis> argument was used in the first example for clarity, to show that only the
+    image index would be modified.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5288,7 +5419,7 @@ column. It can be one of the following values:
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~next(--item--)---------------------------------><
+>>-aListControl~next(--item--)-------------------><
 
 
 ]]>
@@ -5315,7 +5446,7 @@ or is to the right of, <emphasis role="italic">item</emphasis>.</para>
 <indexterm><primary>nextLeft</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~nextLeft(--item--)-----------------------------><
+>>-aListControl~nextLeft(--item--)---------------><
 
 
 ]]>
@@ -5342,7 +5473,7 @@ item itself is excluded from the search.
 <indexterm><primary>nextRight</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~nextRight(--item--)----------------------------><
+>>-aListControl~nextRight(--item--)--------------><
 
 
 ]]>
@@ -5369,7 +5500,7 @@ item itself is excluded from the search.
 <indexterm><primary>nextSelected</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~nextSelected(--item--)-------------------------><
+>>-aListControl~nextSelected(--item--)-----------><
 
 
 ]]>
@@ -5397,7 +5528,7 @@ item itself is excluded from the search.
 <indexterm><primary>prepare4nItems</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~prepare4nItems(--items--)----------------------><
+>>-aListControl~prepare4nItems(--items--)--------><
 
 
 ]]>
@@ -5438,23 +5569,22 @@ control for adding a large number of items.</para>
 </programlisting>
 
 <para>
-  Adds an item to the list-view at the first position in the list using a <link linkend="clsLvFullRow">LvFullRows</link>
-  object.
+  Adds an item to this list-view at the first position in the list using a <xref linkend="clsLvFullRow"/> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The single argument is:
+  </para>
     <variablelist>
       <varlistentry><term>row [required]</term>
       <listitem>
       <para>
-        A <link linkend="clsLvFullRow">LvFullRow</link> object that specifies the item to be added to the list-view.
+        A <computeroutput>LvFullRow</computeroutput> object that specifies the item to be added to the list-view.
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -5466,9 +5596,9 @@ control for adding a large number of items.</para>
   <listitem>
   <para>
     When a full row object is used to add an item to the list view, all the subitems are also added. The <emphasis
-    role="italic">prependFullRow</emphasis> method always as the first item in the list. Because of this, the item index
-    in the item and in the subitems in the full row object are ignored. After the item is inserted, the item index is
-    updated in the item and in the subitems is updated to the correct value of the newly added item.
+    role="italic">prependFullRow</emphasis> method always inserts the new item as the first item in the list. Because of
+    this, the item index in the item and in the subitems in the full row object are ignored. After the item is inserted, the
+    item index is updated in the item and in the subitems is updated to the correct value of the newly added item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5484,6 +5614,14 @@ control for adding a large number of items.</para>
 <programlisting>
 <![CDATA[
 
+  lvItem = .LvItem~new(0, "Business manager", 6)
+  lvSub1 = .LvSubItem~new(0, 1, "Tom", 14)
+  lvSub2 = .LvSubItem~new(0, 2, "Sawyer", 26)
+  lvSub3 = .LvSubItem~new(0, 3, "ts@google.com", 11)
+
+  lvFullRow = .LvFullRow~new(lvItem, lvSub1, lvSub2, lvSub3, .true)
+  list~prependFullRow(lvFullRow)
+
 ]]>
 </programlisting>
   </para>
@@ -5496,7 +5634,7 @@ control for adding a large number of items.</para>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~previous(--item--)-----------------------------><
+>>-aListControl~previous(--item--)---------------><
 
 
 ]]>
@@ -5523,7 +5661,7 @@ or is to the left of, <emphasis role="italic">item</emphasis>.</para>
 <indexterm><primary>previousSelected</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~previousSelected(--item--)---------------------><
+>>-aListControl~previousSelected(--item--)-------><
 
 
 ]]>
@@ -6042,7 +6180,7 @@ of the different styles, refer to <xref linkend="mthCreateListView"/>.
 <programlisting>
 <![CDATA[
                          +-0-+     +-0-+
->>-aListControl~scroll(--+---+--,--+---+--)--------------------><
+>>-aListControl~scroll(--+---+--,--+---+--)------><
                          +-x-+     +-y-+
 
 
@@ -6088,7 +6226,7 @@ number of lines to be scrolled. The default value is 0.
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~select(--item--)-------------------------------><
+>>-aListControl~select(--item--)-----------------><
 
 
 ]]>
@@ -6126,7 +6264,7 @@ number of lines to be scrolled. The default value is 0.
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~Selected---------------------------------------><
+>>-aListControl~Selected-------------------------><
 
 
 ]]>
@@ -6146,7 +6284,7 @@ item.</para>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~SelectedItems----------------------------------><
+>>-aListControl~SelectedItems--------------------><
 
 
 ]]>
@@ -6166,7 +6304,7 @@ of selected items in a list-view control.</para>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setColumnOrder(--order--)-----------------------------------------><
+>>--setColumnOrder(--order--)--------------------><
 
 ]]>
 </programlisting>
@@ -6713,7 +6851,7 @@ second the row is automatically selected.
   </para>
   <para>
     For the <emphasis role="italic">sortItems</emphasis> method to work, every list-view item must have the item data set.
-    When <emphasis role="italic">sortItems</emphasis> is invoked to use the internal ooDialog framework to do the sorting,
+    When <emphasis role="italic">sortItems</emphasis> is invoked to have the ooDialog framework do the sorting internally,
     the item data object must be a <xref linkend="clsLvFullRow"/> object.
   </para>
   </listitem></varlistentry>
@@ -7110,7 +7248,7 @@ and on the system colors used for a selection.
 <indexterm><primary>smallSpacing</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~SmallSpacing-----------------------------------><
+>>-aListControl~SmallSpacing---------------------><
 
 
 ]]>
@@ -7129,7 +7267,7 @@ between items in a small-icon list-view control.</para>
 <indexterm><primary>snapToGrid</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~SnapToGrid-------------------------------------><
+>>-aListControl~SnapToGrid-----------------------><
 
 
 ]]>
@@ -7434,7 +7572,7 @@ grid position.</para>
 <indexterm><primary>spacing</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~Spacing----------------------------------------><
+>>-aListControl~Spacing--------------------------><
 
 
 ]]>
@@ -7453,7 +7591,7 @@ items in an icon list-view control.</para>
 <indexterm><primary>stringWidth</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~stringWidth(--text--)--------------------------><
+>>-aListControl~stringWidth(--text--)------------><
 
 
 ]]>
@@ -7528,7 +7666,7 @@ or 0 in all other cases.
 <indexterm><primary>textBkColor</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~TextBkColor------------------------------------><
+>>-aListControl~TextBkColor----------------------><
 
 
 ]]>
@@ -7548,7 +7686,7 @@ color of the text in a list-view control.</para>
 <indexterm><primary>textBkColor=</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~textBkColor=(--color--)------------------------><
+>>-aListControl~textBkColor=(--color--)----------><
 
 
 ]]>
@@ -7573,7 +7711,7 @@ for the text in a list-view control.</para>
 <indexterm><primary>textColor</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~TextColor--------------------------------------><
+>>-aListControl~TextColor------------------------><
 
 
 ]]>
@@ -7593,7 +7731,7 @@ a list-view control.</para>
 <indexterm><primary>textColor=</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~textColor=(--color--)--------------------------><
+>>-aListControl~textColor=(--color--)------------><
 
 
 ]]>
@@ -7631,7 +7769,7 @@ blue:
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~uncheck(--index--)------------------------------------------><
+>>-aListControl~uncheck(--index--)---------------><
 
 ]]>
 </programlisting>
@@ -7708,7 +7846,7 @@ dynamically remove some patients from the statement list.
 <indexterm><primary>uncheckAll</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~UncheckAll--------------------------------------------------><
+>>-aListControl~UncheckAll-----------------------><
 
 ]]>
 </programlisting>
@@ -7759,7 +7897,7 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>updateItem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~updateItem(--item--)---------------------------><
+>>-aListControl~updateItem(--item--)-------------><
 
 
 ]]>
@@ -8046,9 +8184,9 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>clrText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--clrText-----------------------------------------------------><
+>>--clrText--------------------------------------><
 
->>--clrText-=-varName-------------------------------------------><
+>>--clrText-=-varName----------------------------><
 
 ]]>
 </programlisting>
@@ -8107,9 +8245,9 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>clrTextBk</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--clrTextBk-----------------------------------------------------><
+>>--clrTextBk------------------------------------><
 
->>--clrTextBk-=-varName-------------------------------------------><
+>>--clrTextBk-=-varName--------------------------><
 
 ]]>
 </programlisting>
@@ -8168,9 +8306,9 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>drawStage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--drawStage-----------------------------------------------------><
+>>--drawStage------------------------------------><
 
->>--drawStage-=-varName-------------------------------------------><
+>>--drawStage-=-varName--------------------------><
 
 ]]>
 </programlisting>
@@ -8254,9 +8392,9 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>font</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--font-----------------------------------------------------><
+>>--font-----------------------------------------><
 
->>--font-=-varName-------------------------------------------><
+>>--font-=-varName-------------------------------><
 
 ]]>
 </programlisting>
@@ -8334,9 +8472,9 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>id</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--id-----------------------------------------------------><
+>>--id-------------------------------------------><
 
->>--id-=-varName-------------------------------------------><
+>>--id-=-varName---------------------------------><
 
 ]]>
 </programlisting>
@@ -8400,9 +8538,9 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>item</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--item-----------------------------------------------------><
+>>--item-----------------------------------------><
 
->>--item-=-varName-------------------------------------------><
+>>--item-=-varName-------------------------------><
 
 ]]>
 </programlisting>
@@ -8471,9 +8609,9 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>itemData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--itemData-----------------------------------------------------><
+>>--itemData-------------------------------------><
 
->>--itemData-=-varName-------------------------------------------><
+>>--itemData-=-varName---------------------------><
 
 ]]>
 </programlisting>
@@ -8547,9 +8685,9 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>reply</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--reply-----------------------------------------------------><
+>>--reply----------------------------------------><
 
->>--reply-=-varName-------------------------------------------><
+>>--reply-=-varName------------------------------><
 
 ]]>
 </programlisting>
@@ -8619,9 +8757,9 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvCustomDrawSimple class</primary><secondary>subItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--subItem-----------------------------------------------------><
+>>--subItem--------------------------------------><
 
->>--subItem-=-varName-------------------------------------------><
+>>--subItem-=-varName----------------------------><
 
 ]]>
 </programlisting>
@@ -8700,6 +8838,12 @@ that allows the user to remove the check mark from all the check boxes:
   object reflect the values of the label, icon, state, etc., for the list-view item.
 </para>
 <para>
+  <computeroutput>LvItem</computeroutput> objects can be used to set or modify the values of a list-view item, or to receive
+  information about an item. In addition <computeroutput>LvItem</computeroutput> objects are used in <xref
+  linkend="clsLvFullRow"/> objects. Each <computeroutput>LvFullRow</computeroutput> object is composed of at least one
+  <computeroutput>LvItem</computeroutput> object.
+</para>
+<para>
   Note that ooDialog does not currently support some of the newer features in list-views. The
   <computeroutput>LvItem</computeroutput> class is part of the first steps to enhance ooDialog to support all the list-view
   features. The <computeroutput>LvItem</computeroutput> class has support for attributes that will become important in an
@@ -8723,10 +8867,6 @@ that allows the user to remove the check mark from all the check boxes:
 </thead>
 <tbody>
 <row>
-<entry><link linkend="sctLvItemConstantMethods">Constant Methods</link></entry>
-<entry>The <computeroutput>LvItem</computeroutput> class provides several <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput>directive.</entry>
-</row>
-<row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
@@ -8740,31 +8880,31 @@ that allows the user to remove the check mark from all the check boxes:
 </row>
 <row>
 <entry><xref linkend="atrColumnFormatsClsLvi"/></entry>
-<entry></entry>
+<entry>An array of column format values specifying the format of each item in a column in Tile view.</entry>
 </row>
 <row>
 <entry><xref linkend="atrColumnsClsLvi"/></entry>
-<entry></entry>
+<entry>An array of column indexes specifying which columns are displayed for this item in Tile view, and the order of those columns.</entry>
 </row>
 <row>
 <entry><xref linkend="atrGroupIDClsLvi"/></entry>
-<entry></entry>
+<entry>Reflects the group ID of this item.</entry>
 </row>
 <row>
 <entry><xref linkend="atrImageIndexClsLvi"/></entry>
-<entry></entry>
+<entry>Reflects the index in the icon <link linkend="mthSetImageListClsListView">image</link> lists for this item.</entry>
 </row>
 <row>
 <entry><xref linkend="atrIndentClsLvi"/></entry>
-<entry></entry>
+<entry>Reflects the number of image widths to indent this item.</entry>
 </row>
 <row>
 <entry><xref linkend="atrIndexClsLvi"/></entry>
-<entry></entry>
+<entry>Reflects the index of this item in the list-view.</entry>
 </row>
 <row>
 <entry><xref linkend="atrItemDataClsLvi"/></entry>
-<entry></entry>
+<entry>Reflects the item data value for this item.</entry>
 </row>
 <row>
 <entry><xref linkend="atrItemStateClsLvi"/></entry>
@@ -8793,43 +8933,6 @@ that allows the user to remove the check mark from all the check boxes:
 </tbody></tgroup>
 </table>
 </para>
-</section>
-
-<section id="sctLvItemConstantMethods"><title>Constant Methods</title>
-<indexterm><primary>constant methods</primary><secondary>LvItem class</secondary></indexterm>
-<indexterm><primary>LvItem class</primary><secondary>constant methods</secondary></indexterm>
-<para>
-  The <computeroutput>LvItem</computeroutput> class provides the following <emphasis role="italic">constant</emphasis>
-  values through the use of the <computeroutput>::constant</computeroutput> directive.
-</para>
-<table id="tblConstantsLvItem" frame="all"> <title>LvItem Class Constant Reference</title>
-<tgroup cols="2">
-<colspec colwidth="1*" /><colspec colwidth="3*" />
-<thead>
-<row>
-<entry>Constant Symbol</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry>GROUPIDCALLBACK</entry>
-<entry>A group ID index value that indicates the list-view control should send the GETDISPINFO notification message to retrieve the item's group index.</entry>
-</row>
-<row>
-<entry>GROUPIDNONE</entry>
-<entry>A group ID value that indicates the list-view item does not belong to a group.</entry>
-</row>
-<row>
-<entry>IMAGECALLBACK</entry>
-<entry>An index value for the item's icon in the control's image list that indicates the list-view control should send the GETDISPINFO notification message to retrieve the item's icon index when it needs to display the image.</entry>
-</row>
-<row>
-<entry>IMAGENONE</entry>
-<entry>An index value for the item's icon in the control's image list  that indicates the list-view item does not have an icon.</entry>
-</row>
-</tbody></tgroup>
-</table>
 </section>
 
 <section id="mthNewClsLvItem" xreflabel="new"><title>new (Class Method)</title>
@@ -8886,9 +8989,9 @@ that allows the user to remove the check mark from all the check boxes:
     <listitem>
     <para>
       The zero-based index of the item's icon in the control's <link linkend="mthSetImageListClsListView">image</link> list.
-      This applies to both the large and small image list. The <emphasis role="italic">imageIndex</emphasis> argument can
-      also be one of the following <computeroutput>LvItem</computeroutput> constants. If this argument is omitted, the
-      default is IMAGENONE:
+      For any item there is only 1 image index, so the index must be the same in both the large and small image lists. The
+      <emphasis role="italic">imageIndex</emphasis> argument can also be one of the following list-view <link
+      linkend="sctListViewConstantMethods">constants</link>. If this argument is omitted, the default is IMAGENONE:
     </para>
     <para>
       <simplelist type='vert' columns='3'>
@@ -8919,6 +9022,11 @@ that allows the user to remove the check mark from all the check boxes:
     <varlistentry><term>itemData[optional]</term>
     <listitem>
     <para>
+      An item data value for this item. The list-view control allows the programmer to <link
+      linkend="mthSetItemDataClsListView">assign</link> an item data value to any, or all, list-view items. The item data
+      value can be any Rexx object.
+    </para>
+    <para>
       The <emphasis role="italic">itemData</emphasis> argument sets the <xref linkend="atrItemDataClsLvi"/> attribute of this
       list-view item.
     </para>
@@ -8933,7 +9041,7 @@ that allows the user to remove the check mark from all the check boxes:
       <emphasis role="italic">mask</emphasis> attribute. However, if this object is going to be used to retrieve information
       about the underlying list-view item, the ooDialog framwork has no way to know what attributes the programmer wishes to
       retrieve. For this use of the <computeroutput>LvItem</computeroutput> object, the programmer should set the mask to the
-      value she wants.
+      value that will retrieve the information she wants.
     </para>
     <para>
       The <emphasis role="italic">msk</emphasis> argument can have zero or more of the following keywords, case is not
@@ -8941,27 +9049,82 @@ that allows the user to remove the check mark from all the check boxes:
     </para>
     <para>
       <simplelist type='vert' columns='3'>
-        <member></member>
-        <member></member>
-        <member></member>
+        <member>ALL        </member>
+        <member>COLFMT     </member>
+        <member>COLUMNS    </member>
+        <member>GROUPID    </member>
+        <member>IMAGE      </member>
+        <member>INDENT     </member>
+        <member>NORECOMPUTE</member>
+        <member>PARAM      </member>
+        <member>STATE      </member>
+        <member>TEXT       </member>
       </simplelist>
       <variablelist>
-        <varlistentry><term>T1</term>
+        <varlistentry><term>ALL</term>
         <listitem>
         <para>
-          text
+          A convenience keyword, the same as specifying a a string with every keyword in it.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>T2</term>
+        <varlistentry><term>COLFMT</term>
         <listitem>
         <para>
-          text
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. The <xref linkend="atrColumnFormatsClsLvi"/>
+          attribute is valid or should be set.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>T3</term>
+        <varlistentry><term>COLUMNS</term>
         <listitem>
         <para>
-          text
+          Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. The <xref linkend="atrColumnsClsLvi"/>
+          attribute is valid or should be set.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUPID</term>
+        <listitem>
+        <para>
+          Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. The <xref linkend="atrGroupIDClsLvi"/>
+          attribute is valid or should be set.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>IMAGE</term>
+        <listitem>
+        <para>
+          The <xref linkend="atrImageIndexClsLvi"/> attribute is valid or should be set.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INDENT</term>
+        <listitem>
+        <para>
+          The <xref linkend="atrIndentClsLvi"/> attribute is valid or should be set.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NORECOMPUTE</term>
+        <listitem>
+        <para>
+          Used when the <computeroutput>LvItem</computeroutput> object will be used to retrieve information through the <xref
+          linkend="mthGetItem"/> method. Signals the list-view control not to generate a GETDISPINFO notification to retrieve
+          the text. Rather, the <xref linkend="atrTextClsLvi"/> attribute will contain <emphasis
+          role="italic">lpStrTextCallBack</emphasis>.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>PARAM</term>
+        <listitem>
+        <para>
+          The <xref linkend="atrItemDataClsLvi"/> attribute is valid or should be set.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>STATE</term>
+        <listitem>
+        <para>
+          The <xref linkend="atrStateClsLvi"/> attribute is valid or should be set.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TEXT</term>
+        <listitem>
+        <para>
+          The <xref linkend="atrTextClsLvi"/> attribute is valid or should be set.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -8974,13 +9137,109 @@ that allows the user to remove the check mark from all the check boxes:
     <varlistentry><term>itemState [optional]</term>
     <listitem>
     <para>
-      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+      A list of blank separate keywords that specify the state for the list-view item. An item's state determines its
+      appearance and functionality. The list can contain one or more of the following keywords:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>CUT        </member>
+        <member>DROPHILITED</member>
+        <member>FOCUSED    </member>
+        <member>SELECTED   </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>CUT</term>
+        <listitem>
+        <para>
+          The list-view item is marked for a cut-and-paste operation
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DROPHILITED</term>
+        <listitem>
+        <para>
+          The list-view item is highlighted as a drag-and-drop target.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FOCUSED</term>
+        <listitem>
+        <para>
+          The list-view item has the focus, so it is surrounded by a standard focus rectangle. Although more than one item
+          may be selected, only one item can have the focus.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SELECTED</term>
+        <listitem>
+        <para>
+          The list-view item is selected. The appearance of a selected item depends on whether it has the focus and also on
+          the system colors used for selection.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    <para>
+      Sets the <xref linkend="atrItemStateClsLvi"/> attribute of this list-view item.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>itemStateMsk [optional]</term>
     <listitem>
     <para>
-      Sets the <xref linkend="atrImageIndexClsLvi"/> attribute of this list-view item.
+      Sets the <xref linkend="atrItemStateMaskClsLvi"/> attribute of this list-view item.
+    </para>
+    <para>
+      A string of blank separated keywords specifying which state values to retrieve or set. For example, if only the keyword
+      SELECTED is used, only the value of the SELECTED state will be retrieved in the <emphasis
+      role="italic">state</emphasis> attribute. This also allows the programmer to modify one or more state values without
+      first retrieving the current state values. For instance, setting the item state mask to SELECTED and setting the item
+      state attribute to the empty string will clear the SELECTED state without changing any of the other state value, if
+      the <computeroutput>LvItem</computeroutput> object is used to modify a list-view item. If the <emphasis
+      role="italic">itemStateMask</emphasis> is set to ALL and the <emphasis role="italic">itemState</emphasis> is set to the
+      empty sting will clear the SELECTED, CUT, FOCUSED and HILITED states, if the <computeroutput>LvItem</computeroutput>
+      object is used to modify a list-view item.
+    </para>
+    <para>
+      The acceptable keywords are the same as those for the <emphasis role="italic">itemState</emphasis> argument, with the
+      addition of the ALL keyword:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>ALL        </member>
+        <member>CUT        </member>
+        <member>DROPHILITED</member>
+        <member>FOCUSED    </member>
+        <member>SELECTED   </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>ALL</term>
+        <listitem>
+        <para>
+          All keywords in the <emphasis role="italic">itemState</emphasis> attribute are valid.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CUT</term>
+        <listitem>
+        <para>
+          The CUT keyword is valid in the <emphasis role="italic">itemState</emphasis> attribute.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DROPHILITED</term>
+        <listitem>
+        <para>
+          The DROPHILITED keyword is valid in the <emphasis role="italic">itemState</emphasis> attribute.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FOCUSED</term>
+        <listitem>
+        <para>
+          The FOCUSED keyword is valid in the <emphasis role="italic">itemState</emphasis> attribute.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SELECTED</term>
+        <listitem>
+        <para>
+          The SELECTED keyword is valid in the <emphasis role="italic">itemState</emphasis> attribute.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
     </para>
     </listitem></varlistentry>
     <varlistentry><term>indent [optional]</term>
@@ -9045,13 +9304,32 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a newly instantiated <computeroutput>LvItem</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Note that not all of the <computeroutput>LvItem</computeroutput> object's attributes can be set through the <emphasis
+    role="italic">new</emphasis> method. The <xref linkend="atrOverlayImageIndexClsLvi"/>, <xref
+    linkend="atrStateImageIndexClsLvi"/>, and <xref linkend="atrColumnFormatsClsLvi"/> attributes can be set through their
+    attribute methods after the <computeroutput>LvItem</computeroutput> object has been instantiated.
+  </para>
+  <para>
+    How the new <computeroutput>LvItem</computeroutput> object should be instantiated depends on how the object will be used.
+    Typically, if the object is going to be used to retrieve information about a list-view item, only the <emphasis
+    role="italic">indx</emphasis> and <emphasis role="italic">msk</emphasis> arguments would be used in the <emphasis
+    role="italic">new</emphasis> method. The <emphasis role="italic">indx</emphasis> argument would be set to the index of
+    the item and the <emphasis role="italic">msk</emphasis> argument would be set for all the information that was wanted to
+    be retreived.
+  </para>
+  <para>
+    On the other hand, if the <computeroutput>LvItem</computeroutput> is going to be used to set the information for a
+    list-view item, the typical process would be to set the index for the item using the <emphasis
+    role="italic">indx</emphasis> argument and set the values for all the attributes needed to define the item. In this case,
+    the <emphasis role="italic">msk</emphasis> argument can usually be omitted. For each attribute of the
+    <computeroutput>LvItem</computeroutput> that is assigned a value, the proper keyword is added to the mask by the ooDialog
+    framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9059,16 +9337,80 @@ that allows the user to remove the check mark from all the check boxes:
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a <computeroutput>LvItem</computeroutput> object that will be used in a <xref
+    linkend="clsLvFullRow"/> object to insert an item into a list-view. Only the label of the item and the image index are
+    needed for the purposes of the application, so the other attributes of the <computeroutput>LvItem</computeroutput> are
+    not assigned values. The ooDialog framework will automatically set the proper mask value:
 <programlisting>
 <![CDATA[
+
+  lvItem = .LvItem~new(2, "Mechanical Engineer", 0)
+  ...
+  lvFullRow = .LvFullRow~new(lvItem, lvSub1, lvSub2, lvSub3, .true)
+  list~addFullRow(lvFullRow)
+
+]]>
+</programlisting>
+    This example instantiates a <computeroutput>LvItem</computeroutput> object that will be used to query the information
+    maintained by the list-view for the item at index 21. All information for the item is desired, so the the masks are set
+    to receive all information. Note that the value of the list-view <link
+    linkend="sctListViewConstantMethods">constants</link> IMAGENONE and GROUPIDNONE are both -2:
+<programlisting>
+<![CDATA[
+
+  lvItem = .LvItem~new(21, , , , 'ALL', , 'ALL')
+  if list~getItem(lvItem) then do
+      self~printItem(lvItem)
+  end
+  else do
+      -- some unexpected error ...
+      say 'Error'
+  end
+
+::method printItem
+    use strict arg lvItem
+
+    say 'Item columnFormats:    ' lvItem~columnFormats
+    say 'Item columns:          ' lvItem~columns
+    say 'Item columns count:    ' lvItem~columns~items
+    say 'Item groupID:          ' lvItem~groupID
+    say 'Item imageIndex:       ' lvItem~imageIndex
+    say 'Item indent:           ' lvItem~indent
+    say 'Item index:            ' lvItem~index
+    say 'Item itemData:         ' lvItem~itemData
+    say 'Item itemState:        ' lvItem~itemState
+    say 'Item itemStateMask:    ' lvItem~itemStateMask
+    say 'Item mask:             ' lvItem~mask
+    say 'Item overlayImageIndex:' lvItem~overlayImageIndex
+    say 'Item stateImageIndex:  ' lvItem~stateImageIndex
+    say 'Item text:             ' lvItem~text
+    say
+
+
+
+
+/* Output might be:
+
+Item columnFormats:     an Array
+Item columns:           an Array
+Item columns count:     0
+Item groupID:           -2
+Item imageIndex:        -2
+Item indent:            0
+Item index:             21
+Item itemData:          a LvFullRow
+Item itemState:
+Item itemStateMask:     FOCUSED SELECTED CUT DROPHILITED
+Item mask:              COLFMT COLUMNS GROUPID IMAGE INDENT NORECOMPUTE PARAM STATE TEXT
+Item overlayImageIndex: 0
+Item stateImageIndex:   1
+Item text:              Line 22
+
+*/
 
 ]]>
 </programlisting>
@@ -9082,51 +9424,67 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvItem class</primary><secondary>columnFormats</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--columnFormats-----------------------------------------------------><
+>>--columnFormats--------------------------------><
 
->>--columnFormats-=-varName-------------------------------------------><
+>>--columnFormats-=-varName----------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  An array of column format values specifying the format of each item in a column in Tile view. See the remarks.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">columnFormats get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns an array of column formats. Eeach index of the array specifies the format of the corresponding column in Tile
+    view. The formats are specified by one of the LVCFVT_* <link
+    linkend="sctListViewConstantMethods">constants</link> of the <computeroutput>ListView</computeroutput> class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">columnFormats set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To specify the format for each column in Tile view assign an array to this attribute. The number of items in the array
+    must be the same as the number of items in the array assigned to the <xref linkend="atrColumnsClsLvi"/> attribute. Each
+    index of the array should contain a valid column format. Specify the format using one of the LVCFVT_* <link
+    linkend="sctListViewConstantMethods">constants</link> of the <computeroutput>ListView</computeroutput> class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In Tile view, the item label is displayed to the right of the icon. The programmer can specify additional subitems
+    (corresponding to columns in Details view), to be displayed on lines below the item label. The <xref
+    linkend="atrColumnsClsLvi"/> attribute must be an array that contains the indexes of the subitems to be displayed.
+  </para>
+  <para>
+    The <emphasis role="italic">columnFormats</emphasis> attribute specifies the format for each subitem in the <emphasis
+    role="italic">columns</emphasis> array. The <emphasis role="italic">columnFormats</emphasis> attribute does not have to
+    be set if the <emphasis role="italic">columns</emphasis> attribute is set. In this case the default format for each
+    column is used. But, if the <emphasis role="italic">columnFormats</emphasis> attribute is set, the <emphasis
+    role="italic">colums</emphasis> attribute must also be set and the two arrays must be the same size.
+  </para>
+  <para>
+    For each index in the <emphasis role="italic">columns</emphasis> array, the same index in the <emphasis
+    role="italic">columnFormats</emphasis> array specifies the format for that column. The <emphasis
+    role="italic">columnFormats</emphasis> attribute has no effect in standard Tile views. For extended Tile views, the
+    LVCFMT_LINE_BREAK, LVCFMT_FILL, LVCFMT_WRAP, LVCFMT_NO_TITLE, and LVCFMT_TILE_PLACEMENTMASK formats are valid.
+  </para>
+  <para>
+    ooDialog does not currently support Tile view, but it is likely that a future enhancement will. The <emphasis
+    role="italic">columnFormats</emphasis> attribute is part of the first steps towards implementing the support for Tile
+    view.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect usage is detected.
+    <emphasis role="bold">Requires Windows Vista or later</emphasis>.
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -9137,51 +9495,64 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvItem class</primary><secondary>columns</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--columns-----------------------------------------------------><
+>>--columns--------------------------------------><
 
->>--columns-=-varName-------------------------------------------><
+>>--columns-=-varName-----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  An array of column indexes specifying which columns are displayed for this item in Tile view, and the order of those
+  columns.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">columns get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns an array of column indexes. Each index in the array specifies the index of a column to be displayed in tile view.
+    The order of the column indexes in the array specifies the order the columns are displayed in.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">columns set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To set which columns are displayed in Tile view, assign an array to this attribute. The number of items in the array
+    specifies how many columns are displayed. The maximum is 20. The array can not be sparse. Each index of the array should
+    contain the subitem index to be displayed. The subitems are displayed in the same oder as their index appears in the
+    array.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In Tile view, the item label is displayed to the right of the icon. The programmer can specify additional subitems
+    (corresponding to columns in Details view), to be displayed on lines below the item label. The <emphasis
+    role="italic">columns</emphasis> attribute must be assigned an array that contains the indexes of the subitems to be
+    displayed.
+  </para>
+  <para>
+    The <xref linkend="atrColumnFormatsClsLvi"/> attribute can be used to specify the format for each subitem in the
+    <emphasis role="italic">columns</emphasis> array. The <emphasis role="italic">columnFormats</emphasis> attribute does not
+    have to be set if the <emphasis role="italic">columns</emphasis> attribute is set. In this case the default format for
+    each column is used. But, if the <emphasis role="italic">columnFormats</emphasis> attribute is set, the <emphasis
+    role="italic">colums</emphasis> attribute must also be set and the two arrays must be the same size. For each index in
+    the <emphasis role="italic">columns</emphasis> array, the same index in the <emphasis
+    role="italic">columnFormats</emphasis> array specifies the format for that column.
+  </para>
+  <para>
+    ooDialog does not currently support Tile view, but it is likely that a future enhancement will. The <emphasis
+    role="italic">columnFormats</emphasis> attribute is part of the first steps towards implementing the support for Tile
+    view.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect usage is detected.
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later.
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -9192,51 +9563,50 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvItem class</primary><secondary>groupID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--groupID-----------------------------------------------------><
+>>--groupID--------------------------------------><
 
->>--groupID-=-varName-------------------------------------------><
+>>--groupID-=-varName----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the group ID of this item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">groupID get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the group ID of this item. The ID can also be one of the group ID <link
+    linkend="sctListViewConstantMethods">constants</link> supplied by the <computeroutput>ListView</computeroutput> class,
+    GROUPIDNONE or GROUPIDCALLBACK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">groupID set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to the value of the identifier of the group that this item belongs to, or to one of the group ID
+    <link linkend="sctListViewConstantMethods">constants</link> supplied by the <computeroutput>ListView</computeroutput>
+    class, either GROUPIDNONE or GROUPIDCALLBACK. Do <emphasis role="bold">not</emphasis> set this attribute to 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Setting the <emphasis role="italic">groupID</emphasis> attribute to 0 will cause some uses of the
+    <computeroutput>LvItem</computeroutput> to fail unless the list-view has groups enabled. The best strategy to avoid
+    failures is to new set the attribute to 0.
+  </para>
+  <para>
+    ooDialog does not currently support list-view groups, but it is likely that a future enhancement will add this suppor.
+    The <emphasis role="italic">groupID</emphasis> attribute is part of the first steps towards implementing the
+    support for list-view groups.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -9247,33 +9617,38 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvItem class</primary><secondary>imageIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--imageIndex-----------------------------------------------------><
+>>--imageIndex-----------------------------------><
 
->>--imageIndex-=-varName-------------------------------------------><
+>>--imageIndex-=-varName-------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the index in the icon <link linkend="mthSetImageListClsListView">image</link> lists for this item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">imageIndex get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns this item's image index, or one of the image <link linkend="sctListViewConstantMethods">constants</link>
+    supplied by the <computeroutput>ListView</computeroutput> class, IMAGENONE or IMAGECALLBACK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">imageIndex set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to the index in the icon image lists for this item, or to one of the image <link
+    linkend="sctListViewConstantMethods">constants</link> supplied by the <computeroutput>ListView</computeroutput> class,
+    IMAGENONE or IMAGECALLBACK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In general, if the programmer does not explicitly set this attribute, the ooDialog framework will set it to the IMAGENONE
+    constant. When the <computeroutput>LvItem</computeroutput> object is used to retrieve information about an item, the
+    list-view control will return the IMAGECALLBACK value unless the image index has been explicitly set by the application.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9285,10 +9660,13 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example will set, or change, the image index of the item at index 13 to 3. None of the other list-view item
+    information will be changed.
 <programlisting>
 <![CDATA[
 
+  lvItem = .LvItem~new(13, , 3)
+  list~modifyItem(lvItem)
 
 ]]>
 </programlisting>
@@ -9302,51 +9680,40 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvItem class</primary><secondary>indent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--indent-----------------------------------------------------><
+>>--indent---------------------------------------><
 
->>--indent-=-varName-------------------------------------------><
+>>--indent-=-varName-----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the number of image widths to indent this item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">indent get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the indent value for this item
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">indent set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to a non-negative whole number to set the indent for this item
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A single indentation equals the width of an item image. Therefore, the value 1 indents the item by the width of one
+    image, the value 2 indents by two images, and so on.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -9357,51 +9724,33 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>LvItem class</primary><secondary>index</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--index-----------------------------------------------------><
+>>--index----------------------------------------><
 
->>--index-=-varName-------------------------------------------><
+>>--index = varName------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the index of this item in the list-view.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">index get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the zero-based index of this item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">index set:</emphasis></term>
   <listitem>
   <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Set this attribute to a zero-based index to specify which item in the list-view this item represents.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -9420,25 +9769,23 @@ that allows the user to remove the check mark from all the check boxes:
 </programlisting>
 
 <para>
-  xx
+  Reflects the item data value for this item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">itemData get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the item data value of this item, or the <computeroutput>.nil</computeroutput> object if no item data has been
+    set for this item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">itemData set:</emphasis></term>
   <listitem>
   <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Set this attribute to any value the programmer wants to associate with this item. The list-view control allows the
+    application, (the programmer) to assign a user value to any list-view item. The <xref
+    linkend="mthSetItemDataClsListView"/> method can also be used to set the item data for an item. The value can be any Rexx
+    object that the programmer wants to use.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9450,11 +9797,19 @@ that allows the user to remove the check mark from all the check boxes:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example retrieves the current item data for list-view item 16:
 <programlisting>
 <![CDATA[
 
+    lvItem = .LvItem~new(16, , , , 'PARAM')
+    list~getItem(lvItem)
+    say 'The item data for item 16 is:' lvItem~itemData
 
+/* Output might be:
+
+  The item data for item 6 is: a LvFullRow
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -9814,6 +10169,118 @@ that allows the user to remove the check mark from all the check boxes:
 </para>
 
 
+<section id="sctInternalSorting"><title>Internal Sorting Considerations</title>
+<indexterm><primary>internal sorting</primary><secondary>LvFullRow Class</secondary></indexterm>
+<indexterm><primary>internal sorting</primary><secondary>ListView Class</secondary></indexterm>
+<para>
+  The <xref linkend="mthSortItems"/> method is used to sort list-view items. One option of this method is to have the
+  ooDialog framework implement the sort internally. The internal sort can be significantly faster, for large lists, than
+  implementing the sort in Rexx. However, the internal sorting is dependent on the <computeroutput>LvFullRow</computeroutput>
+  class. There are a few things the Rexx programmer needs to be aware of that effect the ability of the ooDialog framework to
+  do an internal sort.
+</para>
+<para>
+  Any sorting of the list-view items, whether it is through a sort implemented in Rexx or the internal sort, is dependent on
+  <link linkend="mthSetItemDataClsListView">setting</link> a value for the item data of every list-view item. For the
+  internal sort to work, the item data value must be a <computeroutput>LvFullRow</computeroutput> object. There are several
+  approaches that could be used to assign a full row object to the item data of every list-view item. One approach would be
+  to iterate through all the list-view items, for each item, instantiate a full row object for the item, and use the <xref
+  linkend="mthSetItemDataClsListView"/> method to assign the object to the item.
+</para>
+<para>
+  However, full row objects can also be used to add items to the list-view through one the <xref linkend="mthAddFullRow"/>,
+  <xref linkend="mthInsertFullRow"/>, or <xref linkend="mthPrependFullRow"/> methods. A second approach is to add all
+  list-view items using full row objects and have the ooDialog framework set the full row object as the item data when the
+  item is added to the list-view. To use this technique, the programmer should set the <emphasis
+  role="italic">sorting</emphasis> argument to true when <link linkend="mthNewClsLvFullRow">instantiating</link> the full row
+  object.
+</para>
+<para>
+  In a way, a full row object is a snapshot of the information the list-view control maintains about a specific item in the
+  list. This information can change over time as the application is used. For instance, the text of an item could be changed.
+  When a full row object is assigned as the item data of a list-view item, the ooDialog framework does its best to keep the
+  full row object updated with any changes made to the information of the list-view item. But, there is one scenario where
+  this is not always possibile. The Rexx programmer needs to be aware of this and take the proper steps to keep the full row
+  object in synch with the list-view item.
+</para>
+<para>
+  When a subitem column in the list-view is <link linkend="mthInsertColumnPX">inserted</link>
+  or <link linkend="mthDeleteColumn">deleted</link>, the list-view control adds or deletes the subitems of all
+  items that corresponds to the colum. Every item in a list-view always has the same number of subitems. If all items in the
+  list-view have a <computeroutput>LvFullRow</computeroutput> object set as the item data, when a column is deleted, the full
+  row object will have one too many subitems. The same if a column is added, the full row object will have no knowledge of
+  the new subitem. <emphasis role="bold">Note</emphasis> that there is no problem the very first time a column is inserted
+  in a list-view and this only applies to <emphasis role="italic">subitem</emphasis> columns. The information for a
+  list-view item is not deleted by deleting its column, column 0. In addition, this discussion only concerns the case where
+  <computeroutput>LvFullRow</computeroutput> objects have been assigned to the item data of each item to faciliate internal
+  sorting.
+</para>
+<para>
+  Most ooDialog programs that use a list-view do not involve inserting or removing columns after the list-view items have
+  been added. But, for programs that do <emphasis role="italic">and</emphasis> use <computeroutput>LvFullRow</computeroutput>
+  objects to allow internal sorting, the programmer must take an additional step when a column is inserted or deleted. This
+  ensures the integrity of the full row objects. ooDialog provides 3 methods to ensure integrity when a column is inserted or
+  deleted:
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">The fixFullRowColumns method:</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog provides the <xref linkend="mthFixFullRowColumns"/> method of the <computeroutput>ListView</computeroutput>
+    which can be used to bring all the full row objects back in sync. It must be invoked after each individual column insert
+    and delete to work correctly. That is, the programmer can not delete 2 columns and then invoke the <emphasis
+    role="italic">fixFullRowColumns</emphasis> twice. The method is invoked with the column index that was removed or added
+    and a second argument that signals whether the specified column was inserted. The following code snippet gives an
+    example:
+<programlisting>
+<![CDATA[
+    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT")
+    list~fixFullRowColumns(2, .true)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">The adjustFullRows argument:</emphasis></term>
+  <listitem>
+  <para>
+    The methods that insert or delete columns in the list-view have an optional second argument, <emphasis
+    role="italic">adjustFullRows</emphasis>. If this argument is true, then the ooDialog framework is signaled to fix up the
+    full row objects internally when the column is added or deleted. The default for the argument is false. This is perhaps
+    the easist process for the programmer to use. The above example would be altered like this:
+<programlisting>
+<![CDATA[
+    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT", .true)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Manual update</emphasis></term>
+  <listitem>
+  <para>
+    With this method, after the column insert or delete, the programmer iterates through all the list-view items, removes the
+    old invalid item data, creates a valid full row object, and sets the item data to the new full row object. The following
+    code snippet shows the procedure:
+<programlisting>
+<![CDATA[
+
+    list~deleteColumn(delCol)
+
+    do i = 0 to list~items - 1
+      list~removeItemData(i)
+      lvFullRow = list~getFullRow(i, .true)
+      list~setItemData(i, lvFullRow)
+    end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="sctMethodsLvFullRow"><title>Method Table</title>
 <para>
   The following table lists the class and instance methods of the <computeroutput>LvFullRow</computeroutput> class:
@@ -9868,118 +10335,6 @@ that allows the user to remove the check mark from all the check boxes:
 </tbody></tgroup>
 </table>
 </para>
-</section>
-
-<section id="sctInternalSorting"><title>Internal Sorting Considerations</title>
-<indexterm><primary>internal sorting</primary><secondary>LvFullRow Class</secondary></indexterm>
-<indexterm><primary>internal sorting</primary><secondary>ListView Class</secondary></indexterm>
-<para>
-  The <xref linkend="mthSortItems"/> method is used to sort list-view items. One option of this method is to have the
-  ooDialog framework implement the sort internally. The internal sort can be significantly faster, for large lists, than
-  implementing the sort in Rexx. However, the internal sorting is dependent on the <computeroutput>LvFullRow</computeroutput>
-  class. There are a few things the Rexx programmer needs to be aware of that effect the ability of the ooDialog framework to
-  do an internal sort.
-</para>
-<para>
-  Any sorting of the list-view items, whether it is through a sort implemented in Rexx or the internal sort, is dependent on
-  <link linkend="mthSetItemDataClsListView">setting</link> a value for the item data of every list-view item. For the
-  internal sort to work, the item data value must be a <computeroutput>LvFullRow</computeroutput> object. There are several
-  approaches that could be used to assign a full row object to the item data of every list-view item. One approach would be
-  to iterate through all the list-view items, for each item, instantiate a full row object for the item and use the <xref
-  linkend="mthSetItemDataClsListView"/> method to assign the object to the item.
-</para>
-<para>
-  However, full row objects can also be used to add items to the list-view through one the <xref linkend="mthAddFullRow"/>,
-  <xref linkend="mthInsertFullRow"/>, or <xref linkend="mthPrependFullRow"/> methods. A second approach is to add all
-  list-view items using full row objects and have the ooDialog framework set the full row object as the item data when the
-  item is added to the list-view. To use this technique, the programmer should set the <emphasis
-  role="italic">sorting</emphasis> argument to true when <link linkend="mthNewClsLvFullRow">instantiating</link> the full row
-  object.
-</para>
-<para>
-  In a way, a full row object is a snapshot of the information the list-view control maintains about a specific item in the
-  list. This information can change over time as the application is used. For instance, the text of an item could be changed.
-  When a full row object is assigned as the item data of a list-view item, the ooDialog framework does its best to keep the
-  full row object updated with any changes made to the information of the list-view item. But, there is one scenario where
-  this is not always possibile. The Rexx programmer needs to be aware of this and take the proper steps to keep the full row
-  object in synch with the list-view item.
-</para>
-<para>
-  When a subitem column in the list-view is <link linkend="mthInsertColumnPX">inserted</link>
-  or <link linkend="mthDeleteColumn">deleted</link>, the list-view control adds or deletes the subitems of all
-  items that corresponds to the colum. Every item in a list-view always has the same number of subitems. If all items in the
-  list-view have a <computeroutput>LvFullRow</computeroutput> object set as the item data, when a column is deleted, the full
-  row object will have one too many subitems. The same if a column is added, the full row object will have no knowledge of
-  the new subitem. <emphasis role="bold">Note</emphasis> that there is no problem the very first time a column is inserted
-  in a list-view and this only applies to <emphasis role="italic">subitem</emphasis> columns. The information for a
-  list-view item is not deleted by deleting its column, column 0. In addition, this discussion only concerns the case where
-  <computeroutput>LvFullRow</computeroutput> objects have been assigned to the item data of each item to faciliate internal
-  sorting.
-</para>
-<para>
-  Most ooDialog programs that use a list-view do not involve inserting or removing columns after the list-view items have
-  been added. But, for programs that do <emphasis role="italic">and</emphasis> use <computeroutput>LvFullRow</computeroutput>
-  objects to allow internal sorting, the programmer must take an additional step when a column is inserted or deleted. This
-  ensures the integrity of the full row objects. ooDialog provides 3 methods to ensure integrity when a column is inserted or
-  deleted:
-</para>
-
-<variablelist>
-  <varlistentry><term><emphasis role="bold">The fixFullRowColumns method:</emphasis></term>
-  <listitem>
-  <para>
-    ooDialog provides the <xref linkend="mthFixFullRowColumns"/> method of the <computeroutput>ListView</computeroutput>
-    which can be used to bring all the full row objects back in sync. It must be invoked after each individual column insert
-    and delete to work correctly. That is, the programmer can not delete 2 columns and then invoke the <emphasis
-    role="italic">fixFullRowColumns</emphasis> twice. The method is invoked with the column index that was removed or added
-    and a second argument that signals whether the specified column was deleted. The following code snippet gives an
-    example:
-<programlisting>
-<![CDATA[
-    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT")
-    list~fixFullRowColumns(, .false)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">The adjustFullRows argument:</emphasis></term>
-  <listitem>
-  <para>
-    The methods that insert oR delete columns in the list-view have an optional second argument, <emphasis
-    role="italic">adjustFullRows</emphasis>. If this argument is true, then the ooDialog framework is signaled to fix up the
-    full row objects internally when the column is added or deleted. The default for the argument is false. This is perhaps
-    the easist process for the programmer to use. The above example would be altered like this:
-<programlisting>
-<![CDATA[
-    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT", .true)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Manual update</emphasis></term>
-  <listitem>
-  <para>
-    With this method, after the column insert or delete, the programmer iterates through all the list-view items, removes the
-    old invalid item data, creates a valid full row object, and sets the item data to the new full row object. The following
-    code snippet shows the procedure:
-<programlisting>
-<![CDATA[
-
-    list~deleteColumn(delCol)
-
-    do i = 0 to list~items - 1
-      list~removeItemData(i)
-      lvFullRow = list~getFullRow(i, .true)
-      list~setItemData(i, lvFullRow)
-    end
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="mthNewClsLvFullRow" xreflabel="new"><title>new (Class Method)</title>
