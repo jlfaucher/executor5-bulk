@@ -7538,6 +7538,17 @@ grid position.</para>
 <programlisting>
 <![CDATA[
 
+::method initDialog
+    expose list
+    ...
+
+    list = self~newListView(IDC_LV_CONTACTS)
+    items = self~createRows
+
+    do r over items
+        list~addFullRow(r)
+    end
+
 ::method createRows private
 
     ...
@@ -8920,15 +8931,15 @@ that allows the user to remove the check mark from all the check boxes:
 </row>
 <row>
 <entry><xref linkend="atrOverlayImageIndexClsLvi"/></entry>
-<entry></entry>
+<entry>Reflects the one-based index of the overlay image for this item.</entry>
 </row>
 <row>
 <entry><xref linkend="atrStateImageIndexClsLvi"/></entry>
-<entry></entry>
+<entry>Reflects the one-based index of the state image for this item.</entry>
 </row>
 <row>
 <entry><xref linkend="atrTextClsLvi"/></entry>
-<entry></entry>
+<entry>Reflects the text, the label, for this item.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -10221,43 +10232,45 @@ Item text:              Line 22
 </programlisting>
 
 <para>
-  xx
+  Reflects the one-based index of the overlay image for this item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">overlayImageIndex get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the one-based index of the overlay image for this item. 0 indicates the item has no overlay image.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">overlayImageIndex set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To specify an overlay image for this item assign the one-based index of the overlay image in the image list. Assign 0 to
+    indicate the item should not use an overlay image. Valid indexes are 0 through 15. This is a limitation imposed by the
+    operating system.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Both the full-sized icon image list and the small icon image list can have overlay images. The overlay image is
+    superimposed over the item's icon image. If the overlay index is zero, the item has no overlay image.
+  </para>
+  <para>
+    The overlay image index is actually part of the state value for an item in the underlying list-view control. The ooDialog
+    framework hides some of the complexity of separating the overlay index from the state value by making the index a
+    separate attribute in the <computeroutput>LvItem</computeroutput> object. If the programmer wants to retrieve the overlay
+    index only, it is necessary to set the STATE flag in the <xref linkend="atrMaskClsLiv"/> attribute.
+  </para>
+  <para>
+    Currently, ooDialog does not have support for overlay images in the <xref linkend="clsImageList"/> class. However, it is
+    anticipated that support may be added in a future enhancement. Support for overlay image indexes in the
+    <computeroutput>LvItem</computeroutput> class is a first step towards implementing support for overlay images.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -10276,43 +10289,46 @@ Item text:              Line 22
 </programlisting>
 
 <para>
-  xx
+  Reflects the one-based index of the state image for this item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">stateImageIndex get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the one-based index of the state image for this item. 0 indicates the item has no state image.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">stateImageIndex set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To specify a state image for this item assign the one-based index of the state image in the state image list. Assign 0 to
+    indicate the item should not use an state image. Valid indexes are 0 through 15. This is a limitation imposed by the
+    operating system.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The state image is displayed next to an item's icon to indicate an application-defined state. If the state image index is
+    zero, the item has no state image.
+  </para>
+  <para>
+    The state image index is actually part of the state value for an item in the underlying list-view control. The ooDialog
+    framework hides some of the complexity of separating the state index from the state value by making the index a
+    separate attribute in the <computeroutput>LvItem</computeroutput> object. If the programmer wants to retrieve the state
+    image index only, it is necessary to set the STATE flag in the <xref linkend="atrMaskClsLiv"/> attribute.
+  </para>
+  <para>
+    Currently, ooDialog does not have support for setting the state image list in the <xref
+    linkend="mthSetImageListClsListView"/> method of the <computeroutput>ListView</computeroutput> class. However, it is
+    anticipated that support may be added in a future enhancement. Support for state image indexes in the
+    <computeroutput>LvItem</computeroutput> class is a first step towards implementing support for state images.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -10331,25 +10347,34 @@ Item text:              Line 22
 </programlisting>
 
 <para>
-  xx
+  Reflects the text, the label, for this item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">text get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the text for this item. If no text has been set for this item, the <computeroutput>.nil</computeroutput> object
+    is returned. Note that setting the text to the empty string is different than not having the text set at all. In
+    addition, the operarating system uses a special value to indicate to the list-view that it should generate a GETDISPINFO
+    notification to retrieve the text for the item from the application. If this value is set, the string <emphasis
+    role="italic">lpStrTextCallBack</emphasis> is returned as the text for this item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">text set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Assign a string to this attribute to set the text for the item. The string must be less than or equal to 260 characters
+    in length. In addition the special string, <emphasis role="italic">lpStrTextCallBack</emphasis>, can be used to set the
+    text value for the item to the value that indicates the list-view should generate a GETDISPINFO notification. Case is not
+    significant when using <emphasis role="italic">lpStrTextCallBack</emphasis>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Currently, there is no support for the GETDISPINFO event notification in <xref linkend="mthConnectListViewEvent"/>
+    method. It is anticipated that support for this event will be added in the future. Until then, using the <emphasis
+    role="italic">lpStrTextCallBack</emphasis> value will simply result in the item appearing with no text.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -10361,10 +10386,25 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the current text for an item, appends a string to the text, and sets the text for the item to the new
+    value:
 <programlisting>
 <![CDATA[
 
+::method addQualifier private
+    expose list
+    use strict arg itemIndex, additionalText
+
+    lvItem = .LvItem~new(itemIndex, , , , 'TEXT')
+    if list~getItem(lvItem) then do
+        lvItem~text = lvItem~text additionalText
+
+        list~modifyItem(lvItem)
+        return .true
+    end
+    else do
+        return .false
+    end
 
 ]]>
 </programlisting>
@@ -10481,6 +10521,9 @@ Item text:              Line 22
 
 ]]>
 </programlisting>
+    The reason that the default here is false is that with very large lists, the time to fix up the full row objects can be
+    noticeable, .5 to 1.5 seconds for lists with over 10,000 items. Because of this, the programmer may not want the fix up
+    to happen during the insertion or deletion of a column.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Manual update</emphasis></term>
@@ -10536,27 +10579,27 @@ Item text:              Line 22
 </row>
 <row>
 <entry><xref linkend="mthAddSubItem"/></entry>
-<entry>xx</entry>
+<entry>Adds a subitem to this full row. Subitems are always added as the last subitem in the row.</entry>
 </row>
 <row>
 <entry><xref linkend="mthInsertSubItem"/></entry>
-<entry>xx</entry>
+<entry>Inserts a new subitem into this full row and adjusts the subitem indexes for  all existing subitems, when needed.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItem"/></entry>
-<entry>xx</entry>
+<entry>Returns the <xref linkend="clsLvItem"/> object of this full row.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRemoveSubItem"/></entry>
-<entry>xx</entry>
+<entry>Removes the specified subitem from this full row.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSubItem"/></entry>
-<entry>xx</entry>
+<entry>Returns the subitem specified by <emphasis role="italic">index</emphasis> of this full row, or the <computeroutput>.nil</computeroutput> object if the subitem <emphasis role="italic">index</emphasis> is not valid.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSubItems"/></entry>
-<entry>xx</entry>
+<entry>Returns the count of subitems in this full row.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -10583,6 +10626,7 @@ Item text:              Line 22
   <listitem>
   <para>
     The arguments are:
+  </para>
   <variablelist>
     <varlistentry><term>item [required]</term>
     <listitem>
@@ -10607,7 +10651,6 @@ Item text:              Line 22
     </para>
     </listitem></varlistentry>
   </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -10703,24 +10746,23 @@ Item text:              Line 22
 <indexterm><primary>LvFullRow class</primary><secondary>addSubItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addSubItem(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addSubItem(--subitem--)----------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a subitem to this full row. Subitems are always added as the last subitem in the row.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>subitem [required]</term>
       <listitem>
       <para>
-        xx
+        A <xref linkend="clsLvSubItem"/> object that specifies the subitem being added.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -10729,33 +10771,23 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the index of the added subitem on success, or 0 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">addSubItem</emphasis> method allows the programmer to add subitems to the full row after the
+    <computeroutput>LvFullRow</computeroutput> object has been instantiated. Typically, all subitems would be added to the
+    full row at the time of instantiation through the <xref linkend="mthNewClsLvFullRow"/> method. In addition to the
+    <emphasis role="italic">addSubItem</emphasis> method, the <xref linkend="mthInsertSubItem"/> method can be used to insert
+    a subitem into the middle of the subitem list.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -10766,13 +10798,12 @@ Item text:              Line 22
 <indexterm><primary>ListView class</primary><secondary>insertSubItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--insertSubItem(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--insertSubItem(--subItem--,--colIndex--)------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Inserts a new subitem into this full row and adjusts the subitem indexes for  all existing subitems, when needed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -10781,10 +10812,18 @@ Item text:              Line 22
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>subitem [required]</term>
     <listitem>
     <para>
-      xx
+      A <xref linkend="clsLvSubItem"/> object that specifies the subitem being inserted.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>colIndex [required]</term>
+    <listitem>
+    <para>
+      The one-based index that specifies which column the subitem is inserted at. The index can not be 0 and can not be
+      greater than the current count of subitems + 1. That is, a subitem can not be inserted in a way that leaves the
+      subitems non-contiguous.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -10792,13 +10831,25 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">insertSubItem</emphasis> method allows the programmer to add subitems to the full row after
+    the <computeroutput>LvFullRow</computeroutput> object has been instantiated. Typically, all subitems would be added to
+    the full row at the time of instantiation through the <xref linkend="mthNewClsLvFullRow"/> method. In addition to the
+    <emphasis role="italic">insertSubItem</emphasis> method, the <xref linkend="mthAddSubItem"/> method can be used to add a
+    subitem to the end of the subitem list.
+  </para>
+  <para>
+    Inserting a new column into the middle of the exsiting subitems, will of course make the subitem index in the subitems
+    following the newly inserted subitem invalid. The ooDialog framework will automatically fix the subitem indexes where
+    needed. In addition, both the <xref linkend="atrItemClsLvSi"/> and <xref linkend="atrSubItemClsLvSi"/> attributes in the
+    newly inserted <emphasis role="italic">subitem</emphasis> object are set to the collect values automatically. Because of
+    this, the <emphasis role="italic">subitem</emphasis> object argument does not necessarily have to have correct item and
+    subitem index values.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -10806,16 +10857,19 @@ Item text:              Line 22
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example inserts a new subitem for column 3. Notice that when instantiating the
+    <computeroutput>LvSubItem</computeroutput> object, the code does not bother with setting the <emphasis
+    role="italic">item</emphasis> and <emphasis role="italic">subitem</emphasis> correctly. Rather it relies on the <emphasis
+    role="italic">insertSubItem</emphasis> method to set them correctly:
 <programlisting>
 <![CDATA[
+
+    lvSubItem = .LvSubItem~new(1, 1, 'Apartment #13', 2)
+    lvFull~insertSubItem(lvSubItem, 3)
 
 ]]>
 </programlisting>
@@ -10830,33 +10884,25 @@ Item text:              Line 22
 <indexterm><primary>LvFullRow class</primary><secondary>item</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--item(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--item-----------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the <xref linkend="clsLvItem"/> object of this full row.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the <emphasis role="italic">LvItem</emphasis> object for this full row. All full rows must have an item object so
+    there is no way for this method to fail.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -10865,22 +10911,36 @@ Item text:              Line 22
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the <computeroutput>LvFullRow</computeroutput> for the item at index 5 of the list-view. It then gets
+    the <computeroutput>LvItem</computeroutput> object and prints its information out to the display
 <programlisting>
 <![CDATA[
 
+    lvfull = list~getFullRow(5)
+    lvitem = lvFull~item
+    self~printItem(lvitem)
+
+/* Output might be for example:
+
+Item columnFormats:     an Array
+Item columns:           an Array
+Item columns count:     0
+Item groupID:           -2
+Item imageIndex:        3
+Item indent:            0
+Item index:             5
+Item itemData:          a LvFullRow
+Item itemState:         FOCUSED SELECTED
+Item itemStateMask:
+Item mask:              GROUPID IMAGE PARAM TEXT
+Item overlayImageIndex: 0
+Item stateImageIndex:   0
+Item text:              Clerk
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -10893,13 +10953,12 @@ Item text:              Line 22
 <indexterm><primary>LvFullRow class</primary><secondary>removeSubItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--removeSubItem(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--removeSubItem(--index--)---------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes the specified subitem from this full row.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -10907,10 +10966,12 @@ Item text:              Line 22
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The index of the subitem to remove. This is the same as the column index for the subitem. <emphasis
+        role="italic">index</emphasis> must be a valid, existing, subitem index. This means it can not be 0, or greater than
+        the count of current subitems.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -10919,33 +10980,26 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the removed <computeroutput>LvSubItem</computeroutput> object on success, or the
+    <computeroutput>.nil</computeroutput> object on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">removeSubItem</emphasis> method allows the programmer to remove subitem from the full row
+    after the <computeroutput>LvFullRow</computeroutput> object has been instantiated. Typically, all subitems would be set
+    correctly in the full row at the time of instantiation through the <xref linkend="mthNewClsLvFullRow"/> method.
+  </para>
+  <para>
+    Removing a column from the middle of the exsiting subitems, will of course make the subitem index in the subitems
+    following the removed subitem invalid. The ooDialog framework will automatically fix the subitem indexes where needed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -10956,24 +11010,24 @@ Item text:              Line 22
 <indexterm><primary>LvFullRow class</primary><secondary>subItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--subItem(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--subItem(--index--)---------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the subitem specified by <emphasis role="italic">index</emphasis> of this full row, or the
+  <computeroutput>.nil</computeroutput> object if the subitem <emphasis role="italic">index</emphasis> is not valid.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The one-based index of the subitem requested.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -10982,31 +11036,31 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Returns the requested <xref linkend="clsLvSubItem"/> object on success, or the <computeroutput>.nil</computeroutput>
+    object on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the subitem in column 3 of the item at index 4 in the list-view and prints out its information:
 <programlisting>
 <![CDATA[
 
+
+  lvfull  = list~getFullRow(4)
+  subItem = lvFull~subItem(3)
+  self~printSubItem(subItem)
+
+/* Output might be:
+
+Subitem imageIndex:        11
+Subitem item:              4
+Subitem mask:              IMAGE TEXT
+Subitem subitem:           3
+Subitem text:              ca@sharp.org
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -11019,48 +11073,24 @@ Item text:              Line 22
 <indexterm><primary>LvFullRow class</primary><secondary>subItems</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--subItems(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--subItems-------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the count of subitems in this full row.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Returns the count of subitems in this full row.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -11070,6 +11100,38 @@ Item text:              Line 22
 <programlisting>
 <![CDATA[
 
+  lvfull  = list~getFullRow(4)
+  if lvfull~subitems == 0 then do
+      say 'No subitems for row at index 4'
+      return
+  end
+
+  do i = 1 to lvfull~subitems
+      subItem = lvFull~subItem(i)
+      self~printSubItem(subItem)
+  end
+
+/* Output might be:
+
+Item imageIndex:        13
+Item item:              4
+Item mask:              IMAGE TEXT
+Item subitem:           1
+Item text:              Cienna
+
+Item imageIndex:        18
+Item item:              4
+Item mask:              IMAGE TEXT
+Item subitem:           2
+Item text:              Acer
+
+Item imageIndex:        11
+Item item:              4
+Item mask:              IMAGE TEXT
+Item subitem:           3
+Item text:              ca@sharp.org
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -11083,10 +11145,26 @@ Item text:              Line 22
 <section id="clsLvSubItem" xreflabel="LvSubItem"><title>LvSubItem Class</title>
 <indexterm><primary>LvSubItem class</primary></indexterm>
 <para>
-  A LvSubItem object ...
+  A LvSubItem object represents a specific subitem of a single item within a list-view control. Each item in a list-view can
+  have one or more subitems. Each subitem can have a text string and an icon. In report view, the text, and optionally the
+  icon, is displayed in a column separate from the item's icon and label. To display the subitem's icon, the list-view must
+  have the SUBITEMIMAGES <link linkend="mthAddExtendedStyle">extended</link> style.
 </para>
 <para>
-  xx
+  All items in a list-view control have the same number of subitems. The number of subitems is determined by the number of
+  columns in the list-view control. When a column is <link linkend="mthInsertColumnPX">added</link> to a list-view control,
+  its associated subitem index is specified. When a column is added to a list-view, the list-view control creates a subitem
+  for every existing item with a default value of no text and no icon. When a column is removed from a list-view, the
+  list-view deletes the information it maintains for every subitem of that column.
+</para>
+<para>
+  The list-view does not have to be in report view to have subitems. It does not have to be in report view to have columns
+  added or deleted, the list-view can be in any view mode.
+</para>
+<para>
+  <computeroutput>LvSubItem</computeroutput> objects can be used to set the information for a subitem or to receive
+  information concerning a subitem. In addition, <xref linkend="clsLvFullRow"/> objects can be composed of subitem objects in
+  addition to a <xref linkend="clsLvItem"/> object.
 </para>
 
 <section id="sctMethodsLvSubItem"><title>Method Table</title>
@@ -11109,12 +11187,32 @@ Item text:              Line 22
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
 <entry><link linkend="mthNewClsLvSubItem">new</link></entry>
+<entry>Instantiates a new <computeroutput>LvSubItem</computeroutput> object.</entry>
 </row>
 <row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrImageIndexClsLvSi"/></entry>
+<entry>Reflects the index in the smalll icon <link linkend="mthSetImageListClsListView">image</link> list for this subitem.</entry>
+</row>
+<row>
+<entry><xref linkend="atrItemClsLvSi"/></entry>
+<entry>Reflects the index of the item in the list-view that this subitem belongs to.</entry>
+</row>
+<row>
+<entry><xref linkend="atrMaskClsLvSi"/></entry>
+<entry>The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the <computeroutput>LvSubItem</computeroutput> object are valid to set or recieve the information for a list-view item's subitem.</entry>
+</row>
+<row>
+<entry><xref linkend="atrSubItemClsLvSi"/></entry>
+<entry>Reflects the subitem index of this <computeroutput>LvSubItem</computeroutput> object.</entry>
+</row>
+<row>
+<entry><xref linkend="atrTextClsLvSi"/></entry>
+<entry>Reflects the text, the label, for this subitem.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -11126,33 +11224,156 @@ Item text:              Line 22
 <indexterm><primary>LvSubItem class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new(--item-,-subItem--+---------+--+--------------+--+--------+--)---------><
+                          +-,-text--+  +-,-imageIndex-+  +-,-mask-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>LvSubItem</computeroutput> object with the parameters specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Instantiates a new <computeroutput>LvSubItem</computeroutput> object.
+  </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>item [required]</term>
     <listitem>
     <para>
-      xx
+      The zero-based index of the item this subitem belongs to. The argument can not be less than 0.  The <emphasis
+      role="italic">item</emphasis> argument sets the <xref linkend="atrItemClsLvSi"/> attribute of this subitem.
+    </para>
+    <para>
+      Note that depending on the use of this subitem, the ooDialog framework may modify the index attribute. For
+      instance if the <computeroutput>LvSubItem</computeroutput> is contained in a <xref linkend="clsLvFullRow"/> object and
+      the row is added to a list-view, the ooDialog framework will adjust the <emphasis role="italic">index</emphasis>
+      attribute to reflect the actual index of the added item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>subItem [required]</term>
+    <listitem>
+    <para>
+      The one-based index of this subitem. The argument can not be less than 1. The <emphasis role="italic">suItem</emphasis>
+      argument sets the <xref linkend="atrSubItemClsLvSi"/> attribute of this subitem.
+    </para>
+    <para>
+      Note that depending on the use of this subitem, the ooDialog framework may modify the <emphasis
+      role="italic">subItem</emphasis> attribute. For instance if the <computeroutput>LvSubItem</computeroutput> is placed
+      into a <xref linkend="clsLvFullRow"/> object, the ooDialog framework will adjust
+      the <emphasis role="italic">subItem</emphasis> attribute to reflect the actual index of the column of the subitem in
+      the full row.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [optional]</term>
+    <listitem>
+    <para>
+      Sets the text, or label, for this list-view subitem. The <emphasis role="italic">text</emphasis> argument sets the
+      <xref linkend="atrTextClsLvSi"/> attribute of this list-view subitem.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>imageIndex [optional]</term>
+    <listitem>
+    <para>
+      The zero-based index of the subitem's icon in the control's small icon <link
+      linkend="mthSetImageListClsListView">image</link> list. Note that the image index has no meaning if the list-view does
+      not have the SUBITEMIMAGES <link linkend="mthAddExtendedStyle">extended</link> style.
+    </para>
+    <para>
+      The <emphasis role="italic">imageIndex</emphasis> argument can also be one of the following list-view <link
+      linkend="sctListViewConstantMethods">constants</link>. If this argument is omitted, the default is IMAGENONE:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>IMAGECALLBACK</member>
+        <member>IMAGENONE    </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>IMAGECALLBACK</term>
+        <listitem>
+        <para>
+          Indicates the list-view control should send the GETDISPINFO notification message to retrieve the icon index for the
+          subitem.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>IMAGENONE</term>
+        <listitem>
+        <para>
+          The subitem does not have an icon. This is the default if this argument omitted.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    <para>
+      The <emphasis role="italic">imageIndex</emphasis> argument sets the <xref linkend="atrImageIndexClsLvSi"/> attribute of
+      this subitem.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mask [optional]</term>
+    <listitem>
+    <para>
+      A list of blank separate keywords that specify which attributes of this <computeroutput>LvSubItem</computeroutput>
+      object contain data to be set or which attributes are being requested. In general, the ooDialog framework will try to
+      set the <xref linkend="atrMaskClsLvSi"/> attribute correctly without the programmer having to worry about this
+      argument. As each attribute of the <computeroutput>LvSubItem</computeroutput> object is set, the appropriate keyword is
+      added to the <emphasis role="italic">mask</emphasis> attribute. However, if this object is going to be used to retrieve
+      information about the underlying list-view subitem, the ooDialog framwork has no way to know what attributes the
+      programmer wishes to retrieve. For this use of the <computeroutput>LvSubItem</computeroutput> object, the programmer
+      should set the mask to the value that will retrieve the information she wants.
+    </para>
+    <para>
+      The <emphasis role="italic">mask</emphasis> argument can have zero or more of the following keywords, case is not
+      significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>ALL        </member>
+        <member>IMAGE      </member>
+        <member>NORECOMPUTE</member>
+        <member>TEXT       </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>ALL</term>
+        <listitem>
+        <para>
+          A convenience keyword, the same as using the string: <emphasis role="italic">IMAGE NORECOMPUTE TEXT</emphasis>.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>IMAGE</term>
+        <listitem>
+        <para>
+          The <xref linkend="atrImageIndexClsLvSi"/> attribute is valid or should be set.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NORECOMPUTE</term>
+        <listitem>
+        <para>
+          Used when the <computeroutput>LvSubItem</computeroutput> object will be used to retrieve information through the
+          <xref linkend="mthGetSubItem"/> method. Signals the list-view control should not generate a GETDISPINFO
+          notification to retrieve the text. Rather, the <xref linkend="atrTextClsLvSi"/> attribute will contain <emphasis
+          role="italic">lpStrTextCallBack</emphasis>.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TEXT</term>
+        <listitem>
+        <para>
+          The <xref linkend="atrTextClsLvSi"/> attribute is valid or should be set.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    <para>
+      The <emphasis role="italic">mask</emphasis> argument sets the <xref linkend="atrMaskClsLvSi"/> attribute of this
+      subitem.
     </para>
     </listitem></varlistentry>
   </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a newly instantiated and initalized <computeroutput>LvSubItem</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -11166,16 +11387,35 @@ Item text:              Line 22
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows <computeroutput>LvSubItem</computeroutput> objects being instantiated and used in a <xref
+    linkend="clsLvFullRow"/> object, which in turn is used to add a new item to the list-view. Note that the list-viw has the
+    extended SUBITEMIMAGES style and the use of the <emphasis role="italic">imageIndex</emphasis> argument in the <emphasis
+    role="italic">new</emphasis> method. Each column in the list-view will have its own icon:
 <programlisting>
 <![CDATA[
+
+::method populateList private
+    use strict arg list
+
+    list~InsertColumnPx(0, "Title", 150)
+    ret = list~InsertColumnPx(1, "Name", 75)
+    ret = list~InsertColumnPx(2, "Last", 100)
+    ret = list~InsertColumnPx(3, "e-mail", 150)
+
+    list~addExtendedStyle("FULLROWSELECT UNDERLINEHOT ONECLICKACTIVATE SUBITEMIMAGES")
+
+    lvItem = .LvItem~new(0, "Business manager", 6)
+    lvSub1 = .LvSubItem~new(0, 1, "Tom", 14)
+    lvSub2  = .LvSubItem~new(0, 2, "Sawyer", 26)
+    lvSub3  = .LvSubItem~new(0, 3, "ts@google.com", 11)
+    lvFullRow = .LvFullRow~new(lvItem, lvSub1, lvSub2, lvSub3, .true)
+    list~addFullRow(lvFullRow)
+
+    ...
 
 ]]>
 </programlisting>
@@ -11197,25 +11437,32 @@ Item text:              Line 22
 </programlisting>
 
 <para>
-  xx
+  Reflects the index in the small icon <link linkend="mthSetImageListClsListView">image</link> list for this subitem.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">imageIndex get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns this subitem's icon image index, or one of the image <link linkend="sctListViewConstantMethods">constants</link>
+    supplied by the <computeroutput>ListView</computeroutput> class, IMAGENONE or IMAGECALLBACK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">imageIndex set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to the index in the small icon image list for this subitem, or to one of the image <link
+    linkend="sctListViewConstantMethods">constants</link> supplied by the <computeroutput>ListView</computeroutput> class,
+    IMAGENONE or IMAGECALLBACK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In general, if the programmer does not explicitly set this attribute, the ooDialog framework will set it to the IMAGENONE
+    constant. When the <computeroutput>LvSubItem</computeroutput> object is used to retrieve information about a subitem, the
+    list-view control does not update the value for the index if the list-view does not have the SUBITEMIMAGES <link
+    linkend="mthAddExtendedStyle">extended</link> style. Because of this, the value of this attribute is not well defined
+    when the list-view does not have the SUBITEMIMAGES style.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -11227,16 +11474,20 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example will set, or change, the image index for the subitem icon of the item at index 13, column 2 to 3. None of
+    the other list-view item information will be changed.
 <programlisting>
 <![CDATA[
 
+  lvSubItem = .LvSubItem~new(13, 2, , 3)
+  list~modifyItem(lvItem)
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
+
 </section>  <!-- End LvSubItem::imageIndex() [attribute]  -->
 
 <section id="atrItemClsLvSi" xreflabel="item"><title>item (Attribute)</title>
@@ -11252,43 +11503,26 @@ Item text:              Line 22
 </programlisting>
 
 <para>
-  xx
+  Reflects the index of the item in the list-view that this subitem belongs to.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">item get:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">index get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the zero-based index of this subitem's item.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">item set:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">index set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to a zero-based index to specify which item in the list-view this subitem belongs to.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    If this subitem is placed into a <xref linkend="clsLvFullRow"/> object, the ooDialog framework will update this attribute
+    to reflect the actual item index of the full row the subitem is placed in.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -11307,25 +11541,82 @@ Item text:              Line 22
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the
+  <computeroutput>LvSubItem</computeroutput> object are valid to set or recieve the information for a list-view item's
+  subitem.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">mask get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns a blank separated list of keywords specifying which attributes of this subitem are valid. The possible keywords
+    are listed in the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">mask set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To specify which attributes in this item are to be used to set or recieve information, assign a list of blank separated
+    keywords to this attribute. The possible keywords are listed in the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">mask</emphasis> attributed contains a list of blank separate keywords that specify which
+    attributes of this <computeroutput>LvSubItem</computeroutput> object contain data to be set or which attributes are being
+    requested. In general, when setting data, the ooDialog framework will try to set the <emphasis
+    role="italic">mask</emphasis> attribute correctly without the programmer having to worry about this argument. As each
+    attribute of the <computeroutput>LvSubItem</computeroutput> object is set, the appropriate keyword is added to the
+    <emphasis role="italic">mask</emphasis> attribute.
+  </para>
+  <para>
+    However, if this object is going to be used to retrieve information about the underlying list-view item's subitem, the
+    ooDialog framwork has no way to know what attributes the programmer wishes to retrieve. For this use of the
+    <computeroutput>LvSubItem</computeroutput> object, the programmer should set the mask to the value that will retrieve the
+    information he wants.
+  </para>
+  <para>
+    The <emphasis role="italic">mask</emphasis> attribute can have zero or more of the following keywords. When assigning the
+    string to this attribute case is insignificant. When getting the value of this attribute, the returned keywords will be
+    all upper-cased:
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>ALL        </member>
+      <member>IMAGE      </member>
+      <member>NORECOMPUTE</member>
+      <member>TEXT       </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>ALL</term>
+      <listitem>
+      <para>
+        A convenience keyword, the same as using the string: <emphasis role="italic">IMAGE NORECOMPUTE TEXT</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>IMAGE</term>
+      <listitem>
+      <para>
+        The <xref linkend="atrImageIndexClsLvSi"/> attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NORECOMPUTE</term>
+      <listitem>
+      <para>
+        Used when the <computeroutput>LvSubItem</computeroutput> object will be used to retrieve information through the
+        <xref linkend="mthGetSubItem"/> method. Signals the list-view control should not generate a GETDISPINFO
+        notification to retrieve the text. Rather, the <xref linkend="atrTextClsLvSi"/> attribute will contain <emphasis
+        role="italic">lpStrTextCallBack</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TEXT</term>
+      <listitem>
+      <para>
+        The <xref linkend="atrTextClsLvSi"/> attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -11337,10 +11628,24 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the icon index to 2, for the subitem in column 3 of the item at index 11. In this example, the mask
+    attribute is set explicitly to make a point. But it is not actually needed:
 <programlisting>
 <![CDATA[
 
+  subitem = .LvSubItem~new(11, 3, , 2, "IMAGE")
+
+  list~modifySubItem(subitem)
+
+]]>
+</programlisting>
+    This code snippet will work exactly the same as the example above:
+<programlisting>
+<![CDATA[
+
+  subitem = .LvSubItem~new(11, 3, , 2)
+
+  list~modifySubItem(subitem)
 
 ]]>
 </programlisting>
@@ -11362,43 +11667,26 @@ Item text:              Line 22
 </programlisting>
 
 <para>
-  xx
+  Reflects the subitem index of the <computeroutput>LvSubItem</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">subItem get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the one-based subitem index of this object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">subItem set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to the one-based index of the list-view subitem this object represents.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    If this subitem is placed into a <xref linkend="clsLvFullRow"/> object, the ooDialog framework will update this attribute
+    to reflect the actual column of the full row the subitem is placed at.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -11417,25 +11705,34 @@ Item text:              Line 22
 </programlisting>
 
 <para>
-  xx
+  Reflects the text, the label, for this subitem.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">text get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the text for this subitem. If no text has been set for this subitem, the <computeroutput>.nil</computeroutput>
+    object is returned. Note that setting the text to the empty string is different than not having the text set at all. In
+    addition, the operarating system uses a special value to indicate to the list-view that it should generate a GETDISPINFO
+    notification to retrieve the text for the subitem from the application. If this value is set, the string <emphasis
+    role="italic">lpStrTextCallBack</emphasis> is returned as the text for this subitem.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">text set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Assign a string to this attribute to set the text for the subitem. The string must be less than or equal to 260
+    characters in length. In addition the special string, <emphasis role="italic">lpStrTextCallBack</emphasis>, can be used
+    to set the text value for the subitem to the value that indicates the list-view should generate a GETDISPINFO
+    notification. Case is not significant when using <emphasis role="italic">lpStrTextCallBack</emphasis>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Currently, there is no support for the GETDISPINFO event notification in <xref linkend="mthConnectListViewEvent"/>
+    method. It is anticipated that support for this event will be added in the future. Until then, using the <emphasis
+    role="italic">lpStrTextCallBack</emphasis> value will simply result in the subitem appearing with no text.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -11447,10 +11744,25 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the current text for a subitem, appends a string to the text, and sets the text for the subitem to the
+    new value:
 <programlisting>
 <![CDATA[
 
+::method addQualifier private
+    expose list
+    use strict arg itemIndex, subitemIdnex, additionalText
+
+    lvSubItem = .LvSubItem~new(itemIndex, subitemIndex, , , 'TEXT')
+    if list~getSubItem(lvSubItem) then do
+        lvSubItem~text = lvSubItem~text additionalText
+
+        list~modifySubItem(lvSubItem)
+        return .true
+    end
+    else do
+        return .false
+    end
 
 ]]>
 </programlisting>

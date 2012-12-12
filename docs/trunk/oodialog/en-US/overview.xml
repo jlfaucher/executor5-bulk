@@ -1363,9 +1363,16 @@ xPixels = xDialogUnits * self~FactorX
 <section id="sctHistory"><title>History</title>
 <para>
   ooDialog is a Windows only extension to Open Object Rexx and appeared in the first version of IBM's Object Rexx for
-  Windows. Object REXX for Windows NT &amp; 95 Interpreter Edition V1.0 was announced very early in 1997. It included
-  ooDialog and could run on Windows 95 and Windows NT 3.5. However, comments within the code and sections of code itself
-  in ooDialog, indicate that at one point ooDialog could run on Windows 3.0 and 3.1.
+  Windows. This section attempts to give a rough over-view of the history of ooDialog and continues with notes pertaining to
+  the sequential releases of ooDialog past ooDialog 4.1.2
+</para>
+
+
+<section id="sctPreHistory"><title>Prehistory Timeline</title>
+<para>
+  Object REXX for Windows NT &amp; 95 Interpreter Edition V1.0 was announced very early in 1997. It included ooDialog and
+  could run on Windows 95 and Windows NT 3.5. However, comments within the code and sections of code itself in ooDialog,
+  indicate that at one point ooDialog could run on Windows 3.0 and 3.1.
 </para>
 <para>
   IBM announced and released several successive versions of Object Rexx for Windows over the following years. For
@@ -1516,13 +1523,13 @@ xPixels = xDialogUnits * self~FactorX
   installation, provided the ooRexx installation meets the minimum required for the ooDialog version.
 </para>
 
-</section>
+</section> <!-- End Section Prehistory Timeline -->
 
-<section id="sctCurrentRelease"><title>Current Release</title>
+<section id="sct420Release"><title>ooDialog Release 4.2.0</title>
 <para>
-  The current release of ooDialog is the 4.2.0 level ooDialog. It is the first major enhancement of ooDialog in over a
-  decade. This ooDialog has a lot of new and different things in it. In addition to the new dialog classes, new dialog
-  control classes, new methods on existing classes, it includes design changes intended to simplify areas of ooDialog
+  ooDialog 4.2.0 was relased in late August of 2012. It was the first major enhancement of ooDialog in over a decade. This
+  ooDialog has a lot of new and different things in it. In addition to the new dialog classes, new dialog control classes,
+  new methods on existing classes, it includes design changes intended to simplify areas of ooDialog
   that seem to have been confusing in the past. Enhancements have been made that fix areas of ooDialog that have always
   been broken. All ooDialog users should take a close look at these changes.
 </para>
@@ -2003,15 +2010,283 @@ xPixels = xDialogUnits * self~FactorX
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+
+</section> <!-- End Section ooDialog Release 4.2.0 -->
+
+</section> <!-- End Section History -->
+
+
+<section id="sctCurrentRelease"><title>Current Release</title>
+<para>
+  The current release of ooDialog is 4.2.1. It is a 4.2.0 level ooDialog, which means it can be installed to any ooRexx
+  installation that is at least version 4.1.0. The following is a brief summary of the changes in ooDialog 4.2.1 from 4.2.0.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Bug Fixes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    The following bugs were fixed in this release. The bug fix numbers can be used to look up details concerning the bug on
+    SourceForge
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #1116 Debug print outs left in ooDialog 4.2.0
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1117 Method handler passed wrong argument for TreeView EXPANDING event
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1121 ooDialog appcrash running forward class(super) continue
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1124 ooDialog - failed to locate .h file message incorrect
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1126 ooDialog - args sent to the HELP event handler incorrect
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1128 ooDialog UtilityClasses.cls: typo
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1138 MessageDialog: Failure in system service
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1141 ooDialog - connecting system menu command events can fail
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1145 TimedMessage dialog remains on screen after ok() method is invoked
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1146 Return code from ListView::deleteColumn() not as documented
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1147 SingleSelection class
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1149 Potential crash in ooDialog connectKeyPress() method
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Feature Requests Added to ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    The following Request for Feature Ehancements were implemented in the release. Details concerning the enhancements can be
+    looked up on SourceForge using the listed tracker item numbers.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #42 OODialog List Control Class (report) format individual lines
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #130 OODialog List Control Class Activate sort headers
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #419 Add Tooltip control
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #420 Would like to have an AddButtonStem method.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #483 ooDialog setColor and dialog background improvements
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #484 ooDialog setColor methods should not be restricted to the 19 palette indexes
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #485 Treeview itemData
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #486 ooDialog - the TreeView Expanding event should allow a veto
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #487 ooDialog - It would be nice if the TreeView class had a way to do custom sorting
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #488 ooDialog - TreeView class needs a itemText method
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #489 ooDialog - TreeView class should support info tips
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #490 ooDialog - ListView class should support info tips
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #493 ooDialog - TreeView begin / end label editing could be improved
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #494 ooDialog - ListView begin / end label editing could be improved
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #495 ooDialog TreeView control has missing styles
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #496 ooDialog TreeView methods to determine area occupied by an item
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #499 ooDialog connectTreeViewEvent CHANGING veto
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #501 The ListView class should have an easy way to switch views
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Functionality in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    An implementation that allows acces to the Custom Draw facility in Microsoft's Common Control library has been added.
+  </para>
+  <para>
+    Custom Draw allows, for example, the programmer to specify the text and ackground colors for individual rows in a
+    ListView, even for individual columns in the row. The programmer can specify the font of the text for individual
+    list-view items. Etc., etc..
+  </para>
+  <para>
+    The CustomDraw class has been added to ooDialog and is the means to access the Custom Draw facilities.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New ListView support classes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New dialog classes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New utility classes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Methods in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Attributes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Methods in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New samples in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced samples in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation changes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    The ListView Control chapter in the ooDialog Reference Manual has been partially reviewed and corrected for accuracy.
+    Parts of the chapter have been updated to match the format and style that was introduced in the rework of the manual
+    done for ooDialog 4.2.0
+  </para>
+  <para>
+    The TreeView Control chapter in the ooDialog Reference Manual has been partially reviewed and corrected for accuracy.
+    Parts of the chapter have been updated to match the format and style that was introduced in the rework of the manual done
+    for ooDialog 4.2.0
+  </para>
+  <para>
+    The documentation for the connectListViewEvent and connectTreeViewEvent methods have been enhanced.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">TERM:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End Section Current Release -->
+
 
 <section id="sctOODialogFuture"><title>Future</title>
 <indexterm><primary>future directions</primary></indexterm>
 <para>
   The current future direction of ooDialog is to update ooDialog to take full advantage of the Windows 7 functionality
-  for graphical interfaces, related to dialogs. This includes adding more of the missing dialog controls, such as tool
-  tips, status bars, ip address controls, etc.. It also includes updating existing dialog controls to the full
-  functionality available to them in Windows 7.
+  for graphical interfaces, related to dialogs. This includes adding more of the missing dialog controls, such as tool bars,
+  status bars, ip address controls, etc.. It also includes updating existing dialog controls to the full functionality
+  available to them in Windows 7.
 </para>
 <para>
   There are a number of new classes introduced in ooDialog 4.0.0 through 4.2.0 that are intended to be enhanced in
@@ -2031,7 +2306,7 @@ xPixels = xDialogUnits * self~FactorX
   <ulink url="http://sourceforge.net/tracker/?group_id=119701&amp;atid=684733"><citetitle>ooRexx Feature
   Requests</citetitle></ulink> page.
 </para>
-</section>
+</section> <!-- End Section Current Release -->
 
 
 <section id="reference"><title>ooDialog Class Reference</title>
