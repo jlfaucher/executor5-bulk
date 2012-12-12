@@ -63,16 +63,16 @@
 ::constant LVM_EDITLABELW         "0x1076"
 ::constant LVM_GETTOPINDEX        "0x1027"
 
-::constant I_IMAGECALLBACK        -1
-::constant I_IMAGENONE            -2
-::constant I_GROUPIDCALLBACK      -1
-::constant I_GROUPIDNONE          -2
+::constant IMAGECALLBACK          -1
+::constant IMAGENONE              -2
+::constant GROUPIDCALLBACK        -1
+::constant GROUPIDNONE            -2
 
 ::constant LVCFMT_LINE_BREAK          1048576   -- 0x100000
 ::constant LVCFMT_FILL                2097152   -- 0x200000
 ::constant LVCFMT_WRAP                4194304   -- 0x400000
 ::constant LVCFMT_NO_TITLE            8388608   -- 0x800000
-::constant LVCFMT_TILE_PLACEMENTMASK  3145728   -- (LVCFMT_LINE_BREAK | LVCFMT_FILL
+::constant LVCFMT_TILE_PLACEMENTMASK  3145728   -- (LVCFMT_LINE_BREAK | LVCFMT_FILL)
 
 ::method add unguarded external "LIBRARY oodialog lv_add"
 ::method addExtendedStyle unguarded external "LIBRARY oodialog lv_addClearExtendStyle"
@@ -133,6 +133,7 @@
 ::method findNearestXY unguarded external "LIBRARY oodialog lv_findNearestXY"
 ::method findPartial unguarded external "LIBRARY oodialog lv_find"
 ::method firstVisible unguarded
+   use strict arg
    return self~sendWinIntMsg(self~LVM_GETTOPINDEX , 0, 0)
 
 ::method fixFullRowColumns unguarded external "LIBRARY oodialog lv_fixFullRowColumns"
@@ -322,11 +323,6 @@
 
 
 ::class 'LvItem' public
-
-::constant GROUPIDCALLBACK  -1
-::constant GROUPIDNONE      -2
-::constant IMAGECALLBACK    -1
-::constant IMAGENONE        -2
 
 ::method init external "LIBRARY oodialog lvi_init"
 ::method unInit external "LIBRARY oodialog lvi_unInit"

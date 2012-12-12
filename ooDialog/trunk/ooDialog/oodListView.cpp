@@ -1910,7 +1910,7 @@ RexxMethod1(RexxObjectPtr, lv_deleteAll, CSELF, pCSelf)
 
 /** ListView::deleteColumn()
  *
- *  Delectes the specified column.
+ *  Deletes the specified column.
  *
  *  @param index  [required]  The zero-based index of the column to delete
  *
@@ -2092,7 +2092,7 @@ err_out:
  *
  *
  */
-RexxMethod3(RexxObjectPtr, lv_fixFullRowColumns, uint32_t, colIndex, logical_t, removed, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, lv_fixFullRowColumns, uint32_t, colIndex, OPTIONAL_logical_t, inserted, CSELF, pCSelf)
 {
     RexxObjectPtr result = TheFalseObj;
 
@@ -2102,7 +2102,7 @@ RexxMethod3(RexxObjectPtr, lv_fixFullRowColumns, uint32_t, colIndex, logical_t, 
         goto done_out;
     }
 
-    bool     isRemove = removed ? true : false;
+    bool     isRemove = inserted ? false : true;
     uint32_t cColumns = (uint32_t)getColumnCount(pcdc->hCtrl);
     if ( cColumns == (uint32_t)-1 )
     {
@@ -2432,6 +2432,7 @@ RexxMethod3(RexxObjectPtr, lv_getFullRow, uint32_t, itemIndex, OPTIONAL_logical_
     if ( useForSorting )
     {
         pclvfr->subItems[0]->lParam = (LPARAM)pclvfr;
+        pclvfr->subItems[0]->mask  |= LVIF_PARAM;
     }
 
     // Create LvSubItem objects for each column and add them to the struct.
