@@ -694,23 +694,23 @@
 </row>
 <row>
 <entry>LVCFMT_FILL</entry>
-<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. Fill the remainder of the tile area. Might have a title. Only valid in extended tile view. The LVCFMT_FILL flag forces the column to fill the remainder of the tile area.</entry>
+<entry>A column format flag, fill the remainder of the tile area. Might have a title. Only valid in extended tile view. The LVCFMT_FILL flag forces the column to fill the remainder of the tile area. <emphasis role="bold">Requires Windows Vista or later</emphasis>.</entry>
 </row>
 <row>
 <entry>LVCFMT_LINE_BREAK</entry>
-<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. Move to the top of the next list of columns. Only valid in extend tile view, The LVCFMT_LINE_BREAK flag forces the column to wrap to the top of the next list of columns.</entry>
+<entry>A column format flag, move to the top of the next list of columns. Only valid in extend tile view, The LVCFMT_LINE_BREAK flag forces the column to wrap to the top of the next list of columns. <emphasis role="bold">Requires Windows Vista or later</emphasis>.</entry>
 </row>
 <row>
 <entry>LVCFMT_NO_TITLE</entry>
-<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. This subitem does not have a title. Only valid in extended tile view. The LVCFMT_NO_TITLE flag indicates that the column should not display a title.</entry>
+<entry>A column format flag, this subitem does not have a title. Only valid in extended tile view. The LVCFMT_NO_TITLE flag indicates that the column should not display a title. <emphasis role="bold">Requires Windows Vista or later</emphasis>.</entry>
 </row>
 <row>
 <entry>LVCFMT_TILE_PLACEMENTMASK</entry>
-<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. This is a combination of the LVCFMT_LINE_BREAK and LVCFMT_FILL constants.</entry>
+<entry>A column format flag, this is a combination of the LVCFMT_LINE_BREAK and LVCFMT_FILL constants. Only valid in extended tile view. <emphasis role="bold">Requires Windows Vista or later</emphasis>.</entry>
 </row>
 <row>
 <entry>LVCFMT_WRAP</entry>
-<entry><emphasis role="bold">Requires Windows Vista or later</emphasis>. This subitem can be wrapped. Only valid in extended tile view. The LVCFMT_WRAP flag allows the column to wrap within the remaining space in its list of columns.</entry>
+<entry>A column format flag, this subitem can be wrapped. Only valid in extended tile view. The LVCFMT_WRAP flag allows the column to wrap within the remaining space in its list of columns. <emphasis role="bold">Requires Windows Vista or later</emphasis>.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -1184,7 +1184,7 @@
   <listitem>
   <para>
     This example shows part of an initDialog() method.  The private method createRows() returns an array of
-    <computeroutput>LvFullRow</computeroutput> objects, which are then used to populoate the list-view:
+    <computeroutput>LvFullRow</computeroutput> objects, which are then used to populate the list-view:
 <programlisting>
 <![CDATA[
 
@@ -8247,7 +8247,7 @@ that allows the user to remove the check mark from all the check boxes:
 <![CDATA[
 >>--clrTextBk------------------------------------><
 
->>--clrTextBk-=-varName--------------------------><
+>>--clrTextBk = varName--------------------------><
 
 ]]>
 </programlisting>
@@ -8308,7 +8308,7 @@ that allows the user to remove the check mark from all the check boxes:
 <![CDATA[
 >>--drawStage------------------------------------><
 
->>--drawStage-=-varName--------------------------><
+>>--drawStage = varName--------------------------><
 
 ]]>
 </programlisting>
@@ -8394,7 +8394,7 @@ that allows the user to remove the check mark from all the check boxes:
 <![CDATA[
 >>--font-----------------------------------------><
 
->>--font-=-varName-------------------------------><
+>>--font = varName-------------------------------><
 
 ]]>
 </programlisting>
@@ -8474,7 +8474,7 @@ that allows the user to remove the check mark from all the check boxes:
 <![CDATA[
 >>--id-------------------------------------------><
 
->>--id-=-varName---------------------------------><
+>>--id = varName---------------------------------><
 
 ]]>
 </programlisting>
@@ -8540,7 +8540,7 @@ that allows the user to remove the check mark from all the check boxes:
 <![CDATA[
 >>--item-----------------------------------------><
 
->>--item-=-varName-------------------------------><
+>>--item = varName-------------------------------><
 
 ]]>
 </programlisting>
@@ -8611,7 +8611,7 @@ that allows the user to remove the check mark from all the check boxes:
 <![CDATA[
 >>--itemData-------------------------------------><
 
->>--itemData-=-varName---------------------------><
+>>--itemData = varName---------------------------><
 
 ]]>
 </programlisting>
@@ -8687,7 +8687,7 @@ that allows the user to remove the check mark from all the check boxes:
 <![CDATA[
 >>--reply----------------------------------------><
 
->>--reply-=-varName------------------------------><
+>>--reply = varName------------------------------><
 
 ]]>
 </programlisting>
@@ -8759,7 +8759,7 @@ that allows the user to remove the check mark from all the check boxes:
 <![CDATA[
 >>--subItem--------------------------------------><
 
->>--subItem-=-varName----------------------------><
+>>--subItem = varName----------------------------><
 
 ]]>
 </programlisting>
@@ -8908,15 +8908,15 @@ that allows the user to remove the check mark from all the check boxes:
 </row>
 <row>
 <entry><xref linkend="atrItemStateClsLvi"/></entry>
-<entry></entry>
+<entry>Reflects this item's state.</entry>
 </row>
 <row>
 <entry><xref linkend="atrItemStateMaskClsLvi"/></entry>
-<entry></entry>
+<entry>The <emphasis role="italic">itemStateMask</emphasis> attribute specifies which states in the <emphasis role="italic">itemState</emphasis> attribute are valid.</entry>
 </row>
 <row>
 <entry><xref linkend="atrMaskClsLvi"/></entry>
-<entry></entry>
+<entry>The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the <computeroutput>LvItem</computeroutput> object are valid to set or recieve information of the list-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="atrOverlayImageIndexClsLvi"/></entry>
@@ -9064,7 +9064,7 @@ that allows the user to remove the check mark from all the check boxes:
         <varlistentry><term>ALL</term>
         <listitem>
         <para>
-          A convenience keyword, the same as specifying a a string with every keyword in it.
+          A convenience keyword, the same as specifying a string with every keyword in it.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>COLFMT</term>
@@ -9138,7 +9138,7 @@ that allows the user to remove the check mark from all the check boxes:
     <listitem>
     <para>
       A list of blank separate keywords that specify the state for the list-view item. An item's state determines its
-      appearance and functionality. The list can contain one or more of the following keywords:
+      appearance and functionality. The list can contain zero or more of the following keywords:
     </para>
     <para>
       <simplelist type='vert' columns='3'>
@@ -9426,7 +9426,7 @@ Item text:              Line 22
 <![CDATA[
 >>--columnFormats--------------------------------><
 
->>--columnFormats-=-varName----------------------><
+>>--columnFormats = varName----------------------><
 
 ]]>
 </programlisting>
@@ -9497,7 +9497,7 @@ Item text:              Line 22
 <![CDATA[
 >>--columns--------------------------------------><
 
->>--columns-=-varName-----------------------------><
+>>--columns = varName-----------------------------><
 
 ]]>
 </programlisting>
@@ -9565,7 +9565,7 @@ Item text:              Line 22
 <![CDATA[
 >>--groupID--------------------------------------><
 
->>--groupID-=-varName----------------------------><
+>>--groupID = varName----------------------------><
 
 ]]>
 </programlisting>
@@ -9619,7 +9619,7 @@ Item text:              Line 22
 <![CDATA[
 >>--imageIndex-----------------------------------><
 
->>--imageIndex-=-varName-------------------------><
+>>--imageIndex = varName-------------------------><
 
 ]]>
 </programlisting>
@@ -9682,7 +9682,7 @@ Item text:              Line 22
 <![CDATA[
 >>--indent---------------------------------------><
 
->>--indent-=-varName-----------------------------><
+>>--indent = varName-----------------------------><
 
 ]]>
 </programlisting>
@@ -9761,9 +9761,9 @@ Item text:              Line 22
 <indexterm><primary>LvItem class</primary><secondary>itemData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--itemData-----------------------------------------------------><
+>>--itemData-------------------------------------><
 
->>--itemData-=-varName-------------------------------------------><
+>>--itemData = varName---------------------------><
 
 ]]>
 </programlisting>
@@ -9807,7 +9807,7 @@ Item text:              Line 22
 
 /* Output might be:
 
-  The item data for item 6 is: a LvFullRow
+  The item data for item 16 is: a LvFullRow
 
 */
 ]]>
@@ -9822,33 +9822,81 @@ Item text:              Line 22
 <indexterm><primary>LvItem class</primary><secondary>itemState</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--itemState-----------------------------------------------------><
+>>--itemState------------------------------------><
 
->>--itemState-=-varName-------------------------------------------><
+>>--itemState = varName--------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects this item's state.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">itemState get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns a blank separated list of keywords that indicate the item's state. The possible keywords are listed in the
+    remarks.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">itemState set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To set this item's state, assign a string containing a list of state keywords. The possible keywords are listed in the
+    remarks.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The state string contains a list of blank separated keywords. When assigning the string to this attribute case is
+    insignificant. When getting the value of this attribute, the returned keywords will be all upper-cased. The possible
+    keywores are:
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>CUT        </member>
+      <member>DROPHILITED</member>
+      <member>FOCUSED    </member>
+      <member>SELECTED   </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>CUT</term>
+      <listitem>
+      <para>
+        The list-view item is marked for a cut-and-paste operation
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DROPHILITED</term>
+      <listitem>
+      <para>
+        The list-view item is highlighted as a drag-and-drop target.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>FOCUSED</term>
+      <listitem>
+      <para>
+        The list-view item has the focus, so it is surrounded by a standard focus rectangle. Although more than one item
+        may be selected, only one item can have the focus.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SELECTED</term>
+      <listitem>
+      <para>
+        The list-view item is selected. The appearance of a selected item depends on whether it has the focus and also on
+        the system colors used for selection.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  <para>
+    Note that the <xref linkend="atrItemStateMaskClsLvi"/> attribute needs to be used in conjunction with this attribute. The
+    <emphasis role="italic">itemStateMask</emphasis> specifies which states in the <emphasis
+    role="italic">itemState</emphasis> are valid. If a state, say SELECTED, is specified in the <emphasis
+    role="italic">itemStateMask</emphasis>, but not in the <emphasis role="italic">itemState</emphasis>, that state is turned
+    off. If a state is specified in both the <emphasis role="italic">itemState</emphasis> and <emphasis
+    role="italic">itemStateMask</emphasis> attriubtes, that state is turned on.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9860,10 +9908,14 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the state of the item at index 1 to selected and focused:
 <programlisting>
 <![CDATA[
 
+  lvItem = .LvItem~new(1)
+  lvItem~itemState = "SELECTED FOCUSED"
+  lvItem~itemStateMask = "SELECTED FOCUSED"
+  list~modifyItem(lvItem)
 
 ]]>
 </programlisting>
@@ -9877,33 +9929,87 @@ Item text:              Line 22
 <indexterm><primary>LvItem class</primary><secondary>itemStateMask</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--itemStateMask-----------------------------------------------------><
+>>--itemStateMask--------------------------------><
 
->>--itemStateMask-=-varName-------------------------------------------><
+>>--itemStateMask = varName----------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">itemStateMask</emphasis> attribute specifies which states in the <xref
+  linkend="atrItemStateClsLvi"/> attribute are valid.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">itemStateMask get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns a blank separated list of state keywords that indicate which states in the <emphasis
+    role="italic">itemState</emphasis> attribute are valid. The possible keywords are listed in the remarks
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">itemStateMask set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To specify the valid state keywords in the <emphasis role="italic">itemState</emphasis> attribute, assign a list of blank
+    separated keywords to this attribute. The possible keywords are listed in the remarks.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The state mask string contains a list of blank separated keywords. When assigning the string to this attribute case is
+    insignificant. When getting the value of this attribute, the returned keywords will be all upper-cased. The possible
+    keywords are:
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>ALL        </member>
+      <member>CUT        </member>
+      <member>DROPHILITED</member>
+      <member>FOCUSED    </member>
+      <member>SELECTED   </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>ALL</term>
+      <listitem>
+      <para>
+        All keywords in the <emphasis role="italic">itemState</emphasis> attribute are valid.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CUT</term>
+      <listitem>
+      <para>
+        The CUT keyword, or lack of, is valid in the <emphasis role="italic">itemState</emphasis> attribute.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DROPHILITED</term>
+      <listitem>
+      <para>
+        The DROPHILITED keyword, or lack of, is valid in the <emphasis role="italic">itemState</emphasis> attribute.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>FOCUSED</term>
+      <listitem>
+      <para>
+        The FOCUSED keyword, or lack of, is valid in the <emphasis role="italic">itemState</emphasis> attribute.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SELECTED</term>
+      <listitem>
+      <para>
+        The SELECTED keyword, or lack of, is valid in the <emphasis role="italic">itemState</emphasis> attribute.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  <para>
+    Note that the <xref linkend="atrItemStateClsLvi"/> attribute is used in conjunction with this attribute. The
+    <emphasis role="italic">itemStateMask</emphasis> specifies which states in the <emphasis
+    role="italic">itemState</emphasis> are valid. If a state, say SELECTED, is specified in the <emphasis
+    role="italic">itemStateMask</emphasis>, but not in the <emphasis role="italic">itemState</emphasis>, that state is turned
+    off. If a state is specified in both the <emphasis role="italic">itemState</emphasis> and <emphasis
+    role="italic">itemStateMask</emphasis> attriubtes, that state is turned on.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9915,10 +10021,14 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the <emphasis role="italic">itemStateMask</emphasis> to turn off the FOCUSED state of the item without
+    changing any of the other states of the item:
 <programlisting>
 <![CDATA[
 
+  lvItem = .LvItem~new(10)
+  lvItem~itemStateMask = "FOCUSED"
+  list~modifyItem(lvItem)
 
 ]]>
 </programlisting>
@@ -9932,33 +10042,134 @@ Item text:              Line 22
 <indexterm><primary>LvItem class</primary><secondary>mask</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--mask-----------------------------------------------------><
+>>--mask-----------------------------------------><
 
->>--mask-=-varName-------------------------------------------><
+>>--mask = varName-------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">mask</emphasis> attribute is used to specify which values of the
+  <computeroutput>LvItem</computeroutput> object are valid to set or recieve information of the list-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">mask get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns a blank separated list of keywords specifying which attributes of this item are valid. The possible keywords are
+    listed in the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">mask set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To specify which attriubtes in this item are to be used to set or recieve information, assign a list of blank separated
+    keywords to this attribute. The possible keywords are listed in the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">mask</emphasis> contains a list of blank separate keywords that specify which attributes of
+    this <computeroutput>LvItem</computeroutput> object contain data to be set or which attriubtes are being requested. In
+    general, when setting data, the ooDialog framework will try to set the <xref linkend="atrMaskClsLvi"/> attribute
+    correctly without the programmer having to worry about this argument. As each attribute of the
+    <computeroutput>LvItem</computeroutput> object is set, the appropriate keyword is added to the <emphasis
+    role="italic">mask</emphasis> attribute.
+  </para>
+  <para>
+    However, if this object is going to be used to retrieve information about the underlying list-view item, the ooDialog
+    framwork has no way to know what attributes the programmer wishes to retrieve. For this use of the
+    <computeroutput>LvItem</computeroutput> object, the programmer should set the mask to the value that will retrieve the
+    information he wants.
+  </para>
+  <para>
+    The <emphasis role="italic">mask</emphasis> attribute can have zero or more of the following keywords. When assigning the
+    string to this attribute case is insignificant. When getting the value of this attribute, the returned keywords will be
+    all upper-cased:
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>ALL        </member>
+      <member>COLFMT     </member>
+      <member>COLUMNS    </member>
+      <member>GROUPID    </member>
+      <member>IMAGE      </member>
+      <member>INDENT     </member>
+      <member>NORECOMPUTE</member>
+      <member>PARAM      </member>
+      <member>STATE      </member>
+      <member>TEXT       </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>ALL</term>
+      <listitem>
+      <para>
+        A convenience keyword, the same as specifying a string with every keyword in it.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>COLFMT</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Requires Windows Vista or later</emphasis>. The <xref linkend="atrColumnFormatsClsLvi"/>
+        attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>COLUMNS</term>
+      <listitem>
+      <para>
+        Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. The <xref linkend="atrColumnsClsLvi"/>
+        attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GROUPID</term>
+      <listitem>
+      <para>
+        Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. The <xref linkend="atrGroupIDClsLvi"/>
+        attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>IMAGE</term>
+      <listitem>
+      <para>
+        The <xref linkend="atrImageIndexClsLvi"/> attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>INDENT</term>
+      <listitem>
+      <para>
+        The <xref linkend="atrIndentClsLvi"/> attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NORECOMPUTE</term>
+      <listitem>
+      <para>
+        Used when the <computeroutput>LvItem</computeroutput> object will be used to retrieve information through the <xref
+        linkend="mthGetItem"/> method. Signals the list-view control not to generate a GETDISPINFO notification to retrieve
+        the text. Rather, the <xref linkend="atrTextClsLvi"/> attribute will contain <emphasis
+        role="italic">lpStrTextCallBack</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PARAM</term>
+      <listitem>
+      <para>
+        The <xref linkend="atrItemDataClsLvi"/> attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>STATE</term>
+      <listitem>
+      <para>
+        The <xref linkend="atrItemStateClsLvi"/> attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TEXT</term>
+      <listitem>
+      <para>
+        The <xref linkend="atrTextClsLvi"/> attribute is valid or should be set.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9970,10 +10181,25 @@ Item text:              Line 22
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the text label, the icon index, the item data, and the indext for the item at index 11, without
+    changing any other information of the item. In this example, the mask attribute is set explicitly to make a point. But
+    it is not actually needed:
 <programlisting>
 <![CDATA[
 
+  lvItem = .LvItem~new(11, 'Acme Clocks', 2, contactInfo, "TEXT IMAGE PARAM INDENT", , , 2)
+
+  list~modifyItem(lvItem)
+
+]]>
+</programlisting>
+    This code snippet will work exactly the same as the example above:
+<programlisting>
+<![CDATA[
+
+  lvItem = .LvItem~new(11, 'Acme Clocks', 2, contactInfo, , , , 2)
+
+  list~modifyItem(lvItem)
 
 ]]>
 </programlisting>
@@ -9987,9 +10213,9 @@ Item text:              Line 22
 <indexterm><primary>LvItem class</primary><secondary>overlayImageIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--overlayImageIndex-----------------------------------------------------><
+>>--overlayImageIndex----------------------------><
 
->>--overlayImageIndex-=-varName-------------------------------------------><
+>>--overlayImageIndex = varName------------------><
 
 ]]>
 </programlisting>
@@ -10042,9 +10268,9 @@ Item text:              Line 22
 <indexterm><primary>LvItem class</primary><secondary>stateImageIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--stateImageIndex-----------------------------------------------------><
+>>--stateImageIndex------------------------------><
 
->>--stateImageIndex-=-varName-------------------------------------------><
+>>--stateImageIndex = varName--------------------><
 
 ]]>
 </programlisting>
@@ -10097,9 +10323,9 @@ Item text:              Line 22
 <indexterm><primary>LvItem class</primary><secondary>text</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--text-----------------------------------------------------><
+>>--text-----------------------------------------><
 
->>--text-=-varName-------------------------------------------><
+>>--text = varName-------------------------------><
 
 ]]>
 </programlisting>
@@ -10963,9 +11189,9 @@ Item text:              Line 22
 <indexterm><primary>LvSubItem class</primary><secondary>imageIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--imageIndex-----------------------------------------------------><
+>>--imageIndex-----------------------------------><
 
->>--imageIndex-=-varName-------------------------------------------><
+>>--imageIndex = varName-------------------------><
 
 ]]>
 </programlisting>
@@ -11018,9 +11244,9 @@ Item text:              Line 22
 <indexterm><primary>LvSubItem class</primary><secondary>item</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--item-----------------------------------------------------><
+>>--item-----------------------------------------><
 
->>--item-=-varName-------------------------------------------><
+>>--item = varName-------------------------------><
 
 ]]>
 </programlisting>
@@ -11073,9 +11299,9 @@ Item text:              Line 22
 <indexterm><primary>LvSubItem class</primary><secondary>mask</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--mask-----------------------------------------------------><
+>>--mask-----------------------------------------><
 
->>--mask-=-varName-------------------------------------------><
+>>--mask = varName-------------------------------><
 
 ]]>
 </programlisting>
@@ -11128,9 +11354,9 @@ Item text:              Line 22
 <indexterm><primary>LvSubItem class</primary><secondary>subItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--subItem-----------------------------------------------------><
+>>--subItem--------------------------------------><
 
->>--subItem-=-varName-------------------------------------------><
+>>--subItem = varName----------------------------><
 
 ]]>
 </programlisting>
@@ -11183,9 +11409,9 @@ Item text:              Line 22
 <indexterm><primary>LvSubItem class</primary><secondary>text</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--text-----------------------------------------------------><
+>>--text-----------------------------------------><
 
->>--text-=-varName-------------------------------------------><
+>>--text = varName-------------------------------><
 
 ]]>
 </programlisting>
