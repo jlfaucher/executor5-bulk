@@ -395,7 +395,7 @@
 <entry>Retrieves the client area coordinates of an item in this list-view control as a <computeroutput>Point</computeroutput> object.</entry>
 </row>
 <row>
-<entry><xref linkend="mthGetSubitemClsListView"/></entry>
+<entry><xref linkend="mthGetSubitem"/></entry>
 <entry>Receives some, or all, of the information of a subitem of a list-view item. The information is returned as a <link linkend="clsLvSubItem">LvSubItem</link> object.</entry>
 </row>
 <row>
@@ -3667,7 +3667,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 </variablelist>
 </section>  <!-- End ListView::getItemPos() -->
 
-<section id="mthGetSubitemClsListView" xreflabel="getSubitem"><title>getSubitem</title>
+<section id="mthGetSubitem" xreflabel="getSubitem"><title>getSubitem</title>
 <indexterm><primary>getSubitem</primary><secondary>ListView class</secondary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>getSubitem</secondary></indexterm>
 <programlisting>
@@ -10259,7 +10259,7 @@ Item text:              Line 22
     The overlay image index is actually part of the state value for an item in the underlying list-view control. The ooDialog
     framework hides some of the complexity of separating the overlay index from the state value by making the index a
     separate attribute in the <computeroutput>LvItem</computeroutput> object. If the programmer wants to retrieve the overlay
-    index only, it is necessary to set the STATE flag in the <xref linkend="atrMaskClsLiv"/> attribute.
+    index only, it is necessary to set the STATE flag in the <xref linkend="atrMaskClsLvi"/> attribute.
   </para>
   <para>
     Currently, ooDialog does not have support for overlay images in the <xref linkend="clsImageList"/> class. However, it is
@@ -10316,7 +10316,7 @@ Item text:              Line 22
     The state image index is actually part of the state value for an item in the underlying list-view control. The ooDialog
     framework hides some of the complexity of separating the state index from the state value by making the index a
     separate attribute in the <computeroutput>LvItem</computeroutput> object. If the programmer wants to retrieve the state
-    image index only, it is necessary to set the STATE flag in the <xref linkend="atrMaskClsLiv"/> attribute.
+    image index only, it is necessary to set the STATE flag in the <xref linkend="atrMaskClsLvi"/> attribute.
   </para>
   <para>
     Currently, ooDialog does not have support for setting the state image list in the <xref
@@ -11350,7 +11350,7 @@ Item text:              ca@sharp.org
         <listitem>
         <para>
           Used when the <computeroutput>LvSubItem</computeroutput> object will be used to retrieve information through the
-          <xref linkend="mthGetSubItem"/> method. Signals the list-view control should not generate a GETDISPINFO
+          <xref linkend="mthGetSubitem"/> method. Signals the list-view control should not generate a GETDISPINFO
           notification to retrieve the text. Rather, the <xref linkend="atrTextClsLvSi"/> attribute will contain <emphasis
           role="italic">lpStrTextCallBack</emphasis>.
         </para>
@@ -11605,8 +11605,8 @@ Item text:              ca@sharp.org
       <listitem>
       <para>
         Used when the <computeroutput>LvSubItem</computeroutput> object will be used to retrieve information through the
-        <xref linkend="mthGetSubItem"/> method. Signals the list-view control should not generate a GETDISPINFO
-        notification to retrieve the text. Rather, the <xref linkend="atrTextClsLvSi"/> attribute will contain <emphasis
+        <xref linkend="mthGetSubitem"/> method. Signals the list-view control should not generate a GETDISPINFO notification
+        to retrieve the text. Rather, the <xref linkend="atrTextClsLvSi"/> attribute will contain <emphasis
         role="italic">lpStrTextCallBack</emphasis>.
       </para>
       </listitem></varlistentry>
