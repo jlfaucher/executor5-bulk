@@ -229,7 +229,7 @@ Section  doInstall
     ; Add the files ...
     File "${ExamplesDir}\controls\TreeView\rc\*.rc"
     File "${ExamplesDir}\controls\TreeView\rc\*.h"
-    File "${ExamplesDir}\controls\ListView\rc\*.bmp"
+    File "${ExamplesDir}\controls\TreeView\rc\*.bmp"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\examples
