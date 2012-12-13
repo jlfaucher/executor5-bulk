@@ -591,6 +591,15 @@ static void updateFullRowIndexes(pCLvFullRow pclvfr)
  * @param pclvfr
  *
  * @assumes updateFullRowIndexes() has already been invoked.
+ *
+ * @remarks  I wonder if we should set the state mask value used for the
+ *           ListView_GetItem to the pLvi struct, and maybe |= the LVIF_STATE
+ *           flag to the pLvi mask field in the struct?
+ *
+ *           If the Rexx user examines the LvItem object after a call to
+ *           ListView::getFullRow(), he could see maybe SELECTED FOCUSED for the
+ *           state, but no corrsponding values in the mask and stateMask fields
+ *           that would indicate the state attribute is valid.
  */
 static void updateFullRowItemState(pCLvFullRow pclvfr)
 {
@@ -4993,27 +5002,41 @@ RexxMethod2(RexxObjectPtr, lvi_setMask, CSTRING, mask, CSELF, pLVI)
 
 /** LvItem::overlayImageIndex      [attribute]
  */
-RexxMethod1(int32_t, lvi_overlayImageIndex, CSELF, pLVI)
+RexxMethod1(uint32_t, lvi_overlayImageIndex, CSELF, pLVI)
 {
     return (LVIS_OVERLAYMASK & ((LPLVITEM)pLVI)->state) >> 8;
 }
-RexxMethod2(RexxObjectPtr, lvi_setOverlayImageIndex, int32_t, index, CSELF, pLVI)
+RexxMethod2(RexxObjectPtr, lvi_setOverlayImageIndex, uint16_t, index, CSELF, pLVI)
 {
-    ((LPLVITEM)pLVI)->state     |= INDEXTOOVERLAYMASK(index);
-    ((LPLVITEM)pLVI)->stateMask |= LVIS_OVERLAYMASK;
+    if ( index > 15 )
+    {
+        wrongRangeException(context, 1, 0, 15, index);
+    }
+    else
+    {
+        ((LPLVITEM)pLVI)->state     |= INDEXTOOVERLAYMASK(index);
+        ((LPLVITEM)pLVI)->stateMask |= LVIS_OVERLAYMASK;
+    }
     return NULLOBJECT;
 }
 
 /** LvItem::stateImageIndex        [attribute]
  */
-RexxMethod1(int32_t, lvi_stateImageIndex, CSELF, pLVI)
+RexxMethod1(uint16_t, lvi_stateImageIndex, CSELF, pLVI)
 {
     return (LVIS_STATEIMAGEMASK & ((LPLVITEM)pLVI)->state) >> 12;
 }
-RexxMethod2(RexxObjectPtr, lvi_setStateImageIndex, int32_t, index, CSELF, pLVI)
+RexxMethod2(RexxObjectPtr, lvi_setStateImageIndex, uint16_t, index, CSELF, pLVI)
 {
-    ((LPLVITEM)pLVI)->state     |= INDEXTOSTATEIMAGEMASK(index);
-    ((LPLVITEM)pLVI)->stateMask |= LVIS_STATEIMAGEMASK;
+    if ( index > 15 )
+    {
+        wrongRangeException(context, 1, 0, 15, index);
+    }
+    else
+    {
+        ((LPLVITEM)pLVI)->state     |= INDEXTOSTATEIMAGEMASK(index);
+        ((LPLVITEM)pLVI)->stateMask |= LVIS_STATEIMAGEMASK;
+    }
     return NULLOBJECT;
 }
 
@@ -5040,7 +5063,14 @@ uint32_t keyword2lvifSub(CSTRING flags)
 {
     uint32_t val = 0;
 
+    if ( StrCmpI(flags, "ALL") == 0 )
+    {
+        val = LVIF_IMAGE | LVIF_NORECOMPUTE | LVIF_TEXT;
+        return val;
+    }
+
     if ( StrStrI(flags, "IMAGE")       != NULL ) val |= LVIF_IMAGE;
+    if ( StrStrI(flags, "NORECOMPUTE") != NULL ) val |= LVIF_NORECOMPUTE;
     if ( StrStrI(flags, "TEXT")        != NULL ) val |= LVIF_TEXT;
 
     return val;
@@ -5629,7 +5659,7 @@ err_out:
  *
  *  @param  subitem  The subitem to add.
  *
- *  @return  Returns the index of the added item, or 0 on error.
+ *  @return  Returns the index of the added subitem, or 0 on error.
  */
 RexxMethod2(uint32_t, lvfr_addSubitem, RexxObjectPtr, subitem, CSELF, pCSelf)
 {
