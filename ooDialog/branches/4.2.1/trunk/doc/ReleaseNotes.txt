@@ -1,0 +1,380 @@
+                 Release Notes ooDialog 4.2.1 (preview)
+                 ======================================
+
+NOTE:
+------------------------------------------------------------------------
+The ooDialog 4.2.1 preview version is a SNAPSHOT of the current
+development in ooDialog.  It is not a beta release, or even an alpha
+release.  The build is placed here to allow to interested parties to try
+and / or use some of the new features coming up in ooDialog 4.2.1.
+Devlopment work is still on-going and new interfaces are not guarenteed.
+Method names and or method arguments of features currently in
+development may change before a final release.
+
+Please feel free to open bugs on SourceForge for bugs found in this
+preview and / or discuss changes or improvements to the new features on
+the ooRexx User's list.
+------------------------------------------------------------------------
+ENDNOTE:
+
+The ooDialog 4.2.1 release is focused on improvements to the ListView
+and TreeView classes in ooDialog.  In addition to bug fixes, this
+release contains a number of enhancements to both the list-view and
+tree-view implementations in ooDialog.
+
+ooDialog 4.2.1 can be installed to any ooRexx installation, 4.1.0 or
+later.
+
+Beginning with the release of ooDialog 4.2.0, the installation of
+ooDialog has been decoupled from the interpreter.  ooDialog 4.2.1
+installs over the top of any ooRexx installation.  It replaces the
+version of ooDialog in the ooRexx installation with ooDialog 4.2.1.
+
+This type of ooDialog installation is called an "independent" ooDialog
+installation to indicate the ooDialog installation is independent of an
+ooRexx installation and, to a degree, the version of ooRexx installed.
+
+ooDialog 4.2.1 requires a minimum ooRexx version of 4.1.0.
+
+
+Installation
+========================================================================
+
+Installation is simple, done through a typical Windows installer.  Pick
+the installation package that matches the bitness of the ooRexx
+installation.  I.e., a 32-bit package for a 32-bit ooRexx and a 64-bit
+package for a 64-bit ooRexx.
+
+The installer will detect the installed ooRexx, location and version.
+If the ooRexx version is less than 4.1.0, or if there is no installed
+ooRexx, the installer will abort with a message explaining the problem.
+Otherwise the installer will replace the current ooDialog with ooDialog
+4.2.1.
+
+Note that the actions of the installer are dependent on the version of
+ooRexx, not the version of the installed ooDialog.  For instance, if the
+installed ooDialog is version 4.3.0, but for some reason the user is not
+happy with that version, running the ooDialog 4.2.1 installer will
+replace the 4.3.0 version with the 4.2.1 version.
+
+At the time of the installation, *all* ooDialog programs must be halted
+and the ooDialog PDFs must be closed if they happen to be opened.
+
+
+Changes in ooDialog 4.2.1 since the release of ooDialog 4.2.0
+========================================================================
+
+Bug Fixes in ooDialog:
+----------------------
+
+* #1116 Debug print outs left in ooDialog 4.2.0
+
+* #1117 Method handler passed wrong argument for TreeView EXPANDING
+        event
+
+* #1121 ooDialog appcrash running forward class(super) continue
+
+* #1124 ooDialog - failed to locate .h file message incorrect
+
+* #1126 ooDialog - args sent to the HELP event handler incorrect
+
+* #1128 ooDialog UtilityClasses.cls: typo
+
+* #1138 MessageDialog: Failure in system service
+
+* #1141 ooDialog - connecting system menu command events can fail
+
+* #1145 TimedMessage dialog remains on screen after ok() method is
+        invoked
+
+* #1146 Return code from ListView::deleteColumn() not as documented
+
+* #1147 SingleSelection class
+
+* #1149 Potential crash in ooDialog connectKeyPress() method
+
+
+Feature Requests in ooDialog:
+-----------------------------
+
+* #42 OODialog List Control Class (report) format individual lines
+
+* #130 OODialog List Control Class Activate sort headers
+
+* #419 Add Tooltip control
+
+* #420 Would like to have an AddButtonStem method.
+
+* #478 ooDialog - List-view could use a way to work with a complete row
+
+* #483 ooDialog setColor and dialog background improvements
+
+* #484 ooDialog setColor methods should not be restricted to the 19
+       palette indexes
+
+* #485 Treeview itemData
+
+* #486 ooDialog - the TreeView Expanding event should allow a veto
+
+* #487 ooDialog - It would be nice if the TreeView class had a way
+       to do custom sorting
+
+* #488 ooDialog - TreeView class needs a itemText method
+
+* #489 ooDialog - TreeView class should support info tips
+
+* #490 ooDialog - ListView class should support info tips
+
+* #493 ooDialog - TreeView begin / end label editing could be improved
+
+* #494 ooDialog - ListView begin / end label editing could be improved
+
+* #495 ooDialog TreeView control has missing styles
+
+* #496 ooDialog TreeView methods to determine area occupied by an item
+
+* #499 ooDialog connectTreeViewEvent CHANGING veto
+
+* #501 The ListView class should have an easy way to switch views
+
+
+New Functionality in ooDialog:
+------------------------------
+
+An implementation that allows acces to the Custom Draw facility in
+Microsoft's Common Control library has been added.
+
+Custom Draw allows, for example, the programmer to specify the text and
+background colors for individual rows in a ListView, even for individual
+columns in the row.  The programmer can specify the font of the text for
+individual list-view items.  Etc., etc..
+
+The CustomDraw class has been added to ooDialog and is the means to
+access the Custom Draw facilities.
+
+
+New ListView support classes:
+-----------------------------
+
+LvItem class:
+
+Represents a single list-view item.  The attributes of the LvItem are
+the attributes of the underlying Windows list-view item.
+
+LvSubItem class:
+
+Represents a single list-view subitem.  The attributes of the LvSubItem
+are the attributes of the underlying Windows list-view subitem.
+
+LvFullRow class:
+
+List-view items can contain subitems.  This is most apparent in the row
+view of a list-vies where the subitems are displayed in columns next to
+the item.  However, the subitems, once added to an item, are always
+present, even if the list-view is in another view, such as icon view.
+
+The LvFullRow class represents the list-view item and all its subitems.
+LvFullRow objects can be used to insert an item and all data associated
+with the item into a list-view at one time.
+
+LvCustomDrawSimple class:
+
+The LvCustomDrawSimple class is used in conjuction with the custom draw
+facility for ListView controls.
+
+
+New dialog classes:
+-------------------
+
+CustomDraw class:
+
+The CustomDraw class is a new mixin class.  Dialogs in ooDialog can
+inherit this class, which then gives the dialog the ability to access
+the custom draw facility.
+
+The ListView and TreeView controls can register for custom draw.
+
+
+New utility classes:
+--------------------
+
+TvCustomDrawSimple class:
+
+The TvCustomDrawSimple class is used in conjuction with the custom draw
+facility for TreeView controls.
+
+
+New Methods:
+------------
+
+In the PlainBaseDialog class:
+
+getTextSizeTitleBar()
+
+In the DialogControl class:
+
+useVersion()
+usingVersion()
+
+In the ListView class:
+
+addFullRow()
+insertFullRow()
+prependFullRow()
+
+In the TreeView class:
+
+find()
+getItemData()
+itemText()
+removeItemData()
+setItemData()
+
+
+New Attributes:
+---------------
+
+In the SM (system metrics) class:
+
+cxSize
+cxSmIcon
+cyMenu
+
+
+Enhanced Methods:
+-----------------
+
+In the DialogControl class:
+
+setColor()
+setSysColor()
+
+In the DialogExtensions class:
+
+setControlColor()
+setControlSysColor()
+
+In the TreeView class:
+
+insert()
+itemInfo()
+modify()
+
+In the EventNotification class:
+
+connectListViewItem()
+
+  * the KEYDOWNEX event is added.
+
+  * the BEGINEDIT event is enhanced
+
+  * the ENDEDIT event is enhanced
+
+connectTreeViewItem()
+
+  * the KEYDOWNEX event is added.
+
+  * the BEGINEDIT event is enhanced
+
+  * the ENDEDIT event is enhanced
+
+
+New samples:
+------------
+
+oodialog\controls\customDrawListView.rex
+
+The customDrawListView example demonstrates how to change the text, text
+color, and background color of individual rows in a list-view.
+
+oodialog\controls\ToolTip\toolTip.rex
+
+The toolTip.rex example demonstrates the basics of using ToolTips in
+ooDialog.  It includes the usage of a number of the ToolTip methods.
+
+oodialog\controls\ToolTip\customPositionToolTip.rex
+
+The customPositionToolTip.rex example shows how to use the ToolTip class
+to do custom positioning of the info tips provided by the tree-view.
+
+oodialog\controls\ToolTip\manageControlTool.rex
+
+The manageControlTool.rex example shows how to use some advanced
+features of the ToolTip class to provide completely customized ToolTips
+for a dialog control.  This example uses a tree-view control, but the
+techniques could be applied to any dialog control.
+
+
+
+Enhanced samples:
+-----------------
+
+oodialog\treeViewCustomDraw.rex
+
+The oodtree.rex example has been renamed to the treeViewCustomDraw.rex
+and enhanced.  The example has been more fully commented, uses custom
+draw for the tree-view control, and has a number of small bugs fixed.
+
+
+Documentation:
+--------------
+
+The ListView Control chapter in the ooDialog Reference Manual has been
+partially reviewed and corrected for accuracy.  Parts of the chapter
+have been updated to match the format and style that was introduced in
+the rework of the manual done for ooDialog 4.2.0
+
+
+The TreeView Control chapter in the ooDialog Reference Manual has been
+partially reviewed and corrected for accuracy.  Parts of the chapter
+have been updated to match the format and style that was introduced in
+the rework of the manual done for ooDialog 4.2.0
+
+The documentation for the connectListViewEvent and connectTreeViewEvent
+methods have been enhanced.
+
+
+Known Problems, "Gotchas," and Solutions with Independent Installations
+========================================================================
+
+* Problem:
+
+The ooRexx installer creates a log of the files it installs.  When the
+uninstaller runs, the user can select to only uninstall files logged
+during installtion.  An indpendent ooDialog installation may install
+some example programs, documentation files, and shortcuts not recorded
+in the log file.  When ooRexx is uninstalled or upgraded, these files
+and shortcuts may not be deleted.
+
+  Solution 1:
+
+  Before uninstalling ooRexx, install the independent ooDialog that
+  matches the ooRexx installation.  I.e., if the ooRexx installation is
+  any 4.0.x, or 4.1.x ooRexx version, install the ooDialog 4.1.0
+  indpendent installation. Then when ooRexx is uninstalled, all ooDialog
+  files and shortcuts will be removed because the files and shortcuts
+  exactly match what was installed during the ooRexx installation.
+
+  Solution 2:
+
+  After uninstalling ooRexx, manually delete any files in the old ooRexx
+  installation directory.
+
+* Gotcha:
+
+  The independent ooDialog installation deletes the entire ooDialog
+  samples subdirectory tree.  This will delete any personal files
+  that may have been put there after ooRexx was installed.
+
+  Solution 1:
+
+  Do not put personal files in the %REXX_HOME%\samples\ooDialog
+  subdirectory tree.
+
+  Solution 2:
+
+  Before executing the independent ooDialog installer, move or back up
+  any personal files that may be in %REXX_HOME%\samples\ooDialog
+  subdirectory tree.
+
+
