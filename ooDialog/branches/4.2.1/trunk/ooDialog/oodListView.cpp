@@ -94,12 +94,31 @@ inline bool hasSubitemImages(HWND hList)
  * Checks that the list view is either in icon view, or small icon view.
  * Certain list view messages and functions are only applicable in those views.
  *
- * Note that LVS_ICON == 0 so LVS_TYPEMASK must be used.
+ * If we are not at least 6.0 version of the common controls library and using
+ * GWL_STYLE, note that LVS_ICON == 0 so LVS_TYPEMASK must be used,
+ *
+ * @remarks  It seems as if ListView_SetView is used to set the view, which is
+ *           possible from ooDialog 4.2.1 onwards, using the GWL_STYLE to
+ *           determine the view doesn't work.
+ *
+ *           Under almost all circumstances we are at least using 6.0 common
+ *           control library.  We only wouldn't be if we are running on Windows
+ *           2000.  But, we check anyway.
  */
 inline bool isInIconView(HWND hList)
 {
-    uint32_t style = (uint32_t)GetWindowLong(hList, GWL_STYLE);
+    uint32_t style;
+
+    if ( ComCtl32Version < COMCTL32_6_0 )
+    {
+        style = (uint32_t)GetWindowLong(hList, GWL_STYLE);
     return ((style & LVS_TYPEMASK) == LVS_ICON) || ((style & LVS_TYPEMASK) == LVS_SMALLICON);
+}
+    else
+    {
+        style = ListView_GetView(hList);
+        return (style == LV_VIEW_ICON) || (style == LV_VIEW_SMALLICON);
+    }
 }
 
 inline bool isLvFullRowStruct(void *p)
@@ -109,11 +128,22 @@ inline bool isLvFullRowStruct(void *p)
 
 /**
  * Checks if the list view is in report view.
+ *
+ * See remarks for isInIconView() above.
  */
 bool isInReportView(HWND hList)
 {
-    uint32_t style = (uint32_t)GetWindowLong(hList, GWL_STYLE);
+    uint32_t style;
+    if ( ComCtl32Version < COMCTL32_6_0 )
+    {
+        style = (uint32_t)GetWindowLong(hList, GWL_STYLE);
     return ((style & LVS_TYPEMASK) == LVS_REPORT);
+}
+    else
+    {
+        style = ListView_GetView(hList);
+        return style == LV_VIEW_DETAILS;
+    }
 }
 
 /**
