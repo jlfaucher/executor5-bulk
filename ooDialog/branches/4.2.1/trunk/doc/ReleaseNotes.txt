@@ -153,7 +153,7 @@ are the attributes of the underlying Windows list-view subitem.
 LvFullRow class:
 
 List-view items can contain subitems.  This is most apparent in the row
-view of a list-vies where the subitems are displayed in columns next to
+view of a list-view where the subitems are displayed in columns next to
 the item.  However, the subitems, once added to an item, are always
 present, even if the list-view is in another view, such as icon view.
 
@@ -178,6 +178,15 @@ the custom draw facility.
 
 The ListView and TreeView controls can register for custom draw.
 
+
+New dialog control classes:
+---------------------------
+
+ToolTip class:
+
+Tooltip controls are pop-up windows that display text.  Typically the
+text describes a tool.  A tool is either a window or an application
+defined area within a window.
 
 New utility classes:
 --------------------
@@ -246,7 +255,7 @@ modify()
 
 In the EventNotification class:
 
-connectListViewItem()
+connectListViewEvent()
 
   * the KEYDOWNEX event is added.
 
@@ -254,7 +263,7 @@ connectListViewItem()
 
   * the ENDEDIT event is enhanced
 
-connectTreeViewItem()
+connectTreeViewEvent()
 
   * the KEYDOWNEX event is added.
 

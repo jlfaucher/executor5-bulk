@@ -2213,49 +2213,226 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">New ListView support classes in ooDialog 4.2.1:</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    <xref linkend="clsLvItem"/> class: Represents a single list-view item. The attributes of the LvItem are the attributes
+    of the underlying Windows list-view item.
+  </para>
+  <para>
+    <xref linkend="clsLvSubItem"/> class: Represents a single list-view subitem. The attributes of the LvSubItem are the
+    attributes of the underlying Windows list-view subitem.
+  </para>
+  <para>
+    <xref linkend="clsLvFullRow"/> class: List-view items can contain subitems. This is most apparent in the row view of a
+    list-view where the subitems are displayed in columns next to the item. However, the subitems, once added to an item,
+    are always present, even if the list-view is in another view, such as icon view.
+  </para>
+  <para>
+    The LvFullRow class represents the list-view item and all its subitems. LvFullRow objects can be used to insert an item
+    and all data associated with the item into a list-view at one time.
+  </para>
+  <para>
+    <xref linkend="clsLvCustomDrawSimple"/> class: The LvCustomDrawSimple class is used in conjuction with the custom draw
+    facility for ListView controls.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New dialog classes in ooDialog 4.2.1:</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    <xref linkend="clsCustomDraw"/> class: The CustomDraw class is a new mixin class. Dialogs in ooDialog can inherit this
+    class, which then gives the dialog the ability to access the custom draw facility.
+  </para>
+  <para>
+    The ListView and TreeView controls can register for custom draw.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New dialog control classes in ooDialog 4.2.1:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsToolTip"/> class: Tooltip controls are pop-up windows that display text. Typically the text describes
+    a <emphasis role="italic">tool</emphasis>. A <emphasis role="italic">tool</emphasis> is either a window or an
+    application defined area within a window.
+  </para>
   <varlistentry><term><emphasis role="bold">New utility classes in ooDialog 4.2.1:</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    <xref linkend="clsTvCustomDrawSimple"/> class: The TvCustomDrawSimple class is used in conjuction with the custom draw
+    facility for TreeView controls.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Methods in ooDialog 4.2.1:</emphasis></term>
   <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the PlainBaseDialog class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetTextSizeTitleBar"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the DialogControl class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthUseVersion"/>.
+    </para>
+    <para>
+      <xref linkend="mthUsingVersion"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the ListView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthAddFullRow"/>
+    </para>
+    <para>
+      <xref linkend="mthInsertFullRow"/>
+    </para>
+    <para>
+      <xref linkend="mthPrependFullRow"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the TreeView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthFind"/>
+    </para>
+    <para>
+      <xref linkend="mthGetItemDataClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthItemTextClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthRemoveItemDataClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthSetItemDataClsTreeView"/>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Attributes in ooDialog 4.2.1:</emphasis></term>
   <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the SM (system metrics) class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="atrCxSize"/>
+    </para>
+    <para>
+      <xref linkend="atrCxSmIcon"/>.
+    </para>
+    <para>
+      <xref linkend="atrCyMenu"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Enhanced Methods in ooDialog 4.2.1:</emphasis></term>
   <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the DialogControl class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthSetColor"/>
+    </para>
+    <para>
+      <xref linkend="mthSetSysColor"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the DialogExtensions class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthSetControlColor"/>.
+    </para>
+    <para>
+      <xref linkend="mthSetControlSysColor"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the TreeView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthInsertClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthItemInfoClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthModifyClsTreeView"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the EventNotification class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthConnectListViewEvent"/>
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      the KEYDOWNEX event is added.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      the BEGINEDIT event is enhanced
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      the ENDEDIT event is enhanced
+    </para>
+    </listitem>
+    </itemizedlist>
+    <para>
+      <xref linkend="mthConnectTreeViewEvent"/>
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      the KEYDOWNEX event is added.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      the BEGINEDIT event is enhanced
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      the ENDEDIT event is enhanced
+    </para>
+    </listitem>
+    </itemizedlist>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New samples in ooDialog 4.2.1:</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    <computeroutput>oodialog\controls\ListView\customDrawListView.rex</computeroutput>: The customDrawListView example
+    demonstrates how to change the text, text color, and background color of individual rows in a list-view.
+  </para>
+  <para>
+    <computeroutput>oodialog\controls\ListView\columnIcons.rex</computeroutput>: The columnIcons.rex example demonstrates how
+    to use the new LvFullRow class and how to use icons in the columns of list-view items in report view.
+  </para>
+  <para>
+    <computeroutput>oodialog\controls\ToolTip\toolTip.rex</computeroutput>: The toolTip.rex example demonstrates the basics
+    of using ToolTips in ooDialog.  It includes the usage of a number of the ToolTip methods.
+  </para>
+  <para>
+    <computeroutput>oodialog\controls\ToolTip\customPositionToolTip.rex</computeroutput>: The customPositionToolTip.rex
+    example shows how to use the ToolTip class to do custom positioning of the info tips provided by the tree-view.
+  </para>
+  <para>
+    <computeroutput>oodialog\controls\ToolTip\manageControlTool.rex</computeroutput>: The manageControlTool.rex example shows
+    how to use some advanced features of the ToolTip class to provide completely customized ToolTips for a dialog control.
+    This example uses a tree-view control, but the techniques could be applied to any dialog control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Enhanced samples in ooDialog 4.2.1:</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    <computeroutput>oodialog\controls\TreeView\treeViewCustomDraw.rex</computeroutput>: The oodtree.rex example has been
+    renamed to the treeViewCustomDraw.rex and enhanced.  The example has been more fully commented, uses custom draw for the
+    tree-view control, and has a number of small bugs fixed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Documentation changes in ooDialog 4.2.1:</emphasis></term>
@@ -2272,12 +2449,6 @@ xPixels = xDialogUnits * self~FactorX
   </para>
   <para>
     The documentation for the connectListViewEvent and connectTreeViewEvent methods have been enhanced.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">TERM:</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
   </para>
   </listitem></varlistentry>
 </variablelist>
