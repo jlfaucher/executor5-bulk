@@ -56,6 +56,7 @@ typedef enum
 {
     autoVacuum,
     automaticIndex,
+    busyTimeout,
     cacheSize,
     caseSensitiveLike,
     checkpointFullfsync,

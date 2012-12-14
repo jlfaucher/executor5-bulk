@@ -2868,6 +2868,15 @@ RexxMethod1(RexxObjectPtr, oosql_enquote_cls, OPTIONAL_RexxObjectPtr, values)
 }
 
 
+/** ooSQLite::errStr()  [class method]
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, oosql_errStr_cls, int, errCode)
+{
+    return context->String(sqlite3_errstr(errCode));
+}
+
 /** ooSQLite::libVersion()  [class method]
  *
  *
@@ -3369,6 +3378,7 @@ PragmaType getPragmaType(RexxThreadContext *c, CSTRING name)
 
     if ( strcmp(pName, "auto_vacuum")               == 0 ) return autoVacuum;
     if ( strcmp(pName, "automatic_index")           == 0 ) return automaticIndex;
+    if ( strcmp(pName, "busy_timeout")              == 0 ) return busyTimeout;
     if ( strcmp(pName, "cache_size")                == 0 ) return cacheSize;
     if ( strcmp(pName, "case_sensitive_like")       == 0 ) return caseSensitiveLike;
     if ( strcmp(pName, "checkpoint_fullfsync")      == 0 ) return checkpointFullfsync;
@@ -3673,9 +3683,16 @@ RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
     {
         if ( rc == SQLITE_ROW )
         {
-            // This is unexpected to me, but maybe it is okay?
-            snprintf(buf, sizeof(buf), "Unexpected result, data returned from pragma %s", name);
-            result = ooSQLiteErr(c, pConn, OO_UNEXPECTED_RESULT, buf, false);
+            if ( pragma == busyTimeout )
+            {
+                rc = SQLITE_OK;
+            }
+            else
+            {
+                // This is unexpected to me, but maybe it is okay?
+                snprintf(buf, sizeof(buf), "Unexpected result, data returned from pragma %s", name);
+                result = ooSQLiteErr(c, pConn, OO_UNEXPECTED_RESULT, buf, false);
+            }
         }
         else
         {
@@ -10211,6 +10228,7 @@ REXX_METHOD_PROTOTYPE(oosql_compileOptionUsed_cls);
 REXX_METHOD_PROTOTYPE(oosql_complete_cls);
 REXX_METHOD_PROTOTYPE(oosql_encryptionAvailable_cls);
 REXX_METHOD_PROTOTYPE(oosql_enquote_cls);
+REXX_METHOD_PROTOTYPE(oosql_errStr_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersion_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersionNumber_cls);
 REXX_METHOD_PROTOTYPE(oosql_memoryHighWater_cls);
@@ -10376,6 +10394,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosql_complete_cls,                   oosql_complete_cls),
     REXX_METHOD(oosql_encryptionAvailable_cls,        oosql_encryptionAvailable_cls),
     REXX_METHOD(oosql_enquote_cls,                    oosql_enquote_cls),
+    REXX_METHOD(oosql_errStr_cls,                     oosql_errStr_cls),
     REXX_METHOD(oosql_libVersion_cls,                 oosql_libVersion_cls),
     REXX_METHOD(oosql_libVersionNumber_cls,           oosql_libVersionNumber_cls),
     REXX_METHOD(oosql_memoryUsed_cls,                 oosql_memoryUsed_cls),

@@ -63,6 +63,7 @@
 ::method complete class external "LIBRARY oosqlite oosql_complete_cls"
 ::method encryptionAvailable class external "LIBRARY oosqlite oosql_encryptionAvailable_cls"
 ::method enquote class external "LIBRARY oosqlite oosql_enquote_cls"
+::method errStr class external "LIBRARY oosqlite oosql_errStr_cls"
 ::method libVersion class external "LIBRARY oosqlite oosql_libVersion_cls"
 ::method libVersionNumber class external "LIBRARY oosqlite oosql_libVersionNumber_cls"
 ::method memoryHighWater class external "LIBRARY oosqlite oosql_memoryHighWater_cls"
@@ -375,9 +376,9 @@
 -- (oosqlite.dll / oosqlite.so depending on platform.)
 --
 -- Copy the values directly from the top of sqlit3.hpp.
-::constant VERSION        "3.7.14.1"
-::constant VERSION_NUMBER 3007014
-::constant SOURCE_ID      "2012-10-04 19:37:12 091570e46d04e84b67228e0bdbcd6e1fb60c6bdb"
+::constant VERSION        "3.7.15"
+::constant VERSION_NUMBER 3007015
+::constant SOURCE_ID      "2012-12-12 13:36:53 cd0b37c52658bfdf992b1e3dc467bae1835a94ae"
 
 
 -- OO_ prefix indicates constant is not from the SQLite library.
