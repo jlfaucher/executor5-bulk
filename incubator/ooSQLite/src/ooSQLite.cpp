@@ -1016,6 +1016,55 @@ wholenumber_t genMerge(RexxThreadContext *c, RexxArrayObject args)
     return result;
 }
 
+/**
+ * A generic function return the English language description for a result code.
+ *
+ * We add in our own ooSQLite codes to the SQLite sqlite3_errstr() function
+ *
+ * @param c
+ * @param resultCode
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr genErrStr(RexxThreadContext *c, int resultCode)
+{
+    CSTRING str = "unknown error";
+
+    if ( resultCode >= OO_ERR_FIRST && resultCode <= OO_ERR_LAST )
+    {
+        switch ( resultCode )
+        {
+            case OO_BACKUP_DB_ERRSTATE :
+                str = OO_BACKUP_DB_ERRSTATE_STR;
+                break;
+
+            case OO_BACKUP_IN_PROGRESS :
+                str = OO_BACKUP_IN_PROGRESS_STR;
+                break;
+
+            case OO_INTERNAL_ERR :
+                str = OO_INTERNAL_ERR_STR;
+                break;
+
+            case OO_UNEXPECTED_RESULT :
+                str = OO_UNEXPECTED_RESULT_STR;
+                break;
+
+            case OO_WRONG_ARG_TYPE :
+                str = OO_WRONG_ARG_TYPE_STR;
+                break;
+
+            default :
+                break;
+        }
+    }
+    else
+    {
+        str = sqlite3_errstr(resultCode);
+    }
+
+    return c->String(str);
+}
 
 int genStatus(RexxThreadContext *c, int param, RexxObjectPtr _result, logical_t reset, size_t pos, bool isMethod)
 {
@@ -2874,7 +2923,7 @@ RexxMethod1(RexxObjectPtr, oosql_enquote_cls, OPTIONAL_RexxObjectPtr, values)
  */
 RexxMethod1(RexxObjectPtr, oosql_errStr_cls, int, errCode)
 {
-    return context->String(sqlite3_errstr(errCode));
+    return genErrStr(context->threadContext, errCode);
 }
 
 /** ooSQLite::libVersion()  [class method]
@@ -3683,16 +3732,9 @@ RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
     {
         if ( rc == SQLITE_ROW )
         {
-            if ( pragma == busyTimeout )
-            {
-                rc = SQLITE_OK;
-            }
-            else
-            {
-                // This is unexpected to me, but maybe it is okay?
-                snprintf(buf, sizeof(buf), "Unexpected result, data returned from pragma %s", name);
-                result = ooSQLiteErr(c, pConn, OO_UNEXPECTED_RESULT, buf, false);
-            }
+            // This is unexpected to me, but maybe it is okay?
+            snprintf(buf, sizeof(buf), "Unexpected result, data returned from pragma %s", name);
+            result = ooSQLiteErr(c, pConn, OO_UNEXPECTED_RESULT, buf, false);
         }
         else
         {
@@ -4784,6 +4826,16 @@ RexxMethod3(RexxObjectPtr, oosqlconn_pragma, RexxStringObject, _name, OPTIONAL_R
             }
             return pragmaSet(context, pConn, name, value, pragma);
 
+        case busyTimeout :
+            if ( argumentExists(2) )
+            {
+                return pragmaList(context, pConn, name, value, pragma);
+            }
+            else
+            {
+                return pragmaGet(context, pConn, name, pragma);
+            }
+
         default :
             break;
 
@@ -5430,7 +5482,7 @@ RexxMethod4(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OPTI
         pCstmt->format = pConn->format;
     }
 
-    CSTRING msg  = "not and error";
+    CSTRING msg  = "not an error";
     CSTRING tail = NULL;
 
     int rc = sqlite3_prepare_v2(pConn->db, sql, (int)strlen(sql) + 1, &pCstmt->stmt, &tail);
@@ -8734,6 +8786,14 @@ RexxRoutine1(RexxObjectPtr, oosqlErrMsg_rtn, POINTER, _db)
     return context->String(sqlite3_errmsg(db));
 }
 
+/** oosqlErrStr()
+ *
+ */
+RexxRoutine1(RexxObjectPtr, oosqlErrStr_rtn, int, resultCode)
+{
+    return genErrStr(context->threadContext, resultCode);
+}
+
 /** oosqlExec()
  *
  *  Interface to the sqlite3_exec() function, which executes a SQL statement or
@@ -10071,6 +10131,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlDbReleaseMemory_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlDbStatus_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlErrCode_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlErrMsg_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlErrStr_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlExec_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlExtendedResultCodes_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlFinalize_rtn);
@@ -10168,6 +10229,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlDbStatus_rtn,             oosqlDbStatus_rtn),
     REXX_TYPED_ROUTINE(oosqlErrCode_rtn,              oosqlErrCode_rtn),
     REXX_TYPED_ROUTINE(oosqlErrMsg_rtn,               oosqlErrMsg_rtn),
+    REXX_TYPED_ROUTINE(oosqlErrStr_rtn,	              oosqlErrStr_rtn),
     REXX_TYPED_ROUTINE(oosqlExec_rtn,                 oosqlExec_rtn),
     REXX_TYPED_ROUTINE(oosqlExtendedResultCodes_rtn,  oosqlExtendedResultCodes_rtn),
     REXX_TYPED_ROUTINE(oosqlFinalize_rtn,             oosqlFinalize_rtn),

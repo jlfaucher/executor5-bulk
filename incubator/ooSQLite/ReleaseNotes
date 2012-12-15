@@ -214,6 +214,8 @@ the entire user community.
 Changes since ooSQLite Version 1.0.0.8514 (Preview)
 ------------------------------------------------------------------------
 
+The SQLite library is updated to 3.7.15
+
   Bugs:
   ----
 
@@ -227,9 +229,30 @@ Changes since ooSQLite Version 1.0.0.8514 (Preview)
   * #1144 OOsqlite3 Foreign_keys
 
 
-
   Enhancements:
   -------------
+
+  * SQLite 3.7.15 introduces a new SQLite API: sqlite3_errStr.  Support
+  for this API is added to:
+
+    ooSQLite class:
+    --------------
+
+      errStr() method
+
+    Classic interface:
+    ------------------
+
+    oosqlErrStr() routine
+
+  * SQLite 3.7.15 adds a new PRAGMA: busy_timeout.  Support for this
+  pragma has been add to:
+
+    ooSQLiteConnection class:
+    -------------------------
+
+      pragma() method
+
 
   * Enforcement of foreign key constraints is enabled by default for new
   database connections, in both ooSQLite and ooSQLite3.  Each database

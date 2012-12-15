@@ -300,6 +300,7 @@
 ::routine oosqlDbStatus public external "LIBRARY oosqlite oosqlDbStatus_rtn"
 ::routine oosqlErrCode public external "LIBRARY oosqlite oosqlErrCode_rtn"
 ::routine oosqlErrMsg public external "LIBRARY oosqlite oosqlErrMsg_rtn"
+::routine oosqlErrStr public external "LIBRARY oosqlite oosqlErrStr_rtn"
 ::routine oosqlExec public external "LIBRARY oosqlite oosqlExec_rtn"
 ::routine oosqlExtendedErrCode public external "LIBRARY oosqlite oosqlErrCode_rtn"
 ::routine oosqlExtendedResultCodes public external "LIBRARY oosqlite oosqlExtendedResultCodes_rtn"

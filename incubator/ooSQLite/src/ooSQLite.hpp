@@ -38,12 +38,21 @@
 #ifndef ooSQLite_Included
 #define ooSQLite_Included
 
-
+// The range of errors needs to be contiguous and not include any SQLite error
+// rc.  The next SQLite error rc is 1034.
+#define OO_ERR_FIRST                     1000
 #define OO_INTERNAL_ERR                  1000
 #define OO_WRONG_ARG_TYPE                1001
 #define OO_UNEXPECTED_RESULT             1002
 #define OO_BACKUP_IN_PROGRESS            1003
 #define OO_BACKUP_DB_ERRSTATE            1004
+#define OO_ERR_LAST                      1004
+
+#define OO_INTERNAL_ERR_STR              "an unexpected ooSQLite internal error occurred"
+#define OO_WRONG_ARG_TYPE_STR            "an argument to a ooSQLite method or fucntion is the wrong type"
+#define OO_UNEXPECTED_RESULT_STR         "a SQLite API returned a result that is not believed possible"
+#define OO_BACKUP_IN_PROGRESS_STR        "ooSQLite method or function can not be invoked when backup is in progress"
+#define OO_BACKUP_DB_ERRSTATE_STR        "backup not possible, source or destination database is in error state"
 
 #define VALID_VERSION_TYPES "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
 #define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, OO_STEM_OF_STEMS, or OO_CLASSIC_STEM"
