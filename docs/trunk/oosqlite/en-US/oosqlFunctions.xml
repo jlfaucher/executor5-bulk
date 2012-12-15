@@ -3423,6 +3423,112 @@ say ooSQLiteEnquote(str)
 </variablelist>
 </section>  <!-- End oosqlErrMsg() -->
 
+<section id="rtn-oosqlErrStr"><title>oosqlErrStr</title>
+<indexterm><primary>oosqlErrStr</primary></indexterm>
+<indexterm><primary>Classic Rexx Interface</primary><secondary>oosqlErrStr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--oosqlErrStr(--resultCode--)------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the English language descriptive string for a result code.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>resultCode [required]</term>
+    <listitem>
+    <para>
+      One of the result <link linkend="sctResultCode">code</link> constants, or one of the ooSQLite specific result <link
+      linkend="sctOOSQLiteSpecificResultCodes">code</link>, whose descriptive sting is to be retrieved.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the descriptive, English language, string for the specified <emphasis role="italic">result code</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This routine is useful for getting the description of a result code without needing a <link
+    linkend="rtn-oosqlOpen">open</link> database connection. The <link linkend="rtn-oosqlErrMsg">oosqlErrMsg</link> routine
+    will return the descriptive string for the most recent result code associated with the database connection, but the
+    routine requires a handle to an open database connection. The <emphasis role="italic">oosqlErrStr</emphasis> routine can
+    be used at any time to get the descriptive string for a result code.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">oosqlErrStr</emphasis> function is similar to that of the <ulink
+    url="http://www.sqlite.org/c3ref/errcode.html">sqlite3_errstr</ulink> SQLite API
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is a small snippet of code to print out the description of the first 27 result codes. Inspection of the
+    <computeroutput>ooSQLite.cls</computeroutput> file shows us that the first 27 result code constants are in numerically
+    consecutive order:
+<programlisting>
+<![CDATA[
+
+  first = .ooSQLite~OK
+  last  = .ooSQLite~NOTADB
+
+  do i = first to last
+    say oosqlErrStr(i)
+  end
+  say
+
+/* Output would be:
+
+not an error
+SQL logic error or missing database
+unknown error
+access permission denied
+callback requested query abort
+database is locked
+database table is locked
+out of memory
+attempt to write a readonly database
+interrupted
+disk I/O error
+database disk image is malformed
+unknown operation
+database or disk is full
+unable to open database file
+locking protocol
+table contains no data
+database schema has changed
+string or blob too big
+constraint failed
+datatype mismatch
+library routine called out of sequence
+large file support is disabled
+authorization denied
+auxiliary database format error
+bind or column index out of range
+file is encrypted or is not a database
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End oosqlErrStr() -->
 
 <section id="rtn-oosqlExec"><title>oosqlExec</title>
 <indexterm><primary>oosqlExec</primary></indexterm>

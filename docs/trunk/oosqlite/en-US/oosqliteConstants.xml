@@ -1242,6 +1242,49 @@
 
 <row>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">ooSQLite Result Set Format Constants</emphasis></entry>
+</row>
+<row>
+<entry>OO_ARRAY_OF_ARRAYS</entry>
+<entry>Result sets are returned as an array where each item in the array is an array. The array at item 1 is an array of the column names. The following items are the records of the result set.</entry>
+</row>
+<row>
+<entry>OO_ARRAY_OF_DIRECTORIES</entry>
+<entry>Result sets are returned as an array where each item in the array is a Directory object. Each directory in the array contains the values of the columns in a row, where the indexes are the names of the columns.</entry>
+</row>
+<row>
+<entry>OO_STEM_OF_STEMS</entry>
+<entry>Result sets are returned as a stem with tails 0 through the number of rows. Tail 0 contains the number rows and tails 1 through n contain a stem for each row. The tails of the stem of a row are the column names for the rows.</entry>
+</row>
+<row>
+<entry>OO_CLASSIC_STEM</entry>
+<entry>Result sets are returned as a stem with tails 0 through the number of rows. Tail 0 contains the number rows and tails 1 through n contain a compound index, n.columnName for each row. The value of each stm.n.columnName variable is the value of the columnName column for the nth row.</entry>
+</row>
+
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="sctOOSQLiteSpecificResultCodes"><title>ooSQLite Specific Result Code Constants</title>
+<para>
+  The following table lists result code constants specific to ooSQLite. These constants have no counterpart in SQLite:
+</para>
+<table id="tblOOSQLiteSpecificResultCod" frame="all">
+<title>The ooSQLite Specific Result Code Constants</title>
+<tgroup cols="2">
+<colspec colwidth="9*" />
+<colspec colwidth="15*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry align="center"><emphasis role="bold">ooSQLite Result Code Constants</emphasis></entry>
 <entry align="center"><emphasis role="bold">ooSQLite Result Code Constants</emphasis></entry>
 </row>
 <row>
@@ -1263,22 +1306,6 @@
 <row>
 <entry>OO_BACKUP_DB_ERRSTATE</entry>
 <entry>The specified source or destination database for a backup operation is in an error state.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold"></emphasis></entry>
-<entry align="center"><emphasis role="bold">ooSQLite Result Set Format Constants</emphasis></entry>
-</row>
-<row>
-<entry>OO_ARRAY_OF_ARRAYS</entry>
-<entry>Result sets are returned as an array where each item in the array is an array. The array at item 1 is an array of the column names. The following items are the records of the result set.</entry>
-</row>
-<row>
-<entry>OO_ARRAY_OF_DIRECTORIES</entry>
-<entry>Result sets are returned as an array where each item in the array is a Directory object. Each directory in the array contains the values of the columns in a row, where the indexes are the names of the columns.</entry>
-</row>
-<row>
-<entry>OO_STEM_OF_STEMS</entry>
-<entry>Result sets are returned as a stem withe tails 0 through the number of rows. Tail 0 contains the number rows and tails 1 through n contain a stem for each row. The tails of stem of a row are the column names for the rows.</entry>
 </row>
 
 </tbody></tgroup>

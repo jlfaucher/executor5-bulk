@@ -600,7 +600,7 @@
   <para>
     The value of the <emphasis role="italic">lastErrCode</emphasis> attribute will be a SQLite result <link
     linkend="sctResultCode">code</link> or one of the ooSQLite specific result <link
-    linkend="sctOOSQLiteSpecific">codes</link>.
+    linkend="sctOOSQLiteSpecificResultCodes">codes</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">lastErrCode set:</emphasis></term>
@@ -2786,6 +2786,7 @@ Bytes of page memory used by all caches on this database connection:
         <simplelist type='vert' columns='3'>
           <member>auto_vacuum              </member>
           <member>automatic_index          </member>
+          <member>busy_timeout             </member>
           <member>cache_size               </member>
           <member>case_sensitive_like      </member>
           <member>checkpoint_fullfsync     </member>
@@ -2841,13 +2842,29 @@ Bytes of page memory used by all caches on this database connection:
             complete details.
           </para>
           </listitem></varlistentry>
+          <varlistentry><term>busy_timeout</term>
+          <listitem>
+          <para>
+            Queries or changes the setting of the <link linkend="mthBusyTimeOut">busy</link> timeout. This pragma is an
+            alternative to the <emphasis role="italic">busyTimeOut</emphasis> method. SQLite makes the pragma available as a
+            pragma for use with language bindings that do not provide direct access to the sqlite3_busy_timeout() API.
+          </para>
+          <para>
+            ooSQLite of course does provide direct access through both the <emphasis role="italic">busyTimeOut</emphasis>
+            method and the <link linkend="rtn-oosqlBusyTimeOut">oosqlBusyTimeOut</link> routine. The pragma is included here
+            for completeness. Consult the SQLite <ulink
+            url="http://www.sqlite.org/pragma.html#pragma_busy_timeout">busy_timeout</ulink> documentation for complete
+            details.
+          </para>
+          </listitem></varlistentry>
           <varlistentry><term>cache_size</term>
           <listitem>
           <para>
             Queries or changes the suggested maximum number of database disk pages that SQLite will hold in memory at once
             per open database file. Consult the SQLite <ulink
             url="http://www.sqlite.org/pragma.html#pragma_cache_size">cache_size</ulink> documentation for complete details.
-          </para> </listitem></varlistentry>
+          </para>
+          </listitem></varlistentry>
           <varlistentry><term>case_sensitive_like</term>
           <listitem>
           <para>

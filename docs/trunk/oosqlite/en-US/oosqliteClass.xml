@@ -96,6 +96,10 @@
 <entry>Converts the supplied Rexx value(s) into SQL literals.</entry>
 </row>
 <row>
+<entry><link linkend="mthErrStr">enquote</link></entry>
+<entry>Retrieves the English language descriptive string for a result code.</entry>
+</row>
+<row>
 <entry><link linkend="mthLibVersion">libVersion</link></entry>
 <entry>Returns the embedded SQLite library version as a string.</entry>
 </row>
@@ -217,8 +221,8 @@
       the row number combined with a column name in the row. The value at that compound tail is the value of the named column
       in that row. E.g., for a result set that contains the 3 columns, <computeroutput>id</computeroutput>,
       <computeroutput>name</computeroutput>, and <computeroutput>type_id</computeroutput>, the values for row 1 in the result
-      set would be at the stem variables <computeroutput>id</computeroutput>, <computeroutput>stm.1.name</computeroutput>,
-      and <computeroutput>stm.1.type_id</computeroutput>.
+      set would be at the stem variables <computeroutput>stm.1.id</computeroutput>,
+      <computeroutput>stm.1.name</computeroutput>, and <computeroutput>stm.1.type_id</computeroutput>.
     </para>
     </listitem>
     </itemizedlist>
@@ -626,6 +630,113 @@ say .ooSQLite~Enquote(str)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ooSQLite::enquote() -->
+
+<section id="mthErrStr"><title>errStr</title>
+<indexterm><primary>errStr</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>errStr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--errStr(--resultCode--)-----------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the English language descriptive string for a result code.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>resultCode [required]</term>
+    <listitem>
+    <para>
+      One of the result <link linkend="sctResultCode">code</link> constants, or one of the ooSQLite specific result <link
+      linkend="sctOOSQLiteSpecificResultCodes">code</link>, whose descriptive sting is to be retrieved.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the descriptive, English language, string for the specified <emphasis role="italic">result code</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is useful for getting the description of a result code without needing a <link
+    linkend="clsOOSQLiteConnection">ooSQLiteConnection</link> or <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link> object.
+    The <link linkend="mthErrMsg">errMsg</link> method will return the descriptive string for the most recent result code
+    associated with the database connection. The <emphasis role="italic">errStr</emphasis> method can be used at any time to
+    get the descriptive string for a result code.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">errStr</emphasis> method is similar to that of the SQLite <ulink
+    url="http://www.sqlite.org/c3ref/errcode.html">sqlite3_errstr</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is a small snippet of code to print out the description of the first 27 result codes. Inspection of the
+    <computeroutput>ooSQLite.cls</computeroutput> file shows us that the first 27 result code constants are in numerically
+    consecutive order:
+<programlisting>
+<![CDATA[
+
+  first = .ooSQLite~OK
+  last  = .ooSQLite~NOTADB
+
+  do i = first to last
+    say .ooSQLite~errStr(i)
+  end
+  say
+
+/* Output would be:
+
+not an error
+SQL logic error or missing database
+unknown error
+access permission denied
+callback requested query abort
+database is locked
+database table is locked
+out of memory
+attempt to write a readonly database
+interrupted
+disk I/O error
+database disk image is malformed
+unknown operation
+database or disk is full
+unable to open database file
+locking protocol
+table contains no data
+database schema has changed
+string or blob too big
+constraint failed
+datatype mismatch
+library routine called out of sequence
+large file support is disabled
+authorization denied
+auxiliary database format error
+bind or column index out of range
+file is encrypted or is not a database
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::errStr() -->
 
 <section id="mthLibVersion"><title>libVersion</title>
 <indexterm><primary>libVersion</primary></indexterm>
