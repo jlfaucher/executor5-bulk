@@ -961,6 +961,7 @@ static LRESULT charReply(pSubClassData pData, char *method, RexxArrayObject args
             }
         }
     }
+    else
     {
         // On errors:
         ret = DefSubclassProc(hwnd, msg, wParam, lParam);
