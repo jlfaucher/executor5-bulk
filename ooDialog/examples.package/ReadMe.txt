@@ -49,7 +49,7 @@
 
   The following examples have been added since v0.0.5:
 
-  * Event.Handlers\Edit\LostFocus\
+  * Event.Handlers\Edit\LostFocus\voterDlg.rex
 
   * Dialogs\color\controlColor.rex              -- requires ooDialog 4.2.1
 
