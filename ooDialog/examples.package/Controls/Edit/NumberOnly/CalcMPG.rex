@@ -65,10 +65,7 @@
 
   .application~useGlobalConstDir("O", 'CalcMPG.h')
 
-  resourceDLL = "CalcMPG32.dll"
-  if .OS~is64bit then resourceDLL = "CalcMPG64.dll"
-
-  dlg = .MPGDlg~new(resourceDLL, IDD_MPG_DLG)
+  dlg = .MPGDlg~new('CalcMPG.dll', IDD_MPG_DLG)
   if dlg~initCode <> 0 then do
     say "Error initializing dialog.  Aborting"
     return 99
