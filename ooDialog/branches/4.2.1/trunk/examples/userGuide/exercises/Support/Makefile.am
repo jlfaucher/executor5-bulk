@@ -39,5 +39,5 @@
 
 MAINTAINERCLEANFILES	= Makefile.in *~
 
-EXTRA_DIST		= *.cls
+EXTRA_DIST		= *.cls *.h *.rc *.rex
 

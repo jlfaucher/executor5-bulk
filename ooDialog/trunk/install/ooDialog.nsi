@@ -516,14 +516,31 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Samples\DlgData\res\ASimpleDialog.dll"
 
     ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Person
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.txt"
+
+    ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Popups
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Samples\Popups\*rex"
 
     ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Wow4
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.txt"
+
+    ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Support
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Support\*.cls"
+    File "${ExamplesDir}\userGuide\exercises\Support\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Support\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Support\*.rex"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\wav

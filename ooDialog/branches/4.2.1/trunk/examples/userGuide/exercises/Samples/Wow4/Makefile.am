@@ -37,10 +37,7 @@
 
 .NOTPARALLEL:
 
-SUBDIRS			= DlgData Person Popups Wow4
-DIST_SUBDIRS		= DlgData Person Popups Wow4
-
 MAINTAINERCLEANFILES	= Makefile.in *~
 
-EXTRA_DIST		= ReadMe.txt
+EXTRA_DIST		= *.txt *.rex
 
