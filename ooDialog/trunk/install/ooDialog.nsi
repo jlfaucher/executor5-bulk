@@ -531,8 +531,8 @@ Section  doInstall
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Wow4
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rex"
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.txt"
+    File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.txt"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Support
