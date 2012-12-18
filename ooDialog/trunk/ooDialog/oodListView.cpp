@@ -5682,6 +5682,35 @@ err_out:
     return NULLOBJECT;
 }
 
+/** LvFullRow::userData             [attribute]
+ */
+RexxMethod1(RexxObjectPtr, lvfr_userData, CSELF, pCSelf)
+{
+    pCLvFullRow pclvfr = (pCLvFullRow)pCSelf;
+    if ( pclvfr->userData != NULLOBJECT )
+    {
+        return pclvfr->userData;
+    }
+    return TheNilObj;
+}
+RexxMethod2(RexxObjectPtr, lvfr_setUserData, RexxObjectPtr, obj, CSELF, pCSelf)
+{
+    pCLvFullRow pclvfr = (pCLvFullRow)pCSelf;
+
+    if ( obj == TheNilObj )
+    {
+        pclvfr->userData = NULL;
+        context->SetObjectVariable("USERDATA", NULLOBJECT);
+    }
+    else
+    {
+        pclvfr->userData = obj;
+        context->SetObjectVariable("USERDATA", obj);
+    }
+
+    return NULLOBJECT;
+}
+
 /** LvFullRow::addSubitem()
  *
  *  Adds a subitem to this full row.  Subitems are always added as the last

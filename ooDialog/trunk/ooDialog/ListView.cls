@@ -359,6 +359,9 @@
 ::method init external "LIBRARY oodialog lvfr_init"
 ::method unInit external "LIBRARY oodialog lvfr_unInit"
 
+::attribute userData get external "LIBRARY oodialog lvfr_userData"
+::attribute userData set external "LIBRARY oodialog lvfr_setUserData"
+
 ::method addSubItem external "LIBRARY oodialog lvfr_addSubitem"
 ::method insertSubitem external "LIBRARY oodialog lvfr_insertSubitem"
 ::method item external "LIBRARY oodialog lvfr_item"

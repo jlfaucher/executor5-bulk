@@ -1112,6 +1112,10 @@ REXX_METHOD_PROTOTYPE(lvsi_setImageIndex  );
 // LvFullRow
 REXX_METHOD_PROTOTYPE(lvfr_init);
 REXX_METHOD_PROTOTYPE(lvfr_unInit);
+REXX_METHOD_PROTOTYPE(lvfr_userData);
+REXX_METHOD_PROTOTYPE(lvfr_setUserData);
+REXX_METHOD_PROTOTYPE(lvfr_userData);
+REXX_METHOD_PROTOTYPE(lvfr_setUserData);
 REXX_METHOD_PROTOTYPE(lvfr_addSubitem);
 REXX_METHOD_PROTOTYPE(lvfr_insertSubitem);
 REXX_METHOD_PROTOTYPE(lvfr_item);
@@ -2132,6 +2136,8 @@ RexxMethodEntry oodialog_methods[] = {
     // LvFullRow
     REXX_METHOD(lvfr_init,                      lvfr_init),
     REXX_METHOD(lvfr_unInit,                    lvfr_unInit),
+    REXX_METHOD(lvfr_userData,                  lvfr_userData),
+    REXX_METHOD(lvfr_setUserData,               lvfr_setUserData),
     REXX_METHOD(lvfr_addSubitem,                lvfr_addSubitem),
     REXX_METHOD(lvfr_insertSubitem,             lvfr_insertSubitem),
     REXX_METHOD(lvfr_item,                      lvfr_item),

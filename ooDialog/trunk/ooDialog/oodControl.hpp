@@ -144,6 +144,7 @@ typedef struct _lvFullRow
     RexxObjectPtr    *rxSubItems;    // The Rexx subitems rxSubItems[0] is a LvItem, the rest LvSubItems
     RexxObjectPtr     rexxSelf;      // The LvFullRow Rexx object
     RexxObjectPtr     bagOfItems;    // A Rexx bag to hold the Rexx items and protect from GC
+    RexxObjectPtr     userData;      // The user of this class can store an object with each row.
     HWND              hList;         // The list-view this full row has been inserted into.
     uint32_t          subItemCount;  // The number of subItems
     uint32_t          size;          // The allocated size of the subItem array.
