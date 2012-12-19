@@ -999,6 +999,38 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
         case CTRLTAG_NOTHING :
             break;
 
+        case CTRLTAG_EDIT :
+        {
+            if ( tag & CTRLTAG_WANTRETURN )
+            {
+                if ( msg == WM_GETDLGCODE )
+                {
+                    return(DLGC_WANTALLKEYS | DefSubclassProc(hwnd, msg, wParam, lParam));
+                }
+                else if ( msg == WM_KEYDOWN )
+                {
+                    RexxObjectPtr   ctrlID = c->UnsignedInt32(pData->id);
+                    RexxArrayObject args   = c->ArrayOfTwo(ctrlID, pData->pcdc->rexxSelf);
+                    RexxObjectPtr   reply  = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
+
+                    if ( ! checkForCondition(c, false) && reply != NULLOBJECT )
+                    {
+                        c->ReleaseLocalReference(ctrlID);
+                        c->ReleaseLocalReference(args);
+                        c->ReleaseLocalReference(reply);
+
+                        return 0;
+                    }
+                    else
+                    {
+                        // On error return DefSubclassProc()
+                        return DefSubclassProc(hwnd, msg, wParam, lParam);
+                    }
+                }
+            }
+            break;
+        }
+
         case CTRLTAG_CONTROL :
         {
             if ( msg == WM_KEYDOWN )
@@ -1750,6 +1782,43 @@ RexxMethod3(RexxObjectPtr, dlgctrl_connectEvent, CSTRING, event, OPTIONAL_CSTRIN
         wmf.wm       = WM_SIZE;
         wmf.wmFilter = 0xFFFFFFFF;
         wmf.tag      = CTRLTAG_DIALOG | CTRLTAG_REPLYZERO;
+
+        if ( addSubclassMessage(context, pcdc, &wmf) )
+        {
+            result = TheTrueObj;
+        }
+        goto done_out;
+    }
+    else if ( StrCmpI(event, "WANTRETURN") == 0 )
+    {
+        if ( pcdc->controlType != winEdit || ! isSingleLineEdit(pcdc->hCtrl) )
+        {
+            result = TheFalseObj;
+            goto done_out;
+        }
+
+        if ( argumentOmitted(2) )
+        {
+            methodName = "onReturn";
+        }
+
+        wmf.wm       = WM_KEYDOWN;
+        wmf.wmFilter = 0xFFFFFFFF;
+        wmf.wp       = VK_RETURN;
+        wmf.wpFilter = 0xFFFFFFFF;
+        wmf.lp       = 0;
+        wmf.lpFilter = KEY_WASDOWN;
+        wmf.method   = methodName;
+        wmf.tag      = CTRLTAG_EDIT | CTRLTAG_WANTRETURN;
+
+        if ( ! addSubclassMessage(context, pcdc, &wmf) )
+        {
+            goto done_out;
+        }
+
+        wmf.wm       = WM_GETDLGCODE;
+        wmf.wmFilter = 0xFFFFFFFF;
+        wmf.tag      = CTRLTAG_EDIT | CTRLTAG_WANTRETURN;
 
         if ( addSubclassMessage(context, pcdc, &wmf) )
         {

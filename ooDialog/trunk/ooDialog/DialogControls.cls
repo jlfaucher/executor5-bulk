@@ -228,6 +228,10 @@
   use strict arg
   return self~connectEvent('WM_SIZE')
 
+::method wantReturn unguarded
+  use strict arg mthName = 'onReturn'
+  return self~connectEvent('WANTRETURN', mthName)
+
 ::method canUndo unguarded
     use strict arg
     return self~sendWinIntMsg(self~EM_CANUNDO, 0, 0) != 0

@@ -84,6 +84,8 @@
 
 #define CTRLTAG_ISOLATE           0x00000100
 
+#define CTRLTAG_WANTRETURN        0x00000200
+
 /**
  * The last byte is for, well 'extra' information.  Use TAG_EXTRAMASK to
  * isolate the byte.
