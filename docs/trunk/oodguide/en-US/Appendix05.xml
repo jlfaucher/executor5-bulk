@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file.
     #
-    # Copyright (c) 2012, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2012-2012, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -55,13 +55,138 @@
 -->
 
 <appendix id="apx-mvfinternals">
-  <title id="mvfintternals.title">Model-View Framework Internals</title>
-  <indexterm><primary>Model-View Framework</primary></indexterm>
-  <para>This appendix provides an overview of the internals of the Model-View
-    introduced in Chapter 7. </para>
-  <para>To be completed...</para>
+  <title id="mvfinternals.title">Model-View Framework Internals</title>
+  <indexterm><primary>Model-View Framework</primary><secondary>Internals</secondary></indexterm>
+  <para>This appendix provides an overview of the internals of the Model-View Framework
+    (MVF) introduced in <xref linkend="chapSeven"/>. It should really be called "Model-View-Data Framework",
+    since it also encompasses data components; however, historically such frameworks have
+    ommitted the term "data" in their names, and here we lazily conform with history.</para>
+
+  <para>*** Intro to sections here if required. *****</para>
+
+  <!-- Section 1: The Object Manager -->
   <section id="app5ObjectMgr"><title>The Object Manager</title>
-    <para>To be completed...</para>
+    <para>The Model-View Framework (MVF) manages the components that are assembled
+    to make up an application. There are two main parts to the MVF:
+    first a management object (an ooRexx class)
+    called the "Object Manager", and secondly a set of superclasses that provide
+    functions common to all components.
+    A "component" is a Model, a View, or a Data program. An example is the "ProductView"
+    component, which consists of three ooRexx classes: <computeroutput>ProductView</computeroutput>,
+    <computeroutput>AboutDialog</computeroutput>, and <computeroutput>HRSpv</computeroutput>.</para>
+    This component, together with the Product List component, the ProductData component,
+    and a Product datatype, make up a Product Data Business Component.
+    <para>For each component, one class is made known by name to ObjectMgr by name.
   </section>
+
+  <section>
+  <para>
+    <programlisting>
+<![CDATA[
+</programlisting>
+
+     showModel(class-inst)  ->  ObjectMgr
+     				self~getcreate model
+
+
+     View components:		subclass RcView
+     - newInstance [class method]:
+         use arg modelInsanceName, rootDlg
+         dlg = .ModelView~new(rc-file, "IDD_...")
+         dlg~activate(modelInstancName,rootDlg)
+         return dlg
+
+     - activate
+         expose modelData
+         use arg modelInstanceName, rootDlg
+         forward class (super) continue		 Required for MVF
+         modelData = RESULT			- personData returned by super
+    						- ('forward' returns any result via 'RESULT'.)
+         self~popUpAsChild(rootDlg,"SHOWTOP,,icon-resource-id>)
+
+     - initDialog
+         expose modelData
+
+
+     Model components:
+     - newInstance (class method):
+         use strict arg instanceName
+         check id data component is up and running
+         get component id of data component from objectMgr
+         send "find(instanceName)" to data component - returns "dirData"
+         modelId = self~new(dirData)
+         return modelId
+
+     - init (instance Method)
+         - since no separate setup, 'activate' is same as 'init' so just use 'init'.
+
+     Data components:				- subclassed from GenericFile
+     - newInstance (class method):
+         use strict arg instanceName		- instanceName is "The".
+         dataId = self~new(instanceName)
+         return dataId
+
+     - init
+         use arg instanceName
+         filename = "file-name"; columns = num-columns
+         records = self~init:super(fileName, columns)
+
+
+
+     Some component X wants to send 'query' to PersonModel. So:
+     (a) X sends getComponentId('PersonModel PA150') to ObjectMgr.
+     (b) ObjMgr: if exists, then return cmptId
+     (c) Else
+     Sends 'query' to a PersonModel on Message Sender.
+     Messagesender asks ObjectMgr for id of the PersonModel
+     If not in object bag, ObjMgr sends 'newInstance' to Model with inst name
+     as param.
+     .Model~newInstance asks ObjMgr for id for "PersonData The"
+     If not found, then set noDataError to .true.
+     Else do
+       send a "find" to "PersonData The"
+       "PersonData The" returns the Model's instance's data.
+       If data found, then id = .PersonModel~new(data)
+       Return Id (to ObjectMgr)
+     end
+]]>
+    </programlisting>
+</para>
+  </section>
+
+  <section>The "Requires List"</section>
+  <para>To be completed.</para>
 </appendix>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file
     #
-    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2012-2012, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -70,6 +70,49 @@ Things to add:
 
 -->
 
+<!--  Diagram of data objects:
+
+Data components are subclassed from GenericFile (in Suuport file 'genericfile.rex').
+Methods of GenericFile are:
+
+readFile - A private method - Given a filename and the number of columns, reads a file and
+               returns it in "File As Directory" format. This is stored in the public
+               attribute "fileAsDirectory"
+
+ getRecord - Given a "key", returns a file record (or line) as a directory containing
+            the record data associated with that key. Format is:
+
+             Indices   Items
+            +- - - - - - - - - +
+            | index 1 | item 1 |
+            +- - - - -+ - - - -+
+            | index x | item x |
+            +- - - - -+ - - - -+
+            | index n | item n |
+            +- - - - + - - - - +
+
+getFile - Returns the file in "File as Directory" format, as follows:
+
+    "File as Directory" format (using sample data values):
+             Indices    Items
+			+- - - - - - - - - - - - - - - - - -+
+			|Headers | OrderNo | CustNo  | .... |	1D array
+			|- - - - + - - - - + - - - - + - - -|
+			|Records | OR123   | CU0003  + .... |   2D array
+			|        | - - - - + - - - - + - - -|
+			|        | OR345   | CU0145  | .... |
+			|        | - - - - + - - - - + - - -|
+			|        | etc. ......              |
+			|- - - - + - - - - + - - - - + - - -+
+			|Count   | n |                          Integer
+			+- - - - + - +
+
+list - Lists a file on the console.
+
+Order Data - two files, OrderHeadersFile.txt and OrderLinesFile.txt
+The OrderData component merges the two (??)
+-->
+
 <chapter id="chapSeven"><title>A Working Application</title>
 <para>
 </para>
@@ -85,10 +128,10 @@ Things to add:
             the file). However, although the data can be changed in dialogs, the changed data does
             not (in this exercise) update the files. </para>
         <para>Finally, note that the "Help" menu on the main "Sales Order Management" dialog now
-            includes an option "Message Sender" (discussed in more detail in section 7.3. . Click
+            includes an option "Message Sender" (discussed in more detail in section 7.3. Click
             this and a "Message Sender" dialog opens. This can be used to send messages to (invoke
             methods on) the various components, and is a very useful debugging tool.  For example,
-            try sending a "query" message to the Customer number BA0314. To do this, key
+            try sending a "query" message to the Customer whose key is BA0314. To do this, key
             "CustomerModel BA0314" in the "Target" field, "query" in the Method field, and then
             press the "Send" button. The customer's data is returned in the "Reply" field in a
             name-value string.  </para>
@@ -98,6 +141,11 @@ Things to add:
             field, and then press the "Send" button. The Product dialog for instance CU003 appears.
             (The Message Sender is discussed in <xref linkend="chap07-MsgSender"/>.)
         </para>
+        <para>The "ObjectMgr" (which should really be called "ComponentManager" since it manages
+            application components as opposed to any object) is a support class that instantiates
+            components by invoking a component's <emphasis role="italic">newInstance</emphasis>
+            class method. It also keeps track of which components are already instantiated. For more
+            detail see <xref linkend="apx-mvfinternals"/></para>
         <para>Consider now what has to happen to display the Product View. First, a
                 <computeroutput>ProductData</computeroutput> instance is created, and its data read
             from disk (in this exercise, the whole file is read in by the data components). Then the
@@ -116,92 +164,65 @@ Things to add:
 <section id="chap07-struc"><title id="ch7-amvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
 
 <section id="chap07-MVFobj"><title id="ch7-amvf-obj.title">MVF Objective</title>		<!-- Section 7.2.1 -->
-<para>
-Maybe not a separate section - maybe just an intro para after chap title -
-refers (and links) to sub sections.
-</para>
+        <para>The objective of the ModelView Framework (MVF) is to provide a simple mechanism
+            whereby application components can read and write data and display views without
+            needing to be aware of how this is done. The MVF supports the view-model-data
+            separation of concerns in application-level components. For example, if a user
+            double-clicks on an item in say the Product List dialog, then it is expected that
+            a product dialog displaying the data associated with that item in the list view will
+            be displayed. Consider that retrieving data and displaying it requires the following
+            actions:</para>
+            <orderedlist>
+                <listitem>
+                    <para>Create the appropriate Data component, which:</para>
+                </listitem>
+                <listitem>
+                    <para>Opens the data file and reads the data.</para>
+                </listitem>
+                <listitem>
+                    <para>Create the Model component and pass it its "key" (e.g. product
+                        number)</para>
+                </listitem>
+                <listitem>
+                    <para>Get a reference to the Data component</para>
+                </listitem>
+                <listitem>
+                    <para>Invoke a "get" on the Data component to retrieve the data associated with
+                        the Model's key</para>
+                </listitem>
+                <listitem>
+                    <para>Create a View component</para>
+                </listitem>
+                <listitem>
+                    <para>Provide that view component with the data to be displayed in the
+                        dialog.</para>
+                </listitem>
+                <listitem>
+                    <para>Make the dialog visible.</para>
+                </listitem>
+            </orderedlist>
+<para>This set of actions assumes that none of the component instances involved are yet activated.
+                However, the MVF must work when some or all are activated. For example, if a View
+                exists but is minimized, then if a user double-clicks on that item in a list, the
+                MVF need only surface the view. Thus the MVF distinguishes between a number of
+                different states, thus relieving the programmer from having to code such logic for
+                each component. </para>
+            <para>For an overview of MVF internals, see <xref linkend="apx-mvfinternals"/></para>
+            <para/>
 </section>	<!-- End of Section 7.2.1 -->
 
 <section id="chap07-MVFuse"><title id="ch7-amvf-use.title">Using the MVF</title>		<!-- Section 7.2.2 -->
-<para>
-- diff kinds of component; how different kinds use MVF.
-- Ref "samples\person".
-- Ref appendix for detail of MVF (Or leave it for people to look at the code?).
-</para>
-<para>
-    <programlisting>
-<![CDATA[
-</programlisting>
+<para> The MVF must handle the three different kinds of component - view, model, and data. Each model gets
+    its data from its data component, and each model has a single view. (In principal, the MVF could support
+    multiple views of the same model by providing an "Open as..." option for a given icon or list item. This
+    could display a selection of views, similar to the "Open with..." function provided by a button-2 click
+    on an item in Windows Explorer.</para>
 
-     Model-View Framework
+<!--  In addition, any gi- diff kinds of component; how different kinds use MVF. - Ref
+                "samples\person" and "samples\Wow4". Use MessgeSender to show a view of the
+                PersonModel whose key is PA100. Also, WowModel The. - Ref appendix05 for detail of
+                MVF. </para>-->
 
-     showModel(class-inst)  ->  ObjectMgr
-     				self~getcreate model
-
-
-     View components:		subclass RcView
-     - newInstance [class method]:
-         use arg modelInsanceName, rootDlg
-         dlg = .ModelView~new(rc-file, "IDD_...")
-         dlg~activate(modelInstancName,rootDlg)
-         return dlg
-
-     - activate
-         expose modelData
-         use arg modelInstanceName, rootDlg
-         forward class (super) continue		 Required for MVF
-         modelData = RESULT			- personData returned by super
-    						- ('forward' returns any result via 'RESULT'.)
-         self~popUpAsChild(rootDlg,"SHOWTOP,,icon-resource-id>)
-
-     - initDialog
-         expose modelData
-
-
-     Model components:
-     - newInstance (class method):
-         use strict arg instanceName
-         check id data component is up and running
-         get component id of data component from objectMgr
-         send "find(instanceName)" to data component - returns "dirData"
-         modelId = self~new(dirData)
-         return modelId
-
-     - init (instance Method)
-         - since no separate setup, 'activate' is same as 'init' so just use 'init'.
-
-     Data components:				- subclassed from GenericFile
-     - newInstance (class method):
-         use strict arg instanceName		- instanceName is "The".
-         dataId = self~new(instanceName)
-         return dataId
-
-     - init
-         use arg instanceName
-         filename = "file-name"; columns = num-columns
-         records = self~init:super(fileName, columns)
-
-
-
-     Some component X wants to send 'query' to PersonModel. So:
-     (a) X sends getComponentId('PersonModel PA150') to ObjectMgr.
-     (b) ObjMgr: if exists, then return cmptId
-     (c) Else
-     Sends 'query' to a PersonModel on Message Sender.
-     Messagesender asks ObjectMgr for id of the PersonModel
-     If not in object bag, ObjMgr sends 'newInstance' to Model with inst name
-     as param.
-     .Model~newInstance asks ObjMgr for id for "PersonData The"
-     If not found, then set noDataError to .true.
-     Else do
-       send a "find" to "PersonData The"
-       "PersonData The" returns the Model's instance's data.
-       If data found, then id = .PersonModel~new(data)
-       Return Id (to ObjectMgr)
-     end
-]]>
-    </programlisting>
-</para>
 </section>	<!-- End of Section 7.2.2 -->
 
 <section id="chap07-MVFops"><title id="ch7-amvf-ops.title">MVF Underlying Operations</title>	<!-- Section 7.2.3 -->
