@@ -1223,6 +1223,189 @@ void maybeUpdateFullRowText(RexxThreadContext *c, NMLVDISPINFO *pdi)
 
 
 /**
+ * Set the item's, and each subitem's, text to the corresponding value in the
+ * pclvfr struct.
+ *
+ * @param pclvfr
+ * @param hList
+ * @param index
+ *
+ * @return The true object.
+ *
+ * @remarks  Originally this function was conceived to be used when the
+ *           list-view item's user data was a full row object and the Rexx
+ *           programmer wanted to sync the list-view item text with what he had
+ *           set the full row object to.
+ *
+ *           However, it would work well in other circustances.
+ *
+ *           Contrast this function with the similare updateTextUsingFullRow()
+ *           function.  This function unequivocally sets the item and every
+ *           subitem with the text in the full row struct.  The other function
+ *           checks for the LVIF_TEXT max and only updates the list-view if the
+ *           mask is set.  In addition, it optionally updates the full row
+ *           struct when the item has a full row struct assigned as the user
+ *           data.
+ */
+static RexxObjectPtr syncFullRowText(pCLvFullRow pclvfr, HWND hList, uint32_t index)
+{
+    for ( uint32_t i = 0; i <= pclvfr->subItemCount; i++ )
+    {
+        ListView_SetItemText(hList, index, i, (LPSTR)pclvfr->subItems[i]->pszText);
+    }
+    return TheTrueObj;
+}
+
+
+/**
+ * Sets the item's and subitem's text to the corresponding value in the pclvfr
+ * struct.  Checks for a LvFullRow object assigned as the user data for the item
+ * and updates that if needed
+ *
+ * @param c
+ * @param pclvfr
+ * @param hList
+ *
+ * @return The true object.
+ */
+static RexxObjectPtr updateTextUsingFullRow(RexxMethodContext *c, pCLvFullRow pclvfr, HWND hList)
+{
+    uint32_t index = pclvfr->subItems[0]->iItem;
+
+    pCLvFullRow pclvfrExisting = maybeGetFullRow(hList, index);
+
+    for ( uint32_t i = 0; i <= pclvfr->subItemCount; i++ )
+    {
+        if ( pclvfr->subItems[i]->mask & LVIF_TEXT )
+        {
+            ListView_SetItemText(hList, index, i, (LPSTR)pclvfr->subItems[i]->pszText);
+
+            if ( pclvfrExisting != NULL )
+            {
+                updateFullRowText(c->threadContext, pclvfrExisting, i, pclvfr->subItems[i]->pszText);
+            }
+        }
+    }
+    return TheTrueObj;
+}
+
+
+/**
+ * Set the item's, and each subitem's, values to the corresponding values in the
+ * pclvfr struct.
+ *
+ * @param pclvfr
+ * @param hList
+ * @param index
+ *
+ * @return True on success, false if an error occurs with ListView_SetItem().
+ *
+ * @remarks  Originally this function was conceived to be used when the
+ *           list-view item's user data was a full row object and the Rexx
+ *           programmer wanted to sync the list-view item text with what he had
+ *           set the full row object to.
+ *
+ *           However, it would work well in other circustances, *if*, there is
+ *           no full row user data assigned to the list-view item that needs to
+ *           be updated.
+ */
+static RexxObjectPtr syncFullRow(pCLvFullRow pclvfr, HWND hList, uint32_t index)
+{
+    for ( uint32_t i = 0; i <= pclvfr->subItemCount; i++ )
+    {
+        if ( ! ListView_SetItem(hList, pclvfr->subItems[i]) )
+        {
+            return TheFalseObj;
+        }
+    }
+    return TheTrueObj;
+}
+
+
+/**
+ * Sets the item's and subitem's values to the corresponding values in the
+ * pclvfr struct.  Checks for a LvFullRow object assigned as the user data for
+ * the item and updates that if needed
+ *
+ * @param c
+ * @param pclvfr
+ * @param hList
+ *
+ * @return The true object.
+ *
+ * @remarks  There are 3 scenarios we have to manage here.
+ *
+ *            1.) There is no current lParam user data set.  In this case the
+ *            lvItem is just used as is to do a set item.  If a lParam user data
+ *            value is set, we need to protect it.
+ *
+ *            2.) There is a current lParam user data set, but it is not a full
+ *            row object.  In this case, if lvItem contains a lParam user data
+ *            value, we need to replace the current value with the new value.
+ *
+ *            3.) There is a current lParam user data set and it is a full row
+ *            object.  In this case, if lvItem contains a lParm user data value
+ *            we need to update the current value with the new value.  If not,
+ *            we need to merge the new lvItem into the full row item.
+ */
+static RexxObjectPtr modifyFullRow(RexxMethodContext *c, pCDialogControl pcdc, pCLvFullRow pclvfr, HWND hList)
+{
+    uint32_t index = pclvfr->subItems[0]->iItem;
+
+    RexxObjectPtr oldUserData      = getCurrentLviUserData(hList, index);
+    pCLvFullRow   pclvfrExisting   = maybeGetFullRow(hList, index);
+    bool          lParamIsModified = (pclvfr->subItems[0]->mask & LVIF_PARAM) ? true : false;
+
+    for ( uint32_t i = 0; i <= pclvfr->subItemCount; i++ )
+    {
+        LPLVITEM pLvi = pclvfr->subItems[i];
+
+        if ( ! ListView_SetItem(hList, pLvi) )
+        {
+            return TheFalseObj;
+        }
+
+        if ( i == 0 )
+        {
+            if ( lParamIsModified )
+            {
+                protectLviUserData(c, pcdc, pLvi);
+            }
+
+            if ( oldUserData != TheNilObj )
+            {
+                if ( lParamIsModified )
+                {
+                    unProtectControlUserData(c, pcdc, oldUserData);
+                }
+                else if ( pclvfrExisting != NULL )
+                {
+                    mergeLviState(c, pclvfrExisting, pclvfrExisting->subItems[0], pLvi);
+                }
+            }
+        }
+        else
+        {
+            if ( pclvfrExisting != NULL && pclvfrExisting->subItemCount >= i )
+            {
+                if ( pLvi->mask & LVIF_TEXT )
+                {
+                    updateFullRowText(c->threadContext, pclvfrExisting, i, pLvi->pszText);
+                }
+
+                if ( pLvi->mask & LVIF_IMAGE )
+                {
+                    pclvfr->subItems[i]->iImage = pLvi->iImage;
+                }
+            }
+        }
+    }
+
+    return TheTrueObj;
+}
+
+
+/**
  * Adds an item to the list view using a LvFullRow object.  The item is
  * inserted, appended, or prepended to the list, as specified by the FullRowOp
  * type.
@@ -3416,6 +3599,63 @@ err_out:
     return TheNegativeOneObj;
 }
 
+/** ListView::modifyFullRow()
+ *
+ *  Modifies a full row of a list-view item as specified.  That is, modifies the
+ *  item and all subitems, if any, of the list-view item.
+ *
+ *  @param row  [required]  This argument can be either the index of the item to
+ *              update, or a LvFullRow object to do the update with.
+ *
+ *              When row is an index, then the item data for the row *must* be a
+ *              LvFullRow object.  Using an index signals that the row has
+ *              already been updated and the programmer wants the list-view item
+ *              "synched" with the full row.
+ *
+ *              When row is a LvFullRow object, then the underlying list-view
+ *              item's values are set to the full row object's values.  Also,
+ *              for this case, if the item being updated also has a full row
+ *              object assigned the item data, that full row object's values are
+ *              updated, or merged, with the sent full row object's values.
+ *
+ *  @return  True on success, false on error.
+ */
+RexxMethod2(RexxObjectPtr, lv_modifyFullRow, OPTIONAL_RexxObjectPtr, row, CSELF, pCSelf)
+{
+    RexxObjectPtr   result = TheFalseObj;
+    pCDialogControl pcdc   = validateDCCSelf(context, pCSelf);
+
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    uint32_t index;
+    HWND     hList = pcdc->hCtrl;
+
+    if ( context->IsOfType(row, "LVFULLROW") )
+    {
+        result = modifyFullRow(context, pcdc, (pCLvFullRow)context->ObjectToCSelf(row), hList);
+    }
+    else if ( context->UnsignedInt32(row, &index) )
+    {
+        pCLvFullRow pclvfr = maybeGetFullRow(hList, index);
+        if ( pclvfr == NULL )
+        {
+            userDefinedMsgException(context, 1, "the item data for the list-view item is not a LvFullRow object");
+            goto done_out;
+        }
+        result = syncFullRow(pclvfr, hList, index);
+    }
+    else
+    {
+        wrongArgValueException(context->threadContext, 1, "a LvFullRow object or the list-view item index", row);
+    }
+
+done_out:
+    return result;
+}
+
 /** ListView::modifyItem()
  *
  *  Modifies a list-view item using a LvItem object.
@@ -3794,6 +4034,63 @@ RexxMethod3(RexxObjectPtr, lv_setColumnWidthPx, uint32_t, index, OPTIONAL_RexxOb
     }
 
     return (ListView_SetColumnWidth(hList, index, width) ? TheZeroObj : TheOneObj);
+}
+
+/** ListView::setFullRowText()
+ *
+ *  Sets the text for the specified item and all subitems.
+ *
+ *  @param row  [required]  This argument can be either the index of the item to
+ *              update, or a LvFullRow object to do the update with.
+ *
+ *              When row is an index, then the item data for the row *must* be a
+ *              LvFullRow object.  Using an index signals that the text in the
+ *              full row has already been updated and the programmer wants the
+ *              list-view item "synched" with the text in the full row.
+ *
+ *              When row is a LvFullRow object, then the underlying list-view
+ *              item's text is set to the text in the full row object.  Only
+ *              the item and subitems that have the TEXT mask set are updated.
+ *              Also, for this case, if the item being updated also has a full
+ *              row object assigned the item data, that full row object's text
+ *              is updated
+ *
+ *  @return  True on success, false on error.
+ */
+RexxMethod2(RexxObjectPtr, lv_setFullRowText, OPTIONAL_RexxObjectPtr, row, CSELF, pCSelf)
+{
+    RexxObjectPtr   result = TheFalseObj;
+    pCDialogControl pcdc   = validateDCCSelf(context, pCSelf);
+
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    uint32_t index;
+    HWND     hList = pcdc->hCtrl;
+
+    if ( context->IsOfType(row, "LVFULLROW") )
+    {
+        result = updateTextUsingFullRow(context, (pCLvFullRow)context->ObjectToCSelf(row), hList);
+    }
+    else if ( context->UnsignedInt32(row, &index) )
+    {
+        pCLvFullRow pclvfr = maybeGetFullRow(hList, index);
+        if ( pclvfr == NULL )
+        {
+            userDefinedMsgException(context, 1, "the item data for the list-view item is not a LvFullRow object");
+            goto done_out;
+        }
+        result = syncFullRowText(pclvfr, hList, index);
+    }
+    else
+    {
+        wrongArgValueException(context->threadContext, 1, "a LvFullRow object or the list-view item index", row);
+    }
+
+done_out:
+    return result;
 }
 
 /** ListView::setImageList()

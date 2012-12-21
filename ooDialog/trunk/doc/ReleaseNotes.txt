@@ -56,6 +56,14 @@ Feature Requests in ooDialog:
  * #504 It would be nice to be able to store a user value as part of the
         LvFullRow object
 
+ * #505 Would like a way to prevent Enter from closing dialog when in
+        single-line edit control
+
+ * #506 Allow modifying a list-view item and all its subitems at once
+
+ * #507 ooDialog - Modify the text of a list-view item and all its
+        subitems at one time
+
 
 New Functionality in ooDialog:
 ------------------------------
@@ -76,6 +84,19 @@ New utility classes:
 New Methods:
 ------------
 
+In the ListView class:
+
+modifyFullRow   Modifies a list-view's item and all its subitem using a
+                LvFullRow object.
+
+setFullRowText  Sets or updates the text for a list-view item and all
+                its subItems using a LvFullRow object.
+
+In the Edit class:
+
+wantReturn      Connects the Enter keypress in a single-line edit
+                control to a method in the Rexx dialog and prevents the
+                keypress from closing the dialog.
 
 
 New Attributes:

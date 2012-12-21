@@ -208,6 +208,7 @@
    return self~modifyColumnPx(index, label, width, align)
 
 ::method modifyColumnPx unguarded external "LIBRARY oodialog lv_modifyColumnPx"
+::method modifyFullRow unguarded external "LIBRARY oodialog lv_modifyFullRow"
 ::method modifyItem unguarded external "LIBRARY oodialog lv_modifyItem"
 ::method modifySubitem unguarded external "LIBRARY oodialog lv_modifySubitem"
 ::method next unguarded external "LIBRARY oodialog lv_getNextItem"
@@ -246,6 +247,7 @@
    return self~setColumnWidthPx(index, width)
 
 ::method setColumnWidthPx unguarded external "LIBRARY oodialog lv_setColumnWidthPx"
+::method setFullRowText unguarded external "LIBRARY oodialog lv_setFullRowText"
 ::method setHoverTime unguarded
    use strict arg time = (-1)
    if time < -1 then time = -1

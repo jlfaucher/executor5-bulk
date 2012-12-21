@@ -1045,6 +1045,7 @@ REXX_METHOD_PROTOTYPE(lv_itemState);
 REXX_METHOD_PROTOTYPE(lv_itemText);
 REXX_METHOD_PROTOTYPE(lv_modify);
 REXX_METHOD_PROTOTYPE(lv_modifyColumnPx);
+REXX_METHOD_PROTOTYPE(lv_modifyFullRow);
 REXX_METHOD_PROTOTYPE(lv_modifyItem);
 REXX_METHOD_PROTOTYPE(lv_modifySubitem);
 REXX_METHOD_PROTOTYPE(lv_prependFullRow);
@@ -1054,6 +1055,7 @@ REXX_METHOD_PROTOTYPE(lv_replaceStyle);
 REXX_METHOD_PROTOTYPE(lv_setColor);
 REXX_METHOD_PROTOTYPE(lv_setColumnOrder);
 REXX_METHOD_PROTOTYPE(lv_setColumnWidthPx);
+REXX_METHOD_PROTOTYPE(lv_setFullRowText);
 REXX_METHOD_PROTOTYPE(lv_setImageList);
 REXX_METHOD_PROTOTYPE(lv_setItemData);
 REXX_METHOD_PROTOTYPE(lv_setItemPos);
@@ -2069,6 +2071,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_itemState,                   lv_itemState),
     REXX_METHOD(lv_modify,                      lv_modify),
     REXX_METHOD(lv_modifyColumnPx,              lv_modifyColumnPx),
+    REXX_METHOD(lv_modifyFullRow,               lv_modifyFullRow),
     REXX_METHOD(lv_modifyItem,                  lv_modifyItem),
     REXX_METHOD(lv_modifySubitem,               lv_modifySubitem),
     REXX_METHOD(lv_prependFullRow,         	    lv_prependFullRow),
@@ -2078,6 +2081,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_setColor,                    lv_setColor),
     REXX_METHOD(lv_setColumnOrder,              lv_setColumnOrder),
     REXX_METHOD(lv_setColumnWidthPx,            lv_setColumnWidthPx),
+    REXX_METHOD(lv_setFullRowText,              lv_setFullRowText),
     REXX_METHOD(lv_setImageList,                lv_setImageList),
     REXX_METHOD(lv_setItemData,                 lv_setItemData),
     REXX_METHOD(lv_setItemPos,                  lv_setItemPos),
