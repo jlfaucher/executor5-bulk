@@ -479,6 +479,10 @@
 <entry>Sets new attributes for a column of this list-view control when it has the report or list style.</entry>
 </row>
 <row>
+<entry><xref linkend="mthModifyFullRow"/></entry>
+<entry>Modifies the information for an item, and all its subitems, in a list-view using a <xref linkend="clsLvFullRow"/> object.</entry>
+</row>
+<row>
 <entry><xref linkend="mthModifyItem"/></entry>
 <entry>Modifies some or all of the data this list-view maintains for an item using a <xref linkend="clsLvItem"/> object.</entry>
 </row>
@@ -569,6 +573,10 @@
 <row>
 <entry><xref linkend="mthSetColumnWidthPX"/></entry>
 <entry>Sets the width, in pixels, of a column in this list-view control that has the report or list style.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFullRowText"/></entry>
+<entry>Modifies all, or some, of the text for a list-view item and its subitems using a <xref linkend="clsLvFullRow"/> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetHoverTime"/></entry>
@@ -5234,6 +5242,102 @@ column. It can be one of the following values:
 </variablelist>
 </section>  <!-- End ListView::modifyColumnPX() -->
 
+<section id="mthModifyFullRow" xreflabel="modifyFullRow"><title>modifyFullRow</title>
+<indexterm><primary>modifyFullRow</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>modifyFullRow</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--modifyFullRow(--row--)-----------------------><
+]]>
+</programlisting>
+
+<para>
+  Modifies the information for an item, and all its subitems, in a list-view using a <xref linkend="clsLvFullRow"/> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>row [required]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">row</emphasis> argument must either be a <computeroutput>LvFullRow</computeroutput> object,
+      or the zero-based index of the list-view item to be modified.
+    </para>
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">LvFullRow object:</emphasis></term>
+      <listitem>
+      <para>
+        When the <emphasis role="italic">row</emphasis> argument is a <computeroutput>LvFullRow</computeroutput> object, the
+        information in the list-view item is modified to match the information in the full row object.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Item index:</emphasis></term>
+      <listitem>
+      <para>
+        When the <emphasis role="italic">row</emphasis> argument is the index of the item to modify, the item <link
+        linkend="mthSetItemDataClsListView">data</link> of the list-view item <emphasis role="italic">must</emphasis> have
+        been assigned a <computeroutput>LvFullRow</computeroutput> object. The list-view item's information is then modified
+        to match the information in the assigned full row object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using an item index for the <emphasis role="italic">row</emphasis> argument can be thought of as a <emphasis
+    role="italic">sync</emphasis> operation. It is assumed that the programmer has changed the value of the attributes of the
+    <computeroutput>LvFullRow</computeroutput> object that is assigned as the item data of the list-view item. Then, invoking
+    the <emphasis role="italic">modifyFullRow</emphasis> method has the effect of syncing up the underlying list-view item's
+    information with the full row object's information.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example modifies the information for the list-view item with index 3. The item has 4 subitems and uses subitem
+    images. The application only wants to modify the text and image index for the item and the first subitem. The other
+    information of the item is left alone. The first step of getting the full row object for item 3, ensures that all the
+    information in the full row object matches the current state of the item. Then just the label and icon index for the item
+    and first subitem is changed, and the full row object is used to modify the list-view item:
+<programlisting>
+<![CDATA[
+
+  lvfull = list~getFullRow(3)
+
+  lvFull~item~text = 'Nurse Practitioner'
+  lvFull~item~imageIndex = 4
+  lvFull~subitem(1)~text = 'Harry'
+  lvFull~subitem(1)~imageIndex = 14
+
+  list~modifyFullRow(lvFull)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::modifyFullRow() -->
+
 <section id="mthModifyItem" xreflabel="modifyItem"><title>modifyItem</title>
 <indexterm><primary>modifyItem</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>modifyItem</secondary></indexterm>
@@ -6541,6 +6645,127 @@ is sized automatically to the widest item in the list.
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ListView::setColumnWidthPX() -->
+
+<section id="mthSetFullRowText" xreflabel="setFullRowText"><title>setFullRowText</title>
+<indexterm><primary>setFullRowText</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>setFullRowText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFullRowText(--row--)----------------------><
+]]>
+</programlisting>
+
+<para>
+  Modifies all, or some, of the text for a list-view item and its subitems using a <xref linkend="clsLvFullRow"/> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>row [required]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">row</emphasis> argument must either be a <computeroutput>LvFullRow</computeroutput> object,
+      or the zero-based index of the list-view item whose text is to be modified.
+    </para>
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">LvFullRow object:</emphasis></term>
+      <listitem>
+      <para>
+        When the <emphasis role="italic">row</emphasis> argument is a <computeroutput>LvFullRow</computeroutput> object, the
+        text of the list-view item is modified to match the text in the full row object. For the item and each subitem, the
+        text is only modified, if that item or subitem in the <emphasis role="italic">row</emphasis> full row object has its
+        item <xref linkend="atrMaskClsLvi"/>, or subitem <xref linkend="atrMaskClsLvsi"/> attribute set to contain the TEXT
+        keyword. If the item's, or subitem's, mask does not contain the TEXT keyword, the text in the list-view item is left
+        unchanged.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Item index:</emphasis></term>
+      <listitem>
+      <para>
+        When the <emphasis role="italic">row</emphasis> argument is the index of the item to modify, the item <link
+        linkend="mthSetItemDataClsListView">data</link> of the list-view item <emphasis role="italic">must</emphasis> have
+        been assigned a <computeroutput>LvFullRow</computeroutput> object. The list-view item's text is then modified to
+        match the text in the assigned full row object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using an item index for the <emphasis role="italic">row</emphasis> argument can be thought of as a <emphasis
+    role="italic">sync</emphasis> operation. It is assumed that the programmer has changed the value of the text attributes
+    of the <computeroutput>LvFullRow</computeroutput> object that is assigned as the item data of the list-view item. Then,
+    invoking the <emphasis role="italic">modifyFullRow</emphasis> method has the effect of syncing up the underlying
+    list-view item's text with the full row object's text attributes. In this case, the text of the item and the text of
+    every subitem is set to the corresponding text value the item data's full row object.
+  </para>
+  <para>
+    In contrast, when a <computeroutput>LvFullRow</computeroutput> object is used as the <emphasis
+    role="italic">row</emphasis> argument, it is possible to only update the text for the item or subitems that need to be
+    updated. The example below demonstrates this technique.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example constructs a full row object for a list-view that has 6 subitems. <emphasis
+    role="italic">currentItem</emphasis> is the index of one of the list-view items, the item whose text might be modified.
+    Note that the text and mask attributes of the item and subitems of the full row are not set. The current text in all the
+    edit controls is collected and compared to the old values stored in the rec array. If it does not match, the text
+    attribute in the full row is set to the value from the edit control. In this way, when !setFullRowText() is invoked, only
+    the text of the item or subitems in the list-view that have actually changed are updated:
+<programlisting>
+<![CDATA[
+
+  lNameText   = lNameEdit~getText~strip
+  fNameText   = fNameEdit~getText~strip
+  ...
+  zipText     = zipEdit~getText~strip
+
+  lvFullRow = .LvFullRow~new(.LvItem~new(currentItem))
+  do i = 1 to 6
+    lvFullRow~addSubitem(.LvSubItem~new(currentItem, i))
+  end
+
+  if lNameText \== rec[2] then do
+    lvFullRow~item~text = lNameText
+  end
+  if fNameText \== rec[3] then do
+    lvFullRow~subItem(1)~text = fNameText
+  end
+  ...
+  if zipText \== rec[8] then do
+    lvFullRow~subItem(6)~text = zipText
+  end
+
+  list~setFullRowText(lvFullRow)
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::setFullRowText() -->
 
 
 <section id="mthSetHoverTime" xreflabel="setHoverTime"><title>setHoverTime</title>
@@ -8840,6 +9065,818 @@ that allows the user to remove the check mark from all the check boxes:
 </section> <!-- End LvCustomDrawSimple Class -->
 
 
+<section id="clsLvFullRow" xreflabel="LvFullRow"><title>LvFullRow Class</title>
+<indexterm><primary>LvFullRow class</primary></indexterm>
+<para>
+  A <computeroutput>LvFullRow</computeroutput> object is used in ooDialog to represent a list-view item and all subitems
+  of that item. A <computeroutput>LvFullRow</computeroutput> object is composed of a <xref linkend="clsLvItem"/> object whose
+  attributes reflect the list-view item and zero or more <xref linkend="clsLvSubItem"/> objects that reflect the subitems of
+  the list-view item in the <link linkend="ovvUnderlying">underlying</link> list-view.
+</para>
+<para>
+  Normally, the subitems of a list-view item are only thought about when the list-view is in report view. However, once added
+  to an item, the subitems exist whatever view the list-view is in.  A full row object can be used to add or insert list-view
+  items along with all the subitems of the item, or to query information about a list-view item and its subitems.
+</para>
+<para>
+  <computeroutput>LvFullRow</computeroutput> objects also provide the infrastructure that allows the ooDialog framework to
+  <link linkend="mthSortItems">internally</link> sort list-view items.
+</para>
+
+
+<section id="sctInternalSorting"><title>Internal Sorting Considerations</title>
+<indexterm><primary>internal sorting</primary><secondary>LvFullRow Class</secondary></indexterm>
+<indexterm><primary>internal sorting</primary><secondary>ListView Class</secondary></indexterm>
+<para>
+  The <xref linkend="mthSortItems"/> method is used to sort list-view items. One option of this method is to have the
+  ooDialog framework implement the sort internally. The internal sort can be significantly faster, for large lists, than
+  implementing the sort in Rexx. However, the internal sorting is dependent on the <computeroutput>LvFullRow</computeroutput>
+  class. There are a few things the Rexx programmer needs to be aware of that effect the ability of the ooDialog framework to
+  do an internal sort.
+</para>
+<para>
+  Any sorting of the list-view items, whether it is through a sort implemented in Rexx or the internal sort, is dependent on
+  <link linkend="mthSetItemDataClsListView">setting</link> a value for the item data of every list-view item. For the
+  internal sort to work, the item data value must be a <computeroutput>LvFullRow</computeroutput> object. There are several
+  approaches that could be used to assign a full row object to the item data of every list-view item. One approach would be
+  to iterate through all the list-view items, for each item, instantiate a full row object for the item, and use the <xref
+  linkend="mthSetItemDataClsListView"/> method to assign the object to the item.
+</para>
+<para>
+  However, full row objects can also be used to add items to the list-view through one the <xref linkend="mthAddFullRow"/>,
+  <xref linkend="mthInsertFullRow"/>, or <xref linkend="mthPrependFullRow"/> methods. A second approach is to add all
+  list-view items using full row objects and have the ooDialog framework set the full row object as the item data when the
+  item is added to the list-view. To use this technique, the programmer should set the <emphasis
+  role="italic">sorting</emphasis> argument to true when <link linkend="mthNewClsLvFullRow">instantiating</link> the full row
+  object.
+</para>
+<para>
+  In a way, a full row object is a snapshot of the information the list-view control maintains about a specific item in the
+  list. This information can change over time as the application is used. For instance, the text of an item could be changed.
+  When a full row object is assigned as the item data of a list-view item, the ooDialog framework does its best to keep the
+  full row object updated with any changes made to the information of the list-view item. But, there is one scenario where
+  this is not always possibile. The Rexx programmer needs to be aware of this and take the proper steps to keep the full row
+  object in synch with the list-view item.
+</para>
+<para>
+  When a subitem column in the list-view is <link linkend="mthInsertColumnPX">inserted</link>
+  or <link linkend="mthDeleteColumn">deleted</link>, the list-view control adds or deletes the subitems of all
+  items that corresponds to the colum. Every item in a list-view always has the same number of subitems. If all items in the
+  list-view have a <computeroutput>LvFullRow</computeroutput> object set as the item data, when a column is deleted, the full
+  row object will have one too many subitems. The same if a column is added, the full row object will have no knowledge of
+  the new subitem. <emphasis role="bold">Note</emphasis> that there is no problem the very first time a column is inserted
+  in a list-view and this only applies to <emphasis role="italic">subitem</emphasis> columns. The information for a
+  list-view item is not deleted by deleting its column, column 0. In addition, this discussion only concerns the case where
+  <computeroutput>LvFullRow</computeroutput> objects have been assigned to the item data of each item to faciliate internal
+  sorting.
+</para>
+<para>
+  Most ooDialog programs that use a list-view do not involve inserting or removing columns after the list-view items have
+  been added. But, for programs that do <emphasis role="italic">and</emphasis> use <computeroutput>LvFullRow</computeroutput>
+  objects to allow internal sorting, the programmer must take an additional step when a column is inserted or deleted. This
+  ensures the integrity of the full row objects. ooDialog provides 3 methods to ensure integrity when a column is inserted or
+  deleted:
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">The fixFullRowColumns method:</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog provides the <xref linkend="mthFixFullRowColumns"/> method of the <computeroutput>ListView</computeroutput>
+    which can be used to bring all the full row objects back in sync. It must be invoked after each individual column insert
+    and delete to work correctly. That is, the programmer can not delete 2 columns and then invoke the <emphasis
+    role="italic">fixFullRowColumns</emphasis> twice. The method is invoked with the column index that was removed or added
+    and a second argument that signals whether the specified column was inserted. The following code snippet gives an
+    example:
+<programlisting>
+<![CDATA[
+    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT")
+    list~fixFullRowColumns(2, .true)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">The adjustFullRows argument:</emphasis></term>
+  <listitem>
+  <para>
+    The methods that insert or delete columns in the list-view have an optional second argument, <emphasis
+    role="italic">adjustFullRows</emphasis>. If this argument is true, then the ooDialog framework is signaled to fix up the
+    full row objects internally when the column is added or deleted. The default for the argument is false. This is perhaps
+    the easist process for the programmer to use. The above example would be altered like this:
+<programlisting>
+<![CDATA[
+    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT", .true)
+
+]]>
+</programlisting>
+    The reason that the default here is false is that with very large lists, the time to fix up the full row objects can be
+    noticeable, .5 to 1.5 seconds for lists with over 10,000 items. Because of this, the programmer may not want the fix up
+    to happen during the insertion or deletion of a column.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Manual update</emphasis></term>
+  <listitem>
+  <para>
+    With this method, after the column insert or delete, the programmer iterates through all the list-view items, removes the
+    old invalid item data, creates a valid full row object, and sets the item data to the new full row object. The following
+    code snippet shows the procedure:
+<programlisting>
+<![CDATA[
+
+    list~deleteColumn(delCol)
+
+    do i = 0 to list~items - 1
+      list~removeItemData(i)
+      lvFullRow = list~getFullRow(i, .true)
+      list~setItemData(i, lvFullRow)
+    end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="sctMethodsLvFullRow"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>LvFullRow</computeroutput> class:
+
+<table id="tblMethodsLvFullRow" frame="all"> <title>LvFullRow Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsLvFullRow"/></entry>
+<entry>Instantiates a new <computeroutput>LvFullRow</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrUserData"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAddSubItem"/></entry>
+<entry>Adds a subitem to this full row. Subitems are always added as the last subitem in the row.</entry>
+</row>
+<row>
+<entry><xref linkend="mthInsertSubItem"/></entry>
+<entry>Inserts a new subitem into this full row and adjusts the subitem indexes for  all existing subitems, when needed.</entry>
+</row>
+<row>
+<entry><xref linkend="mthItem"/></entry>
+<entry>Returns the <xref linkend="clsLvItem"/> object of this full row.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveSubItem"/></entry>
+<entry>Removes the specified subitem from this full row.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSubItem"/></entry>
+<entry>Returns the subitem specified by <emphasis role="italic">index</emphasis> of this full row, or the <computeroutput>.nil</computeroutput> object if the subitem <emphasis role="italic">index</emphasis> is not valid.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSubItems"/></entry>
+<entry>Returns the count of subitems in this full row.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsLvFullRow" xreflabel="new"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>LvFullRow class</secondary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                +--------------+
+                V              |
+>>--new(--item--+--------------+--+-----------+--)--------------><
+                +--,--subItem--+  +-,-sorting-+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>LvFullRow</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>item [required]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsLvItem">LvItem</link> object that specifies the attributes of the list-view item being added.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>subItem [optional]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsLvSubItem">LvSubItem</link> object that specifies the attributes of a subitem of the list-view
+      item being added. The argument can repeat has many times as needed to specify all the subitems of the item. The
+      subitems are added to the item in the order of the arguments to the <emphasis role="italic">new</emphasis> method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>sorting [optional]</term>
+    <listitem>
+    <para>
+      The very last argument can optionally be <computeroutput>.true</computeroutput> or
+      <computeroutput>.false</computeroutput> to signal that the <computeroutput>LvFullRow</computeroutput> object itself is
+      to be assigned as the item data value of the list-view items. This usage is explained in the remarks section.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the new <computeroutput>LvFullRow</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Each subitem argument must be specified. If a subitem is omitted and a subitem argument follows it, a syntax
+    condition is raised. That is, if a subitem is specified, its preceding subitem must not have been omitted. These
+    statements are acceptable:
+
+<programlisting>
+<![CDATA[
+     row = .LvFullRow~new(item)
+     row = .LvFullRow~new(item, si1, si2)
+     row = .LvFullRow~new(item, si1, si2, si3)
+]]>
+</programlisting>
+
+    These statements will raise a syntax codition:
+
+<programlisting>
+<![CDATA[
+     row = .LvFullRow~new(item, , si2)
+     row = .LvFullRow~new(item, si1, , si3)
+]]>
+</programlisting>
+
+  </para>
+  <para>
+    In addition to specifying <computeroutput>LvSubItem</computeroutput> objects, the last argument can be either true or
+    false. Recall that the list-view control allows the programmer to <link linkend="mthSetItemDataClsListView">attach</link>
+    an item data value to any or all of the list-view items. If the item data for every list-view item is a
+    <computeroutput>LvFullRow</computeroutput> object, the ooDialog framework can perform internal <link
+    linkend="mthSortItems">sorting</link> of the list-view items. The last argument can be true to specify that the
+    <computeroutput>LvFullRow</computeroutput> object being instantiated should be set as the item data value for the
+    list-view item the <computeroutput>LvFullRow</computeroutput> object represents.
+  </para>
+  <para>
+    This feature is really only of use if the full row object is used to add or insert an item into the list-view. If the
+    full row object is not to be used to add an item to the list-view, then there is no reason to use the last argument of
+    true or false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a method that creates an array of list-view full rows from NFL football player data. The array is
+    later used to insert the rows into a list-view control.
+<programlisting>
+<![CDATA[
+
+::method getPlayers private
+
+  players = .NFLPlayer~playersFromDataSource("nflPlayers.txt")
+
+  self~masterList = .MasterPlayerList~new(players)
+
+  playerRows = .array~new(players~items)
+  do i = 1 to players~items
+    j = i - 1
+    p = players[i]
+    lvi = .LvItem~new(j, , p~name, , p)
+    lvsi1 = .LvSubItem~new(j, 1, p~team)
+    lvsi2 = .LvSubItem~new(j, 2, p~position)
+    lvsi3 = .LvSubItem~new(j, 3, p~rating)
+
+    r = .LvFullRow~new(lvi, lvsi1, lvsi2, lvsi3)
+    playerRows[i] = r
+  end
+
+  return playerRows
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::new() -->
+
+<section id="atrUserData" xreflabel="userData"><title>userData (Attribute)</title>
+<indexterm><primary>userData</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>userData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--userData-----------------------------------------------------><
+
+>>--userData = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">userData</emphasis> attribute allows the programmer to associate some data with a
+  <computeroutput>LvFullRow</computeroutput> object. The data assigned can be any Rexx object the programmer desires.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">userData get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the user data object assigned to this full row object, or the <computeroutput>.nil</computeroutput> object if no
+    user data has been associated with this full row.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">userData set:</emphasis></term>
+  <listitem>
+  <para>
+    Assigns a user data object to this full row object. There is no restriction on what type of object this may be.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The Windows list-view control allows an <link linkend="mthSetItemDataClsListView">data</link> value to be associated with
+    any or all items in the list-view. This is convenient for a number of things. However, if the ooDialog program is using
+    <computeroutput>LvFullRow</computeroutput> objects for <link linkend="sctInternalSorting">internal</link> sorting, the
+    full row object is assigned as the data value for each item. This prevents the programmer from using the list-view's item
+    data for some other purpose. The <emphasis role="italic">userData</emphasis> attribute is provided for these
+    circumstances. The programmer assigns a value to the <emphasis role="italic">userData</emphasis> attribute of the full
+    row object that needs to be associated with the list-view item. Since the full row object is assigned to the list-view
+    item data, the value assigned to the <emphasis role="italic">userData</emphasis> attribute is in effect assigned to the
+    list-view item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example constructs a full row object to be displayed as an item in a list-view. The data for each item comes from
+    records in a database. In order to keep track of which record in the database corresponds to each list-view item, the
+    record ID is stored in the <emphasis role="italic">userData</emphasis> attribute of the full row object. The value at
+    index 1 of the rec array is the rowid of the record:
+<programlisting>
+<![CDATA[
+
+::method fullRowFromRecord unguarded
+    use strict arg rec, index = 0
+
+    lvItem = .LvItem~new(index, rec[2])
+    lvSub1 = .LvSubItem~new(index, 1, rec[3])
+    lvSub2 = .LvSubItem~new(index, 2, rec[4])
+    lvSub3 = .LvSubItem~new(index, 3, rec[6])
+    lvSub4 = .LvSubItem~new(index, 4, rec[7])
+    lvSub5 = .LvSubItem~new(index, 5, rec[8])
+
+    lvFullRow = .LvFullRow~new(lvItem, lvSub1, lvSub2, lvSub3, lvSub4, lvSub5, .true)
+    lvFullRow~userData = rec[1]
+
+    return lvFullRow
+
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::userData() [attribute]  -->
+
+<section id="mthAddSubItem" xreflabel="addSubItem"><title>addSubItem</title>
+<indexterm><primary>addSubItem</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>addSubItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addSubItem(--subitem--)----------------------><
+]]>
+</programlisting>
+
+<para>
+  Adds a subitem to this full row. Subitems are always added as the last subitem in the row.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>subitem [required]</term>
+      <listitem>
+      <para>
+        A <xref linkend="clsLvSubItem"/> object that specifies the subitem being added.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the index of the added subitem on success, or 0 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">addSubItem</emphasis> method allows the programmer to add subitems to the full row after the
+    <computeroutput>LvFullRow</computeroutput> object has been instantiated. Typically, all subitems would be added to the
+    full row at the time of instantiation through the <xref linkend="mthNewClsLvFullRow"/> method. In addition to the
+    <emphasis role="italic">addSubItem</emphasis> method, the <xref linkend="mthInsertSubItem"/> method can be used to insert
+    a subitem into the middle of the subitem list.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::addSubItem() -->
+
+<section id="mthInsertSubItem" xreflabel="insertSubItem"><title>insertSubItem</title>
+<indexterm><primary>insertSubItem</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>insertSubItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insertSubItem(--subItem--,--colIndex--)------><
+]]>
+</programlisting>
+
+<para>
+  Inserts a new subitem into this full row and adjusts the subitem indexes for  all existing subitems, when needed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>subitem [required]</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsLvSubItem"/> object that specifies the subitem being inserted.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>colIndex [required]</term>
+    <listitem>
+    <para>
+      The one-based index that specifies which column the subitem is inserted at. The index can not be 0 and can not be
+      greater than the current count of subitems + 1. That is, a subitem can not be inserted in a way that leaves the
+      subitems non-contiguous.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">insertSubItem</emphasis> method allows the programmer to add subitems to the full row after
+    the <computeroutput>LvFullRow</computeroutput> object has been instantiated. Typically, all subitems would be added to
+    the full row at the time of instantiation through the <xref linkend="mthNewClsLvFullRow"/> method. In addition to the
+    <emphasis role="italic">insertSubItem</emphasis> method, the <xref linkend="mthAddSubItem"/> method can be used to add a
+    subitem to the end of the subitem list.
+  </para>
+  <para>
+    Inserting a new column into the middle of the exsiting subitems, will of course make the subitem index in the subitems
+    following the newly inserted subitem invalid. The ooDialog framework will automatically fix the subitem indexes where
+    needed. In addition, both the <xref linkend="atrItemClsLvSi"/> and <xref linkend="atrSubItemClsLvSi"/> attributes in the
+    newly inserted <emphasis role="italic">subitem</emphasis> object are set to the collect values automatically. Because of
+    this, the <emphasis role="italic">subitem</emphasis> object argument does not necessarily have to have correct item and
+    subitem index values.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example inserts a new subitem for column 3. Notice that when instantiating the
+    <computeroutput>LvSubItem</computeroutput> object, the code does not bother with setting the <emphasis
+    role="italic">item</emphasis> and <emphasis role="italic">subitem</emphasis> correctly. Rather it relies on the <emphasis
+    role="italic">insertSubItem</emphasis> method to set them correctly:
+<programlisting>
+<![CDATA[
+
+    lvSubItem = .LvSubItem~new(1, 1, 'Apartment #13', 2)
+    lvFull~insertSubItem(lvSubItem, 3)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::insertSubItem() -->
+
+
+<section id="mthItem" xreflabel="item"><title>item</title>
+<indexterm><primary>item</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>item</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--item-----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the <xref linkend="clsLvItem"/> object of this full row.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the <emphasis role="italic">LvItem</emphasis> object for this full row. All full rows must have an item object so
+    there is no way for this method to fail.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the <computeroutput>LvFullRow</computeroutput> for the item at index 5 of the list-view. It then gets
+    the <computeroutput>LvItem</computeroutput> object and prints its information out to the display
+<programlisting>
+<![CDATA[
+
+    lvfull = list~getFullRow(5)
+    lvitem = lvFull~item
+    self~printItem(lvitem)
+
+/* Output might be for example:
+
+Item columnFormats:     an Array
+Item columns:           an Array
+Item columns count:     0
+Item groupID:           -2
+Item imageIndex:        3
+Item indent:            0
+Item index:             5
+Item itemData:          a LvFullRow
+Item itemState:         FOCUSED SELECTED
+Item itemStateMask:
+Item mask:              GROUPID IMAGE PARAM TEXT
+Item overlayImageIndex: 0
+Item stateImageIndex:   0
+Item text:              Clerk
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::item() -->
+
+<section id="mthRemoveSubItem" xreflabel="removeSubItem"><title>removeSubItem</title>
+<indexterm><primary>removeSubItem</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>removeSubItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeSubItem(--index--)---------------------><
+]]>
+</programlisting>
+
+<para>
+  Removes the specified subitem from this full row.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>index [required]</term>
+      <listitem>
+      <para>
+        The index of the subitem to remove. This is the same as the column index for the subitem. <emphasis
+        role="italic">index</emphasis> must be a valid, existing, subitem index. This means it can not be 0, or greater than
+        the count of current subitems.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the removed <computeroutput>LvSubItem</computeroutput> object on success, or the
+    <computeroutput>.nil</computeroutput> object on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">removeSubItem</emphasis> method allows the programmer to remove subitem from the full row
+    after the <computeroutput>LvFullRow</computeroutput> object has been instantiated. Typically, all subitems would be set
+    correctly in the full row at the time of instantiation through the <xref linkend="mthNewClsLvFullRow"/> method.
+  </para>
+  <para>
+    Removing a column from the middle of the exsiting subitems, will of course make the subitem index in the subitems
+    following the removed subitem invalid. The ooDialog framework will automatically fix the subitem indexes where needed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::removeSubItem() -->
+
+<section id="mthSubItem" xreflabel="subItem"><title>subItem</title>
+<indexterm><primary>subItem</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>subItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--subItem(--index--)---------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the subitem specified by <emphasis role="italic">index</emphasis> of this full row, or the
+  <computeroutput>.nil</computeroutput> object if the subitem <emphasis role="italic">index</emphasis> is not valid.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>index [required]</term>
+      <listitem>
+      <para>
+        The one-based index of the subitem requested.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the requested <xref linkend="clsLvSubItem"/> object on success, or the <computeroutput>.nil</computeroutput>
+    object on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the subitem in column 3 of the item at index 4 in the list-view and prints out its information:
+<programlisting>
+<![CDATA[
+
+
+  lvfull  = list~getFullRow(4)
+  subItem = lvFull~subItem(3)
+  self~printSubItem(subItem)
+
+/* Output might be:
+
+Subitem imageIndex:        11
+Subitem item:              4
+Subitem mask:              IMAGE TEXT
+Subitem subitem:           3
+Subitem text:              ca@sharp.org
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::subItem() -->
+
+<section id="mthSubItems" xreflabel="subItems"><title>subItems</title>
+<indexterm><primary>subItems</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>subItems</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--subItems-------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the count of subitems in this full row.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the count of subitems in this full row.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+  lvfull  = list~getFullRow(4)
+  if lvfull~subitems == 0 then do
+      say 'No subitems for row at index 4'
+      return
+  end
+
+  do i = 1 to lvfull~subitems
+      subItem = lvFull~subItem(i)
+      self~printSubItem(subItem)
+  end
+
+/* Output might be:
+
+Item imageIndex:        13
+Item item:              4
+Item mask:              IMAGE TEXT
+Item subitem:           1
+Item text:              Cienna
+
+Item imageIndex:        18
+Item item:              4
+Item mask:              IMAGE TEXT
+Item subitem:           2
+Item text:              Acer
+
+Item imageIndex:        11
+Item item:              4
+Item mask:              IMAGE TEXT
+Item subitem:           3
+Item text:              ca@sharp.org
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::subItems() -->
+
+</section> <!-- End LvFullRow Class -->
+
+
 <section id="clsLvItem" xreflabel="LvItem"><title>LvItem Class</title>
 <indexterm><primary>LvItem class</primary></indexterm>
 <para>
@@ -10414,732 +11451,6 @@ Item text:              Line 22
 </section>  <!-- End LvItem::text() [attribute]  -->
 
 </section> <!-- End LvItem Class -->
-
-
-<section id="clsLvFullRow" xreflabel="LvFullRow"><title>LvFullRow Class</title>
-<indexterm><primary>LvFullRow class</primary></indexterm>
-<para>
-  A <computeroutput>LvFullRow</computeroutput> object is used in ooDialog to represent a list-view item and all subitems
-  of that item. A <computeroutput>LvFullRow</computeroutput> object is composed of a <xref linkend="clsLvItem"/> object whose
-  attributes reflect the list-view item and zero or more <xref linkend="clsLvSubItem"/> objects that reflect the subitems of
-  the list-view item in the <link linkend="ovvUnderlying">underlying</link> list-view.
-</para>
-<para>
-  Normally, the subitems of a list-view item are only thought about when the list-view is in report view. However, once added
-  to an item, the subitems exist whatever view the list-view is in.  A full row object can be used to add or insert list-view
-  items along with all the subitems of the item, or to query information about a list-view item and its subitems.
-</para>
-<para>
-  <computeroutput>LvFullRow</computeroutput> objects also provide the infrastructure that allows the ooDialog framework to
-  <link linkend="mthSortItems">internally</link> sort list-view items.
-</para>
-
-
-<section id="sctInternalSorting"><title>Internal Sorting Considerations</title>
-<indexterm><primary>internal sorting</primary><secondary>LvFullRow Class</secondary></indexterm>
-<indexterm><primary>internal sorting</primary><secondary>ListView Class</secondary></indexterm>
-<para>
-  The <xref linkend="mthSortItems"/> method is used to sort list-view items. One option of this method is to have the
-  ooDialog framework implement the sort internally. The internal sort can be significantly faster, for large lists, than
-  implementing the sort in Rexx. However, the internal sorting is dependent on the <computeroutput>LvFullRow</computeroutput>
-  class. There are a few things the Rexx programmer needs to be aware of that effect the ability of the ooDialog framework to
-  do an internal sort.
-</para>
-<para>
-  Any sorting of the list-view items, whether it is through a sort implemented in Rexx or the internal sort, is dependent on
-  <link linkend="mthSetItemDataClsListView">setting</link> a value for the item data of every list-view item. For the
-  internal sort to work, the item data value must be a <computeroutput>LvFullRow</computeroutput> object. There are several
-  approaches that could be used to assign a full row object to the item data of every list-view item. One approach would be
-  to iterate through all the list-view items, for each item, instantiate a full row object for the item, and use the <xref
-  linkend="mthSetItemDataClsListView"/> method to assign the object to the item.
-</para>
-<para>
-  However, full row objects can also be used to add items to the list-view through one the <xref linkend="mthAddFullRow"/>,
-  <xref linkend="mthInsertFullRow"/>, or <xref linkend="mthPrependFullRow"/> methods. A second approach is to add all
-  list-view items using full row objects and have the ooDialog framework set the full row object as the item data when the
-  item is added to the list-view. To use this technique, the programmer should set the <emphasis
-  role="italic">sorting</emphasis> argument to true when <link linkend="mthNewClsLvFullRow">instantiating</link> the full row
-  object.
-</para>
-<para>
-  In a way, a full row object is a snapshot of the information the list-view control maintains about a specific item in the
-  list. This information can change over time as the application is used. For instance, the text of an item could be changed.
-  When a full row object is assigned as the item data of a list-view item, the ooDialog framework does its best to keep the
-  full row object updated with any changes made to the information of the list-view item. But, there is one scenario where
-  this is not always possibile. The Rexx programmer needs to be aware of this and take the proper steps to keep the full row
-  object in synch with the list-view item.
-</para>
-<para>
-  When a subitem column in the list-view is <link linkend="mthInsertColumnPX">inserted</link>
-  or <link linkend="mthDeleteColumn">deleted</link>, the list-view control adds or deletes the subitems of all
-  items that corresponds to the colum. Every item in a list-view always has the same number of subitems. If all items in the
-  list-view have a <computeroutput>LvFullRow</computeroutput> object set as the item data, when a column is deleted, the full
-  row object will have one too many subitems. The same if a column is added, the full row object will have no knowledge of
-  the new subitem. <emphasis role="bold">Note</emphasis> that there is no problem the very first time a column is inserted
-  in a list-view and this only applies to <emphasis role="italic">subitem</emphasis> columns. The information for a
-  list-view item is not deleted by deleting its column, column 0. In addition, this discussion only concerns the case where
-  <computeroutput>LvFullRow</computeroutput> objects have been assigned to the item data of each item to faciliate internal
-  sorting.
-</para>
-<para>
-  Most ooDialog programs that use a list-view do not involve inserting or removing columns after the list-view items have
-  been added. But, for programs that do <emphasis role="italic">and</emphasis> use <computeroutput>LvFullRow</computeroutput>
-  objects to allow internal sorting, the programmer must take an additional step when a column is inserted or deleted. This
-  ensures the integrity of the full row objects. ooDialog provides 3 methods to ensure integrity when a column is inserted or
-  deleted:
-</para>
-
-<variablelist>
-  <varlistentry><term><emphasis role="bold">The fixFullRowColumns method:</emphasis></term>
-  <listitem>
-  <para>
-    ooDialog provides the <xref linkend="mthFixFullRowColumns"/> method of the <computeroutput>ListView</computeroutput>
-    which can be used to bring all the full row objects back in sync. It must be invoked after each individual column insert
-    and delete to work correctly. That is, the programmer can not delete 2 columns and then invoke the <emphasis
-    role="italic">fixFullRowColumns</emphasis> twice. The method is invoked with the column index that was removed or added
-    and a second argument that signals whether the specified column was inserted. The following code snippet gives an
-    example:
-<programlisting>
-<![CDATA[
-    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT")
-    list~fixFullRowColumns(2, .true)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">The adjustFullRows argument:</emphasis></term>
-  <listitem>
-  <para>
-    The methods that insert or delete columns in the list-view have an optional second argument, <emphasis
-    role="italic">adjustFullRows</emphasis>. If this argument is true, then the ooDialog framework is signaled to fix up the
-    full row objects internally when the column is added or deleted. The default for the argument is false. This is perhaps
-    the easist process for the programmer to use. The above example would be altered like this:
-<programlisting>
-<![CDATA[
-    list~insertColumnPX(2, "Phone Numbers", 155, "RIGHT", .true)
-
-]]>
-</programlisting>
-    The reason that the default here is false is that with very large lists, the time to fix up the full row objects can be
-    noticeable, .5 to 1.5 seconds for lists with over 10,000 items. Because of this, the programmer may not want the fix up
-    to happen during the insertion or deletion of a column.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Manual update</emphasis></term>
-  <listitem>
-  <para>
-    With this method, after the column insert or delete, the programmer iterates through all the list-view items, removes the
-    old invalid item data, creates a valid full row object, and sets the item data to the new full row object. The following
-    code snippet shows the procedure:
-<programlisting>
-<![CDATA[
-
-    list~deleteColumn(delCol)
-
-    do i = 0 to list~items - 1
-      list~removeItemData(i)
-      lvFullRow = list~getFullRow(i, .true)
-      list~setItemData(i, lvFullRow)
-    end
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="sctMethodsLvFullRow"><title>Method Table</title>
-<para>
-  The following table lists the class and instance methods of the <computeroutput>LvFullRow</computeroutput> class:
-
-<table id="tblMethodsLvFullRow" frame="all"> <title>LvFullRow Class Method Reference</title>
-<tgroup cols="2">
-<colspec colwidth="1*"/>
-<colspec colwidth="4*"/>
-<thead>
-<row>
-<entry>Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Class</emphasis></entry>
-<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
-</row>
-<row>
-<entry><xref linkend="mthNewClsLvFullRow"/></entry>
-<entry>Instantiates a new <computeroutput>LvFullRow</computeroutput> object.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance</emphasis></entry>
-<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
-</row>
-<row>
-<entry><xref linkend="mthAddSubItem"/></entry>
-<entry>Adds a subitem to this full row. Subitems are always added as the last subitem in the row.</entry>
-</row>
-<row>
-<entry><xref linkend="mthInsertSubItem"/></entry>
-<entry>Inserts a new subitem into this full row and adjusts the subitem indexes for  all existing subitems, when needed.</entry>
-</row>
-<row>
-<entry><xref linkend="mthItem"/></entry>
-<entry>Returns the <xref linkend="clsLvItem"/> object of this full row.</entry>
-</row>
-<row>
-<entry><xref linkend="mthRemoveSubItem"/></entry>
-<entry>Removes the specified subitem from this full row.</entry>
-</row>
-<row>
-<entry><xref linkend="mthSubItem"/></entry>
-<entry>Returns the subitem specified by <emphasis role="italic">index</emphasis> of this full row, or the <computeroutput>.nil</computeroutput> object if the subitem <emphasis role="italic">index</emphasis> is not valid.</entry>
-</row>
-<row>
-<entry><xref linkend="mthSubItems"/></entry>
-<entry>Returns the count of subitems in this full row.</entry>
-</row>
-</tbody></tgroup>
-</table>
-</para>
-</section>
-
-<section id="mthNewClsLvFullRow" xreflabel="new"><title>new (Class Method)</title>
-<indexterm><primary>new</primary><secondary>LvFullRow class</secondary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>new</secondary></indexterm>
-<programlisting>
-<![CDATA[
-                +--------------+
-                V              |
->>--new(--item--+--------------+--+-----------+--)--------------><
-                +--,--subItem--+  +-,-sorting-+
-]]>
-</programlisting>
-
-<para>
-  Instantiates a new <computeroutput>LvFullRow</computeroutput> object.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>item [required]</term>
-    <listitem>
-    <para>
-      A <link linkend="clsLvItem">LvItem</link> object that specifies the attributes of the list-view item being added.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>subItem [optional]</term>
-    <listitem>
-    <para>
-      A <link linkend="clsLvSubItem">LvSubItem</link> object that specifies the attributes of a subitem of the list-view
-      item being added. The argument can repeat has many times as needed to specify all the subitems of the item. The
-      subitems are added to the item in the order of the arguments to the <emphasis role="italic">new</emphasis> method.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>sorting [optional]</term>
-    <listitem>
-    <para>
-      The very last argument can optionally be <computeroutput>.true</computeroutput> or
-      <computeroutput>.false</computeroutput> to signal that the <computeroutput>LvFullRow</computeroutput> object itself is
-      to be assigned as the item data value of the list-view items. This usage is explained in the remarks section.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the new <computeroutput>LvFullRow</computeroutput> object.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Each subitem argument must be specified. If a subitem is omitted and a subitem argument follows it, a syntax
-    condition is raised. That is, if a subitem is specified, its preceding subitem must not have been omitted. These
-    statements are acceptable:
-
-<programlisting>
-<![CDATA[
-     row = .LvFullRow~new(item)
-     row = .LvFullRow~new(item, si1, si2)
-     row = .LvFullRow~new(item, si1, si2, si3)
-]]>
-</programlisting>
-
-    These statements will raise a syntax codition:
-
-<programlisting>
-<![CDATA[
-     row = .LvFullRow~new(item, , si2)
-     row = .LvFullRow~new(item, si1, , si3)
-]]>
-</programlisting>
-
-  </para>
-  <para>
-    In addition to specifying <computeroutput>LvSubItem</computeroutput> objects, the last argument can be either true or
-    false. Recall that the list-view control allows the programmer to <link linkend="mthSetItemDataClsListView">attach</link>
-    an item data value to any or all of the list-view items. If the item data for every list-view item is a
-    <computeroutput>LvFullRow</computeroutput> object, the ooDialog framework can perform internal <link
-    linkend="mthSortItems">sorting</link> of the list-view items. The last argument can be true to specify that the
-    <computeroutput>LvFullRow</computeroutput> object being instantiated should be set as the item data value for the
-    list-view item the <computeroutput>LvFullRow</computeroutput> object represents.
-  </para>
-  <para>
-    This feature is really only of use if the full row object is used to add or insert an item into the list-view. If the
-    full row object is not to be used to add an item to the list-view, then there is no reason to use the last argument of
-    true or false.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example shows a method that creates an array of list-view full rows from NFL football player data. The array is
-    later used to insert the rows into a list-view control.
-<programlisting>
-<![CDATA[
-
-::method getPlayers private
-
-  players = .NFLPlayer~playersFromDataSource("nflPlayers.txt")
-
-  self~masterList = .MasterPlayerList~new(players)
-
-  playerRows = .array~new(players~items)
-  do i = 1 to players~items
-    j = i - 1
-    p = players[i]
-    lvi = .LvItem~new(j, , p~name, , p)
-    lvsi1 = .LvSubItem~new(j, 1, p~team)
-    lvsi2 = .LvSubItem~new(j, 2, p~position)
-    lvsi3 = .LvSubItem~new(j, 3, p~rating)
-
-    r = .LvFullRow~new(lvi, lvsi1, lvsi2, lvsi3)
-    playerRows[i] = r
-  end
-
-  return playerRows
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::new() -->
-
-<section id="mthAddSubItem" xreflabel="addSubItem"><title>addSubItem</title>
-<indexterm><primary>addSubItem</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>addSubItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--addSubItem(--subitem--)----------------------><
-]]>
-</programlisting>
-
-<para>
-  Adds a subitem to this full row. Subitems are always added as the last subitem in the row.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>subitem [required]</term>
-      <listitem>
-      <para>
-        A <xref linkend="clsLvSubItem"/> object that specifies the subitem being added.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the index of the added subitem on success, or 0 on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The <emphasis role="italic">addSubItem</emphasis> method allows the programmer to add subitems to the full row after the
-    <computeroutput>LvFullRow</computeroutput> object has been instantiated. Typically, all subitems would be added to the
-    full row at the time of instantiation through the <xref linkend="mthNewClsLvFullRow"/> method. In addition to the
-    <emphasis role="italic">addSubItem</emphasis> method, the <xref linkend="mthInsertSubItem"/> method can be used to insert
-    a subitem into the middle of the subitem list.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::addSubItem() -->
-
-<section id="mthInsertSubItem" xreflabel="insertSubItem"><title>insertSubItem</title>
-<indexterm><primary>insertSubItem</primary></indexterm>
-<indexterm><primary>ListView class</primary><secondary>insertSubItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--insertSubItem(--subItem--,--colIndex--)------><
-]]>
-</programlisting>
-
-<para>
-  Inserts a new subitem into this full row and adjusts the subitem indexes for  all existing subitems, when needed.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>subitem [required]</term>
-    <listitem>
-    <para>
-      A <xref linkend="clsLvSubItem"/> object that specifies the subitem being inserted.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>colIndex [required]</term>
-    <listitem>
-    <para>
-      The one-based index that specifies which column the subitem is inserted at. The index can not be 0 and can not be
-      greater than the current count of subitems + 1. That is, a subitem can not be inserted in a way that leaves the
-      subitems non-contiguous.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns true on success, false on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The <emphasis role="italic">insertSubItem</emphasis> method allows the programmer to add subitems to the full row after
-    the <computeroutput>LvFullRow</computeroutput> object has been instantiated. Typically, all subitems would be added to
-    the full row at the time of instantiation through the <xref linkend="mthNewClsLvFullRow"/> method. In addition to the
-    <emphasis role="italic">insertSubItem</emphasis> method, the <xref linkend="mthAddSubItem"/> method can be used to add a
-    subitem to the end of the subitem list.
-  </para>
-  <para>
-    Inserting a new column into the middle of the exsiting subitems, will of course make the subitem index in the subitems
-    following the newly inserted subitem invalid. The ooDialog framework will automatically fix the subitem indexes where
-    needed. In addition, both the <xref linkend="atrItemClsLvSi"/> and <xref linkend="atrSubItemClsLvSi"/> attributes in the
-    newly inserted <emphasis role="italic">subitem</emphasis> object are set to the collect values automatically. Because of
-    this, the <emphasis role="italic">subitem</emphasis> object argument does not necessarily have to have correct item and
-    subitem index values.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example inserts a new subitem for column 3. Notice that when instantiating the
-    <computeroutput>LvSubItem</computeroutput> object, the code does not bother with setting the <emphasis
-    role="italic">item</emphasis> and <emphasis role="italic">subitem</emphasis> correctly. Rather it relies on the <emphasis
-    role="italic">insertSubItem</emphasis> method to set them correctly:
-<programlisting>
-<![CDATA[
-
-    lvSubItem = .LvSubItem~new(1, 1, 'Apartment #13', 2)
-    lvFull~insertSubItem(lvSubItem, 3)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End ListView::insertSubItem() -->
-
-
-<section id="mthItem" xreflabel="item"><title>item</title>
-<indexterm><primary>item</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>item</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--item-----------------------------------------><
-]]>
-</programlisting>
-
-<para>
-  Returns the <xref linkend="clsLvItem"/> object of this full row.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    There are no arguments for this method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the <emphasis role="italic">LvItem</emphasis> object for this full row. All full rows must have an item object so
-    there is no way for this method to fail.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example gets the <computeroutput>LvFullRow</computeroutput> for the item at index 5 of the list-view. It then gets
-    the <computeroutput>LvItem</computeroutput> object and prints its information out to the display
-<programlisting>
-<![CDATA[
-
-    lvfull = list~getFullRow(5)
-    lvitem = lvFull~item
-    self~printItem(lvitem)
-
-/* Output might be for example:
-
-Item columnFormats:     an Array
-Item columns:           an Array
-Item columns count:     0
-Item groupID:           -2
-Item imageIndex:        3
-Item indent:            0
-Item index:             5
-Item itemData:          a LvFullRow
-Item itemState:         FOCUSED SELECTED
-Item itemStateMask:
-Item mask:              GROUPID IMAGE PARAM TEXT
-Item overlayImageIndex: 0
-Item stateImageIndex:   0
-Item text:              Clerk
-
-*/
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::item() -->
-
-<section id="mthRemoveSubItem" xreflabel="removeSubItem"><title>removeSubItem</title>
-<indexterm><primary>removeSubItem</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>removeSubItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--removeSubItem(--index--)---------------------><
-]]>
-</programlisting>
-
-<para>
-  Removes the specified subitem from this full row.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>index [required]</term>
-      <listitem>
-      <para>
-        The index of the subitem to remove. This is the same as the column index for the subitem. <emphasis
-        role="italic">index</emphasis> must be a valid, existing, subitem index. This means it can not be 0, or greater than
-        the count of current subitems.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the removed <computeroutput>LvSubItem</computeroutput> object on success, or the
-    <computeroutput>.nil</computeroutput> object on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The <emphasis role="italic">removeSubItem</emphasis> method allows the programmer to remove subitem from the full row
-    after the <computeroutput>LvFullRow</computeroutput> object has been instantiated. Typically, all subitems would be set
-    correctly in the full row at the time of instantiation through the <xref linkend="mthNewClsLvFullRow"/> method.
-  </para>
-  <para>
-    Removing a column from the middle of the exsiting subitems, will of course make the subitem index in the subitems
-    following the removed subitem invalid. The ooDialog framework will automatically fix the subitem indexes where needed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::removeSubItem() -->
-
-<section id="mthSubItem" xreflabel="subItem"><title>subItem</title>
-<indexterm><primary>subItem</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>subItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--subItem(--index--)---------------------------><
-]]>
-</programlisting>
-
-<para>
-  Returns the subitem specified by <emphasis role="italic">index</emphasis> of this full row, or the
-  <computeroutput>.nil</computeroutput> object if the subitem <emphasis role="italic">index</emphasis> is not valid.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>index [required]</term>
-      <listitem>
-      <para>
-        The one-based index of the subitem requested.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the requested <xref linkend="clsLvSubItem"/> object on success, or the <computeroutput>.nil</computeroutput>
-    object on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example gets the subitem in column 3 of the item at index 4 in the list-view and prints out its information:
-<programlisting>
-<![CDATA[
-
-
-  lvfull  = list~getFullRow(4)
-  subItem = lvFull~subItem(3)
-  self~printSubItem(subItem)
-
-/* Output might be:
-
-Subitem imageIndex:        11
-Subitem item:              4
-Subitem mask:              IMAGE TEXT
-Subitem subitem:           3
-Subitem text:              ca@sharp.org
-
-*/
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::subItem() -->
-
-<section id="mthSubItems" xreflabel="subItems"><title>subItems</title>
-<indexterm><primary>subItems</primary></indexterm>
-<indexterm><primary>LvFullRow class</primary><secondary>subItems</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--subItems-------------------------------------><
-]]>
-</programlisting>
-
-<para>
-  Returns the count of subitems in this full row.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    There are no arguments for this method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the count of subitems in this full row.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-  lvfull  = list~getFullRow(4)
-  if lvfull~subitems == 0 then do
-      say 'No subitems for row at index 4'
-      return
-  end
-
-  do i = 1 to lvfull~subitems
-      subItem = lvFull~subItem(i)
-      self~printSubItem(subItem)
-  end
-
-/* Output might be:
-
-Item imageIndex:        13
-Item item:              4
-Item mask:              IMAGE TEXT
-Item subitem:           1
-Item text:              Cienna
-
-Item imageIndex:        18
-Item item:              4
-Item mask:              IMAGE TEXT
-Item subitem:           2
-Item text:              Acer
-
-Item imageIndex:        11
-Item item:              4
-Item mask:              IMAGE TEXT
-Item subitem:           3
-Item text:              ca@sharp.org
-
-*/
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End LvFullRow::subItems() -->
-
-</section> <!-- End LvFullRow Class -->
 
 
 <section id="clsLvSubItem" xreflabel="LvSubItem"><title>LvSubItem Class</title>

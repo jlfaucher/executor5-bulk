@@ -94,7 +94,7 @@
 <table id="tblEditMethods" frame="all">
 <title>Important Edit Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1*" /><colspec colwidth="4*" />
+<colspec colwidth="5*" /><colspec colwidth="16*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -280,7 +280,7 @@
 </row>
 <row>
 <entry><xref linkend="mthSetTabStops"/></entry>
-<entry>setTabStops</entry>
+<entry>Sets the tab stops for text copied into a multi-line edit control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthShowBalloon"/></entry>
@@ -293,6 +293,10 @@
 <row>
 <entry><xref linkend="mthUndo"/></entry>
 <entry>Undoes the last edit control operation in the edit control's undo queue.</entry>
+</row>
+<row>
+<entry><xref linkend="mthWantReturn"/></entry>
+<entry>Connects the <emphasis role="italic">Enter</emphasis> keypress to a method in the Rexx dialog and prevents the edit control from sending the keypress to the dialog manager, which closes the dialog.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -3241,7 +3245,7 @@ The new left margin is 10 and the new right margin is 5
 </section>
 
 
-<section id="mthTabEquals"><title>tab=</title>
+<section id="mthTabEquals" xreflabel="tab ="><title>tab=</title>
 <indexterm><primary>tab=</primary><secondary>Edit class</secondary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>tab=</secondary></indexterm>
 <programlisting>
@@ -3253,7 +3257,7 @@ The new left margin is 10 and the new right margin is 5
 
 <para>
   The <emphasis role="italic">tab =</emphasis> method is an alias for the
- <xref linkend="mthSetTabStops"/>() method.  It behaves exactly the same except there is no return
+ <xref linkend="mthSetTabStops"/> method.  It behaves exactly the same except there is no return
   value.
 </para>
 </section>
@@ -3303,6 +3307,196 @@ The new left margin is 10 and the new right margin is 5
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Edit::undo() -->
+
+<section id="mthWantReturn" xreflabel="wantReturn"><title>wantReturn</title>
+<indexterm><primary>wantReturn</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>wantReturn</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wantReturn(--+--------------+--)-------------><
+                 +--methodName--+
+]]>
+</programlisting>
+
+<para>
+  Connects the <emphasis role="italic">Enter</emphasis> keypress to a method in the Rexx dialog and prevents the edit control
+  from sending the keypress to the dialog manager, which closes the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method in the Rexx dialog that will be invoked when the user press the enter key in the single-line
+      edit control. If this argument is omitted, the method name is set to <emphasis role="italic">onReturn</emphasis>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By default in Windows dialogs, when the user presses the enter key, the default button is pressed. Normally the default
+    button is the Ok button and the dialog is closed. Usually, it is not a good idea to try and change this behavior. Most
+    Windows users become to depend on the behavior.
+  </para>
+  <para>
+    However, in rare cases, the programmer may want to change this behavior. Microsoft itself, sometimes changing this
+    behavior, as can be seen when in-place editing of list-view labels is done. When the user is editing a list-view label
+    in-place, hitting the enter key does not close the dialog, but instead accepts the current text as what the user wants.
+    The <emphasis role="italic">wantReturn</emphasis> method can be used in those circumstances.
+  </para>
+  <para>
+    A method is always connected to the Enter keypress, and invoking the <emphasis role="italic">wantReturn</emphasis> method
+    always prevents the Enter keypress from pressing the default button. If the programmer does not need to do anything in
+    the event handling method, she can simply return 0 immediately from the method.
+  </para>
+  <para>
+    This method is only for single-line edit controls. If the edit control is a multi-line edit control, the <emphasis
+    role="italic">wantReturn</emphasis> method fails and returns false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example invokes the <emphasis role="italic">wantReturn</emphasis> method. Note that the optional <emphasis
+    role="italic">methodName</emphasis> argument is not used. Therefore the <emphasis role="italic">onReturn</emphasis>
+    method will be connected:
+<programlisting>
+<![CDATA[
+
+::method setUpItemEdit private
+  expose list itemEdit
+
+  itemEdit~wantReturn
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+
+<section id="evtEditWANTRETURN" xreflabel="WANTRETURN"><title>wantReturn Event Handler</title>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>WANTRETURN</tertiary></indexterm>
+<para>
+  The event handler for the want return event is invoked when the user presses the Enter, sometimes called the Return, key
+  when the connected, single-line, edit control has the focus.
+</para>
+<para>
+  The programmer must return a value from the event handler and the interpreter waits for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onWantReturn unguarded
+  use arg ctrlID, editControlObj
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 2 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>ctrlID</term>
+    <listitem>
+    <para>
+      The resource <link linkend="defResourceId">ID</link> of the edit control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>editControlObj</term>
+    <listitem>
+    <para>
+      The Rexx Edit control object.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler must return a value, but the operating system ignores the value of the return, so any value is okay.
+    Returning 0 is a good choice.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows an event handler for the return event. The dialog has a single-line entry field that lets the
+    user type in record number and advance to that record. Hitting enter signals that the user wants to advance to record
+    entered in the edit control.
+  </para>
+  <para>
+    Note that the processing of retrieving the new record could, theoretically, be lengthy. So, the event handler replies
+    early to prevent the dialog from appearing hung while the processing going on:
+
+<programlisting>
+<![CDATA[
+
+::method onReturn unguarded
+  expose list currentItem dbMgr
+  use arg id, editObj
+
+  itemIndex = editObj~getText
+  max = list~items
+
+  reply 0
+
+  msg = ''
+  if itemIndex < 1 then msg = 'List-view record item can not be less than 1'
+  else if itemIndex > max then msg = 'List-view record item can not be greater than' max
+
+  if msg \== '' then do
+    editObj~setText(currentItem)
+    editObj~showBalloon('Entry Error', msg, 'ERROR')
+    return
+  end
+
+  oldItem = currentItem
+  currentItem = itemIndex - 1
+
+  lvRow = list~getItemData(currentItem)
+  rec = dbMgr~getRecordForID(lvRow~userData)
+
+  if rec == .nil then do
+    say 'Failed to get new record' -- TODO need message box
+    currentItem = oldItem
+    editObj~setText(currentItem)
+    return
+  end
+
+  self~setRecordFields(rec)
+  self~setNavigateButtons
+
+  self~setStateToUnchanged
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End wantReturn Event Handler -->
+
+</section>  <!-- End Edit::wantReturn() -->
 
 
 </chapter>
