@@ -43,11 +43,11 @@
     #########################################################################
 -->
 
-<!-- Appendix 05 - The Model-View Framework (MVf)		  v01-01 18Dec12
+<!-- Appendix 05 - The Model-View Framework (MVf)		  v01-01 20Dec12
      A brief overview of the internals of the Model-View Framework (MVF).
 
      Changes:
-     v01-01 18Dec12: First version.
+     v01-01 20Dec12: First version.
 
      Notes:
      Include overview of ObjectMgr.
@@ -57,35 +57,120 @@
 <appendix id="apx-mvfinternals">
   <title id="mvfinternals.title">Model-View Framework Internals</title>
   <indexterm><primary>Model-View Framework</primary><secondary>Internals</secondary></indexterm>
-  <para>This appendix provides an overview of the internals of the Model-View Framework
-    (MVF) introduced in <xref linkend="chapSeven"/>. It should really be called "Model-View-Data Framework",
-    since it also encompasses data components; however, historically such frameworks have
-    ommitted the term "data" in their names, and here we lazily conform with history.</para>
+  <para>This appendix provides an overview of the internals of the Model-View Framework (MVF)
+    introduced in <xref linkend="chapSeven"/>. It should really be called "Model-View-Data
+    Framework", since it also encompasses data components; however, historically such frameworks
+    have omitted the term "data" in their names, and here we lazily conform with precedence. The
+    following areas are addressed:<itemizedlist>
+      <listitem>
+        <para>A brief review of what is meant by "component"</para>
+      </listitem>
+      <listitem>
+        <para>The classes that make up the MVF</para>
+      </listitem>
+      <listitem>
+        <para>Using the MVF </para>
+      </listitem>
+    </itemizedlist></para>
 
-  <para>*** Intro to sections here if required. *****</para>
-
-  <!-- Section 1: The Object Manager -->
-  <section id="app5ObjectMgr"><title>The Object Manager</title>
-    <para>The Model-View Framework (MVF) manages the components that are assembled
-    to make up an application. There are two main parts to the MVF:
-    first a management object (an ooRexx class)
-    called the "Object Manager", and secondly a set of superclasses that provide
-    functions common to all components.
-    A "component" is a Model, a View, or a Data program. An example is the "ProductView"
-    component, which consists of three ooRexx classes: <computeroutput>ProductView</computeroutput>,
-    <computeroutput>AboutDialog</computeroutput>, and <computeroutput>HRSpv</computeroutput>.</para>
-  <para>
-    This component, together with the Product List component, the ProductData component,
-    and a Product datatype, make up a Product Data Business Component.
-    For each component, one class is made known by name to ObjectMgr by name.
-  </para>
+<!-- Section 1: Components, Classes, Files and Folders -->
+  <section><title>Components, Classes, Files, and Folders</title>
+    <para>A "component", then, is one of three kinds: a Model, View, or Data component. A component
+      may have more than one class. For example, the "ProductView" component (in the
+        <computeroutput>Exercise07\Product</computeroutput> folder) consists of three classes:
+        <computeroutput>ProductView</computeroutput>,  <computeroutput>AboutDialog</computeroutput>,
+      and <computeroutput>HRSpv</computeroutput>. The first of these is the "main" class in the
+      component, the other two being "subsidiary" classes. <indexterm>
+        <primary>Business Component</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Main class</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Subsidiary class</primary>
+      </indexterm>
+      <indexterm>
+        <primary/>
+      </indexterm> This component, together with the ProductModel, ProductListModel,
+      ProductListView, and ProductData components make up the "Product Business Component". Thus a
+      "business component" consists of one or more components, each of which has a "main" class and
+      nought or more subsidiary classes. Thus (by design) a Business Component is a collection of
+      components that implement all and only a significant business concept. Finally, a business
+      component is packaged within a folder that bears its name. And components are packaged in .rex
+      files, Thus the Product business component is the folder
+        <computeroutput>Product</computeroutput> which contains a number of files, most of them
+      executables such as <computeroutput>ProductModelsData.rex</computeroutput> which contains the
+      ProductModel, ProductListModel, and ProductData components. </para>
+    <para>For each component, one class is made known by name to
+        <computeroutput>ObjectMgr</computeroutput>. The class will always be the "main" class. </para>
+    </section>
+    
+<!-- Section 2: The Object Manager -->
+  <section id="app5ObjectMgr"><title>MVF Classes</title>
+    <indexterm><primary>Object Manager</primary></indexterm>
+    <para>The Model-View Framework (MVF) manages the components that are assembled to make up an
+      application. There are two main parts to the MVF: first a management class called the "Object
+      Manager" (<computeroutput>ObjectMgr.rex</computeroutput>), and secondly a set of superclasses
+      - <computeroutput>Model</computeroutput>, <computeroutput>GenericFile</computeroutput>, and
+      three View superclasses <computeroutput>UdView.rex</computeroutput>,
+        <computeroutput>ResView.rex</computeroutput>, and
+        <computeroutput>RcView.rex</computeroutput>. The three View superclasses are identical
+      except for their superclasses - <computeroutput>UserDialog</computeroutput>,
+        <computeroutput>ResDialog</computeroutput>, and <computeroutput>RcDialog</computeroutput>.
+      These should properly be mixins rather than different files, and a future version of this
+      Guide will take this approach. All MVF classes are in the
+        <computeroutput>Exercise07/Support</computeroutput> folder). </para>        
   </section>
 
-  <section><title>Some Title</title>
+  <section id="mvfinternals-mvfmethods"><title>MVF Methods</title>
   <para>
     <programlisting>
 <![CDATA[
-</programlisting>
+GetComponentId for a Model when neither Model nor Data have been instantiated.
+
+  X:            getComponentId('PersonModel', 'PA100')       -->  ObjectMgr
+  ObjectMgr:      newInstance('PA100')                       -->  .PersonModel
+  .PersonModel:     forward class (super) continue           -->  .Model
+  .Model:             getComponentId('PersonData','The')     -->  ObjectMgr
+  ObjectMgr:        ...return idPersonData                   ...  .Model
+  .Model:           getRecord('PA100')                       -->  PersonData
+                    (no 'getRecord' method, so call super)   -->  GenericFile
+  GenericFile     ... return dirData                         ...  .Model
+  .Model          self~new(dirData) - init(dirData)          -->  PersonModel
+  PersonModel       ... init: store dirData, return self     ...  .Model
+  .Model          ... return idPersonModel                   ...  ObjectMgr
+  ObjectMgr     ... return idPersonModel                     ...  X
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PersonModel
+-----------
+    ::METHOD newInstance CLASS PUBLIC
+    use strict arg instanceName
+    forward class (super) continue
+    modelId = RESULT
+    return modelId
+
+  ::METHOD init
+    expose dirPerson
+    use strict arg dirPerson
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PersonData
+----------
+  ::METHOD newInstance CLASS PUBLIC
+    -- If first invocation:
+    personDataId = self~new()
+    return personDataId
+
+  ::METHOD init PUBLIC
+    fileName = "..\samples\person\PersonFile.txt"
+    columns = 6					-- colums in the Persons "table"
+    records = self~init:super(fileName, columns)
+    return self					-- MVF
+
+
+
+===================================================================
 
      showModel(class-inst)  ->  ObjectMgr
      				self~getcreate model
@@ -134,33 +219,43 @@
          records = self~init:super(fileName, columns)
 
 
-
-     Some component X wants to send 'query' to PersonModel. So:
-     (a) X sends getComponentId('PersonModel PA150') to ObjectMgr.
-     (b) ObjMgr: if exists, then return cmptId
-     (c) Else
-     Sends 'query' to a PersonModel on Message Sender.
-     Messagesender asks ObjectMgr for id of the PersonModel
-     If not in object bag, ObjMgr sends 'newInstance' to Model with inst name
-     as param.
-     .Model~newInstance asks ObjMgr for id for "PersonData The"
-     If not found, then set noDataError to .true.
-     Else do
-       send a "find" to "PersonData The"
-       "PersonData The" returns the Model's instance's data.
-       If data found, then id = .PersonModel~new(data)
-       Return Id (to ObjectMgr)
-     end
 ]]>
     </programlisting>
 </para>
+  </section>
+
+<section id="mvfinternals-classnaming"><title>Class Naming Constraints</title>
+  <indexterm><primary>MVF</primary><secondary>Class names</secondary></indexterm>
+  <indexterm><primary>Class naming for the MVF</primary></indexterm>
+  <para>*** Do we need this here, or is it better in Chap 7, or just a pointer from here to Chap 7?</para>
 </section>
+  
+  <section id="mvfinternals-requireslist"><title>The "Requires List"</title>
+        <indexterm><primary>RequiresList</primary></indexterm>
+  <para>An oorexx class that is instantiated from another file must be stated in an oorexx
+      "requires" statement. However, in the MVF component instantiation (or, to be precise,
+      instantiation of the main class in a component) is handled by
+        <computeroutput>ObjectMgr</computeroutput>. This mean that
+        <computeroutput>ObjectMgr</computeroutput> must contain a <emphasis role="italic"
+        >::requires</emphasis> statement for each component. However, to avoid changing the
+        <computeroutput>ObjectMgr.rex</computeroutput> file, a separate file
+        (<computeroutput>RequiresList.rex</computeroutput> in the
+        <computeroutput>Exercise07</computeroutput> folder) containing only the desired set of
+        <emphasis role="italic">::requires</emphasis> statements is used.
+        <computeroutput>ObjectMgr.rex</computeroutput>calls this file as a routine (<emphasis
+        role="italic">call "RequiresList.rex"</emphasis>) as its first executable statement. In this
+      way, additional ooRexx components can be added to the application merely by adding their file
+      names to this file.</para>
+  </section>
 
- <section><title>The Requires List</title>
-  <para>To be completed.</para>
-  </section>     
+  <section id="mvfinternals-ViewMgr"><title>"The View Manager"</title>
+    <indexterm><primary>View Manager</primary></indexterm>
+
+    <para> The View Manager manages common function to do with views (or dialogs). In this Exercise,
+      it is used only for offsetting dialogs and ...[*** to be continued ***].  </para>
+  </section>
+
 </appendix>
-
 
 
 

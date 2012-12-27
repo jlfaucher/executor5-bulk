@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
 <!ENTITY % BOOK_ENTITIES SYSTEM "oodguide.ent">
 %BOOK_ENTITIES;
 ]>
@@ -138,7 +138,7 @@ The OrderData component merges the two (??)
             Product CU003.  To do this, enter "ObjectMgr The" in the Target field of the Message
             Sender, enter "showModel" in the "method" field, enter "ProductModel CU003" in the Data
             field, and then press the "Send" button. The Product dialog for instance CU003 appears.
-            (The Message Sender is discussed in <xref linkend="chap07-MsgSender"/>.)
+            The Message Sender is discussed in <xref linkend="chap07-MsgSender"/>.
         </para>
         <para>The "ObjectMgr" (which should really be called "ComponentManager" since it manages
             application components as opposed to any object) is a support class that instantiates
@@ -204,18 +204,73 @@ The OrderData component merges the two (??)
                 However, the MVF must work when some or all are activated. For example, if a View
                 exists but is minimized, then if a user double-clicks on that item in a list, the
                 MVF need only surface the view. Thus the MVF distinguishes between a number of
-                different states, thus relieving the programmer from having to code such logic for
+                different states, and relieves the programmer from having to code such logic for
                 each component. </para>
             <para>For an overview of MVF internals, see <xref linkend="apx-mvfinternals"/></para>
             <para/>
 </section>	<!-- End of Section 7.2.1 -->
 
 <section id="chap07-MVFuse"><title id="ch7-amvf-use.title">Using the MVF</title>		<!-- Section 7.2.2 -->
-<para> The MVF must handle the three different kinds of component - view, model, and data. Each model gets
-    its data from its data component, and each model has a single view. (In principal, the MVF could support
-    multiple views of the same model by providing an "Open as..." option for a given icon or list item. This
-    could display a selection of views, similar to the "Open with..." function provided by a button-2 click
-    on an item in Windows Explorer.</para>
+<para> The MVF handles the three different kinds of component - view, model, and data. Each model
+                gets its data from its data component, and each model has a single view. (In
+                principal, the MVF could support multiple views of the same model by providing an
+                "Open as..." option for a given icon or list item. This could display a selection of
+                views, similar to the "Open with..." function provided by a button-2 click on an
+                item in Windows Explorer.)</para>
+            <para>MVF requires that each component has a text name, the name being the class name of
+                the main class (such as "CustomerModel", "ProductView" or "OrderData") together with
+                an instance name. For components with a "key" such as Customer Number, the instance
+                name is the key (e.g. "CustomerModel BA0314"). For components that are "singletons"
+                - that is, there can logically be only one instance, the name is "The". An example
+                of a singleton is a data component (e.g. "CustomerData The").  Finally, some
+                components - such as lists - are anonymous, and their instance names are numbers, as
+                in "CustomerList 3". The instance name is important to MVF since its internal logic
+                differs slightly depending on which kind of instance name is used - a "key" name,
+                the singleton name, or the anonymous name. (Note that this naming convention could
+                be relaxed if components were named in a configuration file; however, the
+                distinctions between the different kinds of component would remain).
+
+            Note: also "Forms" - take instance name of entity id = e.g. Order Number</para>
+
+<para>Suppose now that some component X wants to send 'query' to the instance "PA150" of PersonModel
+                which is subclassed from the support class <computeroutput>Model</computeroutput>
+                (MVF support classes are in the <computeroutput>Support</computeroutput> folder). To
+                do this, both the Model and the Data components must be instantiated. The following
+                pseudocode illustrates how the MVF handles this (excluding error handling): <programlisting>
+  <![CDATA[
+    (1) X (where X is some component) invokes "getComponentId('PersonModel','PA150') on ObjectMgr
+          (ObjectMgr maintains a table of all active instances - classname, instancename and object ref).
+    (2)   ObjMgr: If "PersonModel PA150" exists then its object ref is returned to X.
+    (3)   Else ObjMgr sends "newInstance" to .PersonModel (the class object) with the instance name "PA150"
+            as an argument. This is forwarded to the .Model superclass, which, in order to get this instance's data,
+            invokes "getComponentId('PersonData','The')" on ObjectMgr.
+    (4)       ObjMgr: If "PersonData The" exists, then its object ref is returned.
+              Else ObjectMgr sends "newInstance" to .PersonData with the instance name "The".
+    (6)         .PersonData ceates an instance of itself, and the instance's 'init' method uses its superclass
+                  .GenericFile to reads its file from disk. The 'init' method then returns the instance's object ref
+                  .PersonData, which returns it to ObjectMgr
+    (7)         ObjectMgr stores the object ref and object name for "PersonData The", and returns to .Model.
+    (7)       .Model then invokes the 'query' method on "PersonData The" with the instance name ("PA150") as an argument.
+                This is handled entirely by the superclass ("GenericFile") which returns a directory containing
+                the instance's data.
+
+    (8)         "PersonData The" returns the Model's instance's data.
+If data found, then id = .PersonModel~new(data)
+Return Id (to ObjectMgr)
+end
+
+Note - if class name is quoted, then must use precise case match. (Is this correct?)
+]]>
+    </programlisting>
+            </para>
+
+
+<section>
+    <title>Query Protocol</title>
+    <para>to be completed.</para>
+</section>
+
+
 
 <!--  In addition, any gi- diff kinds of component; how different kinds use MVF. - Ref
                 "samples\person" and "samples\Wow4". Use MessgeSender to show a view of the
@@ -238,12 +293,13 @@ The OrderData component merges the two (??)
 </section>	<!-- End of Section 7.2 -->
 
 <section id="chap07-MsgSender"><title id="ch7-amvf-msgsndr.title">The Message Sender</title>	<!-- Section 7.3 -->
-<para>
-Message Sender - get rid of "stand-alone" testing code.
-</para>
+    <indexterm><primary>Message Sender</primary></indexterm>
+<para> Message Sender - get rid of "stand-alone" testing code. </para>
+        <para>In sending to ObjectMgr, this version only supports "List" and "showModel". </para>
 </section>	<!-- End of Section 7.3 -->
 
 <section id="chap07-OrderForm"><title id="ch7-orderform.title">The Order Form</title>		<!-- Section 7.4 -->
+    <indexterm><primary>Order Form dialog</primary></indexterm>
 <para>
 Order Form - use of ControlObjects - multiple dialogs, one main one, one for each tab. Why? To allow controls on
 the form itself.
