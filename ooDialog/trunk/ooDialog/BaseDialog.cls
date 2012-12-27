@@ -239,3 +239,7 @@
 ::method customDraw external "LIBRARY oodialog cd_init"
 ::method customDrawControl external "LIBRARY oodialog cd_customDrawControl"
 ::method RGB external "LIBRARY oodialog image_colorRef_cls"
+
+
+::class 'ResizingAdmin' public mixinclass Object
+

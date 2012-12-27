@@ -548,6 +548,20 @@ typedef struct _wmf {
 typedef WinMessageFilter *pWinMessageFilter;
 
 
+/* Struct for the resizing information for a single control */
+typedef struct _resizeInfoCtrl {
+    size_t              countCtrls;
+} CResizeInfoCtrl;
+typedef CResizeInfoCtrl *pCResizeInfoCtrl;
+
+
+/* Struct for the resizable dialog information struct (ResizingAdmin.) */
+typedef struct _resizeInfoDlg {
+    size_t              countCtrls;
+} CResizeInfoDlg;
+typedef CResizeInfoDlg *pCResizeInfoDlg;
+
+
 /* Struct for the WindowBase object CSelf. */
 typedef struct _wbCSelf {
     HWND              hwnd;
@@ -623,6 +637,7 @@ typedef struct _pbdCSelf {
     pCWindowBase         wndBase;
     pCEventNotification  enCSelf;
     pCWindowExtensions   weCSelf;
+    pCResizeInfoDlg      resizeInfo;
     RexxObjectPtr        rexxSelf;      // This dialog's Rexx dialog object
     RexxObjectPtr        rexxParent;    // This dialog's Rexx parent dialog object
     HWND                 hDlg;          // The handle to this dialog's underlying Windows dialog
@@ -666,6 +681,7 @@ typedef struct _pbdCSelf {
     bool                 isPropSheetDlg;   // Dialog is a property sheet dialog
     bool                 isTabOwnerDlg;    // Dialog is a tab owner dialog
     bool                 isCustomDrawDlg;  // Dialog inherited CustomDraw
+    bool                 isResizableDlg;   // Dialog inherited ResizingAdmin
     bool                 idsNotChecked;
     bool                 badIDs;
     bool                 isDlgHwndSet;     // Has setDlgHandle() been executed

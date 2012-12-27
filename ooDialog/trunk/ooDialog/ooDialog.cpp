@@ -2923,6 +2923,11 @@ static bool checkDlgType(RexxMethodContext *c, RexxObjectPtr self, pCPlainBaseDi
         pcpbd->idsNotChecked   = true;
     }
 
+    if ( c->IsOfType(self, "RESIZINGADMIN") )
+    {
+        pcpbd->isResizableDlg = true;
+    }
+
     return true;
 
 err_out:
