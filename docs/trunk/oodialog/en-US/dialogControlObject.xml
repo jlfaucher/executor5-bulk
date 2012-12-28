@@ -938,8 +938,9 @@ Generic form:
     The operating system translates the numeric <xref linkend="clsVK"/> key code produced by a key down /
     key up combination into a numeric <emphasis role="italic">character</emphasis> code. The character code is sent to
     the window with the keyboard focus in a character event notification. For enhanced 101-key and 102-key keyboards, the
-    <xref linkend="evtDialogControlCHAR"/> event handler will also receive extended key notifications. The extended keys are
-    the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and the arrow keys in the clusters to the left of the numeric keypad.
+    <link linkend="evtDialogControlCHAR">CHAR</link> <xref linkend="evtDialogControlCHAR"/> event handler will also
+    receive extended key notifications. The extended keys are the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and the arrow keys
+    in the clusters to the left of the numeric keypad.
   </para>
   <para>
     There is not a one to one correspondence between the numeric value of a virtual key code and the numeric character
@@ -1061,9 +1062,9 @@ Generic form:
   <link linkend="rmkConnectCharEvent">character</link>.
 </para>
 <para>
-  The programmer must return a value from the event handler and the interpreter waits for this return. Generic
-  information on how to <link linkend="sctCodingEventHandlers">code</link>) event handlers is included in the
-  documentation for the <xref linkend="clsEventNotification"/> class.
+  The programmer must return a value from the event handler and the interpreter waits for this return. Generic information on
+  how to <link linkend="sctCodingEventHandlers">code</link> event handlers is included in the documentation for the <xref
+  linkend="clsEventNotification"/> class.
 </para>
 
 <programlisting>
@@ -1224,7 +1225,11 @@ Generic form:
   <listitem>
   <para>
     The event handler must return <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or a
-    numeric character code. Returning <computeroutput>.true</computeroutput> allows the event to be
+    numeric character code. Returning <computeroutput>.true</computeroutput> passes the event notification on to the control
+    unchanged. Returning <computeroutput>.false</computeroutput> prevents the character from being sent on to the control.
+    This has the effect of <emphasis role="italic">swallowing</emphasis> the character. The control will not be aware of the
+    character. Passing a numeric character back has the effect of replacing what the character was, with the character passed
+    back.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
