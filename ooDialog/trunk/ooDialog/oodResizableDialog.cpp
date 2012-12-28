@@ -51,7 +51,7 @@
 #include "oodMessaging.hpp"
 //#include "oodMouse.hpp"
 //#include "oodData.hpp"
-//#include "oodPropertySheetDialog.hpp"
+#include "oodResizableDialog.hpp"
 
 LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {

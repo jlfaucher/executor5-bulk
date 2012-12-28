@@ -547,19 +547,45 @@ typedef struct _wmf {
 } WinMessageFilter;
 typedef WinMessageFilter *pWinMessageFilter;
 
+// How an edge of a control is pinned to the edge of another window.
+typedef enum
+{
+    stationaryPin = 1,   // control position is unchanged from pinned edge
+    proportionalPin,     // control position is proportional to pinned edge
+    widthPin,            // control width does not change
+    heightPin            // control height does not change
+} edgePin_t;
+
+// Which edge of another window the control's edge is pinned to.
+typedef enum
+{
+    leftEdge = 1,  // pinned to the left edge
+    topEdge,       // pinned to the top edge
+    rightEdge,     // pinned to the right edge
+    bottomEdge,    // pinned to the bottom edge
+    xCenterEdge,   // centered horizontally ...
+    yCenterEdge    // centered vertically ...
+} pinnedEdge_t;
+
+typedef struct _edge
+{
+    edgePin_t     pin;        // how this edge is pinned
+    uint32_t      pinToID;    // the window this edge is pinned to
+    pinnedEdge_t  pinToEdge;  // which edge of the pinned to window is pinned
+};
 
 /* Struct for the resizing information for a single control */
 typedef struct _resizeInfoCtrl {
-    size_t              countCtrls;
-} CResizeInfoCtrl;
-typedef CResizeInfoCtrl *pCResizeInfoCtrl;
-
+    uint32_t              id;
+    RECT                  originalR;
+} ResizeInfoCtrl;
+typedef ResizeInfoCtrl *pResizeInfoCtrl;
 
 /* Struct for the resizable dialog information struct (ResizingAdmin.) */
 typedef struct _resizeInfoDlg {
     size_t              countCtrls;
-} CResizeInfoDlg;
-typedef CResizeInfoDlg *pCResizeInfoDlg;
+} ResizeInfoDlg;
+typedef ResizeInfoDlg *pResizeInfoDlg;
 
 
 /* Struct for the WindowBase object CSelf. */

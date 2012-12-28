@@ -54,6 +54,7 @@
 #include "oodData.hpp"
 #include "oodMessaging.hpp"
 #include "oodDeviceGraphics.hpp"
+#include "oodResizableDialog.hpp"
 
 
 class LoopThreadArgs
@@ -223,6 +224,10 @@ DWORD WINAPI WindowLoopThread(void *arg)
     if ( pcpbd->isTabOwnerDlg )
     {
         dlgProc = (DLGPROC)RexxTabOwnerDlgProc;
+    }
+    else if ( pcpbd->isResizableDlg )
+    {
+        dlgProc = (DLGPROC)RexxResizableDlgProc;
     }
 
     pcpbd->hDlg = CreateDialogParam(pcpbd->hInstance, MAKEINTRESOURCE(args->resourceId), pcpbd->hOwnerDlg,

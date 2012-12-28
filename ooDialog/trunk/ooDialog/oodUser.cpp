@@ -57,6 +57,7 @@
 #include "oodControl.hpp"
 #include "oodMessaging.hpp"
 #include "oodResourceIDs.hpp"
+#include "oodResizableDialog.hpp"
 #include "oodUser.hpp"
 
 BOOL IsNestedDialogMessage(pCPlainBaseDialog pcpbd, LPMSG lpmsg);
@@ -86,6 +87,10 @@ DWORD WINAPI WindowUsrLoopThread(LoopThreadArgs * args)
     if ( pcpbd->isTabOwnerDlg )
     {
         dlgProc = (DLGPROC)RexxTabOwnerDlgProc;
+    }
+    else if ( pcpbd->isResizableDlg )
+    {
+        dlgProc = (DLGPROC)RexxResizableDlgProc;
     }
 
     pcpbd->hDlg = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)args->dlgTemplate, pcpbd->hOwnerDlg,
