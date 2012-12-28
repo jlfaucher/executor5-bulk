@@ -95,7 +95,7 @@ void RexxEntry ooSQLiteLoad(RexxThreadContext *c)
 {
     int rc = sqlite3_initialize();
 
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
     printf("\nooSQLiteLoad() entered sqlite3_initialize() rc=%d\n\n", rc);
 #endif
 
@@ -139,7 +139,7 @@ void RexxEntry ooSQLiteLoad(RexxThreadContext *c)
  */
 void RexxEntry ooSQLiteUnload(RexxThreadContext *c)
 {
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
     printf("\nooSQLiteUnload() entered\n\n");
 #endif
 
@@ -4019,7 +4019,7 @@ RexxMethod1(RexxObjectPtr, oosqlconn_uninit, CSELF, pCSelf)
     {
         pCooSQLiteConn pConn = (pCooSQLiteConn)pCSelf;
 
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
         printf("ooSQLiteConnection::uninit() database connection=%p closed=%d\n", pConn->db, pConn->closed);
 #endif
         if ( ! pConn->closed && pConn->db != NULL )
@@ -4032,7 +4032,7 @@ RexxMethod1(RexxObjectPtr, oosqlconn_uninit, CSELF, pCSelf)
 
             if ( rc == SQLITE_OK )
             {
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
                 printf("ooSQLiteConnection::uninit() did close database first try\n");
 #endif
 
@@ -4059,7 +4059,7 @@ RexxMethod1(RexxObjectPtr, oosqlconn_uninit, CSELF, pCSelf)
                 pConn->db = NULL;
                 pConn->closed = true;
             }
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
             else
             {
                 printf("ooSQLiteConnection::uninit() database connection not closed successfully. rc=%d\n", rc);
@@ -4207,7 +4207,7 @@ RexxMethod1(int, oosqlconn_close, CSELF, pCSelf)
             pConn->db     = NULL;
             pConn->closed = true;
         }
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
         else if ( rc == SQLITE_BUSY )
         {
             printf("Database busy. Sleep here or let user deal with this??\n");
@@ -5528,7 +5528,7 @@ RexxMethod1(RexxObjectPtr, oosqlstmt_uninit, CSELF, pCSelf)
     {
         pCooSQLiteStmt pCstmt = (pCooSQLiteStmt)pCSelf;
 
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
         printf("ooSQLiteStmt::uninit() prepared statement=%p finalized=%d\n", pCstmt->stmt, pCstmt->finalized);
 #endif
 
@@ -6949,7 +6949,7 @@ RexxMethod1(RexxObjectPtr, oosqlbu_uninit, CSELF, pCSelf)
     {
         pCooSQLiteBackup pCbu = (pCooSQLiteBackup)pCSelf;
 
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
         printf("ooSQLiteBackup::uninit() backup=%p finished=%d dstRexxSelf=%p\n",
                pCbu->backup, pCbu->finished, pCbu->dstRexxSelf);
 #endif
@@ -7204,7 +7204,7 @@ RexxMethod1(RexxObjectPtr, oosqlmtx_uninit, CSELF, pCSelf)
     {
         pCooSQLiteMutex pCmtx = (pCooSQLiteMutex)pCSelf;
 
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
         printf("ooSQLiteMutex::uninit() mutex=%p closed=%d\n", pCmtx->mutex, pCmtx->closed);
 #endif
 
@@ -10053,7 +10053,7 @@ RexxMethod1(int, db_cb_releaseBuffer, RexxObjectPtr, buffer)
 {
     pCGenericCallback cbc = (pCGenericCallback)context->BufferData((RexxBufferObject)buffer);
 
-#ifdef OOSQLDBG
+#if OOSQLDBG == 1
     if ( cbc == NULL )
     {
         printf("db_cb_releaseBuffer cbc=%p, is NULL\n", cbc);
