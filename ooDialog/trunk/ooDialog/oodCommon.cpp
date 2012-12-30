@@ -98,6 +98,35 @@ void ooDialogInternalException(RexxMethodContext *c, char *function, int line, c
  *        The specified method, built-in function, or external routine exists,
  *        but you used it incorrectly.
  *
+ *  The "methName" method can only be invoked on "objectName" "msg"
+ *
+ *  The defaultLeft method can only be invoked on a ResizableDlg during the
+ *  defineSizing method.
+ *
+ * @param c           The method context we are operationg in.
+ * @param methodName  Method name.
+ * @param msg
+ * @param rxObj
+ *
+ * @note  This is an argument rearrangement to produce a message similar to, but
+ *        slightly different, than the other methodCanNotBeInvokedExeception
+ *        functions.
+ */
+RexxObjectPtr methodCanOnlyBeInvokedException(RexxMethodContext *c, CSTRING methodName, CSTRING msg, RexxObjectPtr rxObj)
+{
+    TCHAR buf[512];
+    _snprintf(buf, sizeof(buf), "The %s method can only be invoked on %s %s",
+              methodName, c->ObjectToStringValue(rxObj), msg);
+    c->RaiseException1(Rexx_Error_Incorrect_method_user_defined, c->String(buf));
+    return NULLOBJECT;
+}
+
+/**
+ *  93.900
+ *  Error 93 - Incorrect call to method
+ *        The specified method, built-in function, or external routine exists,
+ *        but you used it incorrectly.
+ *
  *  The "methName" method can not be invoked on "objectName" "msg"
  *
  *  The execute method can not be invoked on a PropertyPage using an owner

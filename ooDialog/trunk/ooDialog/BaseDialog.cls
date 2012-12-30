@@ -243,3 +243,15 @@
 
 ::class 'ResizingAdmin' public mixinclass Object
 
+::method defaultBottom external "LIBRARY oodialog ra_defaultSide"
+::method defaultLeft external "LIBRARY oodialog ra_defaultSide"
+::method defaultRight external "LIBRARY oodialog ra_defaultSide"
+::method defaultSizing external "LIBRARY oodialog ra_defaultSizing"
+::method defaultTop external "LIBRARY oodialog ra_defaultSide"
+::method defineSizing
+
+  say 'In defineSizing()'
+  return 0
+
+-- Internal use only
+::method initResizing private  external "LIBRARY oodialog ra_initResizing"              -- Do not document

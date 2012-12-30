@@ -393,6 +393,7 @@ extern void           controlFailedException(RexxThreadContext *, CSTRING, CSTRI
 extern void           wrongWindowStyleException(RexxMethodContext *c, CSTRING, CSTRING);
 extern void           bitmapTypeMismatchException(RexxMethodContext *c, CSTRING orig, CSTRING found, size_t pos);
 extern void           customDrawMismatchException(RexxThreadContext *c, uint32_t id, oodControl_t type);
+extern RexxObjectPtr  methodCanOnlyBeInvokedException(RexxMethodContext *c, CSTRING methodName, CSTRING msg, RexxObjectPtr rxObj);
 extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, CSTRING methodName, RexxObjectPtr rxDlg, CSTRING msg);
 extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, CSTRING methodName, CSTRING msg, RexxObjectPtr rxDlg);
 extern RexxObjectPtr  invalidAttributeException(RexxMethodContext *c, RexxObjectPtr rxDlg);

@@ -54,6 +54,7 @@
 #include "oodMessaging.hpp"
 #include "oodData.hpp"
 #include "oodDeviceGraphics.hpp"
+#include "oodResizableDialog.hpp"
 #include "oodResourceIDs.hpp"
 
 
@@ -3181,6 +3182,25 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
     if ( argumentExists(4) )
     {
         context->SendMessage1(self, "PARSEINCLUDEFILE", hFile);
+    }
+
+    if ( pcpbd->isResizableDlg )
+    {
+        if ( ! allocateResizeInfo(context, pcpbd) )
+        {
+            result = TheOneObj;
+            goto done_out;
+        }
+
+        pcpbd->resizeInfo->inDefineSizing = true;
+
+        RexxObjectPtr reply = context->SendMessage0(self, "DEFINESIZING");
+        if ( ! isInt(0, reply, context->threadContext) )
+        {
+            result = TheOneObj;
+        }
+
+        pcpbd->resizeInfo->inDefineSizing = false;
     }
 
     goto done_out;

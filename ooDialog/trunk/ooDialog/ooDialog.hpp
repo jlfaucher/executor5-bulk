@@ -547,14 +547,17 @@ typedef struct _wmf {
 } WinMessageFilter;
 typedef WinMessageFilter *pWinMessageFilter;
 
+/* Stuff for the ResizingAdmin class (resizable dialogs.) */
+
 // How an edge of a control is pinned to the edge of another window.
 typedef enum
 {
-    stationaryPin = 1,   // control position is unchanged from pinned edge
+    myLeftPin = 1,       // control width does not change
+    myTopPin,            // control height does not change
     proportionalPin,     // control position is proportional to pinned edge
-    widthPin,            // control width does not change
-    heightPin            // control height does not change
-} edgePin_t;
+    stationaryPin,       // control position is unchanged from pinned edge
+    notAPin              // invalid
+} pinType_t;
 
 // Which edge of another window the control's edge is pinned to.
 typedef enum
@@ -564,26 +567,47 @@ typedef enum
     rightEdge,     // pinned to the right edge
     bottomEdge,    // pinned to the bottom edge
     xCenterEdge,   // centered horizontally ...
-    yCenterEdge    // centered vertically ...
+    yCenterEdge,   // centered vertically ...
+    notAnEdge      // invalid
 } pinnedEdge_t;
 
-typedef struct _edge
-{
-    edgePin_t     pin;        // how this edge is pinned
-    uint32_t      pinToID;    // the window this edge is pinned to
+// Defines how one edge of a dialog control is pinned to some other window.
+typedef struct _edge {
     pinnedEdge_t  pinToEdge;  // which edge of the pinned to window is pinned
-};
+    pinType_t     pinType;    // how this edge is pinned
+    uint32_t      pinToID;    // the window this edge is pinned to
+} Edge;
+typedef Edge *pEdge;
+
+// Defines how all 4 edges of a dialog control are pinned to other windows
+typedef struct _controlEdges {
+    Edge      left;
+    Edge      top;
+    Edge      right;
+    Edge      bottom;
+} ControlEdges;
+typedef ControlEdges *pControlEdges;
 
 /* Struct for the resizing information for a single control */
 typedef struct _resizeInfoCtrl {
-    uint32_t              id;
-    RECT                  originalR;
+    RECT               originalRect;
+    RECT               currentRect;
+    pControlEdges      edges;
+    HWND               hCtrl;
+    uint32_t           id;
 } ResizeInfoCtrl;
 typedef ResizeInfoCtrl *pResizeInfoCtrl;
 
-/* Struct for the resizable dialog information struct (ResizingAdmin.) */
+/* Struct for the resizable dialog information (ResizingAdmin.) */
 typedef struct _resizeInfoDlg {
-    size_t              countCtrls;
+    ControlEdges       defEdges;
+    RECT               originalRect;
+    SIZE               minSize;
+    SIZE               maxSize;
+    pResizeInfoCtrl    riCtrls;
+    size_t             tableSize;
+    size_t             countCtrls;
+    bool               inDefineSizing;
 } ResizeInfoDlg;
 typedef ResizeInfoDlg *pResizeInfoDlg;
 
@@ -628,7 +652,6 @@ typedef CEventNotification *pCEventNotification;
 typedef struct _pbdcCSelf {
     char         fontName[MAX_DEFAULT_FONTNAME];
     uint32_t     fontSize;
-
 } CPlainBaseDialogClass;
 typedef CPlainBaseDialogClass *pCPlainBaseDialogClass;
 
@@ -663,7 +686,7 @@ typedef struct _pbdCSelf {
     pCWindowBase         wndBase;
     pCEventNotification  enCSelf;
     pCWindowExtensions   weCSelf;
-    pCResizeInfoDlg      resizeInfo;
+    pResizeInfoDlg       resizeInfo;
     RexxObjectPtr        rexxSelf;      // This dialog's Rexx dialog object
     RexxObjectPtr        rexxParent;    // This dialog's Rexx parent dialog object
     HWND                 hDlg;          // The handle to this dialog's underlying Windows dialog

@@ -617,11 +617,12 @@ void arrayToLargeException(RexxThreadContext *c, uint32_t found, uint32_t max, i
     userDefinedMsgException(c, buffer);
 }
 
-void sparseArrayException(RexxThreadContext *c, size_t argPos, size_t index)
+RexxObjectPtr sparseArrayException(RexxThreadContext *c, size_t argPos, size_t index)
 {
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "Argument %d must be a non-sparse array, index %d is missing", argPos, index);
     userDefinedMsgException(c, buffer);
+    return NULLOBJECT;
 }
 
 /**
@@ -777,6 +778,30 @@ RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRIN
 RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual)
 {
     return wrongArgOptionException(c, pos, list, c->ObjectToStringValue(actual));
+}
+
+/**
+ * Similar to 93.915 and 93.914  (actually a combination of the two.)
+ *
+ * Method argument <pos>, keyword must be exactly one of <list>; found
+ * "<actual>"
+ *
+ * Method argument 2 must be exactly one of left, right, top, or bottom found
+ * "Side"
+ *
+ * @param c
+ * @param pos
+ * @param list
+ * @param actual  String, actual keyword
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr wrongArgKeywordException(RexxMethodContext *c, size_t pos, CSTRING list, CSTRING actual)
+{
+    char buffer[512];
+    snprintf(buffer, sizeof(buffer), "Method argument %d, keyword must be exactly one of %s; found \"%s\"", pos, list, actual);
+    userDefinedMsgException(c, buffer);
+    return NULLOBJECT;
 }
 
 /**

@@ -693,7 +693,12 @@ REXX_METHOD_PROTOTYPE(dyndlg_addMethod);
 REXX_METHOD_PROTOTYPE(dyndlg_addIconResource);
 REXX_METHOD_PROTOTYPE(dyndlg_stop);
 
-// ResourceDialog
+// ResizingAdmin
+REXX_METHOD_PROTOTYPE(ra_defaultSide);
+REXX_METHOD_PROTOTYPE(ra_defaultSizing);
+REXX_METHOD_PROTOTYPE(ra_initResizing);
+
+// ResDialog
 REXX_METHOD_PROTOTYPE(resdlg_init);
 REXX_METHOD_PROTOTYPE(resdlg_getDataTableIDs_pvt);
 REXX_METHOD_PROTOTYPE(resdlg_startDialog_pvt);
@@ -1745,6 +1750,11 @@ RexxMethodEntry oodialog_methods[] = {
 
     REXX_METHOD(window_init,                    window_init),
     REXX_METHOD(window_unInit,                  window_unInit),
+
+    // ResizingAdmin
+    REXX_METHOD(ra_defaultSide,                 ra_defaultSide),
+    REXX_METHOD(ra_defaultSizing,               ra_defaultSizing),
+    REXX_METHOD(ra_initResizing,                ra_initResizing),
 
     // ResDialog
     REXX_METHOD(resdlg_init,                    resdlg_init),
