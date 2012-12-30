@@ -167,7 +167,7 @@
     produce a given product; or a credit-check component that links to an external
     credit-check agency.</para>
   <para>The Order business component is extremely skeletal, but will be developed further in
-  the next exercise.</para>
+  a later exercise.</para>
   <para>Finally, it's worth noting that the folder structure, while useful for development, is
     not necessarily the most appropriate structure for a deployed application. A more
     appropriate deployment structure will be described in a later chapter.
@@ -297,7 +297,7 @@
     creating a Customer often cannot be done without a credit check and
     establishing the customer's bank details in the accounting system. In our Order Management application,
     only the <computeroutput>Order</computeroutput> component has a separate Order Creation dialog, in order to exercise,
-    in the next chapter, more ooDialog capabilities. So, for present purposes,
+    in a later chapter, more ooDialog capabilities. So, for present purposes,
     we assume that Customer and Product creation takes place outside of the sample Order Management application.
   </para>
   <para>Although perhaps not immediately apparent, a specific naming convention has been used.
@@ -485,7 +485,7 @@
     </para>
     <para>
       However, ooDialog also provides a half-way house, where simple code produces a
-      useful result. This simpler code, which will be used in Exercise 7, is discussed in
+      useful result. This simpler code, which will be used in a later exercise, is discussed in
       <xref linkend="apx-satesting-offsets" /> in
       <xref linkend="apx-satesting" />. The following code illustrates the key functions:
       <programlisting>
@@ -539,7 +539,7 @@
           object in the record, and to invoke <emphasis role="italic">newInstance</emphasis>
           directly on the class object. However, in the next exercise, the mechanics of invoking the
           various components (given a class name and an "instance name" such as a customer number)
-          will be moved to a support class.</para>
+          will be moved to support classes.</para>
     <para>Finally, a separate file - <computeroutput>RequiresList.rex</computeroutput> -
           contains the set of <emphasis role="italic">::requires</emphasis> statements for
           the components that might be surfaced. This is why the first executable statement in
@@ -794,7 +794,7 @@
       ]]>
       </programlisting>
       The <emphasis role="italic">~addRow</emphasis> method adds a row of data into the list view.
-      As can be seen, the data in the list is hard-coded. This will be fixed in Exercise 7. The first parameter
+      As can be seen, the data in the list is hard-coded (but this will be fixed in the next exercise). The first parameter
       is the 0-based index of the item, and defaults to the index of the last item added plus 1 (if no items
       already in the list view, this defaults to 0). Note however that when the user
       creates the dialog, the last item appears first not last.
@@ -868,7 +868,7 @@
       (<computeroutput>CustomerView</computeroutput> depends on <computeroutput>CustomerModel</computeroutput>
       being available). As can be seen, in this version of <computeroutput>CustomerListView</computeroutput>
       the data from the ListView is ignored, and the same Customer is surfaced regardless. This is also true
-      for the other List Views. In Exercise 7 this will be fixed so that instantiation of the Model and Data
+      for the other List Views. In the next exercise this will be fixed so that instantiation of the Model and Data
       objects will be handled elsewhere, and the correct instance will be shown.
     </para>
     <para>
@@ -954,7 +954,7 @@
     <indexterm><primary>Icon editor</primary></indexterm>
   </para>
   <para>Second, the size of a dialog icon is variable. That is, an icon larger than the space available
-    will be shrunk to fit. The dialog icons in Exercise 6 are all 64x64 in size, and are automatically
+    will be shrunk to fit. The dialog icons in this exercise are all 64x64 in size, and are automatically
     shrunk to fit. For resource dialogs, the dialog icon is specified in the resource file,
     and its ID in the resource file is specified in the <emphasis role="italic">self~execute(...)</emphasis>
     method. For UserDialog dialogs, the dialog icon is loaded by the
@@ -1056,10 +1056,11 @@
     Customer views (see <xref linkend="chap06-popups-interpret" />).
   </para>
   <para>It remains only to mention that the above code will allow as many lists to be created and surfaced as
-  the user wishes. This may or may not be what's required. In the next exercise, only a single list for
-  each of Customers, Products and Orders will be allowed. When the user double-clicks on an icon, the
-  appropriate list will be "surfaced" in the proper sense of the word - that is, created and shown as the
-  top-level dialog, or, if already created, will have focus put on it so that, if hidden under other
+  the user wishes. This may or may not be what's required. It is of course possible to arrange things
+  so that only a single list for
+  each of Customers, Products and Orders is allowed. In such a case, when the user double-clicks on an icon, the
+  appropriate list would be "surfaced" in the proper sense of the word - that is, created and shown as the
+  top-level dialog, or, if already created, would have focus put on it so that, if hidden under other
   dialogs, it will pop to the "surface" - that is, become the topmost window on the screen.</para>
 </section>  <!-- End of section 6.5 -->
 
@@ -1068,7 +1069,7 @@
   <indexterm><primary>Utility routine</primary><secondary>PasswordBox</secondary></indexterm>
   <para>A subject not yet mentioned is the use of ooDialog utility classes and routines
     in any ooRexx programs. The routines are very simple, and are often one-liners.
-    As an example, the Exercise 6 startup program
+    As an example, in this exercise the startup program
     provides for entry of a password using the (one-line) <computeroutput>PasswordBox</computeroutput> routine.
     Invoking <emphasis role="italic">startup enterPW</emphasis> produces a password box that will accept the password
     "Password". If you get the password wrong, the startup routine will silently end. The code is as follows:
