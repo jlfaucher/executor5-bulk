@@ -49,21 +49,23 @@
      v00-01 25Oct12: First version.
      v00-02 04Dec12: Intro completed.
 
-    7     "A Working Application"	chapSeven
+    7     "Towards A Working Application"	chapSeven
     7.1     Introduction                chap07-intro
     7.2     A 'Model-View Framework'    chap07-MVF
     7.2.1     Objectives		chap07-MVFObjs
     7.2.2     Fitting In / using MVF - diff kinds of component; how different kinds use MVF.
               Ref "samples\person". Ref appendix for detail of MVF.
     7.2.3     Underlying operations provided by MVF (i.e. overview of how MVF works).
-    7.2.4     New superclasses and MVF objects. (mention the "requires list")
-    7.3     Message Sender - get rid of "stand-alone" testing code.
-    7.4     Order Form -
+    7.3     New superclasses and MVF objects. (mention the "requires list")
+    7.4     Message Sender - get rid of "stand-alone" testing code.
+    7.5     The Order Form
 
 Things to add:
-     - Show an example of ReportView with small icons in Ex 7.
+    - Say this app not completed 0 e.g. query mnethod not in super, OrderForm not complete, etc.
+    - Show an example of ReportView with small icons in Ex 7.
        Have say 3 different ones in a single bitmap.
      - Talk about dialog offsetting.
+     - Mention Wow4.
 
 
 
@@ -112,7 +114,7 @@ Order Data - two files, OrderHeadersFile.txt and OrderLinesFile.txt
 The OrderData component merges the two (??)
 -->
 
-<chapter id="chapSeven"><title>A Working Application</title>
+<chapter id="chapSeven"><title>Towards A Working Application</title>
 <para>
 </para>
 
@@ -266,8 +268,48 @@ Note - if class name is quoted, then must use precise case match. (Is this corre
 
 
 <section>
-    <title>Query Protocol</title>
-    <para>to be completed.</para>
+    <title>The 'Query' Protocol</title>
+    <para>A component framework generally requires components to provide specific methods defined by
+                    the framework. In our case, aside from instance creation methods, a "well-known"
+                    method is required for the MVF to access a model component's data. This method
+                    has the name "query", and it must conform to the following protocol:<itemizedlist>
+                        <listitem>
+                            <para>If a component's <emphasis role="italic">query</emphasis> method
+                                is invoked with no parameters, then it must return a directory
+                                containing all the "public" data it has. The directory indexes are
+                                the labels for the data as defined in the "database" (although this
+                                is not usually the case for real production-strength systems, where
+                                the data dictionary for application-level components often differs
+                                from the column names in an SQL database).</para>
+                            <para>For example, use the MessageSender to send "query" to "PersonModel
+                                PA150". A directory is returned by PersonModel, and the Message
+                                Sender presents the directory in name-value form in its "Reply"
+                                field as follows: </para>
+                            <para>          dob: 751513; baseSalary: 38000; number: PA150; jobDescr:
+                                Packer; familyName: James; firstName: Alfred;  </para>
+                        </listitem>
+                        <listitem>
+                            <para>If a component's <emphasis role="italic">query</emphasis> method
+                                is invoked with one parameter, and when that parameter is a
+                                directory, an array, or a string, then only those fields specified
+                                by name are returned. </para>
+                            <para>For example, use the Message Sender to query the first name and
+                                family name for "PersonModel PA150". To do this, specify the fields
+                                by name (case-sensitive) in the "Data" edit field, as follows (but
+                                without the quotes): "firstName familyName". On pressing the "Send"
+                                button, the data "firstName: Alfred; familyName: James;" is returned
+                                as a directory which Message Sender unpacks and presents as a string
+                                in the Reply field. </para>
+                            <para>For debugging purposes, you can cause MessageSender to send a set
+                                of data names as a string (as in the example just given), a
+                                directory, or an array.  To send as a directory, enclose each name
+                                in square brackets, e.g.: [firstName] [familyName]. To send as an
+                                array, place a vertical bar before each name, e.g: | firstName |
+                                familyName. </para>
+                        </listitem>
+                    </itemizedlist>Finally, note that although all components in Exercise07 support
+                    the first of the query protocols (i.e. with no parameters), not all components
+                    support the second.</para>
 </section>
 
 
