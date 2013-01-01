@@ -39,20 +39,13 @@
 #define oodResizableDialog_Included
 
 #define DEFAULT_RESIZABLE_CONTROLS         20
+#define IDC_DEFAULT_PINTO_WINDOW           0
 #define PIN_TYPE_SHORT_LIST                "proportional, or stationary"
 #define PIN_TYPE_LIST                      "myLeft, myTop, proportional, or stationary"
 #define PINNED_EDGE_LIST                   "left, top, right, bottom, xCenter, or yCenter"
 
-/* Struct for the ResizingAdmin object CSelf. */
-typedef struct _raCSelf {
-    pCPlainBaseDialog  pcpbd;
-    RexxObjectPtr      rexxSelf;
-    pResizeInfoDlg     resizeInfo;
-} CResizingAdmin;
-typedef CResizingAdmin *pCResizingAdmin;
-
 
 extern LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-extern bool             allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd);
+extern bool             allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxBufferObject cselfBuffer);
 
 #endif

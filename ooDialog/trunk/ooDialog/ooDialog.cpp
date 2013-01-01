@@ -3186,7 +3186,7 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
 
     if ( pcpbd->isResizableDlg )
     {
-        if ( ! allocateResizeInfo(context, pcpbd) )
+        if ( ! allocateResizeInfo(context, pcpbd, cselfBuffer) )
         {
             result = TheOneObj;
             goto done_out;

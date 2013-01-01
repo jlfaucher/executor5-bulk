@@ -43,25 +43,109 @@
 #include <shlwapi.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
+#include "oodControl.hpp"
 #include "oodDeviceGraphics.hpp"
 #include "oodMessaging.hpp"
 #include "oodResizableDialog.hpp"
 
 /**
- * Validates that the CSelf pointer for a ResizingAdmin object is not null and
+ * Validates that the CSelf pointer for a ResizingAdmin object is not null, and
  * that the resizeInfo pointer is not null.
+ *
+ * @note  Originally we were going to have a separate CResizingAdmin CSelf.
+ *        But, if the user sets up a class that inherits ResizingAdmin before
+ *        inheriting PlainBaseDialog, dialog methods expecting CSelf to be
+ *        CPlainBaseDialog, will end up with CResizingAdmin instead.  That blows
+ *        up.
+ *
+ *        Granted it is a not common class set up, but it is a reasonable class
+ *        set up.  Since the ResizeInfoDlg struct is in the CPlainBaseDialog
+ *        struct, it is simplier to not use CResizingAdmin.
  */
-inline pCResizingAdmin validateRACSelf(RexxMethodContext *c, void *pcra, pResizeInfoDlg *pprid)
+inline pCPlainBaseDialog validateRACSelf(RexxMethodContext *c, void *CSelf, pResizeInfoDlg *pprid)
 {
-    if ( pcra == NULL || ((pCResizingAdmin)pcra)->resizeInfo == NULL)
+    if ( CSelf == NULL || ((pCPlainBaseDialog)CSelf)->resizeInfo == NULL)
     {
         baseClassInitializationException(c, "ResizingAdmin");
+        return NULL;
     }
 
-    *pprid = ((pCResizingAdmin)pcra)->resizeInfo;
-    return (pCResizingAdmin)pcra;
+    *pprid = ((pCPlainBaseDialog)CSelf)->resizeInfo;
+    return (pCPlainBaseDialog)CSelf;
 }
 
+/**
+ * Add the needed WS_CLIPCHILDREN flag.  This dramatically reduces flicker.
+ *
+ * If we also add WS_THICKFRAME here, it appears to work in most cases.  But,
+ * there is some problem if the window does not have the WS_MAXIMIZEBOX style.
+ * However, if WS_THICKFRAME is added to the original dialolg template, things
+ * work without the WS_MAXIMIZEBOX style.  So, for resizable dialogs, we add
+ * that flag to the dialog template instead.
+ *
+ * @param hDlg
+ */
+inline void setResizableDlgStyle(HWND hDlg)
+{
+    SetWindowLong(hDlg, GWL_STYLE, GetWindowLong(hDlg, GWL_STYLE) | WS_CLIPCHILDREN);
+}
+
+/**
+ * Raises an exception for an invalid pin to control ID set by the user.  The
+ * control IDs can only be checked for validity after the dialog has been
+ * created.
+ *
+ * @param c
+ */
+static void raiseInvalidPinToIDException(RexxThreadContext *c, uint32_t pinToID, uint32_t ctrlID)
+{
+    TCHAR buf[512];
+    _snprintf(buf, sizeof(buf), "The resource ID (%d) for the pin to window edge of control ID (%d) is not valid",
+              pinToID, ctrlID);
+    executionErrorException(c, buf);
+}
+
+/**
+ * Checks that all the pin to control IDs resolve to valid windows.  This must
+ * be done before we enumerate all the control windows, so that it checks what
+ * the user set up.
+ *
+ * @param c
+ * @param hDlg
+ * @param prid
+ *
+ * @return bool
+ */
+static bool verifyPinToWindows(RexxThreadContext *c, HWND hDlg, pResizeInfoDlg prid)
+{
+    for ( register size_t i = 0; i < prid->countCtrls; i++)
+    {
+        pControlEdges pce = &prid->riCtrls[i].edges;
+        pEdge         p   = (pEdge)pce;
+        for (size_t i = 0; i < 4; i++, p++)
+        {
+            uint32_t pinToID = p->pinToID;
+            if ( pinToID != 0 && ! IsWindow(GetDlgItem(hDlg, pinToID)) )
+            {
+                raiseInvalidPinToIDException(c, pinToID, prid->riCtrls[i].id);
+                checkForCondition(c, false);
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+/**
+ * Converts a pin to type keyword to the proper flag value.
+ *
+ * @param c
+ * @param keyWord
+ * @param pos
+ * @param isLeftTop
+ *
+ * @return pinType_t
+ */
 static pinType_t keyword2pinType(RexxMethodContext *c, CSTRING keyWord, size_t pos, bool isLeftTop)
 {
     pinType_t pinType = notAPin;
@@ -84,6 +168,15 @@ static pinType_t keyword2pinType(RexxMethodContext *c, CSTRING keyWord, size_t p
     return pinType;
 }
 
+/**
+ * Converts a pin to edge keyword to the proper flag value.
+ *
+ * @param c
+ * @param keyWord
+ * @param pos
+ *
+ * @return pinnedEdge_t
+ */
 static pinnedEdge_t keyword2pinnedEdge(RexxMethodContext *c, CSTRING keyWord, size_t pos)
 {
     pinnedEdge_t edge = notAnEdge;
@@ -99,10 +192,24 @@ static pinnedEdge_t keyword2pinnedEdge(RexxMethodContext *c, CSTRING keyWord, si
     return edge;
 }
 
+/**
+ * Sets up the default left edge struct to the values specified.
+ *
+ * @param c
+ * @param howPinned
+ * @param whichEdge
+ * @param prid
+ *
+ * @return Zero on success, one on error.  This Rexx object is passed on to the
+ *         user as a reply from a method invocation.
+ *
+ * @note  Default edges can only be pinned to the dialog window itself.
+ */
 static RexxObjectPtr defaultLeft(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
 {
     prid->defEdges.left.pinType   = keyword2pinType(c, howPinned, 1, true);
     prid->defEdges.left.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
+    prid->defEdges.left.pinToID   = IDC_DEFAULT_PINTO_WINDOW;
 
     if ( prid->defEdges.left.pinType == notAPin || prid->defEdges.left.pinToEdge == notAnEdge )
     {
@@ -115,6 +222,7 @@ static RexxObjectPtr defaultTop(RexxMethodContext *c, CSTRING howPinned, CSTRING
 {
     prid->defEdges.top.pinType   = keyword2pinType(c, howPinned, 1, true);
     prid->defEdges.top.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
+    prid->defEdges.top.pinToID   = 0;
 
     if ( prid->defEdges.top.pinType == notAPin || prid->defEdges.top.pinToEdge == notAnEdge )
     {
@@ -127,6 +235,7 @@ static RexxObjectPtr defaultRight(RexxMethodContext *c, CSTRING howPinned, CSTRI
 {
     prid->defEdges.right.pinType   = keyword2pinType(c, howPinned, 1, false);
     prid->defEdges.right.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
+    prid->defEdges.right.pinToID   = 0;
 
     if ( prid->defEdges.right.pinType == notAPin || prid->defEdges.right.pinToEdge == notAnEdge )
     {
@@ -139,6 +248,7 @@ static RexxObjectPtr defaultBottom(RexxMethodContext *c, CSTRING howPinned, CSTR
 {
     prid->defEdges.bottom.pinType   = keyword2pinType(c, howPinned, 1, false);
     prid->defEdges.bottom.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
+    prid->defEdges.bottom.pinToID   = 0;
 
     if ( prid->defEdges.bottom.pinType == notAPin || prid->defEdges.bottom.pinToEdge == notAnEdge )
     {
@@ -147,10 +257,102 @@ static RexxObjectPtr defaultBottom(RexxMethodContext *c, CSTRING howPinned, CSTR
     return TheZeroObj;
 }
 
-bool allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd)
+/**
+ * Returns the dialog control resize info struct for the specified control ID.
+ *
+ * @param prid
+ * @param ctrlID
+ *
+ * @return A pointer to the struct when found, otherwise null.
+ *
+ * @remarks  Resize info is added to the table before the underlying dialog is
+ *           created.  At that time, the resource ID must be greater than 0.
+ *           Then, resize info is also added during WM_INITDIALOG.  At that
+ *           time, the ID could be -1 for a static control.
+ *
+ *           We *always* return NULL for -1.  We assume that if the caller uses
+ *           -1 for the control ID, the caller knows that there is no existing
+ *           resize info for the control.  This is true during the enum windows
+ *           function, InitializeAllControlsProc().  The caller is responsible
+ *           for any other use.
+ */
+pResizeInfoCtrl getControlInfo(pResizeInfoDlg prid, uint32_t ctrlID)
 {
-    printf("In allocateResizeInfo()\n");
+    if ( ctrlID != (uint32_t)-1 )
+    {
+        for ( register size_t i = 0; i < prid->countCtrls; i++)
+        {
+            if ( prid->riCtrls[i].id == ctrlID )
+            {
+                return &prid->riCtrls[i];
+            }
+        }
+    }
 
+    return NULL;
+}
+
+/**
+ * Allocates a new dialog control resize info structure and assigns it to the
+ * end of table.
+ *
+ * @param c
+ * @param prid
+ * @param ctrlID
+ *
+ * @return A pointer to the newly allocated structure on success, null on error.
+ *
+ * @assumes The table has already been checked and does not contain a struct for
+ *          this control.
+ */
+pResizeInfoCtrl allocCtrlInfo(RexxThreadContext *c, pResizeInfoDlg prid, int32_t ctrlID, HWND hCtrl, oodControl_t ctrlType)
+{
+    size_t index = prid->countCtrls;
+    if ( index >= prid->tableSize )
+    {
+        HLOCAL temp = LocalReAlloc(prid->riCtrls, sizeof(ResizeInfoCtrl) * prid->tableSize * 2, LMEM_ZEROINIT | LMEM_MOVEABLE);
+        if ( temp == NULL )
+        {
+            MessageBox(0, "Resizable control entrires have exceeded the maximum\n"
+                          "number of allocated table entries, and the table could\n"
+                          "not be expanded.\n\n"
+                          "No more control entries can be added.\n",
+                       "Error", MB_OK | MB_ICONHAND);
+
+            return NULL;
+        }
+
+        prid->tableSize *= 2;
+        prid->riCtrls = (pResizeInfoCtrl)temp;
+    }
+
+    pResizeInfoCtrl ric = &prid->riCtrls[index];
+    prid->countCtrls++;
+
+    memcpy(&ric->edges, &prid->defEdges, sizeof(ControlEdges));
+
+    ric->hCtrl    = hCtrl;
+    ric->id       = ctrlID;
+    ric->ctrlType = ctrlType;
+
+    return ric;
+}
+
+/**
+ * Allocates the ResizeInfoDlg struct and sets up the default values.  Also
+ * passes on the CSelf buffer to be set as a context variable for the
+ * ResizingAdmin object.
+ *
+ * @param c
+ * @param pcpbd
+ * @param cselfBuffer
+ *
+ * @return bool
+ *
+ * @note that cselfBuffer is the Rexx buffer object containing CPlainBaseDialog.
+ */
+bool allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxBufferObject cselfBuffer)
+{
     pResizeInfoDlg prid = (pResizeInfoDlg)LocalAlloc(LPTR, sizeof(ResizeInfoDlg));
     if ( prid == NULL )
     {
@@ -173,12 +375,27 @@ bool allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd)
     prid->defEdges.bottom.pinToEdge = bottomEdge;
     prid->defEdges.bottom.pinType   = proportionalPin;
 
+    prid->minSizeIsInitial = true;
+
     pcpbd->resizeInfo = prid;
 
-    RexxObjectPtr reply = c->SendMessage1(pcpbd->rexxSelf, "INITRESIZING", c->NewPointer(pcpbd));
+    RexxObjectPtr reply = c->SendMessage1(pcpbd->rexxSelf, "INITRESIZING", cselfBuffer);
     if ( reply != TheZeroObj )
     {
         goto err_out;
+    }
+
+    if ( TheConstDirUsage == globalNever )
+    {
+        RexxDirectoryObject constDir = (RexxDirectoryObject)c->SendMessage0(pcpbd->rexxSelf, "CONSTDIR");
+        if ( constDir != NULLOBJECT )
+        {
+            c->DirectoryPut(constDir, c->Int32(IDC_DEFAULT_PINTO_WINDOW), "IDC_DEFAULT_PINTO_WINDOW");
+        }
+    }
+    else
+    {
+        c->DirectoryPut(TheConstDir, c->Int32(IDC_DEFAULT_PINTO_WINDOW), "IDC_DEFAULT_PINTO_WINDOW");
     }
 
     return true;
@@ -195,7 +412,289 @@ err_out:
     return false;
 }
 
+int calcRectSize(pinnedEdge_t e, RECT *rect)
+{
+    switch ( e )
+    {
+        case leftEdge :
+        case rightEdge :
+        case xCenterEdge :
+            return rect->right - rect->left;
 
+        case topEdge :
+        case bottomEdge :
+        case yCenterEdge :
+            return rect->bottom - rect->top;
+
+        default :
+            break;
+    }
+    printf("calcRectSize() major error\n");
+    return 0;
+}
+
+RECT *getRect(uint32_t id, pResizeInfoDlg prid, bool initial)
+{
+    if ( id == 0 )
+    {
+        return initial ? &prid->originalRect : &prid->currentRect;
+    }
+
+    for ( register size_t i = 0; i < prid->countCtrls; i++)
+    {
+        if ( prid->riCtrls[i].id == id )
+        {
+            return initial ? &prid->riCtrls[i].originalRect : &prid->riCtrls[i].currentRect;
+        }
+    }
+    printf("BLOW UP!!\n");
+    return NULL;
+}
+
+void recalcSizePosition(pResizeInfoDlg prid, pResizeInfoCtrl ric)
+{
+    RECT *pinToRectInitial;
+    RECT *pinToRectCurrent;
+
+    pEdge edge = &ric->edges.left;
+    pinToRectInitial = getRect(edge->pinToID, prid, true);
+    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    int oldSize = calcRectSize(leftEdge, pinToRectInitial);
+    int newSize = calcRectSize(leftEdge, pinToRectCurrent);
+    double factor = (double)newSize / oldSize;
+
+#pragma warning(disable:4244)
+
+    ric->currentRect.left = pinToRectCurrent->left + ((ric->originalRect.left - pinToRectInitial->left) * (factor));
+
+    //printf("ID=%d, original left=%d, new left=%d\n", ric->id, ric->originalRect.left, ric->currentRect.left);
+
+    edge = &ric->edges.top;
+    pinToRectInitial = getRect(edge->pinToID, prid, true);
+    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    oldSize = calcRectSize(topEdge, pinToRectInitial);
+    newSize = calcRectSize(topEdge, pinToRectCurrent);
+    factor  = (double)newSize / oldSize;
+    ric->currentRect.top = pinToRectCurrent->top + ((ric->originalRect.top - pinToRectInitial->top) * (factor));
+
+    //printf("ID=%d, original top=%d, new top=%d\n", ric->id, ric->originalRect.top, ric->currentRect.top);
+
+    edge = &ric->edges.right;
+    pinToRectInitial = getRect(edge->pinToID, prid, true);
+    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    oldSize = calcRectSize(rightEdge, pinToRectInitial);
+    newSize = calcRectSize(rightEdge, pinToRectCurrent);
+    factor  = (double)newSize / oldSize;
+    ric->currentRect.right = pinToRectCurrent->right + ((ric->originalRect.right - pinToRectInitial->right) * (factor));
+
+    //printf("ID=%d, original right=%d, new right=%d\n", ric->id, ric->originalRect.right, ric->currentRect.right);
+
+    edge = &ric->edges.bottom;
+    pinToRectInitial = getRect(edge->pinToID, prid, true);
+    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    oldSize = calcRectSize(bottomEdge, pinToRectInitial);
+    newSize = calcRectSize(bottomEdge, pinToRectCurrent);
+    factor  = (double)newSize / oldSize;
+    ric->currentRect.bottom = pinToRectCurrent->bottom + ((ric->originalRect.bottom - pinToRectInitial->bottom) * (factor));
+
+#pragma warning(default:4244)
+
+    //printf("ID=%d, original bottom=%d, new bottom=%d\n", ric->id, ric->originalRect.bottom, ric->currentRect.bottom);
+
+    return;
+}
+
+HDWP deferPosition(HDWP hdwp, pResizeInfoCtrl ric)
+{
+    // Make sure the window exists.
+    if ( ! IsWindow(ric->hCtrl) )
+    {
+        return hdwp;
+    }
+
+    int32_t left   = ric->currentRect.left;
+    int32_t top    = ric->currentRect.top;
+    int32_t right  = ric->currentRect.right;
+    int32_t bottom = ric->currentRect.bottom;
+
+    int32_t width  = right - left;
+    int32_t height = bottom - top;
+
+    // Only defer visible winodws.
+    if ( IsWindowVisible(ric->hCtrl) )
+    {
+        return DeferWindowPos(hdwp, ric->hCtrl, NULL, left, top, width, height, SWP_NOZORDER | SWP_NOACTIVATE);
+    }
+
+    // For not visible windows, just move them.
+    MoveWindow(ric->hCtrl, left, top, width, height, FALSE);
+
+    return hdwp;
+}
+
+bool resizeAll(pResizeInfoDlg prid)
+{
+    // Use defer window postion to resize / repositon all controls at once.
+    HDWP hdwp = BeginDeferWindowPos((int32_t)prid->countCtrls);
+    if ( hdwp == NULL )
+    {
+        return false;
+    }
+
+    for ( size_t i = 0; i < prid->countCtrls; i++)
+    {
+        hdwp = deferPosition(hdwp, &prid->riCtrls[i]);
+        if ( hdwp == NULL )
+        {
+            return false;
+        }
+    }
+
+    return EndDeferWindowPos(hdwp) ? true : false;
+}
+
+BOOL resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long cy)
+{
+    pResizeInfoDlg prid = pcpbd->resizeInfo;
+
+    prid->currentRect.right  = cx;
+    prid->currentRect.bottom = cy;
+    for ( size_t i = 0; i < prid->countCtrls; i++)
+    {
+        recalcSizePosition(prid, &prid->riCtrls[i]);
+    }
+
+    return resizeAll(prid) ? TRUE : FALSE;
+}
+
+/**
+ * This is the callback function for our EnumChildWindows() call in
+ * WM_INITDIALOG.  For each child window
+ *
+ * @param hCtrl
+ * @param lParam
+ *
+ * @return True to continue the enumeration, false to halt the enumeration.
+ *
+ * @note  We only want direct children of the dialog.  Some controls have their
+ *        own child windows.  These are enumerated by EnumChildWindows, but we
+ *        can not work with them.  For instance, a list-view with a column
+ *        header has the header control as a child.  We can not work with the
+ *        header control.  So we skip any child window whose parent is not the
+ *        dialog.
+ */
+BOOL CALLBACK InitializeAllControlsProc(HWND hCtrl, LPARAM lParam)
+{
+    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)lParam;
+    pResizeInfoDlg    prid  = pcpbd->resizeInfo;
+
+    if ( GetParent(hCtrl) != pcpbd->hDlg )
+    {
+        return TRUE;
+    }
+
+    oodControl_t ctrlType = control2controlType(hCtrl);
+    int          ctrlID   = GetDlgCtrlID(hCtrl);
+
+    if ( ctrlType == winGroupBox )
+    {
+        SetWindowLong(hCtrl, GWL_EXSTYLE, GetWindowLong(hCtrl, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
+    }
+
+    pResizeInfoCtrl ric = getControlInfo(prid, ctrlID);
+    if ( ric == NULL )
+    {
+        ric = allocCtrlInfo(pcpbd->dlgProcContext, prid, ctrlID, hCtrl, ctrlType);
+        if ( ric == NULL )
+        {
+            prid->haveError = true;
+            return FALSE;
+        }
+    }
+    else
+    {
+        ric->hCtrl    = hCtrl;
+        ric->ctrlType = ctrlType;
+    }
+
+    GetWindowRect(hCtrl, &ric->originalRect);
+    MapWindowPoints(NULL, pcpbd->hDlg, (POINT *)&ric->originalRect, 2);
+
+#ifdef EXTRA_DEBUG
+    printf("Control hwnd=%p type=%s id=%d rect=(%d, %d, %d, %d)\n", hCtrl, controlType2controlName(ctrlType), ric->id,
+           ric->originalRect.left, ric->originalRect.top, ric->originalRect.right, ric->originalRect.bottom);
+#endif
+
+    return TRUE;
+}
+
+/**
+ *  Called from WM_INITDIALOG to finish the initialization of a resizable
+ *  dialog.
+ *
+ *  Checks that the user did not set a dialog control's pin to window with an
+ *  invalid ID. Gets the original window rectangles for the dialog and the
+ *  controls. Enumerates all child windows of the dialog to either fix up their
+ *  existing control info structs, or to add a record for any controls not
+ *  specified by the user.  And does any other needed miscellaneous set up.
+ *
+ * @param hDlg
+ * @param c
+ * @param pcpbd
+ *
+ * @return LRESULT
+ */
+LRESULT initializeResizableDialog(HWND hDlg, RexxThreadContext *c, pCPlainBaseDialog pcpbd)
+{
+    pResizeInfoDlg prid = pcpbd->resizeInfo;
+
+    if ( ! verifyPinToWindows(c, hDlg, prid) )
+    {
+        endDialogPremature(pcpbd, hDlg, RexxConditionRaised);
+        return FALSE;
+    }
+
+    setResizableDlgStyle(hDlg);
+
+    GetClientRect(hDlg, &prid->originalRect);
+
+    if ( prid->minSizeIsInitial )
+    {
+        prid->minSize.cx  = prid->originalRect.right;
+        prid->minSize.cy  = prid->originalRect.bottom;
+        prid->haveMinSize = true;
+    }
+
+    EnumChildWindows(hDlg, InitializeAllControlsProc, (LPARAM)pcpbd);
+
+    return prid->haveError ? FALSE : TRUE;
+}
+
+/**
+ * The window message processing procedure for dialogs that have inherited
+ * ResizingAdmin.
+ *
+ * This is based on the normal Rexx dialog message processing procedure,
+ * RexxDlgProc() except that it intercepts WM_xxx messages related to resizing.
+ * These messages are processed here, always, and they are never used to invoke
+ * a Rexx dialog method.  This implies that if the user were to connect, say
+ * WM_SIZE, no method would be invoked.
+ *
+ * Currently there is no message processing procedure specifically for
+ * ControlDialog dialogs that might inherit ResizingAdmin.  Resizable
+ * ControlDialog dialogs will probably not work.
+ *
+ * @param hDlg
+ * @param uMsg
+ * @param wParam
+ * @param lParam
+ *
+ * @return LRESULT CALLBACK
+ */
 LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if ( uMsg == WM_INITDIALOG )
@@ -230,9 +729,7 @@ LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
             customDrawCheckIDs(pcpbd);
         }
 
-        printf("In InitDialog of resizable dialog, going to enumerate windows\n");
-
-        return TRUE;
+        return initializeResizableDialog(hDlg, pcpbd->dlgProcContext, pcpbd);
     }
 
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)getWindowPtr(hDlg, GWLP_USERDATA);
@@ -261,6 +758,65 @@ LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
         // things should then (hopefully) unwind cleanly.
         PostQuitMessage(3);
         return TRUE;
+    }
+
+    // We first deal with resizable stuff, then handle the rest with the normal
+    // ooDialog process.
+    pResizeInfoDlg prid = pcpbd->resizeInfo;
+    switch ( uMsg )
+    {
+        case WM_ENTERSIZEMOVE :
+            prid->inSizeOrMove = true;
+            return FALSE;
+
+        case WM_NCCALCSIZE :
+            if ( wParam && prid->inSizeOrMove )
+            {
+                NCCALCSIZE_PARAMS * nccs_params = (NCCALCSIZE_PARAMS *)lParam;
+
+                // Have the default window procedure calculate the client
+                // co-ordinates.
+                DefWindowProc(hDlg, uMsg, FALSE, (LPARAM)&nccs_params->rgrc[0]);
+
+                // Set the source & target rectangles to be the same.
+                nccs_params->rgrc[1] = nccs_params->rgrc[2];
+
+                return WVR_ALIGNLEFT | WVR_ALIGNTOP;
+            }
+            return FALSE;
+
+        case WM_SIZE :
+            if ( prid->inSizeOrMove || wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED )
+            {
+                return resizeAndPosition(pcpbd, hDlg, LOWORD(lParam), HIWORD(lParam));
+            }
+            return FALSE;
+
+        case WM_EXITSIZEMOVE :
+            prid->inSizeOrMove = false;
+            return FALSE;
+
+        case WM_GETMINMAXINFO :
+        {
+            MINMAXINFO *pmmi = (MINMAXINFO *)lParam;
+
+            if ( prid->haveMinSize )
+            {
+                pmmi->ptMinTrackSize.x = prid->minSize.cx;
+                pmmi->ptMinTrackSize.y = prid->minSize.cy;
+            }
+
+            if ( prid->haveMaxSize )
+            {
+                pmmi->ptMaxTrackSize.x = prid->maxSize.cx;
+                pmmi->ptMaxTrackSize.y = prid->maxSize.cy;
+            }
+
+            return TRUE;
+        }
+
+        default :
+            break;
     }
 
     bool msgEnabled = IsWindowEnabled(hDlg) ? true : false;
@@ -322,16 +878,16 @@ LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
  */
 RexxMethod4(RexxObjectPtr, ra_defaultSide, CSTRING, howPinned, CSTRING, whichEdge, NAME, method, CSELF, pCSelf)
 {
-    pResizeInfoDlg  prid = NULL;
-    pCResizingAdmin pcra = validateRACSelf(context, pCSelf, &prid);
-    if ( pcra == NULL )
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
     {
         return TheOneObj;
     }
 
     if ( ! prid->inDefineSizing )
     {
-        return methodCanOnlyBeInvokedException(context, method, "during the defineSizing method", pcra->pcpbd->rexxSelf);
+        return methodCanOnlyBeInvokedException(context, method, "during the defineSizing method", pcpbd->rexxSelf);
     }
 
     switch ( method[7] )
@@ -348,18 +904,16 @@ RexxMethod4(RexxObjectPtr, ra_defaultSide, CSTRING, howPinned, CSTRING, whichEdg
 RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPTIONAL_RexxArrayObject, top,
             OPTIONAL_RexxArrayObject, right, OPTIONAL_RexxArrayObject, bottom, CSELF, pCSelf)
 {
-    RexxMethodContext *c = context;
-
-    pResizeInfoDlg  prid = NULL;
-    pCResizingAdmin pcra = validateRACSelf(context, pCSelf, &prid);
-    if ( pcra == NULL )
+    pResizeInfoDlg    prid  = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
     {
         return TheOneObj;
     }
 
     if ( ! prid->inDefineSizing )
     {
-        return methodCanOnlyBeInvokedException(context, "defaultSizing", "during the defineSizing method", pcra->pcpbd->rexxSelf);
+        return methodCanOnlyBeInvokedException(context, "defaultSizing", "during the defineSizing method", pcpbd->rexxSelf);
     }
 
     RexxObjectPtr rxHowPinned;
@@ -445,27 +999,24 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
 }
 
 
-/** ResizingAdmin::initResizing()  [private ??]
+/** ResizingAdmin::initResizing()  [private]
+ *
+ *  Used to set the CSelf Rexx buffer object as a context variable of this
+ *  object.
+ *
+ *  @note For internal use only.
  */
-RexxMethod2(RexxObjectPtr, ra_initResizing, POINTER, arg, OSELF, self)
+RexxMethod2(RexxObjectPtr, ra_initResizing, RexxObjectPtr, arg, OSELF, self)
 {
-    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)arg;
-    printf("In ra_initResizing()\n");
+    RexxMethodContext *c = context;
 
-    RexxBufferObject praBuffer = context->NewBuffer(sizeof(CResizingAdmin));
-    if ( praBuffer == NULLOBJECT )
+    if ( ! context->IsBuffer(arg) )
     {
+        baseClassInitializationException(context, "ResizingAdmin");
         return TheOneObj;
     }
 
-    pCResizingAdmin pcra = (pCResizingAdmin)context->BufferData(praBuffer);
-    memset(pcra, 0, sizeof(CResizingAdmin));
-
-    pcra->pcpbd      = pcpbd;
-    pcra->rexxSelf   = self;
-    pcra->resizeInfo = pcpbd->resizeInfo;
-
-    context->SetObjectVariable("CSELF", praBuffer);
+    context->SetObjectVariable("CSELF", arg);
 
     return TheZeroObj;
 }

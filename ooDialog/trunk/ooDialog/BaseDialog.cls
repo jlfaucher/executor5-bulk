@@ -249,8 +249,6 @@
 ::method defaultSizing external "LIBRARY oodialog ra_defaultSizing"
 ::method defaultTop external "LIBRARY oodialog ra_defaultSide"
 ::method defineSizing
-
-  say 'In defineSizing()'
   return 0
 
 -- Internal use only

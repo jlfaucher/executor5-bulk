@@ -60,6 +60,7 @@
 class LoopThreadArgs
 {
 public:
+    DLGTEMPLATEEX     *dlgTemplate;
     pCPlainBaseDialog  pcpbd;
     uint32_t           resourceId;
     uint32_t           autoDetectResult;
@@ -195,6 +196,64 @@ err_out:
  */
 #define RESDIALOG_CLASS        "ResDialog"
 
+/**
+ * Forces a binary compiled dialog template to have the WS_THICKFRAME style.
+ *
+ * For resizable dialogs, (dialogs inheriting ResizeAdmin,) we add the thick
+ * frame style to the dialog automatically.  This allows users to simply inherit
+ * ResizeAdmin and have a resizable dialog with no additional code changes.
+ *
+ * This is to do for RcDialog and UserDialog dialogs.  For ResDialogs we need to
+ * update the dialog template in the resource DLL.  We do that here.  The
+ * process is relatively simple.  Find the template in the DLL, load that
+ * resource, lock the resource to get a regular pointer to the template, and
+ * then modify the style in the template.
+ *
+ * @param pcpbd
+ * @param dlgID
+ *
+ * @return DLGTEMPLATEEX*
+ *
+ * @note  If this doesn't work and we return null, the calling code just ignores
+ *        it.  The dialog is created as usual.  If the template already has the
+ *        thick frame, the user will never notice anything.  Otherwise, the user
+ *        will not have a resizable dialog.  This never failed during testing,
+ *        so it is unlikely to not work.
+ */
+static DLGTEMPLATEEX *loadAndFixResizableDlgTemplate(pCPlainBaseDialog pcpbd, int32_t dlgID)
+{
+    DLGTEMPLATEEX *dlgTemplate = NULL;
+
+    HRSRC hRes = FindResource(pcpbd->hInstance, MAKEINTRESOURCE(dlgID), RT_DIALOG);
+    if ( hRes == NULL )
+    {
+        goto err_out;
+    }
+
+    HGLOBAL hResLoad = LoadResource(pcpbd->hInstance, hRes);
+    if (hResLoad == NULL)
+    {
+        goto err_out;
+    }
+
+    dlgTemplate = (DLGTEMPLATEEX *)LockResource(hResLoad);
+    if ( dlgTemplate == NULL )
+    {
+        goto err_out;
+    }
+
+    if ( dlgTemplate->signature == 0xFFFF )
+    {
+        dlgTemplate->style |= WS_THICKFRAME;
+    }
+    else
+    {
+        ((DLGTEMPLATE *)dlgTemplate)->style |= WS_THICKFRAME;
+    }
+
+err_out:
+    return dlgTemplate;
+}
 
 /**
  *  The thread function for the windows message processing loop used by a
@@ -230,8 +289,16 @@ DWORD WINAPI WindowLoopThread(void *arg)
         dlgProc = (DLGPROC)RexxResizableDlgProc;
     }
 
-    pcpbd->hDlg = CreateDialogParam(pcpbd->hInstance, MAKEINTRESOURCE(args->resourceId), pcpbd->hOwnerDlg,
-                                    dlgProc, (LPARAM)pcpbd);
+    if ( args->dlgTemplate != NULL )
+    {
+        pcpbd->hDlg = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)args->dlgTemplate, pcpbd->hOwnerDlg,
+                                                dlgProc, (LPARAM)pcpbd);
+    }
+    else
+    {
+        pcpbd->hDlg = CreateDialogParam(pcpbd->hInstance, MAKEINTRESOURCE(args->resourceId), pcpbd->hOwnerDlg,
+                                        dlgProc, (LPARAM)pcpbd);
+    }
 
     if ( pcpbd->hDlg == NULL )
     {
@@ -418,11 +485,19 @@ RexxMethod5(logical_t, resdlg_startDialog_pvt, CSTRING, library, RexxObjectPtr, 
         return FALSE;
     }
 
+    DLGTEMPLATEEX *dlgTemplate = NULL;
+    if ( pcpbd->isResizableDlg )
+    {
+        // If this fails we just ignore it.
+        dlgTemplate = loadAndFixResizableDlgTemplate(pcpbd, dlgID);
+    }
+
     LoopThreadArgs threadArgs;
-    threadArgs.pcpbd = pcpbd;
-    threadArgs.resourceId = dlgID;
+    threadArgs.dlgTemplate      = dlgTemplate;
+    threadArgs.pcpbd            = pcpbd;
+    threadArgs.resourceId       = dlgID;
     threadArgs.autoDetectResult = OOD_NO_ERROR;
-    threadArgs.release = &Release;
+    threadArgs.release          = &Release;
 
     pcpbd->hDlgProcThread = CreateThread(NULL, 2000, WindowLoopThread, &threadArgs, 0, &thID);
 

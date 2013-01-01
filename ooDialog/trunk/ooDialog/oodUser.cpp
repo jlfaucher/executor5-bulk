@@ -1291,6 +1291,13 @@ RexxMethod2(RexxObjectPtr, dyndlg_dynamicInit, POINTER, arg, OSELF, self)
  *           created, there is no backing Rexx dialog object.  Child dialogs are
  *           created for the 'category' pages of a CategoryDialog or its
  *           subclasses.
+ *
+ *           For a resizable dialog (inherits ResizingAdmin) we add the needed
+ *           styles to force the dialog to be resizable. Testing seems to show
+ *           that adding WS_THICKFRAME during WM_INITDIALOG does not work if
+ *           WS_MAXIMIZEBOX is not used in the dialog template.  But, if
+ *           WS_THICKFRAME is added to the dialog template, WS_MAXIMIZEBOX is
+ *           not needed.  So we do that here.
  */
 RexxMethod9(logical_t, dyndlg_create, uint32_t, x, int32_t, y, int32_t, cx, uint32_t, cy, OPTIONAL_CSTRING, title,
             OPTIONAL_CSTRING, opts, OPTIONAL_CSTRING, dlgClass, ARGLIST, args, CSELF, pCSelf)
@@ -1309,6 +1316,11 @@ RexxMethod9(logical_t, dyndlg_create, uint32_t, x, int32_t, y, int32_t, cx, uint
     if ( pcpbd->isControlDlg )
     {
         style = DS_SETFONT | DS_CONTROL | WS_CHILD;
+    }
+
+    if ( pcpbd->isResizableDlg )
+    {
+        style |= WS_THICKFRAME;
     }
 
     uint32_t exStyle = 0;

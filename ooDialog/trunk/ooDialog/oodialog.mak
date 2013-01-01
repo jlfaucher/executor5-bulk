@@ -118,10 +118,10 @@ OODDATA_SOURCEF = $(OOD_OUTDIR)\oodBaseDialog.obj  $(OOD_OUTDIR)\ooDialog.cpp   
                   $(OOD_OUTDIR)\oodMessaging.obj   $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodUser.obj
 
 # All Source files that include oodControl.hpp
-OODCONTROL_SOURCEF = $(OOD_OUTDIR)\oodBarControls.obj $(OOD_OUTDIR)\oodBaseDialog.obj          $(OOD_OUTDIR)\oodBasicControls.obj \
-                     $(OOD_OUTDIR)\oodControl.obj     $(OOD_OUTDIR)\oodData.obj                $(OOD_OUTDIR)\oodDevicGraphics.obj \
-                     $(OOD_OUTDIR)\ooDialog.cpp       $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodUser.obj          \
-                     $(OOD_OUTDIR)\oodViewControls.obj
+OODCONTROL_SOURCEF = $(OOD_OUTDIR)\oodBarControls.obj $(OOD_OUTDIR)\oodBaseDialog.obj          $(OOD_OUTDIR)\oodBasicControls.obj   \
+                     $(OOD_OUTDIR)\oodControl.obj     $(OOD_OUTDIR)\oodData.obj                $(OOD_OUTDIR)\oodDevicGraphics.obj   \
+                     $(OOD_OUTDIR)\ooDialog.cpp       $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodResizableDialog.obj \
+                     $(OOD_OUTDIR)\oodUser.obj        $(OOD_OUTDIR)\oodViewControls.obj
 
 # All Source files that include oodMessaging.hpp
 OODMESSAGING_SOURCEF = \

@@ -590,10 +590,11 @@ typedef ControlEdges *pControlEdges;
 
 /* Struct for the resizing information for a single control */
 typedef struct _resizeInfoCtrl {
+    ControlEdges       edges;
     RECT               originalRect;
     RECT               currentRect;
-    pControlEdges      edges;
     HWND               hCtrl;
+    oodControl_t       ctrlType;
     uint32_t           id;
 } ResizeInfoCtrl;
 typedef ResizeInfoCtrl *pResizeInfoCtrl;
@@ -602,12 +603,18 @@ typedef ResizeInfoCtrl *pResizeInfoCtrl;
 typedef struct _resizeInfoDlg {
     ControlEdges       defEdges;
     RECT               originalRect;
+    RECT               currentRect;
     SIZE               minSize;
     SIZE               maxSize;
     pResizeInfoCtrl    riCtrls;
     size_t             tableSize;
     size_t             countCtrls;
     bool               inDefineSizing;
+    bool               inSizeOrMove;
+    bool               haveError;
+    bool               minSizeIsInitial;
+    bool               haveMaxSize;
+    bool               haveMinSize;
 } ResizeInfoDlg;
 typedef ResizeInfoDlg *pResizeInfoDlg;
 
