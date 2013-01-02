@@ -203,9 +203,9 @@ err_out:
  * frame style to the dialog automatically.  This allows users to simply inherit
  * ResizeAdmin and have a resizable dialog with no additional code changes.
  *
- * This is to do for RcDialog and UserDialog dialogs.  For ResDialogs we need to
- * update the dialog template in the resource DLL.  We do that here.  The
- * process is relatively simple.  Find the template in the DLL, load that
+ * This is easy to do for RcDialog and UserDialog dialogs.  For ResDialogs we
+ * need to update the dialog template in the resource DLL.  We do that here.
+ * The process is relatively simple.  Find the template in the DLL, load that
  * resource, lock the resource to get a regular pointer to the template, and
  * then modify the style in the template.
  *
@@ -216,9 +216,9 @@ err_out:
  *
  * @note  If this doesn't work and we return null, the calling code just ignores
  *        it.  The dialog is created as usual.  If the template already has the
- *        thick frame, the user will never notice anything.  Otherwise, the user
- *        will not have a resizable dialog.  This never failed during testing,
- *        so it is unlikely to not work.
+ *        thick frame style, the user will never notice anything.  Otherwise,
+ *        the user will not have a resizable dialog.  This never failed during
+ *        testing, so it is unlikely that it will not work.
  */
 static DLGTEMPLATEEX *loadAndFixResizableDlgTemplate(pCPlainBaseDialog pcpbd, int32_t dlgID)
 {

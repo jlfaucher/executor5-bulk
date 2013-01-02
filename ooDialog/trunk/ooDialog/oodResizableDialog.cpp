@@ -870,6 +870,73 @@ LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 }
 
 
+/** Resizing::maxSize          [attribute]
+ */
+RexxMethod1(RexxObjectPtr, ra_maxSize, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    return rxNewSize(context, &prid->maxSize);
+}
+RexxMethod2(RexxObjectPtr, ra_setMaxSize, RexxObjectPtr, _size, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    PSIZE s = rxGetSize(context, _size, 1);
+    if ( s != NULL )
+    {
+        prid->maxSize.cx = s->cx;
+        prid->maxSize.cy = s->cy;
+        prid->haveMaxSize;
+    }
+
+    return NULLOBJECT;
+}
+
+/** Resizing::minSize          [attribute]
+ */
+RexxMethod1(RexxObjectPtr, ra_minSize, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    return rxNewSize(context, &prid->minSize);
+}
+RexxMethod2(RexxObjectPtr, ra_setMinSize, RexxObjectPtr, _size, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    PSIZE s = rxGetSize(context, _size, 1);
+    if ( s != NULL )
+    {
+        prid->minSize.cx = s->cx;
+        prid->minSize.cy = s->cy;
+        prid->haveMinSize;
+        prid->minSizeIsInitial = false;
+    }
+
+    return NULLOBJECT;
+}
+
 /** ResizingAdmin::defaultLeft()
  ** ResizingAdmin::defaultTop()
  ** ResizingAdmin::defaultRight()

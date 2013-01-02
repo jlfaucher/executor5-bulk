@@ -1910,6 +1910,11 @@ RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy)
     return rxNewSize(c->threadContext, cx, cy);
 }
 
+RexxObjectPtr rxNewSize(RexxMethodContext *c, PSIZE s)
+{
+    return rxNewSize(c->threadContext, s->cx, s->cx);
+}
+
 bool rxGetWindowText(RexxMethodContext *c, HWND hwnd, RexxStringObject *pStringObj)
 {
     oodResetSysErrCode(c->threadContext);

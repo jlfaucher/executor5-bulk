@@ -165,6 +165,7 @@ extern RexxObjectPtr rxNewRect(RexxMethodContext *context, PRECT r);
 extern PSIZE         rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos);
 extern RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy);
 extern RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy);
+extern RexxObjectPtr rxNewSize(RexxMethodContext *c, PSIZE s);
 
 extern bool rxGetWindowText(RexxMethodContext *c, HWND hwnd, RexxStringObject *pStringObj);
 extern bool rxDirectoryFromArray(RexxMethodContext *c, RexxArrayObject a, size_t index, RexxDirectoryObject *d, size_t argPos);

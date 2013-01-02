@@ -694,6 +694,10 @@ REXX_METHOD_PROTOTYPE(dyndlg_addIconResource);
 REXX_METHOD_PROTOTYPE(dyndlg_stop);
 
 // ResizingAdmin
+REXX_METHOD_PROTOTYPE(ra_maxSize);
+REXX_METHOD_PROTOTYPE(ra_setMaxSize);
+REXX_METHOD_PROTOTYPE(ra_minSize);
+REXX_METHOD_PROTOTYPE(ra_setMinSize);
 REXX_METHOD_PROTOTYPE(ra_defaultSide);
 REXX_METHOD_PROTOTYPE(ra_defaultSizing);
 REXX_METHOD_PROTOTYPE(ra_initResizing);
@@ -1752,6 +1756,10 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(window_unInit,                  window_unInit),
 
     // ResizingAdmin
+    REXX_METHOD(ra_maxSize,                     ra_maxSize),
+    REXX_METHOD(ra_setMaxSize,                  ra_setMaxSize),
+    REXX_METHOD(ra_minSize,                     ra_minSize),
+    REXX_METHOD(ra_setMinSize,                  ra_setMinSize),
     REXX_METHOD(ra_defaultSide,                 ra_defaultSide),
     REXX_METHOD(ra_defaultSizing,               ra_defaultSizing),
     REXX_METHOD(ra_initResizing,                ra_initResizing),
