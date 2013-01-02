@@ -91,9 +91,20 @@ inline void setResizableDlgStyle(HWND hDlg)
 }
 
 /**
- * Raises an exception for an invalid pin to control ID set by the user.  The
- * control IDs can only be checked for validity after the dialog has been
- * created.
+ * Raises an exception for an invalid pin to control ID set by the user.
+ *
+ * IDC_DEFAULT_PINTO_WINDOW is always valid.  Otherwise there are 2 reasons why
+ * a pin to ID is not valid. 1.) There must be a ResizeInfoCtrl record in the
+ * table prior to ctrlID record.  2.) After the dialog is created, the pin to ID
+ * must be a valid control window.
+ *
+ * For #1, the id is checked when / if the user adds a record for ctrlID.  For
+ * #2, the existing pin to are checked after the dialog is created, but before
+ * all dialog controls are enumerated.
+ *
+ * The text of the exception does not distinguish between case #1 and case #2.
+ * The user will have to use the context of when the exception happens to
+ * distiguish the two.
  *
  * @param c
  */
@@ -125,7 +136,7 @@ static bool verifyPinToWindows(RexxThreadContext *c, HWND hDlg, pResizeInfoDlg p
         for (size_t i = 0; i < 4; i++, p++)
         {
             uint32_t pinToID = p->pinToID;
-            if ( pinToID != 0 && ! IsWindow(GetDlgItem(hDlg, pinToID)) )
+            if ( pinToID != IDC_DEFAULT_PINTO_WINDOW && ! IsWindow(GetDlgItem(hDlg, pinToID)) )
             {
                 raiseInvalidPinToIDException(c, pinToID, prid->riCtrls[i].id);
                 checkForCondition(c, false);
@@ -133,6 +144,53 @@ static bool verifyPinToWindows(RexxThreadContext *c, HWND hDlg, pResizeInfoDlg p
             }
         }
     }
+    return true;
+}
+
+/**
+ * Verifies that the pin to ID is either IDC_DEFAULT_PINTO_WINDOW, or that it is
+ * the resource ID of a control present in the table *before* the control ID, or
+ * that control ID is not currently in the table and pin to ID is present.
+ *
+ * @param c
+ * @param ctrlID
+ * @param pinToID
+ * @param prid
+ *
+ * @return bool
+ *
+ * @notes  This function can be called prior to creating a record for the ctrlID
+ *         control.  This is a normal usage.  In this case pinToID is valid if
+ *         it exists in the table, even if it is the last entry.
+ */
+static bool validPinToID(RexxMethodContext *c, uint32_t ctrlID, uint32_t pinToID, pResizeInfoDlg prid)
+{
+    if ( pinToID == IDC_DEFAULT_PINTO_WINDOW )
+    {
+        return true;
+    }
+
+    bool validPinID  = false;
+
+    for ( register size_t i = 0; i < prid->countCtrls; i++)
+    {
+        if ( prid->riCtrls[i].id = ctrlID )
+        {
+            break;
+        }
+
+        if ( prid->riCtrls[i].id = pinToID )
+        {
+            validPinID = true;
+        }
+    }
+
+    if ( ! validPinID )
+    {
+        raiseInvalidPinToIDException(c->threadContext, pinToID, ctrlID);
+        return false;
+    }
+
     return true;
 }
 
@@ -258,47 +316,14 @@ static RexxObjectPtr defaultBottom(RexxMethodContext *c, CSTRING howPinned, CSTR
 }
 
 /**
- * Returns the dialog control resize info struct for the specified control ID.
- *
- * @param prid
- * @param ctrlID
- *
- * @return A pointer to the struct when found, otherwise null.
- *
- * @remarks  Resize info is added to the table before the underlying dialog is
- *           created.  At that time, the resource ID must be greater than 0.
- *           Then, resize info is also added during WM_INITDIALOG.  At that
- *           time, the ID could be -1 for a static control.
- *
- *           We *always* return NULL for -1.  We assume that if the caller uses
- *           -1 for the control ID, the caller knows that there is no existing
- *           resize info for the control.  This is true during the enum windows
- *           function, InitializeAllControlsProc().  The caller is responsible
- *           for any other use.
- */
-pResizeInfoCtrl getControlInfo(pResizeInfoDlg prid, uint32_t ctrlID)
-{
-    if ( ctrlID != (uint32_t)-1 )
-    {
-        for ( register size_t i = 0; i < prid->countCtrls; i++)
-        {
-            if ( prid->riCtrls[i].id == ctrlID )
-            {
-                return &prid->riCtrls[i];
-            }
-        }
-    }
-
-    return NULL;
-}
-
-/**
  * Allocates a new dialog control resize info structure and assigns it to the
  * end of table.
  *
  * @param c
  * @param prid
  * @param ctrlID
+ * @param hCtrl     May be null if before dialog is created
+ * @param ctrlType  May be winUnknown if before dialog is created
  *
  * @return A pointer to the newly allocated structure on success, null on error.
  *
@@ -335,6 +360,73 @@ pResizeInfoCtrl allocCtrlInfo(RexxThreadContext *c, pResizeInfoDlg prid, int32_t
     ric->id       = ctrlID;
     ric->ctrlType = ctrlType;
 
+    return ric;
+}
+
+/**
+ * Returns the dialog control resize info struct for the specified control ID.
+ *
+ * @param prid
+ * @param ctrlID
+ *
+ * @return A pointer to the struct when found, otherwise null.
+ *
+ * @remarks  Resize info is added to the table before the underlying dialog is
+ *           created.  At that time, the resource ID must be greater than 0.
+ *           Then, resize info is also added during WM_INITDIALOG.  At that
+ *           time, the ID could be -1 for a static control.
+ *
+ *           We *always* return NULL for -1.  We assume that if the caller uses
+ *           -1 for the control ID, the caller knows that there is no existing
+ *           resize info for the control.  This is true during the enum windows
+ *           function, InitializeAllControlsProc().  The caller is responsible
+ *           for any other use.
+ */
+pResizeInfoCtrl getControlInfo(pResizeInfoDlg prid, uint32_t ctrlID)
+{
+    if ( ctrlID != (uint32_t)-1 )
+    {
+        for ( register size_t i = 0; i < prid->countCtrls; i++)
+        {
+            if ( prid->riCtrls[i].id == ctrlID )
+            {
+                return &prid->riCtrls[i];
+            }
+        }
+    }
+
+    return NULL;
+}
+
+/**
+ * Returns a resize info record for the specified control ID after validating
+ * that the pin to ID is valid for the control ID.
+ *
+ * @param c
+ * @param ctrlID
+ * @param pinToID
+ * @param prid
+ *
+ * @return A pointer to the ResizeInfoCtrl struct for the control ID, or null on
+ *         failure.
+ *
+ * @notes  Allocates a new record for the control if one does not already exist.
+ *         The pin to ID must be valid, that is, it must either be
+ *         IDC_DEFAULT_PINTO_WINDOW, or be the control ID of an already existing
+ *         record.
+ */
+static pResizeInfoCtrl getValidatedControlInfo(RexxMethodContext *c, uint32_t ctrlID, uint32_t pinToID, pResizeInfoDlg prid)
+{
+    if ( ! validPinToID(c, ctrlID, pinToID, prid) )
+    {
+        return NULL;
+    }
+
+    pResizeInfoCtrl ric = getControlInfo(prid, ctrlID);
+    if ( ric == NULL )
+    {
+        ric = allocCtrlInfo(c->threadContext, prid, ctrlID, NULL, winUnknown);
+    }
     return ric;
 }
 
@@ -937,10 +1029,105 @@ RexxMethod2(RexxObjectPtr, ra_setMinSize, RexxObjectPtr, _size, CSELF, pCSelf)
     return NULLOBJECT;
 }
 
-/** ResizingAdmin::defaultLeft()
- ** ResizingAdmin::defaultTop()
+/** ResizingAdmin::controlBottom()
+ ** ResizingAdmin::controlLeft()
+ ** ResizingAdmin::controlRight()
+ ** ResizingAdmin::controlTop()
+ *
+ */
+RexxMethod6(RexxObjectPtr, ra_controlSide, RexxObjectPtr, rxID, CSTRING, howPinned, CSTRING, whichEdge,
+            OPTIONAL_RexxObjectPtr, _pinToID, NAME, method, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        goto err_out;
+    }
+
+    if ( ! prid->inDefineSizing )
+    {
+        methodCanOnlyBeInvokedException(context, method, "during the defineSizing method", pcpbd->rexxSelf);
+        goto err_out;
+    }
+
+    uint32_t ctrlID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxID, -1, 1, true);
+    if ( ctrlID = OOD_INVALID_ITEM_ID )
+    {
+        goto err_out;
+    }
+
+    uint32_t pinToID = IDC_DEFAULT_PINTO_WINDOW;
+    if ( argumentExists(4) )
+    {
+        pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, _pinToID, -1, 4, false);
+        if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+        {
+            if ( pinToID == (uint32_t)-1 )
+            {
+                wrongArgValueException(context->threadContext, 3, "a valid numeric ID or a valid symbolic ID" , _pinToID);
+            }
+            goto err_out;
+        }
+    }
+
+    pResizeInfoCtrl ric = getValidatedControlInfo(context, ctrlID, pinToID, prid);
+    if ( ric == NULL )
+    {
+        goto err_out;
+    }
+
+    bool isLeftTop = method[7] == 'L' || method[7] == 'T';
+
+    pinType_t    pinType   = keyword2pinType(context, howPinned, 2, isLeftTop);
+    pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, whichEdge, 3);
+
+    if ( pinType == notAPin || pinToEdge == notAnEdge )
+    {
+        goto err_out;
+    }
+
+    switch ( method[7] )
+    {
+        case 'L' :
+            ric->edges.left.pinType   = pinType;
+            ric->edges.left.pinToEdge = pinToEdge;
+            ric->edges.left.pinToID   = pinToID;
+            break;
+
+        case 'T' :
+            ric->edges.top.pinType   = pinType;
+            ric->edges.top.pinToEdge = pinToEdge;
+            ric->edges.top.pinToID   = pinToID;
+            break;
+
+        case 'R' :
+            ric->edges.right.pinType   = pinType;
+            ric->edges.right.pinToEdge = pinToEdge;
+            ric->edges.right.pinToID   = pinToID;
+            break;
+
+        case 'B' :
+            ric->edges.bottom.pinType   = pinType;
+            ric->edges.bottom.pinToEdge = pinToEdge;
+            ric->edges.bottom.pinToID   = pinToID;
+            break;
+
+        default :
+            goto err_out;
+    }
+
+    return TheZeroObj;
+
+err_out:
+    return TheOneObj;
+}
+
+
+/** ResizingAdmin::defaultBottom()
+ ** ResizingAdmin::defaultLeft()
  ** ResizingAdmin::defaultRight()
- ** ResizingAdmin::defaultBottom()
+ ** ResizingAdmin::defaultTop()
  *
  */
 RexxMethod4(RexxObjectPtr, ra_defaultSide, CSTRING, howPinned, CSTRING, whichEdge, NAME, method, CSELF, pCSelf)

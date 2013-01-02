@@ -250,6 +250,7 @@
 ::attribute maxSize get external   "LIBRARY oodialog ra_maxSize"
 ::attribute maxSize set external   "LIBRARY oodialog ra_setMaxSize"
 
+::method controlBottom external "LIBRARY oodialog ra_controlSide"
 ::method defaultBottom external "LIBRARY oodialog ra_defaultSide"
 ::method defaultLeft external "LIBRARY oodialog ra_defaultSide"
 ::method defaultRight external "LIBRARY oodialog ra_defaultSide"
