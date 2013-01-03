@@ -1,0 +1,351 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodguide.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file
+    #
+    # Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<!-- Chapter07 - A Working Application		 		  v00-02 04Dec12
+
+    Changes:
+     v00-01 25Oct12: First version.
+     v00-02 04Dec12: Intro completed.
+
+    7     "Towards A Working Application"	chapSeven
+    7.1     Introduction                chap07-intro
+    7.2     A 'Model-View Framework'    chap07-MVF
+    7.2.1     Objectives		chap07-MVFObjs
+    7.2.2     Fitting In / using MVF - diff kinds of component; how different kinds use MVF.
+              Ref "samples\person". Ref appendix for detail of MVF.
+    7.2.3     Underlying operations provided by MVF (i.e. overview of how MVF works).
+    7.3     New superclasses and MVF objects. (mention the "requires list")
+    7.4     Message Sender - get rid of "stand-alone" testing code.
+    7.5     The Order Form
+
+Things to add:
+    - Say this app not completed 0 e.g. query mnethod not in super, OrderForm not complete, etc.
+    - Show an example of ReportView with small icons in Ex 7.
+       Have say 3 different ones in a single bitmap.
+     - Talk about dialog offsetting.
+     - Mention Wow4.
+
+
+
+-->
+
+<!--  Diagram of data objects:
+
+Data components are subclassed from GenericFile (in Suuport file 'genericfile.rex').
+Methods of GenericFile are:
+
+readFile - A private method - Given a filename and the number of columns, reads a file and
+               returns it in "File As Directory" format. This is stored in the public
+               attribute "fileAsDirectory"
+
+ getRecord - Given a "key", returns a file record (or line) as a directory containing
+            the record data associated with that key. Format is:
+
+             Indices   Items
+            +- - - - - - - - - +
+            | index 1 | item 1 |
+            +- - - - -+ - - - -+
+            | index x | item x |
+            +- - - - -+ - - - -+
+            | index n | item n |
+            +- - - - + - - - - +
+
+getFile - Returns the file in "File as Directory" format, as follows:
+
+    "File as Directory" format (using sample data values):
+             Indices    Items
+			+- - - - - - - - - - - - - - - - - -+
+			|Headers | OrderNo | CustNo  | .... |	1D array
+			|- - - - + - - - - + - - - - + - - -|
+			|Records | OR123   | CU0003  + .... |   2D array
+			|        | - - - - + - - - - + - - -|
+			|        | OR345   | CU0145  | .... |
+			|        | - - - - + - - - - + - - -|
+			|        | etc. ......              |
+			|- - - - + - - - - + - - - - + - - -+
+			|Count   | n |                          Integer
+			+- - - - + - +
+
+list - Lists a file on the console.
+
+Order Data - two files, OrderHeadersFile.txt and OrderLinesFile.txt
+The OrderData component merges the two (??)
+-->
+
+<chapter id="chapSeven"><title>Towards A Working Application</title>
+<para>
+</para>
+
+<section id="chap07-intro"><title>Introduction</title>  <!-- Section 7.1 -->
+<para> Open the <computeroutput>Exercise07</computeroutput> folder and start the Order Management
+            application by double-clicking on <computeroutput>startup.rex</computeroutput>. Try it
+            out. Change some data. Explore the function which, while not complete, is much more
+            complete than in the previous exercise. In particular, note that application data is
+            read from files - for example, the Customer data is read from the file
+                <computeroutput>CustomerFile.txt</computeroutput> (in which fields in a record are
+            separated by a vertical bar character, and field names are defined in the first line of
+            the file). However, although the data can be changed in dialogs, the changed data does
+            not (in this exercise) update the files. </para>
+        <para>Finally, note that the "Help" menu on the main "Sales Order Management" dialog now
+            includes an option "Message Sender" (discussed in more detail in section 7.3. Click
+            this and a "Message Sender" dialog opens. This can be used to send messages to (invoke
+            methods on) the various components, and is a very useful debugging tool.  For example,
+            try sending a "query" message to the Customer whose key is BA0314. To do this, key
+            "CustomerModel BA0314" in the "Target" field, "query" in the Method field, and then
+            press the "Send" button. The customer's data is returned in the "Reply" field in a
+            name-value string.  </para>
+        <para>Now try using the Message Sender to surface a Product dialog - say the view for
+            Product CU003.  To do this, enter "ObjectMgr The" in the Target field of the Message
+            Sender, enter "showModel" in the "method" field, enter "ProductModel CU003" in the Data
+            field, and then press the "Send" button. The Product dialog for instance CU003 appears.
+            The Message Sender is discussed in <xref linkend="chap07-MsgSender"/>.
+        </para>
+        <para>The "ObjectMgr" (which should really be called "ComponentManager" since it manages
+            application components as opposed to any object) is a support class that instantiates
+            components by invoking a component's <emphasis role="italic">newInstance</emphasis>
+            class method. It also keeps track of which components are already instantiated. For more
+            detail see <xref linkend="apx-mvfinternals"/></para>
+        <para>Consider now what has to happen to display the Product View. First, a
+                <computeroutput>ProductData</computeroutput> instance is created, and its data read
+            from disk (in this exercise, the whole file is read in by the data components). Then the
+            appropriate <computeroutput>ProductModel</computeroutput> component is instantiated and
+            its data retrieved from the <computeroutput>ProductData</computeroutput> component.
+            Finally, an instance of <computeroutput>ProductView</computeroutput> is created and its
+            data retrieved from the <computeroutput>ProductModel</computeroutput> component by
+            invoking its <emphasis>query</emphasis> method. </para>
+        <para>This sequence is a pattern that can be applied to most business components, and hence
+            can be placed in superclasses so that the application components do not each have to
+            provide the same duplicated code. The pattern is called the "Model-View Framework",
+            which is discussed in the next section. After that,  the Message Sender is briefly
+            discussed, following which the details of the Order Form component are addressed.  </para>
+</section>
+
+<section id="chap07-struc"><title id="ch7-amvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
+
+<section id="chap07-MVFobj"><title id="ch7-amvf-obj.title">MVF Objective</title>		<!-- Section 7.2.1 -->
+        <para>The objective of the ModelView Framework (MVF) is to provide a simple mechanism
+            whereby application components can read and write data and display views without
+            needing to be aware of how this is done. The MVF supports the view-model-data
+            separation of concerns in application-level components. For example, if a user
+            double-clicks on an item in say the Product List dialog, then it is expected that
+            a product dialog displaying the data associated with that item in the list view will
+            be displayed. Consider that retrieving data and displaying it requires the following
+            actions:</para>
+            <orderedlist>
+                <listitem>
+                    <para>Create the appropriate Data component, which:</para>
+                </listitem>
+                <listitem>
+                    <para>Opens the data file and reads the data.</para>
+                </listitem>
+                <listitem>
+                    <para>Create the Model component and pass it its "key" (e.g. product
+                        number)</para>
+                </listitem>
+                <listitem>
+                    <para>Get a reference to the Data component</para>
+                </listitem>
+                <listitem>
+                    <para>Invoke a "get" on the Data component to retrieve the data associated with
+                        the Model's key</para>
+                </listitem>
+                <listitem>
+                    <para>Create a View component</para>
+                </listitem>
+                <listitem>
+                    <para>Provide that view component with the data to be displayed in the
+                        dialog.</para>
+                </listitem>
+                <listitem>
+                    <para>Make the dialog visible.</para>
+                </listitem>
+            </orderedlist>
+<para>This set of actions assumes that none of the component instances involved are yet activated.
+                However, the MVF must work when some or all are activated. For example, if a View
+                exists but is minimized, then if a user double-clicks on that item in a list, the
+                MVF need only surface the view. Thus the MVF distinguishes between a number of
+                different states, and relieves the programmer from having to code such logic for
+                each component. </para>
+            <para>For an overview of MVF internals, see <xref linkend="apx-mvfinternals"/></para>
+            <para/>
+</section>	<!-- End of Section 7.2.1 -->
+
+<section id="chap07-MVFuse"><title id="ch7-amvf-use.title">Using the MVF</title>		<!-- Section 7.2.2 -->
+<para> The MVF handles the three different kinds of component - view, model, and data. Each model
+                gets its data from its data component, and each model has a single view. (In
+                principal, the MVF could support multiple views of the same model by providing an
+                "Open as..." option for a given icon or list item. This could display a selection of
+                views, similar to the "Open with..." function provided by a button-2 click on an
+                item in Windows Explorer.)</para>
+            <para>MVF requires that each component has a text name, the name being the class name of
+                the main class (such as "CustomerModel", "ProductView" or "OrderData") together with
+                an instance name. For components with a "key" such as Customer Number, the instance
+                name is the key (e.g. "CustomerModel BA0314"). For components that are "singletons"
+                - that is, there can logically be only one instance, the name is "The". An example
+                of a singleton is a data component (e.g. "CustomerData The").  Finally, some
+                components - such as lists - are anonymous, and their instance names are numbers, as
+                in "CustomerList 3". The instance name is important to MVF since its internal logic
+                differs slightly depending on which kind of instance name is used - a "key" name,
+                the singleton name, or the anonymous name. (Note that this naming convention could
+                be relaxed if components were named in a configuration file; however, the
+                distinctions between the different kinds of component would remain).
+
+            Note: also "Forms" - take instance name of entity id = e.g. Order Number</para>
+
+<para>Suppose now that some component X wants to send 'query' to the instance "PA150" of PersonModel
+                which is subclassed from the support class <computeroutput>Model</computeroutput>
+                (MVF support classes are in the <computeroutput>Support</computeroutput> folder). To
+                do this, both the Model and the Data components must be instantiated. The following
+                pseudocode illustrates how the MVF handles this (excluding error handling): <programlisting>
+  <![CDATA[
+    (1) X (where X is some component) invokes "getComponentId('PersonModel','PA150') on ObjectMgr
+          (ObjectMgr maintains a table of all active instances - classname, instancename and object ref).
+    (2)   ObjMgr: If "PersonModel PA150" exists then its object ref is returned to X.
+    (3)   Else ObjMgr sends "newInstance" to .PersonModel (the class object) with the instance name "PA150"
+            as an argument. This is forwarded to the .Model superclass, which, in order to get this instance's data,
+            invokes "getComponentId('PersonData','The')" on ObjectMgr.
+    (4)       ObjMgr: If "PersonData The" exists, then its object ref is returned.
+              Else ObjectMgr sends "newInstance" to .PersonData with the instance name "The".
+    (6)         .PersonData ceates an instance of itself, and the instance's 'init' method uses its superclass
+                  .GenericFile to reads its file from disk. The 'init' method then returns the instance's object ref
+                  .PersonData, which returns it to ObjectMgr
+    (7)         ObjectMgr stores the object ref and object name for "PersonData The", and returns to .Model.
+    (7)       .Model then invokes the 'query' method on "PersonData The" with the instance name ("PA150") as an argument.
+                This is handled entirely by the superclass ("GenericFile") which returns a directory containing
+                the instance's data.
+
+    (8)         "PersonData The" returns the Model's instance's data.
+If data found, then id = .PersonModel~new(data)
+Return Id (to ObjectMgr)
+end
+
+Note - if class name is quoted, then must use precise case match. (Is this correct?)
+]]>
+    </programlisting>
+            </para>
+
+
+<section>
+    <title>The 'Query' Protocol</title>
+    <para>A component framework generally requires components to provide specific methods defined by
+                    the framework. In our case, aside from instance creation methods, a "well-known"
+                    method is required for the MVF to access a model component's data. This method
+                    has the name "query", and it must conform to the following protocol:<itemizedlist>
+                        <listitem>
+                            <para>If a component's <emphasis role="italic">query</emphasis> method
+                                is invoked with no parameters, then it must return a directory
+                                containing all the "public" data it has. The directory indexes are
+                                the labels for the data as defined in the "database" (although this
+                                is not usually the case for real production-strength systems, where
+                                the data dictionary for application-level components often differs
+                                from the column names in an SQL database).</para>
+                            <para>For example, use the MessageSender to send "query" to "PersonModel
+                                PA150". A directory is returned by PersonModel, and the Message
+                                Sender presents the directory in name-value form in its "Reply"
+                                field as follows: </para>
+                            <para>          dob: 751513; baseSalary: 38000; number: PA150; jobDescr:
+                                Packer; familyName: James; firstName: Alfred;  </para>
+                        </listitem>
+                        <listitem>
+                            <para>If a component's <emphasis role="italic">query</emphasis> method
+                                is invoked with one parameter, and when that parameter is a
+                                directory, an array, or a string, then only those fields specified
+                                by name are returned. </para>
+                            <para>For example, use the Message Sender to query the first name and
+                                family name for "PersonModel PA150". To do this, specify the fields
+                                by name (case-sensitive) in the "Data" edit field, as follows (but
+                                without the quotes): "firstName familyName". On pressing the "Send"
+                                button, the data "firstName: Alfred; familyName: James;" is returned
+                                as a directory which Message Sender unpacks and presents as a string
+                                in the Reply field. </para>
+                            <para>For debugging purposes, you can cause MessageSender to send a set
+                                of data names as a string (as in the example just given), a
+                                directory, or an array.  To send as a directory, enclose each name
+                                in square brackets, e.g.: [firstName] [familyName]. To send as an
+                                array, place a vertical bar before each name, e.g: | firstName |
+                                familyName. </para>
+                        </listitem>
+                    </itemizedlist>Finally, note that although all components in Exercise07 support
+                    the first of the query protocols (i.e. with no parameters), not all components
+                    support the second.</para>
+</section>
+
+
+
+<!--  In addition, any gi- diff kinds of component; how different kinds use MVF. - Ref
+                "samples\person" and "samples\Wow4". Use MessgeSender to show a view of the
+                PersonModel whose key is PA100. Also, WowModel The. - Ref appendix05 for detail of
+                MVF. </para>-->
+
+</section>	<!-- End of Section 7.2.2 -->
+
+<section id="chap07-MVFops"><title id="ch7-amvf-ops.title">MVF Underlying Operations</title>	<!-- Section 7.2.3 -->
+<para>
+- Underlying operations provided by MVF (i.e. overview of how MVF works).
+- Ref appendix for detail.
+</para>
+</section>	<!-- End of Section 7.2.3 -->
+
+<section id="chap07-MVFsupers"><title id="ch7-amvf-supers.title">MVF Superclasses</title>	<!-- Section 7.2.4 -->
+    <para><!--  New superclasses and MVF objects. (mention the "requires list") --></para>
+</section>	<!-- End of Section 7.2.4 -->
+
+</section>	<!-- End of Section 7.2 -->
+
+<section id="chap07-MsgSender"><title id="ch7-amvf-msgsndr.title">The Message Sender</title>	<!-- Section 7.3 -->
+    <indexterm><primary>Message Sender</primary></indexterm>
+<para> Message Sender - get rid of "stand-alone" testing code. </para>
+        <para>In sending to ObjectMgr, this version only supports "List" and "showModel". </para>
+</section>	<!-- End of Section 7.3 -->
+
+<section id="chap07-OrderForm"><title id="ch7-orderform.title">The Order Form</title>		<!-- Section 7.4 -->
+    <indexterm><primary>Order Form dialog</primary></indexterm>
+<para>
+Order Form - use of ControlObjects - multiple dialogs, one main one, one for each tab. Why? To allow controls on
+the form itself.
+</para>
+</section>	<!-- End of Section 7.4 -->
+
+</chapter>
