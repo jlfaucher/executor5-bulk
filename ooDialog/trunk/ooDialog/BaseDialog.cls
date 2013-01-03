@@ -251,6 +251,10 @@
 ::attribute maxSize set external   "LIBRARY oodialog ra_setMaxSize"
 
 ::method controlBottom external "LIBRARY oodialog ra_controlSide"
+::method controlLeft external "LIBRARY oodialog ra_controlSide"
+::method controlRight external "LIBRARY oodialog ra_controlSide"
+::method controlSizing external "LIBRARY oodialog ra_controlSizing"
+::method controlTop external "LIBRARY oodialog ra_controlSide"
 ::method defaultBottom external "LIBRARY oodialog ra_defaultSide"
 ::method defaultLeft external "LIBRARY oodialog ra_defaultSide"
 ::method defaultRight external "LIBRARY oodialog ra_defaultSide"

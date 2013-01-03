@@ -480,10 +480,24 @@ void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t index,
     userDefinedMsgException(c, buffer);
 }
 
+/**
+ * Index <index> of the array, argument <argPos>, must be <obj>
+ *
+ * Index 1 of the array, argument 2, must be "a Directory"
+ *
+ *
+ * Raises 88.900
+ *
+ * @param c        Thread context we are executing in.
+ * @param argPos   Array argument position.
+ * @param index    Index in array
+ * @param msg      Some string message, or object
+ * @param actual   Actual Rexx object, in string format.
+ */
 void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t index, CSTRING obj)
 {
     char buffer[256];
-    snprintf(buffer, sizeof(buffer), "Index %d of the array, argument %d, must be %s", index, argPos, obj);
+    snprintf(buffer, sizeof(buffer), "Index %d of the array, argument %d, must be \"%s\"", index, argPos, obj);
     userDefinedMsgException(c, buffer);
 }
 

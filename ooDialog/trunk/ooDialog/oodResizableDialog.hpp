@@ -48,4 +48,6 @@
 extern LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 extern bool             allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxBufferObject cselfBuffer);
 
+extern BOOL CALLBACK    InitializeAllControlsProc(HWND hCtrl, LPARAM lParam);
+
 #endif

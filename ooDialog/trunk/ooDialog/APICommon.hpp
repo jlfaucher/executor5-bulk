@@ -248,7 +248,7 @@ inline RexxObjectPtr notPositiveArgException(RexxThreadContext *c, size_t argPos
  * @param c        Thread context we are executing in.
  * @param argPos   Array argument position.
  * @param index    Index in array
- * @param msg      Some string message, or object namee
+ * @param msg      Some string message, or object name
  * @param actual   Actual Rexx object,
  */
 inline void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t index, CSTRING msg, RexxObjectPtr actual)

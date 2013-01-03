@@ -117,9 +117,36 @@ static void raiseInvalidPinToIDException(RexxThreadContext *c, uint32_t pinToID,
 }
 
 /**
- * Checks that all the pin to control IDs resolve to valid windows.  This must
- * be done before we enumerate all the control windows, so that it checks what
- * the user set up.
+ * This exception is for a control resize info record added by the user whose
+ * control resource ID is not valid.  I.e., the user typed 109 for the resource
+ * ID, but there is no dialog control with that ID in the dialog.
+ *
+ * This would be discovered after the underlying dialog is created.
+ *
+ * @param c
+ * @param ctrlID
+ */
+static void raiseInvalidResizeInfoRecordException(RexxThreadContext *c, uint32_t ctrlID)
+{
+    TCHAR buf[512];
+    _snprintf(buf, sizeof(buf), "Invalid resize info record; the control ID (%d) does not refer to a valid window", ctrlID);
+    executionErrorException(c, buf);
+}
+
+/**
+ * Checks that resize info record for each dialog control added by the user is
+ * valid.
+ *
+ * When the user adds a resize info record, it is before the underlying dialog
+ * is created.  At that time, a check is done that any pin to ID is valid.  To
+ * be valid, it must either be IDC_DEFAULT_PINTO_WINDOW or be the control ID of
+ * a previous record.
+ *
+ * However, there is no way to check that any resource ID actually is the
+ * resource ID of a dialog control in the dialog.  All control window handles
+ * are null for the user records.  After we enumerate all dialog controls, each
+ * user added record should have a valid control window handle, *unless* the
+ * user used an incorrect resource ID.
  *
  * @param c
  * @param hDlg
@@ -127,21 +154,15 @@ static void raiseInvalidPinToIDException(RexxThreadContext *c, uint32_t pinToID,
  *
  * @return bool
  */
-static bool verifyPinToWindows(RexxThreadContext *c, HWND hDlg, pResizeInfoDlg prid)
+static bool verifyWindows(RexxThreadContext *c, HWND hDlg, pResizeInfoDlg prid, size_t countUserAdded)
 {
-    for ( register size_t i = 0; i < prid->countCtrls; i++)
+    for ( register size_t i = 0; i < countUserAdded; i++)
     {
-        pControlEdges pce = &prid->riCtrls[i].edges;
-        pEdge         p   = (pEdge)pce;
-        for (size_t i = 0; i < 4; i++, p++)
+        if ( ! IsWindow(prid->riCtrls[i].hCtrl) )
         {
-            uint32_t pinToID = p->pinToID;
-            if ( pinToID != IDC_DEFAULT_PINTO_WINDOW && ! IsWindow(GetDlgItem(hDlg, pinToID)) )
-            {
-                raiseInvalidPinToIDException(c, pinToID, prid->riCtrls[i].id);
-                checkForCondition(c, false);
-                return false;
-            }
+            raiseInvalidResizeInfoRecordException(c, prid->riCtrls[i].id);
+            checkForCondition(c, false);
+            return false;
         }
     }
     return true;
@@ -174,14 +195,15 @@ static bool validPinToID(RexxMethodContext *c, uint32_t ctrlID, uint32_t pinToID
 
     for ( register size_t i = 0; i < prid->countCtrls; i++)
     {
-        if ( prid->riCtrls[i].id = ctrlID )
+        if ( prid->riCtrls[i].id == pinToID )
         {
+            validPinID = true;
             break;
         }
 
-        if ( prid->riCtrls[i].id = pinToID )
+        if ( prid->riCtrls[i].id == ctrlID )
         {
-            validPinID = true;
+            break;
         }
     }
 
@@ -276,6 +298,19 @@ static RexxObjectPtr defaultLeft(RexxMethodContext *c, CSTRING howPinned, CSTRIN
     return TheZeroObj;
 }
 
+/**
+ * Sets up the default top edge struct to the values specified.
+ *
+ * @param c
+ * @param howPinned
+ * @param whichEdge
+ * @param prid
+ *
+ * @return Zero on success, one on error.  This Rexx object is passed on to the
+ *         user as a reply from a method invocation.
+ *
+ * @note  Default edges can only be pinned to the dialog window itself.
+ */
 static RexxObjectPtr defaultTop(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
 {
     prid->defEdges.top.pinType   = keyword2pinType(c, howPinned, 1, true);
@@ -289,6 +324,19 @@ static RexxObjectPtr defaultTop(RexxMethodContext *c, CSTRING howPinned, CSTRING
     return TheZeroObj;
 }
 
+/**
+ * Sets up the default right edge struct to the values specified.
+ *
+ * @param c
+ * @param howPinned
+ * @param whichEdge
+ * @param prid
+ *
+ * @return Zero on success, one on error.  This Rexx object is passed on to the
+ *         user as a reply from a method invocation.
+ *
+ * @note  Default edges can only be pinned to the dialog window itself.
+ */
 static RexxObjectPtr defaultRight(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
 {
     prid->defEdges.right.pinType   = keyword2pinType(c, howPinned, 1, false);
@@ -302,6 +350,19 @@ static RexxObjectPtr defaultRight(RexxMethodContext *c, CSTRING howPinned, CSTRI
     return TheZeroObj;
 }
 
+/**
+ * Sets up the default bottom edge struct to the values specified.
+ *
+ * @param c
+ * @param howPinned
+ * @param whichEdge
+ * @param prid
+ *
+ * @return Zero on success, one on error.  This Rexx object is passed on to the
+ *         user as a reply from a method invocation.
+ *
+ * @note  Default edges can only be pinned to the dialog window itself.
+ */
 static RexxObjectPtr defaultBottom(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
 {
     prid->defEdges.bottom.pinType   = keyword2pinType(c, howPinned, 1, false);
@@ -330,7 +391,7 @@ static RexxObjectPtr defaultBottom(RexxMethodContext *c, CSTRING howPinned, CSTR
  * @assumes The table has already been checked and does not contain a struct for
  *          this control.
  */
-pResizeInfoCtrl allocCtrlInfo(RexxThreadContext *c, pResizeInfoDlg prid, int32_t ctrlID, HWND hCtrl, oodControl_t ctrlType)
+static pResizeInfoCtrl allocCtrlInfo(RexxThreadContext *c, pResizeInfoDlg prid, int32_t ctrlID, HWND hCtrl, oodControl_t ctrlType)
 {
     size_t index = prid->countCtrls;
     if ( index >= prid->tableSize )
@@ -382,7 +443,7 @@ pResizeInfoCtrl allocCtrlInfo(RexxThreadContext *c, pResizeInfoDlg prid, int32_t
  *           function, InitializeAllControlsProc().  The caller is responsible
  *           for any other use.
  */
-pResizeInfoCtrl getControlInfo(pResizeInfoDlg prid, uint32_t ctrlID)
+static pResizeInfoCtrl getControlInfo(pResizeInfoDlg prid, uint32_t ctrlID)
 {
     if ( ctrlID != (uint32_t)-1 )
     {
@@ -428,6 +489,295 @@ static pResizeInfoCtrl getValidatedControlInfo(RexxMethodContext *c, uint32_t ct
         ric = allocCtrlInfo(c->threadContext, prid, ctrlID, NULL, winUnknown);
     }
     return ric;
+}
+
+/**
+ * Returns a resize info record for the specified control ID, allocating the
+ * record struct if needed.
+ *
+ * @param c
+ * @param ctrlID
+ * @param prid
+ *
+ * @return A pointer to the ResizeInfoCtrl struct for the control ID, or null on
+ *         failure.
+ *
+ * @notes  Allocates a new record for the control if one does not already exist.
+ */
+static pResizeInfoCtrl getUnValidatedControlInfo(RexxMethodContext *c, uint32_t ctrlID, pResizeInfoDlg prid)
+{
+    pResizeInfoCtrl ric = getControlInfo(prid, ctrlID);
+    if ( ric == NULL )
+    {
+        ric = allocCtrlInfo(c->threadContext, prid, ctrlID, NULL, winUnknown);
+    }
+    return ric;
+}
+
+/**
+ * Returns the width or height of the specified rectangle.
+ *
+ * @param e     Specifies a pinned edge, this determines if the width or the
+ *              height is desired.
+ *
+ * @param rect  The rectangle whose size is to be retrieved
+ *
+ * @return int
+ */
+static size_t calcRectSize(pinnedEdge_t e, RECT *rect)
+{
+    switch ( e )
+    {
+        case leftEdge :
+        case rightEdge :
+        case xCenterEdge :
+            return rect->right - rect->left;
+
+        case topEdge :
+        case bottomEdge :
+        case yCenterEdge :
+        default :
+            return rect->bottom - rect->top;
+    }
+}
+
+/**
+ * Gets either the original, or the current, window position rectangle for the
+ * specified window.
+ *
+ * @param id      Window identifier, specifies the window whose position
+ *                rectangle is desired. Use IDC_DEFAULT_PINTO_WINDOW for the
+ *                dialog, otherwise the resource ID of a dialog control.
+ *
+ * @param prid    The resize info struct for this dialog.
+ *
+ * @param initial Specifies if the original or the current rectangle is desired.
+ *                True for original, false for current.
+ *
+ * @return The window position rectangle specified.
+ *
+ * @note  It is theoretically impossible for the the window position rectangle
+ *        to not exist at this point.  The proper position of the pin to windows
+ *        in the record table is checked during record generation, each dialog
+ *        control is enumerated and a valid record placed in the table at dialog
+ *        creation time, and finally each record is checked to be pointing at a
+ *        valid window.
+ *
+ *        Nevertheless, the code is structured so that if id is not for the
+ *        dialog, but the rectangle is not found in the table, the dialog
+ *        rectangle is returned.  This is done on purpose.
+ */
+static RECT *getRect(uint32_t id, pResizeInfoDlg prid, bool initial)
+{
+    if ( id != 0 )
+    {
+        for ( register size_t i = 0; i < prid->countCtrls; i++)
+        {
+            if ( prid->riCtrls[i].id == id )
+            {
+                return initial ? &prid->riCtrls[i].originalRect : &prid->riCtrls[i].currentRect;
+            }
+        }
+    }
+
+    return initial ? &prid->originalRect : &prid->currentRect;
+}
+
+static void recalcSizePosition(pResizeInfoDlg prid, pResizeInfoCtrl ric)
+{
+    RECT *pinToRectInitial;
+    RECT *pinToRectCurrent;
+
+    pEdge edge = &ric->edges.left;
+    pinToRectInitial = getRect(edge->pinToID, prid, true);
+    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    size_t oldSize = calcRectSize(leftEdge, pinToRectInitial);
+    size_t newSize = calcRectSize(leftEdge, pinToRectCurrent);
+    double factor = (double)newSize / oldSize;
+
+#pragma warning(disable:4244)
+
+    ric->currentRect.left = pinToRectCurrent->left + ((ric->originalRect.left - pinToRectInitial->left) * (factor));
+
+    //printf("ID=%d, original left=%d, new left=%d\n", ric->id, ric->originalRect.left, ric->currentRect.left);
+
+    edge = &ric->edges.top;
+    pinToRectInitial = getRect(edge->pinToID, prid, true);
+    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    oldSize = calcRectSize(topEdge, pinToRectInitial);
+    newSize = calcRectSize(topEdge, pinToRectCurrent);
+    factor  = (double)newSize / oldSize;
+    ric->currentRect.top = pinToRectCurrent->top + ((ric->originalRect.top - pinToRectInitial->top) * (factor));
+
+    //printf("ID=%d, original top=%d, new top=%d\n", ric->id, ric->originalRect.top, ric->currentRect.top);
+
+    edge = &ric->edges.right;
+    pinToRectInitial = getRect(edge->pinToID, prid, true);
+    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    oldSize = calcRectSize(rightEdge, pinToRectInitial);
+    newSize = calcRectSize(rightEdge, pinToRectCurrent);
+    factor  = (double)newSize / oldSize;
+    ric->currentRect.right = pinToRectCurrent->right + ((ric->originalRect.right - pinToRectInitial->right) * (factor));
+
+    //printf("ID=%d, original right=%d, new right=%d\n", ric->id, ric->originalRect.right, ric->currentRect.right);
+
+    edge = &ric->edges.bottom;
+    pinToRectInitial = getRect(edge->pinToID, prid, true);
+    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    oldSize = calcRectSize(bottomEdge, pinToRectInitial);
+    newSize = calcRectSize(bottomEdge, pinToRectCurrent);
+    factor  = (double)newSize / oldSize;
+    ric->currentRect.bottom = pinToRectCurrent->bottom + ((ric->originalRect.bottom - pinToRectInitial->bottom) * (factor));
+
+#pragma warning(default:4244)
+
+    //printf("ID=%d, original bottom=%d, new bottom=%d\n", ric->id, ric->originalRect.bottom, ric->currentRect.bottom);
+
+    return;
+}
+
+/**
+ * Resizes and repositions the specified dialog control to its new size and
+ * position, using DeferWindowPos() if the control window is visible.
+ *
+ * If the window is not visible, the DeferWindowPos() documentation says it will
+ * fail.  When not visible we just use MoveWindow() to immediately do the
+ * resizing and repositioning.  Since we are only using DeferWindowPos() to
+ * reduce flicker, and invisible windows will not produce flicker, this works
+ * well.
+ *
+ * @param hdwp
+ * @param ric
+ *
+ * @return HDWP
+ */
+static HDWP deferPosition(HDWP hdwp, pResizeInfoCtrl ric)
+{
+    if ( ! IsWindow(ric->hCtrl) )
+    {
+        return hdwp;
+    }
+
+    int32_t left   = ric->currentRect.left;
+    int32_t top    = ric->currentRect.top;
+    int32_t right  = ric->currentRect.right;
+    int32_t bottom = ric->currentRect.bottom;
+
+    int32_t width  = right - left;
+    int32_t height = bottom - top;
+
+    if ( IsWindowVisible(ric->hCtrl) )
+    {
+        return DeferWindowPos(hdwp, ric->hCtrl, NULL, left, top, width, height, SWP_NOZORDER | SWP_NOACTIVATE);
+    }
+
+    // For not visible windows, just move them.
+    MoveWindow(ric->hCtrl, left, top, width, height, FALSE);
+
+    return hdwp;
+}
+
+/**
+ * Resizes and repositions all dialog controls in the dialog.
+ *
+ * @param prid
+ *
+ * @return bool
+ */
+static bool resizeAll(pResizeInfoDlg prid)
+{
+    // Use defer window postion to resize / repositon all controls at once.
+    HDWP hdwp = BeginDeferWindowPos((int32_t)prid->countCtrls);
+    if ( hdwp == NULL )
+    {
+        return false;
+    }
+
+    for ( size_t i = 0; i < prid->countCtrls; i++)
+    {
+        hdwp = deferPosition(hdwp, &prid->riCtrls[i]);
+        if ( hdwp == NULL )
+        {
+            return false;
+        }
+    }
+
+    return EndDeferWindowPos(hdwp) ? true : false;
+}
+
+/**
+ * The handler for the WM_SIZE message.
+ *
+ * Calculates the new size for all the dialog controls in the dialog and then
+ * resizes / repositions them all.
+ *
+ * @param pcpbd
+ * @param hDlg
+ * @param cx
+ * @param cy
+ *
+ * @return BOOL
+ */
+static BOOL resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long cy)
+{
+    pResizeInfoDlg prid = pcpbd->resizeInfo;
+
+    prid->currentRect.right  = cx;
+    prid->currentRect.bottom = cy;
+    for ( size_t i = 0; i < prid->countCtrls; i++)
+    {
+        recalcSizePosition(prid, &prid->riCtrls[i]);
+    }
+
+    return resizeAll(prid) ? TRUE : FALSE;
+}
+
+/**
+ *  Called from WM_INITDIALOG to finish the initialization of a resizable
+ *  dialog.
+ *
+ *  Gets the original window rectangles for the dialog and the controls.
+ *  Enumerates all child windows of the dialog to either fix up their existing
+ *  control info structs, or to add a record for any controls not specified by
+ *  the user.  Verifies that all records added by the user refer to an actual
+ *  window.  And does any other needed miscellaneous set up.
+ *
+ * @param hDlg
+ * @param c
+ * @param pcpbd
+ *
+ * @return LRESULT
+ */
+static LRESULT initializeResizableDialog(HWND hDlg, RexxThreadContext *c, pCPlainBaseDialog pcpbd)
+{
+    pResizeInfoDlg prid = pcpbd->resizeInfo;
+
+    setResizableDlgStyle(hDlg);
+
+    GetClientRect(hDlg, &prid->originalRect);
+
+    if ( prid->minSizeIsInitial )
+    {
+        prid->minSize.cx  = prid->originalRect.right;
+        prid->minSize.cy  = prid->originalRect.bottom;
+        prid->haveMinSize = true;
+    }
+
+    size_t originalCount = prid->countCtrls;
+
+    EnumChildWindows(hDlg, InitializeAllControlsProc, (LPARAM)pcpbd);
+
+    if ( ! verifyWindows(c, hDlg, prid, originalCount) )
+    {
+        endDialogPremature(pcpbd, hDlg, RexxConditionRaised);
+        return FALSE;
+    }
+
+    return prid->haveError ? FALSE : TRUE;
 }
 
 /**
@@ -504,168 +854,11 @@ err_out:
     return false;
 }
 
-int calcRectSize(pinnedEdge_t e, RECT *rect)
-{
-    switch ( e )
-    {
-        case leftEdge :
-        case rightEdge :
-        case xCenterEdge :
-            return rect->right - rect->left;
-
-        case topEdge :
-        case bottomEdge :
-        case yCenterEdge :
-            return rect->bottom - rect->top;
-
-        default :
-            break;
-    }
-    printf("calcRectSize() major error\n");
-    return 0;
-}
-
-RECT *getRect(uint32_t id, pResizeInfoDlg prid, bool initial)
-{
-    if ( id == 0 )
-    {
-        return initial ? &prid->originalRect : &prid->currentRect;
-    }
-
-    for ( register size_t i = 0; i < prid->countCtrls; i++)
-    {
-        if ( prid->riCtrls[i].id == id )
-        {
-            return initial ? &prid->riCtrls[i].originalRect : &prid->riCtrls[i].currentRect;
-        }
-    }
-    printf("BLOW UP!!\n");
-    return NULL;
-}
-
-void recalcSizePosition(pResizeInfoDlg prid, pResizeInfoCtrl ric)
-{
-    RECT *pinToRectInitial;
-    RECT *pinToRectCurrent;
-
-    pEdge edge = &ric->edges.left;
-    pinToRectInitial = getRect(edge->pinToID, prid, true);
-    pinToRectCurrent = getRect(edge->pinToID, prid, false);
-
-    int oldSize = calcRectSize(leftEdge, pinToRectInitial);
-    int newSize = calcRectSize(leftEdge, pinToRectCurrent);
-    double factor = (double)newSize / oldSize;
-
-#pragma warning(disable:4244)
-
-    ric->currentRect.left = pinToRectCurrent->left + ((ric->originalRect.left - pinToRectInitial->left) * (factor));
-
-    //printf("ID=%d, original left=%d, new left=%d\n", ric->id, ric->originalRect.left, ric->currentRect.left);
-
-    edge = &ric->edges.top;
-    pinToRectInitial = getRect(edge->pinToID, prid, true);
-    pinToRectCurrent = getRect(edge->pinToID, prid, false);
-
-    oldSize = calcRectSize(topEdge, pinToRectInitial);
-    newSize = calcRectSize(topEdge, pinToRectCurrent);
-    factor  = (double)newSize / oldSize;
-    ric->currentRect.top = pinToRectCurrent->top + ((ric->originalRect.top - pinToRectInitial->top) * (factor));
-
-    //printf("ID=%d, original top=%d, new top=%d\n", ric->id, ric->originalRect.top, ric->currentRect.top);
-
-    edge = &ric->edges.right;
-    pinToRectInitial = getRect(edge->pinToID, prid, true);
-    pinToRectCurrent = getRect(edge->pinToID, prid, false);
-
-    oldSize = calcRectSize(rightEdge, pinToRectInitial);
-    newSize = calcRectSize(rightEdge, pinToRectCurrent);
-    factor  = (double)newSize / oldSize;
-    ric->currentRect.right = pinToRectCurrent->right + ((ric->originalRect.right - pinToRectInitial->right) * (factor));
-
-    //printf("ID=%d, original right=%d, new right=%d\n", ric->id, ric->originalRect.right, ric->currentRect.right);
-
-    edge = &ric->edges.bottom;
-    pinToRectInitial = getRect(edge->pinToID, prid, true);
-    pinToRectCurrent = getRect(edge->pinToID, prid, false);
-
-    oldSize = calcRectSize(bottomEdge, pinToRectInitial);
-    newSize = calcRectSize(bottomEdge, pinToRectCurrent);
-    factor  = (double)newSize / oldSize;
-    ric->currentRect.bottom = pinToRectCurrent->bottom + ((ric->originalRect.bottom - pinToRectInitial->bottom) * (factor));
-
-#pragma warning(default:4244)
-
-    //printf("ID=%d, original bottom=%d, new bottom=%d\n", ric->id, ric->originalRect.bottom, ric->currentRect.bottom);
-
-    return;
-}
-
-HDWP deferPosition(HDWP hdwp, pResizeInfoCtrl ric)
-{
-    // Make sure the window exists.
-    if ( ! IsWindow(ric->hCtrl) )
-    {
-        return hdwp;
-    }
-
-    int32_t left   = ric->currentRect.left;
-    int32_t top    = ric->currentRect.top;
-    int32_t right  = ric->currentRect.right;
-    int32_t bottom = ric->currentRect.bottom;
-
-    int32_t width  = right - left;
-    int32_t height = bottom - top;
-
-    // Only defer visible winodws.
-    if ( IsWindowVisible(ric->hCtrl) )
-    {
-        return DeferWindowPos(hdwp, ric->hCtrl, NULL, left, top, width, height, SWP_NOZORDER | SWP_NOACTIVATE);
-    }
-
-    // For not visible windows, just move them.
-    MoveWindow(ric->hCtrl, left, top, width, height, FALSE);
-
-    return hdwp;
-}
-
-bool resizeAll(pResizeInfoDlg prid)
-{
-    // Use defer window postion to resize / repositon all controls at once.
-    HDWP hdwp = BeginDeferWindowPos((int32_t)prid->countCtrls);
-    if ( hdwp == NULL )
-    {
-        return false;
-    }
-
-    for ( size_t i = 0; i < prid->countCtrls; i++)
-    {
-        hdwp = deferPosition(hdwp, &prid->riCtrls[i]);
-        if ( hdwp == NULL )
-        {
-            return false;
-        }
-    }
-
-    return EndDeferWindowPos(hdwp) ? true : false;
-}
-
-BOOL resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long cy)
-{
-    pResizeInfoDlg prid = pcpbd->resizeInfo;
-
-    prid->currentRect.right  = cx;
-    prid->currentRect.bottom = cy;
-    for ( size_t i = 0; i < prid->countCtrls; i++)
-    {
-        recalcSizePosition(prid, &prid->riCtrls[i]);
-    }
-
-    return resizeAll(prid) ? TRUE : FALSE;
-}
-
 /**
  * This is the callback function for our EnumChildWindows() call in
- * WM_INITDIALOG.  For each child window
+ * WM_INITDIALOG.  For each child window, we capture and save its original size,
+ * save its window handle, determine and save its window type, and create a
+ * resize info struct for the control if one does not exist already.
  *
  * @param hCtrl
  * @param lParam
@@ -722,48 +915,6 @@ BOOL CALLBACK InitializeAllControlsProc(HWND hCtrl, LPARAM lParam)
 #endif
 
     return TRUE;
-}
-
-/**
- *  Called from WM_INITDIALOG to finish the initialization of a resizable
- *  dialog.
- *
- *  Checks that the user did not set a dialog control's pin to window with an
- *  invalid ID. Gets the original window rectangles for the dialog and the
- *  controls. Enumerates all child windows of the dialog to either fix up their
- *  existing control info structs, or to add a record for any controls not
- *  specified by the user.  And does any other needed miscellaneous set up.
- *
- * @param hDlg
- * @param c
- * @param pcpbd
- *
- * @return LRESULT
- */
-LRESULT initializeResizableDialog(HWND hDlg, RexxThreadContext *c, pCPlainBaseDialog pcpbd)
-{
-    pResizeInfoDlg prid = pcpbd->resizeInfo;
-
-    if ( ! verifyPinToWindows(c, hDlg, prid) )
-    {
-        endDialogPremature(pcpbd, hDlg, RexxConditionRaised);
-        return FALSE;
-    }
-
-    setResizableDlgStyle(hDlg);
-
-    GetClientRect(hDlg, &prid->originalRect);
-
-    if ( prid->minSizeIsInitial )
-    {
-        prid->minSize.cx  = prid->originalRect.right;
-        prid->minSize.cy  = prid->originalRect.bottom;
-        prid->haveMinSize = true;
-    }
-
-    EnumChildWindows(hDlg, InitializeAllControlsProc, (LPARAM)pcpbd);
-
-    return prid->haveError ? FALSE : TRUE;
 }
 
 /**
@@ -1052,7 +1203,7 @@ RexxMethod6(RexxObjectPtr, ra_controlSide, RexxObjectPtr, rxID, CSTRING, howPinn
     }
 
     uint32_t ctrlID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxID, -1, 1, true);
-    if ( ctrlID = OOD_INVALID_ITEM_ID )
+    if ( ctrlID == OOD_INVALID_ITEM_ID )
     {
         goto err_out;
     }
@@ -1115,6 +1266,242 @@ RexxMethod6(RexxObjectPtr, ra_controlSide, RexxObjectPtr, rxID, CSTRING, howPinn
 
         default :
             goto err_out;
+    }
+
+    return TheZeroObj;
+
+err_out:
+    return TheOneObj;
+}
+
+
+/** ResizingAdmin::controlSizing()
+ *
+ *
+ */
+RexxMethod6(RexxObjectPtr, ra_controlSizing, RexxObjectPtr, rxID, OPTIONAL_RexxArrayObject, left, OPTIONAL_RexxArrayObject, top,
+            OPTIONAL_RexxArrayObject, right, OPTIONAL_RexxArrayObject, bottom, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid  = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        goto err_out;
+    }
+
+    if ( ! prid->inDefineSizing )
+    {
+        methodCanOnlyBeInvokedException(context, "controlSizing", "during the defineSizing method", pcpbd->rexxSelf);
+        goto err_out;
+    }
+
+    uint32_t ctrlID  = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxID, -1, 1, true);
+    if ( ctrlID == OOD_INVALID_ITEM_ID )
+    {
+        goto err_out;
+    }
+
+    pResizeInfoCtrl ric = getUnValidatedControlInfo(context, ctrlID, prid);
+    if ( ric == NULL )
+    {
+        goto err_out;
+    }
+
+    RexxObjectPtr rxPinToID;
+    RexxObjectPtr rxHowPinned;
+    RexxObjectPtr rxWhichEdge;
+    uint32_t      pinToID;
+
+    if ( argumentExists(2) )
+    {
+        rxHowPinned = context->ArrayAt(left, 1);
+        rxWhichEdge = context->ArrayAt(left, 2);
+        rxPinToID   = context->ArrayAt(left, 3);
+        if ( rxHowPinned == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 2, 1);
+            goto err_out;
+        }
+        if ( rxWhichEdge == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 2, 2);
+            goto err_out;
+        }
+
+        pinToID = IDC_DEFAULT_PINTO_WINDOW;
+        if ( rxPinToID != NULLOBJECT )
+        {
+            pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxPinToID, -1, 2, false);
+            if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+            {
+                if ( pinToID == (uint32_t)-1 )
+                {
+                    wrongObjInArrayException(context->threadContext, 2, 3, "a valid numeric ID or a valid symbolic ID", rxPinToID);
+                }
+                goto err_out;
+            }
+        }
+
+        if ( ! validPinToID(context, ctrlID, pinToID, prid) )
+        {
+            goto err_out;
+        }
+
+        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 2, true);
+        pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, context->ObjectToStringValue(rxWhichEdge), 2);
+
+        if ( pinType == notAPin || pinToEdge == notAnEdge )
+        {
+            goto err_out;
+        }
+
+        ric->edges.left.pinType   = pinType;
+        ric->edges.left.pinToEdge = pinToEdge;
+        ric->edges.left.pinToID   = pinToID;
+    }
+
+    if ( argumentExists(3) )
+    {
+        rxHowPinned = context->ArrayAt(top, 1);
+        rxWhichEdge = context->ArrayAt(top, 2);
+        rxPinToID   = context->ArrayAt(top, 3);
+        if ( rxHowPinned == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 3, 1);
+            goto err_out;
+        }
+        if ( rxWhichEdge == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 3, 2);
+            goto err_out;
+        }
+
+        pinToID = IDC_DEFAULT_PINTO_WINDOW;
+        if ( rxPinToID != NULLOBJECT )
+        {
+            pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxPinToID, -1, 3, false);
+            if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+            {
+                if ( pinToID == (uint32_t)-1 )
+                {
+                    wrongObjInArrayException(context->threadContext, 3, 3, "a valid numeric ID or a valid symbolic ID", rxPinToID);
+                }
+                goto err_out;
+            }
+        }
+
+        if ( ! validPinToID(context, ctrlID, pinToID, prid) )
+        {
+            goto err_out;
+        }
+
+        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 3, true);
+        pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, context->ObjectToStringValue(rxWhichEdge), 3);
+
+        if ( pinType == notAPin || pinToEdge == notAnEdge )
+        {
+            goto err_out;
+        }
+
+        ric->edges.top.pinType   = pinType;
+        ric->edges.top.pinToEdge = pinToEdge;
+        ric->edges.top.pinToID   = pinToID;
+    }
+
+    if ( argumentExists(4) )
+    {
+        rxHowPinned = context->ArrayAt(right, 1);
+        rxWhichEdge = context->ArrayAt(right, 2);
+        rxPinToID   = context->ArrayAt(right, 3);
+        if ( rxHowPinned == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 4, 1);
+            goto err_out;
+        }
+        if ( rxWhichEdge == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 4, 2);
+            goto err_out;
+        }
+
+        pinToID = IDC_DEFAULT_PINTO_WINDOW;
+        if ( rxPinToID != NULLOBJECT )
+        {
+            pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxPinToID, -1, 4, false);
+            if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+            {
+                if ( pinToID == (uint32_t)-1 )
+                {
+                    wrongObjInArrayException(context->threadContext, 4, 3, "a valid numeric ID or a valid symbolic ID", rxPinToID);
+                }
+                goto err_out;
+            }
+        }
+
+        if ( ! validPinToID(context, ctrlID, pinToID, prid) )
+        {
+            goto err_out;
+        }
+
+        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 4, false);
+        pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, context->ObjectToStringValue(rxWhichEdge), 4);
+
+        if ( pinType == notAPin || pinToEdge == notAnEdge )
+        {
+            goto err_out;
+        }
+
+        ric->edges.right.pinType   = pinType;
+        ric->edges.right.pinToEdge = pinToEdge;
+        ric->edges.right.pinToID   = pinToID;
+    }
+
+    if ( argumentExists(5) )
+    {
+        rxHowPinned = context->ArrayAt(bottom, 1);
+        rxWhichEdge = context->ArrayAt(bottom, 2);
+        rxPinToID   = context->ArrayAt(bottom, 3);
+        if ( rxHowPinned == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 5, 1);
+            goto err_out;
+        }
+        if ( rxWhichEdge == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 5, 2);
+            goto err_out;
+        }
+
+        pinToID = IDC_DEFAULT_PINTO_WINDOW;
+        if ( rxPinToID != NULLOBJECT )
+        {
+            pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxPinToID, -1, 5, false);
+            if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+            {
+                if ( pinToID == (uint32_t)-1 )
+                {
+                    wrongObjInArrayException(context->threadContext, 5, 3, "a valid numeric ID or a valid symbolic ID", rxPinToID);
+                }
+                goto err_out;
+            }
+        }
+
+        if ( ! validPinToID(context, ctrlID, pinToID, prid) )
+        {
+            goto err_out;
+        }
+
+        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 5, false);
+        pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, context->ObjectToStringValue(rxWhichEdge), 5);
+
+        if ( pinType == notAPin || pinToEdge == notAnEdge )
+        {
+            goto err_out;
+        }
+
+        ric->edges.bottom.pinType   = pinType;
+        ric->edges.bottom.pinToEdge = pinToEdge;
+        ric->edges.bottom.pinToID   = pinToID;
     }
 
     return TheZeroObj;
