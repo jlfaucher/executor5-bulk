@@ -444,6 +444,8 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Exercise06\Product\res\*.dll"
     File "${ExamplesDir}\userGuide\exercises\Exercise06\Product\res\res.mak"
 
+    /* Do not include exercise 7 in ooDialog 4.2.1
+
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07
     ; Add the files ...
@@ -496,6 +498,8 @@ Section  doInstall
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\res\*.ico"
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\res\*.bmp"
+
+    */
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples
