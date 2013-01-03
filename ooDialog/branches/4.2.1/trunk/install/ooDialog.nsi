@@ -515,24 +515,24 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Samples\DlgData\res\res.mak"
     File "${ExamplesDir}\userGuide\exercises\Samples\DlgData\res\ASimpleDialog.dll"
 
-    ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Person
+    ; Set output path to the installation directory.   Do not include for 4.2.1
+    ;;SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Person
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.h"
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rc"
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rex"
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.txt"
+    ;;File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.h"
+    ;;File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rc"
+    ;;File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rex"
+    ;;File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.txt"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Popups
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Samples\Popups\*rex"
 
-    ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Wow4
+    ; Set output path to the installation directory.  Do not include for 4.2.1
+    ;;SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Wow4
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.rex"
-    File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.txt"
+    ;;File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.rex"
+    ;;File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.txt"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Support
