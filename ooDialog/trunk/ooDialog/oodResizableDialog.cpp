@@ -556,9 +556,9 @@ static size_t calcRectSize(pinnedEdge_t e, RECT *rect)
  *
  * @return The window position rectangle specified.
  *
- * @note  It is theoretically impossible for the the window position rectangle
- *        to not exist at this point.  The proper position of the pin to windows
- *        in the record table is checked during record generation, each dialog
+ * @note  It is theoretically impossible for the window position rectangle to
+ *        not exist at this point.  The proper position of the pin to windows in
+ *        the record table is checked during record generation, each dialog
  *        control is enumerated and a valid record placed in the table at dialog
  *        creation time, and finally each record is checked to be pointing at a
  *        valid window.
@@ -583,66 +583,249 @@ static RECT *getRect(uint32_t id, pResizeInfoDlg prid, bool initial)
     return initial ? &prid->originalRect : &prid->currentRect;
 }
 
-static void recalcSizePosition(pResizeInfoDlg prid, pResizeInfoCtrl ric)
+/**
+ * Returns the co-ordinate in the specified rectangle that mathce the pinned
+ * edge type.
+ *
+ * @param edge
+ * @param r
+ *
+ * @return int32_t
+ */
+int32_t edgeCoord(pinnedEdge_t edge, RECT *r)
 {
-    RECT *pinToRectInitial;
-    RECT *pinToRectCurrent;
+    switch ( edge )
+    {
+        case leftEdge :
+            return r->left;
 
-    pEdge edge = &ric->edges.left;
-    pinToRectInitial = getRect(edge->pinToID, prid, true);
-    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+        case topEdge :
+            return r->top;
 
-    size_t oldSize = calcRectSize(leftEdge, pinToRectInitial);
-    size_t newSize = calcRectSize(leftEdge, pinToRectCurrent);
-    double factor = (double)newSize / oldSize;
+        case rightEdge :
+            return r->right;
+
+        case bottomEdge :
+            return r->bottom;
+
+        case xCenterEdge :
+            return (r->right + r->left) / 2;
+
+        case yCenterEdge :
+            return (r->top + r->bottom) / 2;
+
+        default :
+            break;
+    }
+    return 0;
+}
+
+/**
+ * Returns the new left co-ordinate for dialog control specified through its
+ * resize info, for the edge specified.
+ *
+ * @param prid
+ * @param ric
+ * @param edge
+ *
+ * @return int32_t
+ */
+int32_t newLeft(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
+{
+    RECT *pinToRectInitial = getRect(edge->pinToID, prid, true);
+    RECT *pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    int32_t l = 0;
+
+    switch ( edge->pinType )
+    {
+        case stationaryPin :
+            l = ric->originalRect.left - edgeCoord(edge->pinToEdge, pinToRectInitial) + edgeCoord(edge->pinToEdge, pinToRectCurrent);
+            break;
+
+        case proportionalPin :
+        {
+            size_t oldSize = calcRectSize(leftEdge, pinToRectInitial);
+            size_t newSize = calcRectSize(leftEdge, pinToRectCurrent);
+            double factor = (double)newSize / oldSize;
 
 #pragma warning(disable:4244)
+            l = pinToRectCurrent->left + ((ric->originalRect.left - pinToRectInitial->left) * (factor));
+#pragma warning(disable:4244)
 
-    ric->currentRect.left = pinToRectCurrent->left + ((ric->originalRect.left - pinToRectInitial->left) * (factor));
+            break;
+        }
 
-    //printf("ID=%d, original left=%d, new left=%d\n", ric->id, ric->originalRect.left, ric->currentRect.left);
+        default :
+            break;
+    }
 
-    edge = &ric->edges.top;
-    pinToRectInitial = getRect(edge->pinToID, prid, true);
-    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+    return l;
+}
 
-    oldSize = calcRectSize(topEdge, pinToRectInitial);
-    newSize = calcRectSize(topEdge, pinToRectCurrent);
-    factor  = (double)newSize / oldSize;
-    ric->currentRect.top = pinToRectCurrent->top + ((ric->originalRect.top - pinToRectInitial->top) * (factor));
+/**
+ * Returns the new top co-ordinate for dialog control specified through its
+ * resize info, for the edge specified.
+ *
+ * @param prid
+ * @param ric
+ * @param edge
+ *
+ * @return int32_t
+ */
+int32_t newTop(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
+{
+    RECT *pinToRectInitial = getRect(edge->pinToID, prid, true);
+    RECT *pinToRectCurrent = getRect(edge->pinToID, prid, false);
 
-    //printf("ID=%d, original top=%d, new top=%d\n", ric->id, ric->originalRect.top, ric->currentRect.top);
+    int32_t t = 0;
 
-    edge = &ric->edges.right;
-    pinToRectInitial = getRect(edge->pinToID, prid, true);
-    pinToRectCurrent = getRect(edge->pinToID, prid, false);
+    switch ( edge->pinType )
+    {
+        case stationaryPin :
+            t = ric->originalRect.top - edgeCoord(edge->pinToEdge, pinToRectInitial) + edgeCoord(edge->pinToEdge, pinToRectCurrent);
+            break;
 
-    oldSize = calcRectSize(rightEdge, pinToRectInitial);
-    newSize = calcRectSize(rightEdge, pinToRectCurrent);
-    factor  = (double)newSize / oldSize;
-    ric->currentRect.right = pinToRectCurrent->right + ((ric->originalRect.right - pinToRectInitial->right) * (factor));
+        case proportionalPin :
+        {
+            size_t oldSize = calcRectSize(topEdge, pinToRectInitial);
+            size_t newSize = calcRectSize(topEdge, pinToRectCurrent);
+            double factor  = (double)newSize / oldSize;
 
-    //printf("ID=%d, original right=%d, new right=%d\n", ric->id, ric->originalRect.right, ric->currentRect.right);
-
-    edge = &ric->edges.bottom;
-    pinToRectInitial = getRect(edge->pinToID, prid, true);
-    pinToRectCurrent = getRect(edge->pinToID, prid, false);
-
-    oldSize = calcRectSize(bottomEdge, pinToRectInitial);
-    newSize = calcRectSize(bottomEdge, pinToRectCurrent);
-    factor  = (double)newSize / oldSize;
-    ric->currentRect.bottom = pinToRectCurrent->bottom + ((ric->originalRect.bottom - pinToRectInitial->bottom) * (factor));
-
+#pragma warning(disable:4244)
+            t = pinToRectCurrent->top + ((ric->originalRect.top - pinToRectInitial->top) * (factor));
 #pragma warning(default:4244)
 
-    //printf("ID=%d, original bottom=%d, new bottom=%d\n", ric->id, ric->originalRect.bottom, ric->currentRect.bottom);
+            break;
+        }
 
-    return;
+        default :
+            break;
+    }
+
+    return t;
+}
+
+/**
+ * Returns the new right co-ordinate for dialog control specified through its
+ * resize info, for the edge specified.
+ *
+ * @param prid
+ * @param ric
+ * @param edge
+ *
+ * @return int32_t
+ */
+int32_t newRight(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
+{
+    RECT *pinToRectInitial = getRect(edge->pinToID, prid, true);
+    RECT *pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    int32_t r = 0;
+
+    switch ( edge->pinType )
+    {
+        case stationaryPin :
+            r = ric->originalRect.right - pinToRectInitial->right + pinToRectCurrent->right;
+            break;
+
+        case proportionalPin :
+        {
+            size_t oldSize = calcRectSize(rightEdge, pinToRectInitial);
+            size_t newSize = calcRectSize(rightEdge, pinToRectCurrent);
+            double factor  = (double)newSize / oldSize;
+
+#pragma warning(disable:4244)
+            r = pinToRectCurrent->right + ((ric->originalRect.right - pinToRectInitial->right) * (factor));
+#pragma warning(default:4244)
+
+            break;
+        }
+
+        case myLeftPin :
+            r = ric->currentRect.left + (ric->originalRect.right - ric->originalRect.left);
+            break;
+
+        default :
+            break;
+    }
+
+    return r;
+}
+
+/**
+ * Returns the new bottom co-ordinate for dialog control specified through its
+ * resize info, for the edge specified.
+ *
+ * @param prid
+ * @param ric
+ * @param edge
+ *
+ * @return int32_t
+ */
+int32_t newBottom(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
+{
+    RECT *pinToRectInitial = getRect(edge->pinToID, prid, true);
+    RECT *pinToRectCurrent = getRect(edge->pinToID, prid, false);
+
+    int32_t b = 0;
+
+    switch ( edge->pinType )
+    {
+        case stationaryPin :
+            b = ric->originalRect.bottom - edgeCoord(edge->pinToEdge, pinToRectInitial) + edgeCoord(edge->pinToEdge, pinToRectCurrent);
+            break;
+
+        case proportionalPin :
+        {
+            size_t oldSize = calcRectSize(bottomEdge, pinToRectInitial);
+            size_t newSize = calcRectSize(bottomEdge, pinToRectCurrent);
+            double factor  = (double)newSize / oldSize;
+
+#pragma warning(disable:4244)
+            b = pinToRectCurrent->bottom + ((ric->originalRect.bottom - pinToRectInitial->bottom) * (factor));
+#pragma warning(default:4244)
+
+            break;
+        }
+
+        case myTopPin :
+            b = ric->currentRect.top + (ric->originalRect.bottom - ric->originalRect.top);
+            break;
+
+        default :
+            break;
+    }
+
+    return b;
+}
+
+
+/**
+ * Recalculate and set the current window position in the specified control
+ * resize info struct.
+ *
+ * @param prid
+ * @param ric
+ */
+static void recalcSizePosition(pResizeInfoDlg prid, pResizeInfoCtrl ric)
+{
+    pEdge edge = &ric->edges.left;
+    ric->currentRect.left = newLeft(prid, ric, edge);
+
+    edge = &ric->edges.top;
+    ric->currentRect.top = newTop(prid, ric, edge);
+
+    edge = &ric->edges.right;
+    ric->currentRect.right = newRight(prid, ric, edge);
+
+    edge = &ric->edges.bottom;
+    ric->currentRect.bottom = newBottom(prid, ric, edge);
 }
 
 /**
  * Resizes and repositions the specified dialog control to its new size and
- * position, using DeferWindowPos() if the control window is visible.
+ * position, using DeferWindowPos(), if the control window is visible.
  *
  * If the window is not visible, the DeferWindowPos() documentation says it will
  * fail.  When not visible we just use MoveWindow() to immediately do the
@@ -1542,6 +1725,11 @@ RexxMethod4(RexxObjectPtr, ra_defaultSide, CSTRING, howPinned, CSTRING, whichEdg
 }
 
 
+/** ResizingAdmin::defaultSizing()
+ *
+ *
+ * @author Administrator (1/4/2013)
+ */
 RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPTIONAL_RexxArrayObject, top,
             OPTIONAL_RexxArrayObject, right, OPTIONAL_RexxArrayObject, bottom, CSELF, pCSelf)
 {

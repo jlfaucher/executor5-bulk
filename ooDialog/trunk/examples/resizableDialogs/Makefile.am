@@ -37,10 +37,10 @@
 
 .NOTPARALLEL:
 
-SUBDIRS      = bmp controls examples menus mouse oleinfo ooRexxTry propertySheet.tabControls rc res resizableDialogs simple sysinfo tutorial userGuide wav winsystem
-DIST_SUBDIRS = bmp controls examples menus mouse oleinfo ooRexxTry propertySheet.tabControls rc res resizableDialogs simple sysinfo tutorial userGuide wav winsystem
+SUBDIRS      = DialogAreaU ResizingAdmin
+DIST_SUBDIRS = DialogAreaU ResizingAdmin
 
-MAINTAINERCLEANFILES = Makefile.in *~
+MAINTAINERCLEANFILES 	= Makefile.in *~
 
-EXTRA_DIST = *.rex *.h *.ico
+EXTRA_DIST = *.txt
 
