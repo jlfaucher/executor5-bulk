@@ -810,17 +810,13 @@ int32_t newBottom(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
  */
 static void recalcSizePosition(pResizeInfoDlg prid, pResizeInfoCtrl ric)
 {
-    pEdge edge = &ric->edges.left;
-    ric->currentRect.left = newLeft(prid, ric, edge);
+    ric->currentRect.left = newLeft(prid, ric, &ric->edges.left);
 
-    edge = &ric->edges.top;
-    ric->currentRect.top = newTop(prid, ric, edge);
+    ric->currentRect.top = newTop(prid, ric, &ric->edges.top);
 
-    edge = &ric->edges.right;
-    ric->currentRect.right = newRight(prid, ric, edge);
+    ric->currentRect.right = newRight(prid, ric, &ric->edges.right);
 
-    edge = &ric->edges.bottom;
-    ric->currentRect.bottom = newBottom(prid, ric, edge);
+    ric->currentRect.bottom = newBottom(prid, ric, &ric->edges.bottom);
 }
 
 /**
