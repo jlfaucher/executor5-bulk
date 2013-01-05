@@ -726,7 +726,7 @@ int32_t newRight(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
     switch ( edge->pinType )
     {
         case stationaryPin :
-            r = ric->originalRect.right - pinToRectInitial->right + pinToRectCurrent->right;
+            r = ric->originalRect.right - edgeCoord(edge->pinToEdge, pinToRectInitial) + edgeCoord(edge->pinToEdge, pinToRectCurrent);
             break;
 
         case proportionalPin :
