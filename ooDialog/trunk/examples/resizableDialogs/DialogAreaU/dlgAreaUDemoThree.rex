@@ -262,10 +262,7 @@
 
 ::method onSizeMoveEnded unguarded
   expose u sizing lastSizeInfo
-  say 'In onSizeMoveEnded'
-  do i = 1 to arg()
-    say 'arg' i':' arg(i)
-  end
+
   -- If we were resizing, force the dialog controls to redraw themselves.
   if sizing then do
     u~resize(self, lastSizeInfo)
