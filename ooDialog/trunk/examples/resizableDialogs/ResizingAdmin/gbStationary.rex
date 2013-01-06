@@ -69,12 +69,18 @@
  *  the actual number of lines the programer has to type.
  *
  *  4.)  By default the minimum size of the dialog is set to its initial size
- *  and the maximum size is unlimited.  This example removes any minimum size
- *  restriction and sets a maximum size to slight smaller than the screen.  Note
- *  that the ability to maximize or minimize the dialog is set by the presence
- *  or absence of the minimize or maximize buttons and has nothing to do with
- *  the minimum or maximum size.  The minimum / maximum size is the limits that
- *  the user can size the dialog with the sizing borders.
+ *  when it first is created, and the maximum size is unlimited.  This example
+ *  removes any minimum size restriction and sets a maximum size to slightly
+ *  smaller than the screen.  Note that the ability to maximize or minimize the
+ *  dialog is set by the presence or absence of the minimize or maximize buttons
+ *  and has nothing to do with the minimum or maximum size.  However, if the
+ *  dialog has a maximize button and a maximum size smaller than the screen is
+ *  set, the maximize button will maximize the dialog to the set size.  If the
+ *  dialog has a minimize button, it behaves the same with or without a minimum
+ *  size set.  Note also that the operating system will not let the user size a
+ *  window smaller than the height of the caption bar plus the sizing borders,
+ *  or smaller than the width of the system menu icon and buttons in the caption
+ *  bar, even if the size is set to 1 x 1 pixels.
  */
 
   .application~setDefaults('O', 'gbStationary.h', .false)
@@ -184,6 +190,15 @@ return 0
   pushButton = self~newPushButton(IDC_PB_TEST)
   pushButton~setText('Do Arrange')
 
+
+  -- Get the size of the work area of the screen and make our maximum size 15
+  -- pixels smaller on each side. Then set the minimum size to no minimum.
+  workArea = .SPI~workArea
+  maxSize = .Size~new(workArea~right - workArea~left - 15, workArea~bottom - workArea~top - 15)
+
+  self~maxSize = maxSize
+  self~noMinSize
+
   -- Fill the list-view with items.
   list = self~newListView(IDC_LV_MAIN)
 
@@ -199,7 +214,7 @@ return 0
   end
 
 
-/** onPbPushe()
+/** onPbPushed()
  *
  * The button was pushed, toggle our state.
  */
