@@ -703,6 +703,9 @@ REXX_METHOD_PROTOTYPE(ra_controlSizing);
 REXX_METHOD_PROTOTYPE(ra_defaultSide);
 REXX_METHOD_PROTOTYPE(ra_defaultSizing);
 REXX_METHOD_PROTOTYPE(ra_initResizing);
+REXX_METHOD_PROTOTYPE(ra_noMaxSize);
+REXX_METHOD_PROTOTYPE(ra_noMinSize);
+REXX_METHOD_PROTOTYPE(ra_wantSizeEnded);
 
 // ResDialog
 REXX_METHOD_PROTOTYPE(resdlg_init);
@@ -1767,6 +1770,9 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(ra_defaultSide,                 ra_defaultSide),
     REXX_METHOD(ra_defaultSizing,               ra_defaultSizing),
     REXX_METHOD(ra_initResizing,                ra_initResizing),
+    REXX_METHOD(ra_noMaxSize,                   ra_noMaxSize),
+    REXX_METHOD(ra_noMinSize,                   ra_noMinSize),
+    REXX_METHOD(ra_wantSizeEnded,               ra_wantSizeEnded),
 
     // ResDialog
     REXX_METHOD(resdlg_init,                    resdlg_init),

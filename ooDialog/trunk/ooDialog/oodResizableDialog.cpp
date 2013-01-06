@@ -217,7 +217,8 @@ static bool validPinToID(RexxMethodContext *c, uint32_t ctrlID, uint32_t pinToID
 }
 
 /**
- * Converts a pin to type keyword to the proper flag value.
+ * Converts a pin to type keyword to the proper flag value. We only allow the
+ * user to use MYTOP or MYLEFT where it makes sense.
  *
  * @param c
  * @param keyWord
@@ -226,24 +227,55 @@ static bool validPinToID(RexxMethodContext *c, uint32_t ctrlID, uint32_t pinToID
  *
  * @return pinType_t
  */
-static pinType_t keyword2pinType(RexxMethodContext *c, CSTRING keyWord, size_t pos, bool isLeftTop)
+static pinType_t keyword2pinType(RexxMethodContext *c, CSTRING keyWord, size_t pos, pinnedEdge_t edge)
 {
     pinType_t pinType = notAPin;
 
-    if ( isLeftTop )
+    if (      StrCmpI(keyWord, "PROPORTIONAL") == 0 ) pinType = proportionalPin;
+    else if ( StrCmpI(keyWord, "STATIONARY")   == 0 ) pinType = stationaryPin;
+
+    switch ( edge )
     {
-        if (      StrCmpI(keyWord, "PROPORTIONAL") == 0 ) pinType = proportionalPin;
-        else if ( StrCmpI(keyWord, "STATIONARY") == 0   ) pinType = stationaryPin;
-        else wrongArgKeywordException(c, pos, PIN_TYPE_SHORT_LIST, keyWord);
+        case leftEdge :
+        case topEdge :
+            if ( pinType == notAPin )
+            {
+                wrongArgKeywordException(c, pos, PIN_TYPE_SHORT_LIST, keyWord);
+            }
+            break;
 
-        return pinType;
+        case rightEdge :
+            if ( pinType == notAPin )
+            {
+                if ( StrCmpI(keyWord, "MYLEFT") == 0 )
+                {
+                    pinType = myLeftPin;
+                }
+                else
+                {
+                    wrongArgKeywordException(c, pos, PIN_TYPE_RIGHT_LIST, keyWord);
+                }
+            }
+            break;
+
+        case bottomEdge :
+            if ( pinType == notAPin )
+            {
+                if ( StrCmpI(keyWord, "MYTOP") == 0 )
+                {
+                    pinType = myTopPin;
+                }
+                else
+                {
+                    wrongArgKeywordException(c, pos, PIN_TYPE_BOTTOM_LIST, keyWord);
+                }
+            }
+            break;
+
+        default :
+            break;
+
     }
-
-    if ( StrCmpI(keyWord,      "MYLEFT") == 0       ) pinType = myLeftPin;
-    else if ( StrCmpI(keyWord, "MYTOP") == 0        ) pinType = myTopPin;
-    else if ( StrCmpI(keyWord, "PROPORTIONAL") == 0 ) pinType = proportionalPin;
-    else if ( StrCmpI(keyWord, "STATIONARY") == 0   ) pinType = stationaryPin;
-    else wrongArgKeywordException(c, pos, PIN_TYPE_LIST, keyWord);
 
     return pinType;
 }
@@ -287,7 +319,7 @@ static pinnedEdge_t keyword2pinnedEdge(RexxMethodContext *c, CSTRING keyWord, si
  */
 static RexxObjectPtr defaultLeft(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
 {
-    prid->defEdges.left.pinType   = keyword2pinType(c, howPinned, 1, true);
+    prid->defEdges.left.pinType   = keyword2pinType(c, howPinned, 1, leftEdge);
     prid->defEdges.left.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
     prid->defEdges.left.pinToID   = IDC_DEFAULT_PINTO_WINDOW;
 
@@ -313,7 +345,7 @@ static RexxObjectPtr defaultLeft(RexxMethodContext *c, CSTRING howPinned, CSTRIN
  */
 static RexxObjectPtr defaultTop(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
 {
-    prid->defEdges.top.pinType   = keyword2pinType(c, howPinned, 1, true);
+    prid->defEdges.top.pinType   = keyword2pinType(c, howPinned, 1, topEdge);
     prid->defEdges.top.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
     prid->defEdges.top.pinToID   = 0;
 
@@ -339,7 +371,7 @@ static RexxObjectPtr defaultTop(RexxMethodContext *c, CSTRING howPinned, CSTRING
  */
 static RexxObjectPtr defaultRight(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
 {
-    prid->defEdges.right.pinType   = keyword2pinType(c, howPinned, 1, false);
+    prid->defEdges.right.pinType   = keyword2pinType(c, howPinned, 1, rightEdge);
     prid->defEdges.right.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
     prid->defEdges.right.pinToID   = 0;
 
@@ -365,7 +397,7 @@ static RexxObjectPtr defaultRight(RexxMethodContext *c, CSTRING howPinned, CSTRI
  */
 static RexxObjectPtr defaultBottom(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
 {
-    prid->defEdges.bottom.pinType   = keyword2pinType(c, howPinned, 1, false);
+    prid->defEdges.bottom.pinType   = keyword2pinType(c, howPinned, 1, bottomEdge);
     prid->defEdges.bottom.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
     prid->defEdges.bottom.pinToID   = 0;
 
@@ -1210,11 +1242,32 @@ LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
         case WM_SIZE :
             if ( prid->inSizeOrMove || wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED )
             {
+                prid->isSizing = true;
                 return resizeAndPosition(pcpbd, hDlg, LOWORD(lParam), HIWORD(lParam));
             }
             return FALSE;
 
         case WM_EXITSIZEMOVE :
+            if ( prid->isSizing && prid->sizeEndedMeth != NULL)
+            {
+                RexxThreadContext *c = pcpbd->dlgProcContext;
+                RexxArrayObject args = c->NewArray(0);
+
+                if ( prid->sizeEndedWillReply )
+                {
+                    invokeDirect(c, pcpbd, prid->sizeEndedMeth, args);
+                }
+                else
+                {
+                    RexxStringObject method = c->String(prid->sizeEndedMeth);
+                    invokeDispatch(c, pcpbd->rexxSelf, method, args);
+                    c->ReleaseLocalReference(method);
+                }
+
+                c->ReleaseLocalReference(args);
+            }
+
+            prid->isSizing = false;
             prid->inSizeOrMove = false;
             return FALSE;
 
@@ -1303,7 +1356,12 @@ RexxMethod1(RexxObjectPtr, ra_maxSize, CSELF, pCSelf)
         return NULLOBJECT;
     }
 
-    return rxNewSize(context, &prid->maxSize);
+    if ( prid->haveMaxSize )
+    {
+        return rxNewSize(context, &prid->maxSize);
+    }
+
+    return TheNilObj;
 }
 RexxMethod2(RexxObjectPtr, ra_setMaxSize, RexxObjectPtr, _size, CSELF, pCSelf)
 {
@@ -1319,7 +1377,7 @@ RexxMethod2(RexxObjectPtr, ra_setMaxSize, RexxObjectPtr, _size, CSELF, pCSelf)
     {
         prid->maxSize.cx = s->cx;
         prid->maxSize.cy = s->cy;
-        prid->haveMaxSize;
+        prid->haveMaxSize = true;
     }
 
     return NULLOBJECT;
@@ -1336,7 +1394,12 @@ RexxMethod1(RexxObjectPtr, ra_minSize, CSELF, pCSelf)
         return NULLOBJECT;
     }
 
-    return rxNewSize(context, &prid->minSize);
+    if ( prid->haveMaxSize )
+    {
+        return rxNewSize(context, &prid->minSize);
+    }
+
+    return TheNilObj;
 }
 RexxMethod2(RexxObjectPtr, ra_setMinSize, RexxObjectPtr, _size, CSELF, pCSelf)
 {
@@ -1350,9 +1413,9 @@ RexxMethod2(RexxObjectPtr, ra_setMinSize, RexxObjectPtr, _size, CSELF, pCSelf)
     PSIZE s = rxGetSize(context, _size, 1);
     if ( s != NULL )
     {
-        prid->minSize.cx = s->cx;
-        prid->minSize.cy = s->cy;
-        prid->haveMinSize;
+        prid->minSize.cx  = s->cx;
+        prid->minSize.cy  = s->cy;
+        prid->haveMinSize = true;
         prid->minSizeIsInitial = false;
     }
 
@@ -1407,9 +1470,13 @@ RexxMethod6(RexxObjectPtr, ra_controlSide, RexxObjectPtr, rxID, CSTRING, howPinn
         goto err_out;
     }
 
-    bool isLeftTop = method[7] == 'L' || method[7] == 'T';
+    pinnedEdge_t edge;
+    if (      method[7] == 'L' ) edge = leftEdge;
+    else if ( method[7] == 'T' ) edge = topEdge;
+    else if ( method[7] == 'R' ) edge = rightEdge;
+    else if ( method[7] == 'B' ) edge = bottomEdge;
 
-    pinType_t    pinType   = keyword2pinType(context, howPinned, 2, isLeftTop);
+    pinType_t    pinType   = keyword2pinType(context, howPinned, 2, edge);
     pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, whichEdge, 3);
 
     if ( pinType == notAPin || pinToEdge == notAnEdge )
@@ -1526,7 +1593,7 @@ RexxMethod6(RexxObjectPtr, ra_controlSizing, RexxObjectPtr, rxID, OPTIONAL_RexxA
             goto err_out;
         }
 
-        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 2, true);
+        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 2, leftEdge);
         pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, context->ObjectToStringValue(rxWhichEdge), 2);
 
         if ( pinType == notAPin || pinToEdge == notAnEdge )
@@ -1574,7 +1641,7 @@ RexxMethod6(RexxObjectPtr, ra_controlSizing, RexxObjectPtr, rxID, OPTIONAL_RexxA
             goto err_out;
         }
 
-        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 3, true);
+        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 3, topEdge);
         pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, context->ObjectToStringValue(rxWhichEdge), 3);
 
         if ( pinType == notAPin || pinToEdge == notAnEdge )
@@ -1622,7 +1689,7 @@ RexxMethod6(RexxObjectPtr, ra_controlSizing, RexxObjectPtr, rxID, OPTIONAL_RexxA
             goto err_out;
         }
 
-        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 4, false);
+        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 4, rightEdge);
         pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, context->ObjectToStringValue(rxWhichEdge), 4);
 
         if ( pinType == notAPin || pinToEdge == notAnEdge )
@@ -1670,7 +1737,7 @@ RexxMethod6(RexxObjectPtr, ra_controlSizing, RexxObjectPtr, rxID, OPTIONAL_RexxA
             goto err_out;
         }
 
-        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 5, false);
+        pinType_t    pinType   = keyword2pinType(context, context->ObjectToStringValue(rxHowPinned), 5, bottomEdge);
         pinnedEdge_t pinToEdge = keyword2pinnedEdge(context, context->ObjectToStringValue(rxWhichEdge), 5);
 
         if ( pinType == notAPin || pinToEdge == notAnEdge )
@@ -1833,8 +1900,6 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
  */
 RexxMethod2(RexxObjectPtr, ra_initResizing, RexxObjectPtr, arg, OSELF, self)
 {
-    RexxMethodContext *c = context;
-
     if ( ! context->IsBuffer(arg) )
     {
         baseClassInitializationException(context, "ResizingAdmin");
@@ -1846,4 +1911,66 @@ RexxMethod2(RexxObjectPtr, ra_initResizing, RexxObjectPtr, arg, OSELF, self)
     return TheZeroObj;
 }
 
+
+/** ResizingAdmin::noMaxSize()
+ *
+ */
+RexxMethod1(RexxObjectPtr, ra_noMaxSize, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        prid->haveMaxSize = false;
+    }
+    return TheZeroObj;
+}
+
+
+/** ResizingAdmin::noMinSize()
+ *
+ */
+RexxMethod1(RexxObjectPtr, ra_noMinSize, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd != NULL )
+    {
+        prid->minSizeIsInitial = false;
+        prid->haveMinSize      = false;
+    }
+    return TheZeroObj;
+
+}
+
+
+/** ResizingAdmin::wantSizeEnded()
+ *
+ */
+RexxMethod3(RexxObjectPtr, ra_wantSizeEnded, OPTIONAL_CSTRING, mthName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    if ( argumentOmitted(1) )
+    {
+        mthName = "onSizeEnded";
+    }
+
+    prid->sizeEndedMeth = (char *)LocalAlloc(LPTR, strlen(mthName) + 1);
+    if ( prid->sizeEndedMeth == NULL )
+    {
+        outOfMemoryException(context->threadContext);
+        return TheOneObj;
+    }
+
+    strcpy(prid->sizeEndedMeth, mthName);
+    prid->sizeEndedWillReply = willReply ? true : false;
+
+    return TheZeroObj;
+}
 

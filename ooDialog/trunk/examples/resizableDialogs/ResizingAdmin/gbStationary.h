@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -34,21 +34,17 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-#ifndef oodResizableDialog_Included
-#define oodResizableDialog_Included
-
-#define DEFAULT_RESIZABLE_CONTROLS         20
-#define IDC_DEFAULT_PINTO_WINDOW           0
-#define PIN_TYPE_SHORT_LIST                "proportional, or stationary"
-#define PIN_TYPE_RIGHT_LIST                "myLeft, proportional, or stationary"
-#define PIN_TYPE_BOTTOM_LIST               "myTop, proportional, or stationary"
-#define PINNED_EDGE_LIST                   "left, top, right, bottom, xCenter, or yCenter"
-
-
-extern LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-extern bool             allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxBufferObject cselfBuffer);
-
-extern BOOL CALLBACK    InitializeAllControlsProc(HWND hCtrl, LPARAM lParam);
-
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
 #endif
+
+#define IDD_RESIZABLE                           101
+#define IDC_GB_TEST                             1000
+#define IDC_EDIT_NAMES                          1005
+#define IDC_ST_NAMES                            1006
+#define IDC_ST_LABELS                           1009
+#define IDC_EDIT_LABELS                         1010
+#define IDC_ST_PLACES                           1013
+#define IDC_EDIT_PLACES                         1014
+#define IDC_PB_TEST                             1015
+#define IDC_LV_MAIN                             1016

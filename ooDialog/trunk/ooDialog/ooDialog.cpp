@@ -576,6 +576,14 @@ int32_t delDialog(pCPlainBaseDialog pcpbd, RexxThreadContext *c)
         pcpbd->dlgPrivate = NULL;
     }
 
+    if ( pcpbd->isResizableDlg && pcpbd->resizeInfo != NULL )
+    {
+        safeLocalFree(pcpbd->resizeInfo->riCtrls);
+        safeLocalFree(pcpbd->resizeInfo->sizeEndedMeth);
+        safeLocalFree(pcpbd->resizeInfo);
+        pcpbd->resizeInfo = NULL;
+    }
+
     if ( pcpbd->isPropSheetDlg && pcpbd->dlgPrivate != NULL  )
     {
         delPropSheetDialog((pCPropertySheetDialog)pcpbd->dlgPrivate);

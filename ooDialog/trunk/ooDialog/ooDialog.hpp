@@ -607,10 +607,13 @@ typedef struct _resizeInfoDlg {
     SIZE               minSize;
     SIZE               maxSize;
     pResizeInfoCtrl    riCtrls;
+    char              *sizeEndedMeth;
     size_t             tableSize;
     size_t             countCtrls;
+    bool               sizeEndedWillReply;
     bool               inDefineSizing;
     bool               inSizeOrMove;
+    bool               isSizing;
     bool               haveError;
     bool               minSizeIsInitial;
     bool               haveMaxSize;

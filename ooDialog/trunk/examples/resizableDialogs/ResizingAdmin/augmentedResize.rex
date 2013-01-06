@@ -80,11 +80,11 @@ return 0
  * Each dialog control must be referenced by its resource ID.  The ID can be
  * numeric or symbolic.  This is no different than any other use of ooDialog.
  *
- * The basic premise of the resizing admin is that each side, left, top, etc.,
- * of every control window can be "pinned" to the side of another window.  By
- * default each side is pinned to a side of the dialog window itself.  But, any
- * side of a dialog control window can be pinned to a side of any other dialog
- * control in the dialog.
+ * The basic premise of the resizing admin is that each side, left, top, right,
+ * etc., of every control window can be "pinned" to the side of another window.
+ * By default each side is pinned to a side of the dialog window itself.  But,
+ * any side of a dialog control window can be pinned to a side of any other
+ * dialog control in the dialog.
  *
  * There are several different "types" of pins.  The programmer defines the
  * "sizing" of any dialog control by defining how each "edge" of the control
@@ -99,7 +99,7 @@ return 0
  *   or
  *
  * The right side of a list-view control could be "pinned" the left side of an
- * edit control using a 'fixed' pin.
+ * edit control using a 'stationary' pin.
  *
  * The control windows are identified by the resource ID of the control.  The
  * dialog window is identified by a special constant provided by the
@@ -121,28 +121,97 @@ return 0
  *                 window.
  *
  * STATIONARY   :  The distance between the edge and the pinned to edge remains
- *                 equal to what it was when the dialog is initially created.
+ *                 equal to what it was when the dialog was initially created.
  *
- * MYTOP        :  A special keyword, can only be used for the bottom edge of a control.
+ * MYLEFT       :  A special keyword, can only be used for the right edge of a
+ *                 control.  Pins the right edge of the control to its left
+ *                 edge.  This has the effect of keeping the width of the
+ *                 control constant.
  *
+ * MYTOP        :  A special keyword, can only be used for the bottom edge of a
+ *                 control.  Pins the bottom edge of the control to its top
+ *                 edge.  This has the effect of keeping the height of the
+ *                 control constant.
+ *
+ * The ooDialog framework uses an algorithm to resize / reposition the dialog
+ * control windows that virtually eliminates flicker.  This code requires that
+ * the sizing for every control in the dialog be specified.  When the underlying
+ * dialog is first created, the framework enumerates every dialog control.  If a
+ * a control did not have its sizing defined by the programmer, the framework
+ * assigns the default sizing to the control and adds the sizing definition to
+ * the end of the sizing definitions list.
+ *
+ * When the sizing event notification is received, the ooDialog framework
+ * resizes and repositions every dialog control in the order of the sizing
+ * defintions in the list.
+ *
+ * Because of this, any "pinned to" window must come before the window that pins
+ * to it in the list.  I.e., if a side of a list-view control is to be "pinned"
+ * to the left side of an edit control, the sizing definition for the edit
+ * control must be specified before the sizing definition for the list-view is
+ * specified.  Sizing definitions are placed in the list in the order the
+ * programmer defines the control sizing.  The sizing definitions for all
+ * controls not defined by the programmer are appended to the end of the list,
+ * in the order they are enumerated by the operating system.
+ *
+ * The code in the following defineSizing() method shows how to apply the above
+ * explanation.  The ooDialog reference manual should be consulted for the
+ * complete documentation on the ResizingAdmin class.
  */
 ::method defineSizing
 
+    -- Assign the IDC_DEFAULT_PINTO_WINDOW constant to a short variable name.
+    -- This is just done here to keep the code a little more readable.  In
+    -- addition, IDC_DEFAULT_PINTO_WINDOW is the default.  In almost all cases,
+    -- IDC_DEFAULT_PINTO_WINDOW can simply be omitted.
+
     ID_DLG = self~IDC_DEFAULT_PINTO_WINDOW
 
-    self~controlSizing(IDC_LV_MAIN,                                          -
-                       .array~of('STATIONARY', 'LEFT',   ID_DLG),            -
-                       .array~of('STATIONARY', 'TOP',    ID_DLG),            -
-                       .array~of('STATIONARY', 'RIGHT',  ID_DLG),            -
-                       .array~of('STATIONARY', 'BOTTOM', ID_DLG)             -
-                      )
+    -- The sizing for each edge of a dialog control can be specified
+    -- individually.  Here we define the sizing for the list-view.  It is pinned
+    -- to the left top corner and right bottom corner of the dialog.  This means
+    -- the pixel distance between the edges of the list-view and the edges of
+    -- the dialog will remain constant.
 
+    self~controlLeft(IDC_LV_MAIN,   'STATIONARY', 'LEFT',   ID_DLG)
+    self~controlTop(IDC_LV_MAIN,    'STATIONARY', 'TOP',    ID_DLG)
+    self~controlRight(IDC_LV_MAIN,  'STATIONARY', 'RIGHT',  ID_DLG)
+    self~controlBottom(IDC_LV_MAIN, 'STATIONARY', 'BOTTOM', ID_DLG)
+
+    -- The complete sizing for a single control can be specified at one time.
+    -- The first argument must be the resource ID of the control.  Following
+    -- that are four arguments defining the sizing for the 4 edges of the
+    -- control.  The must be in order: left top right bottom.  However, each
+    -- argument is optional.  If it is omitted, the default sizing for that edge
+    -- is used.
+    --
+    -- Each of the 4 arguments must be an array.  The fist item in the array is
+    -- required and is the type of pin.  The second item in the array is also
+    -- required.  It is the edge of the other window that the edge of the
+    -- control is pinned to.  The third item in the array is the id of the
+    -- window that the control's edge is pinned to.  This item can be omitted,
+    -- it defaults to the dialog window.
+    --
+    -- This definition pins the Test push button to the right top corner of the
+    -- dialog.  Since it is a 'stationary' pin the push button will 'stay' in
+    -- place.  The right side of the button is pinned to its own left side.
+    -- This makes the width of the button constant, it will not change as the
+    -- dialog is sized.  The bottom edge of the button is pinned to its top.
+    -- This makes the height of the button constant.
+    --
+    -- Note that when the pin type is MYLEFT or MYRIGHT, the other 2
+    -- specifications, the edge and window, are always ignored.  However, the
+    -- controlSizing() method requires that the first 2 items in the array not
+    -- be omitted.
     self~controlSizing(IDC_PB_TEST,                                          -
                        .array~of('STATIONARY', 'RIGHT', IDC_LV_MAIN),        -
                        .array~of('STATIONARY', 'TOP'),                       -
                        .array~of('MYLEFT',     'LEFT'),                      -
                        .array~of('MYTOP',      'TOP')                        -
                       )
+
+    -- The following just defines the sizing for all of the rest of the
+    -- controls.
 
     self~controlSizing(IDC_GB_TEST,                                          -
                        .array~of('STATIONARY', 'LEFT'),                      -
@@ -207,11 +276,17 @@ return 0
                        .array~of('MYTOP',      'TOP')                        -
                       )
 
-
   return 0
 
 
+/** initDialog()
+ *
+ * This is just a typical initDialog() method.  We merely put some items into
+ * the list-view to give the dialog some texture.
+ */
 ::method initDialog
+
+  self~newGroupBox(IDC_GB_TEST)~setText('Group Box Stationary Left / Right')
 
   list = self~newListView(IDC_LV_MAIN)
   list~setView('REPORT')
@@ -226,6 +301,3 @@ return 0
   do i = 1 to 200
     list~addRow(i, , "Line" i, "Column" 2, "Column" 3)
   end
-
-
-

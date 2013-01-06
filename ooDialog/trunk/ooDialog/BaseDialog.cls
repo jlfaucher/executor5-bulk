@@ -263,5 +263,9 @@
 ::method defineSizing
   return 0
 
+::method noMaxSize external "LIBRARY oodialog ra_noMaxSize"
+::method noMinSize external "LIBRARY oodialog ra_noMinSize"
+::method wantSizeEnded external "LIBRARY oodialog ra_wantSizeEnded"
+
 -- Internal use only
 ::method initResizing private  external "LIBRARY oodialog ra_initResizing"              -- Do not document
