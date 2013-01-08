@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file
     #
-    # Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -43,104 +43,85 @@
     #########################################################################
 -->
 
-<!-- Chapter07 - A Working Application		 		  v00-02 04Dec12
+<!-- Chapter07 - A Working Application		 		  v00-02 08Jan13
 
     Changes:
-     v00-01 25Oct12: First version.
-     v00-02 04Dec12: Intro completed.
+     v01-00 ddMmm13: First version.
 
-    7     "Towards A Working Application"	chapSeven
-    7.1     Introduction                chap07-intro
-    7.2     A 'Model-View Framework'    chap07-MVF
-    7.2.1     Objectives		chap07-MVFObjs
-    7.2.2     Fitting In / using MVF - diff kinds of component; how different kinds use MVF.
-              Ref "samples\person". Ref appendix for detail of MVF.
-    7.2.3     Underlying operations provided by MVF (i.e. overview of how MVF works).
-    7.3     New superclasses and MVF objects. (mention the "requires list")
-    7.4     Message Sender - get rid of "stand-alone" testing code.
-    7.5     The Order Form
-
-Things to add:
-    - Say this app not completed 0 e.g. query mnethod not in super, OrderForm not complete, etc.
-    - Show an example of ReportView with small icons in Ex 7.
-       Have say 3 different ones in a single bitmap.
-     - Talk about dialog offsetting.
-     - Mention Wow4.
-
-
-
--->
-
-<!--  Diagram of data objects:
-
-Data components are subclassed from GenericFile (in Suuport file 'genericfile.rex').
-Methods of GenericFile are:
-
-readFile - A private method - Given a filename and the number of columns, reads a file and
-               returns it in "File As Directory" format. This is stored in the public
-               attribute "fileAsDirectory"
-
- getRecord - Given a "key", returns a file record (or line) as a directory containing
-            the record data associated with that key. Format is:
-
-             Indices   Items
-            +- - - - - - - - - +
-            | index 1 | item 1 |
-            +- - - - -+ - - - -+
-            | index x | item x |
-            +- - - - -+ - - - -+
-            | index n | item n |
-            +- - - - + - - - - +
-
-getFile - Returns the file in "File as Directory" format, as follows:
-
-    "File as Directory" format (using sample data values):
-             Indices    Items
-			+- - - - - - - - - - - - - - - - - -+
-			|Headers | OrderNo | CustNo  | .... |	1D array
-			|- - - - + - - - - + - - - - + - - -|
-			|Records | OR123   | CU0003  + .... |   2D array
-			|        | - - - - + - - - - + - - -|
-			|        | OR345   | CU0145  | .... |
-			|        | - - - - + - - - - + - - -|
-			|        | etc. ......              |
-			|- - - - + - - - - + - - - - + - - -+
-			|Count   | n |                          Integer
-			+- - - - + - +
-
-list - Lists a file on the console.
-
-Order Data - two files, OrderHeadersFile.txt and OrderLinesFile.txt
-The OrderData component merges the two (??)
+    7   *  Towards A Working Application	                                      chapSeven
+    7.1   * Introduction                                                              chap07-intro
+    7.2   * A 'Model-View Framework'                                                  chap07-mvf
+    7.2.1   * Objectives		                                              chap07-mvf-objs
+              - What has to happen to open dialog (get data etc.)
+              - Try PersonModel (use MsgSender - more detail later) and Wow4
+              - Look at code.
+              - now look at OrderMgr - how dialogs now opened.
+    7.2.2   * MVF Overview                                                            chap07-mvf-oview
+              - Consists of superclasses (Model, View and GenericFile)
+                and "manager" objects.
+    7.2.2.1 * ObjectMgr - Overview only - see appendix 5 for details.                 chap07-mvf-oview-omgr
+                Summary of methods used
+                - list - Lists a file on the console.
+    7.2.2.2   * Model                                                                 chap07-mvf-oview-model
+    7.2.2.3   * View                                                                  chap07-mvf-oview-view
+                - offsetting: use MsgSender (refer to section 7.3 for more details)
+                  e.g. PersonModel - must set Visible = False in resEdit else get a
+                  flicker - try it - add WS_VISIBLE to .rc file (default is FALSE)
+                  then re-open. Watch the flicker as it moves from default position
+                  to offset position. (Note - not used for other dialogs)
+                  (Note - it offsets relative to MsgSender - check out why!)
+    7.2.2.4   * Data                                                                   chap07-mvf-oview-data
+                - Data components are subclassed from GenericFile
+                  (in Support file 'genericfile.rex').
+                - Data formats
+    7.3   * Using the MVF                                                             chap07-mvfuse
+    7.3.1     Diff kinds of component; how different kinds use MVF.                   chap07-mvfuse-kinds
+                - also Wow4 - shows how MVF can be used when doesn't conform
+                   with entity or list.
+    7.3.2     Data formats - standard data formats - getRecord,                       chap07-mvf-datafmts
+                  getFile on Data component
+                - different for Order since have to compose data from two files
+                  (no DBMS!)
+                - Order Data - two files, OrderHeadersFile.txt and OrderLinesFile.txt
+                  The OrderData component merges the two (??)
+    7.4     Message Sender - get rid of "stand-alone" testing code.                   chap07-msgsender
+    7.5     The Order Form -                                                          chap07-orderform
+    7.6     Next Version                                                              chap07-next
+            - Say this app not completed - e.g. query method not in super, OrderForm not complete, etc.
+            Things to add:
+            - drag/drop
+            - Complete the OrderForm
+            - Dialog offsetting
 -->
 
 <chapter id="chapSeven"><title>Towards A Working Application</title>
-<para>
-</para>
 
 <section id="chap07-intro"><title>Introduction</title>  <!-- Section 7.1 -->
+    <para>This chapter, and the accompanying Exercise, provides much of the infrastructure of an
+            application that uses model-view-data component concepts. </para>
 <para> Open the <computeroutput>Exercise07</computeroutput> folder and start the Order Management
             application by double-clicking on <computeroutput>startup.rex</computeroutput>. Try it
-            out. Change some data. Explore the function which, while not complete, is much more
-            complete than in the previous exercise. In particular, note that application data is
-            read from files - for example, the Customer data is read from the file
+            out. Explore the function which, while not complete, is much more so than in the
+            previous exercise. In particular, note that application data is now read from files. For
+            example, the Customer data is read from the file
                 <computeroutput>CustomerFile.txt</computeroutput> (in which fields in a record are
             separated by a vertical bar character, and field names are defined in the first line of
             the file). However, although the data can be changed in dialogs, the changed data does
             not (in this exercise) update the files. </para>
-        <para>Finally, note that the "Help" menu on the main "Sales Order Management" dialog now
-            includes an option "Message Sender" (discussed in more detail in section 7.3. Click
-            this and a "Message Sender" dialog opens. This can be used to send messages to (invoke
-            methods on) the various components, and is a very useful debugging tool.  For example,
+        <para>Finally, note that the "Help" menu on the main Sales Order Management dialog now
+            includes an option "Message Sender" (discussed in more detail in section <xref linkend="ch7-msgsender.title"/>. 
+            Click this option 
+            and a "Message Sender" dialog opens. This can be used to send messages to (invoke
+            methods on) the various components, and is a very useful debugging tool. For example,
             try sending a "query" message to the Customer whose key is BA0314. To do this, key
             "CustomerModel BA0314" in the "Target" field, "query" in the Method field, and then
             press the "Send" button. The customer's data is returned in the "Reply" field in a
-            name-value string.  </para>
+            name-value string. </para>
         <para>Now try using the Message Sender to surface a Product dialog - say the view for
             Product CU003.  To do this, enter "ObjectMgr The" in the Target field of the Message
             Sender, enter "showModel" in the "method" field, enter "ProductModel CU003" in the Data
             field, and then press the "Send" button. The Product dialog for instance CU003 appears.
-            The Message Sender is discussed in <xref linkend="chap07-MsgSender"/>.
+            The Message Sender is discussed in <xref linkend="chap07-msgsender"/>.
         </para>
         <para>The "ObjectMgr" (which should really be called "ComponentManager" since it manages
             application components as opposed to any object) is a support class that instantiates
@@ -160,11 +141,11 @@ The OrderData component merges the two (??)
             provide the same duplicated code. The pattern is called the "Model-View Framework",
             which is discussed in the next section. After that,  the Message Sender is briefly
             discussed, following which the details of the Order Form component are addressed.  </para>
-</section>
+</section>     <!-- End of Section 7.1 -->
 
-<section id="chap07-struc"><title id="ch7-amvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
+<section id="chap07-mvf"><title id="ch7-mvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
 
-<section id="chap07-MVFobj"><title id="ch7-amvf-obj.title">MVF Objective</title>		<!-- Section 7.2.1 -->
+<section id="chap07-mvf-objs"><title id="ch7-mvf-objs.title">MVF Objective</title>		<!-- Section 7.2.1 -->
         <para>The objective of the ModelView Framework (MVF) is to provide a simple mechanism
             whereby application components can read and write data and display views without
             needing to be aware of how this is done. The MVF supports the view-model-data
@@ -207,21 +188,35 @@ The OrderData component merges the two (??)
                 exists but is minimized, then if a user double-clicks on that item in a list, the
                 MVF need only surface the view. Thus the MVF distinguishes between a number of
                 different states, and relieves the programmer from having to code such logic for
-                each component. </para>
-            <para>For an overview of MVF internals, see <xref linkend="apx-mvfinternals"/></para>
-            <para/>
+                each component.
+  </para>
+  <para>
+    Now look at Person in Samples ...
+  </para>
+    <para>
+    Now look at OrderMgr ...
+  </para>
+
 </section>	<!-- End of Section 7.2.1 -->
 
-<section id="chap07-MVFuse"><title id="ch7-amvf-use.title">Using the MVF</title>		<!-- Section 7.2.2 -->
+<section id="chap07-mvf-oview"><title id="ch7-mvf-oview.title">MVF Overview</title>		<!-- Section 7.2.2 -->
+<!--              - Consists of superclasses (Model, View and GenericFile)
+                and "manager" objects.
+              - Overview only - see appendix 5 for details.
+-->
+
 <para> The MVF handles the three different kinds of component - view, model, and data. Each model
-                gets its data from its data component, and each model has a single view. (In
-                principal, the MVF could support multiple views of the same model by providing an
-                "Open as..." option for a given icon or list item. This could display a selection of
+                gets its data from its data component, and each model has a single view.
+                (A production-strength MVF could support multiple views of the same model by providing an
+                "Open as..." option for a given icon or list item. This would display a selection of
                 views, similar to the "Open with..." function provided by a button-2 click on an
                 item in Windows Explorer.)</para>
-            <para>MVF requires that each component has a text name, the name being the class name of
+<para>MVF requires that each component has a text name, the name being the class name of
                 the main class (such as "CustomerModel", "ProductView" or "OrderData") together with
-                an instance name. For components with a "key" such as Customer Number, the instance
+                an instance name.
+                <indexterm><primary>Component</primary><secondary>Name</secondary></indexterm>
+                <indexterm><primary>Name</primary><secondary>Component</secondary></indexterm>
+                For components with a "key" such as Customer Number, the instance
                 name is the key (e.g. "CustomerModel BA0314"). For components that are "singletons"
                 - that is, there can logically be only one instance, the name is "The". An example
                 of a singleton is a data component (e.g. "CustomerData The").  Finally, some
@@ -234,11 +229,14 @@ The OrderData component merges the two (??)
 
             Note: also "Forms" - take instance name of entity id = e.g. Order Number</para>
 
+
+<section id="chap07-mvf-oview-objmgr"><title id="ch7-mvf-oview-objmgr.title">The Object Manager</title>	<!-- Section 7.2.2.1 -->
 <para>Suppose now that some component X wants to send 'query' to the instance "PA150" of PersonModel
                 which is subclassed from the support class <computeroutput>Model</computeroutput>
                 (MVF support classes are in the <computeroutput>Support</computeroutput> folder). To
                 do this, both the Model and the Data components must be instantiated. The following
-                pseudocode illustrates how the MVF handles this (excluding error handling): <programlisting>
+                pseudocode illustrates how the MVF handles this (excluding error handling):
+<programlisting>
   <![CDATA[
     (1) X (where X is some component) invokes "getComponentId('PersonModel','PA150') on ObjectMgr
           (ObjectMgr maintains a table of all active instances - classname, instancename and object ref).
@@ -252,11 +250,11 @@ The OrderData component merges the two (??)
                   .GenericFile to reads its file from disk. The 'init' method then returns the instance's object ref
                   .PersonData, which returns it to ObjectMgr
     (7)         ObjectMgr stores the object ref and object name for "PersonData The", and returns to .Model.
-    (7)       .Model then invokes the 'query' method on "PersonData The" with the instance name ("PA150") as an argument.
+    (8)       .Model then invokes the 'query' method on "PersonData The" with the instance name ("PA150") as an argument.
                 This is handled entirely by the superclass ("GenericFile") which returns a directory containing
                 the instance's data.
 
-    (8)         "PersonData The" returns the Model's instance's data.
+    (9)         "PersonData The" returns the Model's instance's data.
 If data found, then id = .PersonModel~new(data)
 Return Id (to ObjectMgr)
 end
@@ -264,53 +262,87 @@ end
 Note - if class name is quoted, then must use precise case match. (Is this correct?)
 ]]>
     </programlisting>
-            </para>
+  </para>
+  <para>For an overview of MVF internals, see <xref linkend="apx-mvfinternals"/></para>
+  <para>New superclasses and MVF objects. (mention the "requires list")</para>
+</section>	<!-- End of Section 7.2.2.1 -->
 
-
-<section>
-    <title>The 'Query' Protocol</title>
+<section id="chap07-mvf-oview-model"><title>The 'Model' Superclass</title>		<!-- Section 7.2.2.2 -->
+<para>...</para>
+<para>The 'Query' Protocol</para>
     <para>A component framework generally requires components to provide specific methods defined by
-                    the framework. In our case, aside from instance creation methods, a "well-known"
-                    method is required for the MVF to access a model component's data. This method
-                    has the name "query", and it must conform to the following protocol:<itemizedlist>
-                        <listitem>
-                            <para>If a component's <emphasis role="italic">query</emphasis> method
-                                is invoked with no parameters, then it must return a directory
-                                containing all the "public" data it has. The directory indexes are
-                                the labels for the data as defined in the "database" (although this
-                                is not usually the case for real production-strength systems, where
-                                the data dictionary for application-level components often differs
-                                from the column names in an SQL database).</para>
-                            <para>For example, use the MessageSender to send "query" to "PersonModel
-                                PA150". A directory is returned by PersonModel, and the Message
-                                Sender presents the directory in name-value form in its "Reply"
-                                field as follows: </para>
-                            <para>          dob: 751513; baseSalary: 38000; number: PA150; jobDescr:
-                                Packer; familyName: James; firstName: Alfred;  </para>
-                        </listitem>
-                        <listitem>
-                            <para>If a component's <emphasis role="italic">query</emphasis> method
-                                is invoked with one parameter, and when that parameter is a
-                                directory, an array, or a string, then only those fields specified
-                                by name are returned. </para>
-                            <para>For example, use the Message Sender to query the first name and
-                                family name for "PersonModel PA150". To do this, specify the fields
-                                by name (case-sensitive) in the "Data" edit field, as follows (but
-                                without the quotes): "firstName familyName". On pressing the "Send"
-                                button, the data "firstName: Alfred; familyName: James;" is returned
-                                as a directory which Message Sender unpacks and presents as a string
-                                in the Reply field. </para>
-                            <para>For debugging purposes, you can cause MessageSender to send a set
-                                of data names as a string (as in the example just given), a
-                                directory, or an array.  To send as a directory, enclose each name
-                                in square brackets, e.g.: [firstName] [familyName]. To send as an
-                                array, place a vertical bar before each name, e.g: | firstName |
-                                familyName. </para>
-                        </listitem>
-                    </itemizedlist>Finally, note that although all components in Exercise07 support
-                    the first of the query protocols (i.e. with no parameters), not all components
-                    support the second.</para>
-</section>
+      the framework. In our case, aside from instance creation methods, a "well-known"
+      method is required for the MVF to access a model component's data. This method
+      has the name "query", and it must conform to the following protocol:
+      <itemizedlist>
+        <listitem>
+        <para>If a component's <emphasis role="italic">query</emphasis> method
+        is invoked with no parameters, then it must return a directory
+        containing all the "public" data it has. The directory indexes are
+        the labels for the data as defined in the "database" (although this
+        is not usually the case for real production-strength systems, where
+        the data dictionary for application-level components often differs
+        from the column names in an SQL database).</para>
+        <para>For example, use the MessageSender to send "query" to "PersonModel
+        PA150". A directory is returned by PersonModel, and the Message
+        Sender presents the directory in name-value form in its "Reply"
+        field as follows: </para>
+        <para>dob: 751513; baseSalary: 38000; number: PA150; jobDescr:
+        Packer; familyName: James; firstName: Alfred;  </para>
+        </listitem>
+        <listitem>
+        <para>If a component's <emphasis role="italic">query</emphasis> method
+        is invoked with one parameter, and when that parameter is a
+        directory, an array, or a string, then only those fields specified
+        by name are returned. </para>
+        <para>For example, use the Message Sender to query the first name and
+        family name for "PersonModel PA150". To do this, specify the fields
+        by name (case-sensitive) in the "Data" edit field, as follows (but
+        without the quotes): "firstName familyName". On pressing the "Send"
+        button, the data "firstName: Alfred; familyName: James;" is returned
+        as a directory which Message Sender unpacks and presents as a string
+        in the Reply field. </para>
+        <para>For debugging purposes, you can cause MessageSender to send a set
+        of data names as a string (as in the example just given), a
+        directory, or an array.  To send as a directory, enclose each name
+        in square brackets, e.g.: [firstName] [familyName]. To send as an
+        array, place a vertical bar before each name, e.g: | firstName |
+        familyName. </para>
+        </listitem>
+      </itemizedlist>
+      Finally, note that although all components in Exercise07 support
+      the first of the query protocols (i.e. with no parameters), not all components
+      support the second.</para>
+</section>	<!-- End of Section 7.2.2.2 -->
+
+<section id="chap07-mvf-oview-view"><title>The 'View' Superclass</title>		<!-- Section 7.2.2.3 -->
+<para>
+<!-- - offsetting: use MsgSender (refer to section 7.3 for more details)
+  e.g. PersonModel - must set Visible = False in resEdit else get a
+  flicker - try it - add WS_VISIBLE to .rc file (default is FALSE)
+  then re-open. Watch the flicker as it moves from default position
+  to offset position. (Note - not used for other dialogs)
+  (Note - it offsets relative to MsgSender - check out why!)
+-->
+</para>
+</section>	<!-- End of Section 7.2.2.3 -->
+
+<section id="chap07-mvf-oview-data"><title>The 'GenericFile' Superclass</title>		<!-- Section 7.2.2.4 -->
+<para>The data superclass is called "GenericFile", since it acts on any file having
+  a defined format. The main methods used by MVF are: ... </para>
+  <!--  Diagram of data objects:
+
+Methods of GenericFile are:
+
+readFile - A private method - Given a filename and the number of columns, reads a file and
+               returns it in "File As Directory" format. This is stored in the public
+               attribute "fileAsDirectory"
+
+ getRecord - Given a "key", returns a file record (or line) as a directory containing
+            the record data associated with that key. Format is:
+-->
+
+</section>	<!-- End of Section 7.2.2.4 -->
 
 
 
@@ -318,34 +350,82 @@ Note - if class name is quoted, then must use precise case match. (Is this corre
                 "samples\person" and "samples\Wow4". Use MessgeSender to show a view of the
                 PersonModel whose key is PA100. Also, WowModel The. - Ref appendix05 for detail of
                 MVF. </para>-->
+</section>  <!-- End of Section 7.2.2 -->
+</section>  <!-- End of Section 7.2   -->
 
-</section>	<!-- End of Section 7.2.2 -->
+<section id="chap07-mvfuse"><title id="ch7-mvfuse.title">Using the MVF</title>	<!-- Section 7.3 -->
+  <para>
+    - Underlying operations provided by MVF (i.e. overview of how MVF works).
+    - Ref appendix for detail.
+  </para>
 
-<section id="chap07-MVFops"><title id="ch7-amvf-ops.title">MVF Underlying Operations</title>	<!-- Section 7.2.3 -->
-<para>
-- Underlying operations provided by MVF (i.e. overview of how MVF works).
-- Ref appendix for detail.
+
+<section id="chap07-mvfuse-kinds"><title id="ch7-mvfuse-kinds.title">Kinds of Component</title>	<!-- Section 7.3.1 -->
+  <para> xxx </para>
+</section>	<!-- End of Section 7.3.1 -->
+
+<section id="chap07-mvfuse-datafmts"><title id="ch7-mvfuse-datafmts.title">Data Formats</title>	<!-- Section 7.3.2 -->
+  <para>
+    <programlisting>
+    <![CDATA[
+
+             Indices   Items
+            +- - - - - - - - - +
+            | index 1 | item 1 |
+            +- - - - -+ - - - -+
+            | index x | item x |
+            +- - - - -+ - - - -+
+            | index n | item n |
+            +- - - - + - - - - +
+    ]]>
+    </programlisting>
+  </para>
+
+  <para>
+  getFile - Returns the file in "File as Directory" format, as follows:
+  <programlisting>
+    <![CDATA[
+
+    "File as Directory" format (using sample data values):
+             Indices    Items
+			+- - - - - - - - - - - - - - - - - -+
+			|Headers | OrderNo | CustNo  | .... |	1D array
+			|- - - - + - - - - + - - - - + - - -|
+			|Records | OR123   | CU0003  + .... |   2D array
+			|        | - - - - + - - - - + - - -|
+			|        | OR345   | CU0145  | .... |
+			|        | - - - - + - - - - + - - -|
+			|        | etc. ......              |
+			|- - - - + - - - - + - - - - + - - -+
+			|Count   | n |                          Integer
+			+- - - - + - +
+
+    ]]>
+  </programlisting>
 </para>
-</section>	<!-- End of Section 7.2.3 -->
+</section>	<!-- End of Section 7.3.2 -->
+</section>  <!-- End of Section 7.3   -->
 
-<section id="chap07-MVFsupers"><title id="ch7-amvf-supers.title">MVF Superclasses</title>	<!-- Section 7.2.4 -->
-    <para><!--  New superclasses and MVF objects. (mention the "requires list") --></para>
-</section>	<!-- End of Section 7.2.4 -->
-
-</section>	<!-- End of Section 7.2 -->
-
-<section id="chap07-MsgSender"><title id="ch7-amvf-msgsndr.title">The Message Sender</title>	<!-- Section 7.3 -->
+<section id="chap07-msgsender"><title id="ch7-msgsender.title">The Message Sender</title>	<!-- Section 7.4 -->
     <indexterm><primary>Message Sender</primary></indexterm>
 <para> Message Sender - get rid of "stand-alone" testing code. </para>
         <para>In sending to ObjectMgr, this version only supports "List" and "showModel". </para>
-</section>	<!-- End of Section 7.3 -->
+</section>	<!-- End of Section 7.4 -->
 
-<section id="chap07-OrderForm"><title id="ch7-orderform.title">The Order Form</title>		<!-- Section 7.4 -->
+<section id="chap07-orderform"><title id="ch7-orderform.title">The Order Form</title>		<!-- Section 7.5 -->
     <indexterm><primary>Order Form dialog</primary></indexterm>
 <para>
 Order Form - use of ControlObjects - multiple dialogs, one main one, one for each tab. Why? To allow controls on
 the form itself.
 </para>
-</section>	<!-- End of Section 7.4 -->
+</section>	<!-- End of Section 7.5 -->
+
+<section id="chap07-next"><title id="ch7-next">Completing the Application</title>               <!-- Section 7.6 -->
+<para>At this point, there is more to do to complete the application. For example,
+completing the OrderForm, allowing data to be updated, moving as much generic
+function as possible to superclasses, and removing the need for duplciate view superclasses.
+It is planned that these functions will be addressed in the next version of this document.
+</para>
+</section>	<!-- End of Section 7.6 -->
 
 </chapter>
