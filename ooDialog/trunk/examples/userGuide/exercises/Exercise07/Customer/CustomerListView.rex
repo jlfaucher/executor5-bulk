@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: The Customer ListView				  v01-00 06Jun12
+   Exercise 07: The Customer ListView				  v02-00 08Jan13
 
    Contains: classes "CustomerListView" and "HRSclv".
 
@@ -47,6 +47,8 @@
                 and invokes CustomerView.
 
    v01-00 06Jun12: First Version.
+   v02-00 08Jan13: Removed stand-alone startup code (not needed after Ex06)
+                   Commented out say's.
 
    Outstanding Problems: None reported.
 *******************************************************************************/
@@ -61,7 +63,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  CustomerListView						  v02-00 17Aug12
+  CustomerListView						  v02-00 08Jan13
   ----------------
   The view of a list of Customers.
   Changes:
@@ -74,6 +76,8 @@
                     method to top of file - just before ::requires statement(s).
     v01-06 29Mar12: Very minor mods - all just minor clean-ups. All comments removed
     v02-00 17Aug12: Exercise07 - modified to use the MVF.
+           08Jan13: Removed stand-alone startup (not now needed).
+
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -85,11 +89,11 @@
 
   ::METHOD newInstance CLASS PUBLIC
     use arg idCustomerListModel, rootDlg
-    say "CustomerListView-newInstance-01: instName, rootDlg =" idCustomerListModel rootDlg
+    --say "CustomerListView-newInstance-01: instName, rootDlg =" idCustomerListModel rootDlg
     dlg = self~new("Customer\CustomerListView.rc", "IDD_CUSTLIST_DIALOG")
-    say "CustomerListView-newInstance-02: dlg =" dlg
+    --say "CustomerListView-newInstance-02: dlg =" dlg
     dlg~activate(idCustomerListModel, rootDlg)				-- Must be the last statement.
-    return dlg								-- Ex07
+    return dlg
 
   /*----------------------------------------------------------------------------
     Instance Methods
@@ -120,15 +124,11 @@
   ::METHOD activate UNGUARDED
     expose rootDlg modelData
     use arg idCustomerListModel, rootDlg
-    say "CustomerListView-activate-01."
+    --say "CustomerListView-activate-01."
     forward class (super) continue			-- required for MVF
     modelData = RESULT					-- super gets my data!
-    say "CustomerListView-activate-02: rootDlg =" rootDlg
-    if rootDlg = "SA" then do			-- If standalone operation required
-      rootDlg = self				      -- To pass on to children
-      self~execute("SHOWTOP","IDI_CUSTLIST_DLGICON")
-    end
-    else self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_CUSTLIST_DLGICON")
+    --say "CustomerListView-activate-02: rootDlg =" rootDlg
+    self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_CUSTLIST_DLGICON")
     return
 
 
@@ -208,15 +208,9 @@
     end
     info=.Directory~new
     if lvCustomers~getItemInfo(item, info) then do
-      say "CustomerListView-showCustomer-02: info~text =" info~text
-      --.local~my.idCustomerData  = .CustomerData~new	-- create Customer Data instance
-      --.local~my.idCustomerModel = .CustomerModel~new	-- create Customer Model instance
-      --.local~my.idCustomerData~activate
-      --.local~my.idCustomerModel~activate
-      --.CustomerView~newInstance(rootDlg,"CU003")
+      --say "CustomerListView-showCustomer-02: info~text =" info~text
       objectMgr = .local~my.ObjectMgr					-- Ex07
       objectMgr~showModel("CustomerModel", info~text, rootDlg)		-- Ex07
-      --objectMgr~showModel("CustomerModel", "CU0003", self)		-- Ex07
       self~disableControl("IDC_CUSTLIST_SHOWCUST")			-- Ex07
     end
     else do
@@ -226,14 +220,14 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD loadList
     expose lvCustomers modelData					-- Ex07
-    say "CustomerListView-LoadList-00: modelData =" modelData
+    --say "CustomerListView-LoadList-00: modelData =" modelData
     -- modelData is a directory.
-    say "CustomerListView-loadList-01: No Records =" modelData[count]
+    --say "CustomerListView-loadList-01: No Records =" modelData[count]
     rows = modelData[count]				-- Ex07 - number of rows
     arrData = modelData[records]
-    say "CustomerListView-loadList-02:Dims =" arrData~dimension(1) arrData~dimension(2)
+    --say "CustomerListView-loadList-02:Dims =" arrData~dimension(1) arrData~dimension(2)
     do i = 1 to rows				-- Ex07 - omit the header line.
-      say "CustomerListView-loadList-02: arr[i,1 =" arrData[i,1]
+      --say "CustomerListView-loadList-02: arr[i,1 =" arrData[i,1]
       lvCustomers~addRow( , ,arrData[i,1],arrData[i,2],arrData[i,5])
     end
     lvCustomers~setColumnWidth(1)	-- set width of 2nd column to longest text entry.
