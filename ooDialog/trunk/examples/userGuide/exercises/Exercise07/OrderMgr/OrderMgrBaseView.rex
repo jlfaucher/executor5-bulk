@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
    Exercise 06: The OrderManagementBaseView class
-   OrderMgrBaseView.rex						  v01-00 07Jun12
+   OrderMgrBaseView.rex						  v02-00 07Jan13
 
    Contains: classes "OrderMgrBaseBase", HRSombv (private).
 
@@ -44,10 +44,8 @@
 
    Changes:
      v01-00 07Jun12: First Version
+     v02-00 07Jan13: Second version - no change other than tidy up some comments.
 
-
-   To Do: - Add Find Customer, Find Product (buttons or menu items?)
-          - Tidy up comments in code.
 
    Possible future additions:
           - A configure option to allow user to decide whether to use buttons or
@@ -85,13 +83,10 @@
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD newInstance CLASS PUBLIC UNGUARDED
-    --say ".OrderMgrBaseView-newInstance-01: Start."
     -- Enable use of symbolic IDs in menu creation, and turn off AutoDetection
     -- (the third parameter:
     -- Create an instance of OrderMgrBaseView and show it:
     dlg = self~new
-
-    --say ".OrderMgrBaseView-newInstance-02: dlg~Activate."
     dlg~activate
 
 
@@ -311,8 +306,7 @@
   ::METHOD onResize unguarded
   expose u sizing minMaximized lastSizeInfo
   use arg sizingType, sizeinfo
-  --say "OrderMgrBaseView-onResize."
-  --os - this methed sent while re-sizing.
+  -- This methed sent while re-sizing.
   -- Save the size information so we know the final size of the dialog.
   lastSizeInfo = sizeInfo
 
@@ -348,7 +342,6 @@
 
   ::METHOD onSizeMoveEnded UNGUARDED
     expose u sizing lastSizeInfo
-    --say "OrderMgrBaseView-onSizeMoveEnded."
     -- If we were resizing, force the dialog controls to redraw themselves.
     if sizing then do
       u~resize(self, lastSizeInfo)

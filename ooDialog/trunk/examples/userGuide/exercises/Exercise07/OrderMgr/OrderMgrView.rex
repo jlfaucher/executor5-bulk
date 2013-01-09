@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: OrderMgrView.rex 				  v01-00 07Jun12
+   Exercise 06: OrderMgrView.rex 				  v02-00 07Jan13
 
    Contains: 	   class: "OrderMgrView", "HRSomv"
 
@@ -51,6 +51,16 @@
 
    Changes:
      v01-00 07Jun12: First Version
+     v02-00 07Jan13:
+     1. Added get id of ObjectMgr in init method.
+     2. Added menu item "Help - Person" to surface a Person Model in order to
+        illustrate MVF using Person class early in Chapter 7.
+     3. Updated 'showModel' method to use the MVF (via ObjectMgr) to surface
+        List Views that are populated with data read from disk (instead of data
+        hard-coded in the ListView) also give listview the instance name of "a"
+        to indicate an anonymous component to ObjectMgr.
+     4. Added methods "messageSender" and "person" to asllow user to surface
+        (so can explain stuff in text in appropriate sequence).
 
 ------------------------------------------------------------------------------*/
 
@@ -209,7 +219,12 @@ call "OrderMgr\RequiresList.rex"
     .MessageSender~newInstance(self)
     --self~noMenuFunction(.HRSomv~HelpAbout)
 
-
+  /*- - Message Sender- - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD person UNGUARDED
+    expose idObjectMgr
+    say "OrderMgrView-Person."
+    objectMgr = .local.my.ObjectMgr
+    idObjectMgr~showModel("PersonModel","PA150", self)
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD noMenuFunction UNGUARDED
@@ -273,12 +288,6 @@ call "OrderMgr\RequiresList.rex"
     className = record~ID
     say "OrderMgrView-showModel-01: className =" className		-- Ex07
     r = idObjectMgr~showModel(classname, "a", self)			-- Ex07
-/*
-    viewClassName = className||"View"
-    r = O
-    interpret "."||viewClassName||"~newInstance(self)"
-*/
-    --say "OrderMgrView-showModel-02:"
 
 /*============================================================================*/
 
