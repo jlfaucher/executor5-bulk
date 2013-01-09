@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
 
-   Samples:  Person Model and Data Classes	  	  	  v01-00 01Oct12
+   Samples:  Person Model and Data Classes	  	  	  v01-00 09Jan13
 
    Contains: classes "PersonModel" and "PersonData".
 
@@ -46,7 +46,8 @@
    None.
 
    Changes:
-   v01-00 01Oct2: First version.
+   v01-00 01Oct12: First version.
+          09Jan13: Removed or commented-out 'say' instructions.
 
 ------------------------------------------------------------------------------*/
 
@@ -57,7 +58,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  PersonModel							  v01-00 01Oct12
+  PersonModel							  v01-00 09Jan13
   ------------
 
   The "model" part of the Person component - a simple "Model" class that
@@ -91,11 +92,7 @@
     				-- that data when it creates this instance with
     				-- '~new'.
     				-- The data is in a directory:
-    say "PersonModel-init-01: personNumber =" dirPerson["number"]
-    say "PersonModel--init-02: dirPerson =" dirPerson "as follows:"
-    do i over dirPerson
-      say "  "||i "=" dirPerson[i]
-    end
+    --say "PersonModel-init-01: personNumber =" dirPerson["number"]
     --return self
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -116,7 +113,7 @@
     expose dirPerson
     use arg dataNames
     --say "PersonModelData-query-01: familyName =" dirPerson["familyName"]
-    say "PersonModel-query-02: dataNames:" dataNames
+    --say "PersonModel-query-02: dataNames:" dataNames
     dirReturn = .Directory~new
     select
       when dataNames = .nil | dataNames = "" then return dirPerson
@@ -130,7 +127,7 @@
 
       when dataNames~isa(.Array) then do
         do i over dataNames
-          say "PersonModel-query-03: dataNames: '"||dataNames"'"
+          --say "PersonModel-query-03: dataNames: '"||dataNames"'"
           dirReturn[i] = dirPerson[i]
         end
       end
@@ -170,7 +167,7 @@
   ::METHOD newInstance CLASS PUBLIC		-- Invoked by ObjectMgr
     --use strict arg instanceName
     if self~created = "CREATED" then do		-- If this is first time
-      say ".PersonData-newInstance-01."
+      --say ".PersonData-newInstance-01."
       personDataId = self~new()			-- the object id of the PersonData component.
       self~created = .true
       return personDataId
@@ -186,7 +183,7 @@
     fileName = "..\samples\person\PersonFile.txt"
     columns = 6					-- colums in the Persons "table"
     records = self~init:super(fileName, columns)
-    say "PersonData-init-01: records:" records
+    --say "PersonData-init-01: records:" records
     return self					-- MVF
 
 
