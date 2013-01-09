@@ -46,6 +46,7 @@
    Changes:
      v01-00 31May12: First version.
      v02-00 06Sep12: Second version - uses the MVF.
+            09Jan13: Comment-out 'say's.
 ------------------------------------------------------------------------------*/
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -105,7 +106,7 @@
   ::METHOD pickWow				-- MVF uses 'query' method.
     expose arrWowSet
     i = random(1,25)
-    say "WowModel-query: arrWowSet[3,1] =" arrWowSet[3,1]
+    --say "WowModel-query: arrWowSet[3,1] =" arrWowSet[3,1]
     return arrWowSet[i,1]
 
   /*----------------------------------------------------------------------------

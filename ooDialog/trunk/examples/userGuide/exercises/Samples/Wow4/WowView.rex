@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise03 Part 2: The WowView component.			  v01-00 31may12
+   Exercise03 Part 2: The WowView component.			  v02-00 09Jan13
 
    Contains: 	   Classes: WowView.
 
@@ -45,7 +45,9 @@
    Description: The view component for the "Words of Wisdom" app.
 
    Changes:
-     v01-00: First version.
+     v01-00 31May12: First version.
+     v02-00 06Sep12: Changed to use MVF.
+            09Jan13: 'say's commented out.
 ------------------------------------------------------------------------------*/
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -57,6 +59,7 @@
   Changes:
     v01-00 31May12: First version.
     v02-00 06Sep12: Second version - uses the Model-View Framework.
+           09Jan13: 'say's commented-out.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::REQUIRES "ooDialog.cls"
@@ -123,7 +126,7 @@
     --wow = wowPicker~pickWow						-- v01-00
     wow = idModel~pickWow
     --newText~setText(wow)						-- v01-00
-    say "WowView-okClicked-01: newText, modelData =" newText wow
+    --say "WowView-okClicked-01: newText, modelData =" newText wow
     newText~setText(wow)						-- MVF
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
