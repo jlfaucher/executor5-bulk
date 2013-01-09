@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: Customer Models and Data Classes	  	  v01-01 17Aug12
+   Exercise 07: Customer Models and Data Classes	  	  v02-00 08Jan13
 
    Contains: 	   classes "CustomerModel" "CustomerListModel" and "CustomerData".
 
@@ -46,8 +46,9 @@
 
    Changes:
    v01-00 07Jun12: First version.
-   v01-01 09Aug12: Modified to use the Model-View Framework with data read from
-                   file using the GenericFile class. CustomerListModel added.
+   v02-00 08Jan13: Modified to use the Model-View Framework with data read from
+                     file using the GenericFile class. CustomerListModel added.
+                   Commented out 'say' instructions.
 ------------------------------------------------------------------------------*/
 
 ::REQUIRES "..\Support\GenericFile.rex"
@@ -89,11 +90,11 @@
   ::METHOD init
     use strict arg dirData
     self~myData = dirData
-    say "CustomerModel-init-01: customerId  =" dirData["CustNo"]
-    say "CustomerModel-init-02: dirCustomer =" dirData "as follows:"
-    do i over dirData
-      say i "=" dirData[i]
-    end
+    --say "CustomerModel-init-01: customerId  =" dirData["CustNo"]
+    --say "CustomerModel-init-02: dirCustomer =" dirData "as follows:"
+    --do i over dirData
+      --say i "=" dirData[i]
+    --end
     return self
 
 
@@ -108,7 +109,7 @@
             All returns are a Directory containing names and values.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     use arg dataNames
-    say "CustomerModel-query-01: dataNames:" dataNames
+    --say "CustomerModel-query-01: dataNames:" dataNames
     dirReturn = .Directory~new
     select
       when dataNames = .nil | dataNames = "" then return self~myData
@@ -123,7 +124,7 @@
 
       when dataNames~isa(.Array) then do
         do i over dataNames
-          say "CustomerModel-query-03: dataNames: '"||dataNames"'"
+          --say "CustomerModel-query-03: dataNames: '"||dataNames"'"
           dirReturn[i] = self~dirData[i]
         end
       end
@@ -152,11 +153,12 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  CustomerListModel						  v00-01 15Aug12
+  CustomerListModel						  v02-00 13Jan08
   ----------------
   The model for a list of Customers.
   Changes:
     v00-01 15Aug12: First version
+    v02-00 13Jan08: Runs under MVF (Ex07). Commented out 'say's.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS CustomerListModel SUBCLASS Model PUBLIC
@@ -181,7 +183,7 @@
     expose arrData
     use arg arrData
     self~myData = arrdata
-    say "CustomerListModel-init-01: myData =" self~myData
+    --say "CustomerListModel-init-01: myData =" self~myData
     return self
 
   ::METHOD query PUBLIC
@@ -189,7 +191,7 @@
     query - returns an array of all Customer data.
             In MVF this method is invoked by the RcView (or ResView) superclass.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    say "CustomerListModel-query-01."
+    --say "CustomerListModel-query-01."
     return self~myData
 
 /*============================================================================*/
@@ -203,8 +205,9 @@
   The "data" part of the Customer component.
    Changes:
      v01-00 07Jun12: First version.
-     v01-01 09Aug12: Second version - subclasses GenericFile to read data from
-                     a disk file.
+     v02-00 09Aug12: Second version - subclasses GenericFile to read data from
+                       a disk file.
+            08Jan13: Commented out some 'say' instructions.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS CustomerData SUBCLASS GenericFile PUBLIC
@@ -219,7 +222,7 @@
   ::METHOD newInstance CLASS PUBLIC		-- Invoked by ObjectMgr
     --use strict arg instanceName
     if self~created = "CREATED" then do		-- If this is first time
-      say ".CustomerData-newInstance-01."
+      --say ".CustomerData-newInstance-01."
       customerDataId = self~new()
       self~created = .true
       return customerDataId
@@ -240,11 +243,13 @@
     fileName = "Customer\CustomerFile.txt"
     columns = 5			-- colums in the Customer "table"
     numRecords = self~init:super(fileName, columns)
-    say "CustomerData-init-01: numRecords:" numRecords
+    --say "CustomerData-init-01: numRecords:" numRecords
+    /*
     if numRecords > 0 then do
       say "CustomerData-init-02: Array is:"
       say self~fileArray~tostring
     end
+    */
     return self
 
 

@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: The CustomerView component             		  v03-00 09Aug12
+   Exercise 07: The CustomerView component             		  v02-00 08Jan13
 
    Contains: 	   class "CustomerView";  routine "startCustomerView".
    Pre-requisites: RcView.rex, CustomerView.rc, CustomerView.h.
@@ -48,8 +48,8 @@
    v01-00 01Jun12: First version (Exercise04).
    v01-01 07Jun12: Minor changes for Exercise06.
    ....
-   v03-00 09Aug12: Changed to use MVF.
-
+   v02-00 09Aug12: Changed to use MVF.
+          08Jan13: Removed stand-alone startup (not now needed).
 ------------------------------------------------------------------------------*/
 
 
@@ -84,23 +84,21 @@
                     changed to .application~addToConstDir() here.
     v02-05 19Feb12: Moved .Application~addToConstDir statement from newInstance
                     method to top of file - just before ::requires statement(s).
-    v03-00 09Aug12: Changed to use MVF.
-
+    v03-00 09Aug12: Changed to use MVF. Stand-alone startup removed.
+           08Jan13: Removed stand-alone startup (not now needed).
+                    Commented out most 'say' instructions.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
---::CLASS CustomerView SUBCLASS RcDialog PUBLIC
   ::CLASS CustomerView SUBCLASS RcView PUBLIC			       -- v03-00
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD newInstance CLASS PUBLIC UNGUARDED
-    --use arg rootDlg, customerNo
     use arg idCustomerModel, rootDlg						-- Ex07
-    say ".CustomerView-newInstance-01: Start."
+    --say ".CustomerView-newInstance-01: Start."
     -- Create an instance of CustomerView and show it:
     dlg = .CustomerView~new("Customer\CustomerView.rc", "IDD_CUST_DIALOG")
-    --say ".CustomerView-newInstance-02: root =" rootDlg
     dlg~activate(idCustomerModel, rootDlg)					-- Ex07
     return dlg									-- Ex07
 
@@ -113,7 +111,7 @@
     Init - creates the dialog instance but does not make it visible.        --*/
   ::METHOD init
     expose menuBar
-    say "CustomerView-init-01."
+    --say "CustomerView-init-01."
 
     forward class (super) continue
 
@@ -127,7 +125,7 @@
     Create Menu Bar - Creates the menu bar on the dialog.                   --*/
   ::METHOD createMenuBar
     expose menuBar
-    say "CustomerView-createMenuBar-01."
+    --say "CustomerView-createMenuBar-01."
     menuBar = .ScriptMenuBar~new("Customer\CustomerView.rc", "IDR_CUST_MENU", , , .true)
     return .true
 
@@ -140,9 +138,8 @@
     forward class (super) continue	-- Ex07: Required for MV framework.
     custData = RESULT			-- Ex07: instance data returned by super
     					-- Ex07: ('forward' returns any result via 'RESULT'.)
-    say "CustomerView-activate-01."
-    if rootDlg = "SA" then self~execute("SHOWTOP","IDI_CUST_DLGICON")		--ADDED FOR EXERCISE06.
-    else self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_CUST_DLGICON")		--ADDED FOR EXERCISE06.
+    --say "CustomerView-activate-01."
+    self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_CUST_DLGICON")			-- Ex07: deleted "standalone" startup.
     return
 
 
@@ -170,8 +167,7 @@
 
     self~setTitle(.HRScv~dlgTitle)		-- set dialog title.
 
-    -- Get app data and then show it:
-    --self~getData
+    -- Show app data:
     self~showData
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -193,7 +189,7 @@
              Business Rule: Customer Number cannot be changed.              --*/
   ::METHOD update unguarded
     expose custControls
-    say "CustomerView-Update-01"
+    --say "CustomerView-Update-01"
     custControls[ecCustName]~setReadOnly(.false)
     custControls[ecCustAddr]~setReadOnly(.false)
     custControls[ecCustZip]~setReadOnly(.false)
@@ -243,8 +239,8 @@
 
     -- Check if anything's changed:
     result = self~checkForChanges
-    if result then say "CustomerView-recordChanges-01: There were changes!"
-    else say "CustomerView-recordChanges-02: No Changes Found"
+    --if result then say "CustomerView-recordChanges-01: There were changes!"
+    --else say "CustomerView-recordChanges-02: No Changes Found"
 
     /* Send new data to be checked by CustomerModel (not implemented). */
 
@@ -276,19 +272,18 @@
     	       appropriate controls.			                    --*/
   ::METHOD getData
     expose idCustomerModel custData		-- customerNo is actually modelId - chnage later.
-    say "CustomerView-getData-01: idCustomerModel =" idCustomerModel
-    --idCustomerModel = .local~my.idCustomerModel			-- Ex06
+    --say "CustomerView-getData-01: idCustomerModel =" idCustomerModel
     custData = idCustomerModel~query
-    say "CustomerView-getData-02: custData =" custData
+    --say "CustomerView-getData-02: custData =" custData
 
   /*----------------------------------------------------------------------------
     showData - displays data in the dialog's controls.                        */
   ::METHOD showData
     expose custData custControls
-    say "CustomerView-showData-01."
-    do i over custData
-      say i custData[i]
-    end
+    --say "CustomerView-showData-01."
+    --do i over custData
+      --say i custData[i]
+    --end
     -- Show CustNo and CustName:
     custControls[ecCustNo]~setText(custData["CustNo"])
     custControls[ecCustName]~setText(custData["CustName"])
@@ -296,8 +291,8 @@
     -- line-end-separated string.
     strCustAddr = custData["CustAddress"]~changeStr(",",.endOfLine)
     --strCustAddr~~changeStr(",",.endOfLine) -- to many twiddles!
-    say "CustomerView-showData-02: strCustAddr =" strCustAddr
-    say "CustomerView-showData-03: custData['Zip'] =" custData["Zip"]
+    --say "CustomerView-showData-02: strCustAddr =" strCustAddr
+    --say "CustomerView-showData-03: custData['Zip'] =" custData["Zip"]
     custControls[ecCustAddr]~setText(strCustAddr)
     -- Finally, show Zip and Discount:
     custControls[ecCustZip]~setText(custData["Zip"])
@@ -341,7 +336,7 @@
       answer = MessageDialog(msg,hwnd,.HRScv~nilChangedCap,"OK","WARNING","DEFBUTTON2 APPLMODAL")
       end
     else do
-      say "CustomerView-checkForChanges-02: changed =" changed
+      --say "CustomerView-checkForChanges-02: changed =" changed
       custData = newCustData
     end
     return changed
