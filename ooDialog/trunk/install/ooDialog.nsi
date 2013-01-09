@@ -185,6 +185,7 @@ Section  doInstall
     SetOutPath $INSTDIR\samples\oodialog\bmp
     ; Add the files ...
     File "${ExamplesDir}\bmp\*.bmp"
+    File "${ExamplesDir}\bmp\*.ico"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\controls
@@ -558,7 +559,7 @@ Section  doInstall
 
 
     ; Create start menu shortcuts
-    DetailPrint "********** ooDialog 4.2.1 Start Menu Shortcuts **********"
+    DetailPrint "********** ooDialog 4.2.2 Start Menu Shortcuts **********"
 
     CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk" "$INSTDIR\rexxpaws.exe" '"$INSTDIR\samples\oodialog\winsystem\eventlog.rex"' "$INSTDIR\rexx.exe"
     CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\winsystem\usewmgr.rex"' "$INSTDIR\rexx.exe"
@@ -825,6 +826,10 @@ Function RemoveFiles
 
   Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk"
   Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk"
+  Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Samples.lnk"
+  Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Calculator.lnk"
+  Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Change Editor.lnk"
+  Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\FTYPE Changer.lnk"
 
   RMDir /r "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog"
 

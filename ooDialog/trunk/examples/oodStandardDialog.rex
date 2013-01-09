@@ -48,11 +48,18 @@
  * This gives all the dialogs displayed an uniform appearance.
  */
 
-    .application~setDefaults('O', 'oodStandardDialog.h')
-    .application~defaultIcon('oodStandardDialog.ico')
+    -- A directory manager saves the current directory and can later go back to
+    -- that directory.  It also sets up the environment we need.  The class
+    -- itself is located in samplesSetup.rex
+    mgr = .DirectoryManager~new()
 
-    dlg = .StandardDialogs~new("oodStandardDialog.rc", IDD_STDDLGS)
+    .application~setDefaults('O', 'rc\oodStandardDialog.h')
+    .application~defaultIcon('bmp\oodStandardDialog.ico')
+
+    dlg = .StandardDialogs~new("rc\oodStandardDialog.rc", IDD_STDDLGS)
     dlg~execute("SHOWTOP")
+
+    mgr~goBack
 
 return 0
 -- End of entry point.
@@ -61,6 +68,7 @@ return 0
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "ooDialog.cls"
+::requires "samplesSetup.rex"
 
 ::class 'StandardDialogs' subclass RcDialog
 

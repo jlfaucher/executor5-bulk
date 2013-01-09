@@ -53,10 +53,10 @@
  * same resource script and .h file.
  */
 
-    .application~setDefaults('O', 'oodStandardDialog.h')
-    .application~defaultIcon('oodStandardRoutines.ico')
+    .application~setDefaults('O', 'rc\oodStandardDialog.h')
+    .application~defaultIcon('bmp\oodStandardRoutines.ico')
 
-    dlg = .StandardRoutines~new("oodStandardDialog.rc", IDD_STDRTNS)
+    dlg = .StandardRoutines~new("rc\oodStandardDialog.rc", IDD_STDRTNS)
     dlg~execute("SHOWTOP")
 
 return 0
