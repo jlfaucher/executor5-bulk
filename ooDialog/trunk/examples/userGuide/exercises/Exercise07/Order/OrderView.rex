@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The OrderView class				  v01-01 25Aug12
+   Exercise 07: The OrderView class				  v02-00 08Jan13
 
    OrderFormView.rex
 
@@ -50,7 +50,7 @@
 
    Changes:
      v01-00 07Jun12: First Version (Exercise06)
-     v01-01 25Aug12: Ex07 - changed to use the MVF.
+     v02-00 08Jan13: Ex07 - changed to use the MVF.
 
 ------------------------------------------------------------------------------*/
 
@@ -71,7 +71,8 @@
 
   Changes:
     v01-00 07Jun12: First Version.
-    v01-01 25Aug12: Ex07 - changed to use the MVF.
+    v02-00 25Aug12: Ex07 - changed to use the MVF.
+           08Jan13: Extraneous comments removed; some 'say' stmts commented out.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS OrderView SUBCLASS RcView PUBLIC				-- Ex07
@@ -117,15 +118,10 @@
     use strict arg idModelInstance, rootDlg				-- Ex07
     forward class (super) continue		-- Ex07 - MVF: required to get Model's data
     orderData = RESULT				-- Ex07 - MVF: model's data returned by super
-    say "OrderView-activate-00: orderData = " orderData
+    --say "OrderView-activate-00: orderData = " orderData
 
     -- Shows the Dialog - i.e. makes it visible to the user.
-    say "OrderView-activate-01: OrderNumber = " orderData["OrderNo"] orderData~orderNo
-    -- OrderNo SO-3456
-    -- CustNo BA0314
-    -- Disc 0
-    -- Cmtd Y
-    -- Date 120527
+    --say "OrderView-activate-01: OrderNumber = " orderData["OrderNo"] orderData~orderNo
     if rootDlg = "SA" then self~execute("SHOWTOP","IDI_ORDER_DLGICON")
     else self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_ORDER_DLGICON")
     return self								-- Ex07
@@ -135,7 +131,7 @@
   ::METHOD initDialog
     -- Called by ooDialog after SHOWTOP.
     expose menuBar orderControls orderData				-- Ex07
-    say "OrderView-initDialog-01"
+    --say "OrderView-initDialog-01"
 
     menuBar~attachTo(self)
 
@@ -175,7 +171,7 @@
     expose orderControls rootDlg
     say "OrderView-showProduct-01: Show Product requested."
     productItem = orderControls[lvOrderItems]~selected
-    say "OrderView-showProduct-01: item selected =" productItem
+    --say "OrderView-showProduct-01: item selected =" productItem
     if item = -1 then do		-- if no item selected.
       ret = MessageDialog(.HRSolv~nilSelected, self~hwnd, title, 'WARNING')
       return
@@ -183,7 +179,7 @@
 
     info=.Directory~new
     if orderControls[lvOrderItems]~getItemInfo(productItem, info) then do
-      say "OrderView-showOrder-02: info~text =" info~text
+      --say "OrderView-showOrder-02: info~text =" info~text
       objectMgr = .local~my.ObjectMgr
       objectMgr~showModel("ProductModel", info~text, self)		--Ex07
       self~disableControl("IDC_ORDLIST_SHOWORDER")
@@ -191,13 +187,6 @@
     else do
       say "OrderListView-showOrder-04: ~getItemInfo returned .false."
     end
-
-
-    -- From OrderListView - to be modified:
-/*
-
-
-*/
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD anAction UNGUARDED

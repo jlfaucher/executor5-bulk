@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: The OrderModel and OrderData Classes	  	  v02-00 24Aug12
+   Exercise 06: The OrderModel and OrderData Classes	  	  v02-00 08Jan13
 
    Contains: 	   classes "OrderModel", OrderListModel, and "OrderData".  --Ex07
    Pre-requisites: None.
@@ -45,7 +45,7 @@
 
    Changes:
    v01-00 07Jun12: First version.
-   v02-00 24Aug12: Modified to use the MVF.
+   v02-00 08Jan13: Modified to use the MVF.
 ------------------------------------------------------------------------------*/
 
 

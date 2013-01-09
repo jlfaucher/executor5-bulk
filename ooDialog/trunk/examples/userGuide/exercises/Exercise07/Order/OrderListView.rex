@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The Order ListView 				  v01-01 25Aug12
+   Exercise 07: The Order ListView 				  v02-00 08Jan13
 
    Contains: class "OrderListView", "HRSolv"
 
@@ -48,7 +48,8 @@
 
    Changes:
    v01-00 07Jun12: First Version (Ex06).
-   v01-01 25Aug12: Updated for Ex07 using the MVF.
+   v02-00 25Aug12: Updated for Ex07 using the MVF.
+          08Jan13: Removed stand-alone startup (not now needed).
 
    Outstanding Problems: None reported.
 
@@ -120,11 +121,7 @@
     forward class (super) continue					  --Ex07
     modelData = RESULT							  --Ex07
     --say "OrderListView-activate-02: modelData =" modelData
-    if rootDlg = "SA" then do			-- If standalone operation required
-      rootDlg = self				      -- To pass on to children
-      self~execute("SHOWTOP","IDI_ORDLIST_DLGICON")
-    end
-    else self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_ORDLIST_DLGICON")
+    self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_ORDLIST_DLGICON")
     --return self								  --Ex07
 
 

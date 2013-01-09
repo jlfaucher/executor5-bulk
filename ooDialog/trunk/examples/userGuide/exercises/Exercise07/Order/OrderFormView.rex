@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The OrderFormView class				  v02-00 05Oct12
+   Exercise 07: The OrderFormView class				  v02-00 08Jan13
    OrderFormView.rex
 
    Contains: class "OrderFormView", class "HRSofv".
@@ -43,8 +43,8 @@
 
    Changes:
      v01-00 07Jun12: First version.
-     v02-00 05Oct12: OrderFormView Modified to use the Model-View Framework (MVF).
-
+     v02-00 08Jan13: OrderFormView Modified to use the Model-View Framework (MVF).
+                     Removed stand-alone startup (not now needed).
 ------------------------------------------------------------------------------*/
 
 
@@ -61,7 +61,8 @@
 
   Changes:
   v01-00 07Jun12: First Version
-  v02-00 05Oct12: Modified to use the Model-View Framework (MVF).
+  v02-00 05Oct12: Modified to use the Model-View Framework (MVF) including
+                  removal of stand-alone startup.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -109,8 +110,7 @@
     forward class (super) continue
     orderData = RESULT
     say "OrderFormView-activate-01: modelData, orderNum =" orderData||"," orderData[formNumber]
-    if rootDlg = "SA" then self~execute("SHOWTOP","IDI_ORDFORM_DLGICON")
-    else self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_ORDFORM_DLGICON")
+    self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_ORDFORM_DLGICON")
     return
 
 
@@ -118,13 +118,11 @@
   ::METHOD initDialog
     -- Called by ooDialog after SHOWTOP.
     expose menuBar ecOrderNo orderData
-    say "OrderFormView-initDialog-01"
+    -- say "OrderFormView-initDialog-01"
 
     menuBar~attachTo(self)
-trace i
     ecOrderNo         = self~newEdit("IDC_ORDFORM_ORDNO")
     say "OrderFormView-initDialog-01: ecOrderNo =" ecOrderNo
-trace off
     btnCancelOrder = self~newPushButton("IDC_CANCEL")
     btnPlaceOrder = self~newPushButton("IDC_ORDFORM_PLACEORDER")
     self~connectButtonEvent("IDC_CANCEL","CLICKED",cancel)
