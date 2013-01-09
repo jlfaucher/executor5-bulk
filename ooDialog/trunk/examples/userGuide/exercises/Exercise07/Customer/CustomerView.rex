@@ -137,7 +137,7 @@
   /*-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     Activate - Shows the Dialog - i.e. makes it visible to the user.        --*/
   ::METHOD activate unguarded
-    expose custData	--idCustomerModel
+    expose custData
     use arg idCustomerModel, rootDlg 	-- ADDED FOR EXERCISE06. Params reversed for Ex07.
     forward class (super) continue	-- Ex07: Required for MV framework.
     custData = RESULT			-- Ex07: instance data returned by super
@@ -150,7 +150,6 @@
     InitDialog - Called by ooDialog 					   -- */
   ::METHOD initDialog
     expose menuBar custControls
-    say "CustomerView-initDialog-01."
     menuBar~attachTo(self)
     -- Create objects that map to the edit controls defined by the "customer.rc"
     --   so they can be programmatically used elsewhere in the class:
@@ -192,7 +191,6 @@
              Business Rule: Customer Number cannot be changed.              --*/
   ::METHOD update unguarded
     expose custControls
-    --say "CustomerView-Update-01"
     custControls[ecCustName]~setReadOnly(.false)
     custControls[ecCustAddr]~setReadOnly(.false)
     custControls[ecCustZip]~setReadOnly(.false)
@@ -229,7 +227,6 @@
                        the button.                                          --*/
   ::METHOD recordChanges unguarded
     expose custControls custData newCustData
-    say "CustomerView-recordChanges-01"
 
     newCustData = .directory~new
     newCustData[custName] = custControls[ecCustName]~getLine(1)
@@ -271,24 +268,9 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*----------------------------------------------------------------------------
-    Get Data - gets data from the CustomerModel component and displays it in the
-    	       appropriate controls.
-
-    	       REDUNDANT WITH MVF!
-  ::METHOD getData
-    expose idCustomerModel custData		-- customerNo is actually modelId - chnage later.
-    --say "CustomerView-getData-01: idCustomerModel =" idCustomerModel
-    custData = idCustomerModel~query
-     --*/
-
-  /*----------------------------------------------------------------------------
     showData - displays data in the dialog's controls.                        */
   ::METHOD showData
     expose custData custControls
-    say "CustomerView-showData-01."
-    do i over custData
-      say i custData[i]
-    end
     -- Show CustNo and CustName:
     custControls[ecCustNo]~setText(custData["CustNo"])
     custControls[ecCustName]~setText(custData["CustName"])
@@ -339,7 +321,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  Human-Readable Strings (HRScv)				  v02-03 28Jan12
+  Human-Readable Strings (HRScv)				  v02-04 13Jan12
   --------
    This class provides constant character strings for user-visible messages.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
