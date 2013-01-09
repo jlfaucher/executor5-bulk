@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: ProductView.rex - The ProductView component       v01-01 06Jum12
+   Exercise 07: ProductView.rex - The ProductView component       v02-00 09Jan13
 
    Contains: 	   classes "ProductView", "AboutDialog", and "HRSpv".
 
@@ -51,6 +51,8 @@
    Changes:
    v01-00 03Jun12: First version for Exercise05.
    v01-01 06Jun12: Minor changes for Exercise06.
+   v02-00 09Jan12: Removed stand-alone operation, plus some comments.
+                     Method 'getData' removed (now redundant).
 
 ------------------------------------------------------------------------------*/
 
@@ -65,7 +67,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ProductView							  v01-01 06Jun12
+  ProductView							  v02-00 09Jan13
   -----------
   The "view" part of the Product component. Now designed to operate from its own
   folder. Should be invoked from immediately outside the Product folder.
@@ -73,7 +75,9 @@
 
   Changes:
   v01-00 03Jun12: First version.
-     v01-01 06Jun12: Minor changes for Exercise06.
+  v01-01 06Jun12: Minor changes for Exercise06.
+  v02-00 09Jan13: Removed stand-alone startup (not now needed), plus some
+                  comments.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -90,11 +94,7 @@
     say ".ProductView-newInstance-01: model, rootDlg =" idModel rootDlg
     .Application~addToConstDir("Product\ProductView.h")
     -- Create an instance of ProductView and show it:
-    --dlg = .ProductView~new("Product\res\ProductView.dll", IDD_PRODUCT_VIEW)
     dlg = self~new("Product\res\ProductView.dll", IDD_PRODUCT_VIEW)
-    -- Check super (temp debug):
-    --  x = self~fred:super(); say "x =" x
-    say ".ProductView-newInstance-02: dlg =" dlg
     dlg~activate(idModel, rootDlg)					--Ex07
     return dlg								--Ex07
 
@@ -109,22 +109,19 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
-    --say "ProductView-init-01."
     forward class (super) continue
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate UNGUARDED
     expose prodData
-    use arg idModel, rootDlg, prodData					--Ex07- note: prodData is a ProductDT.
-    say "ProductView-activate-01. idModel, rootDlg =" idModel rootDlg
+    use arg idModel, rootDlg, prodData		--Ex07- note: prodData is a ProductDT.
     forward class (super) continue		-- MVF: required to get Model's data
     dirdata = RESULT				-- MVF: model's data returned by super
-    prodData = dirData[DT]
-    say "ProductView-activate-02: rootDlg, prodData =" rootDlg prodData
+    prodData = dirData[DT]			-- dirData is a directory - 'DT'
+    						--   for 'DataType' is in the directory.
     self~dialogState = "closable"
-    if rootDlg = "SA" then self~execute("SHOWTOP","IDI_PROD_DLGICON")		--ADDED FOR EXERCISE06.
-    else self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_PROD_DLGICON")		--ADDED FOR EXERCISE06.
+    self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_PROD_DLGICON")
     return
 
 
@@ -154,7 +151,6 @@
     prodControls[ecProdPrice]~connectCharEvent(onChar)
     prodControls[ecUOM]~connectCharEvent(onChar)
 
-    --prodData = self~getData	-- Gets data from ProductModel into prodData
     self~showData	-- Show the data
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -189,17 +185,14 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD print UNGUARDED
-    -- say "ProductView-print-01"
     ans = MessageDialog(.HRSpv~printMsg)
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD close UNGUARDED
-    --say "ProductView-close-01"
     return self~cancel:super
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD about UNGUARDED
-    --say "ProductView-about-01"
     dlg = .AboutDialog~new("ProductView.dll", IDD_PRODUCT_VIEW_ABOUT)
     dlg~execute("SHOWTOP")
 
@@ -259,6 +252,7 @@
     self~dialogState = "closable"
 
     prodData = newProdData
+    say "ProductView-saveChanges: new values are:"
     prodData~list
     return
 
@@ -298,20 +292,9 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  --::METHOD getData				-- Ex07 makes this method redundant
-    -- Get data from the ProductModel:
-    --expose prodData
-    --say "ProductView-getData-01."
-  --  idProductModel = .local~my.idProductModel
-  --  prodData = idProductModel~query		-- prodData is of type ProductDT
-  --  return prodData
-
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD showData
     -- Transfrom data (where necessary) to display format, and then disable controls.
     expose prodControls prodData
-    say "ProductView-showData-01: prodData =" prodData
     -- Set data in controls:
     prodControls[ecProdNo]~setText(   prodData~number       )
     prodControls[ecProdName]~setText( prodData~name         )

@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07:          					  v00-04 21Aug11
+   Exercise 07:          					  v02-00 09Jan13
 
    The ProductModel, ProductListModel, and ProductData Classes
 
@@ -52,6 +52,7 @@
            Renamed the ProductDT attributes (initial "prod" deemed extraneous)
          - 26Aug11: added some comments - no change to function.
    v00-04 21Aug12: ProducListModel added. Modified to fit the MV Framework.
+   v02-00 13Jan12: Ex07: Some 'say' instructions removed or commented out.
 ------------------------------------------------------------------------------*/
 
 
@@ -101,7 +102,7 @@
     -- self~myData (super's attribute) is a DT. So ask the data component for its
     -- directory version of the data (an attribute of ProductData).
     expose prodData
-    say "ProductModel-query-01: prodData =" prodData
+    --say "ProductModel-query-01: prodData =" prodData
     dir = .directory~new
     return prodData
 /*============================================================================*/
@@ -128,7 +129,7 @@
     self~wantList = .true				-- set super's attribute
     forward class (super) continue
     id = RESULT
-    say "ProductListModel-newInstance-01: id =" id
+    --say "ProductListModel-newInstance-01: id =" id
     return id
 
 
@@ -140,7 +141,7 @@
     expose arrData
     use strict arg data
     self~myData = data
-    say "ProductListModel-init-01: myData =" self~myData
+    --say "ProductListModel-init-01: myData =" self~myData
     return self
 
   ::METHOD query PUBLIC
@@ -148,7 +149,7 @@
     query - returns an array of all Product data.
             In MVF this method is invoked by the RcView (or ResView) superclass.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    say "ProductListModel-query-01."
+    --say "ProductListModel-query-01."
     return self~myData
 
 /*============================================================================*/
@@ -196,19 +197,13 @@
     expose filename numRecords
     filename = "Product\ProductFile.txt";  columns = 6
     numRecords = self~init:super(filename, columns)
-    say "ProductData-init-01: numRecords:" numRecords
-    /*
-    if numRecords > 0 then do
-      say "ProductData-init-02: Array is:"
-      say self~fileArray~tostring
-    end
-    */
+    --say "ProductData-init-01: numRecords:" numRecords
     return self
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD getData PUBLIC	--  ???? Use the DT???
     expose data
-    say "ProductData-getData-01."
+    --say "ProductData-getData-01."
     return data
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide - Exercise07
 
-  ProductListView						  v02-00 21Aug12
+  ProductListView						  v02-00 09Jan13
   -------------
   The view of a list of products.
 
@@ -71,6 +71,8 @@
     v01-00 06Jun12: First version
     v02-00 21Aug12: Modified to use the Model-View Framework.
     		    Comment "Ex07" shows where changes from Ex06 have been made.
+           09Jan13: 'Say' instructions commented out or removed.
+                    Standalone operation removed (not now needed).
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS ProductListView SUBCLASS RcView PUBLIC
@@ -120,11 +122,7 @@
     forward class (super) continue		-- Ex07: required to get Model's data
     modelData = RESULT				-- Ex07: model's data returned by super
     --say "ProductListView-activate-01: root =" root
-    if rootDlg = "SA" then do			-- If standalone operation required
-      rootDlg = self				      -- To pass on to children
-      self~execute("SHOWTOP","IDI_PRODLIST_DLGICON")
-    end
-    else self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_PRODLIST_DLGICON")
+    self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_PRODLIST_DLGICON")
     return self								-- Ex07
 
 
@@ -204,11 +202,6 @@
       --say "ProductListView-showProduct-03; root =" root
       objectMgr = .local~my.ObjectMgr
       objectMgr~showModel("ProductModel", info~text, rootDlg)		--Ex07
-      --.local~my.idProductData  = .ProductData~newInstance	-- create a ProductData instance
-      --.local~my.idProductModel = .ProductModel~newInstance	-- create a ProductModel instance
-      --.local~my.idProductData~activate
-      --.local~my.idProductModel~activate
-      --.ProductView~newInstance(rootDlg,"CU003")
       --say "ProductListView-showProduct-04: after startProductView"
       self~disableControl("IDC_PRODLIST_SHOWPRODUCT")
     end
@@ -219,12 +212,11 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD loadList
     expose lvProducts modelData						-- Ex07
-    say "ProductListView-loadList-01: dataArray =" modelData		-- Ex07
+    --say "ProductListView-loadList-01: dataArray =" modelData		-- Ex07
     rows = modelData[count]						-- Ex07 - number of rows
     arrData = modelData[records]
-    say "ProductListView-loadList-02:Dims =" arrData~dimension(1) arrData~dimension(2)
+    --say "ProductListView-loadList-02:Dims =" arrData~dimension(1) arrData~dimension(2)
     do i = 1 to rows
-      say "ProductListView-loadList-03: arr[i,1] =" arrData[i,1]
       -- Change file price to display format (i.e. cents to dollars.cents):
       displayPrice = (arrData[i,3]/100)~format(,2)
       lvProducts~addRow( , ,arrData[i,1], arrData[i,2], displayPrice, arrData[i,4])
