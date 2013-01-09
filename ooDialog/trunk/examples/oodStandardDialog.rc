@@ -63,4 +63,33 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
 
 
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_STDRTNS DIALOGEX 0, 0, 413, 201
+STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
+CAPTION "User Input Common Public Routines"
+FONT 8, "Ms Shell Dlg", 400, 0, 1
+{
+    LTEXT           "The ooDialog framework provides a number of easy to use public routines that obtain user input in a standard way.  These routines allow the use of simple graphical elements in Rexx applications that collect user input in a standard way.", IDC_STATIC, 10, 10, 393, 18, SS_LEFT
+    GROUPBOX        "Select the Common Public Routine to Display", IDC_STATIC, 11, 33, 392, 139
+    AUTORADIOBUTTON "AskDialog Routine", IDC_RB_ASKDIALOG_R, 25, 56, 90, 10
+    AUTORADIOBUTTON "CheckList Routine", IDC_RB_CHECKLIST_R, 159, 56, 90, 10
+    AUTORADIOBUTTON "ErrorDialog Routine", IDC_RB_ERRORDIALOG_R, 272, 56, 90, 10
+    AUTORADIOBUTTON "FileNameDialog Routine", IDC_RB_FILENAMEDIALOG_R, 25, 79, 90, 10
+    AUTORADIOBUTTON "InfoDialog Routine", IDC_RB_INFODIALOG_R, 159, 79, 90, 10
+    AUTORADIOBUTTON "InputBox Routine", IDC_RB_INPUTBOX_R, 272, 79, 90, 10
+    AUTORADIOBUTTON "IntegerBox Routine", IDC_RB_INTEGERBOX_R, 25, 103, 90, 10
+    AUTORADIOBUTTON "ListChoice Routine", IDC_RB_LISTCHOICE_R, 159, 103, 90, 10
+    AUTORADIOBUTTON "MessageDialog Routine", IDC_RB_MESSAGEDIALOG_R, 272, 103, 90, 10
+    AUTORADIOBUTTON "MultiInputBox Routine", IDC_RB_MULTIINPUTBOX_R, 25, 128, 90, 10
+    AUTORADIOBUTTON "MultiListChoice Routine", IDC_RB_MULTILISTCHOICE_R, 159, 128, 90, 10
+    AUTORADIOBUTTON "PasswordBox Routine", IDC_RB_PASSWORDBOX_R, 272, 128, 90, 10
+    AUTORADIOBUTTON "SingleSelection Routine", IDC_RB_SINGLESELECTION_R, 25, 152, 90, 10
+    AUTORADIOBUTTON "TimedMessage Routine", IDC_RB_TIMEDMESSAGE_R, 159, 152, 90, 10
+    DEFPUSHBUTTON   "Display Selected Routine", IDOK, 161, 177, 90, 14
+    PUSHBUTTON      "Close", IDCANCEL, 353, 177, 50, 14
+}
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDI_APP_ICON_R     ICON           ".\\oodStandardRoutines.ico"
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 IDI_APP_ICON       ICON           ".\\oodStandardDialog.ico"

@@ -50,3 +50,20 @@
 #define IDC_RB_PASSWORDBOX                      1017
 #define IDC_RB_SINGLESELECTION                  1018
 #define IDC_RB_TIMEDMESSAGE                     1019
+
+#define IDD_STDRTNS                             104
+#define IDI_APP_ICON_R                          600
+#define IDC_RB_CHECKLIST_R                      1022
+#define IDC_RB_ASKDIALOG_R                      1023
+#define IDC_RB_INPUTBOX_R                       1024
+#define IDC_RB_INTEGERBOX_R                     1025
+#define IDC_RB_MULTIINPUTBOX_R                  1026
+#define IDC_RB_LISTCHOICE_R                     1027
+#define IDC_RB_MULTILISTCHOICE_R                1028
+#define IDC_RB_PASSWORDBOX_R                    1029
+#define IDC_RB_SINGLESELECTION_R                1030
+#define IDC_RB_TIMEDMESSAGE_R                   1031
+#define IDC_RB_ERRORDIALOG_R                    1032
+#define IDC_RB_FILENAMEDIALOG_R                 1033
+#define IDC_RB_INFODIALOG_R                     1034
+#define IDC_RB_MESSAGEDIALOG_R                  1035

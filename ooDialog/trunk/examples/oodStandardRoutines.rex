@@ -48,12 +48,15 @@
  *
  * Note the use of the defaultIcon() method to give all the dialogs shown during
  * the execution of this example a similar look.
+ *
+ * Note also that both this example and the oodStandardDialogs example share the
+ * same resource script and .h file.
  */
 
-    .application~setDefaults('O', 'oodStandardRoutines.h')
+    .application~setDefaults('O', 'oodStandardDialog.h')
     .application~defaultIcon('oodStandardRoutines.ico')
 
-    dlg = .StandardRoutines~new("oodStandardRoutines.rc", IDD_STDRTNS)
+    dlg = .StandardRoutines~new("oodStandardDialog.rc", IDD_STDRTNS)
     dlg~execute("SHOWTOP")
 
 return 0
