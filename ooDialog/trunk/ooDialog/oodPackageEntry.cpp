@@ -75,6 +75,11 @@ RexxObjectPtr       TheNegativeOneObj = NULLOBJECT;
 RexxObjectPtr       TheApplicationObj = NULLOBJECT;
 RexxDirectoryObject TheConstDir = NULLOBJECT;
 
+// Initialized in ApplicationManager::init() (app_init)
+extern HICON        TheDefaultSmallIcon = NULL;
+extern HICON        TheDefaultBigIcon   = NULL;
+extern bool         DefaultIconIsShared = true;
+
 // Initialized here, can be changed by ApplicationManager::useGlobalConstDir()
 oodConstDir_t       TheConstDirUsage = globalNever;
 
@@ -421,12 +426,13 @@ REXX_METHOD_PROTOTYPE(dlgutil_test_cls);
 
 // ApplicationManager
 REXX_METHOD_PROTOTYPE(app_init);
-REXX_METHOD_PROTOTYPE(app_useGlobalConstDir);
 REXX_METHOD_PROTOTYPE(app_addToConstDir);
 REXX_METHOD_PROTOTYPE(app_autoDetection);
-REXX_METHOD_PROTOTYPE(app_initAutoDetection);
 REXX_METHOD_PROTOTYPE(app_defaultFont);
+REXX_METHOD_PROTOTYPE(app_defaultIcon);
+REXX_METHOD_PROTOTYPE(app_initAutoDetection);
 REXX_METHOD_PROTOTYPE(app_setDefaults);
+REXX_METHOD_PROTOTYPE(app_useGlobalConstDir);
 
 // OS
 REXX_METHOD_PROTOTYPE(os_is64bit);
@@ -1499,12 +1505,13 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_test_cls,               dlgutil_test_cls),
 
     REXX_METHOD(app_init,                       app_init),
-    REXX_METHOD(app_useGlobalConstDir,          app_useGlobalConstDir),
     REXX_METHOD(app_addToConstDir,              app_addToConstDir),
     REXX_METHOD(app_autoDetection,              app_autoDetection),
-    REXX_METHOD(app_initAutoDetection,          app_initAutoDetection),
     REXX_METHOD(app_defaultFont,                app_defaultFont),
+    REXX_METHOD(app_defaultIcon,                app_defaultIcon),
     REXX_METHOD(app_setDefaults,                app_setDefaults),
+    REXX_METHOD(app_initAutoDetection,          app_initAutoDetection),
+    REXX_METHOD(app_useGlobalConstDir,          app_useGlobalConstDir),
 
     // OS
     REXX_METHOD(os_is64bit,                     os_is64bit),

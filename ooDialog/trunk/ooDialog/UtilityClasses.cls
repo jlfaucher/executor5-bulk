@@ -56,12 +56,84 @@
 
 ::class 'ResourceUtils' public mixinclass object
 
-/* Directory object containing symbolic constants */
+-- Directory object containing symbolic constants
 ::attribute constDir get
 ::attribute constDir set private
-
 ::attribute processingLoad private    -- in loadItems ?
 
+::method checkfile private
+   use arg f
+   if (f~lines = 0) then do
+      f~close
+      self~processingLoad = 0
+      ret = errorDialog("Error reading resource file!" f)
+      return 1
+   end
+   return 0
+
+::method checkID external "LIBRARY oodialog rsrcUtils_checkID"
+::method errorfile private
+   use arg f, s
+   f~close
+   self~processingLoad = 0
+   ret = errorDialog("Error reading resource file:" f "("s")")
+
+-- This method is very specific looking only for an ICON resource statement.
+::method findIconInRcFile private
+    use strict arg resFile, iconID
+
+    if \ SysIsFile(resFile) then do
+        foundFile = SysSearchPath("PATH", resFile)
+        if foundFile == "" then do
+            msg = 'Unable to find resource script file "'resFile'"'
+            j = MessageDialog(msg, 0, "File Not Found Error", "OK", "WARNING", "SYSTEMMODAL")
+            return ""
+        end
+        resFile = foundFile
+    end
+
+    f = .stream~new(resFile)
+    ret = f~open(read)
+    if ret \= "READY:" then do
+        msg = 'Resource script file "'resFile'" is not readable:' ret
+        j = MessageDialog(msg, 0, "File Open Error", "OK", "WARNING", "SYSTEMMODAL")
+        return ""
+    end
+
+    found = .false; iconFile = ''
+    fl = f~lines
+    do while \ found
+        do while iconFile == '' & fl > 0
+            s = f~linein; fl -= 1
+            if s~wordpos("ICON") = 2 then do
+                -- ICON RESOURCE statement as opposed to an ICON CONTROL statement.
+                -- filename could have spaces and *should* be in quotes.
+                parse var s nameID ic fileName
+                if nameID~translate == iconID~translate then do
+                    found = .true
+                    iconfile = fileName~strip
+                end
+            end
+        end
+        if fl < 1 then leave
+    end
+
+    f~close
+
+    -- The file name in the resource script file will be in a C string format.
+    -- We need to change any escaped slashes.  In addition, the file name will
+    -- most likely be used in LoadImage() and must not be enclosed in quotes.
+    if iconFile~pos("\\") <> 0 then iconFile = iconFile~changestr("\\", '\')
+    iconFile = iconFile~strip('B', '"')
+
+    if iconFile == '' then do
+        msg = 'Resource script file "'resFile'" does not contain an ICON resource statement for ID:' iconID
+        j = MessageDialog(msg, 0, "Resource Script File Error", "OK", "WARNING", "SYSTEMMODAL")
+    end
+    return iconFile
+
+::method getResourceID unguarded external "LIBRARY oodialog rsrcUtils_resolveResourceID"
+::method idError private external "LIBRARY oodialog rsrcUtils_idError"
 ::method parseIncludeFile
   use strict arg hFile
 
@@ -104,6 +176,8 @@
   f~close
   return .true
 
+::method resolveIconID private external "LIBRARY oodialog rsrcUtils_resolveIconID_pvt"
+::method resolveSymbolicId unguarded external "LIBRARY oodialog rsrcUtils_resolveResourceID"
 ::method skipThroughIfDefs private
   use arg fObj, line
 
@@ -121,27 +195,6 @@
     if ifDefStack~items == 0 then leave
   end
 
-::method checkfile private
-   use arg f
-   if (f~lines = 0) then do
-      f~close
-      self~processingLoad = 0
-      ret = errorDialog("Error reading resource file!" f)
-      return 1
-   end
-   return 0
-
-::method errorfile private
-   use arg f, s
-   f~close
-   self~processingLoad = 0
-   ret = errorDialog("Error reading resource file:" f "("s")")
-
-::method idError private external "LIBRARY oodialog rsrcUtils_idError"
-::method resolveIconID private external "LIBRARY oodialog rsrcUtils_resolveIconID_pvt"
-::method resolveSymbolicId unguarded external "LIBRARY oodialog rsrcUtils_resolveResourceID"
-::method getResourceID unguarded external "LIBRARY oodialog rsrcUtils_resolveResourceID"
-::method checkID external "LIBRARY oodialog rsrcUtils_checkID"
 
 /**
  * Return the symbolic ID from the ConstDir that matches the numeric ID.
@@ -176,11 +229,14 @@
 ::class 'ApplicationManager' public inherit ResourceUtils
 
 ::method init external "LIBRARY oodialog app_init"
-::method useGlobalConstDir external "LIBRARY oodialog app_useGlobalConstDir"
+
 ::method addToConstDir external "LIBRARY oodialog app_addToConstDir"
 ::method autoDetection external "LIBRARY oodialog app_autoDetection"
-::method initAutoDetection external "LIBRARY oodialog app_initAutoDetection"  -- Internal use only.
 ::method defaultFont external "LIBRARY oodialog app_defaultFont"
+::method defaultIcon external "LIBRARY oodialog app_defaultIcon"
+::method initAutoDetection external "LIBRARY oodialog app_initAutoDetection"  -- Internal use only.
+::method useGlobalConstDir external "LIBRARY oodialog app_useGlobalConstDir"
+
 ::method setDefaults external "LIBRARY oodialog app_setDefaults"
 
 ::class 'DlgUtil' public
@@ -817,7 +873,7 @@
    s = self~getTextSizeDu(message)
    sx = s~width
    sy = s~height
-   self~createCenter(sx+20, sy + 20, title,"NOMENU", , , , 1)
+   self~createCenter(sx+20, sy + 20, title, "", , , , 1)
    self~executeAsync( , 'SHOWTOP')
    if sleeping >= 0 then do
       if earlyReply then reply
@@ -831,7 +887,9 @@
 
 ::method initDialog
    expose pos
+
    if pos \== .nil then self~moveTo(pos)
+   .SystemMenu~new(self)~disable(.SystemMenu~SC_CLOSE)
 
 
 -- This class provides a simple dialog with a title, a message, one entry line,

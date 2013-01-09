@@ -665,6 +665,20 @@ BOOL getDialogIcons(pCPlainBaseDialog pcpbd, INT id, UINT iconSrc, PHANDLE phBig
 
     if ( id < 1 )
     {
+        if ( TheDefaultBigIcon != NULL )
+        {
+            *phBig   = TheDefaultBigIcon;
+            *phSmall = TheDefaultSmallIcon;
+
+            // The default icons will be used over and over again, (probably,)
+            // so they must not be destroyed when a dialog ends.
+            pcpbd->sharedIcon = true;
+
+            return TRUE;
+        }
+
+        // Should never get here, the default icons should already be set to
+        // IDI_DLG_DEFAULT, at least.
         id = IDI_DLG_DEFAULT;
     }
 

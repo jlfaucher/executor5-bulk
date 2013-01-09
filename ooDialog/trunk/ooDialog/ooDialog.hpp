@@ -108,6 +108,7 @@
 #define ICON_FILE                 0x00000001
 #define ICON_OODIALOG             0x00000002
 #define ICON_DLL                  0x00000004
+#define ICON_RC                   0x00000008
 
 /* Defines for the different possible versions of comctl32.dll up to Windows 7.
  * These DWORD "packed version" numbers are calculated using the following
@@ -1101,9 +1102,14 @@ extern RexxObjectPtr       TheZeroObj;
 extern RexxObjectPtr       TheTwoObj;
 extern RexxObjectPtr       TheOneObj;
 extern RexxObjectPtr       TheNegativeOneObj;
+
 extern RexxObjectPtr       TheApplicationObj;
 extern RexxDirectoryObject TheConstDir;
 extern oodConstDir_t       TheConstDirUsage;
+extern HICON               TheDefaultSmallIcon;
+extern HICON               TheDefaultBigIcon;
+extern bool                DefaultIconIsShared;
+
 extern RexxDirectoryObject TheDotLocalObj;
 extern RexxPointerObject   TheNullPtrObj;
 

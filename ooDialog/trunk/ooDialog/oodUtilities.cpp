@@ -49,6 +49,7 @@
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
 #include "oodDeviceGraphics.hpp"
+#include "oodResources.hpp"
 #include "oodResourceIDs.hpp"
 
 /**
@@ -368,6 +369,124 @@ static RexxObjectPtr setGlobalFont(RexxMethodContext *c, CSTRING name, uint32_t 
     return result;
 }
 
+/**
+ * Attempt to load the default application icon.  Unlike the getDialogIcons()
+ * function, that tries to always succeed, if we fail to get the regular icon,
+ * we just quit.
+ *
+ * @param c
+ * @param src
+ * @param iconSrc
+ * @param symbolID
+ * @param symbolName
+ *
+ * @return True on success, false on error.
+ *
+ * @note  Sets the system error code.
+ *
+ *        We could be called after the globals, TheDefaultBigIcon and
+ *        TheDefaultSmallIcon have already been set.  If so, we need to preserve
+ *        the old if we fail.
+ */
+static RexxObjectPtr setDefaultIcon(RexxMethodContext *c, CSTRING src, uint32_t iconSrc, uint32_t symbolID, HMODULE _hMod)
+{
+    oodResetSysErrCode(c->threadContext);
+
+    // If one of the reserved IDs, iconSrc has to be ooDialog.
+    if ( symbolID >= IDI_DLG_MIN_ID && symbolID <= IDI_DLG_MAX_ID )
+    {
+        iconSrc = ICON_OODIALOG;
+    }
+
+    int cxBig   = GetSystemMetrics(SM_CXICON);
+    int cyBig   = GetSystemMetrics(SM_CYICON);
+    int cxSmall = GetSystemMetrics(SM_CXSMICON);
+    int cySmall = GetSystemMetrics(SM_CYSMICON);
+
+    HMODULE   hMod  = NULL;
+    uint32_t  flags = LR_SHARED;
+    CSTRING   name  = NULL;
+
+    HICON defBigIcon   = NULL;
+    HICON defSmallIcon = NULL;
+
+    switch ( iconSrc )
+    {
+        case ICON_OODIALOG :
+            hMod = MyInstance;
+            name = MAKEINTRESOURCE(symbolID);
+
+            break;
+
+        case ICON_DLL :
+        {
+            if ( _hMod != NULL )
+            {
+                hMod = _hMod;
+            }
+            else
+            {
+                hMod = LoadLibraryEx(src, NULL, LOAD_LIBRARY_AS_DATAFILE);
+                if ( hMod == NULL )
+                {
+                    goto err_out;
+                }
+            }
+            name = MAKEINTRESOURCE(symbolID);
+        }
+            break;
+
+        case ICON_FILE :
+        case ICON_RC :
+            flags = LR_LOADFROMFILE;
+            name  = src;
+
+            break;
+
+        default :
+            return TheFalseObj;
+    }
+
+    defBigIcon = (HICON)LoadImage(hMod, name, IMAGE_ICON, cxBig, cyBig, flags);
+    if ( defBigIcon == NULL )
+    {
+        goto err_out;
+    }
+
+    defSmallIcon = (HICON)LoadImage(hMod, name, IMAGE_ICON, cxSmall, cySmall, flags);
+    if ( defSmallIcon == NULL )
+    {
+        goto err_out;
+    }
+
+    if ( TheDefaultBigIcon != NULL )
+    {
+        if ( ! DefaultIconIsShared )
+        {
+            DestroyIcon(TheDefaultBigIcon);
+            DestroyIcon(TheDefaultSmallIcon);
+        }
+    }
+
+    TheDefaultBigIcon   = defBigIcon;
+    TheDefaultSmallIcon = defSmallIcon;
+    DefaultIconIsShared = flags == LR_SHARED ? true : false;
+
+    return TheTrueObj;
+
+err_out:
+    oodSetSysErrCode(c->threadContext);
+
+    if ( defBigIcon != NULL )
+    {
+        DestroyIcon(defBigIcon);
+    }
+    if ( flags == LR_SHARED && hMod != MyInstance )
+    {
+        FreeLibrary(hMod);
+    }
+    return TheFalseObj;
+}
 
 static RexxObjectPtr setDefaults(RexxMethodContext *c, pCApplicationManager pcam, RexxDirectoryObject prefs)
 {
@@ -505,6 +624,10 @@ RexxMethod2(RexxObjectPtr, app_init, RexxObjectPtr, magic, OSELF, self)
     // The default for the the const dir usage is never.
     setConstDirUsage(context, "N", 0, NULL);
 
+    // The default application icon for any dialog where the application is not
+    // specified.
+    setDefaultIcon(context, OODDLL, ICON_OODIALOG, IDI_DLG_DEFAULT, NULL);
+
 done_out:
     return NULLOBJECT;
 }
@@ -636,6 +759,129 @@ RexxMethod3(RexxObjectPtr, app_defaultFont, OPTIONAL_CSTRING, name, OPTIONAL_uin
     }
 
     return setGlobalFont(context, name, size, 1);
+}
+
+/** ApplicationManager::defaultIcon()
+ *
+ *  Sets the default application icon.
+ *
+ *  @param  src   [required]  The source for the icon.  This can be the name of
+ *                a stand alone file, ooDialog.dll, the name of a resource
+ *                script file, or the name of a binary resource file.  In
+ *                addition, it can be a ResourceImage object
+ *
+ *  @param  rxID  [optional]  The resource ID of the icon.  If this is omitted,
+ *                then <src> is assumed to be the name of a stand alone file.
+ *                Otherwise it is the resource ID of the icon in <src>.
+ *                However, if <src> is oodialog.dll and this argument is
+ *                omitted, then the default ooDialog app icon is loaded from
+ *                ooDialog.dll.  There is no point in the user doing this,
+ *                unless they want to revert back to the default icon.
+ *
+ *  @param  binary [optional]  True or false.  This argument is ignored if
+ *                 <rxId> is omitted or if <src> is ooDialog.dll.  If true <src>
+ *                 is a binary file. Otherwise it is a resource script file.
+ *
+ *  @return True on success, otherwise false.
+ *
+ *  @notes  Sets the .systemErrorCode.
+ */
+RexxMethod4(RexxObjectPtr, app_defaultIcon, RexxObjectPtr, _src, OPTIONAL_RexxObjectPtr, rxID, OPTIONAL_logical_t, binary,
+            CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    pCApplicationManager pcam = (pCApplicationManager)pCSelf;
+
+    HMODULE  hMod     = NULL;
+    CSTRING  src      = NULL;
+    uint32_t symbolID = 0;
+    bool     isBinary = binary ? true : false;
+    bool     isOODdll = false;
+
+    if ( context->IsOfType(_src, "RESOURCEIMAGE") )
+    {
+        PRESOURCEIMAGE r = (PRESOURCEIMAGE)context->ObjectToCSelf(_src);
+        if ( ! r->isValid )
+        {
+            nullObjectException(context->threadContext, "ResourceImage");
+            return TheFalseObj;
+        }
+
+        if ( argumentOmitted(2) )
+        {
+            missingArgException(context->threadContext, 2);
+            return TheFalseObj;
+        }
+
+        isBinary = true;
+        hMod     = r->hMod;
+    }
+    else
+    {
+        src      = context->ObjectToStringValue(_src);
+        isOODdll = StrCmpI(src, "oodialog.dll") == 0 ? true : false;
+    }
+
+    uint32_t iconSrc;
+    if ( isOODdll )
+    {
+        iconSrc = ICON_OODIALOG;
+    }
+    else if ( argumentOmitted(2) )
+    {
+        iconSrc = ICON_FILE;
+    }
+    else if ( isBinary )
+    {
+        iconSrc = ICON_DLL;
+    }
+    else
+    {
+        iconSrc = ICON_RC;
+    }
+
+    if ( argumentExists(2) )
+    {
+        if ( ! context->ObjectToUnsignedInt32(rxID, &symbolID) )
+        {
+            RexxObjectPtr item = context->DirectoryAt(TheConstDir, context->ObjectToStringValue(rxID));
+            if ( item != NULLOBJECT )
+            {
+                 context->ObjectToUnsignedInt32(item, &symbolID);
+            }
+        }
+
+        if ( symbolID == 0 )
+        {
+            wrongArgValueException(context->threadContext, 2, "a positive numeric ID or a valid symbolic ID", rxID);
+            return TheFalseObj;
+        }
+    }
+    else if ( iconSrc == ICON_OODIALOG )
+    {
+        symbolID = IDI_DLG_DEFAULT;
+    }
+
+    if ( iconSrc == ICON_RC )
+    {
+        RexxObjectPtr iconFile = context->SendMessage2(pcam->rexxSelf, "FINDICONINRCFILE", context->String(src), rxID);
+        if ( iconFile == NULLOBJECT || context->CheckCondition() )
+        {
+            // Sense we are responsible for the findIconInRcFile() code, this
+            // should be pretty much impossible.
+            return TheFalseObj;
+        }
+        else if ( iconFile == context->NullString() )
+        {
+            oodSetSysErrCode(context->threadContext, ERROR_RESOURCE_TYPE_NOT_FOUND);
+            return TheFalseObj;
+        }
+
+        src = context->ObjectToStringValue(iconFile);
+    }
+
+    return setDefaultIcon(context, src, iconSrc, symbolID, hMod);
 }
 
 /** ApplicationManager::setDefaults()
