@@ -45,13 +45,1583 @@
 <chapter id="chpResizableDialogs" xreflabel="Resizable Dialogs"><title>Resizable Dialogs</title>
 <indexterm><primary>resizable dialogs</primary></indexterm>
 <para>
-  xxx
+  In the early versions of Windows, dialogs in general were always fixed in size. Even today, most dialogs are fixed in size.
+  However, the use of resizable dialogs has become very common. Giving the user the ability to resize the dialogs in your
+  program is a nice feature. Especially if the dialogs contain list boxes, list-views, or tree-views.
 </para>
+<para>
+  ooDialog provides two basic ways to make dialogs resizable. One is through the <xref linkend="clsDlgAreaU"/> class and the
+  other is through the <xref linkend="clsResizableAdmin"/> class.
+</para>
+
+<section id="clsDlgArea" xreflabel="DlgArea"><title>DlgArea Class</title>
+<indexterm><primary>DlgArea class</primary></indexterm>
+<para>
+  The <computeroutput>DlgArea</computeroutput> class provides assistance in laying out the dialog controls in a
+  dynamically defined dialog.  The class defines an area within the <xref linkend="defClientArea"/> of
+  a <xref linkend="clsUserDialog"/>. It is a helper class for the
+ <xref linkend="mthDefineDialog"/> method of a <computeroutput>UserDialog</computeroutput> and has no
+  effect on any <xref linkend="ovvUnderlying"/> window.
+</para>
+<para>
+  Note that the <computeroutput>DlgArea</computeroutput> class does not, in and of itself, produce a resizable dialog. It is
+  the use of its subclass, the <xref linkend="clsDlgAreaU"/> class that produces a resizable dialog.
+</para>
+<para>
+  The methods and attributes of the <computeroutput>DlgArea</computeroutput> provide the coordinates of, and within, the
+  defined area. All coordinates are specified as <emphasis role="italic">client area</emphasis> coordinates. That is,
+  all coordinates are relative to the origin (0, 0) of the client area of the dialog.
+</para>
+<para>
+  The following figure shows the measurement attributes used to position a <computeroutput>DlgArea</computeroutput> on
+  the client area of a <computeroutput>UserDialog</computeroutput>.
+</para>
+<figure id="dlgareafig"><title>DlgArea Measurements</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/dlgArea.png" scale="90" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<section id="sctMethodsDlgArea"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods of the
+  <computeroutput>DlgArea</computeroutput> class:
+
+<table id="tblMethodsDlgArea" frame="all"> <title>DlgArea Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsDlgArea"/></entry>
+<entry>Instantiates a new <computeroutput>DlgArea</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrB"/></entry>
+<entry>Reflects the y coordinate, in dialog units, of the bottom margin of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrHeight"/></entry>
+<entry>Reflects the height of the dialog area in dialog units.</entry>
+</row>
+<row>
+<entry><xref linkend="atrL"/></entry>
+<entry>Reflects the x coordinate, in dialog units, of the left margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrLeft"/></entry>
+<entry>Reflects the x coordinate, in dialog units, of the left edge of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrMargin"/></entry>
+<entry>Reflects the size, in dialog units, of the dialog area margin.</entry>
+</row>
+<row>
+<entry><xref linkend="atrR"/></entry>
+<entry>Reflects the x coordinate, in dialog units, of the right margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrT"/></entry>
+<entry>Reflects the y coordinate, in dialog units, of the top margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrTop"/></entry>
+<entry>Reflects the y coordinate, in dialog units, of the top edge of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="atrWidth"/></entry>
+<entry>Reflects the width of the dialog area in dialog units.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthCX"/></entry>
+<entry>Returns a width, in dialog units, relative to the width of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCY"/></entry>
+<entry>Returns a height, in dialog units, relative to the height of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthH"/></entry>
+<entry>Returns a height, in dialog units, relative to the height of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthHR"/></entry>
+<entry>Returns the remaining height, in dialog units, between the last y invocation and the bottom margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRightClsDlgArea"/></entry>
+<entry>Returns the x coordinate, in dialog units, of the right edge of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthW"/></entry>
+<entry>Returns a width, in dialog units, relative to the width of the dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthWR"/></entry>
+<entry>Returns the remaining width, in dialog units, between the last x invocation and the right margin of the area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthXClsDlgArea"/></entry>
+<entry>Returns a x coordinate relative to the client area of the dialog by specifying an offset relative to the defined dialog area.</entry>
+</row>
+<row>
+<entry><xref linkend="mthYClsDlgArea"/></entry>
+<entry>Returns a y coordinate relative to the client area of the dialog by specifying an offset relative to the defined dialog area.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsDlgArea" xreflabel="init"><title>init</title>
+<indexterm><primary>new</primary><secondary>DlgArea class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--x--,--y--,--width--,--height--+-------------+--)------><
+                                        +--,--margin--+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>DlgArea</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>x [required]</term>
+      <listitem>
+      <para>
+        The x coordinate for the area to be defined. The coordinate is specified in <xref linkend="defDialogUnit"/>s and is
+        relative to the top left corner of the <xref linkend="defClientArea"/> of the
+        <computeroutput>UserDialog</computeroutput>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y [required]</term>
+      <listitem>
+      <para>
+        The y coordinate for the area to be defined. The coordinate is specified in dialog units and is relative to the
+        top left corner of the client area of the <computeroutput>UserDialog</computeroutput>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>width [required]</term>
+      <listitem>
+      <para>
+        The width, in dialog units, of the area being defined.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>height [required]</term>
+      <listitem>
+      <para>
+        The height, in dialog units, of the area being defined.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>margin [optional]</term>
+      <listitem>
+      <para>
+        An inner margin, in dialog units, within the dialog area to be left blank. The default is 5
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This examples defines two dialog areas in a dialog. The first area, <emphasis role="italic">u</emphasis>, is defined
+    for the entire client area of the dialog. The second area, <computeroutput>b</computeroutput> is defined as a
+    sub-area of the <computeroutput>u</computeroutput> area.
+  </para>
+
+<programlisting>
+<![CDATA[
+u = .dlgArea~new(0, 0, self~sizeX,self~sizeY)
+b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="atrT" xreflabel="t"><title>t (Attribute)</title>
+<indexterm><primary>t</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>t</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--t--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the y coordinate, in dialog units, of the top margin of the area.
+</para>
+
+</section>
+
+<section id="atrL" xreflabel="l"><title>l (Attribute)</title>
+<indexterm><primary>l</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>l</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--l--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the x coordinate, in dialog units, of the left margin of the area.
+</para>
+
+</section>
+
+<section id="atrB" xreflabel="b"><title>b (Attribute)</title>
+<indexterm><primary>b</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>b</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--b--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the y coordinate, in dialog units, of the bottom margin of the area.
+</para>
+
+<para></para>
+</section>
+
+<section id="atrR" xreflabel="r"><title>r (Attribute)</title>
+<indexterm><primary>r</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>r</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--r--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the x coordinate, in dialog units, of the right margin of the area.
+</para>
+
+</section>
+
+<section id="atrTop" xreflabel="top"><title>top (Attribute)</title>
+<indexterm><primary>top</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>top</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--top------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the y coordinate, in dialog units, of the top edge of the area.
+</para>
+
+</section>
+
+<section id="atrLeft" xreflabel="left"><title>left (Attribute)</title>
+<indexterm><primary>left</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>left</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--left-----------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the x coordinate, in dialog units, of the left edge of the area.
+</para>
+
+</section>
+
+<section id="atrWidth" xreflabel="width"><title>width (Attribute)</title>
+<indexterm><primary>width</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>width</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--width----------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the width of the dialog area in dialog units.
+</para>
+
+</section>
+
+<section id="atrHeight" xreflabel="height"><title>height (Attribute)</title>
+<indexterm><primary>height</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>height</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--height---------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the height of the dialog area in dialog units.
+</para>
+
+</section>
+
+<section id="atrMargin" xreflabel="margin"><title>margin (Attribute)</title>
+<indexterm><primary>margin</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>margin</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--margin---------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reflects the size, in dialog units, of the dialog area margin.
+</para>
+
+</section>
+
+<section id="mthCX" xreflabel="cx"><title>cx</title>
+<indexterm><primary>cx</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>cx</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cx(--+---------+--)--------------------------><
+         +--flag---+
+
+]]>
+</programlisting>
+<para>
+  Returns a width, in dialog units, relative to the width of the dialog area. The <emphasis role="italic">cx</emphasis>
+  and <xref linkend="mthW"/> methods are synonomous.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the width to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire width of the dialog area, excluding the margins, is returned. If flag is
+        not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area width should be returned. E.g., <computeroutput>10%</computeroutput> would mean to return 10
+           percent of the dialog area width.  <computeroutput>8%</computeroutput> would ask for 8 percent of the width,
+           etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area width should be returned. I.e., that portion of the width between the last invocation of the
+ <xref linkend="mthXClsDlgArea"/> method and the right margin.
+        </para> </listitem></varlistentry>
+      </variablelist> </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area width as specified by the <emphasis role="italic">flag</emphasis>
+    argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCY" xreflabel="cy"><title>cy</title>
+<indexterm><primary>cy</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>cy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cy(--+---------+--)--------------------------><
+         +--flag---+
+
+]]>
+</programlisting>
+
+<para>
+  Returns a height, in dialog units, relative to the height of the dialog area. The <emphasis
+  role="italic">cy</emphasis> and <xref linkend="mthH"/> methods are synonomous.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the height to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire height of the dialog area, excluding the margins, is returned. If flag
+        is not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area height should be returned. E.g., <computeroutput>4%</computeroutput> would mean to return 4
+           percent of the dialog area height  <computeroutput>20%</computeroutput> would ask for 20 percent of the
+           height, etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area height should be returned. I.e., that portion of the height between the last invocation of the
+ <xref linkend="mthYClsDlgArea"/> method and the bottom margin.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area height as specified by the <emphasis role="italic">flag</emphasis>
+    argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthH" xreflabel="h"><title>h</title>
+<indexterm><primary>h</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>h</secondary></indexterm>
+
+<para>
+  Returns a height, in dialog units, relative to the height of the dialog area. The <emphasis
+  role="italic">h</emphasis> and <xref linkend="mthCY"/> methods are synonomous.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the height to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire height of the dialog area, excluding the margins, is returned. If flag
+        is not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area height should be returned. E.g., <computeroutput>4%</computeroutput> would mean to return 5
+           percent of the dialog area height  <computeroutput>20%</computeroutput> would ask for 20 percent of the
+           height, etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area height should be returned. I.e., that portion of the height between the last invocation of the
+ <xref linkend="mthYClsDlgArea"/> method and the bottom margin.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area height as specified by the <emphasis role="italic">flag</emphasis>
+    argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHR" xreflabel="hr"><title>hr</title>
+<indexterm><primary>hr</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>hr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hr-------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the remaining height, in dialog units, between the last <xref linkend="mthYClsDlgArea"/> invocation and
+  the bottom margin of the area. This is equivalent to <xref linkend="mthH"/>("R").
+</para>
+
+</section>
+
+<section id="mthRightClsDlgArea" xreflabel="right"><title>right</title>
+<indexterm><primary>right</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>right</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--right----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the x coordinate, in dialog units, of the right edge of the area.
+</para>
+
+</section>
+
+<section id="mthW" xreflabel="w"><title>w</title>
+<indexterm><primary>w</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>w</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--w(--+---------+--)---------------------------><
+        +--flag---+
+
+]]>
+</programlisting>
+<para>
+  Returns a width, in dialog units, relative to the width of the dialog area. The <xref linkend="mthCX"/> and
+  <emphasis role="italic">w</emphasis> methods are synonomous.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the width to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire width of the dialog area, excluding the margins, is returned. If flag is
+        not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area width should be returned. E.g., <computeroutput>10%</computeroutput> would mean to return 10
+           percent of the dialog area width.  <computeroutput>8%</computeroutput> would ask for 8 percent of the width,
+           etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area width should be returned. I.e., that portion of the width between the last invocation of the
+ <xref linkend="mthXClsDlgArea"/> method and the right margin.
+        </para> </listitem></varlistentry>
+      </variablelist> </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area width as specified by the <emphasis role="italic">flag</emphasis>
+    argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthWR" xreflabel="wr"><title>wr</title>
+<indexterm><primary>wr</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>wr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wr-------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the remaining width, in dialog units, between the last <xref linkend="mthXClsDlgArea"/> invocation and the
+  right margin of the area. This is equivalent to <xref linkend="mthW"/>("R").
+</para>
+
+</section>
+
+<section id="mthXClsDlgArea" xreflabel="x"><title>x</title>
+<indexterm><primary>x</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>x</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--x(--+----------+--)--------------------------><
+        +--offSet--+
+
+]]>
+</programlisting>
+
+<para>
+  Returns a x coordinate relative to the <xref linkend="defClientArea"/> of the dialog by specifying
+  an offset relative to the defined dialog area.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>offset [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">offset</emphasis> is omitted, then the x coordinate of the left margin is returned.
+      </para>
+      <para>
+        Otherwise, <emphasis role="italic">offset</emphasis> is specified as either a concrete number or as a
+        percentage. To specify a percentage add the percent sign to the number, e.g. for twenty percent use
+        <computeroutput>20%</computeroutput>.
+      </para>
+      <para>
+        In addition, <emphasis role="italic">offset</emphasis> can be negative or positive. When positive, the offset is
+        an amount to the right of the left margin. When negative, the offset is an amount to the left of the right
+        margin. Both concrete and percentage offsets can be negative.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The appropriate <xref linkend="defClientArea"/> x coordinate, in dialog units, as specified by the
+    <emphasis role="italic">offset</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthYClsDlgArea" xreflabel="y"><title>y</title>
+<indexterm><primary>y</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>y</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--y(--+----------+--)--------------------------><
+        +--offSet--+
+
+]]>
+</programlisting>
+
+<para>
+  Returns a y coordinate relative to the <xref linkend="defClientArea"/> of the dialog by specifying
+  an offset relative to the defined dialog area.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>offset [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">offset</emphasis> is omitted, then the y coordinate of the top margin is returned.
+      </para>
+      <para>
+        Otherwise, <emphasis role="italic">offset</emphasis> is specified as either a concrete number or as a
+        percentage. To specify a percentage add the percent sign to the number, e.g. for twenty percent use
+        <computeroutput>20%</computeroutput>.
+      </para>
+      <para>
+        In addition, <emphasis role="italic">offset</emphasis> can be negative or positive. When positive, the offset is
+        an amount below the top margin. When negative, the offset is an amount above the bottom margin. Both concrete
+        and percentage offsets can be negative.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The appropriate <xref linkend="defClientArea"/> y coordinate, in dialog units, as specified by the
+    <emphasis role="italic">offset</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="exampleDlgArea"><title>DlgArea Example</title>
+<para>
+  With a <computeroutput>UserDialog</computeroutput> we want the top left to be an edit control, with an area for
+  buttons on the right and a status area below.
+</para>
+<para>
+  We decide to give 70% of the width and 90% of the height to the edit control. We leave the margin as the default.
+</para>
+<figure id="dlgareaplanfig"><title>DlgArea Plan</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/dlgareaplan.png" />
+</imageobject>
+</mediaobject>
+</figure>
+<para>
+  Here is what our defineDialog method might look like:
+</para>
+<programlisting>
+<![CDATA[
+/* ------------------------------------------------------------------------- */
+::method defineDialog
+/* ------------------------------------------------------------------------- */
+/* define DlgArea named u as whole of user dialog                            */
+u=.dlgArea~new(  0       ,         0,self~SizeX,Self~SizeY)   /* whole dlg   */
+
+/* define DlgArea named e within DlgArea u for edit control                  */
+e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))
+
+/* define DlgArea named s within DlgArea u for Status Area in remaining height*/
+s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )
+
+/* define DlgArea named b within DlgArea u for Button area                   */
+b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )
+
+/* Edit control coterminous with area e margins                              */
+self~createEdit(12, e~x, e~y, e~w, e~h, "multiline", "text")
+
+/* Status Area Coterminous with area s margins                               */
+self~createStaticText(11, s~x, s~y, s~w, s~h, , "Status info appears here")
+
+/* Seven buttons evenly spaced at 10% intervals, 9% high                     */
+do i = 0 to 6
+   self~createPushButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"), ,"Button" i,"Button"||i)
+end /* DO */
+
+/* ok button 15 dialog units high at bottom of area b                        */
+self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
+]]>
+</programlisting>
+<para>
+  Here is the resultant dialog.
+</para>
+<figure id="dlgareasample"><title>Sample DlgArea</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/sample1.png"/>
+</imageobject>
+</mediaobject>
+</figure>
+</section>
+</section>
+
+<section id="clsDlgAreaU" xreflabel="DlgAreaU"><title>DlgAreaU Class</title>
+<indexterm><primary>DlgAreaU class</primary></indexterm>
+<para>
+  The <computeroutput>DlgAreaU</computeroutput> class is a subclass of the <xref linkend="clsDlgArea"/>
+  class that helps with the creation of dynamically resizable dialogs. This class provides assistance in resizing and /
+  or positioning controls when a dialog is resized.  When the <computeroutput>DlgArea</computeroutput> and
+  <computeroutput>DlgAreaU</computeroutput> classes are used together, the they provide a convenient way to create
+  resizable dialogs.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> The <computeroutput>DlgAreaU</computeroutput> class uses the <emphasis
+  role="italic">.Object</emphasis> class's <emphasis role="italic">source</emphasis> class method to parse the source
+  code of the dialog's <xref linkend="mthDefineDialog"/> method.  This source is not available if the
+  <emphasis role="italic">rexxc</emphasis> program is used to tokenize the source code. Therefore, <emphasis
+  role="italic">DlgAreaU</emphasis> class will <emphasis role="bold">not</emphasis> work if <emphasis
+  role="italic">rexxc</emphasis> is used to tokenize the source code.
+</para>
+<para>
+  The other implication of using the <emphasis role="italic">source</emphasis> method to parse the dialog's <emphasis
+  role="italic">defineDialog</emphasis> method is that the <computeroutput>DlgAreaU</computeroutput> class can only be
+  used with a <xref linkend="clsUserDialog"/>. It will not work with any other dialog class, such as the
+ <xref linkend="clsResDialog"/> or <xref linkend="clsRcDialog"/> classes.
+</para>
+
+<section id="sctMethodsDlgAreaU"><title>Method Table</title>
+<para>
+  Instances of the <computeroutput>DlgAreaU</computeroutput> class implement the methods listed in the following
+  table.
+
+<table id="tDlgAreaUClass" frame="all">
+<title>DlgAreaU Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsDlgAreaU"/></entry>
+<entry>Instantiates a new <computeroutput>DlgAreaU</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrCorrectionFactor"/></entry>
+<entry>A value used to fix problems in the conversion of pixels to dialog units by adjusting the ratio of original size to change in size.</entry>
+</row>
+<row>
+<entry><xref linkend="atrLastError"/></entry>
+<entry>Holds the details if an error was encountered when parsing the dialog's defineDialog method.</entry>
+</row>
+<row>
+<entry><xref linkend="atrNoMove"/></entry>
+<entry>Holds a set of the resource IDs of dialog controls not to be moved during a resize event.</entry>
+</row>
+<row>
+<entry><xref linkend="atrNoResize"/></entry>
+<entry>Holds a set of the resource IDs of dialog controls not to be resized during a resize event.</entry>
+</row>
+<row>
+<entry><xref linkend="atrUpdateOnResize"/></entry>
+<entry>Controls whether the DlgAreaU object forces the dialog controls to redraw after every resize event.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNoMovePut"/></entry>
+<entry>Adds a dialog control to the set of dialog controls that will not be moved during the resize event.</entry>
+</row>
+<row>
+<entry><xref linkend="mthNoResizePut"/></entry>
+<entry>Adds a dialog control to the set of dialog controls that will not be resized during the resize event.</entry>
+</row>
+<row>
+<entry><xref linkend="mthResizeClsDlgAreaU"/></entry>
+<entry>Causes the DlgAreaU object to resize and reposition all the dialog controls in the dialog.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</para>
+
+</section>
+
+<section id="mthNewClsDlgAreaU" xreflabel="new"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>DlgAreaU class</secondary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(-dlg--+----------+--+------------+--+--------+-)--------><
+              +-,-margin-+  +-,-noResize-+  +-noMove-+
+
+]]>
+</programlisting>
+
+<para>
+  The <computeroutput>DlgAreaU</computeroutput> object creates a dialog area coterminous with the calling dialog. It is
+  a subclass of the <xref linkend="clsDlgArea"/> class and therefore inherits all the methods and
+  attributes of that class.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>dlg</term>
+      <listitem>
+      <para>
+        The resizable dialog you are creating a dialog area for. This dialog must be subclassed from a
+       <xref linkend="clsUserDialog"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>margin</term>
+      <listitem>
+      <para>
+        The <computeroutput>DlgArea</computeroutput> <xref linkend="atrMargin"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>noResize</term>
+      <listitem>
+      <para>
+        A <computeroutput>.Set</computeroutput> object containing the resource <xref linkend="defResourceId"/>s of the dialog
+        controls that should <emphasis role="bold">not</emphasis> be resized during the resize event. The IDs may be numeric
+        or <xref linkend="defSymbolicId"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>noMove</term>
+      <listitem>
+      <para>
+        A <computeroutput>.Set</computeroutput> object containing the resource <xref linkend="defResourceId"/>s of the dialog
+        controls that should <emphasis role="bold">not</emphasis> be moved during the resize event. The IDs may be
+        numeric or <xref linkend="defSymbolicId"/>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="atrCorrectionFactor" xreflabel="correctionFactor"><title>correctionFactor (Attribute)</title>
+<indexterm><primary>correctionFactor</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>correctionFactor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--correctionFactor-----------------------------><
+
+>>--correctionFactor=num-------------------------><
+]]>
+</programlisting>
+
+<para>
+  An attribute containing the value used to adjust the ratio of the top &amp; left margins to the bottom &amp; right
+  margins. (The default correction factor is set to 1.05.) The Possible <link linkend="sctDlgAreaUProblems">Problems</link>
+  section has additional details on using the <emphasis role="italic">correctionFactor</emphasis> attribute.
+</para> </section>
+
+<section id="atrLastError" xreflabel="lastError"><title>lastError (Attribute)</title>
+<indexterm><primary>lastError</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>lastError</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lastError------------------------------------><
+
+>>--lastError=errMsg-----------------------------><
+]]>
+</programlisting>
+
+<para>
+  An attribute holding the details if an error was encountered when parsing the calling dialog's
+ <xref linkend="mthDefineDialog"/> method.  The value of the attribute is .nil if no error occurred.
+</para> </section>
+
+<section id="atrNoMove" xreflabel="noMove"><title>noMove (Attribute)</title>
+<indexterm><primary>noMove</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noMove</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noMove---------------------------------------><
+
+>>--noMove=ids-----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  A <computeroutput>.Set</computeroutput> object holding the resource IDs of the dialog controls that the programmer
+  does not wish to be moved during a resize event. The IDs in the set must be numeric.
+</para>
+<para>
+  The programmer can use <xref linkend="defSymbolicId"/> IDs for the dialog controls by adding to the set
+  through the <xref linkend="mthNoMovePut"/> method. Or by passing in a
+  <computeroutput>.Set</computeroutput> object when instantiating a <xref linkend="mthNewClsDlgAreaU"/>
+  <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
+  <emphasis role="italic">noMove</emphasis> attribute to add a resource ID, only numeric IDs should be used.
+</para>
+</section>
+
+<section id="atrNoResize" xreflabel="noResize"><title>noResize (Attribute)</title>
+<indexterm><primary>noResize</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noResize</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>--noResize-------------------------------------><
+
+>>--noResize=ids---------------------------------><
+]]>
+</programlisting>
+
+<para>
+  A <computeroutput>.Set</computeroutput> object holding the resource IDs of the dialog controls that the programmer
+  does not wish to be resized during a resize event. The IDs in the set must be numeric.
+</para>
+<para>
+  The programmer can use <xref linkend="defSymbolicId"/> IDs for the dialog controls by adding to the set
+  through the <xref linkend="mthNoResizePut"/> method. Or by passing in a
+  <computeroutput>.Set</computeroutput> object when instantiating a <xref linkend="mthNewClsDlgAreaU"/>
+  <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
+  <emphasis role="italic">noResize</emphasis> attribute to add a resource ID, only numeric IDs should be used.
+</para>
+</section>
+
+<section id="atrUpdateOnResize" xreflabel="updateOnResize"><title>updateOnResize (Attribute)</title>
+<indexterm><primary>updateOnResize</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>updateOnResize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--updateOnResize-------------------------------><
+>>--updateOnResize=boolean-----------------------><
+]]>
+</programlisting>
+
+<para>
+  An attribute that controls whether the <computeroutput>DlgAreaU</computeroutput> object forces the dialog controls to
+  redraw during every resize event.  The default value of this attribute is <computeroutput>.true</computeroutput>, the
+  dialog controls are forced to redraw on every resize event. Setting this attribute to false will prevent the dialog
+  controls from being forced to redraw.
+</para>
+<para>
+  When the <emphasis role="italic">updateOnResize</emphasis> attribute is <computeroutput>.false</computeroutput>, it
+  becomes the programmer's responsibility to force the dialog controls to redraw when the user has stopped resizing the
+  dialog. This can be down by using the <xref linkend="mthConnectSizeMoveEnded"/> method. Having the dialog
+  controls redraw only once eliminates flicker while the user is sizing the dialog. However, the dialog controls do not
+  change size or position while the using is sizing the dialog. In the <computeroutput>samples\oodialog</computeroutput>
+  directory of the ooRexx installation are two example programs: <computeroutput>dlgAreaUDemo.rex</computeroutput>
+  redraws the dialog controls on every resize event. <computeroutput>dlgAreaUDemoTwo.rex</computeroutput> only redraws
+  the controls once, when the user has stopped resizing the controls. Contrast the two programs to determine which
+  method best suits the needs or your program.
+</para>
+</section>
+
+<section id="mthNoMovePut" xreflabel="noMovePut"><title>noMovePut</title>
+<indexterm><primary>noMovePut</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noMovePut</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noMovePut(--resourceID--)--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Adds a dialog control to the <xref linkend="atrNoMove"/> of dialog controls that will not be moved during the
+  resize event.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>resourceID [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control that is not to be moved during the resize event. May be symbolic or numeric.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method allows the programmer to use <xref linkend="defSymbolicId"/> IDs for the dialog
+    control. If the resource ID is put directly into the set through the <emphasis role="italic">noMove</emphasis>
+    attribute, symbolic IDs will not be recognized.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    If a symbolic ID is used and it can not be resolved a syntax error is raised.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgAreaU::noMovePut() -->
+
+<section id="mthNoResizePut" xreflabel="noResizePut"><title>noResizePut</title>
+<indexterm><primary>noResizePut</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noResizePut</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noResizePut(--resourceID--)------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Adds a dialog control to the <xref linkend="atrNoResize"/> of dialog controls that will not be resized during
+  the resize event.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>resourceID [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control that is not to be resized during the resize event. May be symbolic or
+      numeric.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method allows the programmer to use <xref linkend="defSymbolicId"/> IDs for the dialog
+    control. If the resource ID is put directly into the set through the <emphasis role="italic">noResize</emphasis>
+    attribute, symbolic IDs will not be recognized.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    If a symbolic ID is used and it can not be resolved a syntax error is raised.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgAreaU::noMovePut() -->
+
+<section id="mthResizeClsDlgAreaU" xreflabel="resize"><title>resize</title>
+<indexterm><primary>resize</primary><secondary>DlgAreaU class</secondary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>resize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--resize(--dlgObj--,--sizeInfo--)--------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">resize</emphasis> method causes the <computeroutput>DlgAreaU</computeroutput> object to
+  resize and reposition all the dialog controls in the <emphasis role="italic">dlgObj</emphasis> dialog in relation to
+  the <emphasis role="italic">sizeInfo</emphasis> argument. Normally the dialog is then told to update itself, which
+  redraws the controls. However, the updating is dependent on the value of the
+ <xref linkend="atrUpdateOnResize"/> attribute.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlgObj [required]</term>
+    <listitem>
+    <para>
+      The dialog which is being resized. The dialog must be the same dialog used to instantiate the
+ <xref linkend="mthNewClsDlgAreaU"/> <computeroutput>DlgAreaU</computeroutput> object.
+    </para> </listitem></varlistentry>
+    <varlistentry><term>sizeInfo [required]</term>
+    <listitem>
+    <para>
+      The new size of the dialog. Normally, <emphasis role="italic">sizeInfo</emphasis> comes from the value passed to
+      your resize <link linkend="paraResizeEvent">event</link> handler.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The most common way to use the <computeroutput>DlgAreaU</computeroutput> class is to connect the
+ <xref linkend="mthConnectResize"/> event to an event handling method in a resizable dialog. Then the
+    <emphasis role="italic">sizeInfo</emphasis> arg to the event handler is simply passed on to the <emphasis
+    role="italic">resize</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a typical event handling method in a resizable dialog that makes use of the
+    <computeroutput>DlgAreaU</computeroutput> class
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+  expose u
+
+  self~connectResize('onResize')
+
+  u = .dlgAreaU~new(self)
+  ...
+
+
+::method onResize unguarded
+  expose u
+  use arg sizeEvent, sizeInfo
+
+  u~resize(self, sizeInfo)
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgAreaU::resize() -->
+
+<section id="sctCeateResizableDialogs"><title>Creating resizable Dialogs</title>
+<indexterm><primary>dynamically resizable dialogs</primary><secondary>DlgAreaU class</secondary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>resizable dialogs</secondary></indexterm>
+<para>
+  You can use the <computeroutput>DlgAreaU</computeroutput> class to facilitate creating dynamically resizable dialogs.
+  However the following restrictions apply:
+</para>
+<para>
+  The dialog must be a <xref linkend="clsUserDialog"/> with all dialog controls created in the dialog
+  template from within the <xref linkend="mthDefineDialog"/> method. In the
+ <xref linkend="mthCreate"/> or <xref linkend="mthCreateCenter"/> method, the dialog
+  template must be created with the THICKFRAME option.
+</para>
+<para id="paraResizeEvent">
+  You must connect the <xref linkend="mthConnectResize"/> event to a method in your dialog. Add the
+  following code somewhere in your dialog code. The <emphasis role="italic">init</emphasis>, <emphasis
+  role="italic">defineDialog</emphasis> or <emphasis role="italic">initDialog</emphasis> methods are all a suitable
+  place for the line. The <emphasis role="italic">methodName</emphasis> argument is the name of your event handling
+  method and can be any appropriate method name.
+</para>
+
+<programlisting>
+<![CDATA[
+self~connectResize(methodName)
+]]>
+</programlisting>
+
+<para>
+  Your <emphasis role="italic">defineDialog</emphasis> method must start with these lines:
+</para>
+<programlisting>
+<![CDATA[
+expose u
+u = .dlgAreaU~new(self)
+]]>
+</programlisting>
+<para>
+  Your <emphasis role="italic">defineDialog</emphasis> method must not reference variables within the
+  <link linkend="sctCreateMethods">create</link>/> control method parameters. Although you can use references to
+  <xref linkend="clsDlgArea"/> attributes, so
+</para>
+<programlisting>
+<![CDATA[
+  self~createPushButton(IDC_PB, 5, 100, 45, 15, , "MyButton", "Pressed")
+  self~createPushButton(IDC_PB_1, b~x, b~y("10%"), b~w, b~h("9%"), , "Button" 1, "Button"||1)
+]]>
+</programlisting>
+  <para>
+    work fine, whereas
+  </para>
+<programlisting>
+<![CDATA[
+/* Seven buttons evenly spaced at 10% intervals, 9% high                     */
+do i = 0 to 6
+   self~createPushButton(12+i, b~x, b~y((i * 10)||"%"), b~w, b~h("9%"), , "Button" i, "Button"||i)
+end /* DO */
+]]>
+</programlisting>
+<para>
+  would fail because the <emphasis role="italic">createPushButton</emphasis> method references the variable
+  <computeroutput>i</computeroutput> within its parameters.
+</para>
+<para>
+  To debug your <computeroutput>DlgAreaU</computeroutput> object call/insert the following after the instantiation:
+</para>
+<programlisting>
+<![CDATA[
+if u~lastError \= .nil then call errorDialog u~lastError
+]]>
+</programlisting>
+<para>
+  Your event handler code for the RESIZE event must pass on the second argument of the method to the
+  <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">resize</emphasis> method.
+</para>
+<programlisting>
+<![CDATA[
+/* ------------------------------------------------------------------------- */
+::method OnResize
+/* ------------------------------------------------------------------------- */
+  expose u
+  use arg sizeEvent, sizeInfo
+
+  u~resize(self, sizeInfo)
+
+]]>
+</programlisting>
+<para>
+  The <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">resize</emphasis> method will then
+  automatically resize &amp; position the dialog controls in your dialog that were added to the dialog template with the
+  following methods. The resizing takes place when the dialog frame is dragged, or the minimize, maximize, or restore
+  buttons are pressed:
+</para>
+<table frame="all">
+<title>DlgAreaU Automatic Resize Controls</title>
+<tgroup cols="4" align="left" colsep="1" rowsep="1">
+<tbody>
+<row>
+  <entry>createBitmapbutton</entry>
+  <entry>createBlackframe</entry>
+  <entry>createBlackrect</entry>
+  <entry>createCheckbox</entry>
+</row>
+<row>
+  <entry>createCombobox</entry>
+  <entry>createEdit</entry>
+  <entry>createDatetimePicker</entry>
+  <entry>createEdit</entry>
+</row>
+<row>
+  <entry>createEtchedHorizontal</entry>
+  <entry>createEtchedVertical</entry>
+  <entry>createGrayFrame</entry>
+  <entry>createGrayRect</entry>
+</row>
+<row>
+  <entry>createGroupBox</entry>
+  <entry>createListBox</entry>
+  <entry>createListView</entry>
+  <entry>createMonthCalendar</entry>
+</row>
+<row>
+  <entry>createPasswordEdit</entry>
+  <entry>createProgressBar</entry>
+  <entry>createPushButton</entry>
+  <entry>createRadioButton</entry>
+</row>
+<row>
+  <entry>createScrollBar</entry>
+  <entry>createStatic</entry>
+  <entry>createStaticFrame</entry>
+  <entry>createStaticImage</entry>
+</row>
+<row>
+  <entry>createStaticText</entry>
+  <entry>createTab</entry>
+  <entry>createTrackBar</entry>
+  <entry>createTreeView</entry>
+</row>
+<row>
+  <entry>createUpDown</entry>
+  <entry>createWhiteFrame</entry>
+  <entry>createWhiteRect</entry>
+  <entry></entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>
+  The following <link linkend="sctCreateMethods">create</link> methods can be used to define dialog controls in a
+  <xref linkend="clsUserDialog"/>, but cannot be handled by the
+  <computeroutput>DlgAreaU</computeroutput> <xref linkend="mthResizeClsDlgAreaU"/> method. If you use any of
+  these methods, the dialog controls will not be automatically resized and positioned.
+</para>
+<table frame="all">
+<title>DlgAreaU Non-Automatic Resize Controls</title>
+<tgroup cols="4" align="left" colsep="1" rowsep="1">
+<tbody>
+<row>
+  <entry>createCheckBoxGroup</entry>
+  <entry>createCheckBoxStem</entry>
+  <entry>createComboBoxInput</entry>
+  <entry>createEditInput</entry>
+</row>
+<row>
+  <entry>createEditInputGroup</entry>
+  <entry>createEditInputStem</entry>
+  <entry>createOkCancelLeftBottom</entry>
+  <entry>createOkCancelLeftTop</entry>
+</row>
+<row>
+  <entry>createOkCancelRightBottom</entry>
+  <entry>createOkCancelRightTop</entry>
+  <entry>createPushButtonGroup</entry>
+  <entry>createRadioButtonGroup</entry>
+</row>
+<row>
+  <entry>createRadioButtonStem</entry>
+  <entry></entry>
+  <entry></entry>
+  <entry></entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>
+  All of these dialog controls can be added to the dialog template by using combinations of the methods recognized in
+  the <emphasis role="italic">resize</emphasis> method.
+</para>
+</section>
+
+<section id="sctDlgAreaUProblems"><title>Possible Problems</title>
+<para>
+  The <computeroutput>DlgAreaU</computeroutput> <xref linkend="mthResizeClsDlgAreaU"/> method can create slightly
+  over-size margins on the left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has a
+ <xref linkend="atrCorrectionFactor"/> attribute set by default to 1.05. In tests, this
+  correction factor appears to neutralise the effect. If your dialogs have over (or under) sized margins, you may be
+  able to correct this in your code by adjusting the <emphasis role="italic">correctionFactor</emphasis> attribute. For
+  example:
+</para>
+<programlisting>
+<![CDATA[
+u = .DlgAreaU~new(self)
+u~correctionFactor=1.07
+]]>
+</programlisting>
+<para>
+  You will have to experiment to find the appropriate setting for this attribute.
+</para>
+<para>
+  This problem occurs because of the use of the <xref linkend="ovvInaccurate"/> <emphasis
+  role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes to convert pixels to dialog
+  units. Fixing the problem, at this point, would most likely break existing programs.
+</para>
+</section>
+
+<section id="sctDlgAreaUSample"><title>Sample Code</title>
+<programlisting>
+<![CDATA[
+/* DlgAreaDemo.Rex  --  Demonstrate DlgArea & DlgAreaU Classes  --  Feb 2006 */
+
+dlg = .MyDialog~new
+if dlg~initCode == 0 then dlg~execute("ShowTop")
+
+return dlg~initCode
+
+::requires "ooDialog.cls"
+/* ========================================================================= */
+::class 'MyDialog' subclass UserDialog
+/* ========================================================================= */
+::method init
+/* ------------------------------------------------------------------------- */
+  self~init:super
+  if \ self~createCenter(250, 250, "MyDialog", "ThickFrame", , "Tahoma", 8) then do
+    self~initCode = 1
+    return
+  end
+
+  self~connectResize("onResize")
+
+/* ------------------------------------------------------------------------- */
+::method defineDialog
+/* ------------------------------------------------------------------------- */
+expose u
+
+u = .dlgAreaU~new(self)                                       /* whole dlg   */
+if u~lastError \= .nil then call errorDialog u~lastError
+e = .dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%")) /* edit   area */
+s = .dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      ) /* status area */
+b = .dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      ) /* button area */
+
+self~createEdit(IDC_EDIT, e~x, e~y, e~w, e~h, "multiline", "text")
+self~createStaticText(IDC_ST_STATUS, s~x, s~y, s~w, s~h, , "Status info appears here")
+
+self~createPushButton(IDC_PB_0, b~x, b~y('00%'), b~w, b~h('9%'), ,'Button' 0, 'Button'||0)
+self~createPushButton(IDC_PB_1, b~x, b~y('10%'), b~w, b~h('9%'), ,'Button' 1, 'Button'||1)
+self~createPushButton(IDC_PB_2, b~x, b~y('20%'), b~w, b~h('9%'), ,'Button' 2, 'Button'||2)
+self~createPushButton(IDC_PB_3, b~x, b~y('30%'), b~w, b~h('9%'), ,'Button' 3, 'Button'||3)
+self~createPushButton(IDC_PB_4, b~x, b~y('40%'), b~w, b~h('9%'), ,'Button' 4, 'Button'||4)
+self~createPushButton(IDC_PB_5, b~x, b~y('50%'), b~w, b~h('9%'), ,'Button' 5, 'Button'||5)
+self~createPushButton(IDC_PB_6, b~x, b~y('60%'), b~w, b~h('9%'), ,'Button' 6, 'Button'||6)
+self~createPushButton(IDOK,     b~x, b~y('90%'), b~w, b~h('9%'),'DEFAULT', 'Ok')
+
+
+/* ------------------------------------------------------------------------- */
+::method unknown
+/* ------------------------------------------------------------------------- */
+use arg msgname, args
+if msgname~abbrev("BUTTON") then
+   self~newStatic(IDC_ST_STATUS)~setText('You Pressed Button' msgname~right(1))
+
+/* ------------------------------------------------------------------------- */
+::method onResize
+/* ------------------------------------------------------------------------- */
+expose u
+use arg sizeEvent, sizeinfo
+u~resize(self, sizeinfo)
+
+]]>
+</programlisting>
+<para>
+  This achieves the same dialog as the previous DlgArea <link linkend="exampleDlgArea">example</link>, but now it is
+  resizable by dragging the frame.
+</para>
+</section>
+</section>
+
 
 <section id="clsResizingAdmin" xreflabel="ResizingAdmin"><title>ResizingAdmin Mixin Class</title>
 <indexterm><primary>ResizingAdmin Class</primary></indexterm>
 <para>
-  xxx
+  The <computeroutput>ResizingAdmin</computeroutput> class is a <computeroutput>mixin</computeroutput> class. Resizable
+  dialogs are produced by having a dialog class inherit the <computeroutput>ResizingAdmin</computeroutput> class. This makes
+  any ooDialog dialog resizable without having to change any code in the dialog, even existing dialog. With one caveat, <xref
+  linkend="clsPropertySheetPage"/> and <xref linkend="clsControlDialog"/> dialogs are not supported at this time.
 </para>
 
 <section id="sctMethodsResizingAdmin"><title>Method Table</title>
@@ -94,6 +1664,30 @@
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthControlBottom"/></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><xref linkend="mthControlLeft"/></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><xref linkend="mthControlRight"/></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><xref linkend="mthControlSizign"/></entry>
+<entry>xx</entry>
+</row>
+<row>
+<row>
+<entry><xref linkend="mthControlTop"/></entry>
+<entry>xx</entry>
+</row>
+<entry><xref linkend="mthDefaultBottom"/></entry>
+<entry>xx</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultBottom"/></entry>
@@ -232,6 +1826,322 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ResizingAdmin::minSize() [attribute]  -->
+
+<section id="mthControlBottom" xreflabel="controlBottom"><title>controlBottom</title>
+<indexterm><primary>controlBottom</primary></indexterm>
+<indexterm><primary>ResizingAdmi class</primary><secondary>controlBottom</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlBottom(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmi::controlBottom() -->
+
+<section id="mthControlLeft" xreflabel="controlLeft"><title>controlLeft</title>
+<indexterm><primary>controlLeft</primary></indexterm>
+<indexterm><primary>ResizingAdmi class</primary><secondary>controlLeft</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlLeft(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmi::controlLeft() -->
+
+<section id="mthControlRight" xreflabel="controlRight"><title>controlRight</title>
+<indexterm><primary>controlRight</primary></indexterm>
+<indexterm><primary>ResizingAdmi class</primary><secondary>controlRight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlRight(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmi::controlRight() -->
+
+<section id="mthControlSizing" xreflabel="controlSizing"><title>controlSizing</title>
+<indexterm><primary>controlSizing</primary></indexterm>
+<indexterm><primary>ResizingAdmi class</primary><secondary>controlSizing</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlSizing(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmi::controlSizing() -->
+
+<section id="mthControlTop" xreflabel="controlTop"><title>controlTop</title>
+<indexterm><primary>controlTop</primary></indexterm>
+<indexterm><primary>ResizingAdmi class</primary><secondary>controlTop</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--controlTop(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmi::controlTop() -->
+
 
 <section id="mthDefaultBottom" xreflabel="defaultBottom"><title>defaultBottom</title>
 <indexterm><primary>defaultBottom</primary></indexterm>
@@ -613,6 +2523,198 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Resizing::defineSizing() -->
+
+
+<section id="mthNoMaxSize" xreflabel="noMaxSize"><title>noMaxSize</title>
+<indexterm><primary>noMaxSize</primary></indexterm>
+<indexterm><primary>ResizingAdmi class</primary><secondary>noMaxSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noMaxSize(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmi::noMaxSize() -->
+
+
+<section id="mthNoMinSize" xreflabel="noMinSize"><title>noMinSize</title>
+<indexterm><primary>noMinSize</primary></indexterm>
+<indexterm><primary>ResizingAdmi class</primary><secondary>noMinSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noMinSize(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmi::noMinSize() -->
+
+
+<section id="mthWantSizeEnded" xreflabel="wantSizeEnded"><title>wantSizeEnded</title>
+<indexterm><primary>wantSizeEnded</primary></indexterm>
+<indexterm><primary>ResizingAdmi class</primary><secondary>wantSizeEnded</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wantSizeEnded(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmi::wantSizeEnded() -->
 
 
 </section>  <!-- End Section ResizingAdmin Mixin Class -->
