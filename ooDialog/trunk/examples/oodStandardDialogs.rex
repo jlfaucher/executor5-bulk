@@ -53,10 +53,10 @@
     -- itself is located in samplesSetup.rex
     mgr = .DirectoryManager~new()
 
-    .application~setDefaults('O', 'rc\oodStandardDialog.h')
-    .application~defaultIcon('bmp\oodStandardDialog.ico')
+    .application~setDefaults('O', 'rc\oodStandardDialogs.h')
+    .application~defaultIcon('bmp\oodStandardDialogs.ico')
 
-    dlg = .StandardDialogs~new("rc\oodStandardDialog.rc", IDD_STDDLGS)
+    dlg = .StandardDialogs~new("rc\oodStandardDialogs.rc", IDD_STDDLGS)
     dlg~execute("SHOWTOP")
 
     mgr~goBack
