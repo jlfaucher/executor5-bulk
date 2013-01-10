@@ -83,6 +83,2036 @@
 </figure>
 </section>
 
+
+<section id="clsCustomDraw" xreflabel="CustomDraw"><title>CustomDraw Mixin Class</title>
+<indexterm><primary>CustomDraw class</primary></indexterm>
+<para>
+  Custom draw is a service provided by some of the Windows common controls. This service allows the programmer greater
+  control over the appearance of a control than that provided directly though the styles and methods of the control.
+  Not all controls support custom draw, but those that do provide the service in a generic manner through the use of
+  custom draw <xref linkend="ovvEvents"/> notifications.
+</para>
+<para>
+  The following Windows controls provide custom draw services:
+  <itemizedlist>
+  <listitem>
+  <para>
+    Header controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    List-view controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Rebar controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Toolbar controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Trackbar controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Tree-view controls.
+  </para>
+  </listitem>
+  </itemizedlist>
+  The current implementation of custom draw in ooDialog supports <emphasis role="italic">simple</emphasis> custom draw
+  for the <link linkend="clsListView">list-view</link> and <link linkend="clsTreeView">tree-view</link> controls.
+</para>
+
+<section id="sctCustomDrawOverview" xreflabel="overview"><title>Custom Draw Overview</title>
+<indexterm><primary>custom draw</primary><secondary>overview</secondary></indexterm>
+
+<para>
+  All windows in the Windows operating system periodically paint and erase themselves based on messages received from the
+  system or other applications. This process of painting or erasing is called a paint cycle. The common controls
+  that support custom draw send <xref linkend="ovvEvents"/> notifications at specific points while the control is being
+  drawn. The notifications describe drawing operations that apply to the entire control as well as drawing operations
+  specific to items within the control.
+</para>
+<para>
+  Part of the the information sent in the custom draw notification is what stage of the paint cycle the control is in. The
+  stage will either be part of the overall painting of the control or part of the painting of an item the control contains.
+  The stage is identified by a constant value supplied by the <computeroutput>CustomDraw</computeroutput> class. The possible
+  draw stages are described in the following table:
+
+<table id="tblCustomDrawStage" frame="all"> <title>Stages of Custom Draw</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="2*"/>
+<thead>
+<row>
+<entry>Constant Value</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Global</emphasis></entry>
+<entry align="center"><emphasis role="bold">Draw Stages</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_PREPAINT"/></entry>
+<entry>This stage is before the paint cycle begins.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_POSTPAINT"/></entry>
+<entry>This stage is after the paint cycle is complete.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_PREERASE"/></entry>
+<entry>This stage is before the erase cycle begins. </entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_POSTERASE"/></entry>
+<entry>This stage is after the erase cycle is complete.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Item Specific</emphasis></entry>
+<entry align="center"><emphasis role="bold">Draw Stages</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_ITEMPREPAINT"/></entry>
+<entry>This stage is before an item is drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_ITEMPOSTPAINT"/></entry>
+<entry>This stage is after an item has been drawn.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_ITEMPREERASE "/></entry>
+<entry>This stage is before an item is erased.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_ITEMPOSTERASE"/></entry>
+<entry>This stage is after an item has been erased.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_SUBITEMPREPAINT"/></entry>
+<entry>This stage is before an subitem is drawn. Only used in <xref linkend="clsListView"/> controls in report mode.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDDS_SUBITEMPOSTPAINT"/></entry>
+<entry>This stage is after an subitem has been drawn. Only used in list-view controls in report mode.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+
+<para>
+  The ooDialog program that uses custom draw processes the information sent by the control and returns information that
+  instructs the underlying dialog control what to do. The key to using custom draw is in this information sent back to the
+  control in response to the event notification message. The information returned by the program determines the control's
+  behavior for that paint cycle.
+</para>
+<para>
+  Part of the information returned is a combination of response codes to the event notification. The
+  <computeroutput>CustomDraw</computeroutput> class provides constant values for these codes as summarized in the following
+  table:
+
+<table id="tblCustomDrawResponse" frame="all"> <title>Notification Responses</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="2*"/>
+<thead>
+<row>
+<entry>Constant Value</entry>
+<entry>Effect</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><xref linkend="cnstCDRF_DODEFAULT "/></entry>
+<entry>The control will draw itself. It will not send additional event notifications for this paint cycle. This respons cannot be used with any other response.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_NOTIFYITEMDRAW"/></entry>
+<entry>The control will send event notifications for any item-specific drawing operations. It will send event notification messages before and after it draws items.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_NOTIFYPOSTPAINT"/></entry>
+<entry>The control will send an event notification when the painting cycle for the entire control is complete.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/></entry>
+<entry>The control will send event notifications for any subitem-specific drawing operations. It will send event notification messages before and after it draws subitems.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_SKIPDEFAULT"/></entry>
+<entry>The control will not perform any painting at all. </entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_DOERASE"/></entry>
+<entry>The control will only draw the background.</entry>
+</row>
+<row>
+<entry><xref linkend="cnstCDRF_SKIPPOSTPAINT"/></entry>
+<entry>The control will not draw the focus rectangle around an item.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+<para>
+  Custom draw can be used by the program to draw the entire item, or to change part of the way an item is drawn. Custom draw
+  can be used to change the foreground and background colors, and the font used by the control for each item. For list-view
+  controls in report view, the programmer can also change change the colors and the font for each individual subitem.
+</para>
+
+</section> <!-- End CustomDrawOverview section -->
+
+
+<section id="sctCustomDrawInooDialog"><title>Custom Draw in ooDialog</title>
+<indexterm><primary>custom draw</primary><secondary>in ooDialog</secondary></indexterm>
+
+<para>
+  Using custom draw in ooDialog involves a few basic steps.
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">Inherit <computeroutput>CustomDraw</computeroutput></emphasis></term>
+    <listitem>
+    <para>
+      The dialog subclass where the programmer wants to use custom draw must inherit the
+      <computeroutput>CustomDraw</computeroutput> mixin class.
+
+<programlisting>
+::class 'CustomDrawDlg' subclass RcDialog inherit CustomDraw
+</programlisting>
+    </para>
+    <para>
+      The dialog subclass does not have to be a <xref linkend="clsRcDialog"/> of course. It can be any dialog class supported
+      by ooDialog, except the <xref linkend="clsPropertySheetDialog"/>. Recall that the property sheet dialog is managed by
+      the operating system, not ooDialog. However, the pages of the property sheet dialog, any <xref
+      linkend="clsPropertySheetPage"/> dialogs, can use custom draw.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Initialize <computeroutput>CustomDraw</computeroutput></emphasis></term>
+    <listitem>
+    <para>
+      Before any other use of custom draw, the <computeroutput>CustomDraw</computeroutput> class must be initialized. This is
+      done through the <xref linkend="mthCustomDraw"/> method. This can be done wherever it seems convenient, but typically
+      it would be done before the dialog control is populated with its items.
+<programlisting>
+::method init
+    expose textRed textBlack
+
+    forward class (super) continue
+
+    self~customDraw
+
+</programlisting>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Register Control(s)</emphasis></term>
+    <listitem>
+    <para>
+      Once the <computeroutput>CustomDraw</computeroutput> class is initialized, the next step is to register the dialog
+      controls that will use custom draw. Each individual control must be registered using the <xref
+      linkend="mthCustomDrawControl"/> method.
+<programlisting>
+::method init
+    ...
+
+    self~customDrawControl(IDC_LV_CUSTOM, 'ListView', onCustomDraw)
+
+</programlisting>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Code an Event Handler</emphasis></term>
+    <listitem>
+    <para>
+      The last part of using custom draw is coding the event handler. In ooDialog, the information from the Windows dialog
+      control is passed on the the Rexx event handler in the form of an object. Each individual dialog control type has a
+      control specific class that is used to pass the information. Details on how to code the event handler are explained in
+      the documentation of the control specific class.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Supported Dialog controls.</emphasis></term>
+    <listitem>
+    <para>
+      ooDialog supports custom draw for the dialog controls listed in the following table. The table has a link to the class
+      used to provide the event handler with the information sent by the underlying dialog control and a link to the
+      documentation for the event handler for the specific type of control.
+
+<table id="tblSupportedCustomDrawControls" frame="all"><title>ooDialog Supported Custom Draw Controls</title>
+<tgroup cols="3">
+<colspec colwidth="1*"/>
+<colspec colwidth="1*"/>
+<colspec colwidth="1*"/>
+<thead>
+<row>
+<entry>Control</entry>
+<entry>Information Class</entry>
+<entry>Event Handler</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><xref linkend="clsListView"/></entry>
+<entry><xref linkend="clsLvCustomDrawSimple"/></entry>
+<entry><xref linkend="evtListViewCustomDraw"/></entry>
+</row>
+<row>
+<entry><xref linkend="clsTreeView"/></entry>
+<entry><xref linkend="clsTvCustomDrawSimple"/></entry>
+<entry><xref linkend="evtTreeViewCustomDraw"/></entry>
+</row>
+</tbody></tgroup>
+</table>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+</para>
+
+</section> <!-- End CustomDrawInOODialog section -->
+
+
+<section id="sctSimpleCustomDraw" xreflabel="simple"><title>Simple Custom Draw</title>
+<indexterm><primary>custom draw</primary><secondary>simple custom draw</secondary></indexterm>
+
+<para>
+  Currently, ooDialog supports a limited subset of the full functionality supplied by the Windows custom draw API. The
+  developers are denoting this as <emphasis role="italic">simple</emphasis> custom draw. Simple custom draw allows the
+  ooDialog programmer to change the foreground and background colors of individual dialog control items and subitems. It also
+  allows the programmer to change the font of individual items and subitems.
+</para>
+<para>
+  There are a number of reasons for only supporting simple custom draw at this point. For one, it is probably sufficient for
+  everything an ooDialog programmer will want to do. It allows the most useful functionality of custom draw to be delievered
+  sooner and leaves the possiblity of future enhancements providing more functionality. Drawing in Windows needs to be done
+  quickly and efficiently. This type of programming is normally done in a low-level language. It is not clear that a complete
+  implementation of custom draw would produce satisfactory results.
+</para>
+<para>
+  In simple custom draw, the ooDialog framework does not invoke the custom draw event handler for every single custom draw
+  notification sent by the dialog control. Rather, it replies directly for a number of the drawing stages itself, returning
+  the correct information so that the item and subitem prepaint notifications are sent by the control. It then invokes the
+  Rexx event handler for the item and subitem prepaint notifications. This allows the ooDialog programmer to change the
+  colors and fonts for any individual item or subitem.
+</para>
+<para>
+  In simple custom draw, the Rexx event handler will not recieve notifications for the postpaint, preerase, and posterase
+  drawing stages. The ooDialog programmer just needs to focus on handling the prepaint notifications for items and subitems.
+</para>
+
+</section> <!-- End SimpleCustomDraw section -->
+
+
+<section id="sctMethodsCustomDraw"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>CustomDraw</computeroutput> class:
+
+<table id="tblMethodsCustomDraw" frame="all"> <title>CustomDraw Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*"/>
+<colspec colwidth="4*"/>
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Constant</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="sctConstantsClsCustomDraw">constants</link></entry>
+<entry>The <computeroutput>CustomDraw</computeroutput> class provides a number of constant values needed to work with the custom draw interface.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthCustomDraw">customDraw</link></entry>
+<entry>Initializes the custom draw interface in ooDialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthCustomDrawControl">customDrawControl</link></entry>
+<entry>Registers the specified dialog control to use custom draw.</entry>
+</row>
+<row>
+<entry><link linkend="mthRGB">rgb</link></entry>
+<entry>Constructs a COLORREF from the red, green, and blue values of a color..</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+
+<section id="sctConstantsClsCustomDraw" xreflabel="CustomDraw constants"><title>Constants</title>
+<indexterm><primary>constants</primary><secondary>CustomDraw class</secondary></indexterm>
+<indexterm><primary>CustomDraw class</primary><secondary>constants</secondary></indexterm>
+
+<para>
+  The Windows API for custom draw has a number of constant values used to specify varying things. There are constants used to
+  indicate the current stage of custom draw paint cycle, constants to use in replying to custom draw event notifications,
+  etc.. The <computeroutput>CustomDraw</computeroutput> class supplies the following <emphasis
+  role="italic">constant</emphasis> values to use with custom drawing. Note that, except where indicated, the CDRF_* response
+  codes can be combined together. The <xref linkend="mthOrClsDlgUtil"/> method can be used to combine values.
+</para>
+
+<variablelist>
+  <varlistentry id="cnstCDDS_ITEMPREERASE" xreflabel="CDDS_ITEMPREERASE"><term><emphasis role="bold">CDDS_ITEMPREERASE</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before an item is erased.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_ITEMPREPAINT" xreflabel="CDDS_ITEMPREPAINT "><term><emphasis role="bold">CDDS_ITEMPREPAINT </emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before an item is drawn.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_ITEMPOSTERASE" xreflabel="CDDS_ITEMPOSTERASE"><term><emphasis role="bold">CDDS_ITEMPOSTERASE</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    after an item has been erased.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_ITEMPOSTPAINT" xreflabel="CDDS_ITEMPOSTPAINT"><term><emphasis role="bold">CDDS_ITEMPOSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent after
+    an item has been drawn.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_POSTERASE" xreflabel="CDDS_POSTERASE"><term><emphasis role="bold">CDDS_POSTERASE</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    when the erase cycle is complete.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_POSTPAINT" xreflabel="CDDS_POSTPAINT"><term><emphasis role="bold">CDDS_POSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent when the paint cycle is complete.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_PREERASE" xreflabel="CDDS_PREERASE"><term><emphasis role="bold">CDDS_PREERASE</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before the erase cycle begins.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_PREPAINT" xreflabel="CDDS_PREPAINT"><term><emphasis role="bold">CDDS_PREPAINT</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before the paint cycle begins.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_SUBITEMPREPAINT" xreflabel="CDDS_SUBITEMPREPAINT"><term><emphasis role="bold">CDDS_SUBITEMPREPAINT</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    before a subitem is drawn. This only applies to list-view controls in report view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDDS_SUBITEMPOSTPAINT" xreflabel="CDDS_SUBITEMPOSTPAINT"><term><emphasis role="bold">CDDS_SUBITEMPOSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
+    after a subitem has been drawn. It is only sent for list-view controls in report view.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_DODEFAULT" xreflabel="CDRF_DODEFAULT"><term><emphasis role="bold">CDRF_DODEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    that the control should draw itself. The control will not send any more notification messages for the current paint
+    cycle. This response can not be combined with other response values.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_DOERASE" xreflabel="CDRF_DOERASE"><term><emphasis role="bold">CDRF_DOERASE</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    that the control should only draw the background.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NEWFONT" xreflabel="CDRF_NEWFONT"><term><emphasis role="bold">CDRF_NEWFONT</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    that the programmer has changed the font for the item being drawn. For list-view and tree-view custom draw, it should
+    also be used to indicate that the colors have been changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NOTIFYITEMDRAW " xreflabel="CDRF_NOTIFYITEMDRAW "><term><emphasis role="bold">CDRF_NOTIFYITEMDRAW</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    the control should send notification message for any item-specific drawing operations. The control will send
+    event notifications before and after it draws items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NOTIFYPOSTPAINT " xreflabel="CDRF_NOTIFYPOSTPAINT "><term><emphasis role="bold">CDRF_NOTIFYPOSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    the control should send a notification when the painting cycle for the entire control is complete.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_NOTIFYSUBITEMDRAW " xreflabel="CDRF_NOTIFYSUBITEMDRAW "><term><emphasis role="bold">CDRF_NOTIFYSUBITEMDRAW</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    the control should send notification message for any subitem-specific drawing operations. The control will send
+    event notifications before and after it draws subitems.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_SKIPDEFAULT" xreflabel="CDRF_SKIPDEFAULT"><term><emphasis role="bold">CDRF_SKIPDEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw 8event handler. It indicates
+    that the control should not do any painting, the application will paint the entire control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCDRF_SKIPPOSTPAINT" xreflabel="CDRF_SKIPPOSTPAINT"><term><emphasis role="bold">CDRF_SKIPPOSTPAINT</emphasis></term>
+  <listitem>
+  <para>
+    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
+    that the control should not draw the focus rectangle around an item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCLR_DEFAULT" xreflabel="CLR_DEFAULT"><term><emphasis role="bold">CLR_DEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    A special COLORREF value. COLORREFs are discussed in the documentation for both the <xref linkend="mthRGB"/> and <xref
+    linkend="mthColorRef"/> methods. The CLR_DEFAULT constant value is identical to the value returned either of those
+    methods when the CLR_DEFAULT keyword is used as the first argument to the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCLR_INVALID" xreflabel="CLR_INVALID"><term><emphasis role="bold">CLR_INVALID</emphasis></term>
+  <listitem>
+  <para>
+    A special COLORREF value. COLORREFs are discussed in the documentation for both the <xref linkend="mthRGB"/> and <xref
+    linkend="mthColorRef"/> methods. The CLR_INVALID constant value is identical to the value returned either of those
+    methods when the CLR_INVALID keyword is used as the first argument to the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="cnstCLR_NONE" xreflabel="CLR_NONE"><term><emphasis role="bold">CLR_NONE</emphasis></term>
+  <listitem>
+  <para>
+    A special COLORREF value. COLORREFs are discussed in the documentation for both the <xref linkend="mthRGB"/> and <xref
+    linkend="mthColorRef"/> methods. The CLR_NONE constant value is identical to the value returned either of those methods
+    when the CLR_NONE keyword is used as the first argument to the method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthCustomDraw" xreflabel="customDraw"><title>customDraw</title>
+<indexterm><primary>customDraw</primary></indexterm>
+<indexterm><primary>CustomDraw class</primary><secondary>customDraw</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--customDraw-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Initializes the custom draw interface in ooDialog and allows dialog controls to register for custom draw.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success and false on error. An error is highly unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">customDraw</emphasis> method must be invoked before any other use of custom draw. It
+    performs the basic initialization that allows ooDialog to inteact with the Windows custom draw service. The basic
+    sequence is to invoke the <emphasis role="italic">customDraw</emphasis> method and then register the control(s) that
+    will use custom draw.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example initializes the custom draw interface and then registers a list-view control to use custom draw.
+<programlisting>
+<![CDATA[
+
+::method init
+    expose textRed textBlack
+
+    forward class (super) continue
+
+    self~customDraw
+    self~customDrawControl(IDC_LV_CUSTOM, 'ListView', onCustomDraw)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CustomDraw::customDraw() -->
+
+<section id="mthCustomDrawControl" xreflabel="customDrawControl"><title>customDrawControl</title>
+<indexterm><primary>customDrawControl</primary></indexterm>
+<indexterm><primary>CustomDraw class</primary><secondary>customDrawControl</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--customDrawControl(-id--+-----------+--+------------+-+------------+--)-----><
+                           +-,-ctrlName+  +-,-methName-+ +-,-reserved-+
+]]>
+</programlisting>
+
+<para>
+  Specifies that the programmer will custom draw the named control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        Resource ID of the control, may be numeric or <xref linkend="defSymbolicId"/>.  A syntax condition
+        is raised if the ID is symbolic and it can not be resolved.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ctrlName [optional]</term>
+      <listitem>
+      <para>
+        The name of the type of control. I.e., treeView, TrackBar, LISTVIEW.  By default the control is assumed to be a
+        ListView. Case is not significant. Only ListView and TreeView controls are currently supported.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>methName [optional]</term>
+      <listitem>
+      <para>
+         The name of a method in the Rexx dialog that will be invoked for the custom draw event. If omitted it defaults
+         to <emphasis role="italic">onCustomDraw</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>reserved [optional]</term>
+      <listitem>
+      <para>
+        Reserverd for future use. This argument is currently ignored.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success and 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">customDrawControl</emphasis> method in effect registers a specific dialog control to
+    receive custom draw event notifications and to use a certain <emphasis role="italic">type</emphasis> of custom draw.
+    Currently the only type implemented in ooDialog is <emphasis role="italic">simple</emphasis> custom draw.
+  </para>
+  <para>
+    It is important that the programmer correctly names the control using custom draw through the <emphasis
+    role="italic">ctrlName</emphasis> argument. Failure to do so will result in undefined behaviour.
+  </para>
+  <para>
+    The event handling method for the custom draw event will recieve a single object as its argument. The object
+    conveys information to the event handler concerning the event and receives information from the event handle to pass
+    back to the underlying Windows control. The exact object will depend on the type of dialog control. List-views will
+    receive a <link linkend="clsLvCustomDrawSimple">LvCustomDrawSimple</link> object and tree-views will receive a <link
+    linkend="clsTvCustomDrawSimple">TvCustomDrawSimple</link> object.
+  </para>
+  <para>
+    It is possible to have several dialog controls register to use the same event handling method. The information
+    object sent to the event handler has the resource ID of the control the event is for. However, the event handler
+    needs to respond to the events as quickly as possible. Therefore it may be better to use a different event handler
+    for each dialog control and eliminate the need to decipher which control the event is for in a single handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example initializes the custom draw interface and then registers two controls to use custom draw:
+<programlisting>
+<![CDATA[
+
+  self~customDraw
+  self~customDrawControl(IDC_LV_A, 'ListView', onCustomDrawA)
+  self~customDrawControl(IDC_LV_B, 'ListView', onCustomDrawB)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CustomDraw::customDrawControl() -->
+
+<section id="mthRGB" xreflabel="rgb"><title>rgb</title>
+<indexterm><primary>rgb</primary></indexterm>
+<indexterm><primary>CustomDraw class</primary><secondary>rgb</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--rgb(--+---+--+-----+--+-----+--)-------------><
+          +-r-+  +-,-g-+  +-,-b-+
+]]>
+</programlisting>
+
+<para>
+  Constructs a COLORREF from the red, green, and blue components of a color. In the Windows API values of the type COLORREF
+  are often used for colors.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>r [optional]</term>
+      <listitem>
+      <para>
+        The red component for the color. The default is 0.
+      </para>
+      <para>
+        This argument can also be one of 3 keywords: CLR_DEFAULT, CLR_NONE, or CLR_INVALID, case is not significant. If
+        a keyword is used, the other arguments are ignored. See the remarks section for more information on the
+        keywords.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>g [optional]</term>
+      <listitem>
+      <para>
+        The green component for the color. The default is 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>b [optional]</term>
+      <listitem>
+      <para>
+        The blue component for the color. The default is 0.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the COLORREF value for the specified arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    A COLORREF is a 32-bit number with a hexidecimal format of: <computeroutput>0x00bbggrr</computeroutput>. The
+    <emphasis role="italic">rgb</emphasis> method provides a way to construct a COLORREF from the red, green, and blue
+    values. Each color value (red, green, or blue) is a whole number in the range of 0 to 255 inclusive.
+  </para>
+  <para>
+    The CLR_DEFAULT, CLR_NONE, etc., keywords represent special COLORREF values defined in the Windows API. The exact
+    meaning of the value seems dependent on the context it is used in. For instance, in the list-view custom draw
+    interface, if an item's foreground or background color is assigned CLR_DEFAULT, the list-view draws that item in its
+    default color. On the other hand, if the same thing is done for a tree-view item, the tree-view draws that item in
+    black.
+  </para>
+  <para>
+    CLR_DEFAULT and CLR_INVALID are actually the same value. The CLR_INVAID keyword is provided for completeness.
+  </para>
+  <para>
+    The functionality of the <emphasis role="italic">rgb</emphasis> method is identical to the functionality of the
+    <link linkend="mthColorRef">colorRef</link> class method of the <link linkend="clsImage">Image</link> class. Either
+    method will return the same value for the same inputs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example specifies the custom draw colors for a list-view item. The item will be drawn with dark blue text on a
+    light blue background.
+<programlisting>
+<![CDATA[
+
+  if list~isChecked(item) then do
+      lvcds~clrText   = self~RGB( 17,   5, 250)
+      lvcds~clrTextBk = self~RGB(115, 245, 186)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CustomDraw::rgb() -->
+
+</section> <!-- End CustomDraw Class -->
+
+
+<section id="clsDialogControl" xreflabel="DialogControl"><title>DialogControl</title>
+<indexterm><primary>DialogControl Class</primary></indexterm>
+<para>
+  In a similar relationship as the <xref linkend="clsPlainBaseDialog"/> and dialog objects, the
+  <emphasis role="italic">DialogControl</emphasis> is the base class of all dialog control classes in the ooDialog
+  framework.  It implements methods that are common to every dialog control. DialogControl is also an abstract class. A
+  programmer can not instantiate a new DialogControl object. Rather, one of the concrete dialog control classes such as,
+  the <xref linkend="clsDateTimePicker"/> or the <xref linkend="clsListView"/>, are used.
+</para>
+<para>
+  See <xref linkend="figComponentClassesDiagram"/> to visualize the mixin classes that the
+  DialogControl inherits. In essence the DialogControl is the dialog <xref linkend="chpDialogControlObject"/>
+  object. All the methods and attributes of the DialogControl are listed and documented in the dialog control
+  object chapter. This includes the methods and attributes of its inherited mixin classes.
+</para>
+<para>
+  The DialogControl inherits the following mixin classes:
+  <itemizedlist>
+  <listitem><para><xref linkend="clsWindowBase"/></para></listitem>
+  <listitem><para><xref linkend="clsWindowExtensions"/></para></listitem>
+  </itemizedlist>
+</para>
+
+<section id="sctMethodsDialogContorlObject"><title>Method Table</title>
+<para>
+  The following table lists the attribute methods and instance methods of the
+  <computeroutput>DialogControl</computeroutput> class:
+
+<table id="tblDialogControl" frame="all">
+<title>DialogControl Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="3*" />
+<colspec colwidth="8*" />
+<thead>
+<row>
+<entry>DialogControl Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrHDlg"/></entry>
+<entry>Reflects the window handle of the underlying Windows dialog that the dialog control belongs to.</entry>
+</row>
+<row>
+<entry><xref linkend="atrID"/></entry>
+<entry>Reflects the numeric resource ID for the dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="atrODlg"/></entry>
+<entry>Reflects the Rexx dialog object that the dialog control belongs to.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="dcoAssignFocus"/></entry>
+<entry>Sets the input focus to this dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoClearRect"/></entry>
+<entry>Clears the specified rectangular within the client area of this control.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoConnectCharEvent"/></entry>
+<entry>Connects a character event notification sent to the control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoConnectFKeyPress"/></entry>
+<entry>Connects all F Key key press events to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoConnectKeyPress"/></entry>
+<entry>Connects a key press event notification with a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoData"/></entry>
+<entry>Reprieves the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoDataEquals"/></entry>
+<entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoDisconnectKeyPress"/></entry>
+<entry>Disconnects a method in the Rexx dialog from a previously connected key press event.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoGetTextSizeDlg"/></entry>
+<entry>Calculates the size, (width and height,) in dialog units for a given string.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoGroup"/></entry>
+<entry>Adds or removes the <xref linkend="wsgroup"/> style for the control.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoHasKeyPressConnection"/></entry>
+<entry>Queries if a specific method, or any method, in the Rexx dialog has a connection to a key press event.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoRedrawRect"/></entry>
+<entry>Immediately redraws the rectangle of the client area of the associated dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoSetColor"/></entry>
+<entry>Sets the background color, and optionally the text color, for this dialog control.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoSetSysColor"/></entry>
+<entry>Sets the background color, and optionally the text color, for this dialog control using the system colors.</entry>
+</row>
+<row>
+<entry><xref linkend="dcoTabStop"/></entry>
+<entry>Add or remove the tab stop style for the control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthTextSize"/></entry>
+<entry>Computes the width and height in pixels of the specified string of text when displayed by this control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUseUnicode"/></entry>
+<entry>Sets the format flag telling the control to use, or not use, Unicode.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUsingUnicode"/></entry>
+<entry>Determines if the control is using Unicode or not.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+
+</section>
+
+
+<section id="dcoAssignFocus" xreflabel="assignFocus"><title>assignFocus</title>
+<programlisting>
+DialogControl::<xref linkend="mthAssignFocus"/>
+
+<![CDATA[
+>>--assignFocus----------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoClearRect" xreflabel="clearRect"><title>clearRect</title>
+<programlisting>
+DialogControl::<xref linkend="mthClearRectClsDialogControl"/>
+
+<![CDATA[
+Form 1:
+
+>>--clearRect(--rectangle--)---------------------><
+
+
+Form 2:
+
+>>--clearRect(--pt1--,--pt2--)-------------------><
+
+
+Form 3:
+
+>>--clearRect(--x-,--y-,--cx-,--cy--)------------><
+
+
+Generic form:
+
+>>--clearRect(--rectCoordinates--)---------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoConnectCharEvent" xreflabel="connectCharEvent"><title>connectCharEvent</title>
+<programlisting>
+DialogControl::<xref linkend="mthConnectCharEvent"/>
+
+<![CDATA[
+>>--connectCharEvent(--+--------------+--)-------><
+                       +--methodName--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoConnectFKeyPress" xreflabel="connectFKeyPress"><title>connectFKeyPress</title>
+<programlisting>
+DialogControl::<xref linkend="mthConnectFKeyPressDialogControlObject"/>
+
+<![CDATA[
+>>--connectFKeyPress(--methodName--)-------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoConnectKeyPress" xreflabel="connectKeyPress"><title>connectKeyPress</title>
+<programlisting>
+DialogControl::<xref linkend="mthConnectKeyPressDialogControlObject"/>
+
+<![CDATA[
+>>--connectKeyPress(--methodName--,--keys--+-----------+--)-----><
+                                           +-,-filter--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoData" xreflabel="data"><title>data</title>
+<programlisting>
+DialogControl::<xref linkend="mthData"/>
+
+<![CDATA[
+>>--data-----------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoDataEquals"><title>data=</title>
+<programlisting>
+DialogControl::<xref linkend="mthDataEquals"/>
+
+<![CDATA[
+>>--data = newData-------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoDisconnectKeyPress" xreflabel="disconnectKeyPress"><title>disconnectKeyPress</title>
+<programlisting>
+DialogControl::<xref linkend="mthDisconnectKeyPressDialogControlObject"/>
+
+<![CDATA[
+>>--disconnectKeyPress(--+--------------+--)-----><
+                         +--methodName--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoGetTextSizeDlg" xreflabel="getTextSizeDlg"><title>getTextSizeDlg</title>
+<programlisting>
+DialogControl::<xref linkend="mthGetTextSizeDlgClsDialogControl"/>
+
+<![CDATA[
+>>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
+                           +-,-fontname--+  +-,-fontSize--+  +-,-hwnd--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoGroup" xreflabel="group"><title>group</title>
+<programlisting>
+DialogControl::<xref linkend="mthGroup"/>
+
+<![CDATA[
+>>--group(--+-----------+--)---------------------><
+            +-wantStyle-+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoHasKeyPressConnection" xreflabel="hasKeyPressConnection"><title>hasKeyPressConnection</title>
+<programlisting>
+DialogControl::<xref linkend="mthHasKeyPressConnectionDialogControlObject"/>
+
+<![CDATA[
+>>--hasKeyPressConnection(--+--------------+--)--><
+                            +--methodName--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoRedrawRect" xreflabel="redrawRect"><title>redrawRect</title>
+<programlisting>
+DialogControl::<xref linkend="mthRedrawRectClsDialogControl"/>
+
+<![CDATA[
+Form 1:
+
+>>--redrawRect(--rectangle--+---------+--)-------><
+                            +-,-erase-+
+
+Form 2:
+
+>>--redrawRect(--pt1--,--pt2--+---------+--)-----><
+                              +-,-erase-+
+
+Form 3:
+
+>>--redrawRect(--x-,--y-,--x1-,--y1--+---------+--)-------------><
+                                     +-,-erase-+
+
+Generic form:
+
+>>--redrawRect(--rectCoordinates--+---------+--)-><
+                                  +-,-erase-+
+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoSetColor" xreflabel="setColor"><title>setColor</title>
+<programlisting>
+DialogControl::<xref linkend="mthSetColor"/>
+
+<![CDATA[
+>>--setColor(--bk--+-------+--)------------------><
+                   +-,-fg--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoSetSysColor" xreflabel="setSysColor"><title>setSysColor</title>
+<programlisting>
+DialogControl::<xref linkend="mthSetSysColor"/>
+
+<![CDATA[
+>>--setSysColor(--bk--+-------+--)---------------><
+                      +-,-fg--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoTabStop" xreflabel="tabStop"><title>tabStop</title>
+<programlisting>
+DialogControl::<xref linkend="mthTabStop"/>
+
+<![CDATA[
+>>--tabStop(--+-----------+--)-------------------><
+              +-wantStyle-+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoTextSize" xreflabel="textSize"><title>textSize</title>
+<programlisting>
+DialogControl::<xref linkend="mthTextSize"/>
+
+<![CDATA[
+>>--textSize(--text--,--size--)------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoUseUnicode" xreflabel="useUnicode"><title>useUnicode</title>
+<programlisting>
+DialogControl::<xref linkend="mthUseUnicode"/>
+
+<![CDATA[
+>>--useUnicode(--use--)--------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoUsingUnicode" xreflabel="usingUnicode"><title>usingUnicode</title>
+<programlisting>
+DialogControl::<xref linkend="mthUsingUnicode"/>
+
+<![CDATA[
+>>--usingUnicode---------------------------------><
+]]>
+</programlisting>
+</section>
+
+
+</section>
+
+<!-- <section id="clsDialogExtensions"><title>DialogExtensions Mixin Class</title>   START -->
+<xi:include href="dialogExtensions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="clsDialogExtensions"><title>DialogExtensions Mixin Class</title>   END -->
+
+<section id="clsDynamicDialog" xreflabel="DynamIcDialog"><title>DynamicDialog Mixin Class</title>
+<indexterm><primary>DynamicDialog Class</primary></indexterm>
+<para>
+  The ooDialog framework allows the Rexx programmer to dynamically define a dialog <xref linkend="ovvDialogTemplate" />
+  in her code. This functionality is implemented by the <computeroutput>DynamicDialog</computeroutput> class. This class
+  is inherited by the <xref linkend="clsUserDialog" />and its methods are fully documented there.
+</para>
+<para>
+  Historically the ooDialog documentation did not distinguish the difference between the
+  <computeroutput>UserDialog</computeroutput> methods and the <computeroutput>DynamicDialog</computeroutput> methods.
+  The documentation merely treated the <computeroutput>DynamicDialog</computeroutput> methods as methods of the
+  <computeroutput>UserDialog</computeroutput>. The <computeroutput>DynamicDialog</computeroutput> methods are listed
+  here as a reference with a link to the full documentation in the <computeroutput>UserDialog</computeroutput> chapter.
+</para>
+
+
+<section id="sctMethodsDynamicDialog"><title>Method Table</title>
+<para>
+  The following table lists the methods of the <computeroutput>DynamicDialog</computeroutput> class. The links in the
+  table lead to the full documentation for each method, which is in the <emphasis role="italic">UserDialog
+  Class</emphasis> chapter.
+
+<table id="tDynamicDialogClass" frame="all">
+<title>DynamicDialog Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
+<thead>
+<row>
+<entry>Dialog Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAddIconResource"/></entry>
+<entry>Adds the file name for an icon resource to the dialog's icon table.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreate"/></entry>
+<entry>Begins the creation of the in-memory Windows dialog template by specifying the general details for the dialog itself.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateBitmapButton"/></entry>
+<entry>Creates a bitmap push button in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateBlackFrame"/></entry>
+<entry>Creates a static black frame control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateBlackRect"/></entry>
+<entry>Creates a static black rectangle control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateCenter"/></entry>
+<entry>Begins the creation of an in-memory dialog template for a dialog that will be centered in the user's screen.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateCheckBox"/></entry>
+<entry>Creates a check box control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateCheckBoxGroup"/></entry>
+<entry>Creates a group of check box controls in the dialog template using a single string to specify the check box labels.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateCheckBoxStem"/></entry>
+<entry>Creates a group of check box controls in the dialog template using a stem to specify the check box labels.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateComboBox"/></entry>
+<entry>Creates a combobox control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateComboBoxInput"/></entry>
+<entry>Creates a combobox with a static text control (for the label) in the dialog template. </entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateDateTimePicker"/></entry>
+<entry>Creates a date time picker control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateEdit"/></entry>
+<entry>Creates an edit control in the dialog template</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateEditInput"/></entry>
+<entry>Creates an edit control and a static text control (for the label) in the dialog template, in one step.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateEditInputGroup"/></entry>
+<entry>Creates one or more edit controls with labels in the dialog template using a single string to specify the labels.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateEditInputStem"/></entry>
+<entry>Creates one or more edit controls with labels in the dialog template using a stem to specify the labels.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateEtchedFrame"/></entry>
+<entry>Creates a static etched frame control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateEtchedHorizontal"/></entry>
+<entry>Creates a static control in the dialog template that is an etched horizontal line.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateEtchedVertical"/></entry>
+<entry>Creates a static frame control in the dialog template that is a single etched vertical line.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateGrayFrame"/></entry>
+<entry>Creates a static gray frame control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateGrayRect"/></entry>
+<entry>Creates a static gray rectangle control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateGroupBox"/></entry>
+<entry>Creates a group box in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateListBox"/></entry>
+<entry>Creates a list box control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateListView"/></entry>
+<entry>Creates a list-view control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateMonthCalendar"/></entry>
+<entry>Creates a month calendar control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateOkCancelRightBottom"/></entry>
+<entry>Creates an Ok and Cancel push buttons in the right bottom corner of the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateOkCancelRightTop"/></entry>
+<entry>Creates an Ok and Cancel push buttons in the right top corner of the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateOkCancelLeftBottom"/></entry>
+<entry>Creates an Ok and Cancel push buttons in the left bottom corner of the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateOkCancelLeftTop"/></entry>
+<entry>Creates an Ok and Cancel push buttons in the left top corner of the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreatePasswordEdit"/></entry>
+<entry>Creates an edit control with the PASSWORD style set in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateProgressBar"/></entry>
+<entry>Creates a progress bar control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreatePushButton"/></entry>
+<entry>Creates a push button in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreatePushButtonGroup"/></entry>
+<entry>Creates any number of push buttons in the dialog template at one time.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateRadioButton"/></entry>
+<entry>Creates a radio button control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateRadioButtonGroup"/></entry>
+<entry>Creates a group of radio buttons with labels in the dialog template using a single string to specify the labels.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateRadioButtonStem"/></entry>
+<entry>Creates a group of radio buttons with labels in the dialog template using a stem to specify the labels.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateScrollBar"/></entry>
+<entry>Creates a scroll bar control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateStatic"/></entry>
+<entry>Creates a static control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateStaticFrame"/></entry>
+<entry>Creates one of the static frame controls in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateStaticImage"/></entry>
+<entry>Creates a static image control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateStaticText"/></entry>
+<entry>Creates a static text control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateTab"/></entry>
+<entry>Creates a tab control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateTrackBar"/></entry>
+<entry>Creates a trackbar control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateTreeView"/></entry>
+<entry>Creates a tree view control in the dialog template</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateUpDown"/></entry>
+<entry>Creates an up-down control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateWhiteFrame"/></entry>
+<entry>Creates a white static frame control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateWhiteRect"/></entry>
+<entry>Creates a white static rectangle control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthDefineDialog"/></entry>
+<entry>
+  The programmer uses this method to dynamically create the dialog controls in the dialog template by using the appropriate
+  create ... methods.
+</entry>
+</row>
+<row>
+<entry><xref linkend="mthLoad"/></entry>
+<entry>Creates the in-memory dialog template by reading the dialog template from a resource script file.</entry>
+</row>
+<row>
+<entry><xref linkend="mthLoadFrame"/></entry>
+<entry>Starts the in-memory Windows dialog template by reading a dialog template from a resource script file.</entry>
+</row>
+<row>
+<entry><xref linkend="mthLoadItems"/></entry>
+<entry>
+  Creates the dialog controls in the dialog template, and finishes the dialog template, by reading a dialog template
+  from a resource script file.
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</para>
+
+</section>
+
+<section id="ddAddIconResource"><title>addIconResource</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthAddIconResource"/>
+
+<![CDATA[
+>>--addIconResource(--id--,--fileName--)---------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreate"><title>create</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreate"/>
+
+<![CDATA[
+>>--create(--x--,--y--,--cx--,--cy--,--title-+-----------+--+------------+----->
+                                             +-,-options-+  +-,-dlgClass-+
+
+>----+------------+--+------------+--+------------+--)-------------------------><
+     +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateBitmapButton"><title>createBitmapButton</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateBitmapButton"/>
+
+<![CDATA[
+>>--createBitmapButton(-id-,-x-,-y-+------+-+------+-+----------+-+--------+--->
+                                   +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
+
+>--+------------+-,-normal-+------------+--+-------------+--+-------------+--)--><
+   +-,-methName-+          +-,-focused--+  +-,-selected--+  +-,-disabled--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateBlackFrame"><title>createBlackFrame</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateBlackFrame"/>
+
+<![CDATA[
+>>--createBlackFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)--------------><
+                       +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateBlackRect"><title>createBlackRect</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateBlackRect"/>
+
+<![CDATA[
+>>--createBlackRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
+                      +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateCenter"><title>createCenter</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateCenter"/>
+
+<![CDATA[
+>>--createCenter(--cx--,--cy--,--title-+-----------+--+------------+----------->
+                                       +-,-options-+  +-,-dlgClass-+
+
+>----+------------+--+------------+--+------------+--)-------------------------><
+     +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateCheckBox"><title>createCheckBox</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateCheckBox"/>
+
+<![CDATA[
+>>--createCheckBox(-id-,--x-,--y--+------+--+------+--+---------+--+---------+->
+                                  +-,-cx-+  +-,-cy-+  +-,-style-+  +-,-label-+
+
+>----+-----------------+--+--------------+--)----><
+     +-,-attributeName-+  +-,-connectOpt-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateCheckBoxGroup"><title>createCheckBoxGroup</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateCheckBoxGroup"/>
+
+<![CDATA[
+                                             +-----+
+                                             V     |
+>>--createCheckBoxGroup(id,-x-,-y-+------+-,---txt-+--+---------+-+----------+-)--><
+                                  +-,-cx-+            +-,-style-+ +-,-idStat-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateCheckBoxStem"><title>createCheckBoxStem</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateCheckBoxStem"/>
+
+<![CDATA[
+>>--createCheckBoxStem(id,-x-,-y-+------+-,-txt.-+-------+-+---------+-+----------+-)-><
+                                 +-,-cx-+        +-,-max-+ +-,-style-+ +-,-idStat-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateComboBox"><title>createComboBox</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateComboBox"/>
+
+<![CDATA[
+>>--createComboBox(--id--,--x--,--y--,--cx--,--cy--+---------+--+------------+--)-><
+                                                   +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateComboBoxInput"><title>createComboBoxInput</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateComboBoxInput"/>
+
+<![CDATA[
+>>--createComboBoxInput(-id-,-x-,-y-+-------+-,-cx2-+---------+-,--text------->
+                                 +-,-cx1-+       +-,-count-+
+
+>---+---------+---+----------+--+-----------+--)-------------------------------><
+    +-,-style-+   +-,-idStat-+  +-,-attName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateDateTimePicker"><title>createDateTimePicker</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateDateTimePicker"/>
+
+<![CDATA[
+>>--createDateTimePicker(-id--x-,--y-,--cx-,--cy-+---------+--+------------+--)-><
+                                                 +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+
+<section id="ddCreateEdit"><title>createEdit</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateEdit"/>
+
+<![CDATA[
+>>--createEdit(-id-,-x-,-y-,-cx--+------+--+---------+--+------------+--)------><
+                                 +-,-cy-+  +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEditInput"><title>createEditInput</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateEditInput"/>
+
+<![CDATA[
+>>--createEditInput(-id-,-x-,-y-+-------+-,-cx2-,-+------+-,-text-+----------+->
+                                +-,-cx1-+         +-,-cy-+         +-,-style-+
+
+>--+------------+-+--------+-)-------------------------------------------------><
+   +-,-idStatic-+ +-,-attr-+
+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEditInputGroup"><title>createEditInputGroup</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateEditInputGroup"/>
+
+<![CDATA[
+                                                        +---+
+                                                        V   |
+>>--createEditInputGroup(-id-,-x-,-y-+-------+-,-cx2-,--txt-+-+------+-+-------+-)-><
+                                     +-,-cx1-+                 +-,-s-+ +-,-id2-+
+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEditInputStem"><title>createEditInputStem</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateEditInputStem"/>
+
+<![CDATA[
+>>--createEditInputStem(-id-,-x-,-y-+-------+-,-cx2-,-text.-------------------->
+                                    +-,-cx1-+
+
+>--+---------+-+----------+-)--------------------------------------------------><
+   +-,-style-+ +-,-idStat-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEtchedFrame"><title>createEtchedFrame</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateEtchedFrame"/>
+
+<![CDATA[
+>>--createEtchedFrame(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)------------><
+                        +--id-,-+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEtchedHorizontal"><title>createEtchedHorizontal</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateEtchedHorizontal"/>
+
+<![CDATA[
+>>--createEtchedHorizontal(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)-------><
+                             +--id-,-+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEtchedVertical"><title>createEtchedVertical</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateEtchedVertical"/>
+
+<![CDATA[
+>>--createEtchedVertical(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)---------><
+                           +--id-,-+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateGrayFrame"><title>createGrayFrame</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateGrayFrame"/>
+
+<![CDATA[
+>>--createGrayFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
+                      +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateGrayRect"><title>createGrayRect</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateGrayRect"/>
+
+<![CDATA[
+>>--createGrayRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)----------------><
+                     +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateGroupbox"><title>createGroupbox</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateGroupBox"/>
+
+<![CDATA[
+>>--createGroupbox(-+------+-,-x-,-y-,-cx-,-cy--+---------+-+--------+-)-------><
+                    +--id--+                    +-,-style-+ +-,-text-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateListBox"><title>createListBox</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateListBox"/>
+
+<![CDATA[
+>>--createListBox(--id-,-x-,-y-,-cx-,-cy--+---------+-+------------+-)---------><
+                                          +-,-style-+ +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateListView"><title>createListView</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateListView"/>
+
+<![CDATA[
+>>--createListView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateMonthCalendar"><title>createMonthCalendar</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateMonthCalendar"/>
+
+<![CDATA[
+>>--createMonthCalendar(-id--x-,--y-,--cx-,--cy-+---------+--+------------+--)-><
+                                                +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateOkCancelLeftBottom"><title>createOkCancelLeftBottom</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateOkCancelLeftBottom"/>
+
+<![CDATA[
+>>--createOkCancelLeftBottom---------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateOkCancelLeftTop"><title>createOkCancelLeftTop</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateOkCancelLeftTop"/>
+
+<![CDATA[
+>>--createOkCancelLeftTop------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateOkCancelRightBottom"><title>createOkCancelRightBottom</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateOkCancelRightBottom"/>
+
+<![CDATA[
+>>--createOkCancelRightBottom--------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateOkCancelRightTop"><title>createOkCancelRightTop</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateOkCancelRightTop"/>
+
+<![CDATA[
+>>--createOkCancelRightTop-----------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreatePasswordEdit"><title>createPasswordEdit</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreatePasswordEdit"/>
+
+<![CDATA[
+>>--createPasswordEdit(-id-,-x-,-y-,-cx--+------+--+---------+-+--------+--)---><
+                                         +-,-cy-+  +-,-style-+ +-,-attr-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateProgressBar"><title>createProgressBar</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateProgressBar"/>
+
+<![CDATA[
+>>--createProgressBar(--id--,--x--,--y--,--cx--,--cy-+-----------+--)----------><
+                                                     +--,-style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreatePushButton"><title>createPushButton</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreatePushButton"/>
+
+<![CDATA[
+>>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+---------+-+-------+-+-------+-)-><
+                                             +-,-style-+ +-,-txt-+ +-,-mth-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddcreatePushButtonGroup"><title>createPushButtonGroup</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreatePushButtonGroup"/>
+
+<![CDATA[
+                                                 +----------------+
+                                                 V                |
+>>--createPushButtonGroup(-x-,-y-+------+-+------+-,-txt- -id- -m-+--+-----+-+-----+-)-><
+                                 +-,-cx-+ +-,-cy-+                   +-,-r-+ +-,-o-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateRadioButton"><title>createRadioButton</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateRadioButton"/>
+
+<![CDATA[
+>>--createRadioButton(-id-,-x-,-y-+------+--+------+--+---------+-------------->
+                                  +-,-cx-+  +-,-cy-+  +-,-style-+
+
+>--+--------+--+--------+--)---------------------------------------------------><
+   +-,-text-+  +-,-attr-+
+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateRadioButtonGroup"><title>createRadioButtonGroup</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateRadioButtonGroup"/>
+
+<![CDATA[
+                                                 +-----+
+                                                 V     |
+>>--createRadioButtonGroup(id1,-x-,-y-+------+-,---txt-+--+---------+-+----------+-)--><
+                                      +-,-cx-+            +-,-style-+ +-,-idSt-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateRadioButtonStem"><title>createRadioButtonStem</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateRadioButtonStem"/>
+
+<![CDATA[
+>>--createRadioButtonStem(-id-,-x-,-y--+------+-,-text.--+-------+------------->
+                                       +-,-cx-+          +-,-max-+
+
+>--+---------+--+----------+-)-------------------------------------------------><
+   +-,-style-+  +-,-idStat-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateScrollBar"><title>createScrollBar</title>
+<programlisting>
+DynamicDialog::create <xref linkend="mthCreateScrollBar"/>
+
+<![CDATA[
+>>--createScrollBar(--id--,--x--,--y--,--cx--,--cy--+----------+--)------------><
+                                                    +-,-style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateStatic"><title>createStatic</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateStatic"/>
+
+<![CDATA[
+>>--createStatic(--+----+--,-x-,-y-,-cx-,-cy--+----------+--+---------+--)-----><
+                   +-id-+                     +-,-style--+  +-,-text--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateStaticFrame"><title>createStaticFrame</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateStaticFrame"/>
+
+<![CDATA[
+>>--createStaticFrame(--id--,-x--,-y--,-cx--,-cy--+----------+--)--------------><
+                                                  +-,-style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateStaticImage"><title>createStaticImage</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateStaticImage"/>
+
+<![CDATA[
+>>--createStaticImage(--id--,-x--,-y--,-cx--,-cy--+----------+--)--------------><
+                                                  +-,-style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateStaticText"><title>createStaticText</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateStaticText"/>
+
+<![CDATA[
+>>--createStaticText(-+------+--x-,--y-+------+-+------+-+----------+-+--------+-)-><
+                      +-id-,-+         +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateWhiteFrame"><title>createWhiteFrame</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateWhiteFrame"/>
+
+<![CDATA[
+>>--createWhiteFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)--------------><
+                       +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateWhiteRect"><title>createWhiteRect</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateWhiteRect"/>
+
+<![CDATA[
+>>--createWhiteRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
+                      +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateTab"><title>createTab</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateTab"/>
+
+<![CDATA[
+>>--createTab(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)----><
+                                        +-,-style-+  +-,-attributeName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateTrackBar"><title>createTrackBar</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateTrackBar"/>
+
+<![CDATA[
+>>--createTrackBar(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateTreeView"><title>createTreeView</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateTreeView"/>
+
+<![CDATA[
+>>--createTreeView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateUpDown"><title>createUpDown</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateUpDown"/>
+
+<![CDATA[
+>>--createUpDown(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)-><
+                                           +-,-style-+  +-,-attributeName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddDefineDialog"><title>defineDialog</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthDefineDialog"/>
+
+<![CDATA[
+>>--defineDialog---------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddLoad"><title>load</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthLoad"/>
+
+<![CDATA[
+>>--load(--rcFile--+-------+--+----------+--+-------------+--)-----------------><
+                   +-,-id--+  +--,-opts--+  +-,--expected-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddLoadFrame"><title>loadFrame</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthLoadFrame"/>
+
+<![CDATA[
+>>--loadFrame(--rcFile--+-------+--+----------+--+-------------+--)------------><
+                        +-,-id--+  +--,-opts--+  +-,--expected-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddLoadItems"><title>loadItems</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthLoadItems"/>
+
+<![CDATA[
+>>--loadItems(--rcFile--+-------+--+----------+--)-----------------------------><
+                        +-,-id--+  +--,-opts--+
+]]>
+</programlisting>
+</section>
+
+</section>
+
+<!-- <section id="clsEventNotification"><title>EventNotification Mixin Class</title> START -->
+<xi:include href="eventNotification.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="clsEventNotification"><title>EventNotification Mixin Class</title> END   -->
+
 <section id="clsPlainBaseDialog" xreflabel="PlainBaseDialog"><title>PlainBaseDialog Class</title>
 <indexterm><primary>PlainBaseDialog Class</primary></indexterm>
 <para>
@@ -101,14 +2131,14 @@
 </para>
 <para>
   The PlainBaseDialog inherits the following mixin classes:
+</para>
   <itemizedlist>
-  <listitem><para><xref linkend="clsWindowBase"/></para></listitem>
-  <listitem><para><xref linkend="clsWindowExtensions"/></para></listitem>
   <listitem><para><xref linkend="clsDialogExtensions"/></para></listitem>
   <listitem><para><xref linkend="clsEventNotification"/></para></listitem>
   <listitem><para><xref linkend="clsResourceUtils"/></para></listitem>
+  <listitem><para><xref linkend="clsWindowBase"/></para></listitem>
+  <listitem><para><xref linkend="clsWindowExtensions"/></para></listitem>
   </itemizedlist>
-</para>
 
 
 <section id="sctMethodsPlainBaseDialog"><title>Method Table</title>
@@ -129,7 +2159,7 @@
 <tbody>
 <row>
 <entry><link linkend="tblConstantsDlgObject">Constant</link> Methods</entry>
-<entry>The <computeroutput>PlainBaseDialog</computeroutput> provides a number of <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput>directive.</entry>
+<entry>The <computeroutput>PlainBaseDialog</computeroutput> provides a number of <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput> directive.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
@@ -2156,392 +4186,8 @@ PlainBaseDialog::<xref linkend="mthValidate"/>
 </programlisting>
 </section>
 
-
 </section>  <!-- End Section PlainBaseDialog Class -->
 
-<section id="clsDialogControl" xreflabel="DialogControl"><title>DialogControl</title>
-<indexterm><primary>DialogControl Class</primary></indexterm>
-<para>
-  In a similar relationship as the <xref linkend="clsPlainBaseDialog"/> and dialog objects, the
-  <emphasis role="italic">DialogControl</emphasis> is the base class of all dialog control classes in the ooDialog
-  framework.  It implements methods that are common to every dialog control. DialogControl is also an abstract class. A
-  programmer can not instantiate a new DialogControl object. Rather, one of the concrete dialog control classes such as,
-  the <xref linkend="clsDateTimePicker"/> or the <xref linkend="clsListView"/>, are used.
-</para>
-<para>
-  See <xref linkend="figComponentClassesDiagram"/> to visualize the mixin classes that the
-  DialogControl inherits. In essence the DialogControl is the dialog <xref linkend="chpDialogControlObject"/>
-  object. All the methods and attributes of the DialogControl are listed and documented in the dialog control
-  object chapter. This includes the methods and attributes of its inherited mixin classes.
-</para>
-<para>
-  The DialogControl inherits the following mixin classes:
-  <itemizedlist>
-  <listitem><para><xref linkend="clsWindowBase"/></para></listitem>
-  <listitem><para><xref linkend="clsWindowExtensions"/></para></listitem>
-  </itemizedlist>
-</para>
-
-<section id="sctMethodsDialogContorlObject"><title>Method Table</title>
-<para>
-  The following table lists the attribute methods and instance methods of the
-  <computeroutput>DialogControl</computeroutput> class:
-
-<table id="tblDialogControl" frame="all">
-<title>DialogControl Method Reference</title>
-<tgroup cols="2">
-<colspec colwidth="3*" />
-<colspec colwidth="8*" />
-<thead>
-<row>
-<entry>DialogControl Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
-<entry align="center"><emphasis role="bold"></emphasis></entry>
-</row>
-<row>
-<entry><xref linkend="atrHDlg"/></entry>
-<entry>Reflects the window handle of the underlying Windows dialog that the dialog control belongs to.</entry>
-</row>
-<row>
-<entry><xref linkend="atrID"/></entry>
-<entry>Reflects the numeric resource ID for the dialog control.</entry>
-</row>
-<row>
-<entry><xref linkend="atrODlg"/></entry>
-<entry>Reflects the Rexx dialog object that the dialog control belongs to.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold"></emphasis></entry>
-</row>
-<row>
-<entry><xref linkend="dcoAssignFocus"/></entry>
-<entry>Sets the input focus to this dialog control.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoClearRect"/></entry>
-<entry>Clears the specified rectangular within the client area of this control.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoConnectCharEvent"/></entry>
-<entry>Connects a character event notification sent to the control to a method in the Rexx dialog.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoConnectFKeyPress"/></entry>
-<entry>Connects all F Key key press events to a method in the Rexx dialog.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoConnectKeyPress"/></entry>
-<entry>Connects a key press event notification with a method in the Rexx dialog.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoData"/></entry>
-<entry>Reprieves the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoDataEquals"/></entry>
-<entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoDisconnectKeyPress"/></entry>
-<entry>Disconnects a method in the Rexx dialog from a previously connected key press event.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoGetTextSizeDlg"/></entry>
-<entry>Calculates the size, (width and height,) in dialog units for a given string.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoGroup"/></entry>
-<entry>Adds or removes the <xref linkend="wsgroup"/> style for the control.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoHasKeyPressConnection"/></entry>
-<entry>Queries if a specific method, or any method, in the Rexx dialog has a connection to a key press event.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoRedrawRect"/></entry>
-<entry>Immediately redraws the rectangle of the client area of the associated dialog.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoSetColor"/></entry>
-<entry>Sets the background color, and optionally the text color, for this dialog control.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoSetSysColor"/></entry>
-<entry>Sets the background color, and optionally the text color, for this dialog control using the system colors.</entry>
-</row>
-<row>
-<entry><xref linkend="dcoTabStop"/></entry>
-<entry>Add or remove the tab stop style for the control.</entry>
-</row>
-<row>
-<entry><xref linkend="mthTextSize"/></entry>
-<entry>Computes the width and height in pixels of the specified string of text when displayed by this control.</entry>
-</row>
-<row>
-<entry><xref linkend="mthUseUnicode"/></entry>
-<entry>Sets the format flag telling the control to use, or not use, Unicode.</entry>
-</row>
-<row>
-<entry><xref linkend="mthUsingUnicode"/></entry>
-<entry>Determines if the control is using Unicode or not.</entry>
-</row>
-</tbody></tgroup>
-</table>
-</para>
-
-</section>
-
-
-<section id="dcoAssignFocus" xreflabel="assignFocus"><title>assignFocus</title>
-<programlisting>
-DialogControl::<xref linkend="mthAssignFocus"/>
-
-<![CDATA[
->>--assignFocus----------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="dcoClearRect" xreflabel="clearRect"><title>clearRect</title>
-<programlisting>
-DialogControl::<xref linkend="mthClearRectClsDialogControl"/>
-
-<![CDATA[
-Form 1:
-
->>--clearRect(--rectangle--)---------------------><
-
-
-Form 2:
-
->>--clearRect(--pt1--,--pt2--)-------------------><
-
-
-Form 3:
-
->>--clearRect(--x-,--y-,--cx-,--cy--)------------><
-
-
-Generic form:
-
->>--clearRect(--rectCoordinates--)---------------><
-
-]]>
-</programlisting>
-</section>
-
-<section id="dcoConnectCharEvent" xreflabel="connectCharEvent"><title>connectCharEvent</title>
-<programlisting>
-DialogControl::<xref linkend="mthConnectCharEvent"/>
-
-<![CDATA[
->>--connectCharEvent(--+--------------+--)-------><
-                       +--methodName--+
-]]>
-</programlisting>
-</section>
-
-<section id="dcoConnectFKeyPress" xreflabel="connectFKeyPress"><title>connectFKeyPress</title>
-<programlisting>
-DialogControl::<xref linkend="mthConnectFKeyPressDialogControlObject"/>
-
-<![CDATA[
->>--connectFKeyPress(--methodName--)-------------><
-]]>
-</programlisting>
-</section>
-
-<section id="dcoConnectKeyPress" xreflabel="connectKeyPress"><title>connectKeyPress</title>
-<programlisting>
-DialogControl::<xref linkend="mthConnectKeyPressDialogControlObject"/>
-
-<![CDATA[
->>--connectKeyPress(--methodName--,--keys--+-----------+--)-----><
-                                           +-,-filter--+
-]]>
-</programlisting>
-</section>
-
-<section id="dcoData" xreflabel="data"><title>data</title>
-<programlisting>
-DialogControl::<xref linkend="mthData"/>
-
-<![CDATA[
->>--data-----------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="dcoDataEquals"><title>data=</title>
-<programlisting>
-DialogControl::<xref linkend="mthDataEquals"/>
-
-<![CDATA[
->>--data = newData-------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="dcoDisconnectKeyPress" xreflabel="disconnectKeyPress"><title>disconnectKeyPress</title>
-<programlisting>
-DialogControl::<xref linkend="mthDisconnectKeyPressDialogControlObject"/>
-
-<![CDATA[
->>--disconnectKeyPress(--+--------------+--)-----><
-                         +--methodName--+
-]]>
-</programlisting>
-</section>
-
-<section id="dcoGetTextSizeDlg" xreflabel="getTextSizeDlg"><title>getTextSizeDlg</title>
-<programlisting>
-DialogControl::<xref linkend="mthGetTextSizeDlgClsDialogControl"/>
-
-<![CDATA[
->>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
-                           +-,-fontname--+  +-,-fontSize--+  +-,-hwnd--+
-]]>
-</programlisting>
-</section>
-
-<section id="dcoGroup" xreflabel="group"><title>group</title>
-<programlisting>
-DialogControl::<xref linkend="mthGroup"/>
-
-<![CDATA[
->>--group(--+-----------+--)---------------------><
-            +-wantStyle-+
-]]>
-</programlisting>
-</section>
-
-<section id="dcoHasKeyPressConnection" xreflabel="hasKeyPressConnection"><title>hasKeyPressConnection</title>
-<programlisting>
-DialogControl::<xref linkend="mthHasKeyPressConnectionDialogControlObject"/>
-
-<![CDATA[
->>--hasKeyPressConnection(--+--------------+--)--><
-                            +--methodName--+
-]]>
-</programlisting>
-</section>
-
-<section id="dcoRedrawRect" xreflabel="redrawRect"><title>redrawRect</title>
-<programlisting>
-DialogControl::<xref linkend="mthRedrawRectClsDialogControl"/>
-
-<![CDATA[
-Form 1:
-
->>--redrawRect(--rectangle--+---------+--)-------><
-                            +-,-erase-+
-
-Form 2:
-
->>--redrawRect(--pt1--,--pt2--+---------+--)-----><
-                              +-,-erase-+
-
-Form 3:
-
->>--redrawRect(--x-,--y-,--x1-,--y1--+---------+--)-------------><
-                                     +-,-erase-+
-
-Generic form:
-
->>--redrawRect(--rectCoordinates--+---------+--)-><
-                                  +-,-erase-+
-
-]]>
-</programlisting>
-</section>
-
-<section id="dcoSetColor" xreflabel="setColor"><title>setColor</title>
-<programlisting>
-DialogControl::<xref linkend="mthSetColor"/>
-
-<![CDATA[
->>--setColor(--bk--+-------+--)------------------><
-                   +-,-fg--+
-]]>
-</programlisting>
-</section>
-
-<section id="dcoSetSysColor" xreflabel="setSysColor"><title>setSysColor</title>
-<programlisting>
-DialogControl::<xref linkend="mthSetSysColor"/>
-
-<![CDATA[
->>--setSysColor(--bk--+-------+--)---------------><
-                      +-,-fg--+
-]]>
-</programlisting>
-</section>
-
-<section id="dcoTabStop" xreflabel="tabStop"><title>tabStop</title>
-<programlisting>
-DialogControl::<xref linkend="mthTabStop"/>
-
-<![CDATA[
->>--tabStop(--+-----------+--)-------------------><
-              +-wantStyle-+
-]]>
-</programlisting>
-</section>
-
-<section id="dcoTextSize" xreflabel="textSize"><title>textSize</title>
-<programlisting>
-DialogControl::<xref linkend="mthTextSize"/>
-
-<![CDATA[
->>--textSize(--text--,--size--)------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="dcoUseUnicode" xreflabel="useUnicode"><title>useUnicode</title>
-<programlisting>
-DialogControl::<xref linkend="mthUseUnicode"/>
-
-<![CDATA[
->>--useUnicode(--use--)--------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="dcoUsingUnicode" xreflabel="usingUnicode"><title>usingUnicode</title>
-<programlisting>
-DialogControl::<xref linkend="mthUsingUnicode"/>
-
-<![CDATA[
->>--usingUnicode---------------------------------><
-]]>
-</programlisting>
-</section>
-
-
-</section>
-
-<!-- <section id="clsWindowBase"><title>WindowBase Mixin Class</title>               START -->
-<xi:include href="windowBase.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<!-- <section id="clsWindowBase"><title>WindowBase Mixin Class</title>               END   -->
-
-<!-- <section id="clsWindowExtensions"><title>WindowExtensions Mixin Class</title>   START -->
-<xi:include href="windowExtensions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<!-- <section id="clsWindowExtensions"><title>WindowExtensions Mixin Class</title>   END   -->
-
-<!-- <section id="clsDialogExtensions"><title>DialogExtensions Mixin Class</title>   START -->
-<xi:include href="dialogExtensions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<!-- <section id="clsDialogExtensions"><title>DialogExtensions Mixin Class</title>   END -->
-
-<!-- <section id="clsEventNotification"><title>EventNotification Mixin Class</title> START -->
-<xi:include href="eventNotification.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<!-- <section id="clsEventNotification"><title>EventNotification Mixin Class</title> END   -->
 
 <section id="clsResourceUtils" xreflabel="ResourceUtils"><title>ResourceUtils Mixin Class</title>
 <indexterm><primary>ResourceUtils Class</primary></indexterm>
@@ -2889,1656 +4535,12 @@ DialogControl::<xref linkend="mthUsingUnicode"/>
 </section>  <!-- End Section ResourceUtils Mixin Class -->
 
 
-<section id="clsDynamicDialog" xreflabel="DynamIcDialog"><title>DynamicDialog Mixin Class</title>
-<indexterm><primary>DynamicDialog Class</primary></indexterm>
-<para>
-  The ooDialog framework allows the Rexx programmer to dynamically define a dialog <xref linkend="ovvDialogTemplate" />
-  in her code. This functionality is implemented by the <computeroutput>DynamicDialog</computeroutput> class. This class
-  is inherited by the <xref linkend="clsUserDialog" />and its methods are fully documented there.
-</para>
-<para>
-  Historically the ooDialog documentation did not distinguish the difference between the
-  <computeroutput>UserDialog</computeroutput> methods and the <computeroutput>DynamicDialog</computeroutput> methods.
-  The documentation merely treated the <computeroutput>DynamicDialog</computeroutput> methods as methods of the
-  <computeroutput>UserDialog</computeroutput>. The <computeroutput>DynamicDialog</computeroutput> methods are listed
-  here as a reference with a link to the full documentation in the <computeroutput>UserDialog</computeroutput> chapter.
-</para>
-
-
-<section id="sctMethodsDynamicDialog"><title>Method Table</title>
-<para>
-  The following table lists the methods of the <computeroutput>DynamicDialog</computeroutput> class. The links in the
-  table lead to the full documentation for each method, which is in the <emphasis role="italic">UserDialog
-  Class</emphasis> chapter.
-
-<table id="tDynamicDialogClass" frame="all">
-<title>DynamicDialog Method Reference</title>
-<tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="3*" />
-<thead>
-<row>
-<entry>Dialog Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-</row>
-<row>
-<entry><xref linkend="mthAddIconResource"/></entry>
-<entry>Adds the file name for an icon resource to the dialog's icon table.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreate"/></entry>
-<entry>Begins the creation of the in-memory Windows dialog template by specifying the general details for the dialog itself.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateBitmapButton"/></entry>
-<entry>Creates a bitmap push button in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateBlackFrame"/></entry>
-<entry>Creates a static black frame control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateBlackRect"/></entry>
-<entry>Creates a static black rectangle control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateCenter"/></entry>
-<entry>Begins the creation of an in-memory dialog template for a dialog that will be centered in the user's screen.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateCheckBox"/></entry>
-<entry>Creates a check box control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateCheckBoxGroup"/></entry>
-<entry>Creates a group of check box controls in the dialog template using a single string to specify the check box labels.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateCheckBoxStem"/></entry>
-<entry>Creates a group of check box controls in the dialog template using a stem to specify the check box labels.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateComboBox"/></entry>
-<entry>Creates a combobox control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateComboBoxInput"/></entry>
-<entry>Creates a combobox with a static text control (for the label) in the dialog template. </entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateDateTimePicker"/></entry>
-<entry>Creates a date time picker control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateEdit"/></entry>
-<entry>Creates an edit control in the dialog template</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateEditInput"/></entry>
-<entry>Creates an edit control and a static text control (for the label) in the dialog template, in one step.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateEditInputGroup"/></entry>
-<entry>Creates one or more edit controls with labels in the dialog template using a single string to specify the labels.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateEditInputStem"/></entry>
-<entry>Creates one or more edit controls with labels in the dialog template using a stem to specify the labels.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateEtchedFrame"/></entry>
-<entry>Creates a static etched frame control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateEtchedHorizontal"/></entry>
-<entry>Creates a static control in the dialog template that is an etched horizontal line.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateEtchedVertical"/></entry>
-<entry>Creates a static frame control in the dialog template that is a single etched vertical line.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateGrayFrame"/></entry>
-<entry>Creates a static gray frame control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateGrayRect"/></entry>
-<entry>Creates a static gray rectangle control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateGroupBox"/></entry>
-<entry>Creates a group box in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateListBox"/></entry>
-<entry>Creates a list box control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateListView"/></entry>
-<entry>Creates a list-view control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateMonthCalendar"/></entry>
-<entry>Creates a month calendar control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateOkCancelRightBottom"/></entry>
-<entry>Creates an Ok and Cancel push buttons in the right bottom corner of the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateOkCancelRightTop"/></entry>
-<entry>Creates an Ok and Cancel push buttons in the right top corner of the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateOkCancelLeftBottom"/></entry>
-<entry>Creates an Ok and Cancel push buttons in the left bottom corner of the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateOkCancelLeftTop"/></entry>
-<entry>Creates an Ok and Cancel push buttons in the left top corner of the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreatePasswordEdit"/></entry>
-<entry>Creates an edit control with the PASSWORD style set in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateProgressBar"/></entry>
-<entry>Creates a progress bar control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreatePushButton"/></entry>
-<entry>Creates a push button in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreatePushButtonGroup"/></entry>
-<entry>Creates any number of push buttons in the dialog template at one time.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateRadioButton"/></entry>
-<entry>Creates a radio button control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateRadioButtonGroup"/></entry>
-<entry>Creates a group of radio buttons with labels in the dialog template using a single string to specify the labels.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateRadioButtonStem"/></entry>
-<entry>Creates a group of radio buttons with labels in the dialog template using a stem to specify the labels.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateScrollBar"/></entry>
-<entry>Creates a scroll bar control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateStatic"/></entry>
-<entry>Creates a static control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateStaticFrame"/></entry>
-<entry>Creates one of the static frame controls in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateStaticImage"/></entry>
-<entry>Creates a static image control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateStaticText"/></entry>
-<entry>Creates a static text control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateTab"/></entry>
-<entry>Creates a tab control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateTrackBar"/></entry>
-<entry>Creates a trackbar control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateTreeView"/></entry>
-<entry>Creates a tree view control in the dialog template</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateUpDown"/></entry>
-<entry>Creates an up-down control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateWhiteFrame"/></entry>
-<entry>Creates a white static frame control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthCreateWhiteRect"/></entry>
-<entry>Creates a white static rectangle control in the dialog template.</entry>
-</row>
-<row>
-<entry><xref linkend="mthDefineDialog"/></entry>
-<entry>
-  The programmer uses this method to dynamically create the dialog controls in the dialog template by using the appropriate
-  create ... methods.
-</entry>
-</row>
-<row>
-<entry><xref linkend="mthLoad"/></entry>
-<entry>Creates the in-memory dialog template by reading the dialog template from a resource script file.</entry>
-</row>
-<row>
-<entry><xref linkend="mthLoadFrame"/></entry>
-<entry>Starts the in-memory Windows dialog template by reading a dialog template from a resource script file.</entry>
-</row>
-<row>
-<entry><xref linkend="mthLoadItems"/></entry>
-<entry>
-  Creates the dialog controls in the dialog template, and finishes the dialog template, by reading a dialog template
-  from a resource script file.
-</entry>
-</row>
-</tbody>
-</tgroup>
-</table>
-</para>
-
-</section>
-
-<section id="ddAddIconResource"><title>addIconResource</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthAddIconResource"/>
-
-<![CDATA[
->>--addIconResource(--id--,--fileName--)---------><
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreate"><title>create</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreate"/>
-
-<![CDATA[
->>--create(--x--,--y--,--cx--,--cy--,--title-+-----------+--+------------+----->
-                                             +-,-options-+  +-,-dlgClass-+
-
->----+------------+--+------------+--+------------+--)-------------------------><
-     +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateBitmapButton"><title>createBitmapButton</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateBitmapButton"/>
-
-<![CDATA[
->>--createBitmapButton(-id-,-x-,-y-+------+-+------+-+----------+-+--------+--->
-                                   +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
-
->--+------------+-,-normal-+------------+--+-------------+--+-------------+--)--><
-   +-,-methName-+          +-,-focused--+  +-,-selected--+  +-,-disabled--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateBlackFrame"><title>createBlackFrame</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateBlackFrame"/>
-
-<![CDATA[
->>--createBlackFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)--------------><
-                       +--id--+                   +-,--style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateBlackRect"><title>createBlackRect</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateBlackRect"/>
-
-<![CDATA[
->>--createBlackRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
-                      +--id--+                   +-,--style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateCenter"><title>createCenter</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateCenter"/>
-
-<![CDATA[
->>--createCenter(--cx--,--cy--,--title-+-----------+--+------------+----------->
-                                       +-,-options-+  +-,-dlgClass-+
-
->----+------------+--+------------+--+------------+--)-------------------------><
-     +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateCheckBox"><title>createCheckBox</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateCheckBox"/>
-
-<![CDATA[
->>--createCheckBox(-id-,--x-,--y--+------+--+------+--+---------+--+---------+->
-                                  +-,-cx-+  +-,-cy-+  +-,-style-+  +-,-label-+
-
->----+-----------------+--+--------------+--)----><
-     +-,-attributeName-+  +-,-connectOpt-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateCheckBoxGroup"><title>createCheckBoxGroup</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateCheckBoxGroup"/>
-
-<![CDATA[
-                                             +-----+
-                                             V     |
->>--createCheckBoxGroup(id,-x-,-y-+------+-,---txt-+--+---------+-+----------+-)--><
-                                  +-,-cx-+            +-,-style-+ +-,-idStat-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateCheckBoxStem"><title>createCheckBoxStem</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateCheckBoxStem"/>
-
-<![CDATA[
->>--createCheckBoxStem(id,-x-,-y-+------+-,-txt.-+-------+-+---------+-+----------+-)-><
-                                 +-,-cx-+        +-,-max-+ +-,-style-+ +-,-idStat-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateComboBox"><title>createComboBox</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateComboBox"/>
-
-<![CDATA[
->>--createComboBox(--id--,--x--,--y--,--cx--,--cy--+---------+--+------------+--)-><
-                                                   +-,-style-+  +-,-attrName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateComboBoxInput"><title>createComboBoxInput</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateComboBoxInput"/>
-
-<![CDATA[
->>--createComboBoxInput(-id-,-x-,-y-+-------+-,-cx2-+---------+-,--text------->
-                                 +-,-cx1-+       +-,-count-+
-
->---+---------+---+----------+--+-----------+--)-------------------------------><
-    +-,-style-+   +-,-idStat-+  +-,-attName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateDateTimePicker"><title>createDateTimePicker</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateDateTimePicker"/>
-
-<![CDATA[
->>--createDateTimePicker(-id--x-,--y-,--cx-,--cy-+---------+--+------------+--)-><
-                                                 +-,-style-+  +-,-attrName-+
-]]>
-</programlisting>
-</section>
-
-
-<section id="ddCreateEdit"><title>createEdit</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateEdit"/>
-
-<![CDATA[
->>--createEdit(-id-,-x-,-y-,-cx--+------+--+---------+--+------------+--)------><
-                                 +-,-cy-+  +-,-style-+  +-,-attrName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateEditInput"><title>createEditInput</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateEditInput"/>
-
-<![CDATA[
->>--createEditInput(-id-,-x-,-y-+-------+-,-cx2-,-+------+-,-text-+----------+->
-                                +-,-cx1-+         +-,-cy-+         +-,-style-+
-
->--+------------+-+--------+-)-------------------------------------------------><
-   +-,-idStatic-+ +-,-attr-+
-
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateEditInputGroup"><title>createEditInputGroup</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateEditInputGroup"/>
-
-<![CDATA[
-                                                        +---+
-                                                        V   |
->>--createEditInputGroup(-id-,-x-,-y-+-------+-,-cx2-,--txt-+-+------+-+-------+-)-><
-                                     +-,-cx1-+                 +-,-s-+ +-,-id2-+
-
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateEditInputStem"><title>createEditInputStem</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateEditInputStem"/>
-
-<![CDATA[
->>--createEditInputStem(-id-,-x-,-y-+-------+-,-cx2-,-text.-------------------->
-                                    +-,-cx1-+
-
->--+---------+-+----------+-)--------------------------------------------------><
-   +-,-style-+ +-,-idStat-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateEtchedFrame"><title>createEtchedFrame</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateEtchedFrame"/>
-
-<![CDATA[
->>--createEtchedFrame(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)------------><
-                        +--id-,-+                   +-,--style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateEtchedHorizontal"><title>createEtchedHorizontal</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateEtchedHorizontal"/>
-
-<![CDATA[
->>--createEtchedHorizontal(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)-------><
-                             +--id-,-+                   +-,--style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateEtchedVertical"><title>createEtchedVertical</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateEtchedVertical"/>
-
-<![CDATA[
->>--createEtchedVertical(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)---------><
-                           +--id-,-+                   +-,--style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateGrayFrame"><title>createGrayFrame</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateGrayFrame"/>
-
-<![CDATA[
->>--createGrayFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
-                      +--id--+                   +-,--style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateGrayRect"><title>createGrayRect</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateGrayRect"/>
-
-<![CDATA[
->>--createGrayRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)----------------><
-                     +--id--+                   +-,--style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateGroupbox"><title>createGroupbox</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateGroupBox"/>
-
-<![CDATA[
->>--createGroupbox(-+------+-,-x-,-y-,-cx-,-cy--+---------+-+--------+-)-------><
-                    +--id--+                    +-,-style-+ +-,-text-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateListBox"><title>createListBox</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateListBox"/>
-
-<![CDATA[
->>--createListBox(--id-,-x-,-y-,-cx-,-cy--+---------+-+------------+-)---------><
-                                          +-,-style-+ +-,-attrName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateListView"><title>createListView</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateListView"/>
-
-<![CDATA[
->>--createListView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
-                                             +-,-style-+  +-,-attrName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateMonthCalendar"><title>createMonthCalendar</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateMonthCalendar"/>
-
-<![CDATA[
->>--createMonthCalendar(-id--x-,--y-,--cx-,--cy-+---------+--+------------+--)-><
-                                                +-,-style-+  +-,-attrName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateOkCancelLeftBottom"><title>createOkCancelLeftBottom</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateOkCancelLeftBottom"/>
-
-<![CDATA[
->>--createOkCancelLeftBottom---------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateOkCancelLeftTop"><title>createOkCancelLeftTop</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateOkCancelLeftTop"/>
-
-<![CDATA[
->>--createOkCancelLeftTop------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateOkCancelRightBottom"><title>createOkCancelRightBottom</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateOkCancelRightBottom"/>
-
-<![CDATA[
->>--createOkCancelRightBottom--------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateOkCancelRightTop"><title>createOkCancelRightTop</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateOkCancelRightTop"/>
-
-<![CDATA[
->>--createOkCancelRightTop-----------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreatePasswordEdit"><title>createPasswordEdit</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreatePasswordEdit"/>
-
-<![CDATA[
->>--createPasswordEdit(-id-,-x-,-y-,-cx--+------+--+---------+-+--------+--)---><
-                                         +-,-cy-+  +-,-style-+ +-,-attr-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateProgressBar"><title>createProgressBar</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateProgressBar"/>
-
-<![CDATA[
->>--createProgressBar(--id--,--x--,--y--,--cx--,--cy-+-----------+--)----------><
-                                                     +--,-style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreatePushButton"><title>createPushButton</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreatePushButton"/>
-
-<![CDATA[
->>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+---------+-+-------+-+-------+-)-><
-                                             +-,-style-+ +-,-txt-+ +-,-mth-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddcreatePushButtonGroup"><title>createPushButtonGroup</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreatePushButtonGroup"/>
-
-<![CDATA[
-                                                 +----------------+
-                                                 V                |
->>--createPushButtonGroup(-x-,-y-+------+-+------+-,-txt- -id- -m-+--+-----+-+-----+-)-><
-                                 +-,-cx-+ +-,-cy-+                   +-,-r-+ +-,-o-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateRadioButton"><title>createRadioButton</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateRadioButton"/>
-
-<![CDATA[
->>--createRadioButton(-id-,-x-,-y-+------+--+------+--+---------+-------------->
-                                  +-,-cx-+  +-,-cy-+  +-,-style-+
-
->--+--------+--+--------+--)---------------------------------------------------><
-   +-,-text-+  +-,-attr-+
-
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateRadioButtonGroup"><title>createRadioButtonGroup</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateRadioButtonGroup"/>
-
-<![CDATA[
-                                                 +-----+
-                                                 V     |
->>--createRadioButtonGroup(id1,-x-,-y-+------+-,---txt-+--+---------+-+----------+-)--><
-                                      +-,-cx-+            +-,-style-+ +-,-idSt-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateRadioButtonStem"><title>createRadioButtonStem</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateRadioButtonStem"/>
-
-<![CDATA[
->>--createRadioButtonStem(-id-,-x-,-y--+------+-,-text.--+-------+------------->
-                                       +-,-cx-+          +-,-max-+
-
->--+---------+--+----------+-)-------------------------------------------------><
-   +-,-style-+  +-,-idStat-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateScrollBar"><title>createScrollBar</title>
-<programlisting>
-DynamicDialog::create <xref linkend="mthCreateScrollBar"/>
-
-<![CDATA[
->>--createScrollBar(--id--,--x--,--y--,--cx--,--cy--+----------+--)------------><
-                                                    +-,-style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateStatic"><title>createStatic</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateStatic"/>
-
-<![CDATA[
->>--createStatic(--+----+--,-x-,-y-,-cx-,-cy--+----------+--+---------+--)-----><
-                   +-id-+                     +-,-style--+  +-,-text--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateStaticFrame"><title>createStaticFrame</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateStaticFrame"/>
-
-<![CDATA[
->>--createStaticFrame(--id--,-x--,-y--,-cx--,-cy--+----------+--)--------------><
-                                                  +-,-style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateStaticImage"><title>createStaticImage</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateStaticImage"/>
-
-<![CDATA[
->>--createStaticImage(--id--,-x--,-y--,-cx--,-cy--+----------+--)--------------><
-                                                  +-,-style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateStaticText"><title>createStaticText</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateStaticText"/>
-
-<![CDATA[
->>--createStaticText(-+------+--x-,--y-+------+-+------+-+----------+-+--------+-)-><
-                      +-id-,-+         +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateWhiteFrame"><title>createWhiteFrame</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateWhiteFrame"/>
-
-<![CDATA[
->>--createWhiteFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)--------------><
-                       +--id--+                   +-,--style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateWhiteRect"><title>createWhiteRect</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateWhiteRect"/>
-
-<![CDATA[
->>--createWhiteRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
-                      +--id--+                   +-,--style--+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateTab"><title>createTab</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateTab"/>
-
-<![CDATA[
->>--createTab(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)----><
-                                        +-,-style-+  +-,-attributeName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateTrackBar"><title>createTrackBar</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateTrackBar"/>
-
-<![CDATA[
->>--createTrackBar(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
-                                             +-,-style-+  +-,-attrName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateTreeView"><title>createTreeView</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateTreeView"/>
-
-<![CDATA[
->>--createTreeView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
-                                             +-,-style-+  +-,-attrName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddCreateUpDown"><title>createUpDown</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthCreateUpDown"/>
-
-<![CDATA[
->>--createUpDown(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)-><
-                                           +-,-style-+  +-,-attributeName-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddDefineDialog"><title>defineDialog</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthDefineDialog"/>
-
-<![CDATA[
->>--defineDialog---------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="ddLoad"><title>load</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthLoad"/>
-
-<![CDATA[
->>--load(--rcFile--+-------+--+----------+--+-------------+--)-----------------><
-                   +-,-id--+  +--,-opts--+  +-,--expected-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddLoadFrame"><title>loadFrame</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthLoadFrame"/>
-
-<![CDATA[
->>--loadFrame(--rcFile--+-------+--+----------+--+-------------+--)------------><
-                        +-,-id--+  +--,-opts--+  +-,--expected-+
-]]>
-</programlisting>
-</section>
-
-<section id="ddLoadItems"><title>loadItems</title>
-<programlisting>
-DynamicDialog::<xref linkend="mthLoadItems"/>
-
-<![CDATA[
->>--loadItems(--rcFile--+-------+--+----------+--)-----------------------------><
-                        +-,-id--+  +--,-opts--+
-]]>
-</programlisting>
-</section>
-
-</section>
-
-<section id="clsCustomDraw" xreflabel="CustomDraw"><title>CustomDraw Mixin Class</title>
-<indexterm><primary>CustomDraw class</primary></indexterm>
-<para>
-  Custom draw is a service provided by some of the Windows common controls. This service allows the programmer greater
-  control over the appearance of a control than that provided directly though the styles and methods of the control.
-  Not all controls support custom draw, but those that do provide the service in a generic manner through the use of
-  custom draw <xref linkend="ovvEvents"/> notifications.
-</para>
-<para>
-  The following Windows controls provide custom draw services:
-  <itemizedlist>
-  <listitem>
-  <para>
-    Header controls.
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    List-view controls.
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    Rebar controls.
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    Toolbar controls.
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    Trackbar controls.
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    Tree-view controls.
-  </para>
-  </listitem>
-  </itemizedlist>
-  The current implementation of custom draw in ooDialog supports <emphasis role="italic">simple</emphasis> custom draw
-  for the <link linkend="clsListView">list-view</link> and <link linkend="clsTreeView">tree-view</link> controls.
-</para>
-
-<section id="sctCustomDrawOverview" xreflabel="overview"><title>Custom Draw Overview</title>
-<indexterm><primary>custom draw</primary><secondary>overview</secondary></indexterm>
-
-<para>
-  All windows in the Windows operating system periodically paint and erase themselves based on messages received from the
-  system or other applications. This process of painting or erasing is called a paint cycle. The common controls
-  that support custom draw send <xref linkend="ovvEvents"/> notifications at specific points while the control is being
-  drawn. The notifications describe drawing operations that apply to the entire control as well as drawing operations
-  specific to items within the control.
-</para>
-<para>
-  Part of the the information sent in the custom draw notification is what stage of the paint cycle the control is in. The
-  stage will either be part of the overall painting of the control or part of the painting of an item the control contains.
-  The stage is identified by a constant value supplied by the <computeroutput>CustomDraw</computeroutput> class. The possible
-  draw stages are described in the following table:
-
-<table id="tblCustomDrawStage" frame="all"> <title>Stages of Custom Draw</title>
-<tgroup cols="2">
-<colspec colwidth="1*"/>
-<colspec colwidth="2*"/>
-<thead>
-<row>
-<entry>Constant Value</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Global</emphasis></entry>
-<entry align="center"><emphasis role="bold">Draw Stages</emphasis></entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_PREPAINT"/></entry>
-<entry>This stage is before the paint cycle begins.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_POSTPAINT"/></entry>
-<entry>This stage is after the paint cycle is complete.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_PREERASE"/></entry>
-<entry>This stage is before the erase cycle begins. </entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_POSTERASE"/></entry>
-<entry>This stage is after the erase cycle is complete.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Item Specific</emphasis></entry>
-<entry align="center"><emphasis role="bold">Draw Stages</emphasis></entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_ITEMPREPAINT"/></entry>
-<entry>This stage is before an item is drawn.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_ITEMPOSTPAINT"/></entry>
-<entry>This stage is after an item has been drawn.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_ITEMPREERASE "/></entry>
-<entry>This stage is before an item is erased.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_ITEMPOSTERASE"/></entry>
-<entry>This stage is after an item has been erased.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_SUBITEMPREPAINT"/></entry>
-<entry>This stage is before an subitem is drawn. Only used in <xref linkend="clsListView"/> controls in report mode.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDDS_SUBITEMPOSTPAINT"/></entry>
-<entry>This stage is after an subitem has been drawn. Only used in list-view controls in report mode.</entry>
-</row>
-</tbody></tgroup>
-</table>
-</para>
-
-<para>
-  The ooDialog program that uses custom draw processes the information sent by the control and returns information that
-  instructs the underlying dialog control what to do. The key to using custom draw is in this information sent back to the
-  control in response to the event notification message. The information returned by the program determines the control's
-  behavior for that paint cycle.
-</para>
-<para>
-  Part of the information returned is a combination of response codes to the event notification. The
-  <computeroutput>CustomDraw</computeroutput> class provides constant values for these codes as summarized in the following
-  table:
-
-<table id="tblCustomDrawResponse" frame="all"> <title>Notification Responses</title>
-<tgroup cols="2">
-<colspec colwidth="1*"/>
-<colspec colwidth="2*"/>
-<thead>
-<row>
-<entry>Constant Value</entry>
-<entry>Effect</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry><xref linkend="cnstCDRF_DODEFAULT "/></entry>
-<entry>The control will draw itself. It will not send additional event notifications for this paint cycle. This respons cannot be used with any other response.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDRF_NOTIFYITEMDRAW"/></entry>
-<entry>The control will send event notifications for any item-specific drawing operations. It will send event notification messages before and after it draws items.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDRF_NOTIFYPOSTPAINT"/></entry>
-<entry>The control will send an event notification when the painting cycle for the entire control is complete.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDRF_NOTIFYSUBITEMDRAW"/></entry>
-<entry>The control will send event notifications for any subitem-specific drawing operations. It will send event notification messages before and after it draws subitems.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDRF_SKIPDEFAULT"/></entry>
-<entry>The control will not perform any painting at all. </entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDRF_DOERASE"/></entry>
-<entry>The control will only draw the background.</entry>
-</row>
-<row>
-<entry><xref linkend="cnstCDRF_SKIPPOSTPAINT"/></entry>
-<entry>The control will not draw the focus rectangle around an item.</entry>
-</row>
-</tbody></tgroup>
-</table>
-</para>
-<para>
-  Custom draw can be used by the program to draw the entire item, or to change part of the way an item is drawn. Custom draw
-  can be used to change the foreground and background colors, and the font used by the control for each item. For list-view
-  controls in report view, the programmer can also change change the colors and the font for each individual subitem.
-</para>
-
-</section> <!-- End CustomDrawOverview section -->
-
-
-<section id="sctCustomDrawInooDialog"><title>Custom Draw in ooDialog</title>
-<indexterm><primary>custom draw</primary><secondary>in ooDialog</secondary></indexterm>
-
-<para>
-  Using custom draw in ooDialog involves a few basic steps.
-
-  <variablelist>
-    <varlistentry><term><emphasis role="bold">Inherit <computeroutput>CustomDraw</computeroutput></emphasis></term>
-    <listitem>
-    <para>
-      The dialog subclass where the programmer wants to use custom draw must inherit the
-      <computeroutput>CustomDraw</computeroutput> mixin class.
-
-<programlisting>
-::class 'CustomDrawDlg' subclass RcDialog inherit CustomDraw
-</programlisting>
-    </para>
-    <para>
-      The dialog subclass does not have to be a <xref linkend="clsRcDialog"/> of course. It can be any dialog class supported
-      by ooDialog, except the <xref linkend="clsPropertySheetDialog"/>. Recall that the property sheet dialog is managed by
-      the operating system, not ooDialog. However, the pages of the property sheet dialog, any <xref
-      linkend="clsPropertySheetPage"/> dialogs, can use custom draw.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Initialize <computeroutput>CustomDraw</computeroutput></emphasis></term>
-    <listitem>
-    <para>
-      Before any other use of custom draw, the <computeroutput>CustomDraw</computeroutput> class must be initialized. This is
-      done through the <xref linkend="mthCustomDraw"/> method. This can be done wherever it seems convenient, but typically
-      it would be done before the dialog control is populated with its items.
-<programlisting>
-::method init
-    expose textRed textBlack
-
-    forward class (super) continue
-
-    self~customDraw
-
-</programlisting>
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Register Control(s)</emphasis></term>
-    <listitem>
-    <para>
-      Once the <computeroutput>CustomDraw</computeroutput> class is initialized, the next step is to register the dialog
-      controls that will use custom draw. Each individual control must be registered using the <xref
-      linkend="mthCustomDrawControl"/> method.
-<programlisting>
-::method init
-    ...
-
-    self~customDrawControl(IDC_LV_CUSTOM, 'ListView', onCustomDraw)
-
-</programlisting>
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Code an Event Handler</emphasis></term>
-    <listitem>
-    <para>
-      The last part of using custom draw is coding the event handler. In ooDialog, the information from the Windows dialog
-      control is passed on the the Rexx event handler in the form of an object. Each individual dialog control type has a
-      control specific class that is used to pass the information. Details on how to code the event handler are explained in
-      the documentation of the control specific class.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Supported Dialog controls.</emphasis></term>
-    <listitem>
-    <para>
-      ooDialog supports custom draw for the dialog controls listed in the following table. The table has a link to the class
-      used to provide the event handler with the information sent by the underlying dialog control and a link to the
-      documentation for the event handler for the specific type of control.
-
-<table id="tblSupportedCustomDrawControls" frame="all"><title>ooDialog Supported Custom Draw Controls</title>
-<tgroup cols="3">
-<colspec colwidth="1*"/>
-<colspec colwidth="1*"/>
-<colspec colwidth="1*"/>
-<thead>
-<row>
-<entry>Control</entry>
-<entry>Information Class</entry>
-<entry>Event Handler</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry><xref linkend="clsListView"/></entry>
-<entry><xref linkend="clsLvCustomDrawSimple"/></entry>
-<entry><xref linkend="evtListViewCustomDraw"/></entry>
-</row>
-<row>
-<entry><xref linkend="clsTreeView"/></entry>
-<entry><xref linkend="clsTvCustomDrawSimple"/></entry>
-<entry><xref linkend="evtTreeViewCustomDraw"/></entry>
-</row>
-</tbody></tgroup>
-</table>
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-</para>
-
-</section> <!-- End CustomDrawInOODialog section -->
-
-
-<section id="sctSimpleCustomDraw" xreflabel="simple"><title>Simple Custom Draw</title>
-<indexterm><primary>custom draw</primary><secondary>simple custom draw</secondary></indexterm>
-
-<para>
-  Currently, ooDialog supports a limited subset of the full functionality supplied by the Windows custom draw API. The
-  developers are denoting this as <emphasis role="italic">simple</emphasis> custom draw. Simple custom draw allows the
-  ooDialog programmer to change the foreground and background colors of individual dialog control items and subitems. It also
-  allows the programmer to change the font of individual items and subitems.
-</para>
-<para>
-  There are a number of reasons for only supporting simple custom draw at this point. For one, it is probably sufficient for
-  everything an ooDialog programmer will want to do. It allows the most useful functionality of custom draw to be delievered
-  sooner and leaves the possiblity of future enhancements providing more functionality. Drawing in Windows needs to be done
-  quickly and efficiently. This type of programming is normally done in a low-level language. It is not clear that a complete
-  implementation of custom draw would produce satisfactory results.
-</para>
-<para>
-  In simple custom draw, the ooDialog framework does not invoke the custom draw event handler for every single custom draw
-  notification sent by the dialog control. Rather, it replies directly for a number of the drawing stages itself, returning
-  the correct information so that the item and subitem prepaint notifications are sent by the control. It then invokes the
-  Rexx event handler for the item and subitem prepaint notifications. This allows the ooDialog programmer to change the
-  colors and fonts for any individual item or subitem.
-</para>
-<para>
-  In simple custom draw, the Rexx event handler will not recieve notifications for the postpaint, preerase, and posterase
-  drawing stages. The ooDialog programmer just needs to focus on handling the prepaint notifications for items and subitems.
-</para>
-
-</section> <!-- End SimpleCustomDraw section -->
-
-
-<section id="sctMethodsCustomDraw"><title>Method Table</title>
-<para>
-  The following table lists the class and instance methods of the <computeroutput>CustomDraw</computeroutput> class:
-
-<table id="tblMethodsCustomDraw" frame="all"> <title>CustomDraw Class Method Reference</title>
-<tgroup cols="2">
-<colspec colwidth="1*"/>
-<colspec colwidth="4*"/>
-<thead>
-<row>
-<entry>Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Constant</emphasis></entry>
-<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="sctConstantsClsCustomDraw">constants</link></entry>
-<entry>The <computeroutput>CustomDraw</computeroutput> class provides a number of constant values needed to work with the custom draw interface.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance</emphasis></entry>
-<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="mthCustomDraw">customDraw</link></entry>
-<entry>Initializes the custom draw interface in ooDialog.</entry>
-</row>
-<row>
-<entry><link linkend="mthCustomDrawControl">customDrawControl</link></entry>
-<entry>Registers the specified dialog control to use custom draw.</entry>
-</row>
-<row>
-<entry><link linkend="mthRGB">rgb</link></entry>
-<entry>Constructs a COLORREF from the red, green, and blue values of a color..</entry>
-</row>
-</tbody></tgroup>
-</table>
-</para>
-</section>
-
-
-<section id="sctConstantsClsCustomDraw" xreflabel="CustomDraw constants"><title>Constants</title>
-<indexterm><primary>constants</primary><secondary>CustomDraw class</secondary></indexterm>
-<indexterm><primary>CustomDraw class</primary><secondary>constants</secondary></indexterm>
-
-<para>
-  The Windows API for custom draw has a number of constant values used to specify varying things. There are constants used to
-  indicate the current stage of custom draw paint cycle, constants to use in replying to custom draw event notifications,
-  etc.. The <computeroutput>CustomDraw</computeroutput> class supplies the following <emphasis
-  role="italic">constant</emphasis> values to use with custom drawing. Note that, except where indicated, the CDRF_* response
-  codes can be combined together. The <xref linkend="mthOrClsDlgUtil"/> method can be used to combine values.
-</para>
-
-<variablelist>
-  <varlistentry id="cnstCDDS_ITEMPREERASE" xreflabel="CDDS_ITEMPREERASE"><term><emphasis role="bold">CDDS_ITEMPREERASE</emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
-    before an item is erased.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_ITEMPREPAINT" xreflabel="CDDS_ITEMPREPAINT "><term><emphasis role="bold">CDDS_ITEMPREPAINT </emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
-    before an item is drawn.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_ITEMPOSTERASE" xreflabel="CDDS_ITEMPOSTERASE"><term><emphasis role="bold">CDDS_ITEMPOSTERASE</emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
-    after an item has been erased.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_ITEMPOSTPAINT" xreflabel="CDDS_ITEMPOSTPAINT"><term><emphasis role="bold">CDDS_ITEMPOSTPAINT</emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent after
-    an item has been drawn.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_POSTERASE" xreflabel="CDDS_POSTERASE"><term><emphasis role="bold">CDDS_POSTERASE</emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
-    when the erase cycle is complete.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_POSTPAINT" xreflabel="CDDS_POSTPAINT"><term><emphasis role="bold">CDDS_POSTPAINT</emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent when the paint cycle is complete.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_PREERASE" xreflabel="CDDS_PREERASE"><term><emphasis role="bold">CDDS_PREERASE</emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
-    before the erase cycle begins.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_PREPAINT" xreflabel="CDDS_PREPAINT"><term><emphasis role="bold">CDDS_PREPAINT</emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
-    before the paint cycle begins.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_SUBITEMPREPAINT" xreflabel="CDDS_SUBITEMPREPAINT"><term><emphasis role="bold">CDDS_SUBITEMPREPAINT</emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
-    before a subitem is drawn. This only applies to list-view controls in report view.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDDS_SUBITEMPOSTPAINT" xreflabel="CDDS_SUBITEMPOSTPAINT"><term><emphasis role="bold">CDDS_SUBITEMPOSTPAINT</emphasis></term>
-  <listitem>
-  <para>
-    Part of the information sent in a custom draw event notification. It indicates the current draw stage. This is sent
-    after a subitem has been drawn. It is only sent for list-view controls in report view.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_DODEFAULT" xreflabel="CDRF_DODEFAULT"><term><emphasis role="bold">CDRF_DODEFAULT</emphasis></term>
-  <listitem>
-  <para>
-    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
-    that the control should draw itself. The control will not send any more notification messages for the current paint
-    cycle. This response can not be combined with other response values.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_DOERASE" xreflabel="CDRF_DOERASE"><term><emphasis role="bold">CDRF_DOERASE</emphasis></term>
-  <listitem>
-  <para>
-    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
-    that the control should only draw the background.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_NEWFONT" xreflabel="CDRF_NEWFONT"><term><emphasis role="bold">CDRF_NEWFONT</emphasis></term>
-  <listitem>
-  <para>
-    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
-    that the programmer has changed the font for the item being drawn. For list-view and tree-view custom draw, it should
-    also be used to indicate that the colors have been changed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_NOTIFYITEMDRAW " xreflabel="CDRF_NOTIFYITEMDRAW "><term><emphasis role="bold">CDRF_NOTIFYITEMDRAW</emphasis></term>
-  <listitem>
-  <para>
-    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
-    the control should send notification message for any item-specific drawing operations. The control will send
-    event notifications before and after it draws items.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_NOTIFYPOSTPAINT " xreflabel="CDRF_NOTIFYPOSTPAINT "><term><emphasis role="bold">CDRF_NOTIFYPOSTPAINT</emphasis></term>
-  <listitem>
-  <para>
-    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
-    the control should send a notification when the painting cycle for the entire control is complete.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_NOTIFYSUBITEMDRAW " xreflabel="CDRF_NOTIFYSUBITEMDRAW "><term><emphasis role="bold">CDRF_NOTIFYSUBITEMDRAW</emphasis></term>
-  <listitem>
-  <para>
-    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
-    the control should send notification message for any subitem-specific drawing operations. The control will send
-    event notifications before and after it draws subitems.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_SKIPDEFAULT" xreflabel="CDRF_SKIPDEFAULT"><term><emphasis role="bold">CDRF_SKIPDEFAULT</emphasis></term>
-  <listitem>
-  <para>
-    One of the response values that can be returned to the dialog control from the custom draw 8event handler. It indicates
-    that the control should not do any painting, the application will paint the entire control.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCDRF_SKIPPOSTPAINT" xreflabel="CDRF_SKIPPOSTPAINT"><term><emphasis role="bold">CDRF_SKIPPOSTPAINT</emphasis></term>
-  <listitem>
-  <para>
-    One of the response values that can be returned to the dialog control from the custom draw event handler. It indicates
-    that the control should not draw the focus rectangle around an item.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCLR_DEFAULT" xreflabel="CLR_DEFAULT"><term><emphasis role="bold">CLR_DEFAULT</emphasis></term>
-  <listitem>
-  <para>
-    A special COLORREF value. COLORREFs are discussed in the documentation for both the <xref linkend="mthRGB"/> and <xref
-    linkend="mthColorRef"/> methods. The CLR_DEFAULT constant value is identical to the value returned either of those
-    methods when the CLR_DEFAULT keyword is used as the first argument to the method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCLR_INVALID" xreflabel="CLR_INVALID"><term><emphasis role="bold">CLR_INVALID</emphasis></term>
-  <listitem>
-  <para>
-    A special COLORREF value. COLORREFs are discussed in the documentation for both the <xref linkend="mthRGB"/> and <xref
-    linkend="mthColorRef"/> methods. The CLR_INVALID constant value is identical to the value returned either of those
-    methods when the CLR_INVALID keyword is used as the first argument to the method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="cnstCLR_NONE" xreflabel="CLR_NONE"><term><emphasis role="bold">CLR_NONE</emphasis></term>
-  <listitem>
-  <para>
-    A special COLORREF value. COLORREFs are discussed in the documentation for both the <xref linkend="mthRGB"/> and <xref
-    linkend="mthColorRef"/> methods. The CLR_NONE constant value is identical to the value returned either of those methods
-    when the CLR_NONE keyword is used as the first argument to the method.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-
-</section>
-
-<section id="mthCustomDraw" xreflabel="customDraw"><title>customDraw</title>
-<indexterm><primary>customDraw</primary></indexterm>
-<indexterm><primary>CustomDraw class</primary><secondary>customDraw</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--customDraw-----------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Initializes the custom draw interface in ooDialog and allows dialog controls to register for custom draw.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    There are no arguments for this method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns true on success and false on error. An error is highly unlikely.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The <emphasis role="italic">customDraw</emphasis> method must be invoked before any other use of custom draw. It
-    performs the basic initialization that allows ooDialog to inteact with the Windows custom draw service. The basic
-    sequence is to invoke the <emphasis role="italic">customDraw</emphasis> method and then register the control(s) that
-    will use custom draw.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example initializes the custom draw interface and then registers a list-view control to use custom draw.
-<programlisting>
-<![CDATA[
-
-::method init
-    expose textRed textBlack
-
-    forward class (super) continue
-
-    self~customDraw
-    self~customDrawControl(IDC_LV_CUSTOM, 'ListView', onCustomDraw)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CustomDraw::customDraw() -->
-
-<section id="mthCustomDrawControl" xreflabel="customDrawControl"><title>customDrawControl</title>
-<indexterm><primary>customDrawControl</primary></indexterm>
-<indexterm><primary>CustomDraw class</primary><secondary>customDrawControl</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--customDrawControl(-id--+-----------+--+------------+-+------------+--)-----><
-                           +-,-ctrlName+  +-,-methName-+ +-,-reserved-+
-]]>
-</programlisting>
-
-<para>
-  Specifies that the programmer will custom draw the named control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        Resource ID of the control, may be numeric or <xref linkend="defSymbolicId"/>.  A syntax condition
-        is raised if the ID is symbolic and it can not be resolved.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>ctrlName [optional]</term>
-      <listitem>
-      <para>
-        The name of the type of control. I.e., treeView, TrackBar, LISTVIEW.  By default the control is assumed to be a
-        ListView. Case is not significant. Only ListView and TreeView controls are currently supported.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>methName [optional]</term>
-      <listitem>
-      <para>
-         The name of a method in the Rexx dialog that will be invoked for the custom draw event. If omitted it defaults
-         to <emphasis role="italic">onCustomDraw</emphasis>.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>reserved [optional]</term>
-      <listitem>
-      <para>
-        Reserverd for future use. This argument is currently ignored.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns 0 on success and 1 on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The <emphasis role="italic">customDrawControl</emphasis> method in effect registers a specific dialog control to
-    receive custom draw event notifications and to use a certain <emphasis role="italic">type</emphasis> of custom draw.
-    Currently the only type implemented in ooDialog is <emphasis role="italic">simple</emphasis> custom draw.
-  </para>
-  <para>
-    It is important that the programmer correctly names the control using custom draw through the <emphasis
-    role="italic">ctrlName</emphasis> argument. Failure to do so will result in undefined behaviour.
-  </para>
-  <para>
-    The event handling method for the custom draw event will recieve a single object as its argument. The object
-    conveys information to the event handler concerning the event and receives information from the event handle to pass
-    back to the underlying Windows control. The exact object will depend on the type of dialog control. List-views will
-    receive a <link linkend="clsLvCustomDrawSimple">LvCustomDrawSimple</link> object and tree-views will receive a <link
-    linkend="clsTvCustomDrawSimple">TvCustomDrawSimple</link> object.
-  </para>
-  <para>
-    It is possible to have several dialog controls register to use the same event handling method. The information
-    object sent to the event handler has the resource ID of the control the event is for. However, the event handler
-    needs to respond to the events as quickly as possible. Therefore it may be better to use a different event handler
-    for each dialog control and eliminate the need to decipher which control the event is for in a single handler.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example initializes the custom draw interface and then registers two controls to use custom draw:
-<programlisting>
-<![CDATA[
-
-  self~customDraw
-  self~customDrawControl(IDC_LV_A, 'ListView', onCustomDrawA)
-  self~customDrawControl(IDC_LV_B, 'ListView', onCustomDrawB)
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CustomDraw::customDrawControl() -->
-
-<section id="mthRGB" xreflabel="rgb"><title>rgb</title>
-<indexterm><primary>rgb</primary></indexterm>
-<indexterm><primary>CustomDraw class</primary><secondary>rgb</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--rgb(--+---+--+-----+--+-----+--)-------------><
-          +-r-+  +-,-g-+  +-,-b-+
-]]>
-</programlisting>
-
-<para>
-  Constructs a COLORREF from the red, green, and blue components of a color. In the Windows API values of the type COLORREF
-  are often used for colors.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>r [optional]</term>
-      <listitem>
-      <para>
-        The red component for the color. The default is 0.
-      </para>
-      <para>
-        This argument can also be one of 3 keywords: CLR_DEFAULT, CLR_NONE, or CLR_INVALID, case is not significant. If
-        a keyword is used, the other arguments are ignored. See the remarks section for more information on the
-        keywords.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>g [optional]</term>
-      <listitem>
-      <para>
-        The green component for the color. The default is 0.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>b [optional]</term>
-      <listitem>
-      <para>
-        The blue component for the color. The default is 0.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the COLORREF value for the specified arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    A COLORREF is a 32-bit number with a hexidecimal format of: <computeroutput>0x00bbggrr</computeroutput>. The
-    <emphasis role="italic">rgb</emphasis> method provides a way to construct a COLORREF from the red, green, and blue
-    values. Each color value (red, green, or blue) is a whole number in the range of 0 to 255 inclusive.
-  </para>
-  <para>
-    The CLR_DEFAULT, CLR_NONE, etc., keywords represent special COLORREF values defined in the Windows API. The exact
-    meaning of the value seems dependent on the context it is used in. For instance, in the list-view custom draw
-    interface, if an item's foreground or background color is assigned CLR_DEFAULT, the list-view draws that item in its
-    default color. On the other hand, if the same thing is done for a tree-view item, the tree-view draws that item in
-    black.
-  </para>
-  <para>
-    CLR_DEFAULT and CLR_INVALID are actually the same value. The CLR_INVAID keyword is provided for completeness.
-  </para>
-  <para>
-    The functionality of the <emphasis role="italic">rgb</emphasis> method is identical to the functionality of the
-    <link linkend="mthColorRef">colorRef</link> class method of the <link linkend="clsImage">Image</link> class. Either
-    method will return the same value for the same inputs.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example specifies the custom draw colors for a list-view item. The item will be drawn with dark blue text on a
-    light blue background.
-<programlisting>
-<![CDATA[
-
-  if list~isChecked(item) then do
-      lvcds~clrText   = self~RGB( 17,   5, 250)
-      lvcds~clrTextBk = self~RGB(115, 245, 186)
-  end
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CustomDraw::rgb() -->
-
-</section> <!-- End CustomDraw Class -->
+<!-- <section id="clsWindowBase"><title>WindowBase Mixin Class</title>               START -->
+<xi:include href="windowBase.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="clsWindowBase"><title>WindowBase Mixin Class</title>               END   -->
+
+<!-- <section id="clsWindowExtensions"><title>WindowExtensions Mixin Class</title>   START -->
+<xi:include href="windowExtensions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="clsWindowExtensions"><title>WindowExtensions Mixin Class</title>   END   -->
 
 </chapter>

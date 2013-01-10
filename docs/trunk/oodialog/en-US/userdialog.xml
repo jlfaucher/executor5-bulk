@@ -6783,10 +6783,10 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         <varlistentry><term>NOTIFY</term>
         <listitem>
         <para>
-          The list box only sends the DBLCLICK, SELCHANGE, and SELCANCEL <xref linkend="ovvEvents"/>
-          notifications when it has the NOTIFY style.  All other event notifications are always sent. Use the
- <xref linkend="mthConnectListBoxEvent"/>() method to connect event notifications to a
-          method in the Rexx dialog.
+          Informs the list box that it should send the DBLCLICK, SELCHANGE, and SELCANCEL <xref linkend="ovvEvents"/>
+          notifications. The list box sends these event notifications only when it has the NOTIFY style.  The other list box
+          event notifications are always sent. Use the <xref linkend="mthConnectListBoxEvent"/> method to connect event
+          notifications to a method in the Rexx dialog.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>SORT</term>
@@ -6798,9 +6798,8 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         <varlistentry><term>COLUMNS</term>
         <listitem>
         <para>
-          The list box can handle tab characters ("09"x). Use this option together with the
-          setListTabulators method (see page <xref linkend="mthSetListTabulators"/>) to
-          have more than one column in a list.
+          The list box can handle tab characters ("09"x). Use this option together with the <xref
+          linkend="mthSetListTabulators"/> method to have more than one column in a list.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>VSCROLL</term>
