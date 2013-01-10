@@ -53,6 +53,8 @@ Bug Fixes in ooDialog:
 Feature Requests in ooDialog:
 -----------------------------
 
+ * #417 ooDialog public routines and icon resource
+
  * #504 It would be nice to be able to store a user value as part of the
         LvFullRow object
 
@@ -84,6 +86,16 @@ New utility classes:
 New Methods:
 ------------
 
+In the ApplicationManager class:
+
+defaultIcon     Assigns an application-wide default dialog icon.
+
+In the Edit class:
+
+wantReturn      Connects the Enter keypress in a single-line edit
+                control to a method in the Rexx dialog and prevents the
+                keypress from closing the dialog.
+
 In the ListView class:
 
 modifyFullRow   Modifies a list-view's item and all its subitem using a
@@ -91,12 +103,6 @@ modifyFullRow   Modifies a list-view's item and all its subitem using a
 
 setFullRowText  Sets or updates the text for a list-view item and all
                 its subItems using a LvFullRow object.
-
-In the Edit class:
-
-wantReturn      Connects the Enter keypress in a single-line edit
-                control to a method in the Rexx dialog and prevents the
-                keypress from closing the dialog.
 
 
 New Attributes:
@@ -121,6 +127,20 @@ New samples:
 
 Enhanced samples:
 -----------------
+
+oodialog\oodStandardDialogs.rex
+
+This example is an enhanced version of the old oostddlg.rex.  It has a
+completely graphical interface and no longer uses 'say' statements.  It
+also uses the defaultIcon() method to set the default icon for the
+program.
+
+oodialog\oodStandardRoutines.rex
+
+This example is an enhanced version of the old oostdfct.rex.  It has a
+completely graphical interface and no longer uses 'say' statements.  It
+also uses the defaultIcon() method to set the default icon for the
+program.
 
 
 

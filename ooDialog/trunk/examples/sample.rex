@@ -100,7 +100,7 @@
    self~loadApp("oograph.rex", 3000)
 
 ::method user
-   self~loadApp("oodStandardDialog.rex", 2800)
+   self~loadApp("oodStandardDialogs.rex", 2800)
 
 ::method wiz97
    self~loadApp("propertySheet.tabControls\ticketWizard.rex")
