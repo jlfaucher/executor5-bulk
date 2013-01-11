@@ -399,6 +399,8 @@ extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, CSTRI
 extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, CSTRING methodName, CSTRING msg, RexxObjectPtr rxDlg);
 extern RexxObjectPtr  invalidAttributeException(RexxMethodContext *c, RexxObjectPtr rxDlg);
 
+extern pCDialogControl requiredDlgControlCSelf(RexxMethodContext *c, RexxObjectPtr control, size_t argPos);
+
 /**
  *  93.900
  *  Error 93 - Incorrect call to method

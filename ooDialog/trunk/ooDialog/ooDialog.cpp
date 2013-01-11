@@ -2667,6 +2667,34 @@ RexxMethod2(uint32_t, wb_getWindowLong_pvt, int32_t, flag, CSELF, pCSelf)
 }
 
 
+/** WindowBase::setWindowLong()  [private]
+ *
+ *  Calls SetWindowLong with the value specified.
+ *
+ *  @param  flag   [required] The GWL_xx index to set.
+ *
+ *  @param  value  [required] The value to set
+ *
+ *  @return  The previous value for the index
+ *
+ *  @remarks  This is used internally for setWindowStyleRaw, GWL_STYLE.  It
+ *            could also be used for GWL_EXSTYLE.  The other indexes, besides
+ *            those 2, are pointer or handle values. Because of this, this
+ *            method should not be documented. Use from Rexx for any other index
+ *            is likely to crash Rexx, or have other unintended consequences.
+ */
+RexxMethod3(uint32_t, wb_setWindowLong_pvt, int32_t, flag, CSTRING, value, CSELF, pCSelf)
+{
+
+    uint32_t realValue;
+    if ( ! rxStr2Number32(context, value, &realValue, 2) )
+    {
+        return NULLOBJECT;
+    }
+    return SetWindowLong(getWBWindow(context, pCSelf), flag, realValue);
+}
+
+
 /**
  *  Methods for the .PlainBaseDialog class.
  */

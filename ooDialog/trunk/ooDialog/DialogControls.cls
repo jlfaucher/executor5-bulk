@@ -79,6 +79,7 @@
 ::method putInBag unguarded external "LIBRARY oodialog dlgctrl_putInBag"  -- Internal use only.
 ::method redrawRect unguarded external "LIBRARY oodialog dlgctrl_redrawRect"
 ::method setColor unguarded external "LIBRARY oodialog dlgctrl_setColor"
+::method setParent unguarded external "LIBRARY oodialog dlgctrl_setParent"
 ::method setSysColor unguarded external "LIBRARY oodialog dlgctrl_setColor"
 ::method tabStop unguarded external "LIBRARY oodialog dlgctrl_tabGroup"
 ::method textSize unguarded external "LIBRARY oodialog dlgctrl_textSize"

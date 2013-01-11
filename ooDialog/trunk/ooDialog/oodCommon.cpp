@@ -1825,6 +1825,30 @@ pCPlainBaseDialog requiredDlgCSelf(RexxMethodContext *c, RexxObjectPtr self, ood
     return pcpbd;
 }
 
+pCDialogControl requiredDlgControlCSelf(RexxMethodContext *c, RexxObjectPtr control, size_t argPos)
+{
+    pCDialogControl pcdc = NULL;
+
+    if ( control != NULLOBJECT )
+    {
+        if ( c->IsOfType(control, "DIALOGCONTROL") )
+        {
+            pcdc = controlToCSelf(c, control);
+            if ( pcdc == NULLOBJECT )
+            {
+                baseClassInitializationException(c, "DialogControl");
+            }
+        }
+        else
+        {
+            wrongClassException(c->threadContext, argPos, "DialogControl");
+            return NULLOBJECT;
+        }
+    }
+
+    return pcdc;
+}
+
 PPOINT rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, size_t argPos)
 {
     if ( requiredClass(context->threadContext, p, "Point", argPos) )

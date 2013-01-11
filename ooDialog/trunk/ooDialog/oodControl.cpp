@@ -2082,6 +2082,38 @@ RexxMethod2(RexxObjectPtr, dlgctrl_redrawRect, ARGLIST, args, CSELF, pCSelf)
 }
 
 
+/** DialogControl::setParen()
+ *
+ *  Sets a new parent for this dialog control.
+ *
+ *  @param  The new parent
+ *
+ *  @return  0 on success, 1 on error.
+ *
+ *  @note  Sets the .SystemErrorCode.
+ */
+RexxMethod2(RexxObjectPtr, dlgctrl_setParent, RexxObjectPtr, parent, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    pCDialogControl pcdcParent = requiredDlgControlCSelf(context, parent, 1);
+    pCDialogControl pcdc       = validateDCCSelf(context, pCSelf);
+
+    if ( pcdc == NULL || pcdcParent == NULL )
+    {
+        return TheFalseObj;
+    }
+
+    HWND old = SetParent(pcdc->hCtrl, pcdcParent->hCtrl);
+    if ( old == NULL )
+    {
+        oodSetSysErrCode(context->threadContext);
+        return TheFalseObj;
+    }
+    return TheTrueObj;
+}
+
+
 /** DialogControl::textSize()
  *
  *  Computes the width and height in pixels of the specified string of text when

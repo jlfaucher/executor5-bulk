@@ -537,6 +537,7 @@ REXX_METHOD_PROTOTYPE(wb_foreGroundWindow);
 REXX_METHOD_PROTOTYPE(wb_screenClient);
 REXX_METHOD_PROTOTYPE(wb_mapWindowPoints);
 REXX_METHOD_PROTOTYPE(wb_getWindowLong_pvt);
+REXX_METHOD_PROTOTYPE(wb_setWindowLong_pvt);
 
 // EventNotification
 REXX_METHOD_PROTOTYPE(en_init_eventNotification);
@@ -921,6 +922,7 @@ REXX_METHOD_PROTOTYPE(dlgctrl_getTextSizeDlg);
 REXX_METHOD_PROTOTYPE(dlgctrl_hasKeyPressConnection);
 REXX_METHOD_PROTOTYPE(dlgctrl_redrawRect);
 REXX_METHOD_PROTOTYPE(dlgctrl_setColor);
+REXX_METHOD_PROTOTYPE(dlgctrl_setParent);
 REXX_METHOD_PROTOTYPE(dlgctrl_tabGroup);
 REXX_METHOD_PROTOTYPE(dlgctrl_textSize);
 REXX_METHOD_PROTOTYPE(dlgctrl_putInBag);
@@ -1051,9 +1053,11 @@ REXX_METHOD_PROTOTYPE(lv_getItem);
 REXX_METHOD_PROTOTYPE(lv_getItemData);
 REXX_METHOD_PROTOTYPE(lv_getItemInfo);
 REXX_METHOD_PROTOTYPE(lv_getItemPos);
+REXX_METHOD_PROTOTYPE(lv_getItemRect);
 REXX_METHOD_PROTOTYPE(lv_getNextItem);
 REXX_METHOD_PROTOTYPE(lv_getNextItemWithState);
 REXX_METHOD_PROTOTYPE(lv_getSubitem);
+REXX_METHOD_PROTOTYPE(lv_getSubitemRect);
 REXX_METHOD_PROTOTYPE(lv_getView);
 REXX_METHOD_PROTOTYPE(lv_hasCheckBoxes);
 REXX_METHOD_PROTOTYPE(lv_hitTestInfo);
@@ -1609,6 +1613,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(wb_sendWinHandle2Msg,           wb_sendWinHandle2Msg),
     REXX_METHOD(wb_sendWinUintMsg,              wb_sendWinUintMsg),
     REXX_METHOD(wb_setWindowPos,                wb_setWindowPos),
+    REXX_METHOD(wb_setWindowLong_pvt,           wb_setWindowLong_pvt),
     REXX_METHOD(wb_show,                        wb_show),
     REXX_METHOD(wb_showFast,                    wb_showFast),
     REXX_METHOD(wb_windowRect,                  wb_windowRect),
@@ -1988,6 +1993,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgctrl_hasKeyPressConnection,  dlgctrl_hasKeyPressConnection),
     REXX_METHOD(dlgctrl_redrawRect,             dlgctrl_redrawRect),
     REXX_METHOD(dlgctrl_setColor,               dlgctrl_setColor),
+    REXX_METHOD(dlgctrl_setParent,              dlgctrl_setParent),
     REXX_METHOD(dlgctrl_tabGroup,               dlgctrl_tabGroup),
     REXX_METHOD(dlgctrl_textSize,               dlgctrl_textSize),
     REXX_METHOD(dlgctrl_putInBag,               dlgctrl_putInBag),
@@ -2092,9 +2098,11 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_getItemData,                 lv_getItemData),
     REXX_METHOD(lv_getItemInfo,                 lv_getItemInfo),
     REXX_METHOD(lv_getItemPos,                  lv_getItemPos),
+    REXX_METHOD(lv_getItemRect,                 lv_getItemRect),
     REXX_METHOD(lv_getNextItem,                 lv_getNextItem),
     REXX_METHOD(lv_getNextItemWithState,        lv_getNextItemWithState),
     REXX_METHOD(lv_getSubitem,                  lv_getSubitem),
+    REXX_METHOD(lv_getSubitemRect,              lv_getSubitemRect),
     REXX_METHOD(lv_getView,                     lv_getView),
     REXX_METHOD(lv_hasCheckBoxes,               lv_hasCheckBoxes),
     REXX_METHOD(lv_hitTestInfo,                 lv_hitTestInfo),

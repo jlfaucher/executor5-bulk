@@ -290,6 +290,30 @@ err_out:
 }
 
 
+static uint32_t keyword2lvir(RexxMethodContext *c, CSTRING part, bool isItemRect)
+{
+    uint32_t flag = (uint32_t)-1;
+
+    if ( StrCmpI(part,      "BOUNDS") == 0 ) flag = LVIR_BOUNDS;
+    else if ( StrCmpI(part, "ICON")   == 0 ) flag = LVIR_ICON;
+    else if ( StrCmpI(part, "LABEL")  == 0 ) flag = LVIR_LABEL;
+    else if ( isItemRect )
+    {
+        if ( StrCmpI(part,  "SELECTBOUNDS") == 0 ) flag = LVIR_SELECTBOUNDS;
+        else
+        {
+            wrongArgValueException(c->threadContext, 2, "BOUNDS, ICON, LABEL, or SELECTBOUNDS", part);
+        }
+    }
+    else
+    {
+        wrongArgValueException(c->threadContext, 3, "BOUNDS, ICON, or LABEL", part);
+    }
+
+    return flag;
+}
+
+
 static RexxStringObject view2keyword(RexxMethodContext *c, uint32_t view)
 {
     if (      view == LV_VIEW_ICON      ) return c->String("ICON");
@@ -2944,6 +2968,101 @@ RexxMethod2(RexxObjectPtr, lv_getItemPos, uint32_t, index, CSELF, pCSelf)
         return TheZeroObj;
     }
     return rxNewPoint(context, p.x, p.y);
+}
+
+/** ListView::getItemRect()
+ *
+ *  Gets the bounding rectangle for all or part of a subitem in the current view
+ *  of the list-view control.
+ *
+ *  @param  index     [required]  The index of the item for which the rectangle
+ *                    is being retrieve.
+ *
+ *  @param  subIndex  [required]  The index of the subitem for which the
+ *                    rectangle is being retrieved.
+ *
+ *  @param  part      [optional]  Keyword indicating which part of the subitem
+ *                    rectangle is sought.
+ *
+ *                    BOUNDS
+ *                    ICON
+ *                    LABEL
+ *
+ *                    The default is BOUNDS
+ *
+ *  @return  The specified bounding rectangle on success, the .nil object on
+ *           error.
+ *
+ *  @notes  subIndex can be 0, in which case these method works exactly like
+ *          getItemRect(), with the exception that SELECTBOUNDS is not accepted
+ *          as a keyword.
+ */
+RexxMethod4(RexxObjectPtr, lv_getSubitemRect, uint32_t, index, uint32_t, subIndex, OPTIONAL_CSTRING, part, CSELF, pCSelf)
+{
+    HWND hList = getDChCtrl(pCSelf);
+
+    uint32_t flag = LVIR_BOUNDS;
+    if ( argumentExists(3) )
+    {
+        flag = keyword2lvir(context, part, false);
+        if ( flag == (uint32_t)-1 )
+        {
+            return NULLOBJECT;
+        }
+    }
+
+    LVITEMINDEX lvii;
+    lvii.iItem  = index;
+    lvii.iGroup = I_GROUPIDNONE;
+    printf("flag = %d subitem=%d item=%d\n", flag, subIndex, index);
+    RECT r;
+    if ( ! ListView_GetItemIndexRect(hList, &lvii, subIndex, flag, &r) )
+    {
+        return TheNilObj;
+    }
+    return rxNewRect(context, &r);
+}
+
+/** ListView::getSubitemRect()
+ *
+ *  Gets the bounding rectangle for all or part of an item in the current view.
+ *
+ *  @param  index  [required]  The index of the item for which the rectangle is
+ *                 being retrieve.
+ *
+ *  @param  part   [optional]  Keyword indicating which part of the item
+ *                 rectangle is sought.
+ *
+ *                 BOUNDS
+ *                 ICON
+ *                 LABEL
+ *                 SELECTBOUNDS
+ *
+ *                 The default is BOUNDS
+ *
+ *  @return  The specified bounding rectangle on success, the .nil object on
+ *           error.
+ */
+RexxMethod3(RexxObjectPtr, lv_getItemRect, uint32_t, index, OPTIONAL_CSTRING, part, CSELF, pCSelf)
+{
+    HWND hList = getDChCtrl(pCSelf);
+
+    uint32_t flag = LVIR_BOUNDS;
+    if ( argumentExists(2) )
+    {
+        flag = keyword2lvir(context, part, true);
+        if ( flag == (uint32_t)-1 )
+        {
+            return NULLOBJECT;
+        }
+    }
+
+    RECT r;
+    if ( ! ListView_GetItemRect(hList, index, &r, flag) )
+    {
+        return TheNilObj;
+    }
+    return rxNewRect(context, &r);
 }
 
 /** ListView::getSubitem()
