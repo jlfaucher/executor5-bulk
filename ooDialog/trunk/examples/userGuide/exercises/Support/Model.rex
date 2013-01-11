@@ -36,9 +36,12 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
 
-   Support - Model						 v00-02  09Aug12
+   Support - Model						 v01-00  11Jan13
    ----------------
-   A simple superclass class for the Model-View framework.
+   A superclass for the Model-View framework.
+
+   v01-00 09Aug12: First version.
+          11Jan13: Commented-out "say"s.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -51,7 +54,6 @@
 
   ::ATTRIBUTE wantList     CLASS PUBLIC		-- for List subclasses
   ::ATTRIBUTE myData
-  --::ATTRIBUTE instanceName CLASS PUBLIC		-- for Anonymous subclasses
 
   /*----------------------------------------------------------------------------
     newInstance - must be invoked by subclass.
@@ -59,7 +61,7 @@
   ::METHOD newInstance CLASS PUBLIC
     expose noDataError				-- .true if data not found.
     use strict arg instanceName
-    say ".Model-newInstance-01: instanceName =" instanceName
+    --say ".Model-newInstance-01: instanceName =" instanceName
     -- Check that the model's Data object is up and running. If not, then return .false:
     if noDataError = .true then return .false
     -- Now get the name of the Data component (FredModel or FredListModel --> FredData):
@@ -67,9 +69,9 @@
     className = self~objectName		-- objectName for a class Foo is "The Foo class"
     className = className~upper()	-- When class name is in quotes, then it's mixed case.
     	    				-- Upper here to make everthing upper case for parse var.
--- Addition of Forms
+    -- Handling Forms:
     -- If this is a "Form" then there's no data to get (the user will provide
-    -- the data). So just create the Form Model and return.
+    -- the data). So just create the Form Model (e.g. Order Form) and return.
     -- Assume that the instance name is the Form Number (e.g. for an OrderForm,
     -- the Form Number will be the new Order Number).
     p = className~pos("FORM")
@@ -80,7 +82,7 @@
       say ".Model-newInstance-011: formObj, instanceName =" formObject||"," instanceName
       return formObject
     end
--- End of addition for Forms.
+    -- End of Handling Forms.
 
     -- If there's  "LIST" in the name, then set "get all" for the file access
     --  (as opposed to the default of "get 1 record")
@@ -91,7 +93,7 @@
     parse var className . root1 "MODEL" .
     parse var root1 root "LIST"
     dataClassName = root||"Data"
-    say ".Model-newInstance-02, dataClassName =" dataClassName
+    --say ".Model-newInstance-02, dataClassName =" dataClassName
     -- Get the id of Data component:
     objMgr = .local~my.ObjectMgr
     --say ".Model-newInstance-03: objMgr =" objMgr
@@ -110,8 +112,9 @@
     -- say ".Model-newInstance-05b: array dimensions: =" myData~dimension
     if myData = .false then return .false	-- if ID (key) not found
     -- All is well, then make new instance:
-    say ".Model-newInstance-06: myData =" myData
+    --say ".Model-newInstance-06: myData =" myData
     id = self~new(myData)
+    --say ".Model-newInstance-07: myData =" id
     return id
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -137,9 +140,9 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD query PUBLIC
     use arg dataNames
-    say "Model-query-01: dataNames:" dataNames
+    --say "Model-query-01: dataNames:" dataNames
     dirReturn = .Directory~new
-    say "Model-query-01a: args =" arg()
+    --say "Model-query-01a: args =" arg()
     select
       when arg() = 0 then do
         return self~myData

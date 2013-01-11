@@ -34,12 +34,16 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide - Exercise07
+/* ooDialog User Guide - Support
 
-   Support - RcView						 v00-02  09Aug12
+   Support - RcView						 v01-00  09Aug12
    ----------------
    A simple superclass class for the Model-View framework.
    Code is idential to that in ResView.
+
+   Changes:
+   v01-00 09Aug12: First version.
+          11Jan13: Commented-out the 'say' instructions.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -60,7 +64,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     expose objectMgr
-    say "RcView-init-01."
+    --say "RcView-init-01."
     forward class (super) continue
     objectMgr = .local~my.ObjectMgr	-- Needed to clear up when dialog closed.
     self~viewMgr = .local~myViewMgr
@@ -75,14 +79,14 @@
     expose viewClass viewInstance
     use arg modelId
     -- Get View Instance name and View Class for tidy-up when dialog is closed.
-    say ".RcView~activate-01: class = " viewClass
+    --say ".RcView~activate-01: class = " viewClass
     viewInstance = self~identityHash
     dlgName = self~objectName
-    say ".RcView~activate-02: dlgName = " dlgName
+    --say ".RcView~activate-02: dlgName = " dlgName
     parse var dlgName . viewClass
-    say ".RcView~activate-03: class name = '"||viewClass||"'"
-    say ".RcView-activate-04: viewInstance =" viewInstance
-    say ".RcView-activate-05: modelId =" modelId
+    --say ".RcView~activate-03: class name = '"||viewClass||"'"
+    --say ".RcView-activate-04: viewInstance =" viewInstance
+    --say ".RcView-activate-05: modelId =" modelId
     modelData = modelId~query
     return modelData
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -99,7 +103,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD leaving UNGUARDED
     expose objectMgr viewClass viewInstance
-    say "RcView-leaving-01. viewClass =" viewClass "viewInstance =" viewInstance
+    --say "RcView-leaving-01. viewClass =" viewClass "viewInstance =" viewInstance
     objectMgr~removeView(viewClass, viewInstance)
     -- Note - we do not remove the Model. Should we? If so, not from here!
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

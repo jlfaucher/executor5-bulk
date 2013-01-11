@@ -107,9 +107,7 @@
   ::METHOD activate unguarded
     expose rootDlg
     use arg rootDlg
-    say "MessageSender-activate-01."
-    --self~popUp("SHOWTOP")	-- this works, but leaves command prompt in limbo.
-    --self~execute("SHOWTOP")
+    --say "MessageSender-activate-01."
     self~popupAsChild(rootDlg, "SHOWTOP") --, ,"IDI_CUSTLIST_DLGICON")
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -159,13 +157,13 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD sendMessage
     expose objectMgr ecReply stErrorMsg btnClear
-    say; say "---------------------------------------------------------"
-    say "MessageSender-sendMessage-01."
+    --say; say "---------------------------------------------------------"
+    --say "MessageSender-sendMessage-01."
     ecReply~setText("")		-- Clear any reply data from previous requests.
     --error = .false		-- if true, indicates error in data provided.
     message = self~parseData	-- data is a directory, array, string; .false if error.
     if message = .false then do -- if errors found in the data.
-      say "MessageSender-sendMessage-02: message =" message
+      --say "MessageSender-sendMessage-02: message =" message
       btnClear~enable()		-- allow user to clear entries.
       return .false
     end
@@ -184,7 +182,7 @@
     end
 
     -- Send the Message and Display the response:
-    say "MessageSender-sendMessage-03: message[data] =" message["data"]
+    --say "MessageSender-sendMessage-03: message[data] =" message["data"]
     response = sendMsg(componentRef, message["method"],message["data"])
     select
       when response = "SendMsg - Syntax Error" then do
@@ -304,7 +302,7 @@
     -- Special Treatments:
     if message["class"] = "ObjectMgr" & message["instance"] = "The" then do
       -- Only List and ShowModel allowed (at present).
-      say "MessageSender-parseData-01a: msg to ObjectMgr."
+      --say "MessageSender-parseData-01a: msg to ObjectMgr."
       method = message["method"]
       method = method~upper
       select
@@ -316,23 +314,23 @@
           modelName = ecData~getLine(1)
           parse var modelName modelClass " " modelInstance
           modelClass = modelClass~strip; modelInstance = modelInstance~strip
-          say "MessageSender-parseData-01b: model Class/Inst =" modelClass modelInstance
+          --say "MessageSender-parseData-01b: model Class/Inst =" modelClass modelInstance
           -- Setup self as "Parent" dilaog for offsetting the view to be shown:
           .local~my.ViewMgr~parentOffsetDlg = self
           -- Now show the model:
           r = objectMgr~showModel(modelClass, modelInstance, rootDlg)
-          say "MessageSender-parseData-01c: return =" r
+          --say "MessageSender-parseData-01c: return =" r
           return "special"
         end
         otherwise do
-          say "MessageSender-parseData-01d:" method "is invalid."
+          --say "MessageSender-parseData-01d:" method "is invalid."
           targetMethodError = .true
           --return .false
         end
       end
     end
     else do
-      say "MessageSender-parseData-01d."
+      --say "MessageSender-parseData-01d."
       if message["class"] = "ViewMgr" & message["instance"] = "The" then do
         method = message["method"]
         method = method~upper
@@ -343,7 +341,7 @@
           .local~my.ViewMgr~parentOffsetDlg = self
           -- Now show the model:
           r = .local~my.ViewMgr~showModel(modelClass, modelInstance, rootDlg)
-          say "MessageSender-parseData-01e: return =" r
+          --say "MessageSender-parseData-01e: return =" r
           return "special"
         end
       end
@@ -356,7 +354,7 @@
     msgData = ""
     do i=1 to ecData~lines()
       msgData = msgData||ecData~getLine(i)
-      say "MessageSender-parseData-02: Data = '"||msgData||"'"
+      --say "MessageSender-parseData-02: Data = '"||msgData||"'"
     end
     -- Everything now in a single text string. So now check the data type:
     --say "chars = '"||msgData||"'"
@@ -375,7 +373,6 @@
         dirMsgData = .Directory~new
         separators = msgData~countStr("["); closers = msgData~countStr("]")
         if separators \= closers then formatError = .true
---trace i
         if \formatError then do
           do i = 1 to separators
             parse var msgData "[" index "]" msgData
@@ -384,7 +381,6 @@
           end
           message["data"] = dirMsgData
         end
---trace off
       end
 
       when msgDataType = "arr" then do
@@ -396,7 +392,7 @@
           parse var msgData item "|" msgData
           item = item~strip
           arrMsgData[i] = item
-          say "item =" "'"||item||"'"
+          --say "item =" "'"||item||"'"
         end
         message["data"] = arrMsgData
       end
@@ -448,12 +444,12 @@
 
 ::ROUTINE sendMsg
   use arg targetObject, targetMethod, data
-  say "MessageSender-sendMsg-01: targetObject targetMethod data =" targetObject targetMethod data
+  --say "MessageSender-sendMsg-01: targetObject targetMethod data =" targetObject targetMethod data
   SIGNAL ON SYNTAX NAME catchIt1
   SIGNAL ON NOMETHOD NAME catchIt2
   msg = .Message~new(targetObject, targetMethod, i, data)
   response = msg~send
-  say "MessageSender-sendMsg-02: response =" response
+  --say "MessageSender-sendMsg-02: response =" response
   return response
   catchIt1: say "MessageSender-sendMsg-03: CatchIt1 - Syntax."
   SIGNAL OFF SYNTAX

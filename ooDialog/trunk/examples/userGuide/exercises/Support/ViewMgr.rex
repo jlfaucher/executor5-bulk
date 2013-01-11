@@ -37,11 +37,14 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ViewMgr							 v00-01  23Apr12
+  ViewMgr							 v01-00  11Jan13
   ----------
   A singleton component that manages Views and view-related function
   such as Popup Offsetting.
 
+  Changes:
+    v01-00 23Apr12: First version
+           11Jan13: Comment-out 'say' instructions.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 --::REQUIRES "ObjectMgr.rex"
@@ -61,7 +64,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     --expose dlgOffset
-    say "ViewMgr-init."
+    --say "ViewMgr-init."
     .local~my.ViewMgr = self
     self~mvTable = .Table~new
     self~dlgOffset = 200
@@ -76,7 +79,7 @@
   ::METHOD setPopupParent PUBLIC
     use strict arg parentDlg	-- the dialog id of the Parent View
     self~parentDlg = parentDlg
-    say "ViewMgr-setPopupParent-01. Parent View =" parentDlg
+    --say "ViewMgr-setPopupParent-01. Parent View =" parentDlg
 
   /*----------------------------------------------------------------------------
     offsetDlg  - Calculates the desired position of a "child" dialog given
@@ -99,7 +102,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD addView PUBLIC
     use strict arg model, view
-    say "ViewMgr-addView-01."
+    --say "ViewMgr-addView-01."
     -- Check if view already exists:
 
     -- QUESTION! Does the ObjectMgr know about Views? Why should it?
@@ -129,7 +132,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD showModel PUBLIC
     use strict arg modelClass, modelInstance
-    say "ViewMgr-showModel-01: class / instance:" modelClass "/" modelInstance
+    --say "ViewMgr-showModel-01: class / instance:" modelClass "/" modelInstance
     -- Get the ObjectMgr to do the work:
     dlg = .local~my.ObjectMgr~showModel(modelClass, modelInstance)
     if dlg = .false then do
@@ -137,7 +140,7 @@
       return .false
     end
     else do
-      say "ViewMgr-showModel-03: good response from ObjectMgr."
+      --say "ViewMgr-showModel-03: good response from ObjectMgr."
       return .true
     end
 
@@ -152,16 +155,6 @@
       say i tbl[i]
     end
 */
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-  /*----------------------------------------------------------------------------
-
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-  /*----------------------------------------------------------------------------
-
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /*============================================================================*/
