@@ -131,6 +131,16 @@
  *             be better to send a WM_CLOSE message, do a DestroyWindow() in the
  *             WM_CLOSE processing, and use the WM_DESTROY processing to clean
  *             up.  I.e., use the normal Windows strategy.
+ *
+ *             It is tempting to set pcpbd->hDlg here.  But, if we do we break
+ *             the deprecated CategoryDialog.  So, for now we don't do that.  At
+ *             some point, it would be best to simply say the CategoryDialog
+ *             support is removed and do that.  Note that the chidl dialogs of
+ *             the CategoryDialog, *only* use this window procedure.  So, it is
+ *             only here that we need to worry about this.  It is the
+ *             customDrawCheckIDs() that needs the handle.  No category child
+ *             dialog can have custom draw, so we set pcpbd->hDlg if we are
+ *             going to call that function.
  */
 LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -156,11 +166,12 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             RexxSetProcessMessages(FALSE);
         }
 
-        pcpbd->hDlg = hDlg;
         setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)pcpbd);
 
         if ( pcpbd->isCustomDrawDlg && pcpbd->idsNotChecked )
         {
+            pcpbd->hDlg = hDlg;
+
             // We don't care what the outcome of this is, customDrawCheckIDs
             // will take care of aborting this dialog if the IDs are bad.
             customDrawCheckIDs(pcpbd);
