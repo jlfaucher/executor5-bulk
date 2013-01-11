@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,8 +35,8 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: The Order Management Application
-   Startup.rex 							  v01-01 07Aug12
+   Exercise 07: The Order Management Application
+   Startup.rex 							  v01-02 11Aug12
 
    Description: This file is the "application" or "root" or "starter" part
                 of the sample Order Management application.
@@ -45,6 +45,8 @@
      v01-00 06Jun12: First version.
      v01-01 07Aug12: Support for ObjectMgr and ViewMgr added. MessageSender is
                      optional.
+            11Jan13: Deleted Commented-out startup of MessageSender.
+
 
 ------------------------------------------------------------------------------*/
 
@@ -60,9 +62,6 @@ end
 -- Create Object Manager and View Manager:
 om = .ObjectMgr~new
 vm = .ViewMgr~new
-
--- Start Message Sender:
---.MessageSender~newInstance()
 
 -- Start OrderMgrView:
 .OrderMgrView~newInstance
