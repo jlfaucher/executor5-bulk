@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: The OrderModel and OrderData Classes	  	  v02-00 08Jan13
+   Exercise 07: The OrderModel and OrderData Classes	  	  v02-00 11Jan13
 
    Contains: 	   classes "OrderModel", OrderListModel, and "OrderData".  --Ex07
    Pre-requisites: None.
@@ -55,13 +55,14 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  OrderModel							  v02-00 24Aug12
+  OrderModel							  v02-00 11Jan13
   ------------
   The "model" part of the Order component.
 
   Changes:
    v01-00 07Jun12: First version.
    v02-00 24Aug12: Modified to use the MVF.
+          11Jan13: Commented-out 'say' instructions.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -91,8 +92,8 @@
     expose orderData
     use strict arg orderData				-- Ex07: data provided by Superclass.
     self~myData = orderData				-- Ex07: store in superclass's attribute.
-    say "OrderModel-init-01: orderData =" orderData
-    say "OrderModel-init-02: self~myData =" self~myData
+    --say "OrderModel-init-01: orderData =" orderData
+    --say "OrderModel-init-02: self~myData =" self~myData
 
     -- MVF gives gets the Order's Header data for the OrderModel, and OrderDetails for
     -- the OrderListModel. Here we've got the Order Headers; now we need to ask
@@ -135,7 +136,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -.*/
   ::METHOD newInstance CLASS PUBLIC
     use strict arg instanceName				-- invoked by ObjectMgr
-    say ".OrderFormModel-newInstanceName-01."
+    --say ".OrderFormModel-newInstanceName-01."
     forward class (super) continue					--Ex07
     modelId = RESULT							--Ex07
     return modelId							--Ex07
@@ -145,14 +146,14 @@
     getInstanceName - over-rides super's method.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -.*/
   ::METHOD getInstanceName CLASS PUBLIC
-    say ".OrderFormModel-getInstanceName-01."
+    --say ".OrderFormModel-getInstanceName-01."
     if self~nextOrderNumber = "NEXTORDERNUMBER" then do	-- No instance name set
       self~nextOrderNumber = "SO-4999"
     end
     number = self~nextOrderNumber~right(4)
     number += 1
     self~nextOrderNumber = "SO-"||number
-    say ".OrderFormModel-getInstanceName-02: instanceName =" self~nextOrderNumber
+    --say ".OrderFormModel-getInstanceName-02: instanceName =" self~nextOrderNumber
     return self~nextOrderNumber
 
 
@@ -167,7 +168,7 @@
     expose orderData
     use strict arg orderData				-- Ex07: data provided by Superclass.
     self~myData = orderData				-- Ex07: store in superclass's attribute.
-    say "OrderModel-init-01: orderData =" orderData
+    --say "OrderModel-init-01: orderData =" orderData
     return self
 
 /*============================================================================*/
@@ -197,7 +198,7 @@
       forward class (super) continue		-- MVF: super does the ~new and
                                                 --   passes data as a param on the init.
       modelId = RESULT				-- MVF
-      say ".OrderListModel-newInstance-01: id =" modelId
+      --say ".OrderListModel-newInstance-01: id =" modelId
       return modelId				-- MVF - could just say 'return modelId'.
 
 
@@ -212,8 +213,8 @@
     expose arrData
     use strict arg arrData
     self~myData = arrData
-    say "OrderListModel-init-01: data = " self~myData
-    say "OrderListModel-init-02: type and dimensions:" self~myData self~myData~dimension
+    --say "OrderListModel-init-01: data = " self~myData
+    --say "OrderListModel-init-02: type and dimensions:" self~myData self~myData~dimension
     return self
 
 
@@ -224,7 +225,7 @@
             also gets the Customer Name from the appropriate Customer Model.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD query PUBLIC
-    say "OrderListModel-query-01: self~myData =" self~myData
+    --say "OrderListModel-query-01: self~myData =" self~myData
     -- myData is an array of records. Now get Customer
     return self~myData
 

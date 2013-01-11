@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The Order ListView 				  v02-00 08Jan13
+   Exercise 07: The Order ListView 				  v02-00 11Jan13
 
    Contains: class "OrderListView", "HRSolv"
 
@@ -50,6 +50,7 @@
    v01-00 07Jun12: First Version (Ex06).
    v02-00 25Aug12: Updated for Ex07 using the MVF.
           08Jan13: Removed stand-alone startup (not now needed).
+          11Jan13: Commented-out 'say' instructions.
 
    Outstanding Problems: None reported.
 
@@ -82,9 +83,9 @@
 
   ::METHOD newInstance CLASS PUBLIC
     use strict arg idModel, rootDlg						  --Ex07
-    say ".OrderListView-newInstance-01: root, idModel =" rootDlg idModel
+    --say ".OrderListView-newInstance-01: root, idModel =" rootDlg idModel
     dlg = self~new("Order\OrderListView.rc", "IDD_ORDLIST_LISTVIEW")
-    say ".OrderListView-newInstance-02."
+    --say ".OrderListView-newInstance-02."
     dlg~activate(idModel, rootDlg)					  --Ex07
     return dlg								  --Ex07
 
@@ -108,7 +109,7 @@
   ::METHOD createMenuBar
     -- Creates the menu bar on the dialog.
     expose menuBar
-    say "OrderListView-createMenuBar-01."
+    --say "OrderListView-createMenuBar-01."
     menuBar = .ScriptMenuBar~new("Order\OrderListView.rc", "IDR_ORDLIST_MENU", , , .true)
     return .true
 
@@ -117,7 +118,7 @@
   ::METHOD activate UNGUARDED
     expose rootDlg modelData						  --Ex07
     use strict arg idModel, rootDlg					  --Ex07
-    say "OrderListView-activate-01: idModel, root =" idModel rootDlg
+    --say "OrderListView-activate-01: idModel, root =" idModel rootDlg
     forward class (super) continue					  --Ex07
     modelData = RESULT							  --Ex07
     --say "OrderListView-activate-02: modelData =" modelData
@@ -132,7 +133,7 @@
 
     menuBar~attachTo(self)
 
-    say "OrderListView-initDialog-01"; say
+    --say "OrderListView-initDialog-01"; say
     lvOrders = self~newListView("IDC_ORDLIST_LIST");
     lvOrders~addExtendedStyle(GRIDLINES FULLROWSELECT)
     lvOrders~insertColumnPX(0,"OrderNo",60,"LEFT")
@@ -177,7 +178,7 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD openItem UNGUARDED
-    say "OrderListView-openItem-01: item selected =" item
+    --say "OrderListView-openItem-01: item selected =" item
     self~showOrder
 
 
@@ -189,14 +190,14 @@
   ::METHOD showOrder unguarded
     expose lvOrders rootDlg
     item = lvOrders~selected
-    say "OrderListView-showOrder-01: item selected =" item
+    --say "OrderListView-showOrder-01: item selected =" item
     if item = -1 then do		-- if no item selected.
       ret = MessageDialog(.HRSolv~nilSelected, self~hwnd, title, 'WARNING')
       return
     end
     info=.Directory~new
     if lvOrders~getItemInfo(item, info) then do
-      say "OrderListView-showOrder-02: info~text =" info~text
+      --say "OrderListView-showOrder-02: info~text =" info~text
       objectMgr = .local~my.ObjectMgr
       objectMgr~showModel("OrderModel", info~text, rootDlg)		--Ex07
       self~disableControl("IDC_ORDLIST_SHOWORDER")
@@ -208,7 +209,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD loadList
     expose lvOrders modelData						-- Ex07
-    say "OrderListView-loadList-01: dataArray =" modelData		-- Ex07
+    --say "OrderListView-loadList-01: dataArray =" modelData		-- Ex07
     rows = modelData[count]						-- Ex07 - number of rows
     arrData = modelData[records]
     --say "OrderListView-loadList-02:Dims =" modelData~dimension(1) modelData~dimension(2)

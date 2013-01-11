@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: Customer Models and Data Classes	  	  v02-00 08Jan13
+   Exercise 07: Customer Models and Data Classes	  	  v02-00 11Jan13
 
    Contains: 	   classes "CustomerModel" "CustomerListModel" and "CustomerData".
 
@@ -46,8 +46,8 @@
 
    Changes:
    v01-00 07Jun12: First version.
-   v02-00 08Jan13: Modified to use the Model-View Framework with data read from
-                     file using the GenericFile class. CustomerListModel added.
+   v02-00 11Jan13: Modified to use the Model-View Framework with data read from
+                   file using the GenericFile class. CustomerListModel added.
                    Commented out 'say' instructions.
 ------------------------------------------------------------------------------*/
 
@@ -75,7 +75,7 @@
   ::METHOD newInstance CLASS PUBLIC
     expose noDataError
     use strict arg instanceName
-    say ".CustomerModel-newInstance-01; class name =" self~objectName
+    --say ".CustomerModel-newInstance-01; class name =" self~objectName
     -- Get my data via my superclass:
     forward class (super) continue
     customerId = RESULT
