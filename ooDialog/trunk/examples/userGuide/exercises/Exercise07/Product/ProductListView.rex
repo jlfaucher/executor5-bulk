@@ -36,13 +36,14 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide - Exercise07
 
-  ProductListView						  v02-00 09Jan13
+  ProductListView						  v02-00 11Jan13
   -------------
   The view of a list of products.
 
   Changes:
     v01-00 06Jun12: First version
     v02-00 21Aug12: Modified for Exercise07 to use the Model-View Framework.
+           11Jan13: Commented-out 'say' instructions.
 
   Contains: classes "ProductListView, HRSplv (for human-readable strings)
 
@@ -191,7 +192,7 @@
   ::METHOD showProduct UNGUARDED
     expose lvProducts rootDlg
     item = lvProducts~selected
-    say "ProductListView-showProduct-01: item selected =" item
+    --say "ProductListView-showProduct-01: item selected =" item
     if item = -1 then do		-- if no item selected.
       ret = MessageDialog(.HRSplv~nilSelected, self~hwnd, title, 'WARNING')
       return

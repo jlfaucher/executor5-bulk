@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: The OrderManagementBaseView class
+   Exercise 07: The OrderManagementBaseView class
    OrderMgrBaseView.rex						  v02-00 07Jan13
 
    Contains: classes "OrderMgrBaseBase", HRSombv (private).

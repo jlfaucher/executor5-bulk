@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: ProductView.rex - The ProductView component       v02-00 09Jan13
+   Exercise 07: ProductView.rex - The ProductView component       v02-00 11Jan13
 
    Contains: 	   classes "ProductView", "AboutDialog", and "HRSpv".
 
@@ -51,7 +51,7 @@
    Changes:
    v01-00 03Jun12: First version for Exercise05.
    v01-01 06Jun12: Minor changes for Exercise06.
-   v02-00 09Jan12: Removed stand-alone operation, plus some comments.
+   v02-00 11Jan12: Removed stand-alone operation, plus some comments.
                      Method 'getData' removed (now redundant).
 
 ------------------------------------------------------------------------------*/
@@ -91,7 +91,7 @@
   ::METHOD newInstance CLASS PUBLIC UNGUARDED
     use arg idModel, rootDlg						--Ex07
     if parent = "SA" then hasParent = .false; else hasParent = .true
-    say ".ProductView-newInstance-01: model, rootDlg =" idModel rootDlg
+    --say ".ProductView-newInstance-01: model, rootDlg =" idModel rootDlg
     .Application~addToConstDir("Product\ProductView.h")
     -- Create an instance of ProductView and show it:
     dlg = self~new("Product\res\ProductView.dll", IDD_PRODUCT_VIEW)
