@@ -128,18 +128,29 @@
 <![CDATA[
 GetComponentId for a Model when neither Model nor Data have been instantiated.
 
-  X:            getComponentId('PersonModel', 'PA100')       -->  ObjectMgr
-  ObjectMgr:      newInstance('PA100')                       -->  .PersonModel
-  .PersonModel:     forward class (super) continue           -->  .Model
-  .Model:             getComponentId('PersonData','The')     -->  ObjectMgr
-  ObjectMgr:        ...return idPersonData                   ...  .Model
-  .Model:           getRecord('PA100')                       -->  PersonData
-                    (no 'getRecord' method, so call super)   -->  GenericFile
-  GenericFile     ... return dirData                         ...  .Model
-  .Model          self~new(dirData) - init(dirData)          -->  PersonModel
-  PersonModel       ... init: store dirData, return self     ...  .Model
-  .Model          ... return idPersonModel                   ...  ObjectMgr
-  ObjectMgr     ... return idPersonModel                     ...  X
+  Note: (ObjectMgr maintains a table of all active instances - classname, instancename and object ref).
+
+   (1)  X --> invokes "getComponentId('PersonModel','PA150') on ObjectMgr. 
+   (2)    <-- ObjectMgr, if the object ref for "PersonModel PA150" exists, returns it to X.
+   (3)        Else ObjMgr invokes "newInstance" (with the instance name "PA150" as an argument) on .PersonModel. 
+   (4)        --> .PersonModel forwards to its superclass (.Model) which, in order to get this instance's data,
+                  invokes "getComponentId('PersonData','The')" on ObjectMgr.
+   (5)            --> ObjectMgr, if "PersonData The" exists, 
+   (6)            <-- returns its object ref to .Model.
+   (7)                Else ObjectMgr invokes "newInstance",with the instance name "The", on .PersonData.
+   (8)                --> .PersonData creates an instance of itself ("Person Data The") and the instance's
+                          'init' method uses its superclass to read its file from disk. 
+   (9)                <-- The object ref for "PersonData The" is returned to ObjectMgr.
+   (10)           <-- ObjectMgr stores the object ref (and name) for "PersonData The", and returns it to .Model.
+   (11)           .Model then invokes "query", with the instance name ("PA150"), on "PersonData The". 
+   (12)           --> "PersonData The" uses its superclass ("GenericFile") to read the data from disk, and
+   (13)           <-- returns the instance data (as a directory) to .Model.
+   (14)           .Model issues "self~new" with the instance data as a parameter, so creating a PersonModel instance.
+   (15)           --> PersonModel's init method saves the data and 
+   (16)           <-- returns to .Model 
+   (17)       <-- .Model returns the id to ObjectMgr.
+   (18) X <-- ObjectMgr returns the id to X.
+
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PersonModel

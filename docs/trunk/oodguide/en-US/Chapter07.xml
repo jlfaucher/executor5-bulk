@@ -43,15 +43,15 @@
     #########################################################################
 -->
 
-<!-- Chapter07 - A Working Application		 		  v00-02 08Jan13
+<!-- Chapter07 - A Working Application		 		  v01-00 10Jan13
 
     Changes:
-     v01-00 ddMmm13: First version.
+     v01-00 10Jan13: First version.
 
-    7   *  Towards A Working Application	                                      chapSeven
+    7   *  Towards A Working Application	                                          chapSeven
     7.1   * Introduction                                                              chap07-intro
     7.2   * A 'Model-View Framework'                                                  chap07-mvf
-    7.2.1   * Objectives		                                              chap07-mvf-objs
+    7.2.1   * Objectives		                                                      chap07-mvf-objs
               - What has to happen to open dialog (get data etc.)
               - Try PersonModel (use MsgSender - more detail later) and Wow4
               - Look at code.
@@ -59,7 +59,7 @@
     7.2.2   * MVF Overview                                                            chap07-mvf-oview
               - Consists of superclasses (Model, View and GenericFile)
                 and "manager" objects.
-    7.2.2.1 * ObjectMgr - Overview only - see appendix 5 for details.                 chap07-mvf-oview-omgr
+    7.2.2.1 * ObjectMgr - Overview only - see appendix 5 for details.                 chap07-mvf-oview-objmgr
                 Summary of methods used
                 - list - Lists a file on the console.
     7.2.2.2   * Model                                                                 chap07-mvf-oview-model
@@ -108,72 +108,78 @@
             separated by a vertical bar character, and field names are defined in the first line of
             the file). However, although the data can be changed in dialogs, the changed data does
             not (in this exercise) update the files. </para>
-        <para>Finally, note that the "Help" menu on the main Sales Order Management dialog now
-            includes an option "Message Sender" (discussed in more detail in section <xref linkend="ch7-msgsender.title"/>. 
-            Click this option 
-            and a "Message Sender" dialog opens. This can be used to send messages to (invoke
-            methods on) the various components, and is a very useful debugging tool. For example,
-            try sending a "query" message to the Customer whose key is BA0314. To do this, key
-            "CustomerModel BA0314" in the "Target" field, "query" in the Method field, and then
-            press the "Send" button. The customer's data is returned in the "Reply" field in a
+        <para>Also, note that the "Help" menu on the main Sales Order Management dialog now includes
+            an option "Message Sender" (discussed in more detail in <xref
+                linkend="ch7-msgsender.title"/>. Click this option and a "Message Sender" dialog
+            opens. This sends messages to (invoke methods on) the various components, and is a very
+            useful debugging tool that replaces the "stand-alone" function used in the previous
+            exercise. For example, try sending a "query" message to the Customer whose key is
+            BA0314. To do this, key <computeroutput>CustomerModel BA0314</computeroutput> in the
+                <emphasis role="bold">Target</emphasis> field ,
+                <computeroutput>query</computeroutput> in the <emphasis role="bold"
+                >Method</emphasis> field, and then press <emphasis role="bold">Send</emphasis>. The
+            customer's data is returned in the <emphasis role="bold">Reply</emphasis> field as a
             name-value string. </para>
         <para>Now try using the Message Sender to surface a Product dialog - say the view for
-            Product CU003.  To do this, enter "ObjectMgr The" in the Target field of the Message
-            Sender, enter "showModel" in the "method" field, enter "ProductModel CU003" in the Data
-            field, and then press the "Send" button. The Product dialog for instance CU003 appears.
-            The Message Sender is discussed in <xref linkend="chap07-msgsender"/>.
-        </para>
+            Product CU003. To do this, key <computeroutput>ObjectMgr The</computeroutput>  in the
+                <emphasis role="bold">Target</emphasis> field,
+                <computeroutput>showModel</computeroutput> in the <emphasis role="bold"
+                >Method</emphasis> field, and <computeroutput>ProductModel CU003</computeroutput> in
+            the Data field. Now press <emphasis role="bold">Send</emphasis>. The Product dialog for
+            instance CU003 appears. </para>
         <para>The "ObjectMgr" (which should really be called "ComponentManager" since it manages
             application components as opposed to any object) is a support class that instantiates
             components by invoking a component's <emphasis role="italic">newInstance</emphasis>
             class method. It also keeps track of which components are already instantiated. For more
-            detail see <xref linkend="apx-mvfinternals"/></para>
+            detail see <xref linkend="chap07-mvf-oview-objmgr"/></para>
         <para>Consider now what has to happen to display the Product View. First, a
-                <computeroutput>ProductData</computeroutput> instance is created, and its data read
-            from disk (in this exercise, the whole file is read in by the data components). Then the
-            appropriate <computeroutput>ProductModel</computeroutput> component is instantiated and
-            its data retrieved from the <computeroutput>ProductData</computeroutput> component.
-            Finally, an instance of <computeroutput>ProductView</computeroutput> is created and its
-            data retrieved from the <computeroutput>ProductModel</computeroutput> component by
-            invoking its <emphasis>query</emphasis> method. </para>
+                <computeroutput>ProductData</computeroutput> instance must be created, and its data
+            is read from disk (in this exercise, the whole file is read in). Then the appropriate
+                <computeroutput>ProductModel</computeroutput> component is instantiated and its data
+            retrieved from the <computeroutput>ProductData</computeroutput> component. Finally, an
+            instance of <computeroutput>ProductView</computeroutput> is created and its data
+            retrieved from the <computeroutput>ProductModel</computeroutput> component by invoking
+            its <emphasis>query</emphasis> method. </para>
         <para>This sequence is a pattern that can be applied to most business components, and hence
-            can be placed in superclasses so that the application components do not each have to
-            provide the same duplicated code. The pattern is called the "Model-View Framework",
-            which is discussed in the next section. After that,  the Message Sender is briefly
-            discussed, following which the details of the Order Form component are addressed.  </para>
+            can be handled by superclasses so that the application components do not have to provide
+            the same duplicated code. This pattern is called the "Model-View Framework", which is
+            discussed in the next section. After that, the Message Sender is discussed in more
+            detail, following some details of the Order Form component are addressed. </para>
 </section>     <!-- End of Section 7.1 -->
 
 <section id="chap07-mvf"><title id="ch7-mvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
 
 <section id="chap07-mvf-objs"><title id="ch7-mvf-objs.title">MVF Objective</title>		<!-- Section 7.2.1 -->
+    <para>For a discussion of the internals of the MVF, see <xref linkend="apx-mvfinternals"
+                />.</para>
         <para>The objective of the ModelView Framework (MVF) is to provide a simple mechanism
-            whereby application components can read and write data and display views without
-            needing to be aware of how this is done. The MVF supports the view-model-data
-            separation of concerns in application-level components. For example, if a user
-            double-clicks on an item in say the Product List dialog, then it is expected that
-            a product dialog displaying the data associated with that item in the list view will
-            be displayed. Consider that retrieving data and displaying it requires the following
-            actions:</para>
+                whereby application components can read and write data and display views without
+                needing to be aware of how this is done. The MVF also supports the view-model-data
+                separation of concerns in application-level components. </para>
+            <para>When a user double-clicks on an item in say the Product List dialog, the confident
+                expectation is that a product dialog that shows the data associated with the list
+                item will be displayed. Now consider what has to happen to make that product dialog
+                appear:</para>
             <orderedlist>
                 <listitem>
-                    <para>Create the appropriate Data component, which:</para>
+                    <para>Create the appropriate Data component, which...</para>
                 </listitem>
                 <listitem>
-                    <para>Opens the data file and reads the data.</para>
+                    <para>... opens the correct data file and reads the data.</para>
                 </listitem>
                 <listitem>
-                    <para>Create the Model component and pass it its "key" (e.g. product
-                        number)</para>
+                    <para>Create the Model component and provide it with its "key" (e.g. product
+                        number).</para>
                 </listitem>
                 <listitem>
-                    <para>Get a reference to the Data component</para>
+                    <para>In the Model component, get a reference to the Data component.</para>
                 </listitem>
                 <listitem>
-                    <para>Invoke a "get" on the Data component to retrieve the data associated with
-                        the Model's key</para>
+                    <para>Invoke a method on the Data component to retrieve the data associated with
+                        the Model's key.</para>
                 </listitem>
                 <listitem>
-                    <para>Create a View component</para>
+                    <para>Create a View component.</para>
                 </listitem>
                 <listitem>
                     <para>Provide that view component with the data to be displayed in the
@@ -187,15 +193,70 @@
                 However, the MVF must work when some or all are activated. For example, if a View
                 exists but is minimized, then if a user double-clicks on that item in a list, the
                 MVF need only surface the view. Thus the MVF distinguishes between a number of
-                different states, and relieves the programmer from having to code such logic for
-                each component.
-  </para>
-  <para>
-    Now look at Person in Samples ...
-  </para>
-    <para>
-    Now look at OrderMgr ...
-  </para>
+                different states, and relieves the programmer from having to code the logic for
+                each component and for each possible state. </para>
+    <para> In the previous exercise, the code in <computeroutput>OrderMgrView</computeroutput> 
+      that launched (for example) a Customer List View was as follows: 
+      <programlisting>
+      <![CDATA[
+  ::METHOD showModel UNGUARDED
+    use arg record
+    className = record~ID
+    viewClassName = className||"View"
+    interpret "."||viewClassName||"~newInstance(self)"
+      ]]>
+      </programlisting>
+    The list data was hard-coded in the list view class, 
+    and launching a Customer View from the list was done by the <computeroutput>showCustomer</computeroutput> method:
+    <programlisting>
+    <![CDATA[
+  ::METHOD showCustomer UNGUARDED
+    ...
+    .local~my.idCustomerData  = .CustomerData~new	-- create Customer Data instance
+    .local~my.idCustomerModel = .CustomerModel~new	-- create Customer Model instance
+    .local~my.idCustomerData~activate
+    .local~my.idCustomerModel~activate
+    .CustomerView~newInstance(rootDlg,"CU003")
+    ...
+    ]]>
+    </programlisting>
+    The <computeroutput>getData</computeroutput> method of <computeroutput>CustomerView</computeroutput> then 
+    invoked <computeroutput>query</computeroutput> on <computeroutput>CustomerModel</computeroutput> 
+    (finding its id in <computeroutput>.local</computeroutput>), which in turn invoked <computeroutput>getData</computeroutput>
+    on <computeroutput>CustomerData</computeroutput>, which returned hard-coded Customer data. 
+    </para>
+    <para>Now look at the sequence in Exercise07. First, <computeroutput>OrderMgrView</computeroutput> has the names
+        of the possible model classes (e.g. <computeroutput>CustomerListModel</computeroutput>) hard-coded in its
+        <computeroutput>initRecords</computeroutput> method (although these could arguably be better placed in a configuration file).
+        The <computeroutput>showModel</computeroutput> method is as follows: 
+      <programlisting>
+      <![CDATA[
+  ::METHOD showModel UNGUARDED
+    expose idObjectMgr  -- got from .local in the init method
+    use arg record
+    className = record~ID
+    r = idObjectMgr~showModel(classname, "a", self)			
+      ]]>
+      </programlisting>
+    Here, the Object Manager (<computeroutput>idObjectMgr</computeroutput>) handles the task of ensuring that both
+        the Data and Model components are active. It checks to see if they are already activated; if not, it instantiates them.
+        It then instantiates the appropriate List View component, and launching a Customer View from the list is done as follows:
+        The second parameter ("a") in the last statement is the instance name of the List View, and stands for "Anonymous". Instance names are
+        discussed in <xref linkend="ch7-mvfuse-kinds.title"/>. The <computeroutput>showCustomer</computeroutput> method in the
+        Customer List component, where <computeroutput>info~text</computeroutput> is the Customer Number (also used as the instance name),
+        is as follows: 
+        <programlisting>
+    <![CDATA[
+  ::METHOD showCustomer UNGUARDED
+    ...
+      objectMgr = .local~my.ObjectMgr
+      objectMgr~showModel("CustomerModel", info~text, rootDlg)		
+    ...
+    ]]>
+    </programlisting>
+        
+    </para>
+    <para>Now look at Person....</para>
 
 </section>	<!-- End of Section 7.2.1 -->
 
@@ -205,7 +266,7 @@
               - Overview only - see appendix 5 for details.
 -->
 
-<para> The MVF handles the three different kinds of component - view, model, and data. Each model
+<para> The MVF handles the three different types of component - view, model, and data. Each model
                 gets its data from its data component, and each model has a single view.
                 (A production-strength MVF could support multiple views of the same model by providing an
                 "Open as..." option for a given icon or list item. This would display a selection of
@@ -219,16 +280,15 @@
                 For components with a "key" such as Customer Number, the instance
                 name is the key (e.g. "CustomerModel BA0314"). For components that are "singletons"
                 - that is, there can logically be only one instance, the name is "The". An example
-                of a singleton is a data component (e.g. "CustomerData The").  Finally, some
+                of a singleton is a data component (e.g. "CustomerData The"). Finally, some
                 components - such as lists - are anonymous, and their instance names are numbers, as
                 in "CustomerList 3". The instance name is important to MVF since its internal logic
                 differs slightly depending on which kind of instance name is used - a "key" name,
                 the singleton name, or the anonymous name. (Note that this naming convention could
                 be relaxed if components were named in a configuration file; however, the
-                distinctions between the different kinds of component would remain).
-
-            Note: also "Forms" - take instance name of entity id = e.g. Order Number</para>
-
+                distinctions between the different kinds of component would remain - see
+                <xref linkend="ch7-mvfuse-kinds.title"/> for further discussion.
+            </para>
 
 <section id="chap07-mvf-oview-objmgr"><title id="ch7-mvf-oview-objmgr.title">The Object Manager</title>	<!-- Section 7.2.2.1 -->
 <para>Suppose now that some component X wants to send 'query' to the instance "PA150" of PersonModel
@@ -238,28 +298,7 @@
                 pseudocode illustrates how the MVF handles this (excluding error handling):
 <programlisting>
   <![CDATA[
-    (1) X (where X is some component) invokes "getComponentId('PersonModel','PA150') on ObjectMgr
-          (ObjectMgr maintains a table of all active instances - classname, instancename and object ref).
-    (2)   ObjMgr: If "PersonModel PA150" exists then its object ref is returned to X.
-    (3)   Else ObjMgr sends "newInstance" to .PersonModel (the class object) with the instance name "PA150"
-            as an argument. This is forwarded to the .Model superclass, which, in order to get this instance's data,
-            invokes "getComponentId('PersonData','The')" on ObjectMgr.
-    (4)       ObjMgr: If "PersonData The" exists, then its object ref is returned.
-              Else ObjectMgr sends "newInstance" to .PersonData with the instance name "The".
-    (6)         .PersonData ceates an instance of itself, and the instance's 'init' method uses its superclass
-                  .GenericFile to reads its file from disk. The 'init' method then returns the instance's object ref
-                  .PersonData, which returns it to ObjectMgr
-    (7)         ObjectMgr stores the object ref and object name for "PersonData The", and returns to .Model.
-    (8)       .Model then invokes the 'query' method on "PersonData The" with the instance name ("PA150") as an argument.
-                This is handled entirely by the superclass ("GenericFile") which returns a directory containing
-                the instance's data.
 
-    (9)         "PersonData The" returns the Model's instance's data.
-If data found, then id = .PersonModel~new(data)
-Return Id (to ObjectMgr)
-end
-
-Note - if class name is quoted, then must use precise case match. (Is this correct?)
 ]]>
     </programlisting>
   </para>
@@ -346,10 +385,6 @@ readFile - A private method - Given a filename and the number of columns, reads 
 
 
 
-<!--  In addition, any gi- diff kinds of component; how different kinds use MVF. - Ref
-                "samples\person" and "samples\Wow4". Use MessgeSender to show a view of the
-                PersonModel whose key is PA100. Also, WowModel The. - Ref appendix05 for detail of
-                MVF. </para>-->
 </section>  <!-- End of Section 7.2.2 -->
 </section>  <!-- End of Section 7.2   -->
 
@@ -361,7 +396,12 @@ readFile - A private method - Given a filename and the number of columns, reads 
 
 
 <section id="chap07-mvfuse-kinds"><title id="ch7-mvfuse-kinds.title">Kinds of Component</title>	<!-- Section 7.3.1 -->
-  <para> xxx </para>
+    <para> Note: also "Forms" - take instance name of entity id = e.g. Order Number </para>
+    <!--  In addition, diff kinds of component; how different kinds use MVF. - Ref
+                "samples\person" and "samples\Wow4". Use MessgeSender to show a view of the
+                PersonModel whose key is PA100. Also, WowModel The. - Ref appendix05 for detail of
+                MVF. </para>-->
+    
 </section>	<!-- End of Section 7.3.1 -->
 
 <section id="chap07-mvfuse-datafmts"><title id="ch7-mvfuse-datafmts.title">Data Formats</title>	<!-- Section 7.3.2 -->
