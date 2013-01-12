@@ -3014,7 +3014,7 @@ RexxMethod4(RexxObjectPtr, lv_getSubitemRect, uint32_t, index, uint32_t, subInde
     LVITEMINDEX lvii;
     lvii.iItem  = index;
     lvii.iGroup = I_GROUPIDNONE;
-    printf("flag = %d subitem=%d item=%d\n", flag, subIndex, index);
+
     RECT r;
     if ( ! ListView_GetItemIndexRect(hList, &lvii, subIndex, flag, &r) )
     {
