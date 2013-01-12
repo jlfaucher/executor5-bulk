@@ -1785,6 +1785,39 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             break;
         }
 
+        case LVN_BEGINSCROLL :
+        case LVN_ENDSCROLL   :
+        {
+            NMLVSCROLL    *ps   = (NMLVSCROLL  *)lParam;
+            RexxObjectPtr  rxLV = createControlFromHwnd(c, pcpbd, ps->hdr.hwndFrom, winListView, true);
+            RexxObjectPtr  rxDx = c->Int32(ps->dx);
+            RexxObjectPtr  rxDy = c->Int32(ps->dy);
+
+            msgReply = ReplyTrue;
+
+            RexxArrayObject args = c->ArrayOfFour(idFrom, rxDx, rxDy, rxLV);
+
+            c->ArrayPut(args, code == LVN_BEGINSCROLL ? TheTrueObj : TheFalseObj, 5);
+
+            if ( expectReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                RexxObjectPtr mth = c->String(methodName);
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+                c->ReleaseLocalReference(mth);
+            }
+
+            c->ReleaseLocalReference(rxLV);
+            c->ReleaseLocalReference(rxDx);
+            c->ReleaseLocalReference(rxDy);
+            c->ReleaseLocalReference(args);
+
+            break;
+        }
+
         case LVN_BEGINLABELEDIT :
         {
             NMLVDISPINFO *pdi = (NMLVDISPINFO *)lParam;
@@ -3670,15 +3703,25 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
         *isDefEdit = true;
         *tag = TAG_LISTVIEW | TAG_PRESERVE_OLD;
     }
-    else if ( StrCmpI(keyword, "BEGINEDIT")   == 0 )
+    else if ( StrCmpI(keyword, "BEGINEDIT") == 0 )
     {
         lvn = LVN_BEGINLABELEDIT;
         *tag = TAG_LISTVIEW;
     }
-    else if ( StrCmpI(keyword, "ENDEDIT")     == 0 )
+    else if ( StrCmpI(keyword, "BEGINSCROLL") == 0 )
+    {
+        lvn = LVN_BEGINSCROLL;
+        *tag = TAG_LISTVIEW;
+    }
+    else if ( StrCmpI(keyword, "ENDEDIT") == 0 )
     {
          lvn = LVN_ENDLABELEDIT;
          *tag = TAG_LISTVIEW;
+    }
+    else if ( StrCmpI(keyword, "ENDSCROLL") == 0 )
+    {
+        lvn = LVN_BEGINSCROLL;
+        *tag = TAG_LISTVIEW;
     }
     else if ( StrCmpI(keyword, "CLICK") == 0 )
     {
@@ -3756,6 +3799,8 @@ inline CSTRING lvn2name(uint32_t lvn, uint32_t tag)
         case LVN_COLUMNCLICK    : return "onColumnclick";
         case LVN_BEGINDRAG      : return "onBegindrag";
         case LVN_BEGINRDRAG     : return "onBeginrdrag";
+        case LVN_BEGINSCROLL    : return "onBeginScroll";
+        case LVN_ENDSCROLL      : return "onEndScroll";
         case LVN_ITEMACTIVATE   : return "onActivate";
         case LVN_GETINFOTIP     : return "onGetInfoTip";
         case NM_CLICK           : return "onClick";
@@ -5503,6 +5548,7 @@ err_out:
  *                      BEGINDRAG
  *                      BEGINRDRAG
  *                      BEGINEDIT
+ *                      BEGINSCROLL
  *                      CHANGED
  *                      CHANGING
  *                      COLUMNCLICK
@@ -5510,6 +5556,7 @@ err_out:
  *                      DELETE
  *                      DELETEALL
  *                      ENDEDIT
+ *                      ENDSCROLL
  *                      INSERTED
  *                      KEYDOWN
  *
