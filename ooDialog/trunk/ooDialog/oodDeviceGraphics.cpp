@@ -588,7 +588,7 @@ logical_t oodColorTable(RexxMethodContext *c, pCPlainBaseDialog pcpbd, uint32_t 
 {
     if ( pcpbd->ColorTab == NULL )
     {
-        pcpbd->ColorTab = (COLORTABLEENTRY *)LocalAlloc(LMEM_FIXED, sizeof(COLORTABLEENTRY) * DEF_MAX_CT_ENTRIES);
+        pcpbd->ColorTab = (COLORTABLEENTRY *)LocalAlloc(LPTR, sizeof(COLORTABLEENTRY) * DEF_MAX_CT_ENTRIES);
         if ( pcpbd->ColorTab == NULL )
         {
             outOfMemoryException(c->threadContext);
