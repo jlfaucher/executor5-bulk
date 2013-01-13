@@ -261,6 +261,10 @@
 <entry>Moves and / or resizes the dialog.</entry>
 </row>
 <row>
+<entry><xref linkend="mthSetStyleRaw"/></entry>
+<entry>Sets the value of the window's style flags using the numeric value specified.</entry>
+</row>
+<row>
 <entry><xref linkend="mthSetText"/></entry>
 <entry>Sets the text, the caption, of the dialog.</entry>
 </row>
@@ -3848,6 +3852,101 @@ Generic form:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End WindowBase::setRect() -->
+
+<section id="mthSetStyleRaw" xreflabel="setStyleRaw"><title>setStyleRaw</title>
+<indexterm><primary>setStyleRaw</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>setStyleRaw</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setStyleRaw</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setStyleRaw</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setStyleRaw(--value--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">stStyleRaw</emphasis> method sets the window style flags of the window. The value specified is
+  the raw numeric value. This allows the programmer to set the current style of any dialog or control. However, the
+  programmer needs to be able to look up the numeric value of the window style flags to make use of this functionality. This
+  can be done using the Windows <xref linkend="defWindowsDoc"/> and the Platform <xref linkend="defPlatformSDK"/>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>value [required]</term>
+    <listitem>
+    <para>
+      The new value for the window's style flags. This can either be a non-negative whole number, or for convenience, the
+      number can be expressed as a string in conventional <xref linkend="defConventionalHex"/> format.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The old value for the window style flags. That is, the numeric value of the style flags before the new value was applied.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    There is no way that the ooDialog framework can detect if the value supplied by the programmer is valid for the window.
+    The programmer is responsible for ensuring the value is correct. Using a value not documented by Microsoft as valid, will
+    produce undefined results.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Using this method before the underlying dialog is created returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example gets the current style flags for a list-view control and then adds the WS_CLIPCHILDREN style to the
+    list-view window. (WS_CLIPCHILDREN equals 0x02000000.)  The results are then printed to the screen.
+  </para>
+  <para>
+    The value of the style flags has the potential of being larger than can be accommodated by the default numeric
+    digits.  Use <computeroutput>numeric digits 11</computeroutput> if the returned value needs to be manipulated, for
+    instance to use <computeroutput>d2x</computeroutput> on the value.
+  </para>
+<programlisting>
+<![CDATA[
+  ...
+
+  numeric digits 11
+
+  old = list~setStyleRaw(.DlgUtil~or(list~getStyleRaw, "0x02000000"))
+  new = list~getStyleRaw
+
+  old = "0x" || old~d2x~right(8, '0')
+  new = "0x" || new~d2x~right(8, '0')
+
+  say 'Old list-view style:' old
+  say 'New list-view style:' new
+
+
+/*  Output might be for instance: */
+
+  Old list-view style: 0x50010009
+  New list-view style: 0x52010009
+
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="mthSetText" xreflabel="setText"><title>setText</title>
 <indexterm><primary>setText</primary></indexterm>
