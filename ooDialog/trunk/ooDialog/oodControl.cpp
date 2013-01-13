@@ -1057,10 +1057,12 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
                 else if ( msg == WM_KEYDOWN || msg == WM_KILLFOCUS )
                 {
                     CSTRING keyWord = "error";
+                    LRESULT ret     = 0;
 
                     if ( msg == WM_KILLFOCUS )
                     {
                         keyWord = "killfocus";
+                        ret = DefSubclassProc(hwnd, msg, wParam, lParam);
                     }
                     else
                     {
@@ -1102,12 +1104,15 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
                         c->ReleaseLocalReference(args);
                         c->ReleaseLocalReference(reply);
 
-                        return 0;
+                        return ret;
                     }
                     else
                     {
                         // On error return DefSubclassProc()
-                        return DefSubclassProc(hwnd, msg, wParam, lParam);
+                        if ( ret == 0 )
+                        {
+                            return DefSubclassProc(hwnd, msg, wParam, lParam);
+                        }
                     }
                 }
                 else if ( msg == WM_KEYUP || msg == WM_CHAR )
