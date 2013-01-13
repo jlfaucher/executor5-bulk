@@ -3259,7 +3259,8 @@ RexxMethod1(RexxObjectPtr, lv_hasCheckBoxes, CSELF, pCSelf)
  */
 RexxMethod2(int32_t, lv_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
 {
-    int32_t result = -1;
+    LVHITTESTINFO hti = { 0 };
+    int32_t result    = -1;
 
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
@@ -3298,29 +3299,28 @@ RexxMethod2(int32_t, lv_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
         info = (RexxDirectoryObject)_info;
     }
 
-    LVHITTESTINFO hti;
     hti.pt = point;
 
-    char buf[128];
+    char buf[256];
     *buf = '\0';
 
     if ( _isAtLeastVista() )
     {
-        result = ListView_HitTestEx(hwnd, &hti);
+        result = ListView_SubItemHitTestEx(hwnd, &hti);
 
         if ( haveDirectory )
         {
             context->DirectoryPut(info, context->Int32(hti.iGroup), "GROUP");
 
-            if ( hti.flags & LVHT_EX_FOOTER          ) strcat(buf, "Footer ");
-            if ( hti.flags & LVHT_EX_GROUP           ) strcat(buf, "Group ");
-            if ( hti.flags & LVHT_EX_GROUP_BACKGROUND) strcat(buf, "GroupBackground ");
-            if ( hti.flags & LVHT_EX_GROUP_COLLAPSE  ) strcat(buf, "GroupCollapse ");
-            if ( hti.flags & LVHT_EX_GROUP_FOOTER    ) strcat(buf, "GroupFooter ");
-            if ( hti.flags & LVHT_EX_GROUP_HEADER    ) strcat(buf, "GroupHeader ");
-            if ( hti.flags & LVHT_EX_GROUP_STATEICON ) strcat(buf, "GroupStateIcon ");
-            if ( hti.flags & LVHT_EX_GROUP_SUBSETLINK) strcat(buf, "GroupSubsetLink ");
-            if ( hti.flags & LVHT_EX_ONCONTENTS      ) strcat(buf, "OnContents ");
+            if ( (hti.flags & LVHT_EX_FOOTER          ) == LVHT_EX_FOOTER           ) strcat(buf, "Footer ");
+            if ( (hti.flags & LVHT_EX_GROUP           ) == LVHT_EX_GROUP            ) strcat(buf, "Group ");
+            if ( (hti.flags & LVHT_EX_GROUP_BACKGROUND) == LVHT_EX_GROUP_BACKGROUND ) strcat(buf, "GroupBackground ");
+            if ( (hti.flags & LVHT_EX_GROUP_COLLAPSE  ) == LVHT_EX_GROUP_COLLAPSE   ) strcat(buf, "GroupCollapse ");
+            if ( (hti.flags & LVHT_EX_GROUP_FOOTER    ) == LVHT_EX_GROUP_FOOTER     ) strcat(buf, "GroupFooter ");
+            if ( (hti.flags & LVHT_EX_GROUP_HEADER    ) == LVHT_EX_GROUP_HEADER     ) strcat(buf, "GroupHeader ");
+            if ( (hti.flags & LVHT_EX_GROUP_STATEICON ) == LVHT_EX_GROUP_STATEICON  ) strcat(buf, "GroupStateIcon ");
+            if ( (hti.flags & LVHT_EX_GROUP_SUBSETLINK) == LVHT_EX_GROUP_SUBSETLINK ) strcat(buf, "GroupSubsetLink ");
+            if ( (hti.flags & LVHT_EX_ONCONTENTS      ) == LVHT_EX_ONCONTENTS       ) strcat(buf, "OnContents ");
 
             if ( *buf != '\0' )
             {
@@ -3331,7 +3331,7 @@ RexxMethod2(int32_t, lv_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
     }
     else
     {
-        result = ListView_HitTest(hwnd, &hti);
+        result = ListView_SubItemHitTest(hwnd, &hti);
     }
 
     if ( haveDirectory )
@@ -3341,15 +3341,19 @@ RexxMethod2(int32_t, lv_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
 
         *buf = '\0';
 
-        if ( hti.flags & LVHT_ABOVE          ) strcat(buf, "Above ");
-        if ( hti.flags & LVHT_BELOW          ) strcat(buf, "Below ");
-        if ( hti.flags & LVHT_TORIGHT        ) strcat(buf, "ToRight ");
-        if ( hti.flags & LVHT_TOLEFT         ) strcat(buf, "ToLeft ");
-        if ( hti.flags & LVHT_NOWHERE        ) strcat(buf, "NoWhere ");
-        if ( hti.flags & LVHT_ONITEMICON     ) strcat(buf, "OnIcon ");
-        if ( hti.flags & LVHT_ONITEMLABEL    ) strcat(buf, "OnLabel ");
-        if ( hti.flags & LVHT_ONITEMSTATEICON) strcat(buf, "OnStateIcon ");
-        if ( hti.flags & LVHT_ONITEM         ) strcat(buf, "OnItem ");
+        // LVHT_ABOVE and LVHT_ONITEMSTATEICON are the value ;-(
+        if ( (hti.flags & LVHT_ABOVE          ) == LVHT_ABOVE && hti.iItem < 0 ) strcat(buf, "Above ");
+
+        if ( (hti.flags & LVHT_BELOW          ) == LVHT_BELOW           ) strcat(buf, "Below ");
+        if ( (hti.flags & LVHT_TORIGHT        ) == LVHT_TORIGHT         ) strcat(buf, "ToRight ");
+        if ( (hti.flags & LVHT_TOLEFT         ) == LVHT_TOLEFT          ) strcat(buf, "ToLeft ");
+        if ( (hti.flags & LVHT_NOWHERE        ) == LVHT_NOWHERE         ) strcat(buf, "NoWhere ");
+        if ( (hti.flags & LVHT_ONITEMICON     ) == LVHT_ONITEMICON      ) strcat(buf, "OnIcon ");
+        if ( (hti.flags & LVHT_ONITEMLABEL    ) == LVHT_ONITEMLABEL     ) strcat(buf, "OnLabel ");
+
+        if ( (hti.flags & LVHT_ONITEMSTATEICON) == LVHT_ONITEMSTATEICON && hti.iItem > -1 ) strcat(buf, "OnStateIcon ");
+
+        if ( (hti.flags & LVHT_ONITEM         ) == LVHT_ONITEM          ) strcat(buf, "OnItem ");
 
         if ( *buf != '\0' )
         {

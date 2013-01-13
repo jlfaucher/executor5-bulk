@@ -1134,7 +1134,8 @@
 ::method getRange unguarded external "LIBRARY oodialog mc_getRange"
 ::method getSelectionRange unguarded external "LIBRARY oodialog mc_getSelectionRange"
 ::method getToday unguarded external "LIBRARY oodialog mc_getToday"
-::method hitTest unguarded external "LIBRARY oodialog mc_hitTest"
+::method hitTest unguarded external "LIBRARY oodialog mc_hitTestInfo"  -- Error in 4.2.0 docs, name should have been hitTestInfo. Need to keep for backwards compatibility
+::method hitTestInfo unguarded external "LIBRARY oodialog mc_hitTestInfo"
 ::method setCalendarBorder unguarded external "LIBRARY oodialog mc_setCalendarBorder"
 ::method setCALID unguarded external "LIBRARY oodialog mc_setCALID"
 ::method setColor unguarded external "LIBRARY oodialog mc_setColor"

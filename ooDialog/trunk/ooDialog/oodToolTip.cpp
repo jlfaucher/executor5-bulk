@@ -2084,7 +2084,7 @@ RexxMethod1(logical_t, tt_hasCurrentTool, CSELF, pCSelf)
 }
 
 
-/** ToolTip::hitTest()
+/** ToolTip::hitTestInfo()
  *
  *  Tests a point to determine whether it is within the bounding rectangle of a
  *  tool within the window specified and, if it is, retrieves information about
@@ -2109,9 +2109,12 @@ RexxMethod1(logical_t, tt_hasCurrentTool, CSELF, pCSelf)
  *  @return True if the point being tested is within the window specified,
  *          otherwise false.
  *
- *  @notes
+ *  @remarks  Erroneously called hitTest in ooDialog 4.2.1.  Now both hitTest
+ *            and hitTestInfo are mapped to this method.  Need to preserve
+ *            hitTest for backwards compatibility, but only hitTestInfo is
+ *            documented from 4.2.2 onwards.
  */
-RexxMethod3(logical_t, tt_hitTest, RexxObjectPtr, toolInfo, ARGLIST, args, CSELF, pCSelf)
+RexxMethod3(logical_t, tt_hitTestInfo, RexxObjectPtr, toolInfo, ARGLIST, args, CSELF, pCSelf)
 {
     TTHITTESTINFO hi  = { 0 };
 

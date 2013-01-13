@@ -1171,7 +1171,7 @@ REXX_METHOD_PROTOTYPE(tt_getTitle);
 REXX_METHOD_PROTOTYPE(tt_getToolCount);
 REXX_METHOD_PROTOTYPE(tt_getToolInfo);
 REXX_METHOD_PROTOTYPE(tt_hasCurrentTool);
-REXX_METHOD_PROTOTYPE(tt_hitTest);
+REXX_METHOD_PROTOTYPE(tt_hitTestInfo);
 REXX_METHOD_PROTOTYPE(tt_manageAtypicalTool);
 REXX_METHOD_PROTOTYPE(tt_newToolRect);
 REXX_METHOD_PROTOTYPE(tt_pop);
@@ -1281,7 +1281,7 @@ REXX_METHOD_PROTOTYPE(mc_getMonthRange);
 REXX_METHOD_PROTOTYPE(mc_getRange);
 REXX_METHOD_PROTOTYPE(mc_getSelectionRange);
 REXX_METHOD_PROTOTYPE(mc_getToday);
-REXX_METHOD_PROTOTYPE(mc_hitTest);
+REXX_METHOD_PROTOTYPE(mc_hitTestInfo);
 REXX_METHOD_PROTOTYPE(mc_setCalendarBorder);
 REXX_METHOD_PROTOTYPE(mc_setCALID);
 REXX_METHOD_PROTOTYPE(mc_setColor);
@@ -2112,7 +2112,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_hitTestInfo,                 lv_hitTestInfo),
     REXX_METHOD(lv_insert,                      lv_insert),
     REXX_METHOD(lv_insertColumnPx,              lv_insertColumnPx),
-    REXX_METHOD(lv_insertFullRow,         	    lv_insertFullRow),
+    REXX_METHOD(lv_insertFullRow,               lv_insertFullRow),
     REXX_METHOD(lv_isChecked,                   lv_isChecked),
     REXX_METHOD(lv_itemText,                    lv_itemText),
     REXX_METHOD(lv_itemState,                   lv_itemState),
@@ -2122,7 +2122,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_modifyItem,                  lv_modifyItem),
     REXX_METHOD(lv_modifySubitem,               lv_modifySubitem),
     REXX_METHOD(lv_prependFullRow,         	    lv_prependFullRow),
-    REXX_METHOD(lv_removeItemData,   	        lv_removeItemData),
+    REXX_METHOD(lv_removeItemData,              lv_removeItemData),
     REXX_METHOD(lv_replaceExtendStyle,          lv_replaceExtendStyle),
     REXX_METHOD(lv_replaceStyle,                lv_replaceStyle),
     REXX_METHOD(lv_setColor,                    lv_setColor),
@@ -2216,7 +2216,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tt_getToolCount,                tt_getToolCount),
     REXX_METHOD(tt_getToolInfo,                 tt_getToolInfo),
     REXX_METHOD(tt_hasCurrentTool,              tt_hasCurrentTool),
-    REXX_METHOD(tt_hitTest,                     tt_hitTest),
+    REXX_METHOD(tt_hitTestInfo,                     tt_hitTestInfo),
     REXX_METHOD(tt_manageAtypicalTool,          tt_manageAtypicalTool),
     REXX_METHOD(tt_newToolRect,                 tt_newToolRect),
     REXX_METHOD(tt_pop,                         tt_pop),
@@ -2325,7 +2325,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(mc_getRange,                    mc_getRange),
     REXX_METHOD(mc_getSelectionRange,           mc_getSelectionRange),
     REXX_METHOD(mc_getToday,                    mc_getToday),
-    REXX_METHOD(mc_hitTest,                     mc_hitTest),
+    REXX_METHOD(mc_hitTestInfo,                 mc_hitTestInfo),
     REXX_METHOD(mc_setCalendarBorder,           mc_setCalendarBorder),
     REXX_METHOD(mc_setCALID,                    mc_setCALID),
     REXX_METHOD(mc_setColor,                    mc_setColor),
