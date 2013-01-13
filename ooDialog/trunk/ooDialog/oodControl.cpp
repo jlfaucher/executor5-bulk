@@ -1109,10 +1109,7 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
                     else
                     {
                         // On error return DefSubclassProc()
-                        if ( ret == 0 )
-                        {
-                            return DefSubclassProc(hwnd, msg, wParam, lParam);
-                        }
+                        return (ret == 0 ? DefSubclassProc(hwnd, msg, wParam, lParam) : ret);
                     }
                 }
                 else if ( msg == WM_KEYUP || msg == WM_CHAR )
