@@ -968,6 +968,7 @@ REXX_METHOD_PROTOTYPE(e_isSingleLine);
 REXX_METHOD_PROTOTYPE(e_selection);
 REXX_METHOD_PROTOTYPE(e_replaceSelText);
 REXX_METHOD_PROTOTYPE(e_getLine);
+REXX_METHOD_PROTOTYPE(e_isGrandChild);
 REXX_METHOD_PROTOTYPE(e_lineIndex);
 REXX_METHOD_PROTOTYPE(e_lineFromIndex);
 REXX_METHOD_PROTOTYPE(e_lineLength);
@@ -981,12 +982,13 @@ REXX_METHOD_PROTOTYPE(e_setRect);
 REXX_METHOD_PROTOTYPE(e_style);
 
 // ComboBox
-REXX_METHOD_PROTOTYPE(cb_getText);
 REXX_METHOD_PROTOTYPE(cb_add);
+REXX_METHOD_PROTOTYPE(cb_addDirectory);
+REXX_METHOD_PROTOTYPE(cb_find);
+REXX_METHOD_PROTOTYPE(cb_getEditControl);
+REXX_METHOD_PROTOTYPE(cb_getText);
 REXX_METHOD_PROTOTYPE(cb_insert);
 REXX_METHOD_PROTOTYPE(cb_select);
-REXX_METHOD_PROTOTYPE(cb_find);
-REXX_METHOD_PROTOTYPE(cb_addDirectory);
 
 // ScrollBar
 REXX_METHOD_PROTOTYPE(sb_getRange);
@@ -2038,6 +2040,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(e_selection,                    e_selection),
     REXX_METHOD(e_replaceSelText,               e_replaceSelText),
     REXX_METHOD(e_getLine,                      e_getLine),
+    REXX_METHOD(e_isGrandChild,                 e_isGrandChild),
     REXX_METHOD(e_lineIndex,                    e_lineIndex),
     REXX_METHOD(e_lineFromIndex,                e_lineFromIndex),
     REXX_METHOD(e_lineLength,                   e_lineLength),
@@ -2051,12 +2054,13 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(e_setRect,                      e_setRect),
 
     // ComboBox
-    REXX_METHOD(cb_getText,                     cb_getText),
     REXX_METHOD(cb_add,                         cb_add),
+    REXX_METHOD(cb_addDirectory,                cb_addDirectory),
+    REXX_METHOD(cb_find,                        cb_find),
+    REXX_METHOD(cb_getEditControl,              cb_getEditControl),
+    REXX_METHOD(cb_getText,                     cb_getText),
     REXX_METHOD(cb_insert,                      cb_insert),
     REXX_METHOD(cb_select,                      cb_select),
-    REXX_METHOD(cb_find,                        cb_find),
-    REXX_METHOD(cb_addDirectory,                cb_addDirectory),
 
     // ListBox
     REXX_METHOD(lb_isSingleSelection,           lb_isSingleSelection),

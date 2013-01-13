@@ -211,6 +211,7 @@
 ::method lineFromIndex unguarded external "LIBRARY oodialog e_lineFromIndex"
 ::method lineLength unguarded external "LIBRARY oodialog e_lineLength"
 ::method hideBalloon unguarded external "LIBRARY oodialog e_hideBallon"
+::method isGrandChild unguarded external "LIBRARY oodialog e_isGrandchild"
 ::method showBalloon unguarded external "LIBRARY oodialog e_showBallon"
 ::method getCue unguarded external "LIBRARY oodialog e_getCue"
 ::method setCue unguarded external "LIBRARY oodialog e_setCue"
@@ -610,12 +611,11 @@
 ::constant CB_GETHORIZONTALEXTENT      "0x015d"
 ::constant CB_SETHORIZONTALEXTENT      "0x015e"
 
-::method getText unguarded external "LIBRARY oodialog cb_getText"
 ::method add unguarded external "LIBRARY oodialog cb_add"
-::method insert unguarded external "LIBRARY oodialog cb_insert"
-::method select unguarded external "LIBRARY oodialog cb_select"
-::method find unguarded external "LIBRARY oodialog cb_find"
 ::method addDirectory unguarded external "LIBRARY oodialog cb_addDirectory"
+::method closeDropDown unguarded
+   use strict arg
+   return self~sendWinIntMsg(self~CB_SHOWDROPDOWN, 0, 0)
 
 ::method delete unguarded
    use strict arg index = (self~selectedIndex)
@@ -627,19 +627,17 @@
    use strict arg
    return self~sendWinIntMsg(self~CB_RESETCONTENT, 0, 0)
 
-::method selectedIndex unguarded
+::method find unguarded external "LIBRARY oodialog cb_find"
+::method getHorizontalExtent unguarded
    use strict arg
-   return self~sendWinIntMsg(self~CB_GETCURSEL, 0, 0) + 1
+   return self~sendWinIntMsg(self~CB_GETHORIZONTALEXTENT, 0, 0)
 
-::method selected unguarded
+::method getEditControl unguarded external "LIBRARY oodialog cb_getEditControl"
+::method getText unguarded external "LIBRARY oodialog cb_getText"
+::method insert unguarded external "LIBRARY oodialog cb_insert"
+::method isDropDownOpen unguarded
    use strict arg
-   return self~getText(self~selectedIndex)
-
-::method selectIndex unguarded
-   use strict arg ndx = 0
-   ret = self~sendWinIntMsg(self~CB_SETCURSEL, ndx - 1, 0)
-   if ret == -1, ndx <> 0 then return -1
-   return ret + 1
+   return self~sendWinIntMsg(self~CB_GETDROPPEDSTATE, 0, 0)
 
 ::method items unguarded
    use strict arg
@@ -655,23 +653,26 @@
    use strict arg
    return self~sendWinIntMsg(self~CB_SHOWDROPDOWN, 1, 0)
 
-::method closeDropDown unguarded
+::method select unguarded external "LIBRARY oodialog cb_select"
+::method selected unguarded
    use strict arg
-   return self~sendWinIntMsg(self~CB_SHOWDROPDOWN, 0, 0)
+   return self~getText(self~selectedIndex)
 
-::method isDropDownOpen unguarded
+::method selectedIndex unguarded
    use strict arg
-   return self~sendWinIntMsg(self~CB_GETDROPPEDSTATE, 0, 0)
+   return self~sendWinIntMsg(self~CB_GETCURSEL, 0, 0) + 1
+
+::method selectIndex unguarded
+   use strict arg ndx = 0
+   ret = self~sendWinIntMsg(self~CB_SETCURSEL, ndx - 1, 0)
+   if ret == -1, ndx <> 0 then return -1
+   return ret + 1
 
 ::method setEditSelection unguarded
    use strict arg startndx = 0, endndx = 0
    if endndx == 0 then endndx = -1
    lParam = .DlgUtil~makeLParam(startndx - 1, endndx)
    return self~sendWinIntMsg(self~CB_SETEDITSEL, 0, lParam) == -1
-
-::method getHorizontalExtent unguarded
-   use strict arg
-   return self~sendWinIntMsg(self~CB_GETHORIZONTALEXTENT, 0, 0)
 
 ::method setHorizontalExtent unguarded
    use strict arg extent

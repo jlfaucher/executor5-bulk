@@ -83,8 +83,9 @@
 #define CTRLTAG_FLAGMASK          0x00FFFF00
 
 #define CTRLTAG_ISOLATE           0x00000100
-
 #define CTRLTAG_WANTRETURN        0x00000200
+#define CTRLTAG_ISGRANDCHILD      0x00000400
+#define CTRLTAG_WANTTAB           0x00000800
 
 /**
  * The last byte is for, well 'extra' information.  Use TAG_EXTRAMASK to

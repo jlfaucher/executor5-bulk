@@ -1005,17 +1005,100 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
             {
                 if ( msg == WM_GETDLGCODE )
                 {
-                    return(DLGC_WANTALLKEYS | DefSubclassProc(hwnd, msg, wParam, lParam));
+                    return (DLGC_WANTALLKEYS | DefSubclassProc(hwnd, msg, wParam, lParam));
                 }
                 else if ( msg == WM_KEYDOWN )
                 {
+                    switch ( wParam )
+                    {
+                        case VK_RETURN :
+                        {
+                            RexxObjectPtr   ctrlID = c->UnsignedInt32(pData->id);
+                            RexxArrayObject args   = c->ArrayOfTwo(ctrlID, pData->pcdc->rexxSelf);
+                            RexxObjectPtr   reply  = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
+
+                            if ( ! checkForCondition(c, false) && reply != NULLOBJECT )
+                            {
+                                c->ReleaseLocalReference(ctrlID);
+                                c->ReleaseLocalReference(args);
+                                c->ReleaseLocalReference(reply);
+
+                                return 0;
+                            }
+                            else
+                            {
+                                // On error return DefSubclassProc()
+                                return DefSubclassProc(hwnd, msg, wParam, lParam);
+                            }
+                        }
+
+                        case VK_ESCAPE :
+                        {
+                            SendMessage(pData->pcpbd->hDlg, WM_COMMAND, IDCANCEL, 0);
+                            return 0;
+                        }
+
+                        case VK_TAB :
+                        {
+                            BOOL previous = (GetAsyncKeyState(VK_SHIFT) & ISDOWN) ? 1 : 0;
+                            SendMessage(pData->pcpbd->hDlg, WM_NEXTDLGCTL, previous, FALSE);
+
+                            return 0;
+                        }
+                    }
+                }
+            }
+            else if ( tag & CTRLTAG_ISGRANDCHILD )
+            {
+                if ( msg == WM_GETDLGCODE )
+                {
+                    return (DLGC_WANTALLKEYS | DefSubclassProc(hwnd, msg, wParam, lParam));
+                }
+                else if ( msg == WM_KEYDOWN || msg == WM_KILLFOCUS )
+                {
+                    CSTRING keyWord = "error";
+
+                    if ( msg == WM_KILLFOCUS )
+                    {
+                        keyWord = "killfocus";
+                    }
+                    else
+                    {
+                        switch ( wParam )
+                        {
+                            case VK_RETURN :
+                                keyWord = "enter";
+                                break;
+
+                            case VK_ESCAPE :
+                                keyWord = "escape";
+                                break;
+
+                            case VK_TAB :
+                            {
+                                if ( tag & CTRLTAG_WANTTAB )
+                                {
+                                    keyWord = "tab";
+                                    break;
+                                }
+
+                                BOOL previous = (GetAsyncKeyState(VK_SHIFT) & ISDOWN) ? 1 : 0;
+                                SendMessage(pData->pcpbd->hDlg, WM_NEXTDLGCTL, previous, FALSE);
+
+                                return 0;
+                            }
+                        }
+                    }
+
                     RexxObjectPtr   ctrlID = c->UnsignedInt32(pData->id);
-                    RexxArrayObject args   = c->ArrayOfTwo(ctrlID, pData->pcdc->rexxSelf);
+                    RexxObjectPtr   flag   = c->String(keyWord);
+                    RexxArrayObject args   = c->ArrayOfThree(ctrlID, flag, pData->pcdc->rexxSelf);
                     RexxObjectPtr   reply  = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
 
                     if ( ! checkForCondition(c, false) && reply != NULLOBJECT )
                     {
                         c->ReleaseLocalReference(ctrlID);
+                        c->ReleaseLocalReference(flag);
                         c->ReleaseLocalReference(args);
                         c->ReleaseLocalReference(reply);
 
@@ -1026,6 +1109,10 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
                         // On error return DefSubclassProc()
                         return DefSubclassProc(hwnd, msg, wParam, lParam);
                     }
+                }
+                else if ( msg == WM_KEYUP || msg == WM_CHAR )
+                {
+                    return 0;
                 }
             }
             break;
@@ -1311,7 +1398,7 @@ bool addSubclassMessage(RexxMethodContext *c, pCDialogControl pcdc, pWinMessageF
         pscd->msgs = (MESSAGETABLEENTRY *)temp;
     }
 
-    pscd->msgs[index].rexxMethod = (char *)LocalAlloc(LMEM_FIXED, strlen(pwmf->method) + 1);
+    pscd->msgs[index].rexxMethod = (char *)LocalAlloc(LPTR, strlen(pwmf->method) + 1);
     if ( pscd->msgs[index].rexxMethod == NULL )
     {
         outOfMemoryException(c->threadContext);
@@ -1714,6 +1801,12 @@ RexxMethod1(RexxObjectPtr, dlgctrl_assignFocus, CSELF, pCSelf)
  *            to signal some special processing, but that was never followed
  *            through on.
  *
+ *  @remarks  For WANTRETURN, we need to also connect the VK_TAB and VK_ESCAPE
+ *            keys.  The reason is that we need to use DLGC_WANTALLKEYS for
+ *            WM_GETDLGCODE, which prevents the dialog manager from handling TAB
+ *            and ESCAPE.  I don't see any way of asking for RETURN but not
+ *            ESCAPE and TAB.  In the message processing loop, handle TAB and
+ *            ESCAPE ourselves.
  */
 RexxMethod3(RexxObjectPtr, dlgctrl_connectEvent, CSTRING, event, OPTIONAL_CSTRING, methodName, CSELF, pCSelf)
 {
@@ -1802,15 +1895,28 @@ RexxMethod3(RexxObjectPtr, dlgctrl_connectEvent, CSTRING, event, OPTIONAL_CSTRIN
             methodName = "onReturn";
         }
 
+        wmf.method = methodName;
+        wmf.tag    = CTRLTAG_EDIT | CTRLTAG_WANTRETURN;
+
         wmf.wm       = WM_KEYDOWN;
         wmf.wmFilter = 0xFFFFFFFF;
         wmf.wp       = VK_RETURN;
         wmf.wpFilter = 0xFFFFFFFF;
         wmf.lp       = 0;
         wmf.lpFilter = KEY_WASDOWN;
-        wmf.method   = methodName;
-        wmf.tag      = CTRLTAG_EDIT | CTRLTAG_WANTRETURN;
 
+        if ( ! addSubclassMessage(context, pcdc, &wmf) )
+        {
+            goto done_out;
+        }
+
+        wmf.wp = VK_ESCAPE;
+        if ( ! addSubclassMessage(context, pcdc, &wmf) )
+        {
+            goto done_out;
+        }
+
+        wmf.wp = VK_TAB;
         if ( ! addSubclassMessage(context, pcdc, &wmf) )
         {
             goto done_out;
@@ -1818,7 +1924,10 @@ RexxMethod3(RexxObjectPtr, dlgctrl_connectEvent, CSTRING, event, OPTIONAL_CSTRIN
 
         wmf.wm       = WM_GETDLGCODE;
         wmf.wmFilter = 0xFFFFFFFF;
-        wmf.tag      = CTRLTAG_EDIT | CTRLTAG_WANTRETURN;
+        wmf.wp       = 0;
+        wmf.wpFilter = 0;
+        wmf.lp       = 0;
+        wmf.lpFilter = 0;
 
         if ( addSubclassMessage(context, pcdc, &wmf) )
         {

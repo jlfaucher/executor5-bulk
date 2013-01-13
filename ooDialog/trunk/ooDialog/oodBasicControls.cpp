@@ -1591,6 +1591,186 @@ done_out:
 }
 
 
+/** Edit::isGrandChild()
+ *
+ *  Notifies the framework that this edit control is a grandchild of the dialog
+ *  and configures the underlying edit control to send some event notifications
+ *  to the dialog, rather than its direcet parent.
+ *
+ *  @param  mthName  [optional] The method to be invoked in the Rexx dialog when
+ *                   one of the 4 default events happens.  The default if
+ *                   omitted is onEditGrandChildEvent()
+ *
+ *  @param  wantTab  [opitonal]  If the Rexx method should be invoked for the
+ *                   TAB event.  The default is false, the method is not invoked
+ *                   for the tab key event.
+ *
+ *  @return  True on success, otherwise false.
+ *
+ *  @notes   Requires common control library 6.2.0.
+ *
+ *           This method connects 4 event notifications from the grandchild edit
+ *           control to the method in the Rexx dialog.  3 of the events are key
+ *           down events, the RETURN, ESCAPE, and TAB key down events.  The
+ *           other event is the KILLFOCUS event.  All events invoke the same
+ *           method in the Rexx dialog.  One of the arguments sent to the event
+ *           handler is a keyword that specifies which event happened.
+ *
+ *           By default, the method is not invoked for the TAB key down event,
+ *           but that can be changed using the wantTab argument.
+ *
+ *           Sets the .SystemErrorCode.  This code is set on error, by us, the
+ *           OS does not set any.
+ *
+ *          This edit control must be a singel line edit control, otherwise the
+ *          system error code is set to:
+ *
+ *          ERROR_NOT_SUPPORTED (50)   The request is not supported.
+ *
+ *  @remarks  We need to always connect the VK_TAB key, even if the user does
+ *            not want the TAB nofication.  The reason is that we need to use
+ *            DLGC_WANTALLKEYS for WM_GETDLGCODE, which prevents the dialog
+ *            manager from handling TAB.  I don't see any way of asking for
+ *            RETURN and ESCAPE, but not TAB.  In the message processing loop,
+ *            we simply do invoke the Rexx method unless CTRLTAG_WANTTAB is set
+ *            in the tag.
+ */
+RexxMethod3(RexxObjectPtr, e_isGrandChild, OPTIONAL_CSTRING, mthName, OPTIONAL_logical_t, wantTab, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    RexxObjectPtr    result = TheFalseObj;
+    WinMessageFilter wmf    = {0};
+
+    wmf.tag = CTRLTAG_EDIT | CTRLTAG_ISGRANDCHILD;
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+    if ( ! requiredComCtl32Version(context, "connectEvent", COMCTL32_6_0) )
+    {
+        goto done_out;
+    }
+    if ( ! isSingleLineEdit(pcdc->hCtrl) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_SUPPORTED);
+        goto done_out;
+    }
+
+    wmf.method = "onEditGrandChildEvent";
+    if ( argumentExists(1) )
+    {
+        wmf.method = mthName;
+    }
+
+    wmf.wm       = WM_KILLFOCUS;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = 0;
+    wmf.wpFilter = 0;
+    wmf.lp       = 0;
+    wmf.lpFilter = 0;
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm       = WM_GETDLGCODE;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = 0;
+    wmf.wpFilter = 0;
+    wmf.lp       = 0;
+    wmf.lpFilter = 0;
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm       = WM_KEYDOWN;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = VK_RETURN;
+    wmf.wpFilter = 0xFFFFFFFF;
+    wmf.lp       = 0;
+    wmf.lpFilter = KEY_WASDOWN;
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm = WM_KEYUP;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm = WM_CHAR;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm       = WM_KEYDOWN;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = VK_ESCAPE;
+    wmf.wpFilter = 0xFFFFFFFF;
+    wmf.lp       = 0;
+    wmf.lpFilter = KEY_WASDOWN;
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm = WM_KEYUP;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm = WM_CHAR;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm       = WM_KEYDOWN;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = VK_TAB;
+    wmf.wpFilter = 0xFFFFFFFF;
+    wmf.lp       = 0;
+    wmf.lpFilter = KEY_WASDOWN;
+
+    if ( wantTab )
+    {
+        wmf.tag |= CTRLTAG_WANTTAB;
+    }
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm = WM_KEYUP;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        goto done_out;
+    }
+
+    wmf.wm = WM_CHAR;
+    if ( addSubclassMessage(context, pcdc, &wmf) )
+    {
+        result = TheTrueObj;
+    }
+
+done_out:
+    return result;
+}
+
+
 /** Edit::setTabStops()
  *
  *  Sets the tab stops for text copied into a multi-line edit control.
@@ -2464,21 +2644,6 @@ RexxMethod3(int32_t, lb_addDirectory, CSTRING, drivePath, OPTIONAL_CSTRING, file
 #define COMBOBOX_CLASS   "ComboBox"
 
 
-/** ComboBox::getText()
- *
- *  Return the text of the item at the specified index.
- *
- *  @param  index  The 1-based item index.  (The underlying combo box uses
- *                 0-based indexes.)
- *
- *  @return  The item's text or the empty string on error.
- */
-RexxMethod2(RexxStringObject, cb_getText, uint32_t, index, CSELF, pCSelf)
-{
-    return cbLbGetText(context, ((pCDialogControl)pCSelf)->hCtrl, index, winComboBox);
-}
-
-
 /** ComboBox::add()
  *
  *  Adds a string entry to the combo box.
@@ -2499,6 +2664,88 @@ RexxMethod2(int32_t, cb_add, CSTRING, text, CSELF, pCSelf)
     return ret;
 }
 
+
+/** ComboBox::addDirectory()
+ *
+ */
+RexxMethod3(int32_t, cb_addDirectory, CSTRING, drivePath, OPTIONAL_CSTRING, fileAttributes, CSELF, pCSelf)
+{
+    return cbLbAddDirectory(((pCDialogControl)pCSelf)->hCtrl, drivePath, fileAttributes, winComboBox);
+}
+
+
+/** ComboBox::find()
+ *
+ *  Finds the index of the combo box entry that matches 'text'.  In all cases
+ *  the search is case insensitive.
+ *
+ *  @param  text        The text of the entry to search for.  If not exact, this
+ *                      can be just an abbreviation, or prefix, of the entry.
+ *                      Otherwise an exact match, disregarding case, is searched
+ *                      for.
+ *
+ *  @param  startIndex  [OPTIONAL] The one-based index of the entry to start the
+ *                      search at.  If the search reaches the end of the entries
+ *                      without a match, the search continues with the first
+ *                      entry until all entries have been examined.  When
+ *                      omitted, or 0, the search starts with the first entry.
+ *
+ *  @param  exactly     [OPTIONAL]  Whether to do an exact match.  When this
+ *                      arugment is omitted, 'text' can just the abbreviation of
+ *                      the entry to find.  I.e., 'San' would match "San Diego."
+ *                      If the argument is used and equals true or "Exact" then
+ *                      the entry must match text exactly.  When using the
+ *                      "Exact" form, only the first letter is considered and
+ *                      case is insignificant.
+ *
+ *  @return  The one-based index of the entry, if found, otherwise 0.
+ */
+RexxMethod4(int32_t, cb_find, CSTRING, text, OPTIONAL_uint32_t, startIndex, OPTIONAL_CSTRING, exactly, CSELF, pCSelf)
+{
+    return cbLbFind(((pCDialogControl)pCSelf)->hCtrl, text, startIndex, exactly, winComboBox);
+}
+
+
+/** ComboBox::getEditControl()
+ *
+ *  Returns a Rexx Edit object that reprsents the child edit control used by the
+ *  combo box.
+ */
+RexxMethod1(RexxObjectPtr, cb_getEditControl, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    RexxObjectPtr result = TheNilObj;
+    COMBOBOXINFO  cbi    = { sizeof(COMBOBOXINFO) };
+
+    if ( GetComboBoxInfo(pcdc->hCtrl, &cbi) )
+    {
+        result = createControlFromHwnd(context, pcdc, cbi.hwndItem, winEdit, true);
+    }
+
+    return result;
+}
+
+
+/** ComboBox::getText()
+ *
+ *  Return the text of the item at the specified index.
+ *
+ *  @param  index  The 1-based item index.  (The underlying combo box uses
+ *                 0-based indexes.)
+ *
+ *  @return  The item's text or the empty string on error.
+ */
+RexxMethod2(RexxStringObject, cb_getText, uint32_t, index, CSELF, pCSelf)
+{
+    return cbLbGetText(context, ((pCDialogControl)pCSelf)->hCtrl, index, winComboBox);
+}
 
 /** ComboBox::insert()
  *
@@ -2546,38 +2793,3 @@ RexxMethod2(int32_t, cb_select, CSTRING, text, CSELF, pCSelf)
 }
 
 
-/** ComboBox::find()
- *
- *  Finds the index of the combo box entry that matches 'text'.  In all cases
- *  the search is case insensitive.
- *
- *  @param  text        The text of the entry to search for.  If not exact, this
- *                      can be just an abbreviation, or prefix, of the entry.
- *                      Otherwise an exact match, disregarding case, is searched
- *                      for.
- *
- *  @param  startIndex  [OPTIONAL] The one-based index of the entry to start the
- *                      search at.  If the search reaches the end of the entries
- *                      without a match, the search continues with the first
- *                      entry until all entries have been examined.  When
- *                      omitted, or 0, the search starts with the first entry.
- *
- *  @param  exactly     [OPTIONAL]  Whether to do an exact match.  When this
- *                      arugment is omitted, 'text' can just the abbreviation of
- *                      the entry to find.  I.e., 'San' would match "San Diego."
- *                      If the argument is used and equals true or "Exact" then
- *                      the entry must match text exactly.  When using the
- *                      "Exact" form, only the first letter is considered and
- *                      case is insignificant.
- *
- *  @return  The one-based index of the entry, if found, otherwise 0.
- */
-RexxMethod4(int32_t, cb_find, CSTRING, text, OPTIONAL_uint32_t, startIndex, OPTIONAL_CSTRING, exactly, CSELF, pCSelf)
-{
-    return cbLbFind(((pCDialogControl)pCSelf)->hCtrl, text, startIndex, exactly, winComboBox);
-}
-
-RexxMethod3(int32_t, cb_addDirectory, CSTRING, drivePath, OPTIONAL_CSTRING, fileAttributes, CSELF, pCSelf)
-{
-    return cbLbAddDirectory(((pCDialogControl)pCSelf)->hCtrl, drivePath, fileAttributes, winComboBox);
-}
