@@ -311,7 +311,7 @@
 <entry>Tests if this ToolTip has a current tool.</entry>
 </row>
 <row>
-<entry><xref linkend="mthHitTestClsToolTip"/></entry>
+<entry><xref linkend="mthHitTestInfoClsToolTip"/></entry>
 <entry>Tests a point to determine whether it is within the bounding rectangle of a tool within the window specified and, if it is, retrieves information about the tool.</entry>
 </row>
 <row>
@@ -1873,22 +1873,22 @@ Text for the tool tip: Over main dialog, top left quadrant
 </section>  <!-- End ToolTip::hasCurrentTool() -->
 
 
-<section id="mthHitTestClsToolTip" xreflabel="hitTest"><title>hitTest</title>
-<indexterm><primary>hitTest</primary><secondary>ToolTip class</secondary></indexterm>
+<section id="mthHitTestInfoClsToolTip" xreflabel="hitTestInfo"><title>hitTestInfo</title>
+<indexterm><primary>hitTestInfo</primary><secondary>ToolTip class</secondary></indexterm>
 <indexterm><primary>ToolTip class</primary><secondary>hitTest</secondary></indexterm>
 <programlisting>
 <![CDATA[
 Form 1:
 
->>--hitTest(--toolInfo--,--point--)--------------><
+>>--hitTestInfo(--toolInfo--,--point--)----------><
 
 Form 2:
 
->>--hitTest(--toolInfo--,--x,--y--)--------------><
+>>--hitTestInfo(--toolInfo--,--x,--y--)----------><
 
 Generic form:
 
->>--hitTest(--toolInfo--,--ptToTest--)-----------><
+>>--hitTestInfo(--toolInfo--,--ptToTest--)-------><
 ]]>
 </programlisting>
 
@@ -1906,7 +1906,8 @@ Generic form:
       <varlistentry><term>toolInfo [required in / out]</term>
       <listitem>
       <para>
-        A <xref linkend="clsToolInfo"/>  object whose <xref linkend="atrRexxHwnd"/> attribute specifies which tool window to test.
+        A <xref linkend="clsToolInfo"/> object whose <xref linkend="atrRexxHwnd"/> attribute specifies which tool window to
+        test.
       </para>
       <para>
         If the point tested is within a tool of the tool window, the retrieved tool information is returned in this object.
@@ -1953,7 +1954,7 @@ Generic form:
   hitTool = .ToolInfo~forHitTest(pbTest)
 
   say 'Using' pos
-  if ttTest~hitTest(hitTool, pos) then do
+  if ttTest~hitTestInfo(hitTool, pos) then do
     say 'Got hit'
     say 'Tool info  hwnd:    ' hitTool~rexxHwnd
     say 'Tool info  id:      ' hitTool~rexxID
@@ -1986,7 +1987,7 @@ Tool info  resource: The NIL object
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ToolTip::hitTest() -->
+</section>  <!-- End ToolTip::hitTestInfo() -->
 
 
 <section id="mthManageAtypicalTool" xreflabel="manageAtypicalTool"><title>manageAtypicalTool</title>
@@ -3235,7 +3236,7 @@ Generic form:
 </row>
 <row>
 <entry><link linkend="mthForHitTest">forHitTest</link></entry>
-<entry>Returns a new <computeroutput>ToolInfo</computeroutput> object to be used in the <xref linkend="mthHitTestClsToolTip"/> method.</entry>
+<entry>Returns a new <computeroutput>ToolInfo</computeroutput> object to be used in the <xref linkend="mthHitTestInfoClsToolTip"/> method.</entry>
 </row>
 <row>
 <entry><link linkend="mthForID">forID</link></entry>
@@ -3293,7 +3294,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Returns a new <computeroutput>ToolInfo</computeroutput> object to be used in the <xref linkend="mthHitTestClsToolTip"/>
+  Returns a new <computeroutput>ToolInfo</computeroutput> object to be used in the <xref linkend="mthHitTestInfoClsToolTip"/>
   method.
 </para>
 <variablelist>
@@ -3325,7 +3326,7 @@ Generic form:
   <listitem>
   <para>
     The new <computeroutput>ToolInfo</computeroutput> object is especially constructed to be of use in the <xref
-    linkend="mthHitTestClsToolTip"/> method. To be explicit, the <computeroutput>ToolInfo</computeroutput> object returned is
+    linkend="mthHitTestInfoClsToolTip"/> method. To be explicit, the <computeroutput>ToolInfo</computeroutput> object returned is
     initialized to an empty state and the normal tool indentifiers are not set.  The returned
     <computeroutput>ToolInfo</computeroutput> object is not suitable to be used in any other methods that required a
     <computeroutput>ToolInfo</computeroutput> object, except the <emphasis role="italic">hitTest</emphasis> method.

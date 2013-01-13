@@ -4168,6 +4168,14 @@ Generic Form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    <emphasis role="bold">Note</emphasis> that the values in the <computeroutput>Directory</computeroutput> object reflect
+    what the operating system returns. Experimentation shows that the values returned can vary depending on the version of
+    Windows a program is executing on. Some values also differ depending on the style(s) of the list-view. For instance, the
+    presence or absence of the <link linkend="mthAddExtendedStyle">extended</link> FULLROWSELECT style changes some of the
+    values when hit testing the exact same spot. In addition, Micsoft documents some values, such as ABOVE, that are never
+    seen during testing.
+  </para>
+  <para>
     Sometimes the returned index of the hit spot is all that is needed. In these cases, there is no need to supply the
     optional <computeroutput>.Directory</computeroutput> object.  However, other times the complete hit test information
     may be desired.

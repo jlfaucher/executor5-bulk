@@ -223,7 +223,7 @@
 <entry>Retrieves the date information for the date specified as <emphasis role="italic">today</emphasis> for the month calendar control.</entry>
 </row>
 <row>
-<entry><xref linkend="mthHitTestClsMonthCalendar"/></entry>
+<entry><xref linkend="mthHitTestInfoClsMonthCalendar"/></entry>
 <entry>Determines which portion of a month calendar control is at a given point on the screen.</entry>
 </row>
 <row>
@@ -1846,33 +1846,35 @@
 </section>  <!-- End MonthCalendar::getToday() -->
 
 
-<section id="mthHitTestClsMonthCalendar" xreflabel="hitTest"><title>hitTest</title>
-<indexterm><primary>hitTest</primary><secondary>MonthCalendary class</secondary></indexterm>
-<indexterm><primary>MonthCalendar class</primary><secondary>hitTest</secondary></indexterm>
+<section id="mthHitTestInfoClsMonthCalendar" xreflabel="hitTestInfo"><title>hitTestInfo</title>
+<indexterm><primary>hitTestInfo</primary><secondary>MonthCalendary class</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>hitTestInfo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hitTest(--screenPoint--)---------------------><
+>>--hitTestInfo(--pt--)--------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Determines which portion of a month calendar control is at a given point on the screen.
+  Determines which portion of a month calendar control is at the given point. The point is specifed in client <link
+  linkend="defScreenCoordinates">coordinates</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The single argument is:
+  </para>
   <variablelist>
-    <varlistentry><term>screenPoint [required]</term>
+    <varlistentry><term>pt [required]</term>
     <listitem>
     <para>
-      A <xref linkend="clsPoint"/> object containing the point to test.
+      A <xref linkend="clsPoint"/> object containing the point to test. The point is specifed in client <link
+      linkend="defScreenCoordinates">coordinates</link>.
     </para>
     </listitem></varlistentry>
   </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -1880,6 +1882,7 @@
     The return is a <computeroutput>directory</computeroutput> object containing information on the point hit-tested.
     The <computeroutput>directory</computeroutput> will contain some or all of the following indexes, depending on the
     results of the hit test:
+  </para>
     <variablelist>
       <varlistentry><term>HIT:</term>
       <listitem>
@@ -1889,39 +1892,39 @@
           <varlistentry><term>CalendarBackground:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was in the calendar's background.
+            The point, <emphasis role="italic">pt</emphasis>, was in the calendar's background.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CalendarControl:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, is outside of any calendar but within the
+            The point, <emphasis role="italic">pt</emphasis>, is outside of any calendar but within the
             calendar controls rectangle.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CalendarDate:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was on a particular date within the calendar. The
+            The point, <emphasis role="italic">pt</emphasis>, was on a particular date within the calendar. The
             DATE index of the <computeroutput>directory</computeroutput> object is set to the date at the given point.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CalendarDateMin:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was over the minimum date(s) in the calendar.
+            The point, <emphasis role="italic">pt</emphasis>, was over the minimum date(s) in the calendar.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CalendarDateMax:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was over the maximum date(s) in the calendar.
+            The point, <emphasis role="italic">pt</emphasis>, was over the maximum date(s) in the calendar.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CalendarDateNext:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was over a date from the next month (partially
+            The point, <emphasis role="italic">pt</emphasis>, was over a date from the next month (partially
             displayed at the end of the currently displayed month). If the user clicks here, the month calendar will
             scroll its display to the next month or set of months.
           </para>
@@ -1929,7 +1932,7 @@
           <varlistentry><term>CalendarDatePrev:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was over a date from the previous month
+            The point, <emphasis role="italic">pt</emphasis>, was over a date from the previous month
             (partially displayed at the end of the currently displayed month). If the user clicks here, the month
             calendar will scroll its display to the previous month or set of months.
           </para>
@@ -1937,7 +1940,7 @@
           <varlistentry><term>CalendarDay:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was over a day abbreviation, like <emphasis
+            The point, <emphasis role="italic">pt</emphasis>, was over a day abbreviation, like <emphasis
             role="italic">Fri</emphasis>, for example. The DATE index of the <computeroutput>directory</computeroutput>
             object is set to the corresponding date in the top row.
           </para>
@@ -1945,7 +1948,7 @@
           <varlistentry><term>CalendarWeekNum:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was over a week number. This only applies when
+            The point, <emphasis role="italic">pt</emphasis>, was over a week number. This only applies when
             the month calendar has the WEEKNUMBERS style. The DATE index of the
             <computeroutput>directory</computeroutput> object is set to the  the corresponding date in the leftmost
             column.
@@ -1954,20 +1957,20 @@
           <varlistentry><term>NoWhere:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was not on the month calendar control, or it was
+            The point, <emphasis role="italic">pt</emphasis>, was not on the month calendar control, or it was
             in an inactive portion of the control.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TitleBackground:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was over the background of a month's title.
+            The point, <emphasis role="italic">pt</emphasis>, was over the background of a month's title.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TitleButtonNext:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was over the button at the top right corner of
+            The point, <emphasis role="italic">pt</emphasis>, was over the button at the top right corner of
             the control. If the user clicks here, the month calendar will scroll its display to the next month or set of
             months.
           </para>
@@ -1975,7 +1978,7 @@
           <varlistentry><term>TitleButtonPrev:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was over the button at the top left corner of the
+            The point, <emphasis role="italic">pt</emphasis>, was over the button at the top left corner of the
             control. If the user clicks here, the month calendar will scroll its display to the previous month or set of
             months.
           </para>
@@ -1983,19 +1986,19 @@
           <varlistentry><term>TitleMonth:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was in a month's title bar, over a month name.
+            The point, <emphasis role="italic">pt</emphasis>, was in a month's title bar, over a month name.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TitleYear:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was in a month's title bar, over the year value.
+            The point, <emphasis role="italic">pt</emphasis>, was in a month's title bar, over the year value.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TodayLink:</term>
           <listitem>
           <para>
-            The point, <emphasis role="italic">screenPoint</emphasis>, was on the <emphasis
+            The point, <emphasis role="italic">pt</emphasis>, was on the <emphasis
             role="italic">today</emphasis> link at the bottom of the month calendar control.
           </para>
           </listitem></varlistentry>
@@ -2028,7 +2031,7 @@
       <listitem>
       <para>
         <emphasis role="bold">Vista or later only:</emphasis> The one-based index of the row in the calendar grid that
-        <emphasis role="italic">screenPoint</emphasis> is over. When the point is over the calendar <emphasis
+        <emphasis role="italic">pt</emphasis> is over. When the point is over the calendar <emphasis
         role="italic">grid</emphasis>, which is the grid of dates, both the ROW and COLUMN indexes are set. In addition,
         if the hit test is <emphasis role="italic">CalendarWeekNum</emphasis> the ROW index is set, but the COLUMN index
         is not set.
@@ -2038,21 +2041,13 @@
       <listitem>
       <para>
         <emphasis role="bold">Vista or later only:</emphasis> The one-based index of the column in the calendar grid
-        that <emphasis role="italic">screenPoint</emphasis> is over. When the point is over the calendar <emphasis
+        that <emphasis role="italic">pt</emphasis> is over. When the point is over the calendar <emphasis
         role="italic">grid</emphasis>, which is the grid of dates, both the ROW and COLUMN indexes are set. In addition,
         if the hit test is <emphasis role="italic">CalendarDay</emphasis> the COLUMN index is set, but the ROW index
         is not set.
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Although the Microsoft documentation calls the point to be tested the point on the screen, experimentation shows
-    that the point must be in <xref linkend="defScreenCoordinates"/> coordinates of the dialog.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
@@ -2073,7 +2068,7 @@
   pt = self~getCursorPos
   calendar~screen2client(pt)
 
-  d = calendar~hitTest(pt)
+  d = calendar~hitTestInfo(pt)
   say 'Hit:   ' d~hit
   say 'Date:  ' d~date
   if d~rect == .nil then say 'Rect:  ' d~rect
@@ -2105,7 +2100,7 @@ Column: The NIL object
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End MonthCalendar::hitTest() -->
+</section>  <!-- End MonthCalendar::hitTestInfo() -->
 
 
 <section id="mthRemoveStyleClsMC" xreflabel="removeStyle"><title>removeStyle</title>
