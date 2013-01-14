@@ -460,8 +460,8 @@
 <entry>Sets the thumb position of the horizontal scroll bar contained in the dialog control.</entry>
 </row>
 <row>
-<entry><xref linkend="wedcoSetVScrollPos"/></entry>
-<entry>Sets the thumb position of the vertical scroll bar contained in the dialog control.</entry>
+<entry><xref linkend="wedcoSetFont"/></entry>
+<entry>Sets a new parent for this dialog control.</entry>
 </row>
 <row>
 <entry><xref linkend="wbdcoSetRect"/></entry>
@@ -472,12 +472,20 @@
 <entry>Sets the value of the window's style flags using the numeric value specified.</entry>
 </row>
 <row>
+<entry><xref linkend="mthSetText"/></entry>
+<entry>Sets a new parent for this dialog control.</entry>
+</row>
+<row>
 <entry><xref linkend="wbdcoSetText"/></entry>
 <entry>Sets the text of the control.</entry>
 </row>
 <row>
 <entry><xref linkend="wbdcoSetTitle"/></entry>
 <entry>Sets the text of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoSetVScrollPos"/></entry>
+<entry>Sets the thumb position of the vertical scroll bar contained in the dialog control.</entry>
 </row>
 <row>
 <entry><xref linkend="wbdcoSetWindowPos"/></entry>
@@ -2540,6 +2548,128 @@ Generic form:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DialogControl::setColor() -->
+
+<section id="mthSetParent" xreflabel="setParent"><title>setParent</title>
+<indexterm><primary>setParent</primary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>setParent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setParent(--parent--)------------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets a new parent for this dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>parent</term>
+    <listitem>
+    <para>
+      The dialog control Rexx object that will be set as the parent window of this dialog control
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In Windows, the parent / child window relationship controls a number things, some having to do with how the windows are
+    drawn. A child window is always drawn over the top of the parent, and no part of it can be drawn outside of the parent
+    window. Historically in ooDialog, all dialog controls have be direct children of the dialog window. There are some
+    advanced techniques that can make use of changing the parent of a dialog control to another control in the same dialog.
+    This makes the dialog control the grandchild of the dialog.
+  </para>
+  <para>
+    Doing this causes the dialog control to be drawn over the top the new parent dialog control. Since the operating system
+    handles the drawing automatically, the child dialog control appears as if it is part of the parent dialog control. The
+    effect is much more professional looking than it would be if some other technique with ooDialog was used. The application
+    of this method is of limited use however, and probably should only be used by Rexx programmers that have some knowledge
+    of how Windows works.
+  </para>
+  <para>
+    Several considerations need to be taken into account when using this method. The programmer needs to understand that
+    dialog controls send their event notifications to their parent window. This can not be changed. By setting another dialog
+    control as parent of this dialog control, the programmer changes where this dialog control's notifications are sent. The
+    connect event methods will no longer work with the control, because the notifications are no longer sent to the dialog.
+    However, most all other methods of the dialog control should continue to work unchanged.
+  </para>
+  <para>
+    In order for event notifications from the grandchild dialog control to work, specialized code needs to be added to the
+    ooDialog framework. See for instance the <xref linkend="mthIsGrandchild"/> method which sets up some handling for an
+    <computeroutput>Edit</computeroutput> control whose parent window is no longer the dialog. Future enhancements of
+    ooDialog may add other specialized handling for grandchildren dialog controls. especially if ooDialog users request it
+    and can show a generalized use for their request.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the parent of an edit control to be a list-view in the dialog. When the user clicks on a subitem in
+    the list-view, the edit control is position over the subitem and made visible. The user can type in the edit control to
+    change the text of the subitem:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose list edit
+
+  list = self~newListView(IDC_LISTVIEW)
+
+  edit = self~newEdit(IDC_EDIT)
+  edit~setParent(list)
+  edit~isGrandChild
+  ...
+
+::method onClick unguarded
+  expose list edit editVisible lastIdx lastCol
+  use arg id, itemIndex, columnIndex, keyState
+
+  if lastIdx == itemIndex & lastCol == columnIndex then do
+    if columnIndex > 0 then do
+        r = list~getSubitemRect(itemIndex, columnIndex, 'LABEL')
+
+        r~right  -= r~left
+        r~bottom -= r~top
+        flags = "SHOWWINDOW NOZORDERCHANGE"
+
+        edit~setWindowPos(list~hwnd, r~left, r~top, r~right - r~left, (r~bottom - r~top), flags)
+
+        editVisible = .true
+        edit~assignFocus
+    end
+  end
+
+  lastIdx = itemIndex; lastCol = columnIndex
+
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::setParent() -->
 
 
 <section id="mthSetSysColor" xreflabel="setSysColor"><title>setSysColor</title>
