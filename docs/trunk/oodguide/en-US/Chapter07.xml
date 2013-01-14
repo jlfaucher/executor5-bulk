@@ -104,10 +104,8 @@
             out. Explore the function which, while not complete, is much more so than in the
             previous exercise. In particular, note that application data is now read from files. For
             example, the Customer data is read from the file
-                <computeroutput>CustomerFile.txt</computeroutput> (in which fields in a record are
-            separated by a vertical bar character, and field names are defined in the first line of
-            the file). However, although the data can be changed in dialogs, the changed data does
-            not (in this exercise) update the files. </para>
+                <computeroutput>CustomerFile.txt</computeroutput>. However, although the data can be
+            changed in dialogs, the changed data does not (in this exercise) update the files. </para>
         <para>Also, note that the "Help" menu on the main Sales Order Management dialog now includes
             an option "Message Sender" (discussed in more detail in <xref
                 linkend="ch7-msgsender.title"/>. Click this option and a "Message Sender" dialog
@@ -144,120 +142,123 @@
             can be handled by superclasses so that the application components do not have to provide
             the same duplicated code. This pattern is called the "Model-View Framework", which is
             discussed in the next section. After that, the Message Sender is discussed in more
-            detail, following some details of the Order Form component are addressed. </para>
+            detail, following which the Order Form component id addressed. </para>
 </section>     <!-- End of Section 7.1 -->
 
 <section id="chap07-mvf"><title id="ch7-mvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
 
 <section id="chap07-mvf-objs"><title id="ch7-mvf-objs.title">MVF Objective</title>		<!-- Section 7.2.1 -->
-    <para>For a discussion of the internals of the MVF, see <xref linkend="apx-mvfinternals"
-                />.</para>
-        <para>The objective of the ModelView Framework (MVF) is to provide a simple mechanism
-                whereby application components can read and write data and display views without
-                needing to be aware of how this is done. The MVF also supports the view-model-data
-                separation of concerns in application-level components. </para>
-            <para>When a user double-clicks on an item in say the Product List dialog, the confident
-                expectation is that a product dialog that shows the data associated with the list
-                item will be displayed. Now consider what has to happen to make that product dialog
-                appear:</para>
-            <orderedlist>
-                <listitem>
-                    <para>Create the appropriate Data component, which...</para>
-                </listitem>
-                <listitem>
-                    <para>... opens the correct data file and reads the data.</para>
-                </listitem>
-                <listitem>
-                    <para>Create the Model component and provide it with its "key" (e.g. product
-                        number).</para>
-                </listitem>
-                <listitem>
-                    <para>In the Model component, get a reference to the Data component.</para>
-                </listitem>
-                <listitem>
-                    <para>Invoke a method on the Data component to retrieve the data associated with
-                        the Model's key.</para>
-                </listitem>
-                <listitem>
-                    <para>Create a View component.</para>
-                </listitem>
-                <listitem>
-                    <para>Provide that view component with the data to be displayed in the
-                        dialog.</para>
-                </listitem>
-                <listitem>
-                    <para>Make the dialog visible.</para>
-                </listitem>
-            </orderedlist>
-<para>This set of actions assumes that none of the component instances involved are yet activated.
-                However, the MVF must work when some or all are activated. For example, if a View
-                exists but is minimized, then if a user double-clicks on that item in a list, the
-                MVF need only surface the view. Thus the MVF distinguishes between a number of
-                different states, and relieves the programmer from having to code the logic for
-                each component and for each possible state. </para>
-    <para> In the previous exercise, the code in <computeroutput>OrderMgrView</computeroutput> 
-      that launched (for example) a Customer List View was as follows: 
-      <programlisting>
-      <![CDATA[
-  ::METHOD showModel UNGUARDED
-    use arg record
-    className = record~ID
-    viewClassName = className||"View"
-    interpret "."||viewClassName||"~newInstance(self)"
-      ]]>
-      </programlisting>
-    The list data was hard-coded in the list view class, 
-    and launching a Customer View from the list was done by the <computeroutput>showCustomer</computeroutput> method:
+  <para>For a discussion of the internals of the MVF, 
+      see <xref linkend="apx-mvfinternals"/>.</para>
+  <para>The objective of the ModelView Framework (MVF) is to provide a mechanism
+    whereby application components can read and write data and display views without
+    needing to be aware of <emphasis role="italic">how</emphasis> this is done. Thus the MVF
+    supports view-model-data separation of concerns in application-level
+    components. The MVF comprises three superclasses for application components called 
+    'Model', 'View', and 'GenericFile' (the latter for data components), plus two 
+    "manager" objects: 'ObjectMgr' and 'ViewMgr'.</para>
+  <para>When a user double-clicks on an item in say the Customer List dialog, the confident
+    expectation is that a Customer dialog that shows the data associated with the list
+    item will be displayed. Now consider what has to happen to make that product dialog
+    appear:</para>
+    <orderedlist>
+    <listitem><para>Create the appropriate data component, which...</para></listitem>
+    <listitem><para>... opens the correct file and reads the data.</para></listitem>
+    <listitem><para>Create the model component and provide it with its "key" (e.g. customer number).</para></listitem>
+    <listitem><para>In the model component, get a reference to the data component.</para></listitem>
+    <listitem><para>Invoke a method on the data component to retrieve the data associated with
+      the model's key.</para></listitem>
+    <listitem><para>Create a view component.</para></listitem>
+    <listitem><para>Provide that view component with the data to be displayed in its dialog.</para></listitem>
+    <listitem><para>Make the dialog visible.</para></listitem>
+    </orderedlist>
+  <para>This sequence set of actions assumes that none of the component instances involved are yet
+    activated. However, the MVF must also work when some or all are activated. For example,
+    if a Customer dialog exists but is minimized, and the user double-clicks on that customer
+    in a Customer List dialog, then 
+    the MVF need only surface the Customer dialog. Thus the MVF distinguishes between a
+    number of different states, and relieves the programmer from having to code the
+    logic for each component and for each possible state. </para>
+  <para>Consider the code in <computeroutput>OrderMgrView</computeroutput> that
+    launches (for example) a List View. On the left is the Exercise 6 code, 
+    and on the right is the Exercise 7 code (equivalent or identical statements have been placed 
+    on the same line for comparison).
     <programlisting>
-    <![CDATA[
-  ::METHOD showCustomer UNGUARDED
-    ...
-    .local~my.idCustomerData  = .CustomerData~new	-- create Customer Data instance
-    .local~my.idCustomerModel = .CustomerModel~new	-- create Customer Model instance
-    .local~my.idCustomerData~activate
-    .local~my.idCustomerModel~activate
-    .CustomerView~newInstance(rootDlg,"CU003")
-    ...
-    ]]>
+<![CDATA[
+  Exercise 6                                             Exercise 7
+  ----------                                             ----------
+::METHOD showModel UNGUARDED                            ::METHOD showModel UNGUARDED  
+                                                          expose idObjectMgr  
+  use arg record                                          use arg record
+  className = record~ID                                   className = record~ID
+  viewClassName = className||"View"                       
+  interpret "."||viewClassName||"~newInstance(self)"      r = idObjectMgr~showModel(classname, "a", self)
+]]>
     </programlisting>
-    The <computeroutput>getData</computeroutput> method of <computeroutput>CustomerView</computeroutput> then 
-    invoked <computeroutput>query</computeroutput> on <computeroutput>CustomerModel</computeroutput> 
-    (finding its id in <computeroutput>.local</computeroutput>), which in turn invoked <computeroutput>getData</computeroutput>
-    on <computeroutput>CustomerData</computeroutput>, which returned hard-coded Customer data. 
-    </para>
-    <para>Now look at the sequence in Exercise07. First, <computeroutput>OrderMgrView</computeroutput> has the names
-        of the possible model classes (e.g. <computeroutput>CustomerListModel</computeroutput>) hard-coded in its
-        <computeroutput>initRecords</computeroutput> method (although these could arguably be better placed in a configuration file).
-        The <computeroutput>showModel</computeroutput> method is as follows: 
-      <programlisting>
-      <![CDATA[
-  ::METHOD showModel UNGUARDED
-    expose idObjectMgr  -- got from .local in the init method
-    use arg record
-    className = record~ID
-    r = idObjectMgr~showModel(classname, "a", self)			
-      ]]>
-      </programlisting>
-    Here, the Object Manager (<computeroutput>idObjectMgr</computeroutput>) handles the task of ensuring that both
-        the Data and Model components are active. It checks to see if they are already activated; if not, it instantiates them.
-        It then instantiates the appropriate List View component, and launching a Customer View from the list is done as follows:
-        The second parameter ("a") in the last statement is the instance name of the List View, and stands for "Anonymous". Instance names are
-        discussed in <xref linkend="ch7-mvfuse-kinds.title"/>. The <computeroutput>showCustomer</computeroutput> method in the
-        Customer List component, where <computeroutput>info~text</computeroutput> is the Customer Number (also used as the instance name),
-        is as follows: 
-        <programlisting>
-    <![CDATA[
-  ::METHOD showCustomer UNGUARDED
-    ...
-      objectMgr = .local~my.ObjectMgr
-      objectMgr~showModel("CustomerModel", info~text, rootDlg)		
-    ...
-    ]]>
-    </programlisting>
-        
-    </para>
-    <para>Now look at Person....</para>
+    The key difference is that in Exercise 6 the Customer List is launched by the Order Manager View without 
+    any concern for the list data - because it's hard-coded. In Exercise 7, on the other hand,
+    it is the MVF that performs the key function of showing the view of the model complete with its data
+    which has been read from disk. (By the way, <computeroutput>idObjectMgr</computeroutput> was got
+    from .local in the <computeroutput>init</computeroutput> method.
+  </para>
+  <para>In the Exercise 7 code, the second parameter in the <computeroutput>showModel</computeroutput> method is "a".
+    This indicates that the List View instance is "anonymous". Instance names and "kinds" of component are
+    discussed in <xref linkend="ch7-mvfuse-kinds.title"/>. </para>
+  <para>Now that the List View has been created, consider what happens when the user double-clicks on an item
+    in the list. 
+    In Exercise 6, the list data was hard-coded in the class. In Exercise 7 it is read from disk
+    by the <computeroutput>CustomerData</computeroutput> class (which subclasses <computeroutput>GenericFile</computeroutput>).
+    In both exercises, launching a Customer View from the list (when the user double-clicks on a list item) is done by 
+    the <computeroutput>showCustomer</computeroutput> method as follows (excluding code common to both):    
+  <programlisting>
+<![CDATA[
+  Exercise 6                                             Exercise 7
+  ----------                                             ----------
+::METHOD showCustomer UNGUARDED                      ::METHOD showCustomer UNGUARDED
+  ...                                                  ...
+  .local~my.idCustomerData  = .CustomerData~new	              
+  .local~my.idCustomerModel = .CustomerModel~new	
+  .local~my.idCustomerData~activate
+  .local~my.idCustomerModel~activate
+                                                       objectMgr = .local~my.ObjectMgr  
+  .CustomerView~newInstance(rootDlg,"CU003")           objectMgr~showModel("CustomerModel", info~text, rootDlg)
+  ...
+]]>
+  </programlisting>
+  </para>
+  <para>The sequence of method invocations required to surface the Customer View dialog, and (if necessary) create the 
+    appropriate model and data objects, is choreographed by <computeroutput>ObjectMgr</computeroutput> working with 
+    the <computeroutput>Model</computeroutput>, <computeroutput>View</computeroutput> and
+    <computeroutput>GenericData</computeroutput> superclasses. See <xref linkend="apx-mvfinternals"/> for details.
+  </para>
 
+  <para>Note that in Exercise 7, <computeroutput>OrderMgrView</computeroutput> has the names
+    of the possible model classes (e.g. <computeroutput>CustomerListModel</computeroutput>) hard-coded in its
+    <computeroutput>initRecords</computeroutput> method (although these might be better placed in a configuration file).
+--------------------
+The <computeroutput>showCustomer</computeroutput> method in the
+    Customer List component, where <computeroutput>info~text</computeroutput> is the Customer Number (also used as the instance name),
+    is as follows:
+-----------------------
+    </para>
+
+  <para>Now look at Person....
+The Object Manager handles the task of ensuring that both
+  the Data and Model components are active. It checks to see if they are already activated; if not, it instantiates them.
+  It then instantiates the appropriate List View component, and launching a Customer View from the list is done as follows:
+    </para>
+
+
+<para> **** This Para is Probably Redundant - unless used to describe Person! ****  
+  When the Customer View was instantiated, its
+  <computeroutput>getData</computeroutput> method then invoked
+  <computeroutput>query</computeroutput> on
+  <computeroutput>CustomerModel</computeroutput> (finding its id in
+  <computeroutput>.local</computeroutput>), which in turn invoked
+  <computeroutput>getData</computeroutput> on
+  <computeroutput>CustomerData</computeroutput>, which returned hard-coded
+  Customer data. 
+</para>    
 </section>	<!-- End of Section 7.2.1 -->
 
 <section id="chap07-mvf-oview"><title id="ch7-mvf-oview.title">MVF Overview</title>		<!-- Section 7.2.2 -->
@@ -405,6 +406,9 @@ readFile - A private method - Given a filename and the number of columns, reads 
 </section>	<!-- End of Section 7.3.1 -->
 
 <section id="chap07-mvfuse-datafmts"><title id="ch7-mvfuse-datafmts.title">Data Formats</title>	<!-- Section 7.3.2 -->
+            <para>File formats: fields in a record are separated by a vertical bar character, and
+                field names are defined in the first line of the file.</para>
+            <para>Query on CustomerList 1 gives: RECORDS: an Array; COUNT: 5; HEADERS: an Array; </para>
   <para>
     <programlisting>
     <![CDATA[
