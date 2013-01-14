@@ -2199,7 +2199,7 @@ RexxMethod2(RexxObjectPtr, dlgctrl_redrawRect, ARGLIST, args, CSELF, pCSelf)
  *
  *  @param  The new parent
  *
- *  @return  0 on success, 1 on error.
+ *  @return  True on success, false on error.
  *
  *  @note  Sets the .SystemErrorCode.
  */

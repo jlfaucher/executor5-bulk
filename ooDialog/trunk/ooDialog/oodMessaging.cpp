@@ -3720,7 +3720,7 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
     }
     else if ( StrCmpI(keyword, "ENDSCROLL") == 0 )
     {
-        lvn = LVN_BEGINSCROLL;
+        lvn = LVN_ENDSCROLL;
         *tag = TAG_LISTVIEW;
     }
     else if ( StrCmpI(keyword, "CLICK") == 0 )

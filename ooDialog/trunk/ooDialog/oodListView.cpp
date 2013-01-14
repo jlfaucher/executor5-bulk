@@ -2970,60 +2970,7 @@ RexxMethod2(RexxObjectPtr, lv_getItemPos, uint32_t, index, CSELF, pCSelf)
     return rxNewPoint(context, p.x, p.y);
 }
 
-/** ListView::getItemRect()
- *
- *  Gets the bounding rectangle for all or part of a subitem in the current view
- *  of the list-view control.
- *
- *  @param  index     [required]  The index of the item for which the rectangle
- *                    is being retrieve.
- *
- *  @param  subIndex  [required]  The index of the subitem for which the
- *                    rectangle is being retrieved.
- *
- *  @param  part      [optional]  Keyword indicating which part of the subitem
- *                    rectangle is sought.
- *
- *                    BOUNDS
- *                    ICON
- *                    LABEL
- *
- *                    The default is BOUNDS
- *
- *  @return  The specified bounding rectangle on success, the .nil object on
- *           error.
- *
- *  @notes  subIndex can be 0, in which case these method works exactly like
- *          getItemRect(), with the exception that SELECTBOUNDS is not accepted
- *          as a keyword.
- */
-RexxMethod4(RexxObjectPtr, lv_getSubitemRect, uint32_t, index, uint32_t, subIndex, OPTIONAL_CSTRING, part, CSELF, pCSelf)
-{
-    HWND hList = getDChCtrl(pCSelf);
-
-    uint32_t flag = LVIR_BOUNDS;
-    if ( argumentExists(3) )
-    {
-        flag = keyword2lvir(context, part, false);
-        if ( flag == (uint32_t)-1 )
-        {
-            return NULLOBJECT;
-        }
-    }
-
-    LVITEMINDEX lvii;
-    lvii.iItem  = index;
-    lvii.iGroup = I_GROUPIDNONE;
-
-    RECT r;
-    if ( ! ListView_GetItemIndexRect(hList, &lvii, subIndex, flag, &r) )
-    {
-        return TheNilObj;
-    }
-    return rxNewRect(context, &r);
-}
-
-/** ListView::getSubitemRect()
+/** ListView::getIitemRect()
  *
  *  Gets the bounding rectangle for all or part of an item in the current view.
  *
@@ -3189,6 +3136,59 @@ RexxMethod3(RexxObjectPtr, lv_getSubitem, RexxObjectPtr, _item, OPTIONAL_uint32_
 
 done_out:
     return result;
+}
+
+/** ListView::getSubitemRect()
+ *
+ *  Gets the bounding rectangle for all or part of a subitem in the current view
+ *  of the list-view control.
+ *
+ *  @param  index     [required]  The index of the item for which the rectangle
+ *                    is being retrieve.
+ *
+ *  @param  subIndex  [required]  The index of the subitem for which the
+ *                    rectangle is being retrieved.
+ *
+ *  @param  part      [optional]  Keyword indicating which part of the subitem
+ *                    rectangle is sought.
+ *
+ *                    BOUNDS
+ *                    ICON
+ *                    LABEL
+ *
+ *                    The default is BOUNDS
+ *
+ *  @return  The specified bounding rectangle on success, the .nil object on
+ *           error.
+ *
+ *  @notes  subIndex can be 0, in which case these method works exactly like
+ *          getItemRect(), with the exception that SELECTBOUNDS is not accepted
+ *          as a keyword.
+ */
+RexxMethod4(RexxObjectPtr, lv_getSubitemRect, uint32_t, index, uint32_t, subIndex, OPTIONAL_CSTRING, part, CSELF, pCSelf)
+{
+    HWND hList = getDChCtrl(pCSelf);
+
+    uint32_t flag = LVIR_BOUNDS;
+    if ( argumentExists(3) )
+    {
+        flag = keyword2lvir(context, part, false);
+        if ( flag == (uint32_t)-1 )
+        {
+            return NULLOBJECT;
+        }
+    }
+
+    LVITEMINDEX lvii;
+    lvii.iItem  = index;
+    lvii.iGroup = I_GROUPIDNONE;
+
+    RECT r;
+    if ( ! ListView_GetItemIndexRect(hList, &lvii, subIndex, flag, &r) )
+    {
+        return TheNilObj;
+    }
+    return rxNewRect(context, &r);
 }
 
 /** ListView::getView()
