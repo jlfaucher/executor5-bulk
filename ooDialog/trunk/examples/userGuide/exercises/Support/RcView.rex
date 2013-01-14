@@ -114,17 +114,19 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    setOffsetParent - set the paprent dialog id for later offsetting of a child
-                      dialog.                                   	      */
+    setOffsetParent - set the parent dialog id for later offsetting of a child
+                      dialog.
+         **** Note: This method not used in Exercise07. ****                  */
   ::METHOD setOffsetParent
     use strict arg parentDlg
     viewMgr = .local~my.ViewMgr
     viewMgr~parentOffsetDlg = self
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    offset - offsets a "child" dialog from it "parent" dialog (i.e. the dialog
+    offset - offsets a "child" dialog from its "parent" dialog (i.e. the dialog
              from which the child is "popped up"). 			      */
   ::METHOD offset
+    --say "RcView-offset-1."
     offset    = .local~my.ViewMgr~dlgOffset
     parentDlg = .local~my.ViewMgr~parentOffsetDlg
     popupPos  = parentDlg~getRealPos

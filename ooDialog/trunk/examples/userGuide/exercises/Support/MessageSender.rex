@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: MessageSender.rex 				  v01-01 07Aug12
+   Exercise 07: MessageSender.rex 				  v01-00 07Aug12
 
    Contains:  classes: "MessageSender", "HRSms"
 
@@ -54,8 +54,9 @@
 
    Changes:
      v01-00 07Jun12: First Version
-     v01-01 07Aug12: Changed self~execute() to popupAsChild. Launched via a menu
+            07Aug12: Changed self~execute() to popupAsChild. Launched via a menu
                      item in the Order Management dialog (OrderMgr.rex)
+            14Jan13: Commented-out use of ViewMgr (ViewMgr function incomplete)
 
   Description:
     Target: className instanceName
@@ -113,7 +114,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*----------------------------------------------------------------------------
-    initDialog - initialises the ViewMgr
+    initDialog - initialises the MessageSender
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
     expose ecTarget ecMethod ecData ecReply btnSend btnClear stErrorMsg objectMgr
@@ -314,10 +315,12 @@
           modelName = ecData~getLine(1)
           parse var modelName modelClass " " modelInstance
           modelClass = modelClass~strip; modelInstance = modelInstance~strip
-          --say "MessageSender-parseData-01b: model Class/Inst =" modelClass modelInstance
-          -- Setup self as "Parent" dilaog for offsetting the view to be shown:
+          --say "MessageSender-parseData-01b: ViewMgr~parentOffsetDialog = self."
+          -- Setup self as "Parent" dialog for offsetting the view to be shown
+          --(do it here because other components may have done it previously):
           .local~my.ViewMgr~parentOffsetDlg = self
           -- Now show the model:
+          --say "MessageSender-parseData-01bb: objectMgr~showModel."
           r = objectMgr~showModel(modelClass, modelInstance, rootDlg)
           --say "MessageSender-parseData-01c: return =" r
           return "special"
@@ -329,7 +332,8 @@
         end
       end
     end
-    else do
+-- Following Code does not work - left here in case needed in any follwoing exercises.
+/*    else do
       --say "MessageSender-parseData-01d."
       if message["class"] = "ViewMgr" & message["instance"] = "The" then do
         method = message["method"]
@@ -346,6 +350,7 @@
         end
       end
     end
+*/
 
     -- Normal treatments:
 

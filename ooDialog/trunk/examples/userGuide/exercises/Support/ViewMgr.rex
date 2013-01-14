@@ -79,7 +79,7 @@
   ::METHOD setPopupParent PUBLIC
     use strict arg parentDlg	-- the dialog id of the Parent View
     self~parentDlg = parentDlg
-    --say "ViewMgr-setPopupParent-01. Parent View =" parentDlg
+    say "ViewMgr-setPopupParent-01. Parent View =" parentDlg
 
   /*----------------------------------------------------------------------------
     offsetDlg  - Calculates the desired position of a "child" dialog given
@@ -102,11 +102,11 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD addView PUBLIC
     use strict arg model, view
-    --say "ViewMgr-addView-01."
+    say "ViewMgr-addView-01."
     -- Check if view already exists:
 
     -- QUESTION! Does the ObjectMgr know about Views? Why should it?
-    -- Answer - in this version, OvhjectMgr handles the View Table -
+    -- Answer - in this version, ObjectMgr handles the View Table -
     --          'cos that's the way I did it (not really correct but
     --          there you go...).
 /*
@@ -129,10 +129,11 @@
     showModel - Surface a View. Uses the ObjectMgr to see if the view already
                 exists, and if so, to surface it; else the ObjectMgr causes the
                 required view to be created.
+                *** Note - Not supported by MessageSender in Exercise07. ***
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD showModel PUBLIC
     use strict arg modelClass, modelInstance
-    --say "ViewMgr-showModel-01: class / instance:" modelClass "/" modelInstance
+    say "ViewMgr-showModel-01: class / instance:" modelClass "/" modelInstance
     -- Get the ObjectMgr to do the work:
     dlg = .local~my.ObjectMgr~showModel(modelClass, modelInstance)
     if dlg = .false then do
