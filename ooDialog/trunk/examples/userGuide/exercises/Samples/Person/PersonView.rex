@@ -116,7 +116,7 @@
     self~setMyData(personData)		-- Note: cannor use 'setData' as this
     					-- would conflict with ooDialog's
     					-- setData method.
-    self~offset:super			-- offsetting logic is in the superclass.
+    --self~offset:super			-- offsetting logic is in the superclass.
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
