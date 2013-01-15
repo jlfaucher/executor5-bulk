@@ -1116,7 +1116,7 @@ uint32_t doDataAutoDetection(RexxThreadContext *c, pCPlainBaseDialog pcpbd)
 
        if ( (GetWindowLong(current, GWL_STYLE) & WS_VISIBLE) != 0 )
        {
-           itemToAdd = control2controlType(current);
+           itemToAdd = controlHwnd2controlType(current);
            if ( ! isDataAttributeControl(itemToAdd) )
            {
                itemToAdd = winNotAControl;

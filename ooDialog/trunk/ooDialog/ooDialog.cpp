@@ -5243,7 +5243,7 @@ RexxMethod3(RexxObjectPtr, pbdlg_getNewControl, RexxObjectPtr, rxID, OSELF, self
         goto out;
     }
 
-    oodControl_t controlType = control2controlType(hControl);
+    oodControl_t controlType = controlHwnd2controlType(hControl);
     if ( controlType == winUnknown )
     {
         controlNotSupportedException(context, rxID, self, 1, controlWindow2rexxString(context, hControl));

@@ -206,7 +206,7 @@ void getToolIdentifiers(RexxMethodContext *c, LPTOOLINFO pTI, RexxObjectPtr *hwn
     if ( pTI->uFlags & TTF_IDISHWND )
     {
         pCPlainBaseDialog pcpbd   = (pCPlainBaseDialog)getWindowPtr(pTI->hwnd, GWLP_USERDATA);
-        oodControl_t      ctrType = control2controlType((HWND)pTI->uId);
+        oodControl_t      ctrType = controlHwnd2controlType((HWND)pTI->uId);
 
         rxHwnd = pcpbd->rexxSelf;
         rxID   = createControlFromHwnd(c, pcpbd, (HWND)pTI->uId, ctrType, true);
@@ -216,7 +216,7 @@ void getToolIdentifiers(RexxMethodContext *c, LPTOOLINFO pTI, RexxObjectPtr *hwn
         rxID = c->Uintptr(pTI->uId);
 
         // If ctrlType is winUnknown, the hwnd must be a dialog.
-        oodControl_t ctrlType = control2controlType(pTI->hwnd);
+        oodControl_t ctrlType = controlHwnd2controlType(pTI->hwnd);
         if ( ctrlType == winUnknown )
         {
             pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)getWindowPtr(pTI->hwnd, GWLP_USERDATA);

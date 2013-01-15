@@ -985,9 +985,11 @@ REXX_METHOD_PROTOTYPE(e_style);
 REXX_METHOD_PROTOTYPE(cb_add);
 REXX_METHOD_PROTOTYPE(cb_addDirectory);
 REXX_METHOD_PROTOTYPE(cb_find);
+REXX_METHOD_PROTOTYPE(cb_getComboBoxInfo);
 REXX_METHOD_PROTOTYPE(cb_getEditControl);
 REXX_METHOD_PROTOTYPE(cb_getText);
 REXX_METHOD_PROTOTYPE(cb_insert);
+REXX_METHOD_PROTOTYPE(cb_isGrandchild);
 REXX_METHOD_PROTOTYPE(cb_select);
 
 // ScrollBar
@@ -2057,9 +2059,11 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cb_add,                         cb_add),
     REXX_METHOD(cb_addDirectory,                cb_addDirectory),
     REXX_METHOD(cb_find,                        cb_find),
+    REXX_METHOD(cb_getComboBoxInfo,             cb_getComboBoxInfo),
     REXX_METHOD(cb_getEditControl,              cb_getEditControl),
     REXX_METHOD(cb_getText,                     cb_getText),
     REXX_METHOD(cb_insert,                      cb_insert),
+    REXX_METHOD(cb_isGrandchild,                cb_isGrandchild),
     REXX_METHOD(cb_select,                      cb_select),
 
     // ListBox

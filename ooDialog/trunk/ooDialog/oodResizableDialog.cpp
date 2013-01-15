@@ -1093,7 +1093,7 @@ BOOL CALLBACK InitializeAllControlsProc(HWND hCtrl, LPARAM lParam)
         return TRUE;
     }
 
-    oodControl_t ctrlType = control2controlType(hCtrl);
+    oodControl_t ctrlType = controlHwnd2controlType(hCtrl);
     int          ctrlID   = GetDlgCtrlID(hCtrl);
 
     if ( ctrlType == winGroupBox )

@@ -75,6 +75,7 @@ const char *controlType2winName(oodControl_t control)
         case winMonthCalendar :        return MONTHCAL_CLASS;
         case winDateTimePicker :       return DATETIMEPICK_CLASS;
         case winUpDown :               return UPDOWN_CLASS;
+        case winComboLBox :            return "ComboLBox";
         default :                      return "";
     }
 }
@@ -92,6 +93,7 @@ const char *controlType2className(oodControl_t control)
         case winEdit :                 return "EDIT";
         case winListBox :              return "LISTBOX";
         case winComboBox :             return "COMBOBOX";
+        case winComboLBox :            return "LISTBOX";
         case winScrollBar :            return "SCROLLBAR";
         case winTreeView :             return "TREEVIEW";
         case winListView :             return "LISTVIEW";
@@ -119,6 +121,7 @@ const char *controlType2controlName(oodControl_t control)
         case winEdit :                 return "Edit";
         case winListBox :              return "ListBox";
         case winComboBox :             return "ComboBox";
+        case winComboLBox :            return "ComboLBox";
         case winScrollBar :            return "ScrollBar";
         case winTreeView :             return "TreeView";
         case winListView :             return "ListView";
@@ -151,13 +154,14 @@ oodControl_t winName2controlType(const char *className)
     else if ( strcmp(className, DATETIMEPICK_CLASS) == 0 ) return winDateTimePicker;
     else if ( strcmp(className, UPDOWN_CLASS      ) == 0 ) return winUpDown;
     else if ( strcmp(className, TOOLTIPS_CLASS    ) == 0 ) return winToolTip;
+    else if ( strcmp(className, "ComboLBox"       ) == 0 ) return winComboLBox;
     else
     {
         return winUnknown;
     }
 }
 
-oodControl_t control2controlType(HWND hControl)
+oodControl_t controlHwnd2controlType(HWND hControl)
 {
     oodControl_t type = winUnknown;
 
@@ -190,6 +194,7 @@ oodControl_t controlName2controlType(CSTRING name)
 {
     if      ( StrCmpI(name, "CHECKBOX"      ) == 0 ) return winCheckBox;
     else if ( StrCmpI(name, "COMBOBOX"      ) == 0 ) return winComboBox;
+    else if ( StrCmpI(name, "COMBOLBOX"     ) == 0 ) return winComboLBox;
     else if ( StrCmpI(name, "DATETIMEPICKER") == 0 ) return winDateTimePicker;
     else if ( StrCmpI(name, "EDIT"          ) == 0 ) return winEdit;
     else if ( StrCmpI(name, "GROUPBOX"      ) == 0 ) return winGroupBox;
@@ -999,6 +1004,15 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
         case CTRLTAG_NOTHING :
             break;
 
+        case CTRLTAG_COMBOBOX :
+        {
+            if ( tag & CTRLTAG_ISGRANDCHILD )
+            {
+                return grandchildEvent(pData, method, hwnd, msg, wParam, lParam, tag);
+            }
+            break;
+        }
+
         case CTRLTAG_EDIT :
         {
             if ( tag & CTRLTAG_WANTRETURN )
@@ -1050,72 +1064,7 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
             }
             else if ( tag & CTRLTAG_ISGRANDCHILD )
             {
-                if ( msg == WM_GETDLGCODE )
-                {
-                    return (DLGC_WANTALLKEYS | DefSubclassProc(hwnd, msg, wParam, lParam));
-                }
-                else if ( msg == WM_KEYDOWN || msg == WM_KILLFOCUS )
-                {
-                    CSTRING keyWord = "error";
-                    LRESULT ret     = 0;
-
-                    if ( msg == WM_KILLFOCUS )
-                    {
-                        keyWord = "killfocus";
-                        ret = DefSubclassProc(hwnd, msg, wParam, lParam);
-                    }
-                    else
-                    {
-                        switch ( wParam )
-                        {
-                            case VK_RETURN :
-                                keyWord = "enter";
-                                break;
-
-                            case VK_ESCAPE :
-                                keyWord = "escape";
-                                break;
-
-                            case VK_TAB :
-                            {
-                                if ( tag & CTRLTAG_WANTTAB )
-                                {
-                                    keyWord = "tab";
-                                    break;
-                                }
-
-                                BOOL previous = (GetAsyncKeyState(VK_SHIFT) & ISDOWN) ? 1 : 0;
-                                SendMessage(pData->pcpbd->hDlg, WM_NEXTDLGCTL, previous, FALSE);
-
-                                return 0;
-                            }
-                        }
-                    }
-
-                    RexxObjectPtr   ctrlID = c->UnsignedInt32(pData->id);
-                    RexxObjectPtr   flag   = c->String(keyWord);
-                    RexxArrayObject args   = c->ArrayOfThree(ctrlID, flag, pData->pcdc->rexxSelf);
-                    RexxObjectPtr   reply  = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
-
-                    if ( ! checkForCondition(c, false) && reply != NULLOBJECT )
-                    {
-                        c->ReleaseLocalReference(ctrlID);
-                        c->ReleaseLocalReference(flag);
-                        c->ReleaseLocalReference(args);
-                        c->ReleaseLocalReference(reply);
-
-                        return ret;
-                    }
-                    else
-                    {
-                        // On error return DefSubclassProc()
-                        return (ret == 0 ? DefSubclassProc(hwnd, msg, wParam, lParam) : ret);
-                    }
-                }
-                else if ( msg == WM_KEYUP || msg == WM_CHAR )
-                {
-                    return 0;
-                }
+                return grandchildEvent(pData, method, hwnd, msg, wParam, lParam, tag);
             }
             break;
         }

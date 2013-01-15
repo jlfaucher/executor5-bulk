@@ -71,6 +71,7 @@
 #define CTRLTAG_MOUSE             0x00000002
 #define CTRLTAG_DIALOG            0x00000003
 #define CTRLTAG_EDIT              0x00000004
+#define CTRLTAG_COMBOBOX          0x00000005
 
 /**
  * The next 2 bytes are generic 'flags' that can be isolated using TAG_FLAGMASK.
@@ -213,7 +214,7 @@ extern bool          parseTagOpts(RexxThreadContext *c, CSTRING opts, uint32_t *
 extern RexxClassObject    oodClass4controlType(RexxMethodContext *c, oodControl_t controlType);
 extern RexxClassObject    oodClass4controlType(oodControl_t controlType, RexxMethodContext *c);
 extern RexxClassObject    oodClass4controlType(RexxThreadContext *c, oodControl_t controlType);
-extern oodControl_t       control2controlType(HWND hControl);
+extern oodControl_t       controlHwnd2controlType(HWND hControl);
 extern oodControl_t       controlName2controlType(CSTRING name);
 extern oodControl_t       winName2controlType(const char *className);
 extern const char        *controlType2winName(oodControl_t control);
@@ -238,6 +239,7 @@ extern void               unProtectControlObject(RexxMethodContext *c, pCDialogC
 
 extern RexxObjectPtr      createToolTip(RexxMethodContext *context, RexxObjectPtr rxID, CSTRING styleFlags, pCPlainBaseDialog pcpbd);
 extern bool               tvSubclassEdit(HWND hTV, HWND hEdit, uintptr_t tvID);
+extern LRESULT            grandchildEvent(pSubClassData pData, char *method, HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM lParam, uint32_t tag);
 
 #define ButtonAtom           0x0080
 #define EditAtom             0x0081
@@ -254,10 +256,28 @@ inline bool isSingleLineEdit(HWND hEdit)
     return ((GetWindowLong(hEdit, GWL_STYLE) & ES_MULTILINE) == 0);
 }
 
-/* Determine if a combo box is a drop down list combo box.  */
+/* Determine if a combo box ID is a drop down list combo box.  */
 inline bool isDropDownList(HWND hDlg, uint32_t id)
 {
     return ((GetWindowLong(GetDlgItem(hDlg, id), GWL_STYLE) & CBS_DROPDOWNLIST) == CBS_DROPDOWNLIST);
+}
+
+/* Determine if a combo box window handle is a drop down list combo box.  */
+inline bool isDropDownListCB(HWND hCB)
+{
+    return ((GetWindowLong(hCB, GWL_STYLE) & CBS_DROPDOWNLIST) == CBS_DROPDOWNLIST);
+}
+
+/* Determine if a combo box window handle is a simple combo box.  */
+inline bool isSimpleCB(HWND hCB)
+{
+    return ((GetWindowLong(hCB, GWL_STYLE) & CBS_SIMPLE) == CBS_SIMPLE);
+}
+
+/* Determine if a combo box window handle is a drop donw combo box.  */
+inline bool isDropDownCB(HWND hCB)
+{
+    return ((GetWindowLong(hCB, GWL_STYLE) & CBS_DROPDOWN) == CBS_DROPDOWN);
 }
 
 /* Determine if a list box is a single selection list box.  */

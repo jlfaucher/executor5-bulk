@@ -283,6 +283,7 @@ typedef enum
     winMonthCalendar       = 16,
     winUpDown              = 17,
     winToolTip             = 18,
+    winComboLBox           = 19,
 
     // A special value used by the data table / data table connection functions.
     winNotAControl         = 42,

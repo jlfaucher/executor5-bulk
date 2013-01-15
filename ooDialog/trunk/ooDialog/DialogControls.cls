@@ -628,13 +628,15 @@
    return self~sendWinIntMsg(self~CB_RESETCONTENT, 0, 0)
 
 ::method find unguarded external "LIBRARY oodialog cb_find"
+::method getComboBoxInfo unguarded external "LIBRARY oodialog cb_getComboBoxInfo"
+::method getEditControl unguarded external "LIBRARY oodialog cb_getEditControl"
 ::method getHorizontalExtent unguarded
    use strict arg
    return self~sendWinIntMsg(self~CB_GETHORIZONTALEXTENT, 0, 0)
 
-::method getEditControl unguarded external "LIBRARY oodialog cb_getEditControl"
 ::method getText unguarded external "LIBRARY oodialog cb_getText"
 ::method insert unguarded external "LIBRARY oodialog cb_insert"
+::method isGrandchild unguarded external "LIBRARY oodialog cb_isGrandchild"
 ::method isDropDownOpen unguarded
    use strict arg
    return self~sendWinIntMsg(self~CB_GETDROPPEDSTATE, 0, 0)

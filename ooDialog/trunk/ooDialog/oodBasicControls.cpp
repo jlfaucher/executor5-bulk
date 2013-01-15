@@ -55,6 +55,256 @@
 
 
 /**
+ * The genric implementation for the isGrandChild() method.  Currently only the
+ * edit and combo box controls have this method, so being static in this module
+ * is fine.
+ *
+ * This may need to change if the mehtod is used for more controls .
+ *
+ * @param context
+ * @param mthName
+ * @param wantTab
+ * @param pCSelf
+ *
+ * @return RexxObjectPtr
+ */
+static RexxObjectPtr genericIsGrandchild(RexxMethodContext *context, CSTRING mthName, logical_t wantTab,
+                                         CSELF pCSelf, oodControl_t type)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    RexxObjectPtr    result = TheFalseObj;
+    WinMessageFilter wmf    = {0};
+
+    // For now there is only edit and combo box, may be others in the future.
+    if ( type == winComboBox )
+    {
+        wmf.method = "onComboBoxGrandChildEvent";
+        wmf.tag    = CTRLTAG_COMBOBOX | CTRLTAG_ISGRANDCHILD;
+    }
+    else
+    {
+        wmf.method = "onEditGrandChildEvent";
+        wmf.tag    = CTRLTAG_EDIT | CTRLTAG_ISGRANDCHILD;
+    }
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+    if ( ! requiredComCtl32Version(context, "isGrandChild", COMCTL32_6_0) )
+    {
+        goto done_out;
+    }
+    if ( type == winEdit && ! isSingleLineEdit(pcdc->hCtrl) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_SUPPORTED);
+        goto done_out;
+    }
+
+    if ( argumentExists(1) )
+    {
+        wmf.method = mthName;
+    }
+
+    wmf.wm       = WM_KILLFOCUS;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = 0;
+    wmf.wpFilter = 0;
+    wmf.lp       = 0;
+    wmf.lpFilter = 0;
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm       = WM_GETDLGCODE;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = 0;
+    wmf.wpFilter = 0;
+    wmf.lp       = 0;
+    wmf.lpFilter = 0;
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm       = WM_KEYDOWN;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = VK_RETURN;
+    wmf.wpFilter = 0xFFFFFFFF;
+    wmf.lp       = 0;
+    wmf.lpFilter = KEY_WASDOWN;
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm = WM_KEYUP;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm = WM_CHAR;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm       = WM_KEYDOWN;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = VK_ESCAPE;
+    wmf.wpFilter = 0xFFFFFFFF;
+    wmf.lp       = 0;
+    wmf.lpFilter = KEY_WASDOWN;
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm = WM_KEYUP;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm = WM_CHAR;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm       = WM_KEYDOWN;
+    wmf.wmFilter = 0xFFFFFFFF;
+    wmf.wp       = VK_TAB;
+    wmf.wpFilter = 0xFFFFFFFF;
+    wmf.lp       = 0;
+    wmf.lpFilter = KEY_WASDOWN;
+
+    if ( wantTab )
+    {
+        wmf.tag |= CTRLTAG_WANTTAB;
+    }
+
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm = WM_KEYUP;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    wmf.wm = WM_CHAR;
+    if ( ! addSubclassMessage(context, pcdc, &wmf) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_NOT_ENOUGH_MEMORY);
+        goto done_out;
+    }
+
+    result = TheTrueObj;
+
+done_out:
+    return result;
+}
+
+
+LRESULT grandchildEvent(pSubClassData pData, char *method, HWND hwnd, uint32_t msg,
+                        WPARAM wParam, LPARAM lParam, uint32_t tag)
+{
+    RexxThreadContext *c = pData->pcpbd->dlgProcContext;
+
+    if ( msg == WM_GETDLGCODE )
+    {
+        return (DLGC_WANTALLKEYS | DefSubclassProc(hwnd, msg, wParam, lParam));
+    }
+    else if ( msg == WM_KEYDOWN || msg == WM_KILLFOCUS )
+    {
+        CSTRING keyWord = "error";
+        LRESULT ret     = 0;
+
+        if ( msg == WM_KILLFOCUS )
+        {
+            keyWord = "killfocus";
+            ret = DefSubclassProc(hwnd, msg, wParam, lParam);
+        }
+        else
+        {
+            switch ( wParam )
+            {
+                case VK_RETURN :
+                    keyWord = "enter";
+                    break;
+
+                case VK_ESCAPE :
+                    keyWord = "escape";
+                    break;
+
+                case VK_TAB :
+                {
+                    if ( tag & CTRLTAG_WANTTAB )
+                    {
+                        keyWord = "tab";
+                        break;
+                    }
+
+                    BOOL previous = (GetAsyncKeyState(VK_SHIFT) & ISDOWN) ? 1 : 0;
+                    SendMessage(pData->pcpbd->hDlg, WM_NEXTDLGCTL, previous, FALSE);
+
+                    return 0;
+                }
+            }
+        }
+
+        RexxObjectPtr   ctrlID = c->UnsignedInt32(pData->id);
+        RexxObjectPtr   flag   = c->String(keyWord);
+        RexxArrayObject args   = c->ArrayOfThree(ctrlID, flag, pData->pcdc->rexxSelf);
+        RexxObjectPtr   reply  = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
+
+        if ( ! checkForCondition(c, false) && reply != NULLOBJECT )
+        {
+            c->ReleaseLocalReference(ctrlID);
+            c->ReleaseLocalReference(flag);
+            c->ReleaseLocalReference(args);
+            c->ReleaseLocalReference(reply);
+
+            return ret;
+        }
+        else
+        {
+            // On error return DefSubclassProc()
+            return (ret == 0 ? DefSubclassProc(hwnd, msg, wParam, lParam) : ret);
+        }
+    }
+    else if ( msg == WM_KEYUP || msg == WM_CHAR )
+    {
+        return 0;
+    }
+
+    // Quiet compiler warnings, we can not really get here.
+    return DefSubclassProc(hwnd, msg, wParam, lParam);
+}
+
+
+/**
  *  Methods for the .StaticControl.
  */
 #define STATIC_CLASS              "StaticControl"
@@ -1637,137 +1887,7 @@ done_out:
  */
 RexxMethod3(RexxObjectPtr, e_isGrandChild, OPTIONAL_CSTRING, mthName, OPTIONAL_logical_t, wantTab, CSELF, pCSelf)
 {
-    oodResetSysErrCode(context->threadContext);
-
-    RexxObjectPtr    result = TheFalseObj;
-    WinMessageFilter wmf    = {0};
-
-    wmf.tag = CTRLTAG_EDIT | CTRLTAG_ISGRANDCHILD;
-
-    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
-    if ( pcdc == NULL )
-    {
-        goto done_out;
-    }
-    if ( ! requiredComCtl32Version(context, "connectEvent", COMCTL32_6_0) )
-    {
-        goto done_out;
-    }
-    if ( ! isSingleLineEdit(pcdc->hCtrl) )
-    {
-        oodSetSysErrCode(context->threadContext, ERROR_NOT_SUPPORTED);
-        goto done_out;
-    }
-
-    wmf.method = "onEditGrandChildEvent";
-    if ( argumentExists(1) )
-    {
-        wmf.method = mthName;
-    }
-
-    wmf.wm       = WM_KILLFOCUS;
-    wmf.wmFilter = 0xFFFFFFFF;
-    wmf.wp       = 0;
-    wmf.wpFilter = 0;
-    wmf.lp       = 0;
-    wmf.lpFilter = 0;
-
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm       = WM_GETDLGCODE;
-    wmf.wmFilter = 0xFFFFFFFF;
-    wmf.wp       = 0;
-    wmf.wpFilter = 0;
-    wmf.lp       = 0;
-    wmf.lpFilter = 0;
-
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm       = WM_KEYDOWN;
-    wmf.wmFilter = 0xFFFFFFFF;
-    wmf.wp       = VK_RETURN;
-    wmf.wpFilter = 0xFFFFFFFF;
-    wmf.lp       = 0;
-    wmf.lpFilter = KEY_WASDOWN;
-
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm = WM_KEYUP;
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm = WM_CHAR;
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm       = WM_KEYDOWN;
-    wmf.wmFilter = 0xFFFFFFFF;
-    wmf.wp       = VK_ESCAPE;
-    wmf.wpFilter = 0xFFFFFFFF;
-    wmf.lp       = 0;
-    wmf.lpFilter = KEY_WASDOWN;
-
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm = WM_KEYUP;
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm = WM_CHAR;
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm       = WM_KEYDOWN;
-    wmf.wmFilter = 0xFFFFFFFF;
-    wmf.wp       = VK_TAB;
-    wmf.wpFilter = 0xFFFFFFFF;
-    wmf.lp       = 0;
-    wmf.lpFilter = KEY_WASDOWN;
-
-    if ( wantTab )
-    {
-        wmf.tag |= CTRLTAG_WANTTAB;
-    }
-
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm = WM_KEYUP;
-    if ( ! addSubclassMessage(context, pcdc, &wmf) )
-    {
-        goto done_out;
-    }
-
-    wmf.wm = WM_CHAR;
-    if ( addSubclassMessage(context, pcdc, &wmf) )
-    {
-        result = TheTrueObj;
-    }
-
-done_out:
-    return result;
+    return genericIsGrandchild(context, mthName, wantTab, pCSelf, winEdit);
 }
 
 
@@ -2706,12 +2826,18 @@ RexxMethod4(int32_t, cb_find, CSTRING, text, OPTIONAL_uint32_t, startIndex, OPTI
 }
 
 
-/** ComboBox::getEditControl()
+/** ComboBox::getComboBoxInfo()
  *
- *  Returns a Rexx Edit object that reprsents the child edit control used by the
- *  combo box.
+ *  Returns a Directory object containing information for this combo box.
+ *
+ *  @remarks  The COMBOBOXINFO struct has a field, hwndItem, which is the edit
+ *            control for simple and drop-down combo boxes.  For a drop-down
+ *            list combo box I thought it would be a static control.  But,
+ *            testing seems to show it is the combo box itself.  Rather than try
+ *            to guess what type of control it is, we just use
+ *            controlHwnd2controltype() to determine its type.
  */
-RexxMethod1(RexxObjectPtr, cb_getEditControl, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, cb_getComboBoxInfo, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
 
@@ -2726,9 +2852,77 @@ RexxMethod1(RexxObjectPtr, cb_getEditControl, CSELF, pCSelf)
 
     if ( GetComboBoxInfo(pcdc->hCtrl, &cbi) )
     {
-        result = createControlFromHwnd(context, pcdc, cbi.hwndItem, winEdit, true);
+        RexxDirectoryObject d    = context->NewDirectory();
+        oodControl_t        type = controlHwnd2controlType(cbi.hwndItem);
+
+        RexxObjectPtr temp = createControlFromHwnd(context, pcdc, cbi.hwndItem, type, true);
+        context->DirectoryPut(d, temp, "TEXTOBJ");
+
+        temp = createControlFromHwnd(context, pcdc, cbi.hwndList, winComboLBox, true);
+        context->DirectoryPut(d, temp, "LISTBOXOBJ");
+
+        temp = rxNewRect(context, &cbi.rcButton);
+        context->DirectoryPut(d, temp, "BUTTONRECT");
+
+        temp = rxNewRect(context, &cbi.rcItem);
+        context->DirectoryPut(d, temp, "TEXTRECT");
+
+        CSTRING state = "error";
+        if ( cbi.stateButton == 0 )                          state = "notpressed";
+        else if ( cbi.stateButton == STATE_SYSTEM_INVISIBLE ) state = "absent";
+        else if ( cbi.stateButton == STATE_SYSTEM_PRESSED )   state = "pressed";
+
+        temp = context->String(state);
+        context->DirectoryPut(d, temp, "BUTTONSTATE");
+
+        result = d;
+    }
+    else
+    {
+        oodSetSysErrCode(context->threadContext);
     }
 
+    return result;
+}
+
+
+/** ComboBox::getEditControl()
+ *
+ *  Returns a Rexx Edit object that reprsents the child edit control used by the
+ *  combo box.
+ *
+ *  @notes  Sets the .SystemErrorCode.
+ */
+RexxMethod1(RexxObjectPtr, cb_getEditControl, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    RexxObjectPtr result = TheNilObj;
+    COMBOBOXINFO  cbi    = { sizeof(COMBOBOXINFO) };
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    if ( isDropDownListCB(pcdc->hCtrl) )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_INVALID_COMBOBOX_MESSAGE);
+        goto done_out;
+    }
+
+
+    if ( GetComboBoxInfo(pcdc->hCtrl, &cbi) )
+    {
+        result = createControlFromHwnd(context, pcdc, cbi.hwndItem, winEdit, true);
+    }
+    else
+    {
+        oodSetSysErrCode(context->threadContext);
+    }
+
+done_out:
     return result;
 }
 
@@ -2769,6 +2963,47 @@ RexxMethod2(RexxStringObject, cb_getText, uint32_t, index, CSELF, pCSelf)
 RexxMethod3(int32_t, cb_insert, OPTIONAL_int32_t, index, CSTRING, text, CSELF, pCSelf)
 {
     return cbLbInsert(context, ((pCDialogControl)pCSelf)->hCtrl, index, text, winComboBox);
+}
+
+/** ComboBox::isGrandChild()
+ *
+ *  Notifies the framework that this combo box control is a grandchild of the
+ *  dialog and configures the underlying combo box control to send some event
+ *  notifications to the dialog, rather than its direcet parent.
+ *
+ *  @param  mthName  [optional] The method to be invoked in the Rexx dialog when
+ *                   one of the 4 default events happens.  The default if
+ *                   omitted is onComboBoxGrandChildEvent()
+ *
+ *  @param  wantTab  [opitonal]  If the Rexx method should be invoked for the
+ *                   TAB event.  The default is false, the method is not invoked
+ *                   for the tab key event.
+ *
+ *  @return  True on success, otherwise false.
+ *
+ *  @notes   Requires common control library 6.2.0.
+ *
+ *           This method connects 4 event notifications from the grandchild
+ *           combo box control to the method in the Rexx dialog.  3 of the
+ *           events are key down events, the RETURN, ESCAPE, and TAB key down
+ *           events. The other event is the KILLFOCUS event.  All events invoke
+ *           the same method in the Rexx dialog.  One of the arguments sent to
+ *           the event handler is a keyword that specifies which event happened.
+ *
+ *           By default, the method is not invoked for the TAB key down event,
+ *           but that can be changed using the wantTab argument.
+ *
+ *  @remarks  We need to always connect the VK_TAB key, even if the user does
+ *            not want the TAB nofication.  The reason is that we need to use
+ *            DLGC_WANTALLKEYS for WM_GETDLGCODE, which prevents the dialog
+ *            manager from handling TAB.  I don't see any way of asking for
+ *            RETURN and ESCAPE, but not TAB.  In the message processing loop,
+ *            we simply do not invoke the Rexx method unless CTRLTAG_WANTTAB is
+ *            set in the tag.
+ */
+RexxMethod3(RexxObjectPtr, cb_isGrandchild, OPTIONAL_CSTRING, mthName, OPTIONAL_logical_t, wantTab, CSELF, pCSelf)
+{
+    return genericIsGrandchild(context, mthName, wantTab, pCSelf, winComboBox);
 }
 
 
