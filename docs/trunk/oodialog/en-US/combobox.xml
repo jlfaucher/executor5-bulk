@@ -701,7 +701,7 @@ new orleans
 </section>  <!-- End ComboBox::find() -->
 
 
-<section id="mthGetCombBoxInfo" xreflabel="getCombBoxInfo"><title>getCombBoxInfo</title>
+<section id="mthGetComboBoxInfo" xreflabel="getCombBoxInfo"><title>getCombBoxInfo</title>
 <indexterm><primary>getCombBoxInfo</primary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>getCombBoxInfo</secondary></indexterm>
 <programlisting>
@@ -822,7 +822,7 @@ new orleans
   <para>
     The returned edit control is a grandchild of the dialog so the <xref linkend="mthConnectEditEvent"/> method can not
     connect any events to the Rexx dialog. Dialog controls only send their notifications to their direct parent. However, the
-    <xref linkend="mtIsGrandchildClsEdit"/> method can be used to set up special handling so that a few events can be
+    <xref linkend="mthIsGrandchildClsEdit"/> method can be used to set up special handling so that a few events can be
     intercepted and used to invoke a method in the Rexx dialog.
   </para>
   <para>
@@ -843,7 +843,7 @@ new orleans
   <listitem>
   <para>
     This example gets the child edit control of the combo box so that the application can manipulate the edit control. It
-    also uses the <xref linkend="mthIsGrandchchildClsEdit"/> so that the application can monitor some of the edit control's
+    also uses the <xref linkend="mthIsGrandchildClsEdit"/> so that the application can monitor some of the edit control's
     event notifications:
 <programlisting>
 <![CDATA[
@@ -1054,8 +1054,8 @@ new orleans
     The simple and drop-down combo boxes have a child edit control that recives the keyboard focus rather than the combo box.
     For simple and drop-down combo boxes, the programmer should be get the edit control using the <xref
     linkend="mthGetEditControl"/> method and then use the <computeroutput>Edit</computeroutput> class <xref
-    linkend="mthIsGrandchild"/> method on the edit object rather than the <emphasis role="italic">isGrandchild</emphasis>
-    method on the combo box object.
+    linkend="mthIsGrandchildClsEdit"/> method on the edit object rather than the <emphasis
+    role="italic">isGrandchild</emphasis> method on the combo box object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
