@@ -310,6 +310,24 @@ Section  doInstall
     File "${ExamplesDir}\res\*.dll"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\resizableDialogs
+    ; Add the files ...
+    File "${ExamplesDir}\resizableDialogs\*.txt"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\resizableDialogs\DialogAreaU
+    ; Add the files ...
+    File "${ExamplesDir}\resizableDialogs\DialogAreaU\*.h"
+    File "${ExamplesDir}\resizableDialogs\DialogAreaU\*.rex"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\resizableDialogs\ResizingAdmin
+    ; Add the files ...
+    File "${ExamplesDir}\resizableDialogs\ResizingAdmin\*.h"
+    File "${ExamplesDir}\resizableDialogs\ResizingAdmin\*.rex"
+    File "${ExamplesDir}\resizableDialogs\ResizingAdmin\*.rc"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\simple
     ; Add the files ...
     File "${ExamplesDir}\simple\*.h"
