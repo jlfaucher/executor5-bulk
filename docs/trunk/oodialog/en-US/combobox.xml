@@ -133,35 +133,43 @@
 </row>
 <row>
 <entry><xref linkend="mthAddClsComboBox"/></entry>
-<entry>Adds a new item to the list of the combo box.</entry>
+<entry>Adds a new item to the list of this combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthAddDirectoryClsComboBox"/></entry>
-<entry>Adds file names in a given directory to the items of a combo box.</entry>
+<entry>Adds file names in a given directory to the items of this combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthCloseDropDown"/></entry>
-<entry>Closes the drop-down list of the combo box.</entry>
+<entry>Closes the drop-down list of this combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDeleteClsComboBox"/></entry>
-<entry>Removes an item from the list of the combo box.</entry>
+<entry>Removes an item from the list of this combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDeleteAllClsComboBox"/></entry>
-<entry>Removes all list items from the combo box.</entry>
+<entry>Removes all list items from this combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthFindClsComboBox"/></entry>
-<entry>Searches the combo box for a list item containing the specified text or prefix.</entry>
+<entry>Searches this combo box for a list item containing the specified text or prefix.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetComboBoxInfo"/></entry>
+<entry>Returns a <computeroutput>Directory</computeroutput> object containinng information about this combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetHorizontalExtentClsComboBox"/></entry>
 <entry>Gets the value of the horizontal extent for the combo box.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetEditControl"/></entry>
+<entry>Returns a Rexx <computeroutput>Edit</computeroutput> object that represents the child edit control used by this combo box.</entry>
+</row>
+<row>
 <entry><xref linkend="mthGetTextClsComboBox"/></entry>
-<entry>Gets the text of the list item at the specified position in the combo box.</entry>
+<entry>Gets the text of the list item at the specified position in this combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthInsertClsComboBox"/></entry>
@@ -169,7 +177,11 @@
 </row>
 <row>
 <entry><xref linkend="mthIsDropDownOpen"/></entry>
-<entry>Determines if the list of the combo box is dropped down</entry>
+<entry>Determines if the list of this combo box is dropped down.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsGrandchildClsComboBox"/></entry>
+<entry>Notifies the ooDialog framework that this combo box control is a grandchild of the dialog and configures the underlying combo box control to send four event notifications to the dialog, rather than its direct parent.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItemsClsComboBox"/></entry>
@@ -570,6 +582,7 @@
 </variablelist>
 </section>
 
+
 <section id="mthFindClsComboBox" xreflabel="find"><title>find</title>
 <indexterm><primary>find</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>find</secondary></indexterm>
@@ -685,7 +698,168 @@ new orleans
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End Edit::find() -->
+</section>  <!-- End ComboBox::find() -->
+
+
+<section id="mthGetCombBoxInfo" xreflabel="getCombBoxInfo"><title>getCombBoxInfo</title>
+<indexterm><primary>getCombBoxInfo</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getCombBoxInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCombBoxInfo-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns a <computeroutput>Directory</computeroutput> object containinng information about this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments with this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On error the <computeroutput>.nil</computeroutput> object is returned. On success a
+   <computeroutput>Directory</computeroutput> object is returned whose indexes contain information concerning this combo box.
+   The directory object will have the following indexes set to the values indicated:
+  </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">TEXTOBJ:</emphasis></term>
+    <listitem>
+    <para>
+      xxx and xxx sss.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">LISTBOXOBJ:</emphasis></term>
+    <listitem>
+    <para>
+      xxx and xxx sss.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">TEXTRECT:</emphasis></term>
+    <listitem>
+    <para>
+      xxx and xxx sss.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">BUTTONRECT:</emphasis></term>
+    <listitem>
+    <para>
+      xxx and xxx sss.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">BUTTONSTATE:</emphasis></term>
+    <listitem>
+    <para>
+      xxx and xxx sss.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getCombBoxInfo() -->
+
+
+<section id="mthGetEditControl" xreflabel="getEditControl"><title>getEditControl</title>
+<indexterm><primary>getEditControl</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getEditControl</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getEditControl-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns a Rexx <computeroutput>Edit</computeroutput> object that represents the child edit control used by this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are arguments for this method
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns an <computeroutput>Edit</computeroutput> object that represents the edit control used by this combo box. Returns
+    the <computeroutput>.nil</computeroutput> object on error. Note that drop-down list combo boxes do not have an edit
+    control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The returned edit control is a grandchild of the dialog so the <xref linkend="mthConnectEditEvent"/> method can not
+    connect any events to the Rexx dialog. Dialog controls only send their notifications to their direct parent. However, the
+    <xref linkend="mtIsGrandchildClsEdit"/> method can be used to set up special handling so that a few events can be
+    intercepted and used to invoke a method in the Rexx dialog.
+  </para>
+  <para>
+    Because drop-down list combo boxes do not have a child edit control, this method does not work with drop-down list combo
+    boxes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the child edit control of the combo box so that the application can manipulate the edit control. It
+    also uses the <xref linkend="mthIsGrandchchildClsEdit"/> so that the application can monitor some of the edit control's
+    event notifications:
+<programlisting>
+<![CDATA[
+
+  cb = self~newComboBox(IDC_CB)
+
+  edit = cb~getEditControl
+  edit~isGrandchild
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getEditControl() -->
+
 
 <section id="mthGetHorizontalExtentClsComboBox" xreflabel="getHorizontalExtent"><title>getHorizontalExtent</title>
 <indexterm><primary>getHorizontalExtent</primary><secondary>ComboBox class</secondary></indexterm>
@@ -784,8 +958,6 @@ new orleans
 <programlisting>
 <![CDATA[
 >>--isDropDownOpen-------------------------------><
-
-
 ]]>
 </programlisting>
 
@@ -808,6 +980,120 @@ new orleans
   </listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="mthIsGrandchildClsComboBox" xreflabel="isGrandchild"><title>isGrandchild</title>
+<indexterm><primary>isGrandchild</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>isGrandchild</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isGrandchild(--+------------+--+------------+--)------------><
+                   +-,-mthName--+  +-,-wantTab--+
+]]>
+</programlisting>
+
+<para>
+  Notifies the ooDialog framework that this combo box control is a grandchild of the dialog and configures the underlying
+  combo box control to send four event notifications to the dialog, rather than its direct parent.
+</para>
+<para>
+  The four events that the grandchild notifies the Rexx dialog of are the RETURN, ESCAPE, TAB keydown events, and the
+  KILLFOCUS event. See the Remarks section for more details.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>mthName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method in the Rexx dialog that is connected to the four event notifications sent by the grandchild. If
+      this argument is omitted, the default method name is <emphasis role="italic">onComboBoxGrandchildEvent</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wantTab [optional]</term>
+    <listitem>
+    <para>
+      By default, the TAB keydown notification is not sent to the dialog. If the <emphasis role="italic">wantTab</emphasis>
+      argument is true then the <emphasis role="italic">mthName</emphasis> method is also invoked for the TAB keydown event.
+      The default for this argument is false and the TAB keydown event does not cause the method to be invoked.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Normally dialog controls are child windows of the dialog window. Historically, in older versions of ooDialog, this was
+    always the case. However, since ooDialog 4.2.0, there have begun to be some cases where the programmer can gain access to
+    dialog controls that are not the direct child of the dialog. For instance, the <xref linkend="mthSetParent"/> method can
+    be used to change the parent window of a dialog control to a parent window other than the dilaog window. When the other
+    window is a dialog control, this makes the control window a grandchild of the dialog. Some dialog controls create their
+    own child dialog controls and enhancements to ooDialog have begun to give the Rexx programmer access to these child
+    dialog controls. These are also grandchildren of the dialog.
+  </para>
+  <para>
+    A dialog control sends its event notifications to its direct parent, never to its grandparent. The <emphasis
+    role="italic">isGrandchild</emphasis> method of the <computeroutput>ComboBox</computeroutput> control is a special case
+    method. Its purpose is to allow the ooDialog framework to set up some special handling so that four event notifications
+    will be intercepted and used to invoke a method in the Rexx dialog. Three of the methods are keydown events, the TAB,
+    RETURN, and ESCAPE keydown events. These events occur when the user types the return, (or enter,) key, the escape key, or
+    the tab key. The fourth event is the KILLFOCUS event. This event ocurrs when the combo box control loses the focus.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that this method will probably only work properly for drop-down list combo boxes.
+    The simple and drop-down combo boxes have a child edit control that recives the keyboard focus rather than the combo box.
+    For simple and drop-down combo boxes, the programmer should be get the edit control using the <xref
+    linkend="mthGetEditControl"/> method and then use the <computeroutput>Edit</computeroutput> class <xref
+    linkend="mthIsGrandchild"/> method on the edit object rather than the <emphasis role="italic">isGrandchild</emphasis>
+    method on the combo box object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the <xref
+    linkend="mthComCtl32Version"/>() method to determine the current version of the library. A syntax error is raised if this
+    method is invoked on an operating system where it is not supported.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the parent of a combo box to be a list-view. It then invokes <emphasis
+    role="italic">isGrandchild</emphasis> so that the <emphasis role="italic">onComboBoxGrandchildEvent</emphasis> method
+    will be invoked in the Rexx dialog for the KILLFOCUS, RETURN keydown, and ESCAPE keydown events:
+<programlisting>
+<![CDATA[
+
+  list = self~newListView(IDC_LISTVIEW)
+  cb   = self~newComboBox(IDC_COMBOBOX)
+
+  cb~setParent(list)
+  cb~isGrandChild
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::isGrandchild() -->
+
 
 <section id="mthInsertClsComboBox" xreflabel="insert"><title>insert</title>
 <indexterm><primary>insert</primary><secondary>ComboBox class</secondary></indexterm>

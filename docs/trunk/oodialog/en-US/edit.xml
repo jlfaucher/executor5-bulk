@@ -187,6 +187,10 @@
 <entry>Hides the balloon information window displayed by the <emphasis role="italic">showBalloon</emphasis> method.</entry>
 </row>
 <row>
+<entry><xref linkend="mthIsGrandchildClsEdit"/></entry>
+<entry>Notifies the ooDialgo framework that this edit control is a grandchild of the dialog and configures the underlying edit control to send four event notifications to the dialog, rather than its direct parent.</entry>
+</row>
+<row>
 <entry><xref linkend="mthIsModified"/></entry>
 <entry>Determines if the text in the edit control has been modified.</entry>
 </row>
@@ -1280,7 +1284,7 @@
   </para>
   <para>
     Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
- <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
+    <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
   </listitem></varlistentry>
@@ -1294,18 +1298,24 @@
 </section>
 
 
-<section id="mthIsGrandchild" xreflabel="isGrandchild"><title>isGrandchild</title>
+<section id="mthIsGrandchildClsEdit" xreflabel="isGrandchild"><title>isGrandchild</title>
 <indexterm><primary>isGrandchild</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>isGrandchild</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isGrandchild(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--isGrandchild(--+------------+--+------------+--)------------><
+                   +-,-mthName--+  +-,-wantTab--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Notifies the ooDialog framework that this edit control is a grandchild of the dialog and configures the underlying edit
+  control to send four event notifications to the dialog, rather than its direct parent. The edit control must be a
+  single-line edit control.
+</para>
+<para>
+  The four events that the grandchild notifies the Rexx dialog of are the RETURN, ESCAPE, TAB keydown events, and the
+  KILLFOCUS event. See the Remarks section for more details.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1314,10 +1324,19 @@
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>mthName [optional]</term>
     <listitem>
     <para>
-      xx
+      The name of the method in the Rexx dialog that is connected to the four event notifications sent by the grandchild. If
+      this argument is omitted, the default method name is <emphasis role="italic">onEditGrandchildEvent</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wantTab [optional]</term>
+    <listitem>
+    <para>
+      By default, the TAB keydown notification is not sent to the dialog. If the <emphasis role="italic">wantTab</emphasis>
+      argument is true then the <emphasis role="italic">mthName</emphasis> method is also invoked for the TAB keydown event.
+      The default for this argument is false and the TAB keydown event does not cause the method to be invoked.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1325,17 +1344,36 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Normally dialog controls are child windows of the dialog window. Historically, in older versions of ooDialog, this was
+    always the case. However, since ooDialog 4.2.0, there have begun to be some cases where the programmer can gain access to
+    dialog controls that are not the direct child of the dialog. The <xref linkend="mthSetParent"/> method can be used to
+    change the parent window of a dialog control to a parent window other than the dilaog window. When the other window is a
+    dialog control, this makes the control window a grandchild of the dialog. Some dialog controls create their own child
+    dialog controls and enhancements to ooDialog have begun to give the Rexx programmer access to these child dialog
+    controls. These are also grandchildren of the dialog.
+  </para>
+  <para>
+    A dialog control sends its event notifications to its direct parent, never to its grandparent. The <emphasis
+    role="italic">isGrandchild</emphasis> method of the <computeroutput>Edit</computeroutput> control is a special case
+    method. Its purpose is to allow the ooDialog framework to set up some special handling so that four event notifications
+    will be intercepted and used to invoke a method in the Rexx dialog. Three of the methods are keydown events, the TAB,
+    RETURN and ESCAPE keydown events. These events occur when the user types the return, or enter, key, the escape key, or
+    the tab key. The fourth event is the KILLFOCUS event. The event ocurrs when the edit control loses the focus.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the
+    <xref linkend="mthComCtl32Version"/>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operating system where it is not supported.
+  </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
@@ -1346,9 +1384,17 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the parent of an edit control to be a list-view. It then invokes <emphasis
+    role="italic">isGrandchild</emphasis> so that the <emphasis role="italic">onEditGrandchildEvent</emphasis> method will be
+    invoked in the Rexx dialog for the KILLFOCUS, RETURN keydown, and ESCAPE keydown events:
 <programlisting>
 <![CDATA[
+
+  list = self~newListView(IDC_LISTVIEW)
+
+  edit = self~newEdit(IDC_EDIT)
+  edit~setParent(list)
+  edit~isGrandchild
 
 ]]>
 </programlisting>
