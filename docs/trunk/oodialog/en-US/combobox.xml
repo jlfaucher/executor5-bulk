@@ -731,46 +731,68 @@ new orleans
     <varlistentry><term><emphasis role="bold">TEXTOBJ:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      For simple and drop-down combo boxes this index contains the Rexx <xref linkend="clsEdit"/>  object that
+      represents the child edit control of the combo box. Drop-down list comboxes do not have a child edit control, and this
+      index will contain the Rexx combo box object itself. (The operating system returns the combo box for this value.)
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">LISTBOXOBJ:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      A Rexx <xref linkend="clsListBox"/> object that represents the child list box control of the combo box.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">TEXTRECT:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      A <xref linkend="clsRect"/> object that contains the coordinates of the edit control. For drop-down list controls, the
+      Microsoft documentation does not specify what the returned coordinates are, but experimentation shows that it seems to
+      be the area that the edit control occupies in simple of drop-down combo boxes.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">BUTTONRECT:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      A <xref linkend="clsRect"/> object that contains the coordinates of the button that contains the drop-down arrow.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">BUTTONSTATE:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      A keyword that indicates the button state. The keyword will be exactly one of the following words:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>notpressed</member>
+        <member>absent    </member>
+        <member>pressed   </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>notpressed</term>
+        <listitem>
+        <para>
+          The button exists and it is not pressed.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>absetn</term>
+        <listitem>
+        <para>
+          There is no button. This would be the case for the simple combo box.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>T3</term>
+        <listitem>
+        <para>
+          The button exists and it is pressed.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
     </para>
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
@@ -778,9 +800,30 @@ new orleans
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a method that prints out the information for a simple combo box:
 <programlisting>
 <![CDATA[
+
+::method printInfo
+    expose cbSimple
+
+    d = cbSimple~getComboBoxInfo
+    say 'Simple Combo Box'
+    say '  Button rect: ' d~buttonRect
+    say '  Text rect:   ' d~textRect
+    say '  Text object: ' d~textObj
+    say '  List object: ' d~listBoxObj
+    say '  Button state:' d~buttonState
+    say
+
+/* Output might be for example: */
+
+Simple Combo Box
+  Button rect:  a Rect (1, 1, -1, -1)
+  Text rect:    a Rect (3, 3, 101, 18)
+  Text object:  an Edit
+  List object:  a ListBox
+  Button state: absent
 
 ]]>
 </programlisting>
@@ -806,7 +849,7 @@ new orleans
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    There are arguments for this method
+    There are no arguments for this method
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>

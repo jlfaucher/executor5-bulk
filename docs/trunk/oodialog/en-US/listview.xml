@@ -3946,7 +3946,9 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
     <varlistentry><term>subitemIdx [required]</term>
     <listitem>
     <para>
-      The index of the list-view subitem that contains the subitem whose bounding rectangle is to be retrieved.
+      The index of the list-view subitem that contains the subitem whose bounding rectangle is to be retrieved. This index,
+      may be 0, in which case, the <emphasis role="italic">getSubitemRect</emphasis> method works exactly the same as the
+      <xref linkend="mthGetItemRect"/>, except that the SELECTBOUNDS keyword is not accepted.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>part [optional]</term>
@@ -4002,6 +4004,10 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
+  <para>
+    <emphasis role="bold">Requires Windows Vista or later. Or</emphasis>, if the Rexx program is running on an earlier
+    version of Windows, the list-view <emphasis role="bold">must</emphasis> be in report view.
+  </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>

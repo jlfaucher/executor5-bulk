@@ -464,6 +464,10 @@
 <entry>Sets a new parent for this dialog control.</entry>
 </row>
 <row>
+<entry><xref linkend="mthSetParent"/></entry>
+<entry>Sets a new parent for this dialog control.</entry>
+</row>
+<row>
 <entry><xref linkend="wbdcoSetRect"/></entry>
 <entry>Moves and / or resizes the control.</entry>
 </row>
@@ -576,7 +580,7 @@
   This section describes the attributes of the dialog control object.
 </para>
 
-<section id="wbdcoFactorX"><title>factorX (Attribute)</title>
+<section id="wbdcoFactorX" xreflabel="factorX"><title>factorX (Attribute)</title>
 <programlisting>
 WindowBase::<xref linkend="atrFactorX"/>
 
@@ -589,7 +593,7 @@ WindowBase::<xref linkend="atrFactorX"/>
 </programlisting>
 </section>
 
-<section id="wbdcoFactorY"><title>factorY (Attribute)</title>
+<section id="wbdcoFactorY" xreflabel="factorY"><title>factorY (Attribute)</title>
 <programlisting>
 WindowBase::<xref linkend="atrFactorY"/>
 
@@ -638,7 +642,7 @@ WindowBase::<xref linkend="atrFactorY"/>
 </section>  <!-- End DialogControl::hDlg() [attribute]  -->
 
 
-<section id="wbdcoHwnd"><title>hwnd</title>
+<section id="wbdcoHwnd" xreflabel="hwnd"><title>hwnd</title>
 <programlisting>
 WindowBase::<xref linkend="atrHwnd"/>
 
@@ -682,7 +686,7 @@ WindowBase::<xref linkend="atrHwnd"/>
 </variablelist> </section>  <!-- End DialogControl::id() [attribute]  -->
 
 
-<section id="wbdcoInitCode"><title>initCode (Attribute)</title>
+<section id="wbdcoInitCode" xreflabel="initCode"><title>initCode (Attribute)</title>
 <programlisting>
 WindowBase::<xref linkend="atrInitCode"/>
 
@@ -731,7 +735,7 @@ WindowBase::<xref linkend="atrInitCode"/>
 </section>  <!-- End DialogControl::oDlg() [attribute]  -->
 
 
-<section id="wbdcoSizeX"><title>sizeX (Attribute)</title>
+<section id="wbdcoSizeX" xreflabel="sizeX"><title>sizeX (Attribute)</title>
 <programlisting>
 WindowBase::<xref linkend="atrSizeX"/>
 
@@ -744,7 +748,7 @@ WindowBase::<xref linkend="atrSizeX"/>
 </section>
 
 
-<section id="wbdcoSizeY"><title>sizeY (Attribute)</title>
+<section id="wbdcoSizeY" xreflabel="sizeY"><title>sizeY (Attribute)</title>
 <programlisting>
 WindowBase::<xref linkend="atrSizeY"/>
 
@@ -757,7 +761,7 @@ WindowBase::<xref linkend="atrSizeY"/>
 </section>
 
 
-<section id="wbdcoPixelCX"><title>pixelCX (Attribute)</title>
+<section id="wbdcoPixelCX" xreflabel="pixelCX"><title>pixelCX (Attribute)</title>
 <programlisting>
 WindowBase::<xref linkend="atrPixelCX"/>
 
@@ -768,7 +772,7 @@ WindowBase::<xref linkend="atrPixelCX"/>
 </section>
 
 
-<section id="wbdcoPixelCY"><title>pixelCY (Attribute)</title>
+<section id="wbdcoPixelCY" xreflabel="pixelCY"><title>pixelCY (Attribute)</title>
 <programlisting>
 WindowBase::<xref linkend="atrPixelCY"/>
 
@@ -1927,7 +1931,7 @@ Generic form:
 </section>  <!-- End dialog control object::data() -->
 
 
-<section id="mthDataEquals"><title>data=</title>
+<section id="mthDataEquals" xreflabel="data ="><title>data=</title>
 <indexterm><primary>data=</primary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>data=</secondary></indexterm>
 <indexterm><primary>DialogCcontrol class</primary><secondary>data=</secondary></indexterm>
@@ -2653,7 +2657,7 @@ Generic form:
         r~bottom -= r~top
         flags = "SHOWWINDOW NOZORDERCHANGE"
 
-        edit~setWindowPos(list~hwnd, r~left, r~top, r~right - r~left, (r~bottom - r~top), flags)
+        edit~setWindowPos(list~hwnd, r, flags)
 
         editVisible = .true
         edit~assignFocus
