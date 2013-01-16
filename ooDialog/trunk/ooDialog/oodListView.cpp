@@ -3161,13 +3161,20 @@ done_out:
  *  @return  The specified bounding rectangle on success, the .nil object on
  *           error.
  *
- *  @notes  subIndex can be 0, in which case these method works exactly like
- *          getItemRect(), with the exception that SELECTBOUNDS is not accepted
- *          as a keyword.
+ *  @notes  On Vista, subIndex can be 0, in which case this method works exactly
+ *          like getItemRect(), with the exception that SELECTBOUNDS is not
+ *          accepted as a keyword.
+ *
+ *          If not on Vista, the list-view is required to be in report view.
  */
 RexxMethod4(RexxObjectPtr, lv_getSubitemRect, uint32_t, index, uint32_t, subIndex, OPTIONAL_CSTRING, part, CSELF, pCSelf)
 {
-    HWND hList = getDChCtrl(pCSelf);
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return NULLOBJECT;
+    }
+    HWND hList = pcdc->hCtrl;
 
     uint32_t flag = LVIR_BOUNDS;
     if ( argumentExists(3) )
@@ -3179,15 +3186,33 @@ RexxMethod4(RexxObjectPtr, lv_getSubitemRect, uint32_t, index, uint32_t, subInde
         }
     }
 
-    LVITEMINDEX lvii;
-    lvii.iItem  = index;
-    lvii.iGroup = I_GROUPIDNONE;
+    RECT r = { 0 };
 
-    RECT r;
-    if ( ! ListView_GetItemIndexRect(hList, &lvii, subIndex, flag, &r) )
+    if ( _isAtLeastVista() )
     {
-        return TheNilObj;
+        LVITEMINDEX lvii;
+        lvii.iItem  = index;
+        lvii.iGroup = I_GROUPIDNONE;
+
+        if ( ! ListView_GetItemIndexRect(hList, &lvii, subIndex, flag, &r) )
+        {
+            return TheNilObj;
+        }
     }
+    else
+    {
+        if ( ! isInReportView(hList) )
+        {
+            requiredOS(context, "getSubitemRect", "Vista", Vista_OS);
+            return TheNilObj;
+        }
+
+        if ( ! ListView_GetSubItemRect(hList, index, subIndex, flag, &r) )
+        {
+            return TheNilObj;
+        }
+    }
+
     return rxNewRect(context, &r);
 }
 
