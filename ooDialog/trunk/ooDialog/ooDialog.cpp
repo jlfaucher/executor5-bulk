@@ -3247,6 +3247,7 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
         RexxObjectPtr reply = context->SendMessage0(self, "DEFINESIZING");
         if ( ! isInt(0, reply, context->threadContext) )
         {
+            baseClassInitializationException(context, "ResizingAdmin", "defineSizing failed");
             result = TheOneObj;
         }
 

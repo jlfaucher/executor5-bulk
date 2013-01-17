@@ -180,6 +180,39 @@ void *baseClassInitializationException(RexxMethodContext *c, CSTRING clsName)
 }
 
 /**
+ *  Error 98.900
+ *
+ *  98 The language processor detected a specific error during execution. The
+ *  associated error gives the reason for the error.
+ *
+ *  900 User message.
+ *
+ *  The PropertySheetDialog base class has not been initialized correctly; the
+ *  defineSizing method failed
+ *
+ * @param c         The method context we are operating under.
+ * @param clsName   The name of the base class.
+ * @param msg       Some *short* message to follow the ';'
+ *
+ * @return  A null pointer to void
+ *
+ * @remarks  This error is intended to be used when a some type of fatal error
+ *           happens during the native API processing of the init methods for a
+ *           class.  It should end the dialog.  At this point there is no dialog
+ *           window handle to do a endDialogPremature().
+ */
+void *baseClassInitializationException(RexxThreadContext *c, CSTRING clsName, CSTRING msg)
+{
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "The %s base class has not been initialized correctly; %s", clsName, msg);
+    return executionErrorException(c, buffer);
+}
+void *baseClassInitializationException(RexxMethodContext *c, CSTRING clsName, CSTRING msg)
+{
+    return baseClassInitializationException(c->threadContext, clsName, msg);
+}
+
+/**
  * Message
  *
  * Argument 1, the database connection object, can not be null

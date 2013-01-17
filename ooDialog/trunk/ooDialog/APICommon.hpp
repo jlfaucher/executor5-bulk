@@ -57,6 +57,8 @@ extern void *baseClassInitializationException(RexxThreadContext *c);
 extern void *baseClassInitializationException(RexxThreadContext *c, CSTRING clsName);
 extern void *baseClassInitializationException(RexxMethodContext *c);
 extern void *baseClassInitializationException(RexxMethodContext *c, CSTRING clsName);
+extern void *baseClassInitializationException(RexxThreadContext *c, CSTRING clsName, CSTRING msg);
+extern void *baseClassInitializationException(RexxMethodContext *c, CSTRING clsName, CSTRING msg);
 extern void  userDefinedMsgException(RexxThreadContext *c, CSTRING msg);
 extern void  userDefinedMsgException(RexxThreadContext *c, CSTRING formatStr, int number);
 extern void  userDefinedMsgException(RexxThreadContext *c, int pos, CSTRING msg);

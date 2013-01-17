@@ -2409,7 +2409,7 @@ RexxMethod6(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING,
 
     if ( ! psdInitSuper(context, super, hFile) )
     {
-        goto done_out;
+        goto err_out;
     }
 
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)context->GetCSelf();
@@ -2523,6 +2523,8 @@ RexxMethod6(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING,
 
 done_out:
     pcpbd->wndBase->initCode = result;
+
+err_out:
     return result;
 }
 
