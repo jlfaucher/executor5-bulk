@@ -1266,8 +1266,8 @@
 <indexterm><primary>new</primary><secondary>ResDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--pages--+--------+--+---------+--+---------+--)--------><
-                 +-,-opts-+  +-,-title-+  +-,-hFile-+
+>>--new(--pages--+--------+--+---------+--+---------+--+------+--)-------------><
+                 +-,-opts-+  +-,-title-+  +-,-hFile-+  +-,-id-+
 ]]>
 </programlisting>
 
@@ -1431,6 +1431,12 @@
         added to the <xref linkend="atrConstDir"/> directory.
       </para>
       </listitem></varlistentry>
+      <varlistentry><term>id [optional]</term>
+      <listitem>
+      <para>
+        Sets the <xref linkend="atrID"/> attribute to the positive whole number specified.
+      </para>
+      </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -1440,9 +1446,9 @@
     <computeroutput>PropertySheetDialog</computeroutput> dialogs are a little different than most ooDialog dialogs in
     that their life-cycle is controlled by the operating system rather than the ooDialog framework. In general the
     programmer customizes these dialogs by using the proper keywords in the <emphasis role="italic">opts</emphasis>
-    argument and by setting the attributes of the dialog object, then starting the dialog through
- <xref linkend="mthExecuteClsPSD"/> or <xref linkend="mthPopupClsPSD"/>. Most of the programming
-    work for a property sheet dialog is in the dialogs that are used as the pages for the property sheet.
+    argument and by setting the attributes of the dialog object, then starting the dialog through <xref
+    linkend="mthExecuteClsPSD"/> or <xref linkend="mthPopupClsPSD"/>. Most of the programming work for a property sheet
+    dialog is in the dialogs that are used as the pages for the property sheet.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1675,6 +1681,61 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PropertySheetDialog::header() [attribute]  -->
+
+<section id="atrID" xreflabel="id"><title>id (Attribute)</title>
+<indexterm><primary>id</primary></indexterm>
+<indexterm><primary>PropertySheetDialog class</primary><secondary>id</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--id-----------------------------------------------------><
+
+>>--id = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">id get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">id set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PropertySheetDialog::id() [attribute]  -->
 
 <section id="atrImageList" xreflabel="imageList"><title>imageList (Attribute)</title>
 <indexterm><primary>imageList</primary></indexterm>
