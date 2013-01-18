@@ -46,9 +46,9 @@
  */
 
     -- Use the global .constDir for symbolic IDs, load them from basicResize.h
-    .application~setDefaults('O', 'basicResize.h', .false)
+    .application~setDefaults('O', 'rc\basicResize.h', .false)
 
-    dlg = .ResizableDlg~new("basicResize.rc", IDD_RESIZABLE)
+    dlg = .ResizableDlg~new("rc\basicResize.rc", IDD_RESIZABLE)
     dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
 return 0

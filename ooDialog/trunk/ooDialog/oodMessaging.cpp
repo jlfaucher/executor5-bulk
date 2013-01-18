@@ -53,6 +53,7 @@
 #include "oodMouse.hpp"
 #include "oodData.hpp"
 #include "oodPropertySheetDialog.hpp"
+#include "oodResizableDialog.hpp"
 
 /**
  * The dialog procedure function for all regular ooDialog dialogs.  Handles and
@@ -294,6 +295,10 @@ LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             customDrawCheckIDs(pcpbd);
         }
 
+        if ( pcpbd->isResizableDlg )
+        {
+            return initializeResizableDialog(hDlg, pcpbd->dlgProcContext, pcpbd);
+        }
         return TRUE;
     }
 
@@ -316,6 +321,17 @@ LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
     }
 
     // Don't process WM_DESTROY messages.
+
+    // We first deal with resizable stuff, then handle the rest with the normal
+    // ooDialog process.
+    if ( pcpbd->isResizableDlg )
+    {
+        MsgReplyType resizingReply = handleResizing(hDlg, uMsg, wParam, lParam, pcpbd);
+        if ( resizingReply != ContinueProcessing )
+        {
+            return (resizingReply == ReplyTrue ? TRUE : FALSE);
+        }
+    }
 
     bool msgEnabled = IsWindowEnabled(hDlg) ? true : false;
 

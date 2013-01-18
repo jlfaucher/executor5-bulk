@@ -37,10 +37,7 @@
 
 .NOTPARALLEL:
 
-SUBDIRS      = DialogAreaU ResizingAdmin
-DIST_SUBDIRS = DialogAreaU ResizingAdmin
-
 MAINTAINERCLEANFILES 	= Makefile.in *~
 
-EXTRA_DIST = *.rex
+EXTRA_DIST = *.rc *.h *bmp
 

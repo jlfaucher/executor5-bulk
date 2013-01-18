@@ -609,6 +609,7 @@ typedef struct _resizeInfoDlg {
     SIZE               minSize;
     SIZE               maxSize;
     pResizeInfoCtrl    riCtrls;
+    HWND               redrawThis;
     char              *sizeEndedMeth;
     size_t             tableSize;
     size_t             countCtrls;
@@ -1033,6 +1034,7 @@ typedef struct _psdCSelf {
     char                *caption;
     uint32_t             pageCount;
     uint32_t             propSheetFlags;
+    uint32_t             id;               // Used to ID the property sheet if resizable
     intptr_t             getResultValue;   // Storage for the return from PSM_GETRESULT
     bool                 modeless;
     bool                 isNotWizard;

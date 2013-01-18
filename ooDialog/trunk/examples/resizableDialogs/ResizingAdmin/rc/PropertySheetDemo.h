@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,23 +35,44 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef oodResizableDialog_Included
-#define oodResizableDialog_Included
-
-#define DEFAULT_RESIZABLE_CONTROLS         20
-#define IDC_DEFAULT_PINTO_WINDOW           0
-#define PIN_TYPE_SHORT_LIST                "proportional, or stationary"
-#define PIN_TYPE_RIGHT_LIST                "myLeft, proportional, or stationary"
-#define PIN_TYPE_BOTTOM_LIST               "myTop, proportional, or stationary"
-#define PINNED_EDGE_LIST                   "left, top, right, bottom, xCenter, or yCenter"
-
-
-extern LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-extern LRESULT          initializeResizableDialog(HWND hDlg, RexxThreadContext *c, pCPlainBaseDialog pcpbd);
-extern bool             allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxBufferObject cselfBuffer);
-extern MsgReplyType     handleResizing(HWND hDlg, uint32_t uMsg, WPARAM wParam, LPARAM lParam, pCPlainBaseDialog pcpbd);
-extern BOOL             resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long cy);
-
-extern BOOL CALLBACK    InitializeAllControlsProc(HWND hCtrl, LPARAM lParam);
-
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
 #endif
+
+#define IDD_NEWCONTROLS_DLG                     105
+#define IDD_LISTVIEW_DLG                        106
+#define IDD_TREEVIEW_DLG                        107
+#define IDD_PROGRESSBAR_DLG                     108
+#define IDD_TAB_DLG                             109
+#define IDD_TRACKBAR_DLG                        110
+#define IDC_TAB                                 200
+#define IDC_PB_PREVIOUS                         201
+#define IDC_PB_NEXT                             202
+#define IDC_LV_MAIN                             1000
+#define IDC_TV_MAIN                             1001
+#define IDC_PBAR_PROCESSA                       1002
+#define IDC_PBAR_PROCESSB                       1003
+#define IDC_PBAR_PROCESSC                       1004
+#define IDC_PBAR_PROCESSD                       1005
+#define IDC_PBAR_PROCESSE                       1006
+#define IDC_TAB_MAIN                            1007
+#define IDC_PB_OWNERDRAW                        1008
+#define IDC_TB_HORZ_BOTH                        1009
+#define IDC_TB_HORZ_TOP                         1010
+#define IDC_TB_HORZ_BOTTOM                      1011
+#define IDC_ST_HORZ_BOTTOM                      1012
+#define IDC_ST_HORZ_TOP                         1013
+#define IDC_ST_HORZ_BOTH                        1014
+#define IDC_TB_VERT_RIGHT                       1015
+#define IDC_ST_VERT_RIGHT                       1016
+#define IDC_TB_VERT_LEFT                        1017
+#define IDC_ST_VERT_LEFT                        1018
+#define IDC_TB_VERT_BOTH                        1019
+#define IDC_ST_VERT_BOTH                        1020
+#define IDC_ST_PERCENTA                         1121
+#define IDC_ST_PERCENTB                         1122
+#define IDC_ST_PERCENTC                         1123
+#define IDC_ST_PERCENTD                         1124
+#define IDC_ST_PERCENTE                         1125
+#define IDC_ST_FRAME_LEFT                       1126
+#define IDC_ST_FRAME_RIGHT                      1127

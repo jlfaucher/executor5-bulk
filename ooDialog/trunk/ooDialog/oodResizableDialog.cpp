@@ -491,6 +491,22 @@ static pResizeInfoCtrl getControlInfo(pResizeInfoDlg prid, uint32_t ctrlID)
     return NULL;
 }
 
+static HWND getTabControlHwnd(pResizeInfoDlg prid, uint32_t ctrlID)
+{
+    if ( ctrlID != (uint32_t)-1 )
+    {
+        for ( register size_t i = 0; i < prid->countCtrls; i++)
+        {
+            if ( prid->riCtrls[i].id == ctrlID )
+            {
+                return prid->riCtrls[i].hCtrl;
+            }
+        }
+    }
+
+    return NULL;
+}
+
 /**
  * Returns a resize info record for the specified control ID after validating
  * that the pin to ID is valid for the control ID.
@@ -893,15 +909,15 @@ static HDWP deferPosition(HDWP hdwp, pResizeInfoCtrl ric)
 }
 
 /**
- * Resizes and repositions all dialog controls in the dialog.
+ * Resizes and repositions all dialog controls in the dialog using defer window
+ * position to do them all at onc..
  *
  * @param prid
  *
  * @return bool
  */
-static bool resizeAll(pResizeInfoDlg prid)
+static bool resizeAll(pResizeInfoDlg prid, pCPlainBaseDialog pcpbd, HWND hDlg)
 {
-    // Use defer window postion to resize / repositon all controls at once.
     HDWP hdwp = BeginDeferWindowPos((int32_t)prid->countCtrls);
     if ( hdwp == NULL )
     {
@@ -933,7 +949,7 @@ static bool resizeAll(pResizeInfoDlg prid)
  *
  * @return BOOL
  */
-static BOOL resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long cy)
+BOOL resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long cy)
 {
     pResizeInfoDlg prid = pcpbd->resizeInfo;
 
@@ -944,7 +960,7 @@ static BOOL resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long 
         recalcSizePosition(prid, &prid->riCtrls[i]);
     }
 
-    return resizeAll(prid) ? TRUE : FALSE;
+    return resizeAll(prid, pcpbd, hDlg) ? TRUE : FALSE;
 }
 
 /**
@@ -963,7 +979,7 @@ static BOOL resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long 
  *
  * @return LRESULT
  */
-static LRESULT initializeResizableDialog(HWND hDlg, RexxThreadContext *c, pCPlainBaseDialog pcpbd)
+LRESULT initializeResizableDialog(HWND hDlg, RexxThreadContext *c, pCPlainBaseDialog pcpbd)
 {
     pResizeInfoDlg prid = pcpbd->resizeInfo;
 
@@ -989,6 +1005,141 @@ static LRESULT initializeResizableDialog(HWND hDlg, RexxThreadContext *c, pCPlai
     }
 
     return prid->haveError ? FALSE : TRUE;
+}
+
+MsgReplyType handleResizing(HWND hDlg, uint32_t uMsg, WPARAM wParam, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    pResizeInfoDlg prid = pcpbd->resizeInfo;
+    bool isCtrlDlg = pcpbd->isControlDlg;
+
+    switch ( uMsg )
+    {
+        case WM_ENTERSIZEMOVE :
+        {
+            prid->inSizeOrMove = true;
+            return ReplyFalse;
+        }
+
+        case WM_NCCALCSIZE :
+        {
+            if ( wParam && prid->inSizeOrMove )
+            {
+                NCCALCSIZE_PARAMS * nccs_params = (NCCALCSIZE_PARAMS *)lParam;
+
+                // Have the default window procedure calculate the client
+                // co-ordinates.
+                DefWindowProc(hDlg, uMsg, FALSE, (LPARAM)&nccs_params->rgrc[0]);
+
+                // Set the source & target rectangles to be the same.
+                nccs_params->rgrc[1] = nccs_params->rgrc[2];
+
+                setWindowPtr(hDlg, DWLP_MSGRESULT, (LPARAM)(WVR_ALIGNLEFT | WVR_ALIGNTOP));
+                return ReplyTrue;
+            }
+            return ReplyFalse;
+        }
+
+        case WM_SIZE :
+        {
+            if ( prid->inSizeOrMove || wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED )
+            {
+                prid->isSizing = true;
+                BOOL ret = resizeAndPosition(pcpbd, hDlg, LOWORD(lParam), HIWORD(lParam));
+
+                if ( pcpbd->isOwnerDlg && pcpbd->countChilds > 0 )
+                {
+                    HWND hTab = getTabControlHwnd(prid, 200);
+
+                    RECT r = {0};
+                    GetWindowRect(hTab, &r);
+
+                    TabCtrl_AdjustRect(hTab, false, &r);
+
+                    POINT p = { r.left, r.top };
+                    ScreenToClient(hDlg, &p);
+
+                    int32_t width  = r.right - r.left;
+                    int32_t height = r.bottom - r.top;
+
+                    for ( size_t i = 1; i <= pcpbd->countChilds; i++ )
+                    {
+                        pCPlainBaseDialog chldPcpbd = (pCPlainBaseDialog)pcpbd->childDlg[i];
+
+                        if ( IsWindowVisible(chldPcpbd->hDlg) )
+                        {
+                            SetWindowPos(chldPcpbd->hDlg, hTab, p.x, p.y, width, height, SWP_NOCOPYBITS | SWP_NOOWNERZORDER);
+                            prid->redrawThis = chldPcpbd->hDlg;
+                        }
+                        else
+                        {
+                            // For not visible windows, just move them.
+                            MoveWindow(chldPcpbd->hDlg, p.x, p.y, width, height, FALSE);
+                        }
+                    }
+                }
+
+                return ret ? ReplyTrue : ReplyFalse;
+            }
+            return ReplyFalse;
+        }
+
+        case WM_EXITSIZEMOVE :
+        {
+            if ( prid->isSizing && prid->redrawThis )
+            {
+                RedrawWindow(prid->redrawThis, NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
+                prid->redrawThis = NULL;
+            }
+
+            if ( prid->isSizing && prid->sizeEndedMeth != NULL)
+            {
+                RexxThreadContext *c = pcpbd->dlgProcContext;
+                RexxArrayObject args = c->NewArray(0);
+
+                if ( prid->sizeEndedWillReply )
+                {
+                    invokeDirect(c, pcpbd, prid->sizeEndedMeth, args);
+                }
+                else
+                {
+                    RexxStringObject method = c->String(prid->sizeEndedMeth);
+                    invokeDispatch(c, pcpbd->rexxSelf, method, args);
+                    c->ReleaseLocalReference(method);
+                }
+
+                c->ReleaseLocalReference(args);
+            }
+
+            prid->inSizeOrMove = false;
+            prid->isSizing     = false;
+
+            return ReplyFalse;
+        }
+
+        case WM_GETMINMAXINFO :
+        {
+            MINMAXINFO *pmmi = (MINMAXINFO *)lParam;
+
+            if ( prid->haveMinSize )
+            {
+                pmmi->ptMinTrackSize.x = prid->minSize.cx;
+                pmmi->ptMinTrackSize.y = prid->minSize.cy;
+            }
+
+            if ( prid->haveMaxSize )
+            {
+                pmmi->ptMaxTrackSize.x = prid->maxSize.cx;
+                pmmi->ptMaxTrackSize.y = prid->maxSize.cy;
+            }
+
+            return ReplyTrue;
+        }
+
+        default :
+            break;
+    }
+
+    return ContinueProcessing;
 }
 
 /**
@@ -1088,6 +1239,12 @@ BOOL CALLBACK InitializeAllControlsProc(HWND hCtrl, LPARAM lParam)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)lParam;
     pResizeInfoDlg    prid  = pcpbd->resizeInfo;
 
+    /*
+    printf("InitalizeAllControlsProc() hwnd hCtrl=%p\n", hCtrl);
+    if ( pcpbd->isControlDlg )
+    {
+    }
+    */
     if ( GetParent(hCtrl) != pcpbd->hDlg )
     {
         return TRUE;
@@ -1096,7 +1253,7 @@ BOOL CALLBACK InitializeAllControlsProc(HWND hCtrl, LPARAM lParam)
     oodControl_t ctrlType = controlHwnd2controlType(hCtrl);
     int          ctrlID   = GetDlgCtrlID(hCtrl);
 
-    if ( ctrlType == winGroupBox )
+    if ( ctrlType == winGroupBox || ctrlType == winStatic )
     {
         SetWindowLong(hCtrl, GWL_EXSTYLE, GetWindowLong(hCtrl, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
     }
@@ -1216,82 +1373,10 @@ LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 
     // We first deal with resizable stuff, then handle the rest with the normal
     // ooDialog process.
-    pResizeInfoDlg prid = pcpbd->resizeInfo;
-    switch ( uMsg )
+    MsgReplyType resizingReply = handleResizing(hDlg, uMsg, wParam, lParam, pcpbd);
+    if ( resizingReply != ContinueProcessing )
     {
-        case WM_ENTERSIZEMOVE :
-            prid->inSizeOrMove = true;
-            return FALSE;
-
-        case WM_NCCALCSIZE :
-            if ( wParam && prid->inSizeOrMove )
-            {
-                NCCALCSIZE_PARAMS * nccs_params = (NCCALCSIZE_PARAMS *)lParam;
-
-                // Have the default window procedure calculate the client
-                // co-ordinates.
-                DefWindowProc(hDlg, uMsg, FALSE, (LPARAM)&nccs_params->rgrc[0]);
-
-                // Set the source & target rectangles to be the same.
-                nccs_params->rgrc[1] = nccs_params->rgrc[2];
-
-                return WVR_ALIGNLEFT | WVR_ALIGNTOP;
-            }
-            return FALSE;
-
-        case WM_SIZE :
-            if ( prid->inSizeOrMove || wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED )
-            {
-                prid->isSizing = true;
-                return resizeAndPosition(pcpbd, hDlg, LOWORD(lParam), HIWORD(lParam));
-            }
-            return FALSE;
-
-        case WM_EXITSIZEMOVE :
-            if ( prid->isSizing && prid->sizeEndedMeth != NULL)
-            {
-                RexxThreadContext *c = pcpbd->dlgProcContext;
-                RexxArrayObject args = c->NewArray(0);
-
-                if ( prid->sizeEndedWillReply )
-                {
-                    invokeDirect(c, pcpbd, prid->sizeEndedMeth, args);
-                }
-                else
-                {
-                    RexxStringObject method = c->String(prid->sizeEndedMeth);
-                    invokeDispatch(c, pcpbd->rexxSelf, method, args);
-                    c->ReleaseLocalReference(method);
-                }
-
-                c->ReleaseLocalReference(args);
-            }
-
-            prid->isSizing = false;
-            prid->inSizeOrMove = false;
-            return FALSE;
-
-        case WM_GETMINMAXINFO :
-        {
-            MINMAXINFO *pmmi = (MINMAXINFO *)lParam;
-
-            if ( prid->haveMinSize )
-            {
-                pmmi->ptMinTrackSize.x = prid->minSize.cx;
-                pmmi->ptMinTrackSize.y = prid->minSize.cy;
-            }
-
-            if ( prid->haveMaxSize )
-            {
-                pmmi->ptMaxTrackSize.x = prid->maxSize.cx;
-                pmmi->ptMaxTrackSize.y = prid->maxSize.cy;
-            }
-
-            return TRUE;
-        }
-
-        default :
-            break;
+        return (resizingReply == ReplyTrue ? TRUE : FALSE);
     }
 
     bool msgEnabled = IsWindowEnabled(hDlg) ? true : false;

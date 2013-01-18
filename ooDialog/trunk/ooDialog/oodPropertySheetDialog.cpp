@@ -56,6 +56,7 @@
 #include "oodResources.hpp"
 #include "oodResourceIDs.hpp"
 #include "oodControl.hpp"
+#include "oodResizableDialog.hpp"
 #include "oodPropertySheetDialog.hpp"
 
 
@@ -573,13 +574,16 @@ bool setPageText(RexxMethodContext *c, pCPropertySheetPage pcpsp, CSTRING text, 
  * property sheet dialog is about to be created.  At this point, the in-memory
  * dialog template can be accessed.
  *
- * This allows us to alter the template.  The one practical use of this, would
- * be to change the font of the property sheet.
+ * This allows us to alter the template.  One use of this, could be to change
+ * the font of the property sheet.
  *
  * Note this is just temp code that shows it can actually be done.  Because the
  * dialog template items are variable in size, we need to calculate the
  * beginning and end of memory used by the dialog items, change the font type
  * name and then move the dialog items to the correct place.
+ *
+ * The code here is just saved for future reference.  For a more practical use,
+ * see the adjustResizablePropSheetTemplate() function.
  *
  * @param tmplate
  */
@@ -590,9 +594,10 @@ void adjustPropSheetTemplate(LPARAM tmplate, bool quickReturn)
         return;
     }
 
+#if 0
     DLGTEMPLATE *pDlgTemplate;
     DLGTEMPLATEEX *pDlgTemplateEx;
-    bool hasFontInfo;
+    bool hasFontInfo = false;
 
     pDlgTemplateEx = (DLGTEMPLATEEX *)tmplate;
     if (pDlgTemplateEx->signature == 0xFFFF)
@@ -603,34 +608,240 @@ void adjustPropSheetTemplate(LPARAM tmplate, bool quickReturn)
     }
     else
     {
-           pDlgTemplate = (DLGTEMPLATE *)tmplate;
-           hasFontInfo = (pDlgTemplate->style & DS_SHELLFONT) || (pDlgTemplate->style & DS_SETFONT);
+        pDlgTemplate = (DLGTEMPLATE *)tmplate;
 
-           printf("PropertySheet, regular template. Has font info=%d\n", hasFontInfo);
+        hasFontInfo = (pDlgTemplate->style & DS_SHELLFONT) || (pDlgTemplate->style & DS_SETFONT);
 
-           WORD *pStruct = (WORD *)tmplate;
-           printf(" count items=%d x=%d y=%d cx=%d cy=%d menu=%d class=%d titleWord=%d\n",
-                  pStruct[4], pStruct[5], pStruct[6], pStruct[7], pStruct[8],
-                  pStruct[9], pStruct[10], pStruct[11]);
+        printf("PropertySheet, regular template. Has font info=%d\n", hasFontInfo);
+
+        WORD *pStruct = (WORD *)tmplate;
+        printf(" count items=%d x=%d y=%d cx=%d cy=%d menu=%d class=%d titleWord=%d\n",
+               pStruct[4], pStruct[5], pStruct[6], pStruct[7], pStruct[8],
+               pStruct[9], pStruct[10], pStruct[11]);
 
 
-           WCHAR *wstr = (WCHAR *)(pStruct + 13);
-           printf("  pointSize=%d ", pStruct[12]);
-           wprintf(L"Font=%s\n", wstr);
+        WCHAR *wstr = (WCHAR *)(pStruct + 13);
+        printf("  pointSize=%d ", pStruct[12]);
+        wprintf(L"Font=%s\n", wstr);
 
-           // Temp, change the font size and font name.  Really temp.  Font name
-           // has to be exactly same number of characters as MS Shell Dlg.
-           //
-           // Arial Italic
-           // Book Antiqua
-           // Cooper Black
-           // Poor Richard
-           *(pStruct + 12) = 12;
-           putUnicodeText((LPWORD)wstr, "Arial Italic");
+        // Temp, change the font size and font name.  Really temp.  Font name
+        // has to be exactly same number of characters as MS Shell Dlg.
+        //
+        // Arial Italic
+        // Book Antiqua
+        // Cooper Black
+        // Poor Richard
+        *(pStruct + 12) = 12;
+        putUnicodeText((LPWORD)wstr, "Arial Italic");
     }
-
+#endif
 }
 
+
+/**
+ * Called from the resizable property sheet callback function when signaled that
+ * the property sheet dialog is about to be created.  At this point, the
+ * in-memory dialog template can be accessed.
+ *
+ * This allows us to alter the template.  We use this to add the WS_THICKFRAME
+ * to the property sheet.  Other adjustments could be made.
+ *
+ * @param tmplate
+ */
+void adjustResizablePropSheetTemplate(LPARAM tmplate)
+{
+    DLGTEMPLATE *pDlgTemplate;
+    DLGTEMPLATEEX *pDlgTemplateEx;
+
+    pDlgTemplateEx = (DLGTEMPLATEEX *)tmplate;
+    if (pDlgTemplateEx->signature == 0xFFFF)
+    {
+        pDlgTemplateEx->style |= WS_THICKFRAME;
+    }
+    else
+    {
+        pDlgTemplate = (DLGTEMPLATE *)tmplate;
+        pDlgTemplate->style |= WS_THICKFRAME;
+    }
+}
+
+
+/**
+ * This is the subclass procedure for resizable property sheet dialogs.
+ *
+ * @param hDlg
+ * @param msg
+ * @param wParam
+ * @param lParam
+ * @param id
+ * @param dwData
+ *
+ * @return LRESULT CALLBACK
+ *
+ * @remarks  We need to call initializeResizableDialog() at the time of the
+ *           first WM_SHOWWINDOW.  If we call it prior to this, the button
+ *           controls have not been positioned and once a resize is done, they
+ *           appear in the wrong place.
+ */
+LRESULT CALLBACK ResizableSubclassProc(HWND hDlg, uint32_t msg, WPARAM wParam, LPARAM lParam, UINT_PTR id, DWORD_PTR dwData)
+{
+    static bool isFirstShow = true;
+
+    switch ( msg )
+    {
+        case WM_ENTERSIZEMOVE :
+        {
+            ((pCPropertySheetDialog)dwData)->pcpbd->resizeInfo->inSizeOrMove = true;
+            break;
+        }
+
+        case WM_SHOWWINDOW :
+        {
+            if ( isFirstShow )
+            {
+                pCPlainBaseDialog pcpbd = ((pCPropertySheetDialog)dwData)->pcpbd;
+
+                initializeResizableDialog(hDlg, pcpbd->dlgProcContext, pcpbd);
+                isFirstShow = false;
+            }
+
+            break;
+        }
+
+        case WM_SIZE :
+        {
+            pCPropertySheetDialog pcpsd = (pCPropertySheetDialog)dwData;
+            pCPlainBaseDialog     pcpbd = pcpsd->pcpbd;
+            pResizeInfoDlg        prid  = pcpbd->resizeInfo;
+
+            if ( prid->inSizeOrMove || wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED )
+            {
+                prid->isSizing = true;
+                BOOL ret = resizeAndPosition(pcpbd, hDlg, LOWORD(lParam), HIWORD(lParam));
+
+                HWND hTab = PropSheet_GetTabControl(hDlg);
+
+                RECT r = {0};
+                GetWindowRect(hTab, &r);
+
+                TabCtrl_AdjustRect(hTab, false, &r);
+
+                POINT p = { r.left, r.top };
+                ScreenToClient(hDlg, &p);
+
+                int32_t width  = r.right - r.left;
+                int32_t height = r.bottom - r.top;
+
+                for ( size_t i = 0; i < pcpsd->pageCount; i++ )
+                {
+                    pCPropertySheetPage pcpsp = pcpsd->cppPages[i];
+                    HWND hPage = pcpsp->hPage;
+                    if ( hPage == NULL )
+                    {
+                        continue;
+                    }
+
+                    if ( IsWindowVisible(hPage) )
+                    {
+                        SetWindowPos(hPage, hTab, p.x, p.y, width, height, SWP_NOCOPYBITS | SWP_NOOWNERZORDER);
+                        prid->redrawThis = hPage;
+                    }
+                    else
+                    {
+                        MoveWindow(hPage, p.x, p.y, width, height, FALSE);
+                    }
+                }
+            }
+
+            break;
+        }
+
+        case WM_EXITSIZEMOVE :
+        {
+            pCPlainBaseDialog pcpbd = ((pCPropertySheetDialog)dwData)->pcpbd;
+            pResizeInfoDlg    prid  = pcpbd->resizeInfo;
+
+            if ( prid->isSizing && prid->redrawThis )
+            {
+                RedrawWindow(prid->redrawThis, NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
+                prid->redrawThis = NULL;
+            }
+            if ( prid->isSizing && prid->sizeEndedMeth != NULL)
+            {
+                RexxThreadContext *c = pcpbd->dlgProcContext;
+                RexxArrayObject args = c->NewArray(0);
+
+                if ( prid->sizeEndedWillReply )
+                {
+                    invokeDirect(c, pcpbd, prid->sizeEndedMeth, args);
+                }
+                else
+                {
+                    RexxStringObject method = c->String(prid->sizeEndedMeth);
+                    invokeDispatch(c, pcpbd->rexxSelf, method, args);
+                    c->ReleaseLocalReference(method);
+                }
+
+                c->ReleaseLocalReference(args);
+            }
+
+            prid->isSizing = false;
+            prid->inSizeOrMove = false;
+
+            break;
+        }
+
+        case WM_GETMINMAXINFO :
+        {
+            pResizeInfoDlg  prid = ((pCPropertySheetDialog)dwData)->pcpbd->resizeInfo;
+            MINMAXINFO     *pmmi = (MINMAXINFO *)lParam;
+
+            if ( prid->haveMinSize )
+            {
+                pmmi->ptMinTrackSize.x = prid->minSize.cx;
+                pmmi->ptMinTrackSize.y = prid->minSize.cy;
+            }
+
+            if ( prid->haveMaxSize )
+            {
+                pmmi->ptMaxTrackSize.x = prid->maxSize.cx;
+                pmmi->ptMaxTrackSize.y = prid->maxSize.cy;
+            }
+
+            return TRUE;
+        }
+
+        case WM_NCDESTROY :
+            /* The window is being destroyed, remove the subclass. The dwData
+             * struct will be cleaned up normally since it is the CSelf struct
+             * of the property sheet.
+             */
+            RemoveWindowSubclass(hDlg, ResizableSubclassProc, id);
+            break;
+
+        default :
+            break;
+    }
+
+    return DefSubclassProc(hDlg, msg, wParam, lParam);
+}
+
+/**
+ * Subclasses the property sheet window procedure for resizable property sheets.
+ *
+ * I don't think we need any subclass data other than the property sheet CSelf.
+ * Also, I believe we are always running on the proper thread.
+ *
+ * We do need to figure out a way to ensure we are using a unique ID for
+ * SetWindowSubclass.
+ *
+ * @param hPropSheet
+ * @param pcpsd
+ */
+void subclassResizablePropertySheet(HWND hPropSheet, pCPropertySheetDialog pcpsd)
+{
+    SetWindowSubclass(hPropSheet, ResizableSubclassProc, 100, (DWORD_PTR)pcpsd);
+}
 
 /**
  * Called from the property sheet callback function when signaled that the
@@ -646,9 +857,9 @@ static void initializePropSheet(HWND hPropSheet)
 
     if ( pshd != NULL )
     {
-        pCPropertySheetDialog pcpsd = pshd->pcpsd;
-        RexxThreadContext *c = pcpsd->dlgProcContext;
-        pCPlainBaseDialog pcpbd = pcpsd->pcpbd;
+        pCPropertySheetDialog  pcpsd = pshd->pcpsd;
+        RexxThreadContext     *c     = pcpsd->dlgProcContext;
+        pCPlainBaseDialog      pcpbd = pcpsd->pcpbd;
 
         LocalFree(pshd);
 
@@ -671,6 +882,11 @@ static void initializePropSheet(HWND hPropSheet)
         // Do we have a modal dialog?  TODO this check is worthless because
         // there is no pcpbd->previous set.
         checkModal((pCPlainBaseDialog)pcpbd->previous, pcpsd->modeless);
+
+        if ( pcpbd->isResizableDlg )
+        {
+            SetWindowSubclass(hPropSheet, ResizableSubclassProc, pcpsd->id, (DWORD_PTR)pcpsd);
+        }
 
         c->SendMessage0(pcpsd->rexxSelf, "INITDIALOG");
     }
@@ -700,6 +916,12 @@ static void initializePropSheetPage(HWND hPage, pCPropertySheetPage pcpsp)
     pcpbd->childDlg[0] = hPage;
 
     setDlgHandle(pcpbd);
+
+    if ( pcpbd->isResizableDlg )
+    {
+        initializeResizableDialog(hPage, pcpbd->dlgProcContext, pcpbd);
+    }
+
     if ( pcpsp->pageType == oodResPSPDialog )
     {
         setFontAttrib(c, pcpbd);
@@ -1346,6 +1568,17 @@ LRESULT CALLBACK RexxPropertySheetPageDlgProc(HWND hDlg, UINT uMsg, WPARAM wPara
         return TRUE;
     }
 
+    // We first deal with resizable stuff, then handle the rest with the normal
+    // ooDialog process.
+    if ( pcpbd->isResizableDlg )
+    {
+        MsgReplyType resizingReply = handleResizing(hDlg, uMsg, wParam, lParam, pcpbd);
+        if ( resizingReply != ContinueProcessing )
+        {
+            return (resizingReply == ReplyTrue ? TRUE : FALSE);
+        }
+    }
+
     bool msgEnabled = IsWindowEnabled(hDlg) ? true : false;
 
     // Do not search message table for WM_PAINT to improve redraw.
@@ -1476,6 +1709,40 @@ void CALLBACK PropSheetCallback(HWND hwndPropSheet, UINT uMsg, LPARAM lParam)
     else if ( uMsg == PSCB_PRECREATE )
     {
         adjustPropSheetTemplate(lParam, true);
+    }
+}
+
+
+/**
+ * An implementation of the PropSheetProc callback.  The system calls this
+ * function when the property sheet is being created and initialized.
+ *
+ * We use this callback function for resizable property sheet dialogs.  At the
+ * PSCB_PRECREATE callback, we need to add the WS_THICKFRAME style to the dialog
+ * template.  Adding the style flag anywhere other than in the dialog template
+ * does not work.  However, the only information during this callback is the
+ * template struct, there is no way to know if the dialog is meant to be
+ * resizable or not.  However, the code that assigns callback function does know
+ * if it should be resizable or not.  So, we simply use two nearly identical
+ * callbacks.  One adds the right style to the template, the other does not.
+ *
+ * Other doc is in the PropSheetCallback header.
+ *
+ * @param hwndPropSheet
+ * @param uMsg
+ * @param lParam
+ *
+ * @return void
+ */
+void CALLBACK ResizablePropSheetCallback(HWND hwndPropSheet, UINT uMsg, LPARAM lParam)
+{
+    if ( uMsg == PSCB_INITIALIZED )
+    {
+        initializePropSheet(hwndPropSheet);
+    }
+    else if ( uMsg == PSCB_PRECREATE )
+    {
+        adjustResizablePropSheetTemplate(lParam);
     }
 }
 
@@ -1952,7 +2219,16 @@ PROPSHEETHEADER *initPropSheetHeader(RexxMethodContext *c, pCPropertySheetDialog
     psh->hwndParent       = hParent;
     psh->nPages           = pcpsd->pageCount;
     psh->ppsp             = (LPCPROPSHEETPAGE)psp;
-    psh->pfnCallback      = (PFNPROPSHEETCALLBACK)PropSheetCallback;
+
+
+    if ( pcpsd->pcpbd->isResizableDlg )
+    {
+        psh->pfnCallback = (PFNPROPSHEETCALLBACK)ResizablePropSheetCallback;
+    }
+    else
+    {
+        psh->pfnCallback = (PFNPROPSHEETCALLBACK)PropSheetCallback;
+    }
 
     if ( pcpsd->hInstance != NULL )
     {
@@ -2263,6 +2539,19 @@ done_out:
     return NULLOBJECT;
 }
 
+/** PropertySheetDialog::id()           [Attribute]
+ *
+ */
+RexxMethod1(uint32_t, psdlg_getID_atr, CSELF, pCSelf)
+{
+    return ((pCPropertySheetDialog)pCSelf)->id;
+}
+RexxMethod2(RexxObjectPtr, psdlg_setID_atr, uint32_t, id, CSELF, pCSelf)
+{
+    ((pCPropertySheetDialog)pCSelf)->id = id;
+    return NULLOBJECT;
+}
+
 /** PropertySheetDialog::imageList()    [Attribute set]
  *
  */
@@ -2401,8 +2690,8 @@ done_out:
  *           the programmer so that the programmer can not inadvertently screw
  *           with the array.
  */
-RexxMethod6(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING, opts, OPTIONAL_CSTRING, caption,
-            OPTIONAL_RexxStringObject, hFile, SUPER, super, OSELF, self)
+RexxMethod7(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING, opts, OPTIONAL_CSTRING, caption,
+            OPTIONAL_RexxStringObject, hFile, OPTIONAL_uint32_t, id, SUPER, super, OSELF, self)
 {
     // This is an error return.
     wholenumber_t result = 1;
@@ -2425,8 +2714,8 @@ RexxMethod6(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING,
     memset(pcpsd, 0, sizeof(CPropertySheetDialog));
 
     pcpbd->dlgPrivate = pcpsd;
-    pcpsd->pcpbd = pcpbd;
-    pcpsd->rexxSelf = self;
+    pcpsd->pcpbd      = pcpbd;
+    pcpsd->rexxSelf   = self;
     context->SetObjectVariable("CSELF", cselfBuffer);
 
     // Now process the arguments and do the rest of the initialization.
@@ -2506,6 +2795,15 @@ RexxMethod6(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING,
     if ( ! setCaption(context, pcpsd, caption) )
     {
         goto done_out;
+    }
+
+    if ( argumentOmitted(5) )
+    {
+        pcpsd->id = DEFAULT_PROPSHETT_ID;
+    }
+    else
+    {
+        pcpsd->id = id;
     }
 
     // and the rest:

@@ -762,6 +762,8 @@ REXX_METHOD_PROTOTYPE(psdlg_setCaption_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setResources_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setAppIcon_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setHeader_atr);
+REXX_METHOD_PROTOTYPE(psdlg_getID_atr);
+REXX_METHOD_PROTOTYPE(psdlg_setID_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setWatermark_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setStartPage_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setImageList_atr);
@@ -1838,6 +1840,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(psdlg_setResources_atr,         psdlg_setResources_atr),
     REXX_METHOD(psdlg_setAppIcon_atr,           psdlg_setAppIcon_atr),
     REXX_METHOD(psdlg_setHeader_atr,            psdlg_setHeader_atr),
+    REXX_METHOD(psdlg_getID_atr,                psdlg_getID_atr),
+    REXX_METHOD(psdlg_setID_atr,                psdlg_setID_atr),
     REXX_METHOD(psdlg_setWatermark_atr,         psdlg_setWatermark_atr),
     REXX_METHOD(psdlg_setStartPage_atr,         psdlg_setStartPage_atr),
     REXX_METHOD(psdlg_setImageList_atr,         psdlg_setImageList_atr),

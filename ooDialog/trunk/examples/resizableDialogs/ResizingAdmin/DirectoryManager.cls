@@ -35,23 +35,22 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef oodResizableDialog_Included
-#define oodResizableDialog_Included
+::class 'DirectoryManager' public
 
-#define DEFAULT_RESIZABLE_CONTROLS         20
-#define IDC_DEFAULT_PINTO_WINDOW           0
-#define PIN_TYPE_SHORT_LIST                "proportional, or stationary"
-#define PIN_TYPE_RIGHT_LIST                "myLeft, proportional, or stationary"
-#define PIN_TYPE_BOTTOM_LIST               "myTop, proportional, or stationary"
-#define PINNED_EDGE_LIST                   "left, top, right, bottom, xCenter, or yCenter"
+::method init
+  expose originalDirectory
+
+  -- Save our current directory.
+  originalDirectory = directory()
+
+  -- Get the full path to this program file.
+  parse source . . pgmFile
+
+  -- Get the directory this program file is located in, and then cd to it.
+  pgmDir = pgmFile~left(pgmFile~lastpos('\') - 1)
+  pgmDir = directory(pgmDir)
 
 
-extern LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-extern LRESULT          initializeResizableDialog(HWND hDlg, RexxThreadContext *c, pCPlainBaseDialog pcpbd);
-extern bool             allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxBufferObject cselfBuffer);
-extern MsgReplyType     handleResizing(HWND hDlg, uint32_t uMsg, WPARAM wParam, LPARAM lParam, pCPlainBaseDialog pcpbd);
-extern BOOL             resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long cy);
-
-extern BOOL CALLBACK    InitializeAllControlsProc(HWND hCtrl, LPARAM lParam);
-
-#endif
+::method goBack
+  expose originalDirectory
+  ret = directory(originalDirectory)

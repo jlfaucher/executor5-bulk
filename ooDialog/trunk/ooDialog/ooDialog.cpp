@@ -3084,7 +3084,10 @@ done_out:
  *  The initialization of the base dialog.
  *
  *  @params  library      DLL or .rc file for ResDialog or RcDialog dialogs.
- *  @params  resource     Resource ID for ResDialog or RcDialog dialogs.
+ *  @params  resource     Originally, the resource ID for ResDialog or RcDialog
+ *                        dialogs. Now also used to allow a user to assign an ID
+ *                        to any dialog.  By default -1 will be assigned.
+ *
  *  @params  dlgDataStem  Data stem.
  *  @params  hFile        Header file.
  *

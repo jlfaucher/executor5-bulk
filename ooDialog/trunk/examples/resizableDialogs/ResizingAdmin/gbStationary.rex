@@ -83,9 +83,9 @@
  *  bar, even if the size is set to 1 x 1 pixels.
  */
 
-  .application~setDefaults('O', 'gbStationary.h', .false)
+  .application~setDefaults('O', 'rc\gbStationary.h', .false)
 
-  dlg = .ResizableDlg~new("gbStationary.rc", IDD_RESIZABLE)
+  dlg = .ResizableDlg~new("rc\gbStationary.rc", IDD_RESIZABLE)
   dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
 return 0
