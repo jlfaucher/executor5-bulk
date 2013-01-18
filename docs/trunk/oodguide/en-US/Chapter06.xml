@@ -912,30 +912,30 @@
 </section>  <!-- End of section 6.3 -->
 
 <section id="chap06-resize"><title id="resize.title">Re-sizing Dialogs</title>  <!-- Section 6.4 -->
-<para>If you haven't already done so, try re-sizing the "Order Management" dialog.
-  The ListView containing the icons
-  expands to match the new window size, and one of the two pushbuttons moves as well, although their size
-  - unlike the size of the List View - does not change. This re-sizing function is only available
-  for a <computeroutput>UserDialog</computeroutput>, and requires a number of methods and lines of code.
-  ooDialog provides three samples of the resizing function in the folder
-  <computeroutput>ooRexx\samples\oodialog</computeroutput>,
-  the relevant programs being <computeroutput>dlgAreaUDemo.rex</computeroutput>,
-  <computeroutput>dlgAreaUDemoTwo.rex</computeroutput>, and
-  <computeroutput>dlgAreaUDemoThree.rex</computeroutput>.
-  <computeroutput>OrderMgrBaseView.rex</computeroutput> includes much of the code from the last
-  of these three samples.
-</para>
-<para>
-  The re-sizing function is provided by two ooDialog-provided classes: <computeroutput>dlgAreaU</computeroutput>
-  and <computeroutput>dlgArea</computeroutput>.
-  An important constraint is that, because <computeroutput>dlgAreaU</computeroutput> parses
-  the source code of the <emphasis role="italic">defineDialog</emphasis> method in order to handle re-sizing,
-  it will only work with <computeroutput>UserDialog</computeroutput>, where the dialog template is created
-  through explicit control creation statements. In addition, since the source code is required at run-time,
-  it will not work if the source code is tokenized using <emphasis role="italic">rexxc</emphasis>.
-  For information about using the re-sizing function, see the copious comments in
-  <computeroutput>dlgAreaUDemoThree.rex</computeroutput>.
-</para>
+<para>If you haven't already done so, try re-sizing the Order Management dialog. The ListView
+      containing the icons expands to match the new window size, and the two push-buttons both move
+      (and change in size) in proportion. The re-sizing functionality is provided by the
+      ooDialog-provided mixin class <computeroutput>ResizingAdmin</computeroutput>. All that is
+      required is to specify this mixin in the <computeroutput>::Class</computeroutput> statement,
+      and the dialog will be re-sizeable. Note that together with the dialog, controls are also
+      re-sized. Often, however, it is necessary for some controls <emphasis role="italic"
+        >not</emphasis> to be resized,  or, for example, only to be re-sized in one dimension. This
+      can be specified, for each control, by using the
+        <computeroutput>controlSizing</computeroutput> method of the
+        <computeroutput>ResizingAdmin</computeroutput> class. Essentially, this method provides for
+      "pinning" individual controls in relation either to the dialog, or to other controls.</para>
+<para>Re-sizing can also be provided by two older ooDialog-provided classes:
+        <computeroutput>dlgAreaU</computeroutput> and <computeroutput>dlgArea</computeroutput>. An
+      important constraint is that, because <computeroutput>dlgAreaU</computeroutput> parses the
+      source code of the <emphasis role="italic">defineDialog</emphasis> method in order to handle
+      re-sizing, it will only work with <computeroutput>UserDialog</computeroutput>, where the
+      dialog template is created through explicit control creation statements. In addition, since
+      the source code is required at run-time, it will not work if the source code is tokenized
+      using <emphasis role="italic">rexxc</emphasis>. For information about using this older
+      approach to re-sizing dialogs, see the copious comments in
+        <computeroutput>dlgAreaUDemoThree.rex</computeroutput>. Note that with the introduction of
+        <computeroutput>ResizingAdmin</computeroutput>, this approach to re-sizing dialogs is
+      maintained for backward compatibility only, and is very unlikely to be further developed. </para>
 </section>  <!-- End of section 6.4 -->
 
 <section id="chap06-icons"><title id="icons.title">Creating Icons</title>  <!-- Section 6.5 -->
