@@ -41,6 +41,13 @@
  * This example demonstrates how to use the PropertySheetDialog and has examples
  * of using 5 dialog controls, the: List View, Tree View, Progress Bar, Track
  * Bar, and Tab.
+ *
+ * Note that this example is meant to demonstrate creating a resizable
+ * PropertySheetDialog dialog.  It is exactly  the same as the
+ *
+ *   oodialog\propertySheet.tabControls\PropertySheetDemo.rex
+ *
+ * example, except it is resizable.
  */
 
   -- A directory manager saves the current directory and can later go back to

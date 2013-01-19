@@ -43,7 +43,13 @@
  * PropertySheetDemo.rex example, but uses a Tab control with ControlDialog
  * objects rather than using a PropertySheetDialog.
  *
- * Much of the code is simply copied from the PropertySheetDemo.rex program.
+ * Note that this example is meant to demonstrate creating a resizable dialog
+ * that has a tab control with ControlDialog dialogs as pages.  It is exactly
+ * the same as the
+ *
+ *   oodialog\propertySheet.tabControls\TabDemo.rex
+ *
+ * example, except it is resizable.
  */
 
   .application~setDefaults("O", "rc\PropertySheetDemo.h", .false)
@@ -116,7 +122,8 @@
 
 ::method defineSizing
 
-  dlgIDs = .array~of(IDD_LISTVIEW_DLG, IDD_TREEVIEW_DLG, IDD_PROGRESSBAR_DLG, IDD_TRACKBAR_DLG, IDD_TAB_DLG)
+  dlgIDs = .array~of(IDD_LISTVIEW_DLG, IDD_TREEVIEW_DLG, IDD_PROGRESSBAR_DLG,   -
+                     IDD_TRACKBAR_DLG, IDD_TAB_DLG)
   self~pagedTab(IDC_TAB, dlgIDs)
 
   return 0

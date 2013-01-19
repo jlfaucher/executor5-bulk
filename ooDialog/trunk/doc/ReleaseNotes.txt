@@ -48,10 +48,15 @@ Changes in ooDialog 4.2.2 since the release of ooDialog 4.2.1
 Bug Fixes in ooDialog:
 ----------------------
 
+ * #1153 Deprecated CategoryDialog dialogs do not work in ooDialog 4.2.1
+
+ * #1154 setColor() method produces incorrect results
 
 
 Feature Requests in ooDialog:
 -----------------------------
+
+ * #249 Add support for generalized resizable dialogs
 
  * #417 ooDialog public routines and icon resource
 
@@ -66,16 +71,43 @@ Feature Requests in ooDialog:
  * #507 ooDialog - Modify the text of a list-view item and all its
         subitems at one time
 
+ * #513 Need access to the ListView_GetItemRect
+        ListView_GetIndexItemRect
+
+ * #514 It would be interesting to temporarily change the parent window
+        of a dialog control
+
+ * #515 Would like to connect list-view begin and end scroll events
+
+ * #517 Add a way to access the child controls of a combo box
+
+ * #518 Need to work with an edit control that is not a direct child of
+        the dialog
+
+ * #519 Would like the ListView hitTestInfo to return the subitem index
+
 
 New Functionality in ooDialog:
 ------------------------------
 
+Methods have been added to various classes that allow the embedding of
+either an edit control or a combo box control in the subitem fields of a
+list-view.  This functionality allows the in-place editing of the
+subitems in a list-view item.
 
 
 
 New dialog classes:
 -------------------
 
+ResizingAdmin class:
+
+The ResizingAdmin class is a new mixin class.  Dialogs that inherit this
+class are automatically made resizable.  Any ooDialog dialog class can
+intherit the mixin class.  By default, all controls in the dialog are
+sized in proportion to the change in size of the dialog.  Methods of the
+ResizingAdmin class allow the programmer to customize how the controls
+in the dialog are sized.
 
 
 New utility classes:
@@ -88,41 +120,102 @@ New Methods:
 
 In the ApplicationManager class:
 
-defaultIcon     Assigns an application-wide default dialog icon.
+defaultIcon()     Assigns an application-wide default dialog icon.
+
+
+In the ComboBox class:
+
+getComboBoxInfo() Returns a Directory object containinng information
+                  about the combo box.
+
+getEditControl()  Returns a Rexx Edit object that represents the child
+                  edit control used by the combo box.
+
+isGrandChild()    Notifies the ooDialog framework that the combo box
+                  control is a grandchild of the dialog and configures
+                  the underlying combo box control to send four event
+                  notifications to the dialog, rather than its direct
+                  parent.
+
+
+In the DialogControl class:
+
+setParent()       Sets a new parent for the dialog control.
+
 
 In the Edit class:
 
-wantReturn      Connects the Enter keypress in a single-line edit
-                control to a method in the Rexx dialog and prevents the
-                keypress from closing the dialog.
+wantReturn()      Connects the Enter keypress in a single-line edit
+                  control to a method in the Rexx dialog and prevents
+                  the keypress from closing the dialog.
+
+isGrandChild()    Notifies the ooDialog framework that the edit control
+                  is a grandchild of the dialog and configures the
+                  underlying edit control to send four event
+                  notifications to the dialog, rather than its direct
+                  parent.
+
 
 In the ListView class:
 
-modifyFullRow   Modifies a list-view's item and all its subitem using a
-                LvFullRow object.
+getItemRect()     Gets the bounding rectangle for all or part of an item
+                  in the current view of the list-view.
 
-setFullRowText  Sets or updates the text for a list-view item and all
-                its subItems using a LvFullRow object.
+getSubitemRect()  Gets the bounding rectangle for all or part of a
+                  subitem in the current view of the list-view.
+
+modifyFullRow()   Modifies a list-view's item and all its subitem using
+                  a LvFullRow object.
+
+setFullRowText()  Sets or updates the text for a list-view item and all
+                  its subItems using a LvFullRow object.
+
+
+In the WindowBase class:
+
+setWindowStyleRaw() Sets the window style flags of the window. The value
+                    is specified as the raw numeric value of the style.
 
 
 New Attributes:
 ---------------
-
 
 In the LvFullRow class:
 
 userData  The userData attribute allows the programmer to assign any
           object to each full row object.
 
+In the PlainBaseDialog class:
+
+dlgID     This attribute reflects a whole number value that can be used
+          to identify the dialog.
+
 
 Enhanced Methods:
 -----------------
 
+In the EventNotification class:
+
+connectListViewEvent()  New events added.
+
+  * the BEGINSCROLL event is added.
+
+  * the ENDSCROLL event is added.
+
+In the ListView class:
+
+hitTestInfo()           Enhanced to return the subitem index, instead of
+                        0
 
 
 New samples:
 ------------
 
+oodialog\resizableDialogs\ResizingAdmin\augmentedResize.rex
+oodialog\resizableDialogs\ResizingAdmin\basicResize.rex
+oodialog\resizableDialogs\ResizingAdmin\gbStationary.rex
+
+These 3 examples demonstrate inheriting the ResizingAdmin class.
 
 
 Enhanced samples:
@@ -142,6 +235,16 @@ completely graphical interface and no longer uses 'say' statements.  It
 also uses the defaultIcon() method to set the default icon for the
 program.
 
+oodialog\propertySheet.tabControls\PropertySheetDemo.rex
+oodialog\propertySheet.tabControls\TabDemo.rex
+
+These 2 examples are copied to the
+
+oodialog\resizableDialogs\ResizingAdmin
+
+directory and enhanced to be resizable.  The old and new examples can be
+compared to see both how to make a dialog resizable and how the
+appearance of the old and new versions contrast.
 
 
 Documentation:
