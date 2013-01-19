@@ -43,13 +43,14 @@
     #########################################################################
 -->
 
-<!-- Chapter06 - List Views, Re-Sizing, and PopUps 		  v01-01 30Dec12
+<!-- Chapter06 - List Views, Re-Sizing, and PopUps 		      v01-03 19Jan13
 
     Changes:
      v01-00 06Jun12: First version.
      v01-01 30Dec12: Minor change to text describing function in next chapter.
-     v01-02 08Jan13: Correct trivila typo (path said "c:\aaaa\..." instead of
+     v01-02 08Jan13: Correct trivial typo (path said "c:\aaaa\..." instead of
                      "c:\aaa\...".
+     v01-03 19Jan13: Changed text on re-sizable dialogs to include the new ResizingAdmin class,
 
     6     "An Application Workplace"      chapSix
     6.1     Program Structure             chap06-struc
@@ -919,23 +920,23 @@
       required is to specify this mixin in the <computeroutput>::Class</computeroutput> statement,
       and the dialog will be re-sizeable. Note that together with the dialog, controls are also
       re-sized. Often, however, it is necessary for some controls <emphasis role="italic"
-        >not</emphasis> to be resized,  or, for example, only to be re-sized in one dimension. This
-      can be specified, for each control, by using the
-        <computeroutput>controlSizing</computeroutput> method of the
-        <computeroutput>ResizingAdmin</computeroutput> class. Essentially, this method provides for
-      "pinning" individual controls in relation either to the dialog, or to other controls.</para>
-<para>Re-sizing can also be provided by two older ooDialog-provided classes:
-        <computeroutput>dlgAreaU</computeroutput> and <computeroutput>dlgArea</computeroutput>. An
-      important constraint is that, because <computeroutput>dlgAreaU</computeroutput> parses the
-      source code of the <emphasis role="italic">defineDialog</emphasis> method in order to handle
-      re-sizing, it will only work with <computeroutput>UserDialog</computeroutput>, where the
-      dialog template is created through explicit control creation statements. In addition, since
-      the source code is required at run-time, it will not work if the source code is tokenized
-      using <emphasis role="italic">rexxc</emphasis>. For information about using this older
-      approach to re-sizing dialogs, see the copious comments in
-        <computeroutput>dlgAreaUDemoThree.rex</computeroutput>. Note that with the introduction of
-        <computeroutput>ResizingAdmin</computeroutput>, this approach to re-sizing dialogs is
-      maintained for backward compatibility only, and is very unlikely to be further developed. </para>
+        >not</emphasis> to be resized, or, for example, only to be re-sized in one dimension. This
+      can be specified, for each control, by using the <emphasis role="italic"
+        >controlSizing</emphasis> method of the <computeroutput>ResizingAdmin</computeroutput>
+      class. Essentially, this method provides for "pinning" individual controls in relation either
+      to the dialog, or to other controls.</para>
+<para>Re-sizing is also provided by the <computeroutput>DlgAreaU</computeroutput> class. This
+      ingenious class was written some time ago when ooDialog capabilities were much less developed
+      than they are today. It works by parsing the source code of a subclass' <emphasis
+        role="italic">defineDialog</emphasis> method at run-time. However, this constrains it to
+      being used only with <computeroutput>UserDialog</computeroutput>, where the dialog template is
+      created through explicit control creation statements. In addition, since the source code is
+      required at run-time, it will not work if the source code is tokenized using <emphasis
+        role="italic">rexxc</emphasis>. For information about using this approach to re-sizing
+      dialogs, see the documentation for the DlgAreaU class in the ooDialog Reference manual or the
+      copious comments in <computeroutput>dlgAreaUDemoThree.rex</computeroutput> (which can be found
+      in  the ooRexx samples folder in
+        <computeroutput>oodialog\resizableDialogs\DialogAreaU</computeroutput>).</para>
 </section>  <!-- End of section 6.4 -->
 
 <section id="chap06-icons"><title id="icons.title">Creating Icons</title>  <!-- Section 6.5 -->
