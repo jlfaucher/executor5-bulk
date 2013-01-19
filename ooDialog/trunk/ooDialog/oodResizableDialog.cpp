@@ -2248,6 +2248,11 @@ RexxMethod3(RexxObjectPtr, ra_pagedTab, RexxObjectPtr, rxTabID, RexxArrayObject,
         return NULLOBJECT;
     }
 
+    if ( ! prid->inDefineSizing )
+    {
+        return methodCanOnlyBeInvokedException(context, "pagedTab", "during the defineSizing method", pcpbd->rexxSelf);
+    }
+
     if ( prid->countPagedTabs >= MAXMANAGEDTABS )
     {
         return tooManyPagedTabsException(context, 5, true);
