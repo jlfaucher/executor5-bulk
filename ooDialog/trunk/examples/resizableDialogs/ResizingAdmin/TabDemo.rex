@@ -114,6 +114,13 @@
 
 ::attribute tabContent
 
+::method defineSizing
+
+  dlgIDs = .array~of(IDD_LISTVIEW_DLG, IDD_TREEVIEW_DLG, IDD_PROGRESSBAR_DLG, IDD_TRACKBAR_DLG, IDD_TAB_DLG)
+  self~pagedTab(IDC_TAB, dlgIDs)
+
+  return 0
+
 /** prep()
  *
  * This method is invoked before the dialog is executed.  It does some initial

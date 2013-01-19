@@ -51,6 +51,8 @@ extern LRESULT          initializeResizableDialog(HWND hDlg, RexxThreadContext *
 extern bool             allocateResizeInfo(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxBufferObject cselfBuffer);
 extern MsgReplyType     handleResizing(HWND hDlg, uint32_t uMsg, WPARAM wParam, LPARAM lParam, pCPlainBaseDialog pcpbd);
 extern BOOL             resizeAndPosition(pCPlainBaseDialog pcpbd, HWND hDlg, long cx, long cy);
+extern void             calcDisplayRect(HWND hTab, HWND hDlg, POINT *p, SIZE *s);
+extern void             notifyExitSizeMove(pCPlainBaseDialog pcpbd);
 
 extern BOOL CALLBACK    InitializeAllControlsProc(HWND hCtrl, LPARAM lParam);
 

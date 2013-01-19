@@ -721,16 +721,10 @@ LRESULT CALLBACK ResizableSubclassProc(HWND hDlg, uint32_t msg, WPARAM wParam, L
 
                 HWND hTab = PropSheet_GetTabControl(hDlg);
 
-                RECT r = {0};
-                GetWindowRect(hTab, &r);
+                POINT p = { 0 };
+                SIZE  s = { 0 };
 
-                TabCtrl_AdjustRect(hTab, false, &r);
-
-                POINT p = { r.left, r.top };
-                ScreenToClient(hDlg, &p);
-
-                int32_t width  = r.right - r.left;
-                int32_t height = r.bottom - r.top;
+                calcDisplayRect(hTab, hDlg, &p, &s);
 
                 for ( size_t i = 0; i < pcpsd->pageCount; i++ )
                 {
@@ -743,12 +737,12 @@ LRESULT CALLBACK ResizableSubclassProc(HWND hDlg, uint32_t msg, WPARAM wParam, L
 
                     if ( IsWindowVisible(hPage) )
                     {
-                        SetWindowPos(hPage, hTab, p.x, p.y, width, height, SWP_NOCOPYBITS | SWP_NOOWNERZORDER);
+                        SetWindowPos(hPage, hTab, p.x, p.y, s.cx, s.cy, SWP_NOCOPYBITS | SWP_NOOWNERZORDER);
                         prid->redrawThis = hPage;
                     }
                     else
                     {
-                        MoveWindow(hPage, p.x, p.y, width, height, FALSE);
+                        MoveWindow(hPage, p.x, p.y, s.cx, s.cy, FALSE);
                     }
                 }
             }
@@ -768,21 +762,7 @@ LRESULT CALLBACK ResizableSubclassProc(HWND hDlg, uint32_t msg, WPARAM wParam, L
             }
             if ( prid->isSizing && prid->sizeEndedMeth != NULL)
             {
-                RexxThreadContext *c = pcpbd->dlgProcContext;
-                RexxArrayObject args = c->NewArray(0);
-
-                if ( prid->sizeEndedWillReply )
-                {
-                    invokeDirect(c, pcpbd, prid->sizeEndedMeth, args);
-                }
-                else
-                {
-                    RexxStringObject method = c->String(prid->sizeEndedMeth);
-                    invokeDispatch(c, pcpbd->rexxSelf, method, args);
-                    c->ReleaseLocalReference(method);
-                }
-
-                c->ReleaseLocalReference(args);
+                notifyExitSizeMove(pcpbd);
             }
 
             prid->isSizing = false;
@@ -826,18 +806,6 @@ LRESULT CALLBACK ResizableSubclassProc(HWND hDlg, uint32_t msg, WPARAM wParam, L
     return DefSubclassProc(hDlg, msg, wParam, lParam);
 }
 
-/**
- * Subclasses the property sheet window procedure for resizable property sheets.
- *
- * I don't think we need any subclass data other than the property sheet CSelf.
- * Also, I believe we are always running on the proper thread.
- *
- * We do need to figure out a way to ensure we are using a unique ID for
- * SetWindowSubclass.
- *
- * @param hPropSheet
- * @param pcpsd
- */
 void subclassResizablePropertySheet(HWND hPropSheet, pCPropertySheetDialog pcpsd)
 {
     SetWindowSubclass(hPropSheet, ResizableSubclassProc, 100, (DWORD_PTR)pcpsd);
@@ -848,6 +816,9 @@ void subclassResizablePropertySheet(HWND hPropSheet, pCPropertySheetDialog pcpsd
  * property sheet dialog is being initialized.  Performs the initialization
  * normally done in the window loop thread function and the execute() method for
  * normal ooDialog dialogs.
+ *
+ * In addition, if this is a resizable property sheet, we subclass the property
+ * sheet so we can handle the resizing.
  *
  * @param hPropSheet  Window handle of the property sheet.
  */
@@ -885,7 +856,7 @@ static void initializePropSheet(HWND hPropSheet)
 
         if ( pcpbd->isResizableDlg )
         {
-            SetWindowSubclass(hPropSheet, ResizableSubclassProc, pcpsd->id, (DWORD_PTR)pcpsd);
+            SetWindowSubclass(hPropSheet, ResizableSubclassProc, pcpbd->dlgID, (DWORD_PTR)pcpsd);
         }
 
         c->SendMessage0(pcpsd->rexxSelf, "INITDIALOG");
@@ -1957,12 +1928,19 @@ void assignPSDThreadContext(pCPropertySheetDialog pcpsd, RexxThreadContext *c, u
 }
 
 
-bool psdInitSuper(RexxMethodContext *context, RexxClassObject super, RexxStringObject hFile)
+bool psdInitSuper(RexxMethodContext *context, RexxClassObject super, RexxStringObject hFile, RexxObjectPtr id)
 {
     RexxArrayObject newArgs = context->NewArray(4);
 
     context->ArrayPut(newArgs, context->NullString(), 1);
-    context->ArrayPut(newArgs, TheZeroObj, 2);
+    if ( id != NULLOBJECT )
+    {
+        context->ArrayPut(newArgs, id, 2);
+    }
+    else
+    {
+        context->ArrayPut(newArgs, context->UnsignedInt32(DEFAULT_PROPSHETT_ID), 2);
+    }
     if ( hFile != NULLOBJECT )
     {
         context->ArrayPut(newArgs, hFile, 4);
@@ -2539,19 +2517,6 @@ done_out:
     return NULLOBJECT;
 }
 
-/** PropertySheetDialog::id()           [Attribute]
- *
- */
-RexxMethod1(uint32_t, psdlg_getID_atr, CSELF, pCSelf)
-{
-    return ((pCPropertySheetDialog)pCSelf)->id;
-}
-RexxMethod2(RexxObjectPtr, psdlg_setID_atr, uint32_t, id, CSELF, pCSelf)
-{
-    ((pCPropertySheetDialog)pCSelf)->id = id;
-    return NULLOBJECT;
-}
-
 /** PropertySheetDialog::imageList()    [Attribute set]
  *
  */
@@ -2691,12 +2656,12 @@ done_out:
  *           with the array.
  */
 RexxMethod7(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING, opts, OPTIONAL_CSTRING, caption,
-            OPTIONAL_RexxStringObject, hFile, OPTIONAL_uint32_t, id, SUPER, super, OSELF, self)
+            OPTIONAL_RexxStringObject, hFile, OPTIONAL_RexxObjectPtr, id, SUPER, super, OSELF, self)
 {
     // This is an error return.
     wholenumber_t result = 1;
 
-    if ( ! psdInitSuper(context, super, hFile) )
+    if ( ! psdInitSuper(context, super, hFile, id) )
     {
         goto err_out;
     }
@@ -2787,6 +2752,12 @@ RexxMethod7(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING,
     pcpsd->hIcon = hIcon;
     context->SetObjectVariable("APPICON", temp);
 
+    // Be sure we have a good dialog ID:
+    if ( pcpbd->dlgID == -1 )
+    {
+        pcpbd->dlgID = DEFAULT_PROPSHETT_ID;
+    }
+
     // CAPTION
     if ( argumentOmitted(3) )
     {
@@ -2795,15 +2766,6 @@ RexxMethod7(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING,
     if ( ! setCaption(context, pcpsd, caption) )
     {
         goto done_out;
-    }
-
-    if ( argumentOmitted(5) )
-    {
-        pcpsd->id = DEFAULT_PROPSHETT_ID;
-    }
-    else
-    {
-        pcpsd->id = id;
     }
 
     // and the rest:
@@ -5068,15 +5030,6 @@ static inline pCTabOwnerDialog validateTodCSelf(RexxMethodContext *c, void *pCSe
     return pctod;
 }
 
-static RexxObjectPtr tooManyMTsException(RexxMethodContext *c, uint32_t count)
-{
-    TCHAR buffer[256];
-    _snprintf(buffer, sizeof(buffer), "%d exceeds the maximum (%d) of allowable mangaged tabs", count, MAXMANAGEDTABS);
-
-    userDefinedMsgException(c, buffer);
-    return NULLOBJECT;
-}
-
 static void todAdjustMethods(RexxMethodContext *c, RexxObjectPtr self)
 {
     char *mSrc = "self~tabOwnerOk\n";
@@ -6135,7 +6088,7 @@ RexxObjectPtr todiAddMTs(RexxMethodContext *c, pCTabOwnerDlgInfo pctodi, RexxObj
     {
         if ( pctodi->count >= MAXMANAGEDTABS )
         {
-            return tooManyMTsException(c, 5);
+            return tooManyPagedTabsException(c, 5, false);
         }
 
         pCManagedTab pcmt = (pCManagedTab)c->ObjectToCSelf(mts);
@@ -6149,7 +6102,7 @@ RexxObjectPtr todiAddMTs(RexxMethodContext *c, pCTabOwnerDlgInfo pctodi, RexxObj
         uint32_t count = (uint32_t)c->ArrayItems(_mts);
         if( count + pctodi->count > MAXMANAGEDTABS )
         {
-            return tooManyMTsException(c, count + pctodi->count);
+            return tooManyPagedTabsException(c, count + pctodi->count, false);
         }
 
         for ( uint32_t i = 1; i <= count; i++ )

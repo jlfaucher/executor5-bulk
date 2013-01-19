@@ -585,6 +585,20 @@ void customDrawMismatchException(RexxThreadContext *c, uint32_t id, oodControl_t
     executionErrorException(c, buffer);
 }
 
+RexxObjectPtr tooManyPagedTabsException(RexxMethodContext *c, uint32_t count, bool isPagedTab)
+{
+    TCHAR  buffer[256];
+    char  *insert = "mangaed";
+
+    if ( isPagedTab )
+    {
+        insert = "paged";
+    }
+    _snprintf(buffer, sizeof(buffer), "%d exceeds the maximum (%d) of allowable %s tabs", count, MAXMANAGEDTABS, insert);
+
+    userDefinedMsgException(c, buffer);
+    return NULLOBJECT;
+}
 
 /**
  * Checks that the current Os meets the minimum OS requirements for a method.

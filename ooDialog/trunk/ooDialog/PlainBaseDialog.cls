@@ -269,6 +269,9 @@
 
 ::attribute dlgHandle get unguarded external "LIBRARY oodialog pbdlg_getDlgHandle"
 
+::attribute dlgID get external "LIBRARY oodialog pbdlg_getDlgID"
+::attribute dlgID set external "LIBRARY oodialog pbdlg_setDlgID"
+
 -- finsished is now a boolean, when set to .true, the dialog ends.  Older ooDialog set it
 -- to 2 on an abnormal termination of the underlying dialog.  This is no longer done.
 -- finished presents a problem because it was documented, mostly *incorrectly* in earlier

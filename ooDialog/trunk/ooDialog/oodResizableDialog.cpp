@@ -491,6 +491,18 @@ static pResizeInfoCtrl getControlInfo(pResizeInfoDlg prid, uint32_t ctrlID)
     return NULL;
 }
 
+/**
+ * Searches the array of control resize information structs for a tab control
+ * that matches the specified resource ID.
+ *
+ * Returns the window handle of the tab control when found.  Will return NULL if
+ * not found, but really that should never happen.
+ *
+ * @param prid
+ * @param ctrlID
+ *
+ * @return HWND
+ */
 static HWND getTabControlHwnd(pResizeInfoDlg prid, uint32_t ctrlID)
 {
     if ( ctrlID != (uint32_t)-1 )
@@ -506,6 +518,120 @@ static HWND getTabControlHwnd(pResizeInfoDlg prid, uint32_t ctrlID)
 
     return NULL;
 }
+
+
+/**
+ * Searches the array of child dialogs for a child dialog with the specified
+ * dialog ID.
+ *
+ * Returns the pCPlainBaseDialog pointer for the child when found, NULL when not
+ * found.  The child will only be found when the underlying Windows dialog has
+ * been created.  If the Rexx programmer waits until a page is visited before
+ * creating the underlying Windows dialog, it is very likely that the child
+ * dialog will not always be found.
+ *
+ * @param pcpbd
+ * @param dlgID
+ *
+ * @return pCPlainBaseDialog
+ */
+static pCPlainBaseDialog getChildDlg(pCPlainBaseDialog pcpbd, uint32_t dlgID)
+{
+    for ( register size_t i = 1; i <= pcpbd->countChilds; i++ )
+    {
+        pCPlainBaseDialog chldPcpbd = (pCPlainBaseDialog)pcpbd->childDlg[i];
+        if ( chldPcpbd->dlgID == dlgID )
+        {
+            return chldPcpbd;
+        }
+    }
+    return NULL;
+}
+
+
+/**
+ * When the page dialogs of a tab control are resized, they do not paint
+ * correctly.  The only solution found so far is to use RedrawWindow() to redraw
+ * the page dialog.  Doing this at every WM_SIZE increases the flickering and
+ * doesn't even work.  Redrawing once at the WM_EXITSIZEMOVE message works well.
+ *
+ * During the WM_SIZE processing, we record which dialog, for each tab control
+ * if there is more than one, needs to be redrawn.  Only the single visible
+ * dialog in the tab control needs to be redrawn.
+ *
+ * @param prid
+ */
+static void maybeRedrawWindows(pResizeInfoDlg prid)
+{
+    for ( register size_t i = 0; i < prid->countPagedTabs; i++ )
+    {
+        if ( prid->pagedTabs[i]->redrawThis )
+        {
+            RedrawWindow(prid->pagedTabs[i]->redrawThis, NULL, NULL,
+                         RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
+            prid->pagedTabs[i]->redrawThis = NULL;
+        }
+    }
+}
+
+
+/**
+ * Handles the sizing and positioning of ControlDialog dialogs used as the pages
+ * of a tab control.
+ *
+ * @param pcpbd
+ * @param hDlg
+ *
+ * @remarks.  The pCPlainBaseDialog pointer for each ControlDialog created as a
+ *            child of the 'main', or 'owner', dialog is stored in the
+ *            childDlg[] array of the owner.
+ */
+static void handleChildDialogs(pCPlainBaseDialog pcpbd, HWND hDlg)
+{
+    pResizeInfoDlg prid = pcpbd->resizeInfo;
+
+    for ( size_t i = 0; i < prid->countPagedTabs; i++ )
+    {
+        pPagedTab pt   = prid->pagedTabs[i];
+        HWND      hTab = getTabControlHwnd(prid, pt->tabID);
+        if ( hTab == NULL )
+        {
+            // Probably need error?
+            continue;
+        }
+
+        POINT p = { 0 };
+        SIZE  s = { 0 };
+
+        calcDisplayRect(hTab, hDlg, &p, &s);
+
+        for ( size_t j = 0; j < MAXCHILDDIALOGS; j++ )
+        {
+            uint32_t dlgID = pt->dlgIDs[j];
+            if ( dlgID == 0 )
+            {
+                break;
+            }
+
+            pCPlainBaseDialog chldPcpbd = getChildDlg(pcpbd, dlgID);
+            if ( chldPcpbd == NULL )
+            {
+                continue;
+            }
+
+            if ( IsWindowVisible(chldPcpbd->hDlg) )
+            {
+                SetWindowPos(chldPcpbd->hDlg, hTab, p.x, p.y, s.cx, s.cy, SWP_NOCOPYBITS | SWP_NOOWNERZORDER);
+                pt->redrawThis = chldPcpbd->hDlg;
+            }
+            else
+            {
+                MoveWindow(chldPcpbd->hDlg, p.x, p.y, s.cx, s.cy, FALSE);
+            }
+        }
+    }
+}
+
 
 /**
  * Returns a resize info record for the specified control ID after validating
@@ -632,7 +758,7 @@ static RECT *getRect(uint32_t id, pResizeInfoDlg prid, bool initial)
 }
 
 /**
- * Returns the co-ordinate in the specified rectangle that mathce the pinned
+ * Returns the co-ordinate in the specified rectangle that matches the pinned
  * edge type.
  *
  * @param edge
@@ -640,7 +766,7 @@ static RECT *getRect(uint32_t id, pResizeInfoDlg prid, bool initial)
  *
  * @return int32_t
  */
-int32_t edgeCoord(pinnedEdge_t edge, RECT *r)
+static int32_t edgeCoord(pinnedEdge_t edge, RECT *r)
 {
     switch ( edge )
     {
@@ -678,7 +804,7 @@ int32_t edgeCoord(pinnedEdge_t edge, RECT *r)
  *
  * @return int32_t
  */
-int32_t newLeft(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
+static int32_t newLeft(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
 {
     RECT *pinToRectInitial = getRect(edge->pinToID, prid, true);
     RECT *pinToRectCurrent = getRect(edge->pinToID, prid, false);
@@ -721,7 +847,7 @@ int32_t newLeft(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
  *
  * @return int32_t
  */
-int32_t newTop(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
+static int32_t newTop(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
 {
     RECT *pinToRectInitial = getRect(edge->pinToID, prid, true);
     RECT *pinToRectCurrent = getRect(edge->pinToID, prid, false);
@@ -754,6 +880,7 @@ int32_t newTop(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
     return t;
 }
 
+
 /**
  * Returns the new right co-ordinate for dialog control specified through its
  * resize info, for the edge specified.
@@ -764,7 +891,7 @@ int32_t newTop(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
  *
  * @return int32_t
  */
-int32_t newRight(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
+static int32_t newRight(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
 {
     RECT *pinToRectInitial = getRect(edge->pinToID, prid, true);
     RECT *pinToRectCurrent = getRect(edge->pinToID, prid, false);
@@ -801,6 +928,7 @@ int32_t newRight(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
     return r;
 }
 
+
 /**
  * Returns the new bottom co-ordinate for dialog control specified through its
  * resize info, for the edge specified.
@@ -811,7 +939,7 @@ int32_t newRight(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
  *
  * @return int32_t
  */
-int32_t newBottom(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
+static int32_t newBottom(pResizeInfoDlg prid, pResizeInfoCtrl ric, pEdge edge)
 {
     RECT *pinToRectInitial = getRect(edge->pinToID, prid, true);
     RECT *pinToRectCurrent = getRect(edge->pinToID, prid, false);
@@ -1007,12 +1135,79 @@ LRESULT initializeResizableDialog(HWND hDlg, RexxThreadContext *c, pCPlainBaseDi
     return prid->haveError ? FALSE : TRUE;
 }
 
-MsgReplyType handleResizing(HWND hDlg, uint32_t uMsg, WPARAM wParam, LPARAM lParam, pCPlainBaseDialog pcpbd)
+/**
+ * Given the window handle to a tab control and the dialog it is in, calculates
+ * the size and position, in dialog client area coordinates of the tab control's
+ * display rectangle.
+ *
+ * @param hTab
+ * @param hDlg
+ * @param p          Position returned in this point struct.
+ * @param s          Size returned in this size struct.
+ */
+void calcDisplayRect(HWND hTab, HWND hDlg, POINT *p, SIZE *s)
+{
+    RECT r = { 0 };
+    GetWindowRect(hTab, &r);
+
+    TabCtrl_AdjustRect(hTab, false, &r);
+
+    s->cx = r.right - r.left;
+    s->cy = r.bottom - r.top;
+    p->x  = r.left;
+    p->y  = r.top;
+    ScreenToClient(hDlg, p);
+}
+
+
+/**
+ * Used to invoke a method in the Rexx dialog for the EXITSIZEMOVE event.
+ *
+ * @param pcpbd
+ */
+void notifyExitSizeMove(pCPlainBaseDialog pcpbd)
+{
+    RexxThreadContext *c    = pcpbd->dlgProcContext;
+    RexxArrayObject    args = c->NewArray(0);
+    pResizeInfoDlg     prid = pcpbd->resizeInfo;
+
+    if ( prid->sizeEndedWillReply )
+    {
+        invokeDirect(c, pcpbd, prid->sizeEndedMeth, args);
+    }
+    else
+    {
+        RexxStringObject method = c->String(prid->sizeEndedMeth);
+        invokeDispatch(c, pcpbd->rexxSelf, method, args);
+        c->ReleaseLocalReference(method);
+    }
+
+    c->ReleaseLocalReference(args);
+}
+
+
+/**
+ * Called from one of the Rexx window message processing loops to handle the
+ * messages related to resizing.
+ *
+ * @param hDlg
+ * @param msg
+ * @param wParam
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return ReplyTrue or ReplyFalse to return immediately from the message
+ *         processing loop.  Returns ContinueProcessing to indicate that the
+ *         message processing loop should continue processing this message.
+ *
+ * @assumes  That the caller has already assured that the dialog is a
+ *           ResizingAdmin dialog.
+ */
+MsgReplyType handleResizing(HWND hDlg, uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
     pResizeInfoDlg prid = pcpbd->resizeInfo;
-    bool isCtrlDlg = pcpbd->isControlDlg;
 
-    switch ( uMsg )
+    switch ( msg )
     {
         case WM_ENTERSIZEMOVE :
         {
@@ -1028,7 +1223,7 @@ MsgReplyType handleResizing(HWND hDlg, uint32_t uMsg, WPARAM wParam, LPARAM lPar
 
                 // Have the default window procedure calculate the client
                 // co-ordinates.
-                DefWindowProc(hDlg, uMsg, FALSE, (LPARAM)&nccs_params->rgrc[0]);
+                DefWindowProc(hDlg, msg, FALSE, (LPARAM)&nccs_params->rgrc[0]);
 
                 // Set the source & target rectangles to be the same.
                 nccs_params->rgrc[1] = nccs_params->rgrc[2];
@@ -1046,36 +1241,9 @@ MsgReplyType handleResizing(HWND hDlg, uint32_t uMsg, WPARAM wParam, LPARAM lPar
                 prid->isSizing = true;
                 BOOL ret = resizeAndPosition(pcpbd, hDlg, LOWORD(lParam), HIWORD(lParam));
 
-                if ( pcpbd->isOwnerDlg && pcpbd->countChilds > 0 )
+                if ( prid->countPagedTabs > 0 && pcpbd->countChilds > 0 )
                 {
-                    HWND hTab = getTabControlHwnd(prid, 200);
-
-                    RECT r = {0};
-                    GetWindowRect(hTab, &r);
-
-                    TabCtrl_AdjustRect(hTab, false, &r);
-
-                    POINT p = { r.left, r.top };
-                    ScreenToClient(hDlg, &p);
-
-                    int32_t width  = r.right - r.left;
-                    int32_t height = r.bottom - r.top;
-
-                    for ( size_t i = 1; i <= pcpbd->countChilds; i++ )
-                    {
-                        pCPlainBaseDialog chldPcpbd = (pCPlainBaseDialog)pcpbd->childDlg[i];
-
-                        if ( IsWindowVisible(chldPcpbd->hDlg) )
-                        {
-                            SetWindowPos(chldPcpbd->hDlg, hTab, p.x, p.y, width, height, SWP_NOCOPYBITS | SWP_NOOWNERZORDER);
-                            prid->redrawThis = chldPcpbd->hDlg;
-                        }
-                        else
-                        {
-                            // For not visible windows, just move them.
-                            MoveWindow(chldPcpbd->hDlg, p.x, p.y, width, height, FALSE);
-                        }
-                    }
+                    handleChildDialogs(pcpbd, hDlg);
                 }
 
                 return ret ? ReplyTrue : ReplyFalse;
@@ -1085,29 +1253,14 @@ MsgReplyType handleResizing(HWND hDlg, uint32_t uMsg, WPARAM wParam, LPARAM lPar
 
         case WM_EXITSIZEMOVE :
         {
-            if ( prid->isSizing && prid->redrawThis )
+            if ( prid->countPagedTabs > 0 && prid->isSizing )
             {
-                RedrawWindow(prid->redrawThis, NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
-                prid->redrawThis = NULL;
+                maybeRedrawWindows(prid);
             }
 
             if ( prid->isSizing && prid->sizeEndedMeth != NULL)
             {
-                RexxThreadContext *c = pcpbd->dlgProcContext;
-                RexxArrayObject args = c->NewArray(0);
-
-                if ( prid->sizeEndedWillReply )
-                {
-                    invokeDirect(c, pcpbd, prid->sizeEndedMeth, args);
-                }
-                else
-                {
-                    RexxStringObject method = c->String(prid->sizeEndedMeth);
-                    invokeDispatch(c, pcpbd->rexxSelf, method, args);
-                    c->ReleaseLocalReference(method);
-                }
-
-                c->ReleaseLocalReference(args);
+                notifyExitSizeMove(pcpbd);
             }
 
             prid->inSizeOrMove = false;
@@ -1239,12 +1392,6 @@ BOOL CALLBACK InitializeAllControlsProc(HWND hCtrl, LPARAM lParam)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)lParam;
     pResizeInfoDlg    prid  = pcpbd->resizeInfo;
 
-    /*
-    printf("InitalizeAllControlsProc() hwnd hCtrl=%p\n", hCtrl);
-    if ( pcpbd->isControlDlg )
-    {
-    }
-    */
     if ( GetParent(hCtrl) != pcpbd->hDlg )
     {
         return TRUE;
@@ -1252,6 +1399,10 @@ BOOL CALLBACK InitializeAllControlsProc(HWND hCtrl, LPARAM lParam)
 
     oodControl_t ctrlType = controlHwnd2controlType(hCtrl);
     int          ctrlID   = GetDlgCtrlID(hCtrl);
+    if ( ctrlType == winUnknown )
+    {
+        return TRUE;
+    }
 
     if ( ctrlType == winGroupBox || ctrlType == winStatic )
     {
@@ -1295,9 +1446,13 @@ BOOL CALLBACK InitializeAllControlsProc(HWND hCtrl, LPARAM lParam)
  * a Rexx dialog method.  This implies that if the user were to connect, say
  * WM_SIZE, no method would be invoked.
  *
- * Currently there is no message processing procedure specifically for
- * ControlDialog dialogs that might inherit ResizingAdmin.  Resizable
- * ControlDialog dialogs will probably not work.
+ * The only exception to this is that the user can request a notification for
+ * WM_EXITSIZEMOVE through ResizingAdmin::wantSizeEnded()
+ *
+ * PropertySheetDialog dialogs need to have the Windows PropertySheet control
+ * subclassed to handle resizing.  That suclass procedure,
+ * ResizableSubclassProc(), is similar to this and handles the resizng for
+ * PropertySheetDialog and all PropertySheetPage dialogs.
  *
  * @param hDlg
  * @param uMsg
@@ -1431,6 +1586,10 @@ LRESULT CALLBACK RexxResizableDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 
 
 /** Resizing::maxSize          [attribute]
+ *
+ *  By default resizable dialogs have no max size.  This can be changed through
+ *  the maxSize attribute.  If no maxSize is set, the value of this attribute is
+ *  the .nil object.
  */
 RexxMethod1(RexxObjectPtr, ra_maxSize, CSELF, pCSelf)
 {
@@ -1469,6 +1628,18 @@ RexxMethod2(RexxObjectPtr, ra_setMaxSize, RexxObjectPtr, _size, CSELF, pCSelf)
 }
 
 /** Resizing::minSize          [attribute]
+ *
+ *  By default the minimum size for resizable dialogs is the size of the dialog
+ *  when it is first created.  Basically this will be when it is shown on the
+ *  screen.
+ *
+ *  Note that keeping a dialog hidden and increassing or decreasing its size in
+ *  initDialog() will not change the intial size.
+ *
+ *  Use the noMinSize() method to change to no minimum size.  No minimum size
+ *  can not be set by changing the attribute.  The minSize attribute can only be
+ *  set to a .Size object.  Setting the attribute to a .Size with 0 width and
+ *  height, *may*, work, but it also may have unknown consequences.
  */
 RexxMethod1(RexxObjectPtr, ra_minSize, CSELF, pCSelf)
 {
@@ -1479,7 +1650,7 @@ RexxMethod1(RexxObjectPtr, ra_minSize, CSELF, pCSelf)
         return NULLOBJECT;
     }
 
-    if ( prid->haveMaxSize )
+    if ( prid->haveMinSize )
     {
         return rxNewSize(context, &prid->minSize);
     }
@@ -1876,7 +2047,6 @@ RexxMethod4(RexxObjectPtr, ra_defaultSide, CSTRING, howPinned, CSTRING, whichEdg
 /** ResizingAdmin::defaultSizing()
  *
  *
- * @author Administrator (1/4/2013)
  */
 RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPTIONAL_RexxArrayObject, top,
             OPTIONAL_RexxArrayObject, right, OPTIONAL_RexxArrayObject, bottom, CSELF, pCSelf)
@@ -1999,12 +2169,18 @@ RexxMethod2(RexxObjectPtr, ra_initResizing, RexxObjectPtr, arg, OSELF, self)
 
 /** ResizingAdmin::noMaxSize()
  *
+ *  Sets the resizable dialog so that it has no maximum size.  By default, a
+ *  resizable dialog has not maximum size.  This method only needs to be used if
+ *  a maximum size was set for the dialog and then it is desired to remove that
+ *  maximum size.
+ *
+ *  @return  Returns 0, always.
  */
 RexxMethod1(RexxObjectPtr, ra_noMaxSize, CSELF, pCSelf)
 {
     pResizeInfoDlg    prid = NULL;
     pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
-    if ( pcpbd == NULL )
+    if ( pcpbd != NULL )
     {
         prid->haveMaxSize = false;
     }
@@ -2014,6 +2190,11 @@ RexxMethod1(RexxObjectPtr, ra_noMaxSize, CSELF, pCSelf)
 
 /** ResizingAdmin::noMinSize()
  *
+ *  Sets the resizable dialog so that it has no minimum size.  By default,
+ *  resizable dialogs have a minimum size equal to their size when the
+ *  underlying Windows dialog is first created.
+ *
+ *  @return  Returns 0, always.
  */
 RexxMethod1(RexxObjectPtr, ra_noMinSize, CSELF, pCSelf)
 {
@@ -2025,12 +2206,116 @@ RexxMethod1(RexxObjectPtr, ra_noMinSize, CSELF, pCSelf)
         prid->haveMinSize      = false;
     }
     return TheZeroObj;
+}
 
+
+/** ResizingAdmin::pagedTab()
+ *
+ *  Adds the data necessary to properly resize the dialogs used as pages in a
+ *  tab control.
+ *
+ *  @param rxTabID  The resource ID of the tab control that has control dialogs
+ *                  for pages.  Mayb be numeric or symbolic.
+ *
+ *  @param dlgIDs   An array of the dialog IDs of each control dialog.  Each
+ *                  item in the array is assumed to be the dlgID of one of the
+ *                  dialog pages.  Each item in the array may be numeric or
+ *                  symbolic.  The items must be valid dialog IDs, that is a
+ *                  whole number greater than 0, or a sysmbolic ID that resolves
+ *                  to a whold number gereater than 0.
+ *
+ *                  The array must not be sparse and the number of items can not
+ *                  exceed the maximum number of child dialogs, which is 20.
+ *                  The order of the IDs does not matter.
+ *
+ *  @return  0 on success.  On any detected error a syntax condition is raised.
+ *
+ *  @notes  A paged tab is a tab control that uses ControlDialog dialogs as the
+ *          contents for its pages.  A resizable dialog can only define up to 4
+ *          paged tabs.
+ *
+ *          In order for the resizing admin to properly resize ControlDialog
+ *          dialogs embedded in a tab control, the pagedTab method must be used
+ *          to define each paged tab.
+ *
+ */
+RexxMethod3(RexxObjectPtr, ra_pagedTab, RexxObjectPtr, rxTabID, RexxArrayObject, dlgIDs, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    if ( prid->countPagedTabs >= MAXMANAGEDTABS )
+    {
+        return tooManyPagedTabsException(context, 5, true);
+    }
+
+
+    int32_t tabID = oodResolveSymbolicID(context->threadContext, pcpbd->rexxSelf, rxTabID, -1, 1, true);
+    if ( tabID == OOD_ID_EXCEPTION )
+    {
+        return NULLOBJECT;
+    }
+
+    pPagedTab pt = (pPagedTab)LocalAlloc(LPTR, sizeof(PagedTab));
+    if ( pt == NULL )
+    {
+        outOfMemoryException(context->threadContext);
+        return NULLOBJECT;
+    }
+
+    pt->tabID = tabID;
+    prid->pagedTabs[prid->countPagedTabs++] = pt;
+
+    RexxMethodContext *c = context;
+    size_t count = context->ArrayItems(dlgIDs);
+    if ( count > MAXCHILDDIALOGS )
+    {
+        arrayToLargeException(context->threadContext, (uint32_t)count, MAXCHILDDIALOGS, 2);
+        return NULLOBJECT;
+    }
+
+    for ( size_t i = 1; i <= count; i++ )
+    {
+        RexxObjectPtr rxID = context->ArrayAt(dlgIDs, i);
+        if ( rxID == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 2, i);
+            return NULLOBJECT;
+        }
+
+        int32_t dlgID = oodResolveSymbolicID(context->threadContext, pcpbd->rexxSelf, rxID, -1, 2, true);
+        if ( dlgID == OOD_ID_EXCEPTION )
+        {
+            wrongObjInArrayException(context->threadContext, 2, i, "a valid numeric ID or a valid symbolic ID", rxID);
+            return NULLOBJECT;
+        }
+
+        pt->dlgIDs[i - 1] = dlgID;
+    }
+
+    return TheZeroObj;
 }
 
 
 /** ResizingAdmin::wantSizeEnded()
  *
+ *  Allows the user to specify that a method in the Rexx dialog is invoked when
+ *  the EXITSIZMORE event happens.
+ *
+ *  @param  mthName  The name of the method to invoke.  If omitted, the default
+ *                   name is onSizeEnded.
+ *
+ *  @param  willReply  If true, the interpreter waits for the reply from the
+ *                     method handler.  If false, the interpreter does not wait.
+ *                     The operating system ignores the value of the reply, so
+ *                     any value is acceptable to return from the method
+ *                     handler.  0 always makes a good return value.
+ *
+ *  @return  This method always returns 0.
  */
 RexxMethod3(RexxObjectPtr, ra_wantSizeEnded, OPTIONAL_CSTRING, mthName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
 {

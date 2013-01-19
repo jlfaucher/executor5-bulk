@@ -574,6 +574,8 @@ REXX_METHOD_PROTOTYPE(pbdlg_setFontName_pvt);
 REXX_METHOD_PROTOTYPE(pbdlg_setFontSize_pvt);
 REXX_METHOD_PROTOTYPE(pbdlg_getAutoDetect);
 REXX_METHOD_PROTOTYPE(pbdlg_setAutoDetect);
+REXX_METHOD_PROTOTYPE(pbdlg_getDlgID);
+REXX_METHOD_PROTOTYPE(pbdlg_setDlgID);
 REXX_METHOD_PROTOTYPE(pbdlg_getParentDlg_pvt);
 REXX_METHOD_PROTOTYPE(pbdlg_setParentDlg_pvt);
 REXX_METHOD_PROTOTYPE(pbdlg_getOwnerDialog);
@@ -712,6 +714,7 @@ REXX_METHOD_PROTOTYPE(ra_defaultSizing);
 REXX_METHOD_PROTOTYPE(ra_initResizing);
 REXX_METHOD_PROTOTYPE(ra_noMaxSize);
 REXX_METHOD_PROTOTYPE(ra_noMinSize);
+REXX_METHOD_PROTOTYPE(ra_pagedTab);
 REXX_METHOD_PROTOTYPE(ra_wantSizeEnded);
 
 // ResDialog
@@ -762,8 +765,6 @@ REXX_METHOD_PROTOTYPE(psdlg_setCaption_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setResources_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setAppIcon_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setHeader_atr);
-REXX_METHOD_PROTOTYPE(psdlg_getID_atr);
-REXX_METHOD_PROTOTYPE(psdlg_setID_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setWatermark_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setStartPage_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setImageList_atr);
@@ -1641,6 +1642,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(en_connectUpDownEvent,          en_connectUpDownEvent),
     REXX_METHOD(en_addUserMessage,              en_addUserMessage),
 
+    // PlainBaseDialog
     REXX_METHOD(pbdlg_init_cls,                 pbdlg_init_cls),
     REXX_METHOD(pbdlg_setDefaultFont_cls,       pbdlg_setDefaultFont_cls),
     REXX_METHOD(pbdlg_getFontName_cls,          pbdlg_getFontName_cls),
@@ -1653,6 +1655,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbdlg_setDlgFont,               pbdlg_setDlgFont),
     REXX_METHOD(pbdlg_getAutoDetect,            pbdlg_getAutoDetect),
     REXX_METHOD(pbdlg_setAutoDetect,            pbdlg_setAutoDetect),
+    REXX_METHOD(pbdlg_getDlgID,                 pbdlg_getDlgID),
+    REXX_METHOD(pbdlg_setDlgID,                 pbdlg_setDlgID),
     REXX_METHOD(pbdlg_getParentDlg_pvt,         pbdlg_getParentDlg_pvt),
     REXX_METHOD(pbdlg_setParentDlg_pvt,         pbdlg_setParentDlg_pvt),
     REXX_METHOD(pbdlg_getOwnerDialog,           pbdlg_getOwnerDialog),
@@ -1790,6 +1794,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(ra_initResizing,                ra_initResizing),
     REXX_METHOD(ra_noMaxSize,                   ra_noMaxSize),
     REXX_METHOD(ra_noMinSize,                   ra_noMinSize),
+    REXX_METHOD(ra_pagedTab,                    ra_pagedTab),
     REXX_METHOD(ra_wantSizeEnded,               ra_wantSizeEnded),
 
     // ResDialog
@@ -1840,8 +1845,6 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(psdlg_setResources_atr,         psdlg_setResources_atr),
     REXX_METHOD(psdlg_setAppIcon_atr,           psdlg_setAppIcon_atr),
     REXX_METHOD(psdlg_setHeader_atr,            psdlg_setHeader_atr),
-    REXX_METHOD(psdlg_getID_atr,                psdlg_getID_atr),
-    REXX_METHOD(psdlg_setID_atr,                psdlg_setID_atr),
     REXX_METHOD(psdlg_setWatermark_atr,         psdlg_setWatermark_atr),
     REXX_METHOD(psdlg_setStartPage_atr,         psdlg_setStartPage_atr),
     REXX_METHOD(psdlg_setImageList_atr,         psdlg_setImageList_atr),

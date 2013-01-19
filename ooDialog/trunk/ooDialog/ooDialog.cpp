@@ -578,9 +578,15 @@ int32_t delDialog(pCPlainBaseDialog pcpbd, RexxThreadContext *c)
 
     if ( pcpbd->isResizableDlg && pcpbd->resizeInfo != NULL )
     {
-        safeLocalFree(pcpbd->resizeInfo->riCtrls);
-        safeLocalFree(pcpbd->resizeInfo->sizeEndedMeth);
-        safeLocalFree(pcpbd->resizeInfo);
+        pResizeInfoDlg prid = pcpbd->resizeInfo;
+
+        for ( size_t i = 0; i < prid->countPagedTabs; i++ )
+        {
+            safeLocalFree(prid->pagedTabs[i]);
+        }
+        safeLocalFree(prid->riCtrls);
+        safeLocalFree(prid->sizeEndedMeth);
+        safeLocalFree(prid);
         pcpbd->resizeInfo = NULL;
     }
 
@@ -3084,9 +3090,11 @@ done_out:
  *  The initialization of the base dialog.
  *
  *  @params  library      DLL or .rc file for ResDialog or RcDialog dialogs.
- *  @params  resource     Originally, the resource ID for ResDialog or RcDialog
- *                        dialogs. Now also used to allow a user to assign an ID
- *                        to any dialog.  By default -1 will be assigned.
+ *  @params  resource     The resource ID for ResDialog or RcDialog dialogs. The
+ *                        dlgID attribute is set to this value, if it can be
+ *                        resolved to a number. By default -1 will be assigned
+ *                        to dlgID if resource does not resolve to a positive
+ *                        number.
  *
  *  @params  dlgDataStem  Data stem.
  *  @params  hFile        Header file.
@@ -3099,7 +3107,14 @@ done_out:
  *                        on to the concrete class.  Which in turn knows how to
  *                        use that init object.
  *
- *  @remarks  Prior to 4.0.1, if something failed here, the 'init code' was set
+ *  @remarks  We keep the dlgID attribute separate from the undocumented
+ *            resourceID. dlgID is set to resourceID, if resourceID can be
+ *            resolved here to a number greater than 0.  If it can not be
+ *            resolved, it is set to -1.  This way, changing it to -1 can not
+ *            interfere with the resourceID.  dlgID can be changed any time by
+ *            the user.
+ *
+ *            Prior to 4.0.1, if something failed here, the 'init code' was set
  *            to non-zero.  One problem with this is that it relies on the user
  *            checking the init code and *not* using the dialog object if it is
  *            an error code.  Since we can not rely on that, in order to prevent
@@ -3237,6 +3252,19 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
         context->SendMessage1(self, "PARSEINCLUDEFILE", hFile);
     }
 
+    // If there is a condition pending we do not want to clear it.
+    if ( ! context->CheckCondition() )
+    {
+        pcpbd->dlgID = resolveResourceID(context, resource, self);
+
+        // Now, if there is a condition pending, it came from trying to resolve
+        // the ID, and we do want to clear it.
+        if ( context->CheckCondition() )
+        {
+            context->ClearCondition();
+        }
+    }
+
     if ( pcpbd->isResizableDlg )
     {
         if ( ! allocateResizeInfo(context, pcpbd, cselfBuffer) )
@@ -3252,6 +3280,7 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
         {
             baseClassInitializationException(context, "ResizingAdmin", "defineSizing failed");
             result = TheOneObj;
+            goto done_out;
         }
 
         pcpbd->resizeInfo->inDefineSizing = false;
@@ -3373,6 +3402,37 @@ RexxMethod2(RexxObjectPtr, pbdlg_setAutoDetect, logical_t, on, CSELF, pCSelf)
         return (RexxObjectPtr)baseClassInitializationException(context);
     }
     pcpbd->autoDetect = on;
+    return NULLOBJECT;
+}
+
+/** PlainBaseDialog:dlgID    [attribute get]
+ */
+RexxMethod1(int32_t, pbdlg_getDlgID, CSELF, pCSelf)
+{
+    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
+    if ( pcpbd == NULL )
+    {
+        baseClassInitializationException(context);
+        return 0;
+    }
+    return pcpbd->dlgID;
+}
+/** PlainBaseDialog::dlgID   [attribute set]
+ */
+RexxMethod2(RexxObjectPtr, pbdlg_setDlgID, RexxObjectPtr, _id, CSELF, pCSelf)
+{
+    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
+    if ( pcpbd == NULL )
+    {
+        return (RexxObjectPtr)baseClassInitializationException(context);
+    }
+
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcpbd->rexxSelf, _id, -1, 1, true);
+
+    if ( id != OOD_ID_EXCEPTION )
+    {
+        pcpbd->dlgID = id;
+    }
     return NULLOBJECT;
 }
 

@@ -92,9 +92,6 @@
 ::attribute header get unguarded
 ::attribute header set unguarded external "LIBRARY oodialog psdlg_setHeader_atr"
 
-::attribute id get unguarded external "LIBRARY oodialog psdlg_getID_atr"
-::attribute id set unguarded external "LIBRARY oodialog psdlg_setID_atr"
-
 -- Icons for each tab can come from an ImageList owned by the property dialog
 ::attribute imageList get unguarded
 ::attribute imageList set unguarded external "LIBRARY oodialog psdlg_setImageList_atr"

@@ -73,6 +73,26 @@ public:
  * Sets that owner dialog information in the CSelf of the control dialog, the
  * owned dialog.
  *
+ * Sets the pCPlainBaseDialog pointer of the control dialog as one of the child
+ * dialogs in the owner's childDlg[] array.  This is important, and confusing.
+ * The childDlg array was originally for Category dialogs and is defined as a
+ * HWND array.  Category dialogs are deprecated and have no way to become the
+ * owner dialog of a ControlDialog.
+ *
+ * So, when starting the implementation for ControlDialogs, to save space in the
+ * plain base dialog struct, the existing childDlg array was used to track the
+ * owner dialog's owned control dialogs. The cPlainBaseDialog pointer is cast to
+ * HWND and placed in the array.
+ *
+ * Since *every* ControlDialog passes through this function before the
+ * underlying dialog is created, we are guaranteed that any owner dialog that
+ * has an activated child control dialog, has the pCPlainBaseDialog pointer for
+ * every child control dialog in its childDlg array, and no other pointer types
+ * in that array.
+ *
+ * PropertySheetDialogs track their child dialogs through a cppPage array and
+ * for PropertySheetDialogs, the childDlg array is left alone.
+ *
  * The window message processing function of a control dialog executes in the
  * same thread as the owner dialog, so we copy the thread context and thread ID
  * from the owner dialog.  This ensures the thread context and thread ID are set

@@ -265,6 +265,7 @@
 
 ::method noMaxSize external "LIBRARY oodialog ra_noMaxSize"
 ::method noMinSize external "LIBRARY oodialog ra_noMinSize"
+::method pagedTab external "LIBRARY oodialog ra_pagedTab"
 ::method wantSizeEnded external "LIBRARY oodialog ra_wantSizeEnded"
 
 -- Internal use only

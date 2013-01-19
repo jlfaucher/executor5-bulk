@@ -601,18 +601,29 @@ typedef struct _resizeInfoCtrl {
 } ResizeInfoCtrl;
 typedef ResizeInfoCtrl *pResizeInfoCtrl;
 
+// For control dialogs, a struct for information for each tab control in the
+// dialog.
+typedef struct _pagedTab {
+    HWND      redrawThis;                // For control dialogs, we need a redrawThis for each tab control.
+    uint32_t  tabID;
+    uint32_t  dlgIDs[MAXCHILDDIALOGS];
+} PagedTab;
+typedef PagedTab *pPagedTab;
+
 /* Struct for the resizable dialog information (ResizingAdmin.) */
 typedef struct _resizeInfoDlg {
     ControlEdges       defEdges;
+    pPagedTab          pagedTabs[MAXMANAGEDTABS];
     RECT               originalRect;
     RECT               currentRect;
     SIZE               minSize;
     SIZE               maxSize;
     pResizeInfoCtrl    riCtrls;
-    HWND               redrawThis;
+    HWND               redrawThis;     // Used for PropertySheetDialogs only
     char              *sizeEndedMeth;
-    size_t             tableSize;
+    size_t             tableSize;      // should be ctrlTableSize
     size_t             countCtrls;
+    size_t             countPagedTabs;
     bool               sizeEndedWillReply;
     bool               inDefineSizing;
     bool               inSizeOrMove;
@@ -731,8 +742,9 @@ typedef struct _pbdCSelf {
     size_t               BT_size;
     size_t               countChilds;
     logical_t            autoDetect;
-    DWORD                dlgProcThreadID;
+    uint32_t             dlgProcThreadID;
     uint32_t             fontSize;
+    int32_t              dlgID;            // ID, usually set to resourceID if ResDlg or RcDlg, set to -1 if not resoloved during init()
     bool                 onTheTop;
     bool                 isCategoryDlg;    // Need to use IsNestedDialogMessage()
     bool                 isControlDlg;     // Dialog was created as DS_CONTROL | WS_CHILD
