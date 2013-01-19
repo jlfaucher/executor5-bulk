@@ -115,6 +115,10 @@
 <entry>The window handle of the dialog.</entry>
 </row>
 <row>
+<entry><xref linkend="atrDlgID"/></entry>
+<entry>A whole number ID that can be used to identify this dialog.</entry>
+</row>
+<row>
 <entry><xref linkend="wbdoFactorX"/></entry>
 <entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
 </row>
@@ -2041,6 +2045,71 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 </variablelist>
 </section>  <!-- End PlainBaseDialog::dlgHandle() [attribute]  -->
 
+<section id="atrDlgID" xreflabel="dlgID"><title>dlgID (Attribute)</title>
+<indexterm><primary>dlgID</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>dlgID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dlgID-----------------------------------------------------><
+
+>>--dlgID = id------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  A whole number value that can be used to identify this dialog. This is similar to the resource <link
+  linkend="defResourceId">ID</link> of operating system resources, but it is for the use of the Rexx programmer and the
+  ooDialog framework.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">dlgID get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the dialog ID number of this dialog. This may be -1 if the dialog ID was not set. Otherwise, it will always be a
+    non-zero positive whole number
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">dlgID set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">dlgID</emphasis> can be set at any time by the programmer to a non-zero positive whole
+    number. A <xref linkend="defSymbolicId"/> ID can be used as long as the ooDialog framework can resolve it to a valid ID
+    number. Any other value will not be accepted.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By default, the ooDialog framework will set the <emphasis role="italic">dlgID</emphasis> attribute to the value of the
+    resource ID of a <xref linkend="clsResDialog"/> or <xref linkend="clsRcDialog"/> subclass during the initialization of a
+    dialog object. Otherwise, the <emphasis role="italic">dlgID</emphasis> will be set to -1. -1 signals that the ID has not
+    been set.
+  </para>
+  <para>
+    The primary purpose of the <emphasis role="italic">dlgID</emphasis> attribute is to give the programmer a way to identify
+    specific dialogs to the ooDialog framework. See for instance the <xref linkend="mthPagedTab"/> method.
+  </para>
+  <para>
+    The programmer is free to use this attribute for her own purposes, with the caveat that the purpose should not interfere
+    with its use in the few methods that do rely on the <emphasis role="italic">dlgID</emphasis>. These methods are clearly
+    marked so that there is no way the programmer can unknowingly interfere with the ID's use.
+  </para>
+  <para>
+    Although the <emphasis role="italic">dlgID</emphasis> gets set to the resource ID of a
+    <computeroutput>ResDialog</computeroutput> or <computeroutput>RcDialog</computeroutput> subclass by default, changing the
+    <emphasis role="italic">dlgID</emphasis> will not change the resource ID used to identify the dialog to the operating
+    system.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PlainBaseDialog::dlgID() [attribute]  -->
 
 
 <section id="wbdoFactorX" xreflabel="factorX"><title>factorX (Attribute)</title>
