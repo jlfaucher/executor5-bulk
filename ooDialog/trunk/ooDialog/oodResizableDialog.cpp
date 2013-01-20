@@ -217,6 +217,25 @@ static bool validPinToID(RexxMethodContext *c, uint32_t ctrlID, uint32_t pinToID
 }
 
 /**
+ * Verifies that for the control ID specified, all of the pin to IDs in the
+ * edges of the control precede the control ID in the control resizing table.
+ *
+ * @param c
+ * @param ctrlID
+ * @param ric
+ * @param prid
+ *
+ * @return True if the edges info is good, false otherwise.
+ */
+inline bool validPinToInfo(RexxMethodContext *c, uint32_t ctrlID, pResizeInfoCtrl ric, pResizeInfoDlg prid)
+{
+    return validPinToID(c, ctrlID, ric->edges.left.pinToID, prid)    &&
+           validPinToID(c, ctrlID, ric->edges.top.pinToID, prid)     &&
+           validPinToID(c, ctrlID, ric->edges.right.pinToID, prid)   &&
+           validPinToID(c, ctrlID, ric->edges.bottom.pinToID, prid);
+}
+
+/**
  * Converts a pin to type keyword to the proper flag value. We only allow the
  * user to use MYTOP or MYLEFT where it makes sense.
  *
@@ -2303,6 +2322,69 @@ RexxMethod3(RexxObjectPtr, ra_pagedTab, RexxObjectPtr, rxTabID, RexxArrayObject,
     }
 
     return TheZeroObj;
+}
+
+
+/** ResizingAdmin::useDefaultSizing()
+ *
+ * Sets the control resize info for the specified control to the current value
+ * of the default sizing.
+ *
+ * @param  rxID  [required]  The resource ID of the control, may be numeric or
+ *               symbolic.
+ *
+ * @return Zero on success, one on error.
+ *
+ * @notes  The values of the resize info for any control can be changed at any
+ *         time, but the control's order in the resizing table can not be
+ *         changed once allocated.
+ */
+RexxMethod2(RexxObjectPtr, ra_useDefaultSizing, RexxObjectPtr, rxID, CSELF, pCSelf)
+{
+    pResizeInfoDlg    prid = NULL;
+    pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
+    if ( pcpbd == NULL )
+    {
+        goto err_out;
+    }
+
+    if ( ! prid->inDefineSizing )
+    {
+        methodCanOnlyBeInvokedException(context, "useDefaultSizing", "during the defineSizing method", pcpbd->rexxSelf);
+        goto err_out;
+    }
+
+    uint32_t ctrlID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxID, -1, 1, true);
+    if ( ctrlID == OOD_INVALID_ITEM_ID )
+    {
+        goto err_out;
+    }
+
+    // Unlikely, but no reason why the user couldn't be redefining this control
+    // and we already have a resize info struct.
+    pResizeInfoCtrl ric = getControlInfo(prid, ctrlID);
+    if ( ric == NULL )
+    {
+        ric = allocCtrlInfo(context->threadContext, prid, ctrlID, NULL, winUnknown);
+        if ( ric == NULL )
+        {
+            goto err_out;
+        }
+    }
+    else
+    {
+        memcpy(&ric->edges, &prid->defEdges, sizeof(ControlEdges));
+    }
+
+    if ( ! validPinToInfo(context, ctrlID, ric, prid) )
+    {
+        goto err_out;
+    }
+
+    return TheZeroObj;
+
+err_out:
+    return TheOneObj;
 }
 
 
