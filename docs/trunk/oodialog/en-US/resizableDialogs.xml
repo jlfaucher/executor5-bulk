@@ -1841,7 +1841,7 @@ u~resize(self, sizeinfo)
 
 <section id="mthControlBottom" xreflabel="controlBottom"><title>controlBottom</title>
 <indexterm><primary>controlBottom</primary></indexterm>
-<indexterm><primary>ResizingAdmi class</primary><secondary>controlBottom</secondary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlBottom</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--controlBottom(--+--------+--)---------------------------------------------><
@@ -1900,11 +1900,11 @@ u~resize(self, sizeinfo)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmi::controlBottom() -->
+</section>  <!-- End ResizingAdmin::controlBottom() -->
 
 <section id="mthControlLeft" xreflabel="controlLeft"><title>controlLeft</title>
 <indexterm><primary>controlLeft</primary></indexterm>
-<indexterm><primary>ResizingAdmi class</primary><secondary>controlLeft</secondary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlLeft</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--controlLeft(--+--------+--)---------------------------------------------><
@@ -1963,11 +1963,11 @@ u~resize(self, sizeinfo)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmi::controlLeft() -->
+</section>  <!-- End ResizingAdmin::controlLeft() -->
 
 <section id="mthControlRight" xreflabel="controlRight"><title>controlRight</title>
 <indexterm><primary>controlRight</primary></indexterm>
-<indexterm><primary>ResizingAdmi class</primary><secondary>controlRight</secondary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlRight</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--controlRight(--+--------+--)---------------------------------------------><
@@ -2026,11 +2026,11 @@ u~resize(self, sizeinfo)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmi::controlRight() -->
+</section>  <!-- End ResizingAdmin::controlRight() -->
 
 <section id="mthControlSizing" xreflabel="controlSizing"><title>controlSizing</title>
 <indexterm><primary>controlSizing</primary></indexterm>
-<indexterm><primary>ResizingAdmi class</primary><secondary>controlSizing</secondary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlSizing</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--controlSizing(--+--------+--)---------------------------------------------><
@@ -2089,11 +2089,11 @@ u~resize(self, sizeinfo)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmi::controlSizing() -->
+</section>  <!-- End ResizingAdmin::controlSizing() -->
 
 <section id="mthControlTop" xreflabel="controlTop"><title>controlTop</title>
 <indexterm><primary>controlTop</primary></indexterm>
-<indexterm><primary>ResizingAdmi class</primary><secondary>controlTop</secondary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>controlTop</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--controlTop(--+--------+--)---------------------------------------------><
@@ -2152,7 +2152,7 @@ u~resize(self, sizeinfo)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmi::controlTop() -->
+</section>  <!-- End ResizingAdmin::controlTop() -->
 
 
 <section id="mthDefaultBottom" xreflabel="defaultBottom"><title>defaultBottom</title>
@@ -2539,7 +2539,7 @@ u~resize(self, sizeinfo)
 
 <section id="mthNoMaxSize" xreflabel="noMaxSize"><title>noMaxSize</title>
 <indexterm><primary>noMaxSize</primary></indexterm>
-<indexterm><primary>ResizingAdmi class</primary><secondary>noMaxSize</secondary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>noMaxSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--noMaxSize(--+--------+--)---------------------------------------------><
@@ -2598,12 +2598,12 @@ u~resize(self, sizeinfo)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmi::noMaxSize() -->
+</section>  <!-- End ResizingAdmin::noMaxSize() -->
 
 
 <section id="mthNoMinSize" xreflabel="noMinSize"><title>noMinSize</title>
 <indexterm><primary>noMinSize</primary></indexterm>
-<indexterm><primary>ResizingAdmi class</primary><secondary>noMinSize</secondary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>noMinSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--noMinSize(--+--------+--)---------------------------------------------><
@@ -2662,11 +2662,11 @@ u~resize(self, sizeinfo)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmi::noMinSize() -->
+</section>  <!-- End ResizingAdmin::noMinSize() -->
 
 <section id="mthPagedTab" xreflabel="pagedTab"><title>pagedTab</title>
 <indexterm><primary>pagedTab</primary></indexterm>
-<indexterm><primary>ResizingAdmi class</primary><secondary>pagedTab</secondary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>pagedTab</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--pagedTab(--tabID--,--dlgIDs--)---------------><
@@ -2730,12 +2730,71 @@ u~resize(self, sizeinfo)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmi::pagedTab() -->
+</section>  <!-- End ResizingAdmin::pagedTab() -->
 
+<section id="mthUseDefaultSizing" xreflabel="useDefaultSizing"><title>useDefaultSizing</title>
+<indexterm><primary>useDefaultSizing</primary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>useDefaultSizing</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--useDefaultSizing(--ctrlID--)-----------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the sizing information for the specified control to that of the current <link
+  linkend="mthDefaultSizing">default</link> sizing.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>ctrlID</term>
+    <listitem>
+    <para>
+      The resource ID of the control whose sizing is being set. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResizingAdmin::useDefaultSizing() -->
 
 <section id="mthWantSizeEnded" xreflabel="wantSizeEnded"><title>wantSizeEnded</title>
 <indexterm><primary>wantSizeEnded</primary></indexterm>
-<indexterm><primary>ResizingAdmi class</primary><secondary>wantSizeEnded</secondary></indexterm>
+<indexterm><primary>ResizingAdmin class</primary><secondary>wantSizeEnded</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--wantSizeEnded(--+--------+--)---------------------------------------------><
@@ -2794,7 +2853,7 @@ u~resize(self, sizeinfo)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmi::wantSizeEnded() -->
+</section>  <!-- End ResizingAdmin::wantSizeEnded() -->
 
 
 </section>  <!-- End Section ResizingAdmin Mixin Class -->

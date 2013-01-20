@@ -116,7 +116,7 @@
 </row>
 <row>
 <entry><xref linkend="atrDlgID"/></entry>
-<entry>A whole number ID that can be used to identify this dialog.</entry>
+<entry>The <emphasis role="italic">dlgID</emphasis> attribute reflects a whole number value that can be used to identify this dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="wbdoFactorX"/></entry>
@@ -2058,9 +2058,9 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 </programlisting>
 
 <para>
-  A whole number value that can be used to identify this dialog. This is similar to the resource <link
-  linkend="defResourceId">ID</link> of operating system resources, but it is for the use of the Rexx programmer and the
-  ooDialog framework.
+  The <emphasis role="italic">dlgID</emphasis> attribute reflects a whole number value that can be used to identify this
+  dialog. This is similar to the resource <link linkend="defResourceId">ID</link> of operating system resources, but it is
+  for the use of the Rexx programmer and the ooDialog framework.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">dlgID get:</emphasis></term>
@@ -2101,6 +2101,63 @@ ResourceUtils::<xref linkend="atrConstDir"/>
     <emphasis role="italic">dlgID</emphasis> will not change the resource ID used to identify the dialog to the operating
     system.
   </para>
+  <para>
+    <emphasis role="bold">Note:</emphasis> For <computeroutput>ResDialog</computeroutput> and
+    <computeroutput>RcDialog</computeroutput> subclasses, <emphasis role="italic">if</emphasis> symbolic IDs are used to
+    specify the resource ID in the <xref linkend="clsResDialog"/> method, the <emphasis role="italic">dlgID</emphasis>
+    attribute will only be set to the correct value if the ooDialog framework can resolve the symbolic ID during the
+    <emphasis role="italic">new</emphasis> method. If the symbolic ID can not be resolved, the ID will be set to -1.
+  </para>
+  <para>
+    Take this example:
+  </para>
+<programlisting>
+<![CDATA[
+
+  dlg = .SimpleResDlg~new("simple.dll", IDD_SIMPLE_DLG)
+
+  .application~useGlobalConstDir('O', 'simple.h')
+
+  say 'Dialog ID:' dlg~dlgID
+
+  dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+/* Output will be: */
+
+Dialog ID: -1
+
+]]>
+</programlisting>
+  <para>
+    The <emphasis role="italic">dlgID</emphasis> is -1 because during the <emphasis role="italic">new</emphasis> method, the
+    symbolic ID, IDD_SIMPLE_DLG, could not be resolved. The program works fine and the dialog is shown as expected because
+    during the <emphasis role="italic">execute</emphasis> method, the ooDialog framework is able to resolve the symbolic ID
+    correctly and pass its numeric value on to the operating system. Contrast the above example with the following:
+  </para>
+<programlisting>
+<![CDATA[
+
+  dlg = .SimpleResDlg~new("simple.dll", IDD_SIMPLE_DLG)
+
+  .application~useGlobalConstDir('O', 'simple.h')
+
+  say 'Dialog ID:' dlg~dlgID
+
+  say 'Setting the dialog ID attribute.'
+  dlg~dlgID = IDD_SIMPLE_DLG
+
+  say 'Dialog ID:' dlg~dlgID
+
+  dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+/* Output will be: */
+
+Dialog ID: -1
+Setting the dialog ID attribute.
+Dialog ID: 101
+
+]]>
+</programlisting>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
