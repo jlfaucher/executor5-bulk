@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
 
-   Support - ObjectMgr						 v01-00  23Apr12
+   Support - ObjectMgr						 v01-00  11Jan13
    -------------------
    A singleton component that manages model objects.
 
