@@ -231,6 +231,10 @@
 <entry>Adds a new item to this list-view.</entry>
 </row>
 <row>
+<entry><xref linkend="mthAddRowFromArray"/></entry>
+<entry>Inserts an item into this list-view from an array of values.  The string value of each item in the array is used as the text for the item or subitem(s).</entry>
+</row>
+<row>
 <entry><xref linkend="mthAddStyleClsListView"/></entry>
 <entry>Adds new window styles to this list-view control.</entry>
 </row>
@@ -1304,6 +1308,92 @@
   </listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthAddRowFromArray" xreflabel="addRowFromArray"><title>addRowFromArray</title>
+<indexterm><primary>addRowFromArray</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>addRowFromArray</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addRowFromArray(--data--+--------------+--+--------------+--)--------------><
+                            +-,-itemIndex--+  +-,-strIfNull--+
+]]>
+</programlisting>
+
+<para>
+  Inserts an item into this list-view from an array of values.  The string value of each item in the array is used as the
+  text for the item or subitem(s).
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      An array object. The string value of each item in the array is used as the text for the item and subitems of the
+      list-view item. The item at index 1 of the array is used as the text for the list-view item. The item at index 2 is
+      used as the the text for the first subitem, the item at index 3 is used as the text for subitem 2, etc.. The array can
+      not be sparse
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemIndex [optional]</term>
+    <listitem>
+    <para>
+      The item index to use for the full row. If omitted, the new item is added after the last inserted item in the
+      list-view.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>strIfNil [optional]</term>
+    <listitem>
+    <para>
+      If the item at any index in <emphasis role="italic">data</emphasis> array is the <computeroutput>.nil</computeroutput>
+      object, then the text for the item or subitem corresponding to that index will be the string value of the
+      <computeroutput>.nil</computeroutput> object. Which is <emphasis role="italic">the NIL object</emphasis>. The <emphasis
+      role="italic">strIfNil</emphasis> argument can be used to specify text to use instead of <emphasis role="italic">the
+      NIL object</emphasis>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the index of the newly added list-view item on success. On error, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example queries an ooSQLite database and then populates the list-view items with the returned result set:
+<programlisting>
+<![CDATA[
+
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  sql  = 'SELECT * FROM foods ORDER BY name;'
+  data = dbConn~exec(sql, .true)
+  dbConn~close
+
+  self~insertListViewColumns(list, data[1])
+  do i = 2 to data~items
+      list~addRowFromArray(data[i], , 'null')
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::addRowFromArray() -->
 
 <section id="mthAddStyleClsListView" xreflabel="addStyle"><title>addStyle</title>
 <indexterm><primary>addStyle</primary>
@@ -9475,6 +9565,10 @@ that allows the user to remove the check mark from all the check boxes:
 <entry align="center"><emphasis role="bold">Methods</emphasis></entry>
 </row>
 <row>
+<entry><xref linkend="mthFromArray"/></entry>
+<entry>Constructs a full row object from an array of values. The string value of each item in the array is used as the text for the item and subitem(s).</entry>
+</row>
+<row>
 <entry><xref linkend="mthNewClsLvFullRow"/></entry>
 <entry>Instantiates a new <computeroutput>LvFullRow</computeroutput> object.</entry>
 </row>
@@ -9518,6 +9612,119 @@ that allows the user to remove the check mark from all the check boxes:
 </table>
 </para>
 </section>
+
+<section id="mthFromArray" xreflabel="fromArray"><title>fromArray (Class Method)</title>
+<indexterm><primary>fromArray</primary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>fromArray</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fromArray(--data--+-----------+--+-------------+--+------------------+--)--><
+                      +-,-iIndex--+  +-,-strIfNil--+  +-,-useForSorting--+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>LvFullRow</computeroutput> object from an array of values. The string value of each item
+  in the array is used as the text for the item or subitem(s).
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      An array object. The string value of each item in the array is used as the text for the item and subitems of the
+      list-view item. The item at index 1 of the array is used as the text for the list-view item. The item at index 2 is
+      used as the the text for the first subitem, the item at index 3 is used as the text for subitem 2, etc.. The array can
+      not be sparse
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>iIndex [optional]</term>
+    <listitem>
+    <para>
+      The item index to use for the full row. If omitted, 0 is used for the item index. See the remarks, depending on the
+      use of the returned full row object, specifying an index is often not needed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>strIfNil [optional]</term>
+    <listitem>
+    <para>
+      If the item at any index in <emphasis role="italic">data</emphasis> array is the <computeroutput>.nil</computeroutput>
+      object, then the text for the item or subitem corresponding to that index will be the string value of the
+      <computeroutput>.nil</computeroutput> object. Which is <emphasis role="italic">the NIL object</emphasis>. The <emphasis
+      role="italic">strIfNil</emphasis> argument can be used to specify text to use instead of <emphasis role="italic">the
+      NIL object</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>useForSorting [optional]</term>
+    <listitem>
+    <para>
+      This argument can be either true or false. Recall that the list-view control allows the programmer to <link
+      linkend="mthSetItemDataClsListView">attach</link> an item data value to any or all of the list-view items. If the item
+      data for every list-view item is a <computeroutput>LvFullRow</computeroutput> object, the ooDialog framework can
+      perform internal <link linkend="mthSortItems">sorting</link> of the list-view items. Use true to specify that the
+      <computeroutput>LvFullRow</computeroutput> object being instantiated should be set as the item data value for the
+      list-view item the object represents. If false, the full row object is not set as the item data. The default is false.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A newly instantiated <computeroutput>LvFullRow</computeroutput> object on success, the
+    <computeroutput>.nil</computeroutput> object on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The returned full row object is intended to be used to insert an item into a list-view.  Other uses of the full row
+    object may cause unpredictable results. It is the responsibility of the programmer to determine if the full row object
+    is suitable for some other use. The programmer should consider that only the text attribute of the full row item and its
+    subitems is set.
+  </para>
+  <para>
+    Recall that if the full row object is used in either the <xref linkend="mthAddFullRow"/> or <xref
+    linkend="mthPrependFullRow"/> methods, the item index of the full row object is ignored.  For the
+    <xref linkend="mthInsertFullRow"/> method, if  the item index is 0, the method will work fine, the full row will be
+    inserted as the first item in the list-view. Therefore the optional <itemIndex> argument is never needed, and, depending
+    on the use of the full row object, may be a waste of time.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example queries a ooSQLite database and then populates the list-view with the returned result set:
+<programlisting>
+<![CDATA[
+
+  sql  = 'SELECT * FROM foods ORDER BY name;'
+  data = dbConn~exec(sql, .true)
+  dbConn~close
+
+  self~insertListViewColumns(list, data[1])
+  do i = 2 to data~items
+      fRow = .LvFullRow~fromArray(data[i], , 'null', .true)
+      list~addFullRow(fRow)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::fromArray() -->
 
 <section id="mthNewClsLvFullRow" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>LvFullRow class</secondary></indexterm>
