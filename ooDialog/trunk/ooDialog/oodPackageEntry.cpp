@@ -1048,6 +1048,7 @@ REXX_METHOD_PROTOTYPE(lv_addClearExtendStyle);
 REXX_METHOD_PROTOTYPE(lv_addFullRow);
 REXX_METHOD_PROTOTYPE(lv_addRemoveStyle);
 REXX_METHOD_PROTOTYPE(lv_addRow);
+REXX_METHOD_PROTOTYPE(lv_addRowFromArray);
 REXX_METHOD_PROTOTYPE(lv_arrange);
 REXX_METHOD_PROTOTYPE(lv_checkUncheck);
 REXX_METHOD_PROTOTYPE(lv_delete);
@@ -2106,6 +2107,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_addFullRow,         	        lv_addFullRow),
     REXX_METHOD(lv_addRemoveStyle,              lv_addRemoveStyle),
     REXX_METHOD(lv_addRow,                      lv_addRow),
+    REXX_METHOD(lv_addRowFromArray,             lv_addRowFromArray),
     REXX_METHOD(lv_arrange,                     lv_arrange),
     REXX_METHOD(lv_checkUncheck,                lv_checkUncheck),
     REXX_METHOD(lv_delete,                      lv_delete),

@@ -78,6 +78,7 @@
 ::method addExtendedStyle unguarded external "LIBRARY oodialog lv_addClearExtendStyle"
 ::method addFullRow unguarded external "LIBRARY oodialog lv_addFullRow"
 ::method addRow unguarded external "LIBRARY oodialog lv_addRow"
+::method addRowFromArray unguarded external "LIBRARY oodialog lv_addRowFromArray"
 ::method addStyle unguarded external "LIBRARY oodialog lv_addRemoveStyle"
 ::method alignLeft unguarded external "LIBRARY oodialog lv_arrange"
 ::method alignTop unguarded external "LIBRARY oodialog lv_arrange"

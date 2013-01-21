@@ -1153,7 +1153,6 @@ static RexxObjectPtr simpleNewLvItem(RexxMethodContext *c, CSTRING text)
     }
 
     lvi->mask     = LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE;
-    lvi->mask     = LVIF_TEXT | LVIF_IMAGE;
     lvi->iGroupId = I_GROUPIDNONE;
     lvi->iImage   = I_IMAGENONE;
 
@@ -2112,6 +2111,117 @@ RexxMethod5(int32_t, lv_addRow, OPTIONAL_uint32_t, index, OPTIONAL_int32_t, imag
 done_out:
     return itemIndex;
 }
+
+
+/** ListView::addRowFromArray()
+ *
+ *  Inserts an item into this list-view from an array of values.  The string
+ *  value of each item in the array is used as the text for the item or
+ *  subitem(s).
+ *
+ *  The string value of the first item in the array will be the text for the
+ *  list-view item.  The string value of the second item in the array will be
+ *  the text for the first subitem of the list-view item.  The string value of
+ *  the third item in the array will be the text for the second subitem of the
+ *  list-view item, etc..
+ *
+ *  The array can not be sparse.
+ *
+ *  @param data  [required]  The array of objects whose string values are to be
+ *               used for the text of the item and subitems.
+ *
+ *  @param itemIndex  [optional]  The item index to use for the full row.  If
+ *                    omitted, 0 is used for the item index.
+ *
+ *  @param strIfNil   [opitonal]  String to use for the item or subitem text, if
+ *                    the object in the array is the .nil object.
+ *
+ *  @return  The index of the inserted item on success, or -1 on error.
+ *
+ *  @notes
+ */
+RexxMethod4(int32_t, lv_addRowFromArray, RexxArrayObject, data, OPTIONAL_uint32_t, itemIndex,
+            OPTIONAL_CSTRING, nullStr, CSELF, pCSelf)
+{
+    LVITEM  lvi    = { 0 };
+    int32_t iIndex = -1;
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    size_t cCols = context->ArrayItems(data);
+    if ( cCols == 0 )
+    {
+        emptyArrayException(context->threadContext, 1);
+        goto done_out;
+    }
+
+    CSTRING itemText      = NULL;
+    bool    substitueText =  argumentOmitted(3) ? false : true;
+
+    // Insert the item first
+    RexxObjectPtr arrayItem = context->ArrayAt(data, 1);
+    if ( arrayItem == NULLOBJECT )
+    {
+        sparseArrayException(context->threadContext, 1, 1);
+        goto done_out;
+    }
+
+    if ( argumentOmitted(2) )
+    {
+        itemIndex = pcdc->lastItem + 1;
+    }
+    if ( substitueText )
+    {
+        itemText = arrayItem == TheNilObj ? nullStr : context->ObjectToStringValue(arrayItem);
+    }
+    else
+    {
+        itemText = context->ObjectToStringValue(arrayItem);
+    }
+
+    lvi.mask     = LVIF_TEXT | LVIF_GROUPID | LVIF_IMAGE;
+    lvi.iItem    = itemIndex;
+    lvi.pszText  = (LPSTR)itemText;
+    lvi.iGroupId = I_GROUPIDNONE;
+    lvi.iImage   = I_IMAGENONE;
+
+    iIndex = ListView_InsertItem(pcdc->hCtrl, &lvi);
+
+    if ( iIndex == -1 )
+    {
+        goto done_out;
+    }
+    pcdc->lastItem = iIndex;
+
+    for ( size_t i = 2; i <= cCols; i++ )
+    {
+        arrayItem = context->ArrayAt(data, i);
+        if ( arrayItem == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 1, i);
+            goto done_out;
+        }
+
+        if ( substitueText )
+        {
+            itemText = arrayItem == TheNilObj ? nullStr : context->ObjectToStringValue(arrayItem);
+        }
+        else
+        {
+            itemText = context->ObjectToStringValue(arrayItem);
+        }
+
+        ListView_SetItemText(pcdc->hCtrl, iIndex, (int)(i - 1), (LPSTR)itemText);
+    }
+
+done_out:
+    return iIndex;
+}
+
 
 /** ListView::addStyle()
  *  ListView::removeStyle()
@@ -6172,13 +6282,12 @@ RexxMethod1(RexxObjectPtr, lvfr_init_cls, OSELF, self)
 RexxMethod5(RexxObjectPtr, lvfr_fromArray_cls, RexxArrayObject, data, OPTIONAL_uint32_t, itemIndex,
             OPTIONAL_CSTRING, nullStr, OPTIONAL_logical_t, useForSorting, OSELF, self)
 {
-    RexxMethodContext *c = context;
     RexxObjectPtr result = TheNilObj;
 
-    size_t cCols = c->ArrayItems(data);
+    size_t cCols = context->ArrayItems(data);
     if ( cCols == 0 )
     {
-        emptyArrayException(c->threadContext, 1);
+        emptyArrayException(context->threadContext, 1);
         return result;
     }
 
@@ -6209,23 +6318,23 @@ RexxMethod5(RexxObjectPtr, lvfr_fromArray_cls, RexxArrayObject, data, OPTIONAL_u
     }
 
     CSTRING itemText      = NULL;
-    bool    substitueText =  argumentOmitted(2) ? false : true;
+    bool    substitueText =  argumentOmitted(3) ? false : true;
 
     // Create a LvItem
-    RexxObjectPtr arrayItem = c->ArrayAt(data, 1);
+    RexxObjectPtr arrayItem = context->ArrayAt(data, 1);
     if ( arrayItem == NULLOBJECT )
     {
-        sparseArrayException(c->threadContext, 1, 1);
+        sparseArrayException(context->threadContext, 1, 1);
         goto err_out;
     }
 
     if ( substitueText )
     {
-        itemText = arrayItem == TheNilObj ? nullStr : c->ObjectToStringValue(arrayItem);
+        itemText = arrayItem == TheNilObj ? nullStr : context->ObjectToStringValue(arrayItem);
     }
     else
     {
-        itemText = c->ObjectToStringValue(arrayItem);
+        itemText = context->ObjectToStringValue(arrayItem);
     }
 
     RexxObjectPtr rxItem = simpleNewLvItem(context, itemText);
@@ -6253,20 +6362,20 @@ RexxMethod5(RexxObjectPtr, lvfr_fromArray_cls, RexxArrayObject, data, OPTIONAL_u
     for ( size_t i = 1; i < cCols; i++ )
     {
         // Create a LvSubItem
-        arrayItem = c->ArrayAt(data, i + 1);
+        arrayItem = context->ArrayAt(data, i + 1);
         if ( arrayItem == NULLOBJECT )
         {
-            sparseArrayException(c->threadContext, 1, i + 1);
+            sparseArrayException(context->threadContext, 1, i + 1);
             goto err_out;
         }
 
         if ( substitueText )
         {
-            itemText = arrayItem == TheNilObj ? nullStr : c->ObjectToStringValue(arrayItem);
+            itemText = arrayItem == TheNilObj ? nullStr : context->ObjectToStringValue(arrayItem);
         }
         else
         {
-            itemText = c->ObjectToStringValue(arrayItem);
+            itemText = context->ObjectToStringValue(arrayItem);
         }
 
         RexxObjectPtr rxSubItem = simpleNewLvSubitem(context, itemText, (uint32_t)i);
@@ -6295,6 +6404,8 @@ RexxMethod5(RexxObjectPtr, lvfr_fromArray_cls, RexxArrayObject, data, OPTIONAL_u
 err_out:
     safeLocalFree(pclvfr->subItems);
     safeLocalFree(pclvfr->rxSubItems);
+    pclvfr->subItems = NULL;
+    pclvfr->rxSubItems = NULL;
     return TheNilObj;
 }
 
