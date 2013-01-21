@@ -52,18 +52,11 @@
  * example, except it is resizable.
  */
 
+  -- A directory manager saves the current directory and can later go back to
+  -- that directory.  The class itself is located in DirectoryManaager.cls
+  mgr = .DirectoryManager~new()
+
   .application~setDefaults("O", "rc\PropertySheetDemo.h", .false)
-
-  -- To run correctly, this program needs to be able to find its support files.
-  -- But, we allow starting the program from anywhere.  To do this we:
-  -- get the directory we are executing from, switch to the directory this
-  -- program is installed in, and then switch back to the directory we started
-  -- from when we quit.
-
-  curdir = directory();                       -- Directory we started from.
-  parse source . . me
-  mydir = me~left(me~lastpos('\') - 1)        -- Directory we are installed in.
-  mydir = directory(mydir)                    -- CD to the install direcotry.
 
   -- The original version of this example would take a longish period of time to
   -- appear on the screen.  Too much was being done in the initDialog() method
@@ -110,11 +103,11 @@
   -- Show and run the dialog.
   dlg~execute('SHOWTOP', IDI_DLG_OODIALOG)
 
-  -- Switch back to the intial directory and quit.
-  ret = directory(curdir)
+  mgr~goBack
   return 0
 
 ::requires "ooDialog.cls"
+::requires "DirectoryManager.cls"
 
 ::class 'NewControlsDialog' subclass ResDialog inherit ResizingAdmin
 
@@ -122,11 +115,77 @@
 
 ::method defineSizing
 
-  dlgIDs = .array~of(IDD_LISTVIEW_DLG, IDD_TREEVIEW_DLG, IDD_PROGRESSBAR_DLG,   -
-                     IDD_TRACKBAR_DLG, IDD_TAB_DLG)
-  self~pagedTab(IDC_TAB, dlgIDs)
+    -- In order for the ResizingAdmin to properly size ControlDialog dialogs
+    -- used as pages in a tab control, it must be informed of the dialogs and
+    -- what tab control they are in.  We do that by creating an array of their
+    -- IDs and pass the tab control's resource ID and the array to the
+    -- pagedTab() method.
+    --
+    -- Note that the dialog IDs must be the dlgID attribute of the dialogs.  In
+    -- this case the resource ID of the dialog has the same value as the dlgID
+    -- attribute, but this is not always the case.  Please read the doc tor the
+    -- dlgID attribute in the ooDialog reference manual to understand this.
 
-  return 0
+    dlgIDs = .array~of(IDD_LISTVIEW_DLG, IDD_TREEVIEW_DLG, IDD_PROGRESSBAR_DLG, -
+                       IDD_TRACKBAR_DLG, IDD_TAB_DLG)
+    self~pagedTab(IDC_TAB, dlgIDs)
+
+    -- Now, we have 5 controls in this the main dialog.  The tab control and 4
+    -- push buttons.  We define the sizing for all edges of the tab control at
+    -- one time.  We want the tab control edges to remain the same distance
+    -- from each corresponding edge of the dialog.  So we use a stationary pin
+    -- type.  The pin to window is the dialog, which is the default, so we do
+    -- not need to specify the third index in the array.
+    self~controlSizing(IDC_TAB,                                -
+                       .array~of('STATIONARY', 'LEFT'),        -
+                       .array~of('STATIONARY', 'TOP'),         -
+                       .array~of('STATIONARY', 'RIGHT'),       -
+                       .array~of('STATIONARY', 'BOTTOM')       -
+                      )
+
+    -- For the 4 push buttons, we want them to remain fixed in size, with the
+    -- Previous and Next buttons pinned to the bottom left of the dialog and the
+    -- Ok and Cancel buttons pinned to the right bottom of the dialog.
+    --
+    -- There is probably some clever use of the default sizing that could reduce
+    -- the number of lines of code here, but it is sometimes better to just
+    -- spell everything out in code so that it is obvious what is happening.
+
+    self~controlSizing(IDC_PB_PREVIOUS,                        -
+                       .array~of('STATIONARY', 'LEFT'),        -
+                       .array~of('STATIONARY', 'BOTTOM'),      -
+                       .array~of('MYLEFT',     'LEFT'),        -
+                       .array~of('MYTOP',      'TOP')          -
+                      )
+
+    -- Pin the left of the Next button to the right of the Previous button
+    self~controlSizing(IDC_PB_NEXT,                                       -
+                       .array~of('STATIONARY', 'RIGHT', IDC_PB_PREVIOUS), -
+                       .array~of('STATIONARY', 'BOTTOM'),                 -
+                       .array~of('MYLEFT',     'LEFT'),                   -
+                       .array~of('MYTOP',      'TOP')                     -
+                      )
+
+    -- Now we just do a sort of 'mirror-image' of what we just did for the Ok
+    -- and Cancel buttons.
+
+    self~controlSizing(IDCANCEL,                           -
+                       .array~of('STATIONARY', 'RIGHT'),   -
+                       .array~of('STATIONARY', 'BOTTOM'),  -
+                       .array~of('MYLEFT',     'LEFT'),    -
+                       .array~of('MYTOP',      'TOP')      -
+                      )
+
+    -- Pin the right of the Ok, button to the left of the Cancel button
+    self~controlSizing(IDOK,                                       -
+                       .array~of('STATIONARY', 'LEFT', IDCANCEL),  -
+                       .array~of('STATIONARY', 'BOTTOM'),          -
+                       .array~of('MYLEFT',     'LEFT'),            -
+                       .array~of('MYTOP',      'TOP')              -
+                      )
+
+    -- We must return 0 from this method to continue.
+    return 0
 
 /** prep()
  *
@@ -349,6 +408,25 @@
 
 ::class 'ListViewDlg' subclass ResControlDialog inherit ResizingAdmin
 
+::method defineSizing
+
+    -- The only control in this dialog is the list-view.  We define its sizing
+    -- so that each edge of the list-view maintains the same distance to its
+    -- corresponding edeg of the dialog:
+    self~controlSizing(IDC_LV_MAIN,                            -
+                       .array~of('STATIONARY', 'LEFT'),        -
+                       .array~of('STATIONARY', 'TOP'),         -
+                       .array~of('STATIONARY', 'RIGHT'),       -
+                       .array~of('STATIONARY', 'BOTTOM')       -
+                      )
+
+
+    -- A value must be returned from the defineSizing() method.  O allows the
+    -- dialog to continue, any other failure is a failure and the dialog will be
+    -- ended.
+    return 0
+
+
 ::method initDialog
     expose lv imageList listData
 
@@ -559,6 +637,12 @@
 ::method defineSizing
 
   self~noMinSize
+
+  self~useDefaultSizing(IDC_PBAR_PROCESSA)
+  self~useDefaultSizing(IDC_PBAR_PROCESSB)
+  self~useDefaultSizing(IDC_PBAR_PROCESSC)
+  self~useDefaultSizing(IDC_PBAR_PROCESSD)
+  self~useDefaultSizing(IDC_PBAR_PROCESSE)
 
   return 0
 

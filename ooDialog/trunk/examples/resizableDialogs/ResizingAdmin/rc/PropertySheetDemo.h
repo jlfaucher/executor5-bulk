@@ -76,3 +76,8 @@
 #define IDC_ST_PERCENTE                         1125
 #define IDC_ST_FRAME_LEFT                       1126
 #define IDC_ST_FRAME_RIGHT                      1127
+#define IDC_ST_PROCESSA                         1128
+#define IDC_ST_PROCESSB                         1129
+#define IDC_ST_PROCESSC                         1130
+#define IDC_ST_PROCESSD                         1131
+#define IDC_ST_PROCESSE                         1132
