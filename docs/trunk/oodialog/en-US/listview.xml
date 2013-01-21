@@ -232,7 +232,7 @@
 </row>
 <row>
 <entry><xref linkend="mthAddRowFromArray"/></entry>
-<entry>Inserts an item into this list-view from an array of values.  The string value of each item in the array is used as the text for the item or subitem(s).</entry>
+<entry>Inserts an item into this list-view from an array of values.  The string value of each item in the array is used as the text for the item and subitem(s).</entry>
 </row>
 <row>
 <entry><xref linkend="mthAddStyleClsListView"/></entry>
@@ -1321,7 +1321,7 @@
 
 <para>
   Inserts an item into this list-view from an array of values.  The string value of each item in the array is used as the
-  text for the item or subitem(s).
+  text for the item and subitem(s).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1342,8 +1342,8 @@
     <varlistentry><term>itemIndex [optional]</term>
     <listitem>
     <para>
-      The item index to use for the full row. If omitted, the new item is added after the last inserted item in the
-      list-view.
+      The item index to use for the for the list-view item being added. If omitted, the new item is added after the last
+      inserted item in the list-view.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>strIfNil [optional]</term>
@@ -4911,7 +4911,7 @@ Generic Form:
 </section>  <!-- End ListView::insertColumnPX() -->
 
 
-<section id="mthInsertFullRow" xreflabel="getFullRow"><title>insertFullRow</title>
+<section id="mthInsertFullRow" xreflabel="insertFullRow"><title>insertFullRow</title>
 <indexterm><primary>insertFullRow</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>insertFullRow</secondary></indexterm>
 <programlisting>
@@ -9566,7 +9566,7 @@ that allows the user to remove the check mark from all the check boxes:
 </row>
 <row>
 <entry><xref linkend="mthFromArray"/></entry>
-<entry>Constructs a full row object from an array of values. The string value of each item in the array is used as the text for the item and subitem(s).</entry>
+<entry>Instantiates a new <computeroutput>LvFullRow</computeroutput> object from an array of values. The string value of each item in the array is used as the text for the item and subitem(s).</entry>
 </row>
 <row>
 <entry><xref linkend="mthNewClsLvFullRow"/></entry>
@@ -9625,7 +9625,7 @@ that allows the user to remove the check mark from all the check boxes:
 
 <para>
   Instantiates a new <computeroutput>LvFullRow</computeroutput> object from an array of values. The string value of each item
-  in the array is used as the text for the item or subitem(s).
+  in the array is used as the text for the item and subitem(s).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
