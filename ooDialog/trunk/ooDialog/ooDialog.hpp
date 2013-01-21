@@ -1138,6 +1138,9 @@ extern RexxClassObject TheSizeClass;
 extern RexxClassObject TheRectClass;
 extern RexxClassObject TheLvCustomDrawSimpleClass;
 extern RexxClassObject TheTvCustomDrawSimpleClass;
+extern RexxClassObject TheLvFullRowClass;
+extern RexxClassObject TheLvItemClass;
+extern RexxClassObject TheLvSubItemClass;
 
 extern HBRUSH searchForBrush(pCPlainBaseDialog pcpbd, size_t *index, uint32_t id);
 

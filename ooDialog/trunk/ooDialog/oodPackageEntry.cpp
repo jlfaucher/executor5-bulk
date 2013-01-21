@@ -113,6 +113,15 @@ RexxClassObject     TheLvCustomDrawSimpleClass = NULLOBJECT;
 // Initialized in the TvCustomDrawSimple class init method (tvcds_init_cls.)
 RexxClassObject     TheTvCustomDrawSimpleClass = NULLOBJECT;
 
+// Initialized in the LvFullRow class init method (lvfr_init_cls.)
+RexxClassObject     TheLvFullRowClass = NULLOBJECT;
+
+// Initialized in the LvItem class init method (lvi_init_cls.)
+RexxClassObject     TheLvItemClass = NULLOBJECT;
+
+// Initialized in the LvSubItem class init method (lvsi_init_cls.)
+RexxClassObject     TheLvSubItemClass = NULLOBJECT;
+
 /* GdiplusStartupInput gdiplusStartupInput;
 ULONG_PTR           gdiplusToken; */
 
@@ -1100,6 +1109,7 @@ REXX_METHOD_PROTOTYPE(lv_stringWidthPx);
 REXX_METHOD_PROTOTYPE(lv_zTest);
 
 // LvItem
+REXX_METHOD_PROTOTYPE(lvi_init_cls            );
 REXX_METHOD_PROTOTYPE(lvi_init                );
 REXX_METHOD_PROTOTYPE(lvi_unInit              );
 REXX_METHOD_PROTOTYPE(lvi_columnFormats       );
@@ -1130,6 +1140,7 @@ REXX_METHOD_PROTOTYPE(lvi_text                );
 REXX_METHOD_PROTOTYPE(lvi_setText             );
 
 // LvSubItem
+REXX_METHOD_PROTOTYPE(lvsi_init_cls       );
 REXX_METHOD_PROTOTYPE(lvsi_init           );
 REXX_METHOD_PROTOTYPE(lvsi_unInit         );
 REXX_METHOD_PROTOTYPE(lvsi_item           );
@@ -1144,6 +1155,8 @@ REXX_METHOD_PROTOTYPE(lvsi_imageIndex     );
 REXX_METHOD_PROTOTYPE(lvsi_setImageIndex  );
 
 // LvFullRow
+REXX_METHOD_PROTOTYPE(lvfr_init_cls);
+REXX_METHOD_PROTOTYPE(lvfr_fromArray_cls);
 REXX_METHOD_PROTOTYPE(lvfr_init);
 REXX_METHOD_PROTOTYPE(lvfr_unInit);
 REXX_METHOD_PROTOTYPE(lvfr_userData);
@@ -2154,6 +2167,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_zTest,                       lv_zTest),
 
     // LvItem
+    REXX_METHOD(lvi_init_cls,                   lvi_init_cls),
     REXX_METHOD(lvi_init,                       lvi_init),
     REXX_METHOD(lvi_unInit,                     lvi_unInit),
     REXX_METHOD(lvi_columnFormats,              lvi_columnFormats),
@@ -2184,6 +2198,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lvi_setText,                    lvi_setText),
 
     // LvSubItem
+    REXX_METHOD(lvsi_init_cls,                  lvsi_init_cls),
     REXX_METHOD(lvsi_init,                      lvsi_init),
     REXX_METHOD(lvsi_unInit,                    lvsi_unInit),
     REXX_METHOD(lvsi_item,                      lvsi_item),
@@ -2198,6 +2213,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lvsi_setImageIndex,             lvsi_setImageIndex),
 
     // LvFullRow
+    REXX_METHOD(lvfr_init_cls,                  lvfr_init_cls),
+    REXX_METHOD(lvfr_fromArray_cls,             lvfr_fromArray_cls),
     REXX_METHOD(lvfr_init,                      lvfr_init),
     REXX_METHOD(lvfr_unInit,                    lvfr_unInit),
     REXX_METHOD(lvfr_userData,                  lvfr_userData),

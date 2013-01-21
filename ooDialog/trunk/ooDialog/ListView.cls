@@ -328,6 +328,8 @@
 
 ::class 'LvItem' public
 
+::method init class external "LIBRARY oodialog lvi_init_cls"
+
 ::method init external "LIBRARY oodialog lvi_init"
 ::method unInit external "LIBRARY oodialog lvi_unInit"
 
@@ -360,6 +362,9 @@
 
 
 ::class 'LvFullRow' public
+::method init class external "LIBRARY oodialog lvfr_init_cls"
+::method fromArray class external "LIBRARY oodialog lvfr_fromArray_cls"
+
 ::method init external "LIBRARY oodialog lvfr_init"
 ::method unInit external "LIBRARY oodialog lvfr_unInit"
 
@@ -375,6 +380,8 @@
 
 
 ::class 'LvSubItem' public
+::method init class external "LIBRARY oodialog lvsi_init_cls"
+
 ::method init external "LIBRARY oodialog lvsi_init"
 ::method unInit external "LIBRARY oodialog lvsi_unInit"
 
