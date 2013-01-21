@@ -2131,7 +2131,8 @@ done_out:
  *               used for the text of the item and subitems.
  *
  *  @param itemIndex  [optional]  The item index to use for the full row.  If
- *                    omitted, 0 is used for the item index.
+ *                    omitted, the item is added after the last inserted item in
+ *                    the list-view
  *
  *  @param strIfNil   [opitonal]  String to use for the item or subitem text, if
  *                    the object in the array is the .nil object.
@@ -6272,9 +6273,9 @@ RexxMethod1(RexxObjectPtr, lvfr_init_cls, OSELF, self)
  *          full row item and its subitems is set.
  *
  *          Recall that if the full row object is used in either the addFullRow
- *          or prpendFullRow methods, the item index of the full row object is
+ *          or prependFullRow methods, the item index of the full row object is
  *          ignored.  For the insertFullRow method, if the item index is 0, the
- *          method will work find the full row will be inserted as the first
+ *          method will work fine, the full row will be inserted as the first
  *          item in the list-view.  Therefore the optional <itemIndex> argument
  *          is never needed, and, depending on the use of the full row object,
  *          may be a waste of time.
