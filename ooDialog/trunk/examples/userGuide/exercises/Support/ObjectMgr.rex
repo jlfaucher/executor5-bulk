@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
 
-   Support - ObjectMgr						 v01-00  11Jan13
+   Support - ObjectMgr						 v01-00  21Jan13
    -------------------
    A singleton component that manages model objects.
 
@@ -57,6 +57,7 @@
   Changes:
     v01-00 23Apr12: First version.
            11Jan13: Commented-out 'say' instructions.
+           21Jan13: Make 'addView' private and 'removeView' explicitly public.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -225,7 +226,7 @@ call "RequiresList.rex"
   /*----------------------------------------------------------------------------
     addView - Adds a View to the ObjectBag.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD addView
+  ::METHOD addView PRIVATE
     expose objectBag --viewBag
     use strict arg modelClass, modelInstance, viewClass, viewId
     --say "ObjectMgr-addView-01."
@@ -247,7 +248,7 @@ call "RequiresList.rex"
 
 
   /*----------------------------------------------------------------------------
-    removeView - Removes a view from the ObjectBag.
+    removeView - Removes a view from the ObjectBag. (Used by RcView & ResView.)
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD removeView PUBLIC
     expose objectBag
