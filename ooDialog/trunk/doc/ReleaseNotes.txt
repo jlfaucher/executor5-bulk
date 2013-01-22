@@ -86,6 +86,13 @@ Feature Requests in ooDialog:
 
  * #519 Would like the ListView hitTestInfo to return the subitem index
 
+ * #521 It would be useful to create a LvFullRow from an array of text
+        values
+
+ * #522 Add item to list-view using array to specify the text of the
+        item / subitem(s)
+
+
 
 New Functionality in ooDialog:
 ------------------------------
@@ -158,6 +165,10 @@ isGrandChild()    Notifies the ooDialog framework that the edit control
 
 In the ListView class:
 
+addRowFromArray() Inserts an item into this list-view from an array of
+                  values. The string value of each item in the array is
+                  used as the text for the item and subitem(s).
+
 getItemRect()     Gets the bounding rectangle for all or part of an item
                   in the current view of the list-view.
 
@@ -177,10 +188,19 @@ setWindowStyleRaw() Sets the window style flags of the window. The value
                     is specified as the raw numeric value of the style.
 
 
+In the LvFullRow class:
+
+fromArray()       [Class method] Instantiates a new LvFullRow object
+                  from an array of values. The string value of each item
+                  in the array is used as the text for the item and
+                  subitem(s).
+
+
 New Attributes:
 ---------------
 
 In the LvFullRow class:
+
 
 userData  The userData attribute allows the programmer to assign any
           object to each full row object.
