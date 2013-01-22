@@ -1620,9 +1620,72 @@ u~resize(self, sizeinfo)
 <para>
   The <computeroutput>ResizingAdmin</computeroutput> class is a <computeroutput>mixin</computeroutput> class. Resizable
   dialogs are produced by having a dialog class inherit the <computeroutput>ResizingAdmin</computeroutput> class. This makes
-  any ooDialog dialog resizable without having to change any code in the dialog, even existing dialog. With one caveat, <xref
-  linkend="clsPropertySheetPage"/> and <xref linkend="clsControlDialog"/> dialogs are not supported at this time.
+  any ooDialog dialog resizable without having to change any code in the dialog, even existing dialogs.
 </para>
+
+
+<section id="sctResizingPrinciples" xreflabel=""><title>Understanding How Resizing Works</title>
+<indexterm><primary>ResizingAdmin Class</primary><secondary>basics</secondary></indexterm>
+<para>
+  The basic idea behind the <computeroutput>ResizingAdmin</computeroutput> class is relatively simple. The idea is that each
+  edge, or side, of a dialog control window is <emphasis role="italic">pinned</emphasis> to the edge of the dialog window, or
+  an edge of a dialog control within the dialog. As the edge of the <emphasis role="italic">pinned to</emphasis> window
+  changes position, the <emphasis role="italic">pinned</emphasis> edge of the dialog control changes position according to
+  the <emphasis role="italic">type</emphasis> of pin.
+</para>
+<para>
+  This can be visualized using a list-view in a dialog, where the left edge of the list-view is <emphasis
+  role="italic">pinned</emphasis> to the left edge of the dialog and the right edge of the list-view is <emphasis
+  role="italic">pinned</emphasis> to the right edge of the dialog. As the left edge of the dialog is pulled to the left, the
+  pinned left edge of the list-view is pulled to the left along with it. The dialog increases in width and the list-view
+  increases in width also.
+</para>
+<para>
+  Every edge of every control in the dialog has a <emphasis role="italic">sizing defintion</emphasis> assigned to it. If the
+  programmer does not explicitly define a sizing for an edge of a control, a default sizing definition is assigned to it by
+  the ooDialog framework. This is how a dialog can be made resizable by just inheriting the
+  <computeroutput>ResizingAdmin</computeroutput> and nothing else. The ooDialog framework will assign a default sizing
+  definition to each edge of the control. The default sizing definition may be adequate for the programmer's needs. If not,
+  the programmer can set the sizing definitions for the edges of the controls as needed.
+</para>
+<para>
+  Each sizing definition is comprised of xx parts:
+</para>
+<itemizedlist>
+<listitem>
+<para>
+  The dialog control whose sizing is being defined. Dialog controls are specified by their <link
+  linkend="defResourceId">resource</link> ID. As in other areas of ooDialog, the ID may be numeric or <link
+  linkend="defSymbolicId">symbolic</link>.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <emphasis role="italic">edge</emphasis> of the dialog control that is being defined. An edge being defined is specified
+  by one of four keywords: LEFT, TOP, RIGHT, and BOTTOM. Case is not significant.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <emphasis role="italic">pinned to edge</emphasis> of another window. <emphasis role="italic">Pinned to</emphasis> edges
+  are specified by one of six keywords: LEFT, TOP, RIGHT, BOTTOM, XCENTER, and YCENTER. Case is not significant.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <emphasis role="italic">pin type</emphasis>. <emphasis role="italic">Pin types</emphasis> are specified by one of four
+  keywords: PROPORTIONAL, STATIONARY, MYTOP, MYLEFT. Case is not significant.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <emphasis role="italic">pinned to window</emphasis>.
+</para>
+</listitem>
+</itemizedlist>
+
+</section>  <!-- End Section ResizingPrinciples  -->
+
 
 <section id="sctMethodsResizingAdmin"><title>Method Table</title>
 <para>
@@ -1736,37 +1799,49 @@ u~resize(self, sizeinfo)
 <![CDATA[
 >>--maxSize-----------------------------------------------------><
 
->>--maxSize = varName-------------------------------------------><
+>>--maxSize = sizeObj-------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the maximum size the dialog is allowed to resize to. By default, there is no limit on the maximum size for the
+  dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">maxSize get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the maximum size constraint of the dialog as a <xref linkend="clsSize"/> object. If the maximum size is not
+    constrained, the <computeroutput>.nil</computeroutput> object is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">maxSize set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set the maximum size a dialog can be sized to using a <computeroutput>Size</computeroutput> object. The <emphasis
+    role="italic">width</emphasis> of the <computeroutput>size</computeroutput> object is the maximum width, in pixels, for
+    the dialog and the <emphasis role="italic">height</emphasis> of the <computeroutput>size</computeroutput> object is the
+    maximum height, in pixels for the dialog. By default, the dialog will not have a maximum size restriction.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">maxSize</emphasis> attribute can only be set using a <computeroutput>Size</computeroutput>
+    object. If a maximum size constraint has been set, and for some reason that constraint needs to be removed, use the <xref
+    linkend="mthNoMaxSize"/> method.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. However, the <emphasis role="italic">maxSize</emphasis> attribute can be set or read
+    at any time in the life-cycle of the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1791,31 +1866,39 @@ u~resize(self, sizeinfo)
 <![CDATA[
 >>--minSize-----------------------------------------------------><
 
->>--minSize = varName-------------------------------------------><
+>>--minSize = sizeObj-------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the minimum size the dialog is allowed to resize to. By default, the minimum size for the dialog is set to its
+  initial when the operating system first creates it.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">minSize get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the minimum size constraint of the dialog as a <xref linkend="clsSize"/> object. If the minimum size is not
+    constrained, the <computeroutput>.nil</computeroutput> object is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">minSize set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set the minimum size the dialog can be sized to using a <computeroutput>Size</computeroutput> object. The <emphasis
+    role="italic">width</emphasis> of the <computeroutput>size</computeroutput> object is the minimum width, in pixels, for
+    the dialog and the <emphasis role="italic">height</emphasis> of the <computeroutput>size</computeroutput> object is the
+    minimum height, in pixels, for the dialog. By default, the dialog will have an initial minimum size restriction set to
+    the size of the dialog when first created.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">minSize</emphasis> attribute can only be set using a <computeroutput>Size</computeroutput>
+    object. If a minimum size constraint is set, and that constraint needs to be removed, use the <xref
+    linkend="mthNoMinSize"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1823,14 +1906,25 @@ u~resize(self, sizeinfo)
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. However, the <emphasis role="italic">minSize</emphasis> attribute can be set or read
+    at any time in the life-cycle of the dialog.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets a minimum size for the resizable dialog to be 100 pixels wide by 50 pixels high:
 <programlisting>
 <![CDATA[
 
+::method defineSizing
+
+  s = .Size~new(100, 50)
+  self~minSize = s
+
+  return 0
 
 ]]>
 </programlisting>
@@ -1844,13 +1938,13 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>controlBottom</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--controlBottom(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--controlBottom(--ctrlID-,-howPinned-,-pinToEdge--+----------------+--)------><
+                                                    +-,-pinToWindow--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Defines the sizing for the bottom edge of the dialog control specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1885,7 +1979,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlBottom</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1948,7 +2044,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlLeft</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2011,7 +2109,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlRight</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2074,7 +2174,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlSizing</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2137,7 +2239,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">controlTop</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2201,7 +2305,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultBottom</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2264,7 +2370,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultLeft</emphasis> method is one of them. It can only
+    be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2327,7 +2435,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultRight</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2391,7 +2501,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultSizing</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2455,7 +2567,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">defaultTop</emphasis> method is one of them. It can only
+    be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2517,9 +2631,6 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2583,7 +2694,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">noMaxSize</emphasis> method is not one of them. It
+    can be invoked any time during the life-cycle of the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2647,15 +2760,25 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">noMinSize</emphasis> method is not one of them. It
+    can be invoked any time during the life-cycle of the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example removes the minimum size restriction for a resizable dialog. It does it during the <xref
+    linkend="mthDefineSizing"/> method because it is convenient to do it there, not because it is required:
 <programlisting>
 <![CDATA[
+r
+
+::method defineSizing
+
+  self~noMinSize
+
+  return 0
 
 ]]>
 </programlisting>
@@ -2715,7 +2838,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">pagedTab</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2776,6 +2901,11 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">useDefaultSizing</emphasis> method is one of them. It can
+    only be invoked during the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2838,7 +2968,9 @@ u~resize(self, sizeinfo)
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods of the <emphasis role="italic">ResizingAdmin</emphasis> can only be invoked during the <xref
+    linkend="mthDefineSizing"/> method. The <emphasis role="italic">wantSizeEnded</emphasis> method is not one of them. It
+    can be invoked any time during the life-cycle of the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
