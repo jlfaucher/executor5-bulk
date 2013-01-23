@@ -81,6 +81,10 @@
 ::constant ID_PSRESTARTWINDOWS            2
 ::constant ID_PSREBOOTSYSTEM              3  -- (ID_PSRESTARTWINDOWS | 0x1)
 
+::constant IDC_TAB_IN_PROPSHEET            12320
+::constant IDC_PB_APPLY_IN_PROPSHEET       12321
+
+
 -- The application icon for the property sheet dialog
 ::attribute appIcon get unguarded
 ::attribute appIcon set unguarded external "LIBRARY oodialog psdlg_setAppIcon_atr"

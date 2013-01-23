@@ -1914,16 +1914,18 @@ static HWND checkPropSheetOwner(RexxMethodContext *c, RexxObjectPtr owner, size_
 
 void assignPSDThreadContext(pCPropertySheetDialog pcpsd, RexxThreadContext *c, uint32_t threadID)
 {
-    pcpsd->dlgProcContext = c;
-    pcpsd->dlgProcThreadID = threadID;
+    pcpsd->pcpbd->dlgProcThreadID = threadID;
+    pcpsd->pcpbd->dlgProcContext  = c;
+    pcpsd->dlgProcThreadID        = threadID;
+    pcpsd->dlgProcContext         = c;
 
     uint32_t count = pcpsd->pageCount;
     for ( uint32_t i = 0; i < count; i++ )
     {
-        pcpsd->cppPages[i]->dlgProcContext = c;
-        pcpsd->cppPages[i]->dlgProcThreadID = threadID;
-        pcpsd->cppPages[i]->pcpbd->dlgProcContext = c;
         pcpsd->cppPages[i]->pcpbd->dlgProcThreadID = threadID;
+        pcpsd->cppPages[i]->pcpbd->dlgProcContext  = c;
+        pcpsd->cppPages[i]->dlgProcThreadID        = threadID;
+        pcpsd->cppPages[i]->dlgProcContext         = c;
     }
 }
 
