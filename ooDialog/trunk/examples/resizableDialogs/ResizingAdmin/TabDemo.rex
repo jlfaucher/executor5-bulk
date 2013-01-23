@@ -166,8 +166,8 @@
                        .array~of('MYTOP',      'TOP')                     -
                       )
 
-    -- Now we just do a sort of 'mirror-image' of what we just did for the Ok
-    -- and Cancel buttons.
+    -- Ror the Ok and Cancel buttons, we just do a sort of 'mirror-image' of
+    -- what we just did for the Previous and Next buttons.
 
     self~controlSizing(IDCANCEL,                           -
                        .array~of('STATIONARY', 'RIGHT'),   -
@@ -176,13 +176,25 @@
                        .array~of('MYTOP',      'TOP')      -
                       )
 
-    -- Pin the right of the Ok, button to the left of the Cancel button
+    -- Pin the left of the Ok button to the left of the Cancel button
     self~controlSizing(IDOK,                                       -
                        .array~of('STATIONARY', 'LEFT', IDCANCEL),  -
                        .array~of('STATIONARY', 'BOTTOM'),          -
                        .array~of('MYLEFT',     'LEFT'),            -
                        .array~of('MYTOP',      'TOP')              -
                       )
+
+    -- We register to recieve a notification when the sizing of the dialog has
+    -- ended.  We need this event so we can invoke the placeButton() method in
+    -- our child, TabDlg, dialog.  In the TabDlg dialog, there is an owner-drawn
+    -- button that serves as the context of the tab control.  That button needs
+    -- to be sized and positioned so that it completely occupies the display
+    -- rectangle of the tab control.  Besides the initial sizing of the button,
+    -- the sizing also has to take place every time the size of dialog has
+    -- changed.  The placeButton() method does the sizing, but the TabDlg dialog
+    -- has no way to know *when* the sizing should be done.  Only this, the main
+    -- dialog, has a way to know when the sizing should take place.
+    self~wantSizeEnded('onSizeEnded', .true)
 
     -- We must return 0 from this method to continue.
     return 0
@@ -221,7 +233,9 @@
  * area of the tab control, one control dialog for each tab of the tab control.
  */
 ::method initDialog
-  expose tabContent tabControl pbNext pbPrevious
+  expose tabContent tabControl pbNext pbPrevious needCalculation
+
+  needCalculation = .true
 
   -- Start executing the control dialog for the first tab in the tab control.
   -- We can not resize and reposition the control dialog until the underlying
@@ -289,7 +303,7 @@
  *
  */
 ::method positionAndShow private
-  expose tabControl tabContent displayRect lastSelected havePositioned
+  expose tabControl tabContent displayRect lastSelected havePositioned needCalculation
   use strict arg index
 
   -- We can not position the control dialog until the underlying Windows dialog
@@ -310,8 +324,14 @@
 
   -- Determine the position and size of the display area of the tab control.
   -- Note: in the non-resizable example program, we only calculate the display
-  -- rect
-  self~calculateDisplayArea
+  -- rect once.  Here we need to calculate it every time the dialog has been
+  -- resized.  To avoid calculating the display rectangle over and over when it
+  -- is not needed, we track when the dialog has been resized using the
+  -- needCalculation variable and only do the calculation when necessary.
+  if needCalculation then do
+      self~calculateDisplayArea
+      needCalculation = .false
+  end
 
   -- Now resize and reposition the control dialog to the tab control's display
   -- area.  We need to position the control dialog *above* the tab control in
@@ -319,7 +339,7 @@
   dlg~setWindowPos(tabControl~hwnd, displayRect, "SHOWWINDOW NOOWNERZORDER")
 
   -- Normally this redraw is not needed.  But, for resizable dialogs, when the
-  -- main dialog is resized before this page dialog has been started, when the
+  -- main dialog is resized before the page dialog has been started, when the
   -- page dialog is started and sized to the display rect, it does not always
   -- paint correctly.  Invoking the redraw() method seems to fix that problem.
   -- Here we use the start() method to invoke redraw() on another thread, which
@@ -330,6 +350,20 @@
   havePositioned[index] = .true
 
   self~checkButtons
+
+
+-- The onSizeEnded() method is invoked when the user has resized the dialog and
+-- that sizing is ended.  At this point the TabDlg dialog needs to recalculate
+-- and position the owner-drawn button.  Also, at this point we need to
+-- recalculate the display
+::method onSizeEnded unguarded
+    expose tabContent needCalculation
+
+    needCalculation = .true
+
+    tabContent[5]~placeButton
+
+    return 0
 
 
 ::method onNewTab
@@ -348,7 +382,13 @@
     dlg~ownerDialog = self
     dlg~execute
     self~positionAndShow(index)
+    if index == 5 then dlg~placeButton
   end
+
+  -- The activateThreads() method only starts the threads running when they are
+  -- not already running.  So, we just invoke the method every time the dialog
+  -- is shown.  That way if they had already been activated, but finished, they
+  -- are restarted when the dialog is shown.
   if index == 3 then dlg~activateThreads
 
   self~checkButtons
@@ -564,6 +604,15 @@
 
 ::class 'TreeViewDlg' subclass ResControlDialog inherit ResizingAdmin
 
+-- ::method defineSizing
+   -- The tree-view is the only control in this dialog.  We could take the same
+   -- approach we did in the ListViewDlg and stationary pin the edges of the
+   -- tree-view to the edges of the dialog so that the tree-view takes up as
+   -- much space as possible.  But, the default proportional pinning of the
+   -- edges actually looks good for this dialog.  So, we just use the default
+   -- sizing.
+
+
 ::method initDialog
 
     -- Instantiate a Rexx tree view object that represents the Windows tree-view
@@ -634,15 +683,92 @@
 
 ::class 'ProgressBarDlg' subclass RcControlDialog inherit ResizingAdmin
 
+-- Define the sizing for the controls.  Note that for the progress bars, we want
+-- to use the default sizing so that they resize proportionally.  But, we want
+-- the static labels to be fixed in size and pinned to the progress bar the
+-- label is for.
+--
+-- The individual sizing for a control is added to the sizing table in the order
+-- the sizings are defined.  Then, during a resize event, the windows are sized
+-- in the order they occur in the table.  For any control sizing definition, the
+-- pin to window has to *precede* the control in the table.  Otherwise resizing
+-- would not work correctly.
+--
+-- What this means is that we can not pin a static control to its progress bar
+-- unless the progress bar is already in the table.  The defaultSizing() method
+-- allows us to put a control in to the table with a minimum amount of typing.
+--
+-- We also show both ways of defing the edges of a control.  Using individual
+-- method calls for each edge, or using the single method call, controlSizing().
 ::method defineSizing
 
-  self~noMinSize
+    self~noMinSize
 
-  self~useDefaultSizing(IDC_PBAR_PROCESSA)
-  self~useDefaultSizing(IDC_PBAR_PROCESSB)
-  self~useDefaultSizing(IDC_PBAR_PROCESSC)
-  self~useDefaultSizing(IDC_PBAR_PROCESSD)
-  self~useDefaultSizing(IDC_PBAR_PROCESSE)
+    self~useDefaultSizing(IDC_PBAR_PROCESSA)
+    self~useDefaultSizing(IDC_PBAR_PROCESSB)
+    self~useDefaultSizing(IDC_PBAR_PROCESSC)
+    self~useDefaultSizing(IDC_PBAR_PROCESSD)
+    self~useDefaultSizing(IDC_PBAR_PROCESSE)
+
+    self~controlLeft(  IDC_ST_PROCESSA, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSA)
+    self~controlTop(   IDC_ST_PROCESSA, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSA)
+    self~controlRight( IDC_ST_PROCESSA, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSA, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_PROCESSB, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSB)
+    self~controlTop(   IDC_ST_PROCESSB, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSB)
+    self~controlRight( IDC_ST_PROCESSB, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSB, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_PROCESSC, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSC)
+    self~controlTop(   IDC_ST_PROCESSC, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSC)
+    self~controlRight( IDC_ST_PROCESSC, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSC, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_PROCESSD, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSD)
+    self~controlTop(   IDC_ST_PROCESSD, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSD)
+    self~controlRight( IDC_ST_PROCESSD, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSD, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_PROCESSE, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSE)
+    self~controlTop(   IDC_ST_PROCESSE, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSE)
+    self~controlRight( IDC_ST_PROCESSE, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSE, 'MYTOP',      'TOP')
+
+    self~controlSizing(IDC_ST_PERCENTA,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSA),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSA),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
+
+    self~controlSizing(IDC_ST_PERCENTB,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSB),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSB),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
+
+    self~controlSizing(IDC_ST_PERCENTC,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSC),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSC),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
+
+    self~controlSizing(IDC_ST_PERCENTD,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSD),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSD),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
+
+    self~controlSizing(IDC_ST_PERCENTE,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSE),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSE),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
 
   return 0
 
@@ -747,6 +873,104 @@
 
 
 ::class 'TrackBarDlg' subclass ResControlDialog inherit ResizingAdmin
+
+-- Define the sizing of the controls.  Here, we have the 2 static frames that
+-- surround the trackbars grow proportionally to the dialog, which is the
+-- deault.  Then we pin the controls inside of a static frame to the static
+-- frame.
+--
+-- For the horizontal trackbars, it makes sense for them to stretch horizontally
+-- as the dialog widens.  But there is no point in them stretching vertially as
+-- the dialog get taller.  The actual part of the control that is drawn keeps
+-- the same vertical height.
+--
+-- The reverse is true for the vertical trackbars, the should stretch vertically
+-- and remain fixed horizontally.
+--
+-- All the static labels should remain fixed in size.  The labels for the
+-- horizontal trackbars are pinned to the bottoms of their trackbars and pinned
+-- proportionally to the left of their trackbars.  The labels for the vertical
+-- trackbars are pinned to the top of their trackbars and to the center of their
+-- trackbars.
+--
+-- For the horizontal trackbars: the top trakbar is pinned to the top of its
+-- frame, the bottom to the bottom of its frame, and the middle trackbar is
+-- pinned to the vertical center of its frame.
+--
+-- For the vertical trackbars: the left trackbar is pinned to the left of its
+-- frame, the right is pinned to the right of its frame, and the middle trackbar
+-- is pinned to the horizontal center of its frame.
+::method defineSizing
+
+    self~noMinSize
+
+    self~useDefaultSizing(IDC_ST_FRAME_LEFT)
+
+    self~controlLeft(  IDC_TB_HORZ_BOTTOM, 'STATIONARY', 'LEFT',  IDC_ST_FRAME_LEFT)
+    self~controlTop(   IDC_TB_HORZ_BOTTOM, 'STATIONARY', 'TOP',   IDC_ST_FRAME_LEFT)
+    self~controlRight( IDC_TB_HORZ_BOTTOM, 'STATIONARY', 'RIGHT', IDC_ST_FRAME_LEFT)
+    self~controlBottom(IDC_TB_HORZ_BOTTOM, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_HORZ_BOTTOM, 'PROPORTIONAL', 'LEFT',   IDC_TB_HORZ_BOTTOM)
+    self~controlTop(   IDC_ST_HORZ_BOTTOM, 'STATIONARY',   'BOTTOM', IDC_TB_HORZ_BOTTOM)
+    self~controlRight( IDC_ST_HORZ_BOTTOM, 'MYLEFT',       'LEFT')
+    self~controlBottom(IDC_ST_HORZ_BOTTOM, 'MYTOP',        'TOP')
+
+    self~controlLeft(  IDC_TB_HORZ_TOP, 'STATIONARY', 'LEFT',    IDC_ST_FRAME_LEFT)
+    self~controlTop(   IDC_TB_HORZ_TOP, 'STATIONARY', 'YCENTER', IDC_ST_FRAME_LEFT)
+    self~controlRight( IDC_TB_HORZ_TOP, 'STATIONARY', 'RIGHT',   IDC_ST_FRAME_LEFT)
+    self~controlBottom(IDC_TB_HORZ_TOP, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_HORZ_TOP, 'PROPORTIONAL', 'LEFT',   IDC_TB_HORZ_TOP)
+    self~controlTop(   IDC_ST_HORZ_TOP, 'STATIONARY',   'BOTTOM', IDC_TB_HORZ_TOP)
+    self~controlRight( IDC_ST_HORZ_TOP, 'MYLEFT',       'LEFT')
+    self~controlBottom(IDC_ST_HORZ_TOP, 'MYTOP',        'TOP')
+
+    self~controlLeft(  IDC_TB_HORZ_BOTH, 'STATIONARY', 'LEFT',   IDC_ST_FRAME_LEFT)
+    self~controlTop(   IDC_TB_HORZ_BOTH, 'STATIONARY', 'BOTTOM', IDC_ST_FRAME_LEFT)
+    self~controlRight( IDC_TB_HORZ_BOTH, 'STATIONARY', 'RIGHT',  IDC_ST_FRAME_LEFT)
+    self~controlBottom(IDC_TB_HORZ_BOTH, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_HORZ_BOTH, 'PROPORTIONAL', 'LEFT',   IDC_TB_HORZ_BOTH)
+    self~controlTop(   IDC_ST_HORZ_BOTH, 'STATIONARY',   'BOTTOM', IDC_TB_HORZ_BOTH)
+    self~controlRight( IDC_ST_HORZ_BOTH, 'MYLEFT',       'LEFT')
+    self~controlBottom(IDC_ST_HORZ_BOTH, 'MYTOP',        'TOP')
+
+    self~useDefaultSizing(IDC_ST_FRAME_RIGHT)
+
+    self~controlLeft(  IDC_TB_VERT_RIGHT, 'STATIONARY', 'LEFT',    IDC_ST_FRAME_RIGHT)
+    self~controlTop(   IDC_TB_VERT_RIGHT, 'STATIONARY', 'TOP',     IDC_ST_FRAME_RIGHT)
+    self~controlRight( IDC_TB_VERT_RIGHT, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_TB_VERT_RIGHT, 'STATIONARY', 'BOTTOM',  IDC_ST_FRAME_RIGHT)
+
+    self~controlLeft(  IDC_ST_VERT_RIGHT, 'STATIONARY', 'XCENTER', IDC_TB_VERT_RIGHT)
+    self~controlTop(   IDC_ST_VERT_RIGHT, 'STATIONARY', 'TOP',     IDC_TB_VERT_RIGHT)
+    self~controlRight( IDC_ST_VERT_RIGHT, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_VERT_RIGHT, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_TB_VERT_LEFT, 'STATIONARY',  'XCENTER', IDC_ST_FRAME_RIGHT)
+    self~controlTop(   IDC_TB_VERT_LEFT, 'STATIONARY',  'TOP',     IDC_ST_FRAME_RIGHT)
+    self~controlRight( IDC_TB_VERT_LEFT, 'MYLEFT',      'LEFT')
+    self~controlBottom(IDC_TB_VERT_LEFT, 'STATIONARY',  'BOTTOM',  IDC_ST_FRAME_RIGHT)
+
+    self~controlLeft(  IDC_ST_VERT_LEFT, 'STATIONARY',  'XCENTER', IDC_TB_VERT_LEFT)
+    self~controlTop(   IDC_ST_VERT_LEFT, 'STATIONARY',  'TOP',     IDC_TB_VERT_LEFT)
+    self~controlRight( IDC_ST_VERT_LEFT, 'MYLEFT',      'LEFT')
+    self~controlBottom(IDC_ST_VERT_LEFT, 'MYTOP',       'TOP')
+
+    self~controlLeft(  IDC_TB_VERT_BOTH, 'STATIONARY',  'RIGHT',   IDC_ST_FRAME_RIGHT)
+    self~controlTop(   IDC_TB_VERT_BOTH, 'STATIONARY',  'TOP',     IDC_ST_FRAME_RIGHT)
+    self~controlRight( IDC_TB_VERT_BOTH, 'MYLEFT',      'LEFT')
+    self~controlBottom(IDC_TB_VERT_BOTH, 'STATIONARY',  'BOTTOM',  IDC_ST_FRAME_RIGHT)
+
+    self~controlLeft(  IDC_ST_VERT_BOTH, 'STATIONARY',  'XCENTER', IDC_TB_VERT_BOTH)
+    self~controlTop(   IDC_ST_VERT_BOTH, 'STATIONARY',  'TOP',     IDC_TB_VERT_BOTH)
+    self~controlRight( IDC_ST_VERT_BOTH, 'MYLEFT',      'LEFT')
+    self~controlBottom(IDC_ST_VERT_BOTH, 'MYTOP',       'TOP')
+
+  return 0
+
+
 
 ::method initDialog
     expose font1 trackBars tbLabels
@@ -878,81 +1102,113 @@
 
 ::class 'TabDlg' subclass ResControlDialog inherit ResizingAdmin
 
+::method defineSizing
+
+    self~controlSizing(IDC_TAB_MAIN,                           -
+                       .array~of('STATIONARY', 'LEFT'),        -
+                       .array~of('STATIONARY', 'TOP'),         -
+                       .array~of('STATIONARY', 'RIGHT'),       -
+                       .array~of('STATIONARY', 'BOTTOM')       -
+                      )
+
+    return 0
+
+
 ::method initDialog
-   expose font2 font3 imageList iconsRemoved needWrite pb
+    expose font2 font3 imageList iconsRemoved needWrite pb tc
 
-   -- Set the iconsRemoved and needWrite to false.  These flags are used in
-   -- the OnDrawTabRect() method.
-   iconsRemoved = .false
-   needWrite = .false
+    -- Set the iconsRemoved and needWrite to false.  These flags are used in
+    -- the OnDrawTabRect() method.
+    iconsRemoved = .false
+    needWrite = .false
 
-   -- Connect the draw event of the owner-drawn button.  This is sent when the
-   -- button needs to be drawn.  Then connect the selection changed event of the
-   -- tab control.  This is sent when the user clicks on a different tab.
-   self~connectDraw(IDC_PB_OWNERDRAW, "onDrawTabRect")
-   self~connectTabEvent(IDC_TAB_MAIN, "SELCHANGE", "onTabSelChange")
+    -- Connect the draw event of the owner-drawn button.  This is sent when the
+    -- button needs to be drawn.  Then connect the selection changed event of the
+    -- tab control.  This is sent when the user clicks on a different tab.
+    self~connectDraw(IDC_PB_OWNERDRAW, "onDrawTabRect")
+    self~connectTabEvent(IDC_TAB_MAIN, "SELCHANGE", "onTabSelChange")
 
-   tc = self~newTab(IDC_TAB_MAIN)
-   if tc == .nil then return
+    pb = self~newPushButton(IDC_PB_OWNERDRAW)
+    tc = self~newTab(IDC_TAB_MAIN)
+    if tc == .nil then return
 
-   -- Create a font used to display the name of the color in the owner-drawn
-   -- button.  Create another font used to display some informative text.
-   font2 = self~createFontEX("Arial", 48, "BOLD ITALIC")
-   font3 = self~createFontEx("Arial", 16, "BOLD")
+    -- Create a font used to display the name of the color in the owner-drawn
+    -- button.  Create another font used to display some informative text.
+    font2 = self~createFontEX("Arial", 48, "BOLD ITALIC")
+    font3 = self~createFontEx("Arial", 16, "BOLD")
 
-   -- Add all the tabs, including the index into the image list for an icon for
-   -- each tab.
-   tc~AddFullSeq("Red", 0, ,"Green", 1, , "Moss", 2, , "Blue", 3, , "Purple", 4, , "Cyan", 5, , "Gray", 6)
+    -- Add all the tabs, including the index into the image list for an icon for
+    -- each tab.
+    tc~AddFullSeq("Red", 0, ,"Green", 1, , "Moss", 2, , "Blue", 3, , "Purple", 4, , "Cyan", 5, , "Gray", 6)
 
-   -- Create a COLORREF (pure white) and load our bitmap.  The bitmap is a
-   -- series of 16x16 images, each one a colored letter.
-   cRef = .Image~colorRef(255, 255, 255)
-   image = .Image~getImage("rc\propertySheetDemoTab.bmp")
+    -- Create a COLORREF (pure white) and load our bitmap.  The bitmap is a
+    -- series of 16x16 images, each one a colored letter.
+    cRef = .Image~colorRef(255, 255, 255)
+    image = .Image~getImage("rc\propertySheetDemoTab.bmp")
 
-   -- Create our image list, as a masked image list.
-   flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
-   imageList = .ImageList~create(.Size~new(16, 16), flags, 10, 0)
-   if \image~isNull,  \imageList~isNull then do
-      -- The bitmap is added and the image list deduces the number of images
-      -- from the width of the bitmap.  For each image, the image list creates a
-      -- mask using the color ref.  In essence, the mask is used to turn each
-      -- white pixel in the image to transparent.  In this way, only the letter
-      -- part of the image shows and the rest of the image lets the under-lying
-      -- color show through.
-      imageList~addMasked(image, cRef)
-      tc~setImageList(imageList)
+    -- Create our image list, as a masked image list.
+    flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
+    imageList = .ImageList~create(.Size~new(16, 16), flags, 10, 0)
+    if \image~isNull,  \imageList~isNull then do
+       -- The bitmap is added and the image list deduces the number of images
+       -- from the width of the bitmap.  For each image, the image list creates a
+       -- mask using the color ref.  In essence, the mask is used to turn each
+       -- white pixel in the image to transparent.  In this way, only the letter
+       -- part of the image shows and the rest of the image lets the under-lying
+       -- color show through.
+       imageList~addMasked(image, cRef)
+       tc~setImageList(imageList)
 
-      -- The image list makes a copy of each image added to it.  So, we can now
-      -- release the original image to free up some small amount of system
-      -- resoureces.
-      image~release
-   end
-   else do
-      iconsRemoved = .true
-   end
+       -- The image list makes a copy of each image added to it.  So, we can now
+       -- release the original image to free up some small amount of system
+       -- resoureces.
+       image~release
+    end
+    else do
+       iconsRemoved = .true
+    end
 
-  -- Have the tab control calculate its display area's size and position.
-  r = tc~windowRect
-  tc~calcDisplayRect(r)
-  s = .Size~new(r~right - r~left, r~bottom - r~top)
+    -- In a stand-alone dialog, we would size and position the content of the
+    -- tab control here.  But, this dialog is itself the content of the tab
+    -- control in the main dialog.  And, at this point, the main dialog has not
+    -- sized and positioned us.
+    --
+    -- If we call placeButton() at this point, the button won't be sized
+    -- correctly, because we are not yet sized.  Rather, for this program, the
+    -- main dialog invokes our placeButton() method at the proper time.  Only
+    -- the main dialog knows what that proper time is.
 
-  -- Get the owner draw push button. We'll resize and position it so that it
-  -- completely takes up the display area of the tab control.
-  pb = self~newPushButton(IDC_PB_OWNERDRAW)
 
-  -- Map the display area's position on the screen, to the client co-ordinates
-  -- of this control dialog.
-  p = .Point~new(r~left, r~top)
-  self~screen2client(p)
+-- This method sizes the owner-drawn button so that it is the size of the
+-- display rectangle of the tab control.  The process has to be done after this
+-- dialog has been sized and positioned by the main dialog.  This dialog can not
+-- know when that has happened, only the main dialog knows that.  So, it is the
+-- main dialog that invokes this method.
+::method placeButton unguarded
+    expose pb tc
 
-  -- Now resize and reposition the button so it exactly over-lays the display
-  -- area of the tab control.  We specify that the tab control window is behind
-  -- the button and use the flag that prevents the button's owner window, this
-  -- z-order from changing.  This leaves the tab control on top of the dialog,
-  -- and our push button on top of the tab control.  Which of course is what we
-  -- want.
-  pb~setWindowPos(tc~hwnd, p~x, p~y, s~width, s~height, "SHOWWINDOW NOOWNERZORDER")
+    -- We could be invoked before the underlying dialog has been created.
+    if \ tc~isA(.Tab) then return 0
 
+    -- Have the tab control calculate its display area's size and position.
+    r = tc~windowRect
+    tc~calcDisplayRect(r)
+    s = .Size~new(r~right - r~left, r~bottom - r~top)
+
+    -- Map the display area's position on the screen, to the client co-ordinates
+    -- of this control dialog.
+    p = .Point~new(r~left, r~top)
+    self~screen2client(p)
+
+    -- Now resize and reposition the button so it exactly over-lays the display
+    -- area of the tab control.  We specify that the tab control window is behind
+    -- the button and use the flag that prevents the button's owner window, this
+    -- z-order from changing.  This leaves the tab control on top of the dialog,
+    -- and our push button on top of the tab control.  Which of course is what we
+    -- want.
+    pb~setWindowPos(tc~hwnd, p~x, p~y, s~width, s~height, "SHOWWINDOW NOOWNERZORDER")
+
+    return 0
 
 
 -- When a new tab is selected, we have the owner-drawn button update itself.

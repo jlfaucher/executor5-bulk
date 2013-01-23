@@ -84,6 +84,25 @@
 
 ::class 'ListViewDlg' subclass RcPSPDialog inherit ResizingAdmin
 
+::method defineSizing
+
+    -- The only control in this dialog is the list-view.  We define its sizing
+    -- so that each edge of the list-view maintains the same distance to its
+    -- corresponding edeg of the dialog:
+    self~controlSizing(IDC_LV_MAIN,                            -
+                       .array~of('STATIONARY', 'LEFT'),        -
+                       .array~of('STATIONARY', 'TOP'),         -
+                       .array~of('STATIONARY', 'RIGHT'),       -
+                       .array~of('STATIONARY', 'BOTTOM')       -
+                      )
+
+
+    -- A value must be returned from the defineSizing() method.  O allows the
+    -- dialog to continue, any other failure is a failure and the dialog will be
+    -- ended.
+    return 0
+
+
 ::method initDialog
     expose lv
 
@@ -168,6 +187,7 @@
    j = MessageDialog("Column" column + 1 "was clicked in control" id, self~hwnd, "List-View Notification")
 
 
+
 ::class 'TreeViewDlg' subclass RcPSPDialog inherit ResizingAdmin
 
 ::method initDialog
@@ -239,6 +259,97 @@
 
 
 ::class 'ProgressBarDlg' subclass RcPSPDialog inherit ResizingAdmin
+
+-- Define the sizing for the controls.  Note that for the progress bars, we want
+-- to use the default sizing so that they resize proportionally.  But, we want
+-- the static labels to be fixed in size and pinned to the progress bar the
+-- label is for.
+--
+-- The individual sizing for a control is added to the sizing table in the order
+-- the sizings are defined.  Then, during a resize event, the windows are sized
+-- in the order they occur in the table.  For any control sizing definition, the
+-- pin to window has to *precede* the control in the table.  Otherwise resizing
+-- would not work correctly.
+--
+-- What this means is that we can not pin a static control to its progress bar
+-- unless the progress bar is already in the table.  The defaultSizing() method
+-- allows us to put a control in to the table with a minimum amount of typing.
+--
+-- We also show both ways of defing the edges of a control.  Using individual
+-- method calls for each edge, or using the single method call, controlSizing().
+::method defineSizing
+
+    self~noMinSize
+
+    self~useDefaultSizing(IDC_PBAR_PROCESSA)
+    self~useDefaultSizing(IDC_PBAR_PROCESSB)
+    self~useDefaultSizing(IDC_PBAR_PROCESSC)
+    self~useDefaultSizing(IDC_PBAR_PROCESSD)
+    self~useDefaultSizing(IDC_PBAR_PROCESSE)
+
+    self~controlLeft(  IDC_ST_PROCESSA, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSA)
+    self~controlTop(   IDC_ST_PROCESSA, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSA)
+    self~controlRight( IDC_ST_PROCESSA, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSA, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_PROCESSB, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSB)
+    self~controlTop(   IDC_ST_PROCESSB, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSB)
+    self~controlRight( IDC_ST_PROCESSB, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSB, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_PROCESSC, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSC)
+    self~controlTop(   IDC_ST_PROCESSC, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSC)
+    self~controlRight( IDC_ST_PROCESSC, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSC, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_PROCESSD, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSD)
+    self~controlTop(   IDC_ST_PROCESSD, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSD)
+    self~controlRight( IDC_ST_PROCESSD, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSD, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_PROCESSE, 'STATIONARY', 'XCENTER', IDC_PBAR_PROCESSE)
+    self~controlTop(   IDC_ST_PROCESSE, 'STATIONARY', 'TOP',     IDC_PBAR_PROCESSE)
+    self~controlRight( IDC_ST_PROCESSE, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_PROCESSE, 'MYTOP',      'TOP')
+
+    self~controlSizing(IDC_ST_PERCENTA,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSA),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSA),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
+
+    self~controlSizing(IDC_ST_PERCENTB,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSB),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSB),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
+
+    self~controlSizing(IDC_ST_PERCENTC,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSC),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSC),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
+
+    self~controlSizing(IDC_ST_PERCENTD,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSD),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSD),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
+
+    self~controlSizing(IDC_ST_PERCENTE,                                        -
+                       .array~of('STATIONARY', 'XCENTER', IDC_PBAR_PROCESSE),  -
+                       .array~of('STATIONARY', 'BOTTOM',  IDC_PBAR_PROCESSE),  -
+                       .array~of('MYLEFT',     'LEFT'),                        -
+                       .array~of('MYTOP',      'TOP')                          -
+                      )
+
+  return 0
+
+
 
 ::method initDialog
   expose threadsStarted processes
@@ -343,6 +454,103 @@
 
 
 ::class 'TrackBarDlg' subclass RcPSPDialog inherit ResizingAdmin
+
+-- Define the sizing of the controls.  Here, we have the 2 static frames that
+-- surround the trackbars grow proportionally to the dialog, which is the
+-- deault.  Then we pin the controls inside of a static frame to the static
+-- frame.
+--
+-- For the horizontal trackbars, it makes sense for them to stretch horizontally
+-- as the dialog widens.  But there is no point in them stretching vertially as
+-- the dialog get taller.  The actual part of the control that is drawn keeps
+-- the same vertical height.
+--
+-- The reverse is true for the vertical trackbars, they should stretch
+-- vertically and remain fixed horizontally.
+--
+-- All the static labels should remain fixed in size.  The labels for the
+-- horizontal trackbars are pinned to the bottoms of their trackbars and pinned
+-- proportionally to the left of their trackbars.  The labels for the vertical
+-- trackbars are pinned to the top of their trackbars and to the center of their
+-- trackbars.
+--
+-- For the horizontal trackbars: the top trakbar is pinned to the top of its
+-- frame, the bottom to the bottom of its frame, and the middle trackbar is
+-- pinned to the vertical center of its frame.
+--
+-- For the vertical trackbars: the left trackbar is pinned to the left of its
+-- frame, the right is pinned to the right of its frame, and the middle trackbar
+-- is pinned to the horizontal center of its frame.
+::method defineSizing
+
+    self~noMinSize
+
+    self~useDefaultSizing(IDC_ST_FRAME_LEFT)
+
+    self~controlLeft(  IDC_TB_HORZ_BOTTOM, 'STATIONARY', 'LEFT',  IDC_ST_FRAME_LEFT)
+    self~controlTop(   IDC_TB_HORZ_BOTTOM, 'STATIONARY', 'TOP',   IDC_ST_FRAME_LEFT)
+    self~controlRight( IDC_TB_HORZ_BOTTOM, 'STATIONARY', 'RIGHT', IDC_ST_FRAME_LEFT)
+    self~controlBottom(IDC_TB_HORZ_BOTTOM, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_HORZ_BOTTOM, 'PROPORTIONAL', 'LEFT',   IDC_TB_HORZ_BOTTOM)
+    self~controlTop(   IDC_ST_HORZ_BOTTOM, 'STATIONARY',   'BOTTOM', IDC_TB_HORZ_BOTTOM)
+    self~controlRight( IDC_ST_HORZ_BOTTOM, 'MYLEFT',       'LEFT')
+    self~controlBottom(IDC_ST_HORZ_BOTTOM, 'MYTOP',        'TOP')
+
+    self~controlLeft(  IDC_TB_HORZ_TOP, 'STATIONARY', 'LEFT',    IDC_ST_FRAME_LEFT)
+    self~controlTop(   IDC_TB_HORZ_TOP, 'STATIONARY', 'YCENTER', IDC_ST_FRAME_LEFT)
+    self~controlRight( IDC_TB_HORZ_TOP, 'STATIONARY', 'RIGHT',   IDC_ST_FRAME_LEFT)
+    self~controlBottom(IDC_TB_HORZ_TOP, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_HORZ_TOP, 'PROPORTIONAL', 'LEFT',   IDC_TB_HORZ_TOP)
+    self~controlTop(   IDC_ST_HORZ_TOP, 'STATIONARY',   'BOTTOM', IDC_TB_HORZ_TOP)
+    self~controlRight( IDC_ST_HORZ_TOP, 'MYLEFT',       'LEFT')
+    self~controlBottom(IDC_ST_HORZ_TOP, 'MYTOP',        'TOP')
+
+    self~controlLeft(  IDC_TB_HORZ_BOTH, 'STATIONARY', 'LEFT',   IDC_ST_FRAME_LEFT)
+    self~controlTop(   IDC_TB_HORZ_BOTH, 'STATIONARY', 'BOTTOM', IDC_ST_FRAME_LEFT)
+    self~controlRight( IDC_TB_HORZ_BOTH, 'STATIONARY', 'RIGHT',  IDC_ST_FRAME_LEFT)
+    self~controlBottom(IDC_TB_HORZ_BOTH, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_ST_HORZ_BOTH, 'PROPORTIONAL', 'LEFT',   IDC_TB_HORZ_BOTH)
+    self~controlTop(   IDC_ST_HORZ_BOTH, 'STATIONARY',   'BOTTOM', IDC_TB_HORZ_BOTH)
+    self~controlRight( IDC_ST_HORZ_BOTH, 'MYLEFT',       'LEFT')
+    self~controlBottom(IDC_ST_HORZ_BOTH, 'MYTOP',        'TOP')
+
+    self~useDefaultSizing(IDC_ST_FRAME_RIGHT)
+
+    self~controlLeft(  IDC_TB_VERT_RIGHT, 'STATIONARY', 'LEFT',    IDC_ST_FRAME_RIGHT)
+    self~controlTop(   IDC_TB_VERT_RIGHT, 'STATIONARY', 'TOP',     IDC_ST_FRAME_RIGHT)
+    self~controlRight( IDC_TB_VERT_RIGHT, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_TB_VERT_RIGHT, 'STATIONARY', 'BOTTOM',  IDC_ST_FRAME_RIGHT)
+
+    self~controlLeft(  IDC_ST_VERT_RIGHT, 'STATIONARY', 'XCENTER', IDC_TB_VERT_RIGHT)
+    self~controlTop(   IDC_ST_VERT_RIGHT, 'STATIONARY', 'TOP',     IDC_TB_VERT_RIGHT)
+    self~controlRight( IDC_ST_VERT_RIGHT, 'MYLEFT',     'LEFT')
+    self~controlBottom(IDC_ST_VERT_RIGHT, 'MYTOP',      'TOP')
+
+    self~controlLeft(  IDC_TB_VERT_LEFT, 'STATIONARY',  'XCENTER', IDC_ST_FRAME_RIGHT)
+    self~controlTop(   IDC_TB_VERT_LEFT, 'STATIONARY',  'TOP',     IDC_ST_FRAME_RIGHT)
+    self~controlRight( IDC_TB_VERT_LEFT, 'MYLEFT',      'LEFT')
+    self~controlBottom(IDC_TB_VERT_LEFT, 'STATIONARY',  'BOTTOM',  IDC_ST_FRAME_RIGHT)
+
+    self~controlLeft(  IDC_ST_VERT_LEFT, 'STATIONARY',  'XCENTER', IDC_TB_VERT_LEFT)
+    self~controlTop(   IDC_ST_VERT_LEFT, 'STATIONARY',  'TOP',     IDC_TB_VERT_LEFT)
+    self~controlRight( IDC_ST_VERT_LEFT, 'MYLEFT',      'LEFT')
+    self~controlBottom(IDC_ST_VERT_LEFT, 'MYTOP',       'TOP')
+
+    self~controlLeft(  IDC_TB_VERT_BOTH, 'STATIONARY',  'RIGHT',   IDC_ST_FRAME_RIGHT)
+    self~controlTop(   IDC_TB_VERT_BOTH, 'STATIONARY',  'TOP',     IDC_ST_FRAME_RIGHT)
+    self~controlRight( IDC_TB_VERT_BOTH, 'MYLEFT',      'LEFT')
+    self~controlBottom(IDC_TB_VERT_BOTH, 'STATIONARY',  'BOTTOM',  IDC_ST_FRAME_RIGHT)
+
+    self~controlLeft(  IDC_ST_VERT_BOTH, 'STATIONARY',  'XCENTER', IDC_TB_VERT_BOTH)
+    self~controlTop(   IDC_ST_VERT_BOTH, 'STATIONARY',  'TOP',     IDC_TB_VERT_BOTH)
+    self~controlRight( IDC_ST_VERT_BOTH, 'MYLEFT',      'LEFT')
+    self~controlBottom(IDC_ST_VERT_BOTH, 'MYTOP',       'TOP')
+
+  return 0
+
 
 ::method initDialog
     expose font1 trackBars tbLabels
@@ -474,8 +682,20 @@
 
 ::class 'TabDlg' subclass RcPSPDialog inherit ResizingAdmin
 
+::method defineSizing
+
+    self~controlSizing(IDC_TAB_MAIN,                           -
+                       .array~of('STATIONARY', 'LEFT'),        -
+                       .array~of('STATIONARY', 'TOP'),         -
+                       .array~of('STATIONARY', 'RIGHT'),       -
+                       .array~of('STATIONARY', 'BOTTOM')       -
+                      )
+
+    return 0
+
+
 ::method initDialog
-   expose font2 font3 imageList iconsRemoved needWrite
+   expose font2 font3 imageList iconsRemoved needWrite pb tc
 
    -- Set the iconsRemoved and needWrite to false.  These flags are used in
    -- the OnDrawTabRect() method.
@@ -488,6 +708,7 @@
    self~connectDraw(IDC_PB_OWNERDRAW, "onDrawTabRect")
    self~connectTabEvent(IDC_TAB_MAIN, "SELCHANGE", "onTabSelChange")
 
+  pb = self~newPushButton(IDC_PB_OWNERDRAW)
    tc = self~newTab(IDC_TAB_MAIN)
    if tc == .nil then return
 
@@ -504,6 +725,21 @@
    -- series of 16x16 images, each one a colored letter.
    cRef = .Image~colorRef(255, 255, 255)
    image = .Image~getImage("rc\propertySheetDemoTab.bmp")
+
+   -- This is sort of a trick.  The ooDialog framework invokes the initDialog()
+   -- method when it is notified by the Windows PropertySheet that it is
+   -- creating the dialog for a page.  But, the operating system does not size
+   -- and position the dialog until the ooDialog framework returns from the
+   -- notification.  So, at this exact point of execution, this dialog has not
+   -- been sized and positioned.  If we call placeButton() and then return from
+   -- initDialog(), the button is not sized and positioned correctly, because
+   -- this dialog has not been sized and positioned by the PropertySheet yet.
+   --
+   -- Instead, we return from initDialog() here, by using an early reply.  Then
+   -- we continue to create our imag list and invoke placeButton().  By the time
+   -- placeButton() executes, this dialog has been sized and positioned, and our
+   -- button sized and positioned correctly.
+   reply 0
 
    -- Create our image list, as a masked image list.
    flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
@@ -527,21 +763,31 @@
       iconsRemoved = .true
    end
 
-  -- We will position and size the owner-draw button so that it exactly covers
-  -- the display area of the tab control.
-  r = tc~windowRect
-  tc~calcDisplayRect(r)
-  s = .Size~new(r~right - r~left, r~bottom - r~top)
+   self~placeButton
 
-  pb = self~newPushButton(IDC_PB_OWNERDRAW)
 
-  -- Map the display area's position on the screen, to the client co-ordinates
-  -- of this control dialog.
-  p = .Point~new(r~left, r~top)
-  self~screen2client(p)
 
-  pb~setWindowPos(tc~hwnd, p~x, p~y, s~width, s~height, "SHOWWINDOW NOOWNERZORDER")
+-- We will position and size the owner-draw button so that it exactly covers
+-- the display area of the tab control.
+::method placeButton unguarded
+    expose tc pb
 
+    -- We could be invoked before the underlying dialog has been created.
+    if \ tc~isA(.Tab) then return 0
+
+    r = tc~windowRect
+    tc~calcDisplayRect(r)
+    s = .Size~new(r~right - r~left, r~bottom - r~top)
+
+
+    -- Map the display area's position on the screen, to the client co-ordinates
+    -- of this control dialog.
+    p = .Point~new(r~left, r~top)
+    self~screen2client(p)
+
+    pb~setWindowPos(tc~hwnd, p~x, p~y, s~width, s~height, "SHOWWINDOW NOOWNERZORDER")
+
+    return
 
 
 -- When a new tab is selected, we have the owner-drawn button update itself.
@@ -633,6 +879,50 @@
 
 ::class 'PropertySheetDemoDlg' subclass PropertySheetDialog inherit ResizingAdmin
 
+-- Define the sizing for the controls in the property sheet dialog.  Note that
+-- the control ID for the tab control is provided by a constant from the
+-- PropertySheetDialog class.  The Ok and Cancel push buttons have the usual IDs
+-- supplied by the operatting system.
+--
+-- We set the sizing for the tab control so that it keeps a fixed margin all the
+-- way around it.  This makes the tab control expand to take up as much space in
+-- the dialog as it can.  The buttons are fixed in size and pinned to the bottom
+-- right corner of the dialog.
 ::method defineSizing
 
-  return 0;
+    self~controlSizing(self~IDC_TAB_IN_PROPSHEET,              -
+                       .array~of('STATIONARY', 'LEFT'),        -
+                       .array~of('STATIONARY', 'TOP'),         -
+                       .array~of('STATIONARY', 'RIGHT'),       -
+                       .array~of('STATIONARY', 'BOTTOM')       -
+                      )
+
+    self~controlSizing(IDCANCEL,                           -
+                       .array~of('STATIONARY', 'RIGHT'),   -
+                       .array~of('STATIONARY', 'BOTTOM'),  -
+                       .array~of('MYLEFT',     'LEFT'),    -
+                       .array~of('MYTOP',      'TOP')      -
+                      )
+
+    -- Pin the left of the Ok button to the left of the Cancel button
+    self~controlSizing(IDOK,                                       -
+                       .array~of('STATIONARY', 'LEFT', IDCANCEL),  -
+                       .array~of('STATIONARY', 'BOTTOM'),          -
+                       .array~of('MYLEFT',     'LEFT'),            -
+                       .array~of('MYTOP',      'TOP')              -
+                      )
+
+    ret = self~wantSizeEnded('onSizeEnded', .true)
+
+    return 0;
+
+
+
+-- The onSizeEnded() method is invoked when the user has resized the dialog and
+-- that sizing is ended.  At this point the TabDlg dialog needs to recalculate
+-- and position the owner-drawn button.
+::method onSizeEnded unguarded
+    self~pages[5]~placeButton
+    return 0
+
+
