@@ -445,35 +445,75 @@ in the macrospace, the return code is -3 (&quot;Program is unreadable&quot;).</p
 <secondary>example using</secondary></indexterm>
 <example>
 <title>RexxStart</title>
+<para>
+  The following example for RexxStart should compile and execute on Linux. A few small changes as noted in the example, and
+  it should compile and execute on Windows.  This is dependent on having the build environment set up correctly. Note that
+  you need to provide a <computeroutput>test.rex</computeroutput> program for the executable to pass to the interpreter:
+</para>
 <programlisting>
 <![CDATA[
-int       return_code;                 /* interpreter return code    */
-CONSTRXSTRING  argv[1];                /* program argument string    */
-RXSTRING  retstr;                      /* program return value       */
-short     rc;                          /* converted return code      */
-char      return_buffer[250];          /* returned buffer            */
+/* rexxStartExample.c
 
-                                       /* build the argument string  */
-   MAKERXSTRING(argv[0], macro_argument,
-       strlen(macro_argument));
-                                       /* set up default return      */
+  gcc -D_GNU_SOURCE -std=c99 -pedantic -ldl rexxStartExample.c -lrexx -lrexxapi -o rexxStartExample
+
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <rexx.h>
+
+int main(int argc, char *argv[]) {
+   int           return_code; /* interpreter return code */
+   short         rc;          /* converted return code */
+
+   CONSTRXSTRING argr[1];     /* rexx program argument string */
+   RXSTRING      retstr;      /* rexx program return value */
+
+   char          return_buffer[250]; /* returned buffer */
+   char          rexx_argument[] = "theargument";
+
+   /* build the argument string */
+   MAKERXSTRING(argr[0], rexx_argument, strlen(rexx_argument));
+
+   /* set up default return */
    MAKERXSTRING(retstr, return_buffer, sizeof(return_buffer));
 
-   return_code = RexxStart(1,          /* one argument               */
-                          argv,        /* argument array             */
-                          "CHANGE.ED", /* Rexx procedure name        */
-                          NULL,        /* use disk version           */
-                          "Editor",    /* default address name       */
-                          RXCOMMAND,   /* calling as a subcommand    */
-                          NULL,        /* no exits used              */
-                          &rc,         /* converted return code      */
-                          &retstr);    /* returned result            */
+   retstr.strptr[0] = 0;
 
-                                       /* process return value       */
-...
-                                       /* need to return storage?    */
-   if (RXSTRPTR(retval) != return_buffer)
-     RexxFreeMemory(RXSTRPTR(retval)); /* release the RXSTRING       */
+   return_code = RexxStart(1,            // one argument
+                           argr,         // here it is
+                           "./test.rex", // name of program
+                           NULL,         // use disk version
+                           "bash",       // default address name
+                           RXCOMMAND,    // called as a subcommand
+                           NULL,         // no exits
+                           &rc,          // where to put rc
+                           &retstr);     // where to put returned string
+
+   /* process return value */
+   printf("rc %i\n", rc);
+   if (retstr.strlength > 0) {
+      printf("ret: %s\n", retstr.strptr);
+   }
+
+   /* need to return storage? */
+   if (RXSTRPTR(retstr) !=  return_buffer) {
+      RexxFreeMemory(RXSTRPTR(retstr)); /* release the RXSTRING */
+   }
+   return 0;
+}
+
+/*
+  In the above code, change: "./test.rex" to: ".\test.rex" and
+  change: "bash" to: "cmd".
+
+  For the VC++ copiler, this command line should work:
+
+  cl rexxStartExample.cpp rexx.lib rexxapi.lib
+
+*/
+
 ]]>
 </programlisting>
 </example>
