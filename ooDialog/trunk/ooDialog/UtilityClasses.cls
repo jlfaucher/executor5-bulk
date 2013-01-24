@@ -896,67 +896,86 @@
 -- an OK and a Cancel push button.
 ::class 'InputBox' subclass UserDialog public
 
-::method sx attribute
-::method sy attribute
+::constant  IDC_EDIT   101
+::attribute sx
+::attribute sy
+::attribute editText unguarded
 
 ::method init
    expose message title datas. size
-   use arg message, title, default, size
-   if arg(3,"o") = 1 | default = "DEFAULT" then datas.101 = ""; else datas.101 = default
-   if arg(4,"o") = 1 | size = "SIZE" then size = 0
-   self~init:super(datas.)
+   use arg message, title, default = "", size = 0
+   self~init:super
+   self~editText = default
 
 ::method defineDialog
    expose message size dlgy
    if size = 0 then size = self~sx
-   self~createStaticText(-1, 10, 10, self~sx+2, self~sy, , message)
-   self~AddLine(10, self~sy+4+10, size)
+   self~createStaticText(-1, 10, 10, self~sx + 2, self~sy, , message)
+   self~addLine(10, self~sy + 4 + 10, size)
    self~createPushButtonGroup(self~sx-80, dlgy - 18, 0, 0, "&Ok 1 OK &Cancel 2 CANCEL", 1, "DEFAULT")
 
 ::method addLine
    use arg x, y, l
-   self~createEdit(101, x, y, l, , , "DATA")
-
+   self~createEdit(self~IDC_EDIT, x, y, l)
 
 ::method execute
-   expose message title datas. dlgy size
+   expose message title dlgy size
 
    s = self~getTextSizeDu(message)
-   self~sx = max(s~width,100,size)
+   self~sx = max(s~width, 100, size)
    self~sy = s~height
 
-   dlgy = (self~sy+4)*2+36
+   dlgy = (self~sy + 4) * 2 + 36
    dlgx = self~sx + 20
    if dlgx < 110 then dlgx = 110
 
    self~createCenter(dlgx, dlgy, title,,,,,4)
    self~execute:super("SHOWTOP")
-   if self~initCode = 1 then return datas.101
+   if self~initCode = 1 then return self~editText
    else return ""
 
+::method initDialog
+   self~newEdit(self~IDC_EDIT)~setText(self~editText)
 
--- This class is an InputBox dialog which entry line have the not visible flag.
+::method ok unguarded
+   self~editText = self~newEdit(self~IDC_EDIT)~getText
+   return self~ok:super
+
+::method initAutoDetection
+   self~noAutoDetection
+
+
+-- A subclass of an InputBox dialog that masks the user input. Suitable for
+-- asking the user for a password.
 ::class 'PasswordBox' subclass InputBox public
 
-::method AddLine
+::method addLine
    use arg x, y, l
-   self~createPasswordEdit(101, x, y, l, , , "DATA")
+   self~createPasswordEdit(self~IDC_EDIT, x, y, l)
 
 
--- This class is an InputBox dialog which entry line allows only numerical data.
+-- A subclass of an InputBox dialog that only accepts numerical data.
 ::class 'IntegerBox' subclass InputBox public
 
 ::method validate
-   self~GetDataStem(datas.)
-   if datas.101~DataType('W') = 0 then
-   do
-      call infoDialog "You did not enter numerical data"
-      return 0
+   text = self~newEdit(self~IDC_EDIT)~getText
+   if \ text~dataType('W') then do
+      msg = "You did not enter numerical data"
+      title = 'Data Input Error'
+      j = MessageDialog(msg, self~hwnd, title, 'OK', 'ERROR')
+      return .false
    end
-   else return 1
+   else return .true
 
 
 ::class 'MultiInputBox' subclass UserDialog public
+
+-- This class is too hard to implement without automatic data detection and
+-- still retain backwards compatibility.  So, we explicitly set it to on for
+-- this dialog.  That way it will work if the user has globaly set it to off or
+-- on.
+::method initAutoDetection
+   self~autoDetection
 
 ::method init
    expose message title datas. entries. len
@@ -999,6 +1018,7 @@
 
 ::class 'ListChoice' subclass UserDialog public
 
+::constant  IDC_LB   101
 ::attribute sx
 ::attribute sy
 ::attribute dlgx
@@ -1007,14 +1027,14 @@
 ::attribute leny
 ::attribute message
 ::attribute useVScroll
+::attribute lbSelection unguarded
 
 ::method init
-   expose message title datas. input. lenx leny
-   use arg message, title, input., lenx, leny, predev
-   if arg(4,"o") = 1 then lenx = 0
-   if arg(5,"o") = 1 then leny = 0
-   if arg(6,"o") = 0 then datas.101 = predev; else datas.101 = ""
-   self~init:super(datas.)
+   expose message title input. lenx leny
+   use arg message, title, input., lenx = 0, leny = 0, predev = ''
+
+   self~init:super
+   self~lbSelection = predev
    s = self~getTextSizeDu(message)
    self~sx = s~width
    self~sy = s~height
@@ -1023,21 +1043,21 @@
 
 ::method defineDialog
    expose message sx sy lenx leny dlgx dlgy
-   self~createStaticText(-1, 10, 10, sx+2, sy, , message)
+   self~createStaticText(-1, 10, 10, sx + 2, sy, , message)
    if self~useVScroll then style = "VSCROLL"
    else style = "PARTIAL"
-   self~createListBox(101, 10, sy+4+10, lenx, leny+4, style, "DATA")
-   self~createPushButtonGroup(dlgx-100, dlgy - 18, 0, 0, "&Ok 1 OK &Cancel 2 CANCEL", 1, "DEFAULT")
+   self~createListBox(self~IDC_LB, 10, sy + 4 + 10, lenx, leny+4, style)
+   self~createPushButtonGroup(dlgx - 100, dlgy - 18, 0, 0, "&Ok 1 OK &Cancel 2 CANCEL", 1, "DEFAULT")
 
 ::method initDialog
    expose count input.
    do i = 1 to count
-      self~addListEntry(101, input.i)
+      self~addListEntry(self~IDC_LB, input.i)
    end
-   self~setListBoxData(101, "")
+   self~setListBoxData(self~IDC_LB, self~lbSelection)
 
 ::method execute
-   expose message title sx sy datas. input. count lenx leny dlgx dlgy useVScroll
+   expose message title sx sy input. count lenx leny dlgx dlgy useVScroll
 
    s = self~getTextSizeDu(message)
    sx = s~width
@@ -1080,7 +1100,7 @@
    self~createCenter(self~dlgx, self~dlgy, title,,,,, 4)
    self~execute:super("SHOWTOP")
 
-   if self~initCode = 1 then return datas.101
+   if self~initCode = 1 then return self~lbSelection
    else return ""
 
 ::method recalcListBoxWidth private
@@ -1097,6 +1117,14 @@
    if size~width > 15 then return size~width + 2
    else return size~width
 
+::method ok unguarded
+   self~lbSelection = self~newListBox(self~IDC_LB)~selected
+   return self~ok:super
+
+::method initAutoDetection
+   self~noAutoDetection
+
+
 
 ::class 'MultiListChoice' subclass ListChoice public
 
@@ -1107,18 +1135,29 @@
    self~createListBox(101, 10, self~sy+4+10, self~lenx, self~leny+4, style, "DATA")
    self~createPushButtonGroup(self~dlgx-100, self~dlgy - 18, 0, 0, "&Ok 1 OK &Cancel 2 CANCEL", 1, "DEFAULT")
 
+::method ok unguarded
+   self~lbSelection = self~newListBox(self~IDC_LB)~selectedIndexes
+   return self~ok:.UserDialog
+
+
 
 ::class 'CheckList' subclass UserDialog public
 
   /* Entries is a stem variable with all the titles for the check boxes */
   /* Datas is a stem variable you can use to preselect the check boxes */
   /* 'Datas.i=1' means there will be a check mark on the i-th box */
-::method Init
+::method init
    expose message title datas. entries. len max
    use arg message, title, entries., datas., len, max
    if arg(5,"o") = 1 then len = 0
    if arg(6,"o") = 1 then max = 0
    self~init:super(datas.)
+
+-- Punt on this class and use automatic data detection to retain backwards
+-- compatibility.  We explicitly set it to on for this dialog.  That way it will
+-- work if the user has globaly set it to off or on.
+::method initAutoDetection
+   self~autoDetection
 
 ::method defineDialog
    expose message sx sy len dlgx dlgy entries. placex max
@@ -1164,88 +1203,85 @@
 ::constant  MIN_DLGCX   110  -- minimum size to accomdate ok / cancel buttons
 ::constant  MIN_RB_ID   101  -- first radio button resource ID
 
-::method init
-   expose message title entries. preSel len max enhanced
-   use strict arg  message, title, entries., preSel = 1, len = 0, max = 0
+::attribute selected unguarded
 
-   self~init:super(datas.)
+::method init
+    expose message title entries. preSel len max
+    use strict arg  message, title, entries., preSel = 1, len = 0, max = 0
+    self~init:super
+    self~selected = self~MIN_RB_ID - 1 + preSel
 
 ::method defineDialog
-   expose entries. dlgCX dlgCY msgCX msgCY message groupBoxX staticX len max
+    expose entries. dlgCX dlgCY msgCX msgCY message groupBoxX staticX len max
 
-   buttonTxt = "&Ok 1 OK &Cancel 2 CANCEL"
+    buttonTxt = "&Ok 1 OK &Cancel 2 CANCEL"
 
-   self~createStaticText(-1, staticX, 10, msgCX + 2, msgCY, , message)
-   self~createRadioButtonStem(self~MIN_RB_ID, groupBoxX, msgCY + 4 + 10, len, entries., max)
-   self~createPushButtonGroup(dlgCX - 100, dlgCY - 18, 0, 0, buttonTxt, 1, "DEFAULT")
+    self~createStaticText(-1, staticX, 10, msgCX + 2, msgCY, , message)
+    self~createRadioButtonStem(self~MIN_RB_ID, groupBoxX, msgCY + 4 + 10, len, entries., max)
+    self~createPushButtonGroup(dlgCX - 100, dlgCY - 18, 0, 0, buttonTxt, 1, "DEFAULT")
+
+::method initDialog
+    self~newRadioButton(self~selected)~check
 
 ::method execute
-   expose enhanced dlgCX dlgCY title count
-   datas. = self~dlgData
+    expose dlgCX dlgCY title count
 
-   self~calcSizes
+    self~calcSizes
+    self~createCenter(dlgCX, dlgCY, title, , , , , count + 5)
 
-   self~createCenter(dlgCX, dlgCY, title, , , , , count + 5)
+    self~execute:super("SHOWTOP")
+    if self~initCode = 1 then return (self~selected - self~MIN_RB_ID + 1)
+    else return ""
 
-   self~execute:super("SHOWTOP")
-   if self~initCode = 1 then do
-      offSet = self~MIN_RB_ID - 1
-      do i = self~MIN_RB_ID to offset + count
-         if datas.i = 1 then return i - offset
-      end
-      return 0
-   end
-   else do
-      return ""
-   end
+::method ok unguarded
+    expose count
+
+    do i = self~MIN_RB_ID to (self~MIN_RB_ID + count - 1)
+        if self~newRadioButton(i)~checked then do
+            self~selected = i
+            leave
+       end
+    end
+    return self~ok:super
 
 ::method calcSizes private
-   expose entries. max preSel message len msgCX msgCy count dlgCX dlgCY groupBoxX staticX
+    expose entries. max preSel message len msgCX msgCy count dlgCX dlgCY groupBoxX staticX
 
-   datas.   = self~dlgData
+    s = self~getTextSizeDu(message)
+    msgCX = s~width
+    msgCY = s~height
+    ll = 0; count = 0
+    do while var("entries."count + 1) = 1
+        count += 1
+        if len == 0 then do
+            s = self~getTextSizeDu(entries.count)
+            if s~width > ll then ll = s~width
+        end
+    end
+    if len <> 0 then ll = len
+    else ll += 20
 
-   s = self~getTextSizeDu(message)
-   msgCX = s~width
-   msgCY = s~height
-   ll = 0; count = 0
-   do while var("entries."count + 1) = 1
-      count += 1
-      if len == 0 then do
-          s = self~getTextSizeDu(entries.count)
-          if s~width > ll then ll = s~width
-      end
-   end
-   if len <> 0 then ll = len
-   else ll += 20
+    if max = 0 then max = count
+    dlgCY = max * trunc(msgCY * 1.5) + msgCY + 60
+    dlgCX = self~getMinDlgCX
+    groupBoxX = 10
+    staticX = 10
+    columns = (count % max)
+    if  (count // max) > 0 then columns = columns + 1
 
-   if max = 0 then max = count
-   dlgCY = max * trunc(msgCY * 1.5) + msgCY + 60
-   dlgCX = self~getMinDlgCX
-   groupBoxX = 10
-   staticX = 10
-   columns = (count % max)
-   if  (count // max) > 0 then columns = columns + 1
+    groupBoxCX = ll * columns
+    if msgCX >= groupBoxCX then do
+        if (msgCX + 24) > dlgCX then dlgCX = (msgCX + 24)
+    end
+    else do
+        if groupBoxCX + 24 > dlgCX then dlgCX = groupBoxCX + 24
+    end
 
-   groupBoxCX = ll * columns
-   if msgCX >= groupBoxCX then do
-      if (msgCX + 24) > dlgCX then dlgCX = (msgCX + 24)
-   end
-   else do
-      if groupBoxCX + 24 > dlgCX then dlgCX = groupBoxCX + 24
-   end
-
-   if groupBoxCX + 4 < dlgCX then do
-      groupBoxX = trunc((dlgCX - groupBoxCX) / 2)
-      if groupBoxCX >= msgCX then staticX = groupBoxX
-      else staticX = trunc((dlgCX - msgCX) / 2)
-   end
-
-   offset = self~MIN_RB_ID - 1
-   do i = self~MIN_RB_ID to offset + count
-      datas.i = 0
-   end
-   pr = (offset + preSel)
-   datas.pr = 1
+    if groupBoxCX + 4 < dlgCX then do
+        groupBoxX = trunc((dlgCX - groupBoxCX) / 2)
+        if groupBoxCX >= msgCX then staticX = groupBoxX
+        else staticX = trunc((dlgCX - msgCX) / 2)
+    end
 
 ::method getMinDlgCX private
     expose title
@@ -1259,6 +1295,8 @@
     if self~MIN_DLGCX < s~width then return s~width
     else return self~MIN_DLGCX
 
+::method initAutoDetection
+    self~noAutoDetection
 
 
 -- Never documented and does not work well.  Could be usefull if fixed.

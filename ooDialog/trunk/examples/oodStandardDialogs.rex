@@ -104,6 +104,8 @@ return 0
     do i = 101 to 107
        chk.i = 0
     end
+    chk.102 = 1
+    chk.104 = 1
 
     d = .CheckList~new("This is a checklist dialog","Checklist",lst., chk.)
 
@@ -143,7 +145,7 @@ return 0
     lst.1  = "Monday" ; lst.2  = "Tuesday" ; lst.3  = "Wednesday" ; lst.4  = "Thursday"
     lst.5  = "Friday" ; lst.6  = "Saturday"; lst.7  = "Sunday"
 
-    d = .ListChoice~new("This is a listchoice dialog, please select the day","ListChoice",lst.)
+    d = .ListChoice~new("This is a listchoice dialog, please select the day","ListChoice",lst., , , 'Thursday')
     s = d~execute
     msg = "Your ListChoice data:" || .endOfLine~copies(2) || s
     self~displayResult(msg, 'List Choice Dialog Results:')
