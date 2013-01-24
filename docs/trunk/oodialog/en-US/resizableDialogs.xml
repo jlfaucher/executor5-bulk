@@ -1619,8 +1619,17 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin Class</primary></indexterm>
 <para>
   The <computeroutput>ResizingAdmin</computeroutput> class is a <computeroutput>mixin</computeroutput> class. Resizable
-  dialogs are produced by having a dialog class inherit the <computeroutput>ResizingAdmin</computeroutput> class. This makes
-  any ooDialog dialog resizable without having to change any code in the dialog, even existing dialogs.
+  dialogs are produced by having a dialog class inherit the <computeroutput>ResizingAdmin</computeroutput> class. Any
+  ooDialog dialog that inherits the resizing admin class becomes resizable, using a default resizing policy, without adding
+  any other code. Existing programs can add resizability to the dialogs in the programm by adding:
+<programlisting>
+<![CDATA[
+  inherit ResizingAdmin
+]]>
+</programlisting>
+  to the class definition of the dialog subclasses without making any other code changes. In many cases the default sizing
+  policy produces an adequate resizable dialog. If not, methods of the <computeroutput>ResizingAdmin</computeroutput> can be
+  used to specify a different default sizing policy, or to specify different resizing rules for individual controls.
 </para>
 
 
@@ -1628,7 +1637,7 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin Class</primary><secondary>basics</secondary></indexterm>
 <para>
   The basic idea behind the <computeroutput>ResizingAdmin</computeroutput> class is relatively simple. The idea is that each
-  edge, or side, of a dialog control window is <emphasis role="italic">pinned</emphasis> to the edge of the dialog window, or
+  edge, or side, of a dialog control window is <emphasis role="italic">pinned</emphasis> to an edge of the dialog window, or
   an edge of a dialog control within the dialog. As the edge of the <emphasis role="italic">pinned to</emphasis> window
   changes position, the <emphasis role="italic">pinned</emphasis> edge of the dialog control changes position according to
   the <emphasis role="italic">type</emphasis> of pin.
@@ -1637,17 +1646,17 @@ u~resize(self, sizeinfo)
   This can be visualized using a list-view in a dialog, where the left edge of the list-view is <emphasis
   role="italic">pinned</emphasis> to the left edge of the dialog and the right edge of the list-view is <emphasis
   role="italic">pinned</emphasis> to the right edge of the dialog. As the left edge of the dialog is pulled to the left, the
-  pinned left edge of the list-view is pulled to the left along with it. The right edge of the list-view is pinne to the
-  right edge of the dialog, so it remains stationary, (the right edge of the dialog is stationary.) The dialog increases in
-  width and the list-view increases in width also.
+  pinned left edge of the list-view is pulled to the left along with it. The right edge of the list-view is pinned to the
+  right edge of the dialog, so it remains stationary, (the right edge of the dialog is stationary.) As the dialog increases
+  in width and the list-view increases in width also.
 </para>
 <para>
   Every edge of every control in the dialog has a <emphasis role="italic">sizing defintion</emphasis> assigned to it. If the
   programmer does not explicitly define a sizing for an edge of a control, a default sizing definition is assigned to it by
   the ooDialog framework. This is how a dialog can be made resizable by just inheriting the
   <computeroutput>ResizingAdmin</computeroutput> and nothing else. The ooDialog framework will assign a default sizing
-  definition to each edge of the control. The default sizing definition may be adequate for the programmer's needs. If not,
-  the programmer can set the sizing definitions for the edges of the controls as needed.
+  definition to each edge of every control in the dialog. The default sizing definition may be adequate for the programmer's
+  needs. If not, the programmer can set the sizing definitions for the edges of the controls as needed.
 </para>
 <para>
   The sizing definitions for every control are placed in a table. When a resizing event happens, every control is resized,
@@ -1692,10 +1701,10 @@ u~resize(self, sizeinfo)
 </listitem>
 <listitem>
 <para>
-  The <emphasis role="italic">pinned to window</emphasis>. The window an edge is pinned must be either another dialog control
-  window or the dialog window itself. Resource IDs are used to specify other dialog control windows. A special contstant
-  value, IDC_DEFAULT_PINTO_WINDOW, is provided to specify the dialog window. However, the dialog window is also the default,
-  usually the IDC_IDC_DEFAULT_PINTO_WINDOW constant does not need to be specified.
+  The <emphasis role="italic">pinned to window</emphasis>. The window an edge is pinned to must be either another dialog
+  control window or the dialog window itself. Resource IDs are used to specify other dialog control windows. A special
+  contstant value, IDC_DEFAULT_PINTO_WINDOW, is provided to specify the dialog window. However, the dialog window is also the
+  default, usually the IDC_IDC_DEFAULT_PINTO_WINDOW constant does not need to be specified.
 </para>
 </listitem>
 </itemizedlist>
@@ -1786,10 +1795,11 @@ u~resize(self, sizeinfo)
       a line of code for this type of pin would look like this:
 <programlisting>
 <![CDATA[
-  self~controlRight( IDC_ST_PROCESSA, 'MYLEFT', 'LEFT')
+  self~controlRight(IDC_ST_PROCESSA, 'MYLEFT', 'LEFT')
 ]]>
 </programlisting>
-      The <emphasis role="italic">LEFT</emphasis> argument in the above is actually ignored.
+      The <emphasis role="italic">LEFT</emphasis> argument in the above is actually ignored. IDC_ST_PROCESSA is a valid
+      symbolic ID in the application.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>MyTop:</term>
@@ -1805,12 +1815,23 @@ u~resize(self, sizeinfo)
   self~controlBottom(IDC_ST_PROCESSB, 'MYTOP', 'TOP')
 ]]>
 </programlisting>
-      The <emphasis role="italic">TOP</emphasis> argument in the above is actually ignored.
+      The <emphasis role="italic">TOP</emphasis> argument in the above is actually ignored. IDC_ST_PROCESSB is a valid
+      symbolic ID in the application.
     </para>
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
 </variablelist>
+<para>
+  There are a number of sizing definitons that would result in incorrectly sized contorls. Take for instance control A that
+  is pinned to an edge in control B. If control B were to come after control A in the sizing table, then when control A was
+  being resized, it would be resized in relationship to the <emphasis role="italic">old</emphasis> size of control B.
+  Whatever relationship was desired with the control B window would not be carried out correctly. In a case like this, the
+  Rexx programmer would see that the dialog was not resized the way intended, but it would be very difficult to determine
+  why. Because of this, when this documentation says things like: <emphasis role="italic">the pin to window B must precede
+  the window being pinned in the sizing table</emphasis>, what is really meant is that a syntax condition is raised if that
+  condition is detected.
+</para>
 
 </section>  <!-- End Section ResizingPrinciples  -->
 
@@ -1846,11 +1867,11 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="atrMaxSize"/></entry>
-<entry>xx.</entry>
+<entry>Reflects the maximum size the dialog is allowed to resize to. By default, there is no limit on the maximum size for the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="atrMinSize"/></entry>
-<entry>xx.</entry>
+<entry>Reflects the minimum size the dialog is allowed to resize to. By default, the minimum size for the dialog is set to its initial when the operating system first creates it.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -1947,7 +1968,7 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">maxSize set:</emphasis></term>
   <listitem>
   <para>
-    Set the maximum size a dialog can be sized to using a <computeroutput>Size</computeroutput> object. The <emphasis
+    Sets the maximum size a dialog can be sized to using a <computeroutput>Size</computeroutput> object. The <emphasis
     role="italic">width</emphasis> of the <computeroutput>size</computeroutput> object is the maximum width, in pixels, for
     the dialog and the <emphasis role="italic">height</emphasis> of the <computeroutput>size</computeroutput> object is the
     maximum height, in pixels for the dialog. By default, the dialog will not have a maximum size restriction.
@@ -1975,10 +1996,15 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example set the maximum size for the resizable dialog based on a proportion of the initial dialog size.
 <programlisting>
 <![CDATA[
 
+::method initDialog
+
+  size = self~MinSize
+  max = .Size~new(size~width * 2, trunc(size~height * 1.5))
+  self~maxSize = max
 
 ]]>
 </programlisting>
