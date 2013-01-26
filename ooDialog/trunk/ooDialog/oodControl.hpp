@@ -199,7 +199,7 @@ typedef struct _tvCDSimple
 typedef CTvCustomDrawSimple *pCTvCustomDrawSimple;
 
 extern MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd);
-extern HTREEITEM    tvFindItem(HWND hTv, CSTRING text);
+extern HTREEITEM    tvFindItem(HWND hTv, CSTRING text, HTREEITEM startItem, bool abbrev);
 
 
 enum DateTimePart {dtFull, dtTime, dtDate, dtNow};

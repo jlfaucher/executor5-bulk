@@ -460,7 +460,7 @@ static bool setTreeViewData(HWND hDlg, const char * ldat, uint32_t ctrlID)
 
    if ( hCtrl != NULL )
    {
-       HTREEITEM hItem = tvFindItem(hCtrl, ldat);
+       HTREEITEM hItem = tvFindItem(hCtrl, ldat, NULL, false);
 
        if ( hItem != NULL )
        {
