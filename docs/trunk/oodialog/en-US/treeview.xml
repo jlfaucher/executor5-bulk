@@ -993,8 +993,8 @@ associated with the specified parent item.</para>
 <indexterm><primary>TreeView class</primary><secondary>find</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--find(--text--)-------------------------------><
-
+>>--find(--text--+-------------+--+----------+--)---------------><
+                 +-,-startItem-+  +-,-abbrev-+
 ]]>
 </programlisting>
 
@@ -1005,15 +1005,32 @@ associated with the specified parent item.</para>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The single argument is:
+    The arguments are:
     <variablelist>
       <varlistentry><term>text [required]</term>
       <listitem>
       <para>
-        Specifies the label, the text, of item to search for. The search is case insensitive, but is otherwise exact.
-        I.e., <emphasis role="italic">Coffe Product</emphasis> will not match <emphasis role="italic">Coffe
-        Products</emphasis>, but will match <emphasis role="italic">coffe product</emphasis> or <emphasis
-        role="italic">coffe PRODUCT</emphasis>
+        Specifies the label, the text, of item to search for. If the <emphasis role="italic">abbrev</emphasis> arugment is
+        omitted or false, the search is case insensitive, but is otherwise exact. I.e., <emphasis role="italic">Coffee
+        Product</emphasis> will not match <emphasis role="italic">Coffee Products</emphasis>, but will match <emphasis
+        role="italic">coffee product</emphasis> or <emphasis role="italic">coffee PRODUCT</emphasis>
+      </para> </listitem></varlistentry>
+      <varlistentry><term>startItem [optiona]</term>
+      <listitem>
+      <para>
+        The tree-view item to begin the search at. If omitted, the search begins at the root of the tree.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>abbrev [optiona]</term>
+      <listitem>
+      <para>
+        True to match any item whose label begins with <emphasis role="italic">text</emphasis>. False to exactly match
+        <emphasis role="italic">text</emphasis>. The default is false.
+      </para>
+      <para>
+        If <emphasis role="italic">abbrev</emphasis> is true and <emphasis role="italic">text</emphasis> is <emphasis
+        role="italic">Coffee product</emphasis>, then the labels <emphasis role="italic">coffee product</emphasis>, <emphasis
+        role="italic">COFFEE products</emphasis>, and <emphasis role="italic">coffee prodution</emphasis> will all match.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1022,14 +1039,19 @@ associated with the specified parent item.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the <link linkend="defHandle">handle</link> of the item found, or 0 if no item matches <emphasis
-    role="italic">text</emphasis>.
+    Returns the <link linkend="defHandle">handle</link> of the first item found that matches the search specifications, or 0
+    if no item is found.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The first item to match the search text is returned. The search always starts at the root of the tree.
+    The search starts at the tree-view item specified, the root item by default, and recursively searches all children and
+    grandchildren of the start point. There is only one root item in a tree-view control. Microsoft defines the root in a
+    tree-view to be the first item added.  It is possible, but unusual, to add a <emphasis role="italic">parent</emphasis>
+    tree-view item at the same level as the root item that is not a child of the root. It is important to note that the
+    search is not a search of <emphasis role="italic">every</emphasis> item in the tree-view, it is a search of every child
+    and grandchild of the start point.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1058,8 +1080,6 @@ associated with the specified parent item.</para>
 <programlisting>
 <![CDATA[
 >>--firstVisible---------------------------------><
-
-
 ]]>
 </programlisting>
 
