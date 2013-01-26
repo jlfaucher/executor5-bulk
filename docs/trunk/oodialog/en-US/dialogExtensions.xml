@@ -2533,7 +2533,7 @@ method to manually update the display.
 <![CDATA[
 
 >>--popup(--+-------------+--+------------+--+--------+--)------><
-           +--showOption-+  +-,-ignored--+  +-,-icon-+
+            +--showOption-+  +-,-ignored--+  +-,-icon-+
 
 ]]>
 </programlisting>
@@ -2641,7 +2641,10 @@ method to manually update the display.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Note that the example shown below for the <emphasis role="italic">popup</emphasis> method makes use of the returned
+    <computeroutput>Message</computeroutput> object to illustrate a possible use of the return. However, it is a contrived
+    use case. Typically it is easier to just work with the instantiated dialog object directly.  (In the case of the example
+    this would be the <emphasis role="italic">dlg</emphasis> variable.)
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2702,16 +2705,16 @@ method to manually update the display.
 <![CDATA[
 
 >>--popupAsChild(--+-parent-+--------------+--+------------+--+--------+--)----><
-                           +-,-showOption-+  +-,-ignored--+  +-,-icon-+
+                            +-,-showOption-+  +-,-ignored--+  +-,-icon-+
 
 ]]>
 </programlisting>
 
 <para>
   The <emphasis role="italic">popupAsChild</emphasis> method starts a <link linkend="defModalModeless">modeless</link>
-  dialog executing and returns immediately. It is very similar to the
-                                                     <xref linkend="mthPopup"/> method, but has the additional functionality
-  that it is closed automatically when the <emphasis role="italic">parent</emphasis> dialog is closed.
+  dialog executing and returns immediately. It is very similar to the <xref linkend="mthPopup"/> method, but has the
+  additional functionality that it is closed automatically when the <emphasis role="italic">parent</emphasis> dialog is
+  closed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2827,6 +2830,13 @@ method to manually update the display.
     when the dialog started with <emphasis role="italic">popupAsChild</emphasis> is closed, the <emphasis
     role="italic">parent</emphasis> dialog continues to execute as normal. It is not effected by the closing of the
     <emphasis role="italic">child</emphasis> dialog.
+  </para>
+  <para>
+    Note also that the example shown below for the <emphasis role="italic">popupAsChild</emphasis> method makes use of the
+    returned <computeroutput>Message</computeroutput> object from the <emphasis role="italic">popup</emphasis> method to
+    illustrate a possible use of the return. However, it is a contrived use case. Typically it is easier to just work with
+    the instantiated dialog object directly.  (In the case of the example this would be the <emphasis
+    role="italic">parenDlg</emphasis> variable.)
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
