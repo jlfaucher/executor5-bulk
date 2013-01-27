@@ -1501,6 +1501,22 @@ REXX_METHOD_PROTOTYPE(tvcds_getItemData );
 REXX_METHOD_PROTOTYPE(tvcds_setReply    );
 REXX_METHOD_PROTOTYPE(tvcds_getLevel    );
 
+// BrowseForFolder
+REXX_METHOD_PROTOTYPE(bff_banner);
+REXX_METHOD_PROTOTYPE(bff_setBanner);
+REXX_METHOD_PROTOTYPE(bff_dlgTitle);
+REXX_METHOD_PROTOTYPE(bff_setDlgTitle);
+REXX_METHOD_PROTOTYPE(bff_hint);
+REXX_METHOD_PROTOTYPE(bff_setHint);
+REXX_METHOD_PROTOTYPE(bff_root);
+REXX_METHOD_PROTOTYPE(bff_setRoot);
+REXX_METHOD_PROTOTYPE(bff_startDir);
+REXX_METHOD_PROTOTYPE(bff_setStartDir);
+REXX_METHOD_PROTOTYPE(bff_init);
+REXX_METHOD_PROTOTYPE(bff_uninit);
+REXX_METHOD_PROTOTYPE(bff_getFolder);
+REXX_METHOD_PROTOTYPE(bff_getItemID);
+
 
 RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_init_cls,               dlgutil_init_cls),
@@ -2569,6 +2585,22 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tvcds_getItemData,              tvcds_getItemData),
     REXX_METHOD(tvcds_setReply,                 tvcds_setReply),
     REXX_METHOD(tvcds_getLevel,                 tvcds_getLevel),
+
+// BrowseForFolder
+    REXX_METHOD(bff_banner,                     bff_banner),
+    REXX_METHOD(bff_setBanner,                  bff_setBanner),
+    REXX_METHOD(bff_dlgTitle,                   bff_dlgTitle),
+    REXX_METHOD(bff_setDlgTitle,                bff_setDlgTitle),
+    REXX_METHOD(bff_hint,                       bff_hint),
+    REXX_METHOD(bff_setHint,                    bff_setHint),
+    REXX_METHOD(bff_root,                       bff_root),
+    REXX_METHOD(bff_setRoot,                    bff_setRoot),
+    REXX_METHOD(bff_startDir,                   bff_startDir),
+    REXX_METHOD(bff_setStartDir,                bff_setStartDir),
+    REXX_METHOD(bff_init,                       bff_init),
+    REXX_METHOD(bff_uninit,                     bff_uninit),
+    REXX_METHOD(bff_getFolder,                  bff_getFolder),
+    REXX_METHOD(bff_getItemID,                  bff_getItemID),
 
     REXX_LAST_METHOD()
 };

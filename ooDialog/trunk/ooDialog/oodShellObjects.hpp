@@ -45,6 +45,7 @@ typedef struct _bffCSelf {
     char *dlgTitle;
     char *hint;
     char *banner;
+    char *root;  // TODO this should be a pidl
     bool  usePathForHint;
     bool  needCoUninitialize;
 } CBrowseForFolder;

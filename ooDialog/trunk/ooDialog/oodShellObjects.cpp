@@ -424,6 +424,27 @@ static void fillInBrowseData(RexxMethodContext *context, HWND hwnd, PBROWSEINFO 
     pBI->lParam = (LPARAM)pBD;
 }
 
+/** BrowseForFolder::banner                  [attribute]
+ */
+RexxMethod1(RexxObjectPtr, bff_banner, CSELF, pCSelf)
+{
+    pCBrowseForFolder psfb = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
+    if ( psfb != NULL )
+    {
+        return context->String(psfb->banner);
+    }
+    return context->NullString();
+}
+RexxMethod2(RexxObjectPtr, bff_setBanner, CSTRING, hint, CSELF, pCSelf)
+{
+    pCBrowseForFolder psfb = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
+    if ( psfb != NULL )
+    {
+        // setSfbTitle(context, psfb, title);  TODO
+    }
+    return NULLOBJECT;
+}
+
 /** BrowseForFolder::dlgTitle                  [attribute]
  */
 RexxMethod1(RexxObjectPtr, bff_dlgTitle, CSELF, pCSelf)
@@ -436,6 +457,69 @@ RexxMethod1(RexxObjectPtr, bff_dlgTitle, CSELF, pCSelf)
     return context->NullString();
 }
 RexxMethod2(RexxObjectPtr, bff_setDlgTitle, CSTRING, title, CSELF, pCSelf)
+{
+    pCBrowseForFolder psfb = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
+    if ( psfb != NULL )
+    {
+        // setSfbTitle(context, psfb, title);  TODO
+    }
+    return NULLOBJECT;
+}
+
+/** BrowseForFolder::hint                  [attribute]
+ */
+RexxMethod1(RexxObjectPtr, bff_hint, CSELF, pCSelf)
+{
+    pCBrowseForFolder psfb = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
+    if ( psfb != NULL )
+    {
+        return context->String(psfb->hint);
+    }
+    return context->NullString();
+}
+RexxMethod2(RexxObjectPtr, bff_setHint, CSTRING, hint, CSELF, pCSelf)
+{
+    pCBrowseForFolder psfb = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
+    if ( psfb != NULL )
+    {
+        // setSfbTitle(context, psfb, title);  TODO
+    }
+    return NULLOBJECT;
+}
+
+/** BrowseForFolder::root                  [attribute]
+ */
+RexxMethod1(RexxObjectPtr, bff_root, CSELF, pCSelf)
+{
+    pCBrowseForFolder psfb = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
+    if ( psfb != NULL )
+    {
+        return context->String(psfb->root);
+    }
+    return context->NullString();
+}
+RexxMethod2(RexxObjectPtr, bff_setRoot, CSTRING, root, CSELF, pCSelf)
+{
+    pCBrowseForFolder psfb = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
+    if ( psfb != NULL )
+    {
+        // setSfbTitle(context, psfb, title);  TODO
+    }
+    return NULLOBJECT;
+}
+
+/** BrowseForFolder::startDir                  [attribute]
+ */
+RexxMethod1(RexxObjectPtr, bff_startDir, CSELF, pCSelf)
+{
+    pCBrowseForFolder psfb = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
+    if ( psfb != NULL )
+    {
+        return context->String(psfb->startDir);
+    }
+    return context->NullString();
+}
+RexxMethod2(RexxObjectPtr, bff_setStartDir, CSTRING, startDir, CSELF, pCSelf)
 {
     pCBrowseForFolder psfb = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
     if ( psfb != NULL )
@@ -485,7 +569,8 @@ RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_CSTRING, title, OPTIONAL_CSTRING, 
     return NULLOBJECT;
 }
 
-RexxMethod1(RexxObjectPtr, SimpleFolderBrowse_setRoot, RexxObjectPtr, obj)
+// TODO temp name for setRoot
+RexxMethod1(RexxObjectPtr, bff_getItemID, RexxObjectPtr, obj)
 {
     RexxObjectPtr root = context->Nil();
 
