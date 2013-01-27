@@ -41,17 +41,18 @@
 
 /* Struct for the BrowseForFolder CSelf */
 typedef struct _bffCSelf {
-    char *startDir;
-    char *dlgTitle;
-    char *hint;
-    char *banner;
-    char *root;  // TODO this should be a pidl
-    bool  usePathForHint;
-    bool  needCoUninitialize;
+    LPITEMIDLIST    root;
+    char           *startDir;
+    char           *dlgTitle;
+    char           *hint;
+    char           *banner;
+    bool            usePathForHint;
+    bool            needCoUninitialize;
 } CBrowseForFolder;
 typedef CBrowseForFolder *pCBrowseForFolder;
 
 #define HINT_ID 0x00003749
+#define NO_ITEMID_MSG             "the Windows Shell did not return the item ID for %s"
 
 
 /**

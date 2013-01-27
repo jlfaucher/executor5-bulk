@@ -67,5 +67,6 @@
 
 ::method getFolder external "LIBRARY oodialog bff_getFolder"
 ::method getItemID external "LIBRARY oodialog bff_getItemID"
+::method test external "LIBRARY oodialog bff_test"
 
 
