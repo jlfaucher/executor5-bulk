@@ -114,7 +114,7 @@
             data when dialog opened for first time.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD query PUBLIC							-- MVF
-    return .true
+    return "Wow does not support this method."
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /*============================================================================*/

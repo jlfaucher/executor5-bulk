@@ -99,7 +99,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
     -- expose newText							-- v01-00
-    expose modelData newText							-- MVF
+    expose modelData newText						-- MVF
     newText = self~newStatic(101)
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -111,9 +111,11 @@
     expose rootDlg modelData idModel					-- MVF
     --wowPicker = .local~my.idWowPicker					-- v01-00
     use strict arg idModel, rootDlg					-- MVF
+    say "WowView-activate-01: idModel, rootDlg" idModel||"," rootDlg
     forward class (super) continue		-- MVF: gets Model's data
     modelData = RESULT				-- MVF: Model's data returned by super
-    self~execute("SHOWTOP", IDI_DLG_OOREXX)
+    --self~execute("SHOWTOP", IDI_DLG_OOREXX)
+    self~popupAsChild(rootDlg,"SHOWTOP", IDI_DLG_OOREXX)
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

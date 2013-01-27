@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise07 The WowData component.			  	v02-00 06Sep12
+   Exercise07 The WowData component.			  	v02-00 21Jan13
 
    Contains:       Classes: WowData.
 
@@ -46,6 +46,7 @@
    Changes:
      v01-00 31May12: First version.
      v02-00 06Sep12: Second version - modified to use the Model-View Framework (MVF)
+            21Jan13: Updated comments. No change in funtion.
 
 ------------------------------------------------------------------------------*/
 
@@ -97,23 +98,21 @@
 
   /*----------------------------------------------------------------------------
     getRecord - asks super to read the file from disk. 			-- MVF
-                Normally for a Model, MVF asks its Data component for a single
-                record using the getRecord method of GenericFile (e.g. the data
-                for a single Customer). However, for a ListModel, MVF invokes
-                getFile top get the whole file (to display in a list - e.g.
-                CustomerListModel).
+                Normally for a 'named' component, MVF invokes 'getRecord'
+                to ask the Data component for a single record (handled by the
+                'GenericFile' superclass). However, for a ListModel,
+                MVF invokes 'getFile' to get the whole file to display in a list.
                 Here, although WowModel is a Model, not a ListModel, we want the
-                whole file. So we over-ride super's getRecord method and instead
-                invoke getFile. This returns the number of records (excluding
-                the colums headers line) and stores the file in its
-                'fileAsDirectory' attribute.
+                whole file. And GenericFile holds the file in its 'fileAsDirectory'
+                attribute. So we intercept the 'getRecord' message, and return
+                the file.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD getRecord PUBLIC
     return self~fileAsDirectory
 
 
   /*----------------------------------------------------------------------------
-    activate - Not used for a Data component in MVF
+    activate - Not used for a Data component in MVF			-- MVF
     reads initial Wow Set from disk (but not in this version)
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /*  ::METHOD activate
