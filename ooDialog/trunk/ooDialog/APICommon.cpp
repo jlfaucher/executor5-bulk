@@ -879,6 +879,29 @@ RexxObjectPtr wrongArgOptionException(RexxThreadContext *c, size_t pos, CSTRING 
 }
 
 /**
+ * 93.914
+ * Method argument <argument> must be one of <values>; found "<value>"
+ *
+ * Method argument 1 must be one of the valid CSIDL_XXX constants; found "dog"
+ *
+ * @param argNumber
+ * @param acceptable
+ * @param actual
+ */
+RexxObjectPtr invalidConstantException(RexxMethodContext *c, size_t argNumber, char *msg,
+                                       const char *sub, RexxObjectPtr actual)
+{
+    char buffer[512];
+    snprintf(buffer, sizeof(buffer), msg, sub);
+
+    return wrongArgValueException(c->threadContext, argNumber, buffer, actual);
+}
+RexxObjectPtr invalidConstantException(RexxMethodContext *c, size_t argNumber, char *msg, const char *sub, const char *actual)
+{
+    return invalidConstantException(c, argNumber, msg, sub, c->String(actual));
+}
+
+/**
  * Similar to error 43.001 Could not find routine <routine>
  *
  * Argument <pos>, (the <rtnName> routine,) could not be found

@@ -46,6 +46,7 @@
 
 
 #define NO_MEMORY_MSG             "failed to allocate memory"
+#define INVALID_CONSTANT_MSG      "the valid %s_XXX constants"
 
 extern void  severeErrorException(RexxThreadContext *c, const char *msg);
 extern void  systemServiceException(RexxThreadContext *context, const char *msg);
@@ -98,6 +99,8 @@ extern RexxObjectPtr wrongArgValueException(RexxThreadContext *c, size_t pos, co
 extern RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRING list, CSTRING actual);
 extern RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual);
 extern RexxObjectPtr wrongArgKeywordException(RexxMethodContext *c, size_t pos, CSTRING list, CSTRING actual);
+extern RexxObjectPtr invalidConstantException(RexxMethodContext *c, size_t argNumber, char *msg, const char *sub, RexxObjectPtr actual);
+extern RexxObjectPtr invalidConstantException(RexxMethodContext *c, size_t argNumber, char *msg, const char *sub, const char *actual);
 extern RexxObjectPtr wrongRangeException(RexxThreadContext *c, size_t pos, int min, int max, RexxObjectPtr actual);
 extern RexxObjectPtr wrongRangeException(RexxThreadContext *c, size_t pos, int min, int max, int actual);
 extern RexxObjectPtr wrongRangeException(RexxThreadContext *c, size_t pos, uint32_t min, uint32_t max, RexxObjectPtr actual);

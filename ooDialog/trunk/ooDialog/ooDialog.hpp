@@ -41,7 +41,8 @@
 
 #define NTDDI_VERSION   NTDDI_LONGHORN
 #define _WIN32_WINNT    0x0600
-#define _WIN32_IE       0x0600
+// #define _WIN32_IE       0x0600  <- old IE70 may be too much ?
+#define _WIN32_IE       _WIN32_IE_IE70
 #define WINVER          0x0600
 
 #define STRICT
