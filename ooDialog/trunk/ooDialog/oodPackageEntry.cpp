@@ -1518,6 +1518,8 @@ REXX_METHOD_PROTOTYPE(bff_getFolder);
 REXX_METHOD_PROTOTYPE(bff_getItemID);
 REXX_METHOD_PROTOTYPE(bff_test);
 
+REXX_METHOD_PROTOTYPE(sfb_getFolder);
+
 
 RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_init_cls,               dlgutil_init_cls),
@@ -2603,6 +2605,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(bff_getFolder,                  bff_getFolder),
     REXX_METHOD(bff_getItemID,                  bff_getItemID),
     REXX_METHOD(bff_test,                       bff_test),
+
+    REXX_METHOD(sfb_getFolder,                  sfb_getFolder),
 
     REXX_LAST_METHOD()
 };

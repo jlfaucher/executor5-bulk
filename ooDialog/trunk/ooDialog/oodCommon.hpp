@@ -130,8 +130,6 @@ extern char *            strdup_nospace(const char *str);
 extern char *            strdup_2methodName(const char *str);
 extern void              checkModal(pCPlainBaseDialog previous, logical_t modeless);
 
-extern pCPlainBaseDialog requiredDlgCSelf(RexxMethodContext *c, RexxObjectPtr self, oodClass_t type, size_t argPos, pCDialogControl *ppcdc);
-
 extern oodClass_t    oodClass(RexxMethodContext *, RexxObjectPtr, oodClass_t *, size_t);
 extern DWORD         oodGetSysErrCode(RexxThreadContext *);
 extern void          oodSetSysErrCode(RexxThreadContext *, DWORD);
@@ -400,7 +398,9 @@ extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, CSTRI
 extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, CSTRING methodName, CSTRING msg, RexxObjectPtr rxDlg);
 extern RexxObjectPtr  invalidAttributeException(RexxMethodContext *c, RexxObjectPtr rxDlg);
 
-extern pCDialogControl requiredDlgControlCSelf(RexxMethodContext *c, RexxObjectPtr control, size_t argPos);
+extern pCPlainBaseDialog requiredDlgCSelf(RexxMethodContext *c, RexxObjectPtr self, oodClass_t type, size_t argPos, pCDialogControl *ppcdc);
+extern pCDialogControl   requiredDlgControlCSelf(RexxMethodContext *c, RexxObjectPtr control, size_t argPos);
+extern pCPlainBaseDialog requiredPlainBaseDlg(RexxMethodContext *c, RexxObjectPtr dlg, size_t argPos);
 
 /**
  *  93.900

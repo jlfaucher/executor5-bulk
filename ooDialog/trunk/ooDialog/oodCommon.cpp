@@ -1839,6 +1839,41 @@ pCPlainBaseDialog requiredDlgCSelf(RexxMethodContext *c, RexxObjectPtr self, ood
     return pcpbd;
 }
 
+/**
+ * Checks that the specified Rexx object is in fact a PlainBaseDialog and
+ * returns its CSelf pointer if it is.
+ *
+ * @param c
+ * @param dlg
+ * @param argPos
+ *
+ * @return pCPlainBaseDialog
+ *
+ * @remarks  This is for use when a method argument is required to be a Dialog.
+ *           It could be used for a required or optional argument, it handles
+ *           NULLOBJECT.
+ *
+ *           An exception is rasied on failure.
+ */
+pCPlainBaseDialog requiredPlainBaseDlg(RexxMethodContext *c, RexxObjectPtr dlg, size_t argPos)
+{
+    pCPlainBaseDialog pcpbd = NULL;
+
+    if ( dlg != NULLOBJECT )
+    {
+        if ( c->IsOfType(dlg, "PLAINBASEDIALOG") )
+        {
+            pcpbd = dlgToCSelf(c, dlg);
+        }
+    }
+
+    if ( pcpbd == NULLOBJECT )
+    {
+        wrongClassException(c->threadContext, argPos, "PlainBaseDialog");
+    }
+    return pcpbd;
+}
+
 pCDialogControl requiredDlgControlCSelf(RexxMethodContext *c, RexxObjectPtr control, size_t argPos)
 {
     pCDialogControl pcdc = NULL;

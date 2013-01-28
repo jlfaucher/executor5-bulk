@@ -41,13 +41,12 @@
  * ooDialog classes that are more Shell orientated than the original ooDialog
  * implementation.
  *
- * BrowseForFolder     Main 'browse for folder' class, but requires Windows
- *                     Vista
+ * BrowseForFolder     Main 'browse for folder' class, allows customization.
  *
- * SimpleFolderBrowse  Simplified version of BrowseForFolder that will work on
- *                     XP.
+ * SimpleFolderBrowse  Simplified version of BrowseForFolder with ???
  *
  */
+
 
 ::class 'BrowseForFolder' public
 
@@ -69,4 +68,8 @@
 ::method getItemID external "LIBRARY oodialog bff_getItemID"
 ::method test external "LIBRARY oodialog bff_test"
 
+
+::class 'SimpleFolderBrowse' public
+
+::method getFolder class external "LIBRARY oodialog sfb_getFolder"
 

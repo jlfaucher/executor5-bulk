@@ -39,20 +39,50 @@
 #define oodShellObjects_Included
 
 
+#define HINT_ID                   0x00003749
+#define NO_ITEMID_MSG             "the Windows Shell did not return the item ID for %s"
+
+#define BFF_TITLE                 "ooRexx Browse for Folder"
+#define BFF_BANNER                "Select (or create) the folder you want"
+#define BFF_HINT                  "If the folder you want does not exist you can create it"
+#define BFF_STARTDIR              ""
+
+typedef HRESULT (* SHCreateItemFromIDListPROC)(PCIDLIST_ABSOLUTE pidl, REFIID riid, void **ppv);
+
 /* Struct for the BrowseForFolder CSelf */
-typedef struct _bffCSelf {
+typedef struct _bffCSelf
+{
     LPITEMIDLIST    root;
+    HWND            hOwner;
     char           *startDir;
     char           *dlgTitle;
     char           *hint;
     char           *banner;
+    size_t          countCoInitialized;
     bool            usePathForHint;
     bool            needCoUninitialize;
 } CBrowseForFolder;
 typedef CBrowseForFolder *pCBrowseForFolder;
 
-#define HINT_ID 0x00003749
-#define NO_ITEMID_MSG             "the Windows Shell did not return the item ID for %s"
+// Identifies an attribute of the BrowseForFolder object.
+typedef enum
+{
+    DlgTitle,
+    DlgBanner,
+    DlgHint,
+    DlgStartDir,
+    BffRoot
+} BffAttributeType;
+
+/* Struct used in SimpleFolderBrowse, not a CSelf Maybe don't need this.   */
+typedef struct _sfb
+{
+    char           *startDir;
+    char           *dlgTitle;
+    char           *hint;
+    bool            usePathForHint;
+} CSfbInfo;
+typedef CSfbInfo *pCSfbInfo;
 
 
 /**

@@ -46,7 +46,6 @@
 #include <shobjidl.h>
 #include <shlwapi.h>
 #include <shellapi.h>
-#include <objbase.h>
 //#include <stdio.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
@@ -56,13 +55,7 @@
 /**
  * Methods for the ooDialog .BrowseForFolder class.
  */
-#define SIMPLEFOLDERBROWSE_CLASS  "BrowseForFolder"
-
-
-#define BROWSE_TITLE       "ooRexx Browse for Folder"
-#define BROWSE_BANNER      "Select (or create) the folder you want"
-#define BROWSE_HINT        "If the folder you want does not exist you can create it"
-#define BROWSE_START_DIR   ""
+#define BROWSEFORFOLDER_CLASS  "BrowseForFolder"
 
 
 static inline pCBrowseForFolder getSfbCSelf(RexxMethodContext *c, void * pCSelf)
@@ -90,14 +83,24 @@ int32_t CALLBACK BrowseCallbackProc(HWND hwnd, uint32_t uMsg, LPARAM lp, LPARAM 
             pbff = (pCBrowseForFolder)pData;
 
             if ( pbff->dlgTitle != NULL )
+            {
                 SetWindowText(hwnd, pbff->dlgTitle);
-            if ( pbff->hint != NULL )
+            }
+            if ( pbff->usePathForHint && pbff->startDir != NULL )
+            {
+                SetDlgItemText(hwnd, HINT_ID, pbff->startDir);
+            }
+            else if ( pbff->hint != NULL )
+            {
                 SetDlgItemText(hwnd, HINT_ID, pbff->hint);
+            }
 
             // WParam should be TRUE when passing a path and should be FALSE
             // when passing a pidl.
             if ( pbff->startDir != NULL )
+            {
                 SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)pbff->startDir);
+            }
             break;
 
         case BFFM_SELCHANGED:
@@ -210,6 +213,77 @@ LPCITEMIDLIST getRootPidl(RexxMethodContext *context)
     return pidl;
 }
 
+/**
+ * Sets one of the text attributes of the BrowseForFolder object.
+ *
+ * If rxValue is the .nil object or the empty string, then CSelf value of the
+ * attribute is set to NULL, which basically causes the default value to be used
+ * by the browse dialog.
+ *
+ * The attribute could already have a malloc'd string, in which case we need to
+ * be sure and free it.
+ *
+ * @param c
+ * @param pcbff
+ * @param rxValue
+ * @param type
+ */
+void setTextAttribute(RexxMethodContext *c, pCBrowseForFolder pcbff, RexxObjectPtr rxValue, BffAttributeType type)
+{
+    char    *newVal  = NULL;
+    CSTRING  text    = NULL;
+    size_t   len     = 0;
+
+    if ( rxValue != TheNilObj )
+    {
+        text = c->ObjectToStringValue(rxValue);
+        len  = strlen(text);
+        if ( len == 0 )
+        {
+            text = NULL;
+        }
+    }
+
+    if ( text != NULL )
+    {
+        newVal = (char *)LocalAlloc(LPTR, len + 1);
+        if ( newVal == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            return;
+        }
+        else
+        {
+            strcpy(newVal, text);
+        }
+    }
+
+    switch ( type )
+    {
+        case DlgBanner :
+            safeLocalFree(pcbff->banner);
+            pcbff->banner = newVal;
+            break;
+
+        case DlgHint :
+            safeLocalFree(pcbff->hint);
+            pcbff->hint = newVal;
+            break;
+
+        case DlgStartDir :
+            safeLocalFree(pcbff->startDir);
+            pcbff->startDir = newVal;
+            break;
+
+        case DlgTitle :
+            safeLocalFree(pcbff->dlgTitle);
+            pcbff->dlgTitle = newVal;
+            break;
+
+        default :
+            break;
+    }
+}
 
 void freeRootPidl(RexxMethodContext *context)
 {
@@ -284,6 +358,20 @@ static bool pidlForSpecialFolder(uint32_t csidl, LPITEMIDLIST *ppidl)
     return success;
 }
 
+/**
+ * Converts a string into a LPITEMIDLIST.  The string must either be one of the
+ * CSIDL_xxx constants or a full path name.
+ *
+ * @param c
+ * @param idl
+ * @param argPos
+ * @param canFail
+ *
+ * @return LPITEMIDLIST
+ *
+ * @remarks  Ife th string starts with CSIDL_, but is not a recognized, an
+ *           exception is raised.
+ */
 LPITEMIDLIST getPidlFromString(RexxMethodContext *c, CSTRING idl, size_t argPos, bool canFail)
 {
     LPITEMIDLIST pidl = NULL;
@@ -305,12 +393,13 @@ LPITEMIDLIST getPidlFromString(RexxMethodContext *c, CSTRING idl, size_t argPos,
     }
     else
     {
-        wrongFormatException(c, argPos, idl);
+        wrongArgValueException(c->threadContext, argPos, "a CSIDL_xxx keyword or a full path name", idl);
+        return NULL;
     }
 
     if ( pidl == NULL && ! canFail )
     {
-        wrongFormatException(c, argPos, idl);
+        systemServiceException(c->threadContext, NO_ITEMID_MSG, idl);
     }
     return pidl;
 }
@@ -373,55 +462,31 @@ static RexxObjectPtr folderBrowse(RexxMethodContext *context, PBROWSEINFO pBI, b
     return rxResult;
 }
 
-static void fillInBrowseData(RexxMethodContext *context, HWND hwnd, PBROWSEINFO pBI, pCBrowseForFolder pBD)
+static void fillInBrowseInfo(RexxMethodContext *context, PBROWSEINFO pBI, pCBrowseForFolder pcbff)
 {
-	LPITEMIDLIST pidlRoot = NULL;
-    PTCHAR       pHint;
-    RexxObjectPtr   rxObject;
-
-    pBI->hwndOwner = hwnd;
+    pBI->hwndOwner = pcbff->hOwner;
     pBI->ulFlags  = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS;
 
-    rxObject = context->GetObjectVariable("TITLE");
-    if ( rxObject != context->Nil() )
-    {
-        pBD->dlgTitle = (char *)context->StringData((RexxStringObject)rxObject);
-    }
-
-    rxObject = context->GetObjectVariable("HINT");
-    if ( rxObject != context->Nil() )
+    if ( pcbff->hint != NULL )
     {
         pBI->ulFlags |= BIF_UAHINT;
-        pHint = (char *)context->StringData((RexxStringObject)rxObject);
-        if ( _stricmp("PATH", pHint) == 0 )
+
+        if ( StrCmpI("PATH", pcbff->hint) == 0 )
         {
-            pBD->usePathForHint = true;
-            pBD->hint = BROWSE_HINT;
-        }
-        else
-        {
-            pBD->hint = pHint;
+            pcbff->usePathForHint = true;
+            pcbff->hint           = BFF_HINT;
         }
     }
 
-    rxObject = context->GetObjectVariable("INITIALFOLDER");
-    if ( rxObject != context->Nil() )
+    if ( pcbff->banner != NULL )
     {
-        pBD->startDir = (char *)context->StringData((RexxStringObject)rxObject);
+        pBI->lpszTitle = pcbff->banner;
     }
 
-    // Note that banner goes into the BROWSEINFO structure, not the BROWSE_DATA
-    // structure.
-    rxObject = context->GetObjectVariable("BANNER");
-    if ( rxObject != context->Nil() )
-    {
-        pBI->lpszTitle = context->StringData((RexxStringObject)rxObject);
-    }
-
-    pBI->pidlRoot = getRootPidl(context);
+    pBI->pidlRoot = pcbff->root;
 
     pBI->lpfn   = BrowseCallbackProc;
-    pBI->lParam = (LPARAM)pBD;
+    pBI->lParam = (LPARAM)pcbff;
 }
 
 /** BrowseForFolder::banner                  [attribute]
@@ -429,18 +494,18 @@ static void fillInBrowseData(RexxMethodContext *context, HWND hwnd, PBROWSEINFO 
 RexxMethod1(RexxObjectPtr, bff_banner, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
-    if ( pcbff != NULL )
+    if ( pcbff != NULL && pcbff->banner != NULL )
     {
         return context->String(pcbff->banner);
     }
     return context->NullString();
 }
-RexxMethod2(RexxObjectPtr, bff_setBanner, CSTRING, hint, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, bff_setBanner, RexxObjectPtr, hint, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
     if ( pcbff != NULL )
     {
-        // setSfbTitle(context, pcbff, title);  TODO
+        setTextAttribute(context, pcbff, hint, DlgHint);
     }
     return NULLOBJECT;
 }
@@ -450,18 +515,18 @@ RexxMethod2(RexxObjectPtr, bff_setBanner, CSTRING, hint, CSELF, pCSelf)
 RexxMethod1(RexxObjectPtr, bff_dlgTitle, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
-    if ( pcbff != NULL )
+    if ( pcbff != NULL && pcbff->dlgTitle != NULL )
     {
         return context->String(pcbff->dlgTitle);
     }
     return context->NullString();
 }
-RexxMethod2(RexxObjectPtr, bff_setDlgTitle, CSTRING, title, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, bff_setDlgTitle, RexxObjectPtr, dlgTitle, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
     if ( pcbff != NULL )
     {
-        // setSfbTitle(context, pcbff, title);  TODO
+        setTextAttribute(context, pcbff, dlgTitle, DlgTitle);
     }
     return NULLOBJECT;
 }
@@ -471,18 +536,18 @@ RexxMethod2(RexxObjectPtr, bff_setDlgTitle, CSTRING, title, CSELF, pCSelf)
 RexxMethod1(RexxObjectPtr, bff_hint, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
-    if ( pcbff != NULL )
+    if ( pcbff != NULL && pcbff->hint != NULL )
     {
         return context->String(pcbff->hint);
     }
     return context->NullString();
 }
-RexxMethod2(RexxObjectPtr, bff_setHint, CSTRING, hint, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, bff_setHint, RexxObjectPtr, hint, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
     if ( pcbff != NULL )
     {
-        // setSfbTitle(context, pcbff, title);  TODO
+        setTextAttribute(context, pcbff, hint, DlgHint);
     }
     return NULLOBJECT;
 }
@@ -514,18 +579,18 @@ RexxMethod2(RexxObjectPtr, bff_setRoot, CSTRING, root, CSELF, pCSelf)
 RexxMethod1(RexxObjectPtr, bff_startDir, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
-    if ( pcbff != NULL )
+    if ( pcbff != NULL && pcbff->startDir != NULL )
     {
         return context->String(pcbff->startDir);
     }
     return context->NullString();
 }
-RexxMethod2(RexxObjectPtr, bff_setStartDir, CSTRING, startDir, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, bff_setStartDir, RexxObjectPtr, startDir, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
     if ( pcbff != NULL )
     {
-        // setSfbTitle(context, pcbff, title);  TODO
+        setTextAttribute(context, pcbff, startDir, DlgStartDir);
     }
     return NULLOBJECT;
 }
@@ -550,7 +615,14 @@ RexxMethod1(RexxObjectPtr, bff_uninit, CSELF, pCSelf)
         safeLocalFree(pcbff->hint);
         safeLocalFree(pcbff->startDir);
 
-        CoUninitialize();
+        if ( pcbff->countCoInitialized > 0 )
+        {
+            do
+            {
+                CoUninitialize();
+                pcbff->countCoInitialized--;
+            } while (pcbff->countCoInitialized > 0);
+        }
     }
     return NULLOBJECT;
 }
@@ -562,12 +634,9 @@ RexxMethod1(RexxObjectPtr, bff_uninit, CSELF, pCSelf)
  * If the user wants to have the default Windows values, they specify that by
  * setting them to either .nil or the empty string.
  */
-RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_CSTRING, title, OPTIONAL_CSTRING, banner, OPTIONAL_CSTRING, hint,
-            OPTIONAL_CSTRING, startDir)
+RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_RexxObjectPtr, banner, OPTIONAL_RexxObjectPtr, hint,
+            OPTIONAL_RexxObjectPtr, startDir)
 {
-	LPITEMIDLIST pidl = NULL;
-
-
     RexxBufferObject obj = context->NewBuffer(sizeof(CBrowseForFolder));
     context->SetObjectVariable("CSELF", obj);
 
@@ -579,15 +648,35 @@ RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_CSTRING, title, OPTIONAL_CSTRING, 
         printf("CoInitializeEx returns: 0x%08x\n", hr);
     #endif
 
-    pcbff->needCoUninitialize = true;
+    pcbff->countCoInitialized = 1;
+    pcbff->needCoUninitialize = true;  // TODO probably don't need this field.
 
-    // Set the default attributes for the browser.  TODO
-    /*setSFBAttribute(context,"TITLE", title, BROWSE_TITLE);
-    setSFBAttribute(context,"BANNER", banner, BROWSE_BANNER);
-    setSFBAttribute(context,"HINT", hint, BROWSE_HINT);
-    setSFBAttribute(context,"INITIALFOLDER", startDir, BROWSE_START_DIR);*/
+    // Set the default attributes for the browser.
+    if ( argumentOmitted(1) )
+    {
+        title = context->String(BFF_TITLE);
+    }
+    setTextAttribute(context, pcbff, title, DlgTitle);
 
-    // TODO
+    if ( argumentOmitted(2) )
+    {
+        banner = context->String(BFF_BANNER);
+    }
+    setTextAttribute(context, pcbff, banner, DlgBanner);
+
+    if ( argumentOmitted(3) )
+    {
+        hint = context->String(BFF_HINT);
+    }
+    setTextAttribute(context, pcbff, hint, DlgHint);
+
+    if ( argumentOmitted(4) )
+    {
+        startDir = context->String(BFF_STARTDIR);
+    }
+    setTextAttribute(context, pcbff, startDir, DlgStartDir);
+
+	LPITEMIDLIST pidl = NULL;
     if ( pidlForSpecialFolder(CSIDL_DRIVES, &pidl) )
     {
         pcbff->root = pidl;
@@ -647,30 +736,37 @@ RexxMethod1(RexxObjectPtr, bff_getItemID, RexxObjectPtr, obj)
  * this instance.  The optional arg is a window handle.  If specified that
  * window is used as the owner of the dialog.
  *
- * @param   hwnd  OPTIONAL  A window handle to be used as owner of the browse
- *          dialog.  If this arg is used, but is not a valid window handle, then
- *          an exception is raised.    TODO change this to a dialog object
+ * @param   owner  OPTIONAL  A Rexx dialog to be used as owner of the browse
+ *          dialog.  If this arg is used, but is not a valid PlainBaseDialog an
+ *          exception is raised.
  *
  * @return  Returns the fully qualified path of the folder the user selects, or
  *          the empty string if the user cancels.  In addition, if the user
  *          selects a virtual folder that has no file system path, .nil is
  *          returned.
  */
-RexxMethod2(RexxObjectPtr, bff_getFolder, OSELF, self, OPTIONAL_POINTER, owner)
+RexxMethod2(RexxObjectPtr, bff_getFolder, OPTIONAL_RexxObjectPtr, owner, CSELF, pCSelf)
 {
-    BROWSEINFO   bi = { 0 };
-    ///BROWSE_DATA  bd = { 0 };  TODO
-
-    /*
-    if ( ! checkOptionalWindow(context, (HWND)owner, 1) )
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
+    if ( pcbff == NULL )
     {
         return NULLOBJECT;
     }
-    */
 
-    // NULL for hwnd works fine.
+    if ( argumentExists(1) )
+    {
+        pCPlainBaseDialog pcpbd = requiredPlainBaseDlg(context, owner, 1);
+        if ( pcpbd == NULL )
+        {
+            return NULLOBJECT;
+        }
 
-    //fillInBrowseData(context, (HWND)owner, &bi, &bd);
+        pcbff->hOwner = pcpbd->hDlg;
+    }
+
+    BROWSEINFO   bi = { 0 };
+
+    fillInBrowseInfo(context, &bi, pcbff);
 
     // Second arg is true - return path.
     return folderBrowse(context, &bi, true);
@@ -700,7 +796,7 @@ RexxMethod2(RexxObjectPtr, bff_getItemID, OSELF, self, OPTIONAL_POINTER, owner)
     }
 
     // NULL for owner works fine.
-    fillInBrowseData(context, (HWND)owner, &bi, &bd);
+    fillInBrowseInfo(context, (HWND)owner, &bi, &bd);
 
     // Second arg is false - return PIDL, not path.
     return folderBrowse(context, &bi, false);
@@ -712,8 +808,11 @@ RexxMethod2(RexxObjectPtr, bff_getItemID, OSELF, self, OPTIONAL_POINTER, owner)
  * Example code for GetDisplayName() using SHCreateItemFromIDList to create a
  * IShellItem from a IDL.   Worked Windows 7 64 bit
  *
+ * On XP, having SHCreateItemFromIDlist in the code prevents shell.dll from
+ * being loaded, which prevents oodialog.dll from being loaded.  This can be
+ * worked around using GetProcAddress().  But, that would be cumbersome if using
+ * a number of the 'Vista or later' shell APIs.
  */
-#if 0
 RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
@@ -722,14 +821,36 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
         return NULLOBJECT;
     }
 
+    if ( ! requiredOS(context, "bff_test SHCreateItemFromIDList()", "Vista", Vista_OS) )
+    {
+        return NULLOBJECT;
+    }
+
     PIDLIST_ABSOLUTE pidlSystem;
+
+    HINSTANCE hinst = LoadLibrary(TEXT("Shell32.dll"));
+    if ( hinst == NULL )
+    {
+        printf("LoadLibrary() failed\n");
+        return NULLOBJECT;
+    }
+    SHCreateItemFromIDListPROC pSHCreateItemFromIDList;
+
+    pSHCreateItemFromIDList = (SHCreateItemFromIDListPROC)GetProcAddress(hinst, "SHCreateItemFromIDList");
+    if ( pSHCreateItemFromIDList == NULL )
+    {
+        printf("GetProcAddress() failed\n");
+        return NULLOBJECT;
+    }
 
     // simpler version using IShellItem
     HRESULT hr = SHGetFolderLocation(NULL, CSIDL_SYSTEM, NULL, NULL, &pidlSystem);
     if ( SUCCEEDED(hr) )
     {
         IShellItem *psi;
-        hr = SHCreateItemFromIDList(pidlSystem, IID_PPV_ARGS(&psi));
+
+        //hr = SHCreateItemFromIDList(pidlSystem, IID_PPV_ARGS(&psi));
+        hr = pSHCreateItemFromIDList(pidlSystem, IID_PPV_ARGS(&psi));
         if ( SUCCEEDED(hr) )
         {
             PWSTR pszName;
@@ -747,13 +868,16 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
 
     return NULLOBJECT;
 }
-#endif
 
 
 /**
- * Trial code IFileDialog used to browse for folder
+ * Trial code IFileDialog used to browse for folder.  Works Win 7 64 bit.
+ *
+ * Fails on XP because CLSID_FileOpenDialog is not available.  A simple
+ * requiredOS() fixes that problem.
  *
  */
+#if 0
 RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getSfbCSelf(context, pCSelf);
@@ -761,10 +885,17 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
     {
         return NULLOBJECT;
     }
+    printf("bff_test() enter\n");
+
+    if ( ! requiredOS(context, Vista_OS, "bff_test CLSID_FileOpenDialog", "Vista") )
+    {
+        return NULLOBJECT;
+    }
 
     IFileDialog *pfd;
 
-    if (SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd))))
+    HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
+    if (SUCCEEDED(hr))
     {
         DWORD dwOptions;
         if (SUCCEEDED(pfd->GetOptions(&dwOptions)))
@@ -792,8 +923,142 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
         }
         pfd->Release();
     }
+    else
+    {
+        printf("CoCreateInstance returns: 0x%08x\n", hr);
+    }
 
     return NULLOBJECT;
 }
+#endif
 
+
+/**
+ * Methods for the ooDialog .SimpleFolderBrowse class.
+ */
+#define SIMPLEFOLDERBROWSE_CLASS  "SimpleFolderBrowse"
+
+
+/** SimpleFolderBrowse::getFolder()  [class method]
+ *
+ * SimpleFolderBrowse has only 1 method, getFolder().  The method is a class
+ * method and would be used like so:
+ *
+ * folder = .SimplerFolderBrowse(...)
+ * say 'User picked:' folder
+ *
+ * The arguments to the method can set non-default values for the dialog title,
+ * dialog banner, dialog hint, dialog start directory, and root of the tree.
+ * With no arguments the default SHBrowseForFolder is shown.
+ *
+ */
+RexxMethod6(RexxObjectPtr, sfb_getFolder, OPTIONAL_CSTRING, title, OPTIONAL_CSTRING, banner, OPTIONAL_CSTRING, hint,
+            OPTIONAL_CSTRING, startDir, OPTIONAL_CSTRING, root, OPTIONAL_RexxObjectPtr, owner)
+{
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+    if ( FAILED(hr) )
+    {
+        systemServiceExceptionComCode(context->threadContext, COM_API_FAILED_MSG, "CoInitializeEx", hr);
+        return NULLOBJECT;
+    }
+
+    pCBrowseForFolder pcbff  = NULL;
+    RexxObjectPtr     result = TheNilObj;
+    BROWSEINFO        bi     = { 0 };
+
+    if ( argumentExists(1) || argumentExists(3) || argumentExists(4) )
+    {
+        pcbff = (pCBrowseForFolder)LocalAlloc(LPTR, sizeof(CBrowseForFolder));
+        if ( pcbff == NULL )
+        {
+            outOfMemoryException(context->threadContext);
+            goto done_out;
+        }
+
+        bi.lParam = (LPARAM)pcbff;
+        bi.lpfn   = BrowseCallbackProc;
+    }
+
+    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS;
+
+    if ( argumentExists(1) )
+    {
+        if ( *title != '\0' )
+        {
+            pcbff->dlgTitle = (char *)title;
+        }
+    }
+
+    if ( argumentExists(2) )
+    {
+        if ( *banner != '\0' )
+        {
+            bi.lpszTitle = title;
+        }
+    }
+
+    if ( argumentExists(3) )
+    {
+        bi.ulFlags |= BIF_UAHINT;
+
+        if ( StrCmpI("PATH", hint) == 0 )
+        {
+            pcbff->usePathForHint = true;
+            pcbff->hint           = "";
+        }
+        else
+        {
+            pcbff->hint = (char *)hint;
+        }
+    }
+
+    if ( argumentExists(4) )
+    {
+        if ( *startDir != '\0' )
+        {
+            pcbff->startDir = (char *)startDir;
+        }
+    }
+
+    if ( argumentExists(5) )
+    {
+        bi.pidlRoot = getPidlFromString(context, root, 5, false);
+        if ( bi.pidlRoot == NULL )
+        {
+            goto done_out;
+        }
+    }
+
+    if ( argumentExists(6) )
+    {
+        pCPlainBaseDialog pcpbd = requiredPlainBaseDlg(context, owner, 1);
+        if ( pcpbd == NULL )
+        {
+            goto done_out;
+        }
+
+        bi.hwndOwner = pcpbd->hDlg;
+    }
+
+    // If the user only sent empty strings as arguments, we do not need the
+    // call back function
+    if ( pcbff && pcbff->dlgTitle == NULL && pcbff->hint == NULL && pcbff->startDir == NULL )
+    {
+        bi.lParam = NULL;
+        bi.lpfn   = NULL;
+    }
+
+     result = folderBrowse(context, &bi, true);
+
+done_out:
+    if ( bi.pidlRoot != NULL )
+    {
+
+        CoTaskMemFree((LPVOID)bi.pidlRoot);
+    }
+    safeLocalFree(pcbff);
+    CoUninitialize();
+
+    return result;
+}
 
