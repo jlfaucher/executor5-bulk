@@ -65,7 +65,8 @@
 ::method uninit external "LIBRARY oodialog bff_uninit"
 
 ::method getFolder external "LIBRARY oodialog bff_getFolder"
-::method getItemID external "LIBRARY oodialog bff_getItemID"
+::method initCOM external "LIBRARY oodialog bff_initCOM"
+::method releaseCOM external "LIBRARY oodialog bff_releaseCOM"
 ::method test external "LIBRARY oodialog bff_test"
 
 

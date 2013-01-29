@@ -2532,6 +2532,26 @@ bool goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size
     return true;
 }
 
+bool printHResultErr(CSTRING api, HRESULT hr)
+{
+    char *errBuff = NULL;
+    char *msg     = NULL;
+
+    msg = (char *)LocalAlloc(LPTR, 512);
+    if ( msg )
+    {
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, hr,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&errBuff, 0, NULL);
+
+        printf("API %s: result (0x%08x): %s\n", api, hr, errBuff);
+        LocalFree(msg);
+        LocalFree(errBuff);
+
+        return true;
+    }
+
+    return false;
+}
 /**
  * Fills in a RECT structure using an argument array passed to a Rexx object
  * method.

@@ -59,8 +59,8 @@ typedef struct _bffCSelf
     char           *hint;
     char           *banner;
     size_t          countCoInitialized;
+    uint32_t        coThreadID;
     bool            usePathForHint;
-    bool            needCoUninitialize;
 } CBrowseForFolder;
 typedef CBrowseForFolder *pCBrowseForFolder;
 

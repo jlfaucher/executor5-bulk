@@ -1515,7 +1515,8 @@ REXX_METHOD_PROTOTYPE(bff_setStartDir);
 REXX_METHOD_PROTOTYPE(bff_init);
 REXX_METHOD_PROTOTYPE(bff_uninit);
 REXX_METHOD_PROTOTYPE(bff_getFolder);
-REXX_METHOD_PROTOTYPE(bff_getItemID);
+REXX_METHOD_PROTOTYPE(bff_initCOM);
+REXX_METHOD_PROTOTYPE(bff_releaseCOM);
 REXX_METHOD_PROTOTYPE(bff_test);
 
 REXX_METHOD_PROTOTYPE(sfb_getFolder);
@@ -2603,7 +2604,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(bff_init,                       bff_init),
     REXX_METHOD(bff_uninit,                     bff_uninit),
     REXX_METHOD(bff_getFolder,                  bff_getFolder),
-    REXX_METHOD(bff_getItemID,                  bff_getItemID),
+    REXX_METHOD(bff_initCOM,                    bff_initCOM),
+    REXX_METHOD(bff_releaseCOM,                 bff_releaseCOM),
     REXX_METHOD(bff_test,                       bff_test),
 
     REXX_METHOD(sfb_getFolder,                  sfb_getFolder),
