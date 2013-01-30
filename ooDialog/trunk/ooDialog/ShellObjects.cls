@@ -56,6 +56,9 @@
 ::attribute dlgTitle set external "LIBRARY oodialog bff_setDlgTitle"
 ::attribute hint get external "LIBRARY oodialog bff_hint"
 ::attribute hint set external "LIBRARY oodialog bff_setHint"
+::attribute initialThread get external "LIBRARY oodialog bff_initialThread"
+::attribute owner get external "LIBRARY oodialog bff_Owner"
+::attribute owner set external "LIBRARY oodialog bff_setOwner"
 ::attribute root get external "LIBRARY oodialog bff_root"
 ::attribute root set external "LIBRARY oodialog bff_setRoot"
 ::attribute startDir get external "LIBRARY oodialog bff_startDir"
@@ -65,8 +68,10 @@
 ::method uninit external "LIBRARY oodialog bff_uninit"
 
 ::method getFolder external "LIBRARY oodialog bff_getFolder"
+::method getItemIDList external "LIBRARY oodialog bff_getItemIDList"
 ::method initCOM external "LIBRARY oodialog bff_initCOM"
 ::method releaseCOM external "LIBRARY oodialog bff_releaseCOM"
+::method releaseItemIDList external "LIBRARY oodialog bff_releaseItemIDList"
 ::method test external "LIBRARY oodialog bff_test"
 
 

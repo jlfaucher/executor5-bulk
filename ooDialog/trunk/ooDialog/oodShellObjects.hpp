@@ -39,13 +39,16 @@
 #define oodShellObjects_Included
 
 
-#define HINT_ID                   0x00003749
-#define NO_ITEMID_MSG             "the Windows Shell did not return the item ID for %s"
+#define HINT_ID                     0x00003749
 
-#define BFF_TITLE                 "ooRexx Browse for Folder"
-#define BFF_BANNER                "Select (or create) the folder you want"
-#define BFF_HINT                  "If the folder you want does not exist you can create it"
-#define BFF_STARTDIR              ""
+#define WRONG_IDL_TYPE_LIST         "a CSIDL_xxx keyword, a full path name, or a pointer to an Item ID List"
+#define WRONG_IDL_TYPE_LIST_SHORT   "a CSIDL_xxx keyword or a full path name"
+#define NO_ITEMID_MSG               "the Windows Shell did not return the item ID for %s"
+
+#define BFF_TITLE                   "ooDialog Browse for Folder"
+#define BFF_BANNER                  "Select the folder needed"
+#define BFF_HINT                    "If the needed folder does not exist it can be created"
+#define BFF_STARTDIR                ""
 
 typedef HRESULT (* SHCreateItemFromIDListPROC)(PCIDLIST_ABSOLUTE pidl, REFIID riid, void **ppv);
 
@@ -53,6 +56,7 @@ typedef HRESULT (* SHCreateItemFromIDListPROC)(PCIDLIST_ABSOLUTE pidl, REFIID ri
 typedef struct _bffCSelf
 {
     LPITEMIDLIST    root;
+    RexxObjectPtr   rexxOwner;
     HWND            hOwner;
     char           *startDir;
     char           *dlgTitle;
@@ -73,33 +77,6 @@ typedef enum
     DlgStartDir,
     BffRoot
 } BffAttributeType;
-
-/* Struct used in SimpleFolderBrowse, not a CSelf Maybe don't need this.   */
-typedef struct _sfb
-{
-    char           *startDir;
-    char           *dlgTitle;
-    char           *hint;
-    bool            usePathForHint;
-} CSfbInfo;
-typedef CSfbInfo *pCSfbInfo;
-
-
-/**
- * 88.918  TODO temp added, see if better existing exceptions
- * Argument <argument> is not in a valid format; found "<value>"
- *
- * @param argNumber
- * @param rxActual
- */
-inline void wrongFormatException(RexxMethodContext *c, size_t argNumber, RexxObjectPtr rxActual)
-{
-    c->RaiseException2(Rexx_Error_Invalid_argument_format, c->WholeNumber(argNumber), rxActual);
-}
-inline void wrongFormatException(RexxMethodContext *c, size_t argNumber, CSTRING actual)
-{
-    wrongFormatException(c, argNumber, c->String(actual));
-}
 
 
 #endif

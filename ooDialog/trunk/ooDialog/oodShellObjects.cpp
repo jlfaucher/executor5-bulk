@@ -57,7 +57,6 @@
  */
 #define BROWSEFORFOLDER_CLASS  "BrowseForFolder"
 
-
 /**
  * Ensures the BrowseForFolder CSelf pointer is not null.
  *
@@ -66,13 +65,14 @@
  *
  * @return pCBrowseForFolder
  */
-static inline pCBrowseForFolder getBffCSelf(RexxMethodContext *c, void * pCSelf)
+static pCBrowseForFolder getBffCSelf(RexxMethodContext *c, void * pCSelf)
 {
-    if ( pCSelf == NULL )
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)pCSelf;
+    if ( pcbff == NULL )
     {
         baseClassInitializationException(c);
     }
-    return (pCBrowseForFolder)pCSelf;
+    return pcbff;
 }
 
 /**
@@ -129,7 +129,8 @@ int32_t CALLBACK BrowseCallbackProc(HWND hwnd, uint32_t uMsg, LPARAM lp, LPARAM 
 }
 
 /**
- * Uses CoUninitialize() to uninit COM.
+ * Uses CoUninitialize() to uninit COM, when executing on the same thread as the
+ * BrowseForFolder object was instantiated on..
  *
  * @param pcbff
  */
@@ -140,7 +141,7 @@ static void uninitCom(pCBrowseForFolder pcbff)
         do
         {
 #ifdef _DEBUG
-    printf("uninitCom()\n");
+    printf("uninitCom() thread ID=%d\n", GetCurrentThreadId());
 #endif
             CoUninitialize();
             pcbff->countCoInitialized--;
@@ -395,6 +396,31 @@ static bool pidlForSpecialFolder(uint32_t csidl, LPITEMIDLIST *ppidl)
 
 
 /**
+ * Invokes CoUninitialize() once on the current thread. However, if the current
+ * thread is the same thread as instantiation of the BrowseForFolder object,
+ * then the inovocation will be dpenedent on the state flags.
+ *
+ * @param pcbff
+ *
+ * @return True if CoUnitialize() was invoked on the original thread of
+ *         instantiation
+ */
+static RexxObjectPtr releaseCOM(pCBrowseForFolder pcbff)
+{
+    if ( GetCurrentThreadId() == pcbff->coThreadID )
+    {
+        uninitCom(pcbff);
+        return TheTrueObj;
+    }
+    else
+    {
+        CoUninitialize();
+        return TheFalseObj;
+    }
+}
+
+
+/**
  * Handles a CoInitializeEx() request on the same thread as the BrowseForFolder
  * object was created on.
  *
@@ -463,7 +489,7 @@ LPITEMIDLIST getPidlFromString(RexxMethodContext *c, CSTRING idl, size_t argPos,
     }
     else
     {
-        wrongArgValueException(c->threadContext, argPos, "a CSIDL_xxx keyword or a full path name", idl);
+        wrongArgValueException(c->threadContext, argPos, WRONG_IDL_TYPE_LIST_SHORT, idl);
         return NULL;
     }
 
@@ -474,23 +500,41 @@ LPITEMIDLIST getPidlFromString(RexxMethodContext *c, CSTRING idl, size_t argPos,
     return pidl;
 }
 
-LPITEMIDLIST getPidlFromObject(RexxMethodContext *context, RexxObjectPtr obj, int argPos)
+/**
+ * Extracts a pointer to an item ID list from a Rexx object sent as arg to a
+ * method.  The object must resolve to a CSIDL_xxx constant, a full path, or a
+ * Pointer object.
+ *
+ * Not used for now, not sure that we need this.
+ *
+ * @param c
+ * @param obj
+ * @param argPos
+ *
+ * @return LPITEMIDLIST
+ */
+LPITEMIDLIST getPidlFromObject(RexxMethodContext *c, RexxObjectPtr obj, size_t argPos)
 {
     LPITEMIDLIST pidl = NULL;
 
-    if ( context->IsString(obj) )
+    if ( c->IsString(obj) )
     {
-        pidl = getPidlFromString(context, context->StringData((RexxStringObject)obj), argPos, false);
+        CSTRING idl = c->ObjectToStringValue(obj);
+        pidl = getPidlFromString(c, idl, argPos, false);
     }
-    else if ( context->IsPointer(obj) )
+    else if ( c->IsPointer(obj) )
     {
-        pidl = (LPITEMIDLIST)context->PointerValue((RexxPointerObject)obj);
+        pidl = (LPITEMIDLIST)c->PointerValue((RexxPointerObject)obj);
+        if ( pidl == NULL )
+        {
+            nullObjectException(c->threadContext, "pointer to an Item ID List", argPos);
+        }
+    }
+    else
+    {
+        wrongArgValueException(c->threadContext, argPos, WRONG_IDL_TYPE_LIST, obj);
     }
 
-    if ( pidl == NULL )
-    {
-        wrongFormatException(context, argPos, obj);
-    }
     return pidl;
 }
 
@@ -528,6 +572,11 @@ static RexxObjectPtr folderBrowse(RexxMethodContext *context, PBROWSEINFO pBI, b
         {
             rxResult = context->NewPointer(pidl);
         }
+    }
+
+    if ( ! returnPath && rxResult == context->NullString() )
+    {
+        rxResult = TheNilObj;
     }
     return rxResult;
 }
@@ -622,6 +671,32 @@ RexxMethod2(RexxObjectPtr, bff_setHint, RexxObjectPtr, hint, CSELF, pCSelf)
     return NULLOBJECT;
 }
 
+/** BrowseForFolder:owner                  [attribute]
+ */
+RexxMethod1(RexxObjectPtr, bff_owner, CSELF, pCSelf)
+{
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
+    if ( pcbff != NULL )
+    {
+        return pcbff->rexxOwner == NULLOBJECT ? TheNilObj : pcbff->rexxOwner;
+    }
+    return TheNilObj;
+}
+RexxMethod2(RexxObjectPtr, bff_setOwner, RexxObjectPtr, owner, CSELF, pCSelf)
+{
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
+    if ( pcbff != NULL )
+    {
+        pCPlainBaseDialog pcpbd = requiredPlainBaseDlg(context, owner, 1);
+        if ( pcpbd != NULL )
+        {
+            pcbff->rexxOwner = owner;
+            pcbff->hOwner    = pcpbd->hDlg;
+        }
+    }
+    return NULLOBJECT;
+}
+
 /** BrowseForFolder::root                  [attribute]
  */
 RexxMethod1(RexxObjectPtr, bff_root, CSELF, pCSelf)
@@ -698,6 +773,21 @@ RexxMethod2(RexxObjectPtr, bff_setStartDir, RexxObjectPtr, startDir, CSELF, pCSe
     return NULLOBJECT;
 }
 
+/** BrowseForFolder::initialThread               [attribute]
+ *
+ *  Returns the thread ID of the thread this BrowseForFolder object was
+ *  instantiated on, the ID of the thread that COM was initialized on.
+ */
+RexxMethod1(uint32_t, bff_initialThread, CSELF, pCSelf)
+{
+    pCBrowseForFolder pcbff = getBffCSelf(context, pCSelf);
+    if ( pcbff != NULL )
+    {
+        return pcbff->coThreadID;
+    }
+    return 0;
+}
+
 /** BrowseForFolder::uninit()
  *
  * Does clean up for this BrowseForFolder.  Frees the root PIDL and calls the
@@ -736,6 +826,11 @@ RexxMethod1(RexxObjectPtr, bff_uninit, CSELF, pCSelf)
  *
  * @remarks  MSDN says you have to use CoInitialize or SHBrowseForFolder will
  *           fail.  But it seems to work without it?
+ *
+ *           If a BrowseForFolder object has been previously instantiated and
+ *           COM not released then CoInitializeEx will return S_FALSE, meaning
+ *           COM is already initialized on this thread. We immediately do a
+ *           CoUninitialize to decrement the reference counter fo this case.
  */
 RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_RexxObjectPtr, banner, OPTIONAL_RexxObjectPtr, hint,
             OPTIONAL_RexxObjectPtr, startDir)
@@ -746,7 +841,6 @@ RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_Rex
     pCBrowseForFolder pcbff = (pCBrowseForFolder)context->BufferData(obj);
     memset(pcbff, 0, sizeof(CBrowseForFolder));
 
-    ///*
     HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
     #ifdef _DEBUG
         printf("CoInitializeEx returns: 0x%08x\n", hr);
@@ -765,8 +859,6 @@ RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_Rex
         systemServiceExceptionComCode(context->threadContext, COM_API_FAILED_MSG, "CoInitializeEx", hr);
         return NULLOBJECT;
     }
-
-    //*/
 
     // Set the default attributes for the browser.
     if ( argumentOmitted(1) )
@@ -840,78 +932,67 @@ RexxMethod1(RexxObjectPtr, bff_initCOM, CSELF, pCSelf)
     return TheFalseObj;
 }
 
+RexxObjectPtr getFolderOrIDL(RexxMethodContext *c, void *pCSelf, logical_t reuse, bool getPath)
+{
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(c, pCSelf);
+    if ( pcbff == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    BROWSEINFO   bi = { 0 };
+
+    fillInBrowseInfo(c, &bi, pcbff);
+
+    // If second arg is true - return path.
+    RexxObjectPtr result = folderBrowse(c, &bi, getPath);
+
+    if ( ! reuse )
+    {
+        releaseCOM(pcbff);
+    }
+
+    return result;
+}
+
 /** BrowseForFolder::getFolder()
  *
  * Puts up the customized Browse for Folder dialog using the atributes set for
- * this instance.  The optional arg is a window handle.  If specified that
- * window is used as the owner of the dialog.
+ * this instance.
  *
- * @param   owner  OPTIONAL  A Rexx dialog to be used as owner of the browse
- *          dialog.  If this arg is used, but is not a valid PlainBaseDialog an
- *          exception is raised.
+ * @param   reuse  [OPTIONAL]  By default COM is unitialized on the return from
+ *          this methd.  If reuse is true, COM is not unitialized and it becomes
+ *          the programmer's responsibility to invoke release when the
+ *          BrowseForFolder object is no longer needed.
  *
  * @return  Returns the fully qualified path of the folder the user selects, or
  *          the empty string if the user cancels.  In addition, if the user
  *          selects a virtual folder that has no file system path, .nil is
  *          returned.
  */
-RexxMethod2(RexxObjectPtr, bff_getFolder, OPTIONAL_RexxObjectPtr, owner, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, bff_getFolder, OPTIONAL_logical_t, reuse, CSELF, pCSelf)
 {
-    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
-    if ( pcbff == NULL )
-    {
-        return NULLOBJECT;
-    }
-
-    if ( argumentExists(1) )
-    {
-        pCPlainBaseDialog pcpbd = requiredPlainBaseDlg(context, owner, 1);
-        if ( pcpbd == NULL )
-        {
-            return NULLOBJECT;
-        }
-
-        pcbff->hOwner = pcpbd->hDlg;
-    }
-
-    BROWSEINFO   bi = { 0 };
-
-    fillInBrowseInfo(context, &bi, pcbff);
-
-    // Second arg is true - return path.
-    return folderBrowse(context, &bi, true);
+    return getFolderOrIDL(context, pCSelf, reuse, true);
 }
 
 
-/** BrowseForFolder::getItemID()
+/** BrowseForFolder::getItemIDList()
  *
- * Put up the Browse for Folder dialog and return the PIDL the user selects.
+ * Puts up the customized Browse for Folder dialog using the atributes set for
+ * this instance.
  *
- * @param   hwnd  OPTIONAL  A window handle to be used as owner of the browse
- *          dialog.  If this arg is used, but is not a valid window handle, then
- *          an exception is raised.
+ * @param   reuse  [OPTIONAL]  By default COM is unitialized on the return from
+ *          this methd.  If reuse is true, COM is not unitialized and it becomes
+ *          the programmer's responsibility to invoke release when the
+ *          BrowseForFolder object is no longer needed.
  *
- * @return  Returns the pointer to item ID list the user selected, or the empty
- *          string if the user cancels the dialog.
+ * @return  Returns the pointer to item ID list the user selected, or the .nil
+ *          object if the user cancels the dialog.
  */
-/*
-RexxMethod2(RexxObjectPtr, bff_getItemID, OSELF, self, OPTIONAL_POINTER, owner)
+RexxMethod2(RexxObjectPtr, bff_getItemIDList, OPTIONAL_logical_t, reuse, CSELF, pCSelf)
 {
-    BROWSEINFO   bi = { 0 };
-    BROWSE_DATA  bd = { 0 };
-
-    if ( ! checkOptionalWindow(context, (HWND)owner, 1) )
-    {
-        return NULLOBJECT;
-    }
-
-    // NULL for owner works fine.
-    fillInBrowseInfo(context, (HWND)owner, &bi, &bd);
-
-    // Second arg is false - return PIDL, not path.
-    return folderBrowse(context, &bi, false);
+    return getFolderOrIDL(context, pCSelf, reuse, false);
 }
-*/
 
 
 /** BrowseForFolder::releaseCom
@@ -937,17 +1018,19 @@ RexxMethod1(RexxObjectPtr, bff_releaseCOM, CSELF, pCSelf)
     {
         return NULLOBJECT;
     }
+    return releaseCOM(pcbff);
+}
 
-    if ( GetCurrentThreadId() == pcbff->coThreadID )
+RexxMethod2(RexxObjectPtr, bff_releaseItemIDList, POINTER, pidl, CSELF, pCSelf)
+{
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
+    if ( pcbff == NULL )
     {
-        uninitCom(pcbff);
-        return TheTrueObj;
+        return NULLOBJECT;
     }
-    else
-    {
-        CoUninitialize();
-        return TheFalseObj;
-    }
+    CoTaskMemFree(pidl);
+
+    return TheZeroObj;
 }
 
 /**

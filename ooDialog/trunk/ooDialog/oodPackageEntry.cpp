@@ -1508,6 +1508,9 @@ REXX_METHOD_PROTOTYPE(bff_dlgTitle);
 REXX_METHOD_PROTOTYPE(bff_setDlgTitle);
 REXX_METHOD_PROTOTYPE(bff_hint);
 REXX_METHOD_PROTOTYPE(bff_setHint);
+REXX_METHOD_PROTOTYPE(bff_initialThread);
+REXX_METHOD_PROTOTYPE(bff_owner);
+REXX_METHOD_PROTOTYPE(bff_setOwner);
 REXX_METHOD_PROTOTYPE(bff_root);
 REXX_METHOD_PROTOTYPE(bff_setRoot);
 REXX_METHOD_PROTOTYPE(bff_startDir);
@@ -1516,7 +1519,9 @@ REXX_METHOD_PROTOTYPE(bff_init);
 REXX_METHOD_PROTOTYPE(bff_uninit);
 REXX_METHOD_PROTOTYPE(bff_getFolder);
 REXX_METHOD_PROTOTYPE(bff_initCOM);
+REXX_METHOD_PROTOTYPE(bff_getItemIDList);
 REXX_METHOD_PROTOTYPE(bff_releaseCOM);
+REXX_METHOD_PROTOTYPE(bff_releaseItemIDList);
 REXX_METHOD_PROTOTYPE(bff_test);
 
 REXX_METHOD_PROTOTYPE(sfb_getFolder);
@@ -2597,6 +2602,9 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(bff_setDlgTitle,                bff_setDlgTitle),
     REXX_METHOD(bff_hint,                       bff_hint),
     REXX_METHOD(bff_setHint,                    bff_setHint),
+    REXX_METHOD(bff_initialThread,              bff_initialThread),
+    REXX_METHOD(bff_owner,                      bff_owner),
+    REXX_METHOD(bff_setOwner,                   bff_setOwner),
     REXX_METHOD(bff_root,                       bff_root),
     REXX_METHOD(bff_setRoot,                    bff_setRoot),
     REXX_METHOD(bff_startDir,                   bff_startDir),
@@ -2604,8 +2612,10 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(bff_init,                       bff_init),
     REXX_METHOD(bff_uninit,                     bff_uninit),
     REXX_METHOD(bff_getFolder,                  bff_getFolder),
+    REXX_METHOD(bff_getItemIDList,              bff_getItemIDList),
     REXX_METHOD(bff_initCOM,                    bff_initCOM),
     REXX_METHOD(bff_releaseCOM,                 bff_releaseCOM),
+    REXX_METHOD(bff_releaseItemIDList,          bff_releaseItemIDList),
     REXX_METHOD(bff_test,                       bff_test),
 
     REXX_METHOD(sfb_getFolder,                  sfb_getFolder),
