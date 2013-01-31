@@ -2532,17 +2532,59 @@ bool goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size
     return true;
 }
 
+/**
+ * Gets the error message text for the specified error code.
+ *
+ * @param errBuff   in / out Formatted message returned here.
+ *
+ * @param errCode   The error code whose message is needed.
+ *
+ * @param thisErr   in / out  Format message can fail.  If not null the error
+ *                  code for a failed FormatMessage() is returned here..
+ *
+ * @return True on success, false on error.
+ *
+ * @remarks  errBuff is allocated by the system on success using LocalAlloc().
+ *           The caller is responsible for freeing it on return.
+ *
+ *           Some system error messages use inserts.  Without the
+ *           FORMAT_MESSAGE_IGNORE_INSERTS flag, we get errors when called from
+ *           DlgUtil::errMsg().
+ */
+bool getFormattedErrMsg(char **errBuff, uint32_t errCode, uint32_t *thisErr)
+{
+    unsigned short lang  = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
+    uint32_t       flags = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
+
+    uint32_t count = FormatMessage(flags, NULL, errCode, lang, (LPSTR)errBuff, 0, NULL);
+    if ( thisErr != NULL )
+    {
+        *thisErr = GetLastError();
+    }
+    if ( count == 0 )
+    {
+        return false;
+    }
+
+    return true;
+}
+/**
+ * Formats a HRESULT error code and prints it to the console.  This is more for
+ * use as an internal debugging tool.
+ *
+ * @param api
+ * @param hr
+ *
+ * @return bool
+ */
 bool printHResultErr(CSTRING api, HRESULT hr)
 {
     char *errBuff = NULL;
     char *msg     = NULL;
 
     msg = (char *)LocalAlloc(LPTR, 512);
-    if ( msg )
+    if ( msg && getFormattedErrMsg(&errBuff, hr, NULL) )
     {
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, hr,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&errBuff, 0, NULL);
-
         printf("API %s: result (0x%08x): %s\n", api, hr, errBuff);
         LocalFree(msg);
         LocalFree(errBuff);
@@ -2550,6 +2592,7 @@ bool printHResultErr(CSTRING api, HRESULT hr)
         return true;
     }
 
+    safeLocalFree(msg);
     return false;
 }
 /**

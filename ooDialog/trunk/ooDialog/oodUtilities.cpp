@@ -1107,6 +1107,40 @@ RexxMethod1(uint16_t, dlgutil_loWord_cls, uint32_t, dw) { return LOWORD(dw); }
 RexxMethod2(intptr_t, dlgutil_makeLPARAM_cls, int16_t, loWord, int16_t, hiWord) { return MAKELPARAM(loWord, hiWord); }
 RexxMethod2(uintptr_t, dlgutil_makeWPARAM_cls, int16_t, loWord, int16_t, hiWord) { return MAKEWPARAM(loWord, hiWord); }
 
+RexxMethod1(RexxObjectPtr, dlgutil_errMsg_cls, CSTRING, _errCode)
+{
+    RexxObjectPtr result = context->NullString();
+    uint32_t      rc;
+    uint32_t      errCode;
+    char         *errBuff  = NULL;
+    char          buff[512] = { '\0' };
+
+
+    if ( ! rxStr2Number32(context, _errCode, &errCode, 1) )
+    {
+        return result;
+    }
+
+    if ( getFormattedErrMsg(&errBuff, errCode, &rc) )
+    {
+        char *nl = StrRChr(errBuff, NULL, '\n');
+        if ( nl != NULL )
+        {
+            *nl = '\0';
+        }
+        _snprintf(buff, sizeof(buff), "Error code %u (0x%08x): %s", errCode, errCode, errBuff);
+        LocalFree(errBuff);
+    }
+    else
+    {
+        _snprintf(buff, sizeof(buff), "Internal Windows error formatting the message (%u)", rc);
+    }
+
+    result = context->String(buff);
+
+    return result;
+}
+
 RexxMethod1(uintptr_t, dlgutil_unsigned_cls, intptr_t, n1)
 {
     return (uintptr_t)n1;

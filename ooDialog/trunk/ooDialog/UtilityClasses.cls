@@ -243,6 +243,7 @@
 ::method init class external "LIBRARY oodialog dlgutil_init_cls"
 ::method and class external "LIBRARY oodialog dlgutil_and_cls"
 ::method comctl32Version class external "LIBRARY oodialog dlgutil_comctl32Version_cls"
+::method errMsg class external "LIBRARY oodialog dlgutil_errMsg_cls"
 ::method getSystemMetrics class external "LIBRARY oodialog dlgutil_getSystemMetrics_cls"
 ::method halt class external "LIBRARY oodialog dlgutil_halt_cls"
 ::method handleToPointer class external "LIBRARY oodialog dlgutil_handleToPointer_cls"

@@ -409,6 +409,7 @@ RexxRoutineEntry oodialog_functions[] =
 REXX_METHOD_PROTOTYPE(dlgutil_init_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_comctl32Version_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_version_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_errMsg_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_hiWord_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_loWord_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_shiWord_cls);
@@ -1509,17 +1510,22 @@ REXX_METHOD_PROTOTYPE(bff_setDlgTitle);
 REXX_METHOD_PROTOTYPE(bff_hint);
 REXX_METHOD_PROTOTYPE(bff_setHint);
 REXX_METHOD_PROTOTYPE(bff_initialThread);
+REXX_METHOD_PROTOTYPE(bff_options);
+REXX_METHOD_PROTOTYPE(bff_setOptions);
 REXX_METHOD_PROTOTYPE(bff_owner);
 REXX_METHOD_PROTOTYPE(bff_setOwner);
 REXX_METHOD_PROTOTYPE(bff_root);
 REXX_METHOD_PROTOTYPE(bff_setRoot);
 REXX_METHOD_PROTOTYPE(bff_startDir);
 REXX_METHOD_PROTOTYPE(bff_setStartDir);
+REXX_METHOD_PROTOTYPE(bff_usePathForHint);
+REXX_METHOD_PROTOTYPE(bff_setUsePathForHint);
 REXX_METHOD_PROTOTYPE(bff_init);
 REXX_METHOD_PROTOTYPE(bff_uninit);
+REXX_METHOD_PROTOTYPE(bff_getDisplayName);
 REXX_METHOD_PROTOTYPE(bff_getFolder);
-REXX_METHOD_PROTOTYPE(bff_initCOM);
 REXX_METHOD_PROTOTYPE(bff_getItemIDList);
+REXX_METHOD_PROTOTYPE(bff_initCOM);
 REXX_METHOD_PROTOTYPE(bff_releaseCOM);
 REXX_METHOD_PROTOTYPE(bff_releaseItemIDList);
 REXX_METHOD_PROTOTYPE(bff_test);
@@ -1531,6 +1537,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_init_cls,               dlgutil_init_cls),
     REXX_METHOD(dlgutil_comctl32Version_cls,    dlgutil_comctl32Version_cls),
     REXX_METHOD(dlgutil_version_cls,            dlgutil_version_cls),
+    REXX_METHOD(dlgutil_errMsg_cls,             dlgutil_errMsg_cls),
     REXX_METHOD(dlgutil_hiWord_cls,             dlgutil_hiWord_cls),
     REXX_METHOD(dlgutil_loWord_cls,             dlgutil_loWord_cls),
     REXX_METHOD(dlgutil_sloWord_cls,            dlgutil_sloWord_cls),
@@ -2605,12 +2612,17 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(bff_initialThread,              bff_initialThread),
     REXX_METHOD(bff_owner,                      bff_owner),
     REXX_METHOD(bff_setOwner,                   bff_setOwner),
+    REXX_METHOD(bff_options,                    bff_options),
+    REXX_METHOD(bff_setOptions,                 bff_setOptions),
     REXX_METHOD(bff_root,                       bff_root),
     REXX_METHOD(bff_setRoot,                    bff_setRoot),
     REXX_METHOD(bff_startDir,                   bff_startDir),
     REXX_METHOD(bff_setStartDir,                bff_setStartDir),
+    REXX_METHOD(bff_usePathForHint,             bff_usePathForHint),
+    REXX_METHOD(bff_setUsePathForHint,          bff_setUsePathForHint),
     REXX_METHOD(bff_init,                       bff_init),
     REXX_METHOD(bff_uninit,                     bff_uninit),
+    REXX_METHOD(bff_getDisplayName,             bff_getDisplayName),
     REXX_METHOD(bff_getFolder,                  bff_getFolder),
     REXX_METHOD(bff_getItemIDList,              bff_getItemIDList),
     REXX_METHOD(bff_initCOM,                    bff_initCOM),

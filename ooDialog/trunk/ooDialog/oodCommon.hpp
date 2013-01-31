@@ -176,6 +176,7 @@ extern LPWSTR            ansi2unicode(LPCSTR str);
 extern RexxStringObject  unicode2string(RexxMethodContext *c, PWSTR wstr);
 extern char *            unicode2ansi(PWSTR wstr);
 extern bool              printHResultErr(CSTRING api, HRESULT hr);
+extern bool              getFormattedErrMsg(char **errBuff, uint32_t errCode, uint32_t *thisErr);
 
 extern RexxObjectPtr     setWindowStyle(RexxMethodContext *c, HWND hwnd, uint32_t style);
 extern int               getKeywordValue(String2Int *cMap, const char * str);

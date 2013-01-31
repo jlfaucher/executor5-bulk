@@ -43,10 +43,7 @@
 #include "ooDialog.hpp"     // Must be first, includes windows.h, commctrl.h, and oorexxapi.h
 
 #include <shlobj.h>
-#include <shobjidl.h>
 #include <shlwapi.h>
-#include <shellapi.h>
-//#include <stdio.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
 #include "oodShellObjects.hpp"
@@ -94,13 +91,16 @@ int32_t CALLBACK BrowseCallbackProc(HWND hwnd, uint32_t uMsg, LPARAM lp, LPARAM 
             {
                 SetWindowText(hwnd, pbff->dlgTitle);
             }
-            if ( pbff->usePathForHint && pbff->startDir != NULL )
+            if ( pbff->useHint )
             {
-                SetDlgItemText(hwnd, HINT_ID, pbff->startDir);
-            }
-            else if ( pbff->hint != NULL )
-            {
-                SetDlgItemText(hwnd, HINT_ID, pbff->hint);
+                if ( pbff->usePathForHint && pbff->startDir != NULL )
+                {
+                    SetDlgItemText(hwnd, HINT_ID, pbff->startDir);
+                }
+                else if ( pbff->hint != NULL )
+                {
+                    SetDlgItemText(hwnd, HINT_ID, pbff->hint);
+                }
             }
 
             // WParam should be TRUE when passing a path and should be FALSE
@@ -130,7 +130,7 @@ int32_t CALLBACK BrowseCallbackProc(HWND hwnd, uint32_t uMsg, LPARAM lp, LPARAM 
 
 /**
  * Uses CoUninitialize() to uninit COM, when executing on the same thread as the
- * BrowseForFolder object was instantiated on..
+ * BrowseForFolder object was instantiated on.
  *
  * @param pcbff
  */
@@ -145,13 +145,14 @@ static void uninitCom(pCBrowseForFolder pcbff)
 #endif
             CoUninitialize();
             pcbff->countCoInitialized--;
-        } while (pcbff->countCoInitialized > 0);
+        } while ( pcbff->countCoInitialized > 0 );
     }
 }
 
 /**
  * Checks that a path is a full path name and not a relative path name.  We
- * define full path name here as including the drive letter and colon.
+ * define full path name here as a UNC path or a path that includes the drive
+ * letter and colon.
  *
  * @param path
  *
@@ -171,7 +172,7 @@ static bool _PathIsFull(const char *path)
 }
 
 /**
- * Converts a string keywork to its CSIDL_xx value. Raises an exception if
+ * Converts a string of keywords to its CSIDL_xx value. Raises an exception if
  * keyword is not valid.
  *
  * @param c
@@ -184,63 +185,63 @@ static uint32_t keyword2csidl(RexxMethodContext *c, CSTRING keyword, size_t argP
 {
     uint32_t csidl = OOD_ID_EXCEPTION;
 
-         if ( StrCmpI(keyword, "CSIDL_DESKTOP"                ) == 0 ) csidl = CSIDL_DESKTOP                ;
-    else if ( StrCmpI(keyword, "CSIDL_INTERNET"               ) == 0 ) csidl = CSIDL_INTERNET               ;
-    else if ( StrCmpI(keyword, "CSIDL_PROGRAMS"               ) == 0 ) csidl = CSIDL_PROGRAMS               ;
-    else if ( StrCmpI(keyword, "CSIDL_CONTROLS"               ) == 0 ) csidl = CSIDL_CONTROLS               ;
-    else if ( StrCmpI(keyword, "CSIDL_PRINTERS"               ) == 0 ) csidl = CSIDL_PRINTERS               ;
-    else if ( StrCmpI(keyword, "CSIDL_PERSONAL"               ) == 0 ) csidl = CSIDL_PERSONAL               ;
-    else if ( StrCmpI(keyword, "CSIDL_FAVORITES"              ) == 0 ) csidl = CSIDL_FAVORITES              ;
-    else if ( StrCmpI(keyword, "CSIDL_STARTUP"                ) == 0 ) csidl = CSIDL_STARTUP                ;
-    else if ( StrCmpI(keyword, "CSIDL_RECENT"                 ) == 0 ) csidl = CSIDL_RECENT                 ;
-    else if ( StrCmpI(keyword, "CSIDL_SENDTO"                 ) == 0 ) csidl = CSIDL_SENDTO                 ;
-    else if ( StrCmpI(keyword, "CSIDL_BITBUCKET"              ) == 0 ) csidl = CSIDL_BITBUCKET              ;
-    else if ( StrCmpI(keyword, "CSIDL_STARTMENU"              ) == 0 ) csidl = CSIDL_STARTMENU              ;
-    else if ( StrCmpI(keyword, "CSIDL_MYDOCUMENTS"            ) == 0 ) csidl = CSIDL_MYDOCUMENTS            ;
-    else if ( StrCmpI(keyword, "CSIDL_MYMUSIC"                ) == 0 ) csidl = CSIDL_MYMUSIC                ;
-    else if ( StrCmpI(keyword, "CSIDL_MYVIDEO"                ) == 0 ) csidl = CSIDL_MYVIDEO                ;
-    else if ( StrCmpI(keyword, "CSIDL_DESKTOPDIRECTORY"       ) == 0 ) csidl = CSIDL_DESKTOPDIRECTORY       ;
-    else if ( StrCmpI(keyword, "CSIDL_DRIVES"                 ) == 0 ) csidl = CSIDL_DRIVES                 ;
-    else if ( StrCmpI(keyword, "CSIDL_NETWORK"                ) == 0 ) csidl = CSIDL_NETWORK                ;
-    else if ( StrCmpI(keyword, "CSIDL_NETHOOD"                ) == 0 ) csidl = CSIDL_NETHOOD                ;
-    else if ( StrCmpI(keyword, "CSIDL_FONTS"                  ) == 0 ) csidl = CSIDL_FONTS                  ;
-    else if ( StrCmpI(keyword, "CSIDL_TEMPLATES"              ) == 0 ) csidl = CSIDL_TEMPLATES              ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_STARTMENU"       ) == 0 ) csidl = CSIDL_COMMON_STARTMENU       ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_PROGRAMS"        ) == 0 ) csidl = CSIDL_COMMON_PROGRAMS        ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_STARTUP"         ) == 0 ) csidl = CSIDL_COMMON_STARTUP         ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_DESKTOPDIRECTORY") == 0 ) csidl = CSIDL_COMMON_DESKTOPDIRECTORY;
-    else if ( StrCmpI(keyword, "CSIDL_APPDATA"                ) == 0 ) csidl = CSIDL_APPDATA                ;
-    else if ( StrCmpI(keyword, "CSIDL_PRINTHOOD"              ) == 0 ) csidl = CSIDL_PRINTHOOD              ;
-    else if ( StrCmpI(keyword, "CSIDL_LOCAL_APPDATA"          ) == 0 ) csidl = CSIDL_LOCAL_APPDATA          ;
-    else if ( StrCmpI(keyword, "CSIDL_ALTSTARTUP"             ) == 0 ) csidl = CSIDL_ALTSTARTUP             ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_ALTSTARTUP"      ) == 0 ) csidl = CSIDL_COMMON_ALTSTARTUP      ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_FAVORITES"       ) == 0 ) csidl = CSIDL_COMMON_FAVORITES       ;
-    else if ( StrCmpI(keyword, "CSIDL_INTERNET_CACHE"         ) == 0 ) csidl = CSIDL_INTERNET_CACHE         ;
-    else if ( StrCmpI(keyword, "CSIDL_COOKIES"                ) == 0 ) csidl = CSIDL_COOKIES                ;
-    else if ( StrCmpI(keyword, "CSIDL_HISTORY"                ) == 0 ) csidl = CSIDL_HISTORY                ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_APPDATA"         ) == 0 ) csidl = CSIDL_COMMON_APPDATA         ;
-    else if ( StrCmpI(keyword, "CSIDL_WINDOWS"                ) == 0 ) csidl = CSIDL_WINDOWS                ;
-    else if ( StrCmpI(keyword, "CSIDL_SYSTEM"                 ) == 0 ) csidl = CSIDL_SYSTEM                 ;
-    else if ( StrCmpI(keyword, "CSIDL_PROGRAM_FILES"          ) == 0 ) csidl = CSIDL_PROGRAM_FILES          ;
-    else if ( StrCmpI(keyword, "CSIDL_MYPICTURES"             ) == 0 ) csidl = CSIDL_MYPICTURES             ;
-    else if ( StrCmpI(keyword, "CSIDL_PROFILE"                ) == 0 ) csidl = CSIDL_PROFILE                ;
-    else if ( StrCmpI(keyword, "CSIDL_SYSTEMX86"              ) == 0 ) csidl = CSIDL_SYSTEMX86              ;
-    else if ( StrCmpI(keyword, "CSIDL_PROGRAM_FILESX86"       ) == 0 ) csidl = CSIDL_PROGRAM_FILESX86       ;
-    else if ( StrCmpI(keyword, "CSIDL_PROGRAM_FILES_COMMON"   ) == 0 ) csidl = CSIDL_PROGRAM_FILES_COMMON   ;
-    else if ( StrCmpI(keyword, "CSIDL_PROGRAM_FILES_COMMONX86") == 0 ) csidl = CSIDL_PROGRAM_FILES_COMMONX86;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_TEMPLATES"       ) == 0 ) csidl = CSIDL_COMMON_TEMPLATES       ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_DOCUMENTS"       ) == 0 ) csidl = CSIDL_COMMON_DOCUMENTS       ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_ADMINTOOLS"      ) == 0 ) csidl = CSIDL_COMMON_ADMINTOOLS      ;
-    else if ( StrCmpI(keyword, "CSIDL_ADMINTOOLS"             ) == 0 ) csidl = CSIDL_ADMINTOOLS             ;
-    else if ( StrCmpI(keyword, "CSIDL_CONNECTIONS"            ) == 0 ) csidl = CSIDL_CONNECTIONS            ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_MUSIC"           ) == 0 ) csidl = CSIDL_COMMON_MUSIC           ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_PICTURES"        ) == 0 ) csidl = CSIDL_COMMON_PICTURES        ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_VIDEO"           ) == 0 ) csidl = CSIDL_COMMON_VIDEO           ;
-    else if ( StrCmpI(keyword, "CSIDL_RESOURCES"              ) == 0 ) csidl = CSIDL_RESOURCES              ;
-    else if ( StrCmpI(keyword, "CSIDL_RESOURCES_LOCALIZED"    ) == 0 ) csidl = CSIDL_RESOURCES_LOCALIZED    ;
-    else if ( StrCmpI(keyword, "CSIDL_COMMON_OEM_LINKS"       ) == 0 ) csidl = CSIDL_COMMON_OEM_LINKS       ;
-    else if ( StrCmpI(keyword, "CSIDL_CDBURN_AREA"            ) == 0 ) csidl = CSIDL_CDBURN_AREA            ;
-    else if ( StrCmpI(keyword, "CSIDL_COMPUTERSNEARME"        ) == 0 ) csidl = CSIDL_COMPUTERSNEARME        ;
+         if ( StrStrI(keyword, "CSIDL_DESKTOP"                ) != NULL ) csidl = CSIDL_DESKTOP                ;
+    else if ( StrStrI(keyword, "CSIDL_INTERNET"               ) != NULL ) csidl = CSIDL_INTERNET               ;
+    else if ( StrStrI(keyword, "CSIDL_PROGRAMS"               ) != NULL ) csidl = CSIDL_PROGRAMS               ;
+    else if ( StrStrI(keyword, "CSIDL_CONTROLS"               ) != NULL ) csidl = CSIDL_CONTROLS               ;
+    else if ( StrStrI(keyword, "CSIDL_PRINTERS"               ) != NULL ) csidl = CSIDL_PRINTERS               ;
+    else if ( StrStrI(keyword, "CSIDL_PERSONAL"               ) != NULL ) csidl = CSIDL_PERSONAL               ;
+    else if ( StrStrI(keyword, "CSIDL_FAVORITES"              ) != NULL ) csidl = CSIDL_FAVORITES              ;
+    else if ( StrStrI(keyword, "CSIDL_STARTUP"                ) != NULL ) csidl = CSIDL_STARTUP                ;
+    else if ( StrStrI(keyword, "CSIDL_RECENT"                 ) != NULL ) csidl = CSIDL_RECENT                 ;
+    else if ( StrStrI(keyword, "CSIDL_SENDTO"                 ) != NULL ) csidl = CSIDL_SENDTO                 ;
+    else if ( StrStrI(keyword, "CSIDL_BITBUCKET"              ) != NULL ) csidl = CSIDL_BITBUCKET              ;
+    else if ( StrStrI(keyword, "CSIDL_STARTMENU"              ) != NULL ) csidl = CSIDL_STARTMENU              ;
+    else if ( StrStrI(keyword, "CSIDL_MYDOCUMENTS"            ) != NULL ) csidl = CSIDL_MYDOCUMENTS            ;
+    else if ( StrStrI(keyword, "CSIDL_MYMUSIC"                ) != NULL ) csidl = CSIDL_MYMUSIC                ;
+    else if ( StrStrI(keyword, "CSIDL_MYVIDEO"                ) != NULL ) csidl = CSIDL_MYVIDEO                ;
+    else if ( StrStrI(keyword, "CSIDL_DESKTOPDIRECTORY"       ) != NULL ) csidl = CSIDL_DESKTOPDIRECTORY       ;
+    else if ( StrStrI(keyword, "CSIDL_DRIVES"                 ) != NULL ) csidl = CSIDL_DRIVES                 ;
+    else if ( StrStrI(keyword, "CSIDL_NETWORK"                ) != NULL ) csidl = CSIDL_NETWORK                ;
+    else if ( StrStrI(keyword, "CSIDL_NETHOOD"                ) != NULL ) csidl = CSIDL_NETHOOD                ;
+    else if ( StrStrI(keyword, "CSIDL_FONTS"                  ) != NULL ) csidl = CSIDL_FONTS                  ;
+    else if ( StrStrI(keyword, "CSIDL_TEMPLATES"              ) != NULL ) csidl = CSIDL_TEMPLATES              ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_STARTMENU"       ) != NULL ) csidl = CSIDL_COMMON_STARTMENU       ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_PROGRAMS"        ) != NULL ) csidl = CSIDL_COMMON_PROGRAMS        ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_STARTUP"         ) != NULL ) csidl = CSIDL_COMMON_STARTUP         ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_DESKTOPDIRECTORY") != NULL ) csidl = CSIDL_COMMON_DESKTOPDIRECTORY;
+    else if ( StrStrI(keyword, "CSIDL_APPDATA"                ) != NULL ) csidl = CSIDL_APPDATA                ;
+    else if ( StrStrI(keyword, "CSIDL_PRINTHOOD"              ) != NULL ) csidl = CSIDL_PRINTHOOD              ;
+    else if ( StrStrI(keyword, "CSIDL_LOCAL_APPDATA"          ) != NULL ) csidl = CSIDL_LOCAL_APPDATA          ;
+    else if ( StrStrI(keyword, "CSIDL_ALTSTARTUP"             ) != NULL ) csidl = CSIDL_ALTSTARTUP             ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_ALTSTARTUP"      ) != NULL ) csidl = CSIDL_COMMON_ALTSTARTUP      ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_FAVORITES"       ) != NULL ) csidl = CSIDL_COMMON_FAVORITES       ;
+    else if ( StrStrI(keyword, "CSIDL_INTERNET_CACHE"         ) != NULL ) csidl = CSIDL_INTERNET_CACHE         ;
+    else if ( StrStrI(keyword, "CSIDL_COOKIES"                ) != NULL ) csidl = CSIDL_COOKIES                ;
+    else if ( StrStrI(keyword, "CSIDL_HISTORY"                ) != NULL ) csidl = CSIDL_HISTORY                ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_APPDATA"         ) != NULL ) csidl = CSIDL_COMMON_APPDATA         ;
+    else if ( StrStrI(keyword, "CSIDL_WINDOWS"                ) != NULL ) csidl = CSIDL_WINDOWS                ;
+    else if ( StrStrI(keyword, "CSIDL_SYSTEM"                 ) != NULL ) csidl = CSIDL_SYSTEM                 ;
+    else if ( StrStrI(keyword, "CSIDL_PROGRAM_FILES"          ) != NULL ) csidl = CSIDL_PROGRAM_FILES          ;
+    else if ( StrStrI(keyword, "CSIDL_MYPICTURES"             ) != NULL ) csidl = CSIDL_MYPICTURES             ;
+    else if ( StrStrI(keyword, "CSIDL_PROFILE"                ) != NULL ) csidl = CSIDL_PROFILE                ;
+    else if ( StrStrI(keyword, "CSIDL_SYSTEMX86"              ) != NULL ) csidl = CSIDL_SYSTEMX86              ;
+    else if ( StrStrI(keyword, "CSIDL_PROGRAM_FILESX86"       ) != NULL ) csidl = CSIDL_PROGRAM_FILESX86       ;
+    else if ( StrStrI(keyword, "CSIDL_PROGRAM_FILES_COMMON"   ) != NULL ) csidl = CSIDL_PROGRAM_FILES_COMMON   ;
+    else if ( StrStrI(keyword, "CSIDL_PROGRAM_FILES_COMMONX86") != NULL ) csidl = CSIDL_PROGRAM_FILES_COMMONX86;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_TEMPLATES"       ) != NULL ) csidl = CSIDL_COMMON_TEMPLATES       ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_DOCUMENTS"       ) != NULL ) csidl = CSIDL_COMMON_DOCUMENTS       ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_ADMINTOOLS"      ) != NULL ) csidl = CSIDL_COMMON_ADMINTOOLS      ;
+    else if ( StrStrI(keyword, "CSIDL_ADMINTOOLS"             ) != NULL ) csidl = CSIDL_ADMINTOOLS             ;
+    else if ( StrStrI(keyword, "CSIDL_CONNECTIONS"            ) != NULL ) csidl = CSIDL_CONNECTIONS            ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_MUSIC"           ) != NULL ) csidl = CSIDL_COMMON_MUSIC           ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_PICTURES"        ) != NULL ) csidl = CSIDL_COMMON_PICTURES        ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_VIDEO"           ) != NULL ) csidl = CSIDL_COMMON_VIDEO           ;
+    else if ( StrStrI(keyword, "CSIDL_RESOURCES"              ) != NULL ) csidl = CSIDL_RESOURCES              ;
+    else if ( StrStrI(keyword, "CSIDL_RESOURCES_LOCALIZED"    ) != NULL ) csidl = CSIDL_RESOURCES_LOCALIZED    ;
+    else if ( StrStrI(keyword, "CSIDL_COMMON_OEM_LINKS"       ) != NULL ) csidl = CSIDL_COMMON_OEM_LINKS       ;
+    else if ( StrStrI(keyword, "CSIDL_CDBURN_AREA"            ) != NULL ) csidl = CSIDL_CDBURN_AREA            ;
+    else if ( StrStrI(keyword, "CSIDL_COMPUTERSNEARME"        ) != NULL ) csidl = CSIDL_COMPUTERSNEARME        ;
     else
     {
         invalidConstantException(c, argPos, INVALID_CONSTANT_MSG, "CSIDL", keyword);
@@ -250,11 +251,83 @@ static uint32_t keyword2csidl(RexxMethodContext *c, CSTRING keyword, size_t argP
 }
 
 /**
+ * Converts a string of keywords to its BIF_xx value. Raises an exception if
+ * keyword is not valid.
+ *
+ * @param c
+ * @param keyword
+ * @param argPos
+ *
+ * @return uint32_t
+ */
+static uint32_t keywords2bif(RexxMethodContext *c, CSTRING keyword, size_t argPos)
+{
+    uint32_t bif = OOD_ID_EXCEPTION;
+
+         if ( StrStrI(keyword, "BROWSEFILEJUNCTIONS") != NULL ) bif = BIF_BROWSEFILEJUNCTIONS;
+    else if ( StrStrI(keyword, "BROWSEFORCOMPUTER"  ) != NULL ) bif = BIF_BROWSEFORCOMPUTER  ;
+    else if ( StrStrI(keyword, "BROWSEFORPRINTER"   ) != NULL ) bif = BIF_BROWSEFORPRINTER   ;
+    else if ( StrStrI(keyword, "BROWSEINCLUDEFILES" ) != NULL ) bif = BIF_BROWSEINCLUDEFILES ;
+    else if ( StrStrI(keyword, "BROWSEINCLUDEURLS"  ) != NULL ) bif = BIF_BROWSEINCLUDEURLS  ;
+    else if ( StrStrI(keyword, "DONTGOBELOWDOMAIN"  ) != NULL ) bif = BIF_DONTGOBELOWDOMAIN  ;
+    else if ( StrStrI(keyword, "NEWDIALOGSTYLE"     ) != NULL ) bif = BIF_NEWDIALOGSTYLE     ;
+    else if ( StrStrI(keyword, "NONEWFOLDERBUTTON"  ) != NULL ) bif = BIF_NONEWFOLDERBUTTON  ;
+    else if ( StrStrI(keyword, "NOTRANSLATETARGETS" ) != NULL ) bif = BIF_NOTRANSLATETARGETS ;
+    else if ( StrStrI(keyword, "RETURNFSANCESTORS"  ) != NULL ) bif = BIF_RETURNFSANCESTORS  ;
+    else if ( StrStrI(keyword, "RETURNONLYFSDIRS"   ) != NULL ) bif = BIF_RETURNONLYFSDIRS   ;
+    else if ( StrStrI(keyword, "SHAREABLE"          ) != NULL ) bif = BIF_SHAREABLE          ;
+    else if ( StrStrI(keyword, "STATUSTEXT"         ) != NULL ) bif = BIF_STATUSTEXT         ;
+    else if ( StrStrI(keyword, "UAHINT"             ) != NULL ) bif = BIF_UAHINT             ;
+    else if ( StrStrI(keyword, "USENEWUI"           ) != NULL ) bif = BIF_USENEWUI           ;
+    else
+    {
+        invalidConstantException(c, argPos, INVALID_CONSTANT_MSG, "BIF", keyword);
+    }
+
+    return bif;
+}
+
+/**
+ * Parse the BIF_xx flags and returns the matching keyword string.
+ *
+ * @param c
+ * @param bif
+ *
+ * @return RexxObjectPtr
+ */
+static RexxObjectPtr bif2keywords(RexxMethodContext *c, uint32_t bif)
+{
+    char buf[512] = { '\0' };
+
+    if ( bif & BIF_BROWSEFILEJUNCTIONS) strcat(buf, "BROWSEFILEJUNCTIONS ");
+    if ( bif & BIF_BROWSEFORCOMPUTER  ) strcat(buf, "BROWSEFORCOMPUTER "  );
+    if ( bif & BIF_BROWSEFORPRINTER   ) strcat(buf, "BROWSEFORPRINTER "   );
+    if ( bif & BIF_BROWSEINCLUDEFILES ) strcat(buf, "BROWSEINCLUDEFILES " );
+    if ( bif & BIF_BROWSEINCLUDEURLS  ) strcat(buf, "BROWSEINCLUDEURLS "  );
+    if ( bif & BIF_DONTGOBELOWDOMAIN  ) strcat(buf, "DONTGOBELOWDOMAIN "  );
+    if ( bif & BIF_NEWDIALOGSTYLE     ) strcat(buf, "NEWDIALOGSTYLE "     );
+    if ( bif & BIF_NONEWFOLDERBUTTON  ) strcat(buf, "NONEWFOLDERBUTTON "  );
+    if ( bif & BIF_NOTRANSLATETARGETS ) strcat(buf, "NOTRANSLATETARGETS " );
+    if ( bif & BIF_RETURNFSANCESTORS  ) strcat(buf, "RETURNFSANCESTORS "  );
+    if ( bif & BIF_RETURNONLYFSDIRS   ) strcat(buf, "RETURNONLYFSDIRS "   );
+    if ( bif & BIF_SHAREABLE          ) strcat(buf, "SHAREABLE "          );
+    if ( bif & BIF_STATUSTEXT         ) strcat(buf, "STATUSTEXT "         );
+    if ( bif & BIF_UAHINT             ) strcat(buf, "UAHINT "             );
+    if ( bif & BIF_USENEWUI           ) strcat(buf, "USENEWUI "           );
+
+    if ( buf[0] != '\0' )
+    {
+        buf[strlen(buf) - 1] = '\0';
+    }
+    return c->String(buf);
+}
+
+/**
  * Sets one of the text attributes of the BrowseForFolder object.
  *
- * If rxValue is the .nil object or the empty string, then CSelf value of the
- * attribute is set to NULL, which basically causes the default value to be used
- * by the browse dialog.
+ * If rxValue is the .nil object or the empty string, then the CSelf value of
+ * the attribute is set to NULL, which basically causes the default value to be
+ * used by the browse dialog.
  *
  * The attribute could already have a malloc'd string, in which case we need to
  * be sure and free it.
@@ -304,6 +377,23 @@ void setTextAttribute(RexxMethodContext *c, pCBrowseForFolder pcbff, RexxObjectP
         case DlgHint :
             safeLocalFree(pcbff->hint);
             pcbff->hint = newVal;
+            if ( newVal != NULL )
+            {
+                pcbff->useHint = true;
+            }
+            else
+            {
+                pcbff->useHint = pcbff->usePathForHint ? true : false;
+            }
+
+            if ( pcbff->useHint )
+            {
+                pcbff->bifFlags |= BIF_UAHINT;
+            }
+            else
+            {
+                pcbff->bifFlags &= ~BIF_UAHINT;
+            }
             break;
 
         case DlgStartDir :
@@ -343,13 +433,13 @@ static bool pidlFromPath(LPCSTR path, LPITEMIDLIST *ppidl)
 
    *ppidl = NULL;
 
-   if ( MultiByteToWideChar(CP_ACP, 0, path, -1, wPath, MAX_PATH) == 0 )
+   if ( MultiByteToWideChar(CP_ACP, 0, path, -1, wPath, MAX_PATH) != NULL )
    {
        return false;
    }
 
    // Need the desktop IShellFolder interface.
-   if ( SHGetDesktopFolder(&pShellFolder) != NOERROR )
+   if ( SHGetDesktopFolder(&pShellFolder) != S_OK )
    {
        return false;
    }
@@ -359,7 +449,7 @@ static bool pidlFromPath(LPCSTR path, LPITEMIDLIST *ppidl)
 
    pShellFolder->Release();
 
-   if (FAILED(hr))
+   if ( FAILED(hr) )
    {
       *ppidl = NULL;  // Docs are unclear as to the value of this on failure.
       return false;
@@ -383,11 +473,6 @@ static bool pidlForSpecialFolder(uint32_t csidl, LPITEMIDLIST *ppidl)
     hr = SHGetFolderLocation(NULL, csidl, NULL, 0, ppidl);
     if ( FAILED(hr) )
     {
-    #ifdef _DEBUG
-        printf("Failed to get location hr: 0x%08x csidl: 0x%08x\n", hr, csidl);
-        printHResultErr("SHGetFolderLocation", hr);
-    #endif
-
         *ppidl = NULL;
         success = false;
     }
@@ -398,12 +483,12 @@ static bool pidlForSpecialFolder(uint32_t csidl, LPITEMIDLIST *ppidl)
 /**
  * Invokes CoUninitialize() once on the current thread. However, if the current
  * thread is the same thread as instantiation of the BrowseForFolder object,
- * then the inovocation will be dpenedent on the state flags.
+ * then the inovocation will be dependent on the state flags.
  *
  * @param pcbff
  *
  * @return True if CoUnitialize() was invoked on the original thread of
- *         instantiation
+ *         instantiation, otherwise false.
  */
 static RexxObjectPtr releaseCOM(pCBrowseForFolder pcbff)
 {
@@ -581,20 +666,34 @@ static RexxObjectPtr folderBrowse(RexxMethodContext *context, PBROWSEINFO pBI, b
     return rxResult;
 }
 
+/**
+ * Fills in the browse info struct using the attributes of this BrowseForFolder
+ * object.
+ *
+ * @param context
+ * @param pBI
+ * @param pcbff
+ *
+ * @remarks  We treat a few things about the BIF_xx flags special here.  The
+ *           user can change the flags to what they want, but we always use
+ *           BIF_NEWDIALOGSTYLE.  So, we always add it here as a precaution in
+ *           case it was dropped.  A similar thing for BIF_UAHINT, if useHint is
+ *           true, we always add it.
+ *
+ *           In the code we try to keep bifFlags accurate so that if the user
+ *           accesses the attribute, they get the right info.  But, the logic is
+ *           a little convoluted ... so we take a little extra precaution.
+ */
 static void fillInBrowseInfo(RexxMethodContext *context, PBROWSEINFO pBI, pCBrowseForFolder pcbff)
 {
     pBI->hwndOwner = pcbff->hOwner;
-    pBI->ulFlags   = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS;
+    pBI->ulFlags   = pcbff->bifFlags;
 
-    if ( pcbff->hint != NULL )
+    pBI->ulFlags |= BIF_NEWDIALOGSTYLE;
+
+    if ( pcbff->useHint )
     {
         pBI->ulFlags |= BIF_UAHINT;
-
-        if ( StrCmpI("PATH", pcbff->hint) == 0 )
-        {
-            pcbff->usePathForHint = true;
-            pcbff->hint           = BFF_HINT;
-        }
     }
 
     if ( pcbff->banner != NULL )
@@ -607,6 +706,135 @@ static void fillInBrowseInfo(RexxMethodContext *context, PBROWSEINFO pBI, pCBrow
     pBI->lpfn   = BrowseCallbackProc;
     pBI->lParam = (LPARAM)pcbff;
 }
+
+/**
+ * Common code for the getFolder() and getItemIDList() Rexx methods.  The only
+ * difference between the 2 methods is that getFolder() returns the  selected
+ * folder as a fils system path and getItemIDList() returns the raw pidl.
+ *
+ * @param c
+ * @param pCSelf
+ * @param reuse
+ * @param getPath
+ *
+ * @return RexxObjectPtr
+ *
+ * @remarks  By default we do the CoUnitialize after the browse for folder
+ *           dialog is closed.  The user should be advised in the docs that the
+ *           simplest thing to do is instantiate, configure, and get the folder
+ *           on one thread.  For other usage patterns, the user then becomes
+ *           responsible for matching CoInitializeEx() / CoUnitialize().  The
+ *           BrowseForFolder class has sufficient methods for that to be done in
+ *           Rexx, but the user will need to take care.
+ */
+RexxObjectPtr getFolderOrIDL(RexxMethodContext *c, void *pCSelf, logical_t reuse, bool getPath)
+{
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(c, pCSelf);
+    if ( pcbff == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    BROWSEINFO   bi = { 0 };
+
+    fillInBrowseInfo(c, &bi, pcbff);
+
+    // If second arg is true - return path.
+    RexxObjectPtr result = folderBrowse(c, &bi, getPath);
+
+    if ( ! reuse )
+    {
+        releaseCOM(pcbff);
+    }
+
+    return result;
+}
+
+/**
+ * Returns the display name for the specified item ID list.
+ *
+ * This should return some name for any shell item, virtual folder or not.  We
+ * first try to get a full path name, but if that fails we try a again using the
+ * flag for destop absolute editing.
+ *
+ * @param c
+ * @param pidl
+ *
+ * @return RexxObjectPtr
+ *
+ * @note  Sets the .systemErrorCode
+ *
+ * @remarks  The entry point for SHCreateItemFromIDList is not present on XP
+ *           systems.  So we use GetProcAddress() to use it dynamically at run
+ *           time.  If we don't ooDialog won't load on XP.
+ */
+RexxObjectPtr getBestDisplayName(RexxMethodContext *c, PIDLIST_ABSOLUTE pidl)
+{
+    oodResetSysErrCode(c->threadContext);
+
+    RexxObjectPtr result = TheNilObj;
+
+    HINSTANCE hinst = LoadLibrary(TEXT("Shell32.dll"));
+    if ( hinst == NULL )
+    {
+        oodSetSysErrCode(c->threadContext);
+        goto done_out;
+    }
+
+    SHCreateItemFromIDListPROC pSHCreateItemFromIDList = (SHCreateItemFromIDListPROC)GetProcAddress(hinst, "SHCreateItemFromIDList");
+    if ( pSHCreateItemFromIDList == NULL )
+    {
+        oodSetSysErrCode(c->threadContext);
+        goto done_out;
+    }
+
+    IShellItem *psi;
+
+    HRESULT hr = pSHCreateItemFromIDList(pidl, IID_PPV_ARGS(&psi));
+    if ( SUCCEEDED(hr) )
+    {
+        PWSTR pszName;
+
+        // We first try to get a full path name
+        hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszName);
+        if ( SUCCEEDED(hr) )
+        {
+            result = unicode2string(c, pszName);
+            CoTaskMemFree(pszName);
+        }
+        else
+        {
+            // Probably a virtual file, try again
+            hr = psi->GetDisplayName(SIGDN_DESKTOPABSOLUTEEDITING, &pszName);
+            if ( SUCCEEDED(hr) )
+            {
+                result = unicode2string(c, pszName);
+            }
+            else
+            {
+                oodSetSysErrCode(c->threadContext);
+            }
+
+            CoTaskMemFree(pszName);
+        }
+
+        psi->Release();
+    }
+    else
+    {
+        oodSetSysErrCode(c->threadContext, hr);
+    }
+
+done_out:
+    if ( hinst != NULL )
+    {
+        FreeLibrary(hinst);
+    }
+
+    return result;
+}
+
+
 
 /** BrowseForFolder::banner                  [attribute]
  */
@@ -667,6 +895,35 @@ RexxMethod2(RexxObjectPtr, bff_setHint, RexxObjectPtr, hint, CSELF, pCSelf)
     if ( pcbff != NULL )
     {
         setTextAttribute(context, pcbff, hint, DlgHint);
+    }
+    return NULLOBJECT;
+}
+
+/** BrowseForFolder:options                  [attribute]
+ */
+RexxMethod1(RexxObjectPtr, bff_options, CSELF, pCSelf)
+{
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
+    if ( pcbff != NULL )
+    {
+        return bif2keywords(context, pcbff->bifFlags);
+    }
+    return context->NullString();
+}
+RexxMethod2(RexxObjectPtr, bff_setOptions, CSTRING, opts, CSELF, pCSelf)
+{
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
+    if ( pcbff != NULL )
+    {
+        pcbff->bifFlags = keywords2bif(context, opts, 1) | BIF_NEWDIALOGSTYLE;
+        if ( pcbff->useHint )
+        {
+            pcbff->bifFlags |= BIF_UAHINT;
+        }
+        else
+        {
+            pcbff->bifFlags &= ~BIF_UAHINT;
+        }
     }
     return NULLOBJECT;
 }
@@ -773,6 +1030,39 @@ RexxMethod2(RexxObjectPtr, bff_setStartDir, RexxObjectPtr, startDir, CSELF, pCSe
     return NULLOBJECT;
 }
 
+/** BrowseForFolder::usePathForHint                  [attribute]
+ */
+RexxMethod1(RexxObjectPtr, bff_usePathForHint, CSELF, pCSelf)
+{
+    pCBrowseForFolder pcbff = getBffCSelf(context, pCSelf);
+    if ( pcbff != NULL )
+    {
+        return context->Logical(pcbff->usePathForHint);
+    }
+    return context->NullString();
+}
+RexxMethod2(RexxObjectPtr, bff_setUsePathForHint, logical_t, usePath, CSELF, pCSelf)
+{
+    pCBrowseForFolder pcbff = getBffCSelf(context, pCSelf);
+    if ( pcbff != NULL )
+    {
+        if ( usePath )
+        {
+            pcbff->usePathForHint = true;
+            pcbff->useHint = true;
+        }
+        else
+        {
+            pcbff->usePathForHint = false;
+            if ( pcbff->hint == NULL )
+            {
+                pcbff->useHint = false;
+            }
+        }
+    }
+    return NULLOBJECT;
+}
+
 /** BrowseForFolder::initialThread               [attribute]
  *
  *  Returns the thread ID of the thread this BrowseForFolder object was
@@ -860,6 +1150,8 @@ RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_Rex
         return NULLOBJECT;
     }
 
+    pcbff->bifFlags = DEFAULT_BIF_FLAGS;
+
     // Set the default attributes for the browser.
     if ( argumentOmitted(1) )
     {
@@ -900,7 +1192,22 @@ RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_Rex
 
 /** BrowseForFolder::initCOM
  *
+ *  Invokes CoInitalizeEx() on the current thread, with some forethought.  If
+ *  the current thread is the initial thread that this object was instantiated
+ *  on, then the invocation is only done if needed.
  *
+ *  If we are on the initial thread and the countCoInitialized is 0 the
+ *  initialize is done and the count incremented.  If the count is not 0, the
+ *  initialize is skipped.
+ *
+ *  If we are on another thread, the CoInitializeEx is always done, but the
+ *  return is checked.  If it is S_FALSE, that indicates the CoInitializeEx has
+ *  already been done on this thread and we immediately do an unitialize to keep
+ *  things balanced.
+ *
+ *  If the user makes use of these methods, he assumes the responsibility of
+ *  keeping CoInitializedEx / CoUnitialize() in balance *and* in invoking the
+ *  releaseCOM method when he is done with this object.
  */
 RexxMethod1(RexxObjectPtr, bff_initCOM, CSELF, pCSelf)
 {
@@ -932,28 +1239,33 @@ RexxMethod1(RexxObjectPtr, bff_initCOM, CSELF, pCSelf)
     return TheFalseObj;
 }
 
-RexxObjectPtr getFolderOrIDL(RexxMethodContext *c, void *pCSelf, logical_t reuse, bool getPath)
+/** BrowseForFolder::getDisplayName()
+ *
+ * Returns the display name for an item ID list.
+ *
+ * @param   pidl  [required]  A handle, a pointer, to an item ID list
+ *
+ * @return  Returns the full display name for the item ID list on success, the
+ *          .nil object on error.
+ *
+ * @note  Sets the system error code.
+ */
+RexxMethod2(RexxObjectPtr, bff_getDisplayName, POINTER, pidl, CSELF, pCSelf)
 {
-    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(c, pCSelf);
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
     if ( pcbff == NULL )
     {
         return NULLOBJECT;
     }
 
-    BROWSEINFO   bi = { 0 };
-
-    fillInBrowseInfo(c, &bi, pcbff);
-
-    // If second arg is true - return path.
-    RexxObjectPtr result = folderBrowse(c, &bi, getPath);
-
-    if ( ! reuse )
+    if ( ! requiredOS(context, "getDisplayName", "Vista", Vista_OS) )
     {
-        releaseCOM(pcbff);
+        return NULLOBJECT;
     }
 
-    return result;
+    return getBestDisplayName(context, (PIDLIST_ABSOLUTE)pidl);
 }
+
 
 /** BrowseForFolder::getFolder()
  *
@@ -1008,8 +1320,9 @@ RexxMethod2(RexxObjectPtr, bff_getItemIDList, OPTIONAL_logical_t, reuse, CSELF, 
  *  @return True if the thread CoUnitialize() was called on was the same thread
  *          as this object was first created on.  Returns false if the thread
  *          CoUnitialize() was called on another thread.  CoUnitialize() is
- *          *always* called.
- *
+ *          *always* called.  Unless we are on the same thread as this object
+ *           was instantiated on and the count initialized indicates we have
+ *           already closed out COM.
  */
 RexxMethod1(RexxObjectPtr, bff_releaseCOM, CSELF, pCSelf)
 {
@@ -1021,6 +1334,13 @@ RexxMethod1(RexxObjectPtr, bff_releaseCOM, CSELF, pCSelf)
     return releaseCOM(pcbff);
 }
 
+/** BrowseForFolder::releaseItemIDList()
+ *
+ *  Releases a handle, a pointer, to an item ID list.  This must be done for
+ *  each handle returned from the getItemIDList() method and must *not* be done
+ *  for the root item ID list.
+ *
+ */
 RexxMethod2(RexxObjectPtr, bff_releaseItemIDList, POINTER, pidl, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
@@ -1041,7 +1361,10 @@ RexxMethod2(RexxObjectPtr, bff_releaseItemIDList, POINTER, pidl, CSELF, pCSelf)
  * being loaded, which prevents oodialog.dll from being loaded.  This can be
  * worked around using GetProcAddress().  But, that would be cumbersome if using
  * a number of the 'Vista or later' shell APIs.
+ *
+ * This has now been integrated inot the BrowseForFolder::getDisplayName method.
  */
+#if 0
 RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
@@ -1072,25 +1395,19 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
         return NULLOBJECT;
     }
 
-    // simpler version using IShellItem
     HRESULT hr = SHGetFolderLocation(NULL, CSIDL_PRINTERS, NULL, NULL, &pidlSystem);
-    //HRESULT hr = SHGetFolderLocation(NULL, CSIDL_SYSTEM, NULL, NULL, &pidlSystem);
     if ( SUCCEEDED(hr) )
     {
         IShellItem *psi;
 
-        //hr = SHCreateItemFromIDList(pidlSystem, IID_PPV_ARGS(&psi));
         hr = pSHCreateItemFromIDList(pidlSystem, IID_PPV_ARGS(&psi));
         if ( SUCCEEDED(hr) )
         {
             PWSTR pszName;
             hr = psi->GetDisplayName(SIGDN_DESKTOPABSOLUTEEDITING, &pszName);
-            //hr = psi->GetDisplayName(SIGDN_DESKTOPABSOLUTEPARSING, &pszName);
-            //hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszName);
-            //hr = psi->GetDisplayName(SIGDN_NORMALDISPLAY, &pszName);
             if (SUCCEEDED(hr))
             {
-                wprintf(L"Normal Display - %s\n", pszName);
+                wprintf(L"Desktop Absolute Editing Display - %s\n", pszName);
                 CoTaskMemFree(pszName);
             }
             else
@@ -1101,18 +1418,19 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
         }
         else
         {
-            printHResultErr("ShGetFolderLocation", hr);
+            printHResultErr("SHCreateItemFromIDList", hr);
         }
 
         ILFree(pidlSystem);
     }
     else
     {
-        printHResultErr("SHCreateItemFromIDList", hr);
+        printHResultErr("ShGetFolderLocation", hr);
     }
 
     return NULLOBJECT;
 }
+#endif
 
 
 /**
@@ -1122,7 +1440,6 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
  * requiredOS() fixes that problem.
  *
  */
-#if 0
 RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
@@ -1140,42 +1457,60 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
     IFileDialog *pfd;
 
     HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
-    if (SUCCEEDED(hr))
+    if ( SUCCEEDED(hr) )
     {
         DWORD dwOptions;
-        if (SUCCEEDED(pfd->GetOptions(&dwOptions)))
+
+        hr = pfd->GetOptions(&dwOptions);
+        if ( SUCCEEDED(hr) )
         {
             pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
-        }
-        if (SUCCEEDED(pfd->Show(NULL)))
-        {
-            IShellItem *psi;
-            if (SUCCEEDED(pfd->GetResult(&psi)))
-            {
-                PWSTR pszPath;
 
-                if(!SUCCEEDED(psi->GetDisplayName(SIGDN_DESKTOPABSOLUTEPARSING, &pszPath)))
+            hr = pfd->Show(NULL);
+            if ( SUCCEEDED(hr) )
+            {
+                IShellItem *psi;
+
+                hr = pfd->GetResult(&psi);
+                if ( SUCCEEDED(hr) )
                 {
-                    MessageBox(NULL, "GetIDListName() failed", NULL, NULL);
+                    PWSTR pszPath;
+
+                    hr = psi->GetDisplayName(SIGDN_DESKTOPABSOLUTEPARSING, &pszPath);
+                    if( SUCCEEDED(hr) )
+                    {
+                        wprintf(L"Got folder - %s\n", pszPath);
+                        CoTaskMemFree(pszPath);
+                    }
+                    else
+                    {
+                        printHResultErr("GetDisplayName", hr);
+                    }
+                    psi->Release();
                 }
                 else
                 {
-                    wprintf(L"Got folder - %s\n", pszPath);
-                    CoTaskMemFree(pszPath);
+                    printHResultErr("GetResult", hr);
                 }
-                psi->Release();
             }
+            else
+            {
+                printHResultErr("Show", hr);
+            }
+        }
+        else
+        {
+            printHResultErr("GetOptions", hr);
         }
         pfd->Release();
     }
     else
     {
-        printf("CoCreateInstance returns: 0x%08x\n", hr);
+        printHResultErr("CoCreateInstance", hr);
     }
 
     return NULLOBJECT;
 }
-#endif
 
 
 /**
@@ -1224,7 +1559,7 @@ RexxMethod6(RexxObjectPtr, sfb_getFolder, OPTIONAL_CSTRING, title, OPTIONAL_CSTR
         bi.lpfn   = BrowseCallbackProc;
     }
 
-    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS;
+    bi.ulFlags = DEFAULT_BIF_FLAGS;
 
     if ( argumentExists(1) )
     {
@@ -1238,7 +1573,7 @@ RexxMethod6(RexxObjectPtr, sfb_getFolder, OPTIONAL_CSTRING, title, OPTIONAL_CSTR
     {
         if ( *banner != '\0' )
         {
-            bi.lpszTitle = title;
+            bi.lpszTitle = banner;
         }
     }
 
@@ -1246,7 +1581,8 @@ RexxMethod6(RexxObjectPtr, sfb_getFolder, OPTIONAL_CSTRING, title, OPTIONAL_CSTR
     {
         bi.ulFlags |= BIF_UAHINT;
 
-        if ( StrCmpI("PATH", hint) == 0 )
+        pcbff->useHint = true;
+        if ( StrStrI("PATH", hint) != NULL )
         {
             pcbff->usePathForHint = true;
             pcbff->hint           = "";

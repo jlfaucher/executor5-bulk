@@ -40,6 +40,7 @@
 
 
 #define HINT_ID                     0x00003749
+#define DEFAULT_BIF_FLAGS           BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS
 
 #define WRONG_IDL_TYPE_LIST         "a CSIDL_xxx keyword, a full path name, or a pointer to an Item ID List"
 #define WRONG_IDL_TYPE_LIST_SHORT   "a CSIDL_xxx keyword or a full path name"
@@ -63,7 +64,9 @@ typedef struct _bffCSelf
     char           *hint;
     char           *banner;
     size_t          countCoInitialized;
+    uint32_t        bifFlags;
     uint32_t        coThreadID;
+    bool            useHint;
     bool            usePathForHint;
 } CBrowseForFolder;
 typedef CBrowseForFolder *pCBrowseForFolder;
