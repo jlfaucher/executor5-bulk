@@ -1214,6 +1214,10 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 <entry>Determines the Common Controls Library version in use by ooDialog.</entry>
 </row>
 <row>
+<entry><xref linkend="mthErrMsg"/></entry>
+<entry>Returns the error message text for the specified Windows system error code.</entry>
+</row>
+<row>
 <entry><xref linkend="mthGetSystemMetricsClsDlgUtil"/></entry>
 <entry>Obtains the system metric value for a given index.</entry>
 </row>
@@ -1483,6 +1487,102 @@ return .true
 </variablelist>
 </section>
 
+<section id="mthErrMsg" xreflabel="errMsg"><title>errMsg</title>
+<indexterm><primary>errMsg</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>errMsg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--errMsg(--errCode--)--------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the error message text for the specified Windows system error code.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>errCode [required]</term>
+    <listitem>
+    <para>
+      The Windows system error code to get the error message for. Typically this would come from the <link
+      linkend="dotSystemErrorCode">.SystemErrorCode</link> variable, but it can be any non-negative whole number in the range
+      0 to 4294967295.
+    </para>
+    <para>
+      For convenience in looking up COM or OLE related error codes, a string in conventional <xref
+      linkend="defConventionalHex"/> format are also excepted. Typically an <computeroutput>OleObject</computeroutput> COM
+      related error is displayed something like: 0x80040000.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the error message text that Windows associates with the specified error code. Note that the error message comes
+    from Windows, not ooDialog. ooDialog has no control over the clarity of the message.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Although any valid whole number within the range specified is accepted, only numbers that are actually valid system
+    errors will produce a valid result. Numbers that are not Windows system errors will return a string similar to, <emphasis
+    role="italic">Internal Windows error formatting the message (317)</emphasis>. The number in parenthesis will be the
+    system error code the Windows returned when asked for the message text for the <emphasis role="italic">errCode</emphasis>
+    argument. Since 317 is a valid system error, its message text could be looked up using the <emphasis
+    role="italic">errMsg</emphasis> method, see the example below.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows several usages of the <emphasis role="italic">errMsg</emphasis> method:
+<programlisting>
+<![CDATA[
+
+  say .DlgUtil~errMsg('0x80004024')
+  say .DlgUtil~errMsg(2147500068)
+  say
+  say .DlgUtil~errMsg(266)
+  say
+  say .DlgUtil~errMsg(279)
+  say
+  say .DlgUtil~errMsg(317)
+  say
+  say .DlgUtil~errMsg(87)
+
+/* Output would be:
+Error code 2147500068 (0x80004024): The specified activation could not occur in the client context as specified.
+Error code 2147500068 (0x80004024): The specified activation could not occur in the client context as specified.
+
+Error code 266 (0x0000010a): The copy functions cannot be used.
+
+Internal Windows error formatting the message (317)
+
+Error code 317 (0x0000013d): The system cannot find message text for message number 0x%1 in the message file for %2.
+
+Error code 87 (0x00000057): The parameter is incorrect.
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::errMsg() -->
 
 <section id="mthGetSystemMetricsClsDlgUtil" xreflabel="getSystemMetrics"><title>getSystemMetrics (Class Method)</title>
 <indexterm><primary>getSystemMetrics</primary></indexterm>
