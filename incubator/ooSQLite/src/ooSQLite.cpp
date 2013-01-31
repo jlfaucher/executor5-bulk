@@ -1201,7 +1201,7 @@ int genTableColumnMetadata(RexxThreadContext *c, sqlite3 *db, CSTRING dbName, CS
         wrongClassException(c, pos, "Directory", _results);
         return SQLITE_MISUSE;
     }
-    else if ( ! c->IsStem(_results) )
+    else if ( pos == 4 && ! c->IsStem(_results) )
     {
         wrongClassException(c, pos, "Stem", _results);
         return SQLITE_MISUSE;
