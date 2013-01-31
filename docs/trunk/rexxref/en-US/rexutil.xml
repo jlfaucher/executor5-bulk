@@ -516,9 +516,6 @@ has no effect.</para>
 <varlistentry><term><emphasis role="italic">button</emphasis></term>
 <listitem><para>The message box push button style. The allowed styles are:
 <variablelist>
-<varlistentry><term>"NONE"</term>
-<listitem><para>No icon is displayed.
-</para></listitem></varlistentry>
 <varlistentry><term>"OK"</term>
 <listitem><para>A single OK push button.
 </para></listitem></varlistentry>
@@ -543,6 +540,9 @@ The default push button style is OK.</para>
 <varlistentry><term><emphasis role="italic">icon</emphasis></term>
 <listitem><para>The message box icon style. The allowed styles are:
 <variablelist>
+<varlistentry><term>"NONE"</term>
+<listitem><para>No icon is displayed.
+</para></listitem></varlistentry>
 <varlistentry><term>"HAND"</term>
 <listitem><para>A hand icon is displayed.
 </para></listitem></varlistentry>
@@ -663,7 +663,7 @@ window in the Z order.
 <para><emphasis role="bold">Return codes:</emphasis></para>
 <para>If the application is started successfully, the process id (PID) is
 returned.  If an error occurs the returned value is less than 32.</para>
-<para>Error return codes correspond to a 
+<para>Error return codes correspond to a
 Windows System Error code (<xref linkend="systemerrorcodes" />). If the Windown system error code is greater
 than 32 it is negated. This is to prevent confusion between a legitimate error
 code and a PID.</para>
