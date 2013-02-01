@@ -99,7 +99,6 @@
     bff~root = 'CSIDL_PRINTERS'
     bff~options = 'BROWSEFORPRINTERS NONEWFOLDERBUTTON'
 
-    folder = bff~getFolder(.false); say 'folder:' folder
     pidl = bff~getItemIDList(.true)
     if pidl == .nil then do
         edit~setText('The user canceled.')
