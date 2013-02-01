@@ -36,12 +36,13 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
 
-   Support - Model						 v01-00  11Jan13
+   Support - Model						 v01-00  31Jan13
    ----------------
    A superclass for the Model-View framework.
 
    v01-00 09Aug12: First version.
           11Jan13: Commented-out "say"s.
+          31Jan13: Store model's data in 'myData'.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -76,9 +77,10 @@
     -- the Form Number will be the new Order Number).
     p = className~pos("FORM")
     if p > 0 then do	-- if this is a "Form" component.
-      myData = .Directory~new
-      myData[formNumber] = instanceName
-      formObject = self~new(myData)
+      instData = .Directory~new
+      instData[formNumber] = instanceName
+      formObject = self~new(instData)
+      formObject~myData = instData		-- store instance data for subclasses to access.
       say ".Model-newInstance-011: formObj, instanceName =" formObject||"," instanceName
       return formObject
     end
@@ -107,14 +109,15 @@
     -- But distinguish between Entity Models and List Models - the former needs
     -- a single record, the latter a group of records.
     -- say ".Model-newInstance-05a: getAllRecords =" getAllRecords
-    if getAllRecords then myData = myDataId~getFile()	-- returns a 2D array
-    else myData = myDataId~getRecord(instanceName)		-- a directory
-    -- say ".Model-newInstance-05b: array dimensions: =" myData~dimension
-    if myData = .false then return .false	-- if ID (key) not found
+    if getAllRecords then instData = myDataId~getFile()	-- returns a 2D array
+    else instData = myDataId~getRecord(instanceName)		-- a directory
+    -- say ".Model-newInstance-05b: array dimensions: =" instData~dimension
+    if instData = .false then return .false	-- if ID (key) not found
     -- All is well, then make new instance:
-    --say ".Model-newInstance-06: myData =" myData
-    id = self~new(myData)
-    --say ".Model-newInstance-07: myData =" id
+    --say ".Model-newInstance-06: instData =" instData
+    id = self~new(instData)
+    id~myData = instData
+    --say ".Model-newInstance-07: instData =" id
     return id
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -132,7 +135,7 @@
   /*----------------------------------------------------------------------------
     query - returns a Model's data.
             Standard protocol:
-            Accept a .nil, directory, array, or string of names.
+            Accept a .nil, directory, array, or string of names (case-sensitive).
             if .nil then return all fields; else return values for the names in
             the directory, array, or string. String is assumed to be data
             names separated by one or more spaces.
@@ -142,36 +145,32 @@
     use arg dataNames
     --say "Model-query-01: dataNames:" dataNames
     dirReturn = .Directory~new
-    --say "Model-query-01a: args =" arg()
     select
-      when arg() = 0 then do
-        return self~myData
-      end
+      when dataNames = .nil | dataNames = "" then return self~myData
+
+      when dataNames = "DATANAMES" then return self~myData
 
       -- Caller is requesting specific data items:
       when dataNames~isa(.Directory) then do
+        --say "Model-query-02; dataNames =" dataNames
         do i over dataNames
-      	  dirReturn[i] = self~dirData[i]
+      	  dirReturn[i] = self~myData[i]
         end
       end
 
       when dataNames~isa(.Array) then do
         do i over dataNames
-          say "Model-query-03: dataNames: '"||dataNames"'"
-          dirReturn[i] = self~dirData[i]
+          dirReturn[i] = self~myData[i]
         end
       end
 
-      -- dataNames must be separated by a *single* space.
       when dataNames~isa(.String) then do
         dataNames = dataNames~strip
-        --say "Model-query-04: dataNames: '"||dataNames"'"
         n = dataNames~countStr(" ")+1
         do i = 1 to n
           parse var dataNames name " " dataNames
           if name = " " then iterate     -- ignore extraneous leading spaces.
-          --say "Model-query-05: name: '"name"'"
-          dirReturn[name] = self~dirData[name]
+          dirReturn[name] = self~myData[name]
         end
       end
 

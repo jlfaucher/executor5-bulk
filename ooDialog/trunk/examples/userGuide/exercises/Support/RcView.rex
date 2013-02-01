@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide - Support
 
-   Support - RcView						 v01-00  09Aug12
+   Support - RcView						 v01-00  01Feb13
    ----------------
    A simple superclass class for the Model-View framework.
    Code is idential to that in ResView.
@@ -44,6 +44,7 @@
    Changes:
    v01-00 09Aug12: First version.
           11Jan13: Commented-out the 'say' instructions.
+          01Feb13: Add comment; remove some commented-out 'say's.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -76,17 +77,12 @@
     activate - must be invoked by subclass.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate UNGUARDED
-    expose viewClass viewInstance
+    expose viewClass viewInstance		-- needed for tidy-up on close.
     use arg modelId
     -- Get View Instance name and View Class for tidy-up when dialog is closed.
-    --say ".RcView~activate-01: class = " viewClass
     viewInstance = self~identityHash
     dlgName = self~objectName
-    --say ".RcView~activate-02: dlgName = " dlgName
     parse var dlgName . viewClass
-    --say ".RcView~activate-03: class name = '"||viewClass||"'"
-    --say ".RcView-activate-04: viewInstance =" viewInstance
-    --say ".RcView-activate-05: modelId =" modelId
     modelData = modelId~query
     return modelData
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -103,7 +99,6 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD leaving UNGUARDED
     expose objectMgr viewClass viewInstance
-    --say "RcView-leaving-01. viewClass =" viewClass "viewInstance =" viewInstance
     objectMgr~removeView(viewClass, viewInstance)
     -- Note - we do not remove the Model. Should we? If so, not from here!
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -124,7 +119,8 @@
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     offset - offsets a "child" dialog from its "parent" dialog (i.e. the dialog
-             from which the child is "popped up"). 			      */
+             from which the child is "popped up").
+         **** Note: This method not used in Exercise07. ****                  */
   ::METHOD offset
     --say "RcView-offset-1."
     offset    = .local~my.ViewMgr~dlgOffset

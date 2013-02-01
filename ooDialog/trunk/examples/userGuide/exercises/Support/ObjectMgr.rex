@@ -58,6 +58,7 @@
     v01-00 23Apr12: First version.
            11Jan13: Commented-out 'say' instructions.
            21Jan13: Make 'addView' private and 'removeView' explicitly public.
+                    Minor typos in comments corrected.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -87,7 +88,7 @@ call "RequiresList.rex"
 
   /*----------------------------------------------------------------------------
     getComponentId - Returns a Component Id if it's in the ObjectBag,
-                     else calls doNewInstacne to get id, else returns .false.
+                     else calls doNewInstance to get id, else returns .false.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD getComponentId PUBLIC
     expose objectBag
@@ -255,17 +256,14 @@ call "RequiresList.rex"
     use arg viewClass, viewInstance
     viewClass = viewClass~upper()	-- View class was uppered in addView method.
     viewClassInst = viewClass||"-"||viewInstance
-    --say "ObjectMgr-removeView-01: viewClassInst:" viewClassInst
-    --say "ObjectMgr-removeView-02: ObjectBag List:"
-    --self~list
+    --say "ObjectMgr-removeView-01: viewClassInst:" "'"||viewClass||"'" "'"||viewClassInst||"'"
     r = objectBag~remove(viewClassInst)
-    --say "ObjectMgr-removeView-03: r =" r
+    --say "ObjectMgr-removeView-02: r =" r
     do i over objectBag
       arr = objectBag[i]
       if arr[2] = viewClassInst then arr[2] = .nil
     end
-    --say "ObjectMgr-removeView-04: ObjectBag List:"
-    --self~list
+    --say "ObjectMgr-removeView-03: ObjectBag List:"
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
