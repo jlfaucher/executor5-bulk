@@ -288,6 +288,39 @@ static uint32_t keywords2bif(RexxMethodContext *c, CSTRING keyword, size_t argPo
 }
 
 /**
+ * Converts a keyword to its SIGDN_xx value. Raises an exception if keyword is
+ * not valid.
+ *
+ * @param c
+ * @param keyword
+ * @param argPos
+ *
+ * @return uint32_t
+ */
+static bool keyword2sigdn(RexxMethodContext *c, CSTRING keyword, SIGDN *pSigdn, size_t argPos)
+{
+    SIGDN sigdn;
+
+         if ( StrCmpI(keyword, "DESKTOPABSOLUTEEDITING"      ) == 0 ) sigdn = SIGDN_DESKTOPABSOLUTEEDITING     ;
+    else if ( StrCmpI(keyword, "DESKTOPABSOLUTEPARSING"      ) == 0 ) sigdn = SIGDN_DESKTOPABSOLUTEPARSING     ;
+    else if ( StrCmpI(keyword, "FILESYSPATH"                 ) == 0 ) sigdn = SIGDN_FILESYSPATH                ;
+    else if ( StrCmpI(keyword, "PARENTRELATIVE"              ) == 0 ) sigdn = SIGDN_PARENTRELATIVE             ;
+    else if ( StrCmpI(keyword, "PARENTRELATIVEEDITING"       ) == 0 ) sigdn = SIGDN_PARENTRELATIVEEDITING      ;
+    else if ( StrCmpI(keyword, "PARENTRELATIVEFORADDRESSBAR" ) == 0 ) sigdn = SIGDN_PARENTRELATIVEFORADDRESSBAR;
+    else if ( StrCmpI(keyword, "PARENTRELATIVEPARSING"       ) == 0 ) sigdn = SIGDN_PARENTRELATIVEPARSING      ;
+    else if ( StrCmpI(keyword, "URL"                         ) == 0 ) sigdn = SIGDN_URL                        ;
+    else if ( StrCmpI(keyword, "NORMALDISPLAY"               ) == 0 ) sigdn = SIGDN_NORMALDISPLAY              ;
+    else
+    {
+        invalidConstantException(c, argPos, INVALID_CONSTANT_MSG, "SIGDN", keyword);
+        return false;
+    }
+
+    *pSigdn = sigdn;
+    return true;
+}
+
+/**
  * Parse the BIF_xx flags and returns the matching keyword string.
  *
  * @param c
@@ -751,40 +784,92 @@ RexxObjectPtr getFolderOrIDL(RexxMethodContext *c, void *pCSelf, logical_t reuse
 }
 
 /**
- * Returns the display name for the specified item ID list.
+ * Uses run time dynamic linking to get a function address from Shell32.dll.  If
+ * we already have the address, we just return it.
  *
- * This should return some name for any shell item, virtual folder or not.  We
- * first try to get a full path name, but if that fails we try a again using the
- * flag for destop absolute editing.
+ * @param c
+ * @param pcbff
+ * @param func
+ *
+ * @return void*
+ *
+ * @remarks  The Shell functions we link to here do not have entry points in the
+ *           DLLs on XP. If we are implicitly linked to the function, the entry
+ *           point(s) are not found and oodialog.dll can not be loaded.
+ *
+ *           We do this to try and maintain compatibility on XP.  If the number
+ *           of functions becomes too large, we will have to come up with some
+ *           other scheme.
+ */
+void *getShellFunctionPtr(RexxThreadContext *c, pCBrowseForFolder pcbff, ShellFuncType func)
+{
+    void *funcPtr = NULL;
+
+    if ( pcbff->hShell32 == NULL )
+    {
+        pcbff->hShell32 = LoadLibrary(TEXT("Shell32.dll"));
+        if ( pcbff->hShell32 == NULL )
+        {
+            oodSetSysErrCode(c);
+            goto done_out;
+        }
+    }
+
+    // We only have 1 function so far, may be more in the future.
+    switch ( func )
+    {
+        case ScifidlProc :
+        {
+            if ( pcbff->pSHCreateItemFromIDList != NULL )
+            {
+                funcPtr = pcbff->pSHCreateItemFromIDList;
+                goto done_out;
+            }
+
+            funcPtr = GetProcAddress(pcbff->hShell32, "SHCreateItemFromIDList");
+            if ( funcPtr == NULL )
+            {
+                oodSetSysErrCode(c);
+                goto done_out;
+            }
+
+            pcbff->pSHCreateItemFromIDList = (SHCreateItemFromIDListPROC)funcPtr;
+
+            break;
+        }
+
+        default :
+            break;
+    }
+
+done_out:
+    return funcPtr;
+}
+
+/**
+ * Returns the display name for the specified item ID list as a Rexx object.
  *
  * @param c
  * @param pidl
+ * @param pcbff
+ * @param sigdn
  *
  * @return RexxObjectPtr
  *
- * @note  Sets the .systemErrorCode
+ * @note  Sets the .systemErrorCode for errors.  The calling function should
+ *        have reset the .systemErrorCode to 0.
  *
  * @remarks  The entry point for SHCreateItemFromIDList is not present on XP
  *           systems.  So we use GetProcAddress() to use it dynamically at run
  *           time.  If we don't ooDialog won't load on XP.
  */
-RexxObjectPtr getBestDisplayName(RexxMethodContext *c, PIDLIST_ABSOLUTE pidl)
+RexxObjectPtr getDisplayNameRx(RexxThreadContext *c, PIDLIST_ABSOLUTE pidl, pCBrowseForFolder pcbff, SIGDN sigdn)
 {
-    oodResetSysErrCode(c->threadContext);
-
     RexxObjectPtr result = TheNilObj;
 
-    HINSTANCE hinst = LoadLibrary(TEXT("Shell32.dll"));
-    if ( hinst == NULL )
-    {
-        oodSetSysErrCode(c->threadContext);
-        goto done_out;
-    }
-
-    SHCreateItemFromIDListPROC pSHCreateItemFromIDList = (SHCreateItemFromIDListPROC)GetProcAddress(hinst, "SHCreateItemFromIDList");
+    SHCreateItemFromIDListPROC pSHCreateItemFromIDList = (SHCreateItemFromIDListPROC)getShellFunctionPtr(c, pcbff, ScifidlProc);
     if ( pSHCreateItemFromIDList == NULL )
     {
-        oodSetSysErrCode(c->threadContext);
         goto done_out;
     }
 
@@ -795,8 +880,7 @@ RexxObjectPtr getBestDisplayName(RexxMethodContext *c, PIDLIST_ABSOLUTE pidl)
     {
         PWSTR pszName;
 
-        // We first try to get a full path name
-        hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszName);
+        hr = psi->GetDisplayName(sigdn, &pszName);
         if ( SUCCEEDED(hr) )
         {
             result = unicode2string(c, pszName);
@@ -804,36 +888,20 @@ RexxObjectPtr getBestDisplayName(RexxMethodContext *c, PIDLIST_ABSOLUTE pidl)
         }
         else
         {
-            // Probably a virtual file, try again
-            hr = psi->GetDisplayName(SIGDN_DESKTOPABSOLUTEEDITING, &pszName);
-            if ( SUCCEEDED(hr) )
-            {
-                result = unicode2string(c, pszName);
-            }
-            else
-            {
-                oodSetSysErrCode(c->threadContext);
-            }
-
-            CoTaskMemFree(pszName);
+            oodSetSysErrCode(c);
         }
 
         psi->Release();
     }
     else
     {
-        oodSetSysErrCode(c->threadContext, hr);
+        oodSetSysErrCode(c, hr);
     }
 
 done_out:
-    if ( hinst != NULL )
-    {
-        FreeLibrary(hinst);
-    }
 
     return result;
 }
-
 
 
 /** BrowseForFolder::banner                  [attribute]
@@ -1102,6 +1170,13 @@ RexxMethod1(RexxObjectPtr, bff_uninit, CSELF, pCSelf)
         safeLocalFree(pcbff->hint);
         safeLocalFree(pcbff->startDir);
 
+        if ( pcbff->hShell32 != NULL )
+        {
+            FreeLibrary(pcbff->hShell32);
+            pcbff->hShell32 = NULL;
+            pcbff->pSHCreateItemFromIDList = NULL;
+        }
+
         uninitCom(pcbff);
     }
     return NULLOBJECT;
@@ -1245,13 +1320,25 @@ RexxMethod1(RexxObjectPtr, bff_initCOM, CSELF, pCSelf)
  *
  * @param   pidl  [required]  A handle, a pointer, to an item ID list
  *
- * @return  Returns the full display name for the item ID list on success, the
- *          .nil object on error.
+ * @return  Returns the display name for the item ID list on success, otherwise
+ *          returns the .nil object.
  *
  * @note  Sets the system error code.
+ *
+ *        If sigdn is omitted this method should return some name for any shell
+ *        item, virtual folder or not.  In this case the method first tries to
+ *        get a full path name.  But, if that fails the method tries again using
+ *        the flag for destop absolute editing.
+ *
+ *        If sigdn is used, then the method uses the specified sigdn flag as is
+ *        and returns whatever the Shell returns.
  */
-RexxMethod2(RexxObjectPtr, bff_getDisplayName, POINTER, pidl, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, bff_getDisplayName, POINTER, pidl, OPTIONAL_CSTRING, _sigdn, CSELF, pCSelf)
 {
+    oodResetSysErrCode(context->threadContext);
+
+    RexxObjectPtr result = TheNilObj;
+
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
     if ( pcbff == NULL )
     {
@@ -1263,7 +1350,25 @@ RexxMethod2(RexxObjectPtr, bff_getDisplayName, POINTER, pidl, CSELF, pCSelf)
         return NULLOBJECT;
     }
 
-    return getBestDisplayName(context, (PIDLIST_ABSOLUTE)pidl);
+    if ( argumentOmitted(2) )
+    {
+        result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, pcbff, SIGDN_FILESYSPATH);
+        if ( result == TheNilObj )
+        {
+            result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, pcbff, SIGDN_DESKTOPABSOLUTEEDITING);
+        }
+    }
+    else
+    {
+        SIGDN sigdn;
+
+        if ( keyword2sigdn(context, _sigdn, &sigdn, 2) )
+        {
+            result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, pcbff, sigdn);
+        }
+    }
+
+    return result;
 }
 
 

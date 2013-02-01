@@ -2469,7 +2469,7 @@ char *unicode2ansi(LPWSTR wstr)
 /**
  * Converts a wide character (Unicode) string to a Rexx string object.
  *
- * @param c    Method context we are operating in.
+ * @param c    Thread context we are operating in.
  * @param wstr Wide character string to convert.
  *
  * @return The conveted string as a new Rexx string object on success.
@@ -2478,7 +2478,7 @@ char *unicode2ansi(LPWSTR wstr)
  *           function could be added if it is necessary to distinguish types of
  *           errors.
  */
-RexxStringObject unicode2string(RexxMethodContext *c, LPWSTR wstr)
+RexxStringObject unicode2string(RexxThreadContext *c, LPWSTR wstr)
 {
     RexxStringObject result = c->NullString();
     if ( wstr == NULL )

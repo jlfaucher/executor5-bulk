@@ -51,14 +51,18 @@
 #define BFF_HINT                    "If the needed folder does not exist it can be created"
 #define BFF_STARTDIR                ""
 
+// typedefs for Shell functions dynamically linked at run time.
 typedef HRESULT (* SHCreateItemFromIDListPROC)(PCIDLIST_ABSOLUTE pidl, REFIID riid, void **ppv);
+
 
 /* Struct for the BrowseForFolder CSelf */
 typedef struct _bffCSelf
 {
+    SHCreateItemFromIDListPROC pSHCreateItemFromIDList;  // Run time linking
     LPITEMIDLIST    root;
     RexxObjectPtr   rexxOwner;
     HWND            hOwner;
+    HINSTANCE       hShell32;
     char           *startDir;
     char           *dlgTitle;
     char           *hint;
@@ -80,6 +84,14 @@ typedef enum
     DlgStartDir,
     BffRoot
 } BffAttributeType;
+
+
+// Identifies a shell function that is dynamically linked at run time.  There is
+// only one now, this is in anticipation that more may be added.
+typedef enum
+{
+    ScifidlProc     // The SHCreateItemFromIDList function.
+} ShellFuncType;
 
 
 #endif

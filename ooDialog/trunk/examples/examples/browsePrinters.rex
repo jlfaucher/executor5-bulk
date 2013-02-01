@@ -53,6 +53,9 @@
     .application~setDefaults('O', , .false)
     .constDir[IDC_PB_BROWSE]      = 100
     .constDir[IDC_ST_RESULTS]     = 101
+    .constDir[IDC_EDIT]           = 102
+    .constDir[IDC_RB_LONG_NAME] = 103
+    .constDir[IDC_RB_SHORT_NAME]  = 104
 
     dlg = .PrintersDialog~new
     dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
@@ -70,29 +73,63 @@
 
 ::method defineDialog
 
-  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
-  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
+    self~createStaticText(IDC_ST_RESULTS, 10, 10, 30, 11, , "Results:")
+    self~createEdit(IDC_EDIT, 10, 24, 237, 11, 'AUTOSCROLLH')
+    self~createRadioButton(IDC_RB_LONG_NAME, 10, 60, 90, 14, "AUTO", 'Long Display Name')
+    self~createRadioButton(IDC_RB_SHORT_NAME, 10, 79, 90, 14, "AUTO", 'Short Display Name')
+    self~createPushButton(IDC_PB_BROWSE, 10, 99, 65, 14, "DEFAULT", "Browse Printers", onBrowse)
+    self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Done")
 
 
-::method ok unguarded
-  expose bff pidl
+::method onBrowse unguarded
+  expose rbShort edit
 
-  title  = 'Browse For a Printer'
-  banner = 'Select the printer to use for this test.'
-  hint   = 'This is only a demonstration, no printing will be done.'
+    title  = 'Browse For a Printer'
+    banner = 'Select the printer to use for this test.'
+    hint   = 'This is only a demonstration, no printing will be done.'
 
-  bff = .BrowseForFolder~new(title, banner, hint)
-  bff~owner = self
-  bff~root = 'CSIDL_PRINTERS'
-  bff~options = 'BROWSEFORPRINTERS'
-  say 'options:' bff~options
-  pidl = bff~getItemIDList(.true)
-  say 'Got pidl:' pidl 'class:' pidl~class
-  say bff~getDisplayName(pidl)
+    bff = .BrowseForFolder~new(title, banner, hint)
+    bff~owner = self
+    bff~root = 'CSIDL_PRINTERS'
+    bff~options = 'BROWSEFORPRINTERS'
+
+    pidl = bff~getItemIDList(.true)
+    if pidl == .nil then do
+        edit~setText('The user canceled.')
+        return 0
+    end
+
+    if rbShort~checked then do
+        name = bff~getDisplayName(pidl, 'NORMALDISPLAY')
+    end
+    else do
+        name = bff~getDisplayName(pidl)
+    end
+
+    -- We are done with pidl, release it.
+    bff~releaseItemIDList(pidl)
+
+    -- Determine text for the edit control ...
+    if name == .nil then do
+        text = 'Unexpected result. ' .DlgUtil~errMsg(.systemErrorCode)
+    end
+    else do
+        text = 'The user picked: ' name
+    end
+
+    -- ... and show it
+    edit~setText(text)
+
+    return 0
 
 
-::method leaving unguarded
-  expose bff pidl
+/** initDialog()
+ *
+ * Simple init dialog method.  We just use it to check one of the radio buttons.
+ */
+::method initDialog
+    expose rbShort edit
 
-
-  if pidl \== .nil then bff~releaseItemIDList(pidl)
+    edit = self~newEdit(IDC_EDIT)
+    rbShort = self~newRadioButton(IDC_RB_SHORT_NAME)
+    rbShort~check
