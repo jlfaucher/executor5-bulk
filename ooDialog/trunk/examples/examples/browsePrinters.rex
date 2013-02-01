@@ -81,6 +81,12 @@
     self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Done")
 
 
+/** onBrowse()
+ *
+ * The event handler for the Browse Printers push button.  We configure a
+ * BrowseForFolder object, display it, and report the user's actions in the edit
+ * control
+ */
 ::method onBrowse unguarded
   expose rbShort edit
 
@@ -91,8 +97,9 @@
     bff = .BrowseForFolder~new(title, banner, hint)
     bff~owner = self
     bff~root = 'CSIDL_PRINTERS'
-    bff~options = 'BROWSEFORPRINTERS'
+    bff~options = 'BROWSEFORPRINTERS NONEWFOLDERBUTTON'
 
+    folder = bff~getFolder(.false); say 'folder:' folder
     pidl = bff~getItemIDList(.true)
     if pidl == .nil then do
         edit~setText('The user canceled.')
@@ -117,7 +124,7 @@
         text = 'The user picked: ' name
     end
 
-    -- ... and show it
+    -- ... and set it
     edit~setText(text)
 
     return 0
@@ -125,7 +132,9 @@
 
 /** initDialog()
  *
- * Simple init dialog method.  We just use it to check one of the radio buttons.
+ * Simple init dialog method.  We get references to the edit control and one of
+ * the two radio buttons.  Since the radio buttons are auto and there are only 2
+ * of them we only need one reference to be able to tell which is checked.
  */
 ::method initDialog
     expose rbShort edit

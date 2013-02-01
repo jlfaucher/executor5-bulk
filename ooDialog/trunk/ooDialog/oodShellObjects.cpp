@@ -185,63 +185,63 @@ static uint32_t keyword2csidl(RexxMethodContext *c, CSTRING keyword, size_t argP
 {
     uint32_t csidl = OOD_ID_EXCEPTION;
 
-         if ( StrStrI(keyword, "CSIDL_DESKTOP"                ) != NULL ) csidl = CSIDL_DESKTOP                ;
-    else if ( StrStrI(keyword, "CSIDL_INTERNET"               ) != NULL ) csidl = CSIDL_INTERNET               ;
-    else if ( StrStrI(keyword, "CSIDL_PROGRAMS"               ) != NULL ) csidl = CSIDL_PROGRAMS               ;
-    else if ( StrStrI(keyword, "CSIDL_CONTROLS"               ) != NULL ) csidl = CSIDL_CONTROLS               ;
-    else if ( StrStrI(keyword, "CSIDL_PRINTERS"               ) != NULL ) csidl = CSIDL_PRINTERS               ;
-    else if ( StrStrI(keyword, "CSIDL_PERSONAL"               ) != NULL ) csidl = CSIDL_PERSONAL               ;
-    else if ( StrStrI(keyword, "CSIDL_FAVORITES"              ) != NULL ) csidl = CSIDL_FAVORITES              ;
-    else if ( StrStrI(keyword, "CSIDL_STARTUP"                ) != NULL ) csidl = CSIDL_STARTUP                ;
-    else if ( StrStrI(keyword, "CSIDL_RECENT"                 ) != NULL ) csidl = CSIDL_RECENT                 ;
-    else if ( StrStrI(keyword, "CSIDL_SENDTO"                 ) != NULL ) csidl = CSIDL_SENDTO                 ;
-    else if ( StrStrI(keyword, "CSIDL_BITBUCKET"              ) != NULL ) csidl = CSIDL_BITBUCKET              ;
-    else if ( StrStrI(keyword, "CSIDL_STARTMENU"              ) != NULL ) csidl = CSIDL_STARTMENU              ;
-    else if ( StrStrI(keyword, "CSIDL_MYDOCUMENTS"            ) != NULL ) csidl = CSIDL_MYDOCUMENTS            ;
-    else if ( StrStrI(keyword, "CSIDL_MYMUSIC"                ) != NULL ) csidl = CSIDL_MYMUSIC                ;
-    else if ( StrStrI(keyword, "CSIDL_MYVIDEO"                ) != NULL ) csidl = CSIDL_MYVIDEO                ;
-    else if ( StrStrI(keyword, "CSIDL_DESKTOPDIRECTORY"       ) != NULL ) csidl = CSIDL_DESKTOPDIRECTORY       ;
-    else if ( StrStrI(keyword, "CSIDL_DRIVES"                 ) != NULL ) csidl = CSIDL_DRIVES                 ;
-    else if ( StrStrI(keyword, "CSIDL_NETWORK"                ) != NULL ) csidl = CSIDL_NETWORK                ;
-    else if ( StrStrI(keyword, "CSIDL_NETHOOD"                ) != NULL ) csidl = CSIDL_NETHOOD                ;
-    else if ( StrStrI(keyword, "CSIDL_FONTS"                  ) != NULL ) csidl = CSIDL_FONTS                  ;
-    else if ( StrStrI(keyword, "CSIDL_TEMPLATES"              ) != NULL ) csidl = CSIDL_TEMPLATES              ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_STARTMENU"       ) != NULL ) csidl = CSIDL_COMMON_STARTMENU       ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_PROGRAMS"        ) != NULL ) csidl = CSIDL_COMMON_PROGRAMS        ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_STARTUP"         ) != NULL ) csidl = CSIDL_COMMON_STARTUP         ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_DESKTOPDIRECTORY") != NULL ) csidl = CSIDL_COMMON_DESKTOPDIRECTORY;
-    else if ( StrStrI(keyword, "CSIDL_APPDATA"                ) != NULL ) csidl = CSIDL_APPDATA                ;
-    else if ( StrStrI(keyword, "CSIDL_PRINTHOOD"              ) != NULL ) csidl = CSIDL_PRINTHOOD              ;
-    else if ( StrStrI(keyword, "CSIDL_LOCAL_APPDATA"          ) != NULL ) csidl = CSIDL_LOCAL_APPDATA          ;
-    else if ( StrStrI(keyword, "CSIDL_ALTSTARTUP"             ) != NULL ) csidl = CSIDL_ALTSTARTUP             ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_ALTSTARTUP"      ) != NULL ) csidl = CSIDL_COMMON_ALTSTARTUP      ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_FAVORITES"       ) != NULL ) csidl = CSIDL_COMMON_FAVORITES       ;
-    else if ( StrStrI(keyword, "CSIDL_INTERNET_CACHE"         ) != NULL ) csidl = CSIDL_INTERNET_CACHE         ;
-    else if ( StrStrI(keyword, "CSIDL_COOKIES"                ) != NULL ) csidl = CSIDL_COOKIES                ;
-    else if ( StrStrI(keyword, "CSIDL_HISTORY"                ) != NULL ) csidl = CSIDL_HISTORY                ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_APPDATA"         ) != NULL ) csidl = CSIDL_COMMON_APPDATA         ;
-    else if ( StrStrI(keyword, "CSIDL_WINDOWS"                ) != NULL ) csidl = CSIDL_WINDOWS                ;
-    else if ( StrStrI(keyword, "CSIDL_SYSTEM"                 ) != NULL ) csidl = CSIDL_SYSTEM                 ;
-    else if ( StrStrI(keyword, "CSIDL_PROGRAM_FILES"          ) != NULL ) csidl = CSIDL_PROGRAM_FILES          ;
-    else if ( StrStrI(keyword, "CSIDL_MYPICTURES"             ) != NULL ) csidl = CSIDL_MYPICTURES             ;
-    else if ( StrStrI(keyword, "CSIDL_PROFILE"                ) != NULL ) csidl = CSIDL_PROFILE                ;
-    else if ( StrStrI(keyword, "CSIDL_SYSTEMX86"              ) != NULL ) csidl = CSIDL_SYSTEMX86              ;
-    else if ( StrStrI(keyword, "CSIDL_PROGRAM_FILESX86"       ) != NULL ) csidl = CSIDL_PROGRAM_FILESX86       ;
-    else if ( StrStrI(keyword, "CSIDL_PROGRAM_FILES_COMMON"   ) != NULL ) csidl = CSIDL_PROGRAM_FILES_COMMON   ;
-    else if ( StrStrI(keyword, "CSIDL_PROGRAM_FILES_COMMONX86") != NULL ) csidl = CSIDL_PROGRAM_FILES_COMMONX86;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_TEMPLATES"       ) != NULL ) csidl = CSIDL_COMMON_TEMPLATES       ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_DOCUMENTS"       ) != NULL ) csidl = CSIDL_COMMON_DOCUMENTS       ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_ADMINTOOLS"      ) != NULL ) csidl = CSIDL_COMMON_ADMINTOOLS      ;
-    else if ( StrStrI(keyword, "CSIDL_ADMINTOOLS"             ) != NULL ) csidl = CSIDL_ADMINTOOLS             ;
-    else if ( StrStrI(keyword, "CSIDL_CONNECTIONS"            ) != NULL ) csidl = CSIDL_CONNECTIONS            ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_MUSIC"           ) != NULL ) csidl = CSIDL_COMMON_MUSIC           ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_PICTURES"        ) != NULL ) csidl = CSIDL_COMMON_PICTURES        ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_VIDEO"           ) != NULL ) csidl = CSIDL_COMMON_VIDEO           ;
-    else if ( StrStrI(keyword, "CSIDL_RESOURCES"              ) != NULL ) csidl = CSIDL_RESOURCES              ;
-    else if ( StrStrI(keyword, "CSIDL_RESOURCES_LOCALIZED"    ) != NULL ) csidl = CSIDL_RESOURCES_LOCALIZED    ;
-    else if ( StrStrI(keyword, "CSIDL_COMMON_OEM_LINKS"       ) != NULL ) csidl = CSIDL_COMMON_OEM_LINKS       ;
-    else if ( StrStrI(keyword, "CSIDL_CDBURN_AREA"            ) != NULL ) csidl = CSIDL_CDBURN_AREA            ;
-    else if ( StrStrI(keyword, "CSIDL_COMPUTERSNEARME"        ) != NULL ) csidl = CSIDL_COMPUTERSNEARME        ;
+         if ( StrCmpI(keyword, "CSIDL_DESKTOP"                ) == 0 ) csidl = CSIDL_DESKTOP                ;
+    else if ( StrCmpI(keyword, "CSIDL_INTERNET"               ) == 0 ) csidl = CSIDL_INTERNET               ;
+    else if ( StrCmpI(keyword, "CSIDL_PROGRAMS"               ) == 0 ) csidl = CSIDL_PROGRAMS               ;
+    else if ( StrCmpI(keyword, "CSIDL_CONTROLS"               ) == 0 ) csidl = CSIDL_CONTROLS               ;
+    else if ( StrCmpI(keyword, "CSIDL_PRINTERS"               ) == 0 ) csidl = CSIDL_PRINTERS               ;
+    else if ( StrCmpI(keyword, "CSIDL_PERSONAL"               ) == 0 ) csidl = CSIDL_PERSONAL               ;
+    else if ( StrCmpI(keyword, "CSIDL_FAVORITES"              ) == 0 ) csidl = CSIDL_FAVORITES              ;
+    else if ( StrCmpI(keyword, "CSIDL_STARTUP"                ) == 0 ) csidl = CSIDL_STARTUP                ;
+    else if ( StrCmpI(keyword, "CSIDL_RECENT"                 ) == 0 ) csidl = CSIDL_RECENT                 ;
+    else if ( StrCmpI(keyword, "CSIDL_SENDTO"                 ) == 0 ) csidl = CSIDL_SENDTO                 ;
+    else if ( StrCmpI(keyword, "CSIDL_BITBUCKET"              ) == 0 ) csidl = CSIDL_BITBUCKET              ;
+    else if ( StrCmpI(keyword, "CSIDL_STARTMENU"              ) == 0 ) csidl = CSIDL_STARTMENU              ;
+    else if ( StrCmpI(keyword, "CSIDL_MYDOCUMENTS"            ) == 0 ) csidl = CSIDL_MYDOCUMENTS            ;
+    else if ( StrCmpI(keyword, "CSIDL_MYMUSIC"                ) == 0 ) csidl = CSIDL_MYMUSIC                ;
+    else if ( StrCmpI(keyword, "CSIDL_MYVIDEO"                ) == 0 ) csidl = CSIDL_MYVIDEO                ;
+    else if ( StrCmpI(keyword, "CSIDL_DESKTOPDIRECTORY"       ) == 0 ) csidl = CSIDL_DESKTOPDIRECTORY       ;
+    else if ( StrCmpI(keyword, "CSIDL_DRIVES"                 ) == 0 ) csidl = CSIDL_DRIVES                 ;
+    else if ( StrCmpI(keyword, "CSIDL_NETWORK"                ) == 0 ) csidl = CSIDL_NETWORK                ;
+    else if ( StrCmpI(keyword, "CSIDL_NETHOOD"                ) == 0 ) csidl = CSIDL_NETHOOD                ;
+    else if ( StrCmpI(keyword, "CSIDL_FONTS"                  ) == 0 ) csidl = CSIDL_FONTS                  ;
+    else if ( StrCmpI(keyword, "CSIDL_TEMPLATES"              ) == 0 ) csidl = CSIDL_TEMPLATES              ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_STARTMENU"       ) == 0 ) csidl = CSIDL_COMMON_STARTMENU       ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_PROGRAMS"        ) == 0 ) csidl = CSIDL_COMMON_PROGRAMS        ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_STARTUP"         ) == 0 ) csidl = CSIDL_COMMON_STARTUP         ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_DESKTOPDIRECTORY") == 0 ) csidl = CSIDL_COMMON_DESKTOPDIRECTORY;
+    else if ( StrCmpI(keyword, "CSIDL_APPDATA"                ) == 0 ) csidl = CSIDL_APPDATA                ;
+    else if ( StrCmpI(keyword, "CSIDL_PRINTHOOD"              ) == 0 ) csidl = CSIDL_PRINTHOOD              ;
+    else if ( StrCmpI(keyword, "CSIDL_LOCAL_APPDATA"          ) == 0 ) csidl = CSIDL_LOCAL_APPDATA          ;
+    else if ( StrCmpI(keyword, "CSIDL_ALTSTARTUP"             ) == 0 ) csidl = CSIDL_ALTSTARTUP             ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_ALTSTARTUP"      ) == 0 ) csidl = CSIDL_COMMON_ALTSTARTUP      ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_FAVORITES"       ) == 0 ) csidl = CSIDL_COMMON_FAVORITES       ;
+    else if ( StrCmpI(keyword, "CSIDL_INTERNET_CACHE"         ) == 0 ) csidl = CSIDL_INTERNET_CACHE         ;
+    else if ( StrCmpI(keyword, "CSIDL_COOKIES"                ) == 0 ) csidl = CSIDL_COOKIES                ;
+    else if ( StrCmpI(keyword, "CSIDL_HISTORY"                ) == 0 ) csidl = CSIDL_HISTORY                ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_APPDATA"         ) == 0 ) csidl = CSIDL_COMMON_APPDATA         ;
+    else if ( StrCmpI(keyword, "CSIDL_WINDOWS"                ) == 0 ) csidl = CSIDL_WINDOWS                ;
+    else if ( StrCmpI(keyword, "CSIDL_SYSTEM"                 ) == 0 ) csidl = CSIDL_SYSTEM                 ;
+    else if ( StrCmpI(keyword, "CSIDL_PROGRAM_FILES"          ) == 0 ) csidl = CSIDL_PROGRAM_FILES          ;
+    else if ( StrCmpI(keyword, "CSIDL_MYPICTURES"             ) == 0 ) csidl = CSIDL_MYPICTURES             ;
+    else if ( StrCmpI(keyword, "CSIDL_PROFILE"                ) == 0 ) csidl = CSIDL_PROFILE                ;
+    else if ( StrCmpI(keyword, "CSIDL_SYSTEMX86"              ) == 0 ) csidl = CSIDL_SYSTEMX86              ;
+    else if ( StrCmpI(keyword, "CSIDL_PROGRAM_FILESX86"       ) == 0 ) csidl = CSIDL_PROGRAM_FILESX86       ;
+    else if ( StrCmpI(keyword, "CSIDL_PROGRAM_FILES_COMMON"   ) == 0 ) csidl = CSIDL_PROGRAM_FILES_COMMON   ;
+    else if ( StrCmpI(keyword, "CSIDL_PROGRAM_FILES_COMMONX86") == 0 ) csidl = CSIDL_PROGRAM_FILES_COMMONX86;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_TEMPLATES"       ) == 0 ) csidl = CSIDL_COMMON_TEMPLATES       ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_DOCUMENTS"       ) == 0 ) csidl = CSIDL_COMMON_DOCUMENTS       ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_ADMINTOOLS"      ) == 0 ) csidl = CSIDL_COMMON_ADMINTOOLS      ;
+    else if ( StrCmpI(keyword, "CSIDL_ADMINTOOLS"             ) == 0 ) csidl = CSIDL_ADMINTOOLS             ;
+    else if ( StrCmpI(keyword, "CSIDL_CONNECTIONS"            ) == 0 ) csidl = CSIDL_CONNECTIONS            ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_MUSIC"           ) == 0 ) csidl = CSIDL_COMMON_MUSIC           ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_PICTURES"        ) == 0 ) csidl = CSIDL_COMMON_PICTURES        ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_VIDEO"           ) == 0 ) csidl = CSIDL_COMMON_VIDEO           ;
+    else if ( StrCmpI(keyword, "CSIDL_RESOURCES"              ) == 0 ) csidl = CSIDL_RESOURCES              ;
+    else if ( StrCmpI(keyword, "CSIDL_RESOURCES_LOCALIZED"    ) == 0 ) csidl = CSIDL_RESOURCES_LOCALIZED    ;
+    else if ( StrCmpI(keyword, "CSIDL_COMMON_OEM_LINKS"       ) == 0 ) csidl = CSIDL_COMMON_OEM_LINKS       ;
+    else if ( StrCmpI(keyword, "CSIDL_CDBURN_AREA"            ) == 0 ) csidl = CSIDL_CDBURN_AREA            ;
+    else if ( StrCmpI(keyword, "CSIDL_COMPUTERSNEARME"        ) == 0 ) csidl = CSIDL_COMPUTERSNEARME        ;
     else
     {
         invalidConstantException(c, argPos, INVALID_CONSTANT_MSG, "CSIDL", keyword);
@@ -251,8 +251,7 @@ static uint32_t keyword2csidl(RexxMethodContext *c, CSTRING keyword, size_t argP
 }
 
 /**
- * Converts a string of keywords to its BIF_xx value. Raises an exception if
- * keyword is not valid.
+ * Converts a string of keywords to its BIF_xx value.
  *
  * @param c
  * @param keyword
@@ -262,27 +261,23 @@ static uint32_t keyword2csidl(RexxMethodContext *c, CSTRING keyword, size_t argP
  */
 static uint32_t keywords2bif(RexxMethodContext *c, CSTRING keyword, size_t argPos)
 {
-    uint32_t bif = OOD_ID_EXCEPTION;
+    uint32_t bif = 0;
 
-         if ( StrStrI(keyword, "BROWSEFILEJUNCTIONS") != NULL ) bif = BIF_BROWSEFILEJUNCTIONS;
-    else if ( StrStrI(keyword, "BROWSEFORCOMPUTER"  ) != NULL ) bif = BIF_BROWSEFORCOMPUTER  ;
-    else if ( StrStrI(keyword, "BROWSEFORPRINTER"   ) != NULL ) bif = BIF_BROWSEFORPRINTER   ;
-    else if ( StrStrI(keyword, "BROWSEINCLUDEFILES" ) != NULL ) bif = BIF_BROWSEINCLUDEFILES ;
-    else if ( StrStrI(keyword, "BROWSEINCLUDEURLS"  ) != NULL ) bif = BIF_BROWSEINCLUDEURLS  ;
-    else if ( StrStrI(keyword, "DONTGOBELOWDOMAIN"  ) != NULL ) bif = BIF_DONTGOBELOWDOMAIN  ;
-    else if ( StrStrI(keyword, "NEWDIALOGSTYLE"     ) != NULL ) bif = BIF_NEWDIALOGSTYLE     ;
-    else if ( StrStrI(keyword, "NONEWFOLDERBUTTON"  ) != NULL ) bif = BIF_NONEWFOLDERBUTTON  ;
-    else if ( StrStrI(keyword, "NOTRANSLATETARGETS" ) != NULL ) bif = BIF_NOTRANSLATETARGETS ;
-    else if ( StrStrI(keyword, "RETURNFSANCESTORS"  ) != NULL ) bif = BIF_RETURNFSANCESTORS  ;
-    else if ( StrStrI(keyword, "RETURNONLYFSDIRS"   ) != NULL ) bif = BIF_RETURNONLYFSDIRS   ;
-    else if ( StrStrI(keyword, "SHAREABLE"          ) != NULL ) bif = BIF_SHAREABLE          ;
-    else if ( StrStrI(keyword, "STATUSTEXT"         ) != NULL ) bif = BIF_STATUSTEXT         ;
-    else if ( StrStrI(keyword, "UAHINT"             ) != NULL ) bif = BIF_UAHINT             ;
-    else if ( StrStrI(keyword, "USENEWUI"           ) != NULL ) bif = BIF_USENEWUI           ;
-    else
-    {
-        invalidConstantException(c, argPos, INVALID_CONSTANT_MSG, "BIF", keyword);
-    }
+    if ( StrStrI(keyword, "BROWSEFILEJUNCTIONS") != NULL ) bif |= BIF_BROWSEFILEJUNCTIONS;
+    if ( StrStrI(keyword, "BROWSEFORCOMPUTER"  ) != NULL ) bif |= BIF_BROWSEFORCOMPUTER  ;
+    if ( StrStrI(keyword, "BROWSEFORPRINTER"   ) != NULL ) bif |= BIF_BROWSEFORPRINTER   ;
+    if ( StrStrI(keyword, "BROWSEINCLUDEFILES" ) != NULL ) bif |= BIF_BROWSEINCLUDEFILES ;
+    if ( StrStrI(keyword, "BROWSEINCLUDEURLS"  ) != NULL ) bif |= BIF_BROWSEINCLUDEURLS  ;
+    if ( StrStrI(keyword, "DONTGOBELOWDOMAIN"  ) != NULL ) bif |= BIF_DONTGOBELOWDOMAIN  ;
+    if ( StrStrI(keyword, "NEWDIALOGSTYLE"     ) != NULL ) bif |= BIF_NEWDIALOGSTYLE     ;
+    if ( StrStrI(keyword, "NONEWFOLDERBUTTON"  ) != NULL ) bif |= BIF_NONEWFOLDERBUTTON  ;
+    if ( StrStrI(keyword, "NOTRANSLATETARGETS" ) != NULL ) bif |= BIF_NOTRANSLATETARGETS ;
+    if ( StrStrI(keyword, "RETURNFSANCESTORS"  ) != NULL ) bif |= BIF_RETURNFSANCESTORS  ;
+    if ( StrStrI(keyword, "RETURNONLYFSDIRS"   ) != NULL ) bif |= BIF_RETURNONLYFSDIRS   ;
+    if ( StrStrI(keyword, "SHAREABLE"          ) != NULL ) bif |= BIF_SHAREABLE          ;
+    if ( StrStrI(keyword, "STATUSTEXT"         ) != NULL ) bif |= BIF_STATUSTEXT         ;
+    if ( StrStrI(keyword, "UAHINT"             ) != NULL ) bif |= BIF_UAHINT             ;
+    if ( StrStrI(keyword, "USENEWUI"           ) != NULL ) bif |= BIF_USENEWUI           ;
 
     return bif;
 }
