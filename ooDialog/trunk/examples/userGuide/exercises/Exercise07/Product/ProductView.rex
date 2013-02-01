@@ -52,7 +52,7 @@
    v01-00 03Jun12: First version for Exercise05.
    v01-01 06Jun12: Minor changes for Exercise06.
    v02-00 11Jan12: Removed stand-alone operation, plus some comments.
-                     Method 'getData' removed (now redundant).
+                   Method 'getData' removed (now redundant).
 
 ------------------------------------------------------------------------------*/
 
@@ -90,7 +90,6 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD newInstance CLASS PUBLIC UNGUARDED
     use arg idModel, rootDlg						--Ex07
-    if parent = "SA" then hasParent = .false; else hasParent = .true
     --say ".ProductView-newInstance-01: model, rootDlg =" idModel rootDlg
     .Application~addToConstDir("Product\ProductView.h")
     -- Create an instance of ProductView and show it:

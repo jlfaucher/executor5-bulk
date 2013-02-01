@@ -49,6 +49,9 @@
    v02-00 11Jan13: Modified to use the Model-View Framework with data read from
                    file using the GenericFile class. CustomerListModel added.
                    Commented out 'say' instructions.
+          31Jan13: Removed 'query' method (it's in the superclass) from both
+                   Customer and CustomerList - also removed code storing data
+                   in self~myData.
 ------------------------------------------------------------------------------*/
 
 ::REQUIRES "..\Support\GenericFile.rex"
@@ -89,63 +92,7 @@
 
   ::METHOD init
     use strict arg dirData
-    self~myData = dirData
-    --say "CustomerModel-init-01: customerId  =" dirData["CustNo"]
-    --say "CustomerModel-init-02: dirCustomer =" dirData "as follows:"
-    --do i over dirData
-      --say i "=" dirData[i]
-    --end
     return self
-
-
-  ::METHOD query PUBLIC
-  /*----------------------------------------------------------------------------
-    query - returns Customer data.
-            Standard protocol:
-            Accept a .nil, directory, array, or string of names.
-            if .nil then return all fields; else return values for the names in
-            the directory, array, or string. String is assumed to be data
-            names separated by one or more spaces.
-            All returns are a Directory containing names and values.
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    use arg dataNames
-    --say "CustomerModel-query-01: dataNames:" dataNames
-    dirReturn = .Directory~new
-    select
-      when dataNames = .nil | dataNames = "" then return self~myData
-      when dataNames = "DATANAMES"           then return self~myData
-
-      -- Caller is requesting specific data items:
-      when dataNames~isa(.Directory) then do
-        do i over dataNames
-      	  dirReturn[i] = self~dirData[i]
-        end
-      end
-
-      when dataNames~isa(.Array) then do
-        do i over dataNames
-          --say "CustomerModel-query-03: dataNames: '"||dataNames"'"
-          dirReturn[i] = self~dirData[i]
-        end
-      end
-
-      -- dataNames must be separated by a *single* space.
-      when dataNames~isa(.String) then do
-        dataNames = dataNames~strip
-        --say "CustomerModel-query-04: dataNames: '"||dataNames"'"
-        n = dataNames~countStr(" ")+1
-        do i = 1 to n
-          parse var dataNames name " " dataNames
-          if name = " " then iterate     -- ignore extraneous leading spaces.
-          --say "CustomerModel-query-05: name: '"name"'"
-          dirReturn[name] = self~dirData[name]
-        end
-      end
-
-      otherwise return .false
-    end
-
-    return dirReturn
 
 /*============================================================================*/
 
@@ -180,19 +127,18 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD init
-    expose arrData
-    use arg arrData
-    self~myData = arrdata
+    use arg dirData
+    --self~myData = arrdata
     --say "CustomerListModel-init-01: myData =" self~myData
     return self
 
-  ::METHOD query PUBLIC
+--  ::METHOD query PUBLIC
   /*----------------------------------------------------------------------------
     query - returns an array of all Customer data.
             In MVF this method is invoked by the RcView (or ResView) superclass.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     --say "CustomerListModel-query-01."
-    return self~myData
+--    return self~myData
 
 /*============================================================================*/
 

@@ -140,17 +140,17 @@
   ::METHOD init
     expose arrData
     use strict arg data
-    self~myData = data
+    --self~myData = data
     --say "ProductListModel-init-01: myData =" self~myData
     return self
 
-  ::METHOD query PUBLIC
+--  ::METHOD query PUBLIC
   /*----------------------------------------------------------------------------
     query - returns an array of all Product data.
             In MVF this method is invoked by the RcView (or ResView) superclass.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     --say "ProductListModel-query-01."
-    return self~myData
+--    return self~myData
 
 /*============================================================================*/
 
