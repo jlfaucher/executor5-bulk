@@ -289,6 +289,8 @@
  
     <section id="chap07-mvf-oview-person">		                                        <!-- Section 7.2.2.1 -->
     <title id="ch7-mvf-oview-person.title">An Example - The 'Person' Component</title>
+      <indexterm><primary>Person component</primary></indexterm>
+      <indexterm><primary>Component</primary><secondary>Person</secondary></indexterm>      
     <para>A key question is, what does the MVF look like to the programmer? This section answers
           this question using the Person component, which has minimal function other than using the
           MVF, as an example. But first, using the Message Sender, try sending a
@@ -378,15 +380,17 @@
 ]]></programlisting></para>
             </listitem>
           </itemizedlist></para>
-    <para>The above is how a "normal" component uses MVF. By "normal" is meant a component whose
-          identity is defined by its class and a specific "key" such as a Customer Number, or
-          Product Number. However, there are two other kinds of component: a "singleton" component
-          such as the Order Manager, and an "anonymous" component such as a Customer List. These are
-          discussed below in <xref linkend="ch7-mvfuse-kinds.title"/>.</para>
+    <para>The above is how a "named" component uses MVF. By "named" is meant a component whose
+          identity is a combination of its class and a specific "key" such as a Customer Number, or
+          Product Number. However, there are three other kinds of component: a "singleton" such as
+          the Order Manager, a "form" such as the Order Form, and "anonymous" such as a Customer
+          List. These are discussed below in <xref linkend="ch7-mvfuse-kinds.title"/>.</para>
   </section>      <!-- End of 7.2.2.1 -->
     
 <section id="chap07-mvf-oview-objmgr"><title id="ch7-mvf-oview-objmgr.title">The Object Manager</title>	<!-- Section 7.2.2.2 -->
-        <para>The Object Manager (<computeroutput>ObjectMgr.rex</computeroutput> in the
+  <indexterm><primary>Object Manager</primary><secondary>Methods</secondary></indexterm>
+  <indexterm><primary>MVF</primary><secondary>Object Manager</secondary></indexterm>      
+          <para>The Object Manager (<computeroutput>ObjectMgr.rex</computeroutput> in the
             <computeroutput>userGuide\exercises\Support</computeroutput> folder) is a "singleton"
           class (there can only logically be one of them) and has the external name "ObjectMgr The".
           It maintains a table (called the "Object Bag") of all instantiated components. The public
@@ -426,69 +430,121 @@ Class-Instance            Model Id                ViewClass-Inst
 ]]></programlisting></para>
             </listitem>
             <listitem>
-              <para><emphasis role="italic">showModel(className, instanceName)</emphasis> - Shows
-                the View for the specified Model. If the View exists, then it is surfaced. If not,
-                then if the Data component is not already instantiated, it is instantiated. If the
-                Model component is not already instantiated, it is instantiated. Then the View is
+              <para><computeroutput>showModel</computeroutput>(className, instanceName) - Shows the
+                View for the specified Model. If the View exists, then it is surfaced. If not, then
+                if the Data component is not already instantiated, it is instantiated. If the Model
+                component is not already instantiated, it is instantiated. Then the View is
                 instantiated. All instantiations use the <emphasis role="italic"
                   >newInstance</emphasis> method. All dialogs except the "application" dialog (that
-                is, Order Manager) are created and/or surfaced using the <emphasis role="italic"
-                  >showModel</emphasis> method. </para>
+                is, Order Manager) are created and/or surfaced using the
+                  <computeroutput>showModel</computeroutput> method. </para>
             </listitem>
           </itemizedlist>
         </para>        
-  <para>For further information on the Object Manager see <xref linkend="apx5-mvf-classes-om"/>.</para>
+  <para>For further information on the Object Manager, including further detail on the flow of
+          control when a component is instantiated, see <xref linkend="apx5-mvf-classes-om"
+          />.</para>
  
 </section>	<!-- End of Section 7.2.2.2 -->
   
-  <section id="chap07-mvf-oview-model"><title>The 'Model' Superclass</title>		<!-- Section 7.2.2.3 -->
-<para>...</para>
-<para>The 'Query' Protocol</para>
-    <para>A component framework generally requires components to provide specific methods defined by
-      the framework. In our case, aside from instance creation methods, a "well-known"
-      method is required for the MVF to access a model component's data. This method
-      has the name "query", and it must conform to the following protocol:
-      <itemizedlist>
-        <listitem>
-        <para>If a component's <emphasis role="italic">query</emphasis> method
-        is invoked with no parameters, then it must return a directory
-        containing all the "public" data it has. The directory indexes are
-        the labels for the data as defined in the "database" (although this
-        is not usually the case for real production-strength systems, where
-        the data dictionary for application-level components often differs
-        from the column names in an SQL database).</para>
-        <para>For example, use the Message Sender to send "query" to "PersonModel PA150". A
-                directory is returned by PersonModel, and the Message Sender presents the directory
-                in name-value form in its "Reply" field as follows: </para>
-        <para>dob: 751513; baseSalary: 38000; number: PA150; jobDescr:
-        Packer; familyName: James; firstName: Alfred;  </para>
-        </listitem>
-        <listitem>
-        <para>If a component's <emphasis role="italic">query</emphasis> method
-        is invoked with one parameter, and when that parameter is a
-        directory, an array, or a string, then only those fields specified
-        by name are returned. </para>
-        <para>For example, use the Message Sender to query the first name and
-        family name for "PersonModel PA150". To do this, specify the fields
-        by name (case-sensitive) in the "Data" edit field, as follows (but
-        without the quotes): "firstName familyName". On pressing the "Send"
-        button, the data "firstName: Alfred; familyName: James;" is returned
-        as a directory which Message Sender unpacks and presents as a string
-        in the Reply field. </para>
-        <para>For debugging purposes, you can cause MessageSender to send a set
-        of data names as a string (as in the example just given), a
-        directory, or an array.  To send as a directory, enclose each name
-        in square brackets, e.g.: [firstName] [familyName]. To send as an
-        array, place a vertical bar before each name, e.g: | firstName |
-        familyName. </para>
-        </listitem>
-      </itemizedlist>
-      Finally, note that although all components in Exercise07 support
-      the first of the query protocols (i.e. with no parameters), not all components
-      support the second.</para>
-</section>	<!-- End of Section 7.2.2.3 -->
+  <section id="chap07-mvf-oview-model">
+    <title>The 'Model' Superclass</title>        <!-- Section 7.2.2.3 -->
+    <indexterm><primary>Model</primary><secondary>Methods</secondary></indexterm>
+    <indexterm><primary>MVF</primary><secondary>Model</secondary></indexterm>
+    <para><computeroutput>Model</computeroutput> is the MVF superclass for all model components, and
+          provides key methods for subclasses as follows: <itemizedlist>
+            <listitem>
+              <para><computeroutput>newInstance</computeroutput>
+                <indexterm>
+                  <primary>newInstance</primary>
+                </indexterm> - invoked by the Object Manager (which ensures that the required data
+                component is instantiated) with an instance name as the single parameter. The id of
+                the data component is retrieved from Object Manager, after which
+                  <computeroutput>getRecord</computeroutput> or
+                  <computeroutput>getFile</computeroutput> as appropriate is invoked on the data
+                component. Then <computeroutput>self~new</computeroutput> is invoked with model's
+                data as a parameter. Model also provides an instance attribute
+                  <computeroutput>myData</computeroutput> that contains instance data returned from
+                the data component.</para>
+            </listitem>
+            <listitem>
+              <para><computeroutput>getInstanceName</computeroutput>
+                <indexterm>
+                  <primary>getInstanceName</primary>
+                </indexterm> - invoked by ObjectMgr-showModel for anon components only) - adds 1 to
+                a class variable and returns it. Note - for OrderForm, the method is over-ridden and
+                an "new order number " is returned.</para>
+            </listitem>
+            <listitem>
+              <para><computeroutput>query</computeroutput>
+                <indexterm>
+                  <primary>Query method</primary>
+                </indexterm> A component framework generally requires that components provide
+                specific methods defined by the framework. Aside from instance creation methods, a
+                "well-known" method is required for MVF to access a model component's data. This
+                method has the name "query", and it must conform to the following protocol:</para>
+              <para>If a component's <computeroutput>query</computeroutput> method is invoked with
+                no parameters, then it must return a directory containing all the "public" data it
+                has. The directory indices are the labels for the data as defined in the "database"
+                (although this is not usually the case for real production-strength systems, where
+                the data dictionary for application-level components often differs from the column
+                names in an SQL database).</para>
+              <para>For example, use the Message Sender to send <emphasis role="bold"><emphasis
+                    role="italic">query</emphasis></emphasis> to <emphasis role="bold"><emphasis
+                    role="italic">PersonModel PA150</emphasis></emphasis>. A directory is returned
+                by <computeroutput>PersonModel</computeroutput>, and the Message Sender presents the
+                directory in name-value form in its <emphasis role="bold">Reply</emphasis> field as
+                follows: <programlisting>
+<![CDATA[dob: 751513; baseSalary: 38000; number: PA150; jobDescr: Packer; 
+familyName: James; firstName: Alfred; 
+]]>
+                  </programlisting>If a component's <computeroutput>query</computeroutput>
+                method is invoked with one parameter, and when that parameter is a directory, an
+                array, or a string, then only those fields specified by name are returned. </para>
+              <para>For example, use the Message Sender to query the first name and family name for
+                "PersonModel PA150". To do this, specify the fields by name (case-sensitive) in the
+                  <emphasis role="bold">Data</emphasis> edit field, as follows: <emphasis
+                  role="bold"><emphasis role="italic">firstName familyName</emphasis></emphasis>
+                (note - field names are case-sensitive). On pressing the <emphasis role="bold"
+                  >Send</emphasis> button, the data <emphasis role="bold"><emphasis role="italic"
+                    >firstName: Alfred; familyName: James;</emphasis></emphasis> is returned as a
+                directory which Message Sender unpacks and presents as a string in the <emphasis
+                  role="bold"><emphasis role="italic">Reply</emphasis></emphasis> field. </para>
+              <para>For debugging purposes, 
+                <indexterm><primary>Debugging</primary></indexterm><indexterm><primary>Message Sender</primary><secondary>Debugging</secondary></indexterm>you can use MessageSender to send a set of data names as
+                a string (as in the example just given), a directory, or an array. To send as a
+                directory, enclose each name in square brackets, e.g.: <emphasis role="bold"
+                    ><emphasis role="italic">[firstName] [familyName]</emphasis></emphasis>. To send
+                as an array, place a vertical bar before each name, e.g: <emphasis role="bold"
+                    ><emphasis role="italic">| firstName | familyName</emphasis></emphasis>.</para>
+              <para>Finally, note that although all components in Exercise07 support the first of
+                the query protocols (i.e. with no parameters), not all components support the
+                second.</para>
+            </listitem>
+          </itemizedlist></para>
+      </section>	<!-- End of Section 7.2.2.3 -->
 
 <section id="chap07-mvf-oview-view"><title>The 'View' Superclass</title>		<!-- Section 7.2.2.4 -->
+        <para>There are three View superclasses - <computeroutput>RcView</computeroutput>,
+            <computeroutput>ResView</computeroutput>, and <computeroutput>UdView</computeroutput> -
+          all in the <computeroutput>Support</computeroutput> folder. They are identical except for
+          their superclasses - <computeroutput>RcDialog</computeroutput>,
+            <computeroutput>ResDialog</computeroutput> and
+            <computeroutput>UserDialog</computeroutput> respectively (their function could be
+          provided by a single mixin class, and this is planned for a later version of the User
+          Guide exercises).    </para>
+        <para>activate - modelid provided as the single argument. Sends query to model.  </para>
+        <para>leaving - tidies up</para>
+        <para>Code for offsetting dialogs on first launch is also present, but is not used in this
+          exercise. However, the effect can be seen using the "Person"  component in the
+            <computeroutput>Samples\Person</computeroutput> folder. First, un-comment the last line
+          in the <computeroutput>initDialog</computeroutput> method of
+            <computeroutput>PersonView</computeroutput>. Then use the Message Sender to launch a
+          Person dialog (for example send  <emphasis role="bold"><emphasis role="italic"
+              >showModel</emphasis></emphasis> to <emphasis role="bold"><emphasis role="italic"
+              >ObjectMgr The</emphasis></emphasis> with the data <emphasis role="bold"><emphasis
+              role="italic">PersonModel PA150</emphasis></emphasis>). The Person dialog appears
+          offset from </para>
 <para>
 <!-- - offsetting: use MsgSender (refer to section 7.3 for more details)
   e.g. PersonModel - must set Visible = False in resEdit else get a
@@ -501,6 +557,7 @@ Class-Instance            Model Id                ViewClass-Inst
 </section>	<!-- End of Section 7.2.2.4 -->
 
 <section id="chap07-mvf-oview-data"><title>The 'GenericFile' Superclass</title>		<!-- Section 7.2.2.5 -->
+  <indexterm><primary>Generic File</primary></indexterm>
 <para>The data superclass is called "GenericFile", since it acts on any file having
   a defined format. The main methods used by MVF are: ... </para>
   <!--  Diagram of data objects:
@@ -531,42 +588,69 @@ readFile - A private method - Given a filename and the number of columns, reads 
         "form". <simplelist>
           <member> A "named" component instance is identified by a unique name derived from the
             instance's data (analogous to a database key). An example is
-              <computeroutput>CustomerModel</computeroutput>, where an instance is identified by the
-            Customer Number. The external name for such an instance is, for example, "Customer Model
-            AB0784". Note that a "Form" component such as the Order Form is of the named component
-            kind, since it is (and must be) given its name (such as an order number) when first
-            instantiated. A View component is named by its object reference number (that is, the
-            number returned by invoking <computeroutput>identityHash</computeroutput> on the view
-            instance). </member>
+              <computeroutput>CustomerModel</computeroutput>, where each instance is identified by
+            its Customer Number. The external name for such an instance is of the form model class
+            name, model instance name - e.g. "CustomerModel AB0784". Note that a "Form" component
+            such as the Order Form is of the named component kind, since it is (and must be) given
+            its name (such as an order number) when first instantiated. A View component is named by
+            its object reference number (that is, the number returned by invoking
+              <computeroutput>identityHash</computeroutput> on the view instance). </member>
           <member> "Singleton" instances are those for which there can logically only be a single
             instance - for example, data components such as
               <computeroutput>CustomerData</computeroutput>, or the Order Manager (which in
-            Exercise07 is a view-only component).</member>
+            Exercise07 is a view-only component). Their instance name is always "The". </member>
           <member> An "anonymous" component is one for which there can logically be more than one
-            instance, but which do not have any obvious distinguishing name. Examples are list
-            components such as <computeroutput>CustomerListModel</computeroutput>. The instances of
-            an anonymous component are distinguished by a system-generated number. For example, the
-            name of a Customer List is a unique number generated by its superclass. ObjectMgr, on
-            seeing instance name "a" or "A", invokes <emphasis role="italic"
-              >getInstanceName</emphasis> on the ListModel class object, which is handled by the
-            Model superclass. Model returns a number starting at "1". </member>
+            instance, but which do not have any obvious distinguishing name. Thus they are initially
+            given the instance name "A". Examples are list components such as
+              <computeroutput>CustomerListModel</computeroutput>. Instances of an anonymous
+            component are provided with a system-generated number. For example, the name of a
+            Customer List Model is a unique number generated by its superclass, starting at '1'. For
+            example, to create an instance of <computeroutput>CustomerListModel</computeroutput>,
+            the message <computeroutput>getComponentId("CustomerListModel","A")</computeroutput> is
+            sent to <computeroutput>ObjectMgr</computeroutput> which, on seeing instance name "a" or
+            "A", invokes <computeroutput>getInstanceName</computeroutput> on the ListModel class
+            object, which is handled by the <computeroutput>Model</computeroutput> superclass.
+              <computeroutput>Model</computeroutput> returns a number starting at "1". </member>
           <member> A "form" instance such as a Sales Order Form or a Purchase Request form is a
-            special kind of anonymous component. Although when it is created there is no database
-            record of it, there will be when it's completed and the user hits OK. A new number (e.g.
-            order number) is assigned to a form when it is created, and this number is used as the
-            database key when, after completion, the form is committed to the database. Our
-            OrderForm component assumes that this will happen, and so its instance name is a unique
-            Sales Order number. This is created by the
+            special kind of component. Initially it is anonymous, and although when created there is
+            no database record of it, there will be when it's completed and the user hits OK. A new
+            number (e.g. an order number) is assigned to a form when it is created, and this number
+            is used as the database key when, after completion, the form is committed to the
+            database. For example, the Order Form component assumes that this will happen, and so
+            its instance name is a unique Sales Order number. This is created by the
               <computeroutput>getInstanceName</computeroutput> class method of
-              <computeroutput>OrderFormModel</computeroutput> which intercepts the same method in
-            its superclass - i.e. <computeroutput>Model</computeroutput>.</member>
-        </simplelist> The above classification covers almost all the kinds of dialog found in a
+              <computeroutput>OrderFormModel</computeroutput> which over-rides the same method in
+            its superclass (<computeroutput>Model</computeroutput>).</member>
+        </simplelist>The above classification covers almost all the kinds of dialog found in a
         typical UI environment handling business systems. To test this, consider the "Words of
         Wisdom" business component in Exercise03, which was implemented as a view, a model, and a
         data component. The <computeroutput>.../samples/Wow4</computeroutput> folder contains the
-        same set of components, but modified to use the MVF. The code no longer required is
-        commented out with the comment "v01-00" to the right of the statements. Statements added for
-        MVF use are commented with "MVF". </para>
+        same set of components, but modified to use the MVF. Code no longer required is commented
+        out with the comment "v01-00"; methods or statements added or for MVF use are commented with
+        "MVF"; statements changed are commented "v01-00-->MVF"; unchanged statements are commented
+        "v01-00 &amp; MVF".
+      <footnote ><para>Actually, Wow is somewhat schizophrenic, in that it can be launched either as a singleton or
+            as anonymous - that is, with an instance name of "The" or "A".  If "The", then only one
+            instance is allowed. If "A", then multiple instances can be created.</para></footnote>
+      </para>
+      <para>As mentioned above, this whole approach of having component names define the type of 
+        component is not particularly
+        scalable. A better approach - certainly for production-strength apps - is to provide a configuration file
+        that names the classes and states what type they are. Such a
+        file might look something like this:
+      <programlisting>
+<![CDATA[
+<modelClass name="Product",     type="named", dataClass="ProductDB"/>
+<modelClass name="NewOrder",    type="form"/>
+<modelClass name="CustomerList",type="anonymous"/>
+<modelClass name="SalesOrder",  type="named><viewClass name="MySpecialView"/></modelClass>
+<modelClass name="Wow",         type="singleton"
+  <viewClass name="WowView">
+  <dataClass name="WowData" source="sql">
+</modelClass>
+]]></programlisting>Such a configuration file would remove any need for using class names as the
+        basis for managing instances. 
+      </para>
 
 </section>	<!-- End of Section 7.3.1 -->
 
