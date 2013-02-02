@@ -2585,8 +2585,10 @@ RexxMethod2(RexxObjectPtr, lb_getText, uint32_t, index, CSELF, pCSelf)
  *
  *  @return  The index of the item nearest the point.
  *
- *  @note    Any  ??? x, y coordinates will work.  I.e. -6000, -7000 will work.
- *           The item will be -1 and location will be "ABOVE TOLEFT"
+ *  @note    Any x, y coordinates will work.  I.e. -6000, -7000 will work. The
+ *           item index will be 1 and inClientArea will be false.  The operating
+ *           system always returns the item index that is *closest* to the point
+ *           specified.  Even if it is not very close at all.
  */
 RexxMethod2(int32_t, lb_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
 {
