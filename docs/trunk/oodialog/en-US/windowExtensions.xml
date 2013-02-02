@@ -453,8 +453,8 @@
       Panel on Windows, lists the typeface names of all fonts installed on the system.
     </para>
     <para>
-      As noted above, the font mapper will try to substitute a similar font if the typeface name does not match any of the
-      installed fonts.
+      As noted in the remarks section, the font mapper will try to substitute a similar font if the typeface name does not
+      match any of the installed fonts.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="italic">pointSize [optional]</emphasis></term>
@@ -489,14 +489,22 @@
         The indexes of the object specify the additional font characteristics. For any missing index, the default value is
         used for that characteristic. Unrecogized indexes are ignored. The indexes are listed below. Each index maps to an
         argument of the <computeroutput>CreateFont()</computeroutput> Win32 API. The Rexx programmer can, and maybe should,
-        consult the MSDN <xref linkend="defWindowsDoc"/> documentation to get complete information on the individual
-        arguments. The value for each index must be either numeric or logical, depending on the index.
+        consult the MSDN <xref linkend="defWindowsDoc"/> to get complete information on the individual arguments. The value
+        for each index must be either numeric or logical, depending on the index.
       </para>
       <para>
         The indexes below are listed in the same order as the arguments to <computeroutput>CreateFont()</computeroutput> from
         <emphasis role="italic">nWidth</emphasis> to <emphasis role="italic">fdwPitchAndFamily</emphasis>. Where an index has
         an internal link, the link provides some more information on the possible values for index. The valid indexes are:
       </para>
+      <variablelist>
+        <varlistentry><term><xref linkend="cfxWidth"/></term>
+        <listitem>
+        <para>
+          xxx and xxx sss.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
         <informaltable frame='none' colsep='0' rowsep='0' pgwide='1'>
         <tgroup cols='3'>
         <colspec align='left' colwidth='1*' />
