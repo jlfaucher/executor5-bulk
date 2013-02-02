@@ -200,10 +200,6 @@
 <entry>Gets the text, the label, of the specified tree-view item.</entry>
 </row>
 <row>
-<entry><xref linkend="mthHitTestClsTreeView"/></entry>
-<entry>hitTest</entry>
-</row>
-<row>
 <entry><xref linkend="mthHitTestInfoClsTreeView"/></entry>
 <entry>Determines the location of a point relative to the tree-view control.</entry>
 </row>
@@ -1399,76 +1395,6 @@ item in the client window of a tree-view control.</para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TreeView::getToolTips() -->
-
-<section id="mthHitTestClsTreeView" xreflabel="hitTest"><title>hitTest</title>
-<indexterm><primary>hitTest</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--hitTest(--x--,--y--)-------------------------><
-]]>
-</programlisting>
-
-<para>The hitTest method determines the location of the
-specified point relative to the <xref linkend="defClientArea"/> of a tree-view control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>The x-coordinate of the point.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>The y-coordinate of the point.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>0 if no item occupies the point, or one or more of the
-following strings if an item occupies the specified point:
-<variablelist>
-<varlistentry><term>handle</term>
-<listitem><para>The handle to the item that occupies the specified point.
-</para></listitem></varlistentry>
-<varlistentry><term>ABOVE</term>
-<listitem><para>Above the client area.
-</para></listitem></varlistentry>
-<varlistentry><term>BELOW</term>
-<listitem><para>Below the client area.
-</para></listitem></varlistentry>
-<varlistentry><term>NOWHERE</term>
-<listitem><para>In the client area but below the last item.
-</para></listitem></varlistentry>
-<varlistentry><term>ONITEM</term>
-<listitem><para>On the bitmap or label associated with an item.
-</para></listitem></varlistentry>
-<varlistentry><term>ONBUTTON</term>
-<listitem><para>On the button associated with an item.
-</para></listitem></varlistentry>
-<varlistentry><term>ONICON</term>
-<listitem><para>On the icon associated with an item.
-</para></listitem></varlistentry>
-<varlistentry><term>ONINDENT</term>
-<listitem><para>In the indentation associated with an item.
-</para></listitem></varlistentry>
-<varlistentry><term>ONLABEL</term>
-<listitem><para>On the label (string) associated with an item.
-</para></listitem></varlistentry>
-<varlistentry><term>ONRIGHT</term>
-<listitem><para>In the area to the right of an item.
-</para></listitem></varlistentry>
-<varlistentry><term>ONSTATEICON</term>
-<listitem><para>On the state icon for a tree-view item that is in a user-defined state.
-</para></listitem></varlistentry>
-<varlistentry><term>TOLEFT</term>
-<listitem><para>To the left of the client area.
-</para></listitem></varlistentry>
-<varlistentry><term>TORIGHT</term>
-<listitem><para>To the right of the client area.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthHitTestInfoClsTreeView" xreflabel="hitTestInfo"><title>hitTestInfo</title>
 <indexterm><primary>hitTestInfo</primary><secondary>TreeViewClass</secondary></indexterm>
