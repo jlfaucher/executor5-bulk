@@ -376,6 +376,7 @@
   <listitem>
   <para>
     The arguments are:
+  </para>
   <variablelist>
     <varlistentry><term>fontName [optional]</term>
     <listitem>
@@ -416,7 +417,6 @@
     </para>
     </listitem></varlistentry>
   </variablelist>
-  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
@@ -436,171 +436,162 @@
 </programlisting>
 
 <para>
-  Creates a logical font with the characteristics requested. This should be the preferred method to
-  create fonts in ooDialog. The <xref linkend="mthCreateFont"/>() method does <emphasis
-  role="bold">not</emphasis> properly create the font requested.
-</para>
-<para>
-  The returned font can be used in any method that takes a font, such as,
- <xref linkend="mthSetFont"/>(), <xref linkend="mthSetControlFont"/>(), or
- <xref linkend="mthFontToDC"/>(). When the programmer is done with the font, the operating system
-  resources used by the font can be released with the <xref linkend="mthDeleteFont"/>()
-  method.
-</para>
-<para>
-  The Windows operating system uses a font mapper to map a logical font to the characteristics of the
-  font requested. Because available fonts can vary from system to system, the returned font is not always
-  the same as the requested font. For example, if a font named Palatino is requested, but no such font is
-  available on the system, the font mapper will substitute a font that has similar attributes but a
-  different name.
-</para>
-<para>
-  The interface to the font mapper takes a wide range of arguments to specify many different attributes
-  of the requested font. The <emphasis role="italic">additional</emphasis> argument gives the ooRexx
-  programmer the ability to use any, or all, of these arguments. On the other hand, The
-  <computeroutput>createFontEx</computeroutput>() method has good defaults for each of the arguments,
-  allowing the programmer to use the method with a minimum of effort.
-</para>
-<para>
-  If an application will run on different systems, where the programmer does not know in advance what
-  fonts will be available on each system, carefully specifying the font characteristics will help give
-  the application the same look on each system. The font mapper will pick a font on each system that most
-  closely matches the requested attributes.
+  Creates a logical font with the characteristics requested. This should be the preferred method to create fonts in ooDialog.
+  The <xref linkend="mthCreateFont"/> method does <emphasis role="bold">not</emphasis> properly create the font requested.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are:
+  </para>
   <variablelist>
-    <varlistentry><term><emphasis role="italic">fontName</emphasis></term>
+    <varlistentry><term><emphasis role="italic">fontName [required]</emphasis></term>
     <listitem>
     <para>
-      The typeface name of the requested font. The <emphasis role="italic">fonts</emphasis> folder,
-      accessed from the Control Panel, on Windows lists the typeface names of all fonts installed on
-      the system.
+      The typeface name of the requested font. The <emphasis role="italic">fonts</emphasis> folder, accessed from the Control
+      Panel on Windows, lists the typeface names of all fonts installed on the system.
     </para>
     <para>
-      As noted above, the font mapper will try to substitute a similar font if the typeface name does
-      not match any of the installed fonts.
+      As noted above, the font mapper will try to substitute a similar font if the typeface name does not match any of the
+      installed fonts.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term><emphasis role="italic">pointSize</emphasis></term>
+    <varlistentry><term><emphasis role="italic">pointSize [optional]</emphasis></term>
     <listitem>
     <para>
-      Optional. The point size of the requested font. The default is 8.
+      The point size of the requested font. The default is 8.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term><emphasis role="italic">additional</emphasis></term>
+    <varlistentry><term><emphasis role="italic">additional [optional]</emphasis></term>
     <listitem>
     <para>
-      Optional. A <computeroutput>.Directory</computeroutput> object whose indexes define additional
-      characteristics of the requested font. For any missing index, the default value is used for
-      that characteristic. If this argument is omitted then the default value for all characteristics
-      is used.
+      Specifies additional characteristics of the requested font. If this argument is omitted, deault values are used for all
+      characteristics. The <emphasis role="italic">additional</emphasis> argument can be either:
     </para>
+    <itemizedlist>
+    <listitem>
     <para>
-      The indexes are listed below. Each index maps to an argument of the Win32 API,
-      <computeroutput>CreateFont()</computeroutput>. As suggested above, the programmer should
-      consult the MSDN <xref linkend="defWindowsDoc"/> documentation to get complete
-      information on the individual arguments. The value for each index must be either numeric or
-      logical, depending on the index.
+      A <computeroutput>.Directory</computeroutput> object whose indexes specify the characteristics.
     </para>
+    </listitem>
+    <listitem>
     <para>
-      The indexes below are listed in the same order as the arguments to
-      <computeroutput>CreateFont()</computeroutput> from <emphasis role="italic">nWidth</emphasis> to
-      <emphasis role="italic">fdwPitchAndFamily</emphasis>. Where an index has a link, the link
-      provides some more information on the possible values for index. The valid indexes are:
-      <informaltable frame='none' colsep='0' rowsep='0' pgwide='1'>
-      <tgroup cols='3'>
-      <colspec align='left' colwidth='1*' />
-      <colspec align='left' colwidth='1*' />
-      <colspec align='left' colwidth='1*' />
-      <thead>
-      <row><entry>Index</entry><entry>Meaning</entry><entry>Default</entry></row>
-      </thead>
-      <tbody>
-      <row>
-        <entry><xref linkend="cfxWidth"/></entry>
-        <entry>The average width of the characters in the requested font</entry>
-        <entry>0</entry>
-      </row>
-      <row>
-        <entry><xref linkend="cfxEscarpment"/></entry>
-        <entry>The angle between the escapement vector and the x-axis of the device</entry>
-        <entry>0</entry>
-      </row>
-      <row>
-        <entry><xref linkend="cfxOrientation"/></entry>
-        <entry>The angle between each character's base line and the x-axis of the device</entry>
-        <entry>0</entry>
-      </row>
-      <row>
-        <entry><xref linkend="cfxWeight"/></entry>
-        <entry>The weight of the font</entry>
-        <entry>FW_NORMAL</entry>
-      </row>
-      <row>
-        <entry>ITALIC</entry>
-        <entry>True for an italic font</entry>
-        <entry>false</entry>
-      </row>
-      <row>
-        <entry>UNDERLINE</entry>
-        <entry>True for an uderlined font</entry>
-        <entry>false</entry>
-      </row>
-      <row>
-        <entry>STRIKEOUT</entry>
-        <entry>True for a strikeout font</entry>
-        <entry>false</entry>
-      </row>
-      <row>
-        <entry><xref linkend="cfxCharset"/></entry>
-        <entry>Specifies the character set</entry>
-        <entry>DEFAULT_CHARSET</entry>
-      </row>
-      <row>
-        <entry><xref linkend="cfxOutputPrecision"/></entry>
-        <entry>Specifies the output precision</entry>
-        <entry>OUT_TT_PRECIS</entry>
-      </row>
-      <row>
-        <entry><xref linkend="cfxClipPrecision"/></entry>
-        <entry>Specifies the clipping precision</entry>
-        <entry>CLIP_DEFAULT_PRECIS</entry>
-      </row>
-      <row>
-        <entry><xref linkend="cfxQuality"/></entry>
-        <entry>Specifies the output quality</entry>
-        <entry>DEFAULT_QUALITY</entry>
-      </row>
-      <row>
-        <entry><xref linkend="cfxPitchAndFamily"/></entry>
-        <entry>Specifies the pitch and family of the font</entry>
-        <entry>FF_DONTCARE</entry>
-      </row>
-      </tbody>
-      </tgroup>
-      </informaltable>
+      A list of blank separated keywords that specify the characteristics.
     </para>
+    </listitem>
+    </itemizedlist>
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">Directory Object:</emphasis></term>
+      <listitem>
+      <para>
+        The indexes of the object specify the additional font characteristics. For any missing index, the default value is
+        used for that characteristic. Unrecogized indexes are ignored. The indexes are listed below. Each index maps to an
+        argument of the <computeroutput>CreateFont()</computeroutput> Win32 API. The Rexx programmer can, and maybe should,
+        consult the MSDN <xref linkend="defWindowsDoc"/> documentation to get complete information on the individual
+        arguments. The value for each index must be either numeric or logical, depending on the index.
+      </para>
+      <para>
+        The indexes below are listed in the same order as the arguments to <computeroutput>CreateFont()</computeroutput> from
+        <emphasis role="italic">nWidth</emphasis> to <emphasis role="italic">fdwPitchAndFamily</emphasis>. Where an index has
+        an internal link, the link provides some more information on the possible values for index. The valid indexes are:
+      </para>
+        <informaltable frame='none' colsep='0' rowsep='0' pgwide='1'>
+        <tgroup cols='3'>
+        <colspec align='left' colwidth='1*' />
+        <colspec align='left' colwidth='1*' />
+        <colspec align='left' colwidth='1*' />
+        <thead>
+        <row><entry>Index</entry><entry>Meaning</entry><entry>Default</entry></row>
+        </thead>
+        <tbody>
+        <row>
+          <entry><xref linkend="cfxWidth"/></entry>
+          <entry>The average width of the characters in the requested font</entry>
+          <entry>0</entry>
+        </row>
+        <row>
+          <entry><xref linkend="cfxEscarpment"/></entry>
+          <entry>The angle between the escapement vector and the x-axis of the device</entry>
+          <entry>0</entry>
+        </row>
+        <row>
+          <entry><xref linkend="cfxOrientation"/></entry>
+          <entry>The angle between each character's base line and the x-axis of the device</entry>
+          <entry>0</entry>
+        </row>
+        <row>
+          <entry><xref linkend="cfxWeight"/></entry>
+          <entry>The weight of the font</entry>
+          <entry>FW_NORMAL</entry>
+        </row>
+        <row>
+          <entry>ITALIC</entry>
+          <entry>True for an italic font</entry>
+          <entry>false</entry>
+        </row>
+        <row>
+          <entry>UNDERLINE</entry>
+          <entry>True for an uderlined font</entry>
+          <entry>false</entry>
+        </row>
+        <row>
+          <entry>STRIKEOUT</entry>
+          <entry>True for a strikeout font</entry>
+          <entry>false</entry>
+        </row>
+        <row>
+          <entry><xref linkend="cfxCharset"/></entry>
+          <entry>Specifies the character set</entry>
+          <entry>DEFAULT_CHARSET</entry>
+        </row>
+        <row>
+          <entry><xref linkend="cfxOutputPrecision"/></entry>
+          <entry>Specifies the output precision</entry>
+          <entry>OUT_TT_PRECIS</entry>
+        </row>
+        <row>
+          <entry><xref linkend="cfxClipPrecision"/></entry>
+          <entry>Specifies the clipping precision</entry>
+          <entry>CLIP_DEFAULT_PRECIS</entry>
+        </row>
+        <row>
+          <entry><xref linkend="cfxQuality"/></entry>
+          <entry>Specifies the output quality</entry>
+          <entry>DEFAULT_QUALITY</entry>
+        </row>
+        <row>
+          <entry><xref linkend="cfxPitchAndFamily"/></entry>
+          <entry>Specifies the pitch and family of the font</entry>
+          <entry>FF_DONTCARE</entry>
+        </row>
+        </tbody>
+        </tgroup>
+        </informaltable>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Keyword List:</emphasis></term>
+      <listitem>
+      <para>
+        One or more of the following keywords, separated by blanks. Case is not significant:
+        <simplelist type='horiz' columns='3'>
+        <member>THIN      </member>
+        <member>EXTRALIGHT</member>
+        <member>LIGHT     </member>
+        <member>MEDIUM    </member>
+        <member>SEMIBOLD  </member>
+        <member>EXTRABOLD </member>
+        <member>BOLD     </member>
+        <member>HEAVY    </member>
+        <member>UNDERLINE</member>
+        <member>ITALIC   </member>
+        <member>STRIKEOUT</member>
+        </simplelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
     </listitem></varlistentry>
   </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method provides an interface to the Win32 API: <computeroutput>CreateFont()</computeroutput>.
-    Use the MSDN <xref linkend="defWindowsDoc"/> documentation to get more information on the
-    arguments to this method.
-  </para>
-  <para>
-    Sets the <xref linkend="dotSystemErrorCode"/>.
-  </para>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -609,6 +600,44 @@
     handle. Because of the way the font mapper works, it is hard to conceive of a circustance where
     this method would fail. However, if it were to fail, the
     <xref linkend="dotSystemErrorCode"/> would be non-zero.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The returned font can be used in any method that takes a font, such as, <xref linkend="mthSetFont"/>, <xref
+    linkend="mthSetControlFont"/>, or <xref linkend="mthFontToDC"/>. When the programmer is done with the font, the operating
+    system resources used by the font can be released with the <xref linkend="mthDeleteFont"/> method.
+  </para>
+  <para>
+    The Windows operating system uses a font mapper to map a logical font to the characteristics of the font requested. Because
+    available fonts can vary from system to system, the returned font is not always the same as the requested font. For
+    example, if a font named Palatino is requested, but no such font is available on the system, the font mapper will
+    substitute a font that has similar attributes but a different name.
+  </para>
+  <para>
+    The interface to the font mapper takes a wide range of arguments to specify many different attributes of the requested
+    font. The <emphasis role="italic">additional</emphasis> argument gives the ooRexx programmer the ability to use any, or
+    all, of these arguments. On the other hand, The <emphasis role="italic">createFontEx</emphasis> method has good defaults
+    for each of the arguments, allowing the programmer to use the method with a minimum of effort.
+  </para>
+  <para>
+    If an application will run on different systems, where the programmer does not know in advance what fonts will be available
+    on each system, carefully specifying the font characteristics will help give the application the same look on each system.
+    The font mapper will pick a font on each system that most closely matches the requested attributes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method provides an interface to the Win32 API: <computeroutput>CreateFont()</computeroutput>. Use the MSDN <xref
+    linkend="defWindowsDoc"/> documentation to get more information on the arguments to this method.
+  </para>
+  <para>
+    Sets the <xref linkend="dotSystemErrorCode"/>.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -659,7 +688,7 @@
   list provides additional information on the meaning of values that can be assigned to each index.
 </para>
 <variablelist>
-  <varlistentry id="cfxWidth"><term><emphasis role="bold">width</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxWidth" xreflabel="WIDTH"><term><emphasis role="bold">width</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       Specifies the average width, in logical units, of the characters in the requested font. The default
@@ -671,7 +700,7 @@
       the current device's aspect ratio and the digitized aspect ratio of available fonts.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="cfxEscarpment"><term><emphasis role="bold">escarpment</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxEscarpment" xreflabel="ESCARPMENT"><term><emphasis role="bold">escarpment</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       Specifies the angle, in tenths of degrees, between the escapement vector and the x-axis of the
@@ -679,14 +708,14 @@
       predefined values for this argument.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="cfxOrientation"><term><emphasis role="bold">orientation</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxOrientation" xreflabel="ORIENTATION"><term><emphasis role="bold">orientation</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       Specifies the angle, in tenths of degrees, between each character's base line and the x-axis of the
       device. Windows has no predefined values for this argument.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="cfxWeight"><term><emphasis role="bold">weight</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxWeight" xreflabel="WEIGHT"><term><emphasis role="bold">weight</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       Specifies the weight of the font in the range 0 through 1000. For example, 400 is normal and 700 is
@@ -740,7 +769,7 @@
       is <computeroutput>.false</computeroutput>.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="cfxCharset"><term><emphasis role="bold">charset</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxCharset" xreflabel="CHARSET"><term><emphasis role="bold">charset</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       Specifies the character set. The following values are predefined in Windows:
@@ -771,7 +800,7 @@
     </tbody></tgroup>
     </informaltable>
   </listitem></varlistentry>
-  <varlistentry id="cfxOutputPrecision"><term><emphasis role="bold">outputPrecsion</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxOutputPrecision" xreflabel="OUTPUTPRECSION"><term><emphasis role="bold">outputPrecsion</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       The output precision defines how closely the output must match the requested font's height, width,
@@ -856,7 +885,7 @@
     </tbody></tgroup>
     </informaltable>
   </listitem></varlistentry>
-  <varlistentry id="cfxClipPrecision"><term><emphasis role="bold">clipPrecision</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxClipPrecision" xreflabel="CLIPPRECISION"><term><emphasis role="bold">clipPrecision</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       The clipping precision defines how to clip characters that are partially outside the clipping
@@ -925,7 +954,7 @@
     </tbody></tgroup>
     </informaltable>
   </listitem></varlistentry>
-  <varlistentry id="cfxQuality"><term><emphasis role="bold">quality</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxQuality" xreflabel="QUALITY"><term><emphasis role="bold">quality</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       The output quality defines how carefully the font mapper must attempt to match the logical-font
@@ -995,7 +1024,7 @@
     </tbody></tgroup>
     </informaltable>
   </listitem></varlistentry>
-  <varlistentry id="cfxPitchAndFamily"><term><emphasis role="bold">pitchAndFamily</emphasis> Must be an integer.</term>
+  <varlistentry id="cfxPitchAndFamily" xreflabel="PITCHANDFAMILY"><term><emphasis role="bold">pitchAndFamily</emphasis> Must be an integer.</term>
   <listitem>
     <para>
       Specifies the pitch and family of the font. Font families describe the look of a font in a general

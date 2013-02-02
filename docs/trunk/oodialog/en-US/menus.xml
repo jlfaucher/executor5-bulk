@@ -143,7 +143,7 @@
   <term><emphasis role="bold">Menu Item Identifier</emphasis></term>
   <listitem>
   <para>
-    Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu item identifier.
+    Each menu item has a unique, positive, integer assigned to it by the programmer, called a menu item identifier.
     These numbers are essentially the same as any other <xref linkend="defResourceId"/> used in
     ooDialog. The Rexx programmer can use numeric or <xref linkend="itmMenuSymbolicIDs"/> IDs for menu
     item identifier's, in the same way as for other resource IDs.
@@ -182,24 +182,24 @@
   <term><emphasis role="bold">Symbolic Menu Item IDs</emphasis></term>
   <listitem>
   <para>
-    Menu <emphasis role="italic">item identifiers</emphasis> are essentially <xref linkend="defResourceId"/>s. The programmer
-    can use <xref linkend="defSymbolicId"/> IDs for menu item identifiers rather than numeric IDs for any argument in a menu
-    object method that uses a menu item identifier. However, to do so, the programmer <emphasis role="italic">must</emphasis>
-    use the global
-    <xref linkend="dotConstDir"/>. If the global <computeroutput>.constDir</computeroutput> is not used,
-    then all menu item identifier arguments <emphasis role="bold">must</emphasis> be numeric.
-  </para> </listitem></varlistentry>
+    Menu <emphasis role="italic">item identifiers</emphasis> are essentially resource <link
+    linkend="defResourceId">IDs</link>. The programmer can use <xref linkend="defSymbolicId"/> IDs for menu item identifiers
+    rather than numeric IDs for any argument in a menu object method that uses a menu item identifier. However, to do so, the
+    programmer <emphasis role="italic">must</emphasis> use the global <xref linkend="dotConstDir"/>. If the global
+    <computeroutput>.constDir</computeroutput> is not used, then all menu item identifier arguments <emphasis
+    role="bold">must</emphasis> be numeric.
+  </para>
+ </listitem></varlistentry>
 </variablelist>
 <para>
   Except in a few methods where it simply does not make any sense, all menu methods that require specifying a menu item,
-  accept either a menu item identifier or a menu item position. The menu item specifier is refered to as the menu
-  item ID. Since both identifiers and positions are numbers, the programmer needs to specify which is being used.
-  However, by default, the ID is assumed to be an identifier. Therefore, the programmer only need indicate when the ID
-  is a position ID.
+  accept either a menu item identifier or a menu item position. The menu item specifier is refered to generically as the
+  <emphasis role="italic">menu item ID</emphasis>. In ooDialog, all <emphasis role="italic">menu item IDs</emphasis> must be
+  greater than 0. Since both identifiers and positions are numbers, the programmer needs to specify which is being used.
+  However, by default, the ID is assumed to be an identifier. Therefore, the programmer only need indicate when the ID is a
+  position ID.
 </para>
 </section>
-
-
 
 
 <section id="sctMenuCommandItems"><title>Menu Command Items</title>
@@ -3937,10 +3937,10 @@
   </para>
   <para>
     When the menu command item is inserted into the menu, if there are no other items in the menu there is no ID for the
-    <emphasis role="italic">before</emphasis> argument. In this case the programmer can use any non-negative number and
+    <emphasis role="italic">before</emphasis> argument. In this case the programmer can use any positive number and
     the operating system will accept it. The ooDialog examples commonly use the same ID for both the <emphasis
-    role="italic">idBefore</emphasis> and <emphasis role="italic">id</emphasis> arguments for this case. 0 is also a
-    good choice for the <emphasis role="italic">idBefore</emphasis> argument.
+    role="italic">idBefore</emphasis> and <emphasis role="italic">id</emphasis> arguments for this case. 1 is also a good
+    choice for the <emphasis role="italic">idBefore</emphasis> argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4152,10 +4152,10 @@
   <listitem>
   <para>
     When the submenu is inserted into the menu, if there are no other items in the menu there is no ID for the
-    <emphasis role="italic">before</emphasis> argument. In this case the programmer can use any non-negative number and
-    the operating system will accept it. The ooDialog examples commonly use the same ID for both the <emphasis
-    role="italic">idBefore</emphasis> and <emphasis role="italic">id</emphasis> arguments for this case. 0 is also a
-    good choice for the <emphasis role="italic">idBefore</emphasis> argument.
+    <emphasis role="italic">before</emphasis> argument. In this case the programmer can use any positive number and the
+    operating system will accept it. The ooDialog examples commonly use the same ID for both the <emphasis
+    role="italic">idBefore</emphasis> and <emphasis role="italic">id</emphasis> arguments for this case. 1 is also a good
+    choice for the <emphasis role="italic">idBefore</emphasis> argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4247,10 +4247,10 @@
   <listitem>
   <para>
     When the separator is inserted into the menu, if there are no other items in the menu there is no ID for the
-    <emphasis role="italic">before</emphasis> argument. In this case the programmer can use any non-negative number and
-    the operating system will accept it. The ooDialog examples commonly use the same ID for both the <emphasis
-    role="italic">idBefore</emphasis> and <emphasis role="italic">id</emphasis> arguments for this case. 0 is also a
-    good choice for the <emphasis role="italic">idBefore</emphasis> argument.
+    <emphasis role="italic">before</emphasis> argument. In this case the programmer can use any positive number and the
+    operating system will accept it. The ooDialog examples commonly use the same ID for both the <emphasis
+    role="italic">idBefore</emphasis> and <emphasis role="italic">id</emphasis> arguments for this case. 1 is also a good
+    choice for the <emphasis role="italic">idBefore</emphasis> argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
