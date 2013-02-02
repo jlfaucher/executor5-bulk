@@ -2449,25 +2449,6 @@ static int32_t cbLbAddDirectory(HWND hCtrl, CSTRING drivePath, CSTRING fileAttri
 }
 
 
-RexxMethod1(RexxObjectPtr, lb_isSingleSelection, CSELF, pCSelf)
-{
-    return (isSingleSelectionListBox(getDChCtrl(pCSelf)) ? TheTrueObj : TheFalseObj);
-}
-
-/** ListBox::getText()
- *
- *  Return the text of the item at the specified index.
- *
- *  @param  index  The 1-based item index.  (The underlying list box uses
- *                 0-based indexes.)
- *
- *  @return  The item's text or the empty string on error.
- */
-RexxMethod2(RexxObjectPtr, lb_getText, uint32_t, index, CSELF, pCSelf)
-{
-    return cbLbGetText(context, ((pCDialogControl)pCSelf)->hCtrl, index, winListBox);
-}
-
 /** ListBox::add()
  *
  *  Adds a string item to the list box.
@@ -2487,6 +2468,98 @@ RexxMethod2(int32_t, lb_add, CSTRING, text, CSELF, pCSelf)
     }
     return ret;
 }
+
+
+/** ListBox::addDirectory()
+ *
+ *
+ */
+RexxMethod3(int32_t, lb_addDirectory, CSTRING, drivePath, OPTIONAL_CSTRING, fileAttributes, CSELF, pCSelf)
+{
+    return cbLbAddDirectory(((pCDialogControl)pCSelf)->hCtrl, drivePath, fileAttributes, winListBox);
+}
+
+
+/** ListBox::deselectIndex()
+ *
+ *  Deselects the specified item, or all items, in the list box.
+ *
+ *  @param  index  [OPTIONAL]  The one-based index of the item to deselect.  If
+ *                 this argument is omitted, 0 or -1, all items in the list box
+ *                 are deselected.
+ *
+ *  @return  -1 on error, otherwise 0.
+ *
+ *  @note  If the list box is a single-selection list box, the index argument is
+ *         simply ignored.  The return will always be 0.  For a
+ *         multiple-selection list box, if index is greater than the last item
+ *         in the listbox, -1 is returned.
+ */
+RexxMethod2(int32_t, lb_deselectIndex, OPTIONAL_int32_t, index, CSELF, pCSelf)
+{
+    HWND hCtrl = getDChCtrl(pCSelf);
+    int32_t ret;
+
+    if ( isSingleSelectionListBox(hCtrl) )
+    {
+        ret = ((int32_t)SendMessage(hCtrl, LB_SETCURSEL, -1, 0) != -1 ? -1 : 0);
+    }
+    else
+    {
+        index = (index <= 0 ? -1 : index - 1);
+        ret = (int32_t)SendMessage(hCtrl, LB_SETSEL, FALSE, index);
+    }
+    return ret;
+}
+
+
+/** ListBox::find()
+ *
+ *  Finds the index of the list box item that matches 'text'.  In all cases
+ *  the search is case insensitive.
+ *
+ *  @param  text        The text of the item to search for.  If not exact, this
+ *                      can be just an abbreviation, or prefix, of the item.
+ *                      Otherwise an exact match, disregarding case, is searched
+ *                      for.
+ *
+ *  @param  startIndex  [OPTIONAL] The one-based index of the item to start the
+ *                      search at.  If the search reaches the end of the items
+ *                      without a match, the search continues with the first
+ *                      item until all items have been examined.  When
+ *                      omitted, or 0, the search starts with the first item.
+ *
+ *  @param  exactly     [OPTIONAL]  Whether to do an exact match.  When this
+ *                      arugment is omitted, 'text' can just the abbreviation of
+ *                      the item to find.  I.e., 'San' would match "San Diego."
+ *                      If the argument is used and equals true or "Exact" then
+ *                      the item must match text exactly.  When using the
+ *                      "Exact" form, only the first letter is considered and
+ *                      case is insignificant.
+ *
+ *  @return  The one-based index of the item, if found, otherwise 0.
+ */
+RexxMethod4(int32_t, lb_find, CSTRING, text, OPTIONAL_uint32_t, startIndex, OPTIONAL_CSTRING, exactly, CSELF, pCSelf)
+{
+
+    return cbLbFind(((pCDialogControl)pCSelf)->hCtrl, text, startIndex, exactly, winListBox);
+}
+
+
+/** ListBox::getText()
+ *
+ *  Return the text of the item at the specified index.
+ *
+ *  @param  index  The 1-based item index.  (The underlying list box uses
+ *                 0-based indexes.)
+ *
+ *  @return  The item's text or the empty string on error.
+ */
+RexxMethod2(RexxObjectPtr, lb_getText, uint32_t, index, CSELF, pCSelf)
+{
+    return cbLbGetText(context, ((pCDialogControl)pCSelf)->hCtrl, index, winListBox);
+}
+
 
 /** ListBox::insert()
  *
@@ -2552,6 +2625,17 @@ RexxMethod3(int32_t, lb_insert, OPTIONAL_int32_t, index, CSTRING, text, CSELF, p
     return ret;
 }
 
+
+/** ListBox::isSingleSelection()
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, lb_isSingleSelection, CSELF, pCSelf)
+{
+    return (isSingleSelectionListBox(getDChCtrl(pCSelf)) ? TheTrueObj : TheFalseObj);
+}
+
+
 /** ListBox::select()
  *
  *  Selects the item in the list box that that begins with the letters specified
@@ -2566,84 +2650,6 @@ RexxMethod3(int32_t, lb_insert, OPTIONAL_int32_t, index, CSTRING, text, CSELF, p
 RexxMethod2(int32_t, lb_select, CSTRING, text, CSELF, pCSelf)
 {
     return cbLbSelect(((pCDialogControl)pCSelf)->hCtrl, text, winListBox);
-}
-
-
-/** ListBox::selectIndex()
- *
- *  Selects the specified item in the list box.
- *
- *  @param  index  [OPTIONAL]  The one-based index of the item to select.  See
- *                 the notes for the behavior is this argument is omitted or 0.
- *                 For a multiple-selection list box only, if this argument is
- *                 -1, then all items in the list box are selected.
- *
- *  @return  False on error, true on no error.
- *
- *  @note    For backwards compatibility, if the index argument is omitted, or
- *           0, the selection is removed from all items in the list box.  But
- *           really, the deselectIndex() method should be used.
- */
-RexxMethod2(int32_t, lb_selectIndex, OPTIONAL_int32_t, index, CSELF, pCSelf)
-{
-    HWND hCtrl = getDChCtrl(pCSelf);
-    int32_t ret;
-
-    bool backwardCompat = (argumentOmitted(1) || index == 0 ? true : false);
-
-    if ( isSingleSelectionListBox(hCtrl) )
-    {
-        index = (backwardCompat ? -1 : index - 1);
-        ret = (int32_t)SendMessage(hCtrl, LB_SETCURSEL, index, 0);
-        ret = (ret != index ? 0 : 1);
-    }
-    else
-    {
-        if ( backwardCompat )
-        {
-            ret = (int32_t)SendMessage(hCtrl, LB_SETSEL, FALSE, -1);
-        }
-        else
-        {
-            index = (index < 0 ? -1 : index - 1);
-            ret = (int32_t)SendMessage(hCtrl, LB_SETSEL, TRUE, index);
-        }
-        ret = (ret == -1 ? 0 : 1);
-    }
-    return ret;
-}
-
-
-/** ListBox::deselectIndex()
- *
- *  Deselects the specified item, or all items, in the list box.
- *
- *  @param  index  [OPTIONAL]  The one-based index of the item to deselect.  If
- *                 this argument is omitted, 0 or -1, all items in the list box
- *                 are deselected.
- *
- *  @return  -1 on error, otherwise 0.
- *
- *  @note  If the list box is a single-selection list box, the index argument is
- *         simply ignored.  The return will always be 0.  For a
- *         multiple-selection list box, if index is greater than the last item
- *         in the listbox, -1 is returned.
- */
-RexxMethod2(int32_t, lb_deselectIndex, OPTIONAL_int32_t, index, CSELF, pCSelf)
-{
-    HWND hCtrl = getDChCtrl(pCSelf);
-    int32_t ret;
-
-    if ( isSingleSelectionListBox(hCtrl) )
-    {
-        ret = ((int32_t)SendMessage(hCtrl, LB_SETCURSEL, -1, 0) != -1 ? -1 : 0);
-    }
-    else
-    {
-        index = (index <= 0 ? -1 : index - 1);
-        ret = (int32_t)SendMessage(hCtrl, LB_SETSEL, FALSE, index);
-    }
-    return ret;
 }
 
 
@@ -2720,43 +2726,51 @@ done_out:
 }
 
 
-/** ListBox::find()
+/** ListBox::selectIndex()
  *
- *  Finds the index of the list box item that matches 'text'.  In all cases
- *  the search is case insensitive.
+ *  Selects the specified item in the list box.
  *
- *  @param  text        The text of the item to search for.  If not exact, this
- *                      can be just an abbreviation, or prefix, of the item.
- *                      Otherwise an exact match, disregarding case, is searched
- *                      for.
+ *  @param  index  [OPTIONAL]  The one-based index of the item to select.  See
+ *                 the notes for the behavior is this argument is omitted or 0.
+ *                 For a multiple-selection list box only, if this argument is
+ *                 -1, then all items in the list box are selected.
  *
- *  @param  startIndex  [OPTIONAL] The one-based index of the item to start the
- *                      search at.  If the search reaches the end of the items
- *                      without a match, the search continues with the first
- *                      item until all items have been examined.  When
- *                      omitted, or 0, the search starts with the first item.
+ *  @return  False on error, true on no error.
  *
- *  @param  exactly     [OPTIONAL]  Whether to do an exact match.  When this
- *                      arugment is omitted, 'text' can just the abbreviation of
- *                      the item to find.  I.e., 'San' would match "San Diego."
- *                      If the argument is used and equals true or "Exact" then
- *                      the item must match text exactly.  When using the
- *                      "Exact" form, only the first letter is considered and
- *                      case is insignificant.
- *
- *  @return  The one-based index of the item, if found, otherwise 0.
+ *  @note    For backwards compatibility, if the index argument is omitted, or
+ *           0, the selection is removed from all items in the list box.  But
+ *           really, the deselectIndex() method should be used.
  */
-RexxMethod4(int32_t, lb_find, CSTRING, text, OPTIONAL_uint32_t, startIndex, OPTIONAL_CSTRING, exactly, CSELF, pCSelf)
+RexxMethod2(int32_t, lb_selectIndex, OPTIONAL_int32_t, index, CSELF, pCSelf)
 {
+    HWND hCtrl = getDChCtrl(pCSelf);
+    int32_t ret;
 
-    return cbLbFind(((pCDialogControl)pCSelf)->hCtrl, text, startIndex, exactly, winListBox);
+    bool backwardCompat = (argumentOmitted(1) || index == 0 ? true : false);
+
+    if ( isSingleSelectionListBox(hCtrl) )
+    {
+        index = (backwardCompat ? -1 : index - 1);
+        ret = (int32_t)SendMessage(hCtrl, LB_SETCURSEL, index, 0);
+        ret = (ret != index ? 0 : 1);
+    }
+    else
+    {
+        if ( backwardCompat )
+        {
+            ret = (int32_t)SendMessage(hCtrl, LB_SETSEL, FALSE, -1);
+        }
+        else
+        {
+            index = (index < 0 ? -1 : index - 1);
+            ret = (int32_t)SendMessage(hCtrl, LB_SETSEL, TRUE, index);
+        }
+        ret = (ret == -1 ? 0 : 1);
+    }
+    return ret;
 }
 
 
-RexxMethod3(int32_t, lb_addDirectory, CSTRING, drivePath, OPTIONAL_CSTRING, fileAttributes, CSELF, pCSelf)
-{
-    return cbLbAddDirectory(((pCDialogControl)pCSelf)->hCtrl, drivePath, fileAttributes, winListBox);
-}
 
 /**
  * Methods for the ComboBox class.
