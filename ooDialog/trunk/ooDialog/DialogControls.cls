@@ -647,6 +647,7 @@
    return self~sendWinIntMsg(self~LB_GETTOPINDEX, 0, 0) + 1
 
 ::method getText unguarded external "LIBRARY oodialog lb_getText"
+::method hitTestInfo unguarded external "LIBRARY oodialog lb_hitTestInfo"
 ::method insert unguarded external "LIBRARY oodialog lb_insert"
 ::method isSingleSelection unguarded external "LIBRARY oodialog lb_isSingleSelection"
 ::method itemHeight unguarded     -- Dialog units, not accurate

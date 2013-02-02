@@ -2561,6 +2561,89 @@ RexxMethod2(RexxObjectPtr, lb_getText, uint32_t, index, CSELF, pCSelf)
 }
 
 
+/** ListBox::hitTestInfo()
+ *
+ *  Gets the one-based index of the item nearest the specified point in this
+ *  list box.
+ *
+ *  @param  pt  [required]  The position, x and y co-ordinates, of the point to
+ *              test. This can be specified in two forms.
+ *
+ *      Form 1:  arg 1 is a .Point object.
+ *      Form 2:  arg 1 is the x co-ordinate and arg2 is the y co-ordinate.
+ *
+ *  @param  info  [optional in/out]  A directory object in which all hit info is
+ *                returned.  If the directory is supplied, on return the
+ *                directory will have these indexes:
+ *
+ *                inClientArea    True if the point is in the clien area of the
+ *                                list box.  False if it is not in the client
+ *                                area
+ *
+ *                itemIndex       Same value as the return.  The index of
+ *                                the item nearest the specified point.
+ *
+ *  @return  The index of the item nearest the point.
+ *
+ *  @note    Any  ??? x, y coordinates will work.  I.e. -6000, -7000 will work.
+ *           The item will be -1 and location will be "ABOVE TOLEFT"
+ */
+RexxMethod2(int32_t, lb_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
+{
+    int32_t result = -1;
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+    HWND hwnd = pcdc->hCtrl;
+
+    size_t sizeArray;
+    size_t argsUsed;
+    POINT  point;
+    if ( ! getPointFromArglist(context, args, &point, 1, 3, &sizeArray, &argsUsed) )
+    {
+        goto done_out;
+    }
+
+    bool haveDirectory = (sizeArray > argsUsed) ? true : false;
+    RexxDirectoryObject info;
+
+    // Check arg count against expected.
+    if ( sizeArray > (haveDirectory ? argsUsed + 1 : argsUsed) )
+    {
+        tooManyArgsException(context->threadContext, (haveDirectory ? argsUsed + 1 : argsUsed));
+        goto done_out;
+    }
+
+    if ( haveDirectory )
+    {
+        RexxObjectPtr _info = context->ArrayAt(args, argsUsed + 1);
+        if ( _info == NULLOBJECT || ! context->IsDirectory(_info) )
+        {
+            wrongClassException(context->threadContext, argsUsed + 1, "Directory");
+            goto done_out;
+        }
+
+        info = (RexxDirectoryObject)_info;
+    }
+
+    LPARAM ret = SendMessage(hwnd, LB_ITEMFROMPOINT, 0, MAKELPARAM(point.x, point.y));
+
+    result = LOWORD(ret);
+    result++;
+
+    if ( haveDirectory )
+    {
+        context->DirectoryPut(info, context->Int32(result), "ITEMINDEX");
+        context->DirectoryPut(info, context->Logical(! HIWORD(ret)), "INCLIENTAREA");
+    }
+
+done_out:
+    return result;
+}
+
 /** ListBox::insert()
  *
  *  Inserts a string item into the list box at the index specified.
