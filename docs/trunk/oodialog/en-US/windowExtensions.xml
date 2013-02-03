@@ -501,87 +501,88 @@
         <varlistentry><term><xref linkend="cfxWidth"/></term>
         <listitem>
         <para>
-          xxx and xxx sss.
+          A non-negative whole number that specifies the average width of the characters in the requested font. The default
+          is 0 which tells the font mapper to choose a closest match value.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxEscarpment"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the angle between the escapement vector and the x-axis of the device.
+          The default is 0.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxOrientation"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the angle between each character's base line and the x-axis of the
+          device. The default is 0.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxWeight"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number in the range of 0 through 1,000 that specifies the weight of the font. The default is
+          FW_NORMAL, which is 400.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">ITALIC</emphasis></term>
+        <listitem>
+        <para>
+          True for an italic font. The default is false.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">UNDERLINE</emphasis></term>
+        <listitem>
+        <para>
+          True for an underline font. The default is false.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">STRIKEOUT</emphasis></term>
+        <listitem>
+        <para>
+          True for a strikeout font. The default is false.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxCharset"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the character set. The default is DEFAULT_CHARSET.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxOutputPrecision"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the output precision. The default is OUT_TT_PRECIS.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxClipPrecision"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the clipping precision. The default is CLIP_DEFAULT_PRECIS.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxQuality"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the output quality. The default is DEFAULT_QUALITY.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="cfxPitchAndFamily"/></term>
+        <listitem>
+        <para>
+          A non-negative whole number that specifies the pitch and family of the font. The default is FF_DONTCARE.
         </para>
         </listitem></varlistentry>
       </variablelist>
-        <informaltable frame='none' colsep='0' rowsep='0' pgwide='1'>
-        <tgroup cols='3'>
-        <colspec align='left' colwidth='1*' />
-        <colspec align='left' colwidth='1*' />
-        <colspec align='left' colwidth='1*' />
-        <thead>
-        <row><entry>Index</entry><entry>Meaning</entry><entry>Default</entry></row>
-        </thead>
-        <tbody>
-        <row>
-          <entry><xref linkend="cfxWidth"/></entry>
-          <entry>The average width of the characters in the requested font</entry>
-          <entry>0</entry>
-        </row>
-        <row>
-          <entry><xref linkend="cfxEscarpment"/></entry>
-          <entry>The angle between the escapement vector and the x-axis of the device</entry>
-          <entry>0</entry>
-        </row>
-        <row>
-          <entry><xref linkend="cfxOrientation"/></entry>
-          <entry>The angle between each character's base line and the x-axis of the device</entry>
-          <entry>0</entry>
-        </row>
-        <row>
-          <entry><xref linkend="cfxWeight"/></entry>
-          <entry>The weight of the font</entry>
-          <entry>FW_NORMAL</entry>
-        </row>
-        <row>
-          <entry>ITALIC</entry>
-          <entry>True for an italic font</entry>
-          <entry>false</entry>
-        </row>
-        <row>
-          <entry>UNDERLINE</entry>
-          <entry>True for an uderlined font</entry>
-          <entry>false</entry>
-        </row>
-        <row>
-          <entry>STRIKEOUT</entry>
-          <entry>True for a strikeout font</entry>
-          <entry>false</entry>
-        </row>
-        <row>
-          <entry><xref linkend="cfxCharset"/></entry>
-          <entry>Specifies the character set</entry>
-          <entry>DEFAULT_CHARSET</entry>
-        </row>
-        <row>
-          <entry><xref linkend="cfxOutputPrecision"/></entry>
-          <entry>Specifies the output precision</entry>
-          <entry>OUT_TT_PRECIS</entry>
-        </row>
-        <row>
-          <entry><xref linkend="cfxClipPrecision"/></entry>
-          <entry>Specifies the clipping precision</entry>
-          <entry>CLIP_DEFAULT_PRECIS</entry>
-        </row>
-        <row>
-          <entry><xref linkend="cfxQuality"/></entry>
-          <entry>Specifies the output quality</entry>
-          <entry>DEFAULT_QUALITY</entry>
-        </row>
-        <row>
-          <entry><xref linkend="cfxPitchAndFamily"/></entry>
-          <entry>Specifies the pitch and family of the font</entry>
-          <entry>FF_DONTCARE</entry>
-        </row>
-        </tbody>
-        </tgroup>
-        </informaltable>
       </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">Keyword List:</emphasis></term>
       <listitem>
       <para>
-        One or more of the following keywords, separated by blanks. Case is not significant:
+        One or more of the following keywords, separated by blanks. Case is not significant. The UNDERLINE, ITALIC, and
+        STRIKEOUT keywords specify the corresponing type of font. All the other keywords specify the weight of the font.
+        Using more that one of the weight keywords is the list is undefined:
+      </para>
         <simplelist type='horiz' columns='3'>
         <member>THIN      </member>
         <member>EXTRALIGHT</member>
@@ -595,7 +596,6 @@
         <member>ITALIC   </member>
         <member>STRIKEOUT</member>
         </simplelist>
-      </para>
       </listitem></varlistentry>
     </variablelist>
     </listitem></varlistentry>
