@@ -160,6 +160,10 @@ modify list box controls.
 <entry>Gets the text of the list item at the specified position in the list box.</entry>
 </row>
 <row>
+<entry><xref linkend="mthHitTestInfoClsListBox"/></entry>
+<entry>Determines the one-based index of the item nearest the specified point in this list box.</entry>
+</row>
+<row>
 <entry><xref linkend="mthInsertClsListBox"/></entry>
 <entry>Inserts a new item into the list after the specified item.</entry>
 </row>
@@ -696,6 +700,133 @@ if the <emphasis role="italic">index</emphasis> does not refer to an item or an 
 </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ListBox::getText() -->
+
+<section id="mthHitTestInfoClsListBox" xreflabel="hitTestInfo"><title>hitTestInfo</title>
+<indexterm><primary>hitTestInfo</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>hitTestInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+Form 1:
+
+>>--hitTestInfo(--pos--+---------+--)------------><
+                       +-,-info--+
+
+Form 2:
+
+>>--hitTestInfo(--x--,--y--+---------+--)--------><
+                           +-,-info--+
+
+Generic Form:
+
+>>--hitTestInfo(--hitPoint--+---------+--)-------><
+                            +-,-info--+
+
+]]>
+</programlisting>
+
+<para>
+  Determines the one-based index of the item nearest the specified point in this list box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>hitPoint [required]</term>
+      <listitem>
+      <para>
+        The point, in client <xref linkend="defScreenCoordinates"/>, to test.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>info [optional in / out]</term>
+      <listitem>
+      <para>
+        A <computeroutput>.Directory</computeroutput> object in which additional information concerning the hit test
+        will be returned. This argument can be omitted if the additional information is not needed. When the argument is
+        used, on return <emphasis role="italic">info</emphasis> will contain the following indexes:
+      </para>
+      <variablelist>
+        <varlistentry><term>INCLIENTAREA</term>
+        <listitem>
+        <para>
+          The value of this index will be true or false. It will be true when the hit point is within the client area of the
+          list box and false if the point is not within the client area.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ITEMINDEX</term>
+        <listitem>
+        <para>
+          The index of the item closest to the point specified. This value will be the same as the return value from the
+          method.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-base index of the list box item that is closet to the point specified.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    It is important to realize that no matter where the point specified is, there will <emphasis
+    role="italic">always</emphasis> be an item that is closest to it. The return  value of this method will always be the
+    index of an item in the list box. Because of this, the <emphasis role="italic">info</emphasis> argument is usually
+    needed. The <emphasis role="italic">INCLIENTAREA</emphasis> index is really the only way to know if a list box item is
+    under the specified point.
+  </para>
+  <para>
+    Another point that may not be evident at first glance. The item index returned will always be the index of an item
+    showing. That is, say the list box contains 12 items and the items are scrolled so that the items 1 through 3 are
+    scrolled to the top of the list box out of view. If the specified point has a y coordinate of -5, it might be expected
+    that the index returned will be 3, the item that would actually be under that point. The return will not be 3, it will be
+    4, the index of the item at the top of the viewable area in the list box.
+  </para>
+  <para>
+    The operating system accepts any point, even one that seems silly like (-7000, -6000).
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example returns the text of the list box item under the specified point, or .nil if the point is not over the list
+    box:
+<programlisting>
+<![CDATA[
+
+::method textAtPoint
+  use strict arg point
+
+  lb = self~newListBox(IDC_LB_FNAME)
+
+  d = .Directory~new
+  index = lb~hitTestInfo(point, d)
+  if d~inClientArea then do
+    text = lb~getText(index)
+    return text
+  end
+
+  return .nil
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListBox::hitTestInfo() -->
 
 <section id="mthInsertClsListBox" xreflabel="insert"><title>insert</title>
 <indexterm><primary>insert</primary><secondary>ListBox class</secondary></indexterm>
