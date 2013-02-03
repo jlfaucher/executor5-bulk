@@ -3011,7 +3011,6 @@ RexxMethod1(RexxObjectPtr, cb_getEditControl, CSELF, pCSelf)
         goto done_out;
     }
 
-
     if ( GetComboBoxInfo(pcdc->hCtrl, &cbi) )
     {
         result = createControlFromHwnd(context, pcdc, cbi.hwndItem, winEdit, true);
@@ -3062,6 +3061,34 @@ RexxMethod2(RexxStringObject, cb_getText, uint32_t, index, CSELF, pCSelf)
 RexxMethod3(int32_t, cb_insert, OPTIONAL_int32_t, index, CSTRING, text, CSELF, pCSelf)
 {
     return cbLbInsert(context, ((pCDialogControl)pCSelf)->hCtrl, index, text, winComboBox);
+}
+
+/** ComboBox::isDropDown()
+ ** ComboBox::isDropDownList()
+ ** ComboBox::isSimple()
+ *
+ *  Tests if this combo box is a drop-down combo box.
+ *
+ *  @remarks  We combine the 3 different Rexx methods into this one.
+ */
+RexxMethod2(logical_t, cb_isDropDown, NAME, method, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return FALSE;
+    }
+
+    if ( method[2] == 'S' )
+    {
+        return isSimpleCB(pcdc->hCtrl) ? TRUE : FALSE;
+    }
+    else if ( method[10] == '\0' )
+    {
+        return isDropDownListCB(pcdc->hCtrl) ? TRUE : FALSE;
+    }
+
+    return isDropDownCB(pcdc->hCtrl) ? TRUE : FALSE;
 }
 
 /** ComboBox::isGrandChild()

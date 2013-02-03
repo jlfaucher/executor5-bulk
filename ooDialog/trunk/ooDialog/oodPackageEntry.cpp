@@ -1007,6 +1007,7 @@ REXX_METHOD_PROTOTYPE(cb_getComboBoxInfo);
 REXX_METHOD_PROTOTYPE(cb_getEditControl);
 REXX_METHOD_PROTOTYPE(cb_getText);
 REXX_METHOD_PROTOTYPE(cb_insert);
+REXX_METHOD_PROTOTYPE(cb_isDropDown);
 REXX_METHOD_PROTOTYPE(cb_isGrandchild);
 REXX_METHOD_PROTOTYPE(cb_select);
 
@@ -2123,6 +2124,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cb_getEditControl,              cb_getEditControl),
     REXX_METHOD(cb_getText,                     cb_getText),
     REXX_METHOD(cb_insert,                      cb_insert),
+    REXX_METHOD(cb_isDropDown,                  cb_isDropDown),
     REXX_METHOD(cb_isGrandchild,                cb_isGrandchild),
     REXX_METHOD(cb_select,                      cb_select),
 

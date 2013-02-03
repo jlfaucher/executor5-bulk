@@ -256,8 +256,20 @@ inline bool isSingleLineEdit(HWND hEdit)
     return ((GetWindowLong(hEdit, GWL_STYLE) & ES_MULTILINE) == 0);
 }
 
+/* Determine if a combo box window handle is a simple combo box.  */
+inline bool isSimpleCB(HWND hCB)
+{
+    return ((GetWindowLong(hCB, GWL_STYLE) & CBS_SIMPLE) == CBS_SIMPLE);
+}
+
+/* Determine if a combo box window handle is a drop down combo box.  */
+inline bool isDropDownCB(HWND hCB)
+{
+    return ((GetWindowLong(hCB, GWL_STYLE) & CBS_DROPDOWN) == CBS_DROPDOWN);
+}
+
 /* Determine if a combo box ID is a drop down list combo box.  */
-inline bool isDropDownList(HWND hDlg, uint32_t id)
+inline bool isDropDownListCB(HWND hDlg, uint32_t id)
 {
     return ((GetWindowLong(GetDlgItem(hDlg, id), GWL_STYLE) & CBS_DROPDOWNLIST) == CBS_DROPDOWNLIST);
 }
@@ -266,18 +278,6 @@ inline bool isDropDownList(HWND hDlg, uint32_t id)
 inline bool isDropDownListCB(HWND hCB)
 {
     return ((GetWindowLong(hCB, GWL_STYLE) & CBS_DROPDOWNLIST) == CBS_DROPDOWNLIST);
-}
-
-/* Determine if a combo box window handle is a simple combo box.  */
-inline bool isSimpleCB(HWND hCB)
-{
-    return ((GetWindowLong(hCB, GWL_STYLE) & CBS_SIMPLE) == CBS_SIMPLE);
-}
-
-/* Determine if a combo box window handle is a drop donw combo box.  */
-inline bool isDropDownCB(HWND hCB)
-{
-    return ((GetWindowLong(hCB, GWL_STYLE) & CBS_DROPDOWN) == CBS_DROPDOWN);
 }
 
 /* Determine if a list box is a single selection list box.  */

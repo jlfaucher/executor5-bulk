@@ -364,7 +364,7 @@ static bool getComboBoxData(HWND hwnd, uint32_t itemID, char *data)
 {
     LRESULT result = 0;
 
-    if ( isDropDownList(hwnd, itemID) )
+    if ( isDropDownListCB(hwnd, itemID) )
     {
         result = SendDlgItemMessage(hwnd, itemID, CB_GETCURSEL, 0, 0);
         if ( result != CB_ERR && (SendDlgItemMessage(hwnd, itemID, CB_GETLBTEXTLEN, result, 0) < DATA_BUFFER) )
@@ -399,7 +399,7 @@ static bool getComboBoxData(HWND hwnd, uint32_t itemID, char *data)
  */
 static uint32_t setComboBoxData(HWND hwnd, uint32_t itemID, CSTRING itemText)
 {
-    if ( isDropDownList(hwnd, itemID) )
+    if ( isDropDownListCB(hwnd, itemID) )
     {
         LRESULT index = SendDlgItemMessage(hwnd, itemID, CB_FINDSTRING, 0, (LPARAM)itemText);
         if ( index != LB_ERR )

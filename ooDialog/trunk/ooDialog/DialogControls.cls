@@ -304,11 +304,14 @@
 
 ::method getText unguarded external "LIBRARY oodialog cb_getText"
 ::method insert unguarded external "LIBRARY oodialog cb_insert"
+::method isDropDown unguarded external "LIBRARY oodialog cb_isDropDown"
+::method isDropDownList unguarded external "LIBRARY oodialog cb_isDropDown"
 ::method isDropDownOpen unguarded
    use strict arg
    return self~sendWinIntMsg(self~CB_GETDROPPEDSTATE, 0, 0)
 
 ::method isGrandchild unguarded external "LIBRARY oodialog cb_isGrandchild"
+::method isSimple unguarded external "LIBRARY oodialog cb_isDropDown"
 ::method items unguarded
    use strict arg
    return self~sendWinIntMsg(self~CB_GETCOUNT, 0, 0)
