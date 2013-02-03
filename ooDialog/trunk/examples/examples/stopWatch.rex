@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 
 /* ========================================================================= */
-/* Stopwatch    a Rexx Stopwatch              Sahananda             May 2006 */
+/* Stopwatch    a Rexx Stopwatch                                             */
 /* ========================================================================= */
 
    dlg = .StopWatchCls~new      /* Create OODialog Class instance            */
@@ -110,7 +110,7 @@ expose el b1 b2 events state session menuBar
    REPLY -->                                         -- run asynchronously -v>|
    -----
 
-   action = self~newPusButton(arg(1))~title        /* pressed button title   */
+   action = self~newPushButton(arg(1))~title       /* pressed button title   */
 
    Select
       when action='Start'  then do
