@@ -71,6 +71,8 @@ Feature Requests in ooDialog:
  * #507 ooDialog - Modify the text of a list-view item and all its
         subitems at one time
 
+ * #512 Add setWindowStyleRaw to match WindowBase getWindowStyleRaw
+
  * #513 Need access to the ListView_GetItemRect
         ListView_GetIndexItemRect
 
@@ -86,11 +88,20 @@ Feature Requests in ooDialog:
 
  * #519 Would like the ListView hitTestInfo to return the subitem index
 
+ * #520 folder selection dialog
+
  * #521 It would be useful to create a LvFullRow from an array of text
         values
 
  * #522 Add item to list-view using array to specify the text of the
         item / subitem(s)
+
+ * #524 Standard dialogs should work no matter what the application wide
+        setting of auto detect
+
+ * #525 The TreeView find() should allow some options
+
+ * #526 Get the message text associated with Windows error codes
 
 
 
@@ -102,6 +113,8 @@ either an edit control or a combo box control in the subitem fields of a
 list-view.  This functionality allows the in-place editing of the
 subitems in a list-view item.
 
+Work has been done that allows any type of ooDialog dialog to be made
+resizable.
 
 
 New dialog classes:
@@ -116,10 +129,33 @@ sized in proportion to the change in size of the dialog.  Methods of the
 ResizingAdmin class allow the programmer to customize how the controls
 in the dialog are sized.
 
+BrowseForFolder class:
+
+The ooDialog BrowseForFolder class provides access to the Windows
+BrowseForFolder COM object.  It gives the Rexx programmer the ability to
+put up a standard dialog that allows the user to select a folder.  It is
+somewhat similar the the fileNameDialog() routine, except it is possible
+to select a folder.  Something that has not been possible in ooDialog
+previously.  The programmer has access to the full set of customizations
+in the COM object.
+
+SimpleFolderBrowse class:
+
+The SimpleFolderBrowse class also provides access to the Windows
+BrowseForFolder COM object, however it is designed to be very simple to
+use.  Only the most common customization features are provided.
+
 
 New utility classes:
 --------------------
 
+
+
+New Public Routines:
+--------------------
+
+SimpleFolderBrowse()  This routine provides a shortcut access to the
+                      SimpleFolderBrowse dialog class.
 
 
 New Methods:
@@ -145,6 +181,12 @@ isGrandChild()    Notifies the ooDialog framework that the combo box
                   parent.
 
 
+In the DlgUtil class:
+
+errMsg()         Returns the operating system error message text for  a
+                 system error code, including COM error codes.
+
+
 In the DialogControl class:
 
 setParent()       Sets a new parent for the dialog control.
@@ -161,6 +203,12 @@ isGrandChild()    Notifies the ooDialog framework that the edit control
                   underlying edit control to send four event
                   notifications to the dialog, rather than its direct
                   parent.
+
+
+In the ListBox class:
+
+hitTestInfo()    Determines the one-based index of the item nearest a
+                 specified point in a list box.
 
 
 In the ListView class:
@@ -182,18 +230,18 @@ setFullRowText()  Sets or updates the text for a list-view item and all
                   its subItems using a LvFullRow object.
 
 
-In the WindowBase class:
-
-setWindowStyleRaw() Sets the window style flags of the window. The value
-                    is specified as the raw numeric value of the style.
-
-
 In the LvFullRow class:
 
 fromArray()       [Class method] Instantiates a new LvFullRow object
                   from an array of values. The string value of each item
                   in the array is used as the text for the item and
                   subitem(s).
+
+In the WindowBase class:
+
+setWindowStyleRaw() Sets the window style flags of the window. The value
+                    is specified as the raw numeric value of the style.
+
 
 
 New Attributes:
@@ -227,6 +275,13 @@ In the ListView class:
 hitTestInfo()           Enhanced to return the subitem index, instead of
                         0
 
+In the TreeView class:
+
+find()                  Enhanced to allow starting the search from any
+                        parent tree-view item.  Enhanced to allow
+                        searching for an abbreviation of the tree-view
+                        item label.
+
 
 Deprecated Methods:
 -------------------
@@ -245,6 +300,19 @@ oodialog\resizableDialogs\ResizingAdmin\basicResize.rex
 oodialog\resizableDialogs\ResizingAdmin\gbStationary.rex
 
 These 3 examples demonstrate inheriting the ResizingAdmin class.
+
+oodialog\examples\browsePrinters.rex
+
+This example demonstrates the BrowseForFolder class.
+
+oodialog\examples\simpleFolderBrowse.rex
+
+This example demonstrates the SimpleBrowseForFolder class.
+
+oodialog\examples\stopWatch.rex
+
+This example demonstrates general ooDialog programming techniques by
+putting up a 'stop watch' dialog.
 
 
 Enhanced samples:
