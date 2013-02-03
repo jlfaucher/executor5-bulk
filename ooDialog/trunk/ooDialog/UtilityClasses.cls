@@ -1425,26 +1425,25 @@
 
 /* - - - - - - - - - - - - - Public routines - - - - - - - - - - - - - - - - -*/
 
-::routine fileNameDialog public external "LIBRARY oodialog fileNameDlg_rtn"
-::routine msSleep public external "LIBRARY oodialog msSleep_rtn"
-::routine findWindow public external "LIBRARY oodialog findWindow_rtn"
-::routine play public external "LIBRARY oodialog playSound_rtn"
-
-::routine messageDialog public external "LIBRARY oodialog messageDialog_rtn"
-::routine infoDialog public
-   use strict arg info
-   return messageDialog(info, , "Information", "OK", "INFORMATION", "SETFOREGROUND TASKMODAL")
-
-::routine errorDialog public
-   use strict arg info
-   return messageDialog(info, , "Error", "OK", "HAND", "SETFOREGROUND TASKMODAL")
-
 ::routine askDialog public
    use strict arg info, defaultButton = 'Y'
    miscStyles = "SETFOREGROUND TASKMODAL"
    if defaultButton~left(1)~translate == 'N' then miscStyles ||= ' DEFBUTTON2'
    return (messageDialog(info, , "Question", "YESNO", "QUESTION", miscStyles) == 6)
 
+::routine errorDialog public
+   use strict arg info
+   return messageDialog(info, , "Error", "OK", "HAND", "SETFOREGROUND TASKMODAL")
+
+::routine fileNameDialog public external "LIBRARY oodialog fileNameDlg_rtn"
+::routine findWindow public external "LIBRARY oodialog findWindow_rtn"
+::routine infoDialog public
+   use strict arg info
+   return messageDialog(info, , "Information", "OK", "INFORMATION", "SETFOREGROUND TASKMODAL")
+
+::routine messageDialog public external "LIBRARY oodialog messageDialog_rtn"
+::routine msSleep public external "LIBRARY oodialog msSleep_rtn"
+::routine play public external "LIBRARY oodialog playSound_rtn"
 ::routine screenSize public
    return .DlgUtil~screenSize
 
@@ -1459,129 +1458,45 @@
  *  They are needed to maintain backward compatibilty with  pre-4.0.0, because
  *  both names were documented.
  */
-::routine sleepMS public external "LIBRARY oodialog msSleep_rtn"
-::routine winTimer public external "LIBRARY oodialog winTimer_rtn"
-::routine getFileNameWindow public external "LIBRARY oodialog fileNameDlg_rtn"
-::routine playSoundFile public external "LIBRARY oodialog playSound_rtn"
-::routine playSoundFileInLoop public external "LIBRARY oodialog playSound_rtn"
-::routine stopSoundFile public external "LIBRARY oodialog playSound_rtn"
-
-::routine infoMessage public
-   use strict arg info
-   return messageDialog(info, , "Information", "OK", "INFORMATION", "SETFOREGROUND TASKMODAL")
+::routine binaryAnd public
+  use strict arg n1, n2
+  return .DlgUtil~and(n1, n2)
 
 ::routine errorMessage public
    use strict arg info
    return messageDialog(info, , "Error", "OK", "HAND", "SETFOREGROUND TASKMODAL")
 
+::routine getFileNameWindow public external "LIBRARY oodialog fileNameDlg_rtn"
+::routine getScreenSize public
+  vals = .DlgUtil~screenSize
+  return vals[1] vals[2] vals[3] vals[4]
+
+::routine getSysMetrics public
+  use strict arg index
+  return .DlgUtil~getSystemMetrics(index)
+
+::routine infoMessage public
+   use strict arg info
+   return messageDialog(info, , "Information", "OK", "INFORMATION", "SETFOREGROUND TASKMODAL")
+
+::routine instMMFuncs public
+  return 1
+
+::routine playSoundFile public external "LIBRARY oodialog playSound_rtn"
+::routine playSoundFileInLoop public external "LIBRARY oodialog playSound_rtn"
+::routine sleepMS public external "LIBRARY oodialog msSleep_rtn"
+::routine stopSoundFile public external "LIBRARY oodialog playSound_rtn"
+
+::routine winTimer public external "LIBRARY oodialog winTimer_rtn"
 ::routine yesNoMessage public
    use strict arg info, defaultButton = 'Y'
    miscStyles = "SETFOREGROUND TASKMODAL"
    if defaultButton~left(1)~translate == 'N' then miscStyles ||= ' DEFBUTTON2'
    return messageDialog(info, , "Question", "YESNO", "QUESTION", miscStyles) == 6
 
-::routine getSysMetrics public
-  use strict arg index
-  return .DlgUtil~getSystemMetrics(index)
-
-::routine getScreenSize public
-  vals = .DlgUtil~screenSize
-  return vals[1] vals[2] vals[3] vals[4]
-
-::routine instMMFuncs public
-  return 1
-
-::routine binaryAnd public
-  use strict arg n1, n2
-  return .DlgUtil~and(n1, n2)
-
 /* ----- End compatibility routines. -----------------------------------------*/
 
 /*-------------------------- shortcut routines -------------------------------*/
-
-::routine TimedMessage public
-   use arg msg, title, duration, earlyReply = .false, pos = .nil
-   if \ duration~datatype('W') then return -1
-   if \ earlyReply~datatype('O') then earlyReply = .false
-   dlg = .TimedMessage~new(msg,title,duration, earlyReply, pos)
-   dlg~execute
-   if duration < 0 then return dlg
-   if \ earlyReply then drop dlg
-   return 0
-
-::routine InputBox public
-   use arg msg, title, default, size
-   dlg = .InputBox~new(msg,title,default,size)
-   ret = dlg~execute
-   drop dlg
-   return ret
-
-::routine IntegerBox public
-   use arg msg, title, default, size
-   dlg = .IntegerBox~new(msg,title,default,size)
-   ret = dlg~execute
-   drop dlg
-   return ret
-
-::routine PasswordBox public
-   use arg msg, title, default, size
-   dlg = .Passwordbox~new(msg,title,default,size)
-   ret = dlg~execute
-   drop dlg
-   return ret
-
-::routine MultiInputBox public
-   use arg msg, title, labels, datas, len
-   if arg(5,"o") = 1 then len = 0
-   num = labels~items
-   do i=1 to num
-      j = i+100
-      lab.i = labels[i]
-      dat.j = datas[i]
-   end
-   dlg = .MultiInputBox~new(msg, title, lab., dat., len)
-   if dlg~execute \= 1 then do; drop dlg; return .NIL; end
-   ret = .array~new(num)
-   do i=1 to num
-      attr = labels[i]~changestr(' ','')~changestr('&','')
-      Interpret 'ret[i] = dlg~'attr
-   end
-   drop dlg
-   return ret
-
-::routine ListChoice public
-   use arg msg, title, list, lx, ly, predev
-   if arg(4,"o") = 1 then lx = 0
-   if arg(5,"o") = 1 then ly = 0
-   if arg(6,"o") = 1 then predev = ""
-   num = list~items
-   do i=1 to num
-      lst.i = list[i]
-   end
-   dlg = .ListChoice~new(msg, title, lst., lx, ly, predev)
-   res = dlg~execute
-   drop dlg
-   if res = '' then return .nil
-   else return res
-
-::routine MultiListChoice public
-   use arg msg, title, list, lx, ly, predev
-   if arg(4,"o") = 1 then lx = 0
-   if arg(5,"o") = 1 then ly = 0
-   if arg(6,"o") = 1 then predev = ""
-   num = list~items
-   do i=1 to num
-      lst.i = list[i]
-   end
-   dlg = .MultiListChoice~new(msg, title, lst., lx, ly, predev)
-   res = dlg~execute
-   if res = '' then do; drop dlg; return .NIL; end
-   ret = .array~new
-   do i=1 to words(res)
-      ret[i] = list[word(res,i)]
-   end
-   drop dlg
-   return ret
 
 ::routine CheckList public
    use arg msg, title, labels, checks, lx = 0, max = 0
@@ -1605,6 +1520,80 @@
    drop dlg
    return ret
 
+::routine InputBox public
+   use arg msg, title, default, size
+   dlg = .InputBox~new(msg,title,default,size)
+   ret = dlg~execute
+   drop dlg
+   return ret
+
+::routine IntegerBox public
+   use arg msg, title, default, size
+   dlg = .IntegerBox~new(msg,title,default,size)
+   ret = dlg~execute
+   drop dlg
+   return ret
+
+::routine ListChoice public
+   use arg msg, title, list, lx, ly, predev
+   if arg(4,"o") = 1 then lx = 0
+   if arg(5,"o") = 1 then ly = 0
+   if arg(6,"o") = 1 then predev = ""
+   num = list~items
+   do i=1 to num
+      lst.i = list[i]
+   end
+   dlg = .ListChoice~new(msg, title, lst., lx, ly, predev)
+   res = dlg~execute
+   drop dlg
+   if res = '' then return .nil
+   else return res
+
+::routine MultiInputBox public
+   use arg msg, title, labels, datas, len
+   if arg(5,"o") = 1 then len = 0
+   num = labels~items
+   do i=1 to num
+      j = i+100
+      lab.i = labels[i]
+      dat.j = datas[i]
+   end
+   dlg = .MultiInputBox~new(msg, title, lab., dat., len)
+   if dlg~execute \= 1 then do; drop dlg; return .NIL; end
+   ret = .array~new(num)
+   do i=1 to num
+      attr = labels[i]~changestr(' ','')~changestr('&','')
+      Interpret 'ret[i] = dlg~'attr
+   end
+   drop dlg
+   return ret
+
+::routine MultiListChoice public
+   use arg msg, title, list, lx, ly, predev
+   if arg(4,"o") = 1 then lx = 0
+   if arg(5,"o") = 1 then ly = 0
+   if arg(6,"o") = 1 then predev = ""
+   num = list~items
+   do i=1 to num
+      lst.i = list[i]
+   end
+   dlg = .MultiListChoice~new(msg, title, lst., lx, ly, predev)
+   res = dlg~execute
+   if res = '' then do; drop dlg; return .NIL; end
+   ret = .array~new
+   do i=1 to words(res)
+      ret[i] = list[word(res,i)]
+   end
+   drop dlg
+   return ret
+
+::routine PasswordBox public
+   use arg msg, title, default, size
+   dlg = .Passwordbox~new(msg,title,default,size)
+   ret = dlg~execute
+   drop dlg
+   return ret
+
 ::routine SingleSelection public
    use strict arg msg, title, labels, preSel = 1, rbWidth = 0, max = 0
 
@@ -1615,6 +1604,16 @@
    res = dlg~execute
    drop dlg
    return res
+
+::routine TimedMessage public
+   use arg msg, title, duration, earlyReply = .false, pos = .nil
+   if \ duration~datatype('W') then return -1
+   if \ earlyReply~datatype('O') then earlyReply = .false
+   dlg = .TimedMessage~new(msg,title,duration, earlyReply, pos)
+   dlg~execute
+   if duration < 0 then return dlg
+   if \ earlyReply then drop dlg
+   return 0
 
 
 /**
