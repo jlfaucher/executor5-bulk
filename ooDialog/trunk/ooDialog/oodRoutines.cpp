@@ -647,6 +647,17 @@ RexxRoutine1(RexxObjectPtr, msSleep_rtn, uint32_t, ms)
     return TheZeroObj;
 }
 
+
+RexxRoutine1(RexxObjectPtr, simpleFolderBrowse_rtn, ARGLIST, args)
+{
+    RexxClassObject SFBClass = context->FindContextClass("SIMPLEFOLDERBROWSE");
+    return context->SendMessage(SFBClass, "GETFOLDER", args);
+}
+
+
+/** playSoundFile()
+ *
+ */
 RexxRoutine3(RexxObjectPtr, playSound_rtn, OPTIONAL_CSTRING, fileName, OPTIONAL_CSTRING, modifier, NAME, routineName)
 {
     bool isStopRoutine = strcmp("STOPSOUNDFILE", routineName) == 0;

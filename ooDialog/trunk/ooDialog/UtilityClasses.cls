@@ -1447,6 +1447,7 @@
 ::routine screenSize public
    return .DlgUtil~screenSize
 
+::routine simpleFolderBrowse public external "LIBRARY oodialog simpleFolderBrowse_rtn"
 ::routine systemMetrics public
    use strict arg index
    return .DlgUtil~getSystemMetrics(index)
