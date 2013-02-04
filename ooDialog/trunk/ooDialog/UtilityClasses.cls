@@ -349,6 +349,7 @@
 ::attribute right set external "LIBRARY oodialog rect_setRight"
 ::attribute bottom get external "LIBRARY oodialog rect_bottom"
 ::attribute bottom set external "LIBRARY oodialog rect_setBottom"
+::method copy external "LIBRARY oodialog rect_copy"
 ::method string external "LIBRARY oodialog rect_string"
 
 ::class 'Point' public

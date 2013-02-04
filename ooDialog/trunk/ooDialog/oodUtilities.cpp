@@ -2487,6 +2487,17 @@ RexxMethod2(RexxObjectPtr, rect_setTop, CSELF, pRect, int32_t, top) { ((RECT *)p
 RexxMethod2(RexxObjectPtr, rect_setRight, CSELF, pRect, int32_t, right) { ((RECT *)pRect)->right = right; return NULLOBJECT; }
 RexxMethod2(RexxObjectPtr, rect_setBottom, CSELF, pRect, int32_t, bottom) { ((RECT *)pRect)->bottom = bottom; return NULLOBJECT; }
 
+/** Rect::copy()
+ *
+ *  Returns a new Rect object that is a copy of this Rect.
+ *
+ */
+RexxMethod1(RexxObjectPtr, rect_copy, CSELF, pRect)
+{
+    PRECT pR = (PRECT)pRect;
+    return rxNewRect(context, pR->left, pR->top, pR->right, pR->bottom);
+}
+
 RexxMethod1(RexxStringObject, rect_string, CSELF, pRect)
 {
     PRECT pR = (PRECT)pRect;

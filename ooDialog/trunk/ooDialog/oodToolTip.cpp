@@ -788,7 +788,7 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
     pRelayEventData    pred  = (pRelayEventData)pData->pData;
     RexxThreadContext *c     = pData->pcpbd->dlgProcContext;
 
-    if ( (msg >= WM_MOUSEFIRST && msg <= WM_MOUSELAST) || msg == WM_NCMOUSEMOVE && ! pred->skipRelay )
+    if ( ((msg >= WM_MOUSEFIRST && msg <= WM_MOUSELAST) || msg == WM_NCMOUSEMOVE) && ! pred->skipRelay )
     {
         MSG _msg;
         _msg.hwnd = hwnd;
@@ -811,6 +811,12 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
                 c->ReleaseLocalReference(rxPoint);
                 c->ReleaseLocalReference(rxMMsg);
                 c->ReleaseLocalReference(args);
+            }
+            else
+            {
+                SendMessage(pred->hToolTip, TTM_ACTIVATE, 0, 0);
+                endDialogPremature(pData->pcpbd, pData->pcpbd->hDlg, RexxConditionRaised);
+                return FALSE;
             }
         }
 
@@ -875,6 +881,9 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
 
                     RexxObjectPtr reply = c->SendMessage(pData->pcpbd->rexxSelf, method, args);
 
+                    // Local reference for reply is released in checkForBoolean
+                    // Returned reply is TheTrueObj or TheFalseObj - do not need
+                    // to release.
                     reply = checkForBoolean(c, pData->pcpbd, reply, method, false);
                     if ( reply == NULLOBJECT )
                     {
@@ -922,7 +931,6 @@ LRESULT CALLBACK ManageAtypicalToolProc(HWND hwnd, uint32_t msg, WPARAM wParam, 
                         nmtdi->uFlags |= TTF_DI_SETITEM;
                     }
 
-                    c->ReleaseLocalReference(reply);
                     c->ReleaseLocalReference(_text);
                     c->ReleaseLocalReference(flags);
                     c->ReleaseLocalReference(info);
@@ -2238,6 +2246,7 @@ RexxMethod4(logical_t, tt_manageAtypicalTool, RexxObjectPtr, toolObject, OPTIONA
             OPTIONAL_RexxArrayObject, methods, CSELF, pCSelf)
 {
     pCDialogControl subClassCtrl = NULL;
+    pSubClassData   pSCData      = NULL;
 
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )
@@ -2275,7 +2284,7 @@ RexxMethod4(logical_t, tt_manageAtypicalTool, RexxObjectPtr, toolObject, OPTIONA
         goto err_out;
     }
 
-    pSubClassData pSCData = (pSubClassData)LocalAlloc(LPTR, sizeof(SubClassData));
+    pSCData = (pSubClassData)LocalAlloc(LPTR, sizeof(SubClassData));
     if ( pSCData == NULL )
     {
         outOfMemoryException(context->threadContext);
@@ -3225,7 +3234,7 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, hwndObj, OPTIONAL_RexxObjectP
 
     if ( argumentExists(5) )
     {
-        PRECT r = rxGetRect(context, _rect, 6);
+        PRECT r = rxGetRect(context, _rect, 5);
         if ( r == NULL )
         {
             goto done_out;
