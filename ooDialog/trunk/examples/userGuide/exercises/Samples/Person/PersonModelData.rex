@@ -48,6 +48,7 @@
    Changes:
    v01-00 01Oct12: First version.
           09Jan13: Removed or commented-out 'say' instructions.
+          05Feb13: Removed 'query' method since it's available in the superclass.
 
 ------------------------------------------------------------------------------*/
 
@@ -92,63 +93,21 @@
     				-- that data when it creates this instance with
     				-- '~new'.
     				-- The data is in a directory:
-    --say "PersonModel-init-01: personNumber =" dirPerson["number"]
-    --return self
+
+    self~myData = dirPerson	-- Store the data in my superclass.
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
   /*----------------------------------------------------------------------------
-    query - returns Person data.
-            Standard protocol:
-            Accept a .nil, directory, array, or string of names.
-            if .nil then return all; else return values for the names in
-            the directory, array, or string. String is assumed to be data
-            names separated by one or more spaces.
-            All returns are a Directory containing names and values.
-
-    NOTE: This should be implemented by the Model superclass - so this method
-          will be removed later!
+    test - a method to demonstrate Message Sender method store.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD query PUBLIC
-    expose dirPerson
-    use arg dataNames
-    --say "PersonModelData-query-01: familyName =" dirPerson["familyName"]
-    --say "PersonModel-query-02: dataNames:" dataNames
-    dirReturn = .Directory~new
-    select
-      when dataNames = .nil | dataNames = "" then return dirPerson
-      when dataNames = "DATANAMES" then return dirPerson
+  ::METHOD test
+    return 25
 
-      when dataNames~isa(.Directory) then do
-        do i over dataNames
-      	  dirReturn[i] = dirPerson[i]
-        end
-      end
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-      when dataNames~isa(.Array) then do
-        do i over dataNames
-          --say "PersonModel-query-03: dataNames: '"||dataNames"'"
-          dirReturn[i] = dirPerson[i]
-        end
-      end
 
-      -- dataNames must be separated by a *single* space.
-      when dataNames~isa(.String) then do
-        dataNames = dataNames~strip
-        --say "PersonModel-query-04: dataNames: '"||dataNames"'"
-        n = dataNames~countStr(" ")+1
-        do i = 1 to n
-          parse var dataNames name " " dataNames
-          if name = " " then iterate     -- ignore extraneous leading spaces.
-          --say "PersonModel-query-05: name: '"name"'"
-          dirReturn[name] = dirPerson[name]
-        end
-      end
-
-      otherwise return .false
-    end
-
-    return dirReturn
 
 /*============================================================================*/
 
@@ -178,13 +137,16 @@
     end
 
 
-  ::METHOD init PUBLIC
-    expose fileName records instanceName
+  ::METHOD init PRIVATE
     fileName = "..\samples\person\PersonFile.txt"
     columns = 6					-- colums in the Persons "table"
     records = self~init:super(fileName, columns)
     --say "PersonData-init-01: records:" records
     return self					-- MVF
+
+
+/*============================================================================*/
+
 
 
 /*//////////////////////////////////////////////////////////////////////////////
