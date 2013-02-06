@@ -156,6 +156,10 @@
 <entry>Searches this combo box for a list item containing the specified text or prefix.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetCueClsComboBox"/></entry>
+<entry>Retrieves the cue banner text for this combo box, or the empty string if there is no cue set.</entry>
+</row>
+<row>
 <entry><xref linkend="mthGetComboBoxInfo"/></entry>
 <entry>Returns a <computeroutput>Directory</computeroutput> object containinng information about this combo box.</entry>
 </row>
@@ -700,6 +704,71 @@ new orleans
 </variablelist>
 </section>  <!-- End ComboBox::find() -->
 
+<section id="mthGetCueClsComboBox" xreflabel="getCue"><title>getCue</title>
+<indexterm><primary>getCue</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getCue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCue---------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the cue banner text for this combo box, or the empty string if there is no cue set.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the cue for this combo box, or the empty string if no cue is set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The cue banner is text that is displayed in the edit control, or selection field, of a combo box when there is no item
+    currently selected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    <emphasis role="bold">Requires Windows Vista or later</emphasis>.
+  </para>
+  <para>
+    Raises syntax errors if incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets a simple cue for a combo box and then reads it back:
+<programlisting>
+<![CDATA[
+
+  comboBox = self~newComboBox(IDC_COMBOBOX)
+
+  comboBox~setCue("Select a city")
+
+  say 'Cue set:' comboBox~getCue
+
+/* Output would be:
+
+   Cue set: Select a city
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getCue() -->
 
 <section id="mthGetComboBoxInfo" xreflabel="getCombBoxInfo"><title>getCombBoxInfo</title>
 <indexterm><primary>getCombBoxInfo</primary></indexterm>
@@ -903,6 +972,68 @@ Simple Combo Box
 </variablelist>
 </section>  <!-- End ComboBox::getEditControl() -->
 
+<section id="mthGetFirstVisibleClsComboBox" xreflabel="getFirstVisible"><title>getFirstVisible</title>
+<indexterm><primary>getFirstVisible</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getFirstVisible</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFirstVisible(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getFirstVisible() -->
 
 <section id="mthGetHorizontalExtentClsComboBox" xreflabel="getHorizontalExtent"><title>getHorizontalExtent</title>
 <indexterm><primary>getHorizontalExtent</primary><secondary>ComboBox class</secondary></indexterm>
@@ -951,6 +1082,133 @@ Simple Combo Box
 </variablelist>
 </section>  <!-- End ComboBox::getHorizontalExtent() -->
 
+<section id="mthGetItemHeightClsComboBox" xreflabel="getItemHeight"><title>getItemHeight</title>
+<indexterm><primary>getItemHeight</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getItemHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemHeight(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getItemHeight() -->
+
+<section id="mthGetMinVisible" xreflabel="getMinVisible"><title>getMinVisible</title>
+<indexterm><primary>getMinVisible</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>getMinVisible</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMinVisible(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::getMinVisible() -->
+
+
 <section id="mthGetTextClsComboBox" xreflabel="getText"><title>getText</title>
 <indexterm><primary>getText</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>getText</secondary></indexterm>
@@ -994,6 +1252,197 @@ Simple Combo Box
   </listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="mthInsertClsComboBox" xreflabel="insert"><title>insert</title>
+<indexterm><primary>insert</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>insert</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insert(--+-------+--,--item--)---------------><
+             +-index-+
+
+]]>
+</programlisting>
+
+<para>
+  Inserts a new item into the list of the combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the position to add the new item. If this <emphasis role="italic">index</emphasis> is
+        omitted, the item is added after the currently selected item. If there is no currently selected item, the new
+        item is inserted as the last item. If <emphasis role="italic">index</emphasis> is 0 the item is inserted as the
+        first item. If <emphasis role="italic">index</emphasis> is less than 0 then the new item is inserted as the last
+        item
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>item [required]</term>
+      <listitem>
+      <para>
+      	The item to add to the list.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unlike the <xref linkend="mthAddClsComboBox"/> method, if the combo box has the SORT style, the <emphasis
+    role="italic">insert</emphasis> method does not cause the combo box to sort the list items.
+  </para>
+  <para>
+    If the combo box has a horizontal scroll bar and the width of the new item is wider than the combo box, or wider
+    than the current horizontal extent, the programmer should use the <xref linkend="mthSetHorizontalExtentClsComboBox"/>
+    method to ensure the scroll bar is shown and will scroll far enough to show the whole item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the one-based index of the position at which the item was been added. A number less than 1 indicates an
+    error.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthIsDropDown" xreflabel="isDropDown"><title>isDropDown</title>
+<indexterm><primary>isDropDown</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>isDropDown</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isDropDown(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::isDropDown() -->
+
+
+<section id="mthIsDropDownList" xreflabel="isDropDownList"><title>isDropDownList</title>
+<indexterm><primary>isDropDownList</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>isDropDownList</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isDropDownList(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::isDropDownList() -->
+
 
 <section id="mthIsDropDownOpen" xreflabel="isDropDownOpen"><title>isDropDownOpen</title>
 <indexterm><primary>isDropDownOpen</primary></indexterm>
@@ -1137,67 +1586,69 @@ Simple Combo Box
 </variablelist>
 </section>  <!-- End ComboBox::isGrandchild() -->
 
-
-<section id="mthInsertClsComboBox" xreflabel="insert"><title>insert</title>
-<indexterm><primary>insert</primary><secondary>ComboBox class</secondary></indexterm>
-<indexterm><primary>ComboBox class</primary><secondary>insert</secondary></indexterm>
+<section id="mthIsSimple" xreflabel="isSimple"><title>isSimple</title>
+<indexterm><primary>isSimple</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>isSimple</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--insert(--+-------+--,--item--)---------------><
-             +-index-+
-
+>>--isSimple(--+--------+--)---------------------------------------------><
+                  +--type--+
 ]]>
 </programlisting>
 
 <para>
-  Inserts a new item into the list of the combo box.
+  xx
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are:
-    <variablelist>
-      <varlistentry><term>index [optional]</term>
-      <listitem>
-      <para>
-        The one-based index of the position to add the new item. If this <emphasis role="italic">index</emphasis> is
-        omitted, the item is added after the currently selected item. If there is no currently selected item, the new
-        item is inserted as the last item. If <emphasis role="italic">index</emphasis> is 0 the item is inserted as the
-        first item. If <emphasis role="italic">index</emphasis> is less than 0 then the new item is inserted as the last
-        item
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>item [required]</term>
-      <listitem>
-      <para>
-      	The item to add to the list.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Unlike the <xref linkend="mthAddClsComboBox"/> method, if the combo box has the SORT style, the <emphasis
-    role="italic">insert</emphasis> method does not cause the combo box to sort the list items.
-  </para>
-  <para>
-    If the combo box has a horizontal scroll bar and the width of the new item is wider than the combo box, or wider
-    than the current horizontal extent, the programmer should use the <xref linkend="mthSetHorizontalExtentClsComboBox"/>
-    method to ensure the scroll bar is shown and will scroll far enough to show the whole item.
+    Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    On success, the one-based index of the position at which the item was been added. A number less than 1 indicates an
-    error.
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End ComboBox::isSimple() -->
+
 
 <section id="mthItemsClsComboBox" xreflabel="items"><title>items</title>
 <indexterm><primary>items</primary><secondary>ComboBox class</secondary></indexterm>
@@ -1516,6 +1967,70 @@ Simple Combo Box
 </variablelist>
 </section>  <!-- End ComboBox::selectIndex() -->
 
+<section id="mthSetCueClsComboBox" xreflabel="setCue"><title>setCue</title>
+<indexterm><primary>setCue</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setCue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCue(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setCue() -->
+
+
 <section id="mthSetEditSelection" xreflabel="setEditSelection"><title>setEditSelection</title>
 <indexterm><primary>setEditSelection</primary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>setEditSelection</secondary></indexterm>
@@ -1696,5 +2211,132 @@ Simple Combo Box
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ComboBox::setHorizontalExtent() -->
+
+<section id="mthSetItemHeight" xreflabel="setItemHeight"><title>setItemHeight</title>
+<indexterm><primary>setItemHeight</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setItemHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setItemHeight(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setItemHeight() -->
+
+<section id="mthSetMinVisible" xreflabel="setMinVisible"><title>setMinVisible</title>
+<indexterm><primary>setMinVisible</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setMinVisible</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMinVisible(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setMinVisible() -->
+
 
 </chapter>

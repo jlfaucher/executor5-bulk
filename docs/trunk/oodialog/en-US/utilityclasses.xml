@@ -3807,7 +3807,7 @@ rc = play("Welcome.wav")
 <entry>Subtracts two <computeroutput>Point</computeroutput>objects</entry>
 </row>
 <row>
-<entry><xref linkend="mthCopy"/></entry>
+<entry><xref linkend="mthCopyClsPoint"/></entry>
 <entry>Returns a new <computeroutput>Point</computeroutput> object that represents the same coordinates as this point.</entry>
 </row>
 <row>
@@ -4149,8 +4149,8 @@ Changed point q to be at (150,300)
 </variablelist>
 </section>  <!-- End Point::-() -->
 
-<section id="mthCopy" xreflabel="copy"><title>copy</title>
-<indexterm><primary>copy</primary></indexterm>
+<section id="mthCopyClsPoint" xreflabel="copy"><title>copy</title>
+<indexterm><primary>copy</primary><secondary>PointClass</secondary></indexterm>
 <indexterm><primary>Point class</primary><secondary>copy</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4554,6 +4554,10 @@ Changed point q to be at (150,300)
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
+<entry><xref linkend="mthCopyClsRect"/></entry>
+<entry>Returns a new <computeroutput>Rect</computeroutput> object with the same coordinates as this rectangle.</entry>
+</row>
+<row>
 <entry><xref linkend="mthStringRect"/></entry>
 <entry>Provides an informative string representation of the <computeroutput>Rect</computeroutput> object.</entry>
 </row>
@@ -4854,6 +4858,64 @@ New upper corner (55,75) new lower corner 110,125)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Rect::top() [attribute]  -->
+
+<section id="mthCopyClsRect" xreflabel="copy"><title>copy</title>
+<indexterm><primary>copy</primary><secondary>RectClass</secondary></indexterm>
+<indexterm><primary>Rect class</primary><secondary>copy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--copy-----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns a new <computeroutput>Rect</computeroutput> object with the same coordinates as this rectangle.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a newly instantiated <computeroutput>Rect</computeroutput> object with the same coordinates as this object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The copied rectangle initially has the same coordinates as this rectangle. Changing the coordinates in one rectangle
+    after the copy does not effect the coordinates of the other rectangle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example makes a copy of the client rectangle of an edit control:
+<programlisting>
+<![CDATA[
+
+  editOffsetRect = editRect~copy
+  editOffsetRect~top -= height
+  editOffSetRect~bottom -= height
+
+  say 'text rect:      ' editRect
+  say 'text offset rect' editOffsetRect
+
+  /* Output might be */
+
+  text rect:       a Rect (0, 0, 104, 21)
+  text offset rect a Rect (0, -21, 104, 0)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Rect::copy() -->
+
 
 <section id="mthStringRect" xreflabel="string"><title>string</title>
 <indexterm><primary>string</primary><secondary>Rect class</secondary></indexterm>
