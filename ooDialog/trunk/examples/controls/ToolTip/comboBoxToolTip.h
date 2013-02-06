@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,46 +35,19 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  	ReadMe
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
 
-  1.  ooDialog - ToolTip Example Programs
-  ---------------------------------------
+#define IDD_MAJOR_CITIES                        101
+#define IDC_COMBOBOX                            1003
+#define IDC_RB_DEFAULT                          1005
+#define IDC_RB_CUSTOM                           1007
 
-  This directory contains example programs that demonstrate how to use the
-  ToolTip control in ooDialog.  It is intended that the examples range from
-  simple programs to medium complex programs, and cover most of the
-  important methods of the ToolTip class.
-
-
-    - toolTip.rex
-
-    Shows how to use a ToolTip control, including responding to the SHOW
-    event to position the ToolTip where desired.  Also shows how to:
-    enumerate the tools contained in the ToolTip, add a tool simply to the
-    ToolTip, add a tool as a rectangular area, create a multiline ToolTip,
-    and create a balloon ToolTip
-
-    - comboBoxToolTip.rex
-
-    Shows how to add tool tips to a combo box.  When the list items in a
-    combo box are longer than the combo box is wide, it is difficult for
-    the user to know what they say.  The tool tip control is an elegant
-    solution to this problem.  But, adding tool tips and getting them to
-    work is a little more difficult than one might think.  This example
-    shows how to do it.
-
-
-    - customPositionToolTip.rex
-
-    Demonstrates how to do custom positioning of the info tip in a
-    tree-view control.  If the program is just displayed, it appears to be
-    exactly the same as the manageControlTool.rex example.  The source
-    code for both examples needs to be examined to see the differences.
-
-    - manageControlTool.rex
-
-    Demonstrates how create a completely custom ToolTip for a dialog
-    control.  If the program is just displayed, it appears to be exactly
-    the same as the manageControlTool.rex example.  The source code for
-    both examples needs to be examined to see the differences.
-
+#define IDC_TT_CB_MAIN                          500
+#define IDC_TT_CB_EDIT                          502
+#define IDC_TT_CB_LISTBOX                       503
+#define IDC_TT_EDIT_TRACK                       504
+#define IDC_TT_BUTTON_TRACK                     505
+#define IDC_TI_EDITRECT                         506
+#define IDC_TI_BUTTONRECT                       507

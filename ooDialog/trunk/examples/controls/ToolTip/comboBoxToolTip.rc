@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,46 +35,21 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  	ReadMe
-
-  1.  ooDialog - ToolTip Example Programs
-  ---------------------------------------
-
-  This directory contains example programs that demonstrate how to use the
-  ToolTip control in ooDialog.  It is intended that the examples range from
-  simple programs to medium complex programs, and cover most of the
-  important methods of the ToolTip class.
+#include <windows.h>
+#include <winuser.h>
+#include <commctrl.h>
+#include "comboBoxToolTip.h"
 
 
-    - toolTip.rex
-
-    Shows how to use a ToolTip control, including responding to the SHOW
-    event to position the ToolTip where desired.  Also shows how to:
-    enumerate the tools contained in the ToolTip, add a tool simply to the
-    ToolTip, add a tool as a rectangular area, create a multiline ToolTip,
-    and create a balloon ToolTip
-
-    - comboBoxToolTip.rex
-
-    Shows how to add tool tips to a combo box.  When the list items in a
-    combo box are longer than the combo box is wide, it is difficult for
-    the user to know what they say.  The tool tip control is an elegant
-    solution to this problem.  But, adding tool tips and getting them to
-    work is a little more difficult than one might think.  This example
-    shows how to do it.
-
-
-    - customPositionToolTip.rex
-
-    Demonstrates how to do custom positioning of the info tip in a
-    tree-view control.  If the program is just displayed, it appears to be
-    exactly the same as the manageControlTool.rex example.  The source
-    code for both examples needs to be examined to see the differences.
-
-    - manageControlTool.rex
-
-    Demonstrates how create a completely custom ToolTip for a dialog
-    control.  If the program is just displayed, it appears to be exactly
-    the same as the manageControlTool.rex example.  The source code for
-    both examples needs to be examined to see the differences.
-
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_MAJOR_CITIES DIALOGEX 0, 0, 241, 128
+STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
+CAPTION "Major Cities of the World"
+FONT 8, "Ms Shell Dlg", 400, 0, 1
+{
+    COMBOBOX        IDC_COMBOBOX, 10, 10, 80, 70, WS_TABSTOP | WS_VSCROLL | CBS_DROPDOWNLIST
+    GROUPBOX        "Tool Tip - Tip Positioning", IDC_STATIC, 111, 10, 120, 74, WS_GROUP
+    AUTORADIOBUTTON "Tool Tip positions the tips", IDC_RB_DEFAULT, 122, 32, 104, 9, WS_TABSTOP
+    AUTORADIOBUTTON "Application positions the tips", IDC_RB_CUSTOM, 122, 58, 104, 9
+    PUSHBUTTON      "Done", IDCANCEL, 181, 104, 50, 14
+}
