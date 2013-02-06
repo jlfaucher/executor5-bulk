@@ -1476,6 +1476,112 @@ RexxMethod1(int, bc_test_cls, RexxObjectPtr, obj)
 #define BALLON_MAX_TEXT     1023
 #define QUE_MAX_TEXT         255
 
+
+
+/**
+ * Generic function to get the cue text.  Used by both the combobox and the edit
+ * controls.
+ *
+ * @author Administrator (2/5/2013)
+ *
+ * @param c
+ * @param isEdit
+ * @param pCSelf
+ *
+ * @return RexxObjectPtr
+ */
+static RexxStringObject cbEditGetCue(RexxMethodContext *c, bool isEdit, void *pCSelf)
+{
+    RexxStringObject result = c->NullString();
+
+    pCDialogControl pcdc = validateDCCSelf(c, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return result;
+    }
+
+    if ( ! requiredComCtl32Version(c, "getCue", COMCTL32_6_0)  )
+    {
+        return result;
+    }
+
+    if ( ! isEdit && ! requiredOS(c, "setCue", "Vista", Vista_OS) )
+    {
+        return result;
+    }
+
+    WCHAR wszCue[QUE_MAX_TEXT + 1];
+
+    if ( isEdit )
+    {
+        if ( Edit_GetCueBannerText(pcdc->hCtrl, wszCue, QUE_MAX_TEXT) )
+        {
+            result = unicode2string(c, wszCue);
+        }
+    }
+    else
+    {
+        if ( ComboBox_GetCueBannerText(pcdc->hCtrl, wszCue, QUE_MAX_TEXT) )
+        {
+            result = unicode2string(c, wszCue);
+        }
+    }
+
+    return result;
+}
+
+
+/**
+ * Generic function to set the cue text.  Used for both a combo box and an edit
+ * control.
+ *
+ * @param c
+ * @param text
+ * @param show
+ * @param isEdit
+ * @param pCSelf
+ *
+ * @return RexxObjectPtr
+ */
+static RexxObjectPtr cbEditSetCue(RexxMethodContext *c, CSTRING text, logical_t show, bool isEdit, void *pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(c, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheOneObj;
+    }
+
+    if ( ! requiredComCtl32Version(c, "setCue", COMCTL32_6_0)  )
+    {
+        return TheOneObj;
+    }
+
+    if ( ! isEdit && ! requiredOS(c, "setCue", "Vista", Vista_OS) )
+    {
+        return TheOneObj;
+    }
+
+    // The text is limited to 255.
+    if ( strlen(text) > QUE_MAX_TEXT )
+    {
+        stringTooLongException(c->threadContext, 1, QUE_MAX_TEXT, strlen(text));
+        return TheOneObj;
+    }
+
+    WCHAR wszCue[QUE_MAX_TEXT + 1];
+    putUnicodeText((LPWORD)wszCue, text);
+
+    if ( isEdit )
+    {
+        return Edit_SetCueBannerTextFocused(pcdc->hCtrl, wszCue, show) ? TheZeroObj : TheOneObj;
+    }
+    else
+    {
+        return ComboBox_SetCueBannerText(pcdc->hCtrl, wszCue) ? TheZeroObj : TheOneObj;
+    }
+}
+
+
 /**
  * Take an edit control's window flags and construct a Rexx string that
  * represents the control's style.
@@ -2056,7 +2162,7 @@ RexxMethod4(RexxObjectPtr, e_showBallon, CSTRING, title, CSTRING, text, OPTIONAL
  *                 characters or less.
  *  @param  show   [optional] Whether the cue should still display when the edit
  *                 control has the focus. The default is false, the cue text
- *                 disappears when the user clickd the edit control.
+ *                 disappears when the user sets focus to the edit control.
  *
  *  @return  0 on success, 1 on failure.
  *
@@ -2073,24 +2179,8 @@ RexxMethod4(RexxObjectPtr, e_showBallon, CSTRING, title, CSTRING, text, OPTIONAL
  */
 RexxMethod3(RexxObjectPtr, e_setCue, CSTRING, text, OPTIONAL_logical_t, show, CSELF, pCSelf)
 {
-    if ( ! requiredComCtl32Version(context, "setCue", COMCTL32_6_0)  )
-    {
-        return TheOneObj;
-    }
-
-    // The text is limited to 255.
-    if ( strlen(text) > QUE_MAX_TEXT )
-    {
-        stringTooLongException(context->threadContext, 1, QUE_MAX_TEXT, strlen(text));
-        return TheOneObj;
-    }
-
-    WCHAR wszCue[QUE_MAX_TEXT + 1];
-    putUnicodeText((LPWORD)wszCue, text);
-
-    return Edit_SetCueBannerTextFocused(getDChCtrl(pCSelf), wszCue, show) ? TheZeroObj : TheOneObj;
+    return cbEditSetCue(context, text, show, true, pCSelf);
 }
-
 
 /** Edit::getCue()
  *
@@ -2104,20 +2194,7 @@ RexxMethod3(RexxObjectPtr, e_setCue, CSTRING, text, OPTIONAL_logical_t, show, CS
  */
 RexxMethod1(RexxStringObject, e_getCue, CSELF, pCSelf)
 {
-    if ( ! requiredComCtl32Version(context, "getCue", COMCTL32_6_0)  )
-    {
-        return NULLOBJECT;
-    }
-
-    RexxStringObject result = context->NullString();
-    WCHAR wszCue[QUE_MAX_TEXT + 1];
-
-    if ( Edit_GetCueBannerText(getDChCtrl(pCSelf), wszCue, QUE_MAX_TEXT) )
-    {
-        result = unicode2string(context, wszCue);
-    }
-
-    return result;
+    return cbEditGetCue(context, true, pCSelf);
 }
 
 
@@ -2985,6 +3062,22 @@ RexxMethod1(RexxObjectPtr, cb_getComboBoxInfo, CSELF, pCSelf)
 }
 
 
+/** ComboBox::getCue()
+ *
+ *  Retrieves the cue banner text, or the empty string if there is no cue set.
+ *
+ *  @return  The cue banner text on success, or the empty string on error and if
+ *           no cue is set
+ *
+ *  @remarks  For an edit control, this simply does not seem to work under XP.
+ *            However, it does work in Vista and Windows 7.
+ */
+RexxMethod1(RexxStringObject, cb_getCue, CSELF, pCSelf)
+{
+    return cbEditGetCue(context, false, pCSelf);
+}
+
+
 /** ComboBox::getEditControl()
  *
  *  Returns a Rexx Edit object that reprsents the child edit control used by the
@@ -3025,6 +3118,53 @@ done_out:
 }
 
 
+/** ComboBox::getItemHeight()
+ *
+ *  Determines the height of the list items or the height of the selection field
+ *  in this combo box.
+ *
+ *  @param  getSelectionField  [optional]  If true get the selection field
+ *                             height, if false get the item height.  The
+ *                             default is false, get the item height.
+ *
+ *  @return  The height in pixels of the list box items or the selection field
+ *           as specified.  On error returns -1
+ */
+RexxMethod2(int32_t, cb_getItemHeight, OPTIONAL_logical_t, getSelectionField, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+
+    WPARAM which = getSelectionField ? -1 : 0;
+    return (int32_t)SendMessage(pcdc->hCtrl, CB_GETITEMHEIGHT, which, 0);
+}
+
+
+/** ComboBox::getMinVisible()
+ *
+ * Retrieves the minimum visible number for this combo box.
+ *
+ * @notes  Requires Common Controls Library 6.0
+ */
+RexxMethod1(int32_t, cb_getMinVisible, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+    if ( ! requiredComCtl32Version(context, "getMinVisible", COMCTL32_6_0)  )
+    {
+        return 0;
+    }
+
+    return ComboBox_GetMinVisible(pcdc->hCtrl);
+}
+
+
 /** ComboBox::getText()
  *
  *  Return the text of the item at the specified index.
@@ -3038,6 +3178,7 @@ RexxMethod2(RexxStringObject, cb_getText, uint32_t, index, CSELF, pCSelf)
 {
     return cbLbGetText(context, ((pCDialogControl)pCSelf)->hCtrl, index, winComboBox);
 }
+
 
 /** ComboBox::insert()
  *
@@ -3154,3 +3295,83 @@ RexxMethod2(int32_t, cb_select, CSTRING, text, CSELF, pCSelf)
 }
 
 
+/** ComboBox::setCue()
+ *
+ *  Sets the cue, text for the edit control in a combo box.  This text prompts
+ *  the user for what to enter in the edit control.
+ *
+ *  @param  text   The text for the tip.  The length of the text must be 255
+ *                 characters or less.
+ *
+ *  @return  0 on success, 1 on failure.
+ *
+ *  @notes  Requires Vista  or later. Note the restriction on the length of
+ *          text.
+ *
+ */
+RexxMethod2(RexxObjectPtr, cb_setCue, CSTRING, text, CSELF, pCSelf)
+{
+    return cbEditSetCue(context, text, FALSE, false, pCSelf);
+}
+
+
+/** ComboBox::setItemHeight()
+ *
+ *  Sets the height of the list items or the selection field in a combo box.
+ *
+ *  @param  height             [required] The height in pixels to set the
+ *                             specified component.
+ *
+ *  @param  setSelectionField  [optional]  If true get the selection field
+ *                             height, if false get the item height.  The
+ *                             default is false, get the item height.
+ *
+ *  @return  If the height is wrong returns -1.
+ *
+ *  @note  The selection field height in a combo box is set independently of the
+ *         height of the list items. The programmer must ensure that the height
+ *         of the selection field is not smaller than the height of a particular
+ *         list item.
+ */
+RexxMethod3(int32_t, cb_setItemHeight, uint32_t, pixels, OPTIONAL_logical_t, setSelectionField, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+
+    WPARAM which = setSelectionField ? -1 : 0;
+    return (int32_t)SendMessage(pcdc->hCtrl, CB_SETITEMHEIGHT, which, pixels);
+}
+
+
+/** ComboBox::setMinVisible()
+ *
+ *  Sets the minimum number of visible items in the drop-down list of a combo
+ *  box.
+ *
+ *  @param count  The minimum number of visible items.
+ *
+ *  @return True on success, otherwise false.
+ *
+ *  @notes  Requires Common Control library 6.0
+ *
+ *          When the number of items in the drop-down list is greater than the
+ *          minimum, the combo box uses a scrollbar. By default, 30 is the
+ *          minimum number of visible items.
+ */
+RexxMethod2(logical_t, cb_setMinVisible, int32_t, count, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return 0;
+    }
+    if ( ! requiredComCtl32Version(context, "setMinVisible", COMCTL32_6_0)  )
+    {
+        return 0;
+    }
+
+    return ComboBox_SetMinVisible(pcdc->hCtrl, count);
+}

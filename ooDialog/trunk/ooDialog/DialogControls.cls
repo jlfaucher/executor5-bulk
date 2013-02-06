@@ -276,6 +276,7 @@
 ::constant CB_SETCURSEL                "0x014E"
 ::constant CB_SHOWDROPDOWN             "0x014F"
 ::constant CB_GETDROPPEDSTATE          "0x0157"
+::constant CB_GETTOPINDEX              "0x015b"
 ::constant CB_GETHORIZONTALEXTENT      "0x015d"
 ::constant CB_SETHORIZONTALEXTENT      "0x015e"
 
@@ -296,12 +297,18 @@
    return self~sendWinIntMsg(self~CB_RESETCONTENT, 0, 0)
 
 ::method find unguarded external "LIBRARY oodialog cb_find"
+::method getCue unguarded external "LIBRARY oodialog cb_getCue"
 ::method getComboBoxInfo unguarded external "LIBRARY oodialog cb_getComboBoxInfo"
 ::method getEditControl unguarded external "LIBRARY oodialog cb_getEditControl"
+::method getFirstVisible unguarded
+   return self~sendWinIntMsg(self~CB_GETTOPINDEX, 0, 0) + 1
+
 ::method getHorizontalExtent unguarded
    use strict arg
    return self~sendWinIntMsg(self~CB_GETHORIZONTALEXTENT, 0, 0)
 
+::method getItemHeight unguarded external "LIBRARY oodialog cb_getItemHeight"
+::method getMinVisible unguarded external "LIBRARY oodialog cb_getMinVisible"
 ::method getText unguarded external "LIBRARY oodialog cb_getText"
 ::method insert unguarded external "LIBRARY oodialog cb_insert"
 ::method isDropDown unguarded external "LIBRARY oodialog cb_isDropDown"
@@ -341,6 +348,7 @@
    if ret == -1, ndx <> 0 then return -1
    return ret + 1
 
+::method setCue unguarded external "LIBRARY oodialog cb_setCue"
 ::method setEditSelection unguarded
    use strict arg startndx = 0, endndx = 0
    if endndx == 0 then endndx = -1
@@ -352,6 +360,8 @@
    self~sendWinIntMsg(self~CB_SETHORIZONTALEXTENT, extent, 0)
    return 0
 
+::method setItemHeight unguarded external "LIBRARY oodialog cb_setItemHeight"
+::method setMinVisible unguarded external "LIBRARY oodialog cb_setMinVisible"
 
 -- DEPRECATED
 ::method editSelection

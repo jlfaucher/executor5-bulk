@@ -1003,13 +1003,19 @@ REXX_METHOD_PROTOTYPE(e_style);
 REXX_METHOD_PROTOTYPE(cb_add);
 REXX_METHOD_PROTOTYPE(cb_addDirectory);
 REXX_METHOD_PROTOTYPE(cb_find);
+REXX_METHOD_PROTOTYPE(cb_getCue);
 REXX_METHOD_PROTOTYPE(cb_getComboBoxInfo);
 REXX_METHOD_PROTOTYPE(cb_getEditControl);
+REXX_METHOD_PROTOTYPE(cb_getItemHeight);
+REXX_METHOD_PROTOTYPE(cb_getMinVisible);
 REXX_METHOD_PROTOTYPE(cb_getText);
 REXX_METHOD_PROTOTYPE(cb_insert);
 REXX_METHOD_PROTOTYPE(cb_isDropDown);
 REXX_METHOD_PROTOTYPE(cb_isGrandchild);
 REXX_METHOD_PROTOTYPE(cb_select);
+REXX_METHOD_PROTOTYPE(cb_setCue);
+REXX_METHOD_PROTOTYPE(cb_setItemHeight);
+REXX_METHOD_PROTOTYPE(cb_setMinVisible);
 
 // ScrollBar
 REXX_METHOD_PROTOTYPE(sb_getRange);
@@ -2121,13 +2127,19 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cb_add,                         cb_add),
     REXX_METHOD(cb_addDirectory,                cb_addDirectory),
     REXX_METHOD(cb_find,                        cb_find),
+    REXX_METHOD(cb_getCue,                      cb_getCue),
     REXX_METHOD(cb_getComboBoxInfo,             cb_getComboBoxInfo),
     REXX_METHOD(cb_getEditControl,              cb_getEditControl),
+    REXX_METHOD(cb_getItemHeight,               cb_getItemHeight),
+    REXX_METHOD(cb_getMinVisible,               cb_getMinVisible),
     REXX_METHOD(cb_getText,                     cb_getText),
     REXX_METHOD(cb_insert,                      cb_insert),
     REXX_METHOD(cb_isDropDown,                  cb_isDropDown),
     REXX_METHOD(cb_isGrandchild,                cb_isGrandchild),
     REXX_METHOD(cb_select,                      cb_select),
+    REXX_METHOD(cb_setCue,                      cb_setCue),
+    REXX_METHOD(cb_setItemHeight,               cb_setItemHeight),
+    REXX_METHOD(cb_setMinVisible,               cb_setMinVisible),
 
     // ListBox
     REXX_METHOD(lb_add,                         lb_add),
