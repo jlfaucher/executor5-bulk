@@ -43,10 +43,10 @@
     #########################################################################
 -->
 
-<!-- Chapter07 - A Working Application		 		  v01-00 10Jan13
+<!-- Chapter07 - A Working Application		 		  v01-00 06Feb13
 
     Changes:
-     v01-00 10Jan13: First version.
+     v01-00 06Feb13: First version.
 
     7   *  Towards A Working Application	                                          chapSeven
     7.1   * Introduction                                                              chap07-intro
@@ -308,22 +308,12 @@
             <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Samples\Person</computeroutput>.
           The requirements for using the MVF are as follows: <itemizedlist>
             <listitem>
-              <para>The Data Component (a subclass of
-                <computeroutput>GenericFile</computeroutput>)</para>
-              <para>Data components such as <computeroutput>PersonData</computeroutput> are required
-                to provide a <emphasis role="italic">newInstance</emphasis> class method, which is
-                invoked by the MVF. No parameters are provided. If an instance has <emphasis
-                  role="italic">not</emphasis> already been created, it is created, and its object
-                ID is returned to the MVF (i.e. to the caller).  </para>
-              <para>In the <emphasis role="italic">init</emphasis> method, the file name and the
-                number of columns in the file is specified, and the superclass' <emphasis
-                  role="italic">init</emphasis> method is invoked with the filename and number of
-                columns as parameters. Invocation of super with these parameters is an MVF
-                requirement. MVF requires that 'self' is returned. </para>
-              <para>In summary, the code required to conform with MVF is: <programlisting>
-<![CDATA[
+              <para><emphasis role="bold">A Data Component </emphasis>(a subclass of
+                  <computeroutput>GenericFile</computeroutput>)</para>
+              <para><programlisting><![CDATA[
 ::METHOD newInstance CLASS PUBLIC
   ...
+  -- Check if an instance has already been created; if so, return .false.
   idData = self~new()
   return idData
     
@@ -331,17 +321,20 @@
   ...
   records = self~init:super(fileName, columns)
   return self      
-]]></programlisting></para>
+]]></programlisting>Data components such as <computeroutput>PersonData</computeroutput> are required
+                to provide a <computeroutput>newInstance</computeroutput> class method, which is
+                invoked by the MVF. No parameters are provided. This method first checks if an
+                instance has already been created. If not, it is created, and its object ID is
+                returned to the MVF (i.e. to the caller). </para>
+              <para>In the <computeroutput>init</computeroutput> method, the superclass'
+                  <computeroutput>init</computeroutput> method is invoked with the filename and the
+                number of columns in the file as parameters. Invocation of super with these
+                parameters is an MVF requirement. MVF also requires that 'self' is returned. </para>
             </listitem>
             <listitem>
-              <para>The Model Component (a subclass of
-                <computeroutput>Model</computeroutput>)</para>
-              <para>Model components such as <computeroutput>PersonModel</computeroutput> are
-                required to provide a <emphasis role="italic">newInstance</emphasis> class method
-                with one required argument - the model's instance name. The method must be forwarded
-                to the superclass, which creates the objectinvokes <emphasis role="italic"
-                  >init</emphasis> with the Model's instance data as an argument.  <programlisting>
-<![CDATA[
+              <para><emphasis role="bold">A Model Component</emphasis> (a subclass of
+                  <computeroutput>Model</computeroutput>)</para>
+              <para><programlisting><![CDATA[
 ::METHOD newInstance CLASS PUBLIC
   use strict arg instanceName
     forward class (super) continue	
@@ -349,24 +342,19 @@
     return modelId
 
  ::METHOD init
-   use strict arg dirPerson
-]]></programlisting></para>
+   use strict arg myData]]></programlisting>Model components such as
+                  <computeroutput>PersonModel</computeroutput> are required to provide a <emphasis
+                  role="italic">newInstance</emphasis> class method with one required argument - the
+                model's instance name. The method must be forwarded to the
+                  <computeroutput>Model</computeroutput> superclass, which retrieves the intended
+                instance's data from its data component, then creates an instance of itself with the
+                instance data as a parameter. The new instance must then be returned. </para>
             </listitem>
             <listitem>
-              <para>The View Component (a subclass of <computeroutput>RcView</computeroutput> or
-                  <computeroutput>ResView</computeroutput>)</para>
-              <para>View components such as <computeroutput>PersonView</computeroutput> must provide
-                a <computeroutput>newInstance</computeroutput> class method and an
-                  <computeroutput>activate</computeroutput> method. The
-                  <computeroutput>newInstance</computeroutput> method is invoked by MVF with the
-                view's model id (and also the root dialog - that is, the Order Manager dialog).
-                After the dialog is created, MVF requires that
-                  <computeroutput>activate</computeroutput>, with the model's id as the first
-                argument, be invoked on the new dialog. The
-                  <computeroutput>activate</computeroutput> method must forward to its superclass
-                (with 'continue' specified). The superclass returns the Model's data in
-                  <computeroutput>RESULT</computeroutput>. <programlisting>
-<![CDATA[
+              <para><emphasis role="bold">A View Component</emphasis> (a subclass of
+                  <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>,
+                or <computeroutput>UdView</computeroutput>)</para>
+              <para><programlisting><![CDATA[
 ::METHOD newInstance CLASS PUBLIC
   use strict arg modelId, rootDlg
   -- create dialog, e.g. "dlg = .PersonView~new(...)"
@@ -377,7 +365,18 @@
   use strict arg modelId, rootDlg
   forward class (super) continue
   personData = RESULT		
-]]></programlisting></para>
+]]></programlisting>View components such as <computeroutput>PersonView</computeroutput> must provide
+                a <computeroutput>newInstance</computeroutput> class method and an
+                  <computeroutput>activate</computeroutput> method. The
+                  <computeroutput>newInstance</computeroutput> method is invoked by MVF with the
+                view's model id (and also the root dialog - that is, the Order Manager dialog).
+                After the dialog is created, MVF requires that
+                  <computeroutput>activate</computeroutput>, with the model's id as the first
+                argument, be invoked on the new dialog. In the
+                  <computeroutput>activate</computeroutput> method, the superclass must be invoked
+                using <computeroutput>forward</computeroutput>. The superclass returns the Model's
+                data in <computeroutput>RESULT</computeroutput>. Finally, the id of the new dialog
+                must be returned.</para>
             </listitem>
           </itemizedlist></para>
     <para>The above is how a "named" component uses MVF. By "named" is meant a component whose
@@ -471,9 +470,10 @@ Class-Instance            Model Id                ViewClass-Inst
               <para><computeroutput>getInstanceName</computeroutput>
                 <indexterm>
                   <primary>getInstanceName</primary>
-                </indexterm> - invoked by ObjectMgr-showModel for anon components only) - adds 1 to
-                a class variable and returns it. Note - for OrderForm, the method is over-ridden and
-                an "new order number " is returned.</para>
+                </indexterm> is invoked by ObjectMgr-showModel for anonymous components only. It
+                adds 1 to a class variable and returns it. Note - for
+                  <computeroutput>OrderForm</computeroutput>, the method is over-ridden and a "new
+                order number " is returned.</para>
             </listitem>
             <listitem>
               <para><computeroutput>query</computeroutput>
@@ -482,69 +482,80 @@ Class-Instance            Model Id                ViewClass-Inst
                 </indexterm> A component framework generally requires that components provide
                 specific methods defined by the framework. Aside from instance creation methods, a
                 "well-known" method is required for MVF to access a model component's data. This
-                method has the name "query", and it must conform to the following protocol:</para>
-              <para>If a component's <computeroutput>query</computeroutput> method is invoked with
-                no parameters, then it must return a directory containing all the "public" data it
-                has. The directory indices are the labels for the data as defined in the "database"
-                (although this is not usually the case for real production-strength systems, where
-                the data dictionary for application-level components often differs from the column
-                names in an SQL database).</para>
-              <para>For example, use the Message Sender to send <emphasis role="bold"><emphasis
-                    role="italic">query</emphasis></emphasis> to <emphasis role="bold"><emphasis
-                    role="italic">PersonModel PA150</emphasis></emphasis>. A directory is returned
-                by <computeroutput>PersonModel</computeroutput>, and the Message Sender presents the
-                directory in name-value form in its <emphasis role="bold">Reply</emphasis> field as
-                follows: <programlisting>
+                method has the name "query", and it must conform to a specific protocol as follows:<itemizedlist>
+                  <listitem>
+                    <para>If a component's <computeroutput>query</computeroutput> method is invoked
+                      with no parameters, then it must return a directory containing all the
+                      "public" data it has. The directory indexes are the labels for the data as
+                      defined in the "database" (although this is not usually the case for real
+                      production-strength systems, where the data dictionary for application-level
+                      components often differs from the column names in an SQL database).</para>
+                    <para>For example, use the Message Sender to send <emphasis role="bold"
+                          ><emphasis role="italic">query</emphasis></emphasis> to <emphasis
+                        role="bold"><emphasis role="italic">PersonModel PA150</emphasis></emphasis>.
+                      A directory is returned by <computeroutput>PersonModel</computeroutput>, and
+                      the Message Sender presents the directory in name-value form in its <emphasis
+                        role="bold">Reply</emphasis> field as follows: <programlisting>
 <![CDATA[dob: 751513; baseSalary: 38000; number: PA150; jobDescr: Packer; 
 familyName: James; firstName: Alfred; 
 ]]>
-                  </programlisting>If a component's <computeroutput>query</computeroutput>
-                method is invoked with one parameter, and when that parameter is a directory, an
-                array, or a string, then only those fields specified by name are returned. </para>
-              <para>For example, use the Message Sender to query the first name and family name for
-                "PersonModel PA150". To do this, specify the fields by name (case-sensitive) in the
-                  <emphasis role="bold">Data</emphasis> edit field, as follows: <emphasis
-                  role="bold"><emphasis role="italic">firstName familyName</emphasis></emphasis>
-                (note - field names are case-sensitive). On pressing the <emphasis role="bold"
-                  >Send</emphasis> button, the data <emphasis role="bold"><emphasis role="italic"
-                    >firstName: Alfred; familyName: James;</emphasis></emphasis> is returned as a
-                directory which Message Sender unpacks and presents as a string in the <emphasis
-                  role="bold"><emphasis role="italic">Reply</emphasis></emphasis> field. </para>
-              <para>For debugging purposes, 
-                <indexterm><primary>Debugging</primary></indexterm><indexterm><primary>Message Sender</primary><secondary>Debugging</secondary></indexterm>you can use MessageSender to send a set of data names as
-                a string (as in the example just given), a directory, or an array. To send as a
-                directory, enclose each name in square brackets, e.g.: <emphasis role="bold"
-                    ><emphasis role="italic">[firstName] [familyName]</emphasis></emphasis>. To send
-                as an array, place a vertical bar before each name, e.g: <emphasis role="bold"
-                    ><emphasis role="italic">| firstName | familyName</emphasis></emphasis>.</para>
-              <para>Finally, note that although all components in Exercise07 support the first of
-                the query protocols (i.e. with no parameters), not all components support the
-                second.</para>
+</programlisting></para>
+                  </listitem>
+                  <listitem>
+                    <para>If a component's <computeroutput>query</computeroutput> method is invoked
+                      with one parameter, and when that parameter is a directory, an array, or a
+                      string, then only those fields specified by name are returned. </para>
+                    <para>For example, use the Message Sender to query the first name and family
+                      name for "PersonModel PA150". To do this, specify the fields by name
+                      (case-sensitive) in the <emphasis role="bold">Data</emphasis> edit field, as
+                      follows: <emphasis role="bold"><emphasis role="italic">firstName
+                          familyName</emphasis></emphasis> (note - field names are case-sensitive).
+                      On pressing the <emphasis role="bold">Send</emphasis> button, the data
+                        <emphasis role="bold"><emphasis role="italic">firstName: Alfred; familyName:
+                          James;</emphasis></emphasis> is returned as a directory which Message
+                      Sender unpacks and presents as a string in the <emphasis role="bold"><emphasis
+                          role="italic">Reply</emphasis></emphasis> field. </para>
+                    <para>For debugging purposes, <indexterm>
+                        <primary>Debugging</primary>
+                      </indexterm>
+                      <indexterm>
+                        <primary>Message Sender</primary>
+                        <secondary>Debugging</secondary>
+                      </indexterm> you can use MessageSender to send a set of data names as a string
+                      (as in the example just given), a directory, or an array. To send as a
+                      directory, enclose each name in square brackets, e.g.: <emphasis role="bold"
+                          ><emphasis role="italic">[firstName] [familyName]</emphasis></emphasis>.
+                      To send as an array, place a vertical bar before each name, e.g: <emphasis
+                        role="bold"><emphasis role="italic">| firstName |
+                        familyName</emphasis></emphasis>. </para>
+                  </listitem>
+                </itemizedlist></para>
             </listitem>
           </itemizedlist></para>
-      </section>	<!-- End of Section 7.2.2.3 -->
+  </section>	<!-- End of Section 7.2.2.3 -->
 
-<section id="chap07-mvf-oview-view"><title>The 'View' Superclass</title>		<!-- Section 7.2.2.4 -->
-        <para>There are three View superclasses - <computeroutput>RcView</computeroutput>,
-            <computeroutput>ResView</computeroutput>, and <computeroutput>UdView</computeroutput> -
-          all in the <computeroutput>Support</computeroutput> folder. They are identical except for
-          their superclasses - <computeroutput>RcDialog</computeroutput>,
+  <section id="chap07-mvf-oview-view"><title>The 'View' Superclass</title>		<!-- Section 7.2.2.4 -->
+        <para>There are three View superclasses in the <computeroutput>Support</computeroutput>
+          folder: <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>,
+          and <computeroutput>UdView</computeroutput>. They are identical except for their
+          superclasses - <computeroutput>RcDialog</computeroutput>,
             <computeroutput>ResDialog</computeroutput> and
             <computeroutput>UserDialog</computeroutput> respectively (their function could be
           provided by a single mixin class, and this is planned for a later version of the User
-          Guide exercises).    </para>
-        <para>activate - modelid provided as the single argument. Sends query to model.  </para>
+          Guide exercises). </para>
+        <para>xxxxxxxx   activate - modelid provided as the single argument. Sends query to model.
+          Returns data.</para>
         <para>leaving - tidies up</para>
         <para>Code for offsetting dialogs on first launch is also present, but is not used in this
-          exercise. However, the effect can be seen using the "Person"  component in the
+          exercise. However, the effect can be seen using the "Person" component in the
             <computeroutput>Samples\Person</computeroutput> folder. First, un-comment the last line
           in the <computeroutput>initDialog</computeroutput> method of
             <computeroutput>PersonView</computeroutput>. Then use the Message Sender to launch a
-          Person dialog (for example send  <emphasis role="bold"><emphasis role="italic"
+          Person dialog (for example send <emphasis role="bold"><emphasis role="italic"
               >showModel</emphasis></emphasis> to <emphasis role="bold"><emphasis role="italic"
               >ObjectMgr The</emphasis></emphasis> with the data <emphasis role="bold"><emphasis
               role="italic">PersonModel PA150</emphasis></emphasis>). The Person dialog appears
-          offset from </para>
+          offset the center of the screen. </para>
 <para>
 <!-- - offsetting: use MsgSender (refer to section 7.3 for more details)
   e.g. PersonModel - must set Visible = False in resEdit else get a
