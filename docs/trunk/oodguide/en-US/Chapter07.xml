@@ -447,11 +447,22 @@ Class-Instance            Model Id                ViewClass-Inst
 </section>	<!-- End of Section 7.2.2.2 -->
   
   <section id="chap07-mvf-oview-model">
-    <title>The 'Model' Superclass</title>        <!-- Section 7.2.2.3 -->
-    <indexterm><primary>Model</primary><secondary>Methods</secondary></indexterm>
-    <indexterm><primary>MVF</primary><secondary>Model</secondary></indexterm>
-    <para><computeroutput>Model</computeroutput> is the MVF superclass for all model components, and
-          provides key methods for subclasses as follows: <itemizedlist>
+        <title>The 'Model' Superclass</title>
+        <!-- Section 7.2.2.3 -->
+        <indexterm>
+          <primary>Model</primary>
+          <secondary>Methods</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>MVF</primary>
+          <secondary>Model</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>Superclasses</primary>
+          <secondary>Model</secondary>
+        </indexterm>
+        <para><computeroutput>Model</computeroutput> is the MVF superclass for all model components,
+          and provides key methods for subclasses as follows: <itemizedlist>
             <listitem>
               <para><computeroutput>newInstance</computeroutput>
                 <indexterm>
@@ -532,58 +543,108 @@ familyName: James; firstName: Alfred;
                 </itemizedlist></para>
             </listitem>
           </itemizedlist></para>
-  </section>	<!-- End of Section 7.2.2.3 -->
+      </section>	<!-- End of Section 7.2.2.3 -->
 
   <section id="chap07-mvf-oview-view"><title>The 'View' Superclass</title>		<!-- Section 7.2.2.4 -->
-        <para>There are three View superclasses in the <computeroutput>Support</computeroutput>
-          folder: <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>,
-          and <computeroutput>UdView</computeroutput>. They are identical except for their
+        <para><indexterm><primary>View</primary><secondary>Methods</secondary></indexterm>
+          <indexterm><primary>MVF</primary><secondary>View</secondary></indexterm>
+          <indexterm><primary>Superclasses</primary><secondary>View</secondary></indexterm>
+          <indexterm><primary>RcView</primary></indexterm><indexterm><primary>ResView</primary></indexterm>
+          <indexterm><primary>UdView</primary></indexterm>
+          There are three View superclasses in the
+            <computeroutput>Support</computeroutput> folder:
+          <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>, and
+            <computeroutput>UdView</computeroutput>. They are identical except for their
           superclasses - <computeroutput>RcDialog</computeroutput>,
             <computeroutput>ResDialog</computeroutput> and
             <computeroutput>UserDialog</computeroutput> respectively (their function could be
           provided by a single mixin class, and this is planned for a later version of the User
-          Guide exercises). </para>
-        <para>xxxxxxxx   activate - modelid provided as the single argument. Sends query to model.
-          Returns data.</para>
-        <para>leaving - tidies up</para>
-        <para>Code for offsetting dialogs on first launch is also present, but is not used in this
-          exercise. However, the effect can be seen using the "Person" component in the
-            <computeroutput>Samples\Person</computeroutput> folder. First, un-comment the last line
-          in the <computeroutput>initDialog</computeroutput> method of
-            <computeroutput>PersonView</computeroutput>. Then use the Message Sender to launch a
-          Person dialog (for example send <emphasis role="bold"><emphasis role="italic"
-              >showModel</emphasis></emphasis> to <emphasis role="bold"><emphasis role="italic"
-              >ObjectMgr The</emphasis></emphasis> with the data <emphasis role="bold"><emphasis
-              role="italic">PersonModel PA150</emphasis></emphasis>). The Person dialog appears
-          offset the center of the screen. </para>
-<para>
-<!-- - offsetting: use MsgSender (refer to section 7.3 for more details)
-  e.g. PersonModel - must set Visible = False in resEdit else get a
-  flicker - try it - add WS_VISIBLE to .rc file (default is FALSE)
-  then re-open. Watch the flicker as it moves from default position
-  to offset position. (Note - not used for other dialogs)
-  (Note - it offsets relative to MsgSender - check out why!)
--->
-</para>
+          Guide exercises). Important methods are:</para>
+        <para>
+          <itemizedlist>
+            <listitem>
+              <para><computeroutput>activate</computeroutput> - This is invoked by the subclass,
+                which must provide the view's model id as the single argument. A
+                  <computeroutput>query</computeroutput> message is invoked on the model, which
+                returns the model's data as a directory. In addition, this method saves information
+                used to tidy up the view in the <computeroutput>leaving</computeroutput> method.
+              </para>
+            </listitem>
+            <listitem>
+              <para><computeroutput>leaving</computeroutput><indexterm>
+                  <primary>leaving method</primary>
+                </indexterm> - This method is automatically invoked by ooDialog when a dialog
+                closes. Its only function is to remove the view from the Object Manager's table. </para>
+            </listitem>
+            <listitem>
+              <para><computeroutput>offset</computeroutput><indexterm>
+                  <primary>offset method</primary>
+                </indexterm> - This method offsets dialogs from the Order Management dialog when
+                first opened. Although not used elsewhere in this exercise, the effect can be seen
+                using the "Person" component in the <computeroutput>Samples\Person</computeroutput>
+                folder. First, use the Message Sender to launch a Person dialog (for example send
+                  <emphasis role="bold"><emphasis role="italic">showModel</emphasis></emphasis> to
+                  <emphasis role="bold"><emphasis role="italic">ObjectMgr The</emphasis></emphasis>
+                with the data <emphasis role="bold"><emphasis role="italic">PersonModel
+                    PA150</emphasis></emphasis>). The Person dialog appears offset from the center
+                of the screen. Now un-comment the last line
+                  (<computeroutput>--self~offset:super</computeroutput>) in the
+                  <computeroutput>initDialog</computeroutput> method of
+                  <computeroutput>PersonView</computeroutput>, save, re-start the application, and
+                launch the Person dialog as before. Note that the dialog "flickers" when opened - it
+                seems to open for a fraction of a second in the centre of the screen, then
+                re-appears offset from Message Sender. The flicker results from the .rc file
+                containing the dialog property WS_VISIBLE (in ResEdit the behavior property
+                "visible" is set to true). First it appears in the center of the screen, then moves
+                to the offset position. Now remove "<computeroutput>| WS_VISIBLE</computeroutput>"
+                from the .rc file, save, and re-run. The Person dialog appears without a flicker
+                offset from the Message Sender.</para>
+            </listitem>
+          </itemizedlist>
+        </para>
 </section>	<!-- End of Section 7.2.2.4 -->
 
-<section id="chap07-mvf-oview-data"><title>The 'GenericFile' Superclass</title>		<!-- Section 7.2.2.5 -->
-  <indexterm><primary>Generic File</primary></indexterm>
-<para>The data superclass is called "GenericFile", since it acts on any file having
-  a defined format. The main methods used by MVF are: ... </para>
-  <!--  Diagram of data objects:
-
-Methods of GenericFile are:
-
-readFile - A private method - Given a filename and the number of columns, reads a file and
-               returns it in "File As Directory" format. This is stored in the public
-               attribute "fileAsDirectory"
-
- getRecord - Given a "key", returns a file record (or line) as a directory containing
-            the record data associated with that key. Format is:
--->
-
-</section>	<!-- End of Section 7.2.2.5 -->
+<section id="chap07-mvf-oview-data">
+        <title>The 'GenericFile' Superclass</title>
+        <!-- Section 7.2.2.5 -->
+        <indexterm>
+          <primary>Generic File</primary>
+        </indexterm>
+        <indexterm>
+          <primary>MVF</primary>
+          <secondary>GenericFile</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>Superclasses</primary>
+          <secondary>GenericFile</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>Superclasses</primary>
+          <secondary>GenericFile</secondary>
+        </indexterm>
+        <para>The data superclass is called "GenericFile", since it acts on any file having the
+          defined format (see <xref linkend="chap07-mvfuse-datafmts"/> for a description of the file
+          format).  The important methods are: <itemizedlist>
+            <listitem>
+              <para><computeroutput>getRecord</computeroutput><indexterm>
+                  <primary>getRecord method</primary>
+                </indexterm> - Invoked with a record key (e.g. a Customer Number) as its single
+                argument, reads the record from the file defined in the subclass, and returns a
+                "record directory".  </para>
+            </listitem>
+            <listitem>
+              <para><computeroutput>getFile</computeroutput><indexterm>
+                  <primary>getFile method</primary>
+                </indexterm> - Returns the file in  "file as directory" format. </para>
+            </listitem>
+            <listitem>
+              <para><computeroutput>list</computeroutput><indexterm>
+                  <primary>list method</primary>
+                </indexterm> - Lists the file on the console.</para>
+            </listitem>
+          </itemizedlist>See <xref linkend="chap07-mvfuse-datafmts"/> for a description of the data
+          formats.</para>
+      </section>	<!-- End of Section 7.2.2.5 -->
 
 
 
@@ -639,17 +700,16 @@ readFile - A private method - Given a filename and the number of columns, reads 
         same set of components, but modified to use the MVF. Code no longer required is commented
         out with the comment "v01-00"; methods or statements added or for MVF use are commented with
         "MVF"; statements changed are commented "v01-00-->MVF"; unchanged statements are commented
-        "v01-00 &amp; MVF".
-      <footnote ><para>Actually, Wow is somewhat schizophrenic, in that it can be launched either as a singleton or
-            as anonymous - that is, with an instance name of "The" or "A".  If "The", then only one
-            instance is allowed. If "A", then multiple instances can be created.</para></footnote>
-      </para>
-      <para>As mentioned above, this whole approach of having component names define the type of 
-        component is not particularly
-        scalable. A better approach - certainly for production-strength apps - is to provide a configuration file
-        that names the classes and states what type they are. Such a
-        file might look something like this:
-      <programlisting>
+        "v01-00 &amp; MVF". <footnote>
+          <para>Actually, Wow is somewhat schizophrenic, in that it can be launched either as a
+            singleton or as anonymous - that is, with an instance name of "The" or "A". If "The",
+            then only one instance is allowed. If "A", then multiple instances can be
+            created.</para>
+        </footnote>As mentioned above, this whole approach of having component names define the type
+        of component is not particularly scalable. A better approach - certainly for
+        production-strength apps - is to provide a configuration file that names the classes and
+        states what type they are. Such a file might look something like this, and would remove any
+        need for using class names as the basis for managing instances: <programlisting>
 <![CDATA[
 <modelClass name="Product",     type="named", dataClass="ProductDB"/>
 <modelClass name="NewOrder",    type="form"/>
@@ -659,9 +719,7 @@ readFile - A private method - Given a filename and the number of columns, reads 
   <viewClass name="WowView">
   <dataClass name="WowData" source="sql">
 </modelClass>
-]]></programlisting>Such a configuration file would remove any need for using class names as the
-        basis for managing instances. 
-      </para>
+]]></programlisting></para>
 
 </section>	<!-- End of Section 7.3.1 -->
 
@@ -674,21 +732,13 @@ readFile - A private method - Given a filename and the number of columns, reads 
 
 Query on CustomerList 1 gives: RECORDS: an Array; COUNT: 5; HEADERS: an Array;
   -->
-      <para>Fields in a file record are separated by a vertical bar character, and field names
-        are defined in the first line of the file. The superclass
-        <computeroutput>GenericFile</computeroutput> provides two methods for reading data from the
-        file: <computeroutput>getRecord</computeroutput> which takes a record key (e.g. a Customer
-        Number) as its single argument and returns a "record directory", and
-        <computeroutput>getFile</computeroutput> which returns the whole file as a "file directory". 
-        It also
-        provides a <computeroutput>list</computeroutput> method which lists a file on the
-        console.</para>
-    <para>The format of a "record directory is as follows:
-    <programlisting>
+      <para>Fields in a file record are separated by a vertical bar character, and field names are
+        defined in the first line of the file. All data files have the file extension ".txt". </para>
+    <para>The format of a "record" directory is as follows: <programlisting>
     <![CDATA[
     "Record Directory" format (using sample data values):
     
-              Indices     Items
+              Indexes     Items
             +- - - - - - - - - - - - - -+
             | CustNo   | BA0314         |
             +- - - - - + - - - - - - - -+
@@ -698,28 +748,26 @@ Query on CustomerList 1 gives: RECORDS: an Array; COUNT: 5; HEADERS: an Array;
             +- - - - - + - - - - - - - -+
     ]]>
     </programlisting>
-  </para>
-  <para>getFile - Returns the file in "File as Directory" format, as follows: 
-    <programlisting>
+      </para>
+  <para>getFile - Returns the file in "File as Directory" format, as follows: <programlisting>
     <![CDATA[
 
     "File Directory" format (using sample data values):
     
-       Indices    Items
+             Indexes    Items
 			+- - - - - - - - - - - - - - - - - - - - - - - - +
 			|Headers | CustNo  | CustName             | .... |	 1D array
 			|- - - - + - - - - + - - - - - - - - - - -+ - - -|
 			|Records | AB0784  | ABC Enterprises Inc. | .... |   2D array
 			|        | - - - - + - - - - - - - - - - -+ - - -|
 			|        | AC0027  | Frith Motors Inc.    | .... |
-			|        | - - - - + - - - - + - - - - - -+ - - -|
-			|        | etc. ......                           |
+			|        | - - - - + - - - - - - - - - - -+ - - -|
+			|        |   ...   + ...                  + ...  |
 			|- - - - + - - - - - - - - - - - - - - - -+ - - -+
 			|Count   | n |                                       Integer
 			+- - - - + - +
     ]]>
   </programlisting>
-    
       </para>
 </section>	<!-- End of Section 7.3.2 -->
 </section>  <!-- End of Section 7.3   -->
