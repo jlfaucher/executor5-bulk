@@ -1514,8 +1514,8 @@ return .true
       0 to 4294967295.
     </para>
     <para>
-      For convenience in looking up COM or OLE related error codes, a string in conventional <xref
-      linkend="defConventionalHex"/> format are also excepted. Typically an <computeroutput>OleObject</computeroutput> COM
+      For convenience in looking up COM or OLE related error codes, strings in conventional <xref
+      linkend="defConventionalHex"/> format are also accepted. Typically an <computeroutput>OleObject</computeroutput> COM
       related error is displayed something like: 0x80040000.
     </para>
     </listitem></varlistentry>
@@ -1534,9 +1534,9 @@ return .true
     Although any valid whole number within the range specified is accepted, only numbers that are actually valid system
     errors will produce a valid result. Numbers that are not Windows system errors will return a string similar to, <emphasis
     role="italic">Internal Windows error formatting the message (317)</emphasis>. The number in parenthesis will be the
-    system error code the Windows returned when asked for the message text for the <emphasis role="italic">errCode</emphasis>
-    argument. Since 317 is a valid system error, its message text could be looked up using the <emphasis
-    role="italic">errMsg</emphasis> method, see the example below.
+    system error code that Windows returned when asked for the message text for the <emphasis
+    role="italic">errCode</emphasis> argument. Since 317 is a valid system error, its message text could be looked up using
+    the <emphasis role="italic">errMsg</emphasis> method, see the example below.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
