@@ -779,69 +779,6 @@ RexxObjectPtr getFolderOrIDL(RexxMethodContext *c, void *pCSelf, logical_t reuse
 }
 
 /**
- * Uses run time dynamic linking to get a function address from Shell32.dll.  If
- * we already have the address, we just return it.
- *
- * @param c
- * @param pcbff
- * @param func
- *
- * @return void*
- *
- * @remarks  The Shell functions we link to here do not have entry points in the
- *           DLLs on XP. If we are implicitly linked to the function, the entry
- *           point(s) are not found and oodialog.dll can not be loaded.
- *
- *           We do this to try and maintain compatibility on XP.  If the number
- *           of functions becomes too large, we will have to come up with some
- *           other scheme.
- */
-void *getShellFunctionPtr(RexxThreadContext *c, pCBrowseForFolder pcbff, ShellFuncType func)
-{
-    void *funcPtr = NULL;
-
-    if ( pcbff->hShell32 == NULL )
-    {
-        pcbff->hShell32 = LoadLibrary(TEXT("Shell32.dll"));
-        if ( pcbff->hShell32 == NULL )
-        {
-            oodSetSysErrCode(c);
-            goto done_out;
-        }
-    }
-
-    // We only have 1 function so far, may be more in the future.
-    switch ( func )
-    {
-        case ScifidlProc :
-        {
-            if ( pcbff->pSHCreateItemFromIDList != NULL )
-            {
-                funcPtr = pcbff->pSHCreateItemFromIDList;
-                goto done_out;
-            }
-
-            funcPtr = GetProcAddress(pcbff->hShell32, "SHCreateItemFromIDList");
-            if ( funcPtr == NULL )
-            {
-                oodSetSysErrCode(c);
-                goto done_out;
-            }
-
-            pcbff->pSHCreateItemFromIDList = (SHCreateItemFromIDListPROC)funcPtr;
-
-            break;
-        }
-
-        default :
-            break;
-    }
-
-done_out:
-    return funcPtr;
-}
-
-/**
  * Returns the display name for the specified item ID list as a Rexx object.
  *
  * @param c
@@ -853,47 +790,45 @@ done_out:
  *
  * @note  Sets the .systemErrorCode for errors.  The calling function should
  *        have reset the .systemErrorCode to 0.
- *
- * @remarks  The entry point for SHCreateItemFromIDList is not present on XP
- *           systems.  So we use GetProcAddress() to use it dynamically at run
- *           time.  If we don't ooDialog won't load on XP.
  */
 RexxObjectPtr getDisplayNameRx(RexxThreadContext *c, PIDLIST_ABSOLUTE pidl, pCBrowseForFolder pcbff, SIGDN sigdn)
 {
     RexxObjectPtr result = TheNilObj;
 
-    SHCreateItemFromIDListPROC pSHCreateItemFromIDList = (SHCreateItemFromIDListPROC)getShellFunctionPtr(c, pcbff, ScifidlProc);
-    if ( pSHCreateItemFromIDList == NULL )
-    {
-        goto done_out;
-    }
+    IShellFolder    *psfParent;
+    PCUITEMID_CHILD  pidlRelative;
 
-    IShellItem *psi;
-
-    HRESULT hr = pSHCreateItemFromIDList(pidl, IID_PPV_ARGS(&psi));
+    HRESULT hr = SHBindToParent(pidl, IID_PPV_ARGS(&psfParent), &pidlRelative);
     if ( SUCCEEDED(hr) )
     {
-        PWSTR pszName;
+        STRRET strDispName;
 
-        hr = psi->GetDisplayName(sigdn, &pszName);
+        hr = psfParent->GetDisplayNameOf(pidlRelative, sigdn, &strDispName);
         if ( SUCCEEDED(hr) )
         {
-            result = unicode2string(c, pszName);
-            CoTaskMemFree(pszName);
+            char szDisplayName[MAX_PATH];
+
+            hr = StrRetToBuf(&strDispName, pidlRelative, szDisplayName, ARRAYSIZE(szDisplayName));
+            if ( SUCCEEDED(hr) )
+            {
+                result = c->String(szDisplayName);
+            }
+            else
+            {
+                oodSetSysErrCode(c, hr);
+            }
         }
         else
         {
             oodSetSysErrCode(c);
         }
 
-        psi->Release();
+        psfParent->Release();
     }
     else
     {
         oodSetSysErrCode(c, hr);
     }
-
-done_out:
 
     return result;
 }
@@ -1165,13 +1100,6 @@ RexxMethod1(RexxObjectPtr, bff_uninit, CSELF, pCSelf)
         safeLocalFree(pcbff->hint);
         safeLocalFree(pcbff->startDir);
 
-        if ( pcbff->hShell32 != NULL )
-        {
-            FreeLibrary(pcbff->hShell32);
-            pcbff->hShell32 = NULL;
-            pcbff->pSHCreateItemFromIDList = NULL;
-        }
-
         uninitCom(pcbff);
     }
     return NULLOBJECT;
@@ -1340,11 +1268,6 @@ RexxMethod3(RexxObjectPtr, bff_getDisplayName, POINTER, pidl, OPTIONAL_CSTRING, 
         return NULLOBJECT;
     }
 
-    if ( ! requiredOS(context, "getDisplayName", "Vista", Vista_OS) )
-    {
-        return NULLOBJECT;
-    }
-
     if ( argumentOmitted(2) )
     {
         result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, pcbff, SIGDN_FILESYSPATH);
@@ -1462,7 +1385,14 @@ RexxMethod2(RexxObjectPtr, bff_releaseItemIDList, POINTER, pidl, CSELF, pCSelf)
  * worked around using GetProcAddress().  But, that would be cumbersome if using
  * a number of the 'Vista or later' shell APIs.
  *
- * This has now been integrated inot the BrowseForFolder::getDisplayName method.
+ * This was integrated into the BrowseForFolder::getDisplayName method.  It
+ * worked fine with 64-bit ooRexx on 64-bit Windows.  But, it crashed under
+ * 32-bit ooRexx on Windows 64-bit.  From debugging, it seems the typedef for
+ * SHCreateItemFromIDListPROC was not correct.  The code worked fine in all
+ * cases, if the direct SHCreateItemFromIDList() was used.
+ *
+ * Since the problem was not debugged, BrowseForFolder::getDisplayName() was
+ * switched to use another algorithm that works on XP.
  */
 #if 0
 RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
@@ -1530,7 +1460,6 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
 
     return NULLOBJECT;
 }
-#endif
 
 
 /**
@@ -1611,7 +1540,45 @@ RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
 
     return NULLOBJECT;
 }
+#endif
 
+
+/**
+ * Example code for GetDisplayName() that does not use SHCreateItemFromIDList.
+ * This code has no problems on XP, so BrowseForFolder::getDisplayName() uses
+ * this code.
+ *
+ */
+RexxMethod1(RexxObjectPtr, bff_test, CSELF, pCSelf)
+{
+    PIDLIST_ABSOLUTE pidlSystem;
+
+    HRESULT hr = SHGetFolderLocation(NULL, CSIDL_PRINTERS, NULL, NULL, &pidlSystem);
+    if ( SUCCEEDED(hr) )
+    {
+        IShellFolder *psfParent;
+        PCUITEMID_CHILD pidlRelative;
+        hr = SHBindToParent(pidlSystem, IID_PPV_ARGS(&psfParent), &pidlRelative);
+        if ( SUCCEEDED(hr) )
+        {
+            STRRET strDispName;
+            hr = psfParent->GetDisplayNameOf(pidlRelative, SIGDN_DESKTOPABSOLUTEEDITING, &strDispName);
+            if ( SUCCEEDED(hr) )
+            {
+                WCHAR szDisplayName[MAX_PATH];
+                hr = StrRetToBufW(&strDispName, pidlRelative, szDisplayName, ARRAYSIZE(szDisplayName));
+                if ( SUCCEEDED(hr) )
+                {
+                    wprintf(L"Got folder SHGDN_NORMAL - %s\n", szDisplayName);
+                }
+            }
+            psfParent->Release();
+        }
+        CoTaskMemFree(pidlSystem);
+    }
+
+    return TheZeroObj;
+}
 
 /**
  * Methods for the ooDialog .SimpleFolderBrowse class.
