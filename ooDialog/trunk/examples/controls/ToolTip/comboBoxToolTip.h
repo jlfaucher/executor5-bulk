@@ -51,3 +51,4 @@
 #define IDC_TT_BUTTON_TRACK                     505
 #define IDC_TI_EDITRECT                         506
 #define IDC_TI_BUTTONRECT                       507
+#define IDC_TI_LISTBOX                          508
