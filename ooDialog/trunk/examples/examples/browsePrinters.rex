@@ -181,7 +181,7 @@
         name = bff~getDisplayName(pidl, 'NORMALDISPLAY')
     end
     else do
-        name = bff~getDisplayName(pidl)
+        name = bff~getDisplayName(pidl, 'DESKTOPABSOLUTEEDITING')
     end
 
     -- We are done with pidl, release it.
