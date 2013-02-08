@@ -123,7 +123,11 @@
 <tbody>
 <row>
 <entry><xref linkend="rtnAskDialog"/> routine</entry>
-<entry>Pops up a message box containing the specified question, a Yes and a No push button.</entry>
+<entry>Pops up a message box containing the specified question, a Yes, and a No push button.</entry>
+</row>
+<row>
+<entry><xref linkend="clsBrowseForFolder"/> class</entry>
+<entry>Provides access to the Windows <emphasis role="italic">Browse For Folder</emphasis> dialog, allowing complete configuration of the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="clsCheckList"/> class</entry>
@@ -135,7 +139,7 @@
 </row>
 <row>
 <entry><xref linkend="rtnErrorDialog"/> routine</entry>
-<entry>Pops up a message box containing the specified error message, an Ok push button and an error icon.</entry>
+<entry>Pops up a message box containing the specified error message, an Ok push button, and an error icon.</entry>
 </row>
 <row>
 <entry><xref linkend="rtnFileNameDialog"/> routine</entry>
@@ -198,6 +202,14 @@
 <entry>A shortcut to invoke a <computeroutput>PasswordBox</computeroutput> dialog.</entry>
 </row>
 <row>
+<entry><xref linkend="clsSimpleFolderBrowse"/> class</entry>
+<entry>Allows the display of a simple to use, but non-configurable, Windows <emphasis role="italic">Browse For Folder</emphasis> dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="rtnSimpleFolderBrowse"/> routine</entry>
+<entry>A short cut routine for the <computeroutput>SimpleFolderBrowse</computeroutput> dialog.</entry>
+</row>
+<row>
 <entry><xref linkend="clsSingleSelection"/> class</entry>
 <entry>A dialog that has a group of radio buttons. The user can select only one item of the group.</entry>
 </row>
@@ -256,6 +268,491 @@ These functions are described in the
 Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter.
 </para></listitem></varlistentry>
 </variablelist>
+
+<section id="clsBrowseForFolder" xreflabel="BrowseForFolder"><title>BrowseForFolder Class</title>
+<indexterm><primary>BrowseForFolder class</primary></indexterm>
+<para>
+  A BrowseForFolder object ...
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsBrowseForFolder"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>BrowseForFolder</computeroutput> class:
+
+<table id="tblMethodsBrowseForFolder" frame="all"> <title>BrowseForFolder Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsBrowseForFolder">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+
+<section id="sctSpecialFolderNames" xreflabel="Special Folder Names"><title>Special Folder Names</title>
+<indexterm><primary>BrowseForFolder</primary><secondary>Special Folder Names</secondary></indexterm>
+<indexterm><primary>SimpleFolderBrowse</primary><secondary>Special Folder Names</secondary></indexterm>
+
+<para>
+  Windows uses CSIDL (constant special item ID list) names to provide a unique system-independent way to identify special
+  folders used frequently by applications. These folders may not have the same name or location on any given system. For
+  example, the system folder may be <emphasis role="italic">C:\Windows</emphasis> on one system and <emphasis
+  role="italic">C:\Winnt</emphasis> on another.
+</para>
+<para>
+  In Windows Vista and later the CSIDL values have been replaced by Known Folder values, but for compatibility the CSIDL
+  values still work. ooDialog does not yet support the known folder values, only the CSIDL names. Some of the methods of the
+  <computeroutput>BrowseForFolder</computeroutput> class and the <xref linkend="clsSimpleFolderBrowse"/> class accept the
+  CSIDL names listed below for arguments. Future enhancements to ooDialog may also accept the CSIDL names, so they are listed
+  here in one place. The names are not case sensitive, but are otherwise spelled exactly as Microsoft does. Google can be
+  used to research any of the names further. Only the names listed are recognized in ooDialog.
+</para>
+
+<variablelist>
+  <varlistentry><term>CSIDL_ADMINTOOLS:</term>
+  <listitem>
+  <para>
+    The file system directory that is used to store administrative tools for an individual user.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_ALTSTARTUP:</term>
+  <listitem>
+  <para>
+    The file system directory that corresponds to the user's nonlocalized Startup program group. This value is recognized in
+    Windows Vista for backward compatibility, but the folder itself no longer exists.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_APPDATA:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for application-specific data.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_BITBUCKET:</term>
+  <listitem>
+  <para>
+    The virtual folder that contains the objects in the user's Recycle Bin.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_CDBURN_AREA:</term>
+  <listitem>
+  <para>
+    The file system directory that acts as a staging area for files waiting to be written to a CD.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_ADMINTOOLS:</term>
+  <listitem>
+  <para>
+    The file system directory that contains administrative tools for all users of the computer.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_ALTSTARTUP:</term>
+  <listitem>
+  <para>
+    The file system directory that corresponds to the nonlocalized Startup program group for all users. Valid only for
+    Microsoft Windows NT systems. This value is recognized in Windows Vista for backward compatibility, but the folder itself
+    no longer exists.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_APPDATA:</term>
+  <listitem>
+  <para>
+    The file system directory that contains application data for all users. This folder is used for application data that is not user specific. For example, an application can
+    store a spell-check dictionary, a database of clip art, or a log file in the CSIDL_COMMON_APPDATA folder. This
+    information will not roam and is available to anyone using the computer.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_DESKTOPDIRECTORY:</term>
+  <listitem>
+  <para>
+    The file system directory that contains files and folders that appear on the desktop for all users.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_DOCUMENTS:</term>
+  <listitem>
+  <para>
+    The file system directory that contains documents that are common to all users.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_FAVORITES:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for favorite items common to all users
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_MUSIC:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a repository for music files common to all users.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_OEM_LINKS:</term>
+  <listitem>
+  <para>
+    This value is recognized in Windows Vista for backward compatibility, but the folder itself is no longer used.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_PICTURES:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a repository for image files common to all users
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_PROGRAMS:</term>
+  <listitem>
+  <para>
+    The file system directory that contains the directories for the common program groups that appear on the Start menu for
+    all users.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_STARTMENU:</term>
+  <listitem>
+  <para>
+    The file system directory that contains the programs and folders that appear on the Start menu for all users
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_STARTUP:</term>
+  <listitem>
+  <para>
+    The file system directory that contains the programs that appear in the Startup folder for all users.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_TEMPLATES:</term>
+  <listitem>
+  <para>
+    The file system directory that contains the templates that are available to all users.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMMON_VIDEO:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a repository for video files common to all users.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COMPUTERSNEARME:</term>
+  <listitem>
+  <para>
+    The folder that represents other computers in your workgroup.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_CONNECTIONS:</term>
+  <listitem>
+  <para>
+    The virtual folder that represents Network Connections, that contains network and dial-up connections.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_CONTROLS:</term>
+  <listitem>
+  <para>
+    The virtual folder that contains icons for the Control Panel applications.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_COOKIES:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for Internet cookies.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_DESKTOP:</term>
+  <listitem>
+  <para>
+    The virtual folder that represents the Windows desktop, the root of the namespace.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_DESKTOPDIRECTORY:</term>
+  <listitem>
+  <para>
+    The file system directory used to physically store file objects on the desktop (not to be confused with the desktop
+    folder itself.)
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_DRIVES:</term>
+  <listitem>
+  <para>
+    The virtual folder that represents My Computer, containing everything on the local computer: storage devices, printers,
+    and Control Panel.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_FAVORITES:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for the user's favorite items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_FONTS:</term>
+  <listitem>
+  <para>
+    A virtual folder that contains fonts.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_HISTORY:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for Internet history items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_INTERNET:</term>
+  <listitem>
+  <para>
+    A virtual folder for Internet Explorer.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_INTERNET_CACHE:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for temporary Internet files
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_LOCAL_APPDATA:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a data repository for local (nonroaming) applications.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_MYDOCUMENTS:</term>
+  <listitem>
+  <para>
+    The virtual folder that represents the My Documents desktop item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_MYMUSIC:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for music files.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_MYPICTURES:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for image files.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_MYVIDEO:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for video files
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_NETHOOD:</term>
+  <listitem>
+  <para>
+    A file system directory that contains the link objects that may exist in the My Network Places virtual folder. It is not
+    the same as CSIDL_NETWORK, which represents the network namespace root.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_NETWORK:</term>
+  <listitem>
+  <para>
+    A virtual folder that represents Network Neighborhood, the root of the network namespace hierarchy.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_PERSONAL:</term>
+  <listitem>
+  <para>
+    The virtual folder that represents the My Documents desktop item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_PRINTERS:</term>
+  <listitem>
+  <para>
+    The virtual folder that contains installed printers.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_PRINTHOOD:</term>
+  <listitem>
+  <para>
+    The file system directory that contains the link objects that can exist in the Printers virtual folder.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_PROFILE:</term>
+  <listitem>
+  <para>
+    The user's profile folder. Applications should not create files or folders at this level; they should put their data
+    under the locations referred to by CSIDL_APPDATA or CSIDL_LOCAL_APPDATA.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_PROGRAM_FILES:</term>
+  <listitem>
+  <para>
+    The Program Files folder.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_PROGRAM_FILES_COMMON:</term>
+  <listitem>
+  <para>
+    A folder for components that are shared across applications.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_PROGRAM_FILES_COMMONX86:</term>
+  <listitem>
+  <para>
+    Listed in MSDN doc with no explanation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_PROGRAM_FILESX86:</term>
+  <listitem>
+  <para>
+    Listed in MSDN doc with no explanation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_PROGRAMS:</term>
+  <listitem>
+  <para>
+    The file system directory that contains the user's program groups (which are themselves file system directories.)
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_RECENT:</term>
+  <listitem>
+  <para>
+    The file system directory that contains shortcuts to the user's most recently used documents.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_RESOURCES:</term>
+  <listitem>
+  <para>
+    Windows Vista. The file system directory that contains resource data.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_RESOURCES_LOCALIZED:</term>
+  <listitem>
+  <para>
+    Listed in MSDN doc with no explanation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_SENDTO:</term>
+  <listitem>
+  <para>
+    The file system directory that contains Send To menu items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_STARTMENU:</term>
+  <listitem>
+  <para>
+    The file system directory that contains Start menu items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_STARTUP:</term>
+  <listitem>
+  <para>
+    The file system directory that corresponds to the user's Startup program group. The system starts these programs whenever
+    any user logs onto Windows.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_SYSTEM:</term>
+  <listitem>
+  <para>
+    The Windows System folder.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_SYSTEMX86:</term>
+  <listitem>
+  <para>
+    Listed in MSDN doc with no explanation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_TEMPLATES:</term>
+  <listitem>
+  <para>
+    The file system directory that serves as a common repository for document templates
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>CSIDL_WINDOWS:</term>
+  <listitem>
+  <para>
+    The Windows directory or SYSROOT. This corresponds to the %windir% or %SYSTEMROOT% environment variables.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End Special Folder Names section -->
+
+
+<section id="mthNewClsBrowseForFolder"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>BrowseForFolder class</secondary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::new() -->
+
+</section> <!-- End BrowseForFolder Class -->
+
 
 <section id="clsCheckList" xreflabel="CheckList"><title>CheckList Class</title>
 <indexterm><primary>CheckList</primary>
@@ -739,6 +1236,177 @@ class, InputBox, by using a password entry line instead
 of a simple entry line.</para>
 </section>
 </section>
+
+<section id="clsSimpleFolderBrowse" xreflabel="SimpleFolderBrowse"><title>SimpleFolderBrowse Class</title>
+<indexterm><primary>SimpleFolderBrowse class</primary></indexterm>
+<para>
+  The SimpleFolderBrowse object displays the Windows common Browse For Folder dialog and returns the user's selection. It is
+  a simplified version of the <xref linkend="clsBrowseForFolder"/> dialog that is designed to be simple to use, and does not
+  have as many configuration options as the <computeroutput>BrowseForFolder</computeroutput> object does.
+</para>
+<para>
+  The Windows common Browse For Folder dialog allows the user to select a folder from a tree-like display of the computer's
+  file system. The Browse For Folder dialog is specifically for opening or choosing folders.
+</para>
+
+<section id="sctMethodsSimpleFolderBrowse"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>SimpleFolderBrowse</computeroutput> class.
+  This simple to use dialog only has a single class method:
+
+<table id="tblMethodsSimpleFolderBrowse" frame="all"> <title>SimpleFolderBrowse Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFolderClsSimpleFolderBrowse"/></entry>
+<entry>Pops up the Browse For Folder Windows dialog and returns the user's selection.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthGetFolderClsSimpleFolderBrowse" xreflabel="getFolder"><title>getFolder (Class Method)</title>
+<indexterm><primary>getFoder</primary><secondary>SimpleFolderBrowse class</secondary></indexterm>
+<indexterm><primary>SimpleFolderBrowse class</primary><secondary>getFolder</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFolder(--+---------+-------+-+------ +-+---------+-+--------+-+---------+--)--><
+                +--capt-+ +-,-bnr-+ +-,-hnt-+ +-,-start-+ +-,-root-+ +-,-owner-+
+]]>
+</programlisting>
+
+<para>
+  Instantiates the Rexx SimpleBrowseFolder object, pops up the Windows Browse For Folder dialog, and returns the user's
+  selection in one step.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>capt [optional]</term>
+    <listitem>
+    <para>
+      Specifies a caption, or title, for the dialog. The Windows default title is <emphasis role="italic">Browse For
+      Folder</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bnr [optional]</term>
+    <listitem>
+    <para>
+      Specifies text to use for what Windows calls the <emphasis role="italic">banner</emphasis> for the dialog.  This string
+      is displayed above the tree view control in the dialog box. The string can be used to specify instructions to the user.
+      By default nothing is displayed for the banner and the area above the tree view is blank.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hnt [optional]</term>
+    <listitem>
+    <para>
+      Specifies text to use for a <emphasis role="italic">hint</emphasis> in the dialog. The hint is displayed between the
+      bottom of the tree view control, above the row of buttons at the bottom of the dialog. By default there is no hint, and
+      the area where the hint would go is removed from the dialog. That is, the bottom row of buttons is placed directly
+      below the tree view.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>start [optional]</term>
+    <listitem>
+    <para>
+      Specifies an initial selected folder for the dialog. By default, the dialog opens with the top-most item in the tree
+      view selected. If a start folder is specified, the folder is selected and, if needed, the tree view items are expanded
+      and the tree view is scrolled so that the starting folder is visible in the tree view.
+    </para>
+    <para>
+      Testing indicates that the folder specified must be a fully qualified path name of an existing directory. If not, the
+      operating system seems to just ignore it.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>root [optional]</term>
+    <listitem>
+    <para>
+      Specifies the root for the tree view in the dialog. The root is the location of the root folder from which the user
+      starts browsing. Only the specified folder and any subfolders that are beneath it in the namespace hierarchy
+      will appear in the dialog box. The user can not browse above the root folder. If this argument is omitted, the
+      operating system uses the namespace root (the desktop folder.)
+    </para>
+    <para>
+      Specify either a fully qualified file system path name, or use one of the <xref linkend="sctSpecialFolderNames"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>owner [optional]</term>
+    <listitem>
+    <para>
+      The Rexx dialog object that is to be the owner window of the browse for folder dialog. The owner dialog is disabled
+      until the browse for folder dialog is closed by the users.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    If the user cancels the dialog, the empty string is returned, otherwise the fully qualified path to the folder the user
+    picked is returned. However it is possible to set up the dialog in a way such that the user can pick a virtual folder.
+    Virtual folders do not have a file system path. The <computeroutput>.nil</computeroutput> object is returned if a virtual
+    folder is picked.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <computeroutput>SimpleFolderBrowse</computeroutput> dialog is intended to be simple to use and is restricted to file
+    system paths. The Windows Browse For Folders dialog has more capabilities than can be accessed through the
+    <computeroutput>SimpleFolderBrowse</computeroutput> class, but the capabilities are less likely to be useful in most
+    ooRexx programs. The <xref linkend="clsBrowseForFolder"/> class allows access to all features of the Windows Browse For
+    Folders dialog, but it is correspondingly more complex to use.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example puts up the Browse For Folder dialog and gets the user's selection:
+<programlisting>
+<![CDATA[
+
+  folder = .SimpleFolderBrowse~getFolder
+
+  select
+      when folder == .nil then text = 'The user picked a virtual folder'
+      when folder == '' then text = 'The user canceled'
+      otherwise text = 'The user picked:' folder
+  end
+  -- End select
+
+  say text
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SimpleFolderBrowse::new() -->
+
+</section> <!-- End SimpleFolderBrowse Class -->
+
 
 <section id="clsSingleSelection" xreflabel="SingleSelection"><title>SingleSelection Class</title>
 <indexterm><primary>SingleSelection</primary><secondary>standard dialog</secondary></indexterm>
@@ -2197,6 +2865,134 @@ pwd = PasswordBox("Please enter your password","Security")
   class.
 </para>
 </section>
+
+<section id="rtnSimpleFolderBrowse"><title>SimpleFolderBrowse</title>
+<indexterm><primary>SimpleFolderBrowse</primary></indexterm>
+<indexterm><primary>public routines</primary><secondary>SimpleFolderBrowse</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--SimpleFolderBrowse(--+---------+-------+-+------ +-+---------+-+--------+-+---------+--)--><
+                        +--capt-+ +-,-bnr-+ +-,-hnt-+ +-,-start-+ +-,-root-+ +-,-owner-+
+]]>
+</programlisting>
+
+<para>
+  Brings up the Windows <emphasis role="italic">Browe For Folder</emphasis> dialog, allowing the user to select a folder in
+  the file system.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>capt [optional]</term>
+    <listitem>
+    <para>
+      Specifies a caption, or title, for the dialog. The Windows default title is <emphasis role="italic">Browse For
+      Folder</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bnr [optional]</term>
+    <listitem>
+    <para>
+      Specifies text to use for what Windows calls the <emphasis role="italic">banner</emphasis> for the dialog.  This string
+      is displayed above the tree view control in the dialog box. The string can be used to specify instructions to the user.
+      By default nothing is displayed for the banner and the area above the tree view is blank.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hnt [optional]</term>
+    <listitem>
+    <para>
+      Specifies text to use for a <emphasis role="italic">hint</emphasis> in the dialog. The hint is displayed between the
+      bottom of the tree view control, above the row of buttons at the bottom of the dialog. By default there is no hint, and
+      the area where the hint would go is removed from the dialog. That is, the bottom row of buttons is placed directly
+      below the tree view.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>start [optional]</term>
+    <listitem>
+    <para>
+      Specifies an initial selected folder for the dialog. By default, the dialog opens with the top-most item in the tree
+      view selected. If a start folder is specified, the folder is selected and, if needed, the tree view items are expanded
+      and the tree view is scrolled so that the starting folder is visible in the tree view.
+    </para>
+    <para>
+      Testing indicates that the folder specified must be a fully qualified path name of an existing directory. If not, the
+      operating system seems to just ignore it.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>root [optional]</term>
+    <listitem>
+    <para>
+      Specifies the root for the tree view in the dialog. The root is the location of the root folder from which the user
+      starts browsing. Only the specified folder and any subfolders that are beneath it in the namespace hierarchy
+      will appear in the dialog box. The user can not browse above the root folder. If this argument is omitted, the
+      operating system uses the namespace root (the desktop folder.)
+    </para>
+    <para>
+      Specify either a fully qualified file system path name, or use one of the <xref linkend="sctSpecialFolderNames"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>owner [optional]</term>
+    <listitem>
+    <para>
+      The Rexx dialog object that is to be the owner window of the browse for folder dialog. The owner dialog is disabled
+      until the browse for folder dialog is closed by the users.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    If the user cancels the dialog, the empty string is returned, otherwise the fully qualified path to the folder the user
+    picked is returned. However it is possible to set up the dialog in a way such that the user can pick a virtual folder.
+    Virtual folders do not have a file system path. The <computeroutput>.nil</computeroutput> object is returned if a virtual
+    folder is picked.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">SimpleFolderBrowse</emphasis> routine is just a shortcut to using the <xref
+    linkend="clsSimpleFolderBrowse"/> class. It is intended to be simple to use and is restricted to file system paths. The
+    Windows Browse For Folders dialog has more capabilities than can be accessed through this routine, but the capabilities
+    are less likely to be useful in most ooRexx programs. The <xref linkend="clsBrowseForFolder"/> class allows access to all
+    features of the Windows Browse For Folders dialog, but it is correspondingly more complex to use.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example puts up the Browse For Folder dialog and gets the user's selection:
+<programlisting>
+<![CDATA[
+
+  folder = SimpleFolderBrowse()
+
+  select
+      when folder == .nil then text = 'The user picked a virtual folder'
+      when folder == '' then text = 'The user canceled'
+      otherwise text = 'The user picked:' folder
+  end
+  -- End select
+
+  say text
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SimpleFolderBrowse() -->
+
 
 <section id="rtnSingleSelection" xreflabel="SingleSelection"><title>SingleSelection Routine</title>
 <indexterm><primary>SingleSelection</primary><secondary>function</secondary></indexterm>

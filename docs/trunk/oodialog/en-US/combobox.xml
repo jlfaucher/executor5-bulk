@@ -60,8 +60,8 @@
 <para>
   In simple and drop-down combo boxes the selection field is an edit control and can be used to enter
   text not available in the list, or to edit existing text. In a drop-down list combo box, the list is a list box
-  control and the use can only select the items.  In drop-down and drop-down list combo boxes the list only appears
-  when the user opens it. In a simple combo box the list is always visible.
+  control and the use can only select the items in the list box. In drop-down and drop-down list combo boxes the list only
+  appears when the user opens it. In a simple combo box the list is always visible.
 </para>
 <para>
   The <computeroutput>ComboBox</computeroutput> class provides methods to query and modify combo box controls.
@@ -69,6 +69,7 @@
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
   needed, or are useful, when working with combo box controls:
+</para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
@@ -92,7 +93,6 @@
   </para>
   </listitem></varlistentry>
 </variablelist>
-</para>
 
 <section id="sctMethodsComboBox"><title>Method Table</title>
 <para>
@@ -102,8 +102,8 @@
 <table id="tblComboBoxMethods" frame="all">
 <title>ComboBox Methods and Attributes</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="3*" />
+<colspec colwidth="6*" />
+<colspec colwidth="16*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -169,7 +169,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetFirstVisibleClsComboBox"/></entry>
-<entry> Determines the one-based index of the top item in the drop down list.</entry>
+<entry> Determines the one-based index of the top item in the drop-down list.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetHorizontalExtentClsComboBox"/></entry>
@@ -181,7 +181,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetMinVisible"/></entry>
-<entry>Determines the height of the list items or the height of the selection field in this combo box.</entry>
+<entry>Retrieves the minimum number of visible items that must be displayed in the drop-down list of this combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetTextClsComboBox"/></entry>
@@ -193,11 +193,11 @@
 </row>
 <row>
 <entry><xref linkend="mthIsDropDown"/></entry>
-<entry></entry>
+<entry>Determines if this combo box is a drop-down combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIsDropDownList"/></entry>
-<entry></entry>
+<entry>Determines if this combo box is a drop-down lis combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIsDropDownOpen"/></entry>
@@ -209,7 +209,7 @@
 </row>
 <row>
 <entry><xref linkend="mthIsSimple"/></entry>
-<entry></entry>
+<entry>Determines if this combo box is a simple combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthItemsClsComboBox"/></entry>
@@ -253,11 +253,11 @@
 </row>
 <row>
 <entry><xref linkend="mthSetItemHeightClsComboBox"/></entry>
-<entry></entry>
+<entry>Sets the height of the list items or the selection field in this combo box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetMinVisible"/></entry>
-<entry>Sets the minimum number of visible items in the drop down list of a combo box.</entry>
+<entry>Sets the minimum number of visible items in the drop-down list of a combo box.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -303,7 +303,6 @@
 <![CDATA[
 >>-connectComboBoxEvent(--id--,--event--+----------------+--)------------------><
                                         +--,-methodName--+
-
 ]]>
 </programlisting>
 </para>
@@ -316,8 +315,6 @@
 <programlisting>
 <![CDATA[
 >>--add(--listEntry--)---------------------------><
-
-
 ]]>
 </programlisting>
 
@@ -329,6 +326,7 @@
   <listitem>
   <para>
     The only argument is:
+  </para>
     <variablelist>
       <varlistentry><term>listEntry [required]</term>
       <listitem>
@@ -337,7 +335,6 @@
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -374,10 +371,8 @@
 <indexterm><primary>ComboBox class</primary><secondary>addDirectory</secondary></indexterm>
 <programlisting>
 <![CDATA[
-
 >>--addDirectory(--filePattern--+-------------------+--)--------><
                                 +-,-fileAttributes--+
-
 ]]>
 </programlisting>
 
@@ -390,6 +385,7 @@
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
       <varlistentry><term>filePattern [required]</term>
       <listitem>
@@ -473,7 +469,6 @@
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -523,12 +518,11 @@
 <programlisting>
 <![CDATA[
 >>--closeDropDown--------------------------------><
-
 ]]>
 </programlisting>
 
 <para>
-  Closes the drop down list box of a drop-down combo box or a drop-down list combo box. This method has no effect on
+  Closes the drop-down list box of a drop-down combo box or a drop-down list combo box. This method has no effect on
   simple combo boxes.
 </para>
 <variablelist>
@@ -554,7 +548,6 @@
 <![CDATA[
 >>--delete(--+---------+--)----------------------><
              +--index--+
-
 ]]>
 </programlisting>
 
@@ -566,6 +559,7 @@
   <listitem>
   <para>
     The only argument is:
+  </para>
     <variablelist>
     <varlistentry><term>index [optional]</term>
     <listitem>
@@ -575,7 +569,6 @@
     </para>
     </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -599,7 +592,6 @@
 <programlisting>
 <![CDATA[
 >>--deleteAll------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -630,7 +622,6 @@
 <![CDATA[
 >>--find(--textOrPrefix--+--------------+--+---------+--)-------><
                          +-,-startIndex-+  +-,-exact-+
-
 ]]>
 </programlisting>
 
@@ -642,6 +633,7 @@
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
       <varlistentry><term>textOrPrefix [required]</term>
       <listitem>
@@ -666,7 +658,6 @@
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -1018,7 +1009,7 @@ Simple Combo Box
 </programlisting>
 
 <para>
-  Determines the one-based index of the top item in the drop down list.
+  Determines the one-based index of the top item in the drop-down list.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1074,7 +1065,6 @@ Simple Combo Box
 <programlisting>
 <![CDATA[
 >>--getHorizontalExtent--------------------------><
-
 ]]>
 </programlisting>
 
@@ -1183,7 +1173,7 @@ Simple Combo Box
 </programlisting>
 
 <para>
-  Retrieves the minimum number of visible items that must be displayed in the drop down list of this combo box.
+  Retrieves the minimum number of visible items that must be displayed in the drop-down list of this combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1201,8 +1191,8 @@ Simple Combo Box
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    When the number of items in the drop down list is greater than the minimum, the combo box uses a scrollbar. Unless the
-    combo box has the no integral height style, the drop down will be sized so that it can accommodate the minimum number of
+    When the number of items in the drop-down list is greater than the minimum, the combo box uses a scrollbar. Unless the
+    combo box has the no integral height style, the drop-down will be sized so that it can accommodate the minimum number of
     items. By default, 30 is the minimum setting for the combo box.
   </para>
   </listitem></varlistentry>
@@ -1246,8 +1236,6 @@ New minimum visible setting is:  10
 <programlisting>
 <![CDATA[
 >>--getText(--index--)---------------------------><
-
-
 ]]>
 </programlisting>
 
@@ -1256,16 +1244,18 @@ New minimum visible setting is:  10
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The only argument is:
-    <variablelist>
-      <varlistentry><term>index</term>
-      <listitem>
-      <para>
-        The one-based index of a combo box item.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <listitem>
+  <para>
+    The only argument is:
   </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The one-based index of a combo box item.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -1292,7 +1282,6 @@ New minimum visible setting is:  10
 <![CDATA[
 >>--insert(--+-------+--,--item--)---------------><
              +-index-+
-
 ]]>
 </programlisting>
 
@@ -1304,6 +1293,7 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
       <varlistentry><term>index [optional]</term>
       <listitem>
@@ -1322,7 +1312,6 @@ New minimum visible setting is:  10
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
@@ -1352,59 +1341,32 @@ New minimum visible setting is:  10
 <indexterm><primary>ComboBox class</primary><secondary>isDropDown</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isDropDown(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--isDropDown-----------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if this combo box is a drop-down combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if this combo box is a drop-down combo box, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Recall there are 3 types of combo boxes. A <emphasis role="italic">simple</emphasis> combo box, a <emphasis
+    role="italic">drop-down</emphasis> combo box, and a <emphasis role="italic">drop-down list</emphasis> combo box. This
+    method determines if this combo box is a <emphasis role="italic">drop-down</emphasis> combo box.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1416,59 +1378,32 @@ New minimum visible setting is:  10
 <indexterm><primary>ComboBox class</primary><secondary>isDropDownList</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isDropDownList(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--isDropDownList-------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if this combo box is a drop-down list combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if this combo box is a drop-down list combo box, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Recall there are 3 types of combo boxes. A <emphasis role="italic">simple</emphasis> combo box, a <emphasis
+    role="italic">drop-down</emphasis> combo box, and a <emphasis role="italic">drop-down list</emphasis> combo box. This
+    method determines if this combo box is a <emphasis role="italic">drop-down list</emphasis> combo box.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1622,59 +1557,32 @@ New minimum visible setting is:  10
 <indexterm><primary>ComboBox class</primary><secondary>isSimple</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isSimple(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--isSimple-------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if this combo box is a simple combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if this combo box is a drop-down list combo box, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Recall there are 3 types of combo boxes. A <emphasis role="italic">simple</emphasis> combo box, a <emphasis
+    role="italic">drop-down</emphasis> combo box, and a <emphasis role="italic">drop-down list</emphasis> combo box. This
+    method determines if this combo box is a <emphasis role="italic">simple</emphasis> combo box.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1687,8 +1595,6 @@ New minimum visible setting is:  10
 <programlisting>
 <![CDATA[
 >>--items----------------------------------------><
-
-
 ]]>
 </programlisting>
 
@@ -1719,7 +1625,6 @@ New minimum visible setting is:  10
 <![CDATA[
 >>--modify(--+--------+--,--newText--)-----------><
              +--index-+
-
 ]]>
 </programlisting>
 
@@ -1731,6 +1636,7 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
       <varlistentry><term>index [optional]</term>
       <listitem>
@@ -1747,7 +1653,6 @@ New minimum visible setting is:  10
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -1779,7 +1684,7 @@ New minimum visible setting is:  10
 </programlisting>
 
 <para>
-  Shows the drop down list box of a drop-down combo box or a drop-down list combo box. This method has no effect on
+  Shows the drop-down list box of a drop-down combo box or a drop-down list combo box. This method has no effect on
   simple combo boxes.
 </para>
 <variablelist>
@@ -1804,7 +1709,6 @@ New minimum visible setting is:  10
 <programlisting>
 <![CDATA[
 >>--select(--itemText--)-------------------------><
-
 ]]>
 </programlisting>
 
@@ -1817,6 +1721,7 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     The single argument is:
+  </para>
     <variablelist>
       <varlistentry><term>itemText [required]</term>
       <listitem>
@@ -1825,7 +1730,6 @@ New minimum visible setting is:  10
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -1890,7 +1794,6 @@ New minimum visible setting is:  10
 <programlisting>
 <![CDATA[
 >>--selected-------------------------------------><
-
 ]]>
 </programlisting>
 
@@ -1920,7 +1823,6 @@ New minimum visible setting is:  10
 <programlisting>
 <![CDATA[
 >>--selectedIndex--------------------------------><
-
 ]]>
 </programlisting>
 
@@ -1950,7 +1852,6 @@ New minimum visible setting is:  10
 <![CDATA[
 >>--selectIndex(--+---------+--)-----------------><
                   +--index--+
-
 ]]>
 </programlisting>
 
@@ -1962,6 +1863,7 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     The only argument is:
+  </para>
     <variablelist>
       <varlistentry><term>index [optional]</term>
       <listitem>
@@ -1974,7 +1876,6 @@ New minimum visible setting is:  10
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -2091,6 +1992,7 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     The arguments are:
+  </para>
     <variablelist>
       <varlistentry><term>startIndex [optional]</term>
       <listitem>
@@ -2109,7 +2011,6 @@ New minimum visible setting is:  10
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -2162,7 +2063,6 @@ New minimum visible setting is:  10
 <programlisting>
 <![CDATA[
 >>--setHorizontalExtent(--pixels--)--------------><
-
 ]]>
 </programlisting>
 
@@ -2174,6 +2074,7 @@ New minimum visible setting is:  10
   <listitem>
   <para>
     The single argument is:
+  </para>
     <variablelist>
       <varlistentry><term>pixels [required]</term>
       <listitem>
@@ -2182,7 +2083,6 @@ New minimum visible setting is:  10
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -2259,13 +2159,13 @@ New minimum visible setting is:  10
 <indexterm><primary>ComboBox class</primary><secondary>setItemHeight</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setItemHeight(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setItemHeight(--height--+----------------------+--)---------><
+                            +-,-setSelectionField--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the height of the list items or the selection field in this combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2274,10 +2174,18 @@ New minimum visible setting is:  10
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>height [required]</term>
     <listitem>
     <para>
-      xx
+      The height, in pixels, to set the specified component. <emphasis role="italic">height</emphasis> must be a non-negative
+      whole number or a syntax condition is raised.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>setSelectionField [optional]</term>
+    <listitem>
+    <para>
+      By default this method sets the height of the combo box items in the list. If <emphasis
+      role="italic">setSelectionField</emphasis> is true, the height of the selection field is set.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2285,13 +2193,16 @@ New minimum visible setting is:  10
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 on success. Returns -1 if <emphasis role="italic">height</emphasis> is not valid. The Microsoft documentation
+    does not specify exactly what invalid means. Some simple testing shows that the operating system will not accept very
+    large numbers. Exactly where the cut off is could be determined by the programmer if needed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The selection field height in a combo box is set independently of the height of the list items. The programmer must
+    ensure that the height of the selection field is not smaller than the height of a particular list item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2299,14 +2210,11 @@ New minimum visible setting is:  10
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example gets the height of the combo box items and increases it by 2 pixels:
+    This example gets the height of the combo box items, increases it by 2 pixels, and sets that as the height of the items:
 <programlisting>
 <![CDATA[
 
@@ -2320,6 +2228,7 @@ New minimum visible setting is:  10
 </variablelist>
 </section>  <!-- End ComboBox::setItemHeight() -->
 
+
 <section id="mthSetMinVisible" xreflabel="setMinVisible"><title>setMinVisible</title>
 <indexterm><primary>setMinVisible</primary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>setMinVisible</secondary></indexterm>
@@ -2330,7 +2239,7 @@ New minimum visible setting is:  10
 </programlisting>
 
 <para>
-  Sets the minimum number of visible items in the drop down list of a combo box.
+  Sets the minimum number of visible items in the drop-down list of a combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2342,7 +2251,7 @@ New minimum visible setting is:  10
     <varlistentry><term>number [required]</term>
     <listitem>
     <para>
-      The new setting for the minimum number of visible items in the drop down list.
+      The new setting for the minimum number of visible items in the drop-down list.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2350,14 +2259,14 @@ New minimum visible setting is:  10
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns true on success, fasle on error.
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    When the number of items in the drop down list is greater than the minimum, the combo box uses a scrollbar. Unless the
-    combo box has the no integral height style, the drop down will be sized so that it can accommodate the minimum number of
+    When the number of items in the drop-down list is greater than the minimum, the combo box uses a scrollbar. Unless the
+    combo box has the no integral height style, the drop-down will be sized so that it can accommodate the minimum number of
     items. By default, 30 is the minimum setting for the combo box.
   </para>
   </listitem></varlistentry>

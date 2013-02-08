@@ -1423,40 +1423,49 @@ self~newPushButton(IDCANCEL)~click
 <indexterm><primary>Button class</primary><secondary>getIdealSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getIdealSize---------------------------------><
-
+>>--getIdealSize(--+-------------+--)------------><
+                   +--wantWidth--+
 ]]>
 </programlisting>
 <para>
-  This method queries the button control for its ideal size.  The ideal size is the size that best fits
-  its text or image.  (If the button has an image.)
+  This method queries the button control for its ideal size. The ideal size is the size that best fits its text and image.
+  (If the button has an image.)
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This method has no arguments.
+    The single optional argument is:
   </para>
+  <variablelist>
+    <varlistentry><term>wantWidth [optional]</term>
+    <listitem>
+    <para>
+      Specifies the desired width of the button in pixels. If this argument is used, the operating system will calculate the
+      idea height for a button width the width specified. This functionality is not available on Windows XP
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
     The possible return values are:
+  </para>
     <variablelist>
       <varlistentry><term>A <xref linkend="clsSize"/> object</term>
       <listitem>
       <para>
-        The ideal size for the button.
+        The ideal size for the button in pixels.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
       <listitem>
       <para>
-        Some unanticipated error.  This is very unlikely to happen.
+        Some unanticipated error. This is very unlikely to happen.
       </para>
       </listitem></varlistentry>
     </variablelist>
-    </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
@@ -1818,6 +1827,7 @@ return .true
   <listitem>
   <para>
     The single argument is:
+  </para>
     <variablelist>
       <varlistentry><term>newImage [required]</term>
       <listitem>
@@ -1828,7 +1838,6 @@ return .true
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
