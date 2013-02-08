@@ -1104,7 +1104,22 @@ RexxMethod2(logical_t, bc_setTextMargin, RexxObjectPtr, r, CSELF, pCSelf)
     return 0;
 }
 
-RexxMethod1(RexxObjectPtr, bc_getIdealSize, CSELF, pCSelf)
+/** Button::getIdealSize()
+ *
+ *  Gets the size of the button that best fits the text and image, if an image
+ *  list is present.
+ *
+ *  @param  wantWidth  [optional]  Specifies the desired width of the button.
+ *                     If this argument is used, the operating system will
+ *                     calculate the idea height for a button of the width
+ *                     specified.  This functionality is not available on
+ *                     Windows XP
+ *
+ *  @return  On success returns a .Size object containing the operating
+ *           systems's calculation of the ideal size.  On error returns the .nil
+ *           object.
+ */
+RexxMethod2(RexxObjectPtr, bc_getIdealSize, OPTIONAL_uint32_t, wantWidth, CSELF, pCSelf)
 {
     if ( ! requiredComCtl32Version(context, "getIdealSize", COMCTL32_6_0) )
     {
@@ -1114,7 +1129,12 @@ RexxMethod1(RexxObjectPtr, bc_getIdealSize, CSELF, pCSelf)
     HWND hwnd = getDChCtrl(pCSelf);
     RexxObjectPtr result = NULLOBJECT;
 
-    SIZE size;
+    SIZE size = { 0, 0 };
+
+    if ( argumentExists(1) )
+    {
+        size.cx;
+    }
     if ( Button_GetIdealSize(hwnd, &size) )
     {
         result = rxNewSize(context, size.cx, size.cy);

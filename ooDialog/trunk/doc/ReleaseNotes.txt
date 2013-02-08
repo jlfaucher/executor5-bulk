@@ -103,6 +103,17 @@ Feature Requests in ooDialog:
 
  * #526 Get the message text associated with Windows error codes
 
+ * #528 Get the list box item under a point
+
+ * #529	Add methods to determine type of combo box from Rexx code
+
+ * #530	Want to be be able to calculate the rectangle occupied by a
+        combo box item
+
+ * #531	Combo box methods to set the minimum number of items shown in
+        list
+
+ * #532	Set the cue banner text for a combo box
 
 
 New Functionality in ooDialog:
@@ -168,17 +179,45 @@ defaultIcon()     Assigns an application-wide default dialog icon.
 
 In the ComboBox class:
 
+getCue()          Retrieves the cue banner text for this combo box, or
+                  the empty string if  there is no cue set.
+
 getComboBoxInfo() Returns a Directory object containinng information
                   about the combo box.
 
 getEditControl()  Returns a Rexx Edit object that represents the child
                   edit control used by the combo box.
 
+getFirstVisible() Determines the one-based index of the top item in the
+                  drop-down list.
+
+getItemHeight()   Determines the height of the list items or the height
+                  of the selection field in this combo box.
+
+getMinVisible()   Retrieves the minimum number of visible items that
+                  must be displayed in the drop-down list of this combo
+                  box.
+
+isDropDown()      Determines if this combo box is a drop-down combo box.
+
+isDropDownList()  Determines if this combo box is a drop-down list combo
+                  box.
+
 isGrandChild()    Notifies the ooDialog framework that the combo box
                   control is a grandchild of the dialog and configures
                   the underlying combo box control to send four event
                   notifications to the dialog, rather than its direct
                   parent.
+
+isSimple()        Determines if this combo box is a simple combo box.
+
+setCue()          Sets the cue banner text for this combo box.
+
+setItemHeight()   Sets the height of the list items or the selection
+                  field in this combo box.
+
+setMinVisible()   Sets the minimum number of visible items in the
+                  drop-down list of a combo box.
 
 
 In the DlgUtil class:
@@ -268,6 +307,16 @@ dlgID     This attribute reflects a whole number value that can be used
 
 Enhanced Methods:
 -----------------
+
+In the Button class:
+
+getIdealSize()          A new optional parameter, wantWidth, is added.
+                        If this argument is specified, the operating
+                        system will calculate the ideal height of the
+                        button with the specified width.  This
+                        functionality is not available in the operating
+                        system until Vista or later.
+
 
 In the EventNotification class:
 
