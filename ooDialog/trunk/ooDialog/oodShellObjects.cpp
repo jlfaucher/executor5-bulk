@@ -339,9 +339,8 @@ static RexxObjectPtr bif2keywords(RexxMethodContext *c, uint32_t bif)
     if ( bif & BIF_RETURNFSANCESTORS  ) strcat(buf, "RETURNFSANCESTORS "  );
     if ( bif & BIF_RETURNONLYFSDIRS   ) strcat(buf, "RETURNONLYFSDIRS "   );
     if ( bif & BIF_SHAREABLE          ) strcat(buf, "SHAREABLE "          );
-    if ( bif & BIF_STATUSTEXT         ) strcat(buf, "STATUSTEXT "         );
     if ( bif & BIF_UAHINT             ) strcat(buf, "UAHINT "             );
-    if ( bif & BIF_USENEWUI           ) strcat(buf, "USENEWUI "           );
+    if ( (bif & BIF_USENEWUI) == BIF_USENEWUI ) strcat(buf, "USENEWUI "   );
 
     if ( buf[0] != '\0' )
     {
@@ -897,6 +896,21 @@ RexxMethod2(RexxObjectPtr, bff_setHint, RexxObjectPtr, hint, CSELF, pCSelf)
     return NULLOBJECT;
 }
 
+/** BrowseForFolder::initialThread               [attribute]
+ *
+ *  Returns the thread ID of the thread this BrowseForFolder object was
+ *  instantiated on, the ID of the thread that COM was initialized on.
+ */
+RexxMethod1(uint32_t, bff_initialThread, CSELF, pCSelf)
+{
+    pCBrowseForFolder pcbff = getBffCSelf(context, pCSelf);
+    if ( pcbff != NULL )
+    {
+        return pcbff->coThreadID;
+    }
+    return 0;
+}
+
 /** BrowseForFolder:options                  [attribute]
  */
 RexxMethod1(RexxObjectPtr, bff_options, CSELF, pCSelf)
@@ -1061,21 +1075,6 @@ RexxMethod2(RexxObjectPtr, bff_setUsePathForHint, logical_t, usePath, CSELF, pCS
     return NULLOBJECT;
 }
 
-/** BrowseForFolder::initialThread               [attribute]
- *
- *  Returns the thread ID of the thread this BrowseForFolder object was
- *  instantiated on, the ID of the thread that COM was initialized on.
- */
-RexxMethod1(uint32_t, bff_initialThread, CSELF, pCSelf)
-{
-    pCBrowseForFolder pcbff = getBffCSelf(context, pCSelf);
-    if ( pcbff != NULL )
-    {
-        return pcbff->coThreadID;
-    }
-    return 0;
-}
-
 /** BrowseForFolder::uninit()
  *
  * Does clean up for this BrowseForFolder.  Frees the root PIDL and calls the
@@ -1118,7 +1117,7 @@ RexxMethod1(RexxObjectPtr, bff_uninit, CSELF, pCSelf)
  *           If a BrowseForFolder object has been previously instantiated and
  *           COM not released then CoInitializeEx will return S_FALSE, meaning
  *           COM is already initialized on this thread. We immediately do a
- *           CoUninitialize to decrement the reference counter fo this case.
+ *           CoUninitialize to decrement the reference counter for this case.
  */
 RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_RexxObjectPtr, banner, OPTIONAL_RexxObjectPtr, hint,
             OPTIONAL_RexxObjectPtr, startDir)
