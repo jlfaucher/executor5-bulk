@@ -82,27 +82,27 @@
 </row>
 <row>
 <entry><xref linkend="atrHwnd"/></entry>
-<entry>The window handle of the dialog.</entry>
+<entry>The <link linkend="defHandle">handle</link> of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="atrInitCode"/></entry>
-<entry>Reflects if the object initialization was successful.</entry>
+<entry>Reflects if the dialog object initialization was successful. Has no meaning if the object is a dialog control.</entry>
 </row>
 <row>
 <entry><xref linkend="atrPixelCX"/></entry>
-<entry>The width of the dialog in pixels.</entry>
+<entry>The width of this window in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="atrPixelCY"/></entry>
-<entry>The height of the dialog in pixels.</entry>
+<entry>The height of this window in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="atrSizeX"/></entry>
-<entry>The width of the dialog in dialog units. (Inaccurate.)</entry>
+<entry>The width of this window in dialog units. (Inaccurate.)</entry>
 </row>
 <row>
 <entry><xref linkend="atrSizeY"/></entry>
-<entry>The height of the dialog in dialog units. (Inaccurate.)</entry>
+<entry>The height of this window in dialog units. (Inaccurate.)</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -110,39 +110,39 @@
 </row>
 <row>
 <entry><xref linkend="mthChildWindowFromPoint"/></entry>
-<entry>Determines which, if any, of the child windows belonging to this dialog contains the specified point.</entry>
+<entry>Determines which, if any, of the child windows belonging to this window contains the specified point.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClear"/></entry>
-<entry>Clears the client area of the dialog by painting it with the background brush.</entry>
+<entry>Clears the client area of this window by painting it with the background brush.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClient2screen"/></entry>
-<entry>Converts a point, or points, in client-area coordinates of the dialog to its screen coordinates.</entry>
+<entry>Converts a point, or points, in client-area coordinates of this window to its screen coordinates.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClientRect"/></entry>
-<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the dialog's client area in pixels.</entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of this window's client area in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClientToScreen"/></entry>
-<entry>Converts client-area coordinates of the dialog to its screen coordinates.</entry>
+<entry>Converts client-area coordinates of this window to its screen coordinates.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDisable"/></entry>
-<entry>Disables the dialog.</entry>
+<entry>Disables this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDisplay"/></entry>
-<entry>Shows or hides the dialog.</entry>
+<entry>Shows or hides this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDraw"/></entry>
-<entry>Redraws the entire client area of the dialog immediately.</entry>
+<entry>Redraws the entire client area of this window immediately.</entry>
 </row>
 <row>
 <entry><xref linkend="mthEnable"/></entry>
-<entry>Enables the dialog.</entry>
+<entry>Enables this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthForegroundWindow"/></entry>
@@ -150,155 +150,159 @@
 </row>
 <row>
 <entry><xref linkend="mthGetClientRect"/></entry>
-<entry>Returns the dimensions of the dialog's client area.</entry>
+<entry>Returns the dimensions of this window's client area.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetExStyleRaw"/></entry>
-<entry>Retrieves the numeric value of the dialog's extended style flags.</entry>
+<entry>Retrieves the numeric value of this window's extended style flags.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetID"/></entry>
-<entry>Retrieves the identification number of the dialog.</entry>
+<entry>Retrieves the identification number of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetPos"/></entry>
-<entry>Returns the position of the dialog in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+<entry>Returns the position of this window in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthGetRealPos"/></entry>
-<entry>Returns the position of the dialog in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+<entry>Returns the position of this window in pixels as a <computeroutput>Point</computeroutput> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetRealSize"/></entry>
-<entry>Returns the size of the dialog in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+<entry>Returns the size of this window in pixels as a <computeroutput>Size</computeroutput> object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetRect"/></entry>
-<entry>Returns the dimesions of the dialog.</entry>
+<entry>Returns the dimensions of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetSize"/></entry>
-<entry>Returns the size of the dialog in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+<entry>Returns the size of this window in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthGetStyleRaw"/></entry>
-<entry>Retrieves the numeric value of the dialog's style flags.</entry>
+<entry>Retrieves the numeric value of this window's style flags.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetText"/></entry>
-<entry>Gets the text of the dialog.</entry>
+<entry>Gets the text of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetTextSizePx"/></entry>
-<entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
+<entry>Calculates the size needed, in pixels, for a string written in this window. <emphasis role="bold">(Preferred method.)</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthGetTextSizeScreen"/></entry>
-<entry>Calculates the size needed for a string in pixels.</entry>
+<entry>Gets the size, width and height, in pixels, needed to display a string in a specific font.</entry>
 </row>
 <row>
 <entry><xref linkend="mthHide"/></entry>
-<entry>Hides the dialog by marking it invisible and immediately redrawing the area it occupies.</entry>
+<entry>Hides this window by marking it invisible and immediately redrawing the area it occupies.</entry>
 </row>
 <row>
 <entry><xref linkend="mthHideFast"/></entry>
-<entry>Marks the dialog as invisible, no redrawing is done.</entry>
+<entry>Marks this window as invisible, no redrawing is done.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIsEnabled"/></entry>
-<entry>Tests if the dialog is enabled.</entry>
+<entry>Tests if this window is enabled.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIsVisible"/></entry>
-<entry>Tests if the dialog is visible.</entry>
+<entry>Tests if this window is visible.</entry>
+</row>
+<row>
+<entry><xref linkend="mthMapWindowPoints"/></entry>
+<entry>Converts, or maps, a set of points from the coordinate space relative to this window to a coordinate space relative to the specified window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthMove"/></entry>
-<entry>Moves the dialog to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+<entry>Moves this window to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthMoveTo"/></entry>
-<entry>Moves the dialog to the position specified in pixels.</entry>
+<entry>Moves this window to the position specified in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="mthMoveWindow"/></entry>
-<entry>Changes the position, visibility, and Z order of the dialog.</entry>
+<entry>Changes the position, visibility, and Z order of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRedraw"/></entry>
-<entry>Redraws the entire dialog window and all its child windows immediately.</entry>
+<entry>Redraws the entire window and all its child windows immediately.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRedrawClient"/></entry>
-<entry>Redraws the entire client area of the dialog immediately.</entry>
+<entry>Redraws the entire client area of this window immediately.</entry>
 </row>
 <row>
 <entry><xref linkend="mthResize"/></entry>
-<entry>Resizes the dialog to the size specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+<entry>Resizes this window to the size specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthResizeTo"/></entry>
-<entry>Resizes the dialog to the size specified in pixels.</entry>
+<entry>Resizes this window to the size specified in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="mthScreen2client"/></entry>
-<entry>Converts a point or points in screen coordinates to the client-area coordinates of the dialog.</entry>
+<entry>Converts a point or points in screen coordinates to the client-area coordinates of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthScreenToClient"/></entry>
-<entry>Converts screen coordinates to the client-area coordinates of the dialog.</entry>
+<entry>Converts screen coordinates to the client-area coordinates of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSendMessage"/></entry>
-<entry>Sends a Windows message to the underlying dialog and returns its response as a whole number.</entry>
+<entry>Sends a Windows message to the underlying window of this object and returns its response as a whole number.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSendMessageHandle"/></entry>
-<entry>Sends a Windows message to the underlying dialog and returns its response as a handle.</entry>
+<entry>Sends a Windows message to the underlying window of this object and returns its response as a handle.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetRect"/></entry>
-<entry>Moves and / or resizes the dialog.</entry>
+<entry>Moves and / or resizes this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetStyleRaw"/></entry>
-<entry>Sets the value of the window's style flags using the numeric value specified.</entry>
+<entry>Sets the value of this window's style flags using the numeric value specified.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetText"/></entry>
-<entry>Sets the text, the caption, of the dialog.</entry>
+<entry>Sets the text, the caption, of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetTitleClsWindowBase"/></entry>
-<entry>Sets the text of the dialog.</entry>
+<entry>Sets the text of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetWindowPos"/></entry>
-<entry>Changes the size, position, visibility, and Z order of the dialog.</entry>
+<entry>Changes the size, position, visibility, and Z order of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthShowFast"/></entry>
-<entry>Marks the dialog as visible.</entry>
+<entry>Marks this window as visible.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSizeWindow"/></entry>
-<entry>Changes the size, visibility, and Z order of the dialog.</entry>
+<entry>Changes the size, visibility, and Z order of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthTitle"/></entry>
-<entry>Gets the text of the dialog.</entry>
+<entry>Gets the text of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthTitleEquals"/></entry>
-<entry>Sets the text of the dialog.</entry>
+<entry>Sets the text of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUpdateClsWindowBase"/></entry>
-<entry>Invalidates the entire client area of the dialog.</entry>
+<entry>Invalidates the entire client area of this window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthWindowRect"/></entry>
-<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the dialog in pixels.</entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of this window in pixels.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2446,6 +2450,115 @@ else
   </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthMapWindowPoints" xreflabel="mapWindowPoints"><title>mapWindowPoints</title>
+<indexterm><primary>mapWindowPoints</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>mapWindowPoints</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--mapWindowPoints(--hwndTo--,--points--)-------><
+]]>
+</programlisting>
+
+<para>
+  Converts, or maps, a set of points from the coordinate space relative to this window to a coordinate space relative to the
+  specified window.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>hwndTo [required]</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> to map this window's coordinate space to.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>points [required in / out]</term>
+    <listitem>
+    <para>
+      The coordinates to map. This argument must be either a <xref linkend="clsPoint"/> object or a <xref linkend="clsRect"/>
+      object. On a sucessful return, this object will be transformed so that it contains the mapped coordinates.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the mapping was successful, returns false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is similar to the <xref linkend="mthClient2screen"/>  and <xref linkend="mthScreen2client"/> methods except
+    that the mapping is being done directly between 2 windows and the screen, the desktop window, is not involved. The
+    <emphasis role="italic">mapWindowPoints</emphasis> methods has the same effect as would converting a point in this
+    window's coordinate space to screen coordinate space and then converting that point to the <emphasis
+    role="italic">hwndTo</emphasis> window's coordinate space.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from a drag and drop program, where the user can drag an item from one list-view and drop it into some
+    other list-view. The <emphasis role="italic">mapWindowPoints</emphasis> method is used to directly map points from / to
+    the different list-view's coordinate space:
+<programlisting>
+<![CDATA[
+
+  -- Take the West list-view's client area and map it to the
+  -- NFL list-view's coordinate space.
+
+  nfl2west = lvWest~clientRect
+  lvWest~mapWindowPoints(lvNFL~hwnd, nfl2west)
+
+  ...
+
+  -- Some other portion of the program.  The point
+  -- p is in the NFL list-view's coordinate space.
+  -- We want to see if that point is over the West
+  -- list-view or over the East list-view.
+
+  if p~inRect(nfl2west) then do
+    dragItem~target = lvWest
+  end
+  else if p~inRect(nfl2east) then do
+    dragItem~target = lvEast
+  end
+  ...
+
+  -- The point p is in client coordinates of the NFL list view.  We are
+  -- going to map that point back to the client coordinates of the list view
+  -- where the row is being dropped.  Then the drag item can determine where
+  -- the insertion poing for the row should be in the target list view.
+
+  lvNFL~mapWindowPoints(dragItem~target~hwnd, p)
+
+
+
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::mapWindowPoints() -->
+
 
 <section id="mthMove" xreflabel="move"><title>move</title>
 <indexterm><primary>move</primary></indexterm>

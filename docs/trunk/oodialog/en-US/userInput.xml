@@ -269,46 +269,93 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 </para></listitem></varlistentry>
 </variablelist>
 
+
 <section id="clsBrowseForFolder" xreflabel="BrowseForFolder"><title>BrowseForFolder Class</title>
 <indexterm><primary>BrowseForFolder class</primary></indexterm>
 <para>
-  A BrowseForFolder object ...
-</para>
-<para>
-  xx
+  A BrowseForFolder object represents the Windows <emphasis role="italic">Browse For Folder</emphasis> common dialog. The
+  Windows operating system provides a number of common dialogs for use by applications to allow presenting the user with an
+  unified generic method to do common tasks. The Browse For Folder dialog is specifically to allow the user to open or choose
+  folders.
 </para>
 
-<section id="sctMethodsBrowseForFolder"><title>Method Table</title>
-<para>
-  The following table lists the class and instance methods of the <computeroutput>BrowseForFolder</computeroutput> class:
 
-<table id="tblMethodsBrowseForFolder" frame="all"> <title>BrowseForFolder Class Method Reference</title>
-<tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="4*" />
-<thead>
-<row>
-<entry>Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-</row>
-<row>
-<entry>new</entry>
-<entry><link linkend="mthNewClsBrowseForFolder">new</link></entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-</row>
-</tbody></tgroup>
-</table>
+<section id="sctShell / COM considerations"><title>Shell / COM considerations</title>
+<indexterm><primary>BrowseForFolder class</primary><secondary>Shell / COM considerations</secondary></indexterm>
+
+<para>
+  The browse for folder dialog is part of the Windows Shell. Shell objects are implemented using COM (the component object
+  model, a standard introduced by Microsoft.) The Windows Shell should not be confused with the Windows window manager, which
+  is responsible for the windowing system in Windows. ooDialog is primarily concerned with, and deals with, the windowing
+  system. However, to be able to deal with the full range of application needs in a modern Windows system, it becomes
+  necessary to use more than just the windowing system. The ability to provide a way in an application that allows users to
+  select or choose a folder is an example of this.
 </para>
-</section>
+<variablelist>
+  <varlistentry id="varItemIDList"  xreflabel="item ID list"><term><emphasis role="bold">Item ID List</emphasis></term>
+  <listitem>
+  <para>
+    The Windows Shell identifies objects in the Shell using a structure called an item ID list. Files, folders, printers,
+    remote computers all have an item ID list when working with them in the Shell. The ooDialog programmer does not really
+    need to know about the details of these item ID lists. Although technically incorrect, the programmer can just think of
+    them as <link linkend="defHandle">handles</link>. However, it is difficult to document the
+    <computeroutput>BrowseForFolder</computeroutput> class without making some reference to an item ID list. For that
+    purpose, this simple explanation of them is included.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  In general, the Rexx programmer can work with the BrowseForFolder class in the same way as working with any other ooDialog
+  dialog classes. However, because the underlying Windows object is a COM object rather than the usual windowing system
+  window, there are a few considerations the programmer needs to be aware of. The use of COM objects requirers that the COM
+  library be initialized and released for <emphasis role="bold">each</emphasis> thread that a COM object is used in.
+</para>
+<para>
+  Normally the ooDialog programmer does not need to be much aware of threading and thread issues. However the COM requiement
+  that the library be initialized and released on each thread changes that. The normal usage pattern for a BrowseForFolder
+  object would be:
+</para>
+<itemizedlist>
+<listitem>
+<para>
+  <emphasis role="italic">Instantiate a <computeroutput>BrowseForFolder</computeroutput> object.</emphasis>
+</para>
+</listitem>
+<listitem>
+<para>
+  Configure the browse for folder object.
+</para>
+</listitem>
+<listitem>
+<para>
+  Show the dialog and get the user's selection.
+</para>
+</listitem>
+</itemizedlist>
+<para>
+  As long as this is all done on one thread, there is no problem. The ooDialog framework initializes COM when the object is
+  instantiated and releases COM when the underlying dialog is closed, when the <xref linkend="mthGetFolder"/> method returns.
+  However, if the programmer wants, or needs, to implement a different usage pattern, then it becomes the programmer's
+  responsibility to ensure that COM is initialized and released properly on each thread. The
+  <computeroutput>BrowseForFolder</computeroutput> class provides the tools the programmer needs to do that. If COM is not
+  initialized on a thread the browse for folder object is running on, then methods invoked on the object may fail. If COM is
+  not released on a thread it <emphasis role="italic">was</emphasis> initialized on, then system resource leaks can occur.
+</para>
+<para>
+  This is not that complicated and is not really that different than other areas of ooDialog concerning system resources. If
+  the programmer wants to use a different font for a dialog control, the <xref linkend="mthSetFont"/> method will fail unless
+  the programmer has first initialized a font. If the programmer initializes a font using the <xref
+  linkend="mthCreateFontEx"/> method and does not release the font, then system resource leaks can ocurr. The only difference
+  here is that this <emphasis role="italic">initialize / release</emphasis> cycle is on a per thread basis.
+</para>
+<para>
+  The documentation for the individual attributes and methods of the <computeroutput>BrowseForFolder</computeroutput> class
+  will make note of when the programmer needs to consider these threading issues when using the attribute or method. In
+  addition, the <xref linkend="clsSimpleFolderBrowse"/> class provides an interface to the Browse For Folder common dialog
+  where the Rexx programmer does not need to be aware of COM.
+</para>
+
+</section> <!-- End Shell / COM considerations section -->
 
 
 <section id="sctSpecialFolderNames" xreflabel="Special Folder Names"><title>Special Folder Names</title>
@@ -688,13 +735,781 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 
 </section> <!-- End Special Folder Names section -->
 
+<section id="sctMethodsBrowseForFolder"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>BrowseForFolder</computeroutput> class:
+
+<table id="tblMethodsBrowseForFolder" frame="all"> <title>BrowseForFolder Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsBrowseForFolder">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+
+
 
 <section id="mthNewClsBrowseForFolder"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>BrowseForFolder class</secondary></indexterm>
 <indexterm><primary>BrowseForFolder class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
+>>--new(--+---------+--+----------+--+--------+--+------------+--)-------------><
+          +--title--+  +-,-banner-+  +-,-hint-+  +-,-startDir-+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>title [optional]</term>
+    <listitem>
+    <para>
+      Specifies a caption, or title, for the dialog. The Windows default title is <emphasis role="italic">Browse For
+      Folder</emphasis>. If this argumentis used, the <xref linkend="atrDlgTitle"/> attribute is set using the value
+      specified.
+    </para>
+    <para>
+      If this argument is omitted, the default ooDialog value, <emphasis role="italic">ooDialog Browse for Folder</emphasis>,
+      is set for the <emphasis role="italic">dlgTitle</emphasis> attribute. To prevent the ooDialg default value from being
+      used and have the Windows default used, set this argument to the <computeroutput>.nil</computeroutput> object, or to the empty string.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>banner [optional]</term>
+    <listitem>
+    <para>
+      Specifies text to use for what Windows calls the <emphasis role="italic">banner</emphasis> for the dialog.  This string
+      is displayed above the tree view control in the dialog box. The string can be used to specify instructions to the user.
+      By default, Windows, does not display the banner and the area above the tree view is blank. If this argument is
+      used, the <xref linkend="atrBanner"/> attribute is set to the value specified.
+    </para>
+    <para>
+      If this argument is omitted, the default ooDialog value, <emphasis role="italic">Select the folder needed</emphasis>,
+      is set for the <emphasis role="italic">banner</emphasis> attribute. To prevent the ooDialg default value from being
+      used and have the Windows default used, set this argument to the <computeroutput>.nil</computeroutput> object, or to
+      the empty string.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hint [optional]</term>
+    <listitem>
+    <para>
+      Specifies text to use for a <emphasis role="italic">hint</emphasis> in the dialog. The hint is displayed between the
+      bottom of the tree view control, above the row of buttons at the bottom of the dialog. By default, Windows does not
+      dispaly a hint, and the area where the hint would go is removed from the dialog. That is, the bottom row of
+      buttons is placed directly below the tree view. If this argument is used, the <xref linkend="atrHint"/> attribute is
+      set to the value specified.
+    </para>
+    <para>
+      If this argument is omitted, the default ooDialog value, <emphasis role="italic">If the needed folder does not exist it
+      can be created</emphasis>, is set for the <emphasis role="italic">hint</emphasis> attribute. To prevent the ooDialg
+      default value from being used and have the Windows default used, set this argument to the
+      <computeroutput>.nil</computeroutput> object, or to the empty string.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>startDir [optional]</term>
+    <listitem>
+    <para>
+      Specifies an initial selected folder for the dialog. By default, Windows opens the dialog with the top-most item in the
+      tree view selected. If a start folder is specified, the folder is selected and, if needed, the tree view items are
+      expanded and the tree view is scrolled so that the starting folder is visible in the tree view. If this argument is
+      used, the <xref linkend="atrStartDir"/> attribute is set to the value specified.
+    </para>
+    <para>
+      Testing indicates that the folder specified must be a fully qualified path name of an existing directory. If not, the
+      operating system seems to just ignore it.
+    </para>
+    <para>
+      If this argument is omitted, the ooDialog framework sets the <emphasis role="italic">startDir</emphasis> attribute to
+      the empty string. The causes Windows to use its default behaviour.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a newly instantiated <computeroutput>BrowseForFolder</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    During instantiation, the <xref linkend="atrOptions"/>, <xref linkend="atrRoot"/>. and the <xref
+    linkend="atrInitialThread"/> attributes are also set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::new() -->
+
+<section id="atrBanner" xreflabel="banner"><title>banner (Attribute)</title>
+<indexterm><primary>banner</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>banner</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--banner-----------------------------------------------------><
+
+>>--banner = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">banner get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">banner set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::banner() [attribute]  -->
+
+<section id="atrDlgTitle" xreflabel="dlgTitle"><title>dlgTitle (Attribute)</title>
+<indexterm><primary>dlgTitle</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>dlgTitle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dlgTitle-----------------------------------------------------><
+
+>>--dlgTitle = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">dlgTitle get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">dlgTitle set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::dlgTitle() [attribute]  -->
+
+<section id="atrHint" xreflabel="hint"><title>hint (Attribute)</title>
+<indexterm><primary>hint</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>hint</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hint-----------------------------------------------------><
+
+>>--hint = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">hint get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">hint set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::hint() [attribute]  -->
+
+<section id="atrInitialThread" xreflabel="initialThread"><title>initialThread (Attribute)</title>
+<indexterm><primary>initialThread</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>initialThread</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--initialThread-----------------------------------------------------><
+
+>>--initialThread = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">initialThread get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">initialThread set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::initialThread() [attribute]  -->
+
+<section id="atrOptions" xreflabel="options"><title>options (Attribute)</title>
+<indexterm><primary>options</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>options</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--options-----------------------------------------------------><
+
+>>--options = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the Browse For Folder dialog options set for this object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">options get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a list of the keywords that specify the Browse For Folder dialog options that are currently set for this object.
+    The kewyords are listed and explained in the remarks section.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">options set:</emphasis></term>
+  <listitem>
+  <para>
+    Set the Browse For Folder dialog options using a blank separated list of keywords. The list is case insensitive. The
+    possible keywords are listed in the remarks section.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    On instantiation, the Browse For Folder dialog options are set to a default value that is appropriate for most use cases.
+    The default options are <emphasis role="italic">RETURNONLYFSDIRS RETURNFSANCESTORS NEWDIALOGSTYLE</emphasis>. To change
+    these options after instantiations, set this attribute using a list of 0 or more of the following keywords, case is not
+    significant. The list <emphasis role="italic">replaces</emphasis> the current list, with one caveat. The ooDialog
+    framework manages the NEWDIALOGSTYLE and UAHINT options. The NEWDIALOGSTYLE is required. If the new list does not
+    contain that keyword it is added. The UAHINT option is added when needed and removed when not needed.
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>BROWSEFILEJUNCTIONS</member>
+      <member>BROWSEFORCOMPUTER  </member>
+      <member>BROWSEFORPRINTER   </member>
+      <member>BROWSEINCLUDEFILES </member>
+      <member>BROWSEINCLUDEURLS  </member>
+      <member>DONTGOBELOWDOMAIN  </member>
+      <member>NEWDIALOGSTYLE     </member>
+      <member>NONEWFOLDERBUTTON  </member>
+      <member>NOTRANSLATETARGETS </member>
+      <member>RETURNFSANCESTORS  </member>
+      <member>RETURNONLYFSDIRS   </member>
+      <member>SHAREABLE          </member>
+      <member>UAHINT             </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>BROWSEFILEJUNCTIONS</term>
+      <listitem>
+      <para>
+        Allows folder junctions like zip files and libraries to be browsed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BROWSEFORCOMPUTER</term>
+      <listitem>
+      <para>
+        Only return computers.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BROWSEFORPRINTER</term>
+      <listitem>
+      <para>
+        Only allow the selection of printers.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BROWSEINCLUDEFILES</term>
+      <listitem>
+      <para>
+        The browse dialog box will display files as well as folders.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BROWSEINCLUDEURLS</term>
+      <listitem>
+      <para>
+        The browse dialog box can display URLs. The NEWDIALOGSTYLE and BROWSEINCLUDEFILES flags must also be set. If these
+        three flags are not set, the browser dialog box will reject URLs. Even when these flags are set, the browse dialog
+        box will only display URLs if the folder that contains the selected item supports them.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DONTGOBELOWDOMAIN</term>
+      <listitem>
+      <para>
+        Do not include network folders below the domain level in the dialog box's tree view control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NEWDIALOGSTYLE</term>
+      <listitem>
+      <para>
+        Use the new user interface. Setting this flag provides the user with a larger dialog box that can be resized. The
+        dialog box has several new capabilities, including: drag-and-drop capability within the dialog box, reordering,
+        shortcut menus, new folders, delete, and other shortcut menu commands. The programmer can not effectively remove this
+        flag, the ooDialog framework ensures it is always set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NONEWFOLDERBUTTON</term>
+      <listitem>
+      <para>
+        Do not include the New Folder button in the browse dialog box.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTRANSLATETARGETS</term>
+      <listitem>
+      <para>
+        When the selected item is a shortcut, return the <xref linkend="varItemIDList"/> of the shortcut itself rather than
+        its target.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RETURNFSANCESTORS</term>
+      <listitem>
+      <para>
+        Only return file system ancestors. An ancestor is a subfolder that is beneath the root folder in the namespace
+        hierarchy.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RETURNONLYFSDIRS</term>
+      <listitem>
+      <para>
+        Only return file system directories.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SHAREABLE</term>
+      <listitem>
+      <para>
+        The browse dialog box can display shareable resources on remote systems. It is intended for applications that want to
+        expose remote shares on a local system.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>UAHINT</term>
+      <listitem>
+      <para>
+        Adds a usage hint to the dialog box. This option is set by the ooDialog framework, the programmer can not effectively
+        alter it. The option is set if the <xref linkend="atrHint"/> attribute is set and removed if the attribute is not
+        set.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from a demonstration program show
+<programlisting>
+<![CDATA[
+
+  title  = 'Browse For a Printer'
+  banner = 'Select the printer to use for this test.'
+  hint   = 'This is only a demonstration, no printing will be done.'
+
+  bff = .BrowseForFolder~new(title, banner, hint)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::options() [attribute]  -->
+
+<section id="atrOwner" xreflabel="owner"><title>owner (Attribute)</title>
+<indexterm><primary>owner</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>owner</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--owner-----------------------------------------------------><
+
+>>--owner = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">owner get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">owner set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::owner() [attribute]  -->
+
+<section id="atrRoot" xreflabel="root"><title>root (Attribute)</title>
+<indexterm><primary>root</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>root</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--root-----------------------------------------------------><
+
+>>--root = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">root get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">root set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::root() [attribute]  -->
+
+<section id="atrStartDir" xreflabel="startDir"><title>startDir (Attribute)</title>
+<indexterm><primary>startDir</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>startDir</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--startDir-----------------------------------------------------><
+
+>>--startDir = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">startDir get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">startDir set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::startDir() [attribute]  -->
+
+<section id="atrUsePathForHint" xreflabel="usePathForHint"><title>usePathForHint (Attribute)</title>
+<indexterm><primary>usePathForHint</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>usePathForHint</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--usePathForHint-----------------------------------------------------><
+
+>>--usePathForHint = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">usePathForHint get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">usePathForHint set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::usePathForHint() [attribute]  -->
+
+<section id="mthGetDisplayName" xreflabel="getDisplayName"><title>getDisplayName</title>
+<indexterm><primary>getDisplayName</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>getDisplayName</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getDisplayName(--+--------+--)---------------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -706,7 +1521,8 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
+  </para>
   <variablelist>
     <varlistentry><term>TERM</term>
     <listitem>
@@ -715,7 +1531,6 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
     </para>
     </listitem></varlistentry>
   </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -732,7 +1547,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
@@ -750,7 +1565,323 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End BrowseForFolder::new() -->
+</section>  <!-- End BrowseForFolder::getDisplayName() -->
+
+<section id="mthGetFolder" xreflabel="getFolder"><title>getFolder</title>
+<indexterm><primary>getFolder</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>getFolder</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFolder(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::getFolder() -->
+
+<section id="mthGetItemIDList" xreflabel="getItemIDList"><title>getItemIDList</title>
+<indexterm><primary>getItemIDList</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>getItemIDList</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemIDList(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::getItemIDList() -->
+
+<section id="mthInitCOM" xreflabel="initCOM"><title>initCOM</title>
+<indexterm><primary>initCOM</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>initCOM</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--initCOM(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::initCOM() -->
+
+<section id="mthReleaseCOM" xreflabel="releaseCOM"><title>releaseCOM</title>
+<indexterm><primary>releaseCOM</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>releaseCOM</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--releaseCOM(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::releaseCOM() -->
+
+<section id="mthReleaseItemIDList" xreflabel="releaseItemIDList"><title>releaseItemIDList</title>
+<indexterm><primary>releaseItemIDList</primary></indexterm>
+<indexterm><primary>BrowseForFolder class</primary><secondary>releaseItemIDList</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--releaseItemIDList(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BrowseForFolder::releaseItemIDList() -->
+
 
 </section> <!-- End BrowseForFolder Class -->
 
@@ -2867,13 +3998,13 @@ pwd = PasswordBox("Please enter your password","Security")
 </para>
 </section>
 
-<section id="rtnSimpleFolderBrowse"><title>SimpleFolderBrowse</title>
+<section id="rtnSimpleFolderBrowse" xreflabel="SimpleFolderBrowse"><title>SimpleFolderBrowse</title>
 <indexterm><primary>SimpleFolderBrowse</primary></indexterm>
 <indexterm><primary>public routines</primary><secondary>SimpleFolderBrowse</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--SimpleFolderBrowse(--+---------+-------+-+------ +-+---------+-+--------+-+---------+--)--><
-                        +--capt-+ +-,-bnr-+ +-,-hnt-+ +-,-start-+ +-,-root-+ +-,-owner-+
+>>-SimpleFolderBrowse(-+-------+-+-------+-+-------+-+--------+-+------+-+--------+-)-><
+                       +--capt-+ +-,-bnr-+ +-,-hnt-+ +-,-strt-+ +-,-rt-+ +-,-ownr-+
 ]]>
 </programlisting>
 
@@ -2912,7 +4043,7 @@ pwd = PasswordBox("Please enter your password","Security")
       below the tree view.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>start [optional]</term>
+    <varlistentry><term>strt [optional]</term>
     <listitem>
     <para>
       Specifies an initial selected folder for the dialog. By default, the dialog opens with the top-most item in the tree
@@ -2924,7 +4055,7 @@ pwd = PasswordBox("Please enter your password","Security")
       operating system seems to just ignore it.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>root [optional]</term>
+    <varlistentry><term>rt [optional]</term>
     <listitem>
     <para>
       Specifies the root for the tree view in the dialog. The root is the location of the root folder from which the user
@@ -2936,7 +4067,7 @@ pwd = PasswordBox("Please enter your password","Security")
       Specify either a fully qualified file system path name, or use one of the <xref linkend="sctSpecialFolderNames"/>.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>owner [optional]</term>
+    <varlistentry><term>ownr [optional]</term>
     <listitem>
     <para>
       The Rexx dialog object that is to be the owner window of the browse for folder dialog. The owner dialog is disabled
