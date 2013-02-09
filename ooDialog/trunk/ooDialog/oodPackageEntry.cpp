@@ -1485,6 +1485,10 @@ REXX_METHOD_PROTOTYPE(mouse_showCursor);
 REXX_METHOD_PROTOTYPE(mouse_trackEvent);
 REXX_METHOD_PROTOTYPE(mouse_test);
 
+//Keyboard
+REXX_METHOD_PROTOTYPE(kb_getAsyncKeyState_cls);
+
+
 // CustomDraw
 REXX_METHOD_PROTOTYPE(cd_init);
 REXX_METHOD_PROTOTYPE(cd_customDrawControl);
@@ -2593,6 +2597,10 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(mouse_showCursor,               mouse_showCursor),
     REXX_METHOD(mouse_trackEvent,               mouse_trackEvent),
     REXX_METHOD(mouse_test,                     mouse_test),
+
+
+    // Keyboard
+    REXX_METHOD(kb_getAsyncKeyState_cls,        kb_getAsyncKeyState_cls),
 
 // CustomDraw
     REXX_METHOD(cd_init,                        cd_init),

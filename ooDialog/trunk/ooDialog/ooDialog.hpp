@@ -445,6 +445,7 @@ typedef struct {
 // Masks for GetAsyncKeyState() and GetKeyState() returns.
 #define TOGGLED               0x00000001  // GetKeyState()
 #define ISDOWN                    0x8000  // GetAsyncKeyState()
+#define WASPRESSED                0x0001  // GetAsyncKeyState()
 
 /* Microsoft does not define these, just has this note:
  *

@@ -426,6 +426,8 @@
 
 ::method test external "LIBRARY oodialog mouse_test"
 
+::class 'Keyboard' public
+::method getAsyncKeyState class external "LIBRARY oodialog kb_getAsyncKeyState_cls"
 
 ::class 'DayState' public
 ::method init external "LIBRARY oodialog ds_init"
