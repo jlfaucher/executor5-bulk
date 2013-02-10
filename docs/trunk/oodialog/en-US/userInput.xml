@@ -76,7 +76,7 @@
 </row>
 <row>
 <entry><xref linkend="clsKeyboard"/>  Input</entry>
-<entry>The operating system generates keyboard input from the physical keyboard and provides the means for a program to receive and process that input. ooDialog has the <computeroutput>Keyboard</computeroutput> class to deal with functionality related to the keyboard. However, for historic reasons some of the keyboard related function is scattered through the the dialog and dialog control classes.</entry>
+<entry>The operating system generates keyboard input from the physical keyboard and provides the means for a program to receive and process that input. ooDialog has the <computeroutput>Keyboard</computeroutput> class to deal with functionality related to the keyboard. However, for historic reasons some of the keyboard related function is scattered throughout the the dialog and dialog control classes.</entry>
 </row>
 <row>
 <entry><xref linkend="clsMouse"/> Input</entry>
@@ -288,8 +288,8 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   model, a standard introduced by Microsoft.) The Windows Shell should not be confused with the Windows window manager, which
   is responsible for the windowing system in Windows. ooDialog is primarily concerned with, and deals with, the windowing
   system. However, to be able to deal with the full range of application needs in a modern Windows system, it becomes
-  necessary to use more than just the windowing system. The ability to provide a way in an application that allows users to
-  select or choose a folder is an example of this.
+  necessary to use more than just the windowing system. The need to provide a way for users to select or choose a folder is
+  an example of needing more than just the window manager.
 </para>
 <variablelist>
   <varlistentry id="varItemIDList"  xreflabel="item ID list"><term><emphasis role="bold">Item ID List</emphasis></term>
@@ -305,14 +305,15 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   </listitem></varlistentry>
 </variablelist>
 <para>
-  In general, the Rexx programmer can work with the BrowseForFolder class in the same way as working with any other ooDialog
-  dialog classes. However, because the underlying Windows object is a COM object rather than the usual windowing system
-  window, there are a few considerations the programmer needs to be aware of. The use of COM objects requirers that the COM
-  library be initialized and released for <emphasis role="bold">each</emphasis> thread that a COM object is used in.
+  In general, the Rexx programmer can work with the <computeroutput>BrowseForFolder</computeroutput> class in the same way as
+  working with any other ooDialog dialog classes. However, because the underlying Windows object is a COM object rather than
+  the usual windowing system window, there are a few considerations the programmer needs to be aware of. The use of COM
+  objects requirers that the COM library be initialized and released for <emphasis role="italic">each</emphasis> thread that
+  a COM object is used in.
 </para>
 <para>
-  Normally the ooDialog programmer does not need to be much aware of threading and thread issues. However the COM requiement
-  that the library be initialized and released on each thread changes that. The normal usage pattern for a BrowseForFolder
+  Normally the Rexx programmer does not need to be much aware of threading and thread issues. However the COM requiement
+  that the library be initialized and released on each thread changes that. The normal usage pattern for a browse for folder
   object would be:
 </para>
 <itemizedlist>
@@ -351,8 +352,8 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <para>
   The documentation for the individual attributes and methods of the <computeroutput>BrowseForFolder</computeroutput> class
   will make note of when the programmer needs to consider these threading issues when using the attribute or method. In
-  addition, the <xref linkend="clsSimpleFolderBrowse"/> class provides an interface to the Browse For Folder common dialog
-  where the Rexx programmer does not need to be aware of COM.
+  addition, the <xref linkend="clsSimpleFolderBrowse"/> class provides an interface to the Browse For Folder dialog where
+  the Rexx programmer does not need to be aware of COM.
 </para>
 
 </section> <!-- End Shell / COM considerations section -->
@@ -655,13 +656,13 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term>CSIDL_PROGRAM_FILES_COMMONX86:</term>
   <listitem>
   <para>
-    Listed in MSDN doc with no explanation.
+    Listed in the MSDN documentation with no explanation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>CSIDL_PROGRAM_FILESX86:</term>
   <listitem>
   <para>
-    Listed in MSDN doc with no explanation.
+    Listed in the MSDN documentation with no explanation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>CSIDL_PROGRAMS:</term>
@@ -685,7 +686,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term>CSIDL_RESOURCES_LOCALIZED:</term>
   <listitem>
   <para>
-    Listed in MSDN doc with no explanation.
+    Listed in the MSDN documentation with no explanation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>CSIDL_SENDTO:</term>
@@ -716,7 +717,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term>CSIDL_SYSTEMX86:</term>
   <listitem>
   <para>
-    Listed in MSDN doc with no explanation.
+    Listed in the MSDN documentation with no explanation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>CSIDL_TEMPLATES:</term>
@@ -755,24 +756,85 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
-<entry><link linkend="mthNewClsBrowseForFolder">new</link></entry>
+<entry><xref linkend="clsBrowseForFolder"/> </entry>
+<entry>Instantiates a new <computeroutput>BrowseForFolder</computeroutput> object</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
 </row>
 <row>
+<row>
+<entry><xref linkend="atrBanner"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrDlgTitle"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrHint"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrInitialThread"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrOptions"/> </entry>
+<entry>Reflects the Browse For Folder dialog options set for this object.</entry>
+</row>
+<row>
+<entry><xref linkend="atrOwner"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrRoot"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrStartDir"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrUsePathForHint"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrBanner"/> </entry>
+<entry></entry>
+</row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthGetDisplayName"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFolder"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthGetItemIDList"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthInitCom"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthReleaseCOM"/> </entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthReleaseItemIDList"/> </entry>
+<entry></entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 </section>
-
-
-
 
 <section id="mthNewClsBrowseForFolder"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>BrowseForFolder class</secondary></indexterm>
@@ -785,7 +847,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>BrowseForFolder</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -825,11 +887,11 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
     <varlistentry><term>hint [optional]</term>
     <listitem>
     <para>
-      Specifies text to use for a <emphasis role="italic">hint</emphasis> in the dialog. The hint is displayed between the
-      bottom of the tree view control, above the row of buttons at the bottom of the dialog. By default, Windows does not
-      dispaly a hint, and the area where the hint would go is removed from the dialog. That is, the bottom row of
-      buttons is placed directly below the tree view. If this argument is used, the <xref linkend="atrHint"/> attribute is
-      set to the value specified.
+      Specifies text to use for a <emphasis role="italic">hint</emphasis> in the dialog. The hint is displayed below the
+      bottom of the tree view control and above the bottom row of buttons of the dialog. By default, Windows does not display
+      a hint, and the area where the hint would go is removed from the dialog. That is, the bottom row of buttons is placed
+      directly below the tree view. If this argument is used, the <xref linkend="atrHint"/> attribute is set to the value
+      specified.
     </para>
     <para>
       If this argument is omitted, the default ooDialog value, <emphasis role="italic">If the needed folder does not exist it
@@ -1148,7 +1210,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
     these options after instantiations, set this attribute using a list of 0 or more of the following keywords, case is not
     significant. The list <emphasis role="italic">replaces</emphasis> the current list, with one caveat. The ooDialog
     framework manages the NEWDIALOGSTYLE and UAHINT options. The NEWDIALOGSTYLE is required. If the new list does not
-    contain that keyword it is added. The UAHINT option is added when needed and removed when not needed.
+    contain that keyword it is added. The UAHINT option is added when needed, and removed when not needed.
   </para>
   <para>
     <simplelist type='vert' columns='3'>
@@ -1267,7 +1329,8 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example comes from a demonstration program show
+    This example comes from a demonstration program showing how to browse for printers. After instantiating the browse for
+    folder object, it sets the dialog options to a non-default value, a value appropriate for printer browsing:
 <programlisting>
 <![CDATA[
 
@@ -1277,6 +1340,10 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 
   bff = .BrowseForFolder~new(title, banner, hint)
 
+  bff~owner = self
+  bff~root = 'CSIDL_PRINTERS'
+
+  bff~options = 'BROWSEFORPRINTERS NONEWFOLDERBUTTON'
 ]]>
 </programlisting>
   </para>
@@ -1382,11 +1449,21 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from a demonstration program showing how to browse for printers. After instantiating the browse for
+    folder object, it sets the root attribute to the printers folder:
 <programlisting>
 <![CDATA[
 
+  title  = 'Browse For a Printer'
+  banner = 'Select the printer to use for this test.'
+  hint   = 'This is only a demonstration, no printing will be done.'
 
+  bff = .BrowseForFolder~new(title, banner, hint)
+
+  bff~owner = self
+  bff~root = 'CSIDL_PRINTERS'
+
+  bff~options = 'BROWSEFORPRINTERS NONEWFOLDERBUTTON'
 ]]>
 </programlisting>
   </para>
@@ -2373,7 +2450,7 @@ of a simple entry line.</para>
 <indexterm><primary>SimpleFolderBrowse class</primary></indexterm>
 <para>
   The SimpleFolderBrowse object displays the Windows common Browse For Folder dialog and returns the user's selection. It is
-  a simplified version of the <xref linkend="clsBrowseForFolder"/> dialog that is designed to be simple to use, and does not
+  a simplified version of the <xref linkend="clsBrowseForFolder"/> dialog that is designed to be easy to use, and does not
   have as many configuration options as the <computeroutput>BrowseForFolder</computeroutput> object does.
 </para>
 <para>
@@ -2449,8 +2526,8 @@ of a simple entry line.</para>
     <varlistentry><term>hnt [optional]</term>
     <listitem>
     <para>
-      Specifies text to use for a <emphasis role="italic">hint</emphasis> in the dialog. The hint is displayed between the
-      bottom of the tree view control, above the row of buttons at the bottom of the dialog. By default there is no hint, and
+      Specifies text to use for a <emphasis role="italic">hint</emphasis> in the dialog. The hint is displayed below the
+      bottom of the tree view control and above the bottom row of buttons of the dialog. By default there is no hint, and
       the area where the hint would go is removed from the dialog. That is, the bottom row of buttons is placed directly
       below the tree view.
     </para>
@@ -2483,7 +2560,7 @@ of a simple entry line.</para>
     <listitem>
     <para>
       The Rexx dialog object that is to be the owner window of the browse for folder dialog. The owner dialog is disabled
-      until the browse for folder dialog is closed by the users.
+      until the browse for folder dialog is closed by the user.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4009,7 +4086,7 @@ pwd = PasswordBox("Please enter your password","Security")
 </programlisting>
 
 <para>
-  Brings up the Windows <emphasis role="italic">Browe For Folder</emphasis> dialog, allowing the user to select a folder in
+  Brings up the Windows <emphasis role="italic">Browse For Folder</emphasis> dialog, allowing the user to select a folder in
   the file system.
 </para>
 <variablelist>
@@ -4037,8 +4114,8 @@ pwd = PasswordBox("Please enter your password","Security")
     <varlistentry><term>hnt [optional]</term>
     <listitem>
     <para>
-      Specifies text to use for a <emphasis role="italic">hint</emphasis> in the dialog. The hint is displayed between the
-      bottom of the tree view control, above the row of buttons at the bottom of the dialog. By default there is no hint, and
+      Specifies text to use for a <emphasis role="italic">hint</emphasis> in the dialog. The hint is displayed below the
+      bottom of the tree view control, and above the bottom row of buttons of the dialog. By default there is no hint, and
       the area where the hint would go is removed from the dialog. That is, the bottom row of buttons is placed directly
       below the tree view.
     </para>
@@ -4071,7 +4148,7 @@ pwd = PasswordBox("Please enter your password","Security")
     <listitem>
     <para>
       The Rexx dialog object that is to be the owner window of the browse for folder dialog. The owner dialog is disabled
-      until the browse for folder dialog is closed by the users.
+      until the browse for folder dialog is closed by the user.
     </para>
     </listitem></varlistentry>
   </variablelist>

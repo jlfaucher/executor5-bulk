@@ -42,7 +42,7 @@
     #
     #########################################################################
 -->
-<section id="clsKeyboard"><title>Keyboard Class</title>
+<section id="clsKeyboard" xreflabel="Keyboard"><title>Keyboard Class</title>
 <indexterm><primary>Keyboard class</primary></indexterm>
 <para>
   The <computeroutput>Keyboard</computeroutput> class has methods and attributes to address the functionality of receiving
@@ -74,7 +74,7 @@
 </row>
 <row>
 <entry><xref linkend="mthGetAsyncKeyState"/> </entry>
-<entry></entry>
+<entry>Determines whether a key is up or down at the time this method is invoked. Optionally, determines whether the key was pressed after a previous invocation of the <emphasis role="italic">getAsyncKeyState</emphasis> method.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -85,7 +85,7 @@
 </para>
 </section>
 
-<section id="mthGetAsyncKeyState"><title>getAsyncKeyState (Class Method)</title>
+<section id="mthGetAsyncKeyState" xreflabel="getAsyncKeyState"><title>getAsyncKeyState (Class Method)</title>
 <indexterm><primary>getAsyncKeyState</primary></indexterm>
 <indexterm><primary>Keyboard class</primary><secondary>getAsyncKeyState</secondary></indexterm>
 <programlisting>
@@ -116,24 +116,24 @@
     <varlistentry><term>info [optional in / out]</term>
     <listitem>
     <para>
-      A <computeroutput>Directory</computeroutput> object whose indexes contiain the key state. On return, the
-      <computeroutput>Directory</computeroutput> will contain the following indexes:
+      A <computeroutput>Directory</computeroutput> object whose indexes will, on return, contain the key state information.
+      On return the <computeroutput>Directory</computeroutput> will contain the following indexes:
     </para>
     <variablelist>
       <varlistentry><term>WASDOWN</term>
       <listitem>
       <para>
         This index will be true if the key was down and false if the key was not down. The value of this index is exactly the
-        same as the return from the <emphasis role="italic">getAsyncKeyState</emphasis>.
+        same as the return from the <emphasis role="italic">getAsyncKeyState</emphasis> method.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>WASPRESSED</term>
       <listitem>
       <para>
-        This index reflects the state of the operating system's was pressed flag. That flag is true if the key was pressed
-        since the last time the async key state was queried. The <emphasis role="italic">WASPRESSED</emphasis> index will be
-        true if the flag for the specified key was true and false if the flag is false. Microsoft cautions that this is not
-        reliable, see the remarks.
+        This index reflects the state of the operating system's <emphasis role="italic">was pressed</emphasis> flag. That
+        flag is true if the key was pressed since the last time the async key state was queried. The <emphasis
+        role="italic">WASPRESSED</emphasis> index will be true if the flag for the specified key was true and false if the
+        flag is false. Microsoft cautions that this is not reliable, see the remarks.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -166,8 +166,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example comes from an application that has a user interface that does 1 thing on a column click of a list-view and
-    another thing if the column click was done with the control held down:
+    This example comes from an application that has a user interface that does one thing if the user clicks a column header
+    of a list-view, and another thing if the column click was done with the control key held down:
 <programlisting>
 <![CDATA[
 
