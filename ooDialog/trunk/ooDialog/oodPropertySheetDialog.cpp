@@ -2744,15 +2744,28 @@ RexxMethod7(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING,
     pcpsd->getResultValue = OOD_NO_VALUE;
 
     // Set values for all the attributes, APPICON first:
-    SIZE s;
+    RexxObjectPtr rxIcon;
+    SIZE          s;
     s.cx = GetSystemMetrics(SM_CXSMICON);
     s.cy = GetSystemMetrics(SM_CYSMICON);
 
-    HICON         hIcon = getOORexxIcon(IDI_DLG_OOREXX);
-    RexxObjectPtr temp  = rxNewValidImage(context, hIcon, IMAGE_ICON, &s, LR_SHARED, true);
+    if ( TheDefaultSmallIcon != NULL )
+    {
+        pcpsd->hIcon = TheDefaultSmallIcon;
+    }
+    else
+    {
+        pcpsd->hIcon = getOORexxIcon(IDI_DLG_OOREXX);
+    }
 
-    pcpsd->hIcon = hIcon;
-    context->SetObjectVariable("APPICON", temp);
+    // We need a Rexx Image object because the user can retrieve the appIcon
+    // attribute.  We use LR_SHARED for the flag because, even if we are using
+    // the TheDefaultSmallIcon and it was loaded from a file, the only thing the
+    // LR_SHARED flag does is prevent DestroyIcon() from being called if the
+    // uninit() method runs for the .Image object.  Which is what we want for
+    // the default application icon.
+    rxIcon = rxNewValidImage(context, pcpsd->hIcon, IMAGE_ICON, &s, LR_SHARED, true);
+    context->SetObjectVariable("APPICON", rxIcon);
 
     // Be sure we have a good dialog ID:
     if ( pcpbd->dlgID == -1 )
