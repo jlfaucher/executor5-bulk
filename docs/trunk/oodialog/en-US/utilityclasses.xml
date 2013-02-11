@@ -43,16 +43,16 @@
     #
     #########################################################################
 -->
-<chapter id="utilityclasses"><title>Utility Classes and Objects</title>
+<chapter id="utilityclasses"><title>Utility Classes, Routines, and Objects</title>
 <indexterm><primary>Utility Classes</primary></indexterm>
 <para>
-  The ooDialog framework provides a number of utility classes that are useful when writing more complex
-  programs.  These classes do not easily fit into the category of a type of dialog or a type of dialog
+  The ooDialog framework provides a number of utility classes and public routines that are useful when writing more complex
+  programs.  These classes and routines do not easily fit into the category of a type of dialog or a type of dialog
   control and are therefore documented separately.  In addition, ooDialog places some globally available
   objects in the <computeroutput>.local</computeroutput> environment.
 </para>
 <para>
-  The classes and objects in the following table are described in this chapter:
+  The classes, routines, and objects in the following table are described in this chapter:
 <table id="tUtilityClasses" frame="all">
 <title>ooDialog Utility Classes and Objects</title>
 <tgroup cols="2">
@@ -148,6 +148,10 @@
 <row>
 <entry><xref linkend="clsWindow"/></entry>
 <entry>An utility class with methods common to all windows.</entry>
+</row>
+<row>
+<entry><xref linkend="rtnWinTimer"/></entry>
+<entry>Depending on the specified mode, creates, waits on, or releases a periodic Windows timer.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -3682,16 +3686,13 @@ returns its handle.</para>
 
 <section id="rtnPlay" xreflabel="Play"><title>Play Routine</title>
 <indexterm><primary>Play</primary></indexterm>
-<indexterm><primary>public routines</primary>
-<secondary>Play</secondary></indexterm>
+<indexterm><primary>public routines</primary><secondary>Play</secondary></indexterm>
 <para>This routine is used to play audio sounds.</para>
 <programlisting>
 <![CDATA[
 >>-Play(--+----------+--+---------+--)-----------><
           +-fileName-+  +-,--YES--+
                         +-,--LOOP-+
-
-
 ]]>
 </programlisting>
 
@@ -8828,5 +8829,151 @@ WindowBase::<xref linkend="mthWindowRect"/>
 </section>
 
 </section> <!-- End Window Class -->
+
+
+<section id="rtnWinTimer"><title>WinTimer</title>
+<indexterm><primary>WinTimer</primary></indexterm>
+<indexterm><primary>public routines</primary><secondary>WinTimer</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--WinTimer(--mode--,--msOrID--)----------------><
+]]>
+</programlisting>
+
+<para>
+  Creates, waits on, or releases, depending on <emphasis role="italic">mode</emphasis>, a periodic Windows timer.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>mode [required]</term>
+      <listitem>
+      <para>
+        Exactly one of the following keywords, case is not significant. The <emphasis role="italic">mode</emphasis> keyword
+        controls what the function does:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>START</member>
+          <member>WAIT</member>
+          <member>STOP</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>START</term>
+          <listitem>
+          <para>
+            Creates the timer and starts it. The WAIT and STOP modes will fail if the timer is not created first. In the
+            START mode, the <emphasis role="italic">msOrID</emphasis> argument specifies the period, in milliseconds, of the
+            timer. The return value for the START mode is the ID of the timer. This ID must then be used for the WAIT or STOP
+            modes.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term></term>
+          <listitem>
+          <para>
+            Waits until the next period of the timer is elapsed. In the WAIT mode, the <emphasis
+            role="italic">msOrID</emphasis> argument must be the ID of the timer that is returned from using the CREATE mode.
+            The return value is 0 on success and the system error code on error.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>STOP</term>
+          <listitem>
+          <para>
+            Stops, releases, the timer. In the STOP mode,  the <emphasis role="italic">msOrID</emphasis> argument must be the
+            ID of the timer that is returned from using the CREATE mode. The return value is 0 on success and the system
+            error code on error.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>msOrID [required]</term>
+      <listitem>
+      <para>
+        The value of the <emphasis role="italic">msOrID</emphasis> argument is dependent on the <emphasis
+        role="italic">mode</emphasis> argument as explained above. When creating the timer this argument is the desired
+        period, in milliseconds, of the timer. In the WAIT and STOP modes, the <emphasis role="italic">msOrID</emphasis>
+        argument must be the timer ID that is returned from calling the function in the CREATE mode.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return value is dependent on the <emphasis role="italic">mode</emphasis> the function is called with. If <emphasis
+    role="italic">mode</emphasis> is CREATE, then the return value is 0 on error, otherwise the timer ID on success. In the
+    other 2 modes the return is 0 on success and a system error code on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Every created timer should be released by calling the function with the STOP <emphasis role="italic">mode</emphasis>.
+    Otherwise, the operating system will continue signaling the timer and consuming some system resources.
+  </para>
+  <para>
+    When calling <emphasis role="italic">WinTimer</emphasis> in the WAIT mode, the routine does not return until the current
+    period of the timer elapses. During the WAIT, the current thread is suspended. When starting the WAIT, some portion of
+    the current period will have elapsed, so the current thread is not suspended for the timer period. It is only suspended
+    for the remaining time in the current period. This is unlike the Rexx <emphasis role="italic">SysSleep</emphasis>
+    routine, where the thread is suspended for the interval specified. For instance, if the timer period is 2 seconds and the
+    application calls the routine in WAIT mode after .9 seconds of the current period has elapsed, the thread will only be
+    suspended for 1.1 seconds.
+  </para>
+  <para>
+    Windows is not a real time operating system. Any type of timer in Windows can only achieve an aproximate wait period. In
+    particular you can not expect a working wait period of less thatn 15 milliseconds with the <emphasis
+    role="italic">WinTimer</emphasis> routine.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example that shows how to correctly start and use a timer with the <emphasis role="italic">WinTimer</emphasis>
+    routine:
+<programlisting>
+<![CDATA[
+
+::method doStuff unguarded
+  expose finished
+
+  finished = .false
+  reply 0
+
+  id = WinTimer("START", 2000)
+  if id <> 0 then do while \ finished
+    say "Still working at:" time()
+
+    do i = 1 to 10
+      ...
+    end
+
+    ...
+
+    ret = WinTimer("WAIT", id)
+    if ret <> 0 then leave
+  end
+
+  if id <> 0 then ret = WinTimer("STOP", id)
+
+  finished = .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WinTimer() -->
 
 </chapter>
