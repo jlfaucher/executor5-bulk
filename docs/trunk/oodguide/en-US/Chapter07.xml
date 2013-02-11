@@ -506,11 +506,9 @@ Class-Instance            Model Id                ViewClass-Inst
                         role="bold"><emphasis role="italic">PersonModel PA150</emphasis></emphasis>.
                       A directory is returned by <computeroutput>PersonModel</computeroutput>, and
                       the Message Sender presents the directory in name-value form in its <emphasis
-                        role="bold">Reply</emphasis> field as follows: <programlisting>
-<![CDATA[dob: 751513; baseSalary: 38000; number: PA150; jobDescr: Packer; 
+                        role="bold">Reply</emphasis> field as follows: <programlisting><![CDATA[dob: 751513; baseSalary: 38000; number: PA150; jobDescr: Packer; 
 familyName: James; firstName: Alfred; 
-]]>
-</programlisting></para>
+]]></programlisting></para>
                   </listitem>
                   <listitem>
                     <para>If a component's <computeroutput>query</computeroutput> method is invoked
@@ -624,26 +622,88 @@ familyName: James; firstName: Alfred;
         </indexterm>
         <para>The data superclass is called "GenericFile", since it acts on any file having the
           defined format (see <xref linkend="chap07-mvfuse-datafmts"/> for a description of the file
-          format).  The important methods are: <itemizedlist>
+          format). The important methods are: <itemizedlist>
             <listitem>
               <para><computeroutput>getRecord</computeroutput><indexterm>
                   <primary>getRecord method</primary>
                 </indexterm> - Invoked with a record key (e.g. a Customer Number) as its single
                 argument, reads the record from the file defined in the subclass, and returns a
-                "record directory".  </para>
+                "record directory". </para>
             </listitem>
             <listitem>
               <para><computeroutput>getFile</computeroutput><indexterm>
                   <primary>getFile method</primary>
-                </indexterm> - Returns the file in  "file as directory" format. </para>
+                </indexterm> - Returns the file in "file as directory" format. </para>
             </listitem>
             <listitem>
               <para><computeroutput>list</computeroutput><indexterm>
                   <primary>list method</primary>
                 </indexterm> - Lists the file on the console.</para>
             </listitem>
-          </itemizedlist>See <xref linkend="chap07-mvfuse-datafmts"/> for a description of the data
-          formats.</para>
+          </itemizedlist>See <xref linkend="chap07-mvfuse-datafmts"/> for a description of the
+          "record directory" and "file as directory" formats.</para>
+        <para>The <computeroutput>OrderData</computeroutput>
+          <indexterm>
+            <primary>OrderData class</primary>
+          </indexterm>class uses <computeroutput>GenericFile</computeroutput> in a different way
+          than other components. Other components can have all their data returned with a single
+          invocation of one of <computeroutput>GenericFile</computeroutput>'s methods.
+            <computeroutput>OrderData</computeroutput> on the other hand needs not only the order
+          data from two files (Order Headers and Order Details), but also selected fields from
+          Customer and Product records. In other words, it needs to do a relational "join". And
+          since (in this exercise at least) we are not using an SQL database, the joins have to be
+          done explicitly by the <computeroutput>OrderData</computeroutput> class. This is done in
+          the <computeroutput>init</computeroutput> method, as follows. </para>
+        <para>First, the OrderHeaders file is read into an attribute
+            <computeroutput>dirOrderHeaders</computeroutput>. Then all order lines are read into an
+          attribute <computeroutput>dirOrderLines</computeroutput>. Following this, the
+            <computeroutput>addCustomerInfo</computeroutput> method retrieves additional customer
+          data (required by <computeroutput>OrderView</computeroutput>) from the Customer Data
+          component and that data is added to <computeroutput>dirOrderHeaders</computeroutput>.
+          Finally, the <computeroutput>addProductInfo</computeroutput> method invokes the Product
+          Data component to do the same for the required Product data (e.g. Product Names).</para>
+        <para>Since the Order data is held in two attributes of
+            <computeroutput>OrderData</computeroutput>, the
+            <computeroutput>getRecord</computeroutput> and <computeroutput>getFile</computeroutput>
+          methods are over-ridden, and handled completely by the
+            <computeroutput>OrderData</computeroutput> class. While
+            <computeroutput>getFile</computeroutput> is very simple - merely returning
+            <computeroutput>dirOrderHeaders</computeroutput> (which is sufficient for the Product
+          List model and view), the  <computeroutput>getRecord</computeroutput> method needs to
+          build the data for a single Order from the Order and OrderLines attributes, combining some
+          Customer and some Product data not present in the Order Data (for example, Customer
+          Discounts and Product Names). Thus it also over-rides its superclass method, and builds a
+          directory called "dirOrderRecord" whose format is as follows:<programlisting><![CDATA[   "dirOrderRecord" format (using data values from Order No SO-1234):
+    
+              Indexes         Items
+            +- - - - - - - - - - - - - - - - - - - - - - - - +
+            | OrderNo       | SO-1234                        |
+            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            | CustNo        | AB0784                         |
+            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            | CustName      | ABC Enterprises Inc.           |
+            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            | CustAddr      | 2145 Engle Blvd,Hardtown,FL    |
+            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            | Zip           | 37043                          |
+            +- - - - - + - - - - - - - - - - - - - - - - - - + 
+            | Cmtd          | N                              |
+            +- - - - - + - - - - - - - - - - - - - - - - - - + 
+            | CustDisc      | B1                             |
+            +- - - - - + - - - - - - - - - - - - - - - - - - + 
+            | Disc          | 2                              |
+            +- - - - - + - - - - - - - - - - - - - - - - - - + 
+            | Date          | 120821                         |
+            +- - - - - - - - - - - - - - - - - - - - - - - - +
+            | OrderLineHdrs | OrderNo  ProdNo Qty ProdName   |     <a 1D array>
+            +- - - - - - - - - - - - - - - - - - - - - - - - +
+            | OrderLines    | SO-1234  AB100/W  5 Baffle     |     <a 2D array>
+            |               | SO-1234  CF300/X  6 Widget Box |
+            |               | SO-1234  EF500/W 15 Slodget    |
+            +- - - - - - - - - - - - - - - - - - - - - - - - +]]></programlisting></para>
+        <para>Finally, a <computeroutput>listOrders</computeroutput> method is provided, since the
+            <computeroutput>list</computeroutput> method of
+            <computeroutput>GenericFile</computeroutput> cannot list data from two files.</para>
       </section>	<!-- End of Section 7.2.2.5 -->
 
 
@@ -723,7 +783,7 @@ familyName: James; firstName: Alfred;
 
 </section>	<!-- End of Section 7.3.1 -->
 
-<section id="chap07-mvfuse-datafmts"><title id="ch7-mvfuse-datafmts.title">Data Methods and Formats</title>	<!-- Section 7.3.2 -->
+<section id="chap07-mvfuse-datafmts"><title id="ch7-mvfuse-datafmts.title">Data Formats</title>	<!-- Section 7.3.2 -->
   <!-- 
                 - different for Order since have to compose data from two files
                   (no DBMS!)
@@ -734,9 +794,7 @@ Query on CustomerList 1 gives: RECORDS: an Array; COUNT: 5; HEADERS: an Array;
   -->
       <para>Fields in a file record are separated by a vertical bar character, and field names are
         defined in the first line of the file. All data files have the file extension ".txt". </para>
-    <para>The format of a "record" directory is as follows: <programlisting>
-    <![CDATA[
-    "Record Directory" format (using sample data values):
+    <para>The format of a "record" directory is as follows:<programlisting><![CDATA[    "Record Directory" format (using sample data values):
     
               Indexes     Items
             +- - - - - - - - - - - - - -+
@@ -745,9 +803,7 @@ Query on CustomerList 1 gives: RECORDS: an Array; COUNT: 5; HEADERS: an Array;
             | CustName | LMN & Partners |
             +- - - - - + - - - - - - - -+
             | Zip      | 84394          |
-            +- - - - - + - - - - - - - -+
-    ]]>
-    </programlisting>
+            +- - - - - + - - - - - - - -+]]> </programlisting>
       </para>
   <para>getFile - Returns the file in "File as Directory" format, as follows: <programlisting>
     <![CDATA[
@@ -774,24 +830,21 @@ Query on CustomerList 1 gives: RECORDS: an Array; COUNT: 5; HEADERS: an Array;
 
 <section id="chap07-msgsender"><title id="ch7-msgsender.title">The Message Sender</title>	<!-- Section 7.4 -->
     <indexterm><primary>Message Sender</primary></indexterm>
-  <para> Message Sender - get rid of "stand-alone" testing code. </para>
+  <para>Message Sender - get rid of "stand-alone" testing code. </para>
         <para>In sending to ObjectMgr, this version only supports "List" and "showModel". </para>
 </section>	<!-- End of Section 7.4 -->
 
 <section id="chap07-orderform"><title id="ch7-orderform.title">The Order Form</title>		<!-- Section 7.5 -->
     <indexterm><primary>Order Form dialog</primary></indexterm>
-<para>
-Order Form - use of ControlObjects - multiple dialogs, one main one, one for each tab. Why? To allow controls on
-the form itself.
-</para>
+<para>Order Form - use of ControlObjects - multiple dialogs, one main one, one for each tab. Why? To
+      allow controls on the form itself. </para>
 </section>	<!-- End of Section 7.5 -->
 
 <section id="chap07-next"><title id="ch7-next">Completing the Application</title>               <!-- Section 7.6 -->
-<para>At this point, there is more to do to complete the application. For example,
-completing the OrderForm, allowing data to be updated, moving as much generic
-function as possible to superclasses, and removing the need for duplciate view superclasses.
-It is planned that these functions will be addressed in the next version of this document.
-</para> 
+<para>At this point, there is more to do to complete the application. For example, completing the
+      OrderForm, allowing data to be updated, moving as much generic function as possible to
+      superclasses, and removing the need for duplicate view superclasses. It is planned that these
+      functions will be addressed in the next version of this document. </para> 
   <para>(Mention the "requires list" somewhere!)</para>
 </section>	<!-- End of Section 7.6 -->
 
