@@ -2091,6 +2091,17 @@ RexxMethod4(logical_t, tv_sortChildrenCB, CSTRING, _hItem, CSTRING, method, OPTI
     return rexxTreeViewSort(context, hItem, method, param, pcdc);
 }
 
+RexxMethod1(logical_t, tv_test, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return FALSE;
+    }
+
+    printf("No current test.\n");
+    return TRUE;
+}
 
 /**
  *  Methods for the .TvCustomDrawSimple class.

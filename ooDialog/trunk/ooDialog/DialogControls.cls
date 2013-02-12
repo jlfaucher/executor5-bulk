@@ -81,6 +81,7 @@
 ::method setColor unguarded external "LIBRARY oodialog dlgctrl_setColor"
 ::method setParent unguarded external "LIBRARY oodialog dlgctrl_setParent"
 ::method setSysColor unguarded external "LIBRARY oodialog dlgctrl_setColor"
+::method setWindowTheme unguarded external "LIBRARY oodialog dlgctrl_setWindowTheme"
 ::method tabStop unguarded external "LIBRARY oodialog dlgctrl_tabGroup"
 ::method textSize unguarded external "LIBRARY oodialog dlgctrl_textSize"
 ::method useUnicode unguarded

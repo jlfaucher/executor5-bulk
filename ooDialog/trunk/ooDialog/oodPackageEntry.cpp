@@ -941,6 +941,7 @@ REXX_METHOD_PROTOTYPE(dlgctrl_hasKeyPressConnection);
 REXX_METHOD_PROTOTYPE(dlgctrl_redrawRect);
 REXX_METHOD_PROTOTYPE(dlgctrl_setColor);
 REXX_METHOD_PROTOTYPE(dlgctrl_setParent);
+REXX_METHOD_PROTOTYPE(dlgctrl_setWindowTheme);
 REXX_METHOD_PROTOTYPE(dlgctrl_tabGroup);
 REXX_METHOD_PROTOTYPE(dlgctrl_textSize);
 REXX_METHOD_PROTOTYPE(dlgctrl_putInBag);
@@ -1264,6 +1265,7 @@ REXX_METHOD_PROTOTYPE(tv_setImageList);
 REXX_METHOD_PROTOTYPE(tv_setItemData);
 REXX_METHOD_PROTOTYPE(tv_setItemHeight);
 REXX_METHOD_PROTOTYPE(tv_sortChildrenCB);
+REXX_METHOD_PROTOTYPE(tv_test);
 
 // Tab
 REXX_METHOD_PROTOTYPE(tab_select);
@@ -2070,6 +2072,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgctrl_redrawRect,             dlgctrl_redrawRect),
     REXX_METHOD(dlgctrl_setColor,               dlgctrl_setColor),
     REXX_METHOD(dlgctrl_setParent,              dlgctrl_setParent),
+    REXX_METHOD(dlgctrl_setWindowTheme,         dlgctrl_setWindowTheme),
     REXX_METHOD(dlgctrl_tabGroup,               dlgctrl_tabGroup),
     REXX_METHOD(dlgctrl_textSize,               dlgctrl_textSize),
     REXX_METHOD(dlgctrl_putInBag,               dlgctrl_putInBag),
@@ -2365,6 +2368,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tv_setItemData,                 tv_setItemData),
     REXX_METHOD(tv_setItemHeight,               tv_setItemHeight),
     REXX_METHOD(tv_sortChildrenCB,              tv_sortChildrenCB),
+    REXX_METHOD(tv_test,                        tv_test),
 
     // Tab
     REXX_METHOD(tab_select,                     tab_select),

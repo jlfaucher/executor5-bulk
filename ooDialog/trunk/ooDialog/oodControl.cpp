@@ -46,6 +46,7 @@
 
 #include <shlwapi.h>
 #include <OleAcc.h>
+#include <uxtheme.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
 #include "oodMessaging.hpp"
@@ -2142,7 +2143,7 @@ RexxMethod2(RexxObjectPtr, dlgctrl_redrawRect, ARGLIST, args, CSELF, pCSelf)
 }
 
 
-/** DialogControl::setParen()
+/** DialogControl::setParent()
  *
  *  Sets a new parent for this dialog control.
  *
@@ -2170,6 +2171,53 @@ RexxMethod2(RexxObjectPtr, dlgctrl_setParent, RexxObjectPtr, parent, CSELF, pCSe
         oodSetSysErrCode(context->threadContext);
         return TheFalseObj;
     }
+    return TheTrueObj;
+}
+
+
+/** DialogControl::setWindowTheme()
+ *
+ *  Causes a window to use a different set of visual style information than its
+ *  class normally uses.
+ *
+ *  @param  name [required]  The application name to use in place of the calling
+ *               application's name.
+ *
+ *  @return  True on success, false on error.
+ *
+ *  @note  Sets the .SystemErrorCode.
+ *
+ *  @remarks  The only theme name I know to work is 'explorer.'  Not at all sure
+ *            what other names might be valid.
+ */
+RexxMethod2(RexxObjectPtr, dlgctrl_setWindowTheme, CSTRING, name, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheFalseObj;
+    }
+
+    size_t len = strlen(name);
+    if ( len >= MAX_PATH )
+    {
+        stringTooLongException(context->threadContext, 1, MAX_PATH - 1, len);
+        return TheFalseObj;
+    }
+
+    WCHAR themeName[MAX_PATH];
+
+    putUnicodeText((LPWORD)themeName, name);
+
+    HRESULT hr = SetWindowTheme(pcdc->hCtrl, themeName, NULL);
+    if ( ! SUCCEEDED(hr) )
+    {
+        oodSetSysErrCode(context->threadContext, hr);
+        return TheFalseObj;
+    }
+
     return TheTrueObj;
 }
 

@@ -202,6 +202,8 @@
    use strict arg
    return self~sendWinIntMsg(self~TVM_GETVISIBLECOUNT, 0, 0)
 
+::method test unguarded external "LIBRARY oodialog tv_test"
+
 
 -- DEPRECATED
 ::method hitTest unguarded

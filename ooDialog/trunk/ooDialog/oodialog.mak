@@ -175,6 +175,7 @@ $(OOD_OUTDIR)\oodialog.dll: $(SOURCEF)
     COMCTL32.LIB \
     shlwapi.lib \
     Oleacc.lib \
+    UxTheme.lib \
     -def:$(OOD_OODIALOGSRC)\ooDialog.def \
     -out:$(OOD_OUTDIR)\$(@B).dll
 
