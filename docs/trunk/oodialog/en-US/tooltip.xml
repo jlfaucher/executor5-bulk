@@ -359,7 +359,7 @@
 <entry>Sets the information that this ToolTip control maintains for a tool.</entry>
 </row>
 <row>
-<entry><xref linkend="mthSetWindowTheme"/></entry>
+<entry><xref linkend="mthSetWindowThemeClsToolTip"/></entry>
 <entry>Sets the visual style of a ToolTip control.</entry>
 </row>
 <row>
@@ -2912,7 +2912,7 @@ Tool info  resource: The NIL object
 </section>  <!-- End ToolTip::setToolInfo() -->
 
 
-<section id="mthSetWindowTheme" xreflabel="setWindowTheme"><title>setWindowTheme</title>
+<section id="mthSetWindowThemeClsToolTip" xreflabel="setWindowTheme"><title>setWindowTheme</title>
 <indexterm><primary>setWindowTheme</primary></indexterm>
 <indexterm><primary>ToolTip class</primary><secondary>setWindowTheme</secondary></indexterm>
 <programlisting>
@@ -2947,6 +2947,11 @@ Tool info  resource: The NIL object
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
+  <para>
+    This method over-rides the <xref linkend="clsDialogControl"/>  class’s <xref
+    linkend="mthSetWindowThemeClsDialogControl"/> method because the implementation for a tool tip is different than for the
+    general dialog control case.
+  </para>
   <para>
     This method is included for completeness. The Windows <xref linkend="defWindowsDoc"/> is very sparse on this topic. It
     simply says a string specifying the style, but doesn't say what styles are available. Currently, the ooDialog developers
