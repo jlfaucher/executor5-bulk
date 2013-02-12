@@ -64,6 +64,8 @@ Feature Requests in ooDialog:
 
  * #249 Add support for generalized resizable dialogs
 
+ * #370 Replace ooDialog WinTimer with a waitable time
+
  * #417 ooDialog public routines and icon resource
 
  * #504 It would be nice to be able to store a user value as part of the
@@ -122,6 +124,8 @@ Feature Requests in ooDialog:
  * #532	Set the cue banner text for a combo box
 
  * #534	Key status
+
+ * #535 Treeview expand/collapse button replacement
 
 
 New Functionality in ooDialog:
@@ -230,6 +234,13 @@ setItemHeight()   Sets the height of the list items or the selection
 
 setMinVisible()   Sets the minimum number of visible items in the
                   drop-down list of a combo box.
+
+
+In the DialogControl class:
+
+setWindowTheme()  Changes the visual theme for this dialog control
+                  window, causes the window to use a different set of
+                  visual style information than its class normally uses.
 
 
 In the DlgUtil class:
@@ -349,6 +360,18 @@ find()                  Enhanced to allow starting the search from any
                         parent tree-view item.  Enhanced to allow
                         searching for an abbreviation of the tree-view
                         item label.
+
+
+Enhanced Public Routines:
+-------------------------
+
+WinTimer()              The WinTimer() public routine was originally
+                        implemented in a way that caused it consume 100%
+                        of the CPU in a busy loop.  The routine has been
+                        re-implmented in a way that keeps the same
+                        behaviour of the routine the same, without the
+                        high CPU use.  The CPU use while waiting on the
+                        timer is now 0%.
 
 
 Deprecated Methods:
