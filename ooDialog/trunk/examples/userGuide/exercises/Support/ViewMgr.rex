@@ -37,7 +37,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ViewMgr							 v01-00  11Jan13
+  ViewMgr							 v01-00  13Feb13
   ----------
   A singleton component that manages Views and view-related function
   such as Popup Offsetting.
@@ -45,14 +45,13 @@
   Changes:
     v01-00 23Apr12: First version
            11Jan13: Comment-out 'say' instructions.
+           13Feb13: Remove code not used.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 --::REQUIRES "ObjectMgr.rex"
 
 ::CLASS 'ViewMgr' PUBLIC
 
-  :: ATTRIBUTE mvTable		-- Table of Models and their Views
-  				--   NOT USED (it's in the ObjectMgr).
   :: ATTRIBUTE dlgOffset	-- A single number of dialog units by which a
   				--   child dialog is offset (vertically and
   				--   horizontally) from a parent.
@@ -66,7 +65,6 @@
     --expose dlgOffset
     --say "ViewMgr-init."
     .local~my.ViewMgr = self
-    self~mvTable = .Table~new
     self~dlgOffset = 200
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -97,32 +95,6 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-  /*----------------------------------------------------------------------------
-    addView - Adds a View to mvTable.
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD addView PUBLIC
-    use strict arg model, view
-    say "ViewMgr-addView-01."
-    -- Check if view already exists:
-
-    -- QUESTION! Does the ObjectMgr know about Views? Why should it?
-    -- Answer - in this version, ObjectMgr handles the View Table -
-    --          'cos that's the way I did it (not really correct but
-    --          there you go...).
-/*
-    dlg = .local~my.ObjectMgr~queryView(modelClass, modelInstance)
-    if dlg \= .false then do		-- if View (dialog) exists
-      dlg~show
-      return .true
-    end
-
-    if exists then do
-      -- surface view
-      return .true
-    end
-    -- Create View:
-*/
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
   /*----------------------------------------------------------------------------
@@ -145,17 +117,6 @@
       return .true
     end
 
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-  /*----------------------------------------------------------------------------
-    listMVTable - list the MV Table on the console.
-                  NOT USED.
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/*  ::METHOD listMVTable PUBLIC
-    do i over self~mvTable
-      say i tbl[i]
-    end
-*/
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /*============================================================================*/

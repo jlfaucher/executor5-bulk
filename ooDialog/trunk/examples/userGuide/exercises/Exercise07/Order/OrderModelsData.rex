@@ -55,14 +55,15 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  OrderModel							  v02-00 11Jan13
+  OrderModel							  v01-00 08Feb13
   ------------
   The "model" part of the Order component.
 
   Changes:
    v01-00 07Jun12: First version.
-   v02-00 24Aug12: Modified to use the MVF.
+          24Aug12: Modified to use the MVF.
           11Jan13: Commented-out 'say' instructions.
+          08Feb13: Minor changes to comments only.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -316,7 +317,7 @@
     -- (1) Add column headers (field names) from Customer to OrderHeaders:
     columnHeaders = self~dirOrderHeaders[headers]
     columnHeaders[6] = "CustName"; columnHeaders[7] = "CustDisc"
-    columnHeaders[8] = "CustAddress"; columnHeaders[9] = "Zip"
+    columnHeaders[8] = "CustAddr"; columnHeaders[9] = "Zip"
     self~dirOrderHeaders[headers] = columnHeaders
 
     -- (2) Add values for custName, Discount, CustAddress and Zip for each order header line:
@@ -333,16 +334,11 @@
       --say "OrderData-getFile-04: arrOrderHeaders[i,2] =" arrOrderHeaders[i,2]
       orderCustNo = arrData[i,2]
       custDir = idCustdata~getRecord(orderCustNo)
-      --orderCustName     = custDir["CustName"]
-      --orderCustDiscount = custDir["Discount"]
-      --orderCustAddress  = custDir["CustAddress"]
-      --orderCustZip      = custDir["Zip"]
       -- add customer's Name and Address to the end of the record:
       arrData[i,6] = custDir["CustName"]
       arrData[i,7] = custDir["CustDisc"]
-      arrData[i,8] = custDir["CustAddress"]
+      arrData[i,8] = custDir["CustAddr"]
       arrData[i,9] = custDir["Zip"]
-      --say "OrderData-getFile-05: custName = " arrOrderHeaders[i,6]
     end
     self~dirOrderHeaders[records] = arrData
     return
@@ -367,17 +363,13 @@
     if idProductData = .false then return .false
     -- (2b) For each order line, get the product name from ProductData
     --      and add it to the OrderLines in-memory file:
-    --say "OrderData-addProductInfo-01: self~dirOrderLines[count] =" self~dirOrderLines[count]
     do i=1 to self~dirOrderLines[count]		-- loop over the Order Lines records:
       -- get Product record from ProductData:
       orderProductNo = arrData[i,2]
-      --say "OrderData-addProductInfo-02: orderProductNo =" orderProductNo
       prodDir = idProductData~getRecord(orderProductNo)
-      --say "OrderData-addProductInfo-03: prodDir =" prodDir
       orderProductName = prodDir["ProdName"]
       -- add product's Name to the end of the record:
       arrData[i,4] = orderProductName
-      --say "OrderData-addProductInfo-04: custName = " arrOrderHeaders[i,6]
     end
     self~dirOrderLines[records] = arrData
     return
@@ -469,7 +461,7 @@
 
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    listFile - lists the file.
+    listOrders - lists the file.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD listOrders PUBLIC
     say; say "----List-Orders--------------------------------"

@@ -52,7 +52,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  WowData							  v02-00 06Sep12
+  WowData							  v02-00 13Feb13
   -------
   Has access to WOW data, and returns a set to requester.
 
@@ -61,32 +61,34 @@
   Changes:
     v01-01 31May12: First version.
     v02-00 06Sep12: Second version - modified to use the Model-View Framework (MVF)
+           13Feb13: Changes to comments only.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::REQUIRES "..\Support\GenericFile.rex"
+::REQUIRES "..\Support\GenericFile.rex"					-- MVF
 
 --::CLASS WowData PUBLIC
-  ::CLASS WowData SUBCLASS GenericFile PUBLIC				-- MVF
+  ::CLASS WowData SUBCLASS GenericFile PUBLIC			-- v01-00-->MVF
 
   ::ATTRIBUTE created CLASS						-- MVF
 
   /*----------------------------------------------------------------------------
-    newInstance - creates an instance of WowData. Since all data components are
-    		  singletons, MVF applies the instance the name "The".
+    newInstance - creates an instance of WowData. Since all data
+                  components are singletons, MVF applies the instance
+                  name "The".
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD newInstance CLASS PUBLIC					-- MVF
-      use strict arg instanceName		-- MVF: instanceName is "The".
-      if self~created = "CREATED" then do	-- MVF - if not yet created
+      use strict arg instanceName		-- the instanceName is "The".
+      if self~created = "CREATED" then do	-- if not yet created
         WowDataId = self~new()
         return WowDataId
       end
-      else do
-        say ".WowData-newInstance-01 - singleton component, so can't have more than one instance."
+      else do					-- if already created, then error.
+        say ".WowData-newInstance-01 - Error: singleton component, so can't have more than one instance."
         return .false
       end
 
   /*----------------------------------------------------------------------------
-    init - asks super to read the file from disk. 			-- MVF
+    init - asks super to read the file from disk.
            Returns the number of records (exclusing the colums headers line)
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init								-- MVF
@@ -97,22 +99,22 @@
 
 
   /*----------------------------------------------------------------------------
-    getRecord - asks super to read the file from disk. 			-- MVF
+    getRecord - asks super to read the file from disk.
                 Normally for a 'named' component, MVF invokes 'getRecord'
                 to ask the Data component for a single record (handled by the
-                'GenericFile' superclass). However, for a ListModel,
-                MVF invokes 'getFile' to get the whole file to display in a list.
+                'GenericFile' superclass). For a ListModel, MVF invokes 'getFile'
+                to get the whole file to display in a list.
                 Here, although WowModel is a Model, not a ListModel, we want the
                 whole file. And GenericFile holds the file in its 'fileAsDirectory'
                 attribute. So we intercept the 'getRecord' message, and return
                 the file.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD getRecord PUBLIC
+  ::METHOD getRecord PUBLIC						-- MVF
     return self~fileAsDirectory
 
 
   /*----------------------------------------------------------------------------
-    activate - Not used for a Data component in MVF			-- MVF
+    activate - Not used for a Data component in MVF		          v01-00
     reads initial Wow Set from disk (but not in this version)
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /*  ::METHOD activate
@@ -137,7 +139,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*----------------------------------------------------------------------------
-    readWowSet - returns the Wow set as an array.
+    readWowSet - returns the Wow set as an array.			  v01-00
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   --::METHOD readWowSet
     --expose arrWow

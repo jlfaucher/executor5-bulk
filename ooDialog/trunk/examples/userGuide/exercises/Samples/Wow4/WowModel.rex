@@ -37,7 +37,7 @@
 /* ooDialog User Guide
    Exercise07 Part 2: The WowModel component.			  v02-00 06Sep12
 
-   Contains:       Classes: WowPicker.
+   Contains:       Classes: WowModel.
 
    Pre-requisites: The Model-View Framework (MVF)
 
@@ -45,13 +45,14 @@
 
    Changes:
      v01-00 31May12: First version.
-     v02-00 06Sep12: Second version - uses the MVF.
+     v02-00 06Sep12: Second version - uses the MVF. Class name changed from
+                     WowPicker to WowModel.
             09Jan13: Comment-out 'say's.
 ------------------------------------------------------------------------------*/
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  WowPicker							  v01-00 31may12
+  WowModel							  v01-00 13Feb13
   ---------
   A class that returns a Words of Wisdom string, selected randomly from a set
   of such Words of Wisdom.
@@ -59,38 +60,39 @@
   			   Have the size of the set configurable.)
   Changes:
     v01-00 31may12: First version.
-    v02-00 06Sep12: Seciond version - uses the MVF.
+    v02-00 06Sep12: Second version - uses the MVF.
+           13Feb13: Mods to comments only.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::REQUIRES "..\Support\Model.rex"					-- MVF
+::REQUIRES "..\Support\Model.rex"					  -- MVF
 
--- ::CLASS WowModel Public						-- v01-00
-::CLASS WowModel SUBCLASS Model PUBLIC					-- MVF
+::CLASS WowModel SUBCLASS Model PUBLIC				  --v01-00-->MVF
 
   /*----------------------------------------------------------------------------
-    newInstance - class method required for MVF. 			-- MVF
+    newInstance - class method required for MVF.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD newInstance CLASS PUBLIC
+  ::METHOD newInstance CLASS PUBLIC					   --MVF
     use strict arg instanceName
-    forward class (super) continue		-- MVF: super does the ~new and
-                                                --   passes data as a param on the init.
-    modelId = RESULT				-- MVF (or just 'return RESULT')
-    return modelId				-- MVF
+    forward class (super) continue	-- Super does the ~new, gets the data
+    					-- and passes it as a param on the init.
+    modelId = RESULT			-- MVF (or just 'return RESULT')
+    return modelId
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*----------------------------------------------------------------------------
-    init - Since there's not no divided setup as in Views,		-- MVF
+    init - Since there's not no divided setup as in Views,
            'activate' is same as 'init' so with MVF we just use 'init'.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD init								-- MVF
+  ::METHOD init								  -- MVF
     expose arrWowSet
     use strict arg dirWowSet		-- MVF: data for model provided by super
     arrWowSet = dirWowSet[Records]	-- MVF: pre-defines format of data.
     return self				-- MVF.
 
+
   /*----------------------------------------------------------------------------
-    activate - Not used by Model components when using MVF.
+    activate - Not used by Model components when using MVF.		--v01-00
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   /*::METHOD activate
     expose arrWowSet
@@ -103,18 +105,19 @@
   /*----------------------------------------------------------------------------
     pickWow - picks a Word of Wisdom from the current wowSet and returns it.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD pickWow				-- MVF uses 'query' method.
+  ::METHOD pickWow						 -- v01-00 & MVF
     expose arrWowSet
     i = random(1,25)
-    --say "WowModel-query: arrWowSet[3,1] =" arrWowSet[3,1]
     return arrWowSet[i,1]
 
   /*----------------------------------------------------------------------------
-    query - Required by MVF but not used by the View - because does not display
-            data when dialog opened for first time.
+    query - MVF sends 'query' when the View is created. However, this function
+            is not used by WowView since it does not display data when the
+            dialog is opened for first time. Thus, since the superclass's
+            method is not required either, this method merely returns a string.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD query PUBLIC							-- MVF
-    return "Wow does not support this method."
+  ::METHOD query PUBLIC							  -- MVF
+    return "WowModel-query: this method not supported."
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /*============================================================================*/

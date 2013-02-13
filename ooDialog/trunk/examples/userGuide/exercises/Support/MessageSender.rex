@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: MessageSender.rex 				  v01-00 06Feb13
+   Exercise 07: MessageSender.rex 				  v01-00 11Feb13
 
    Contains:  classes: "MessageSender", "HRSms"
 
@@ -60,7 +60,7 @@
             05Feb13: Changed edit controls to comboboxes for Target and Method.
                      Provided for user add of methods and target components
                      (not saved over a dialog close).
-            06Feb13: "say" instructions and commented-out method removed.
+            11feb13: No change to function - minor tidy-up of a few comments.
 
   Description:
     Target: className instanceName
@@ -89,6 +89,7 @@
 
   ::METHOD newInstance CLASS PUBLIC
     use arg rootDlg
+    --say ".MessageSender-newInstance."
     dlg = .MessageSender~new("..\Support\MessageSender.rc", "DLG_MESSAGESENDER") --,,"MessageSender.h")
     dlg~activate(rootDlg)
     return
@@ -99,6 +100,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     expose objectMgr
+    --say "MessageSender-init-01."
     forward class (super) continue
     .local~my.MsgSender = self
     return
@@ -110,6 +112,7 @@
   ::METHOD activate unguarded
     expose rootDlg
     use arg rootDlg
+    --say "MessageSender-activate-01."
     self~popupAsChild(rootDlg, "SHOWTOP") --, ,"IDI_CUSTLIST_DLGICON")
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -120,6 +123,7 @@
   ::METHOD initDialog
     expose cbTarget cbMethod ecData ecReply btnSend btnClear stErrorMsg objectMgr -
            chkStoreTarget chkStoreMethod arrTargets arrMethods
+    --say "MessageSender-initDialog-01."
     cbTarget    = self~newComboBox("IDC_MS_COMPONENT")
     cbMethod    = self~newComboBox("IDC_MS_METHOD")
     ecData      = self~newEdit("IDC_MS_DATA")
@@ -139,6 +143,7 @@
 
     -- Get id of ObjectMgr:
     objectMgr = .local~my.objectMgr
+    --say "MessageSender-initDialog-02 - objectMgr =" objectMgr
     if objectMgr = .nil then do	-- Check if ObjectMgr is present - .nil if not.
       stErrorMsg~setText(.HRSms~prefix1||.HRSms~noObjectMgr)
       btnSend~disable()
@@ -173,10 +178,14 @@
   ::METHOD sendMessage
     expose objectMgr ecReply stErrorMsg btnClear chkStoreTarget chkStoreMethod -
            cbTarget cbMethod arrTargets arrMethods
+    --say; say "---------------------------------------------------------"
+    --say "MessageSender-sendMessage-01."
     ecReply~setText("")		-- Clear any reply data from previous requests.
+    --error = .false		-- if true, indicates error in data provided.
     message = self~parseData	-- data is a directory, array, string; .false if error.
 
     if message = .false then do -- if errors found in the data.
+      --say "MessageSender-sendMessage-02: message =" message
       btnClear~enable()		-- allow user to clear entries.
       chkStoreTarget~uncheck; chkStoreMethod~uncheck
       return .false
@@ -198,6 +207,7 @@
     end
 
     -- Send the Message and Display the response:
+    --say "MessageSender-sendMessage-03: message[data] =" message["data"]
     response = sendMsg(componentRef, message["method"],message["data"])
     select
       when response = "SendMsg - Syntax Error" then do
@@ -233,9 +243,9 @@
       end
     end
     btnClear~enable
+    -- say "MessageSender-sendMessage-04: response =" response
 
     -- Message sent successfully - so now action the checkboxes:
-    -- If either 'store' checkbox is checked, then add target and/or method to list in combobox:
     self~storeEntry(cbTarget, chkStoreTarget)
     self~storeEntry(cbMethod, chkStoreMethod)
 
@@ -245,11 +255,12 @@
 
 
   /*----------------------------------------------------------------------------
-   storeEntry - Store a new item in either Target or Method comboboxes.
-       		Assumes that a checkbox has been checked (sop caller has to check).
+   storeEntry - Store a new item in either Target or Method comboboxes if a
+       		checkbox has been checked.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD storeEntry PRIVATE
     use strict arg comboBox, checkBox
+    --say "MessageSender-storeEntry-01."
     if checkBox~getCheckState = "CHECKED" then do
       newItem = comboBox~getEditControl()~getLine(1)
       ix = comboBox~find(newitem)	-- case-insensitive find
@@ -259,6 +270,7 @@
       checkBox~uncheck()
     end
     return
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
@@ -287,6 +299,7 @@
            ||.HRSms~help8
     title = .HRSms~help1
     buttons = "OK"
+    --ans = MessageDialog(msg, 0, title, "OK", "INFORMATION")
     ans = MessageDialog(msg, self~dlgHandle, title, "OK", "INFORMATION")
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -323,10 +336,13 @@
   ::METHOD parseData
     expose cbTarget cbMethod ecData stErrorMsg objectMgr rootDlg
     stErrorMsg~setText("")	-- remove any previous error message.
+    --say; say "MessageSender-parseData-01."
     message = .Directory~new
 
     -- get target component name:
+    --target = cbTarget~getText(1)
     target = cbTarget~getEditControl()~getLine(1)
+    --say "MessageSender-parseData-02 target =" target
     parse var target class instance
     targetError = .false
     if class = "" | instance = "" then targetError = .true
@@ -338,12 +354,14 @@
     -- get Method/Message Name:
     targetMethodError = .false
     targetMethod = cbMethod~getEditControl()~getLine(1)
+    --say "MessageSender-parseData-03 targetMethod =" targetMethod
     if targetMethod~words \= 1 then targetMethodError = .true
     else message["method"] = targetMethod~strip
 
     -- Special Treatments:
     if message["class"] = "ObjectMgr" & message["instance"] = "The" then do
       -- Only List and ShowModel allowed (at present).
+      --say "MessageSender-parseData-04: msg to ObjectMgr."
       method = message["method"]
       method = method~upper
       select
@@ -355,11 +373,14 @@
           modelName = ecData~getLine(1)
           parse var modelName modelClass " " modelInstance
           modelClass = modelClass~strip; modelInstance = modelInstance~strip
+          --say "MessageSender-parseData-05: ViewMgr~parentOffsetDialog = self."
           -- Setup self as "Parent" dialog for offsetting the view to be shown
           --(do it here because other components may have done it previously):
           .local~my.ViewMgr~parentOffsetDlg = self
           -- Now show the model:
+          --say "MessageSender-parseData-06: objectMgr~showModel."
           r = objectMgr~showModel(modelClass, modelInstance, rootDlg)
+          --say "MessageSender-parseData-07: return =" r
           return "special"
         end
         otherwise do
@@ -369,6 +390,25 @@
         end
       end
     end
+-- Following Code does not work - left here in case needed in any following exercises.
+/*    else do
+      --say "MessageSender-parseData-01d."
+      if message["class"] = "ViewMgr" & message["instance"] = "The" then do
+        method = message["method"]
+        method = method~upper
+        if method = "SHOWMODEL" then do
+          modelName = ecData~getLine(1)
+          parse var modelName modelClass " " modelInstance
+          modelClass = modelClass~strip; modelInstance = modelInstance~strip
+          .local~my.ViewMgr~parentOffsetDlg = self
+          -- Now show the model:
+          r = .local~my.ViewMgr~showModel(modelClass, modelInstance, rootDlg)
+          --say "MessageSender-parseData-01e: return =" r
+          return "special"
+        end
+      end
+    end
+*/
 
     -- Normal treatments:
 
@@ -377,13 +417,16 @@
     msgData = ""
     do i=1 to ecData~lines()
       msgData = msgData||ecData~getLine(i)
+      --say "MessageSender-parseData-02: Data = '"||msgData||"'"
     end
     -- Everything now in a single text string. So now check the data type:
+    --say "chars = '"||msgData||"'"
     msgData = strip(msgData)  		-- remove leading & trailing blanks.
     if left(msgData,1) = "" then msgDataType = .false 	-- i.e. no data
     else if left(msgData,1) = "[" then msgDataType = "dir"
       else if left(msgData,1) = "|" then msgDataType = "arr"
         else msgDataType = "str"
+    --say "msgDataType =" msgDataType;
 
     formatError = .false
     Select
@@ -464,10 +507,12 @@
 
 ::ROUTINE sendMsg
   use arg targetObject, targetMethod, data
+  --say "MessageSender-sendMsg-01: targetObject targetMethod data =" targetObject targetMethod data
   SIGNAL ON SYNTAX NAME catchIt1
   SIGNAL ON NOMETHOD NAME catchIt2
   msg = .Message~new(targetObject, targetMethod, i, data)
   response = msg~send
+  --say "MessageSender-sendMsg-02: response =" response
   return response
   catchIt1: say "MessageSender-sendMsg-03: CatchIt1 - Syntax."
   SIGNAL OFF SYNTAX

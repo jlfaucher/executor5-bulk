@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: Customer Models and Data Classes	  	  v02-00 11Jan13
+   Exercise 07: Customer Models and Data Classes	  	  v02-00 31Jan13
 
    Contains: 	   classes "CustomerModel" "CustomerListModel" and "CustomerData".
 

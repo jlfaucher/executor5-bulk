@@ -211,17 +211,30 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD showData
     expose orderControls orderData
-    say "--------------------"
+/*    say "--------------------"
     say "OrderView-showData-00: contents of orderData:"
-    do i over orderdata
+    do i over orderData
       say i orderData[i]
     end
+    say; say "Order Lines:"
+    xorderLines = orderData[OrderLines]
+    do i over xorderLines
+      say i
+    end
+    say; say "Order Line Headers:"
+    xorderLines = orderData[OrderLineHdrs]
+    do i over xorderLines
+      say i
+    end
+    say "End of Contents of orderData."
+    say "---------------------"; say
+*/
     --say "orderData['CustNo']:" orderData['CustNo']  -- orderData~CustNo, orderData~'CustNo' - neither work.
     --say "--------------------"
     -- Format & show the address:
-    custAddr = orderData["CustAddress"]
+    custAddr = orderData["CustAddr"]
     parse var custAddr street "," city "," state
-    say "OrderView-showData-01: address =" street city state orderData["Zip"]
+    --say "OrderView-showData-01: address =" street city state orderData["Zip"]
     eol = .endOfLine
     custNameAddr = orderData["CustName"]||eol||street||eol||city||eol||state orderData["Zip"]
     orderControls[ecOrderNameAddr]~setText(custNameAddr)
@@ -239,9 +252,9 @@
     lvOrderLines = orderControls[lvOrderItems]
     arr = orderData[OrderLines]
     --say "OrderView-showData-02: order lines array dims =" arr~dimension
---    do i = 1 to arr~dimension(1)
---      say arr[i,2]  arr[i,3]  arr[i,4]
---    end
+    --do i = 1 to arr~dimension(1)
+      --say arr[i,1] "-" arr[i,2]  arr[i,3]  arr[i,4]
+    --end
     do i=1 to arr~dimension(1)
       qty = arr[i,3]~right(8," ")
       lvOrderLines~addRow( , , arr[i,2], arr[i,4], qty )
