@@ -1303,127 +1303,252 @@
     self~noAutoDetection
 
 
--- Never documented and does not work well.  Could be usefull if fixed.
-::class 'StateIndicator' subclass UserDialog public
+::class 'ProgressDialog' public subclass UserDialog
 
-::method Xext attribute
-::method TitleTxt attribute
-::method Msg attribute
-::method Dims attribute
+::constant IDC_PB_MAIN    100
+::constant IDC_ST_MSG     101
+::constant IDC_ST_STATUS  102
+
+::constant BUTTON_CX      35
+::constant BUTTON_CY      14
+::constant DLG_WIDTH      91  -- 2 x button width + margins + interbutton spacing
+::constant CAPTION_TEXT   "Application Processing ..."
+::constant INCR_STEP      1
+::constant MARQUEE_PAUSE  100
+::constant MSG_TEXT       "Background processing is taking place.  Please be patient."
+::constant PADDING_DU     7
+::constant RANGE_MAX      100
+::constant RANGE_MIN      0
+
+::attribute absoluteWidth
+::attribute canCancel
+::attribute captionText
+::attribute incrStep
+::attribute marqueeMode
+::attribute marqueePause
+::attribute msgHeight    -- Number of lines, default 1
+::attribute msgText
+::attribute noMsg
+::attribute noStatus
+::attribute width
+::attribute rangeMax
+::attribute rangeMin
+::attribute worker unguarded private
 
 ::method init
-   use arg message, title, fixedx
-   if arg(3,'o') = 1 then self~XExt = 0; else self~XExt = fixedx
-   self~Msg = message
-   self~TitleTxt = title
-   self~dims = .directory~new
-   self~init:super("")
-   if self~initCode = 0 then self~Popup
+    use strict arg capt = (self~CAPTION_TEXT), msg = (self~MSG_TEXT), max = (self~RANGE_MAX), min = (self~RANGE_MIN), incr = (self~INCR_STEP)
+    self~init:super
+
+    self~captionText = capt
+    self~msgText     = msg
+    self~rangeMax    = max
+    self~rangeMin    = min
+    self~incrStep    = incr
+    self~setDefaults
+
+::method begin
+    expose width height
+
+    self~calcSizes
+    if self~createCenter(width, height, self~captionText) then do
+        self~popup('ShowTop')
+    end
+    else do
+        self~initCode = 1
+        msg   = "Failed to create underyling dialog."
+        title = 'ooDialog - Unexpected Error'
+        ret = MessageDialog(msg, , title, 'OK', 'ERROR')
+    end
+
+::method complete unguarded
+    expose pb
+    use strict arg
+    if self~initCode <> 0 then return
+    if \ pb~isA(.ProgressBar) then return
+    if self~marqueeMode then pb~setMarquee(.false)
+    else pb~setPos(self~rangeMax)
+
+::method doStatus unguarded private
+    expose statusBar
+    use strict arg text
+    if self~noStatus then return
+    if self~initCode <> 0 then return
+    guard on when statusBar~isA(.Static)
+    statusBar~setText(text)
+
+::method endNow unguarded
+    return self~ok:super
+
+::method increase unguarded
+    expose pb
+    use strict arg incr = (self~incrStep)
+    if self~marqueeMode then return
+    if self~initCode <> 0 then return
+    guard on when pb~isA(.ProgressBar)
+    pb~step(incr)
+
+::method setInterruptible unguarded external "LIBRARY oodialog pd_setInterruptible"
+::method updateStatus unguarded
+    use strict arg text
+    self~doStatus("Status:" text)
+
+::method updateStatusText unguarded
+    use strict arg text
+    self~doStatus(text)
+
+::method calcSizes private
+    expose width height lineHeight
+
+    pad = self~PADDING_DU
+    if self~noMsg, self~noStatus then do
+        tempText = self~MSG_TEXT
+    end
+    else if \ self~noMsg, self~msgHeight < 2 then do
+        tempText = self~msgText
+    end
+    else do
+        tempText = self~MSG_TEXT
+    end
+    size = self~getTextSizeDU(tempText)
+    lineHeight = size~height
+
+    height = pad
+    if \ self~noMsg then do
+        height += lineHeight * self~msgHeight
+    end
+    if \ self~noStatus then do
+        height += pad + lineHeight
+    end
+
+    if height > pad then height += pad
+    height += lineHeight + pad
+
+    if self~canCancel then do
+        height += pad + self~BUTTON_CY
+    end
+
+    if self~absoluteWidth then do
+        width = self~width
+    end
+    else do
+      cx = size~width + (2 * pad)
+      if cx >= self~width then width = cx
+      else width = self~width
+    end
+
+::method setDefaults private
+
+    self~msgHeight     = 1
+    self~noMsg         = .false
+    self~noStatus      = .false
+    self~absoluteWidth = .false
+    self~width         = self~DLG_WIDTH
+    self~marqueePause  = self~MARQUEE_PAUSE
+    self~marqueeMode   = .false
+    self~worker        = .nil
+    self~canCancel     = .false
 
 ::method defineDialog
-   self~createStaticText(100, 10, 10, self~dims["sx"]+2, self~dims["sy"], , self~msg)
-
-::method initAutoDetection
-   self~noAutoDetection
-
-::method calcSize
-   size = self~getTextSizeDu(self~msg)
-   scrSize = screenSize()
-   self~dims["sx"] = size~width
-   self~dims["sy"] = size~height
-   if self~XExt = 0 then do
-       self~dims["cx"] = self~dims["sx"]+20
-       self~dims["cy"]= self~dims["sy"]*2.2+20
-   end
-   else do
-       self~dims["cx"] = self~XExt
-       lines = 1
-       if self~dims["sx"] + 20 > self~dims["cx"] then do
-           lines = Trunc(self~dims["sx"] / (self~dims["cx"] -20) + 0.98)
-           self~dims["sx"] = self~dims["cx"] - 20
-           self~dims["sy"] = Trunc(self~dims["sy"]*lines*1.1)
-       end
-       if lines >1 then self~dims["cy"] = self~dims["sy"]+20
-       else self~dims["cy"] = self~dims["sy"]*2.2+20
-   end
-   self~dims["x"] = trunc((scrSize[1]-self~dims["cx"]) /2)
-   self~dims["y"] = trunc((scrSize[2] - self~dims["cy"] - 20) /2)
-
-::method popUp
-   self~calcSize
-   self~create(self~dims["x"],self~dims["y"], self~dims["cx"], self~dims["cy"], self~TitleTxt,"NOMENU",,,1 )
-   self~startIt
-   self~show("SHOWTOP")
-
-::method destroy
-   self~finished = .true
-   self~stopIt
-
-::method "Message="
-   parse arg message
-   self~msg = message
-   self~calcSize
-   self~ResizeItem(100, self~dims["sx"]+2, self~dims["sy"])
-   if self~XExt = 0 then do
-       self~Resize(self~dims["cx"], self~dims["cy"], "HIDE")
-   end
-   else do
-       parse value self~GetWindowRect(self~dlgHandle) with l t r b
-       if self~dims["cy"] > (b-t) / self~factorY then self~Resize(self~dims["cx"], self~dims["cy"], "NORMAL")
-   end
-   self~setStaticData(100, message)
-   if self~XExt = 0 then self~Move(self~dims["x"], self~dims["y"], "NORMAL")
-
-
--- Never documented and does not work well.  Could be usefull if fixed.
-::class 'ProgressIndicator' subclass StateIndicator public
-
-::method lowValue attribute
-::method highValue attribute
-::method incStep attribute
-
-::method init
-   use arg message, title, low, high, step, fixedx
-   if arg(6,'o') = 1 then fixedx = 0
-   if arg(3,'o') = 1 then self~lowValue = 0; else self~lowValue = low
-   if arg(4,'o') = 1 then self~highValue = 100; else self~highValue = high
-   if arg(5,'o') = 1 then self~incStep = 10; else self~incStep = step
-   self~init:super(message, title, fixedx)
+    expose width height lineHeight
+    pad = self~PADDING_DU
+    style = 'SMOOTH'
+    if self~marqueeMode then style ||= ' MARQUEE'
+    cx   = width - 2 * pad
+    curY = pad
+    if \ self~noMsg then do
+      cy = lineheight * self~msgHeight
+      self~createStaticText(self~IDC_ST_MSG, pad, curY, cx, cy, , self~msgText)
+      curY += cy + pad
+    end
+    if \ self~noStatus then do
+        self~createStaticText(self~IDC_ST_STATUS, pad, curY, cx, lineHeight, , "" )
+        curY += lineHeight + pad
+    end
+    self~createProgressBar(self~IDC_PB_MAIN, pad, curY, cx, lineHeight, style)
+    curY += lineHeight + pad
+    if self~canCancel then do
+        self~createPushButton(IDCANCEL, width - pad - self~BUTTON_CX, curY, self~BUTTON_CX, self~BUTTON_CY, , 'Cancel')
+    end
 
 ::method initDialog
-   pb = self~newProgressBar(101)
-   if pb \= .nil then do
-       pb~setRange(self~lowValue, self~highValue)
-       pb~setPos(self~lowValue)
-       pb~setStep(self~incStep)
-   end
+    expose pb statusBar
 
-::method defineDialog
-   self~createProgressBar(101, 5, 5, self~sizex-10, 14)
-   self~createStaticText(100, 10, 25, self~dims["sx"]+2,self~dims["sy"], , self~msg)
+    pb = self~newProgressBar(self~IDC_PB_MAIN)
+    if self~marqueeMode then do
+        pb~setMarquee(.true, self~marqueePause)
+    end
+    else do
+        pb~setRange(self~rangeMin, self~rangeMax)
+        pb~setStep(self~incrStep)
+        pb~step
+    end
+    if \ self~noMsg then do
+        self~newStatic(self~IDC_ST_MSG)~setText(self~msgText)
+    end
+    if \ self~noStatus then do
+        statusBar = self~newStatic(self~IDC_ST_STATUS)
+        statusBar~setText("Status: ")
+    end
+
+-- Don't let the user close the dialog, unless the work can be stopped, or it
+-- is allowed.
+::method ok unguarded
+::method cancel unguarded
+    expose worker
+
+    if worker <> .nil then do
+        if worker~interruptible then do
+            worker~interrupt
+            return
+        end
+        self~giveStatus(.true)
+        return
+    end
+    else if self~canCancel then do
+        return self~cancel:super
+    end
+    self~giveStatus(.false)
+
+::method giveStatus unguarded private
+    expose pb worker
+    use strict arg tryLater
+    reply 0
+
+    if self~marqueeMode then do
+        msg = "Processing is not done yet, and can" || .endOfLine || -
+              "not be canceled at this time."       || .endOfLine
+    end
+    else do
+        r = pb~getFullRange
+        percentDone = trunc((pb~getPos / (r~max - r~min)) * 100)
+        msg = "Processing is only" percentDone"% done, and" || .endOfLine -
+              "can not be canceled at this time."           || .endOfLine
+    end
+    if tryLater then do
+        msg ||= "(Try canceling later.)" || .endOfLine
+    end
+    msg ||= .endOfLine || "Please be patient."
+
+    ret = MessageDialog(msg, , self~captionText, 'OK', 'INFORMATION')
+
+::method initAutoDetection
+    self~noAutoDetection
 
 
-::method calcSize
-   self~calcSize:super
-   self~dims["cy"] = self~dims["cy"]+10  /* 15 more for the progress bar */
-   scrSize = screenSize()
-   self~dims["x"] = trunc((scrSize[1]-self~dims["cx"]) /2)
-   self~dims["y"] = trunc((scrSize[2] - self~dims["cy"] - 20) /2)
+::class 'Interruptible' public mixinclass Object
+::method interrupt     unguarded abstract
+::method interruptible unguarded abstract
 
-::method "progress="
-   use arg newpos
-   self~newProgressBar(101)~setPos(newpos)
-
-::method increase
-   if arg(1,'e') = 1 then self~newProgressBar(101)~step(arg(1))
-   else self~newProgressBar(101)~step
-
-::method complete
-   self~newProgressBar(101)~setPos(self~highValue)
-
-::method "message="
-   forward class (super) continue
-   self~resizeItem(101,  self~sizex-10, 14)
+::class 'Alerter' public inherit Interruptible
+::attribute isCanceled
+::method init
+    expose isCanceled
+    isCanceled = .false
+::method interruptible unguarded
+    return .true
+::method interrupt unguarded
+    expose isCanceled
+    isCanceled = .true
 
 
 /* - - - - - - - - - - - - - Public routines - - - - - - - - - - - - - - - - -*/

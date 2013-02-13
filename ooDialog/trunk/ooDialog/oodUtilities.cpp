@@ -2673,6 +2673,26 @@ RexxMethod3(RexxObjectPtr, dss_quickDayStateBuffer, RexxObjectPtr, _ds1, RexxObj
 
 
 /**
+ * Methods for the ooDialog .ProgressDialog class.
+ */
+#define PROGRESSDIALOG_CLASS  "ProgressDialog"
+
+
+RexxMethod2(uint32_t, pd_setInterruptible, RexxObjectPtr, w, OSELF, self)
+{
+    if ( ! context->IsOfType(w, "INTERRUPTIBLE") )
+    {
+        wrongClassException(context->threadContext, 1, "Interruptible");
+        return 1;
+    }
+
+    context->SendMessage1(self, "WORKER=", w);
+    context->SendMessage1(self, "CANCANCEL=", TheTrueObj);
+    return 0;
+}
+
+
+/**
  * Methods for the ooDialog .TimedMessage class.
  */
 #define TIMEDMESSAGE_CLASS  "TimedMessage"

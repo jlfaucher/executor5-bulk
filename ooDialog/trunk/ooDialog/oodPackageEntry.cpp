@@ -844,6 +844,9 @@ REXX_METHOD_PROTOTYPE(rcpspdlg_startTemplate);
 // UserPSPDialog
 REXX_METHOD_PROTOTYPE(userpspdlg_init);
 
+// ProgressDialog
+REXX_METHOD_PROTOTYPE(pd_setInterruptible);
+
 // TimedMessage
 REXX_METHOD_PROTOTYPE(timedmsg_init);
 
@@ -1975,6 +1978,9 @@ RexxMethodEntry oodialog_methods[] = {
 
     // ResPSPDialog
     REXX_METHOD(respspdlg_init,                 respspdlg_init),
+
+    // ProgressDialog
+    REXX_METHOD(pd_setInterruptible,            pd_setInterruptible),
 
     //TimedMessage
     REXX_METHOD(timedmsg_init,                  timedmsg_init),
