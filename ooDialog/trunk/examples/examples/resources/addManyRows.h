@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,17 +35,21 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#define IDC_ST_TOOL_SIMULATOR                       200
-#define IDC_PB_SHOW_PALETTE                         210
-#define IDC_PB_LOCKMODULE                           301
-#define IDC_PB_LOCKPROJECT                          302
-#define IDC_PB_SPLITMODULE                          303
-#define IDC_PB_SAVEMODULE                           304
-#define IDC_PB_SAVEPROJECT                          305
-#define IDC_PB_SAVEALL                              306
-#define IDC_PB_CHECKIN                              307
-#define IDC_PB_LINKTOWEB                            308
-#define IDC_PB_CODEREVIEW                           309
-#define IDC_PB_UPDATE                               310
-#define IDC_PB_PROJECTREVIEW                        311
-#define IDC_PB_CLOSE                                400
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
+
+#define IDD_ADD_ROWS                            101
+#define IDD_INTRO                               103
+#define IDC_LV                                  1002
+#define IDC_PB_SORT_INTERN                      1003
+#define IDC_PB_SORT_REXX                        1004
+#define IDC_SP_ITEMS                            1010
+#define IDC_ED_ITEMS                            1011
+#define IDC_CK_FREEFORM                         1013
+#define IDC_RB_1000                             1020
+#define IDC_RB_2000                             1021
+#define IDC_RB_5000                             1022
+#define IDC_RB_10000                            1023
+#define IDC_RB_15000                            1024
+#define IDC_RB_25000                            1025
