@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
 
-   Samples:  Person Model and Data Classes	  	  	  v01-00 09Jan13
+   Samples:  Person Model and Data Classes	  	  	  v01-00 14Feb13
 
    Contains: classes "PersonModel" and "PersonData".
 
@@ -49,6 +49,7 @@
    v01-00 01Oct12: First version.
           09Jan13: Removed or commented-out 'say' instructions.
           05Feb13: Removed 'query' method since it's available in the superclass.
+          14Feb13: Removed (commented-out) 'return self' from the init method.
 
 ------------------------------------------------------------------------------*/
 
@@ -142,7 +143,6 @@
     columns = 6					-- colums in the Persons "table"
     records = self~init:super(fileName, columns)
     --say "PersonData-init-01: records:" records
-    return self					-- MVF
 
 
 /*============================================================================*/
