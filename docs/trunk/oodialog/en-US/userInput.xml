@@ -3533,7 +3533,7 @@ of a simple entry line.</para>
 <indexterm><primary>ProgressDialog class</primary><secondary>Alerter class</secondary></indexterm>
 <para>
   An <computeroutput>Alerter</computeroutput> object is intended to be used as the argument to the <xref
-  linkend="mthSetInterruptiple"/> method of the <xref linkend="clsProgressDialog"/> object, when the progress dialog can
+  linkend="mthSetInterruptible"/> method of the <xref linkend="clsProgressDialog"/> object, when the progress dialog can
   always be canceled by the user, but the application needs to know if the user cancels.
 </para>
 
@@ -3645,8 +3645,8 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  Reflects the state of the internal canceled flag. The flag is false if the <xref linkend="mthInterrupt"/> method of this
-  object has not been invoked and true if it has been invoked.
+  Reflects the state of the internal canceled flag. The flag is false if the <xref linkend="mthInterruptClsAlerter"/> method
+  of this object has not been invoked and true if it has been invoked.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -3688,7 +3688,7 @@ of a simple entry line.</para>
   <listitem>
   <para>
     The <emphasis role="italic">alerter</emphasis> object provides a concrete implmentation of the <xref
-    linkend="clsInterruptiple"/> interface that can be used as the arguemnt to the <xref linkend="mthSetInterruptiple"/>
+    linkend="clsInterruptible"/> interface that can be used as the arguemnt to the <xref linkend="mthSetInterruptible"/>
     method of the <xref linkend="clsProgressDialog"/>. It is intended to be used when the progress dialog can always be
     canceled and provides a notification to the application if the progress dialog is canceled.
   </para>
@@ -3732,7 +3732,7 @@ of a simple entry line.</para>
   <listitem>
   <para>
     The <emphasis role="italic">alerter</emphasis> object provides a concrete implmentation of the <xref
-    linkend="clsInterruptiple"/> interface that can be used as the arguemnt to the <xref linkend="mthSetInterruptiple"/>
+    linkend="clsInterruptible"/> interface that can be used as the arguemnt to the <xref linkend="mthSetInterruptible"/>
     method of the <xref linkend="clsProgressDialog"/>. It is intended to be used when the progress dialog can always be
     canceled and provides a notification to the application if the progress dialog is canceled. When used with the progress
     dialog object, the progress dialog invokes this method if the user cancels, to determine if it is okay to cancel, close,
