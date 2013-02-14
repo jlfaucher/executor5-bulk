@@ -107,43 +107,41 @@
       particular, note that application data is now read from files. For example, the Customer data
       is read from the file <computeroutput>CustomerFile.txt</computeroutput>. However, although the
       data can be changed in dialogs, the changed data does not (in this exercise) update the files. </para>
-        <para>Also, note that the "Help" menu on the main Sales Order Management dialog now includes
-      an option "Message Sender" (discussed in more detail in <xref linkend="ch7-msgsender.title"/>.
-      Click this option and a "Message Sender" dialog opens. This sends messages to (invoke methods
-      on) the various components, and is a very useful debugging tool that replaces the
-      "stand-alone" function used in the previous exercise. For example, try sending a "query"
-      message to the Customer whose key is BA0314. To do this, key <emphasis role="bold"><emphasis
-          role="italic">CustomerModel BA0314</emphasis></emphasis> in the <emphasis role="bold"
-        >Target</emphasis> field , <emphasis role="bold"><emphasis role="italic"
-        >query</emphasis></emphasis> in the <emphasis role="bold">Method</emphasis> field, and then
-      press <emphasis role="bold">Send</emphasis>. The customer's data is returned in the <emphasis
-        role="bold">Reply</emphasis> field as a name-value string. </para>
+        <para>Also, note that the <emphasis role="bold">Help</emphasis> menu on the main Sales Order
+      Management dialog now includes an option <emphasis role="bold">Message Sender</emphasis>
+      (discussed in more detail in <xref linkend="ch7-msgsender.title"/>. Click this option and a
+      "Message Sender" dialog opens. This sends messages to (invoke methods on) the various
+      components, and is a very useful debugging tool that replaces the "stand-alone" function used
+      in the previous exercise. For example, try sending a "query" message to the Customer whose key
+      is BA0314. To do this, key <emphasis role="bold"><emphasis role="italic">CustomerModel
+          BA0314</emphasis></emphasis> in the <emphasis role="bold">Target</emphasis> field ,
+        <emphasis role="bold"><emphasis role="italic">query</emphasis></emphasis> in the <emphasis
+        role="bold">Method</emphasis> field, and then press <emphasis role="bold">Send</emphasis>.
+      The customer's data is returned in the <emphasis role="bold">Reply</emphasis> field as a
+      name-value string. </para>
         <para>Now try using the Message Sender to surface a Product dialog - say the view for
-      Product CU003. To do this, key <emphasis role="bold"><emphasis role="italic">ObjectMgr
-          The</emphasis></emphasis> in the <emphasis role="bold">Target</emphasis> field, <emphasis
-        role="bold"><emphasis role="italic">showModel</emphasis></emphasis> in the <emphasis
-        role="bold">Method</emphasis> field, and <emphasis role="bold"><emphasis role="italic"
-          >ProductModel CU003</emphasis></emphasis> in the <emphasis role="bold">Data</emphasis>
-      field. Now press <emphasis role="bold">Send</emphasis>. The Product dialog for instance CU003
-      appears. </para>
-        <para>The "ObjectMgr" (which should really be called "ComponentManager" since it manages
-      application components as opposed to any ooRexx object) is a support class that instantiates
-      components by invoking a component's <emphasis role="italic">newInstance</emphasis> class
-      method. It also keeps track of which components are already instantiated. For more detail see
-        <xref linkend="chap07-mvf-oview-objmgr"/></para>
-        <para>Consider now what has to happen to display the Product View. First, a
+      Product CU003. To do this, select <emphasis role="bold">ObjectMgr The</emphasis> in the
+        <emphasis role="bold">Target</emphasis> combo-box pull-down, <emphasis role="bold"
+        >showModel</emphasis> in the <emphasis role="bold">Method</emphasis> field, and type
+        <emphasis role="bold"><emphasis role="italic">ProductModel CU003</emphasis></emphasis> in
+      the <emphasis role="bold">Data</emphasis> field. Now press <emphasis role="bold"
+        >Send</emphasis>. The Product dialog for instance CU003 appears. </para>
+        <para>The "Object Manager" (which should really be called "ComponentManager" since it
+      manages application components as opposed to any old ooRexx object) is a support class that
+      instantiates components by invoking a component's <emphasis role="bold">newInstance</emphasis>
+      class method. It also keeps track of which components are already instantiated. For more
+      detail see <xref linkend="chap07-mvf-oview-objmgr"/></para>
+        <para>Consider now what has to happen to display a Product View. First, a
         <computeroutput>ProductData</computeroutput> instance must be created, and its data is read
-      from disk (in this exercise, the whole file is read in). Then the appropriate
-        <computeroutput>ProductModel</computeroutput> component is instantiated and its data
-      retrieved from the <computeroutput>ProductData</computeroutput> component. Finally, an
-      instance of <computeroutput>ProductView</computeroutput> is created and its data retrieved
-      from the <computeroutput>ProductModel</computeroutput> component by invoking its
-        <computeroutput>query</computeroutput> method. </para>
+      from disk. Then the appropriate <computeroutput>ProductModel</computeroutput> component is
+      instantiated and its data retrieved from the <computeroutput>ProductData</computeroutput>
+      component. Finally, an instance of <computeroutput>ProductView</computeroutput> is created and
+      its data retrieved from the <computeroutput>ProductModel</computeroutput> component by
+      invoking its <computeroutput>query</computeroutput> method. </para>
         <para>This sequence is a pattern that can be applied to most business components, and hence
-            can be handled by superclasses so that the application components do not have to provide
-            the same duplicated code. This pattern is called the "Model-View Framework", which is
-            discussed in the next section. After that, the Message Sender is discussed in more
-            detail, following which the Order Form component id addressed. </para>
+      can be handled by superclasses so that the application components do not have to provide the
+      same duplicated code. The pattern is called the "Model-View Framework", which is discussed in
+      the next section.  </para>
 </section>     <!-- End of Section 7.1 -->
 
 <section id="chap07-mvf"><title id="ch7-mvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
@@ -297,21 +295,21 @@
             <computeroutput>showModel</computeroutput> message to '<computeroutput>ObjectMgr
             The</computeroutput>' with the data '<computeroutput>PersonModel
           PA150</computeroutput>'. The Person dialog appears, and the MVF has handled the task of
-          ensuring that both the Data and Model components are active. First it checks to see if
-          they are already activated; if not, it instantiates them (the Data instance first, then
-          the Model). Second, on instantiation, <computeroutput>PersonModel</computeroutput>'s
-          superclass asks the <computeroutput>PersonData</computeroutput> instance for its data.
-          Third, <computeroutput>PersonView</computeroutput>'s superclass asks
+          ensuring that both the Data and Model components are active before the View is launched.
+          First, MVF checks to see if they are already activated; if not, it instantiates them (the
+          Data instance first, then the Model). Second, on instantiation,
+            <computeroutput>PersonModel</computeroutput>'s superclass asks the
+            <computeroutput>PersonData</computeroutput> instance for its data. Third,
+            <computeroutput>PersonView</computeroutput>'s superclass asks
             <computeroutput>PersonModel</computeroutput> for its data. Finally, the dialog for
-          Person PA150 appears.  </para>
+          Person PA150 appears. </para>
     <para>The code required to use the MVF is shown in the Person component in
             <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Samples\Person</computeroutput>.
           The requirements for using the MVF are as follows: <itemizedlist>
             <listitem>
               <para><emphasis role="bold">A Data Component </emphasis>(a subclass of
                   <computeroutput>GenericFile</computeroutput>)</para>
-              <para><programlisting><![CDATA[
-::METHOD newInstance CLASS PUBLIC
+              <para><programlisting><![CDATA[::METHOD newInstance CLASS PUBLIC
   ...
   -- Check if an instance has already been created; if so, return .false.
   idData = self~new()
@@ -320,16 +318,15 @@
 ::METHOD init PRIVATE
   ...
   records = self~init:super(fileName, columns)
-  return self      
-]]></programlisting>Data components such as <computeroutput>PersonData</computeroutput> are required
-                to provide a <computeroutput>newInstance</computeroutput> class method, which is
-                invoked by the MVF. No parameters are provided. This method first checks if an
-                instance has already been created. If not, it is created, and its object ID is
+  ...]]></programlisting>Data components such as <computeroutput>PersonData</computeroutput> are
+                required to provide a <computeroutput>newInstance</computeroutput> class method,
+                which is invoked by the MVF. No parameters are provided. This method first checks if
+                an instance has already been created. If not, it is created, and its object ID is
                 returned to the MVF (i.e. to the caller). </para>
               <para>In the <computeroutput>init</computeroutput> method, the superclass'
                   <computeroutput>init</computeroutput> method is invoked with the filename and the
                 number of columns in the file as parameters. Invocation of super with these
-                parameters is an MVF requirement. MVF also requires that 'self' is returned. </para>
+                parameters is an MVF requirement.</para>
             </listitem>
             <listitem>
               <para><emphasis role="bold">A Model Component</emphasis> (a subclass of
@@ -642,7 +639,11 @@ familyName: James; firstName: Alfred;
             </listitem>
           </itemizedlist>See <xref linkend="chap07-mvfuse-datafmts"/> for a description of the
           "record directory" and "file as directory" formats.</para>
-        <para>The <computeroutput>OrderData</computeroutput>
+      </section>
+      <section>
+        <title>Compound Data</title><para>"Compound data" is data assembled from two or more files. In Relational Data Base terms, this
+          means a join. In this exercise, the only example of compound data is the Order component.
+          Thus the <computeroutput>OrderData</computeroutput>
           <indexterm>
             <primary>OrderData class</primary>
           </indexterm>class uses <computeroutput>GenericFile</computeroutput> in a different way
@@ -669,8 +670,8 @@ familyName: James; firstName: Alfred;
             <computeroutput>OrderData</computeroutput> class. While
             <computeroutput>getFile</computeroutput> is very simple - merely returning
             <computeroutput>dirOrderHeaders</computeroutput> (which is sufficient for the Product
-          List model and view), the  <computeroutput>getRecord</computeroutput> method needs to
-          build the data for a single Order from the Order and OrderLines attributes, combining some
+          List model and view), the <computeroutput>getRecord</computeroutput> method needs to build
+          the data for a single Order from the Order and OrderLines attributes, combining some
           Customer and some Product data not present in the Order Data (for example, Customer
           Discounts and Product Names). Thus it also over-rides its superclass method, and builds a
           directory called "dirOrderRecord" whose format is as follows:<programlisting><![CDATA[   "dirOrderRecord" format (using data values from Order No SO-1234):
@@ -703,7 +704,8 @@ familyName: James; firstName: Alfred;
             +- - - - - - - - - - - - - - - - - - - - - - - - +]]></programlisting></para>
         <para>Finally, a <computeroutput>listOrders</computeroutput> method is provided, since the
             <computeroutput>list</computeroutput> method of
-            <computeroutput>GenericFile</computeroutput> cannot list data from two files.</para>
+            <computeroutput>GenericFile</computeroutput> cannot list data from more than one
+          file.</para>
       </section>	<!-- End of Section 7.2.2.5 -->
 
 
@@ -718,39 +720,40 @@ familyName: James; firstName: Alfred;
   <indexterm><primary>Component</primary><secondary>Kinds of</secondary></indexterm>
   <para>There are four "kinds" of components in Exercise07: "named", "singleton", "anonymous", and
         "form". <simplelist>
-          <member> A "named" component instance is identified by a unique name derived from the
-            instance's data (analogous to a database key). An example is
-              <computeroutput>CustomerModel</computeroutput>, where each instance is identified by
+          <member> A "<emphasis role="bold">named</emphasis>" component instance is identified by a
+            unique name derived from the instance's data (analogous to a database key). An example
+            is <computeroutput>CustomerModel</computeroutput>, where each instance is identified by
             its Customer Number. The external name for such an instance is of the form model class
             name, model instance name - e.g. "CustomerModel AB0784". Note that a "Form" component
             such as the Order Form is of the named component kind, since it is (and must be) given
             its name (such as an order number) when first instantiated. A View component is named by
             its object reference number (that is, the number returned by invoking
               <computeroutput>identityHash</computeroutput> on the view instance). </member>
-          <member> "Singleton" instances are those for which there can logically only be a single
-            instance - for example, data components such as
+          <member> "<emphasis role="bold">Singleton</emphasis>" instances are those for which there
+            can logically only be a single instance - for example, data components such as
               <computeroutput>CustomerData</computeroutput>, or the Order Manager (which in
             Exercise07 is a view-only component). Their instance name is always "The". </member>
-          <member> An "anonymous" component is one for which there can logically be more than one
-            instance, but which do not have any obvious distinguishing name. Thus they are initially
-            given the instance name "A". Examples are list components such as
-              <computeroutput>CustomerListModel</computeroutput>. Instances of an anonymous
-            component are provided with a system-generated number. For example, the name of a
-            Customer List Model is a unique number generated by its superclass, starting at '1'. For
-            example, to create an instance of <computeroutput>CustomerListModel</computeroutput>,
-            the message <computeroutput>getComponentId("CustomerListModel","A")</computeroutput> is
-            sent to <computeroutput>ObjectMgr</computeroutput> which, on seeing instance name "a" or
-            "A", invokes <computeroutput>getInstanceName</computeroutput> on the ListModel class
-            object, which is handled by the <computeroutput>Model</computeroutput> superclass.
+          <member> An "<emphasis role="bold">anonymous</emphasis>" component is one for which there
+            can logically be more than one instance, but which do not have any obvious
+            distinguishing name. Thus they are initially given the instance name "A". Examples are
+            list components such as <computeroutput>CustomerListModel</computeroutput>. Instances of
+            an anonymous component are provided with a system-generated number. For example, the
+            name of a Customer List Model is a unique number generated by its superclass, starting
+            at '1'. For example, to create an instance of
+              <computeroutput>CustomerListModel</computeroutput>, the message
+              <computeroutput>getComponentId("CustomerListModel","A")</computeroutput> is sent to
+              <computeroutput>ObjectMgr</computeroutput> which, on seeing instance name "a" or "A",
+            invokes <computeroutput>getInstanceName</computeroutput> on the ListModel class object,
+            which is handled by the <computeroutput>Model</computeroutput> superclass.
               <computeroutput>Model</computeroutput> returns a number starting at "1". </member>
-          <member> A "form" instance such as a Sales Order Form or a Purchase Request form is a
-            special kind of component. Initially it is anonymous, and although when created there is
-            no database record of it, there will be when it's completed and the user hits OK. A new
-            number (e.g. an order number) is assigned to a form when it is created, and this number
-            is used as the database key when, after completion, the form is committed to the
-            database. For example, the Order Form component assumes that this will happen, and so
-            its instance name is a unique Sales Order number. This is created by the
-              <computeroutput>getInstanceName</computeroutput> class method of
+          <member> A "<emphasis role="bold">form</emphasis>" instance such as a Sales Order Form or
+            a Purchase Request form is a special kind of component. Initially it is anonymous, and
+            although when created there is no database record of it, there will be when it's
+            completed and the user hits OK. A new number (e.g. an order number) is assigned to a
+            form when it is created, and this number is used as the database key when, after
+            completion, the form is committed to the database. For example, the Order Form component
+            assumes that this will happen, and so its instance name is a unique Sales Order number.
+            This is created by the <computeroutput>getInstanceName</computeroutput> class method of
               <computeroutput>OrderFormModel</computeroutput> which over-rides the same method in
             its superclass (<computeroutput>Model</computeroutput>).</member>
         </simplelist>The above classification covers almost all the kinds of dialog found in a
@@ -769,17 +772,14 @@ familyName: James; firstName: Alfred;
         of component is not particularly scalable. A better approach - certainly for
         production-strength apps - is to provide a configuration file that names the classes and
         states what type they are. Such a file might look something like this, and would remove any
-        need for using class names as the basis for managing instances: <programlisting>
-<![CDATA[
-<modelClass name="Product",     type="named", dataClass="ProductDB"/>
+        need for using class names as the basis for managing instances: <programlisting><![CDATA[<modelClass name="Product",     type="named", dataClass="ProductDB"/>
 <modelClass name="NewOrder",    type="form"/>
 <modelClass name="CustomerList",type="anonymous"/>
 <modelClass name="SalesOrder",  type="named><viewClass name="MySpecialView"/></modelClass>
 <modelClass name="Wow",         type="singleton"
   <viewClass name="WowView">
   <dataClass name="WowData" source="sql">
-</modelClass>
-]]></programlisting></para>
+</modelClass>]]></programlisting></para>
 
 </section>	<!-- End of Section 7.3.1 -->
 
@@ -789,12 +789,11 @@ familyName: James; firstName: Alfred;
                   (no DBMS!)
                 - Order Data - two files, OrderHeadersFile.txt and OrderLinesFile.txt
                   The OrderData component merges the two (??)
-
-Query on CustomerList 1 gives: RECORDS: an Array; COUNT: 5; HEADERS: an Array;
   -->
       <para>Fields in a file record are separated by a vertical bar character, and field names are
-        defined in the first line of the file. All data files have the file extension ".txt". </para>
-    <para>The format of a "record" directory is as follows:<programlisting><![CDATA[    "Record Directory" format (using sample data values):
+        defined in the first line of the file. All data files have the file extension ".txt".
+          <computeroutput>GenericFile</computeroutput> returns a single record (for example a
+        Customer record) in a "record directory", whose format is as follows:<programlisting><![CDATA[    "Record Directory" format (using sample data values):
     
               Indexes     Items
             +- - - - - - - - - - - - - -+
@@ -803,16 +802,15 @@ Query on CustomerList 1 gives: RECORDS: an Array; COUNT: 5; HEADERS: an Array;
             | CustName | LMN & Partners |
             +- - - - - + - - - - - - - -+
             | Zip      | 84394          |
-            +- - - - - + - - - - - - - -+]]> </programlisting>
-      </para>
-  <para>getFile - Returns the file in "File as Directory" format, as follows: <programlisting>
-    <![CDATA[
-
-    "File Directory" format (using sample data values):
+            +- - - - - + - - - - - - - -+
+            + ...      | ...            |
+            +- - - - - - - - - - - - - -+]]> </programlisting> A complete file (for example the
+        Customer File retrieved and displayed by the CustomerList component) is returned in "File as
+        Directory" format, as follows: <programlisting><![CDATA[    "File Directory" format (using sample data values):
     
              Indexes    Items
 			+- - - - - - - - - - - - - - - - - - - - - - - - +
-			|Headers | CustNo  | CustName             | .... |	 1D array
+			|Headers | CustNo  | CustName             | .... |   1D array
 			|- - - - + - - - - + - - - - - - - - - - -+ - - -|
 			|Records | AB0784  | ABC Enterprises Inc. | .... |   2D array
 			|        | - - - - + - - - - - - - - - - -+ - - -|
@@ -821,17 +819,31 @@ Query on CustomerList 1 gives: RECORDS: an Array; COUNT: 5; HEADERS: an Array;
 			|        |   ...   + ...                  + ...  |
 			|- - - - + - - - - - - - - - - - - - - - -+ - - -+
 			|Count   | n |                                       Integer
-			+- - - - + - +
-    ]]>
-  </programlisting>
-      </para>
+			+- - - - + - +]]>  </programlisting></para>
+      <para>The data format for on Order is a combination of data from three files - OrderData,
+        CustomerData, and ProductData - and is described in </para>
 </section>	<!-- End of Section 7.3.2 -->
 </section>  <!-- End of Section 7.3   -->
 
 <section id="chap07-msgsender"><title id="ch7-msgsender.title">The Message Sender</title>	<!-- Section 7.4 -->
     <indexterm><primary>Message Sender</primary></indexterm>
-  <para>Message Sender - get rid of "stand-alone" testing code. </para>
-        <para>In sending to ObjectMgr, this version only supports "List" and "showModel". </para>
+  <para>The Message Sender is launched from the <emphasis role="bold">Help</emphasis> menu of the
+        <emphasis role="bold">Sales Order Management</emphasis> dialog and is used to "send messages
+      to" (aka "invoke methods on") components. It illustrates a useful kind of debugging aid, and
+      replaces the special component-specific "startup" scripts provided in Exercise 6. While a
+      useful aid, it is provided as merely a demonstration of the kind of debugging aid that can be
+      deployed when using a component-based architecture. Thus it does not pretend to be
+      all-encompassing, and the results of sending some messages may be unpredictable. In addition,
+      its display of data returned is limited. For example, a "query" message sent to a List
+      component only displays the top-level items, as follows:
+      <programlisting><![CDATA[    RECORDS: an Array; COUNT: 5; HEADERS: an Array;]]> </programlisting></para>
+    <para>Certain commonly-used target objects and messages are provided in the two combo boxes
+        <emphasis role="bold">Target</emphasis> and <emphasis role="bold">Method</emphasis>. For
+      repetitive testing of a given component, additional targets and messages can be temporarily
+      "stored" in the combo boxes, so saving in typing time. The combo boxes are re-set when the
+      Message Sender is closed. </para>
+        <para>Finally, in sending to the Object Manager, only the "list" and "showModel" methods are
+      supported. </para>
 </section>	<!-- End of Section 7.4 -->
 
 <section id="chap07-orderform"><title id="ch7-orderform.title">The Order Form</title>		<!-- Section 7.5 -->
