@@ -2450,13 +2450,64 @@ of a simple entry line.</para>
 </section>
 </section>
 
+<section id="sctProgressDialog" xreflabel="A Progress Dialog"><title>A Progress Dialog</title>
+<indexterm><primary>progress dialog implementation</primary></indexterm>
+<para>
+  ooDialog provides, as a standard dialog, an easy to use implementation of a progress dialog in the <xref
+  linkend="clsProgressDialog"/> class. This implementation includes two small helper classes for the
+  <computeroutput>ProgressDialog</computeroutput> class, the <xref linkend="clsInterruptible"/> and the <xref
+  linkend="clsAlerter"/> classes. These classes are documented in this section.
+</para>
+
 <section id="clsProgressDialog" xreflabel="ProgressDialog"><title>ProgressDialog Class</title>
 <indexterm><primary>ProgressDialog class</primary></indexterm>
 <para>
-  A ProgressDialog object ...
+  A <computeroutput>ProgressDialog</computeroutput> object is used to show a dialog containing a <xref
+  linkend="clsProgressBar"/>, an optional message, an optional status line, and an optional <emphasis
+  role="italic">Cancel</emphasis> button. The dialog shows the progress a lengthy task is making to the user. The optional
+  components of the dialog, the message text, the status line, et., can be used to convey more information concerning the
+  progrress, or the purpose of the dialog, to the user. The components can be used, or not used, according to the needs of
+  the application.
 </para>
 <para>
-  xx
+  The progress dialog internally creates and sizes the components of the dialog, and the dialog itself, depending on how it
+  is configured. For instance, if the dialog is configured to skip the message and status components, and the progress is not
+  cancelable by the user, the dialog will consist of a progress bar only. The width of the dialog will either be a calculated
+  width, default width, or a configured width. The height of the dialog will be the proper height to accomdatae the progress
+  bar and other components, with margins. The layout of the dialog, from top to bottom, has a static control for the message
+  at the top of the dialog, then a static control for the status line, then the progress bar, and finally a cancel button at
+  the bottom right hand corner. The static message text, static status text, and progress bar controls are all the entire
+  width of the dialog with an equal margin on each side.
+</para>
+<para>
+  By default, the width of the dialog is calcualted based on the width of the message text. If there is no message, the width
+  is calculated based on the width of a typical message. Or, the programmer can configure a width. The dialog maintains a
+  minimum width that it will not be sized smaller than.
+</para>
+<para>
+  The dialog object has a number of attributes that are used configure the appearance and behaviour of the dialog. The
+  attributes all have default values and the progress dialog can be simply used <emphasis role="italic">as is</emphasis>, or
+  the programmer can change the values of any or all of the attributes. The methods of the
+  <computeroutput>ProgressDialog</computeroutput> class are used to start, update, and close the dialog.
+</para>
+<para>
+  Normally, an application, shows the progress bar, starts its lengthy operation, and periodically as it makes progress with
+  the option it advances the progress bar position. When the operation finishes, the application ends the progress bar. With
+  the <computeroutput>ProgressDialog</computeroutput> object, the programmer first configures the object by setting any
+  attributes whose default values are not appropriate. The <xref linkend="mthBegin"/> method shows the progress bar. As the
+  operation progresses, the programmer advances the progress bar position using the <xref linkend="mthIncrease"/> method. The
+  <xref linkend="mthUpdateStatus"/> and <xref linkend="mthUpdateStatusText"/> methods can also be used to update the status
+  line as progress is made, if desired. Finally, the <xref linkend="mthCompleteClsProgressDialog"/> and <xref
+  linkend="mthEndNow"/> are used to end the dialog.
+</para>
+<para>
+  One important aspect of performing a lengthy operation is whether the user can, or can not, cancel the operation once it is
+  begun. By default, the progress dialog can not be canceled by the user, and no cancel button is present in the dialog. If
+  the user tries to end the dialog using the Escape key, the Close menu item in the system menu, or the close button in the
+  title bar, a message box is put up explaining that the operation is not done yet and can not be canceled. The dialog is not
+  allowed to close. This default behaviour is changed throught the <xref linkend="atrCanCancel"/> attribute or through the
+  <xref linkend="mthSetInterruptible"/> method. The use of an <xref linkend="clsInterruptible"/> object gives the programmer
+  an elgant way of handling and controlling a user's request to cancel the operation.
 </para>
 
 <section id="sctMethodsProgressDialog"><title>Method Table</title>
@@ -2702,6 +2753,43 @@ of a simple entry line.</para>
 </variablelist>
 </section>  <!-- End PropertyDialog::incrStep() [attribute]  -->
 
+<section id="atrInitialStatusText" xreflabel="initialStatusText"><title>initialStatusText (Attribute)</title>
+<indexterm><primary>initialStatusText</primary></indexterm>
+<indexterm><primary>PropertyDialog class</primary><secondary>initialStatusText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--initialStatusText-----------------------------------------------------><
+
+>>--initialStatusText = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PropertyDialog::initialStatusText() [attribute]  -->
+
 <section id="atrMarqueeMode" xreflabel="marqueeMode"><title>marqueeMode (Attribute)</title>
 <indexterm><primary>MarqueeMode</primary></indexterm>
 <indexterm><primary>PropertyDialog class</primary><secondary>marqueeMode</secondary></indexterm>
@@ -2887,43 +2975,6 @@ of a simple entry line.</para>
 </variablelist>
 </section>  <!-- End PropertyDialog::noStatus() [attribute]  -->
 
-<section id="atrWidthClsPropertyDialog" xreflabel="width"><title>width (Attribute)</title>
-<indexterm><primary>width</primary><secondary>PropertyDialog class</secondary></indexterm>
-<indexterm><primary>PropertyDialog class</primary><secondary>width</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--width-----------------------------------------------------><
-
->>--width = varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End PropertyDialog::width() [attribute]  -->
-
 <section id="atrRangeMax" xreflabel="rangeMax"><title>rangeMax (Attribute)</title>
 <indexterm><primary>rangeMax</primary></indexterm>
 <indexterm><primary>PropertyDialog class</primary><secondary>rangeMax</secondary></indexterm>
@@ -2996,6 +3047,43 @@ of a simple entry line.</para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PropertyDialog::rangeMin() [attribute]  -->
+
+<section id="atrWidthClsPropertyDialog" xreflabel="width"><title>width (Attribute)</title>
+<indexterm><primary>width</primary><secondary>PropertyDialog class</secondary></indexterm>
+<indexterm><primary>PropertyDialog class</primary><secondary>width</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--width-----------------------------------------------------><
+
+>>--width = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PropertyDialog::width() [attribute]  -->
 
 <section id="mthBegin" xreflabel="begin"><title>begin</title>
 <indexterm><primary>begin</primary></indexterm>
@@ -3438,8 +3526,345 @@ of a simple entry line.</para>
 </variablelist>
 </section>  <!-- End ProgressDialog::updateStatusText() -->
 
-
 </section> <!-- End ProgressDialog Class -->
+
+<section id="clsAlerter" xreflabel="Alerter"><title>Alerter Class</title>
+<indexterm><primary>Alerter class</primary></indexterm>
+<indexterm><primary>ProgressDialog class</primary><secondary>Alerter class</secondary></indexterm>
+<para>
+  An <computeroutput>Alerter</computeroutput> object is intended to be used as the argument to the <xref
+  linkend="mthSetInterruptiple"/> method of the <xref linkend="clsProgressDialog"/> object, when the progress dialog can
+  always be canceled by the user, but the application needs to know if the user cancels.
+</para>
+
+<section id="sctMethodsAlerter"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>Alerter</computeroutput> class:
+
+<table id="tblMethodsAlerter" frame="all"> <title>Alerter Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthNewClsAlerter"/> </entry>
+<entry>Instantiates a new <computeroutput>Alerter</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsAlerter">new</link></entry>
+<entry>new</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthInterruptClsAlerter"/> </entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><xref linkend="mthInterruptibleClsAlerter"/></entry>
+<entry>xx</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsAlerter"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>Alerter class</secondary></indexterm>
+<indexterm><primary>Alerter class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  A simple implementation of the <xref linkend="clsInterruptible"/> interface that can be used with a <xref
+  linkend="clsProgressDialog"/> object to notify the application that the user has canceled the progress dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a newly instantiated <computeroutput>Alerter</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    An <emphasis role="italic">Alerter</emphasis> object provides a concrete implementation of the two abstract methods of
+    the <computeroutput>Interruptible</computeroutput> interface. The object sets the <xref linkend="atrIsCanceled"/>
+    attributed to false on instantiation. if the <xref linkend="mthInterruptClsAlerter"/> method is invoked, the attribute is
+    set to true. This allows the application to test the value of the <emphasis role="italic">isCanceled</emphasis> attribute
+    to determine if the user has canceled the progress dialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Alerter::new() -->
+
+<section id="atrIsCanceled" xreflabel="isCanceled"><title>isCanceled (Attribute)</title>
+<indexterm><primary>isCanceled</primary></indexterm>
+<indexterm><primary>Alerter class</primary><secondary>isCanceled</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isCanceled-----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reflects the state of the internal canceled flag. The flag is false if the <xref linkend="mthInterrupt"/> method of this
+  object has not been invoked and true if it has been invoked.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">isCanceled</emphasis> attribute is a <emphasis role="italic">get</emphasis> only attribute. The
+    programmer can not set the value of this attribute. It is set internally by the object and can not be changed.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Alerter::isCanceled() [attribute]  -->
+
+<section id="mthInterruptClsAlerter" xreflabel="interrupt"><title>interrupt</title>
+<indexterm><primary>interrupt</primary><secondary>Alerter class</secondary></indexterm>
+<indexterm><primary>Alerter class</primary><secondary>interrupt</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--interrupt------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Signals this object that it is being interrupted.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return any value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">alerter</emphasis> object provides a concrete implmentation of the <xref
+    linkend="clsInterruptiple"/> interface that can be used as the arguemnt to the <xref linkend="mthSetInterruptiple"/>
+    method of the <xref linkend="clsProgressDialog"/>. It is intended to be used when the progress dialog can always be
+    canceled and provides a notification to the application if the progress dialog is canceled.
+  </para>
+  <para>
+    When the <emphasis role="italic">interrupt</emphasis> method is invoked, the <xref linkend="atrIsCanceled"/> attribute is
+    set to true. When used with the progress dialog object, the progress dialog invokes this method if the user cancels the
+    dialog. This allows the programmer to determine if the user has canceled the dialog by checking the <emphasis
+    role="italic">isCanceled</emphasis> attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Alerter::interrupt() -->
+
+<section id="mthInterruptibleClsAlerter" xreflabel="interruptible"><title>interruptible</title>
+<indexterm><primary>interruptible</primary><secondary>Alerter class</secondary></indexterm>
+<indexterm><primary>Alerter class</primary><secondary>interruptible</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--interruptible--------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Detemines if this object is interruptible at this point in time. By definition an <computeroutput>Alerter</computeroutput>
+  object is always interruptible.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns true.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">alerter</emphasis> object provides a concrete implmentation of the <xref
+    linkend="clsInterruptiple"/> interface that can be used as the arguemnt to the <xref linkend="mthSetInterruptiple"/>
+    method of the <xref linkend="clsProgressDialog"/>. It is intended to be used when the progress dialog can always be
+    canceled and provides a notification to the application if the progress dialog is canceled. When used with the progress
+    dialog object, the progress dialog invokes this method if the user cancels, to determine if it is okay to cancel, close,
+    the dialog. This method always returns true for that invocation.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Alerter::interruptible() -->
+
+</section> <!-- End Alerter Class -->
+
+<section id="clsInterruptible" xreflabel="Interruptible"><title>Interruptible Mixin Class</title>
+<indexterm><primary>Interruptible class</primary></indexterm>
+<para>
+  The <computeroutput>Interruptible</computeroutput> class defines an interface for an object that can be <emphasis
+  role="italic">interrupted</emphasis>, but possibly only interrupted at certain times. It does this by defining two abstract
+  methods. Users of the <computeroutput>Interruptible</computeroutput> class are expected to inherit this mixin class and
+  provide concrete implmentations of both abstract methods.
+</para>
+<para>
+  The <computeroutput>Interruptible</computeroutput> class is a helper class for the <xref linkend="clsProgressDialog"/>
+  class. Only <emphasis role="italic">interruptible</emphasis> objects can be used as an argument for the <xref
+  linkend="mthSetInterruptible"/> method. The progress dialog will invoke both methods of the
+  <computeroutput>Interruptible</computeroutput> object, so concrete implementations for both methods must be provided to
+  prevent syntax conditions from bein raised.
+</para>
+
+<section id="sctMethodsInterruptible"><title>Method Table</title>
+<para>
+  The following table lists the abstract instance methods of the <computeroutput>Interruptible</computeroutput> mixin class:
+
+<table id="tblMethodsInterruptible" frame="all"> <title>Interruptible Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthInterruptClsInterruptible"/> </entry>
+<entry>Signals this object that it is being interrupted.</entry>
+</row>
+<row>
+<entry><xref linkend="mthInterruptibleClsInterruptible"/></entry>
+<entry>Detemines if this object is interruptible at this point in time.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthInterruptClsInterruptible" xreflabel="interrupt"><title>interrupt (abstract)</title>
+<indexterm><primary>interrupt</primary><secondary>Interruptible class</secondary></indexterm>
+<indexterm><primary>Interruptible class</primary><secondary>interrupt</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--interrupt------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Signals this object that it is being interrupted.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return any value
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The contract for this abstract method is that it will not receive any arguments and will not return any value.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Interruptible::interrupt() -->
+
+<section id="mthInterruptibleClsInterruptible" xreflabel="interruptible"><title>interruptible (abstract)</title>
+<indexterm><primary>interruptible</primary><secondary>Interruptible class</secondary></indexterm>
+<indexterm><primary>Interruptible class</primary><secondary>interruptible</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--interruptible--------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Detemines if this object is interruptible at this point in time.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if this object can be interrupted now. Returns false if this object should not be interrrupted now, but can
+    possibly be interrupted at a later time.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The contract for this abstract method is that it will not be passed any arguments and will always return either true or
+    false.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Interruptible::interruptible() -->
+
+</section> <!-- End Interruptible Class -->
+
+</section> <!-- End Progress Dialog section -->
 
 
 <section id="clsSimpleFolderBrowse" xreflabel="SimpleFolderBrowse"><title>SimpleFolderBrowse Class</title>
