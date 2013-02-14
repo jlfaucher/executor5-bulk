@@ -1316,6 +1316,7 @@
 ::constant INCR_STEP      1
 ::constant MARQUEE_PAUSE  100
 ::constant MSG_TEXT       "Background processing is taking place.  Please be patient."
+::constant STATUS_TEXT    "Status: "
 ::constant PADDING_DU     7
 ::constant RANGE_MAX      100
 ::constant RANGE_MIN      0
@@ -1324,15 +1325,16 @@
 ::attribute canCancel
 ::attribute captionText
 ::attribute incrStep
+::attribute initialStatusText
 ::attribute marqueeMode
 ::attribute marqueePause
 ::attribute msgHeight    -- Number of lines, default 1
 ::attribute msgText
 ::attribute noMsg
 ::attribute noStatus
-::attribute width
 ::attribute rangeMax
 ::attribute rangeMin
+::attribute width
 ::attribute worker unguarded private
 
 ::method init
@@ -1438,15 +1440,16 @@
 
 ::method setDefaults private
 
-    self~msgHeight     = 1
-    self~noMsg         = .false
-    self~noStatus      = .false
-    self~absoluteWidth = .false
-    self~width         = self~DLG_WIDTH
-    self~marqueePause  = self~MARQUEE_PAUSE
-    self~marqueeMode   = .false
-    self~worker        = .nil
-    self~canCancel     = .false
+    self~msgHeight         = 1
+    self~noMsg             = .false
+    self~noStatus          = .false
+    self~initialStatusText = self~STATUS_TEXT
+    self~absoluteWidth     = .false
+    self~width             = self~DLG_WIDTH
+    self~marqueePause      = self~MARQUEE_PAUSE
+    self~marqueeMode       = .false
+    self~worker            = .nil
+    self~canCancel         = .false
 
 ::method defineDialog
     expose width height lineHeight
@@ -1487,7 +1490,7 @@
     end
     if \ self~noStatus then do
         statusBar = self~newStatic(self~IDC_ST_STATUS)
-        statusBar~setText("Status: ")
+        statusBar~setText(self~initialStatusText)
     end
 
 -- Don't let the user close the dialog, unless the work can be stopped, or it
@@ -1540,7 +1543,7 @@
 ::method interruptible unguarded abstract
 
 ::class 'Alerter' public inherit Interruptible
-::attribute isCanceled
+::attribute isCanceled get
 ::method init
     expose isCanceled
     isCanceled = .false
