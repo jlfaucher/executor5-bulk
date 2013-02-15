@@ -1,6 +1,6 @@
 
                               Release Notes
-                      Extra ooDialog Samples v0.0.6
+                      Extra ooDialog Samples v0.0.7
                       =============================
 
   The extra ooDialog samples package is meant to provide ooDialog
@@ -34,6 +34,37 @@
   Notes:
   ------
 
+  *  Version 0.0.7 of the package requires ooDialog 4.2.0 or later to run
+  most of the example programs in the package.  Some example programs now
+  require ooDialog 4.2.1.  This is in anticipation of an upcoming release
+  for ooDialog.
+
+  *  The release contains around 2 dozen example programs.
+
+  Changes Since v0.0.6:
+  ---------------------
+
+  Examples:
+  ---------
+
+  An example directory has been added showing how use makeDLL.rex to build
+  your own resource-only DLLs.  Read the makeDLL.ReadMe file in the top
+  level directory, in addition to reading the read me file in the new
+  directory:
+
+  * makeDLL.example\
+
+
+
+                        Cumlative Release Notes:
+                        ========================
+
+                              Release Notes
+                      Extra ooDialog Samples v0.0.7
+                      =============================
+  Notes:
+  ------
+
   *  Version 0.0.6 of the package requires ooDialog 4.2.0 or later to run
   most of the example programs in the package.  Some example programs now
   require ooDialog 4.2.1.  This is in anticipation of an upcoming release
@@ -53,10 +84,6 @@
 
   * Dialogs\color\controlColor.rex              -- requires ooDialog 4.2.1
 
-
-
-                        Cumlative Release Notes:
-                        ========================
 
 
                               Release Notes

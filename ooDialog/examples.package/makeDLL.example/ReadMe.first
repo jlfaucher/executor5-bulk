@@ -1,0 +1,53 @@
+
+
+                            Make DLL Example
+                            ================
+
+
+This directory contains the files for a simple example of how to put
+eveything together to create and use a ResDialog with a resource-only
+DLL.
+
+You first need to read the makeDLL.readMe file in the top-level
+directory.  Once you have read that and installed any necessary files,
+copy the makeDLL.rex file to this directory.  Of course you can always
+place the makeDLL.rex program somewhere in the path.
+
+From a command line prompt: be sure you have the environment set up as
+instructed by the makeDLL.readMe file, then enter the following at the
+command line:
+
+C:\makeDLL.example>rexx makeDLL.rex AnimalGame.rc
+Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Microsoft (R) Incremental Linker Version 10.00.40219.01
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Then type:
+
+C:\makeDLL.example>rexx AnimalGame.rex
+
+
+The AnimalGame.rex program is simply a copy of the AnimalGame.rex
+program distributed with a release version of ooDialog.  It is slighty
+altered to make it a better example of building your own resource-only
+DLL.  In this example all the files for the program are put in one
+directory, this directory.  In the ooDialog version, the resource files
+are scattered throughout subdirectories.  For some one unfamilar with
+compiling C programs, the process is much easier to understand if
+everything is in one place.
+
+Also copied to this directory are a bunch of *.wav files.  These file
+are not compiled into the resource-only DLL, the are just needed for the
+program.
+
+When the resource script is compiled into the DLL, an intermediatory
+file with a .res extension is generated.  This file is not needed and
+can safely be deleted.
+
+C:\makeDLL.example>del AnimalGame.res
+
+
+
+
