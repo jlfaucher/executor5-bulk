@@ -88,6 +88,8 @@ return 0
 ::attribute itemCount
 ::attribute createRowsTime
 ::attribute insertRowsTime
+::attribute insertedRows
+::attribute internalSortTime
 ::attribute rexxSortTime
 
 /** initDialog()
@@ -97,7 +99,7 @@ return 0
  * list-view with its items.
  */
 ::method initDialog
-    expose list rows row6
+    expose list rows createCanceled insertCanceled
 
     list = self~newListView(IDC_LV)
 
@@ -116,24 +118,75 @@ return 0
     list~InsertColumn(10, "Characters", 55)
     list~InsertColumn(11, "Characters", 55)
 
-    self~connectButtonEvent(IDC_PB_SORT_REXX, 'CLICKED', onSortRexx)
     self~connectButtonEvent(IDC_PB_SORT_INTERN, 'CLICKED', onSortInternally)
+    self~connectButtonEvent(IDC_PB_SORT_REXX, 'CLICKED', onSortRexx)
 
     rows = self~createRows(list)
 
+    self~newGroupBox(IDC_GB_TIMES)~setText('Time in seconds (' || self~itemCount || ' rows):')
+
+    self~setStatics
+
+::method setStatics private
+    expose createCanceled insertCanceled staticInternal staticRexxSort
+
+    staticCreate   = self~newStatic(IDC_ST_CREATE)
+    staticInsert   = self~newStatic(IDC_ST_INSERT)
+    staticInternal = self~newStatic(IDC_ST_INTERNAL)
+    staticRexxSort = self~newStatic(IDC_ST_REXXSORT)
+
+    if createCanceled then do
+        staticCreate~setText('Create full rows:' self~createRowsTime '(canceled)')
+        staticInsert~setText('Insert full rows: N/A')
+        staticInternal~hide
+        staticRexxSort~hide
+        self~newPushButton(IDC_PB_SORT_INTERN)~disable
+        self~newPushButton(IDC_PB_SORT_REXX)~disable
+
+        rect = staticCreate~windowRect
+        s = .Size~new(rect~right - rect~left, rect~bottom - rect~top)
+        s~width *= 2
+        staticCreate~resizeTo(s)
+        return 0
+    end
+
+    staticCreate~setText('Create full rows:' self~createRowsTime)
+
+    if insertCanceled then do
+        staticInsert~setText('Insert full rows:' self~insertRowsTime '(canceled after inserting' self~insertedRows 'rows)')
+        staticInternal~hide
+        staticRexxSort~hide
+        self~newPushButton(IDC_PB_SORT_INTERN)~disable
+        self~newPushButton(IDC_PB_SORT_REXX)~disable
+
+        rect = staticInsert~windowRect
+        s = .Size~new(rect~right - rect~left, rect~bottom - rect~top)
+        s~width *= 2
+        staticInsert~resizeTo(s)
+        return 0
+    end
+
+    staticInsert~setText('Insert full rows:' self~insertRowsTime)
+
 
 ::method onSortInternally unguarded
-    expose list
+    expose list staticInternal
 
     d = .directory~new
     d~column    = 3
     d~ascending = .false
     d~caseless  = .true
 
+    j = time('E')
+
     list~sortItems('InternalListViewSort', d)
 
+    self~internalSortTime = time('e')
+    staticInternal~setText('Internal sort:' self~internalSortTime)
+
+
 ::method onSortRexx unguarded
-    expose list
+    expose list staticRexxSort
 
     count = self~itemCount
 
@@ -143,14 +196,19 @@ return 0
     end
     else if count > 2000 then do
         msg = "A Rexx sort with" count 'items is not a' || .endOfLine || -
-              'good idea, it can take too long.'                      || .endOfLine~copies(2)
+              'good idea, it can take too long.'                      || .endOfLine~copies(2) || -
+              'If you want to perform this sort out of' || .endOfLine || -
+              'curiousity, start the sort and then let' || .endOfLine || -
+              'it alone. Windows will say the window'   || .endOfLine || -
+              'is not responding.  But it will event-'  || .endOfLine || -
+              'ually finish. 5 minutes for 5000 items.' || .endOfLine || -
+              'Times are exponential for more items.'                 || .endOfLine~copies(2)
     end
 
     if msg~length > 3 then do
         msg || = 'Do you want to continue?'
         title = 'Cautionary Statement - Think Twice'
         if MessageDialog(msg, self~hwnd, title, 'YESNO', 'WARNING') == self~IDNO then return 0
-        --ret = MessageDialog(msg, self~hwnd, title, 'YESNO', 'WARNING'); say 'IDNO' self~IDNO 'ret:' ret
     end
 
     msg  = 'Performing a list-view item sort using a Rexx method of this dialog.  Please be patient...'
@@ -170,7 +228,8 @@ return 0
 
     pbDlg~endNow
 
-    self~RexxSortTiem = time('e')
+    self~rexxSortTime = time('e')
+    staticRexxSort~setText('Rexx sort:' self~rexxSortTime)
 
 
 
@@ -193,9 +252,13 @@ return 0
  * insert all the items into the list-view.
  */
 ::method createRows private
+    expose createCanceled insertCanceled
     use arg list
 
     j = time('E')
+
+    createCanceled = .false
+    insertCanceled = .false
 
     count = self~itemCount
     rows = .array~new(count)
@@ -248,8 +311,12 @@ return 0
     end
 
     self~createRowsTime = time('e')
+    self~itemCount = rows~items
 
-    if a~isCanceled then return rows
+    if a~isCanceled then do
+        createCanceled = .true
+        return rows
+    end
 
     j = time('r')
 
@@ -271,10 +338,17 @@ return 0
             leave
         end
     end
+
     self~insertRowsTime = time('e')
 
-    if \ a~isCanceled then do
+    if a~isCanceled then do
+        self~insertedRows = i
+        insertCanceled = .true
+    end
+    else do
         pbDlg~complete
+        pbDlg~updateStatus('finished inserting' rows~items 'full rows')
+        r = SysSleep(1.5)
         pbDlg~endNow
     end
 
