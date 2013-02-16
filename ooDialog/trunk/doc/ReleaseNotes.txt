@@ -64,6 +64,8 @@ Feature Requests in ooDialog:
 
  * #249 Add support for generalized resizable dialogs
 
+ * #352 Fix document StateIndicator / ProgressIndicator
+
  * #370 Replace ooDialog WinTimer with a waitable time
 
  * #417 ooDialog public routines and icon resource
@@ -176,6 +178,13 @@ Keyboard class:
 
 The Keyboard class addresses the receiving and processing of keyboard
 input.
+
+ProgressDialog class:
+
+A ProgressDialog object is used to show a dialog containing a
+ProgressBar, an optional message, an optional status line, and an
+optional Cancel button.  The dialog shows the progress a lengthy task is
+making to the user.
 
 
 New Public Routines:
@@ -391,6 +400,10 @@ oodialog\resizableDialogs\ResizingAdmin\basicResize.rex
 oodialog\resizableDialogs\ResizingAdmin\gbStationary.rex
 
 These 3 examples demonstrate inheriting the ResizingAdmin class.
+
+oodialog\examples\addManyRows.re
+
+This example shows how to use the new ProgressDialog calls.
 
 oodialog\examples\browsePrinters.rex
 

@@ -36,15 +36,18 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  This example shows
- *  view.
+ *  This example shows how to use the standard dialog, the ProgressDialog
+ *  dialog, to show the user how a lengthy operation is progressing.  It also
+ *  demonstrates how much faster an internal sort can be than using a Rexx sort.
  *
  *  The main points of the example are:
  *
- *  1.) It shows how to use the LvFullRow, LvItem, and LvSubItem objects to add
+ *  1.) It shows how to use the ProgressDialog class.
+ *
+ *  2.) It shows how to use the LvFullRow, LvItem, and LvSubItem objects to add
  *      items to list-views
  *
- *  2.) It shows
+ *  3.) It shows to sort on a column in the list-view
  *
  *  Note that in the .rc file, the resource script file, for this example, the
  *  dialog is created *not* visible.  Thus, while the dialog is being
@@ -54,13 +57,41 @@
  *  flicker.  So, it is mostly a matter of preference how you create the dialog,
  *  initially visible, or initially invisible.  But, it is good to be aware of
  *  the option.
+ *
+ *  In addition, with a large number of list-view items, it takes some time to
+ *  create the LvFullRow objects and insert them into the list-view.  With the
+ *  dialog being invisible, the user is going to wonder what is going on.  This
+ *  is the perfect time to use a ProgressDialog.
+ *
+ *  NOTE: During a Rexx sort of the items in a list-view, the list-view invokes
+ *        the Rexx method in this dialog to do a comparison of 2 items.  We do
+ *        not know what sorting algorithm the list-view is using, but we can
+ *        speculate that it is a quick sort.  Each callback from the native code
+ *        the list-view is running in, to the Rexx interpreter, is relatively
+ *        expensive.  Expensive relative to the time to actually do a single
+ *        comparison.  As the number of items to sort grows, the number of
+ *        comparisons grows, worst case, exponentially. Even average case,
+ *        O(n log n), the growth is far from linear.  As the number of
+ *        comparisons grows, the expensive callbacks into the interpreter truely
+ *        dominate.  Do not use the Rexx sort for a large number of items.
+ *        Start by using a Rexx sort with a small number of items to get a feel
+ *        for how long it is taking.  Using a Rexx sort with a large nubmer of
+ *        items, will always finish, eventually.  It may literally take hours.
+ *
+ *  This example times the operations where a progress dialog is displayed and
+ *  shows those times in the main dialog.  This is an interesting experiment.
+ *
+ *  The internal sort is very fast, in comparison.  Do not hesitate to sort
+ *  even the maximum number of items using the internal sort.
  */
 
     -- Set the defaults for this application.  Use the global .constDir 'O'nly,
-    -- Read the 'addManyRows.h' file for symbolic resource ID
-    -- definitions.  And, turn automatica data detection off (.false.)
+    -- Read the 'addManyRows.h' file for symbolic resource ID  definitions.
+    -- And, turn automatica data detection off (.false.)
     .application~setDefaults('O', 'resources\addManyRows.h', .false)
 
+    -- Allow the user to pick the number of items to be inserted into the
+    -- list-view.
     dlgIntro = .ExampleSetUpDlg~new('resources\addManyRows.rc', IDD_INTRO)
     if dlgIntro~execute('SHOWTOP') == dlgIntro~IDCANCEL then do
       ret = MessageDialog('You are missing out on an excellent example', ,'User Canceled', 'OK', 'WARNING')
@@ -127,6 +158,12 @@ return 0
 
     self~setStatics
 
+/** setStatics
+ *
+ * Helper method to set up the static controls that are used to display the
+ * timings.  How they are set is dependent on whether the user canceled the
+ * LvFullRow creation or the insertion of the rows.
+ */
 ::method setStatics private
     expose createCanceled insertCanceled staticInternal staticRexxSort
 
@@ -169,13 +206,21 @@ return 0
     staticInsert~setText('Insert full rows:' self~insertRowsTime)
 
 
+/** onSortInternally()
+ *
+ * The event handler for the Internal Sort push button.  We put up a dialog to
+ * let the user decide what and how to sort.
+ */
 ::method onSortInternally unguarded
     expose list staticInternal
 
+    dlg = .SortSetupDlg~new('resources\addManyRows.rc', IDD_SORT_PARAMS)
+    if dlg~execute('SHOWTOP') == dlg~IDCANCEL then return 0
+
     d = .directory~new
-    d~column    = 3
-    d~ascending = .false
-    d~caseless  = .true
+    d~column    = dlg~column
+    d~ascending = dlg~ascending
+    d~caseless  = dlg~caseless
 
     j = time('E')
 
@@ -185,8 +230,15 @@ return 0
     staticInternal~setText('Internal sort:' self~internalSortTime)
 
 
+/** onSortRexx()
+ *
+ * The event handler for the Rexx Sort push button.  We put up a dialog to
+ * let the user decide what and how to sort.  We also warn the user that the
+ * sort can take a very long time depending on the number of items in the
+ * list-view
+ */
 ::method onSortRexx unguarded
-    expose list staticRexxSort
+    expose list staticRexxSort rexxColumn rexxAscending rexxCaseless
 
     count = self~itemCount
 
@@ -211,6 +263,13 @@ return 0
         if MessageDialog(msg, self~hwnd, title, 'YESNO', 'WARNING') == self~IDNO then return 0
     end
 
+    dlg = .SortSetupDlg~new('resources\addManyRows.rc', IDD_SORT_PARAMS)
+    if dlg~execute('SHOWTOP') == dlg~IDCANCEL then return 0
+
+    rexxColumn    = dlg~column
+    rexxAscending = dlg~ascending
+    rexxCaseless  = dlg~caseless
+
     msg  = 'Performing a list-view item sort using a Rexx method of this dialog.  Please be patient...'
     capt = 'Rexx ooDialog Dialog Method Sort'
     pbDlg = .ProgressDialog~new(capt, msg)
@@ -224,7 +283,7 @@ return 0
     pbDlg~begin
 
     reply 0
-    list~sortItems('DOSORT')
+    list~sortItems('DOREXXSORT')
 
     pbDlg~endNow
 
@@ -232,14 +291,32 @@ return 0
     staticRexxSort~setText('Rexx sort:' self~rexxSortTime)
 
 
-
-::method doSort unguarded
+/** doRexxSort()
+ *
+ * This is the call back method that actually does the comparison for 2 items in
+ * the list view.
+ */
+::method doRexxSort unguarded
+    expose rexxColumn rexxAscending rexxCaseless
     use arg lvRow1, lvRow2
 
-    text1 = lvRow1~item~text
-    text2 = lvRow2~item~text
+    if rexxColumn == 0 then do
+        text1 = lvRow1~item~text
+        text2 = lvRow2~item~text
+    end
+    else do
+        text1 = lvRow1~subitem(rexxColumn)~text
+        text2 = lvRow2~subitem(rexxColumn)~text
+    end
 
-    return text2~caselessCompareTo(text1)
+    if rexxAscending then do
+        if rexxCaseless then return text1~caselessCompareTo(text2)
+        else return text1~compareTo(text2)
+    end
+    else do
+        if rexxCaseless then return text2~caselessCompareTo(text1)
+        else return text2~compareTo(text1)
+    end
 
 
 /** createRows()
@@ -272,7 +349,6 @@ return 0
       extra = .endOfLine~copies(2) || 'It is possible that inserting' self~itemCount 'items will exhaust your system resources.'
       pbDlg~msgText || = extra
       pbDlg~msgHeight = 5
-      say pbDlg~msgText
     end
 
     a = .Alerter~new
@@ -365,7 +441,9 @@ return 0
     chars = ''
 
     do i = 1 to len
-        chars || = random(97, 122)~d2c
+        upper = random(0, 1)
+        if upper then chars || = random(65, 90)~d2c
+        else chars || = random(97, 122)~d2c
     end
 
     return chars
@@ -375,6 +453,10 @@ return 0
  *
  * A simple helper dialog for our example.  We let the user choose the number of
  * list-view items to insert.
+ *
+ * There is not much comment for this class, it is really pretty straight
+ * forward, initialize the dialog controls to the beginning state, what until
+ * the user closes the dialog, record the number of items the user picked.
  */
 ::class 'ExampleSetUpDlg' subclass RcDialog
 
@@ -392,7 +474,7 @@ return 0
     updItems = self~newUpDown(IDC_SP_ITEMS)
     r = .directory~new
     r~min = 500
-    r~max = 500000
+    r~max = 50000
     updItems~setRange(r)
     updItems~setPosition(10000)
 
@@ -456,5 +538,69 @@ return 0
 
     return self~ok:super
 
+
+/** SortSetUpDlg
+ *
+ * A dialog to let the user choose what and how they want soreted.
+ *
+ * Similar to the ExampleSetUpDlg class there is not much comment here, the
+ * dialog is straight forward, set up the controls, record what the user pickes.
+ */
+::class 'SortSetUpDlg' subclass RcDialog
+
+::attribute column
+::attribute ascending
+::attribute caseless
+
+::method initDialog
+    expose column ascending caseless rbItem rbAscending rbCaseless upDown edit
+
+    column    = 0
+    ascending = .true
+    caseless  = .true
+
+    rbItem      = self~newRadioButton(IDC_RB_ITEM)~~check
+    rbAscending = self~newRadioButton(IDC_RB_ASCENDING)~~check
+    rbCaseless  = self~newRadioButton(IDC_RB_CASELESS)~~check
+
+    upDown = self~newUpDown(IDC_SP_COL)~~disable
+    edit   = self~newEdit(IDC_ED_COL)~~disable
+
+    upDown~setRange(1, 11)
+    upDown~setPosition(3)
+
+    self~connectButtonEvent(IDC_RB_ITEM, 'CLICKED', onItemClick)
+    self~connectButtonEvent(IDC_RB_SUBITEM, 'CLICKED', onSubItemClick)
+
+    rbItem~assignFocus
+
+
+::method onItemClick unguarded
+    expose upDown edit
+
+    upDown~disable
+    edit~disable
+
+
+::method onSubItemClick unguarded
+    expose upDown edit
+
+    upDown~enable
+    edit~enable
+
+
+::method ok unguarded
+    expose column ascending caseless rbItem rbAscending rbCaseless upDown
+
+    if rbItem~checked then column = 0
+    else column = upDown~getPosition
+
+    if rbAscending~checked then ascending = .true
+    else ascending = .false
+
+    if rbCaseless~checked then caseless = .true
+    else caseless = .false
+
+    return self~ok:super
 
 
