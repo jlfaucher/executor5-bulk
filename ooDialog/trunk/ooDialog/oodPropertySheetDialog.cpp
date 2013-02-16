@@ -685,24 +685,24 @@ void adjustResizablePropSheetTemplate(LPARAM tmplate)
  */
 LRESULT CALLBACK ResizableSubclassProc(HWND hDlg, uint32_t msg, WPARAM wParam, LPARAM lParam, UINT_PTR id, DWORD_PTR dwData)
 {
-    static bool isFirstShow = true;
+    pCPropertySheetDialog pcpsd = (pCPropertySheetDialog)dwData;
 
     switch ( msg )
     {
         case WM_ENTERSIZEMOVE :
         {
-            ((pCPropertySheetDialog)dwData)->pcpbd->resizeInfo->inSizeOrMove = true;
+            pcpsd->pcpbd->resizeInfo->inSizeOrMove = true;
             break;
         }
 
         case WM_SHOWWINDOW :
         {
-            if ( isFirstShow )
+            if ( pcpsd->isFirstShow )
             {
-                pCPlainBaseDialog pcpbd = ((pCPropertySheetDialog)dwData)->pcpbd;
+                pCPlainBaseDialog pcpbd = pcpsd->pcpbd;
 
                 initializeResizableDialog(hDlg, pcpbd->dlgProcContext, pcpbd);
-                isFirstShow = false;
+                pcpsd->isFirstShow = false;
             }
 
             break;
@@ -710,7 +710,6 @@ LRESULT CALLBACK ResizableSubclassProc(HWND hDlg, uint32_t msg, WPARAM wParam, L
 
         case WM_SIZE :
         {
-            pCPropertySheetDialog pcpsd = (pCPropertySheetDialog)dwData;
             pCPlainBaseDialog     pcpbd = pcpsd->pcpbd;
             pResizeInfoDlg        prid  = pcpbd->resizeInfo;
 
@@ -752,7 +751,7 @@ LRESULT CALLBACK ResizableSubclassProc(HWND hDlg, uint32_t msg, WPARAM wParam, L
 
         case WM_EXITSIZEMOVE :
         {
-            pCPlainBaseDialog pcpbd = ((pCPropertySheetDialog)dwData)->pcpbd;
+            pCPlainBaseDialog pcpbd = pcpsd->pcpbd;
             pResizeInfoDlg    prid  = pcpbd->resizeInfo;
 
             if ( prid->isSizing && prid->redrawThis )
@@ -773,7 +772,7 @@ LRESULT CALLBACK ResizableSubclassProc(HWND hDlg, uint32_t msg, WPARAM wParam, L
 
         case WM_GETMINMAXINFO :
         {
-            pResizeInfoDlg  prid = ((pCPropertySheetDialog)dwData)->pcpbd->resizeInfo;
+            pResizeInfoDlg  prid = pcpsd->pcpbd->resizeInfo;
             MINMAXINFO     *pmmi = (MINMAXINFO *)lParam;
 
             if ( prid->haveMinSize )
@@ -2680,9 +2679,10 @@ RexxMethod7(wholenumber_t, psdlg_init, RexxArrayObject, pages, OPTIONAL_CSTRING,
     pCPropertySheetDialog pcpsd = (pCPropertySheetDialog)context->BufferData(cselfBuffer);
     memset(pcpsd, 0, sizeof(CPropertySheetDialog));
 
-    pcpbd->dlgPrivate = pcpsd;
-    pcpsd->pcpbd      = pcpbd;
-    pcpsd->rexxSelf   = self;
+    pcpbd->dlgPrivate  = pcpsd;
+    pcpsd->pcpbd       = pcpbd;
+    pcpsd->rexxSelf    = self;
+    pcpsd->isFirstShow = true;
     context->SetObjectVariable("CSELF", cselfBuffer);
 
     // Now process the arguments and do the rest of the initialization.

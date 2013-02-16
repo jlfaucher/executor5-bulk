@@ -1055,6 +1055,7 @@ typedef struct _psdCSelf {
     bool                 isWiz97;
     bool                 isWizLite;
     bool                 isAeroWiz;
+    bool                 isFirstShow;      // For resizable dialogs, in subclass proc, indicates is 1st WM_SHOWWINDOW
 } CPropertySheetDialog;
 typedef CPropertySheetDialog *pCPropertySheetDialog;
 
