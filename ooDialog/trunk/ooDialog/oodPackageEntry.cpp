@@ -388,7 +388,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(fileNameDlg_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(findWindow_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(messageDialog_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(msSleep_rtn);
-REXX_TYPED_ROUTINE_PROTOTYPE(playSound_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(play_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(simpleFolderBrowse_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(winTimer_rtn);
 
@@ -400,7 +400,7 @@ RexxRoutineEntry oodialog_functions[] =
     REXX_TYPED_ROUTINE(findWindow_rtn,         findWindow_rtn),
     REXX_TYPED_ROUTINE(messageDialog_rtn,      messageDialog_rtn),
     REXX_TYPED_ROUTINE(msSleep_rtn,            msSleep_rtn),
-    REXX_TYPED_ROUTINE(playSound_rtn,          playSound_rtn),
+    REXX_TYPED_ROUTINE(play_rtn,               play_rtn),
     REXX_TYPED_ROUTINE(simpleFolderBrowse_rtn, simpleFolderBrowse_rtn),
     REXX_TYPED_ROUTINE(winTimer_rtn,           winTimer_rtn),
 

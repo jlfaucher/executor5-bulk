@@ -658,7 +658,7 @@ RexxRoutine1(RexxObjectPtr, simpleFolderBrowse_rtn, ARGLIST, args)
 /** playSoundFile()
  *
  */
-RexxRoutine3(RexxObjectPtr, playSound_rtn, OPTIONAL_CSTRING, fileName, OPTIONAL_CSTRING, modifier, NAME, routineName)
+RexxRoutine3(RexxObjectPtr, play_rtn, OPTIONAL_CSTRING, fileName, OPTIONAL_CSTRING, modifier, NAME, routineName)
 {
     bool isStopRoutine = strcmp("STOPSOUNDFILE", routineName) == 0;
 

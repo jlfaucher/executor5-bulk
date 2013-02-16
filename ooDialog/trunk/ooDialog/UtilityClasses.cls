@@ -1574,22 +1574,20 @@
 
 ::routine messageDialog public external "LIBRARY oodialog messageDialog_rtn"
 ::routine msSleep public external "LIBRARY oodialog msSleep_rtn"
-::routine play public external "LIBRARY oodialog playSound_rtn"
+::routine play public external "LIBRARY oodialog play_rtn"
 ::routine screenSize public
    return .DlgUtil~screenSize
 
 ::routine simpleFolderBrowse public external "LIBRARY oodialog simpleFolderBrowse_rtn"
-::routine systemMetrics public
-   use strict arg index
-   return .DlgUtil~getSystemMetrics(index)
-
-::routine routineTest public external "LIBRARY oodialog routineTest_rtn"
+::routine winTimer public external "LIBRARY oodialog winTimer_rtn"
+::routine routineTest public external "LIBRARY oodialog routineTest_rtn"  -- internal use only
 
 
 /** The following routines are, mostly, duplicates of the public routines above.
  *  They are needed to maintain backward compatibilty with  pre-4.0.0, because
- *  both names were documented.
+ *  both names were documented.  They are all deprecated.
  */
+/* ----- Start deprecated routines. ------------------------------------------*/
 ::routine binaryAnd public
   use strict arg n1, n2
   return .DlgUtil~and(n1, n2)
@@ -1614,19 +1612,21 @@
 ::routine instMMFuncs public
   return 1
 
-::routine playSoundFile public external "LIBRARY oodialog playSound_rtn"
-::routine playSoundFileInLoop public external "LIBRARY oodialog playSound_rtn"
+::routine playSoundFile public external "LIBRARY oodialog play_rtn"
+::routine playSoundFileInLoop public external "LIBRARY oodialog play_rtn"
 ::routine sleepMS public external "LIBRARY oodialog msSleep_rtn"
-::routine stopSoundFile public external "LIBRARY oodialog playSound_rtn"
+::routine stopSoundFile public external "LIBRARY oodialog play_rtn"
+::routine systemMetrics public
+   use strict arg index
+   return .DlgUtil~getSystemMetrics(index)
 
-::routine winTimer public external "LIBRARY oodialog winTimer_rtn"
 ::routine yesNoMessage public
    use strict arg info, defaultButton = 'Y'
    miscStyles = "SETFOREGROUND TASKMODAL"
    if defaultButton~left(1)~translate == 'N' then miscStyles ||= ' DEFBUTTON2'
    return messageDialog(info, , "Question", "YESNO", "QUESTION", miscStyles) == 6
 
-/* ----- End compatibility routines. -----------------------------------------*/
+/* ----- End deprecated routines. --------------------------------------------*/
 
 /*-------------------------- shortcut routines -------------------------------*/
 
