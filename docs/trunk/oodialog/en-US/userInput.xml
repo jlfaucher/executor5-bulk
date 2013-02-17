@@ -2737,9 +2737,9 @@ of a simple entry line.</para>
 <indexterm><primary>PropertyDialog class</primary><secondary>absoluteWidth</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--absoluteWidth-----------------------------------------------------><
+>>--absoluteWidth--------------------------------><
 
->>--absoluteWidth = pixels-------------------------------------------><
+>>--absoluteWidth = trueOrFalse------------------><
 
 ]]>
 </programlisting>
@@ -2792,21 +2792,31 @@ of a simple entry line.</para>
 <indexterm><primary>PropertyDialog class</primary><secondary>canCancel</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--canCancel-----------------------------------------------------><
+>>--canCancel------------------------------------><
 
->>--canCancel = varName-------------------------------------------><
+>>--canCancel = trueOrFalse----------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">canCancel</emphasis> attribute specifies whether the user is allowed to cancel the progress
+  dialog or not. By default, the dialog can not be canceled. If this attribute is true, then a Cancel button is added to the
+  dialog and the user is allowed to close the, cancel the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If the programmer configures the dialog such that it can be canceled, then this implies to the user that closing the
+    dialog halts the lengthy operation in progress. It is the programmer's responsibility to handle that. The <xref
+    linkend="clsInterruptible"/> class and the <xref linkend="mthSetInterruptible"/> method provide some tools to allow the
+    programmer to handle canceling the dialog in a graceful manner.
+  </para>
+  <para>
+    If the <emphasis role="italic">setInterruptible</emphasis> method is used to assign an
+    <computeroutput>Interruptible</computeroutput> object, the <emphasis role="italic">canCancel</emphasis> attribute is
+    automatically set to true.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
