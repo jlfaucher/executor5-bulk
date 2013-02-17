@@ -2631,39 +2631,78 @@ of a simple entry line.</para>
 <indexterm><primary>ProgressDialog class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new(--+--------+--+-------+--+-------+--+-------+--+--------+--)-----------><
+          +-capt-,-+  +-,-msg-+  +-,-min-+  +-,-max-+  +-,-step-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>ProgressDialog</computeroutput> object and sets its configuration attributes as
+  specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
+  </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>capt [optional]</term>
     <listitem>
     <para>
-      xx
+      Specifies the caption, the title, for the dialog. The <xref linkend="atrCaptionText"/> attribute is set to the value
+      specified. If this argument is omitted, the <emphasis role="italic">captionText</emphasis> attribute is set to the
+      default of <emphasis role="italic">Application Processing ...</emphasis>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msg [optional]</term>
+    <listitem>
+    <para>
+      Specifies the text for a message to be displayed at the top of the dialog box. The <xref linkend="atrMsgText"/>
+      attribute is set to this value. If this argument is omitted, the <emphasis role="italic">msgText</emphasis> attribute
+      is set to a default value of <emphasis role="italic">Background processing is taking place.  Please be
+      patient.</emphasis>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>min [optional]</term>
+    <listitem>
+    <para>
+      Sets the minimum value for the progress bar's <link linkend="mthSetFullRangePBC">range</link>. The <xref
+      linkend="atrRangeMin"/> attribute is set to this value. If this arugment is omitted, the <emphasis
+      role="italic">rangeMin</emphasis> attribute is set to 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>max [optional]</term>
+    <listitem>
+    <para>
+      Sets the maximum value for the progress bar's <link linkend="mthSetFullRangePBC">range</link>. The <xref
+      linkend="atrRangeMax"/> attribute is set to this value. If this arugment is omitted, the <emphasis
+      role="italic">rangeMax</emphasis> attribute is set to 100.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>step [optional]</term>
+    <listitem>
+    <para>
+      Specifies the <link linkend="mthSetStepPBC">step</link> increment for the progress bar. The <xref
+      linkend="atrIncrStep"/> attribute is set to this value. If this argument is omitted, the <emphasis
+      role="italic">stepIncr</emphasis> attribute is set to a default value of 1.
     </para>
     </listitem></varlistentry>
   </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a newly instantiated <computeroutput>ProgressDialog</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The exact behaviour and appearance of the progress bar dialog is configured by setting the values of its attributes. Only
+    a few of the attribute's values can be set by arguments to the <emphasis role="italic">new</emphasis> method. The other
+    attriubtes are all set to default values when the object is instantiated. The documentation for the individual attributes
+    specifies what the default value for the attribute is.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2671,16 +2710,20 @@ of a simple entry line.</para>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a progress bar dialog, specifying a title and message for the dialog. It changes the range from
+    0 to 100, to 0 to 200, and changes the step increment value to 4:
 <programlisting>
 <![CDATA[
+
+  title = 'Acme Widgets - Business Contacts'
+  msg = 'Creating and inserting the contact information. This will take some time.'
+
+  pbDlg = .ProgressDialog~new(title, msg, , 200, 4)
+  ...
 
 ]]>
 </programlisting>
@@ -2696,28 +2739,46 @@ of a simple entry line.</para>
 <![CDATA[
 >>--absoluteWidth-----------------------------------------------------><
 
->>--absoluteWidth = varName-------------------------------------------><
+>>--absoluteWidth = pixels-------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  This attribute is set to true or false. By default, the width of the dialog is calculated based on the width of the message
+  text, or the width of a generic message if the <xref linkend="atrMsgText"/> is not set. However, the programmer can change
+  this behavior by setting <emphasis role="italic">absoluteWidth</emphasis> to true and setting the <xref
+  linkend="atrWidthClsProgressDialog"/> attriubte to a desired width.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When <emphasis role="italic">absoluteWidth</emphasis> is false, the value of the <emphasis role="italic">width</emphasis>
+    attribute is always ignored. False is the default value for <emphasis role="italic">absoluteWidth</emphasis>. The
+    programmer needs to set both attributes to force a desired width for the progress bar dialog.
+  </para>
+  <para>
+    Note that the progress bar dialog can not be made smaller in width than a minimum width enforced by the class. This
+    minimum width is the width of 2 buttons plus the margins and the space between 2 buttons.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example the programmer wants the progress bar dialog to be wider than that calculated from the message text and
+    wider than the enforced minimum:
 <programlisting>
 <![CDATA[
 
+  title = 'Acme Widgets - Business Contacts'
+  msg = 'Inserting information.'
+
+  pbDlg = .ProgressDialog~new(title, msg, , 200, 4)
+
+  pbDlg~absoluteWidth = .true
+  pbDlg~width = 196
+  ...
 
 ]]>
 </programlisting>
