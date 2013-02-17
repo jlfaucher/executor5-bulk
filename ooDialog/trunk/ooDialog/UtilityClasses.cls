@@ -1338,7 +1338,7 @@
 ::attribute worker unguarded private
 
 ::method init
-    use strict arg capt = (self~CAPTION_TEXT), msg = (self~MSG_TEXT), max = (self~RANGE_MAX), min = (self~RANGE_MIN), incr = (self~INCR_STEP)
+    use strict arg capt = (self~CAPTION_TEXT), msg = (self~MSG_TEXT), min = (self~RANGE_MIN), max = (self~RANGE_MAX), incr = (self~INCR_STEP)
     self~init:super
 
     self~captionText = capt
