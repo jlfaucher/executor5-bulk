@@ -2491,14 +2491,14 @@ of a simple entry line.</para>
   <computeroutput>ProgressDialog</computeroutput> class are used to start, update, and close the dialog.
 </para>
 <para>
-  Normally, an application, shows the progress bar, starts its lengthy operation, and periodically as it makes progress with
-  the option it advances the progress bar position. When the operation finishes, the application ends the progress bar. With
-  the <computeroutput>ProgressDialog</computeroutput> object, the programmer first configures the object by setting any
+  Normally, an application, shows the progress bar, starts its lengthy operation, and periodically, as it makes progress with
+  the operation, it advances the progress bar position. When the operation finishes, the application ends the progress bar.
+  With the <computeroutput>ProgressDialog</computeroutput> object, the programmer first configures the object by setting any
   attributes whose default values are not appropriate. The <xref linkend="mthBegin"/> method shows the progress bar. As the
   operation progresses, the programmer advances the progress bar position using the <xref linkend="mthIncrease"/> method. The
   <xref linkend="mthUpdateStatus"/> and <xref linkend="mthUpdateStatusText"/> methods can also be used to update the status
   line as progress is made, if desired. Finally, the <xref linkend="mthCompleteClsProgressDialog"/> and <xref
-  linkend="mthEndNow"/> are used to end the dialog.
+  linkend="mthEndNow"/> methods are used to end the dialog.
 </para>
 <para>
   One important aspect of performing a lengthy operation is whether the user can, or can not, cancel the operation once it is
@@ -2530,12 +2530,96 @@ of a simple entry line.</para>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
-<entry><link linkend="mthNewClsProgressDialog">new</link></entry>
+<entry><xref linkend="mthNewClsProgressDialog"/></entry>
+<entry>Instantiates a new <computeroutput>ProgressDialog</computeroutput>object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrAbsoluteWidth"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrCanCancel"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrCaptionText"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrIncrStep"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrInitialStatusText"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrMarqueeMode"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrMarqueePause"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrMsgText"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrNoMsg"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrNoStatus"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrRangeMax"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrRangeMix"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="atrWidthClsProgressDlg"/></entry>
+<entry></entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthBegin"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthCompleteClsProgressDialog"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthEndNow"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthIncrease"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthSetInterruptible"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthUpdateStatus"/></entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="mthUpdateStatusText"/></entry>
+<entry></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -3048,7 +3132,7 @@ of a simple entry line.</para>
 </variablelist>
 </section>  <!-- End PropertyDialog::rangeMin() [attribute]  -->
 
-<section id="atrWidthClsPropertyDialog" xreflabel="width"><title>width (Attribute)</title>
+<section id="atrWidthClsProgressDialog" xreflabel="width"><title>width (Attribute)</title>
 <indexterm><primary>width</primary><secondary>PropertyDialog class</secondary></indexterm>
 <indexterm><primary>PropertyDialog class</primary><secondary>width</secondary></indexterm>
 <programlisting>
