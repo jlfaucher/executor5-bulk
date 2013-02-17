@@ -96,7 +96,7 @@
   different than, the IBM syntax diagrams used in other ooRexx reference documentation.  The author is calling these
   diagrams <emphasis role="italic">simplified railroad tracks</emphasis>. It primarily strives to limit all diagrams to
   2 lines, and does away with much of the complexity of true IBM railroad tracks. The body of text following the
-  syntax diagrams, and this clarifying text, will resolve any ambiguities in the diagram.
+  syntax diagrams, along with this clarifying text, will resolve any ambiguities in the diagrams.
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> Not all syntax diagrams may be converted to the simplified railroad tracks at
@@ -122,8 +122,10 @@
 </para>
 <para>
   Diagrams of syntactical units other than complete statements start with the <computeroutput>&gt;---</computeroutput>
-  symbol and end with the  <computeroutput>---&gt;</computeroutput> symbol.
-</para></listitem>
+  symbol and end with the  <computeroutput>---&gt;</computeroutput> symbol. Currently this document does not contain any of
+  these types of diagrams.
+</para>
+</listitem>
 <listitem>
 <para>
   Required items appear on the horizontal line (the main path).
@@ -131,8 +133,6 @@
 <programlisting>
 <![CDATA[
 >>-STATEMENT--required_item------------------------------------><
-
-
 ]]>
 </programlisting>
 </para></listitem>
@@ -149,7 +149,7 @@
 </para>
 </listitem></itemizedlist>
 <para>
-  In this reference, the syntax diagrams being presented is the syntax for method or attribute invocations, and routine
+  In this reference, the syntax diagrams being presented are the syntax for method or attribute invocations, and routine
   calls. The diagrams show the method, attribute, or routine name and their arguments.  For method or attribute invocations,
   the section the method or attribute is included in, and / or the text itself, make it clear as to which class the method
   belongs to.
@@ -181,21 +181,21 @@
 </programlisting>
 <para>
   In the above example, the syntax diagram indicates that the name of the method or routine is <emphasis
-  role="italic">createFontEx</emphasis>. The location of the syntax diagram would clearly indicate that is is a method of the
-  <xref linkend="clsWindowExtensions"/>, that has been inherited by the <xref linkend="chpDialogObject"/> object. The diagram
-  indicates that the arguemnt in the first position, <emphasis role="italic">fontName</emphasis> is required. The argument in
-  the second postion, <emphasis role="italic">pointSize</emphasis> is optional, and the argument in the third position,
-  <emphasis role="italic">additional</emphasis> is also optional.
+  role="italic">createFontEx</emphasis>. The location of the syntax diagram would clearly indicate that it is a method of the
+  <xref linkend="clsWindowExtensions"/> class, that has been inherited by the <xref linkend="chpDialogObject"/> object. The
+  diagram indicates that the argument in the first position, <emphasis role="italic">fontName</emphasis> is required. The
+  argument in the second postion, <emphasis role="italic">pointSize</emphasis> is optional, and the argument in the third
+  position, <emphasis role="italic">additional</emphasis> is also optional.
 </para>
 <para>
-  <emphasis role="italic">In addition</emphasis>, the syntax diagram indicates that <emphasis role="italic">if</emphasis> the
+  <emphasis role="bold">In addition</emphasis>, the syntax diagram indicates that <emphasis role="italic">if</emphasis> the
   second positional argument is omitted but the third positional is used, there <emphasis role="bold">must</emphasis> be 2
-  commas preceeding <emphasis role="italic">additional</emphasis> argument.
+  commas preceding the <emphasis role="italic">additional</emphasis> argument.
 </para>
 <important><title>Important</title>
   <para>
-    Although the reader may prefer to interpret the syntax diagrams in some other way than just explained, doing so is
-    <emphasis role="italic">wrong</emphasis>.
+    Although the reader may prefer to interpret the syntax diagrams in some other way than that just explained, doing so is
+    <emphasis role="bold">wrong</emphasis>.
   </para>
 </important>
 </section>
