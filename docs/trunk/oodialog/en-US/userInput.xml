@@ -2551,51 +2551,55 @@ of a simple entry line.</para>
 </row>
 <row>
 <entry><xref linkend="atrCanCancel"/></entry>
-<entry></entry>
+<entry>The <emphasis role="italic">canCancel</emphasis> attribute specifies whether the user is allowed to cancel the progress dialog or not.</entry>
 </row>
 <row>
 <entry><xref linkend="atrCaptionText"/></entry>
-<entry></entry>
+<entry>Reflects the text that will be used for the title of the progress dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="atrIncrStep"/></entry>
-<entry></entry>
+<entry>Reflects the value of the step increment for the progress bar in the dilaog.</entry>
 </row>
 <row>
 <entry><xref linkend="atrInitialStatusText"/></entry>
-<entry></entry>
+<entry>Reflects the text that will be displayed on the status line in the progress dialog when the dialog is first shown.</entry>
 </row>
 <row>
 <entry><xref linkend="atrMarqueeMode"/></entry>
-<entry></entry>
+<entry>Reflects the status of the marquee mode of the progress bar.</entry>
 </row>
 <row>
 <entry><xref linkend="atrMarqueePause"/></entry>
-<entry></entry>
+<entry>Reflects the time in milliseconds between updates in the animation when in marquee mode.</entry>
+</row>
+<row>
+<entry><xref linkend="atrMsgHeight"/></entry>
+<entry>Reflects the number of lines that the area for the message text will take up.</entry>
 </row>
 <row>
 <entry><xref linkend="atrMsgText"/></entry>
-<entry></entry>
+<entry>Reflects the text to be displayed in the message area of the progress dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="atrNoMsg"/></entry>
-<entry></entry>
+<entry>Reflects whether the progress dialog will contain a message area or not.</entry>
 </row>
 <row>
 <entry><xref linkend="atrNoStatus"/></entry>
-<entry></entry>
+<entry>Reflects whether the progress dialog will have a status line or not.</entry>
 </row>
 <row>
 <entry><xref linkend="atrRangeMax"/></entry>
-<entry></entry>
+<entry>Reflect the highest position the progress bar can be moved to.</entry>
 </row>
 <row>
 <entry><xref linkend="atrRangeMin"/></entry>
-<entry></entry>
+<entry>Reflect the lowest position the progress bar can be moved to.</entry>
 </row>
 <row>
 <entry><xref linkend="atrWidthClsProgressDialog"/></entry>
-<entry></entry>
+<entry>Reflects the, possible, width of the progress dialog.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -2603,15 +2607,15 @@ of a simple entry line.</para>
 </row>
 <row>
 <entry><xref linkend="mthBegin"/></entry>
-<entry></entry>
+<entry>Begins the execution of the underlying Windows dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthCompleteClsProgressDialog"/></entry>
-<entry></entry>
+<entry>Moves the position of the progress bar to the end of the bar.</entry>
 </row>
 <row>
 <entry><xref linkend="mthEndNow"/></entry>
-<entry></entry>
+<entry>Ends the execution of the underlying progress dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthIncrease"/></entry>
@@ -2882,7 +2886,7 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  Reflects the title that will be used for the title of the progress dialog. By default this attribute is set to <emphasis
+  Reflects the text that will be used for the title of the progress dialog. By default this attribute is set to <emphasis
   role="italic">Application Processing ...</emphasis>
 </para>
 <variablelist>
@@ -2976,11 +2980,11 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  Reflects the text that will be displayed on the status line in the progress bar dialog. The status line is displayed just
-  above the progress bar in the dialog. By default, if the <xref linkend="atrNoStatus"/> attribute is not set to true, the
-  status line will display <emphasis role="italic">Status:</emphasis>. The programmer can change the value of the <emphasis
-  role="italic">initialStatusText</emphasis> so that some other text is displayed when the dialog starts. Perhaps the empty
-  string.
+  Reflects the text that will be displayed on the status line in the progress dialog when the dialog is first shown. The
+  status line is displayed just above the progress bar in the dialog. By default, if the <xref linkend="atrNoStatus"/>
+  attribute is not set to true, the status line will display <emphasis role="italic">Status:</emphasis>. The programmer can
+  change the value of the <emphasis role="italic">initialStatusText</emphasis> so that some other text is displayed when the
+  dialog starts. Perhaps the empty string.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3185,7 +3189,7 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  Reflects the message text to be displayed in the message area of the progress dialog.
+  Reflects the text to be displayed in the message area of the progress dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -3414,7 +3418,8 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  xx
+  Begins the execution of the underlying Windows dialog. The <emphasis role="italic">begin</emphasis> method is similar in
+  concept to the <xref linkend="mthPopup"/> method of the dialog object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3426,30 +3431,31 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 on success and 1 for some unexpected error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    The <emphasis role="italic">begin</emphasis> method starts the dialog and returns immediately. If there is some error
+    creating the underlying dialog, a message box is put up explaining the problem to the user. This is highly unlikely to
+    happen.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example configures a progress dialog and then uses the <emphasis role="italic">begin</emphasis> method to start it:
 <programlisting>
 <![CDATA[
+
+  pbDlg = .ProgressDialog~new
+  pbDlg~msgText = 'Creating and inserting full rows into the list-view. This will take some time.'
+
+  a = .Alerter~new
+  pbDlg~setInterruptible(a)
+  pbDlg~begin
+  pbDlg~updateStatus('0 full rows created')
 
 ]]>
 </programlisting>
@@ -3463,56 +3469,52 @@ of a simple entry line.</para>
 <indexterm><primary>ProgressDialog class</primary><secondary>complete</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--complete(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--complete-------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Moves the position of the progress bar to the end of the bar.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    There is not return from this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    This method is intended to be invoked when the lengthy operation is finished. Moving the position of the progress bar to
+    the gives the user a visual clue that the operation has ended. It is not necessary to use this method to finish the
+    dialog, it is a convenience method. The <xref linkend="mthEndNow"/> method actually ends the dialog, and is required to
+    end the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the <emphasis role="italic">complete</emphasis> method to move the position of the progress bar to the
+    end when it drops out of the processing loop. It then updates the status line and pauses a short time before actually
+    ending the dialog. This gives the user a visual clue that the operation completed successfully:
 <programlisting>
 <![CDATA[
+
+  do i = 1 to rows~items
+      ...
+  end
+
+  pbDlg~complete
+  pbDlg~updateStatus('finished inserting' rows~items 'full rows')
+  r = SysSleep(1.5)
+  pbDlg~endNow
 
 ]]>
 </programlisting>
@@ -3526,56 +3528,51 @@ of a simple entry line.</para>
 <indexterm><primary>ProgressDialog class</primary><secondary>endNow</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--endNow(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--endNow---------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Ends the execution of the underlying progress dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method does not have any arguments.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    If the progress bar is cancelable and the user cancels the dialog, that will of course close the dialog. If the dialog
+    is not cancelable, then the user can not close the dialog and the programmer must end the dialog using the <emphasis
+    role="italic">endNow</emphasis> method. Good practice would probably be to close the dialog for the user when the lengthy
+    operation is ended.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example supplies the user with a visual clue that the operation completed successfull when it drops out of the
+    processing loop. It then ends the dialog using the <emphasis role="italic">endNow</emphasis> method.
 <programlisting>
 <![CDATA[
+
+  do i = 1 to rows~items
+      ...
+  end
+
+  pbDlg~complete
+  pbDlg~updateStatus('finished inserting' rows~items 'full rows')
+  r = SysSleep(1.5)
+  pbDlg~endNow
 
 ]]>
 </programlisting>
