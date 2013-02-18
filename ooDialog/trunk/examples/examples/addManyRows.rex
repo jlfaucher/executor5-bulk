@@ -374,16 +374,16 @@ return 0
         rows[i] = .LvFullRow~new(lvi, lvsi1, lvsi2, lvsi3, lvsi4, lvsi5, lvsi6, lvsi7, lvsi8, lvsi9, lvsi10, lvsi11, .true)
 
         if i // step = 0 then do
-          pbDlg~increase
-          pbDlg~updateStatus(i 'full rows created')
+              pbDlg~increase
+              pbDlg~updateStatus(i 'full rows created')
         end
 
         if a~isCanceled then do
-          pbDlg~updateStatus('canceled after creating' i 'full rows')
-          r = SysSleep(1.5)
-          pbDlg~endNow
-          leave
-        end
+              pbDlg~updateStatus('canceled after creating' i 'full rows')
+              r = SysSleep(1.5)
+              pbDlg~endNow
+              leave
+        end           r
     end
 
     self~createRowsTime = time('e')
@@ -404,14 +404,14 @@ return 0
         list~addFullRow(rows[i])
 
         if i // step = 0 then do
-            pbDlg~increase
-            pbDlg~updateStatus(i 'full rows inserted')
+                pbDlg~increase
+                pbDlg~updateStatus(i 'full rows inserted')
         end
         if a~isCanceled then do
-            pbDlg~updateStatus('canceled after inserting' i 'full rows')
-            r = SysSleep(1.5)
-            pbDlg~endNow
-            leave
+                pbDlg~updateStatus('canceled after inserting' i 'full rows')
+                r = SysSleep(1.5)
+                pbDlg~endNow
+                leave
         end
     end
 
