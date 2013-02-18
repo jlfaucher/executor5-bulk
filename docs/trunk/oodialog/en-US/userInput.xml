@@ -2473,7 +2473,7 @@ of a simple entry line.</para>
   The progress dialog internally creates and sizes the components of the dialog, and the dialog itself, depending on how it
   is configured. For instance, if the dialog is configured to skip the message and status components, and the progress is not
   cancelable by the user, the dialog will consist of a progress bar only. The width of the dialog will either be a calculated
-  width, default width, or a configured width. The height of the dialog will be the proper height to accomdatae the progress
+  width, default width, or a configured width. The height of the dialog will be the proper height to accommodate the progress
   bar and other components, with margins. The layout of the dialog, from top to bottom, has a static control for the message
   at the top of the dialog, then a static control for the status line, then the progress bar, and finally a cancel button at
   the bottom right hand corner. The static message text, static status text, and progress bar controls are all the entire
@@ -2507,7 +2507,7 @@ of a simple entry line.</para>
   title bar, a message box is put up explaining that the operation is not done yet and can not be canceled. The dialog is not
   allowed to close. This default behaviour is changed throught the <xref linkend="atrCanCancel"/> attribute or through the
   <xref linkend="mthSetInterruptible"/> method. The use of an <xref linkend="clsInterruptible"/> object gives the programmer
-  an elgant way of handling and controlling a user's request to cancel the operation.
+  an elegant way of handling and controlling a user's request to cancel the operation.
 </para>
 
 <section id="sctMethodsProgressDialog"><title>Method Table</title>
@@ -2547,7 +2547,7 @@ of a simple entry line.</para>
 </row>
 <row>
 <entry><xref linkend="atrAbsoluteWidth"/></entry>
-<entry>Reflects whether the width of the dialog is calculated based on the width of the message text, or if the width is set to an absolute value bye the application.</entry>
+<entry>Reflects whether the width of the dialog is calculated based on the width of the message text, or if the width is set to an absolute value by the application.</entry>
 </row>
 <row>
 <entry><xref linkend="atrCanCancel"/></entry>
@@ -2591,11 +2591,11 @@ of a simple entry line.</para>
 </row>
 <row>
 <entry><xref linkend="atrRangeMax"/></entry>
-<entry>Reflect the highest position the progress bar can be moved to.</entry>
+<entry>Reflects the highest position the progress bar can be moved to.</entry>
 </row>
 <row>
 <entry><xref linkend="atrRangeMin"/></entry>
-<entry>Reflect the lowest position the progress bar can be moved to.</entry>
+<entry>Reflects the lowest position the progress bar can be moved to.</entry>
 </row>
 <row>
 <entry><xref linkend="atrWidthClsProgressDialog"/></entry>
@@ -2619,26 +2619,26 @@ of a simple entry line.</para>
 </row>
 <row>
 <entry><xref linkend="mthIncrease"/></entry>
-<entry></entry>
+<entry>The <emphasis role="italic">increase</emphasis> method moves the position of the progress bar by the value of the <xref linkend="atrIncrStep"/> attribute, or by the specified amount if the <emphasis role="italic">step</emphasis> argument is specified.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetInterruptible"/></entry>
-<entry></entry>
+<entry>Passes an instantiated <xref linkend="clsInterruptible"/> object to the Rexx progress dialog object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUpdateStatus"/></entry>
-<entry></entry>
+<entry>Updates the status line with the supplied text.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUpdateStatusText"/></entry>
-<entry></entry>
+<entry>Updates the status line using the exact text specified.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 </section>
 
-<section id="sctProgressDialogConstantMethods"><title>Constant Methods</title>
+<section id="sctProgressDialogConstantMethods" xreflabel="constants"><title>Constant Methods</title>
 <indexterm><primary>constant methods</primary><secondary>ProgressDialog class</secondary></indexterm>
 <indexterm><primary>ProgressDialog class</primary><secondary>constant methods</secondary></indexterm>
 <para>
@@ -2660,7 +2660,7 @@ of a simple entry line.</para>
 <tbody>
 <row>
 <entry>IDC_PB_MAIN</entry>
-<entry>The resource ID of the progress bar used in the dialog. This id could be used to get the <xref linkend="clsProgressBar"/> object in the dialog and manipulate it directly using the methods of the class.</entry>
+<entry>The resource ID of the progress bar used in the dialog. This ID could be used to get the <xref linkend="clsProgressBar"/> object in the dialog and manipulate it directly using the methods of the class.</entry>
 </row>
 <row>
 <entry>IDC_ST_MSG</entry>
@@ -2794,7 +2794,7 @@ of a simple entry line.</para>
 
 <para>
   Reflects whether the width of the dialog is calculated based on the width of the message text, or if the width is set to
-  an absolute value bye the application. This attribute is set to true or false. By default, the width of the dialog is
+  an absolute value by the application. This attribute is set to true or false. By default, the width of the dialog is
   calculated based on the width of the message text, or the width of the default message if the <xref linkend="atrMsgText"/>
   attribute is not set.
 </para>
@@ -2854,7 +2854,7 @@ of a simple entry line.</para>
 <para>
   The <emphasis role="italic">canCancel</emphasis> attribute specifies whether the user is allowed to cancel the progress
   dialog or not. By default, the dialog can not be canceled and the value of this attriubte is false. If this attribute is
-  true, then a Cancel button is added to the dialog and the user is allowed to close the, cancel the dialog.
+  true, then a Cancel button is added to the dialog and the user is allowed to close, to cancel, the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -2907,7 +2907,8 @@ of a simple entry line.</para>
   pbDlg = .ProgressDialog~new
 
   pbDlg~captionText = 'Acme Widgets - Business Contacts'
-  pbDlg~msgText = 'Creating and inserting the contact information. This will take some time.'
+  pbDlg~msgText = 'Creating and inserting the contact information. ' || -
+                  'This will take some time.'
 
   ...
 
@@ -3142,7 +3143,7 @@ of a simple entry line.</para>
   <para>
     The height of the static control for the message is <emphasis role="italic">always</emphasis> set to <emphasis
     role="italic">msgHeight</emphasis> times the calculated height of a single line. The static control for the message will
-    automatically wrap the text at word breaks. The control also honors new line character if they are embedded in the text.
+    automatically wrap the text at word breaks. The control also honors new line characters if they are embedded in the text.
   </para>
   <para>
     No attempt is made during the height and width calculations to try and determine if the assigned message text will fit in
@@ -3156,15 +3157,19 @@ of a simple entry line.</para>
   <para>
     In this example, the application sometimes adds some extra text to the message. Knowing that the progress dialog will be
     very short and very long without some change, the message height is set to 5 lines to produce a balanced dialog. Note the
-    insertion of two new lines in the message text to set off the added text""
+    insertion of two new lines in the message text to set off the added text:
 <programlisting>
 <![CDATA[
 
   pbDlg = .ProgressDialog~new
-  pbDlg~msgText = 'Creating and inserting full rows into the list-view. This will take some time.'
+  pbDlg~msgText = 'Creating and inserting the contact information. ' || -
+                  'This will take some time.'
 
   if self~itemCount > 30000 then do
-    extra = .endOfLine~copies(2) || 'It is possible that inserting' self~itemCount 'items will exhaust your system resources.'
+    extra = .endOfLine~copies(2) || -
+            'It is possible that inserting' self~itemCount 'items'   || -
+            ' will exhaust your system resources.'
+
     pbDlg~msgText ||= extra
     pbDlg~msgHeight = 5
   end
@@ -3209,7 +3214,8 @@ of a simple entry line.</para>
 <![CDATA[
 
   pbDlg = .ProgressDialog~new
-  pbDlg~msgText = 'Creating and inserting full rows into the list-view. This will take some time.'
+  pbDlg~msgText = 'Creating and inserting the contact information. ' || -
+                  'This will take some time.'
 
 ]]>
 </programlisting>
@@ -3247,7 +3253,7 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example configures a progress dialog so that it has no message text area and no status line area.
+    This example configures a progress dialog so that it has no status line area and no message text area.
 <programlisting>
 <![CDATA[
 
@@ -3318,7 +3324,7 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  Reflect the highest position the progress bar can be moved to.
+  Reflects the highest position the progress bar can be moved to.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -3343,7 +3349,7 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  Reflect the lowest position the progress bar can be moved to.
+  Reflects the lowest position the progress bar can be moved to.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -3381,7 +3387,7 @@ of a simple entry line.</para>
     When the progress dialog object is instantiated, the <emphasis role="italic">width</emphasis> attribute is set to the
     minimum width the dialog will be set to. This is done simply to ensure the attribute has a numerical value. It is
     expected that the if the application sets the <emphasis role="italic">absoluteWidth</emphasis> attribute to true, the
-    application will also the <emphasis role="italic">width</emphasis> attribute to some specific value.
+    application will also set the <emphasis role="italic">width</emphasis> attribute to some specific value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3450,7 +3456,8 @@ of a simple entry line.</para>
 <![CDATA[
 
   pbDlg = .ProgressDialog~new
-  pbDlg~msgText = 'Creating and inserting full rows into the list-view. This will take some time.'
+  pbDlg~msgText = 'Creating and inserting the contact information. ' || -
+                  'This will take some time.'
 
   a = .Alerter~new
   pbDlg~setInterruptible(a)
@@ -3486,16 +3493,16 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    There is not return from this method.
+    There is no return from this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
     This method is intended to be invoked when the lengthy operation is finished. Moving the position of the progress bar to
-    the gives the user a visual clue that the operation has ended. It is not necessary to use this method to finish the
+    the end gives the user a visual clue that the operation has ended. It is not necessary to use this method to finish the
     dialog, it is a convenience method. The <xref linkend="mthEndNow"/> method actually ends the dialog, and is required to
-    end the dialog.
+    end the dialog when it has not been canceled by the user.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3586,25 +3593,28 @@ of a simple entry line.</para>
 <indexterm><primary>ProgressDialog class</primary><secondary>increase</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--increase(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--increase(--+--------+--)---------------------><
+               +--step--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">increase</emphasis> method moves the position of the progress bar by the value of the <xref
+  linkend="atrIncrStep"/> attribute, or by the specified amount if the <emphasis role="italic">step</emphasis> argument is
+  specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>step [optional]</term>
     <listitem>
     <para>
-      xx
+      A specific amount to move the progress bar by. If this argument is omitted the value of the <emphasis
+      role="italic">incrStep</emphasis> attribute is used.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3612,30 +3622,37 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    This method does not return a value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
+    The <emphasis role="italic">increase</emphasis> method is exactly equivalent to the <xref linkend="mthStepPBC"/> method
+    of the <xref linkend="clsProgressBar"/> class.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    If the progress bar is in marquee mode, or the progress dialog was not instantiated correctly, this method does nothing.
+    If the underlying dialog has not been created yet, this method will wait until it has been createdd.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example immediately invokes the <emphasis role="italic">increase</emphasis> method after it starts the dialog. If
+    the underlying Windows dialog has not been fully created, the <emphasis role="italic">increase</emphasis> method will
+    wait until it has been created:
 <programlisting>
 <![CDATA[
+
+  pbDlg = .ProgressDialog~new
+  pbDlg~msgText = 'Creating and inserting the contact information. ' || -
+                  'This will take some time.'
+
+  a = .Alerter~new
+  pbDlg~setInterruptible(a)
+  pbDlg~begin
+  pbDlg~increase
 
 ]]>
 </programlisting>
@@ -3649,25 +3666,24 @@ of a simple entry line.</para>
 <indexterm><primary>ProgressDialog class</primary><secondary>setInterruptible</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setInterruptible(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setInterruptible(--interruptibleObject--)----><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Passes an instantiated <xref linkend="clsInterruptible"/> object to the Rexx progress dialog object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>interruptibleObject [required]</term>
     <listitem>
     <para>
-      xx
+      The interruptible object the progress dialog should use.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3675,13 +3691,27 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 on success, 1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    An <computeroutput>Interruptible</computeroutput> object provides a genric way for the progress dialog to handle the user
+    canceling the dialog. When the <emphasis role="italic">setInterruptible</emphasis> method is invoked, the <xref
+    linkend="atrCanCancel"/> attribute is automatically set to true.
+  </para>
+  <para>
+    If the user cancels the dialog, the progress dialog will first invoke the <xref
+    linkend="mthInterruptibleClsInterruptible"/> method to determine if the lengthy operation in progress can be interrupted
+    at that point. If the return is false, the progress dialog informs the user, through a message dialog, that the operation
+    can not be canceled and does not close the dialog. If the return is true, then the progress dialog invokes the <xref
+    linkend="mthInterruptClsInterruptible"/> method to notify the <emphasis role="italic">interruptible</emphasis> object
+    that the user canceled the operation, and ends the dialog.
+  </para>
+  <para>
+    Using those methods of the <emphasis role="italic">interruptible</emphasis> object, the programmer can manage how and
+    when the user can cancel the operation and react correctly to a cancellation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3689,17 +3719,40 @@ of a simple entry line.</para>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates an <xref linkend="clsAlerter"/> object, which is a concrete implementation of the
+    <computeroutput>Interrruptible</computeroutput> class, and passes the object to the progress dialog. This allows the user
+    to cancel the dialog. The <computeroutput>Alerter</computeroutput> class provides the <xref linkend="atrIsCanceled"/>
+    attribute. By checking the <emphasis role="italic">isCanceled</emphasis> attribute within the processing loop, the
+    application can determine if the user has canceled the operation and end the processing loop:
 <programlisting>
 <![CDATA[
 
+  pbDlg = .ProgressDialog~new
+  pbDlg~msgText = 'Creating and inserting the contact information. ' || -
+                  'This will take some time.'
+
+  a = .Alerter~new
+  pbDlg~setInterruptible(a)
+  pbDlg~begin
+
+  do i = 1 to count
+      -- do stuff
+
+      if /* some condition */ then do
+            pbDlg~increase
+      end
+
+      if a~isCanceled then do
+            pbDlg~updateStatus('canceled after ...' )
+            r = SysSleep(1.5)
+            pbDlg~endNow
+            leave
+      end
+  end
 ]]>
 </programlisting>
   </para>
@@ -3712,25 +3765,25 @@ of a simple entry line.</para>
 <indexterm><primary>ProgressDialog class</primary><secondary>updateStatus</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--updateStatus(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--updateStatus(--text--)-----------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Updates the status line with the supplied text. The status line will aways begin with the string: <emphasis
+  role="italic">Status: </emphasis> and continue with the supplied text.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>text [required]</term>
     <listitem>
     <para>
-      xx
+      The text to append after the <emphasis role="italic">status :</emphasis> string.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3738,13 +3791,14 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    There is no return from this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To change the status line text without having the <emphasis role="italic">Status: </emphasis> string prepended use the
+    <xref linkend="mthUpdateStatusText"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3752,17 +3806,31 @@ of a simple entry line.</para>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a progress dialog and enters a processing loop. Every 100 iterations, it updates the status line
+    using the <emphasis role="italic">updateStatus</emphasis> method. When i equals 200, the status line will read: <emphasis
+    role="italic">Status: 200 records inserted.</emphasis>
 <programlisting>
 <![CDATA[
 
+  pbDlg = .ProgressDialog~new
+  pbDlg~msgText = 'Creating and inserting the contact information. ' || -
+                  'This will take some time.'
+
+  pbDlg~begin
+
+  do i = 1 to count
+      -- do stuff
+
+      if i // 100 = 0 then do
+            pbDlg~increase
+            pbDlg~updateStatus(i 'records inserted.')
+      end
+      ...
+  end
 ]]>
 </programlisting>
   </para>
@@ -3775,25 +3843,24 @@ of a simple entry line.</para>
 <indexterm><primary>ProgressDialog class</primary><secondary>updateStatusText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--updateStatusText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--updateStatusText(--text--)-------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Updates the status line using the exact text specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>text [required]</term>
     <listitem>
     <para>
-      xx
+      The text to be displayed on the status line.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3801,13 +3868,15 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    There is no return from this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The similar, <xref linkend="mthUpdateStatus"/> method, always starts the status line with <emphasis
+    role="italic">Status: </emphasis>. This is a convenience, sometimes. This method is provided for situations where the
+    <emphasis role="italic">Status: </emphasis> prolog is undesired.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3815,17 +3884,32 @@ of a simple entry line.</para>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    <para>
+      This example creates a progress dialog and enters a processing loop. Every 100 iterations, it updates the status line
+      using the <emphasis role="italic">updateStatusText</emphasis> method. When i equals 200, the status line will read:
+      <emphasis role="italic">Have now inserted the contact information for 200 contacts ...</emphasis>
 <programlisting>
 <![CDATA[
 
+  pbDlg = .ProgressDialog~new
+  pbDlg~msgText = 'Creating and inserting the contact information. ' || -
+                  'This will take some time.'
+
+  pbDlg~begin
+
+  do i = 1 to count
+      -- do stuff
+
+      if i // 100 = 0 then do
+            pbDlg~increase
+            pbDlg~updateStatus('Have now inserted the contact information for' i 'contacts ...')
+      end
+      ...
+  end
 ]]>
 </programlisting>
   </para>
@@ -3839,9 +3923,13 @@ of a simple entry line.</para>
 <indexterm><primary>Alerter class</primary></indexterm>
 <indexterm><primary>ProgressDialog class</primary><secondary>Alerter class</secondary></indexterm>
 <para>
-  An <computeroutput>Alerter</computeroutput> object is intended to be used as the argument to the <xref
-  linkend="mthSetInterruptible"/> method of the <xref linkend="clsProgressDialog"/> object, when the progress dialog can
-  always be canceled by the user, but the application needs to know if the user cancels.
+  The <computeroutput>Alerter</computeroutput> class is a simple implementation of the <xref linkend="clsInterruptible"/>
+  interface that can be used with a <xref linkend="clsProgressDialog"/> object to notify the application that the user has
+  canceled the progress dialog.
+</para>
+<para>
+  An <computeroutput>Alerter</computeroutput> object is intended to be used when the progress dialog can always be canceled
+  by the user, but the application needs to know if and when the user cancels.
 </para>
 
 <section id="sctMethodsAlerter"><title>Method Table</title>
@@ -3872,8 +3960,8 @@ of a simple entry line.</para>
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsAlerter">new</link></entry>
-<entry>new</entry>
+<entry><xref linkend="atrIsCanceled"/></entry>
+<entry>Reflects the state of the internal canceled flag.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -3881,18 +3969,18 @@ of a simple entry line.</para>
 </row>
 <row>
 <entry><xref linkend="mthInterruptClsAlerter"/> </entry>
-<entry>xx</entry>
+<entry>Signals this object that it is being interrupted.</entry>
 </row>
 <row>
 <entry><xref linkend="mthInterruptibleClsAlerter"/></entry>
-<entry>xx</entry>
+<entry>Detemines if this object is interruptible at this point in time. By definition an <computeroutput>Alerter</computeroutput> object is always interruptible.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 </section>
 
-<section id="mthNewClsAlerter"><title>new (Class Method)</title>
+<section id="mthNewClsAlerter" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>Alerter class</secondary></indexterm>
 <indexterm><primary>Alerter class</primary><secondary>new</secondary></indexterm>
 <programlisting>
@@ -3902,8 +3990,7 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  A simple implementation of the <xref linkend="clsInterruptible"/> interface that can be used with a <xref
-  linkend="clsProgressDialog"/> object to notify the application that the user has canceled the progress dialog.
+  Instantiates a new <computeroutput>Alerter</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3931,10 +4018,34 @@ of a simple entry line.</para>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example an <computeroutput>Alerter</computeroutput> object being used with a progress dialog. Within a processing
+    loop, the application periodically checks to see if the user has canceled the operation by checking the <emphasis
+    role="italic">isCanceled</emphasis> attribute of the alterter:
 <programlisting>
 <![CDATA[
 
+  pbDlg = .ProgressDialog~new
+  pbDlg~msgText = 'Creating and inserting the contact information. ' || -
+                  'This will take some time.'
+
+  a = .Alerter~new
+  pbDlg~setInterruptible(a)
+  pbDlg~begin
+
+  do i = 1 to count
+      -- do stuff
+
+      if /* some condition */ then do
+            pbDlg~increase
+      end
+
+      if a~isCanceled then do
+            pbDlg~updateStatus('canceled after ...' )
+            r = SysSleep(1.5)
+            pbDlg~endNow
+            leave
+      end
+  end
 ]]>
 </programlisting>
   </para>
@@ -4042,8 +4153,8 @@ of a simple entry line.</para>
     linkend="clsInterruptible"/> interface that can be used as the arguemnt to the <xref linkend="mthSetInterruptible"/>
     method of the <xref linkend="clsProgressDialog"/>. It is intended to be used when the progress dialog can always be
     canceled and provides a notification to the application if the progress dialog is canceled. When used with the progress
-    dialog object, the progress dialog invokes this method if the user cancels, to determine if it is okay to cancel, close,
-    the dialog. This method always returns true for that invocation.
+    dialog object, the progress dialog invokes this method if the user cancels, to determine if it is okay to cancel, to
+    close, the dialog. This method always returns true for that invocation.
   </para>
   </listitem></varlistentry>
 </variablelist>
