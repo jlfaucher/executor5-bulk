@@ -1350,6 +1350,7 @@
 
 ::method begin
     expose width height
+    use strict arg
 
     self~calcSizes
     if self~createCenter(width, height, self~captionText) then do
@@ -1400,6 +1401,7 @@
 
 ::method calcSizes private
     expose width height lineHeight
+    use strict arg
 
     pad = self~PADDING_DU
     if self~noMsg, self~noStatus then do
@@ -1434,8 +1436,8 @@
     end
     else do
       cx = size~width + (2 * pad)
-      if cx >= self~width then width = cx
-      else width = self~width
+      if cx >= self~DLG_WIDTH then width = cx
+      else width = self~DLG_WIDTH
     end
 
 ::method setDefaults private
