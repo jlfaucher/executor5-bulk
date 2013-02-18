@@ -2526,12 +2526,20 @@ of a simple entry line.</para>
 </thead>
 <tbody>
 <row>
+<entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">constant Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="sctProgressDialogConstantMethods"/></entry>
+<entry>Some constants defined by the <computeroutput>ProgressDialog</computeroutput> class may be of use to the programmer.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthNewClsProgressDialog"/></entry>
-<entry>Instantiates a new <computeroutput>ProgressDialog</computeroutput>object.</entry>
+<entry>Instantiates a new <computeroutput>ProgressDialog</computeroutput> object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
@@ -2539,7 +2547,7 @@ of a simple entry line.</para>
 </row>
 <row>
 <entry><xref linkend="atrAbsoluteWidth"/></entry>
-<entry></entry>
+<entry>Reflects whether the width of the dialog is calculated based on the width of the message text, or if the width is set to an absolute value bye the application.</entry>
 </row>
 <row>
 <entry><xref linkend="atrCanCancel"/></entry>
@@ -2648,15 +2656,15 @@ of a simple entry line.</para>
 <tbody>
 <row>
 <entry>IDC_PB_MAIN</entry>
-<entry>The resource ID of the progress bar used in the dialog. This id could be used to get the <xref linkend="clsProgressBar"/> object in the dialog and manipulate it directly usin the methods of the class.</entry>
+<entry>The resource ID of the progress bar used in the dialog. This id could be used to get the <xref linkend="clsProgressBar"/> object in the dialog and manipulate it directly using the methods of the class.</entry>
 </row>
 <row>
 <entry>IDC_ST_MSG</entry>
-<entry>The resource ID of the static text control used for the message in the dialog. This ID could be used to get the <xref linkend="clsStatic"/> object in the dialog and manipulate it directly usin the methods of the class.</entry>
+<entry>The resource ID of the static text control used for the message in the dialog. This ID could be used to get the <xref linkend="clsStatic"/> object in the dialog and manipulate it directly using the methods of the class.</entry>
 </row>
 <row>
 <entry>IDC_ST_STATUS</entry>
-<entry>The resource ID of the static text control used for the status line in the dialog. This ID could be used to get the <xref linkend="clsStatic"/> object in the dialog and manipulate it directly usin the methods of the class.</entry>
+<entry>The resource ID of the static text control used for the status line in the dialog. This ID could be used to get the <xref linkend="clsStatic"/> object in the dialog and manipulate it directly using the methods of the class.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2781,10 +2789,14 @@ of a simple entry line.</para>
 </programlisting>
 
 <para>
-  This attribute is set to true or false. By default, the width of the dialog is calculated based on the width of the message
-  text, or the width of a generic message if the <xref linkend="atrMsgText"/> is not set. However, the programmer can change
-  this behavior by setting <emphasis role="italic">absoluteWidth</emphasis> to true and setting the <xref
-  linkend="atrWidthClsProgressDialog"/> attriubte to a desired width.
+  Reflects whether the width of the dialog is calculated based on the width of the message text, or if the width is set to
+  an absolute value bye the application. This attribute is set to true or false. By default, the width of the dialog is
+  calculated based on the width of the message text, or the width of the default message if the <xref linkend="atrMsgText"/>
+  attribute is not set.
+</para>
+<para>
+  However, the programmer can change this behavior by setting <emphasis role="italic">absoluteWidth</emphasis> to true and
+  setting the <xref linkend="atrWidthClsProgressDialog"/> attriubte to a desired width.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
