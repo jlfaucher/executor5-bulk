@@ -1355,13 +1355,16 @@
     self~calcSizes
     if self~createCenter(width, height, self~captionText) then do
         self~popup('ShowTop')
+        ret = 0
     end
     else do
         self~initCode = 1
         msg   = "Failed to create underyling dialog."
         title = 'ooDialog - Unexpected Error'
-        ret = MessageDialog(msg, , title, 'OK', 'ERROR')
+        r = MessageDialog(msg, , title, 'OK', 'ERROR')
+        ret = 1
     end
+    return ret
 
 ::method complete unguarded
     expose pb
