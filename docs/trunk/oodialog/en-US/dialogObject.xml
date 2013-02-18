@@ -2054,9 +2054,9 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 <indexterm><primary>dialog object</primary><secondary>dlgID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--dlgID-----------------------------------------------------><
+>>--dlgID----------------------------------------><
 
->>--dlgID = id------------------------------------------------><
+>>--dlgID = id-----------------------------------><
 
 ]]>
 </programlisting>
@@ -3250,7 +3250,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 <indexterm><primary>dialog object</primary><secondary>createToolTip</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--createToolTip(--id--+----------+--)-------------><
+>>--createToolTip(--id--+----------+--)----------><
                         +-,-style--+
 ]]>
 </programlisting>
@@ -4680,11 +4680,14 @@ EventNotification::<xref linkend="mthConnectDraw"/>
 EventNotification::<xref linkend="mthConnectEachSBEvent"/>
 
 <![CDATA[
->>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+-+-------+-+-------+-+-------+-->
-                                                     +-,-mthWhenDrag-+ +-,-min-+ +-,-max-+ +-,-pos-+
+>>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+--------->
+                                                     +-,-mthWhenDrag-+
 
->--+-----------+-+-----------+-+----------+-+--------------+-+-------------+-+-------------+-)--------><
-   +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+ +-,-progbuttom-+ +-,-progtrack-+ +-,-progendsc-+
+>--+-------+-+-------+-+-------+--+-----------+-+-----------+-+----------+----->
+   +-,-min-+-+-,-max-+ +-,-pos-+  +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+
+
+>--+-------------+-+------------+-+------------+-+-------------+--)------------><
+   +-,-mthButtom-+ +-,-mthTrack-+ +-,-mthEndSc-+ +-,-willReply-+
 ]]>
 </programlisting>
 </section>
@@ -5341,7 +5344,7 @@ EventNotification::<xref linkend="mthHasKeyPressConnectionDialogObject"/>
 <indexterm><primary>dialog object</primary><secondary>backgroundSysColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--backgroundSysColor(--color--)------><
+>>--backgroundSysColor(--color--)----------------><
 
 ]]>
 </programlisting>
@@ -7690,7 +7693,7 @@ DialogExtensions::<xref linkend="mthInstallAnimatedButton"/>
 >>--installAnimatedButton(--id,--+-------+-+--------+-,-bmpF-+--------+-,-mX-,-mY-->
                                 +-,-mth-+ +-,-cls--+        +-,-bmpT-+
 
->--+---------+--+---------+--,--delay---+--------+--+--------+--)-----------------><
+>--+---------+--+---------+--,--delay---+--------+--+--------+--)--------------><
    +-,-sizeX-+  +-,-sizeY-+             -,+-xNow-+  +-,-yNow-+
 ]]>
 </programlisting>
