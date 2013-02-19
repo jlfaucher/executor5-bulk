@@ -383,7 +383,7 @@ return 0
               r = SysSleep(1.5)
               pbDlg~endNow
               leave
-        end           r
+        end
     end
 
     self~createRowsTime = time('e')
