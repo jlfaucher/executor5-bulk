@@ -956,11 +956,19 @@ RexxMethod2(RexxObjectPtr, bff_setOwner, RexxObjectPtr, owner, CSELF, pCSelf)
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
     if ( pcbff != NULL )
     {
-        pCPlainBaseDialog pcpbd = requiredPlainBaseDlg(context, owner, 1);
-        if ( pcpbd != NULL )
+        if ( owner == TheNilObj )
         {
-            pcbff->rexxOwner = owner;
-            pcbff->hOwner    = pcpbd->hDlg;
+            pcbff->rexxOwner = NULL;
+            pcbff->hOwner    = NULL;
+        }
+        else
+        {
+            pCPlainBaseDialog pcpbd = requiredPlainBaseDlg(context, owner, 1);
+            if ( pcpbd != NULL )
+            {
+                pcbff->rexxOwner = owner;
+                pcbff->hOwner    = pcpbd->hDlg;
+            }
         }
     }
     return NULLOBJECT;
