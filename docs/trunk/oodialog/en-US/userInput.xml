@@ -279,8 +279,8 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <para>
   A BrowseForFolder object represents the Windows <emphasis role="italic">Browse For Folder</emphasis> common dialog. The
   Windows operating system provides a number of common dialogs for use by applications to allow presenting the user with an
-  unified generic method to do common tasks. The Browse For Folder dialog is specifically to allow the user to open or choose
-  folders.
+  unified generic method to do common tasks. The Browse For Folder dialog is specifically used to allow the user to open or
+  choose folders.
 </para>
 
 
@@ -288,77 +288,78 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <indexterm><primary>BrowseForFolder class</primary><secondary>Shell / COM considerations</secondary></indexterm>
 
 <para>
-  The browse for folder dialog is part of the Windows Shell. Shell objects are implemented using COM (the component object
-  model, a standard introduced by Microsoft.) The Windows Shell should not be confused with the Windows window manager, which
+  The browse for folder dialog is part of the Windows Shell. Shell objects are implemented using COM (the Component Object
+  Model, a standard introduced by Microsoft.) The Windows Shell should not be confused with the Windows window manager, which
   is responsible for the windowing system in Windows. ooDialog is primarily concerned with, and deals with, the windowing
-  system. However, to be able to deal with the full range of application needs in a modern Windows system, it becomes
-  necessary to use more than just the windowing system. The need to provide a way for users to select or choose a folder is
-  an example of needing more than just the window manager.
+  system. However, in a modern Windows system, not all tasks can be done through the windowing system. Selecting or choosing
+  a folder is an example of task that is not done through the window manager.
 </para>
-<variablelist>
-  <varlistentry id="varItemIDList"  xreflabel="item ID list"><term><emphasis role="bold">Item ID List</emphasis></term>
-  <listitem>
-  <para>
-    The Windows Shell identifies objects in the Shell using a structure called an item ID list. Files, folders, printers,
-    remote computers all have an item ID list when working with them in the Shell. The ooDialog programmer does not really
-    need to know about the details of these item ID lists. Although technically incorrect, the programmer can just think of
-    them as <link linkend="defHandle">handles</link>. However, it is difficult to document the
-    <computeroutput>BrowseForFolder</computeroutput> class without making some reference to an item ID list. For that
-    purpose, this simple explanation of them is included.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
 <para>
   In general, the Rexx programmer can work with the <computeroutput>BrowseForFolder</computeroutput> class in the same way as
   working with any other ooDialog dialog classes. However, because the underlying Windows object is a COM object rather than
-  the usual windowing system window, there are a few considerations the programmer needs to be aware of. The use of COM
-  objects requirers that the COM library be initialized and released for <emphasis role="italic">each</emphasis> thread that
-  a COM object is used in.
+  the usual windowing system window, there are a few considerations the programmer needs to be aware of.
 </para>
-<para>
-  Normally the Rexx programmer does not need to be much aware of threading and thread issues. However the COM requiement
-  that the library be initialized and released on each thread changes that. The normal usage pattern for a browse for folder
-  object would be:
-</para>
-<itemizedlist>
-<listitem>
-<para>
-  <emphasis role="italic">Instantiate a <computeroutput>BrowseForFolder</computeroutput> object.</emphasis>
-</para>
-</listitem>
-<listitem>
-<para>
-  Configure the browse for folder object.
-</para>
-</listitem>
-<listitem>
-<para>
-  Show the dialog and get the user's selection.
-</para>
-</listitem>
-</itemizedlist>
-<para>
-  As long as this is all done on one thread, there is no problem. The ooDialog framework initializes COM when the object is
-  instantiated and releases COM when the underlying dialog is closed, when the <xref linkend="mthGetFolder"/> method returns.
-  However, if the programmer wants, or needs, to implement a different usage pattern, then it becomes the programmer's
-  responsibility to ensure that COM is initialized and released properly on each thread. The
-  <computeroutput>BrowseForFolder</computeroutput> class provides the tools the programmer needs to do that. If COM is not
-  initialized on a thread the browse for folder object is running on, then methods invoked on the object may fail. If COM is
-  not released on a thread it <emphasis role="italic">was</emphasis> initialized on, then system resource leaks can occur.
-</para>
-<para>
-  This is not that complicated and is not really that different than other areas of ooDialog concerning system resources. If
-  the programmer wants to use a different font for a dialog control, the <xref linkend="mthSetFont"/> method will fail unless
-  the programmer has first initialized a font. If the programmer initializes a font using the <xref
-  linkend="mthCreateFontEx"/> method and does not release the font, then system resource leaks can ocurr. The only difference
-  here is that this <emphasis role="italic">initialize / release</emphasis> cycle is on a per thread basis.
-</para>
-<para>
-  The documentation for the individual attributes and methods of the <computeroutput>BrowseForFolder</computeroutput> class
-  will make note of when the programmer needs to consider these threading issues when using the attribute or method. In
-  addition, the <xref linkend="clsSimpleFolderBrowse"/> class provides an interface to the Browse For Folder dialog where
-  the Rexx programmer does not need to be aware of COM.
-</para>
+<variablelist>
+  <varlistentry id="varCOMLibrary" xreflabel="COM library"><term><emphasis role="bold">COM Library / Threading:</emphasis></term>
+  <listitem>
+  <para>
+    The use of COM objects requirers that the COM library be initialized and released for <emphasis
+    role="italic">each</emphasis> thread that a COM object is used in. Normally the Rexx programmer does not need to be much
+    aware of threading and thread issues. However the COM requiement that the library be initialized and released on each
+    thread changes that. The normal usage pattern for a browse for folder object would be:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <emphasis role="italic">Instantiate a <computeroutput>BrowseForFolder</computeroutput> object.</emphasis>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Configure the browse for folder object.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Show the dialog and get the user's selection.
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    As long as this is all done on one thread, there is no problem. The ooDialog framework initializes COM when the object is
+    instantiated and releases COM when the underlying dialog is closed, when the <xref linkend="mthGetFolder"/> method returns.
+    However, if the programmer wants, or needs, to implement a different usage pattern, then it becomes the programmer's
+    responsibility to ensure that COM is initialized and released properly on each thread. The
+    <computeroutput>BrowseForFolder</computeroutput> class provides the tools the programmer needs to do that. If COM is not
+    initialized on a thread the browse for folder object is running on, then methods invoked on the object may fail. If COM is
+    not released on a thread it <emphasis role="italic">was</emphasis> initialized on, then system resource leaks can occur.
+  </para>
+  <para>
+    This is not that complicated and is not really that different than other areas of ooDialog concerning system resources. If
+    the programmer wants to use a different font for a dialog control, the <xref linkend="mthSetFont"/> method will fail unless
+    the programmer has first initialized a font. If the programmer initializes a font using the <xref
+    linkend="mthCreateFontEx"/> method and does not release the font, then system resource leaks can ocurr. The only difference
+    here is that this <emphasis role="italic">initialize / release</emphasis> cycle is on a per thread basis.
+  </para>
+  <para>
+    The documentation for the individual attributes and methods of the <computeroutput>BrowseForFolder</computeroutput> class
+    will make note of when the programmer needs to consider these threading issues when using the attribute or method. In
+    addition, the <xref linkend="clsSimpleFolderBrowse"/> class provides an interface to the Browse For Folder dialog where
+    the Rexx programmer does not need to be aware of COM.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="varItemIDList" xreflabel="item ID list"><term><emphasis role="bold">Item ID List</emphasis></term>
+  <listitem>
+  <para>
+    The Windows Shell identifies objects in the Shell using a device called an item ID list. Files, folders, printers,
+    remote computers all have an item ID list that is used to uniquely identify them to the Shell. The ooDialog programmer
+    does not really need to know about the details of these item ID lists. Although technically incorrect, the programmer can
+    just think of them as <link linkend="defHandle">handles</link>. However, it is difficult to document the
+    <computeroutput>BrowseForFolder</computeroutput> class without making some reference to an item ID list. For that
+    purpose, this brief explanation is included.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 
 </section> <!-- End Shell / COM considerations section -->
 
@@ -769,19 +770,19 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 </row>
 <row>
 <entry><xref linkend="atrBanner"/> </entry>
-<entry></entry>
+<entry>Reflects the banner text for this browse for folder object.</entry>
 </row>
 <row>
 <entry><xref linkend="atrDlgTitle"/> </entry>
-<entry></entry>
+<entry>Reflects the title to be used in the browse for folder dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="atrHint"/> </entry>
-<entry></entry>
+<entry>Reflects the hint text to be used in the browse for folder dialog</entry>
 </row>
 <row>
 <entry><xref linkend="atrInitialThread"/></entry>
-<entry></entry>
+<entry>Reflects the thread ID of the thread this browse for folder object was instantiated on.</entry>
 </row>
 <row>
 <entry><xref linkend="atrOptions"/> </entry>
@@ -789,23 +790,19 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 </row>
 <row>
 <entry><xref linkend="atrOwner"/> </entry>
-<entry></entry>
+<entry>Reflects the Rexx dialog that is the owner of this browse for folder dialog. By default there is no owner.</entry>
 </row>
 <row>
 <entry><xref linkend="atrRoot"/> </entry>
-<entry></entry>
+<entry>Reflects the folder that will be set as the root folder of the tree-view control in the browse for folder dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="atrStartDir"/> </entry>
-<entry></entry>
+<entry>Reflects a directory, a folder, that should be pre-selected when the browse for folder dialog first opens.</entry>
 </row>
 <row>
 <entry><xref linkend="atrUsePathForHint"/> </entry>
-<entry></entry>
-</row>
-<row>
-<entry><xref linkend="atrBanner"/> </entry>
-<entry></entry>
+<entry>Reflects the status of the internal flag controlling whether the hint text should be set to the selected folder's path.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -813,7 +810,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 </row>
 <row>
 <entry><xref linkend="mthGetDisplayName"/> </entry>
-<entry></entry>
+<entry>Returns the display name relative to the file system path</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFolder"/> </entry>
@@ -864,7 +861,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
     <listitem>
     <para>
       Specifies a caption, or title, for the dialog. The Windows default title is <emphasis role="italic">Browse For
-      Folder</emphasis>. If this argumentis used, the <xref linkend="atrDlgTitle"/> attribute is set using the value
+      Folder</emphasis>. If this argument is used, the <xref linkend="atrDlgTitle"/> attribute is set using the value
       specified.
     </para>
     <para>
@@ -945,10 +942,16 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a new <computeroutput>BrowseForFolder</computeroutput> object with a title, banner, and hint:
 <programlisting>
 <![CDATA[
 
+  -- Set title, banner, and a hint for the dialog.
+  title  = 'Browse For a Printer'
+  banner = 'Select the printer to use for this test.'
+  hint   = 'This is only a demonstration, no printing will be done.'
+
+  bff = .BrowseForFolder~new(title, banner, hint)
 ]]>
 </programlisting>
   </para>
@@ -963,31 +966,38 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <![CDATA[
 >>--banner---------------------------------------><
 
->>--banner = varName-----------------------------><
-
+>>--banner = text--------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the banner text for this browse for folder object. The <emphasis role="italic">banner</emphasis> is an area above
+  the tree-view control in the dialog that can be used to display a few lines of text. By default, Windows leaves this area
+  blank.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">banner get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the banner text for this object, or the empty string if the Windows default behaviour for the banner is to be
+    used.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">banner set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To use a non-default banner, set this attribute to the text desired. To specify that the default Windows behaviour
+    regarding the banner be used, set this attribute to the empty string or to the <computeroutput>.nil</computeroutput>
+    object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    By default, the text, <emphasis role="italic">Select the folder needed</emphasis> is set for the banner by the ooDialog
+    framework. By default, Windows will not use a baner. To use the Windows default behaviour rather than the ooDialog
+    default banner, set the <emphasis role="italic">banner</emphasis> attributed to the empty string, or the the
+    <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -999,10 +1009,12 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example example configures a browse for folder object to not display a banner:
 <programlisting>
 <![CDATA[
 
+  bff = .BrowseForFolder~new('Choose the Backup Folder')
+  bff~banner = .nil
 
 ]]>
 </programlisting>
@@ -1018,31 +1030,34 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <![CDATA[
 >>--dlgTitle-------------------------------------><
 
->>--dlgTitle = varName---------------------------><
-
+>>--dlgTitle = title-----------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the title to be used in the browse for folder dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">dlgTitle get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the text to be used for the dialog title, or the empty string if the Windows default title will be used.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">dlgTitle set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to the title desired for the dialog, if the ooDialog default is not desired. Set this attribute to the
+    empty string or to the <computeroutput>.nil</computeroutput> object to specify that the Windows default title be used.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    By default the ooDialog framework sets the <emphasis role="italic">dlgTitle</emphasis> attribute to <emphasis
+    role="italic">ooDialog Browse for Folder</emphasis>. The Windows default title is <emphasis role="italic">Browse fo
+    Folder.</emphasis> To have the dialog use the Windows default, set this attribute to the empty string or the
+    <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1054,10 +1069,12 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a browse for folder dialog and then sets a custom title for the dialog:
 <programlisting>
 <![CDATA[
 
+  bff = .BrowseForFolder~new
+  bff~dlgTitle ='Choose the Backup Folder'
 
 ]]>
 </programlisting>
@@ -1073,31 +1090,36 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <![CDATA[
 >>--hint-----------------------------------------><
 
->>--hint = varName-------------------------------><
-
+>>--hint = hint----------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the hint text to be used in the browse for folder dialog. The <emphasis role="italic">hint</emphasis> is an area
+  between the bottom of the tree-view and above the bottom rows of buttons that can be used to display a line of text. By
+  default, Windows removes this area from the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">hint get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the text of the hint for this browse for folder dialog. Returns the empty string if no hint is to be displayed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">hint set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set this attribute to the text to display in the hint area, if the default ooDialog hint is not appropriate. Set this
+    attribute to the empty string or the <computeroutput>.nil</computeroutput> object to restore the default Windows
+    behaviour, which is to remove the hint area altogether.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    By default, the ooDialog framework sets this attribute to <emphasis role="italic">If the needed folder does not exist it
+    can be created</emphasis>. To prevent this text being used, either set the <emphasis role="italic">hint</emphasis>
+    attriubte to the text desired, or set it to the empty string to remove the hint area altogether.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1109,10 +1131,12 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a browse for folder object and then sets the hint to text that informs the user what to do:
 <programlisting>
 <![CDATA[
 
+  bff = .BrowseForFolder~new
+  bff~hint ='Choose the folder to place your back up files in.'
 
 ]]>
 </programlisting>
@@ -1127,32 +1151,41 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <programlisting>
 <![CDATA[
 >>--initialThread--------------------------------><
-
->>--initialThread = varName----------------------><
-
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the thread ID of the thread this browse for folder object was instantiated on.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">initialThread get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the thread ID for the thread that this object was instantiated on.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">initialThread set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The <emphasis role="italic">initialThread</emphasis> attribute can not be set by the programmer. It is set by the
+    ooDialog framework and can not be changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the browse for folder dialog is first instantiated, the ooDialog framework <link
+    linkend="varCOMLibrary">initializes</link> the COM library on the thread that is executing and records the
+    thread ID in the <emphasis role="italic">initialThread</emphasis> attribute. If the application makes use of the browse
+    for folder object in multiple threads, the value of the initial thread ID is helpful in determining if the COM library
+    needs to be initialized or not on the currently executing thread. The <xref linkend="mthThreadID"/> method of the <xref
+    linkend="clsDlgUtil"/> class can be used to determine the ID of the currently executing.
+  </para>
+  <para>
+    The recomendation is that the browse for folder dialog should be instantiated, used, and disposed of all on the same
+    thread. However, if the programmer has a need, or even just the desire, to use the browse for folder object on multiple
+    threads, there is no reason why that can not be done. The programmer just needs to manage the initialization and release
+    of the COM library herself.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1183,7 +1216,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <![CDATA[
 >>--options--------------------------------------><
 
->>--options = varName----------------------------><
+>>--options = keywords---------------------------><
 
 ]]>
 </programlisting>
@@ -1362,31 +1395,36 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <![CDATA[
 >>--owner----------------------------------------><
 
->>--owner = varName------------------------------><
+>>--owner = ownerDlg-----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the Rexx dialog that is the owner of this browse for folder dialog. By default there is no owner.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">owner get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    If this browse for folder dialog has an owner dialog, returns that Rexx dialog. Returns the
+  <computeroutput>.nil</computeroutput> object if ther is no owner dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">owner set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To assign an owner dialog to the browse for folder dialog set the <emphasis role="italic">ownerDlg</emphasis> attribute
+    to a Rexx dialog object that is to be the owner. By default there is no owner dialog assigned. If the programmer has set
+    an owner dialog and for some reasons needs to remove it, this can be done by setting the <emphasis
+    role="italic">ownerDlg</emphasis> attribute to the <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If the browse for folder dialog has an owner dialog, then when the browse dialog is displayed the operating system will
+    disable the owner dialog until the user has closed the browse dialog. This is normally the behaviour wanted.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1398,10 +1436,15 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the first steps in configuring a <emphasis role="italic">browse for printers</emphasis> dialog that is
+    displayed from a dialog. The dialog is set as the owner of the browse for printers dialog:
 <programlisting>
 <![CDATA[
 
+  bff = .BrowseForFolder~new(title, banner, hint)
+  bff~owner = self
+  bff~root = 'CSIDL_PRINTERS'
+  ...
 
 ]]>
 </programlisting>
@@ -1417,31 +1460,31 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <![CDATA[
 >>--root-----------------------------------------><
 
->>--root = varName-------------------------------><
+>>--root = rootFolder----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the folder that will be set as the root folder of the tree-view control in the browse for folder dialog. It is not
+  possible for the user to browse above the root folder.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">root get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the item <link linkend="varItemIDList">ID</link> list for the folder set as the root folder of the browse for
+    folder dialog. If no root folder has been set, the <computeroutput>.nil</computeroutput> object is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">root set:</emphasis></term>
   <listitem>
   <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The <emphasis role="italic">root</emphasis> attribute can be set using a number of different forms. By default, no root
+    folder is set. To remove a root folder, set the attribute to the emplty string or to the
+    <computeroutput>.nil</computeroutput> object. Use a full path name to set the root folder to the named folder. One of the
+    <xref linkend="sctSpecialFolderNames"/> can be used. In addition, an item <link linkend="varItemIDList">ID</link> list
+    can be used. An item ID list can be obtained through the <xref linkend="mthGetItemIDList"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1482,31 +1525,36 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <![CDATA[
 >>--startDir-------------------------------------><
 
->>--startDir = varName---------------------------><
+>>--startDir = initialFolder---------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects a directory, a folder, that should be pre-selected when the browse for folder dialog first opens. The tree-view
+  control is expanded and scrolled, if needed, so that the selected folder is visible when the dialog is shown.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">startDir get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the full path name of the folder that is initially selected for this browse for folder dialog, of the empty
+    string if no start folder has been set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">startDir set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set the <emphasis role="italic">startDir</emphasis> attribute to the full path name of the direcotry that should be
+    pre-selected when the browse for folder diaglo is started. To remove a starting directory, set this attribute to the
+    <computeroutput>.nil</computeroutput> object or to the empty string.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Relative path names and incomplete path names are ignored by the operating system. The <emphasis
+    role="italic">startDir</emphasis> attribute needs to be set to a full path name for this feature to work.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1518,10 +1566,18 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example configures the browse for folder dialog to open with the <computeroutput>C:\Program Files\Microsoft
+    Games</computeroutput> directory selected:
 <programlisting>
 <![CDATA[
 
+  bff = .BrowseForFolder~new
+
+  bff~root = 'CSIDL_DRIVES'
+  bff~usePathForHint = .true
+  bff~startDir = "C:\Program Files\Microsoft Games"
+
+  folder = bff~getFolder
 
 ]]>
 </programlisting>
@@ -1537,31 +1593,36 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <![CDATA[
 >>--usePathForHint-------------------------------><
 
->>--usePathForHint = varName---------------------><
+>>--usePathForHint = trueOrFalse-----------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the status of the internal flag controlling whether the hint text should be set to the selected folder's path. By
+  default the flag is set to false.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">usePathForHint get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns true if the use path for hint feature is enabled, or false if it is disabled.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">usePathForHint set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set the <emphasis role="italic">usePathForHint</emphasis> attribute to true to enable the updating of the hint to the
+    path of the currently selected folder, or to false to disable the feature.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The browse for folder dialog has a feature that will update the hint text with the full path to the currently selected
+    folder in the tree-view control. Each time the selected folder is changed, the hint is updated with the new path to the
+    newly selected folder. This feature is turned on or off throught the <emphasis role="italic">usePathForHint</emphasis>
+    attribute.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1573,10 +1634,17 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a browse for folder object and configures it to display the full path to the selected folder as
+    the hint by setting the <emphasis role="italic">usePathForHint</emphasis> attribute to true:
 <programlisting>
 <![CDATA[
 
+  bff = .BrowseForFolder~new
+
+  bff~root = 'CSIDL_MYDOCUMENTS'
+  bff~usePathForHint = .true
+
+  folder = bff~getFolder
 
 ]]>
 </programlisting>
@@ -1590,13 +1658,13 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <indexterm><primary>BrowseForFolder class</primary><secondary>getDisplayName</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getDisplayName(--+--------+--)---------------><
-                  +--type--+
+>>--getDisplayName(--pidl--,--+--------+--)------><
+                              +--type--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the display name for an item <link linkend="varItemIDList">ID</link> list.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1605,10 +1673,91 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>pidl [required]</term>
     <listitem>
     <para>
-      xx
+      The item ID list whose display name is desired.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type [optional]</term>
+    <listitem>
+    <para>
+      There are several different types or formats of display names. By default if this arugment is omitted, the method first
+      tries to get the full file system path name. But, if that fails, it tries again using the DESKTOPABSOLUTEEDITING flag.
+      This should always return something.
+    </para>
+    <para>
+      When used, the <emphasis role="italic">type</emphasis> argument specifies the format of the returned display name using
+      exactly one of the following keyword, case is not significant:
+    </para>
+    <para>
+    <simplelist type='vert' columns='3'>
+      <member>DESKTOPABSOLUTEEDITING     </member>
+      <member>DESKTOPABSOLUTEPARSING     </member>
+      <member>FILESYSPATH                </member>
+      <member>PARENTRELATIVE             </member>
+      <member>PARENTRELATIVEEDITING      </member>
+      <member>PARENTRELATIVEFORADDRESSBAR</member>
+      <member>PARENTRELATIVEPARSING      </member>
+      <member>URL                        </member>
+      <member>NORMALDISPLAY              </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>DESKTOPABSOLUTEEDITING</term>
+      <listitem>
+      <para>
+        Returns the editing name relative to the desktop.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DESKTOPABSOLUTEPARSING</term>
+      <listitem>
+      <para>
+        Returns the parsing name relative to the desktop.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>FILESYSPATH</term>
+      <listitem>
+      <para>
+        Returns the display name relative to the file system path
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PARENTRELATIVE</term>
+      <listitem>
+      <para>
+        MSDN does not document this.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PARENTRELATIVEEDITING</term>
+      <listitem>
+      <para>
+        Returns the editing name relative to the parent folder.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PARENTRELATIVEFORADDRESSBAR</term>
+      <listitem>
+      <para>
+        Returns the path relative to the parent folder in a friendly format as displayed in an address bar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PARENTRELATIVEPARSING</term>
+      <listitem>
+      <para>
+        Returns the parsing name relative to the parent folder.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>URL</term>
+      <listitem>
+      <para>
+        Returns the display name relative to a URL.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NORMALDISPLAY</term>
+      <listitem>
+      <para>
+        Returns the display name relative to the desktop.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1616,13 +1765,14 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the display name on success, the <computeroutput>.nil</computeroutput> object on failure.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Not all format types will return a display name for any item ID list. For example, if the item ID list is a virtual
+    folder and the FILESYSPATH format is requeste, the method will fail.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1637,10 +1787,23 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets an item ID list that the user selects and then prints its display name:
 <programlisting>
 <![CDATA[
 
+  bff = .BrowseForFolder~new
+  bff~root = 'CSIDL_DRIVES'
+  bff~usePathForHint = .true
+  bff~startDir = "C:\Program Files\Microsoft Games"
+  idList = bff~getItemIDList
+  say bff~getDisplayName(idList, 'NORMALDISPLAY')
+  return 0
+
+/* Output might be:
+
+$Recycle.Bin
+
+*/
 ]]>
 </programlisting>
   </para>
