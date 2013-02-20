@@ -35,14 +35,14 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: OrderMgrView.rex 				  v02-00 11Jan13
+   Exercise 07: OrderMgrView.rex 				  v02-00 20Feb13
 
    Contains: 	   class: "OrderMgrView", "HRSomv"
 
-   This is a subclass of OrderMgrBaseView, and provides only the "application"
-   function of Order Management.
+   Description: The Order Manager View class - the container for of the
+        	Order Management application.
 
-   Pre-requisites: Class "OrderMgrBaseView
+   Pre-requisites: MVF.
 
    Description: A sample Order Manager View class - part of the sample
         	Order Manager component.
@@ -51,37 +51,49 @@
 
    Changes:
      v01-00 07Jun12: First Version
-     v02-00 25Sep12:
+     v01-01 18Jan13: Version 1.1 - dialog sizing now uses resizingAdmin.
+     v02-00 20Feb13:
        1. Added get id of ObjectMgr in init method.
        2. Added menu item "Help - Person" to surface a Person Model in order to
           illustrate MVF using Person class early in Chapter 7.
-       3. Updated 'showModel' method to use the MVF (via ObjectMgr) to surface
+       3. Added menu item "Help - Message Sender" to surface the Message Sender.
+       4. Updated 'showModel' method to use the MVF (via ObjectMgr) to surface
           List Views that are populated with data read from disk (instead of data
           hard-coded in the ListView) also give listview the instance name of "a"
           to indicate an anonymous component to ObjectMgr.
-       4. Added methods "messageSender" and "person" to asllow user to surface
-          (so can explain stuff in text in appropriate sequence).
-     v02-00 11Jan13: Commented-out 'say' instructions.
-
+       5. Added methods "messageSender" and "person" which launch a PersonModel
+          and a Message Sender respectively.
 
 ------------------------------------------------------------------------------*/
+
+-- Use the global .constDir for symbolic IDs - load them from OrderMgrView.h
+.Application~addToConstDir("OrderMgr\OrderMgrView.h")
 
 call "OrderMgr\RequiresList.rex"
 
 ::REQUIRES "ooDialog.cls"
-::REQUIRES "OrderMgr\OrderMgrBaseView.rex"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  OrderMgrView							  v01-00 07Jun12
+  OrderMgrView							  v02-00 20Feb13
   --------------------
-  The "application" part of the "Order Manager View" component. This class
-  provides for all function except re-sizing and basic setup (OrderMgrBaseView
-  has the .h file and the .rc file for the menu).
-
+  To the user, this class is the Order Management Application. It provides
+  access to the various functions required for managing Sales orders.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderMgrView SUBCLASS OrderMgrBaseView PUBLIC
+::CLASS OrderMgrView SUBCLASS RcDialog PUBLIC INHERIT ResizingAdmin
+
+  ::ATTRIBUTE lv PRIVATE	-- The ListView that contains the icons.
+
+  /*----------------------------------------------------------------------------
+    Class Methods
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  ::METHOD newInstance CLASS PUBLIC
+    say ".OrderMgrView-newInstance-01."
+    dlg = .OrderMgrView~new("OrderMgr\OrderMgrView.rc", IDD_ORDMGR)
+    dlg~activate
+
 
   /*----------------------------------------------------------------------------
     Instance Methods
@@ -92,12 +104,77 @@ call "OrderMgr\RequiresList.rex"
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD init
-    expose records idObjectMgr
-    --say "OrderMgrView-init."
-    self~init:super
+    expose menuBar records idObjectMgr
+    say "OrderMgrView-init-01; next stmt is 'forward class (super) continue'."
+    forward class (super) continue
+    say "OrderMgrView-init-02."
+    menuBar = .ScriptMenuBar~new("OrderMgr\OrderMgrView.rc", IDR_ORDMGR_MENU, , , .true)
     self~createIconList
     records = self~initRecords
     idObjectMgr = .local~my.ObjectMgr
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD defineDialog
+    say "OrderMgrView-defineDialog-01."
+
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD activate UNGUARDED
+    say "OrderMgrView-activate-01."
+    self~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD initDialog
+    expose menuBar records iconList
+    say "OrderMgrView-initDialog-01."
+    menuBar~attachTo(self)
+
+    -- Create a proxy for the List View and store in instance variable 'lv'.
+    self~lv = self~newListView(IDC_ORDMGR_ICONS)
+
+    -- Add the Image List to the ListView:
+    self~lv~setImageList(iconList, .Image~toID(LVSIL_NORMAL))
+    -- Add icons (i.e. records) to the ListView:
+    do i=1 to records~items
+      self~lv~addRow(, i-1, records[i]~name)
+    end
+
+    self~connectListViewEvent(IDC_ORDMGR_ICONS, "ACTIVATE", "onDoubleClick")
+    -- Following line required to allow icons to be dragged around the listview.
+    self~connectListViewEvent(IDC_ORDMGR_ICONS, "BEGINDRAG", "DefListDragHandler")
+    self~connectButtonEvent("IDC_ORDMGR_EXIT", "CLICKED",exitApp)
+    self~connectButtonEvent("IDC_ORDMGR_RESET","CLICKED",resetIcons)
+    self~setTitle(.HRSomv~WindowTitle)		-- set dialog title.
+
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD defineSizing
+    say "OrderMgrView-defineSizing-01."
+    -- Called automatically by ooDialog.
+    -- Order of arrays: left, top, right, bottom.
+    -- Order of array items: pinType, edge-of-other-window, id of other window
+    self~controlSizing(IDC_ORDMGR_RESET, -
+                       .array~of('STATIONARY', 'LEFT'  ), -
+                       .array~of('STATIONARY', 'BOTTOM'), -
+                       .array~of('MYLEFT',     'LEFT'  ), -
+                       .array~of('MYTOP',      'TOP'   )  -
+                      )
+    self~controlSizing(IDC_ORDMGR_EXIT, -
+                       .array~of('STATIONARY', 'RIGHT' ), -
+                       .array~of('STATIONARY', 'BOTTOM'), -
+                       .array~of('MYLEFT',     'RIGHT' ), -
+                       .array~of('MYTOP',      'TOP'   )  -
+                      )
+    self~controlSizing(IDC_ORDMGR_ICONS, -
+                       .array~of('STATIONARY', 'LEFT'  ), -
+                       .array~of('STATIONARY', 'TOP'   ), -
+                       .array~of('STATIONARY', 'RIGHT' ), -
+                       .array~of('STATIONARY', 'BOTTOM')  -
+                      )
+
+    return .false
+
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD createIconList PRIVATE
@@ -151,7 +228,7 @@ call "OrderMgr\RequiresList.rex"
     return records
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD initDialog
+/*  ::METHOD initDialog
     expose records iconList
     --say "OrderMgrView-initDialog."
     self~initDialog:super
@@ -161,7 +238,7 @@ call "OrderMgr\RequiresList.rex"
     do i=1 to records~items
       self~lv~addRow(, i-1, records[i]~name)
     end
-
+*/
 
   /*----------------------------------------------------------------------------
     Event-Handler Methods - Menu Events
@@ -302,7 +379,6 @@ call "OrderMgr\RequiresList.rex"
   issued by the OrderMgrBaseView class.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-
 ::CLASS HRSomv PRIVATE		-- Human-Readable Strings
   ::CONSTANT QExit        "Are you sure you want to close all windows and exit the application?"
   ::CONSTANT NoMenu       "This menu item is not yet implemented."
@@ -313,5 +389,8 @@ call "OrderMgr\RequiresList.rex"
   ::CONSTANT NewCust      "New Customer"
   ::CONSTANT NewProd      "New Product"
   ::CONSTANT HelpAbout    "Help - About"
+  ::CONSTANT WindowTitle  "Sales Order Management"	-- Dialog Caption
+  ::CONSTANT Reset        "Reset Icons"			-- PushButton
+  ::CONSTANT ExitApp      "Exit Application"		-- PushButton
 
 /*============================================================================*/
