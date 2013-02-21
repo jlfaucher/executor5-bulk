@@ -213,6 +213,12 @@ Section  doInstall
     File "${ExamplesDir}\controls\ListView\rc\res.mak"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\ListView\subitem.editing
+    ; Add the files ...
+    File "${ExamplesDir}\controls\ListView\subitem.editing\*.rex"
+    File "${ExamplesDir}\controls\ListView\subitem.editing\*.txt"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\controls\ToolTip
     ; Add the files ...
     File "${ExamplesDir}\controls\ToolTip\*.rex"
@@ -507,8 +513,6 @@ Section  doInstall
 
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\OrderMgr
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Exercise07\OrderMgr\*.h"
-    File "${ExamplesDir}\userGuide\exercises\Exercise07\OrderMgr\*.rc"
     File "${ExamplesDir}\userGuide\exercises\Exercise07\OrderMgr\*.rex"
 
     ; Set output path to the installation directory.
