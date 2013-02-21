@@ -1187,7 +1187,11 @@
 </row>
 <row>
 <entry><xref linkend="mthPopupClsPSD"/></entry>
-<entry>Begins the execution of a modeless property sheet dialog and returns immediately.</entry>
+<entry>Begins the execution of a <link linkend="defModalModeless">modeless</link>  property sheet dialog and returns immediately.</entry>
+</row>
+<row>
+<entry><xref linkend="mthPopupClsPSD"/></entry>
+<entry>Sarts a <emphasis role="italic">modeless</emphasis> propertry sheet dialog executing and returns immediately. The property sheet dialog is closed automatically when its parent is closed</entry>
 </row>
 <row>
 <entry><xref linkend="mthPressButton"/></entry>
@@ -2969,6 +2973,92 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PropertySheetDialog::popup() -->
+
+<section id="mthPopupAsChildClsPSD" xreflabel="popupAsChild"><title>popupAsChild</title>
+<indexterm><primary>popupAsChild</primary><secondary>PropertySheetDialog class</secondary></indexterm>
+<indexterm><primary>PropertySheetDialog class</primary><secondary>popupAsChild</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--popupAsChild(--parent--)---------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">popupAsChild</emphasis> method starts a <link linkend="defModalModeless">modeless</link>
+  propertry sheet dialog executing and returns immediately. It is very similar to the <xref linkend="mthPopupClsPSD"/>
+  method, but has the additional functionality that it is closed automatically when the <emphasis
+  role="italic">parent</emphasis> dialog is closed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>parent [required]</term>
+    <listitem>
+    <para>
+      Some other Rexx dialog object. A relationship is established with the <emphasis role="italic">parent</emphasis>
+      dialog such that when the <emphasis role="italic">parent</emphasis> dialog is closed, this dialog is
+      automatically closed also.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is a Rexx <computeroutput>Message</computeroutput> object, (see the Open Object Rexx reference manual to
+    learn more about the <computeroutput>Message</computeroutput> class.) The message object can be used, for instance,
+    to check if the dialog has been closed by the user, to obtain the result value from the execution of the dialog,
+    etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that the relationship between the dialog started with <emphasis role="italic">popupAsChild</emphasis> and the
+    <emphasis role="italic">parent</emphasis> dialog is one-way. When the <emphasis role="italic">parent</emphasis>
+    dialog is closed, the dialog started with the <emphasis role="italic">popupAsChild</emphasis> method is closed. But,
+    when the dialog started with <emphasis role="italic">popupAsChild</emphasis> is closed, the <emphasis
+    role="italic">parent</emphasis> dialog continues to execute as normal. It is not effected by the closing of the
+    <emphasis role="italic">child</emphasis> dialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a property sheet dialog that is popped up from the parent dialog when a button is clicked:
+
+<programlisting>
+<![CDATA[
+
+::method onPopup unguarded
+
+    -- Create the 5 dialog pages.
+    p1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
+    p2 = .TreeViewDlg~new("rc\PropertySheetDemo.rc", IDD_TREEVIEW_DLG)
+    p3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG)
+    p4 = .TrackBarDlg~new("rc\PropertySheetDemo.rc", IDD_TRACKBAR_DLG)
+    p5 = .TabDlg~new("rc\PropertySheetDemo.rc", IDD_TAB_DLG)
+
+    -- Create the PropertySheetDialog using an array of the 5 dialog pages.
+    pages = .array~of(p1, p2, p3, p4, p5)
+    title = "ooRexx Property Sheet with Controls"
+    propDlg = .PropertySheetDemoDlg~new(pages, "NOAPPLYNOW", title)
+
+    -- Show the property sheet.
+    propDlg~popupAsChild(self)
+
+]]>
+</programlisting>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PropertySheetDialog::popupAsChild() -->
+
 
 <section id="mthPressButton" xreflabel="pressButton"><title>pressButton</title>
 <indexterm><primary>pressButton</primary></indexterm>

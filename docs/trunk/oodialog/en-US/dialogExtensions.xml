@@ -2698,15 +2698,13 @@ method to manually update the display.
 
 
 <section id="mthPopupAsChild" xreflabel="popupAsChild"><title>popupAsChild</title>
-<indexterm><primary>popupAsChild</primary></indexterm>
+<indexterm><primary>popupAsChild</primary><secondary>DialogExtensions class</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>popupAsChild</secondary></indexterm>
 <indexterm><primary>DialogExtensions class</primary><secondary>popupAsChild</secondary></indexterm>
 <programlisting>
 <![CDATA[
-
->>--popupAsChild(--+-parent-+--------------+--+------------+--+--------+--)----><
-                            +-,-showOption-+  +-,-ignored--+  +-,-icon-+
-
+>>--popupAsChild(--parent--+---------------+--+------------+--+---------+--)---><
+                           +-,-showOption--+  +-,-ignored--+  +-,-icon--+
 ]]>
 </programlisting>
 
@@ -2721,96 +2719,96 @@ method to manually update the display.
   <listitem>
   <para>
     The arguments are:
-    <variablelist>
-      <varlistentry><term>parent [required]</term>
-      <listitem>
-      <para>
-        Some other Rexx dialog object. A relationship is established with the <emphasis role="italic">parent</emphasis>
-        dialog such that when the <emphasis role="italic">parent</emphasis> dialog is closed, this dialog is
-        automatically closed also.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>showOption [optional]</term>
-      <listitem>
-      <para>
-        Zero or one of the following keywords to specify how the dialog is shown. This keyword is used in the automatic
-        invocation of the <xref linkend="mthShowClsPlainBaseDialog"/> method. Case is not significant. If this
-        argument is omitted, the NORMAL keyword is used:
-        <variablelist>
-          <varlistentry><term>NORMAL</term>
-          <listitem>
-          <para>
-            Makes the dialog visible in its default position and window size. This has the effect of restoring the dialog size
-            and position if it is minimized or maximized. This is the default if the argument is omitted.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DEFAULT</term>
-          <listitem>
-          <para>
-            DEFAULT is an alias for NORMAL. The two keywords are functionally identical.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>SHOWTOP</term>
-          <listitem>
-          <para>
-            Makes the dialog visible and the topmost window.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDE</term>
-          <listitem>
-          <para>
-            Makes the dialog invisible.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MIN</term>
-          <listitem>
-          <para>
-            Minimizes the dialog and activates the next window in the window order.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MAX</term>
-          <listitem>
-          <para>
-            Maximizes, and makes visible if necessary, the dialog.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>INACTIVE</term>
-          <listitem>
-          <para>
-            Makes the dialog visible without changing the active window.  When the NORMAL keyword is used, the dialog is shown
-            and becomes the active window. The INACTIVE keyword makes the dialog visible without changing the focus from the
-            current active window.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RESTORE</term>
-          <listitem>
-          <para>
-            Makes the dialog visible and restores it to its original size and position if it was minimized or maximized. An
-            application should specify this flag when restoring a minimized window.
-          </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>ignored [optional]</term>
-      <listitem>
-      <para>
-        This argument is completely ignored. It is a hold over from the original ooDialog implementation. However, since
-        the <emphasis role="italic">icon</emphasis> argument follows it, the <emphasis role="italic">ignored</emphasis>
-        argument must be retained. It serves as a place holder argument to preserve backwards compatibility. The
-        programmer should simply omit it, or use a value such as <computeroutput>1</computeroutput> to serve as the
-        place holder.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>icon [optional]</term>
-      <listitem>
-      <para>
-        The resource ID of the <xref linkend="defDialogIcon"/>. May be numeric or <xref linkend="defSymbolicId"/>. If an
-      icon ID is not supplied, the default ooDialog icon will be used.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
   </para>
+  <variablelist>
+    <varlistentry><term>parent [required]</term>
+    <listitem>
+    <para>
+      Some other Rexx dialog object. A relationship is established with the <emphasis role="italic">parent</emphasis>
+      dialog such that when the <emphasis role="italic">parent</emphasis> dialog is closed, this dialog is
+      automatically closed also.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>showOption [optional]</term>
+    <listitem>
+    <para>
+      Zero or one of the following keywords to specify how the dialog is shown. This keyword is used in the automatic
+      invocation of the <xref linkend="mthShowClsPlainBaseDialog"/> method. Case is not significant. If this
+      argument is omitted, the NORMAL keyword is used:
+      <variablelist>
+        <varlistentry><term>NORMAL</term>
+        <listitem>
+        <para>
+          Makes the dialog visible in its default position and window size. This has the effect of restoring the dialog size
+          and position if it is minimized or maximized. This is the default if the argument is omitted.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DEFAULT</term>
+        <listitem>
+        <para>
+          DEFAULT is an alias for NORMAL. The two keywords are functionally identical.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SHOWTOP</term>
+        <listitem>
+        <para>
+          Makes the dialog visible and the topmost window.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDE</term>
+        <listitem>
+        <para>
+          Makes the dialog invisible.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MIN</term>
+        <listitem>
+        <para>
+          Minimizes the dialog and activates the next window in the window order.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MAX</term>
+        <listitem>
+        <para>
+          Maximizes, and makes visible if necessary, the dialog.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INACTIVE</term>
+        <listitem>
+        <para>
+          Makes the dialog visible without changing the active window.  When the NORMAL keyword is used, the dialog is shown
+          and becomes the active window. The INACTIVE keyword makes the dialog visible without changing the focus from the
+          current active window.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RESTORE</term>
+        <listitem>
+        <para>
+          Makes the dialog visible and restores it to its original size and position if it was minimized or maximized. An
+          application should specify this flag when restoring a minimized window.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ignored [optional]</term>
+    <listitem>
+    <para>
+      This argument is completely ignored. It is a hold over from the original ooDialog implementation. However, since
+      the <emphasis role="italic">icon</emphasis> argument follows it, the <emphasis role="italic">ignored</emphasis>
+      argument must be retained. It serves as a place holder argument to preserve backwards compatibility. The
+      programmer should simply omit it, or use a value such as <computeroutput>1</computeroutput> to serve as the
+      place holder.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>icon [optional]</term>
+    <listitem>
+    <para>
+      The resource ID of the <xref linkend="defDialogIcon"/>. May be numeric or <xref linkend="defSymbolicId"/>. If an
+    icon ID is not supplied, the default ooDialog icon will be used.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
