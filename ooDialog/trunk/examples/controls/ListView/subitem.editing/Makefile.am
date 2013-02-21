@@ -1,6 +1,6 @@
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
-#/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+#/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,9 +36,6 @@
 #/*----------------------------------------------------------------------------*/
 
 .NOTPARALLEL:
-
-SUBDIRS      = rc subitem.editing
-DIST_SUBDIRS = rc subitem.editing
 
 MAINTAINERCLEANFILES 	= Makefile.in *~
 

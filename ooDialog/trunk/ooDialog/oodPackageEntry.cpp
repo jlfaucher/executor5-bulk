@@ -785,7 +785,6 @@ REXX_METHOD_PROTOTYPE(psdlg_setStartPage_atr);
 REXX_METHOD_PROTOTYPE(psdlg_setImageList_atr);
 REXX_METHOD_PROTOTYPE(psdlg_init);
 REXX_METHOD_PROTOTYPE(psdlg_execute);
-REXX_METHOD_PROTOTYPE(psdlg_popup);
 REXX_METHOD_PROTOTYPE(psdlg_getPage);
 REXX_METHOD_PROTOTYPE(psdlg_addPage);
 REXX_METHOD_PROTOTYPE(psdlg_insertPage);
@@ -801,6 +800,8 @@ REXX_METHOD_PROTOTYPE(psdlg_getResult);
 REXX_METHOD_PROTOTYPE(psdlg_indexToID);
 REXX_METHOD_PROTOTYPE(psdlg_indexToHandle);
 REXX_METHOD_PROTOTYPE(psdlg_pageToIndex);
+REXX_METHOD_PROTOTYPE(psdlg_popup);
+REXX_METHOD_PROTOTYPE(psdlg_popupAsChild);
 REXX_METHOD_PROTOTYPE(psdlg_pressButton);
 REXX_METHOD_PROTOTYPE(psdlg_setCurSel);
 REXX_METHOD_PROTOTYPE(psdlg_setCurSelByID);
@@ -1921,6 +1922,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(psdlg_init,                     psdlg_init),
     REXX_METHOD(psdlg_execute,                  psdlg_execute),
     REXX_METHOD(psdlg_popup,                    psdlg_popup),
+    REXX_METHOD(psdlg_popupAsChild,             psdlg_popupAsChild),
     REXX_METHOD(psdlg_getPage,                  psdlg_getPage),
     REXX_METHOD(psdlg_addPage,                  psdlg_addPage),
     REXX_METHOD(psdlg_insertPage,               psdlg_insertPage),

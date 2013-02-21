@@ -1,7 +1,8 @@
                       Release Notes ooDialog 4.2.2
                       ============================
 
-The ooDialog 4.2.2 release ...
+The ooDialog 4.2.2 release is focused on the implementation of Request
+for Enhancements with a large number of new features.
 
 ooDialog 4.2.2 can be installed to any ooRexx installation, 4.1.0 or
 later.
@@ -129,6 +130,8 @@ Feature Requests in ooDialog:
 
  * #535 Treeview expand/collapse button replacement
 
+ * #536 popupAsChild support for PropertySheets
+
 
 New Functionality in ooDialog:
 ------------------------------
@@ -247,6 +250,8 @@ setMinVisible()   Sets the minimum number of visible items in the
 
 In the DialogControl class:
 
+setParent()       Sets a new parent for the dialog control.
+
 setWindowTheme()  Changes the visual theme for this dialog control
                   window, causes the window to use a different set of
                   visual style information than its class normally uses.
@@ -256,11 +261,6 @@ In the DlgUtil class:
 
 errMsg()         Returns the operating system error message text for  a
                  system error code, including COM error codes.
-
-
-In the DialogControl class:
-
-setParent()       Sets a new parent for the dialog control.
 
 
 In the Edit class:
@@ -307,6 +307,15 @@ fromArray()       [Class method] Instantiates a new LvFullRow object
                   from an array of values. The string value of each item
                   in the array is used as the text for the item and
                   subitem(s).
+
+
+In the PropertySheetDialog class:
+
+popupAsChild()    The popupAsChild() method works for
+                  PropertySheetDialog dialogs as it does for regular
+                  ooDialog. It starts a modeless property sheet dialog
+                  that is closed automatically when its assigned parent
+                  dialog is closed.
 
 
 In the Rect class:
@@ -358,10 +367,12 @@ connectListViewEvent()  New events added.
 
   * the ENDSCROLL event is added.
 
+
 In the ListView class:
 
 hitTestInfo()           Enhanced to return the subitem index, instead of
                         0
+
 
 In the TreeView class:
 

@@ -147,32 +147,34 @@ Section  doInstall
   ; Install the files
   SetOutPath "$INSTDIR"
 
-    DetailPrint "********** ooDialog 4.2.1 Framework **********"
+    DetailPrint "********** ooDialog ${SHORTVERSION} Framework **********"
     File "${BinDir}\oodialog.dll"
     File "${BinDir}\ooDialog.cls"
     File "${BinDir}\oodPlain.cls"
     File "${BinDir}\oodWin32.cls"
     DetailPrint ""
 
-    DetailPrint "********** ooDialog 4.2.1 ooRexxTry **********"
+    DetailPrint "********** ooDialog ${SHORTVERSION} ooRexxTry **********"
     File "${ExamplesDir}\ooRexxTry\ooRexxTry.rex"
     CreateShortCut "${SMooRexxFolder}\Try Rexx (GUI).lnk" "$INSTDIR\rexx.exe" '"$INSTDIR\ooRexxTry.rex"' "$INSTDIR\rexx.exe"
     DetailPrint ""
 
-    DetailPrint "********** ooDialog 4.2.1 Documentation **********"
+    DetailPrint "********** ooDialog ${SHORTVERSION} Documentation **********"
     ; Set the installation directory:
     SetOutPath $INSTDIR\doc
     ; Add the files ...
     File "${ROOTDIR}\doc\oodialog.pdf"
     File "${ROOTDIR}\doc\oodguide.pdf"
+    File "${ROOTDIR}\doc\ooDialog_ReleaseNotes.txt"
     File "${ExamplesDir}\ooRexxTry\doc\ooRexxTry.pdf"
 
     CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog Reference.lnk" "$INSTDIR\doc\oodialog.pdf" "" "$INSTDIR\doc\oodialog.pdf" 0
     CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog User Guide.lnk" "$INSTDIR\doc\oodguide.pdf" "" "$INSTDIR\doc\oodguide.pdf" 0
+    CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog Release Notes.lnk" "$INSTDIR\doc\ooDialog_ReleaseNotes.txt" "" "$INSTDIR\doc\ooDialog_ReleaseNotes.txt" 0
     CreateShortCut  "${SMooRexxFolder}\Documentation\ooRexxTry Reference.lnk" "$INSTDIR\doc\ooRexxTry.pdf" "" "$INSTDIR\doc\ooRexxTry.pdf" 0
     DetailPrint ""
 
-    DetailPrint "********** ooDialog 4.2.1 Samples **********"
+    DetailPrint "********** ooDialog ${SHORTVERSION} Samples **********"
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog
     ; Add the files ...

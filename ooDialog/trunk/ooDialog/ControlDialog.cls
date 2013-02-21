@@ -134,6 +134,7 @@
 ::method insertPage unguarded external "LIBRARY oodialog psdlg_insertPage"
 ::method pageToIndex unguarded external "LIBRARY oodialog psdlg_pageToIndex"
 ::method popup external "LIBRARY oodialog psdlg_popup"
+::method popupAsChild external "LIBRARY oodialog psdlg_popupAsChild"
 ::method pressButton unguarded external "LIBRARY oodialog psdlg_pressButton"
 ::method querySiblings unguarded external "LIBRARY oodialog psdlg_querySiblings"
 ::method rebootSystem unguarded

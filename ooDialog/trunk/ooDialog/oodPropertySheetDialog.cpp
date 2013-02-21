@@ -947,7 +947,7 @@ inline bool isPropSheetMatch(LPCREATESTRUCT cs)
  * prevents the page from canceling the close.  We then programmatically press
  * the Cancel key.
  *
- * This was originally intended only for modal propert sheetes.  Usually it is
+ * This was originally intended only for modal propert sheets.  Usually it is
  * not needed with modeless property sheets as DestroyWindow() works fine,
  * however there is no reason it can not be used with modeless property sheet
  * dialogs.
@@ -3431,7 +3431,7 @@ RexxMethod2(uint32_t, psdlg_pageToIndex, POINTER, hPage, CSELF, pCSelf)
  *
  *  @notes  AeroWizard dialogs do not support modeless
  */
-RexxMethod2(RexxObjectPtr, psdlg_popup, NAME, methodName, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, psdlg_popup, CSELF, pCSelf)
 {
     pCPropertySheetDialog pcpsd = (pCPropertySheetDialog)pCSelf;
     pCPlainBaseDialog pcpbd = pcpsd->pcpbd;
@@ -3496,6 +3496,34 @@ err_out:
     safeLocalFree(psp);
     safeLocalFree(psh);
     stopDialog(pcpsd->pcpbd, context->threadContext);
+    return TheFalseObj;
+}
+
+
+/** PropertySheetDialog::popupAsChild()
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, psdlg_popupAsChild, RexxObjectPtr, parent, CSELF, pCSelf)
+{
+    pCPropertySheetDialog pcpsd = (pCPropertySheetDialog)pCSelf;
+    pCPlainBaseDialog pcpbd = pcpsd->pcpbd;
+
+    if ( ! requiredClass(context->threadContext, parent, "PlainBaseDialog", 1) )
+    {
+        goto err_out;
+    }
+
+    RexxObjectPtr childDialogs = context->SendMessage0(parent, "CHILDDIALOGS");
+    if ( childDialogs != NULLOBJECT )
+    {
+        context->SendMessage1(childDialogs, "INSERT", pcpsd->rexxSelf);
+        pcpbd->rexxParent = parent;
+
+        return context->SendMessage0(pcpsd->rexxSelf, "POPUP");
+    }
+
+err_out:
     return TheFalseObj;
 }
 

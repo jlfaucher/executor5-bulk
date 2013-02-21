@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2009-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -37,33 +37,29 @@
 
   	ReadMe
 
-  1.  ooDialog - Dialog Control Example Programs
+  1.  ooDialog - List-view Example Programs
   -----------------------------------------------
 
-  This directory contains example programs that demonstrate how to use the
-  list-view control in ooDialog.  The examples range from simple to medium
-  complex.
+  This directory contains several, similar, example programs that
+  demonstrate how to embedd a dialog control within the the list-view.
+  The embedded controls allow the user to do in-place editing of the
+  subitems in the list-view when in report mode.
 
-    - columnClickListView.rex
+  To activate subitem editing, the user first selects a row by clicking on
+  it with the mouse. If the user then clicks one more time, the embedded
+  control becomes active.  The user enters the value desired.  At that
+  point, hitting enter makes the change.  If the user hits the escape key,
+  or clicks somewhere else on the list-view, the change is abandoned.
 
-    An example program that shows how to determine which row and which
-    column in a list view control the user has clicked on.
+    - dropDownComboBox.rex
 
-    - customDrawListView.rex
+    Embeds a drop down combo box in the list-view.
 
-    Shows how to use a list-view with emphasis on custom draw.  Custom
-    draw with a list-view allows you set the text color, background color,
-    and font for individuals list-view items.  And when the list-view is
-    in report view, this can be done for individual subitems of each row.
+    - dropDownListComboBox.rex
 
-    - columnIcons.rex
+    Embeds a drop down list combo box in the list-view.
 
-    This example shows how to use icons for all columns in a list-view,
-    how to use LvFullRow objects to populate a list-view, and how to use
-    the internal sorting feature of the ooDialog framework.  In report
-    view, the columns can be drag and droppred to arrange the order.
-    Clicking on a column sorts the column.
+    - editControl.rex
 
-  The subitem.editing subdirectory contains several examples of embedding
-  dialog controls within the list-view to allow in-place editing of the
-  subitems in report view.
+    Embeds an edit control in the list-view.
+
