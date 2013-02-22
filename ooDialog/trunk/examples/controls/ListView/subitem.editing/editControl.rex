@@ -36,31 +36,58 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  Doc not done
+ *  This example shows how to embedd a drop down list combo box in a list-view,
+ *  to allow the user to edit the subitems in the list-view.
  *
- *  Note that you must add the FULLROWSELECT extended style to the list view in
- *  order to get the correct row number.  If the list view does not have this
- *  style, Windows only reports the row number if the text label in the left-
- *  most column is clicked on.
+ *  To activate the editing, the user clicks once on a subitem, then clicks one
+ *  more time to activate the editing.  A drop down list combo box takes the
+ *  place of the subitem in the list-view.  With a drop down list combo box the
+ *  user can only select an item from the list.
  *
+ *  When the user is in the editing mode, hitting enter, escape, or clicking the
+ *  mouse any where else on the scren, ends the editing.  If enter is hit, the
+ *  changes are accepted, otherwise, the changes are abandoned.
+ *
+ *  The key to how this works is creating an invisible combo box, which is then
+ *  made a child of the list-view.  When editing mode is entered, the combo box
+ *  positioned over the subitem, sized to the size of the subitem, and made
+ *  visible.  When editing is over, the combo box is made invisible again.
+ *
+ *  The Rexx combo box, after it is made a child of the list-view, can be used
+ *  as normal, with one caveat: Since it is a child of the list-view, the combo
+ *  box no longer sends its event nofications to the dialog.  They are sent to
+ *  the list-view.  This means that connecting the combo box events will have no
+ *  effect.
  */
 
-  dlg = .SimpleLV~new
-  if dlg~initCode = 0 then do
-    -- Add a symbolic resource ID for the list view.
-    dlg~constDir[IDC_LISTVIEW] = 200
-    dlg~constDir[IDC_EDIT]     = 201
+    -- Set the defaults for this application.  Use the global .constDir 'O'nly,
+    -- turn automatic data detection off (.false.)  Then we add a few symbols
+    -- to the global .constDir:
+    .application~setDefaults('O', , .false)
+    .constDir[IDC_LISTVIEW] = 200
+    .constDir[IDC_EDIT]     = 201
 
-    dlg~create(30, 30, 325, 200, "A Simple List View", "VISIBLE")
-    dlg~execute("SHOWTOP")
-  end
+    dlg = .SimpleLV~new
+    if dlg~initCode = 0 then do
+          dlg~create(30, 30, 325, 200, "In-place Editing List View", "VISIBLE")
+          dlg~execute("SHOWTOP")
+    end
 
+return 0
 -- End of entry point.
 
 ::requires "ooDialog.cls"
 
 ::class 'SimpleLV' subclass UserDialog
 
+/** defineDialog()
+ *
+ * Standard defineDialog. We create a combo box, list-view, and ok button in
+ * the dialog template.  Note the combo box is created invisible.
+ *
+ * We add a flag to keep track of whether the combo box is visisble or not.  We
+ * also connect the events we need to monitor.
+ */
 ::method defineDialog
   expose editVisible
 
@@ -72,26 +99,53 @@
 
   self~connectListViewEvent(IDC_LISTVIEW, "CLICK", onClick)
   self~connectListViewEvent(IDC_LISTVIEW, "BEGINSCROLL", onBeginScroll)
+    self~connectListViewEvent(IDC_LISTVIEW, "ENDSCROLL", onBeginScroll)
 
+
+/** initDialog()
+ *
+ *  Here we do 2 normal things, populate the list-view and populate the combo
+ *  box.
+ *
+ *  The rest is what makes this work. The isGrandchild() method sets up a
+ *  connection to some of the event notifications sent by the grandchild
+ *  control, to a Rexx method in this dialog.  We need that event connection to
+ *  monitor the Esc, Enter key events, and the lost focus event.
+ *
+ *  The other key thing we do is set the parent of the combo box to be the list
+ *  view.  This parent / child relation is what keeps the combo box drawn
+ *  correctly, it ensures that the combo box is drawn over the top of the list
+ *  view.
+ */
 ::method initDialog
-  expose list edit
+    expose list edit
 
-  list = self~newListView(IDC_LISTVIEW)
+    list = self~newListView(IDC_LISTVIEW)
 
-  edit = self~newEdit(IDC_EDIT)
-  edit~setParent(list)
-  edit~isGrandChild
+    edit = self~newEdit(IDC_EDIT)
+    edit~setParent(list)
+    edit~isGrandChild
 
-  list~addExtendedStyle("FULLROWSELECT GRIDLINES CHECKBOXES HEADERDRAGDROP")
+    self~setUpListView(list)
 
-  list~insertColumn(0, "Row (Column 1)", 105)
-  list~insertColumn(1, "Column 2", 100)
-  list~insertColumn(2, "Column 3", 100)
 
-  do i = 1 to 200
-    list~addRow(i, , "Line" i, "Line / Col ("i", 2)", "Line / Col ("i", 3)")
-  end
 
+/** onClick()
+ *
+ *  This is the event handler for a click on the list-view.  We track the clicks
+ *  and when we see that the user has clicked twice in a row on the same subitem
+ *  we enter editing mode.
+ *
+ *  When we enter editing mode, we get the rectangle of the subitem we are going
+ *  to edit, size the combo box to that size, position the combo box over the
+ *  subitem, and make the combo box visible.
+ *
+ *  We set our flag so that we know the combo box is now visible, and assign the
+ *  focus to the combo box.  And that's it.
+ *
+ *  Notice that we set the height of the combo box to 4 times the height of the
+ *  subitem.  This allows space for the drop down.
+ */
 ::method onClick unguarded
   expose list edit editVisible lastIdx lastCol
   use arg id, itemIndex, columnIndex, keyState
@@ -116,39 +170,91 @@
   return 0
 
 
+/** onBeginScroll()
+ *
+ *  This is the event handler for the begin and end scroll events.  When the
+ *  user is in the editing mode and then moves a way from the edit control, we
+ *  interpret that as canceling the edit.
+ *
+ *  This works fine if the user tabs out of the edit control, used the mouse to
+ *  click outside the edit control, brings somer other application to the fore-
+ *  ground.  But, for some reason, clicking on the scroll bars fro the list-view
+ *  does not trigger the onEditGrandChildEvent() handler.  This seriously messes
+ *  up the logic.
+ *
+ *  The begin and / or end scroll event is sent as soon as the user clicks on
+ *  the scroll bars.  So, we connect that event and use the event handler to
+ *  hide the combo box if it is visible.
+ */
 ::method onBeginScroll unguarded
-  expose editVisible edit
-  use arg ctrlID, dx, dy, lv, isBegin
+    expose editVisible edit
+    use arg ctrlID, dx, dy, lv, isBegin
 
-  if editVisible then self~hideEdit(edit)
-  return 0
+    if editVisible then self~hideEdit(edit)
+    return 0
 
 
+
+/** onEditGrandChildEvent()
+ *
+ *  This is the event handler for events that happen in a grandchild control.
+ *  There are 4 events that get forwarded on to the grandfathe dialog.  The Esc,
+ *  Tab, and Enter key events, and the lost focus event.  Which event is
+ *  specified by the 2nd argument, which uses a keyword to denote the event.
+ *
+ *  The isGrandChild() method automatically sets up the connection to the 4
+ *  events.  Since we did not request the tab key event be connected, we won't
+ *  get that notification.  The other 3 notifications, all signal the end of the
+ *  editing mode.  On enter, we need to update the subitem text with the new
+ *  text.
+ */
 ::method onEditGrandChildEvent unguarded
-  expose list lastIdx lastCol
-  use arg id, key, editCtrl
+    expose list lastIdx lastCol
+    use arg id, key, editCtrl
 
-  if key == 'enter' then do
-    text = editCtrl~getText~strip
-    if text \== '' then list~setItemText(lastIdx, lastCol, text)
-    self~hideEdit(editCtrl)
-  end
-  else if key == 'escape' then self~hideEdit(editCtrl)
-  else if key == 'killfocus' then self~hideEdit(editCtrl, .false)
+    if key == 'enter' then do
+        text = editCtrl~getText~strip
+        if text \== '' then list~setItemText(lastIdx, lastCol, text)
+        self~hideEdit(editCtrl)
+    end
+    else if key == 'escape' then self~hideEdit(editCtrl)
+    else if key == 'killfocus' then self~hideEdit(editCtrl, .false)
 
-  return 0
+    return 0
 
 
+/** hideEdit()
+ *
+ *  Makes the edit control invisible, removes its text, and, maybe assign, the
+ *  focus back to the list-view.  This is done each time the editing mode is
+ *  ended.
+ */
 ::method hideEdit private unguarded
-  expose editVisible list
-  use strict arg editCtrl, assignFocus = .true
+    expose editVisible list
+    use strict arg editCtrl, assignFocus = .true
 
-  if assignFocus then list~assignFocus
+    if assignFocus then list~assignFocus
 
-  editCtrl~setText("")
-  editCtrl~hide
-  editVisible = .false
+    editCtrl~setText("")
+    editCtrl~hide
+    editVisible = .false
 
 
+/** setUpListView()
+ *
+ * Sets up the list view by adding the columns and populating the list with
+ * rows.
+ */
+::method setUpListView private
+    use strict arg list
 
+    list~addExtendedStyle("FULLROWSELECT GRIDLINES CHECKBOXES HEADERDRAGDROP")
+
+    list~insertColumn(0, "Row (List-view item)", 75)
+    list~insertColumn(1, "Column 2 (subitem 1)", 70)
+    list~insertColumn(2, "Column 3 (subitem 2)", 70)
+
+    do i = 1 to 200
+        list~addRow(i, , "Row" i, "Row / Col ("i", 2)", "Row / Col ("i", 3)")
+    end
 
