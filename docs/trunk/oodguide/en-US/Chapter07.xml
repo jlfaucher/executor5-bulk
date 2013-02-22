@@ -42,11 +42,10 @@
     #
     #########################################################################
 -->
-
-<!-- Chapter07 - A Working Application		 		  v01-00 06Feb13
+<!-- Chapter07 - A Working Application		 		  v01-00 019eb13
 
     Changes:
-     v01-00 06Feb13: First version.
+     v01-00 19Feb13: First version.
 
     7   *  Towards A Working Application	                                          chapSeven
     7.1   * Introduction                                                              chap07-intro
@@ -87,69 +86,79 @@
                 - Order Data - two files, OrderHeadersFile.txt and OrderLinesFile.txt
                   The OrderData component merges the two (??)
     7.4     Message Sender - get rid of "stand-alone" testing code.                   chap07-msgsender
-    7.5     The Order Form -                                                          chap07-orderform
-    7.6     Next Version                                                              chap07-next
+    7.5     OrderMgr - re-sizing.                                                     chap07-ordermgr
+    7.6     The Order Form -                                                          chap07-orderform
+    7.7     Next Version                                                              chap07-next
             - Say this app not completed - e.g. query method not in super, OrderForm not complete, etc.
             Things to add:
             - drag/drop
             - Complete the OrderForm
             - Dialog offsetting
 -->
+<chapter id="chapSeven">
+  <title>Towards A Working Application</title>
 
-<chapter id="chapSeven"><title>Towards A Working Application</title>
-
-<section id="chap07-intro"><title>Introduction</title>  <!-- Section 7.1 -->
+<!-- *********************************************************************************************** -->
+  <section id="chap07-intro">
+    <title>Introduction</title>
+    <!-- Section 7.1 -->
     <para>This chapter, and the accompanying Exercise, provides much of the infrastructure of an
-            application that uses model-view-data component concepts. </para>
-  <para> Open the <computeroutput>Exercise07</computeroutput> folder and start the Order Management
-      application by double-clicking on <computeroutput>startup.rex</computeroutput>. Try it out.
-      Explore the function which, while not complete, is much more so than in the previous exercise. In
-      particular, note that application data is now read from files. For example, the Customer data
-      is read from the file <computeroutput>CustomerFile.txt</computeroutput>. However, although the
-      data can be changed in dialogs, the changed data does not (in this exercise) update the files. </para>
-        <para>Also, note that the <emphasis role="bold">Help</emphasis> menu on the main Sales Order
-      Management dialog now includes an option <emphasis role="bold">Message Sender</emphasis>
-      (discussed in more detail in <xref linkend="ch7-msgsender.title"/>. Click this option and a
+      application that uses model-view-data component concepts. </para>
+    <para> Open the <computeroutput>Exercise07</computeroutput> folder and start the Order
+      Management application by double-clicking on <computeroutput>startup.rex</computeroutput>. Try
+      it out. Explore the function which, while not complete, is much more so than in the previous
+      exercise. In particular, note that application data is now read from files. For example, the
+      Customer data is read from the file <computeroutput>CustomerFile.txt</computeroutput>.
+      However, although data can be changed in some dialogs, the changed data does not (in this
+      exercise) update the files. </para>
+    <para>Also, note that the <emphasis role="bold">Help</emphasis> menu on the main Sales Order
+      Management dialog now includes an option <xref linkend="chap07x-msgsender"/> <emphasis role="bold">Message Sender</emphasis>
+      (discussed in more detail in <xref linkend="chap07-msgsender"/>. Click this option and a
       "Message Sender" dialog opens. This sends messages to (invoke methods on) the various
-      components, and is a very useful debugging tool that replaces the "stand-alone" function used
-      in the previous exercise. For example, try sending a "query" message to the Customer whose key
-      is BA0314. To do this, key <emphasis role="bold"><emphasis role="italic">CustomerModel
+      components, and is a very useful debugging tool that is an alternative to the "stand-alone"
+      function used in Exercise 6. For example, try sending a "query" message to the Customer whose
+      key is BA0314. To do this, key <emphasis role="bold"><emphasis role="italic">CustomerModel
           BA0314</emphasis></emphasis> in the <emphasis role="bold">Target</emphasis> field ,
         <emphasis role="bold"><emphasis role="italic">query</emphasis></emphasis> in the <emphasis
         role="bold">Method</emphasis> field, and then press <emphasis role="bold">Send</emphasis>.
       The customer's data is returned in the <emphasis role="bold">Reply</emphasis> field as a
       name-value string. </para>
-        <para>Now try using the Message Sender to surface a Product dialog - say the view for
-      Product CU003. To do this, select <emphasis role="bold">ObjectMgr The</emphasis> in the
-        <emphasis role="bold">Target</emphasis> combo-box pull-down, <emphasis role="bold"
+    <para>Now try using the Message Sender to surface a Product dialog - say the view for Product
+      CU003. To do this, select <emphasis role="bold">ObjectMgr The</emphasis> in the <emphasis
+        role="bold">Target</emphasis> combo-box pull-down, <emphasis role="bold"
         >showModel</emphasis> in the <emphasis role="bold">Method</emphasis> field, and type
         <emphasis role="bold"><emphasis role="italic">ProductModel CU003</emphasis></emphasis> in
       the <emphasis role="bold">Data</emphasis> field. Now press <emphasis role="bold"
         >Send</emphasis>. The Product dialog for instance CU003 appears. </para>
-        <para>The "Object Manager" (which should really be called "ComponentManager" since it
-      manages application components as opposed to any old ooRexx object) is a support class that
-      instantiates components by invoking a component's <emphasis role="bold">newInstance</emphasis>
-      class method. It also keeps track of which components are already instantiated. For more
-      detail see <xref linkend="chap07-mvf-oview-objmgr"/></para>
-        <para>Consider now what has to happen to display a Product View. First, a
+    <para>The "Object Manager" (which could also be called "ComponentManager" since it manages
+      application components as opposed to any old ooRexx object) is a support class that
+      instantiates a component by invoking its <emphasis role="bold">newInstance</emphasis> class
+      method. It also keeps track of which components have been instantiated. For more detail see
+        <xref linkend="chap07-mvf-oview-objmgr"/></para>
+    <para>Consider now what has to happen to display a Product dialog. First, a
         <computeroutput>ProductData</computeroutput> instance must be created, and its data is read
-      from disk. Then the appropriate <computeroutput>ProductModel</computeroutput> component is
-      instantiated and its data retrieved from the <computeroutput>ProductData</computeroutput>
-      component. Finally, an instance of <computeroutput>ProductView</computeroutput> is created and
-      its data retrieved from the <computeroutput>ProductModel</computeroutput> component by
-      invoking its <computeroutput>query</computeroutput> method. </para>
-        <para>This sequence is a pattern that can be applied to most business components, and hence
-      can be handled by superclasses so that the application components do not have to provide the
-      same duplicated code. The pattern is called the "Model-View Framework", which is discussed in
-      the next section.  </para>
-</section>     <!-- End of Section 7.1 -->
+      from disk. Then the appropriate <computeroutput>ProductModel</computeroutput> component must
+      be instantiated and its data retrieved from the <computeroutput>ProductData</computeroutput>
+      component. Finally, an instance of <computeroutput>ProductView</computeroutput> has to be
+      created and its data retrieved from the <computeroutput>ProductModel</computeroutput>
+      component by invoking its <computeroutput>query</computeroutput> method. </para>
+    <para>This sequence is a pattern that can be applied to most business components, and hence can
+      be handled by superclasses instead of by essentially duplicated code in the application
+      components. The pattern is called the "Model-View Framework", which is discussed in the next
+      section. </para>
+  </section>
+  <!-- End of Section 7.1 -->
 
-<section id="chap07-mvf"><title id="ch7-mvf.title">A Model-View Framework</title>		<!-- Section 7.2 -->
-  <para>This section presents the externals of the MVF. For a discussion of the internals of the
-    MVF, see <xref linkend="apx5-mvf.title"/>.</para>
-  
-  <section id="chap07-mvf-objs"><title id="ch7-mvf-objs.title">MVF Objective</title>		<!-- Section 7.2.1 -->
-  <para>The objective of the Model-View Framework (MVF) is to provide a mechanism whereby
+<!-- *********************************************************************************************** -->
+  <section id="chap07-mvf">
+    <title id="ch7-mvf.title">A Model-View Framework</title>
+    <!-- Section 7.2 -->
+    <para>This section presents the externals of the MVF. For a discussion of the internals of the
+      MVF, see <xref linkend="apx5-mvf.title"/>.</para>
+    <section id="chap07-mvf-objs">
+      <title id="ch7-mvf-objs.title">MVF Objective</title>
+      <!-- Section 7.2.1 -->
+      <para>The objective of the Model-View Framework (MVF) is to provide a mechanism whereby
         application components can read and write data and display views without needing to be aware
         of <emphasis role="italic">how</emphasis> this is done. Thus the MVF supports
         view-model-data separation of concerns in application-level components. The MVF comprises
@@ -158,62 +167,73 @@
         (the latter for data components), plus two "manager" objects:
           <computeroutput>ObjectMgr</computeroutput>' and
         <computeroutput>ViewMgr</computeroutput>.</para>
-  <para>When a user double-clicks on an item in say the Customer List dialog, the confident
-    expectation is that a Customer dialog that shows the data associated with the list
-    item will be displayed. Now consider what has to happen to make that product dialog
-    appear:</para>
-    <orderedlist>
-    <listitem><para>Create the appropriate data component, which...</para></listitem>
-    <listitem><para>... opens the correct file and reads the data.</para></listitem>
-    <listitem><para>Create the model component and provide it with its "key" (e.g. customer number).</para></listitem>
-    <listitem><para>In the model component, get a reference to the data component.</para></listitem>
-    <listitem><para>Invoke a method on the data component to retrieve the data associated with
-      the model's key.</para></listitem>
-    <listitem><para>Create a view component.</para></listitem>
-    <listitem><para>Provide that view component with the data to be displayed in its dialog.</para></listitem>
-    <listitem><para>Make the dialog visible.</para></listitem>
-    </orderedlist>
-  <para>This sequence set of actions assumes that none of the component instances involved are yet
-    activated. However, the MVF must also work when some or all are activated. For example,
-    if a Customer dialog exists but is minimized, and the user double-clicks on that customer
-    in a Customer List dialog, then
-    the MVF need only surface the Customer dialog. Thus the MVF distinguishes between a
-    number of different states, and relieves the programmer from having to code the
-    logic for each component and for each possible state. </para>
-  <para>Consider, for example, the code in <computeroutput>OrderMgrView</computeroutput> that
+      <para>When a user double-clicks on an item in say the Customer List dialog, the confident
+        expectation is that a Customer dialog that shows the data associated with the list item will
+        be displayed. Now consider what has to happen to make that product dialog appear:</para>
+      <orderedlist>
+        <listitem>
+          <para>Create the appropriate data component, which...</para>
+        </listitem>
+        <listitem>
+          <para>... opens the correct file and reads the data.</para>
+        </listitem>
+        <listitem>
+          <para>Create the model component and provide it with its "key" (e.g. customer
+            number).</para>
+        </listitem>
+        <listitem>
+          <para>In the model component, get a reference to the data component.</para>
+        </listitem>
+        <listitem>
+          <para>Invoke a method on the data component to retrieve the data associated with the
+            model's key.</para>
+        </listitem>
+        <listitem>
+          <para>Create a view component.</para>
+        </listitem>
+        <listitem>
+          <para>Provide that view component with the data to be displayed in its dialog.</para>
+        </listitem>
+        <listitem>
+          <para>Make the dialog visible.</para>
+        </listitem>
+      </orderedlist>
+      <para>This sequence set of actions assumes that none of the component instances involved are
+        yet activated. However, the MVF must also work when some or all are activated. For example,
+        if a Customer dialog exists but is minimized, and the user double-clicks on that customer in
+        a Customer List dialog, then the MVF need only surface the Customer dialog. Thus the MVF
+        distinguishes between a number of different states, and relieves the programmer from having
+        to code the logic for each component and for each possible state. </para>
+      <para>Consider, for example, the code in <computeroutput>OrderMgrView</computeroutput> that
         launches a List View. On the left is the Exercise 6 code, and on the right is the Exercise 7
-        code (equivalent or identical statements have been placed on the same line for comparison). <programlisting>
-<![CDATA[ 
-                                  OrderMgrView
-  Exercise 6                                             Exercise 7
-  ----------                                             ----------
-::METHOD showModel UNGUARDED                            ::METHOD showModel UNGUARDED
-                                                          expose idObjectMgr
-  use arg record                                          use arg record
-  className = record~ID                                   className = record~ID
+        code (equivalent or identical statements have been placed on the same line for comparison). <programlisting><![CDATA[                                  OrderMgrView
+         Exercise 6                                             Exercise 7
+         ----------                                             ----------
+::METHOD showModel UNGUARDED                    ::METHOD showModel UNGUARDED
+                                                  expose idObjectMgr
+  use arg record                                  use arg record
+  className = record~ID                           className = record~ID
   viewClassName = className||"View"
-  interpret "."||viewClassName||"~newInstance(self)"      r = idObjectMgr~showModel(classname, "a", self)
-]]>
-    </programlisting> The key difference is that in Exercise 6 the Customer List is launched
+  interpret "."||viewClassName||-                 r = idObjectMgr~showModel(classname, -
+    "~newInstance(self)"                                "a", self)
+]]>    </programlisting> The key difference is that in Exercise 6 the Customer List is launched
         without any concern for the data - because the data is hard-coded in the List View. In
         Exercise 7, on the other hand, the data is read from disk and provided to the List View.
         This is done by the <computeroutput>showModel</computeroutput> method of an MVF component
         called the "Object Manager" (<computeroutput>idObjectMgr</computeroutput>), its id having
         been retrieved from <computeroutput>.local</computeroutput> in the
-          <computeroutput>init</computeroutput> method.  </para>
-  <para>In the Exercise 7 code, the second parameter in the <computeroutput>showModel</computeroutput> method is "a".
-    This indicates that the List View instance is "anonymous". Instance names and "kinds" of component are
-    discussed in <xref linkend="ch7-mvfuse-kinds.title"/>. </para>
-  <para>Now that the List View has been created, consider what happens when the user double-clicks
-        on an item in the list. In Exercise 6, the list data was hard-coded. In Exercise 7 it is
-        read from disk by the <computeroutput>CustomerData</computeroutput> class (which subclasses
-          <computeroutput>GenericFile</computeroutput>). In both exercises, launching a Customer
-        View from the list (when the user double-clicks on a list item) is done by the
-          <computeroutput>showCustomer</computeroutput> method as follows (excluding code common to
-        both): 
-    <programlisting>
-<![CDATA[
-                           CustomerListView                                     
+          <computeroutput>init</computeroutput> method. </para>
+      <para>In the Exercise 7 code, the second parameter in the
+          <computeroutput>showModel</computeroutput> method is "a". This indicates that the List
+        View instance is "anonymous". Instance names and "kinds" of component are discussed in <xref
+          linkend="chap07-mvfuse-kinds"/>. </para>
+      <para>Now that the List View has been created, consider what happens when the user
+        double-clicks on an item in the list. In Exercise 6, the list data was hard-coded. In
+        Exercise 7 it is read from disk by the <computeroutput>CustomerData</computeroutput> class
+        (which subclasses <computeroutput>GenericFile</computeroutput>). In both exercises,
+        launching a Customer View from the list (when the user double-clicks on a list item) is done
+        by the <computeroutput>showCustomer</computeroutput> method as follows (excluding code
+        common to both): <programlisting><![CDATA[                           CustomerListView                                     
   Exercise 6                                           Exercise 7
   ----------                                           ----------
 ::METHOD showCustomer UNGUARDED                      ::METHOD showCustomer UNGUARDED
@@ -223,49 +243,46 @@
   .local~my.idCustomerData~activate
   .local~my.idCustomerModel~activate
                                                        objectMgr = .local~my.ObjectMgr
-  .CustomerView~newInstance(rootDlg,"CU003")           objectMgr~showModel("CustomerModel", info~text, rootDlg)
-  ...                                                  ...
-]]>
-  </programlisting>
-      </para>
-    <para>In Exercise 6, before the CustomerView is instantiated, the CustomerData and CustomerModel
-        components must be instantiated, and their object IDs stored in
+  .CustomerView~newInstance(rootDlg,"CU003")           objectMgr~showModel("CustomerModel", -
+                                                         info~text, rootDlg)
+   ...                                                 ...
+]]></programlisting>In Exercise 6, before the CustomerView is instantiated, the CustomerData and
+        CustomerModel components must be instantiated, and their object IDs stored in
           <computeroutput>.local</computeroutput> for later access by the CustomerView and
         CustomerModel objects. This is needed, although no data is actually read from disk, the
         CustomerView invokes a method on CustomerModel which invokes CustomerData. </para>
       <para>In Exercise 7, on the other hand, the value of
           <computeroutput>info~text</computeroutput> (the index read from the selected ListView row)
-        is the Customer Number, and is used as the Customer object's instance name. The single
-          <computeroutput>showModel</computeroutput> statement  - a method of the Object Manager -
-        then manages or "choreographs" the sequence of method invocations required to surface the
-        Customer View dialog, and (if necessary) create the appropriate model and data objects. This
-        choreography, using the <computeroutput>Model</computeroutput>,
-          <computeroutput>View</computeroutput> and <computeroutput>GenericData</computeroutput>
-        superclasses, results in the Customer View being surfaced with its data read from disk and
-        displayed. See <xref linkend="apx5-mvf-ops.title"/> for a full description of the way in
-        which this is done. </para>
-
-    <para>Finally, note that in Exercise 7, the names of the possible List Model classes (e.g.
+        is the Customer Number, and is used as the Customer object's instance name. Object Manager's
+          <computeroutput>showModel</computeroutput> method then manages or "choreographs" the
+        sequence of method invocations required to surface the Customer View dialog, and (if
+        necessary) create the appropriate model and data objects. This choreography, using the
+          <computeroutput>Model</computeroutput>, <computeroutput>View</computeroutput> and
+          <computeroutput>GenericData</computeroutput> superclasses, results in the Customer View
+        being surfaced with its data read from disk and displayed. See <xref linkend="apx5-mvf-ops"
+        /> for a full description of the way in which this is done.</para>
+      <para>Finally, note that in Exercise 7, the names of the possible List Model classes (e.g.
           <computeroutput>CustomerListModel</computeroutput>) are hard-coded in the
           <computeroutput>initRecords</computeroutput> method of
           <computeroutput>OrderMgrView</computeroutput> (although these would arguably be better
         placed in some configuration file).</para>
-  </section>	<!-- End of Section 7.2.1 -->
-  
-  <section id="chap07-mvf-oview"><title id="ch7-mvf-oview.title">MVF Overview</title>                                 <!-- Section 7.2.2 -->
-  <para>
-    The MVF consists of five classes: <computeroutput>ObjectMgr</computeroutput>,
-    <computeroutput>ViewMgr</computeroutput>, <computeroutput>Model</computeroutput>,
-    <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>,
-    and <computeroutput>GenericFile</computeroutput>. These are all located in the 
-    folder <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Support</computeroutput>.
-    Together, they handle the three different types of application component - view, model, and data. Each model
-      gets its data from its data component, and each model has a single view.
-      (A production-strength MVF could support multiple views of the same model by providing an
-      "Open as..." option for a given icon or list item. This would display a selection of
-      views, similar to the "Open with..." function provided by a button-2 click on an
-      item in Windows Explorer.)</para>
-    <para>MVF requires that each component has a text name, the name being the class name of the
+    </section>
+    <!-- End of Section 7.2.1 -->
+    <section id="chap07-mvf-oview">
+      <title id="ch7-mvf-oview.title">MVF Overview</title>
+      <!-- Section 7.2.2 -->
+      <para> The MVF consists of five classes: <computeroutput>ObjectMgr</computeroutput>,
+          <computeroutput>ViewMgr</computeroutput>, <computeroutput>Model</computeroutput>,
+          <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>, and
+          <computeroutput>GenericFile</computeroutput>. These are all located in the folder
+          <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Support</computeroutput>.
+        Together, they handle the three different types of application component - view, model, and
+        data. Each model gets its data from its data component, and each model has a single view. (A
+        production-strength MVF could support multiple views of the same model by providing an "Open
+        as..." option for a given icon or list item. This would display a selection of views,
+        similar to the "Open with..." function provided by a button-2 click on an item in Windows
+        Explorer.)</para>
+      <para>MVF requires that each component has a text name, the name being the class name of the
         main class (such as "CustomerModel", "ProductView" or "OrderData") together with an instance
         name. <indexterm>
           <primary>Component</primary>
@@ -283,27 +300,32 @@
         instance name is used - a "key" name, a singleton name, or an anonymous name. (Note that
         this naming convention could be relaxed if components were named in a configuration file;
         however, the distinctions between the different kinds of component would remain.) See <xref
-          linkend="ch7-mvfuse-kinds.title"/> for further discussion. </para>
- 
-    <section id="chap07-mvf-oview-person">		                                        <!-- Section 7.2.2.1 -->
-    <title id="ch7-mvf-oview-person.title">An Example - The 'Person' Component</title>
-      <indexterm><primary>Person component</primary></indexterm>
-      <indexterm><primary>Component</primary><secondary>Person</secondary></indexterm>      
-    <para>A key question is, what does the MVF look like to the programmer? This section answers
+          linkend="chap07-mvfuse-kinds"/> for further discussion. </para>
+      <section id="chap07-mvf-oview-person">
+        <!-- Section 7.2.2.1 -->
+        <title id="ch7-mvf-oview-person.title">An Example - The 'Person' Component</title>
+        <indexterm>
+          <primary>Person component</primary>
+        </indexterm>
+        <indexterm>
+          <primary>Component</primary>
+          <secondary>Person</secondary>
+        </indexterm>
+        <para>A key question is, what does the MVF look like to the programmer? This section answers
           this question using the Person component, which has minimal function other than using the
-          MVF, as an example. But first, using the Message Sender, try sending a
-            <computeroutput>showModel</computeroutput> message to '<computeroutput>ObjectMgr
-            The</computeroutput>' with the data '<computeroutput>PersonModel
-          PA150</computeroutput>'. The Person dialog appears, and the MVF has handled the task of
-          ensuring that both the Data and Model components are active before the View is launched.
-          First, MVF checks to see if they are already activated; if not, it instantiates them (the
-          Data instance first, then the Model). Second, on instantiation,
-            <computeroutput>PersonModel</computeroutput>'s superclass asks the
-            <computeroutput>PersonData</computeroutput> instance for its data. Third,
-            <computeroutput>PersonView</computeroutput>'s superclass asks
+          MVF, as an example. But first, using the Message Sender, try sending a <emphasis
+            role="italic"><emphasis role="bold">showModel</emphasis></emphasis> message to <emphasis
+            role="italic"><emphasis role="bold">ObjectMgr The</emphasis></emphasis> with the data
+            <emphasis role="italic"><emphasis role="bold">PersonModel PA150</emphasis></emphasis>.
+          The Person dialog appears, and the MVF has handled the task of ensuring that both the Data
+          and Model components are active before the View is launched. First, MVF checks to see if
+          they are already activated; if not, it instantiates them (the Data instance first, then
+          the Model). Second, on instantiation, <computeroutput>PersonModel</computeroutput>'s
+          superclass asks the <computeroutput>PersonData</computeroutput> instance for its data.
+          Third, <computeroutput>PersonView</computeroutput>'s superclass asks
             <computeroutput>PersonModel</computeroutput> for its data. Finally, the dialog for
           Person PA150 appears. </para>
-    <para>The code required to use the MVF is shown in the Person component in
+        <para>The code required to use the MVF is shown in the Person component in
             <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Samples\Person</computeroutput>.
           The requirements for using the MVF are as follows: <itemizedlist>
             <listitem>
@@ -376,17 +398,25 @@
                 must be returned.</para>
             </listitem>
           </itemizedlist></para>
-    <para>The above is how a "named" component uses MVF. By "named" is meant a component whose
+        <para>The above is how a "named" component uses MVF. By "named" is meant a component whose
           identity is a combination of its class and a specific "key" such as a Customer Number, or
           Product Number. However, there are three other kinds of component: a "singleton" such as
           the Order Manager, a "form" such as the Order Form, and "anonymous" such as a Customer
-          List. These are discussed below in <xref linkend="ch7-mvfuse-kinds.title"/>.</para>
-  </section>      <!-- End of 7.2.2.1 -->
-    
-<section id="chap07-mvf-oview-objmgr"><title id="ch7-mvf-oview-objmgr.title">The Object Manager</title>	<!-- Section 7.2.2.2 -->
-  <indexterm><primary>Object Manager</primary><secondary>Methods</secondary></indexterm>
-  <indexterm><primary>MVF</primary><secondary>Object Manager</secondary></indexterm>      
-          <para>The Object Manager (<computeroutput>ObjectMgr.rex</computeroutput> in the
+          List. These are discussed below in <xref linkend="chap07-mvfuse-kinds"/>.</para>
+      </section>
+      <!-- End of 7.2.2.1 -->
+      <section id="chap07-mvf-oview-objmgr">
+        <title id="ch7-mvf-oview-objmgr.title">The Object Manager</title>
+        <!-- Section 7.2.2.2 -->
+        <indexterm>
+          <primary>Object Manager</primary>
+          <secondary>Methods</secondary>
+        </indexterm>
+        <indexterm>
+          <primary>MVF</primary>
+          <secondary>Object Manager</secondary>
+        </indexterm>
+        <para>The Object Manager (<computeroutput>ObjectMgr.rex</computeroutput> in the
             <computeroutput>userGuide\exercises\Support</computeroutput> folder) is a "singleton"
           class (there can only logically be one of them) and has the external name "ObjectMgr The".
           It maintains a table (called the "Object Bag") of all instantiated components. The public
@@ -436,14 +466,13 @@ Class-Instance            Model Id                ViewClass-Inst
                   <computeroutput>showModel</computeroutput> method. </para>
             </listitem>
           </itemizedlist>
-        </para>        
-  <para>For further information on the Object Manager, including further detail on the flow of
+        </para>
+        <para>For further information on the Object Manager, including further detail on the flow of
           control when a component is instantiated, see <xref linkend="apx5-mvf-classes-om"
           />.</para>
- 
-</section>	<!-- End of Section 7.2.2.2 -->
-  
-  <section id="chap07-mvf-oview-model">
+      </section>
+      <!-- End of Section 7.2.2.2 -->
+      <section id="chap07-mvf-oview-model">
         <title>The 'Model' Superclass</title>
         <!-- Section 7.2.2.3 -->
         <indexterm>
@@ -538,15 +567,31 @@ familyName: James; firstName: Alfred;
                 </itemizedlist></para>
             </listitem>
           </itemizedlist></para>
-      </section>	<!-- End of Section 7.2.2.3 -->
-
-  <section id="chap07-mvf-oview-view"><title>The 'View' Superclass</title>		<!-- Section 7.2.2.4 -->
-        <para><indexterm><primary>View</primary><secondary>Methods</secondary></indexterm>
-          <indexterm><primary>MVF</primary><secondary>View</secondary></indexterm>
-          <indexterm><primary>Superclasses</primary><secondary>View</secondary></indexterm>
-          <indexterm><primary>RcView</primary></indexterm><indexterm><primary>ResView</primary></indexterm>
-          <indexterm><primary>UdView</primary></indexterm>
-          There are three View superclasses in the
+      </section>
+      <!-- End of Section 7.2.2.3 -->
+      <section id="chap07-mvf-oview-view">
+        <title>The 'View' Superclass</title>
+        <!-- Section 7.2.2.4 -->
+        <para><indexterm>
+            <primary>View</primary>
+            <secondary>Methods</secondary>
+          </indexterm>
+          <indexterm>
+            <primary>MVF</primary>
+            <secondary>View</secondary>
+          </indexterm>
+          <indexterm>
+            <primary>Superclasses</primary>
+            <secondary>View</secondary>
+          </indexterm>
+          <indexterm>
+            <primary>RcView</primary>
+          </indexterm><indexterm>
+            <primary>ResView</primary>
+          </indexterm>
+          <indexterm>
+            <primary>UdView</primary>
+          </indexterm> There are three View superclasses in the
             <computeroutput>Support</computeroutput> folder:
           <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>, and
             <computeroutput>UdView</computeroutput>. They are identical except for their
@@ -569,7 +614,8 @@ familyName: James; firstName: Alfred;
               <para><computeroutput>leaving</computeroutput><indexterm>
                   <primary>leaving method</primary>
                 </indexterm> - This method is automatically invoked by ooDialog when a dialog
-                closes. Its only function is to remove the view from the Object Manager's table. </para>
+                closes. Its only function is to remove the view from the Object Manager's table.
+              </para>
             </listitem>
             <listitem>
               <para><computeroutput>offset</computeroutput><indexterm>
@@ -597,9 +643,9 @@ familyName: James; firstName: Alfred;
             </listitem>
           </itemizedlist>
         </para>
-</section>	<!-- End of Section 7.2.2.4 -->
-
-<section id="chap07-mvf-oview-data">
+      </section>
+      <!-- End of Section 7.2.2.4 -->
+      <section id="chap07-mvf-oview-data">
         <title>The 'GenericFile' Superclass</title>
         <!-- Section 7.2.2.5 -->
         <indexterm>
@@ -641,9 +687,10 @@ familyName: James; firstName: Alfred;
           "record directory" and "file as directory" formats.</para>
       </section>
       <section>
-        <title>Compound Data</title><para>"Compound data" is data assembled from two or more files. In Relational Data Base terms, this
-          means a join. In this exercise, the only example of compound data is the Order component.
-          Thus the <computeroutput>OrderData</computeroutput>
+        <title>Compound Data</title>
+        <para>"Compound data" is data assembled from two or more files. In Relational Data Base
+          terms, this means a join. In this exercise, the only example of compound data is the Order
+          component. Thus the <computeroutput>OrderData</computeroutput>
           <indexterm>
             <primary>OrderData class</primary>
           </indexterm>class uses <computeroutput>GenericFile</computeroutput> in a different way
@@ -706,20 +753,29 @@ familyName: James; firstName: Alfred;
             <computeroutput>list</computeroutput> method of
             <computeroutput>GenericFile</computeroutput> cannot list data from more than one
           file.</para>
-      </section>	<!-- End of Section 7.2.2.5 -->
+      </section>
+      <!-- End of Section 7.2.2.5 -->
+    </section>
+    <!-- End of Section 7.2.2 -->
+  </section>
+  <!-- End of Section 7.2   -->
 
-
-
-</section>  <!-- End of Section 7.2.2 -->
-</section>  <!-- End of Section 7.2   -->
-
-<section id="chap07-mvfuse"><title id="ch7-mvfuse.title">Using the MVF</title>	<!-- Section 7.3 -->
-
-<section id="chap07-mvfuse-kinds"><title id="ch7-mvfuse-kinds.title">Kinds of Component</title>	<!-- Section 7.3.1 -->
-  <indexterm><primary>Kind of component</primary></indexterm>
-  <indexterm><primary>Component</primary><secondary>Kinds of</secondary></indexterm>
-  <para>There are four "kinds" of components in Exercise07: "named", "singleton", "anonymous", and
-        "form". <simplelist>
+<!-- *********************************************************************************************** -->
+  <section id="chap07-mvfuse">
+    <title id="ch7-mvfuse.title">Using the MVF</title>
+    <!-- Section 7.3 -->
+    <section id="chap07-mvfuse-kinds">
+      <title id="ch7-mvfuse-kinds.title">Kinds of Component</title>
+      <!-- Section 7.3.1 -->
+      <indexterm>
+        <primary>Kind of component</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Component</primary>
+        <secondary>Kinds of</secondary>
+      </indexterm>
+      <para>There are four "kinds" of components in Exercise07: "named", "singleton", "anonymous",
+        and "form". <simplelist>
           <member> A "<emphasis role="bold">named</emphasis>" component instance is identified by a
             unique name derived from the instance's data (analogous to a database key). An example
             is <computeroutput>CustomerModel</computeroutput>, where each instance is identified by
@@ -768,8 +824,8 @@ familyName: James; firstName: Alfred;
             singleton or as anonymous - that is, with an instance name of "The" or "A". If "The",
             then only one instance is allowed. If "A", then multiple instances can be
             created.</para>
-        </footnote>As mentioned above, this whole approach of having component names define the type
-        of component is not particularly scalable. A better approach - certainly for
+        </footnote>As mentioned above, this whole approach of having component names define
+        the type of component is not particularly scalable. A better approach - certainly for
         production-strength apps - is to provide a configuration file that names the classes and
         states what type they are. Such a file might look something like this, and would remove any
         need for using class names as the basis for managing instances: <programlisting><![CDATA[<modelClass name="Product",     type="named", dataClass="ProductDB"/>
@@ -780,16 +836,11 @@ familyName: James; firstName: Alfred;
   <viewClass name="WowView">
   <dataClass name="WowData" source="sql">
 </modelClass>]]></programlisting></para>
-
-</section>	<!-- End of Section 7.3.1 -->
-
-<section id="chap07-mvfuse-datafmts"><title id="ch7-mvfuse-datafmts.title">Data Formats</title>	<!-- Section 7.3.2 -->
-  <!-- 
-                - different for Order since have to compose data from two files
-                  (no DBMS!)
-                - Order Data - two files, OrderHeadersFile.txt and OrderLinesFile.txt
-                  The OrderData component merges the two (??)
-  -->
+    </section>
+    <!-- End of Section 7.3.1 -->
+    <section id="chap07-mvfuse-datafmts">
+      <title id="ch7-mvfuse-datafmts.title">Data Formats</title>
+      <!-- Section 7.3.2 -->
       <para>Fields in a file record are separated by a vertical bar character, and field names are
         defined in the first line of the file. All data files have the file extension ".txt".
           <computeroutput>GenericFile</computeroutput> returns a single record (for example a
@@ -822,12 +873,19 @@ familyName: James; firstName: Alfred;
 			+- - - - + - +]]>  </programlisting></para>
       <para>The data format for on Order is a combination of data from three files - OrderData,
         CustomerData, and ProductData - and is described in </para>
-</section>	<!-- End of Section 7.3.2 -->
-</section>  <!-- End of Section 7.3   -->
+    </section>
+    <!-- End of Section 7.3.2 -->
+  </section>
+  <!-- End of Section 7.3   -->
 
-<section id="chap07-msgsender"><title id="ch7-msgsender.title">The Message Sender</title>	<!-- Section 7.4 -->
-    <indexterm><primary>Message Sender</primary></indexterm>
-  <para>The Message Sender is launched from the <emphasis role="bold">Help</emphasis> menu of the
+<!-- *********************************************************************************************** -->
+  <section id="chap07-msgsender" xreflabel="chap07x-msgsender">
+    <title id="ch7-msgsender.title">The Message Sender</title>
+    <!-- Section 7.4 -->
+    <indexterm>
+      <primary>Message Sender</primary>
+    </indexterm>
+    <para>The Message Sender is launched from the <emphasis role="bold">Help</emphasis> menu of the
         <emphasis role="bold">Sales Order Management</emphasis> dialog and is used to "send messages
       to" (aka "invoke methods on") components. It illustrates a useful kind of debugging aid, and
       replaces the special component-specific "startup" scripts provided in Exercise 6. While a
@@ -840,24 +898,163 @@ familyName: James; firstName: Alfred;
     <para>Certain commonly-used target objects and messages are provided in the two combo boxes
         <emphasis role="bold">Target</emphasis> and <emphasis role="bold">Method</emphasis>. For
       repetitive testing of a given component, additional targets and messages can be temporarily
-      "stored" in the combo boxes, so saving in typing time. The combo boxes are re-set when the
-      Message Sender is closed. </para>
-        <para>Finally, in sending to the Object Manager, only the "list" and "showModel" methods are
-      supported. </para>
-</section>	<!-- End of Section 7.4 -->
+      "stored" in the combo boxes, so saving in typing time. Additions to the combo boxes are thrown
+      away when the Message Sender is closed. </para>
+    <para>The "Data" section can be used to send data to a component. However, the data formats sent
+      must be either a string, an array, or a directory. To send an array, place a "|" (vertical
+      bar) character before each array element. To send a directory, use square brackets for
+      indexes.  </para>
+    <para>The Message Sender is implemented as two ooRexx classes: a main class and a separate
+      data-only class for visible strings.  Multiple copies can be launched concurrently. </para>
+  </section>
+  <!-- End of Section 7.4 -->
 
-<section id="chap07-orderform"><title id="ch7-orderform.title">The Order Form</title>		<!-- Section 7.5 -->
-    <indexterm><primary>Order Form dialog</primary></indexterm>
-<para>Order Form - use of ControlObjects - multiple dialogs, one main one, one for each tab. Why? To
-      allow controls on the form itself. </para>
-</section>	<!-- End of Section 7.5 -->
+<!-- *********************************************************************************************** -->
+  <section id="chap07-ordermgr">
+    <title id="ch7-ordermgr.title">Revisiting Re-sizing</title> <!-- Section 7.5 -->
+    <indexterm><primary>Re-sizing</primary><secondary>Dialogs</secondary></indexterm>
+    <indexterm><primary>Re-sizing</primary><secondary>Controls</secondary></indexterm>
+    <indexterm><primary>Control</primary><secondary>Re-sizing</secondary></indexterm>
+    <indexterm><primary>Dialog</primary><secondary>Re-sizing</secondary></indexterm>
+    <para>In Exercise 6, the Order Manager is a re-sizeable dialog, However, when re-sized, all controls 
+      were enlarged (or shrunk) in size. Normally, to have all controls change size is not a requirement;
+      rather controls such as push buttons and edit fields should usually not change their size. 
+      </para>
+    <para>In Exercise 7, only the "container" for the icons is required to re-size. Other controls should not change.
+      This is achieved by "pinning"
+      the other controls so that they do not move or expand/contract. For example, the "Reset Icons" button
+      is pinned to the left side and to the bottom side 
+      of the dialog, so preventing the button from moving away from the bottom-left of the dialog. In addition, 
+      to prevent the button changing its size, the top side of the button is pinned to the bottom side, and the
+      right side is pinned to the left side. Code to define such constraints must be placed in a
+      <computeroutput>defineSizing</computeroutput>
+      <indexterm><primary>defineSizing method</primary></indexterm>
+      <indexterm><primary>Methods</primary><secondary>defineSizing</secondary></indexterm>
+      method which is automatically invoked by ooDialog before the underlying dialog is created. If nothing is defined,
+      the default is to do nothing. Note that in this method, no other method that requires the underlying dialog
+      to exist can be invoked. Note also that this method must return <computeroutput>.false</computeroutput>.</para> 
+    <para>Specifying how controls behave when the dialog is re-sized is done by invoking the
+        <computeroutput>controlSizing</computeroutput> method (a method of ooDialog's
+        <computeroutput>ResizingAdmin</computeroutput> class) on 'self'. As an example, the
+      following code defines the resizing behavior of the "Reset Icons" button on the Order
+      Management dialog: <programlisting>
+        <![CDATA[
+    ::METHOD defineSizing
+      ...
+      self~controlSizing(IDC_ORDMGR_RESET, -
+                         .array~of('STATIONARY', 'LEFT'  ), -
+                         .array~of('STATIONARY', 'BOTTOM'), -
+                         .array~of('MYLEFT',     'LEFT'  ), -
+                         .array~of('MYTOP',      'TOP'   )  -
+      ...)]]>      
+      </programlisting> The <computeroutput>controlSizing</computeroutput>
+      method takes five arguments: a control's resource ID (e.g. the Reset button) and four arrays.
+      The first array addresses the left side of the control, the second the top, the third the
+      right, and the fourth the bottom. So: left, top, right, bottom. For each side there is an
+      array, and each array has three items. First the type of pin. Second the edge of the "other"
+      window (remembering that each dialog and each control is actually a "window"). Third the id of
+      the other window to which this control is pinned, the default being the resource id of the
+      main dialog (in our case the Order Management dialog whose resource id is
+      'IDD_ORDMGR').</para> 
+      <para>So, taking the second parameter as an example, "STATIONARY" means that the left side of the Reset button 
+        must not move away (or towards) the second parameter, i.e. the "LEFT" side of the dialog.</para>
+    <para>Consider the last parameter - the array 'MYTOP', 'TOP'. The keyword 'MYTOP' is a special keyword that
+      can only be used for the bottom edge of a control.  It pins the bottom edge of the control to its top
+      edge. This has the effect of keeping the height of the control constant. Similarly, 'MYLEFT' pins the right side 
+      of the control to the left side, so keeping the width of the control constant. Note that the second parameter
+      is ignored, although it must be a valid sizing parameter.</para>
+    <para>The result of all this is that the Reset button does not move from the bottom left corner of the dialog,
+        and its size remains constant.
+    </para>
+    <para>For further information about the ResizingAdmin class, see the ooDialog Reference. In addition, the folder
+      <computeroutput>Program Files\ooRexx\samples\oodialog\</computeroutput> contains examples of re-sizeable dialogs in 
+      <computeroutput>resizableDialogs\ResizingAdmin</computeroutput>. Here, the program 
+      <computeroutput>augmentedResize.rex</computeroutput> has copious and excellent comments on the various aspects
+      of re-sizing. Worth a read!</para>
+  </section> <!-- End of Section 7.5 -->
+  
+  <!-- *********************************************************************************************** -->
+  <section id="chap07-orderform">
+    <title id="ch7-orderform.title">The Order Form</title>
+    <!-- comment: Section 7.6 --> 
+    <indexterm>
+      <primary>Order Form dialog</primary>
+    </indexterm>
+    <para>The Order Form uses two Property Sheets. Order Form - use of ControlObjects - multiple dialogs, one main one, one for each tab.
+      Why? To allow controls on the form itself.  Note - each page is a separate dialog. One main dia</para>
+    <!-- 
+ ==== From Mark:
+  
+The problem was in the .rc file.  Both dialogs for the pages need to be created not visible.  
+The order lines dialog had the WS_VISIBLE style in the .rc file.  
+Removing the flag fixes your problem.  I reattached the file so you can see the change.
 
-<section id="chap07-next"><title id="ch7-next">Completing the Application</title>               <!-- Section 7.6 -->
-<para>At this point, there is more to do to complete the application. For example, completing the
-      OrderForm, allowing data to be updated, moving as much generic function as possible to
-      superclasses, and removing the need for duplicate view superclasses. It is planned that these
-      functions will be addressed in the next version of this document. </para> 
-  <para>(Mention the "requires list" somewhere!)</para>
-</section>	<!-- End of Section 7.6 -->
+In your main program I updated this comment to read:
 
+  cd1~ownerDialog = dlg
+  /* cd2~ownerDialog = dlg */  /* Owner is assigned when it is executed. */
+
+You can only assign an owner once.  You could do it there and remove the assignment later in the program.
+
+    else do
+      dlg~ownerDialog = self
+      dlg~execute
+      self~positionAndShow(index)
+    end
+
+This sequence would be just as good:
+
+  cd1~ownerDialog = dlg
+   cd2~ownerDialog = dlg 
+
+...
+
+   else do
+        dlg~execute
+      self~positionAndShow(index)
+    end
+
+Regarding your initDialog() comments.  You have 3 dialogs here.  Your main dialog, 
+and the two page dialogs.  The initDialog() for the main dialog is only run once.  
+It is not executed again:
+
+OrderFormView-initDialog-01.
+
+Then the Customer details page dialog is started executing immediately, so the initial page will show.  
+Its initDialog() is also only run once:
+
+CustDetailsDlg-initDialog-01.
+
+Finally, if and only if, you switch to the second page the Order lines dialog is started executing, 
+its initDialog() is only run once:
+
+OrderLinesDlg-initDialog-01
+
+If you run the program, but quit the program without switching to the 2nd page, 
+then you will never execute the Order lines dialog and you will never see the 
+Order lines initDialog() execute because the underlying dialog is never created.
+
+You have 3 dialogs in your program.  These are 3 independent dialogs with 3 independent underlying 
+Windows dialogs created.  (If you visit all the pages.)  The initDialog() method will be invoked only
+1 time for each dialog.  It is invoked when the underlying Windows dialog is created.
+
+Hope that clears things up.  The key thing for the problem you saw is that the page dialogs must
+be created not visible.
+
+  -->
+
+  </section>
+  <!-- End of Section 7.6 -->
+
+<!-- *********************************************************************************************** -->
+  <section id="chap07-next">
+    <title id="ch7-next">Completing the Application</title>
+    <!-- Section 7.7 -->
+    <para>At this point, there is more to do to complete the application. For example, the Order Form
+      is still in the same skeletal form as in Exercise 6; more generic function such as that found  
+      in the List components could be moved to a superclass; the three view superclasses could be 
+      made into a single mixin class; SQL could be used for data-on-disk; updates could properly implemented.
+      It is planned that these functions will be addressed in the next version of this document. </para>
+  </section>
+  <!-- End of Section 7.7 -->
 </chapter>
