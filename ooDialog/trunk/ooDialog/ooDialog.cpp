@@ -3276,22 +3276,18 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
         pcpbd->resizeInfo->inDefineSizing = true;
 
         RexxObjectPtr reply = context->SendMessage0(self, "DEFINESIZING");
-        if ( context->CheckCondition() )
-        {
-            // It is relatively easy to get a syntax error in the defineSizing()
-            // method.  If we do not clear the condition and just abort here,
-            // the condition message will print out to the user.
-            result = TheOneObj;
-            pcpbd->resizeInfo->inDefineSizing = false;
-            goto done_out;
-        }
 
         if ( ! isInt(0, reply, context->threadContext) )
         {
-            baseClassInitializationException(context, "ResizingAdmin", "defineSizing failed");
+            // It is relatively easy to get a syntax error in the defineSizing()
+            // method.  If we have a condition, we don't want to replace it with
+            // the base class initialization condition
+            if ( ! context->CheckCondition() )
+            {
+                baseClassInitializationException(context, "ResizingAdmin", "defineSizing failed");
+            }
+
             result = TheOneObj;
-            pcpbd->resizeInfo->inDefineSizing = false;
-            goto done_out;
         }
 
         pcpbd->resizeInfo->inDefineSizing = false;

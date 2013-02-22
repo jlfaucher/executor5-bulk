@@ -4881,7 +4881,11 @@ RexxMethod9(RexxObjectPtr, userpspdlg_init, OPTIONAL_RexxObjectPtr, dlgData, OPT
     }
     else
     {
-        baseClassInitializationException(context, USERPSPDIALOG_CLASS);
+        // Let syntax conditions trickle through ...
+        if ( ! context->CheckCondition() )
+        {
+            baseClassInitializationException(context, USERPSPDIALOG_CLASS);
+        }
     }
 
 done_out:
@@ -4941,7 +4945,11 @@ RexxMethod9(RexxObjectPtr, rcpspdlg_init, RexxStringObject, scriptFile, RexxObje
     }
     else
     {
-        baseClassInitializationException(context, RCPSPDIALOG_CLASS);
+        // Let syntax conditions trickle through ...
+        if ( ! context->CheckCondition() )
+        {
+            baseClassInitializationException(context, RCPSPDIALOG_CLASS);
+        }
     }
 
 done_out:
@@ -5048,7 +5056,11 @@ RexxMethod7(RexxObjectPtr, respspdlg_init, RexxStringObject, dllFile, RexxObject
     }
     else
     {
-        baseClassInitializationException(context, RESPSPDIALOG_CLASS);
+        // Let syntax conditions trickle through ...
+        if ( ! context->CheckCondition() )
+        {
+            baseClassInitializationException(context, RESPSPDIALOG_CLASS);
+        }
     }
 
 done_out:
@@ -6526,8 +6538,6 @@ RexxMethod7(RexxObjectPtr, cdi_init, OPTIONAL_RexxObjectPtr, owner, OPTIONAL_log
     {
         goto  done_out;
     }
-
-
 
 done_out:
     return NULLOBJECT;
