@@ -168,10 +168,11 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
 
         setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)pcpbd);
-
+        printf("RexxDlgProc::WM_INITDIALOG pcpbd=%p hDlg=%p\n\n", pcpbd, hDlg);
         if ( pcpbd->isCustomDrawDlg && pcpbd->idsNotChecked )
         {
             pcpbd->hDlg = hDlg;
+            printf("RexxDlgProc::WM_INITDIALOG SHOULD NOT SEE THIS MESSAGE\n");
 
             // We don't care what the outcome of this is, customDrawCheckIDs
             // will take care of aborting this dialog if the IDs are bad.
@@ -445,6 +446,7 @@ LRESULT handleWmUser(pCPlainBaseDialog pcpbd, HWND hDlg, UINT uMsg, WPARAM wPara
     {
         case WM_USER_CREATECHILD:
         {
+        printf("WM_USER_CREATE_CHILD       pcpbd=%p hDlg=%p\n\n", pcpbd, hDlg) ;
             HWND hChild = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)lParam, hDlg, (DLGPROC)RexxDlgProc,
                                                     (LPARAM)pcpbd);
             ReplyMessage((LRESULT)hChild);

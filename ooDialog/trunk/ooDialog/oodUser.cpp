@@ -99,7 +99,7 @@ DWORD WINAPI WindowUsrLoopThread(LoopThreadArgs * args)
     if ( pcpbd->hDlg )
     {
         pcpbd->childDlg[0] = pcpbd->hDlg;
-        printf("WindowUsrLoopThread() pcpbd=%p pcpbd->hDlg=%p pcbdp->childDlg[0]=%p\n", pcpbd, pcpbd->hDlg, pcpbd->childDlg[0]);
+        printf("WindowUsrLoopThread()      pcpbd=%p pcpbd->hDlg=%p pcbdp->childDlg[0]=%p\n\n", pcpbd, pcpbd->hDlg, pcpbd->childDlg[0]);
         MSG msg;
         BOOL result;
         pcpbd->isActive = true;
@@ -1514,7 +1514,7 @@ RexxMethod3(logical_t, dyndlg_startParentDialog, uint32_t, iconID, logical_t, mo
 
     if ( pcpbd->hDlg )
     {
-        printf("startParentDialog() pcpbd=%p pcpbd->hDlg=\n", pcpbd, pcpbd->hDlg);
+        printf("startParentDialog()        pcpbd=%p pcpbd->hDlg=\n\n", pcpbd, pcpbd->hDlg);
         setDlgHandle(pcpbd);
 
         // Set the thread priority higher for faster drawing.
@@ -1640,7 +1640,7 @@ RexxMethod3(RexxObjectPtr, dyndlg_startChildDialog, POINTERSTRING, basePtr, uint
     }
 
     pcpbd->childDlg[childIndex] = hChild;
-    printf("startChildDialog() pcpbd=%p pcpbd->hDlg=%p hChild=%p idx=%d pcbdp->childDlg[idx]=%p\n",
+    printf("startChildDialog()         pcpbd=%p pcpbd->hDlg=%p\nhChild=%p idx=%d pcbdp->childDlg[idx]=%p\n\n",
            pcpbd, pcpbd->hDlg, hChild, childIndex, pcpbd->childDlg[childIndex]);
     result = pointer2string(context, hChild);
 
