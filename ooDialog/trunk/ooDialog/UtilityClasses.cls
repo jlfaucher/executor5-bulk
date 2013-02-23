@@ -1725,7 +1725,7 @@
    return ret
 
 ::routine PasswordBox public
-   use arg msg, title, default, size
+   use arg msg, title, default = "", size = 0
    dlg = .Passwordbox~new(msg,title,default,size)
    ret = dlg~execute
    drop dlg
