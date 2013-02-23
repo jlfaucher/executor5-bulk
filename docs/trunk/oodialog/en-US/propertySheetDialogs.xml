@@ -47,6 +47,15 @@
 <indexterm><primary>PropertySheet dialogs</primary></indexterm>
 <indexterm><primary>Control dialogs</primary></indexterm>
 <para>
+  ooDialog supports two approaches to embedding content in a <xref linkend="clsTab"/> control. Although the appearance of a
+  dialog using either approach can appear almost exactly the same, there are distinct differences in the two approaches.
+  These approaches are discussed in this chapter.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Property Sheet:</emphasis></term>
+  <listitem>
+  <para>
   A Windows <emphasis role="italic">property sheet</emphasis> is a main window containing one or more overlapping
   windows. Each of the overlapping windows is called a <emphasis role="italic">page</emphasis>.  The main window is
   called a property sheet, signifying a property sheet is used to set <emphasis role="italic">properties</emphasis>.  In
@@ -56,14 +65,19 @@
   ooDialog implements property sheets through the <xref linkend="clsPropertySheetDialog"/> and
   the <xref linkend="clsPropertySheetPage"/> classes.
 </para>
-<para>
-  Windows has a style for dialogs that allows the dialog to work well as a dialog within a top-level dialog. The
-  ooDialog framework has support for this type of dialog and calls them <emphasis role="italic">control</emphasis>
-  dialogs because they function like a dialog control within the top-level dialog. These dialogs work well as the
-  content for tab control pages. The implementation for control dialogs is primarily through the
- <xref linkend="clsControlDialog"/> mixin class and the subclasses that inherit the
-  <computeroutput>ControlDialog</computeroutput> class.
-</para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Control Dialogs:</emphasis></term>
+  <listitem>
+  <para>
+    Windows also has a style for dialogs that allows the dialog to work well as a dialog within a top-level dialog. The
+    ooDialog framework has support for this type of dialog and calls them <emphasis role="italic">control</emphasis>
+    dialogs because they function like a dialog control within the top-level dialog. These dialogs work well as the
+    content for tab control pages. The implementation for control dialogs is primarily through the <xref
+    linkend="clsControlDialog"/> mixin class and the subclasses that inherit the
+    <computeroutput>ControlDialog</computeroutput> class.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 
 
 <section id="sctControlDialogs" xreflabel="Control"><title>Control Dialogs</title>
