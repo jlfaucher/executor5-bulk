@@ -171,7 +171,7 @@
       end
       my = my + stepy; i = i + 1
       parse var inp rb inp
-      if cx = 0 then do
+      if rb \== '', cx = 0 then do
          s = self~getTextSizeDu(rb)
          len = s~width
          if len > lastlen then lastlen = len
