@@ -36,28 +36,28 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  This example shows how to embedd a drop down list combo box in a list-view,
- *  to allow the user to edit the subitems in the list-view.
+ *  This example shows how to embedd an edit control in a list-view, to allow
+ *  the user to edit the subitems in the list-view.
  *
  *  To activate the editing, the user clicks once on a subitem, then clicks one
- *  more time to activate the editing.  A drop down list combo box takes the
- *  place of the subitem in the list-view.  With a drop down list combo box the
- *  user can only select an item from the list.
+ *  more time to activate the editing.  An edit control takes the place of the
+ *  subitem in the list-view.
  *
  *  When the user is in the editing mode, hitting enter, escape, or clicking the
  *  mouse any where else on the scren, ends the editing.  If enter is hit, the
  *  changes are accepted, otherwise, the changes are abandoned.
  *
- *  The key to how this works is creating an invisible combo box, which is then
- *  made a child of the list-view.  When editing mode is entered, the combo box
- *  positioned over the subitem, sized to the size of the subitem, and made
- *  visible.  When editing is over, the combo box is made invisible again.
+ *  The key to how this works is creating an invisible edit control, which is
+ *  then made a child of the list-view.  When editing mode is entered, the edit
+ *  control is positioned over the subitem, sized to the size of the subitem,
+ *  and made visible.  When editing is over, the edit control is made invisible
+ *  again.
  *
- *  The Rexx combo box, after it is made a child of the list-view, can be used
- *  as normal, with one caveat: Since it is a child of the list-view, the combo
- *  box no longer sends its event nofications to the dialog.  They are sent to
- *  the list-view.  This means that connecting the combo box events will have no
- *  effect.
+ *  The Rexx edit control, after it is made a child of the list-view, can be
+ *  used as normal, with one caveat: Since it is a child of the list-view, the
+ *  edit control no longer sends its event nofications to the dialog.  They are
+ *  sent to the list-view.  This means that connecting the edit control events
+ *  will have no effect.
  */
 
     -- Set the defaults for this application.  Use the global .constDir 'O'nly,
@@ -69,8 +69,8 @@
 
     dlg = .SimpleLV~new
     if dlg~initCode = 0 then do
-          dlg~create(30, 30, 325, 200, "In-place Editing List View", "VISIBLE")
-          dlg~execute("SHOWTOP")
+        dlg~create(30, 30, 325, 200, "In-place Editing List View", "VISIBLE")
+        dlg~execute("SHOWTOP")
     end
 
 return 0
@@ -82,11 +82,11 @@ return 0
 
 /** defineDialog()
  *
- * Standard defineDialog. We create a combo box, list-view, and ok button in
- * the dialog template.  Note the combo box is created invisible.
+ * Standard defineDialog. We create an edit control, list-view, and ok button in
+ * the dialog template.  Note the edit control is created invisible.
  *
- * We add a flag to keep track of whether the combo box is visisble or not.  We
- * also connect the events we need to monitor.
+ * We add a flag to keep track of whether the edit control is visisble or not.
+ * We also connect the events we need to monitor.
  */
 ::method defineDialog
   expose editVisible
@@ -99,23 +99,22 @@ return 0
 
   self~connectListViewEvent(IDC_LISTVIEW, "CLICK", onClick)
   self~connectListViewEvent(IDC_LISTVIEW, "BEGINSCROLL", onBeginScroll)
-    self~connectListViewEvent(IDC_LISTVIEW, "ENDSCROLL", onBeginScroll)
+  self~connectListViewEvent(IDC_LISTVIEW, "ENDSCROLL", onBeginScroll)
 
 
 /** initDialog()
  *
- *  Here we do 2 normal things, populate the list-view and populate the combo
- *  box.
+ *  Here we do 1 normal thing, populate the list-view.
  *
  *  The rest is what makes this work. The isGrandchild() method sets up a
  *  connection to some of the event notifications sent by the grandchild
  *  control, to a Rexx method in this dialog.  We need that event connection to
  *  monitor the Esc, Enter key events, and the lost focus event.
  *
- *  The other key thing we do is set the parent of the combo box to be the list
- *  view.  This parent / child relation is what keeps the combo box drawn
- *  correctly, it ensures that the combo box is drawn over the top of the list
- *  view.
+ *  The other key thing we do is set the parent of the edit control to be the
+ *  list view.  This parent / child relation is what keeps the edit control
+ *  drawn correctly, it ensures that the edit control is drawn over the top of
+ *  the list view.
  */
 ::method initDialog
     expose list edit
@@ -129,7 +128,6 @@ return 0
     self~setUpListView(list)
 
 
-
 /** onClick()
  *
  *  This is the event handler for a click on the list-view.  We track the clicks
@@ -137,14 +135,11 @@ return 0
  *  we enter editing mode.
  *
  *  When we enter editing mode, we get the rectangle of the subitem we are going
- *  to edit, size the combo box to that size, position the combo box over the
- *  subitem, and make the combo box visible.
+ *  to edit, size the edit control to that size, position the edit control over
+ *  the subitem, and make the edit control visible.
  *
- *  We set our flag so that we know the combo box is now visible, and assign the
- *  focus to the combo box.  And that's it.
- *
- *  Notice that we set the height of the combo box to 4 times the height of the
- *  subitem.  This allows space for the drop down.
+ *  We set our flag so that we know the edit control is now visible, and assign
+ *  the focus to the edti control.  And that's it.
  */
 ::method onClick unguarded
   expose list edit editVisible lastIdx lastCol
@@ -173,18 +168,18 @@ return 0
 /** onBeginScroll()
  *
  *  This is the event handler for the begin and end scroll events.  When the
- *  user is in the editing mode and then moves a way from the edit control, we
+ *  user is in the editing mode and then moves away from the edit control, we
  *  interpret that as canceling the edit.
  *
  *  This works fine if the user tabs out of the edit control, used the mouse to
- *  click outside the edit control, brings somer other application to the fore-
- *  ground.  But, for some reason, clicking on the scroll bars fro the list-view
+ *  click outside the edit control, brings some other application to the fore-
+ *  ground.  But, for some reason, clicking on the scroll bars for the list-view
  *  does not trigger the onEditGrandChildEvent() handler.  This seriously messes
  *  up the logic.
  *
  *  The begin and / or end scroll event is sent as soon as the user clicks on
  *  the scroll bars.  So, we connect that event and use the event handler to
- *  hide the combo box if it is visible.
+ *  hide the edit control if it is visible.
  */
 ::method onBeginScroll unguarded
     expose editVisible edit
@@ -194,12 +189,11 @@ return 0
     return 0
 
 
-
 /** onEditGrandChildEvent()
  *
  *  This is the event handler for events that happen in a grandchild control.
  *  There are 4 events that get forwarded on to the grandfathe dialog.  The Esc,
- *  Tab, and Enter key events, and the lost focus event.  Which event is
+ *  Tab, and Enter key events, and the lost focus event.  Which event, is
  *  specified by the 2nd argument, which uses a keyword to denote the event.
  *
  *  The isGrandChild() method automatically sets up the connection to the 4
@@ -225,7 +219,7 @@ return 0
 
 /** hideEdit()
  *
- *  Makes the edit control invisible, removes its text, and, maybe assign, the
+ *  Makes the edit control invisible, removes its text, and, maybe, assigns the
  *  focus back to the list-view.  This is done each time the editing mode is
  *  ended.
  */
