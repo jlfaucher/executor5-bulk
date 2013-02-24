@@ -123,16 +123,21 @@ Z_FLAGS = -Zd
 !ENDIF
 
 #
+# Set up the optimize compiler flags used for a release build.
+#
+!IF "$(CPU)" == "X64"
+OPTIMIZE = /O2
+!ELSE
+OPTIMIZE = /O1
+!ENDIF
+
+#
 # set up the compile flags used in addition to the $(cflags) windows sets
 #
 !IF "$(NODEBUG)" == "1"
-my_cdebug = $(Z_FLAGS) -O2 /Gr /DNDEBUG /Gs #Gs added by IH
-#added by IH for the NT queue pull problem
-cflags_noopt=/nologo /D:_X86_ /DWIN32 $(WARNING_FLAGS) -c /Ox /Gf /Gr /DNDEBUG /Gs /DNULL=0
+my_cdebug = $(Z_FLAGS) $(OPTIMIZE) /Gr /DNDEBUG #Gs added by IH, Gs is included in both /O1 and /O2
 !ELSE
 my_cdebug = -Zi /Od /Gr /D_DEBUG /DEBUGTYPE:CV
-#added by IH for the NT queue pull problem
-cflags_noopt=/nologo /D:_X86_ /DWIN32 $(WARNING_FLAGS) -c $(my_cdebug) /DNULL=0
 !ENDIF
 
 cflags_common=/EHsc /nologo /D:_X86_ /DWIN32 $(VER_DEF) $(WARNING_FLAGS) -c $(my_cdebug) $(MK_ASM) $(RXDBG) /DNULL=0
