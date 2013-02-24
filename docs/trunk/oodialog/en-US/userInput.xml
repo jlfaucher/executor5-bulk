@@ -279,10 +279,9 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <para>
   A BrowseForFolder object represents the Windows <emphasis role="italic">Browse For Folder</emphasis> common dialog. The
   Windows operating system provides a number of common dialogs for use by applications to allow presenting the user with an
-  unified generic method to do common tasks. The Browse For Folder dialog is specifically used to allow the user to open or
-  choose folders.
+  unified generic method to do common tasks. The purpose of the Browse For Folder dialog is specifically to allow the user to
+  open or choose folders.
 </para>
-
 
 <section id="sctShellCOMConsiderations"><title>Shell / COM considerations</title>
 <indexterm><primary>BrowseForFolder class</primary><secondary>Shell / COM considerations</secondary></indexterm>
@@ -327,12 +326,13 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   </itemizedlist>
   <para>
     As long as this is all done on one thread, there is no problem. The ooDialog framework initializes COM when the object is
-    instantiated and releases COM when the underlying dialog is closed, when the <xref linkend="mthGetFolder"/> method returns.
-    However, if the programmer wants, or needs, to implement a different usage pattern, then it becomes the programmer's
-    responsibility to ensure that COM is initialized and released properly on each thread. The
-    <computeroutput>BrowseForFolder</computeroutput> class provides the tools the programmer needs to do that. If COM is not
-    initialized on a thread the browse for folder object is running on, then methods invoked on the object may fail. If COM is
-    not released on a thread it <emphasis role="italic">was</emphasis> initialized on, then system resource leaks can occur.
+    instantiated and releases COM when the underlying dialog is closed, that is when the <xref linkend="mthGetFolder"/> or
+    <xref linkend="mthGetItemIDList"/> method returns. However, if the programmer wants, or needs, to implement a different
+    usage pattern, then it becomes the programmer's responsibility to ensure that COM is initialized and released properly on
+    each thread. The <computeroutput>BrowseForFolder</computeroutput> class provides the tools the programmer needs to do
+    that. If COM is not initialized on a thread the browse for folder object is running on, then methods invoked on the
+    object may fail. If COM is not released on a thread it <emphasis role="italic">was</emphasis> initialized on, then system
+    resource leaks can occur.
   </para>
   <para>
     This is not that complicated and is not really that different than other areas of ooDialog concerning system resources. If
@@ -761,7 +761,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry><xref linkend="clsBrowseForFolder"/> </entry>
+<entry><xref linkend="mthNewClsBrowseForFolder"/></entry>
 <entry>Instantiates a new <computeroutput>BrowseForFolder</computeroutput> object</entry>
 </row>
 <row>
@@ -837,7 +837,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 </para>
 </section>
 
-<section id="mthNewClsBrowseForFolder"><title>new (Class Method)</title>
+<section id="mthNewClsBrowseForFolder" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>BrowseForFolder class</secondary></indexterm>
 <indexterm><primary>BrowseForFolder class</primary><secondary>new</secondary></indexterm>
 <programlisting>
@@ -1197,10 +1197,155 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a browse for folder object that is reused for the life-time of the dialog.  In the onBrowse() method,
+    if the method is not running on the same thread as the BrowseForFolder object was instantiated on, then COM is
+    initialized and released each time the object is used.  If it is the same thread, COM is not initialized and not
+    released.
+  </para>
+  <para>
+    Finally, during the leaving() method, if the method is running on the same thread as the browse for folder was
+    instantiated on, the item <link linkend="varItemIDList">ID</link> list and COM are released.
+  </para>
+  <para>
+    Note that this example does run correctly. But, if it were to turn out that the leaving() method was not running on the
+    same thread as the define() method had run on, then COM and the item ID list would not be released correctly. It was only
+    after some testing that it was determined that the program ran correctly:
 <programlisting>
 <![CDATA[
 
+::method defineDialog
+  expose bff pidl
+
+  ...
+
+  say 'defineDialog() thread ID' .DlgUtil~threadID
+  say
+  bff = .BrowseForFolder~new
+  bff~usePathForHint = .true
+  bff~hint = ''
+
+  pidl = .nil
+
+::method onBrowse unguarded
+  expose bff pidl
+
+  say 'onBrowse() thread:' .DlgUtil~threadID
+  say
+
+  newThread = (bff~initialThread == .DlgUtil~threadID)
+
+  if newThread then bff~initCOM
+
+  if pidl \== .nil then bff~releaseItemIDList(pidl)
+  if bff~owner \== .nil then bff~owner = self
+
+  pidl = bff~getItemIDList(.true)
+
+  if pidl \== .nil then say 'The user picked:' bff~getDisplayName(pidl)
+  else say 'The user canceled'
+  say
+
+  if newThread then bff~releaseCOM
+
+  return 0
+
+::method leaving unguarded
+  expose bff pidl
+
+  if bff~initialThread == .DlgUtil~threadID then do
+      say 'leaving() thread ID' .DlgUtil~threadID
+      if pidl \== .nil then bff~releaseItemIDList(pidl)
+      bff~releaseCOM
+  end
+
+/* Output from a typical session:
+
+defineDialog() thread ID 4032
+
+onBrowse() thread: 3320
+
+The user picked: C:\Rexx\ooRexx.3.0.0.release
+
+onBrowse() thread: 3320
+
+The user canceled
+
+onBrowse() thread: 3320
+
+The user picked: U:\PictureFiles
+
+leaving() thread ID 4032
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  <para>
+    The recommendation is to simply instantiate a browse for folder object, use it, and dispose of it. The above example
+    could have just as easily, and perhaps more easily, been written this way:
+
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  ...
+
+  say 'defineDialog() thread ID' .DlgUtil~threadID
+  say
+  return 0
+
+
+::method ok unguarded
+
+  say 'onBrowse() thread:' .DlgUtil~threadID
+  say
+
+  bff = .BrowseForFolder~new
+  bff~usePathForHint = .true
+  bff~hint = ''
+  bff~owner = self
+
+  pidl = bff~getItemIDList(.true)
+
+  if pidl \== .nil then say 'The user picked:' bff~getDisplayName(pidl)
+  else say 'The user canceled'
+  say
+
+  if pidl \== .nil then bff~releaseItemIDList(pidl)
+  bff~releaseCOM
+
+  return 0
+
+::method leaving unguarded
+
+  say 'leaving() thread ID' .DlgUtil~threadID
+  return 0
+
+/* Output from a typical session:
+
+defineDialog() thread ID 3580
+
+onBrowse() thread: 3960
+
+The user picked: C:\Rexx\ooRexx.3.2.0.debug
+
+onBrowse() thread: 3960
+
+The user picked: U:\MovieFiles\2013\Santa Fe New Mexico
+
+onBrowse() thread: 3960
+
+The user canceled
+
+onBrowse() thread: 3960
+
+The user picked: C:\Tools\TortoiseSVN
+
+leaving() thread ID 3580
+
+*/
 
 ]]>
 </programlisting>
@@ -1425,6 +1570,10 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <para>
     If the browse for folder dialog has an owner dialog, then when the browse dialog is displayed the operating system will
     disable the owner dialog until the user has closed the browse dialog. This is normally the behaviour wanted.
+  </para>
+  <para>
+    Note that setting the <emphasis role="italic">owner</emphasis> attribute before the underlying ownere dialog has been
+    created will have not effect.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
