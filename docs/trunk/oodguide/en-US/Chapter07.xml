@@ -112,8 +112,8 @@
       However, although data can be changed in some dialogs, the changed data does not (in this
       exercise) update the files. </para>
     <para>Also, note that the <emphasis role="bold">Help</emphasis> menu on the main Sales Order
-      Management dialog now includes an option <xref linkend="chap07x-msgsender"/> <emphasis role="bold">Message Sender</emphasis>
-      (discussed in more detail in <xref linkend="chap07-msgsender"/>. Click this option and a
+      Management dialog now includes an option <emphasis role="bold">Message Sender</emphasis>
+      (discussed in more detail in <xref linkend="chap07-msgsender"/>). Click this option and a
       "Message Sender" dialog opens. This sends messages to (invoke methods on) the various
       components, and is a very useful debugging tool that is an alternative to the "stand-alone"
       function used in Exercise 6. For example, try sending a "query" message to the Customer whose
@@ -467,7 +467,7 @@ Class-Instance            Model Id                ViewClass-Inst
             </listitem>
           </itemizedlist>
         </para>
-        <para>For further information on the Object Manager, including further detail on the flow of
+        <para>For further information on the Object Manager, including more detail on the flow of
           control when a component is instantiated, see <xref linkend="apx5-mvf-classes-om"
           />.</para>
       </section>
@@ -879,7 +879,7 @@ familyName: James; firstName: Alfred;
   <!-- End of Section 7.3   -->
 
 <!-- *********************************************************************************************** -->
-  <section id="chap07-msgsender" xreflabel="chap07x-msgsender">
+  <section id="chap07-msgsender">
     <title id="ch7-msgsender.title">The Message Sender</title>
     <!-- Section 7.4 -->
     <indexterm>
@@ -980,68 +980,22 @@ familyName: James; firstName: Alfred;
     <indexterm>
       <primary>Order Form dialog</primary>
     </indexterm>
-    <para>The Order Form uses two Property Sheets. Order Form - use of ControlObjects - multiple dialogs, one main one, one for each tab.
-      Why? To allow controls on the form itself.  Note - each page is a separate dialog. One main dia</para>
-    <!-- 
- ==== From Mark:
-  
-The problem was in the .rc file.  Both dialogs for the pages need to be created not visible.  
-The order lines dialog had the WS_VISIBLE style in the .rc file.  
-Removing the flag fixes your problem.  I reattached the file so you can see the change.
-
-In your main program I updated this comment to read:
-
-  cd1~ownerDialog = dlg
-  /* cd2~ownerDialog = dlg */  /* Owner is assigned when it is executed. */
-
-You can only assign an owner once.  You could do it there and remove the assignment later in the program.
-
-    else do
-      dlg~ownerDialog = self
-      dlg~execute
-      self~positionAndShow(index)
-    end
-
-This sequence would be just as good:
-
-  cd1~ownerDialog = dlg
-   cd2~ownerDialog = dlg 
-
-...
-
-   else do
-        dlg~execute
-      self~positionAndShow(index)
-    end
-
-Regarding your initDialog() comments.  You have 3 dialogs here.  Your main dialog, 
-and the two page dialogs.  The initDialog() for the main dialog is only run once.  
-It is not executed again:
-
-OrderFormView-initDialog-01.
-
-Then the Customer details page dialog is started executing immediately, so the initial page will show.  
-Its initDialog() is also only run once:
-
-CustDetailsDlg-initDialog-01.
-
-Finally, if and only if, you switch to the second page the Order lines dialog is started executing, 
-its initDialog() is only run once:
-
-OrderLinesDlg-initDialog-01
-
-If you run the program, but quit the program without switching to the 2nd page, 
-then you will never execute the Order lines dialog and you will never see the 
-Order lines initDialog() execute because the underlying dialog is never created.
-
-You have 3 dialogs in your program.  These are 3 independent dialogs with 3 independent underlying 
-Windows dialogs created.  (If you visit all the pages.)  The initDialog() method will be invoked only
-1 time for each dialog.  It is invoked when the underlying Windows dialog is created.
-
-Hope that clears things up.  The key thing for the problem you saw is that the page dialogs must
-be created not visible.
-
-  -->
+    <para>Open an Order Form from the icon in the Order Management dialog. Although still not functional,
+      the format of the dialog <emphasis role="italic">looks</emphasis> much more like a usable sales order
+      form than in the previous exercise. The main part of the form is a Tab Control with two tabs - one for 
+      entering customer details, the other for product details. 
+      <indexterm><primary>Tab Control</primary></indexterm>
+      <indexterm><primary>Property Sheet</primary></indexterm>
+      <indexterm><primary>Property Sheet Page</primary></indexterm>
+      ooDialog supports two approaches to embedding content in a Tab Control: a Property Sheet Dialog with a
+      Property Sheet Page for each tab, and a Resource Dialog with a Control Dialog for each tab. .
+      See the ooDialog Reference for a full description. One of the differences is that while the Property Sheet Dialog approach 
+      is simpler (more is handled by the operating system), it does not allow for interesting controls to be placed
+      on the main dialog outside the Tab Control. Thus the alternate approach - Control Dialogs - is used for the Order Form.
+    </para>
+    <para>The Order Form consists of three dialogs - the main Resource File Dialog (<computeroutput>RcDialog</computeroutput>)
+      plus two Control Dialogs (<computeroutput>RcControlDialog</computeroutput>) in a Tab Control.</para>
+    
 
   </section>
   <!-- End of Section 7.6 -->

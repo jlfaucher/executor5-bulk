@@ -42,13 +42,11 @@
     #
     #########################################################################
 -->
-
-<!-- Appendix 05 - The Model-View Framework (MVf)		  v01-00 14Jan13
+<!-- Appendix 05 - The Model-View Framework (MVf)		  v01-00 19Feb13
      An overview of the internals of the Model-View Framework (MVF).
 
      Changes:
-     v01-00 20Dec12: First version.
-            14Jan13: Additional text.
+     v01-00 19Feb13: First version.
 
      Notes:
      Include overview of ObjectMgr.
@@ -66,10 +64,12 @@
      A5.5    * The 'Requires' List                                              apx5-mvf-reqlist
 
 -->
-
 <appendix id="apx5-mvf">
   <title id="apx5-mvf.title">Model-View Framework Internals</title>
-  <indexterm><primary>Model-View Framework</primary><secondary>Internals</secondary></indexterm>
+  <indexterm>
+    <primary>Model-View Framework</primary>
+    <secondary>Internals</secondary>
+  </indexterm>
   <para>This appendix provides an overview of the internals of the Model-View Framework (MVF)
     introduced in <xref linkend="chapSeven"/>. It should really be called "Model-View-Data
     Framework", since it also encompasses data components; however, historically such frameworks
@@ -85,38 +85,49 @@
         <para>Using the MVF </para>
       </listitem>
     </itemizedlist></para>
-
-<!-- Section A5.1: Components, Classes, Files and Folders -->			<!-- Section A5.1 -->
+  <!-- Section A5.1: Components, Classes, Files and Folders -->
+  <!-- Section A5.1 -->
   <section id="apx5-mvf-ccff">
-  <title id="apx5-mvfi-ccff.title">Components, Classes, Files, and Folders</title>
+    <title id="apx5-mvfi-ccff.title">Components, Classes, Files, and Folders</title>
     <para>A "component", then, is one of three kinds: a Model, View, or Data component. A component
       may have more than one class. For example, the "ProductView" component (in the
         <computeroutput>Exercise07\Product</computeroutput> folder) consists of three classes:
-        <computeroutput>ProductView</computeroutput>,  <computeroutput>AboutDialog</computeroutput>,
+        <computeroutput>ProductView</computeroutput>, <computeroutput>AboutDialog</computeroutput>,
       and <computeroutput>HRSpv</computeroutput>. The first of these is the "main" class in the
-      component, the other two being "subsidiary" classes.
-      <indexterm><primary>Business Component</primary></indexterm>
-      <indexterm><primary>Main class</primary></indexterm>
-      <indexterm><primary>Subsidiary class</primary></indexterm>
-      <indexterm><primary/></indexterm>
-      This component, together with the ProductModel, ProductListModel,
+      component, the other two being "subsidiary" classes. <indexterm>
+        <primary>Business Component</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Main class</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Subsidiary class</primary>
+      </indexterm>
+      <indexterm>
+        <primary/>
+      </indexterm> This component, together with the ProductModel, ProductListModel,
       ProductListView, and ProductData components make up the "Product Business Component". Thus a
       "business component" consists of one or more components, each of which has a "main" class and
       nought or more subsidiary classes. Thus (by design) a Business Component is a collection of
-      components that implement all and only a significant business concept. Finally, a business
-      component is packaged within a folder that bears its name. And components are packaged in .rex
-      files, Thus the Product business component is the folder
-        <computeroutput>Product</computeroutput> which contains a number of files, most of them
+      components that implements all and only a significant business concept. <footnote>
+        <para>The definition of a "significant business concept" in the context of components has
+          been addressed in a number of sources, including "Enterprise Service-Oriented
+          Architectures", McGovern, Sims, Jain &amp; Little, Springer 2006.</para>
+      </footnote>Finally, a business component is packaged within a folder that bears its name, the
+      individual components being packaged in .rex files. Thus the Product business component is the
+      folder <computeroutput>Product</computeroutput> which contains a number of files, most of them
       executables such as <computeroutput>ProductModelsData.rex</computeroutput> which contains the
-      <computeroutput>ProductModel</computeroutput>, <computeroutput>ProductListModel</computeroutput>,
-      and <computeroutput>ProductData</computeroutput> components. </para>
-    <para>For each component, one class - the "main" class - is made known by name to
-        <computeroutput>ObjectMgr</computeroutput>.</para>
-    </section>      <!--  End of A5.1.  -->
-
-  <section id="app5-mvf-classes">                                               <!-- A5.2 -->
+        <computeroutput>ProductModel</computeroutput>,
+        <computeroutput>ProductListModel</computeroutput>, and
+        <computeroutput>ProductData</computeroutput> components. </para>
+  </section>
+  <!--  End of A5.1.  -->
+  <section id="apx5-mvf-classes">
+    <!-- A5.2 -->
     <title id="apx5-mvf-classes.title">MVF Classes</title>
-    <indexterm><primary>Object Manager</primary></indexterm>
+    <indexterm>
+      <primary>Object Manager</primary>
+    </indexterm>
     <para>The Model-View Framework (MVF) manages the components that are assembled to make up an
       application. There are two main parts to the MVF: first a management class called the "Object
       Manager" (<computeroutput>ObjectMgr.rex</computeroutput>), and secondly a set of superclasses
@@ -125,33 +136,45 @@
         <computeroutput>ResView.rex</computeroutput>, and
         <computeroutput>RcView.rex</computeroutput>. The three View superclasses are identical
       except for their superclasses - <computeroutput>UserDialog</computeroutput>,
-        <computeroutput>ResDialog</computeroutput>, and <computeroutput>RcDialog</computeroutput>.
-      These should properly be mixins rather than different files, and a future version of this
-      Guide will take this approach. All MVF classes are in the
-        <computeroutput>Exercise07/Support</computeroutput> folder). </para>
-
-  <section id="apx5-mvf-classes-om">						<!-- A5.2.1 -->
-    <title id="apx5-mvf-classes-om.title">The Object Manager</title>
-    <indexterm><primary>Object Manager</primary></indexterm>
-    <indexterm><primary>MVF classes</primary><secondary>Object Manager</secondary></indexterm>
-
-    <para>xxx</para>
-  </section>	<!-- End of A5.2.1 -->
-
-  <section id="apx5-mvf-classes-vm">						<!-- A5.2.2 -->
-  <title id="apx5-mvf-classes-vm.title">The View Manager</title>
-    <indexterm><primary>View Manager</primary></indexterm>
-    <indexterm><primary>MVF classes</primary><secondary>View Manager</secondary></indexterm>
-    <para> The View Manager manages common function to do with views (or dialogs) that are not
-      appropriate (from a design point of view) for the View superclasses.</para> 
-      <para>In Exercise 7, View Manager is used only for offsetting dialogs, which is 
-        demonstrated by <computeroutput>PersonView</computeroutput> (in the <computeroutput>Samples/Person</computeroutput>
-        folder). First, un-comment the statement "<computeroutput>self~offset:super</computeroutput> in the 
-      <computeroutput>initDialog</computeroutput> method. Then launch a Person Model instance using Message Sender 
-        to send a <computeroutput>showModel</computeroutput> message to Object Manager using the send data, 
-        <emphasis role="italic">PersonModel PA150</emphasis>.
-        The person dialog appears offset from the Message Sender.</para>
-        <para>The offsetting is done by the two dialogs involved: the "parent" dialog from which
+        <computeroutput>ResDialog</computeroutput>, and <computeroutput>RcDialog</computeroutput>
+      respectively. These should properly be mixins rather than different files, and a future
+      version of this Guide may take this approach. All MVF classes are in the
+        <computeroutput>Exercises/Support</computeroutput> folder). </para>
+    <section id="apx5-mvf-classes-om">
+      <!-- A5.2.1 -->
+      <title id="apx5-mvf-classes-om.title">The Object Manager</title>
+      <indexterm>
+        <primary>Object Manager</primary>
+      </indexterm>
+      <indexterm>
+        <primary>MVF classes</primary>
+        <secondary>Object Manager</secondary>
+      </indexterm>
+      <para>The Object Manager is at the heart of the Model-View Framework. Its public methods of
+        this class are described in <xref linkend="chap07-mvf-oview-objmgr"/>.</para>
+    </section>
+    <!-- End of A5.2.1 -->
+    <section id="apx5-mvf-classes-vm">
+      <!-- A5.2.2 -->
+      <title id="apx5-mvf-classes-vm.title">The View Manager</title>
+      <indexterm>
+        <primary>View Manager</primary>
+      </indexterm>
+      <indexterm>
+        <primary>MVF classes</primary>
+        <secondary>View Manager</secondary>
+      </indexterm>
+      <para> The View Manager manages common function to do with views (or dialogs) that are not
+        appropriate (from a design point of view) for the View superclasses.</para>
+      <para>In Exercise 7, View Manager is used only for offsetting dialogs, which is demonstrated
+        by <computeroutput>PersonView</computeroutput> (in the
+          <computeroutput>Samples/Person</computeroutput> folder). First, un-comment the statement
+          "<computeroutput>self~offset:super</computeroutput> in the
+          <computeroutput>initDialog</computeroutput> method. Then launch a Person Model instance
+        using Message Sender to send a <computeroutput>showModel</computeroutput> message to Object
+        Manager using the send data, <emphasis role="italic">PersonModel PA150</emphasis>. The
+        person dialog appears offset from the Message Sender.</para>
+      <para>The offsetting is done by the two dialogs involved: the "parent" dialog from which
         offsetting is to be done, and the "offset" dialog that appears offset from the parent. The
         sequence of operation is as follows: <programlisting>
 <![CDATA[
@@ -175,35 +198,54 @@
 ]]>
     </programlisting> In summary, using the MVF, it takes very little effort by the application
         programmer to perform dialog offsetting. </para>
-  </section>	<!-- End of A5.2.2 -->
-
-  <section id="apx5-mvf-classes-m">                                             <!-- A5.2.3 -->
-  <title id="apx5-mvf-classes-m.title">Model</title>
-    <indexterm><primary>Model</primary></indexterm>
-    <indexterm><primary>MVF classes</primary><secondary>Model</secondary></indexterm>
-    <para> The Model class ... [*** to be continued ***].  </para>
-  </section>     <!-- End of A5.2.3 -->
-
-  <section id="apx5-mvf-classes-v">                                             <!-- A5.2.4 -->
-  <title id="apx5-mvf-classes-v.title">View</title>
-    <indexterm><primary>Model class</primary></indexterm>
-    <indexterm><primary>MVF classes</primary><secondary>View</secondary></indexterm>
-    <para> The View class ... [*** to be continued ***].  </para>
-  </section>     <!-- End of A5.2.4 -->
-
-  <section id="apx5-mvf-classes-gf">                                             <!-- A5.2.5 -->
-  <title id="apx5-mvf-classes-gf.title">Generic File</title>
-    <indexterm><primary>Generic File</primary></indexterm>
-    <indexterm><primary>MVF classes</primary><secondary>Generic File</secondary></indexterm>
-    <para> The Generic File ... [*** to be continued ***].  </para>
-  </section>     <!-- End of A5.2.5 -->
-
-  </section>     <!-- End of A5.2 -->
-
-  <section id="apx5-mvf-ops">                                                   <!-- A5.3 -->
+    </section>
+    <!-- End of A5.2.2 -->
+    <section id="apx5-mvf-classes-m">
+      <!-- A5.2.3 -->
+      <title id="apx5-mvf-classes-m.title">Model</title>
+      <indexterm>
+        <primary>Model</primary>
+      </indexterm>
+      <indexterm>
+        <primary>MVF classes</primary>
+        <secondary>Model</secondary>
+      </indexterm>
+      <para> The Model class ... [*** to be continued ***]. </para>
+    </section>
+    <!-- End of A5.2.3 -->
+    <section id="apx5-mvf-classes-v">
+      <!-- A5.2.4 -->
+      <title id="apx5-mvf-classes-v.title">View</title>
+      <indexterm>
+        <primary>Model class</primary>
+      </indexterm>
+      <indexterm>
+        <primary>MVF classes</primary>
+        <secondary>View</secondary>
+      </indexterm>
+      <para> The View class ... [*** to be continued ***]. </para>
+    </section>
+    <!-- End of A5.2.4 -->
+    <section id="apx5-mvf-classes-gf">
+      <!-- A5.2.5 -->
+      <title id="apx5-mvf-classes-gf.title">Generic File</title>
+      <indexterm>
+        <primary>Generic File</primary>
+      </indexterm>
+      <indexterm>
+        <primary>MVF classes</primary>
+        <secondary>Generic File</secondary>
+      </indexterm>
+      <para> The Generic File ... [*** to be continued ***]. </para>
+    </section>
+    <!-- End of A5.2.5 -->
+  </section>
+  <!-- End of A5.2 -->
+  <section id="apx5-mvf-ops">
+    <!-- A5.3 -->
     <title id="apx5-mvf-ops.title">MVF Operations</title>
-  <para>
-    <programlisting>
+    <para>
+      <programlisting>
 <![CDATA[
 GetComponentId for a Model when neither Model nor Data have been instantiated.
 
@@ -312,24 +354,34 @@ PersonData
 ]]>
     </programlisting>
     </para>
-  </section>     <!-- End of Section A5.3 -->
-
-  <section id="apx5-mvf-classnames">                                            <!-- A5.4 -->
-  <title id="apx5-mvf-classnames.title">Class Naming Constraints</title>
-  <indexterm><primary>MVF</primary><secondary>Class names</secondary></indexterm>
-  <indexterm><primary>Class naming for MVF</primary></indexterm>
-  <para>*** Do we need this here, or is it better in Chap 7, or just a pointer from here to Chap 7?</para>
-  </section>     <!-- End of A5.4 -->
-
-
-  <section id="apx5-mvf-reqlist">                                               <!-- A5.5 -->
-  <title id="apx5-mvf-reqlist.title">The Requires List</title>
-  <indexterm><primary>Requires List</primary></indexterm>
-  <para>An oorexx class that is instantiated from another file must be stated in an oorexx
+  </section>
+  <!-- End of Section A5.3 -->
+  <!-- A5.4 -->
+  <!--  <section id="apx5-mvf-classnames">
+    <title id="apx5-mvf-classnames.title">Class Naming Constraints</title>
+    <indexterm>
+      <primary>MVF</primary>
+      <secondary>Class names</secondary>
+    </indexterm>
+    <indexterm>
+      <primary>Class naming for MVF</primary>
+    </indexterm>
+    <para>*** Do we need this here, or is it better in Chap 7, or just a pointer from here to Chap
+      7?</para>
+  </section>
+  End of A5.4  -->
+  
+  <section id="apx5-mvf-reqlist">
+    <!-- A5.5 -->
+    <title id="apx5-mvf-reqlist.title">The Requires List</title>
+    <indexterm>
+      <primary>Requires List</primary>
+    </indexterm>
+    <para>An oorexx class that is instantiated from another file must be specified in an ooRexx
       "requires" statement. However, in the MVF component instantiation (or, to be precise,
       instantiation of the main class in a component) is handled by
         <computeroutput>ObjectMgr</computeroutput>. This mean that
-        <computeroutput>ObjectMgr</computeroutput> must contain a <emphasis role="italic"
+        <computeroutput>ObjectMgr</computeroutput> must provide a <emphasis role="italic"
         >::requires</emphasis> statement for each component. However, to avoid changing the
         <computeroutput>ObjectMgr.rex</computeroutput> file, a separate file
         (<computeroutput>RequiresList.rex</computeroutput> in the
@@ -339,40 +391,6 @@ PersonData
         role="italic">call "RequiresList.rex"</emphasis>) as its first executable statement. In this
       way, additional ooRexx components can be added to the application merely by adding their file
       names to this file.</para>
-  </section>     <!-- End of A5.5 -->
-
-
-
+  </section>
+  <!-- End of A5.5 -->
 </appendix>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
