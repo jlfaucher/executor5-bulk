@@ -374,14 +374,15 @@
     expose tabControl
     lvOrderItems = self~newListView("IDC_ORDLINES_LIST")
     lvOrderItems~addExtendedStyle(GRIDLINES FULLROWSELECT)
-    lvOrderItems~insertColumnPX(0,"ProductNo",    20,"LEFT")
-    lvOrderItems~insertColumnPX(1,"Product Name", 20,"LEFT")
-    lvOrderItems~insertColumnPX(2,"Qty",          20,"LEFT")
+    lvOrderItems~insertColumnPX(0,"ProdNo",        60,"LEFT")
+    lvOrderItems~insertColumnPX(1,"Product Name", 180,"LEFT")
+    lvOrderItems~insertColumnPX(2,"Qty",           40,"LEFT")
+    lvOrderItems~insertColumnPX(3,"Amount",        60,"LEFT")
     --say "OrderLinesDlg-initDialog-01."
 
     -- Test an edit field:
     ecProdno = self~newEdit("IDC_ORDLINES_PRODNO")
-    ecProdNo~setText("12345")
+
 
   /*----------------------------------------------------------------------------
     leaving - invoked by ooDialog when a dialog closes.
