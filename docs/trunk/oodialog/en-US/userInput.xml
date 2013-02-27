@@ -2092,11 +2092,11 @@ $Recycle.Bin
   <listitem>
   <para>
     The item ID list returned is similar to a <link linkend="defHandle">handle</link> to other system resources, like a <link
-    linkend="mthCreatFontEx">font</link> or a <link linkend="mthGetDC">device context</link>, and must be released to free up
-    the resource. Use the <xref linkend="mthReleaseItemIDList"/> method to free the item ID list when done with it. <emphasis
-    role="bold">Note</emphasis> that the <emphasis role="italic">releaseItemIDList</emphasis> does not need the COM library
-    to be initialized. Therefore there is no problem invoking <emphasis role="italic">releaseItemIDList</emphasis> <emphasis
-    role="italic">after</emphasis> the COM library has been released.
+    linkend="mthCreateFontEx">font</link> or a <link linkend="mthGetDC">device context</link>, and must be released to free
+    up the resource. Use the <xref linkend="mthReleaseItemIDList"/> method to free the item ID list when done with it.
+    <emphasis role="bold">Note</emphasis> that the <emphasis role="italic">releaseItemIDList</emphasis> does not need the COM
+    library to be initialized. Therefore there is no problem invoking <emphasis role="italic">releaseItemIDList</emphasis>
+    <emphasis role="italic">after</emphasis> the COM library has been released.
   </para>
   <para>
     However, if the returned item ID list is set as the <xref linkend="atrRoot"/> attribute, there is no need to release that
@@ -2489,9 +2489,9 @@ leaving() thread ID 4032
   <listitem>
   <para>
     An item ID list is similar to a <link linkend="defHandle">handle</link> to other system resources, like a <link
-    linkend="mthCreatFontEx">font</link> or a <link linkend="mthGetDC">device context</link>, and must be released to free up
-    the resource. Each item ID list returned from the <xref linkend="mthGetItemIDList"/> method should be released when the
-    application is finished using it, unless the item ID list is assigned to the <xref linkend="atrRoot"/> attribute.
+    linkend="mthCreateFontEx">font</link> or a <link linkend="mthGetDC">device context</link>, and must be released to free
+    up the resource. Each item ID list returned from the <xref linkend="mthGetItemIDList"/> method should be released when
+    the application is finished using it, unless the item ID list is assigned to the <xref linkend="atrRoot"/> attribute.
     <emphasis role="bold">Note</emphasis> that the <emphasis role="italic">releaseItemIDList</emphasis> does not need the COM
     library to be initialized. Therefore there is no problem invoking <emphasis role="italic">releaseItemIDList</emphasis>
     <emphasis role="italic">after</emphasis> the COM library has been released.
