@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: MessageSender.rex 				  v01-00 11Feb13
+   Exercise 07: MessageSender.rex 				  v01-00 14Feb13
 
    Contains:  classes: "MessageSender", "HRSms"
 
@@ -60,7 +60,8 @@
             05Feb13: Changed edit controls to comboboxes for Target and Method.
                      Provided for user add of methods and target components
                      (not saved over a dialog close).
-            11feb13: No change to function - minor tidy-up of a few comments.
+            11Feb13: No change to function - minor tidy-up of a few comments.
+            14Feb13: Correct text in the Help dialog.
 
   Description:
     Target: className instanceName
@@ -550,7 +551,7 @@
   ::CONSTANT help5        "  Directory: '[aaa] [bbb] [c cc]'"
   ::CONSTANT help6        "  Array:     '|aaa|bbb|c cc'"
   ::CONSTANT help7        "  String:    'aaa bbb'"
-  ::CONSTANT help8        "Note: an added target or method is not saved over a close."
+  ::CONSTANT help8        "Note: a 'saved' target or method is not saved over a close."
   ::CONSTANT helpMsg      "Press F1 for help on allowable data formats."
 /*============================================================================*/
 

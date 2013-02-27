@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: OrderMgrView.rex 				  v02-00 20Feb13
+   Exercise 07: OrderMgrView.rex 				  v02-00 27Feb13
 
    Contains: 	   class: "OrderMgrView", "HRSomv"
 
@@ -61,8 +61,9 @@
           List Views that are populated with data read from disk (instead of data
           hard-coded in the ListView) also give listview the instance name of "a"
           to indicate an anonymous component to ObjectMgr.
-       5. Added methods "messageSender" and "person" which launch a PersonModel
+       5. Added methods "person" and "messageSender" which launch a PersonModel
           and a Message Sender respectively.
+       27Feb: Commented-out several 'say's.
 
 ------------------------------------------------------------------------------*/
 
@@ -90,7 +91,7 @@ call "OrderMgr\RequiresList.rex"
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD newInstance CLASS PUBLIC
-    say ".OrderMgrView-newInstance-01."
+    --say ".OrderMgrView-newInstance-01."
     dlg = .OrderMgrView~new("OrderMgr\OrderMgrView.rc", IDD_ORDMGR)
     dlg~activate
 
@@ -105,9 +106,9 @@ call "OrderMgr\RequiresList.rex"
 
   ::METHOD init
     expose menuBar records idObjectMgr
-    say "OrderMgrView-init-01; next stmt is 'forward class (super) continue'."
+    --say "OrderMgrView-init-01; next stmt is 'forward class (super) continue'."
     forward class (super) continue
-    say "OrderMgrView-init-02."
+    --say "OrderMgrView-init-02."
     menuBar = .ScriptMenuBar~new("OrderMgr\OrderMgrView.rc", IDR_ORDMGR_MENU, , , .true)
     self~createIconList
     records = self~initRecords
@@ -115,19 +116,19 @@ call "OrderMgr\RequiresList.rex"
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD defineDialog
-    say "OrderMgrView-defineDialog-01."
+    --say "OrderMgrView-defineDialog-01."
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate UNGUARDED
-    say "OrderMgrView-activate-01."
+    --say "OrderMgrView-activate-01."
     self~execute("SHOWTOP", IDI_DLG_OOREXX)
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
     expose menuBar records iconList
-    say "OrderMgrView-initDialog-01."
+    --say "OrderMgrView-initDialog-01."
     menuBar~attachTo(self)
 
     -- Create a proxy for the List View and store in instance variable 'lv'.
@@ -150,14 +151,14 @@ call "OrderMgr\RequiresList.rex"
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD defineSizing
-    say "OrderMgrView-defineSizing-01."
+    --say "OrderMgrView-defineSizing-01."
     -- Called automatically by ooDialog.
     -- Order of arrays: left, top, right, bottom.
     -- Order of array items: pinType, edge-of-other-window, id of other window
     self~controlSizing(IDC_ORDMGR_RESET, -
                        .array~of('STATIONARY', 'LEFT'  ), -
                        .array~of('STATIONARY', 'BOTTOM'), -
-                       .array~of('MYLEFT',     'LEFT'  ), -
+                       .array~of('MYLEFT',     'BOTTOM'  ), -
                        .array~of('MYTOP',      'TOP'   )  -
                       )
     self~controlSizing(IDC_ORDMGR_EXIT, -
@@ -172,7 +173,6 @@ call "OrderMgr\RequiresList.rex"
                        .array~of('STATIONARY', 'RIGHT' ), -
                        .array~of('STATIONARY', 'BOTTOM')  -
                       )
-
     return .false
 
 

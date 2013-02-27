@@ -35,31 +35,64 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef IDC_STATIC
-#define IDC_STATIC (-1)
-#endif
 
-#define IDR_ORDFORM_MENU                        102
-#define IDI_ORDFORM_DLGICON                     107
-#define IDD_ORDFORM_DIALOG                      113
-#define IDD_ORDFORM_CUST_DIALOG                 114
-#define IDD_ORDFORM_ORDLINES_DIALOG             115
-#define IDC_CUSTDTLS_NUM                        1000
-#define IDC_CANCEL                              1001
-#define IDC_CUSTDTLS_DISC                       1001
-#define IDM_ORDFORM_PLACE                       40000
-#define IDM_ORDFORM_ABOUT                       40001
-#define IDC_ORDFORM_DATE                        40002
-#define IDM_ORDFORM_SAVE                        40003
-#define IDM_ORDFORM_CANCEL                      40004
-#define IDC_ORDFORM_ORDNO                       40005
-#define IDC_ORDFORM_TABS                        40009
-#define IDC_ORDFORM_PLACEORDER                  40010
-#define IDC_ORDLINES_LIST                       40026
-#define IDC_ORDLINES_PRODNO                     40027
-#define IDC_ORDLINES_QTY                        40028
-#define IDC_ORDLINES_ADD                        40029
-#define IDC_ORDLINES_DELETE                     40030
-#define IDC_CUSTDTLS_FIND                       40031
-#define IDC_CUSTDTLS_ADDR                       40037
-#define IDC_CUSTDTLS_NAME                       40038
+#include <windows.h>
+#include <commctrl.h>
+#include <richedit.h>
+#include "OrderMgrView.h"
+
+
+
+
+//
+// Menu resources
+//
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDR_ORDMGR_MENU MENU
+{
+    POPUP "Orders"
+    {
+        MENUITEM "New Order...", IDM_ORDMGR_NEWORDER
+        MENUITEM "Order List...", IDM_ORDMGR_ORDERLIST
+        MENUITEM "Order Search...", IDM_ORDMGR_ORDERSEARCH
+    }
+    POPUP "Customers"
+    {
+        MENUITEM "Customer List...", IDM_ORDMGR_CUSTLIST
+        MENUITEM "Customer Search...", IDM_ORDMGR_CUSTSEARCH
+    }
+    POPUP "Products"
+    {
+        MENUITEM "Product List...", IDM_ORDMGR_PRODLIST
+        MENUITEM SEPARATOR
+        MENUITEM "Product Search...", IDM_ORDMGR_PRODSEARCH
+    }
+    POPUP "New"
+    {
+        MENUITEM "Product...", IDM_ORDMGR_PRODNEW
+        MENUITEM "Customer...", IDM_ORDMGR_CUSTNEW
+        MENUITEM "Order...", IDM_ORDMGR_ORDERNEW
+    }
+    POPUP "Help"
+    {
+        MENUITEM "About", IDM_ORDMGR_ABOUT
+        MENUITEM "Message Sender", IDM_MESSAGE_SENDER1
+        MENUITEM "Person", IDM_PERSON1
+    }
+}
+
+
+
+//
+// Dialog resources
+//
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_ORDMGR DIALOG 0, 0, 310, 209
+STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "Ms Shell Dlg"
+{
+    PUSHBUTTON      "Exit Application", IDC_ORDMGR_EXIT, 245, 186, 60, 15
+    PUSHBUTTON      "Reset Icons", IDC_ORDMGR_RESET, 5, 186, 50, 15
+    CONTROL         "", IDC_ORDMGR_ICONS, WC_LISTVIEW, WS_TABSTOP | WS_BORDER | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | LVS_ICON, 5, 5, 300, 175
+}

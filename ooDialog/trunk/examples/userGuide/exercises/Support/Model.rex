@@ -36,13 +36,14 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
 
-   Support - Model						 v01-00  31Jan13
+   Support - Model						 v01-00  27Feb13
    ----------------
    A superclass for the Model-View framework.
 
    v01-00 09Aug12: First version.
           11Jan13: Commented-out "say"s.
           31Jan13: Store model's data in 'myData'.
+          27Feb13: Commented-out some "say" instructions.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -81,7 +82,7 @@
       instData[formNumber] = instanceName
       formObject = self~new(instData)
       formObject~myData = instData		-- store instance data for subclasses to access.
-      say ".Model-newInstance-011: formObj, instanceName =" formObject||"," instanceName
+      --say ".Model-newInstance-011: formObj, instanceName =" formObject||"," instanceName
       return formObject
     end
     -- End of Handling Forms.
