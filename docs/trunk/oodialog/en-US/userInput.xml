@@ -814,19 +814,19 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 </row>
 <row>
 <entry><xref linkend="mthGetFolder"/> </entry>
-<entry></entry>
+<entry>Shows the browse for folder dialog configured as defined by the current values of the attributes of this object.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetItemIDList"/> </entry>
-<entry></entry>
+<entry>Shows the browse for folder dialog and retrieves the item <link linkend="varItemIDList">ID</link> list the user picks.</entry>
 </row>
 <row>
 <entry><xref linkend="mthInitCOM"/> </entry>
-<entry></entry>
+<entry>Initializes the COM <link linkend="varCOMLibrary">library</link> on the current thread.</entry>
 </row>
 <row>
 <entry><xref linkend="mthReleaseCOM"/> </entry>
-<entry></entry>
+<entry>Releases the COM <link linkend="varCOMLibrary">library</link> on the current thread.</entry>
 </row>
 <row>
 <entry><xref linkend="mthReleaseItemIDList"/> </entry>
@@ -1636,7 +1636,16 @@ leaving() thread ID 3580
     can be used. An item ID list can be obtained through the <xref linkend="mthGetItemIDList"/> method.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When an item ID list is obtained through the <emphasis role="italic">getItemIDList</emphasis>, the user is normally
+    responsible for <link linkend="mthReleaseItemIDList">releasing</link> the item ID list. However, the ooDialog
+    automatically releases the item ID list set as the <emphasis role="italic">root</emphasis> attribute. There is no need to
+    release an item ID list that has been set as the <emphasis role="italic">root</emphasis> attriubte.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -2000,7 +2009,7 @@ $Recycle.Bin
   <listitem>
   <para>
     The recommended usage pattern for the BrowseForFolder object is to instantiate the object, configure the dialog through
-    the object's attriubtes, and show the dialog using <emphasis role="italic">getFolder</emphasis>, or <xref
+    the object's attributes, and show the dialog using <emphasis role="italic">getFolder</emphasis>, or <xref
     linkend="mthGetItemIDList"/>. In this way the COM library is <link linkend="varCOMLibrary">initialized</link> when the
     object is instantiated and released during the return from <emphasis role="italic">getFolder</emphasis> or <emphasis
     role="italic">getItemIDList</emphasis>.
@@ -2082,7 +2091,28 @@ $Recycle.Bin
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The item ID list returned is similar to a <link linkend="defHandle">handle</link> to other system resources, like a <link
+    linkend="mthCreatFontEx">font</link> or a <link linkend="mthGetDC">device context</link>, and must be released to free up
+    the resource. Use the <xref linkend="mthReleaseItemIDList"/> method to free the item ID list when done with it. <emphasis
+    role="bold">Note</emphasis> that the <emphasis role="italic">releaseItemIDList</emphasis> does not need the COM library
+    to be initialized. Therefore there is no problem invoking <emphasis role="italic">releaseItemIDList</emphasis> <emphasis
+    role="italic">after</emphasis> the COM library has been released.
+  </para>
+  <para>
+    However, if the returned item ID list is set as the <xref linkend="atrRoot"/> attribute, there is no need to release that
+    itme ID list, the ooDialog framework will release it automatically.
+  </para>
+  <para>
+    The recommended usage pattern for the BrowseForFolder object is to instantiate the object, configure the dialog through
+    the object's attributes, and show the dialog using <emphasis role="italic">getItemIDList</emphasis>, or <xref
+    linkend="mthGetFolder"/>. In this way the COM library is <link linkend="varCOMLibrary">initialized</link> when the
+    object is instantiated and released during the return from <emphasis role="italic">getFolder</emphasis> or <emphasis
+    role="italic">getItemIDList</emphasis>.
+  </para>
+  <para>
+    The COM library is always released during the <emphasis role="italic">getItemIDList</emphasis> method, unless the
+    <emphasis role="italic">reuse</emphasis> argument is true. When <emphasis role="italic">reuse</emphasis> is true, the COM
+    library is not released and it becomes the programmer's responsibility to ensure the library is released properly
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2090,16 +2120,68 @@ $Recycle.Bin
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example the user is first asked to pick the top-level folder for all backups the application does. Then, the user
+    is asked to select the folder for the current backup. To allow the user to pick a virtual folder like the Documents
+    subfolder in Libraries, the application uses the <emphasis role="italic">getIDList</emphasis> method for the first
+    showing of the browse for folder dialog. The returned item ID list is then set as the root for the second showing of the
+    browse for folder dialog. This ensures that the user picks a subfolder of the first folder picked.
+  </para>
+  <para>
+    Some other things to note about the example. For the first showing of the <xref linkend="atrOptions"/> attribute is set
+    to the empty string and the root is set to CSIDL_DESKTOP. CSIDL_DESKTOP is the root of the entire shell namespace. This
+    combination allows the browsing of every folder in the shell. In the first invocation of <emphasis
+    role="italic">getItemIDList</emphasis>, note the use of the <emphasis role="italic">reuse</emphasis> arg. The prevents
+    the COM library from being released. Then in the last invocation of <emphasis role="italic">getFolder</emphasis>, the
+    <emphasis role="italic">reuse</emphasis> arg is not used, and the ooDialog framework takes car of releasing the COM
+    library. However, if the user cancels the first showing of the dialog, the application handles releasing COM before it
+    returns:
 <programlisting>
 <![CDATA[
+
+  title = 'Acme Widgets - A1 Accounting Program'
+  banner = 'The A1 Accounting Program needs to know the top-level' || -
+           ' folder for data backups'
+
+  bff = .BrowseForFolder~new
+  bff~dlgTitle = title
+  bff~banner = banner
+  bff~hint = 'Pick, or create, the folder for your backups.'
+  bff~options = '';
+  bff~root = 'CSIDL_DESKTOP'
+
+  idList = bff~getItemIDList(.true)
+  if idList == .nil then do
+    say 'The user canceled'
+    bff~releaseCOM
+    return .nil
+  end
+
+  say 'Top-level backup folder:' bff~getDisplayName(idList, 'NORMALDISPLAY')
+
+  newBanner = 'The A1 Accounting Program needs to know the subfolder' || -
+              ' for this backup.'
+  bff~root = idList
+  bff~options = bff~options 'RETURNFSANCESTORS RETURNONLYFSDIRS'
+  bff~banner = newBanner
+  bff~hint = 'Pick, or create, the folder for this backup.'
+  bff~startDir = .nil
+
+  folder = bff~getFolder
+
+  select
+    when folder == .nil then say 'The user picked a virtual folder'
+    when folder == '' then say 'The user canceled'
+    otherwise say 'The user picked:' folder
+  end
+  -- End select
+
+  return folder
+
+::requires 'ooDialog.cls'
 
 ]]>
 </programlisting>
@@ -2113,33 +2195,26 @@ $Recycle.Bin
 <indexterm><primary>BrowseForFolder class</primary><secondary>initCOM</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--initCOM(--+--------+--)----------------------><
-                  +--type--+
+>>--initCOM--------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Initializes the COM <link linkend="varCOMLibrary">library</link> on the current thread.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true when the COM library is initialized as a result of the <emphasis role="italic">initCom</emphasis>
+    invocation. Returns false if the library is not initialized as a result of the <emphasis role="italic">initCom</emphasis>
+    invocation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -2151,18 +2226,93 @@ $Recycle.Bin
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a browse for folder object that is reused for the life-time of the dialog.  In the onBrowse() method,
+    if the method is not running on the same thread as the BrowseForFolder object was instantiated on, then COM is
+    initialized and released each time the object is used.  If it is the same thread, COM is not initialized and not
+    released.
+  </para>
+  <para>
+    Finally, during the leaving() method, if the method is running on the same thread as the browse for folder was
+    instantiated on, the item <link linkend="varItemIDList">ID</link> list and COM are released.
+  </para>
+  <para>
+    Note that this example does run correctly. But, if it were to turn out that the leaving() method was not running on the
+    same thread as the define() method had run on, then COM and the item ID list would not be released correctly. It was only
+    after some testing that it was determined that the program ran correctly:
+
 <programlisting>
 <![CDATA[
+
+::method defineDialog
+  expose bff pidl
+
+  ...
+
+  say 'defineDialog() thread ID' .DlgUtil~threadID
+  say
+  bff = .BrowseForFolder~new
+  bff~usePathForHint = .true
+  bff~hint = ''
+
+  pidl = .nil
+
+::method onBrowse unguarded
+  expose bff pidl
+
+  say 'onBrowse() thread:' .DlgUtil~threadID
+  say
+
+  newThread = (bff~initialThread == .DlgUtil~threadID)
+
+  if newThread then bff~initCOM
+
+  if pidl \== .nil then bff~releaseItemIDList(pidl)
+  if bff~owner \== .nil then bff~owner = self
+
+  pidl = bff~getItemIDList(.true)
+
+  if pidl \== .nil then say 'The user picked:' bff~getDisplayName(pidl)
+  else say 'The user canceled'
+  say
+
+  if newThread then bff~releaseCOM
+
+  return 0
+
+::method leaving unguarded
+  expose bff pidl
+
+  if bff~initialThread == .DlgUtil~threadID then do
+      say 'leaving() thread ID' .DlgUtil~threadID
+      if pidl \== .nil then bff~releaseItemIDList(pidl)
+      bff~releaseCOM
+  end
+
+/* Output from a typical session:
+
+defineDialog() thread ID 4032
+
+onBrowse() thread: 3320
+
+The user picked: C:\Rexx\ooRexx.3.0.0.release
+
+onBrowse() thread: 3320
+
+The user canceled
+
+onBrowse() thread: 3320
+
+The user picked: U:\PictureFiles
+
+leaving() thread ID 4032
+
+*/
 
 ]]>
 </programlisting>
@@ -2176,28 +2326,19 @@ $Recycle.Bin
 <indexterm><primary>BrowseForFolder class</primary><secondary>releaseCOM</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--releaseCOM(--+--------+--)-------------------><
-                  +--type--+
+>>--releaseCOM-----------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Releases the COM <link linkend="varCOMLibrary">library</link> on the current thread.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -2223,9 +2364,86 @@ $Recycle.Bin
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a browse for folder object that is reused for the life-time of the dialog.  In the onBrowse() method,
+    if the method is not running on the same thread as the BrowseForFolder object was instantiated on, then COM is
+    initialized and released each time the object is used.  If it is the same thread, COM is not initialized and not
+    released.
+  </para>
+  <para>
+    Finally, during the leaving() method, if the method is running on the same thread as the browse for folder was
+    instantiated on, the item <link linkend="varItemIDList">ID</link> list and COM are released.
+  </para>
+  <para>
+    Note that this example does run correctly. But, if it were to turn out that the leaving() method was not running on the
+    same thread as the define() method had run on, then COM and the item ID list would not be released correctly. It was only
+    after some testing that it was determined that the program ran correctly:
 <programlisting>
 <![CDATA[
+
+::method defineDialog
+  expose bff pidl
+
+  ...
+
+  say 'defineDialog() thread ID' .DlgUtil~threadID
+  say
+  bff = .BrowseForFolder~new
+  bff~usePathForHint = .true
+  bff~hint = ''
+
+  pidl = .nil
+
+::method onBrowse unguarded
+  expose bff pidl
+
+  say 'onBrowse() thread:' .DlgUtil~threadID
+  say
+
+  newThread = (bff~initialThread == .DlgUtil~threadID)
+
+  if newThread then bff~initCOM
+
+  if pidl \== .nil then bff~releaseItemIDList(pidl)
+  if bff~owner \== .nil then bff~owner = self
+
+  pidl = bff~getItemIDList(.true)
+
+  if pidl \== .nil then say 'The user picked:' bff~getDisplayName(pidl)
+  else say 'The user canceled'
+  say
+
+  if newThread then bff~releaseCOM
+
+  return 0
+
+::method leaving unguarded
+  expose bff pidl
+
+  if bff~initialThread == .DlgUtil~threadID then do
+      say 'leaving() thread ID' .DlgUtil~threadID
+      if pidl \== .nil then bff~releaseItemIDList(pidl)
+      bff~releaseCOM
+  end
+
+/* Output from a typical session:
+
+defineDialog() thread ID 4032
+
+onBrowse() thread: 3320
+
+The user picked: C:\Rexx\ooRexx.3.0.0.release
+
+onBrowse() thread: 3320
+
+The user canceled
+
+onBrowse() thread: 3320
+
+The user picked: U:\PictureFiles
+
+leaving() thread ID 4032
+
+*/
 
 ]]>
 </programlisting>
@@ -2239,13 +2457,12 @@ $Recycle.Bin
 <indexterm><primary>BrowseForFolder class</primary><secondary>releaseItemIDList</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--releaseItemIDList(--+--------+--)------------><
-                  +--type--+
+>>--releaseItemIDList(--itemIDList--)------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Releases the system resources used by an item <link linkend="varItemIDList">ID</link> list.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2254,10 +2471,10 @@ $Recycle.Bin
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>itemIDList [required]</term>
     <listitem>
     <para>
-      xx
+      The item ID list to be released.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2265,13 +2482,24 @@ $Recycle.Bin
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    An item ID list is similar to a <link linkend="defHandle">handle</link> to other system resources, like a <link
+    linkend="mthCreatFontEx">font</link> or a <link linkend="mthGetDC">device context</link>, and must be released to free up
+    the resource. Each item ID list returned from the <xref linkend="mthGetItemIDList"/> method should be released when the
+    application is finished using it, unless the item ID list is assigned to the <xref linkend="atrRoot"/> attribute.
+    <emphasis role="bold">Note</emphasis> that the <emphasis role="italic">releaseItemIDList</emphasis> does not need the COM
+    library to be initialized. Therefore there is no problem invoking <emphasis role="italic">releaseItemIDList</emphasis>
+    <emphasis role="italic">after</emphasis> the COM library has been released.
+  </para>
+  <para>
+    The one caveat to the rule that every item ID list must be released is, if the returned item ID list is set as the
+    <emphasis role="italic">root</emphasis> attribute, there is no need to release that itme ID list, the ooDialog framework
+    will release it automatically.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2279,17 +2507,51 @@ $Recycle.Bin
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example configures a browse for folder dialog to allow browsing the entire shell namespace. It then runs in a loop
+    allowing the user to pick a folder and see the folder's display name is. Note that every returned item ID list is
+    released. Also note that the <xref linkend="mthGetItemIDList"/> method uses true for the <emphasis
+    role="italic">reuse</emphasis> argument. This tells the ooDialog framework to not release COM during the invocation of
+    the <emphasis role="italic">getItemIDList</emphasis> method. Because of this the example uses <xref
+    linkend="mthReleaseCOM"/> to properly release the COM library when the example ends:
+
 <programlisting>
 <![CDATA[
 
+  bff = .BrowseForFolder~new
+  bff~options = '';
+  bff~root = 'CSIDL_DESKTOP'
+
+  msgQuestion = .endOfLine~copies(2) || "Do you want to continue browsing?"
+  title = 'Browsing All Shell Folders'
+
+  yes = .PlainBaseDialog~IDYES
+  keepGoing = yes
+  do while keepGoing == yes
+      idList = bff~getItemIDList(.true)
+
+      if idList == .nil then do
+          nop
+      end
+      else do
+          msg = 'You picked the "'                          || -
+                bff~getDisplayName(idList, 'NORMALDISPLAY') || -
+                '" folder' || msgQuestion
+
+          keepGoing = MessageDialog(msg, , title, 'YESNO', 'QUESTION')
+
+          bff~releaseItemIDList(idList)
+      end
+  end
+
+  bff~releaseCom
+
+  return 0
+
+  ::required 'ooDialog.cls'
 ]]>
 </programlisting>
   </para>
