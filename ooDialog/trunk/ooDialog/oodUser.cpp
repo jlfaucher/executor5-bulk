@@ -804,10 +804,6 @@ uint32_t dateTimePickerStyle(CSTRING opts, uint32_t style)
     {
         style |= DTS_TIMEFORMAT;
     }
-    else
-    {
-        style |= DTS_TIMEFORMAT;
-    }
 
     if ( StrStrI(opts, "CANPARSE") != NULL ) style |= DTS_APPCANPARSE;
     if ( StrStrI(opts, "RIGHT"   ) != NULL ) style |= DTS_RIGHTALIGN;
