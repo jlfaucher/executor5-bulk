@@ -552,6 +552,7 @@ static RexxObjectPtr reInitCOM(RexxMethodContext *c, pCBrowseForFolder pcbff)
     }
 
     HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+    oodSetSysErrCode(c->threadContext, hr);
     if ( hr == S_OK )
     {
         pcbff->countCoInitialized++;
@@ -849,7 +850,7 @@ RexxMethod2(RexxObjectPtr, bff_setBanner, RexxObjectPtr, hint, CSELF, pCSelf)
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
     if ( pcbff != NULL )
     {
-        setTextAttribute(context, pcbff, hint, DlgHint);
+        setTextAttribute(context, pcbff, hint, DlgBanner);
     }
     return NULLOBJECT;
 }
@@ -1195,55 +1196,6 @@ RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_Rex
     return NULLOBJECT;
 }
 
-/** BrowseForFolder::initCOM
- *
- *  Invokes CoInitalizeEx() on the current thread, with some forethought.  If
- *  the current thread is the initial thread that this object was instantiated
- *  on, then the invocation is only done if needed.
- *
- *  If we are on the initial thread and the countCoInitialized is 0 the
- *  initialize is done and the count incremented.  If the count is not 0, the
- *  initialize is skipped.
- *
- *  If we are on another thread, the CoInitializeEx is always done, but the
- *  return is checked.  If it is S_FALSE, that indicates the CoInitializeEx has
- *  already been done on this thread and we immediately do an unitialize to keep
- *  things balanced.
- *
- *  If the user makes use of these methods, he assumes the responsibility of
- *  keeping CoInitializedEx / CoUnitialize() in balance *and* in invoking the
- *  releaseCOM method when he is done with this object.
- */
-RexxMethod1(RexxObjectPtr, bff_initCOM, CSELF, pCSelf)
-{
-    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
-    if ( pcbff == NULL )
-    {
-        return NULLOBJECT;
-    }
-
-    if ( pcbff->coThreadID == GetCurrentThreadId() )
-    {
-        return reInitCOM(context, pcbff);
-    }
-
-    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-    if ( hr == S_FALSE )
-    {
-        CoUninitialize();
-        return TheFalseObj;
-    }
-    else if ( hr == S_OK )
-    {
-        return TheTrueObj;
-    }
-    else
-    {
-        systemServiceExceptionComCode(context->threadContext, COM_API_FAILED_MSG, "CoInitializeEx", hr);
-    }
-    return TheFalseObj;
-}
-
 /** BrowseForFolder::getDisplayName()
  *
  * Returns the display name for an item ID list.
@@ -1337,6 +1289,54 @@ RexxMethod2(RexxObjectPtr, bff_getItemIDList, OPTIONAL_logical_t, reuse, CSELF, 
 }
 
 
+/** BrowseForFolder::initCOM
+ *
+ *  Invokes CoInitalizeEx() on the current thread, with some forethought.  If
+ *  the current thread is the initial thread that this object was instantiated
+ *  on, then the invocation is only done if needed.
+ *
+ *  If we are on the initial thread and the countCoInitialized is 0 the
+ *  initialize is done and the count incremented.  If the count is not 0, the
+ *  initialize is skipped.
+ *
+ *  If we are on another thread, the CoInitializeEx is always done, but the
+ *  return is checked.  If it is S_FALSE, that indicates the CoInitializeEx has
+ *  already been done on this thread and we immediately do an unitialize to keep
+ *  things balanced.
+ *
+ *  If the user makes use of these methods, he assumes the responsibility of
+ *  keeping CoInitializedEx / CoUnitialize() in balance *and* in invoking the
+ *  releaseCOM method when he is done with this object.
+ */
+RexxMethod1(RexxObjectPtr, bff_initCOM, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(context, pCSelf);
+    if ( pcbff == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    if ( pcbff->coThreadID == GetCurrentThreadId() )
+    {
+        return reInitCOM(context, pcbff);
+    }
+
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+    oodSetSysErrCode(context->threadContext, hr);
+    if ( hr == S_OK )
+    {
+        return TheTrueObj;
+    }
+    else if ( hr == S_FALSE )
+    {
+        CoUninitialize();
+    }
+    return TheFalseObj;
+}
+
+
 /** BrowseForFolder::releaseCom
  *
  *  Calls CoUninitialize() on the current thread.  This is to allow the user to
@@ -1351,8 +1351,8 @@ RexxMethod2(RexxObjectPtr, bff_getItemIDList, OPTIONAL_logical_t, reuse, CSELF, 
  *          as this object was first created on.  Returns false if the thread
  *          CoUnitialize() was called on another thread.  CoUnitialize() is
  *          *always* called.  Unless we are on the same thread as this object
- *           was instantiated on and the count initialized indicates we have
- *           already closed out COM.
+ *          was instantiated on and the count initialized indicates we have
+ *          already closed out COM.
  */
 RexxMethod1(RexxObjectPtr, bff_releaseCOM, CSELF, pCSelf)
 {
@@ -1370,6 +1370,14 @@ RexxMethod1(RexxObjectPtr, bff_releaseCOM, CSELF, pCSelf)
  *  each handle returned from the getItemIDList() method and must *not* be done
  *  for the root item ID list.
  *
+ *  @note CoTaskMemFree() is specifically documented as not needing a call to
+ *        CoInitializeEx() before being used.
+ *
+ *  @remarks  A user may set the root attriubte to a pidl they obtained through
+ *            getItemIDList(). If they did not read the docs closely, they may
+ *            think they still need to release that pidl.  This can cause a
+ *            crash when the root attriubte is freed again in uninit().  So, we
+ *            protect against that.
  */
 RexxMethod2(RexxObjectPtr, bff_releaseItemIDList, POINTER, pidl, CSELF, pCSelf)
 {
@@ -1378,6 +1386,11 @@ RexxMethod2(RexxObjectPtr, bff_releaseItemIDList, POINTER, pidl, CSELF, pCSelf)
     {
         return NULLOBJECT;
     }
+    if ( pcbff->root == pidl )
+    {
+        pcbff->root = NULL;
+    }
+
     CoTaskMemFree(pidl);
 
     return TheZeroObj;
