@@ -318,14 +318,15 @@
   ::METHOD cancel
     expose tabContent
     say "OrderFormView-cancel-01."
-    do dlg over tabContent
-      dlg~endExecution(.false)
-    end
-    return self~cancel:super
 
     response = askDialog(.HRSofv~QExit, "N")
-    if response = 1 then forward class (super)  -- '1' means the 'Yes' button pressed
-    return
+    if response = 1 then do /*forward class (super) */ -- '1' means the 'Yes' button pressed
+      do dlg over tabContent
+        dlg~endExecution(.false)
+      end
+      return self~cancel:super
+    end
+
 
 
   /*----------------------------------------------------------------------------
