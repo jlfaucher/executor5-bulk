@@ -1648,7 +1648,7 @@ u~resize(self, sizeinfo)
   role="italic">pinned</emphasis> to the right edge of the dialog. As the left edge of the dialog is pulled to the left, the
   pinned left edge of the list-view is pulled to the left along with it. The right edge of the list-view is pinned to the
   right edge of the dialog, so it remains stationary, (the right edge of the dialog is stationary.) As the dialog increases
-  in width and the list-view increases in width also.
+  in width, the list-view increases in width also.
 </para>
 <para>
   Every edge of every control in the dialog has a <emphasis role="italic">sizing defintion</emphasis> assigned to it. If the
@@ -1683,8 +1683,8 @@ u~resize(self, sizeinfo)
 </listitem>
 <listitem>
 <para>
-  The <emphasis role="italic">edge</emphasis> of the dialog control that is being defined. An edge being defined is specified
-  by one of four keywords: LEFT, TOP, RIGHT, and BOTTOM. Case is not significant.
+  The <emphasis role="italic">pinned edge</emphasis> of the dialog control that is being defined. The pinned edge being
+  defined is specified by one of four keywords: LEFT, TOP, RIGHT, and BOTTOM. Case is not significant.
 </para>
 </listitem>
 <listitem>
@@ -1710,7 +1710,40 @@ u~resize(self, sizeinfo)
 </itemizedlist>
 
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Pinned to edge:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Pinned edge:</emphasis></term>
+  <listitem>
+  <para>
+    The following specifies the meaning of the pinned edge keywords:
+  </para>
+
+  <variablelist>
+    <varlistentry><term>Left:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the vertical edge of the window with the smallest X co-ordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Top:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the smallest Y co-ordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Right:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the vertical edge of the window with the largest X co-ordinate.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Bottom:</term>
+    <listitem>
+    <para>
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the largest Y co-ordinate.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry id="varPinnedToEdge" xreflabel="pinned to edge"><term><emphasis role="bold">Pinned to edge:</emphasis></term>
   <listitem>
   <para>
     The following specifies the meaning of the pinned to edge keywords:
@@ -1720,25 +1753,25 @@ u~resize(self, sizeinfo)
     <varlistentry><term>Left:</term>
     <listitem>
     <para>
-      Self-explanatory, but technically it is the vertical edge of the window with the smallest X co-ordinate.
+      This should be self-explanatory, but technically it is the vertical edge of the window with the smallest X co-ordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>Top:</term>
     <listitem>
     <para>
-      Self-explanatory, but technically it is the horizontal edge of the window with the smallest Y co-ordinate.
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the smallest Y co-ordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>Right:</term>
     <listitem>
     <para>
-      Self-explanatory, but technically it is the vertical edge of the window with the largest X co-ordinate.
+      This should be self-explanatory, but technically it is the vertical edge of the window with the largest X co-ordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>Bottom:</term>
     <listitem>
     <para>
-      Self-explanatory, but technically it is the horizontal edge of the window with the largest Y co-ordinate.
+      This should be self-explanatory, but technically it is the horizontal edge of the window with the largest Y co-ordinate.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>XCenter:</term>
@@ -1759,7 +1792,7 @@ u~resize(self, sizeinfo)
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Pin type:</emphasis></term>
+  <varlistentry id="varPinType" xreflabel="pin type"><term><emphasis role="bold">Pin type:</emphasis></term>
   <listitem>
   <para>
     The following specifies the meaning of the pin type keywords:
@@ -1871,7 +1904,7 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="atrMinSize"/></entry>
-<entry>Reflects the minimum size the dialog is allowed to resize to. By default, the minimum size for the dialog is set to its initial when the operating system first creates it.</entry>
+<entry>Reflects the minimum size the dialog is allowed to resize to. By default, the minimum size for the dialog is set to its initial size when the operating system first creates it.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -1879,23 +1912,23 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="mthControlBottom"/></entry>
-<entry>xx</entry>
+<entry>Defines the sizing for the bottom edge of the dialog control specified.</entry>
 </row>
 <row>
 <entry><xref linkend="mthControlLeft"/></entry>
-<entry>xx</entry>
+<entry>Defines the sizing for the left edge of the dialog control specified.</entry>
 </row>
 <row>
 <entry><xref linkend="mthControlRight"/></entry>
-<entry>xx</entry>
+<entry>Defines the sizing for the right edge of the dialog control specified.</entry>
 </row>
 <row>
 <entry><xref linkend="mthControlSizing"/></entry>
-<entry>xx</entry>
+<entry>Defines the sizing for some or all of the edges of the specified dialog control with one method call.</entry>
 </row>
 <row>
 <entry><xref linkend="mthControlTop"/></entry>
-<entry>xx</entry>
+<entry>Defines the sizing for the top edge of the dialog control specified.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultBottom"/></entry>
@@ -1946,9 +1979,9 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>maxSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--maxSize-----------------------------------------------------><
+>>--maxSize--------------------------------------><
 
->>--maxSize = sizeObj-------------------------------------------><
+>>--maxSize = sizeObj----------------------------><
 
 ]]>
 </programlisting>
@@ -1970,7 +2003,7 @@ u~resize(self, sizeinfo)
   <para>
     Sets the maximum size a dialog can be sized to using a <computeroutput>Size</computeroutput> object. The <emphasis
     role="italic">width</emphasis> of the <computeroutput>size</computeroutput> object is the maximum width, in pixels, for
-    the dialog and the <emphasis role="italic">height</emphasis> of the <computeroutput>size</computeroutput> object is the
+    the dialog and the <emphasis role="italic">height</emphasis> of the <computeroutput>Size</computeroutput> object is the
     maximum height, in pixels for the dialog. By default, the dialog will not have a maximum size restriction.
   </para>
   </listitem></varlistentry>
@@ -1996,7 +2029,7 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example set the maximum size for the resizable dialog based on a proportion of the initial dialog size.
+    This example sets the maximum size for the resizable dialog based on a proportion of the initial dialog size.
 <programlisting>
 <![CDATA[
 
@@ -2018,16 +2051,16 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>minSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--minSize-----------------------------------------------------><
+>>--minSize--------------------------------------><
 
->>--minSize = sizeObj-------------------------------------------><
+>>--minSize = sizeObj----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   Reflects the minimum size the dialog is allowed to resize to. By default, the minimum size for the dialog is set to its
-  initial when the operating system first creates it.
+  initial size when the operating system first creates it.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">minSize get:</emphasis></term>
@@ -2042,7 +2075,7 @@ u~resize(self, sizeinfo)
   <para>
     Set the minimum size the dialog can be sized to using a <computeroutput>Size</computeroutput> object. The <emphasis
     role="italic">width</emphasis> of the <computeroutput>size</computeroutput> object is the minimum width, in pixels, for
-    the dialog and the <emphasis role="italic">height</emphasis> of the <computeroutput>size</computeroutput> object is the
+    the dialog and the <emphasis role="italic">height</emphasis> of the <computeroutput>Size</computeroutput> object is the
     minimum height, in pixels, for the dialog. By default, the dialog will have an initial minimum size restriction set to
     the size of the dialog when first created.
   </para>
@@ -2092,8 +2125,8 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>controlBottom</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--controlBottom(--ctrlID-,-howPinned-,-pinToEdge--+----------------+--)------><
-                                                    +-,-pinToWindow--+
+>>--controlBottom(--id--,--howPinned--,--pinToEdge--+------------------+--)----><
+                                                    +--,--pinToWindow--+
 ]]>
 </programlisting>
 
@@ -2107,10 +2140,31 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the bottom edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2118,13 +2172,14 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When defining the sizing for the bottom edge, the definition <emphasis role="bold">must</emphasis> be correct. If an
+    incorrect definition is detected, a syntax condition is raised.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2141,9 +2196,11 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example defines the sizing for the bottom edge of a list-view:
 <programlisting>
 <![CDATA[
+
+  self~controlBottom(IDC_LV_MAIN, 'STATIONARY', 'BOTTOM')
 
 ]]>
 </programlisting>
@@ -2157,13 +2214,13 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>controlLeft</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--controlLeft(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--controlLeft(--id--,--howPinned--,--pinToEdge--+------------------+--)------><
+                                                  +--,--pinToWindow--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Defines the sizing for the left edge of the dialog control specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2172,10 +2229,31 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the left edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2183,13 +2261,14 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When defining the sizing for the left edge, the definition <emphasis role="bold">must</emphasis> be correct. If an
+    incorrect definition is detected, a syntax condition is raised.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2206,9 +2285,11 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example defines the sizing for the left edge of a list-view:
 <programlisting>
 <![CDATA[
+
+  self~controlLeft(IDC_LV_MAIN, 'STATIONARY', 'LEFT')
 
 ]]>
 </programlisting>
@@ -2222,13 +2303,13 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>controlRight</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--controlRight(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--controlRight(--id--,--howPinned--,--pinToEdge--+------------------+--)-----><
+                                                   +--,--pinToWindow--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Defines the sizing for the right edge of the dialog control specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2237,10 +2318,31 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the right edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2248,13 +2350,14 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When defining the sizing for the right edge, the definition <emphasis role="bold">must</emphasis> be correct. If an
+    incorrect definition is detected, a syntax condition is raised.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2271,9 +2374,12 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example defines the sizing for the right edge of a list-view. To be sure the code is clear to anyone looking at it,
+    the programmer decided to explicitly name the window the right edge is pinned to:
 <programlisting>
 <![CDATA[
+
+  self~controlRight(IDC_LV_MAIN, 'STATIONARY', 'RIGHT', self~IDC_IDC_DEFAULT_PINTO_WINDOW)
 
 ]]>
 </programlisting>
@@ -2287,13 +2393,13 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>controlSizing</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--controlSizing(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--controlSizing(--id--+--------- +--+--------+--+---------+--+-----------+--)-----><
+                        +-,-right--+  +-,-top--+  +-,-left--+  +-,-bottom--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Defines the sizing for some or all of the edges of the specified dialog control with one method call.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2302,10 +2408,42 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>right [opitonal]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the right edge of the control. If this argument is omitted, the current
+      default <link linkend="mthDefaultRight">right</link> sizing definition is used. See the remarks section for the details
+      on constructing the array and its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>top [opitonal]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the top edge of the control. If this argument is omitted, the current
+      default <link linkend="mthDefaultTop">top</link> sizing definition is used. See the remarks section for the details
+      on constructing the array and its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>left [opitonal]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the left edge of the control. If this argument is omitted, the current
+      default <link linkend="mthDefaultLeft">left</link> sizing definition is used. See the remarks section for the details
+      on constructing the array and its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bottom [opitonal]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the bottom edge of the control. If this argument is omitted, the current
+      default <link linkend="mthDefaultBottom">bottom</link> sizing definition is used. See the remarks section for the
+      details on constructing the array and its indexes.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2313,13 +2451,44 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 on success, 1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">right</emphasis>, <emphasis role="italic">top</emphasis>, etc., arguments must be an array.
+    Each array must contain index 1 and index 2. Index 3 is optional. The arrays are formed are as follows:
+  </para>
+  <variablelist>
+    <varlistentry><term>Index 1 [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition of the edge.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Index 2 [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition of the edge.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Index 3 [optional]</term>
+    <listitem>
+    <para>
+      The window the edge is being pinned to. By default this is the dialog window. To specify a dialog control window use
+      the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  <para>
+    For any of the optional edge sizing definition arguments that are omitted, a sizing edge defintion is constructed using
+    the default sizing in effect at the time. Not that the default sizing can be changed using the <xref
+    linkend="mthDefaultLeft"/>, <xref linkend="mthDefaultTop"/>, etc., methods. Changing the default sizing has no effect on
+    the sizing defintion for any control that has already been added to the sizing table. It only effects sizign added after
+    the default has been changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2336,10 +2505,18 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example defines the sizing for all edges of an edit control using the <emphasis
+    role="italic">controlSizing</emphasis> method. Note that there are any number of ways the Rexx code could be formatted
+    here. The format shown is merely one way, it is not required:
 <programlisting>
 <![CDATA[
 
+  self~controlSizing(IDC_EDIT_NAMES,                                       -
+                     .array~of('STATIONARY', 'LEFT', IDC_ST_NAMES),        -
+                     .array~of('STATIONARY', 'TOP',  IDC_GB_TEST),         -
+                     .array~of('STATIONARY', 'LEFT', IDC_ST_LABELS),       -
+                     .array~of('MYTOP',      'TOP')                        -
+                     )
 ]]>
 </programlisting>
   </para>
@@ -2352,13 +2529,13 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>controlTop</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--controlTop(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--controlTop(--id--,--howPinned--,--pinToEdge--+------------------+--)-------><
+                                                 +--,--pinToWindow--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Defines the sizing for the bottom edge of the dialog control specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2367,10 +2544,31 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>howPinned [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the top edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2378,13 +2576,14 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When defining the sizing for the top edge, the definition <emphasis role="bold">must</emphasis> be correct. If an
+    incorrect definition is detected, a syntax condition is raised.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2401,9 +2600,11 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example defines the sizing for the top edge of a list-view:
 <programlisting>
 <![CDATA[
+
+  self~controlTop(IDC_LV_MAIN,'STATIONARY', 'TOP')
 
 ]]>
 </programlisting>
@@ -2418,13 +2619,14 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultBottom</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultBottom(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--defaultBottom(----howPinned--,--pinToEdge--)----------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Changes the default sizing policy for the bottom edge of dialog controls. Before the underlying Windows dialog starts
+  executing, every edge of every dialog control in the dialog is assigned a sizing definition. Every edge that the
+  application has not explicitly defined a sizing for is assigned the default sizing definition for that edge.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2433,10 +2635,16 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>howPinned [required]</term>
     <listitem>
     <para>
-      xx
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2444,7 +2652,7 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 on success, 1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -2483,13 +2691,14 @@ u~resize(self, sizeinfo)
 <indexterm><primary>Resizing class</primary><secondary>defaultLeft</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultLeft(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--defaultLeft(----howPinned--,--pinToEdge--)---><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Changes the default sizing policy for the left edge of dialog controls. Before the underlying Windows dialog starts
+  executing, every edge of every dialog control in the dialog is assigned a sizing definition. Every edge that the
+  application has not explicitly defined a sizing for is assigned the default sizing definition for that edge.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2548,13 +2757,14 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultRight</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultRight(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--defaultRight(----howPinned--,--pinToEdge--)--><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Changes the default sizing policy for the right edge of dialog controls. Before the underlying Windows dialog starts
+  executing, every edge of every dialog control in the dialog is assigned a sizing definition. Every edge that the
+  application has not explicitly defined a sizing for is assigned the default sizing definition for that edge.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2680,13 +2890,14 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultTop</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultTop(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--defaultTop(----howPinned--,--pinToEdge--)----><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Changes the default sizing policy for the top edge of dialog controls. Before the underlying Windows dialog starts
+  executing, every edge of every dialog control in the dialog is assigned a sizing definition. Every edge that the
+  application has not explicitly defined a sizing for is assigned the default sizing definition for that edge.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>

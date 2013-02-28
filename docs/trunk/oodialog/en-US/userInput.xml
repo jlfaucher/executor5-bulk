@@ -353,10 +353,9 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
   <para>
     The Windows Shell identifies objects in the Shell using a device called an item ID list. Files, folders, printers,
     remote computers all have an item ID list that is used to uniquely identify them to the Shell. The ooDialog programmer
-    does not really need to know about the details of these item ID lists. Although technically incorrect, the programmer can
-    just think of them as <link linkend="defHandle">handles</link>. However, it is difficult to document the
-    <computeroutput>BrowseForFolder</computeroutput> class without making some reference to an item ID list. For that
-    purpose, this brief explanation is included.
+    does not really need to know about the details of these item ID lists. However, it is difficult to document the
+    <computeroutput>BrowseForFolder</computeroutput> class without making references to an item ID list. Although technically
+    incorrect, the programmer can just think of them as <link linkend="defHandle">handles</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -810,7 +809,7 @@ Public Routines <link linkend="sctPublicRoutines">section</link> of this chapter
 </row>
 <row>
 <entry><xref linkend="mthGetDisplayName"/> </entry>
-<entry>Returns the display name relative to the file system path</entry>
+<entry>Returns the display name for an item <link linkend="varItemIDList">ID</link> list.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFolder"/> </entry>
@@ -1849,7 +1848,7 @@ leaving() thread ID 3580
       exactly one of the following keyword, case is not significant:
     </para>
     <para>
-    <simplelist type='vert' columns='3'>
+    <simplelist type='vert' columns='2'>
       <member>DESKTOPABSOLUTEEDITING     </member>
       <member>DESKTOPABSOLUTEPARSING     </member>
       <member>FILESYSPATH                </member>
@@ -2136,7 +2135,7 @@ $Recycle.Bin
     combination allows the browsing of every folder in the shell. In the first invocation of <emphasis
     role="italic">getItemIDList</emphasis>, note the use of the <emphasis role="italic">reuse</emphasis> arg. The prevents
     the COM library from being released. Then in the last invocation of <emphasis role="italic">getFolder</emphasis>, the
-    <emphasis role="italic">reuse</emphasis> arg is not used, and the ooDialog framework takes car of releasing the COM
+    <emphasis role="italic">reuse</emphasis> arg is not used, and the ooDialog framework takes care of releasing the COM
     library. However, if the user cancels the first showing of the dialog, the application handles releasing COM before it
     returns:
 <programlisting>
@@ -2220,7 +2219,28 @@ $Recycle.Bin
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the browse for folder dialog is first instantiated, the ooDialog framework initializes the COM library on the thread
+    that is executing. If that same object is used on another thread than the initial thread, the methods of the object may
+    fail unless the COM library is initialized on the other thread. The <emphasis role="italic">initCOM</emphasis> method is
+    provided to perform that initialization.
+  </para>
+  <para>
+    For each invocation of <emphasis role="italic">initCOM</emphasis> that returns true, a matching call to <xref
+    linkend="mthReleaseCOM"/> must be made on the same thread. Note that the <xref linkend="mthGetFolder"/> and <xref
+    linkend="mthGetItemIDList"/> methods release the COM library on the thread they are executing in when the <emphasis
+    role="italic">reuse</emphasis> arguemnt is false. Therefore, if <emphasis role="italic">initCOM</emphasis> is invoked on
+    thread xx, the matching release COM requirement can be fulfilled by invoking <emphasis role="italic">getFolder</emphasis>
+    with the <emphasis role="italic">reuse</emphasis> argument set to false.
+  </para>
+  <para>
+    If <emphasis role="italic">initCOM</emphasis> returns false, then there is no need to invoke <emphasis
+    role="italic">releaseCOM</emphasis>. Indeed, invoking <emphasis role="italic">releaseCOM</emphasis> will be a mistake as
+    this will cause the matching <emphasis role="italic">initCOM</emphasis> / <emphasis role="italic">releaseCOM</emphasis>
+    calls to become unbalanced. When <emphasis role="italic">initCom</emphasis> returns false, it can be for two reasons. If
+    the COM library has already been initialized on the current thread, false is returned and the
+    <computeroutput>.SystemErrorCode</computeroutput> is set to 1. There is also the possibility of a failure in initializing
+    the COM library. In this case, false is returned and the <computeroutput>.SystemErrorCode</computeroutput> is set to a
+    COM error code that describes the error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2343,22 +2363,41 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if the current thread is the same thread as this <computeroutput>BrowseForFolder</computeroutput> object was
+    instantiated on, otherwise false. A return of false does not indicate failure.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    As noted through out the <computeroutput>BrowseForFolder</computeroutput> documentation, the COM library must be
+    initialized and released for each thread the browse for folder object is used on. The ooDialog initializes the COM
+    library on the thread the object is first instantiated on and releases the COM library on the thread that the <xref
+    linkend="mthGetFolder"/> method, or the <xref linkend="mthGetItemIDList"/> is invoked on. If the same browse for folder
+    object is used on another thread than the thread it was instatiated on, the methods of the object may fail unless the COM
+    library is initialized on the other thread. The <xref linkend="mthInitCOM"/> method is provided to perform the
+    initialization, and the <emphasis role="italic">releaseCOM</emphasis> method is provided to release the COM library on
+    the other thread.
+  </para>
+  <para>
+    For each invocation of <emphasis role="italic">initCOM</emphasis> that returns true, a matching call to <emphasis
+    role="italic">releaseCOM</emphasis> must be made on the same thread. Note that the <xref linkend="mthGetFolder"/> and
+    <xref linkend="mthGetItemIDList"/> methods release the COM library on the thread they are executing in when the <emphasis
+    role="italic">reuse</emphasis> arguemnt is false. Therefore, if <emphasis role="italic">initCOM</emphasis> is invoked on
+    thread xx, the matching release COM requirement can be fulfilled by invoking <emphasis role="italic">getFolder</emphasis>
+    with the <emphasis role="italic">reuse</emphasis> argument set to false.
+  </para>
+  <para>
+    If <emphasis role="italic">initCOM</emphasis> returns false, then there is no need to invoke <emphasis
+    role="italic">releaseCOM</emphasis>. Indeed, invoking <emphasis role="italic">releaseCOM</emphasis> will be a mistake as
+    this will cause the matching <emphasis role="italic">initCOM</emphasis> / <emphasis role="italic">releaseCOM</emphasis>
+    calls to become unbalanced.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2468,7 +2507,7 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is;
   </para>
   <variablelist>
     <varlistentry><term>itemIDList [required]</term>
@@ -2512,7 +2551,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     This example configures a browse for folder dialog to allow browsing the entire shell namespace. It then runs in a loop
-    allowing the user to pick a folder and see the folder's display name is. Note that every returned item ID list is
+    allowing the user to pick a folder and see what the folder's display name is. Note that every returned item ID list is
     released. Also note that the <xref linkend="mthGetItemIDList"/> method uses true for the <emphasis
     role="italic">reuse</emphasis> argument. This tells the ooDialog framework to not release COM during the invocation of
     the <emphasis role="italic">getItemIDList</emphasis> method. Because of this the example uses <xref
@@ -2551,14 +2590,13 @@ leaving() thread ID 4032
 
   return 0
 
-  ::required 'ooDialog.cls'
+  ::requires 'ooDialog.cls'
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End BrowseForFolder::releaseItemIDList() -->
-
 
 </section> <!-- End BrowseForFolder Class -->
 
