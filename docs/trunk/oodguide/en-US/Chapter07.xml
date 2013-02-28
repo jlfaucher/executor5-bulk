@@ -937,7 +937,8 @@ familyName: James; firstName: Alfred;
         <computeroutput>controlSizing</computeroutput> method (a method of ooDialog's
         <computeroutput>ResizingAdmin</computeroutput> class) on 'self'. As an example, the
       following code defines the resizing behavior of the "Reset Icons" button on the Order
-      Management dialog: <programlisting>
+      Management dialog:
+      <programlisting>
         <![CDATA[
     ::METHOD defineSizing
       ...
@@ -947,7 +948,7 @@ familyName: James; firstName: Alfred;
                          .array~of('MYLEFT',     'LEFT'  ), -
                          .array~of('MYTOP',      'TOP'   )  -
       ...)]]>      
-      </programlisting> The <computeroutput>controlSizing</computeroutput>
+      </programlisting>The <computeroutput>controlSizing</computeroutput>
       method takes five arguments: a control's resource ID (e.g. the Reset button) and four arrays.
       The first array addresses the left side of the control, the second the top, the third the
       right, and the fourth the bottom. So: left, top, right, bottom. For each side there is an
@@ -984,19 +985,101 @@ familyName: James; firstName: Alfred;
       the format of the dialog <emphasis role="italic">looks</emphasis> much more like a usable sales order
       form than in the previous exercise. The main part of the form is a Tab Control with two tabs - one for 
       entering customer details, the other for product details. 
-      <indexterm><primary>Tab Control</primary></indexterm>
+      <indexterm><primary>Tab Control</primary><secondary>Property Sheet</secondary></indexterm>
       <indexterm><primary>Property Sheet</primary></indexterm>
       <indexterm><primary>Property Sheet Page</primary></indexterm>
+      <indexterm><primary>Control Dialog</primary></indexterm>
+      <indexterm><primary>Tab Control</primary><secondary>Control Dialog</secondary></indexterm>
       ooDialog supports two approaches to embedding content in a Tab Control: a Property Sheet Dialog with a
-      Property Sheet Page for each tab, and a Resource Dialog with a Control Dialog for each tab. .
-      See the ooDialog Reference for a full description. One of the differences is that while the Property Sheet Dialog approach 
+      Property Sheet Page for each tab, and a Resource Dialog with a Control Dialog for each tab.
+      <indexterm><primary>Control Dialog</primary></indexterm>
+      <footnote><para>By "resource dialog" is meant 
+      an RcDialog, a ResDialog or a UserDialog. The two former have resources defined in a resource file, whereas 
+      the latter's resources are defined programmatically.
+      See the ooDialog Reference for a full description.</para></footnote>
+      One important difference is that while the Property Sheet Dialog approach 
       is simpler (more is handled by the operating system), it does not allow for interesting controls to be placed
       on the main dialog outside the Tab Control. Thus the alternate approach - Control Dialogs - is used for the Order Form.
     </para>
-    <para>The Order Form consists of three dialogs - the main Resource File Dialog (<computeroutput>RcDialog</computeroutput>)
-      plus two Control Dialogs (<computeroutput>RcControlDialog</computeroutput>) in a Tab Control.</para>
-    
-
+    <para>The instance name for the new Order Form is the Order Number. When the icon on the Order Management dialog is
+      double-clicked, the MVF is used to surface the OrderForm dialog. The sequence of operation is as follows
+      (with detail irrelevant to the Order Form omitted):
+      <simplelist>
+        <member>OrderMgrView sends 'showModel("OrderFormModel", "a")' to the ObjectMgr.</member>
+        <member>ObjectMgr sees that the instance name is "anonymous", and so sends 'getInstanceName'
+          to the class object (.OrderFormModel in this case).</member>
+        <member>.OrderFormModel provides this class method, and returns the next Order Number.</member>
+        <member>ObjectMgr uses the new Order Number as the instance name for the Order Form, and</member>
+        <member>sends 'newInstance(instanceName,...)' to .OrderFormModel, which then instantiates an OrderModel instance.</member>
+        <member>ObjectMgr then sends newInstance to .OrderFormView, which then creates an instance of the OrderFormView dialog.</member>
+      </simplelist>
+    </para>
+    <para>The Order Form consists of three dialogs - the main Resource File Dialog (an <computeroutput>RcDialog</computeroutput>)
+      plus two Control Dialogs (<computeroutput>RcControlDialog</computeroutput>) in a Tab Control. The two Control Dialogs - 
+      one for Customer Details and one for details of Products ordered, are 
+      created in the <computeroutput>activate</computeroutput> method as follows:
+      <programlisting><![CDATA[
+    cd1 = .CustDetailsDlg~new("Order\OrderFormView.rc", IDD_ORDFORM_CUST_DIALOG)
+    cd2 = .OrderLinesDlg~new("Order\OrderFormView.rc", IDD_ORDFORM_ORDLINES_DIALOG)
+    tabContent = .array~of(cd1, cd2)
+    cd1~ownerDialog = self
+    self~prep(tabContent)   
+    ]]></programlisting>The <computeroutput>prep</computeroutput> method is then called to set up the tabs:
+      <programlisting><![CDATA[
+  ::METHOD prep
+    expose tabContent lastSelected havePositioned
+    use strict arg tabContent
+    havePositioned = .array~of(.false, .false)
+    lastSelected = 0
+    self~connectTabEvent(IDC_ORDFORM_TABS, SELCHANGE, onNewTab)
+    ]]></programlisting>The 'havePositioned' array is used to determine if the page dialogs have been
+    positioned, and both are marked as not positioned. Then "no tab yet selected" is set. Finally, an 
+    event handling method is are connected to the event 'onNewTab'.</para>
+    <para>Next, in the <computeroutput>initDialog</computeroutput> method, the tabs are added to the tab control, 
+      their size is calculated, and the control dialog used for the first page is positioned and 
+      shown:
+      <programlisting><![CDATA[
+  ::METHOD initDialog
+    expose ... tabContent lastSelected ...
+    ...
+    tabControl = self~newTab(IDC_ORDFORM_TABS)
+    tabControl~addSequence("Customer Details", "Order Lines")
+    ...
+    self~calculateDisplayArea
+    self~positionAndShow(1)
+    ]]></programlisting>
+    </para>
+    <para>The two methods <computeroutput>calculateDisplayArea</computeroutput> and <computeroutput>positionAndShow</computeroutput>
+      are well-commented, and are copied from the ooDialog sample program <computeroutput>oodListViews.rex</computeroutput>
+      - one of the excellent   
+      samples in the <computeroutput>samples\oodialog\propertySheet.tabControls</computeroutput> folder, which is in the 
+      <computeroutput>Program Files\ooRexx</computeroutput> folder. 
+    </para>
+    <para>
+      Note that it's essential to properly close the control dialogs in the <computeroutput>cancel</computeroutput> and/or
+      <computeroutput>ok</computeroutput> methods. This must be done using the <computeroutput>endExecution</computeroutput>
+      method.</para>
+    <para>Finally, the Order Form illustrates one use of the <computeroutput>DateTimePicker</computeroutput> control. 
+      <indexterm><primary>DateTime class</primary></indexterm>
+      <indexterm><primary>DateTimePicker</primary></indexterm>
+      <indexterm><primary>OrderForm</primary><secondary>DateTime class</secondary></indexterm>
+      <indexterm><primary>OrderForm</primary><secondary>DateTimePicker</secondary></indexterm>
+      This is a very fully-featured control, providing many ways of displaying and manipulating date and time. 
+      For the Order Form it allows the user easily to specify the Order Date. It's partly configured in the
+      .rc file (in ResEdit, "Use Spin Control" is set to "false" and "Format" is set to "Short Date"), and partly in code, 
+      as follows:
+      <programlisting><![CDATA[
+  ::METHOD initDialog
+    ...
+      orderDate = self~newDateTimePicker(IDC_ORDFORM_DATE);
+      orderDate~setFormat("MMM dd',' yyyy")
+      today = .DateTime~today
+      maxOrderDate = today~addYears(1)
+      orderDate~setRange(.array~of(today,maxOrderDate))
+    ]]></programlisting>First the format of the edit field is set. Then the ooRexx <computeroutput>DateTime</computeroutput>
+      class is used to set the allowable range of dates that the user can enter: the range is from "today" (i.e. the day on 
+      which the dialog is used) to a year from "today". 
+    </para>
   </section>
   <!-- End of Section 7.6 -->
 
@@ -1004,11 +1087,12 @@ familyName: James; firstName: Alfred;
   <section id="chap07-next">
     <title id="ch7-next">Completing the Application</title>
     <!-- Section 7.7 -->
-    <para>At this point, there is more to do to complete the application. For example, the Order Form
-      is still in the same skeletal form as in Exercise 6; more generic function such as that found  
-      in the List components could be moved to a superclass; the three view superclasses could be 
-      made into a single mixin class; SQL could be used for data-on-disk; updates could properly implemented.
-      It is planned that these functions will be addressed in the next version of this document. </para>
+    <para>At this point, there is more to do to complete the application. For example, generic function 
+      such as that found in the List components could be moved to a superclass; the three view superclasses could be 
+      made into a single mixin class; the Order Form needs to provide for data to be entered and stored;
+      SQL could be used for data-on-disk; updates could properly implemented, and it would be nice if the user
+      could use drag-and-drop to enter data into the Order Form. It is planned that some or all of these functions
+      will be addressed in the next version of this document.</para>
   </section>
   <!-- End of Section 7.7 -->
 </chapter>
