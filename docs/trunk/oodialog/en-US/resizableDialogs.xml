@@ -1932,15 +1932,15 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="mthDefaultBottom"/></entry>
-<entry>xx</entry>
+<entry>Changes the default sizing policy for the bottom edge of dialog controls.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultLeft"/></entry>
-<entry></entry>
+<entry>Changes the default sizing policy for the bottom edge of dialog controls.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultRight"/></entry>
-<entry></entry>
+<entry>Changes the default sizing policy for the bottom edge of dialog controls.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultSizing"/></entry>
@@ -1948,7 +1948,7 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="mthDefaultTop"/></entry>
-<entry></entry>
+<entry>Changes the default sizing policy for the bottom edge of dialog controls.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefineSizing"/></entry>
@@ -2619,7 +2619,7 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultBottom</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultBottom(----howPinned--,--pinToEdge--)----------------><
+>>--defaultBottom(--howPinned--,--pinToEdge--)---><
 ]]>
 </programlisting>
 
@@ -2691,7 +2691,7 @@ u~resize(self, sizeinfo)
 <indexterm><primary>Resizing class</primary><secondary>defaultLeft</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultLeft(----howPinned--,--pinToEdge--)---><
+>>--defaultLeft(--howPinned--,--pinToEdge--)-----><
 ]]>
 </programlisting>
 
@@ -2707,10 +2707,16 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>howPinned [required]</term>
     <listitem>
     <para>
-      xx
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2718,13 +2724,7 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns 0 on success, 1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2757,7 +2757,7 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultRight</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultRight(----howPinned--,--pinToEdge--)--><
+>>--defaultRight(--howPinned--,--pinToEdge--)----><
 ]]>
 </programlisting>
 
@@ -2773,10 +2773,16 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>howPinned [required]</term>
     <listitem>
     <para>
-      xx
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2784,13 +2790,7 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns 0 on success, 1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2873,9 +2873,20 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from an application that changes the default sizing to one that is better for the application. All the
+    dialog controls whose sizing is not explictly defined in the application will have their left and right sides pinned to
+    the left side of dialog. The STATIONARY keyword means that the sides will remain the same pixel distance from the left
+    edge as they start with. A similar thing with the top and bottom of the controls, they will be pinned to the bottom of a
+    list-view. The effect of this, is that the dialog controls using the default sizing will all remain the same size. They
+    will not get bigger or smaller:
 <programlisting>
 <![CDATA[
+
+  self~defaultSizing(.array~of('STATIONARY', 'LEFT'),                     -
+                     .array~of('STATIONARY', 'BOTTOM', IDC_LV_MAIN),      -
+                     .array~of('STATIONARY', 'LEFT'),                     -
+                     .array~of('STATIONARY', 'BOTTOM', ICD_LV_MAIN)       -
+                    )
 
 ]]>
 </programlisting>
@@ -2890,7 +2901,7 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultTop</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultTop(----howPinned--,--pinToEdge--)----><
+>>--defaultTop(--howPinned--,--pinToEdge--)------><
 ]]>
 </programlisting>
 
@@ -2906,10 +2917,16 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>howPinned [required]</term>
     <listitem>
     <para>
-      xx
+      The <xref linkend="varPinType"/> keyword for the sizing definition.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pinToEdge [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2917,13 +2934,7 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns 0 on success, 1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2940,9 +2951,12 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example changes the default sizing for dialog control top edges to a STATIONARY type of pin and pins the edges to
+    the bottom edge of a list-view:
 <programlisting>
 <![CDATA[
+
+  self~defaultTop~('STATIONARY', 'BOTTOM', IDC_LV_MAIN)
 
 ]]>
 </programlisting>
