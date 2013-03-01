@@ -117,6 +117,32 @@ static void raiseInvalidPinToIDException(RexxThreadContext *c, uint32_t pinToID,
 }
 
 /**
+ * Raises an exception for an invalid, default, pin to control ID set by the
+ * user.
+ *
+ * IDC_DEFAULT_PINTO_WINDOW is always valid.
+ *
+ * Otherwise if the default sizing is changed, the pin to window must already
+ * have a record in the tabel.  I.e., the pin to window has to precede any
+ * default records that are added from this point on.
+ *
+ * If the user uses an invalid resource ID, for example 202, but there is no
+ * dialog control with resource ID 202, this will be detected when the existing
+ * pin to IDs are checked after the dialog is created, but before all dialog
+ * controls are enumerated.  For this the raiseInvalidPinToIDException will be
+ * raised.
+ *
+ * @param c
+ */
+static void raiseInvalidDefaultPinToIDException(RexxThreadContext *c, uint32_t pinToID)
+{
+    TCHAR buf[512];
+    _snprintf(buf, sizeof(buf), "The resource ID (%d) for the default pin to window edge is not valid, it is not in the table",
+              pinToID);
+    executionErrorException(c, buf);
+}
+
+/**
  * This exception is for a control resize info record added by the user whose
  * control resource ID is not valid.  I.e., the user typed 109 for the resource
  * ID, but there is no dialog control with that ID in the dialog.
@@ -214,6 +240,38 @@ static bool validPinToID(RexxMethodContext *c, uint32_t ctrlID, uint32_t pinToID
     }
 
     return true;
+}
+
+/**
+ * Verifies that the pin to ID is either IDC_DEFAULT_PINTO_WINDOW, or that it is
+ * the resource ID of a control that is already present in the table.
+ *
+ * @param c
+ * @param pinToID
+ * @param prid
+ *
+ * @return bool
+ *
+ * @notes  The default sizing for any edge can be changed, but it can not have a
+ *         pin to ID that is not already in the table.
+ */
+static bool validDefaultPinToID(RexxMethodContext *c, uint32_t pinToID, pResizeInfoDlg prid)
+{
+    if ( pinToID == IDC_DEFAULT_PINTO_WINDOW )
+    {
+        return true;
+    }
+
+    for ( register size_t i = 0; i < prid->countCtrls; i++)
+    {
+        if ( prid->riCtrls[i].id == pinToID )
+        {
+            return true;
+        }
+    }
+
+    raiseInvalidDefaultPinToIDException(c->threadContext, pinToID);
+    return false;
 }
 
 /**
@@ -333,14 +391,12 @@ static pinnedEdge_t keyword2pinnedEdge(RexxMethodContext *c, CSTRING keyWord, si
  *
  * @return Zero on success, one on error.  This Rexx object is passed on to the
  *         user as a reply from a method invocation.
- *
- * @note  Default edges can only be pinned to the dialog window itself.
  */
-static RexxObjectPtr defaultLeft(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
+static RexxObjectPtr defaultLeft(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, uint32_t pinToID, pResizeInfoDlg prid)
 {
     prid->defEdges.left.pinType   = keyword2pinType(c, howPinned, 1, leftEdge);
     prid->defEdges.left.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
-    prid->defEdges.left.pinToID   = IDC_DEFAULT_PINTO_WINDOW;
+    prid->defEdges.left.pinToID   = pinToID;
 
     if ( prid->defEdges.left.pinType == notAPin || prid->defEdges.left.pinToEdge == notAnEdge )
     {
@@ -359,14 +415,12 @@ static RexxObjectPtr defaultLeft(RexxMethodContext *c, CSTRING howPinned, CSTRIN
  *
  * @return Zero on success, one on error.  This Rexx object is passed on to the
  *         user as a reply from a method invocation.
- *
- * @note  Default edges can only be pinned to the dialog window itself.
  */
-static RexxObjectPtr defaultTop(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
+static RexxObjectPtr defaultTop(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, uint32_t pinToID, pResizeInfoDlg prid)
 {
     prid->defEdges.top.pinType   = keyword2pinType(c, howPinned, 1, topEdge);
     prid->defEdges.top.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
-    prid->defEdges.top.pinToID   = 0;
+    prid->defEdges.top.pinToID   = pinToID;
 
     if ( prid->defEdges.top.pinType == notAPin || prid->defEdges.top.pinToEdge == notAnEdge )
     {
@@ -385,14 +439,12 @@ static RexxObjectPtr defaultTop(RexxMethodContext *c, CSTRING howPinned, CSTRING
  *
  * @return Zero on success, one on error.  This Rexx object is passed on to the
  *         user as a reply from a method invocation.
- *
- * @note  Default edges can only be pinned to the dialog window itself.
  */
-static RexxObjectPtr defaultRight(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
+static RexxObjectPtr defaultRight(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, uint32_t pinToID, pResizeInfoDlg prid)
 {
     prid->defEdges.right.pinType   = keyword2pinType(c, howPinned, 1, rightEdge);
     prid->defEdges.right.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
-    prid->defEdges.right.pinToID   = 0;
+    prid->defEdges.right.pinToID   = pinToID;
 
     if ( prid->defEdges.right.pinType == notAPin || prid->defEdges.right.pinToEdge == notAnEdge )
     {
@@ -411,14 +463,12 @@ static RexxObjectPtr defaultRight(RexxMethodContext *c, CSTRING howPinned, CSTRI
  *
  * @return Zero on success, one on error.  This Rexx object is passed on to the
  *         user as a reply from a method invocation.
- *
- * @note  Default edges can only be pinned to the dialog window itself.
  */
-static RexxObjectPtr defaultBottom(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, pResizeInfoDlg prid)
+static RexxObjectPtr defaultBottom(RexxMethodContext *c, CSTRING howPinned, CSTRING whichEdge, uint32_t pinToID, pResizeInfoDlg prid)
 {
     prid->defEdges.bottom.pinType   = keyword2pinType(c, howPinned, 1, bottomEdge);
     prid->defEdges.bottom.pinToEdge = keyword2pinnedEdge(c, whichEdge, 2);
-    prid->defEdges.bottom.pinToID   = 0;
+    prid->defEdges.bottom.pinToID   = pinToID;
 
     if ( prid->defEdges.bottom.pinType == notAPin || prid->defEdges.bottom.pinToEdge == notAnEdge )
     {
@@ -1733,7 +1783,7 @@ RexxMethod6(RexxObjectPtr, ra_controlSide, RexxObjectPtr, rxID, CSTRING, howPinn
         {
             if ( pinToID == (uint32_t)-1 )
             {
-                wrongArgValueException(context->threadContext, 3, "a valid numeric ID or a valid symbolic ID" , _pinToID);
+                wrongArgValueException(context->threadContext, 4, "a valid numeric ID or a valid symbolic ID" , _pinToID);
             }
             goto err_out;
         }
@@ -2038,7 +2088,8 @@ err_out:
  ** ResizingAdmin::defaultTop()
  *
  */
-RexxMethod4(RexxObjectPtr, ra_defaultSide, CSTRING, howPinned, CSTRING, whichEdge, NAME, method, CSELF, pCSelf)
+RexxMethod5(RexxObjectPtr, ra_defaultSide, CSTRING, howPinned, CSTRING, whichEdge, OPTIONAL_RexxObjectPtr, _pinToID,
+            NAME, method, CSELF, pCSelf)
 {
     pResizeInfoDlg    prid = NULL;
     pCPlainBaseDialog pcpbd = validateRACSelf(context, pCSelf, &prid);
@@ -2052,12 +2103,31 @@ RexxMethod4(RexxObjectPtr, ra_defaultSide, CSTRING, howPinned, CSTRING, whichEdg
         return methodCanOnlyBeInvokedException(context, method, "during the defineSizing method", pcpbd->rexxSelf);
     }
 
+    uint32_t pinToID = IDC_DEFAULT_PINTO_WINDOW;
+    if ( argumentExists(3) )
+    {
+        pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, _pinToID, -1, 3, false);
+        if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+        {
+            if ( pinToID == (uint32_t)-1 )
+            {
+                wrongArgValueException(context->threadContext, 3, "a valid numeric ID or a valid symbolic ID" , _pinToID);
+            }
+            return TheOneObj;
+        }
+    }
+
+    if ( ! validDefaultPinToID(context, pinToID, prid) )
+    {
+        return TheOneObj;
+    }
+
     switch ( method[7] )
     {
-        case 'L' : return defaultLeft(context, howPinned, whichEdge, prid);
-        case 'T' : return defaultTop(context, howPinned, whichEdge, prid);
-        case 'R' : return defaultRight(context, howPinned, whichEdge, prid);
-        case 'B' : return defaultBottom(context, howPinned, whichEdge, prid);
+        case 'L' : return defaultLeft(context, howPinned, whichEdge, pinToID, prid);
+        case 'T' : return defaultTop(context, howPinned, whichEdge, pinToID, prid);
+        case 'R' : return defaultRight(context, howPinned, whichEdge, pinToID, prid);
+        case 'B' : return defaultBottom(context, howPinned, whichEdge, pinToID, prid);
     }
     return TheOneObj;
 }
@@ -2084,11 +2154,18 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
 
     RexxObjectPtr rxHowPinned;
     RexxObjectPtr rxWhichEdge;
+    RexxObjectPtr rxPinToID;
+
+    CSTRING  howPinned;
+    CSTRING  whichEdge;
+    uint32_t pinToID;
 
     if ( argumentExists(1) )
     {
         rxHowPinned = context->ArrayAt(left, 1);
         rxWhichEdge = context->ArrayAt(left, 2);
+        rxPinToID   = context->ArrayAt(left, 3);
+
         if ( rxHowPinned == NULLOBJECT )
         {
             return sparseArrayException(context->threadContext, 1, 1);
@@ -2098,7 +2175,29 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
             return sparseArrayException(context->threadContext, 1, 2);
         }
 
-        if ( defaultLeft(context, context->ObjectToStringValue(rxHowPinned), context->ObjectToStringValue(rxWhichEdge), prid) == TheOneObj )
+        howPinned = context->ObjectToStringValue(rxHowPinned);
+        whichEdge = context->ObjectToStringValue(rxWhichEdge);
+        pinToID   = IDC_DEFAULT_PINTO_WINDOW;
+
+        if ( rxPinToID != NULLOBJECT )
+        {
+            pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxPinToID, -1, 3, false);
+            if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+            {
+                if ( pinToID == (uint32_t)-1 )
+                {
+                    wrongObjInArrayException(context->threadContext, 1, 3, "a valid numeric ID or a valid symbolic ID", rxPinToID);
+                }
+                return NULLOBJECT;
+            }
+
+            if ( ! validDefaultPinToID(context, pinToID, prid) )
+            {
+                return NULLOBJECT;
+            }
+        }
+
+        if ( defaultLeft(context, howPinned, whichEdge, pinToID, prid) == TheOneObj )
         {
             return NULLOBJECT;
         }
@@ -2108,6 +2207,8 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
     {
         rxHowPinned = context->ArrayAt(top, 1);
         rxWhichEdge = context->ArrayAt(top, 2);
+        rxPinToID   = context->ArrayAt(top, 3);
+
         if ( rxHowPinned == NULLOBJECT )
         {
             return sparseArrayException(context->threadContext, 2, 1);
@@ -2117,7 +2218,29 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
             return sparseArrayException(context->threadContext, 2, 2);
         }
 
-        if ( defaultTop(context, context->ObjectToStringValue(rxHowPinned), context->ObjectToStringValue(rxWhichEdge), prid) == TheOneObj )
+        howPinned = context->ObjectToStringValue(rxHowPinned);
+        whichEdge = context->ObjectToStringValue(rxWhichEdge);
+        pinToID   = IDC_DEFAULT_PINTO_WINDOW;
+
+        if ( rxPinToID != NULLOBJECT )
+        {
+            pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxPinToID, -1, 3, false);
+            if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+            {
+                if ( pinToID == (uint32_t)-1 )
+                {
+                    wrongObjInArrayException(context->threadContext, 2, 3, "a valid numeric ID or a valid symbolic ID", rxPinToID);
+                }
+                return NULLOBJECT;
+            }
+
+            if ( ! validDefaultPinToID(context, pinToID, prid) )
+            {
+                return NULLOBJECT;
+            }
+        }
+
+        if ( defaultTop(context, howPinned, whichEdge, pinToID, prid) == TheOneObj )
         {
             return NULLOBJECT;
         }
@@ -2127,6 +2250,8 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
     {
         rxHowPinned = context->ArrayAt(right, 1);
         rxWhichEdge = context->ArrayAt(right, 2);
+        rxPinToID   = context->ArrayAt(right, 3);
+
         if ( rxHowPinned == NULLOBJECT )
         {
             return sparseArrayException(context->threadContext, 3, 1);
@@ -2136,7 +2261,29 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
             return sparseArrayException(context->threadContext, 3, 2);
         }
 
-        if ( defaultRight(context, context->ObjectToStringValue(rxHowPinned), context->ObjectToStringValue(rxWhichEdge), prid) == TheOneObj )
+        howPinned = context->ObjectToStringValue(rxHowPinned);
+        whichEdge = context->ObjectToStringValue(rxWhichEdge);
+        pinToID   = IDC_DEFAULT_PINTO_WINDOW;
+
+        if ( rxPinToID != NULLOBJECT )
+        {
+            pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxPinToID, -1, 3, false);
+            if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+            {
+                if ( pinToID == (uint32_t)-1 )
+                {
+                    wrongObjInArrayException(context->threadContext, 3, 3, "a valid numeric ID or a valid symbolic ID", rxPinToID);
+                }
+                return NULLOBJECT;
+            }
+
+            if ( ! validDefaultPinToID(context, pinToID, prid) )
+            {
+                return NULLOBJECT;
+            }
+        }
+
+        if ( defaultRight(context, howPinned, whichEdge, pinToID, prid) == TheOneObj )
         {
             return NULLOBJECT;
         }
@@ -2146,6 +2293,8 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
     {
         rxHowPinned = context->ArrayAt(bottom, 1);
         rxWhichEdge = context->ArrayAt(bottom, 2);
+        rxPinToID   = context->ArrayAt(bottom, 3);
+
         if ( rxHowPinned == NULLOBJECT )
         {
             return sparseArrayException(context->threadContext, 4, 1);
@@ -2155,7 +2304,29 @@ RexxMethod5(RexxObjectPtr, ra_defaultSizing, OPTIONAL_RexxArrayObject, left, OPT
             return sparseArrayException(context->threadContext, 4, 2);
         }
 
-        if ( defaultBottom(context, context->ObjectToStringValue(rxHowPinned), context->ObjectToStringValue(rxWhichEdge), prid) == TheOneObj )
+        howPinned = context->ObjectToStringValue(rxHowPinned);
+        whichEdge = context->ObjectToStringValue(rxWhichEdge);
+        pinToID   = IDC_DEFAULT_PINTO_WINDOW;
+
+        if ( rxPinToID != NULLOBJECT )
+        {
+            pinToID = oodResolveSymbolicID(context, pcpbd->rexxSelf, rxPinToID, -1, 3, false);
+            if ( pinToID == OOD_INVALID_ITEM_ID || pinToID == (uint32_t)-1 )
+            {
+                if ( pinToID == (uint32_t)-1 )
+                {
+                    wrongObjInArrayException(context->threadContext, 4, 3, "a valid numeric ID or a valid symbolic ID", rxPinToID);
+                }
+                return NULLOBJECT;
+            }
+
+            if ( ! validDefaultPinToID(context, pinToID, prid) )
+            {
+                return NULLOBJECT;
+            }
+        }
+
+        if ( defaultBottom(context, howPinned, whichEdge, pinToID, prid) == TheOneObj )
         {
             return NULLOBJECT;
         }
