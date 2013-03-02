@@ -1655,8 +1655,28 @@ u~resize(self, sizeinfo)
   programmer does not explicitly define a sizing for an edge of a control, a default sizing definition is assigned to it by
   the ooDialog framework. This is how a dialog can be made resizable by just inheriting the
   <computeroutput>ResizingAdmin</computeroutput> and nothing else. The ooDialog framework will assign a default sizing
-  definition to each edge of every control in the dialog. The default sizing definition may be adequate for the programmer's
-  needs. If not, the programmer can set the sizing definitions for the edges of the controls as needed.
+  definition to each edge of every control in the dialog.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Default Sizing Policy:</emphasis></term>
+  <listitem>
+  <para>
+    The initial default sizing policy is relatively simple. The left edge of a dialong control is pinned proportionally to
+    the left edge of the dialog. The top edge of a dialog control is pinned proportionally to the top edge of the dialog. And
+    so on, the right edge of a control to the right edge of the dialog, bottom edge of a control to the bottom edge of the
+    dialog.
+  </para>
+  <para>
+    The default sizing policy can be changed by the programmer though the <xref linkend="mthDefaultSizing"/> method. Or the
+    individual default sizing for a single edge can be changed through the <xref linkend="mthDefaultBottom"/>, <xref
+    linkend="mthDefaultLeft"/>, <xref linkend="mthDefaultRight"/>, or <xref linkend="mthDefaultTop"/> methods.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  The default sizing definition may be adequate for the programmer's needs. If not, the programmer can explicitly set the
+  sizing definitions for the edges of the controls as needed.
 </para>
 <para>
   The sizing definitions for every control are placed in a table. When a resizing event happens, every control is resized,
@@ -1944,7 +1964,7 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="mthDefaultSizing"/></entry>
-<entry></entry>
+<entry>Resets the default sizing policy.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultTop"/></entry>
@@ -1952,11 +1972,11 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="mthDefineSizing"/></entry>
-<entry></entry>
+<entry>The <emphasis role="italic">defineSizing</emphasis> method is invoked automatically by the ooDialog framework. It is not meant to be, nor should it be, invoked by the programmer. The method is meant to be over-ridden by the programmer. It is used to add or change sizing defintions.</entry>
 </row>
 <row>
 <entry><xref linkend="mthNoMaxSize"/></entry>
-<entry>xx</entry>
+<entry>Removes any exsiting restriction on the maximum size the dialog can be resized to.</entry>
 </row>
 <row>
 <entry><xref linkend="mthNoMinSize"/></entry>
@@ -1965,6 +1985,10 @@ u~resize(self, sizeinfo)
 <row>
 <entry><xref linkend="mthPagedTab"/></entry>
 <entry>xx</entry>
+</row>
+<row>
+<entry><xref linkend="mthUseDefaultSizing"/></entry>
+<entry>Sets the sizing information for the specified control to that of the current <link linkend="mthDefaultSizing">default</link> sizing.</entry>
 </row>
 <row>
 <entry><xref linkend="mthWantSizeEnded"/></entry>
@@ -2414,7 +2438,7 @@ u~resize(self, sizeinfo)
       The resource ID of the dialog control whose sizing is being defined. May be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>right [opitonal]</term>
+    <varlistentry><term>right [optional]</term>
     <listitem>
     <para>
       An array whose indexes define the sizing for the right edge of the control. If this argument is omitted, the current
@@ -2422,7 +2446,7 @@ u~resize(self, sizeinfo)
       on constructing the array and its indexes.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>top [opitonal]</term>
+    <varlistentry><term>top [optional]</term>
     <listitem>
     <para>
       An array whose indexes define the sizing for the top edge of the control. If this argument is omitted, the current
@@ -2430,7 +2454,7 @@ u~resize(self, sizeinfo)
       on constructing the array and its indexes.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>left [opitonal]</term>
+    <varlistentry><term>left [optional]</term>
     <listitem>
     <para>
       An array whose indexes define the sizing for the left edge of the control. If this argument is omitted, the current
@@ -2438,7 +2462,7 @@ u~resize(self, sizeinfo)
       on constructing the array and its indexes.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>bottom [opitonal]</term>
+    <varlistentry><term>bottom [optional]</term>
     <listitem>
     <para>
       An array whose indexes define the sizing for the bottom edge of the control. If this argument is omitted, the current
@@ -2619,7 +2643,8 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultBottom</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultBottom(--howPinned--,--pinToEdge--)---><
+>>--defaultBottom(--howPinned--,--pinToEdge--+------------------+--)-----------><
+                                             +--,--pinToWindow--+
 ]]>
 </programlisting>
 
@@ -2647,6 +2672,15 @@ u~resize(self, sizeinfo)
       The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the bottom edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -2658,7 +2692,10 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If the <emphasis role="italic">pinToWindow</emphasis> argument is used and its value is not the dialog window, then a
+    sizing record for that window must already exist in the sizing table. That is, if the <emphasis
+    role="italic">pinToWindow</emphasis> is set to dialog control AA, then a sizing definition for AA must have been already
+    explicitly defined.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2691,7 +2728,8 @@ u~resize(self, sizeinfo)
 <indexterm><primary>Resizing class</primary><secondary>defaultLeft</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultLeft(--howPinned--,--pinToEdge--)-----><
+>>--defaultLeft(--howPinned--,--pinToEdge--+------------------+--)-------------><
+                                           +--,--pinToWindow--+
 ]]>
 </programlisting>
 
@@ -2719,12 +2757,30 @@ u~resize(self, sizeinfo)
       The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the left edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
     Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">pinToWindow</emphasis> argument is used and its value is not the dialog window, then a
+    sizing record for that window must already exist in the sizing table. That is, if the <emphasis
+    role="italic">pinToWindow</emphasis> is set to dialog control AA, then a sizing definition for AA must have been already
+    explicitly added to the sizing table.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2757,7 +2813,8 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultRight</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultRight(--howPinned--,--pinToEdge--)----><
+>>--defaultRight(--howPinned--,--pinToEdge--+------------------+--)------------><
+                                            +--,--pinToWindow--+
 ]]>
 </programlisting>
 
@@ -2785,12 +2842,30 @@ u~resize(self, sizeinfo)
       The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the right edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
     Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">pinToWindow</emphasis> argument is used and its value is not the dialog window, then a
+    sizing record for that window must already exist in the sizing table. That is, if the <emphasis
+    role="italic">pinToWindow</emphasis> is set to dialog control AA, then a sizing definition for AA must have been already
+    explicitly added to the sizing table.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2824,13 +2899,15 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultSizing</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultSizing(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--defaultSizing(--+---------+--+---------+--+----------+--+------------+--)--><
+                    +--right--+  +-,--top--+  +-,--left--+  +-,--bottom--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Resets the default sizing policy. At the time the underlying dialog starts executing, every edge of every control in the
+  dialog must have a sizing definition. Any edge of any control that does not have a sizing definition explicitly set by the
+  application is assigned the default sizing definition for that edge.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2839,10 +2916,36 @@ u~resize(self, sizeinfo)
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>right [optional]</term>
     <listitem>
     <para>
-      xx
+      An array whose indexes define the default sizing for the right edge of a control. If this argument is omitted, the current
+      default right sizing definition is not changed. See the remarks section for the details on constructing the array and
+      its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>top [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the default sizing for the top edge of a control. If this argument is omitted, the current
+      default top sizing definition is not changed. See the remarks section for the details on constructing the array and its
+      indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>left [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the default sizing for the left edge of a control. If this argument is omitted, the current
+      default left sizing definition is not changed. See the remarks section for the details on constructing the array and
+      its indexes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bottom [optional]</term>
+    <listitem>
+    <para>
+      An array whose indexes define the sizing for the bottom edge of the control. If this argument is omitted, the current
+      default bottom sizing definition is not changed. See the remarks section for the details on constructing the array and
+      its indexes.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2850,13 +2953,50 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 on success and 1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">right</emphasis>, <emphasis role="italic">top</emphasis>, etc., arguments must be an array.
+    Each array must contain index 1 and index 2. Index 3 is optional. The arrays are formed are as follows:
+  </para>
+  <variablelist>
+    <varlistentry><term>Index 1 [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinType"/> keyword for the sizing definition of the edge.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Index 2 [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition of the edge.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Index 3 [optional]</term>
+    <listitem>
+    <para>
+      The window the edge is being pinned to. By default this is the dialog window. To specify a dialog control window use
+      the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  <para>
+    For any of the optional edge sizing definition arguments that are omitted, the current sizing edge defintion is left
+    unchanged. Note that the default sizing for a single edge can be changed individually using the <xref
+    linkend="mthDefaultLeft"/>, <xref linkend="mthDefaultTop"/>, etc., methods. Changing the default sizing has no effect on
+    the sizing defintion for any control that has already been added to the sizing table. It only effects sizing definitions
+    added after the default has been changed.
+  </para>
+  <para>
+    The default sizing definition is used for any control that does not have any sizing record in the sizing table. It is
+    also used for any missing edge defintions in a partially defined record. E.g., if the application explicitly sets only
+    the top edge definition for a dialog control, the default sizing defintitions for the left, right, and bottom edges will
+    be used.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2901,7 +3041,8 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>defaultTop</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultTop(--howPinned--,--pinToEdge--)------><
+>>--defaultTop(--howPinned--,--pinToEdge--+------------------+--)--------------><
+                                          +--,--pinToWindow--+
 ]]>
 </programlisting>
 
@@ -2929,12 +3070,30 @@ u~resize(self, sizeinfo)
       The <xref linkend="varPinnedToEdge"/> keyword for the sizing definition.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>pinToWindow [optional]</term>
+    <listitem>
+    <para>
+      The window the top edge is being pinned to. By default this is the dialog window. To specify a dialog control window
+      use the resource ID of the control. This may be numeric or <xref linkend="defSymbolicId"/>. The <link
+      linkend="tblResizingAdminMethods">IDC_IDC_DEFAULT_PINTO_WINDOW</link> constant can also be used to explicitly define
+      the pin to window as the dialog window.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
     Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">pinToWindow</emphasis> argument is used and its value is not the dialog window, then a
+    sizing record for that window must already exist in the sizing table. That is, if the <emphasis
+    role="italic">pinToWindow</emphasis> is set to dialog control AA, then a sizing definition for AA must have been already
+    explicitly added to the sizing table.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2971,39 +3130,46 @@ u~resize(self, sizeinfo)
 <indexterm><primary>Resizing class</primary><secondary>defineSizing</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defineSizing(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--defineSizing---------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">defineSizing</emphasis> method is invoked automatically by the ooDialog framework. It is not
+  meant to be, nor should it be, invoked by the programmer. The method is meant to be over-ridden by the programmer. It is
+  used to add or change sizing defintions.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments sent to the <emphasis role="italic">defineSizing</emphasis> method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Many of the methods of the <computeroutput>ResizingAdmin</computeroutput> can only be invoked during the execution of the
+    <emphasis role="italic">defineSizing</emphasis> method. All sizing definitions must be done within the <emphasis
+    role="italic">defineSizing</emphasis> method. The <emphasis role="italic">defineSizing</emphasis> method executes before
+    the underlying Windows dialog is created. The implication of this is that methods that require the underlying Winodws
+    dialog to exist can not be used in <emphasis role="italic">defineSizing</emphasis>.
+  </para>
+  <para>
+    The <emphasis role="italic">defineSizing</emphasis> method is invoked as the last procedure in the initialization of the
+    base dialog object. Error conditions during the <emphasis role="italic">defineSizing</emphasis> method cause the
+    initializtion of the base dialog object to fail.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis>, the default implementation of the <emphasis role="italic">defineSizing</emphasis>
+    method returns 0. If an application over-rides the <emphasis role="italic">defineSizing</emphasis> method, that method
+    <emphasis role="bold">must</emphasis> also return 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3015,9 +3181,26 @@ u~resize(self, sizeinfo)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the complete <emphasis role="italic">defineSizing</emphasis> method from one of the example programs:
 <programlisting>
 <![CDATA[
+
+::method defineSizing
+
+    -- The only control in this dialog is the list-view.  We define its sizing
+    -- so that each edge of the list-view maintains the same distance to its
+    -- corresponding edeg of the dialog:
+    self~controlSizing(IDC_LV_MAIN,                            -
+                       .array~of('STATIONARY', 'LEFT'),        -
+                       .array~of('STATIONARY', 'TOP'),         -
+                       .array~of('STATIONARY', 'RIGHT'),       -
+                       .array~of('STATIONARY', 'BOTTOM')       -
+                      )
+
+    -- A value must be returned from the defineSizing() method.  O allows the
+    -- dialog to continue, any other value is a failure and the dialog will be
+    -- ended.
+    return 0
 
 ]]>
 </programlisting>
@@ -3032,39 +3215,32 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>noMaxSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--noMaxSize(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--noMaxSize------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes any exsiting restriction on the maximum size the dialog can be resized to.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    By default no maximum size limit is set for resizable dialogs. If the application uses the <xref linkend="atrMaxSize"/>
+    attribute to set a maximum size and later needs to remove the restriction, it can be done using the <emphasis
+    role="italic">noMaxSize</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3078,17 +3254,6 @@ u~resize(self, sizeinfo)
     can be invoked any time during the life-cycle of the dialog.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ResizingAdmin::noMaxSize() -->
 
@@ -3098,8 +3263,7 @@ u~resize(self, sizeinfo)
 <indexterm><primary>ResizingAdmin class</primary><secondary>noMinSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--noMinSize(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--noMinSize------------------------------------><
 ]]>
 </programlisting>
 
@@ -3273,7 +3437,10 @@ r
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In order to pin the edge of a dialog control to the edge of some other dialog control, a sizing definition for the other
+    control must already exist in the sizing definition table. The <emphasis role="italic">useDefaultSizing</emphasis> is a
+    convenience method that allows a sizing definition for the <emphasis role="italic">other</emphasis> control to be placed
+    in the table with a minimum of effort.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3290,9 +3457,20 @@ r
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example the default sizing is going to be changed to pin the top and bottom edges of controls to a list-view in
+    the application. There needs to be a sizing definintion for the list-view already in the table to do that, but the sizing
+    for the list-view is that of the current default sizing. The <emphasis role="italic">useDefaultSizing</emphasis> method
+    provides a convenient way to add the list-view's record:
 <programlisting>
 <![CDATA[
+
+  self~useDefaultSizing(IDC_LV_MAIN)
+
+  self~defaultSizing(.array~of('STATIONARY', 'LEFT'),                     -
+                     .array~of('STATIONARY', 'BOTTOM', IDC_LV_MAIN),      -
+                     .array~of('STATIONARY', 'LEFT'),                     -
+                     .array~of('STATIONARY', 'BOTTOM', ICD_LV_MAIN)       -
+                    )
 
 ]]>
 </programlisting>
