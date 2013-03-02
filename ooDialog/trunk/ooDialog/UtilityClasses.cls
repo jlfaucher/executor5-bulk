@@ -1636,8 +1636,7 @@
 /*-------------------------- shortcut routines -------------------------------*/
 
 ::routine CheckList public
-   use arg msg, title, labels, checks, lx = 0, max = 0
-   if arg(4,"o") then checks = .array~new
+   use arg msg, title, labels, checks = (.array~new), lx = 0, max = 0
    num = labels~items
    do i=1 to num
       j = i+100
@@ -1658,24 +1657,21 @@
    return ret
 
 ::routine InputBox public
-   use arg msg, title, default, size
+   use arg msg, title, default = '', size = 0
    dlg = .InputBox~new(msg,title,default,size)
    ret = dlg~execute
    drop dlg
    return ret
 
 ::routine IntegerBox public
-   use arg msg, title, default, size
+   use arg msg, title, default = '', size = 0
    dlg = .IntegerBox~new(msg,title,default,size)
    ret = dlg~execute
    drop dlg
    return ret
 
 ::routine ListChoice public
-   use arg msg, title, list, lx, ly, predev
-   if arg(4,"o") = 1 then lx = 0
-   if arg(5,"o") = 1 then ly = 0
-   if arg(6,"o") = 1 then predev = ""
+   use arg msg, title, list, lx = 0, ly = 0, predev = ""
    num = list~items
    do i=1 to num
       lst.i = list[i]
@@ -1687,8 +1683,7 @@
    else return res
 
 ::routine MultiInputBox public
-   use arg msg, title, labels, datas, len
-   if arg(5,"o") = 1 then len = 0
+   use arg msg, title, labels, datas, len = 0
    num = labels~items
    do i=1 to num
       j = i+100
@@ -1706,10 +1701,7 @@
    return ret
 
 ::routine MultiListChoice public
-   use arg msg, title, list, lx, ly, predev
-   if arg(4,"o") = 1 then lx = 0
-   if arg(5,"o") = 1 then ly = 0
-   if arg(6,"o") = 1 then predev = ""
+   use arg msg, title, list, lx = 0, ly = 0, predev = ""
    num = list~items
    do i=1 to num
       lst.i = list[i]
