@@ -1320,6 +1320,11 @@ MsgReplyType handleResizing(HWND hDlg, uint32_t msg, WPARAM wParam, LPARAM lPara
             return ReplyFalse;
         }
 
+        case WM_SIZING :
+        {
+            return ReplyFalse;
+        }
+
         case WM_EXITSIZEMOVE :
         {
             if ( prid->countPagedTabs > 0 && prid->isSizing )
@@ -2412,7 +2417,7 @@ RexxMethod1(RexxObjectPtr, ra_noMinSize, CSELF, pCSelf)
  *                  dialog pages.  Each item in the array may be numeric or
  *                  symbolic.  The items must be valid dialog IDs, that is a
  *                  whole number greater than 0, or a sysmbolic ID that resolves
- *                  to a whold number gereater than 0.
+ *                  to a whole number gereater than 0.
  *
  *                  The array must not be sparse and the number of items can not
  *                  exceed the maximum number of child dialogs, which is 20.
@@ -2427,7 +2432,6 @@ RexxMethod1(RexxObjectPtr, ra_noMinSize, CSELF, pCSelf)
  *          In order for the resizing admin to properly resize ControlDialog
  *          dialogs embedded in a tab control, the pagedTab method must be used
  *          to define each paged tab.
- *
  */
 RexxMethod3(RexxObjectPtr, ra_pagedTab, RexxObjectPtr, rxTabID, RexxArrayObject, dlgIDs, CSELF, pCSelf)
 {
