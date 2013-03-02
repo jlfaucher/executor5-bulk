@@ -460,9 +460,8 @@
                        .array~of('STATIONARY', 'BOTTOM')       -
                       )
 
-
     -- A value must be returned from the defineSizing() method.  O allows the
-    -- dialog to continue, any other failure is a failure and the dialog will be
+    -- dialog to continue, any other values is a failure and the dialog will be
     -- ended.
     return 0
 

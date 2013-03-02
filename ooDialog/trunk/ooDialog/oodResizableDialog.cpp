@@ -2509,6 +2509,11 @@ RexxMethod3(RexxObjectPtr, ra_pagedTab, RexxObjectPtr, rxTabID, RexxArrayObject,
  * @notes  The values of the resize info for any control can be changed at any
  *         time, but the control's order in the resizing table can not be
  *         changed once allocated.
+ *
+ *         This method allows the programmer to explicity define a sizing record
+ *         in the table, but still use the default sizing.  It is a convenience
+ *         method so that a sizing definition can be adde to the table ahead of
+ *         adding a record that pins to the control.
  */
 RexxMethod2(RexxObjectPtr, ra_useDefaultSizing, RexxObjectPtr, rxID, CSELF, pCSelf)
 {
