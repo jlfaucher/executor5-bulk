@@ -441,7 +441,7 @@
                   <computeroutput>identityHash</computeroutput> on its id. The following shows the
                 contents of the Object Bag after (a) a CustomerList was double-clicked on the Order
                 Management dialog, (b) a Customer in the list was double-clicked, and (c) the <link
-                  linkend="ch7-msgsender">Message Sender</link> was used to send a 'query'
+                  linkend="chap07-msgsender">Message Sender</link> was used to send a 'query'
                 message to <emphasis role="italic">ProductModel LM400</emphasis>: <programlisting>
 <![CDATA[
 Object Bag List:
@@ -627,9 +627,9 @@ familyName: James; firstName: Alfred;
               </para>
             </listitem>
             <listitem>
-              <para><computeroutput>offset</computeroutput><indexterm>
+              <para><computeroutput>offset</computeroutput>
                   <indexterm><primary>offset method</primary></indexterm>
-                  <indexterm<primary>View superclass</primary><secondary>offset method</secondary></indexterm>
+                  <indexterm><primary>View superclass</primary><secondary>offset method</secondary></indexterm>
                - This method offsets dialogs from the Order Management dialog when
                 first opened. Although not used elsewhere in this exercise, the effect can be seen
                 using the "Person" component in the <computeroutput>Samples\Person</computeroutput>
@@ -637,7 +637,7 @@ familyName: James; firstName: Alfred;
                   <emphasis role="bold"><emphasis role="italic">showModel</emphasis></emphasis> to
                   <emphasis role="bold"><emphasis role="italic">ObjectMgr The</emphasis></emphasis>
                 with the data <emphasis role="bold"><emphasis role="italic">PersonModel
-                    PA150</emphasis></emphasis>). The Person dialog appears offset from the center
+                    PA150</emphasis></emphasis>). The Person dialog appears in the center
                 of the screen. Now un-comment the last line
                   (<computeroutput>--self~offset:super</computeroutput>) in the
                   <computeroutput>initDialog</computeroutput> method of
@@ -648,8 +648,8 @@ familyName: James; firstName: Alfred;
                 containing the dialog property WS_VISIBLE (in ResEdit the behavior property
                 "visible" is set to true). First it appears in the center of the screen, then moves
                 to the offset position. Now remove "<computeroutput>| WS_VISIBLE</computeroutput>"
-                from the .rc file, save, and re-run. The Person dialog appears without a flicker
-                offset from the Message Sender.</para>
+                from the .rc file, save, and re-run. The Person dialog appears without a flicker but
+                offset (from the Message Sender).</para>
             </listitem>
           </itemizedlist>
         </para>
@@ -673,20 +673,24 @@ familyName: James; firstName: Alfred;
           <primary>Superclasses</primary>
           <secondary>GenericFile</secondary>
         </indexterm>
-        <para>The data superclass is called "GenericFile", since it acts on any file having the
-          defined format (see <xref linkend="chap07-mvfuse-datafmts"/> for a description of the file
-          format). The important methods are: <itemizedlist>
+        <para>The data superclass is called "GenericFile" since it acts on any file having the
+          defined format. Open any of the .txt data files (e.g. <computeroutput>PersonFile.txt</computeroutput>
+          to see the format. Essentially,
+          the first line in the file must be the column names (or labels). A label must not
+          contain spaces. Lines 2 to <emphasis role="italic">n</emphasis> are the data values,
+          each separated by a vertical bar character.
+          The main methods are: <itemizedlist>
             <listitem>
               <para><computeroutput>getRecord</computeroutput><indexterm>
                   <primary>getRecord method</primary>
                 </indexterm> - Invoked with a record key (e.g. a Customer Number) as its single
                 argument, reads the record from the file defined in the subclass, and returns a
-                "record directory". </para>
+                "record directory".</para>
             </listitem>
             <listitem>
               <para><computeroutput>getFile</computeroutput><indexterm>
                   <primary>getFile method</primary>
-                </indexterm> - Returns the file in "file as directory" format. </para>
+                </indexterm> - Returns the file in "file as directory" format.</para>
             </listitem>
             <listitem>
               <para><computeroutput>list</computeroutput><indexterm>
@@ -699,70 +703,94 @@ familyName: James; firstName: Alfred;
       <section>
         <title>Compound Data</title>
         <para>"Compound data" is data assembled from two or more files. In Relational Data Base
-          terms, this means a join. In this exercise, the only example of compound data is the Order
-          component. Thus the <computeroutput>OrderData</computeroutput>
-          <indexterm>
-            <primary>OrderData class</primary>
-          </indexterm>class uses <computeroutput>GenericFile</computeroutput> in a different way
-          than other components. Other components can have all their data returned with a single
-          invocation of one of <computeroutput>GenericFile</computeroutput>'s methods.
-            <computeroutput>OrderData</computeroutput> on the other hand needs not only the order
-          data from two files (Order Headers and Order Details), but also selected fields from
-          Customer and Product records. In other words, it needs to do a relational "join". And
-          since (in this exercise at least) we are not using an SQL database, the joins have to be
-          done explicitly by the <computeroutput>OrderData</computeroutput> class. This is done in
-          the <computeroutput>init</computeroutput> method, as follows. </para>
-        <para>First, the OrderHeaders file is read into an attribute
-            <computeroutput>dirOrderHeaders</computeroutput>. Then all order lines are read into an
-          attribute <computeroutput>dirOrderLines</computeroutput>. Following this, the
-            <computeroutput>addCustomerInfo</computeroutput> method retrieves additional customer
-          data (required by <computeroutput>OrderView</computeroutput>) from the Customer Data
-          component and that data is added to <computeroutput>dirOrderHeaders</computeroutput>.
-          Finally, the <computeroutput>addProductInfo</computeroutput> method invokes the Product
-          Data component to do the same for the required Product data (e.g. Product Names).</para>
-        <para>Since the Order data is held in two attributes of
-            <computeroutput>OrderData</computeroutput>, the
+          terms, this is a "join". The one example of compound data in Exercise 7 is the
+            <computeroutput>OrderData</computeroutput>class, where the
+            <computeroutput>init</computeroutput> method uses the superclass's
+            <computeroutput>getFile</computeroutput> method to read each of the two Order files
+          (OrderHeader.txt and OrderDetail.txt). This data is stored in two attributes,
+            <computeroutput>dirOrderHeaders</computeroutput> and
+            <computeroutput>dirOrderLines</computeroutput>. Then the
+            <computeroutput>addCustomerInfo</computeroutput> method gets selected Customer data
+          (e.g. Customer Addresses) via the <computeroutput>CustomerData</computeroutput> instance
+          and adds this to <computeroutput>dirOrderHeaders</computeroutput>. Finally, the
+            <computeroutput>addProductInfo</computeroutput> method accesses the
+            <computeroutput>ProductData</computeroutput> instance to get selected Product data (e.g.
+          Product Names) and stores this in the <computeroutput>dirOrderLines</computeroutput>
+          attribute. </para>
+          <para>The <computeroutput>dirOrderHeaders</computeroutput> format is as follows: <programlisting><![CDATA[
+ Indexes  Items
++---------------------------------------------------------------------+
+|Headers|OrderNo|CustNo|Date  |Disc|Cmtd|Cust |Cust|CustAddr | Zip    |   <a 1D array>
+|       |       |      |      |    |    |Name |Disc|         |        |
+|- - - -+- - - -+ - - -+ - - -+- - +- - +- - -+- - +- - - - -+ - - - -|
+|Records|SO-1234|AB0784|120821| 2  | N  |ABC..| B1 |2154 En..|FL 37043|   <a 2D array>
++- - - -+- - - -+ - - -+ - - -+- - +- - +- - -+- - |- - - - -+- - - - |
+        |SO-2345|BA0314|110815| 1.5| Y  |LMN..| C2 |116 Hig..|NV 84394|
+        |- - - -+ - - -+ - - -+- - +- - +- - -+- - |- - - - -+- - - - |
+        |SO-3456|BA0314|120527| 0  | Y  |LMN..| C2 |116 Hig..+NV 84394|
+        |- - - -+- - - +- - - +- - +- - +- - -+- - +- - - - -|- - - - |
+        |SO-4567|CU0003|120630| 0  | Y  |Red..| A1 |43 Main..|AR 48231|
+        |- - - -+ - - -+ - - -+- - +- - +- - -+- - +- - - - -+- - - - |
+        |SO-4569|AC0027|120824| 5  | N  |Fri..| B1 |124 Fre..|TX 78254|
+        +-------------------------------------------------------------+]]></programlisting> And the
+          format of the <computeroutput>dirOrderLines</computeroutput> attribute is as follows: <programlisting><![CDATA[
+       Indexes   Items
+     +-------------------+
+     | Count   | 12      |
+     |- - - - -+- - - - -+- - - - -+- - -+- - - - - - -+
+     | Headers | OrderNo | ProdNo  | Qty | ProdName    |    <a 1D array>
+     |- - - - -+- - - - -+- - - - -+- - -+- - - - - - -|
+     | Records | SO-1234 | AB100/W |   5 | Baffle      |    <a 2D array>
+     +- - - - -+- - - - -+- - - - -+- - -+- - - - - - -| 
+               | SO-1234 | CF300/X |   6 | Widget Box  |
+               |- - - - -+- - - - -+- - -+- - - - - - -|
+               | SO-1234 | EF500/W  | 15 | Slodget     |
+               |- - - - -+- - - - -+- - -+- - - - - - -|
+                 ...       ...       ...   ...  
+               |- - - - -+- - - - -+- - -+- - - - - - -|
+               | SO-4569 | XY200   |  12 | Blad Anchor |
+               +- - - - -+- - - - -+- - -+- - - - - - -+]]></programlisting>Since the Order data is
+          held in two attributes of <computeroutput>OrderData</computeroutput>, the
             <computeroutput>getRecord</computeroutput> and <computeroutput>getFile</computeroutput>
-          methods are over-ridden, and handled completely by the
+          methods are over-ridden, and handled entirely by the
             <computeroutput>OrderData</computeroutput> class. While
             <computeroutput>getFile</computeroutput> is very simple - merely returning
             <computeroutput>dirOrderHeaders</computeroutput> (which is sufficient for the Product
           List model and view), the <computeroutput>getRecord</computeroutput> method needs to build
-          the data for a single Order from the Order and OrderLines attributes, combining some
-          Customer and some Product data not present in the Order Data (for example, Customer
-          Discounts and Product Names). Thus it also over-rides its superclass method, and builds a
-          directory called "dirOrderRecord" whose format is as follows:<programlisting><![CDATA[   "dirOrderRecord" format (using data values from Order No SO-1234):
+          the data for a single Order from both <computeroutput>dirOrderHeaders</computeroutput> and
+            <computeroutput>dirOrderLines</computeroutput>. Thus it also over-rides its superclass
+          method, and builds a directory called "dirOrderRecord" whose format is as follows: <programlisting><![CDATA[   "dirOrderRecord" format (using data values from Order No SO-1234):
 
               Indexes         Items
             +- - - - - - - - - - - - - - - - - - - - - - - - +
             | OrderNo       | SO-1234                        |
-            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | CustNo        | AB0784                         |
-            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | CustName      | ABC Enterprises Inc.           |
-            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | CustAddr      | 2145 Engle Blvd,Hardtown,FL    |
-            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | Zip           | 37043                          |
-            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | Cmtd          | N                              |
-            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | CustDisc      | B1                             |
-            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | Disc          | 2                              |
-            +- - - - - + - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | Date          | 120821                         |
-            +- - - - - - - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | OrderLineHdrs | OrderNo  ProdNo Qty ProdName   |     <a 1D array>
-            +- - - - - - - - - - - - - - - - - - - - - - - - +
+            +- - - - - - - -+- - - - - - - - - - - - - - - - +
             | OrderLines    | SO-1234  AB100/W  5 Baffle     |     <a 2D array>
             |               | SO-1234  CF300/X  6 Widget Box |
             |               | SO-1234  EF500/W 15 Slodget    |
             +- - - - - - - - - - - - - - - - - - - - - - - - +]]></programlisting></para>
         <para>Finally, a <computeroutput>listOrders</computeroutput> method is provided, since the
             <computeroutput>list</computeroutput> method of
-            <computeroutput>GenericFile</computeroutput> cannot list data from more than one
-          file.</para>
+            <computeroutput>GenericFile</computeroutput> cannot list data from more than one file.
+          Both these methods </para>
       </section>
       <!-- End of Section 7.2.2.5 -->
     </section>
