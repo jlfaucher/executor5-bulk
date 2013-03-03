@@ -102,58 +102,90 @@
   <emphasis role="bold">Note:</emphasis> Not all syntax diagrams may be converted to the simplified railroad tracks at
   this time.
 </para>
+<para>
+  In this reference, the syntax diagrams being presented are the syntax for method or attribute invocations, and routine
+  calls. The diagrams show the method, attribute, or routine name and their arguments. For method or attribute invocations,
+  the section the method or attribute is included in, and / or the text itself, make it clear as to which class the method
+  belongs to. The following defines how the syntax diagrams are to be read:
+</para>
 <itemizedlist>
+<listitem>
+  Each syntax diagram is for a single method or attribute invocation, or for a single routine call.
+</listitem>
 <listitem>
 <para>
   Read the syntax diagrams from left to right, from top to bottom, following the path of the line.
 </para>
 <para>
-  The <computeroutput>&gt;&gt;---</computeroutput> symbol indicates the beginning of a statement.
+  The <computeroutput>&gt;&gt;--</computeroutput> symbol indicates the beginning of an invocation or call.
 </para>
 <para>
-  The <computeroutput>---&gt;</computeroutput> symbol indicates that the statement syntax is continued on the next
-  line. In most cases statement continuation is avoided.
+  The <computeroutput>--&gt;</computeroutput> symbol indicates that the invocation syntax is continued on the next line. In
+  most cases continuation is avoided.
 </para>
 <para>
   The <computeroutput>&gt;---</computeroutput> symbol indicates that a statement is continued from the previous line.
 </para>
 <para>
-  The <computeroutput>---&gt;&lt;</computeroutput> symbol indicates the end of a statement.
-</para>
-<para>
-  Diagrams of syntactical units other than complete statements start with the <computeroutput>&gt;---</computeroutput>
-  symbol and end with the  <computeroutput>---&gt;</computeroutput> symbol. Currently this document does not contain any of
-  these types of diagrams.
+  The <computeroutput>-&gt;&lt;</computeroutput> symbol indicates the end of a statement.
 </para>
 </listitem>
 <listitem>
 <para>
-  Required items appear on the horizontal line (the main path).
+  The method, attribute, or routine name is the first token, (first word,) on the horizontal line (the main path).
+  Parentheses, enclose the arguments, if there are any arguments.
 
 <programlisting>
 <![CDATA[
->>-STATEMENT--required_item------------------------------------><
+>>--methodName()---------------------------------><
+]]>
+</programlisting>
+</para>
+</listitem>
+<para>
+  Methods, attributes, or routines that do not accept arguments, stand alone on the main line.
+
+<programlisting>
+<![CDATA[
+>>--attributeName--------------------------------><
+]]>
+</programlisting>
+</para>
+</listitem>
+<listitem>
+<para>
+  Required arguments appear on the horizontal line, (the main path,) wihin the parentheses.
+
+<programlisting>
+<![CDATA[
+>>--methodName(--requiredArgument--)-------------><
 ]]>
 </programlisting>
 </para></listitem>
 <listitem>
 <para>
-  Optional items appear below the main path.
+  Optional arguments appear on a line directly below the main path.
 
 <programlisting>
 <![CDATA[
->>-STATEMENT--+---------------+--------------------------------><
-              +-optional_item-+
+>>--methodName(--+--------------------+--)-------><
+                 +--optionalArgument--+
 ]]>
 </programlisting>
 </para>
-</listitem></itemizedlist>
+<listitem>
 <para>
-  In this reference, the syntax diagrams being presented are the syntax for method or attribute invocations, and routine
-  calls. The diagrams show the method, attribute, or routine name and their arguments.  For method or attribute invocations,
-  the section the method or attribute is included in, and / or the text itself, make it clear as to which class the method
-  belongs to.
+  Commas are placed on the same line and immediately before the argument whose position relies on the comma.
+
+<programlisting>
+<![CDATA[
+>>--methodName(--arg1--+-----------+--,--arg3--+-----------+--)----------------><
+                       +--,--arg2--+           +--,--arg4--+
+]]>
+</programlisting>
 </para>
+</listitem>
+</itemizedlist>
 <important><title>Important</title>
   <para>
     In ooRexx, the arguments to methods or functions are enclosed in parenthesis and each argument is separated by a comma.
@@ -167,8 +199,10 @@
 <para>
   In the syntax diagrams in this document, arguments are represented by appropriate variable names and these variable names
   are then described in the text for the method. When arguments are optional, the default value and or behavior if the
-  argument is omitted is also described in the text. In <emphasis role="bold">all</emphasis> cases, the text rather than the
-  syntax diagram should be considered definitive.
+  argument is omitted is also described in the text.
+</para>
+<para>
+  In <emphasis role="bold">all</emphasis> cases, the text rather than the syntax diagram should be considered definitive.
 </para>
 <para>
   The following example shows the described syntax:

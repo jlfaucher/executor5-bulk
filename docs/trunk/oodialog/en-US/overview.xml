@@ -2015,8 +2015,9 @@ xPixels = xDialogUnits * self~FactorX
 
 <section id="sct421Release"><title>ooDialog Release 4.2.1</title>
 <para>
-  ooDialog 4.2.1 was released in ... It is a 4.2.0 level ooDialog, which means it can be installed to any ooRexx installation
-  that is at least version 4.1.0. The following is a brief summary of the changes in ooDialog 4.2.1 from ooDialog 4.2.0.
+  ooDialog 4.2.1 was released in January 2013. It is a 4.2.0 level ooDialog, which means it can be installed to any ooRexx
+  installation that is at least version 4.1.0. The following is a brief summary of the changes in ooDialog 4.2.1 from
+  ooDialog 4.2.0.
 </para>
 
 <variablelist>
@@ -2459,9 +2460,8 @@ xPixels = xDialogUnits * self~FactorX
 
 <section id="sctCurrentRelease"><title>Current Release</title>
 <para>
-  The current release of ooDialog is 4.2.2. It is a 4.2.?? level ooDialog, which means it can be installed to any ooRexx
-  installation that is at least version 4.??.??. The following is a brief summary of the changes in ooDialog 4.2.2 from
-  4.2.1.
+  The current release of ooDialog is 4.2.2. It is a 4.2.0 level ooDialog, which means it can be installed to any ooRexx
+  installation that is at least version 4.1.0. The following is a brief summary of the changes in ooDialog 4.2.2 from 4.2.1.
 </para>
 
 <variablelist>
@@ -2474,15 +2474,28 @@ xPixels = xDialogUnits * self~FactorX
   <itemizedlist>
   <listitem>
   <para>
-    * xxx
+    * #1153 Deprecated CategoryDialog dialogs do not work in ooDialog 4.2.1
   </para>
   </listitem>
   <listitem>
   <para>
-    * xxx
+    * #1154 setColor() method produces incorrect results
   </para>
   </listitem>
   </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation Bug Fixes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    The following documentation bugs were fixed in this release. The bug fix numbers can be used to look up details
+    concerning the bug on SourceForge
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    * #196 ooDialog - mapWindowPoints() was never documented
+  </para>
+  </listitem>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Feature Requests Added to ooDialog 4.2.2:</emphasis></term>
   <listitem>
@@ -2493,38 +2506,292 @@ xPixels = xDialogUnits * self~FactorX
   <itemizedlist>
   <listitem>
   <para>
-    * #504 It would be nice to be able to store a user value as part of the <xref linkend="clsLvFullRow"/> object
+    * #249 Add support for generalized resizable dialogs
   </para>
   </listitem>
   <listitem>
   <para>
-    * #505 Would like a way to prevent Enter from closing dialog when in single-line <link linkend="clsEdit">edit</link>
-    control
+    * #352 Fix document StateIndicator / ProgressIndicator
   </para>
   </listitem>
   <listitem>
   <para>
-    * #506 Allow modifying a <link linkend="clsListView">list-view</link> item and all its subitems at once
+    * #370 Replace ooDialog WinTimer with a waitable time
   </para>
   </listitem>
   <listitem>
   <para>
-    * #507 ooDialog - Modify the text of a <link linkend="clsListView">list-view</link> item and all its subitems at one time
+    * #417 ooDialog public routines and icon resource
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #504 It would be nice to be able to store a user value as part of the LvFullRow object
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #505 Would like a way to prevent Enter from closing dialog when in single-line edit control
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #506 Allow modifying a list-view item and all its subitems at once
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #507 ooDialog - Modify the text of a list-view item and all its subitems at one time
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #512 Add setWindowStyleRaw to match WindowBase getWindowStyleRaw
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #513 Need access to the ListView_GetItemRect ListView_GetIndexItemRect
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #514 It would be interesting to temporarily change the parent window of a dialog control
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #515 Would like to connect list-view begin and end scroll events
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #517 Add a way to access the child controls of a combo box
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #518 Need to work with an edit control that is not a direct child of the dialog
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #519 Would like the ListView hitTestInfo to return the subitem index
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #520 folder selection dialog
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #521 It would be useful to create a LvFullRow from an array of text values
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #522 Add item to list-view using array to specify the text of the item / subitem(s)
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #524 Standard dialogs should work no matter what the application wide setting of auto detect
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #525 The TreeView find() should allow some options
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #526 Get the message text associated with Windows error codes
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #528 Get the list box item under a point
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #529	Add methods to determine type of combo box from Rexx code
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #530	Want to be be able to calculate the rectangle occupied by a combo box item
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #531	Combo box methods to set the minimum number of items shown in list
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #532	Set the cue banner text for a combo box
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #534	Key status
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #535 Treeview expand/collapse button replacement
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #536 popupAsChild support for PropertySheets
   </para>
   </listitem>
   </itemizedlist>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Funtionality in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    Methods have been added to various classes that allow the embedding of either an edit control or a combo box control in
+    the subitem fields of a list-view.  This functionality allows the in-place editing of the subitems in a list-view item.
+  </para>
+  <para>
+    Work has been done that allows any type of ooDialog dialog to be made resizable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Dialog Classes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsResizingAdmin"/> class: The ResizingAdmin class is a new mixin class. Dialogs that inherit this class
+    are automatically made resizable.  Any ooDialog dialog class can intherit the mixin class. By default, all controls in
+    the dialog are sized in proportion to the change in size of the dialog. Methods of the ResizingAdmin class allow the
+    programmer to customize how the controls in the dialog are sized.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Utility Classes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="clsBrowseForFolder"/> class: The ooDialog BrowseForFolder class provides access to the Windows
+    BrowseForFolder COM object. It gives the Rexx programmer the ability to put up a standard dialog that allows the user to
+    select a folder. It is somewhat similar the the fileNameDialog() routine, except it is possible to select a folder.
+    Something that has not been possible in ooDialog previously. The programmer has access to the full set of customizations
+    in the COM object.
+  </para>
+  <para>
+    <xref linkend="clsSimpleFolderBrowse"/> class: The SimpleFolderBrowse class also provides access to the Windows
+    BrowseForFolder COM object, however it is designed to be very simple to use. Only the most common customization features
+    are provided.
+  </para>
+  <para>
+    <xref linkend="clsKeyboard"/> class: The Keyboard class addresses the receiving and processing of keyboard input.
+  </para>
+  <para>
+    <xref linkend="clsProgressDialog"/> class: A ProgressDialog object is used to show a dialog containing a ProgressBar, an
+    optional message, an optional status line, and an optional Cancel button. The dialog shows the progress a lengthy task
+    is making to the user.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Public Routines in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="rtnSimpleFolderBrowse"/> routine: This routine provides a shortcut access to the
+    SimpleFolderBrowse dialog class.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Methods in ooDialog 4.2.2:</emphasis></term>
   <listitem>
   <variablelist>
+    <varlistentry><term><emphasis role="bold">In the ApplicationManager class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthDefaultIcon"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the ComboBox class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetCueClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthGetComboBoxInfo"/>
+    </para>
+    <para>
+      <xref linkend="mthGetEditControl"/>
+    </para>
+    <para>
+      <xref linkend="mthGetFirstVisibleClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthGetItemHeightClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthGetMinVisible"/>
+    </para>
+    <para>
+      <xref linkend="mthIsDropDown"/>
+    </para>
+    <para>
+      <xref linkend="mthIsDropDownList"/>
+    </para>
+    <para>
+      <xref linkend="mthIsGrandChildClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthIsSimple"/>
+    </para>
+    <para>
+      <xref linkend="mthSetCueClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthSetItemHeightClsComboBox"/>
+    </para>
+    <para>
+      <xref linkend="mthSetMinVisible"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the DialogControl class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthSetParent"/>
+    </para>
+    <para>
+      <xref linkend="mthSetWindowTheme"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the DlgUtil class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthErrMsg"/>
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">In the Edit class:</emphasis></term>
     <listitem>
+    <para>
+      <xref linkend="mthIsGrandchildClsEdit"/>
+    </para>
     <para>
       <xref linkend="mthWantReturn"/>
     </para>
     </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the ListBox class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthHitTestInfo"/>
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">In the ListView class:</emphasis></term>
     <listitem>
+    <para>
+      <xref linkend="mthAddRowFromArray"/>.
+    </para>
+    <para>
+      <xref linkend="mthGetItemRect"/>.
+    </para>
+    <para>
+      <xref linkend="mthGetSubitemRect"/>.
+    </para>
     <para>
       <xref linkend="mthModifyFullRow"/>.
     </para>
@@ -2532,7 +2799,248 @@ xPixels = xDialogUnits * self~FactorX
       <xref linkend="mthSetFullRowText"/>.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the LvFullRow class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthFromArray"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the PropertySheetDialog class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthPopupAsChildClsPSD"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the Rect class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthCopyClsRect"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the WindowBase class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthSetWindowStyleRaw"/>
+    </para>
+    </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Attributes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">In the LvFullRow class:</emphasis></term>
+      <listitem>
+      <para>
+        <xref linkend="atrUserDataClsLvFr"/>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">In the PlainBaseDialog class:</emphasis></term>
+      <listitem>
+      <para>
+        <xref linkend="atrDlgID"/>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Methods in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the Button class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetIdealSize"/>: A new optional parameter, wantWidth, is added. If this argument is
+      specified, the operating system will calculate the ideal height of the button with the specified width. This
+      functionality is not available in the operating system until Vista or later.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the EventNotification class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthConnectListViewEvent"/>: New events added.
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      The BEGINSCROLL event is added.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      The ENDSCROLL event is added.
+    </para>
+    </listitem>
+    </itemizedlist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the ListView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthHitTestInfo"/>: Enhanced to return the subitem index, instead of 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">In the TreeView class:</emphasis></term>
+    <listitem>
+    <para>
+      <xref linkend="mthFind"/>: Enhanced to allow starting the search from any parent tree-view item.
+      Enhanced to allow searching for an abbreviation of the tree-view item label.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Public Routines in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    <xref linkend="rtnWinTimer"/>: The WinTimer() public routine was originally implemented in a way that caused it consume
+    100% of the CPU in a busy loop. The routine has been re-implmented in a way that keeps the behaviour of the routine the
+    same, without the high CPU use. The CPU use while waiting on the timer is now 0%.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Deprecated Methods in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">In the Treeview class:</emphasis></term>
+    <listitem>
+    <para>
+      <emphasis role="italic">hitTest</emphasis>: This method is deprecated. Use the<xref
+      linkend="mthHitTestInfoClsTreeView"/> method instead.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Samples in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    These 3 examples demonstrate how to embed a control in a list-view when it is in report view and use the control to do
+    in-place subitem editing.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>ooDialog\controls\ListView\subitem.editing\dropDownComboBox.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>ooDialog\controls\ListView\subitem.editing\dropDownListComboBox.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>ooDialog\controls\ListView\subitem.editing\editControl.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    These 3 examples demonstrate inheriting the ResizingAdmin class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\augmentedResize.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\basicResize.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\gbStationary.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example shows how to use the new ProgressDialog class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\addManyRows.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example demonstrates the BrowseForFolder class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\browsePrinters.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example demonstrates the SimpleBrowseForFolder class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\simpleFolderBrowse.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example demonstrates general ooDialog programming techniques by putting up a <emphasis role="italic">stop
+    watch</emphasis> dialog.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\stopWatch.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Samples in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    This example is an enhanced version of the old oostddlg.rex. It has a completely graphical interface and no longer uses
+    'say' statements.  It also uses the defaultIcon() method to set the default icon for the program.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\oodStandardDialogs.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    This example is an enhanced version of the old oostdfct.rex. It has a completely graphical interface and no longer uses
+    'say' statements.  It also uses the defaultIcon() method to set the default icon for the program.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\oodStandardRoutines.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    These 2 examples are copied from the
+    <computeroutput>oodialog\propertySheet.tabControls\PropertySheetDemo.rex</computeroutput> and
+    <computeroutput>oodialog\propertySheet.tabControls\TabDemo.rex</computeroutput> examples and enhanced to be resizable.
+    The old and new examples can be compared to see both how to make a dialog resizable and how the appearance of the old and
+    new versions contrast.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\PropertySheetDemo.rex</computeroutput>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\resizableDialogs\ResizingAdmin\TabDemo.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Documentation Changes in ooDialog 4.2.2:</emphasis></term>
+  <listitem>
+  <para>
+    All new methods, new classes, new functionality, etc., are fully documented. Other than that there are no major changes
+    to the documentation.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 
