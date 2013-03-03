@@ -265,15 +265,15 @@ errMsg()         Returns the operating system error message text for  a
 
 In the Edit class:
 
-wantReturn()      Connects the Enter keypress in a single-line edit
-                  control to a method in the Rexx dialog and prevents
-                  the keypress from closing the dialog.
-
-isGrandChild()    Notifies the ooDialog framework that the edit control
+isGrandchild()    Notifies the ooDialog framework that the edit control
                   is a grandchild of the dialog and configures the
                   underlying edit control to send four event
                   notifications to the dialog, rather than its direct
                   parent.
+
+wantReturn()      Connects the Enter keypress in a single-line edit
+                  control to a method in the Rexx dialog and prevents
+                  the keypress from closing the dialog.
 
 
 In the ListBox class:
@@ -406,6 +406,13 @@ hitTest()               This method is deprecated.  Use the
 New samples:
 ------------
 
+ooDialog\controls\ListView\subitem.editing\dropDownComboBox.rex
+ooDialog\controls\ListView\subitem.editing\dropDownListComboBox.rex
+ooDialog\controls\ListView\subitem.editing\editControl.rex
+
+These 3 examples demonstrate how to embed a control in a list-view when
+it is in report view and use the control to do in-place subitem editing.
+
 oodialog\resizableDialogs\ResizingAdmin\augmentedResize.rex
 oodialog\resizableDialogs\ResizingAdmin\basicResize.rex
 oodialog\resizableDialogs\ResizingAdmin\gbStationary.rex
@@ -447,14 +454,15 @@ completely graphical interface and no longer uses 'say' statements.  It
 also uses the defaultIcon() method to set the default icon for the
 program.
 
+oodialog\resizableDialogs\ResizingAdmin\PropertySheetDemo.rex
+oodialog\resizableDialogs\ResizingAdmin\TabDemo.rex
+
+These 2 examples are copied from the
+
 oodialog\propertySheet.tabControls\PropertySheetDemo.rex
 oodialog\propertySheet.tabControls\TabDemo.rex
 
-These 2 examples are copied to the
-
-oodialog\resizableDialogs\ResizingAdmin
-
-directory and enhanced to be resizable.  The old and new examples can be
+examples and enhanced to be resizable.  The old and new examples can be
 compared to see both how to make a dialog resizable and how the
 appearance of the old and new versions contrast.
 
@@ -462,6 +470,9 @@ appearance of the old and new versions contrast.
 Documentation:
 --------------
 
+All new methods, new classes, and new functionality are fully
+documented.  Other than that there are no major changes to the
+documentation.
 
 
 Known Problems, "Gotchas," and Solutions with Independent Installations
