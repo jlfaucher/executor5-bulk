@@ -1051,7 +1051,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 <![CDATA[
 >>--lastError------------------------------------><
 
->>--lastError=errMsg-----------------------------><
+>>--lastError = errMsg---------------------------><
 ]]>
 </programlisting>
 
@@ -1067,7 +1067,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 <![CDATA[
 >>--noMove---------------------------------------><
 
->>--noMove=ids-----------------------------------><
+>>--noMove = ids---------------------------------><
 ]]>
 </programlisting>
 
@@ -1092,7 +1092,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 <![CDATA[
 >>--noResize-------------------------------------><
 
->>--noResize=ids---------------------------------><
+>>--noResize = ids-------------------------------><
 ]]>
 </programlisting>
 
@@ -1115,7 +1115,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 <programlisting>
 <![CDATA[
 >>--updateOnResize-------------------------------><
->>--updateOnResize=boolean-----------------------><
+>>--updateOnResize = boolean---------------------><
 ]]>
 </programlisting>
 
@@ -1885,6 +1885,15 @@ u~resize(self, sizeinfo)
   the window being pinned in the sizing table</emphasis>, what is really meant is that a syntax condition is raised if that
   condition is detected.
 </para>
+<para>
+  <emphasis role="bold">Note</emphasis>, when using the <computeroutput>ResizingAdmin</computeroutput> class, the event
+  notifications related to resizing are handled internally by the ooDialog framework and the event notifications can not be
+  connected to an event handler in the Rexx dialog. There are 3 event notifications effected: the SIZE, SIZING, and
+  EXITSIZEMOVE events. The <xref linkend="mthConnectResize"/>, <xref linkend="mthConnectResizing"/>, and <xref
+  linkend="mthConnectSizeMoveEnded"/> methods have no effect when a dialog has inherited the
+  <computeroutput>ResizingAdmin</computeroutput> class. However, the <xref linkend="mthWantSizeEnded"/> can be used to allow
+  the application to be notified of the EXITSIZEMOVE event.
+</para>
 
 </section>  <!-- End Section ResizingPrinciples  -->
 
@@ -1956,19 +1965,19 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="mthDefaultLeft"/></entry>
-<entry>Changes the default sizing policy for the bottom edge of dialog controls.</entry>
+<entry>Changes the default sizing policy for the left edge of dialog controls.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultRight"/></entry>
-<entry>Changes the default sizing policy for the bottom edge of dialog controls.</entry>
+<entry>Changes the default sizing policy for the right edge of dialog controls.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultSizing"/></entry>
-<entry>Resets the default sizing policy.</entry>
+<entry>Resets the default sizing policy to that specified.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefaultTop"/></entry>
-<entry>Changes the default sizing policy for the bottom edge of dialog controls.</entry>
+<entry>Changes the default sizing policy for the top edge of dialog controls.</entry>
 </row>
 <row>
 <entry><xref linkend="mthDefineSizing"/></entry>
@@ -1980,11 +1989,11 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="mthNoMinSize"/></entry>
-<entry>xx</entry>
+<entry>Removes any exsiting restriction on the minimum size the dialog can be resized to.</entry>
 </row>
 <row>
 <entry><xref linkend="mthPagedTab"/></entry>
-<entry>xx</entry>
+<entry>Adds the data necessary to properly resize the dialogs used as pages in a tab control.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUseDefaultSizing"/></entry>
@@ -1992,7 +2001,7 @@ u~resize(self, sizeinfo)
 </row>
 <row>
 <entry><xref linkend="mthWantSizeEnded"/></entry>
-<entry>xx</entry>
+<entry>Allows the user to specify that a method in the Rexx dialog is invoked when the EXITSIZEMOVE event happens.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -3268,33 +3277,27 @@ u~resize(self, sizeinfo)
 </programlisting>
 
 <para>
-  xx
+  Removes any exsiting restriction on the minimum size the dialog can be resized to.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method takes no arguments.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    By default the  minimum size limit is set to the initial size of the dialogs. If the application wants to remove this
+    restriction, or uses the <xref linkend="atrMinSize"/> attribute to set a minimum size and later needs to remove the
+    restriction, it can be done using the <emphasis role="italic">noMinSize</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3312,10 +3315,10 @@ u~resize(self, sizeinfo)
   <listitem>
   <para>
     This example removes the minimum size restriction for a resizable dialog. It does it during the <xref
-    linkend="mthDefineSizing"/> method because it is convenient to do it there, not because it is required:
+    linkend="mthDefineSizing"/> method because it is convenient to do it there, not because it is required to be done in
+    that method:
 <programlisting>
 <![CDATA[
-r
 
 ::method defineSizing
 
@@ -3352,13 +3355,21 @@ r
     <varlistentry><term>tabID [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the tab control that contains the dialogs used as pages of that tab control. May be numeric or <xref
+      linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dlgIDs [required]</term>
     <listitem>
     <para>
-      xx
+      An array of the dialog <link linkend="atrDlgID">IDs</link> of each control dialog.  Each item in the array is assumed
+      to be the dlgID of one of the dialog pages.  Each item in the array may be numeric or symbolic.  The items must be
+      valid dialog IDs, that is a whole number greater than 0, or a sysmbolic ID that resolves to a whole number gereater
+      than 0.
+    </para>
+    <para>
+      The array must not be sparse and the number of items can not exceed the maximum number of child dialogs, which is 20.
+      The order of the IDs does not matter.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3366,13 +3377,18 @@ r
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 on success. On any detected error a syntax condition is raised.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A <emphasis role="italic">paged</emphasis> tab is a tab control that uses <xref linkend="clsControlDialg"/> dialogs as
+    the contents for its pages.  A resizable dialog can only define up to 4 paged tabs.
+  </para>
+  <para>
+    In order for the resizing admin to properly resize <computeroutput>ControlDialog</computeroutput> dialogs embedded in a
+    tab control, the <emphasis role="italic">pagedTab</emphasis> method must be used to define each paged tab.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3389,9 +3405,14 @@ r
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows part of the <xref linkend="mthDefineSizing"/> method for a dialog that has a tab control with 5 pages:
 <programlisting>
 <![CDATA[
+
+  dlgIDs = .array~of(IDD_LISTVIEW_DLG, IDD_TREEVIEW_DLG, IDD_PROGRESSBAR_DLG, -
+                     IDD_TRACKBAR_DLG, IDD_TAB_DLG)
+
+  self~pagedTab(IDC_TAB, dlgIDs)
 
 ]]>
 </programlisting>
@@ -3484,13 +3505,13 @@ r
 <indexterm><primary>ResizingAdmin class</primary><secondary>wantSizeEnded</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wantSizeEnded(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--wantSizeEnded(--+-----------+--+----------------+--)--------><
+                    +--mthName--+  +--,--willReply--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Allows the user to specify that a method in the Rexx dialog is invoked when the EXITSIZEMOVE event happens.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3499,10 +3520,19 @@ r
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>mthName [optional]</term>
     <listitem>
     <para>
-      xx
+      The name of the event handler method in the Rexx dialog to be connected to the EXITSIZEMOVE event. If this argument is
+      omitted, the ooDialog framework uses a method name of <emphasis role="italic">onSizeEnded</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      Specifies if the interpreter should <link linkend="sctCodingEventHandlers">wait</link>, or not wait, for the reply from
+      the event handler. If <emphasis role="italic">willReply</emphasis> is true, the interpreter waits in the window message
+      processing loop until the event handler returns a reply to the notification, if false the interpreter does not wait.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3510,13 +3540,21 @@ r
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When using the <computeroutput>ResizingAdmin</computeroutput> class, the event notifications related to resizing are
+    handled internally by the ooDialog framework and the event notifications can not be connected to an event handler in the
+    Rexx dialog. There are 3 event notifications effected: the SIZE, SIZING, and EXITSIZEMOVE events. The <xref
+    linkend="mthConnectResize"/>, <xref linkend="mthConnectResizing"/>, and <xref linkend="mthConnectSizeMoveEnded"/> methods
+    have no effect when a dialog has inherited the <computeroutput>ResizingAdmin</computeroutput> class.
+  </para>
+  <para>
+    However, there are cases when the resize ended notification may be needed by an application with a resizable dialog. The
+    <emphasis role="italic">wantSizeEnded</emphasis> method is for those cases.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3533,17 +3571,84 @@ r
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example informs the ooDialog framework that the dialog needs the EXITSIZEMOVE event notification. It explicity
+    specifies the name of the event handling method, even though the method name is the same as the default:
 <programlisting>
 <![CDATA[
+
+  self~wantSizeEnded('onSizeEnded', .true)
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ResizingAdmin::wantSizeEnded() -->
 
+
+<section id="evtResizingAdminEXITSIZEMOVE" xreflabel="EXITSIZEMOVE"><title>ExitSizeMove Event Handler</title>
+<indexterm><primary>ResizingAdmin class</primary><secondary>events</secondary><tertiary>EXITSIZEMOVE</tertiary></indexterm>
+<para>
+  The event handler for the exit size move event is invoked when the user has been dragging the sizing border of a resizable
+  dialog and releases the mouse button.
+</para>
+<para>
+  Whether the event handler must return a value and if the interpreter waits (or does not wait) for this return is specified
+  by using the <emphasis role="italic">willReply</emphasis> argument in the <xref linkend="mthWantSizeEnded"/> method. When
+  <emphasis role="italic">willReply</emphasis> is true, the event handler must return a value and the interpreter waits for
+  that return. Otherwise, the interpreter does not wait for the return and the event handerl is not <emphasis
+  role="italic">required</emphasis> to return a value. Good practice would be to always return a value from an event handler.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onSizeEnded unguarded
+  use arg
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method does not recieve any arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return for this event so any value can be returned. 0 makes a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example comes from an application that uses <xref linkend="clsControlDialog"/> dialogs as the pages in a
+    <xref linkend="clsTab"/> control. When the resizing of the dialog ends, the dialog used for page 5 needs to do some extra
+    processing, which is done in the placeButton() method:
+
+<programlisting>
+<![CDATA[
+
+::method onSizeEnded unguarded
+    expose tabContent needCalculation
+
+    needCalculation = .true
+
+    tabContent[5]~placeButton
+
+    return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End ExitSizeMove Event Handler -->
+
+</section>  <!-- End ResizingAdmin::wantSizeEnded() -->
 
 </section>  <!-- End Section ResizingAdmin Mixin Class -->
 
