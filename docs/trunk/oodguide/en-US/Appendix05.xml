@@ -46,7 +46,7 @@
      An overview of the internals of the Model-View Framework (MVF).
 
      Changes:
-     v01-00 01Mar13: First version.
+     v01-00 03Mar13: First version.
 
      Notes:
      Include overview of ObjectMgr.
@@ -69,7 +69,7 @@
     <primary>Model-View Framework</primary>
     <secondary>Internals</secondary>
   </indexterm>
-  <para>A description of the Model-View Framework (MVF) is given in <xref linkend="chapSeven"/>.
+  <para>A description of the Model-View Framework (MVF) is given in <xref linkend="chap07-mvf-oview"/>.
     This appendix provides some further detail on certain aspects of the MVF. By the way, the MVF should
     really be called "Model-View-Data Framework", since it also encompasses data components;
     however, historically such frameworks have omitted the term "data" in their names, and here we
@@ -94,26 +94,20 @@
         <computeroutput>ProductView</computeroutput>, <computeroutput>AboutDialog</computeroutput>,
       and <computeroutput>HRSpv</computeroutput>. The first of these is the "main" class in the
       component (sometimes called the "focus class"), the other two being "subsidiary" classes
-      (sometimes called "support" classes). <indexterm>
-        <primary>Business Component</primary>
-      </indexterm>
-      <indexterm>
-        <primary>Main class</primary>
-      </indexterm>
-      <indexterm>
-        <primary>Subsidiary class</primary>
-      </indexterm>
-      <indexterm>
-        <primary/>
-      </indexterm> The ProductView component, together with the ProductModel, ProductListModel,
-      ProductListView, and ProductData components make up the "Product Business Component". Thus a
-      "business component" consists of one or more components, each of which has a "main" class and
+      (sometimes called "support" classes). <indexterm><primary>Business Component</primary></indexterm>
+      <indexterm><primary>Main class</primary></indexterm>
+      <indexterm><primary>Subsidiary class</primary></indexterm>
+      The <computeroutput>ProductView</computeroutput> component, together with the
+      <computeroutput>ProductModel</computeroutput>, <computeroutput>ProductListModel</computeroutput>,
+      <computeroutput>ProductListView</computeroutput>, and
+      <computeroutput>ProductData</computeroutput> components make up the "Product Business Component".
+      Thus a "business component" consists of one or more components, each of which has a "main" class and
       naught or more subsidiary classes. Thus (by design) a Business Component is a collection of
-      components that implements all and only a significant business concept. <footnote>
-        <para>The definition of a "significant business concept" in the context of components has
+      components that implements all and only a significant business concept.<footnote>
+      <para>The definition of a "significant business concept" in the context of components has
           been addressed in a number of sources, including "Enterprise Service-Oriented
-          Architectures", McGovern, Sims, Jain &amp; Little, Springer 2006.</para>
-      </footnote>Finally, a business component is packaged within a folder that bears its name, the
+          Architectures", McGovern, Sims, Jain &amp; Little, Springer 2006.</para></footnote> 
+      Finally, a business component is packaged within a folder that bears its name, the
       individual components being packaged in .rex files. Thus the Product business component is the
       folder <computeroutput>Product</computeroutput> which contains a number of files, most of them
       executables such as <computeroutput>ProductModelsData.rex</computeroutput> which contains the
@@ -129,23 +123,23 @@
     <title id="apx5-mvf-classes.title">MVF Classes</title>
     <indexterm><primary>MVF classes</primary></indexterm>
     <para>The Model-View Framework (MVF) manages the components that are assembled to make up an
-      application. There are two main parts to the MVF: <simplelist>
-        <member>Two management classes called the "Object Manager"
+      application. There are two main parts to the MVF:
+      <itemizedlist>
+        <listitem><para>Two management classes called the "Object Manager"
           (<computeroutput>ObjectMgr.rex</computeroutput>) and the "View Manager"
-          (<computeroutput>ViewMgr.rex</computeroutput>)</member>
-        <member>A set of superclasses - <computeroutput>Model</computeroutput>,
+          (<computeroutput>ViewMgr.rex</computeroutput>)</para></listitem>
+        <listitem><para>A set of superclasses - <computeroutput>Model</computeroutput>,
           <computeroutput>GenericFile</computeroutput>, and three View superclasses -
           <computeroutput>RcView.rex</computeroutput>,
           <computeroutput>ResView.rex</computeroutput>, and
           <computeroutput>UdView.rex</computeroutput>. The three View superclasses are identical
           except for their superclasses - <computeroutput>RcDialog</computeroutput>,
           <computeroutput>ResDialog</computeroutput>, and
-          <computeroutput>UserDialog</computeroutput> respectively.
-          <footnote>
+          <computeroutput>UserDialog</computeroutput> respectively.<footnote>
             <para>The three View superclasses should properly be mixins rather than different files,
-              and a future version of the Guide may take this approach.</para>
-          </footnote></member>
-      </simplelist>
+              and a future version of the Guide may take this approach.</para></footnote>
+        </para></listitem>
+      </itemizedlist>
       All MVF classes are in the <computeroutput>Exercises/Support</computeroutput>
       folder. </para>
     
@@ -166,7 +160,7 @@
           Manager is to relieve the programmer from having to be concerned with the various management aspects in
           a multi-dialog application. Thus the Object Manager, in conjunction with other MVF classes, 
           implements common patterns such as the "get component id" pattern, and the "show a view of a model" 
-          pattern. An example of how the <emphasis role="bold">ShowModel</emphasis>
+          pattern. An example of how the <emphasis role="bold">getComponentId</emphasis>
           method works is shown below in <xref linkend="apx5-mvf-ops"/>.</para>
       </section>
      </section>
@@ -189,28 +183,33 @@
           "<computeroutput>self~offset:super</computeroutput> in the
           <computeroutput>initDialog</computeroutput> method. Then launch a Person Model instance
         using Message Sender to send a <computeroutput>showModel</computeroutput> message with the
-        data, <emphasis role="italic">PersonModel PA150</emphasis> to Object Manager. The person
+        data, <replaceable>PersonModel PA150</replaceable> to the Object Manager. The person
         dialog appears offset from the Message Sender.</para>
       <para>The offsetting is done by the two dialogs involved: the "parent" dialog from which
         offsetting is to be done, and the "offset" dialog that appears offset from the parent. The
         sequence of operation is as follows: <programlisting>
 <![CDATA[
   A. Setup:
-     1. ViewMgr sets its 'dlgOffset' attribute in its 'init' method (set to 200 in Exercise 7).
+     1. ViewMgr sets its 'dlgOffset' attribute in its 'init' method (set to 200
+        in Exercise 7).
      
   B. Execution:
-     1. The parent dialog (e.g. MessageSender) sets itself as the 'parent' (from which 
+     1. The parent dialog (e.g. MessageSender) sets itself as the 'parent' (from which
         offsetting is to be done) by setting ViewMgr's 'parentOffsetDialog' attribute. 
-     2. The parent launches the 'child' offset dialog by sending 'showModel' to the Object Manager.
-     3. The offset dialog (e.g. Person View) issues 'self~offset:super' in its 'initDialog' method.
-     4. This is handled by the superclass (RcView for PersonView), which first asks ViewMgr for the offset 
-        amount (attribute 'dlgOffset'), and then moves the new dialog by the offset amount.
+     2. The parent launches the 'child' offset dialog by sending 'showModel' to the
+        Object Manager.
+     3. The offset dialog (e.g. Person View) issues 'self~offset:super' in its
+        'initDialog' method.
+     4. This is handled by the superclass (RcView for PersonView), which first asks 
+        ViewMgr for the offset amount (attribute 'dlgOffset'), and then moves the new
+        dialog by the offset amount.
 ]]>
     </programlisting> Note that application components only do steps 1, 2, and 3, the code for
         which is as follows: <programlisting>
 <![CDATA[
   1. Parent - <some method>:  .local~my.ViewMgr~parentOffsetDlg = self
-  2.                          r = .local~my.objectMgr~showModel(childModel, childInstance, rootDlg)
+  2.                          r = .local~my.objectMgr~showModel(childModel, -
+                                   childInstance, rootDlg)
   3. Child -  initDialog:     self~offset:super    
 ]]>
     </programlisting> In summary, using the MVF, it takes very little effort by the application
@@ -232,7 +231,7 @@
       </indexterm>
       <para>Superclasses provided for application components are: <computeroutput>Model</computeroutput>,
         <computeroutput>GenericFile</computeroutput>, and a set of
-        view (or dialog) superclasses: ,<computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>,
+        view (or dialog) superclasses: <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>,
         and <computeroutput>UdView</computeroutput>. These are described in 
         <xref linkend="chap07-mvf-oview"/>.</para>
     </section>
@@ -277,7 +276,8 @@
    (18) X <-- ObjectMgr returns the id to X.
 ]]></programlisting></para>
     <para>The Object Manager maintains a table of all active component instances. They can be listed
-      on the console by using the Message sender to send a "list" message to "ObjectMgr The". 
+      on the console by using the Message sender to send a <replaceable>list</replaceable> message to 
+      <computeroutput>ObjectMgr The</computeroutput>. 
       See <xref linkend="chap07-mvf-oview-objmgr"/> for a description of the Object Manager's public methods.</para>
     </section>
   <!-- End of Section A5.3 -->
@@ -291,9 +291,9 @@
       detail of its operations sometimes depend on the kind of class being dealt with. For example,
       one difference between showing a view of a Customer and showing a view of a Customer List is
       that the former requires one record to be returned from the Customer Data component, while the
-      latter requires the complete file to be returned. In Exercise07, the MVF discovers the kind of
-      component being dealt by specific words in the class name ("List", "Form") or by the instance
-      name being "A" or "a". A better way of dealing with the kinds of component could be through
+      latter requires the complete file to be returned. In Exercise07, the MVF discovers what kind of
+      component is being dealt with by specific words in the class name ("List", "Form") or by the instance
+      name being "A" or "a". A better way of specifying the kinds of component could be through
       configuration, where the folder for each component would contain a configuration file which
       the MVF would read. </para>
   </section>
@@ -309,14 +309,14 @@
       "requires" statement. However, in the MVF, component instantiation (or, to be precise,
       instantiation of the main class in a component) is handled by
         <computeroutput>ObjectMgr</computeroutput>. This mean that
-        <computeroutput>ObjectMgr</computeroutput> must provide a <emphasis role="italic"
-        >::requires</emphasis> statement for each component. However, to avoid changing the
+      <computeroutput>ObjectMgr</computeroutput> must provide a <computeroutput>::requires</computeroutput>
+      statement for each component. However, to avoid changing the
         <computeroutput>ObjectMgr.rex</computeroutput> file, a separate file
         (<computeroutput>RequiresList.rex</computeroutput> in the
         <computeroutput>Exercise07</computeroutput> folder) containing only the desired set of
-        <emphasis role="italic">::requires</emphasis> statements is used.
-        <computeroutput>ObjectMgr.rex</computeroutput>calls this file as a routine (<emphasis
-        role="italic">call "RequiresList.rex"</emphasis>) as its first executable statement. In this
+      <computeroutput>::requires</computeroutput> statements is used.
+        <computeroutput>ObjectMgr.rex</computeroutput> calls this file as a routine
+      (<computeroutput>call "RequiresList.rex"</computeroutput>) as its first executable statement. In this
       way, additional components can be added to the application merely by adding their file names
       to this file. Of course, if a configuration file approach were to be used, then the MVF could
       generate the appropriate RequiresList file.</para>

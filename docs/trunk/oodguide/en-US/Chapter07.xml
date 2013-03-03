@@ -42,7 +42,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter07 - A Working Application		 		  v01-00 019eb13
+<!-- Chapter07 - A Working Application		 		  v01-00 03Mar13
 
     Changes:
      v01-00 19Feb13: First version.
@@ -73,7 +73,7 @@
     7.2.2.5   * Data                                                                  chap07-mvf-oview-data
                 - Data components are subclassed from GenericFile
                   (in Support file 'genericfile.rex').
-                - Data formats
+    7.2.2.6   * Compound Data                                                       chap07-mvf-comp
     7.3   * Using the MVF                                                             chap07-mvfuse
     7.3.1     Diff kinds of component; how different kinds use MVF.                   chap07-mvfuse-kinds
                 - Anonymous and Singleton Components
@@ -115,19 +115,18 @@
       Management dialog now includes an option <emphasis role="bold">Message Sender</emphasis>
       (discussed in more detail in <xref linkend="chap07-msgsender"/>). Click this option and a
       "Message Sender" dialog opens. This sends messages to (invoke methods on) the various
-      components, and is a very useful debugging tool that is an alternative to the "stand-alone"
-      function used in Exercise 6. For example, try sending a "query" message to the Customer whose
-      key is BA0314. To do this, key <emphasis role="bold"><emphasis role="italic">CustomerModel
-          BA0314</emphasis></emphasis> in the <emphasis role="bold">Target</emphasis> field ,
-        <emphasis role="bold"><emphasis role="italic">query</emphasis></emphasis> in the <emphasis
-        role="bold">Method</emphasis> field, and then press <emphasis role="bold">Send</emphasis>.
+      components, and is a very useful debugging tool that replaces the "stand-alone" function used
+      in Exercise 6. For example, try sending a "query" message to the Customer whose key is BA0314.
+      To do this, key <replaceable>CustomerModel BA0314</replaceable> in the <emphasis role="bold">Target</emphasis> field ,
+      <replaceable>query</replaceable> in the <emphasis role="bold">Method</emphasis> field,
+      and then press <emphasis role="bold">Send</emphasis>.
       The customer's data is returned in the <emphasis role="bold">Reply</emphasis> field as a
       name-value string. </para>
     <para>Now try using the Message Sender to surface a Product dialog - say the view for Product
       CU003. To do this, select <emphasis role="bold">ObjectMgr The</emphasis> in the <emphasis
         role="bold">Target</emphasis> combo-box pull-down, <emphasis role="bold"
         >showModel</emphasis> in the <emphasis role="bold">Method</emphasis> field, and type
-        <emphasis role="bold"><emphasis role="italic">ProductModel CU003</emphasis></emphasis> in
+      <replaceable>ProductModel CU003</replaceable> in
       the <emphasis role="bold">Data</emphasis> field. Now press <emphasis role="bold"
         >Send</emphasis>. The Product dialog for instance CU003 appears. </para>
     <para>The "Object Manager" (which could also be called "ComponentManager" since it manages
@@ -316,10 +315,9 @@
         </indexterm>
         <para>A key question is, what does the MVF look like to the programmer? This section answers
           this question using the Person component (which has minimal function other than using the
-          MVF) as an example. But first, using the Message Sender, try sending a <emphasis
-            role="italic"><emphasis role="bold">showModel</emphasis></emphasis> message to <emphasis
-            role="italic"><emphasis role="bold">ObjectMgr The</emphasis></emphasis> with the data
-            <emphasis role="italic"><emphasis role="bold">PersonModel PA150</emphasis></emphasis>.
+          MVF) as an example. But first, using the Message Sender, try sending a 
+          <replaceable>showModel</replaceable> message to <replaceable>ObjectMgr The</replaceable>
+          with the data <replaceable>PersonModel PA150</replaceable>.
           The Person dialog appears, and the MVF has handled the task of ensuring that both the Data
           and Model components are active before the View is launched. First, MVF checks to see if
           they are already activated; if not, it instantiates them (the Data instance first, then
@@ -700,22 +698,23 @@ familyName: James; firstName: Alfred;
           </itemizedlist>See <xref linkend="chap07-mvfuse-datafmts"/> for a description of the
           "record directory" and "file as directory" formats.</para>
       </section>
-      <section>
+      
+      <section id="chap07-mvf-comp">
         <title>Compound Data</title>
         <para>"Compound data" is data assembled from two or more files. In Relational Data Base
           terms, this is a "join". The one example of compound data in Exercise 7 is the
-            <computeroutput>OrderData</computeroutput>class, where the
+            <computeroutput>OrderData</computeroutput> class, where the
             <computeroutput>init</computeroutput> method uses the superclass's
             <computeroutput>getFile</computeroutput> method to read each of the two Order files
           (OrderHeader.txt and OrderDetail.txt). This data is stored in two attributes,
             <computeroutput>dirOrderHeaders</computeroutput> and
             <computeroutput>dirOrderLines</computeroutput>. Then the
-            <computeroutput>addCustomerInfo</computeroutput> method gets selected Customer data
-          (e.g. Customer Addresses) via the <computeroutput>CustomerData</computeroutput> instance
-          and adds this to <computeroutput>dirOrderHeaders</computeroutput>. Finally, the
-            <computeroutput>addProductInfo</computeroutput> method accesses the
-            <computeroutput>ProductData</computeroutput> instance to get selected Product data (e.g.
-          Product Names) and stores this in the <computeroutput>dirOrderLines</computeroutput>
+            <computeroutput>addCustomerInfo</computeroutput> method is called to get selected Customer data
+          (e.g. Customer Addresses) from the <computeroutput>CustomerData</computeroutput> component
+          and then adds this data to the <computeroutput>dirOrderHeaders</computeroutput> attribute. 
+          Finally, the <computeroutput>addProductInfo</computeroutput> method accesses the
+            <computeroutput>ProductData</computeroutput> component to get selected Product data (e.g.
+          Product Names) and then adds this data to the <computeroutput>dirOrderLines</computeroutput>
           attribute. </para>
           <para>The <computeroutput>dirOrderHeaders</computeroutput> format is as follows: <programlisting><![CDATA[
  Indexes  Items
@@ -756,8 +755,8 @@ familyName: James; firstName: Alfred;
             <computeroutput>OrderData</computeroutput> class. While
             <computeroutput>getFile</computeroutput> is very simple - merely returning
             <computeroutput>dirOrderHeaders</computeroutput> (which is sufficient for the Product
-          List model and view), the <computeroutput>getRecord</computeroutput> method needs to build
-          the data for a single Order from both <computeroutput>dirOrderHeaders</computeroutput> and
+          List component), the <computeroutput>getRecord</computeroutput> method needs to build the
+          data for a single Order from both <computeroutput>dirOrderHeaders</computeroutput> and
             <computeroutput>dirOrderLines</computeroutput>. Thus it also over-rides its superclass
           method, and builds a directory called "dirOrderRecord" whose format is as follows: <programlisting><![CDATA[   "dirOrderRecord" format (using data values from Order No SO-1234):
 
@@ -789,8 +788,7 @@ familyName: James; firstName: Alfred;
             +- - - - - - - - - - - - - - - - - - - - - - - - +]]></programlisting></para>
         <para>Finally, a <computeroutput>listOrders</computeroutput> method is provided, since the
             <computeroutput>list</computeroutput> method of
-            <computeroutput>GenericFile</computeroutput> cannot list data from more than one file.
-          Both these methods </para>
+            <computeroutput>GenericFile</computeroutput> cannot list data from more than one file.  </para>
       </section>
       <!-- End of Section 7.2.2.5 -->
     </section>
@@ -813,21 +811,25 @@ familyName: James; firstName: Alfred;
         <secondary>Kinds of</secondary>
       </indexterm>
       <para>There are four "kinds" of components in Exercise07: "named", "singleton", "anonymous",
-        and "form". <simplelist>
-          <member> A "<emphasis role="bold">named</emphasis>" component instance is identified by a
+        and "form". <itemizedlist>
+          <listitem><para>A "<emphasis role="bold">named</emphasis>" component instance is identified by a
             unique name derived from the instance's data (analogous to a database key). An example
             is <computeroutput>CustomerModel</computeroutput>, where each instance is identified by
             its Customer Number. The external name for such an instance is of the form model class
             name, model instance name - e.g. "CustomerModel AB0784". Note that a "Form" component
-            such as the Order Form is of the named component kind, since it is (and must be) given
-            its name (such as an order number) when first instantiated. A View component is named by
+            such as the Order Form is of the named component kind, since although it starts out without a name,
+            it is (and must be) given
+            its name (such as an order number) when first instantiated. This is done when the Object Manager
+            invokes its <computeroutput>getInstanceName</computeroutput> class method.
+            A View component is named by
             its object reference number (that is, the number returned by invoking
-              <computeroutput>identityHash</computeroutput> on the view instance). </member>
-          <member> "<emphasis role="bold">Singleton</emphasis>" instances are those for which there
+              <computeroutput>identityHash</computeroutput> on the view instance).
+          </para></listitem>
+          <listitem><para>"<emphasis role="bold">Singleton</emphasis>" instances are those for which there
             can logically only be a single instance - for example, data components such as
               <computeroutput>CustomerData</computeroutput>, or the Order Manager (which in
-            Exercise07 is a view-only component). Their instance name is always "The". </member>
-          <member> An "<emphasis role="bold">anonymous</emphasis>" component is one for which there
+            Exercise07 is a view-only component). Their instance name is always "The". </para></listitem>
+          <listitem><para>An "<emphasis role="bold">anonymous</emphasis>" component is one for which there
             can logically be more than one instance, but which do not have any obvious
             distinguishing name. Thus they are initially given the instance name "A". Examples are
             list components such as <computeroutput>CustomerListModel</computeroutput>. Instances of
@@ -839,8 +841,8 @@ familyName: James; firstName: Alfred;
               <computeroutput>ObjectMgr</computeroutput> which, on seeing instance name "a" or "A",
             invokes <computeroutput>getInstanceName</computeroutput> on the ListModel class object,
             which is handled by the <computeroutput>Model</computeroutput> superclass.
-              <computeroutput>Model</computeroutput> returns a number starting at "1". </member>
-          <member> A "<emphasis role="bold">form</emphasis>" instance such as a Sales Order Form or
+            <computeroutput>Model</computeroutput> returns a number starting at "1".</para></listitem>
+          <listitem><para>A "<emphasis role="bold">form</emphasis>" instance such as a Sales Order Form or
             a Purchase Request form is a special kind of component. Initially it is anonymous, and
             although when created there is no database record of it, there will be when it's
             completed and the user hits OK. A new number (e.g. an order number) is assigned to a
@@ -849,15 +851,15 @@ familyName: James; firstName: Alfred;
             assumes that this will happen, and so its instance name is a unique Sales Order number.
             This is created by the <computeroutput>getInstanceName</computeroutput> class method of
               <computeroutput>OrderFormModel</computeroutput> which over-rides the same method in
-            its superclass (<computeroutput>Model</computeroutput>).</member>
-        </simplelist>The above classification covers almost all the kinds of dialog found in a
+            its superclass (<computeroutput>Model</computeroutput>).</para></listitem>
+        </itemizedlist>The above classification covers almost all the kinds of dialog found in a
         typical UI environment handling business systems. To test this, consider the "Words of
         Wisdom" business component in Exercise03, which was implemented as a view, a model, and a
         data component. The <computeroutput>.../samples/Wow4</computeroutput> folder contains the
         same set of components, but modified to use the MVF. Code no longer required is commented
         out with the comment "v01-00"; methods or statements added or for MVF use are commented with
         "MVF"; statements changed are commented "v01-00-->MVF"; unchanged statements are commented
-        "v01-00 &amp; MVF". <footnote>
+        "v01-00 &amp; MVF".<footnote>
           <para>Actually, Wow is somewhat schizophrenic, in that it can be launched either as a
             singleton or as anonymous - that is, with an instance name of "The" or "A". If "The",
             then only one instance is allowed. If "A", then multiple instances can be
@@ -881,7 +883,8 @@ familyName: James; firstName: Alfred;
       <!-- Section 7.3.2 -->
       <para>Fields in a file record are separated by a vertical bar character, and field names are
         defined in the first line of the file. All data files have the file extension ".txt".
-          <computeroutput>GenericFile</computeroutput> returns a single record (for example a
+        <computeroutput>GenericFile</computeroutput>'s <computeroutput>getRecord</computeroutput> metod 
+        returns a single record (for example a
         Customer record) in a "record directory", whose format is as follows:<programlisting><![CDATA[    "Record Directory" format (using sample data values):
 
               Indexes     Items
@@ -894,8 +897,9 @@ familyName: James; firstName: Alfred;
             +- - - - - + - - - - - - - -+
             + ...      | ...            |
             +- - - - - - - - - - - - - -+]]> </programlisting> A complete file (for example the
-        Customer File retrieved and displayed by the CustomerList component) is returned in "File as
-        Directory" format, as follows: <programlisting><![CDATA[    "File Directory" format (using sample data values):
+        Customer File retrieved and displayed by the CustomerList component) is returned by
+        <computeroutput>GenericFile</computeroutput>'s <computeroutput>getFile</computeroutput> method
+        in "File as Directory" format, as follows: <programlisting><![CDATA[    "File Directory" format (using sample data values):
 
              Indexes    Items
 			+- - - - - - - - - - - - - - - - - - - - - - - - +
@@ -909,8 +913,8 @@ familyName: James; firstName: Alfred;
 			|- - - - + - - - - - - - - - - - - - - - -+ - - -+
 			|Count   | n |                                       Integer
 			+- - - - + - +]]>  </programlisting></para>
-      <para>The data format for on Order is a combination of data from three files - OrderData,
-        CustomerData, and ProductData - and is described in </para>
+      <para>The data format for an Order is a combination of data from three files - OrderData,
+        CustomerData, and ProductData - and is described in <xref linkend="chap07-mvf-comp"/></para>
     </section>
     <!-- End of Section 7.3.2 -->
   </section>
@@ -928,22 +932,26 @@ familyName: James; firstName: Alfred;
       to" (aka "invoke methods on") components. It illustrates a useful kind of debugging aid, and
       replaces the special component-specific "startup" scripts provided in Exercise 6. While a
       useful aid, it is provided as merely a demonstration of the kind of debugging aid that can be
-      deployed when using a component-based architecture. Thus it does not pretend to be
-      all-encompassing, and the results of sending some messages may be unpredictable. In addition,
-      its display of data returned is limited. For example, a "query" message sent to a List
-      component only displays the top-level items, as follows:
+      deployed when using a component-based architecture with a Model-View Framework. Thus it does
+      not pretend to be all-encompassing, and the results of sending some messages may be
+      unpredictable. In addition, its display of data returned is limited. For example, a "query"
+      message sent to a List component only displays the directory indexes and items as follows:
       <programlisting><![CDATA[    RECORDS: an Array; COUNT: 5; HEADERS: an Array;]]> </programlisting></para>
-    <para>Certain commonly-used target objects and messages are provided in the two combo boxes
+    <para>Some commonly-used target objects and messages are provided in the two combo boxes
         <emphasis role="bold">Target</emphasis> and <emphasis role="bold">Method</emphasis>. For
       repetitive testing of a given component, additional targets and messages can be temporarily
-      "stored" in the combo boxes, so saving in typing time. Additions to the combo boxes are thrown
-      away when the Message Sender is closed. </para>
-    <para>The "Data" section can be used to send data to a component. However, the data formats sent
-      must be either a string, an array, or a directory. To send an array, place a "|" (vertical
-      bar) character before each array element. To send a directory, use square brackets for
-      indexes.  </para>
-    <para>The Message Sender is implemented as two ooRexx classes: a main class and a separate
-      data-only class for visible strings.  Multiple copies can be launched concurrently. </para>
+      "stored" in the combo boxes, so saving in typing time. However, such additions to the combo
+      boxes are thrown away when the Message Sender is closed. </para>
+    <para>The "Data" section can be used to send data to a component. The data formats sent must be
+      either a string, an array, or a directory. To send an array, place a "|" (vertical bar)
+      character before each array element. To send a directory, use square brackets for indexes- for
+      example, [Name] Jim Brooks [Age] 34. </para>
+    <para>The Message Sender is located in the <computeroutput>Support</computeroutput> folder. It is 
+      implemented as two ooRexx classes and a routine. The classes are a main class and a separate
+      data-only class for visible strings. The routine sends
+      a message by constructing an instance of the ooRexx <computeroutput>Message</computeroutput>
+      class, then invoking its <computeroutput>send</computeroutput> method. Multiple copies of the
+      Message Sender can be launched concurrently. </para>
   </section>
   <!-- End of Section 7.4 -->
 
@@ -955,7 +963,7 @@ familyName: James; firstName: Alfred;
     <indexterm><primary>Control</primary><secondary>Re-sizing</secondary></indexterm>
     <indexterm><primary>Dialog</primary><secondary>Re-sizing</secondary></indexterm>
     <para>In Exercise 6, the Order Manager is a re-sizeable dialog, However, when re-sized, all controls
-      were enlarged (or shrunk) in size. Normally, to have all controls change size is not a requirement;
+      were also enlarged (or shrunk). Normally, to have all controls change size is not a requirement;
       rather controls such as push buttons and edit fields should usually not change their size.
       </para>
     <para>In Exercise 7, only the "container" for the icons is required to re-size. Other controls should not change.
@@ -985,7 +993,7 @@ familyName: James; firstName: Alfred;
                          .array~of('STATIONARY', 'BOTTOM'), -
                          .array~of('MYLEFT',     'LEFT'  ), -
                          .array~of('MYTOP',      'TOP'   )  -
-      ...)]]>
+                        )]]>
       </programlisting>The <computeroutput>controlSizing</computeroutput>
       method takes five arguments: a control's resource ID (e.g. the Reset button) and four arrays.
       The first array addresses the left side of the control, the second the top, the third the
@@ -993,14 +1001,14 @@ familyName: James; firstName: Alfred;
       array, and each array has three items. First the type of pin. Second the edge of the "other"
       window (remembering that each dialog and each control is actually a "window"). Third the id of
       the other window to which this control is pinned, the default being the resource id of the
-      main dialog (in our case the Order Management dialog whose resource id is
-      'IDD_ORDMGR').</para>
+      main dialog (in our case the Order Management dialog.</para>
       <para>So, taking the second parameter as an example, "STATIONARY" means that the left side of the Reset button
         must not move away (or towards) the second parameter, i.e. the "LEFT" side of the dialog.</para>
     <para>Consider the last parameter - the array 'MYTOP', 'TOP'. The keyword 'MYTOP' is a special keyword that
       can only be used for the bottom edge of a control.  It pins the bottom edge of the control to its top
       edge. This has the effect of keeping the height of the control constant. Similarly, 'MYLEFT' pins the right side
-      of the control to the left side, so keeping the width of the control constant. Note that the second parameter
+      of the control to the left side, so keeping the width of the control constant. Note that 
+      in this case the second parameter
       is ignored, although it must be a valid sizing parameter.</para>
     <para>The result of all this is that the Reset button does not move from the bottom left corner of the dialog,
         and its size remains constant.
@@ -1019,39 +1027,66 @@ familyName: James; firstName: Alfred;
     <indexterm>
       <primary>Order Form dialog</primary>
     </indexterm>
-    <para>Open an Order Form from the icon in the Order Management dialog. Although still not functional,
-      the format of the dialog <emphasis role="italic">looks</emphasis> much more like a usable sales order
-      form than in the previous exercise. The main part of the form is a Tab Control with two tabs - one for
-      entering customer details, the other for product details.
-      <indexterm><primary>Tab Control</primary><secondary>Property Sheet</secondary></indexterm>
-      <indexterm><primary>Property Sheet</primary></indexterm>
-      <indexterm><primary>Property Sheet Page</primary></indexterm>
-      <indexterm><primary>Control Dialog</primary></indexterm>
-      <indexterm><primary>Tab Control</primary><secondary>Control Dialog</secondary></indexterm>
-      ooDialog supports two approaches to embedding content in a Tab Control: a Property Sheet Dialog with a
-      Property Sheet Page for each tab, and a Resource Dialog with a Control Dialog for each tab.
-      <indexterm><primary>Control Dialog</primary></indexterm>
-      <footnote><para>By "resource dialog" is meant
-      an RcDialog, a ResDialog or a UserDialog. The two former have resources defined in a resource file, whereas
-      the latter's resources are defined programmatically.
-      See the ooDialog Reference for a full description.</para></footnote>
-      One important difference is that while the Property Sheet Dialog approach
-      is simpler (more is handled by the operating system), it does not allow for interesting controls to be placed
-      on the main dialog outside the Tab Control. Thus the alternate approach - Control Dialogs - is used for the Order Form.
-    </para>
-    <para>The instance name for the new Order Form is the Order Number. When the icon on the Order Management dialog is
-      double-clicked, the MVF is used to surface the OrderForm dialog. The sequence of operation is as follows
-      (with detail irrelevant to the Order Form omitted):
-      <simplelist>
-        <member>OrderMgrView sends 'showModel("OrderFormModel", "a")' to the ObjectMgr.</member>
-        <member>ObjectMgr sees that the instance name is "anonymous", and so sends 'getInstanceName'
-          to the class object (.OrderFormModel in this case).</member>
-        <member>.OrderFormModel provides this class method, and returns the next Order Number.</member>
-        <member>ObjectMgr uses the new Order Number as the instance name for the Order Form, and</member>
-        <member>sends 'newInstance(instanceName,...)' to .OrderFormModel, which then instantiates an OrderModel instance.</member>
-        <member>ObjectMgr then sends newInstance to .OrderFormView, which then creates an instance of the OrderFormView dialog.</member>
-      </simplelist>
-    </para>
+    <para>Open an Order Form from the icon in the Order Management dialog. Although still not
+      functional, the format of the dialog <emphasis role="italic">looks</emphasis> much more like a
+      usable sales order form than in the previous exercise. The main part of the form is a Tab
+      Control with two tabs - one for entering customer details, the other for product details.<indexterm>
+        <primary>Tab Control</primary>
+        <secondary>Property Sheet</secondary>
+      </indexterm><indexterm>
+        <primary>Property Sheet</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Property Sheet Page</primary>
+      </indexterm><indexterm>
+        <primary>Control Dialog</primary>
+      </indexterm><indexterm>
+        <primary>Tab Control</primary>
+        <secondary>Control Dialog</secondary>
+      </indexterm> ooDialog supports two approaches to embedding content in a Tab Control: a
+      Property Sheet Dialog with a Property Sheet Page for each tab, and a Resource Dialog with a
+      Control Dialog for each tab.<indexterm>
+        <primary>Control Dialog</primary>
+      </indexterm><footnote>
+        <para>By "resource dialog" is meant an RcDialog, a ResDialog or a UserDialog. The two former
+          have resources defined in a resource file, whereas the latter's resources are defined
+          programmatically. See the ooDialog Reference for a full description.</para>
+      </footnote> One important difference is that while the Property Sheet Dialog approach is
+      simpler (more is handled by the operating system), it does not allow for interesting controls
+      to be placed on the main dialog outside the Tab Control. Thus the alternate approach - Control
+      Dialogs - is used for the Order Form. </para>
+    <para>The instance name for the new Order Form is the Order Number. When the icon on the Order
+      Management dialog is double-clicked, the MVF is used to surface the OrderForm dialog. The
+      sequence of operation is as follows (with detail irrelevant to the Order Form omitted): <itemizedlist>
+        <listitem>
+          <para><computeroutput>OrderMgrView</computeroutput> sends
+              <computeroutput>showModel("OrderFormModel", "a")</computeroutput> to the Object
+            Manager.</para>
+        </listitem>
+        <listitem>
+          <para>The Object Manager sees that the instance name is "anonymous", and so sends
+              <computeroutput>getInstanceName</computeroutput> to the class object
+              (<computeroutput>.OrderFormModel</computeroutput> in this case).</para>
+        </listitem>
+        <listitem>
+          <para><computeroutput>OrderFormModel</computeroutput> provides this class method, and
+            returns the next Order Number.</para>
+        </listitem>
+        <listitem>
+          <para>The Object Manager uses the new Order Number as the instance name for the Order
+            Form, and...</para>
+        </listitem>
+        <listitem>
+          <para>sends <computeroutput>newInstance(instanceName,...)</computeroutput> to
+              <computeroutput>.OrderFormModel</computeroutput>, which then instantiates an
+              <computeroutput>OrderModel</computeroutput> instance.</para>
+        </listitem>
+        <listitem>
+          <para>The Object Manager then sends <computeroutput>newInstance</computeroutput> to
+              <computeroutput>.OrderFormView</computeroutput>, which then creates an instance of the
+              <computeroutput>OrderFormView</computeroutput> dialog.</para>
+        </listitem>
+      </itemizedlist></para>
     <para>The Order Form consists of three dialogs - the main Resource File Dialog (an <computeroutput>RcDialog</computeroutput>)
       plus two Control Dialogs (<computeroutput>RcControlDialog</computeroutput>) in a Tab Control. The two Control Dialogs -
       one for Customer Details and one for details of Products ordered, are
@@ -1097,11 +1132,11 @@ familyName: James; firstName: Alfred;
       Note that it's essential to properly close the control dialogs in the <computeroutput>cancel</computeroutput> and/or
       <computeroutput>ok</computeroutput> methods. This must be done using the <computeroutput>endExecution</computeroutput>
       method.</para>
-    <para>Finally, the Order Form illustrates one use of the <computeroutput>DateTimePicker</computeroutput> control.
-      <indexterm><primary>DateTime class</primary></indexterm>
-      <indexterm><primary>DateTimePicker</primary></indexterm>
-      <indexterm><primary>OrderForm</primary><secondary>DateTime class</secondary></indexterm>
-      <indexterm><primary>OrderForm</primary><secondary>DateTimePicker</secondary></indexterm>
+    <para>Finally, the Order Form illustrates one use of the <computeroutput>DateTimePicker</computeroutput>
+      control. <indexterm><primary>DateTime class</primary></indexterm>
+ <indexterm><primary>DateTimePicker</primary></indexterm>
+ <indexterm><primary>OrderForm</primary><secondary>DateTime class</secondary></indexterm>
+ <indexterm><primary>OrderForm</primary><secondary>DateTimePicker</secondary></indexterm>
       This is a very fully-featured control, providing many ways of displaying and manipulating date and time.
       For the Order Form it allows the user easily to specify the Order Date. It's partly configured in the
       .rc file (in ResEdit, "Use Spin Control" is set to "false" and "Format" is set to "Short Date"), and partly in code,
@@ -1130,7 +1165,7 @@ familyName: James; firstName: Alfred;
       made into a single mixin class; the Order Form needs to provide for data to be entered and stored;
       SQL could be used for data-on-disk; updates could properly implemented, and it would be nice if the user
       could use drag-and-drop to enter data into the Order Form. It is planned that some or all of these functions
-      will be addressed in the next version of this document.</para>
+      will be addressed in the next version of this Guide.</para>
   </section>
   <!-- End of Section 7.7 -->
 </chapter>
