@@ -99,4 +99,14 @@ call rxfuncadd "MathLoadFuncs", "rxmath", "MathLoadFuncs"
   the source of the error.
 </para>
 </section>
+
+<section><title>Package Limitations</title>
+<para>
+  The RxMath package internally uses the corresponding C library math functions to perform the
+  actual calculations. These C functions are limited to values of the C numeric type of
+  <emphasis role="bold">double</emphasis>. All numeric arguments passed to the RxMath package
+  functions are truncated (if needed) in order to convert them to the C
+  <emphasis role="bold">double</emphasis> type.
+</para>
+</section>
 </chapter>
