@@ -192,6 +192,10 @@
 <entry>Retrieves the bounding rectangle for a tree-view item and indicates whether the item is visible.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetStateImage"/></entry>
+<entry>Returns the index in the image list of the state image for the specified tree-view item.</entry>
+</row>
+<row>
 <entry><xref linkend="mthGetToolTipsClsTreeView"/></entry>
 <entry>Retrieves the child <link linkend="clsToolTip">ToolTip</link> control used by this tree-view.</entry>
 </row>
@@ -286,6 +290,10 @@
 <row>
 <entry><xref linkend="mthSetItemHeightClsTreeView"/></entry>
 <entry>Sets the height of the tree-view items.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetStateImage"/></entry>
+<entry>Assigns the index in the image list of the state image for the specified tree-view item.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetToolTipsClsTreeView"/></entry>
@@ -1109,40 +1117,48 @@ item in the client window of a tree-view control.</para>
 </programlisting>
 
 <para>
-  Retrieves the current image list for the type specified. The default is to retrieve the tree-views
-  normal image list.  See the <xref linkend="mthSetImageListClsTreeView"/> method for
-  infomation on assigning an image list to a tree-view control.
+  Retrieves the current image list for the type specified. The default is to retrieve the tree-view's normal image list.  See
+  the <xref linkend="mthSetImageListClsTreeView"/> method for infomation on assigning an image list to a tree-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-  <para>The single optional argument is:
-    <variablelist>
-      <varlistentry><term>type [optional]</term>
-      <listitem>
-        <para>
-          Specifies which image list to retrieve. You can use <xref linkend="mthToIDClsImage"/> method of the <xref
-          linkend="clsImage"/> class to get the correct numeric value for one of the following symbols:
-          <simplelist type='horiz' columns='2'>
-          <member>TVSIL_NORMAL</member>
-          <member>TVSIL_STATE </member>
-          </simplelist>
-          or use the correct numeric value itself.
-      </para>
-      <para>
-        The default is TVSIL_NORMAL.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <para>
+    The single optional argument is:
   </para>
+  <variablelist>
+    <varlistentry><term>type [optional]</term>
+    <listitem>
+    <para>
+      Specifies which image list, the NORMAL or STATE image list, to retrieve the image list for. The operating system uses
+      these 2 flags to specify the 2 types of image lists.
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      TVSIL_NORMAL: Numeric value == 0. Use the NORMAL keyword or the numeric value. The <xref linkend="mthToIDClsImage"/>
+      method of the <xref linkend="clsImage"/> class can also be used with TVSIL_NORMAL to get the correct numeric value.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      TVSIL_STATE: Numeric value == 2. Use the STATE keyword or the numeric value. The <xref linkend="mthToIDClsImage"/>
+      method of the <xref linkend="clsImage"/> class can also be used with TVSIL_STATE to get the correct numeric value.
+    </para>
+    </listitem>
+    </itemizedlist>
+    <para>
+      If this argument is omitted, the default is TVSIL_NORMAL.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      This method returns the current image <xref linkend="clsImageList"/>, if there is one.
-      <computeroutput>.nil</computeroutput> is returned if there is no current image list of the type
-      specified.
-    </para>
+  <para>
+    This method returns the current image <xref linkend="clsImageList"/>, if there is one. The
+    <computeroutput>.nil</computeroutput> object is returned if there is no current image list of the type specified.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -1166,7 +1182,7 @@ item in the client window of a tree-view control.</para>
 ::method odImageLists
   expose treeView
 
-  types = .array~of(TVSIL_NORMAL, TVSIL_STATE)
+  types = .array~of('NORMAL', 'STATE')
 
   do type over types
     il = treeView~getImageList(type)
@@ -1365,6 +1381,58 @@ item in the client window of a tree-view control.</para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TreeView::getItemRect() -->
+
+<section id="mthGetStateImage" xreflabel="getStateImage"><title>getStateImage</title>
+<indexterm><primary>getStateImage</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>getStateImage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getStateImage(--hItem--)---------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the index in the image list of the state image for the specified tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>hItem [required]</term>
+    <listitem>
+    <para>
+       The handle of the tree-view item whose state image index is being queried.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns -1 on error, otherwise returns the index for the state image. A value of 0 is used by the operating system to
+    indicate there is no state image assigned for a tree-view item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    State images ares displayed next to an item's icon, immediately to the left. They are used to indicate an application
+    defined state for the item. The state image list is set using the <xref
+    linkend="mthSetImageListClsTreeview"/> method. A value of 0 indicates there is no state image. Only 15 state images can
+    be assigned, indexes 1 through 15.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::getStateImage() -->
 
 
 <section id="mthGetToolTipsClsTreeView" xreflabel="getToolTips"><title>getToolTips</title>
@@ -2729,76 +2797,88 @@ item.</para>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setImageList(--newImageList--+----------+--)----------------><
-                                 +--,-type--+
+>>--setImageList(--+----------------+--+-----------+--)---------><
+                   +--newImageList--+  +--,--type--+
 ]]>
 </programlisting>
 
 <para>
-  Assigns, or removes, an image list for the tree-view control. Using
-  <computeroutput>.nil</computeroutput> for the first argument removes the current image list. Tree-view
-  controls can have two image lists. The normal image list, which contains selected, nonselected, and
-  overlay images for the items of a tree-view control. And, the state image list. The state images can be
-  used by the programmer to indicate application-defined item states. A state image is displayed to the
-  left of an item's selected or nonselected image.
-</para>
-<para>
-  The tree-view control does not destroy an image list that is associated with it. The programmer must
-  destroy the image list separately, if desired. This is useful if the same image list is assigned to
-  multiple tree-view controls. In essence, the ownership of the image list remains with the programmer.
-  The <xref linkend="clsImageList"/> and <xref linkend="clsImage"/> classes are
-  used to manage image lists and images in ooDialog. The documentation on both classes discusses when and
-  why the programmer may want to release image lists. The Image class documentation has the most detail
-  on this subject.
+  Assigns, or removes, an image list for the tree-view control.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>newImageList</term>
-      <listitem>
-        <para>
-          The image <xref linkend="clsImageList"/> to assign to the tree-view. If this argument
-          is <computeroutput>.nil</computeroutput> the existing image list, if any, is removed.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>type</term>
-      <listitem>
-        <para>
-          Optional. Specifies which image list to assign, (or remove.) You can use <xref linkend="mthToIDClsImage"/> method
-          of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the following symbols:
-          <simplelist type='horiz' columns='2'>
-          <member>TVSIL_NORMAL</member>
-          <member>TVSIL_STATE </member>
-          </simplelist>
-          or use the correct numeric value itself.
-        </para>
-        <para>
-          The default is TVSIL_NORMAL.
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>newImageList [optional]</term>
+    <listitem>
+    <para>
+      The <xref linkend="clsImageList"/> object to assign to the tree-view. If this argument is omitted or is the
+      <computeroutput>.nil</computeroutput> object, the existing image list, if any, is removed.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type [optional]</term>
+    <listitem>
+    <para>
+      Specifies which image list, the NORMAL or STATE image list, to assign or remove. The operating system uses these 2
+      flags to specify the 2 types of image lists.
+    </para>
+    <itemizedlist>
+    <listitem>
+    <para>
+      TVSIL_NORMAL: Numeric value == 0. Use the NORMAL keyword or the numeric value. The <xref linkend="mthToIDClsImage"/>
+      method of the <xref linkend="clsImage"/> class can also be used with TVSIL_NORMAL to get the correct numeric value.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      TVSIL_STATE: Numeric value == 2. Use the STATE keyword or the numeric value. The <xref linkend="mthToIDClsImage"/>
+      method of the <xref linkend="clsImage"/> class can also be used with TVSIL_STATE to get the correct numeric value.
+    </para>
+    </listitem>
+    </itemizedlist>
+    <para>
+      If this argument is omitted, the default is TVSIL_NORMAL.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The existing image list is returned, if there is one. Otherwise,
-      <computeroutput>.nil</computeroutput> is returned.
-    </para>
+  <para>
+    The existing image list is returned, if there is one. Otherwise, <computeroutput>.nil</computeroutput> is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Tree-view controls can have two image lists. The normal image list, which contains selected, nonselected, and overlay
+    images for the items of a tree-view control. And, the state image list. The state images can be used by the programmer to
+    indicate application-defined item states. A state image is displayed to the left of an item's selected or nonselected
+    image.
+  </para>
+  <para>
+    The tree-view control does not destroy an image list that is associated with it. The programmer must destroy the image
+    list separately, if desired. This is useful if the same image list is assigned to multiple tree-view controls. In
+    essence, the ownership of the image list remains with the programmer. The <xref linkend="clsImageList"/> and <xref
+    linkend="clsImage"/> classes are used to manage image lists and images in ooDialog. The documentation on both classes
+    discusses when and why the programmer may want to release image lists. The Image class documentation has the most detail
+    on this subject.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example creates an image list and assigns it to the tree-view control for use as the normal
-      image list.
+  <para>
+    This example creates an image list and assigns it to the tree-view control for use as the normal image list. Since the
+    normal is the default, the <emphasis role="italic">type</emphasis> argument does not need to be specified:
 <programlisting>
 <![CDATA[
 
@@ -2807,13 +2887,13 @@ item.</para>
   imageList = .ImageList~create(.Size~new(32, 32), .Image~toID(ILC_COLOR8), 10, 0)
   if \image~isNull,  \imageList~isNull then do
      imageList~add(image)
-     tc~setImageList(imageList, .Image~toID(TVSIL_NORMAL))
+     tc~setImageList(imageList)
      image~release
   end
 
 ]]>
 </programlisting>
-    </para>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TreeView::setImageList() -->
@@ -2841,7 +2921,7 @@ item.</para>
       <varlistentry><term>hItem [required]</term>
       <listitem>
       <para>
-        The the tree-view item the data value is associated with.
+        The tree-view item the data value is associated with.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>data [optional]</term>
@@ -2961,6 +3041,92 @@ item.</para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TreeView::setItemHeight() -->
+
+<section id="mthSetStateImage" xreflabel="setStateImage"><title>setStateImage</title>
+<indexterm><primary>setStateImage</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>setStateImage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setStateImage(--hItem--,--index--)-----------><
+]]>
+</programlisting>
+
+<para>
+  Assigns the index in the <link linkend="mthSetImageListClsTreeView">image</link> list of the state image for the specified
+  tree-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>hItem [required]</term>
+    <listitem>
+    <para>
+      The handle of the tree-view item whose state image index is being set.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The index of the image in the state image list for the specified tree-view item.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    State images ares displayed next to an item's icon, immediately to the left. They are used to indicate an application
+    defined state for the item. The state image list is set using the <xref
+    linkend="mthSetImageListClsTreeview"/> method. A value of 0 indicates there is no state image. Only 15 state images can
+    be assigned, indexes 1 through 15.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+::method setStateIndex private
+    expose tv
+    use strict arg hItem, state
+
+    select
+        when state == 'singleton' then index = 1
+        when state == 'duplicate' then index = 2
+        when state == 'triplicate' then index = 3
+        when state == 'quadruplicate' then index = 4
+        otherwise index = 0
+    end
+
+    tv~setStateImage(hItem, index)
+
+    return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::setStateImage() -->
+
 
 <section id="mthSetToolTipsClsTreeView" xreflabel="setToolTips"><title>setToolTips</title>
 <indexterm><primary>setToolTips</primary><secondary>TreeView class</secondary></indexterm>
