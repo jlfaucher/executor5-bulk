@@ -67,7 +67,7 @@ static pCBrowseForFolder getBffCSelf(RexxMethodContext *c, void * pCSelf)
     pCBrowseForFolder pcbff = (pCBrowseForFolder)pCSelf;
     if ( pcbff == NULL )
     {
-        baseClassInitializationException(c);
+        baseClassInitializationException(c, BROWSEFORFOLDER_CLASS);
     }
     return pcbff;
 }
@@ -452,7 +452,7 @@ void setTextAttribute(RexxMethodContext *c, pCBrowseForFolder pcbff, RexxObjectP
  * @note   If this function fails, *ppidl will be null on return.  This function
  *         does not raise an exception, that is left to the caller.
  */
-static bool pidlFromPath(LPCSTR path, LPITEMIDLIST *ppidl)
+static bool pidlFromPath(RexxMethodContext *c, LPCSTR path, LPITEMIDLIST *ppidl)
 {
    LPSHELLFOLDER pShellFolder = NULL;
    HRESULT       hr;
@@ -460,14 +460,17 @@ static bool pidlFromPath(LPCSTR path, LPITEMIDLIST *ppidl)
 
    *ppidl = NULL;
 
-   if ( MultiByteToWideChar(CP_ACP, 0, path, -1, wPath, MAX_PATH) != NULL )
+   if ( MultiByteToWideChar(CP_ACP, 0, path, -1, wPath, MAX_PATH) == 0 )
    {
+       oodSetSysErrCode(c->threadContext);
        return false;
    }
 
    // Need the desktop IShellFolder interface.
-   if ( SHGetDesktopFolder(&pShellFolder) != S_OK )
+   hr = SHGetDesktopFolder(&pShellFolder);
+   if ( FAILED(hr) )
    {
+       oodSetSysErrCode(c->threadContext, hr);
        return false;
    }
 
@@ -478,6 +481,7 @@ static bool pidlFromPath(LPCSTR path, LPITEMIDLIST *ppidl)
 
    if ( FAILED(hr) )
    {
+       oodSetSysErrCode(c->threadContext, hr);
       *ppidl = NULL;  // Docs are unclear as to the value of this on failure.
       return false;
    }
@@ -598,7 +602,7 @@ LPITEMIDLIST getPidlFromString(RexxMethodContext *c, CSTRING idl, size_t argPos,
     }
     else if ( _PathIsFull(idl) )
     {
-        pidlFromPath(idl, &pidl);
+        pidlFromPath(c, idl, &pidl);
     }
     else
     {
@@ -618,8 +622,6 @@ LPITEMIDLIST getPidlFromString(RexxMethodContext *c, CSTRING idl, size_t argPos,
  * method.  The object must resolve to a CSIDL_xxx constant, a full path, or a
  * Pointer object.
  *
- * Not used for now, not sure that we need this.
- *
  * @param c
  * @param obj
  * @param argPos
@@ -633,7 +635,7 @@ LPITEMIDLIST getPidlFromObject(RexxMethodContext *c, RexxObjectPtr obj, size_t a
     if ( c->IsString(obj) )
     {
         CSTRING idl = c->ObjectToStringValue(obj);
-        pidl = getPidlFromString(c, idl, argPos, false);
+        pidl = getPidlFromString(c, idl, argPos, true);
     }
     else if ( c->IsPointer(obj) )
     {
@@ -649,6 +651,41 @@ LPITEMIDLIST getPidlFromObject(RexxMethodContext *c, RexxObjectPtr obj, size_t a
     }
 
     return pidl;
+}
+
+
+/**
+ * Transform a Rexx object used as an argument to a method to a pointer to an
+ * IShellItem object.
+ *
+ * @param c
+ * @param folder
+ * @param argPos
+ *
+ * @return IShellItem*
+ *
+ * @remarks  Although the function name does not indicate it, the Rexx object
+ *           argument is assumed to be a folder in this case.
+ *
+ *           This uses a depracated method so that it will / should work on XP.
+ *           When ooDialog becomes Vista or later this should be reworked.
+ */
+static IShellItem *getShellItemFromObject(RexxMethodContext *c, RexxObjectPtr folder, size_t argPos)
+{
+    LPITEMIDLIST pidl = getPidlFromObject(c, folder, argPos);
+    if ( pidl == NULL )
+    {
+        return NULL;
+    }
+
+    IShellItem *psi = NULL;
+    HRESULT hr = SHCreateShellItem(NULL, NULL, pidl, &psi);
+    if ( FAILED(hr) )
+    {
+        oodSetSysErrCode(c->threadContext, hr);
+    }
+
+    return psi;
 }
 
 /**
@@ -1728,4 +1765,491 @@ done_out:
 
     return result;
 }
+
+
+
+/**
+ * Methods for the ooDialog .CommonItemDialog class.
+ */
+#define COMMONITEMDIALOG_CLASS  "CommonItemDialog"
+
+
+/**
+ * Parse the FOS_xx flags and returns the matching keyword string.
+ *
+ * @param c
+ * @param fos
+ *
+ * @return RexxObjectPtr
+ */
+static RexxObjectPtr fos2keywords(RexxMethodContext *c, FILEOPENDIALOGOPTIONS fos)
+{
+    char buf[512] = { '\0' };
+
+    if ( fos & FOS_ALLNONSTORAGEITEMS) strcat(buf, "ALLNONSTORAGEITEMS ");
+    if ( fos & FOS_ALLOWMULTISELECT  ) strcat(buf, "ALLOWMULTISELECT "  );
+    if ( fos & FOS_CREATEPROMPT      ) strcat(buf, "CREATEPROMPT "      );
+    if ( fos & FOS_DEFAULTNOMINIMODE ) strcat(buf, "DEFAULTNOMINIMODE " );
+    if ( fos & FOS_DONTADDTORECENT   ) strcat(buf, "DONTADDTORECENT "   );
+    if ( fos & FOS_FILEMUSTEXIST     ) strcat(buf, "FILEMUSTEXIST "     );
+    if ( fos & FOS_FORCEFILESYSTEM   ) strcat(buf, "FORCEFILESYSTEM "   );
+    if ( fos & FOS_FORCEPREVIEWPANEON) strcat(buf, "FORCEPREVIEWPANEON ");
+    if ( fos & FOS_FORCESHOWHIDDEN   ) strcat(buf, "FORCESHOWHIDDEN "   );
+    if ( fos & FOS_HIDEMRUPLACES     ) strcat(buf, "HIDEMRUPLACES "     );
+    if ( fos & FOS_HIDEPINNEDPLACES  ) strcat(buf, "HIDEPINNEDPLACES "  );
+    if ( fos & FOS_NOCHANGEDIR       ) strcat(buf, "NOCHANGEDIR "       );
+    if ( fos & FOS_NODEREFERENCELINKS) strcat(buf, "NODEREFERENCELINKS ");
+    if ( fos & FOS_NOREADONLYRETURN  ) strcat(buf, "NOREADONLYRETURN "  );
+    if ( fos & FOS_NOTESTFILECREATE  ) strcat(buf, "NOTESTFILECREATE "  );
+    if ( fos & FOS_NOVALIDATE        ) strcat(buf, "NOVALIDATE "        );
+    if ( fos & FOS_OVERWRITEPROMPT   ) strcat(buf, "OVERWRITEPROMPT "   );
+    if ( fos & FOS_PATHMUSTEXIST     ) strcat(buf, "PATHMUSTEXIST "     );
+    if ( fos & FOS_PICKFOLDERS       ) strcat(buf, "PICKFOLDERS "       );
+    if ( fos & FOS_SHAREAWARE        ) strcat(buf, "SHAREAWARE "        );
+    if ( fos & FOS_STRICTFILETYPES   ) strcat(buf, "STRICTFILETYPES "   );
+
+    if ( buf[0] != '\0' )
+    {
+        buf[strlen(buf) - 1] = '\0';
+    }
+    return c->String(buf);
+}
+
+/**
+ * Converts a string of keywords to its FOS_xx value.
+ *
+ * @param c
+ * @param keywords
+ * @param argPos
+ *
+ * @return uint32_t
+ */
+static FILEOPENDIALOGOPTIONS keywords2fos(RexxMethodContext *c, CSTRING keywords, size_t argPos)
+{
+    FILEOPENDIALOGOPTIONS fos = 0;
+
+    if ( StrStrI(keywords, "ALLNONSTORAGEITEMS") != NULL ) fos |= FOS_ALLNONSTORAGEITEMS;
+    if ( StrStrI(keywords, "ALLOWMULTISELECT"  ) != NULL ) fos |= FOS_ALLOWMULTISELECT  ;
+    if ( StrStrI(keywords, "CREATEPROMPT"      ) != NULL ) fos |= FOS_CREATEPROMPT      ;
+    if ( StrStrI(keywords, "DEFAULTNOMINIMODE" ) != NULL ) fos |= FOS_DEFAULTNOMINIMODE ;
+    if ( StrStrI(keywords, "DONTADDTORECENT"   ) != NULL ) fos |= FOS_DONTADDTORECENT   ;
+    if ( StrStrI(keywords, "FILEMUSTEXIST"     ) != NULL ) fos |= FOS_FILEMUSTEXIST     ;
+    if ( StrStrI(keywords, "FORCEFILESYSTEM"   ) != NULL ) fos |= FOS_FORCEFILESYSTEM   ;
+    if ( StrStrI(keywords, "FORCEPREVIEWPANEON") != NULL ) fos |= FOS_FORCEPREVIEWPANEON;
+    if ( StrStrI(keywords, "FORCESHOWHIDDEN"   ) != NULL ) fos |= FOS_FORCESHOWHIDDEN   ;
+    if ( StrStrI(keywords, "HIDEMRUPLACES"     ) != NULL ) fos |= FOS_HIDEMRUPLACES     ;
+    if ( StrStrI(keywords, "HIDEPINNEDPLACES"  ) != NULL ) fos |= FOS_HIDEPINNEDPLACES  ;
+    if ( StrStrI(keywords, "NOCHANGEDIR"       ) != NULL ) fos |= FOS_NOCHANGEDIR       ;
+    if ( StrStrI(keywords, "NODEREFERENCELINKS") != NULL ) fos |= FOS_NODEREFERENCELINKS;
+    if ( StrStrI(keywords, "NOREADONLYRETURN"  ) != NULL ) fos |= FOS_NOREADONLYRETURN  ;
+    if ( StrStrI(keywords, "NOTESTFILECREATE"  ) != NULL ) fos |= FOS_NOTESTFILECREATE  ;
+    if ( StrStrI(keywords, "NOVALIDATE"        ) != NULL ) fos |= FOS_NOVALIDATE        ;
+    if ( StrStrI(keywords, "OVERWRITEPROMPT"   ) != NULL ) fos |= FOS_OVERWRITEPROMPT   ;
+    if ( StrStrI(keywords, "PATHMUSTEXIST"     ) != NULL ) fos |= FOS_PATHMUSTEXIST     ;
+    if ( StrStrI(keywords, "PICKFOLDERS"       ) != NULL ) fos |= FOS_PICKFOLDERS       ;
+    if ( StrStrI(keywords, "SHAREAWARE"        ) != NULL ) fos |= FOS_SHAREAWARE        ;
+    if ( StrStrI(keywords, "STRICTFILETYPES"   ) != NULL ) fos |= FOS_STRICTFILETYPES   ;
+
+    return fos;
+}
+
+
+
+/**
+ * Ensures the CommonItemDialog CSelf pointer is not null.
+ *
+ * @param c
+ * @param pCSelf
+ *
+ * @return pCCommonItemDialog
+ */
+static pCCommonItemDialog getCidCSelf(RexxMethodContext *c, void * pCSelf)
+{
+    oodResetSysErrCode(c->threadContext);
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)pCSelf;
+    if ( pccid == NULL )
+    {
+        oodSetSysErrCode(c->threadContext, ERROR_INVALID_FUNCTION);
+        baseClassInitializationException(c, COMMONITEMDIALOG_CLASS);
+    }
+    return pccid;
+}
+
+
+/** CommonItemDialog::options                  [attribute]
+ */
+RexxMethod1(RexxObjectPtr, cid_options, CSELF, pCSelf)
+{
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    if ( pccid != NULL )
+    {
+        FILEOPENDIALOGOPTIONS fos;
+
+        HRESULT hr = pccid->pfd->GetOptions(&fos);
+        if ( SUCCEEDED(hr) )
+        {
+            return fos2keywords(context, fos);
+        }
+        else
+        {
+            oodSetSysErrCode(context->threadContext, hr);
+        }
+    }
+    return context->NullString();
+}
+RexxMethod2(RexxObjectPtr, cid_setOptions, CSTRING, opts, CSELF, pCSelf)
+{
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    if ( pccid != NULL )
+    {
+        uint32_t fos = keywords2fos(context, opts, 1);
+        HRESULT  hr  = pccid->pfd->SetOptions(fos);
+        if ( ! SUCCEEDED(hr) )
+        {
+            oodSetSysErrCode(context->threadContext, hr);
+        }
+    }
+    return NULLOBJECT;
+}
+
+
+/** CommonItemDialog::uninit()
+ *
+ * Does clean up for this CommonItemDialog.  May not be needed
+ */
+RexxMethod1(RexxObjectPtr, cid_uninit, CSELF, pCSelf)
+{
+    pCCommonItemDialog pccid = getCidCSelf(context, pCSelf);
+    if ( pccid != NULL )
+    {
+        if ( pccid->comInitialized && pccid->comThreadID == GetCurrentThreadId() )
+        {
+            CoUninitialize();
+            pccid->comInitialized = false;
+#ifdef _DEBUG
+    printf("cid_uninit(), CoUninitialize() invoked\n");
+#endif
+        }
+    }
+    return NULLOBJECT;
+}
+
+/** CommonItemDialog::init()
+ *
+ * Initializes
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, cid_init, RexxObjectPtr, cselfBuf)
+{
+    if ( ! context->IsBuffer(cselfBuf) )
+    {
+        baseClassInitializationException(context, "CommonItemDialog");
+        return TheNilObj;
+    }
+
+    context->SetObjectVariable("CSELF", cselfBuf);
+
+    return TheZeroObj;
+}
+
+
+/** CommonItemDialog::getResult()
+ *
+ *
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, cid_getResult, OPTIONAL_CSTRING, _sigdn, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+    HRESULT       hr     = ERROR_INVALID_FUNCTION;
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    if ( pccid == NULL )
+    {
+        goto done_out;
+    }
+
+    SIGDN sigdn = SIGDN_FILESYSPATH;
+    if ( argumentExists(1) )
+    {
+        if ( ! keyword2sigdn(context, _sigdn, &sigdn, 1) )
+        {
+            goto done_out;
+        }
+    }
+
+    IShellItem *psi;
+
+    hr = pccid->pfd->GetResult(&psi);
+    if ( SUCCEEDED(hr) )
+    {
+        PWSTR pszPath;
+
+        hr = psi->GetDisplayName(sigdn, &pszPath);
+        if( SUCCEEDED(hr) )
+        {
+            result = unicode2NilString(context->threadContext, pszPath);
+            CoTaskMemFree(pszPath);
+        }
+        psi->Release();
+    }
+
+done_out:
+    oodSetSysErrCode(context->threadContext, hr);
+    return result;
+}
+
+
+/** CommonItemDialog::initCOM
+ *
+ *  Invokes CoInitalizeEx() on the current thread, with some forethought.  If
+ *  the current thread is the initial thread that this object was instantiated
+ *  on, then the invocation is only done if needed.
+ *
+ *  If we are on the initial thread and comInitialized is false the initialize
+ *  is done and comInitialized is set to true.  If comInitialized is true, the
+ *  initialize is skipped.
+ *
+ *  If we are on another thread, the CoInitializeEx is always done, but the
+ *  return is checked.  If it is S_FALSE, that indicates the CoInitializeEx has
+ *  already been done on this thread and we immediately do an unitialize to keep
+ *  things balanced.
+ *
+ *  If the user makes use of the initCom method, he assumes the responsibility
+ *  of keeping CoInitializedEx / CoUnitialize() in balance *and* in invoking the
+ *  releaseCOM method when he is done with this object.
+ */
+RexxMethod1(RexxObjectPtr, cid_initCOM, CSELF, pCSelf)
+{
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    if ( pccid == NULL )
+    {
+        return TheFalseObj;
+    }
+
+    if ( pccid->comThreadID == GetCurrentThreadId() && pccid->comInitialized )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_INVALID_FUNCTION);
+        return TheFalseObj;
+    }
+
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+    oodSetSysErrCode(context->threadContext, hr);
+    if ( hr == S_OK )
+    {
+        if ( pccid->comThreadID == GetCurrentThreadId() )
+        {
+            pccid->comInitialized = true;
+        }
+        return TheTrueObj;
+    }
+    else if ( hr == S_FALSE )
+    {
+        CoUninitialize();
+    }
+    return TheFalseObj;
+}
+
+
+/** CommonItemDialog::releaseCom
+ *
+ *  Calls CoUninitialize() on the current thread.
+ *
+ *  The user is responsible for invoking releaseCom(), on the same thread as
+ *  this object was instantiated on, *once* when she is done with the
+ *  CommonItemDialog object.
+ *
+ *  In addition to that invocation, the user is responsible for invoking
+ *  releaseCom() once for each successful invocation of initCom().
+ *
+ *  @return True if CoUnitialize() was called on this thread, false if this is
+ *          the same thread as the original thread CoUnitialize() was called on,
+ *          and COM is not intialized at this time.
+ */
+RexxMethod1(RexxObjectPtr, cid_releaseCOM, CSELF, pCSelf)
+{
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    if ( pccid == NULL )
+    {
+        return TheFalseObj;
+    }
+
+    if ( pccid->comThreadID == GetCurrentThreadId() && ! pccid->comInitialized )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_INVALID_FUNCTION);
+        return TheFalseObj;
+    }
+
+    CoUninitialize();
+    if ( pccid->comThreadID == GetCurrentThreadId() )
+    {
+        pccid->comInitialized = false;
+    }
+    return TheTrueObj;
+}
+
+/** CommonItemDialog::setFolder()
+ *
+ *
+ *
+ *
+ */
+RexxMethod2(uint32_t, cid_setFolder, RexxObjectPtr, folder, CSELF, pCSelf)
+{
+    HRESULT hr = 0;
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    if ( pccid == NULL )
+    {
+        hr = ERROR_INVALID_FUNCTION;
+        goto done_out;
+    }
+
+    IShellItem *psi = getShellItemFromObject(context, folder, 1);
+    if ( psi != NULL )
+    {
+        printf("Got psi=%p\n", psi);
+        hr = pccid->pfd->SetFolder(psi);
+    }
+
+done_out:
+    oodSetSysErrCode(context->threadContext, hr);
+    return hr;
+}
+
+
+/** CommonItemDialog::show()
+ *
+ *
+ *
+ *
+ */
+RexxMethod2(uint32_t, cid_show, OPTIONAL_RexxObjectPtr, owner, CSELF, pCSelf)
+{
+    HRESULT hr = ERROR_INVALID_FUNCTION;
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    if ( pccid == NULL )
+    {
+        goto done_out;
+    }
+
+    HWND hOwner = NULL;
+    if ( argumentExists(1) )
+    {
+        pCPlainBaseDialog pcpbd = requiredPlainBaseDlg(context, owner, 1);
+        if ( pcpbd != NULL )
+        {
+            hOwner = pcpbd->hDlg;
+        }
+        else
+        {
+            hr = ERROR_WINDOW_NOT_DIALOG;
+            goto done_out;
+        }
+    }
+
+    hr = pccid->pfd->Show(hOwner);
+
+done_out:
+    oodSetSysErrCode(context->threadContext, hr);
+    return hr;
+}
+
+
+/**
+ * Methods for the ooDialog .OpenFileDialog class.
+ */
+#define OPENFILEDIALOG_CLASS  "OpenFileDialog"
+
+RexxObjectPtr commonFileDialogInit(RexxMethodContext *c, RexxClassObject super, REFCLSID rclsid, CSTRING name)
+{
+    oodResetSysErrCode(c->threadContext);
+    RexxObjectPtr result = TheOneObj;
+
+    if ( ! requiredOS(c, Vista_OS, name, "Vista") )
+    {
+        return result;
+    }
+
+    RexxBufferObject bufObj = c->NewBuffer(sizeof(CCommonItemDialog));
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)c->BufferData(bufObj);
+    memset(pccid, 0, sizeof(CCommonItemDialog));
+
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+    if ( hr == S_OK )
+    {
+        pccid->comInitialized = true;
+        pccid->comThreadID    = GetCurrentThreadId();
+    }
+    else if ( hr == S_FALSE )
+    {
+        CoUninitialize();
+    }
+    else
+    {
+        oodSetSysErrCode(c->threadContext, hr);
+        return result;
+    }
+
+    IFileDialog *pfd;
+    hr = CoCreateInstance(rclsid, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
+
+    if ( SUCCEEDED(hr) )
+    {
+        pccid->pfd = pfd;
+
+        RexxArrayObject newArgs = c->NewArray(1);
+        c->ArrayPut(newArgs, bufObj, 1);
+
+        result = c->ForwardMessage(NULL, NULL, super, newArgs);
+        if ( result != TheZeroObj )
+        {
+            CoUninitialize();
+            oodSetSysErrCode(c->threadContext, OR_INVALID_OID);
+            pccid->comInitialized = false;
+        }
+    }
+    else
+    {
+        oodSetSysErrCode(c->threadContext, hr);
+    }
+
+    return result;
+}
+
+/** OpenFileDialog::init()
+ *
+ * Initializes
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, ofd_init, SUPER, super)
+{
+    return commonFileDialogInit(context, super, CLSID_FileOpenDialog, "OpenFileDialog");
+}
+
+
+/**
+ * Methods for the ooDialog .SaveFileDialog class.
+ */
+#define SAVEFILEDIALOG_CLASS  "SaveFileDialog"
+
+
+
+/** SafeFileDialog::init()
+ *
+ * Initializes
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, sfd_init, SUPER, super)
+{
+    return commonFileDialogInit(context, super, CLSID_FileSaveDialog, "SaveFileDialog");
+}
+
 

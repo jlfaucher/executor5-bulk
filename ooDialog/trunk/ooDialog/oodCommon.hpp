@@ -174,7 +174,8 @@ extern bool rxIntFromDirectory(RexxMethodContext *, RexxDirectoryObject, CSTRING
 extern int               putUnicodeText(LPWORD dest, const char *text);
 extern LPWSTR            ansi2unicode(LPCSTR str);
 extern RexxStringObject  unicode2string(RexxThreadContext *c, PWSTR wstr);
-extern char *            unicode2ansi(PWSTR wstr);
+extern RexxObjectPtr     unicode2NilString(RexxThreadContext *c, LPWSTR wstr);
+extern char             *unicode2ansi(PWSTR wstr);
 extern bool              printHResultErr(CSTRING api, HRESULT hr);
 extern bool              getFormattedErrMsg(char **errBuff, uint32_t errCode, uint32_t *thisErr);
 

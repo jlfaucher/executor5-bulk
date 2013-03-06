@@ -2474,13 +2474,44 @@ char *unicode2ansi(LPWSTR wstr)
  *
  * @return The conveted string as a new Rexx string object on success.
  *
- * @remarks  The Rexx null string is returned if an error occurs.  A second
- *           function could be added if it is necessary to distinguish types of
- *           errors.
+ * @remarks  The Rexx null string is returned if an error occurs.  Use
+ *           unicode2NilString() to return the .nil ojbect on errors.
  */
 RexxStringObject unicode2string(RexxThreadContext *c, LPWSTR wstr)
 {
     RexxStringObject result = c->NullString();
+    if ( wstr == NULL )
+    {
+        goto done_out;
+    }
+
+    char *str = unicode2ansi(wstr);
+    if ( str == NULL )
+    {
+        goto done_out;
+    }
+
+    result = c->String(str);
+    free(str);
+
+done_out:
+    return result;
+}
+
+
+/**
+ * Converts a wide character (Unicode) string to a Rexx string object, or .nil
+ * on error.
+ *
+ * @param c    Thread context we are operating in.
+ * @param wstr Wide character string to convert.
+ *
+ * @return The conveted string as a new Rexx string object on success, .nil on
+ *         error.
+ */
+RexxObjectPtr unicode2NilString(RexxThreadContext *c, LPWSTR wstr)
+{
+    RexxObjectPtr result = TheNilObj;
     if ( wstr == NULL )
     {
         goto done_out;

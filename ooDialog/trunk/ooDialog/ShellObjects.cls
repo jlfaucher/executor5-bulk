@@ -80,6 +80,33 @@
 ::method test external "LIBRARY oodialog bff_test"
 
 
+::class 'CommonItemDialog' public
+
+::constant  CANCELED     2147943623
+
+::attribute options get external "LIBRARY oodialog cid_options"
+::attribute options set external "LIBRARY oodialog cid_setOptions"
+
+::method init external "LIBRARY oodialog cid_init"
+::method uninit external "LIBRARY oodialog cid_uninit"
+
+::method getResult external "LIBRARY oodialog cid_getResult"
+::method initCOM external "LIBRARY oodialog cid_initCOM"
+::method releaseCOM external "LIBRARY oodialog cid_releaseCOM"
+::method setFolder external "LIBRARY oodialog cid_setFolder"
+::method show external "LIBRARY oodialog cid_show"
+
+
+::class 'OpenFileDialog' public subclass CommonItemDialog
+
+::method init external "LIBRARY oodialog ofd_init"
+
+
+::class 'SaveFileDialog' public subclass CommonItemDialog
+
+::method init external "LIBRARY oodialog sfd_init"
+
+
 ::class 'SimpleFolderBrowse' public
 
 ::method getFolder class external "LIBRARY oodialog sfb_getFolder"

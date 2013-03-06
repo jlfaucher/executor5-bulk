@@ -80,6 +80,15 @@ typedef enum
     BffRoot
 } BffAttributeType;
 
+/* Struct for the CommonItemDialog CSelf */
+typedef struct _cidCSelf
+{
+    IFileDialog   *pfd;
+    uint32_t       comThreadID;
+    bool           comInitialized;
+} CCommonItemDialog;
+typedef CCommonItemDialog *pCCommonItemDialog;
+
 
 
 #endif

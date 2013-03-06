@@ -1557,6 +1557,23 @@ REXX_METHOD_PROTOTYPE(bff_test);
 
 REXX_METHOD_PROTOTYPE(sfb_getFolder);
 
+// CommonItemDialog
+REXX_METHOD_PROTOTYPE(cid_options);
+REXX_METHOD_PROTOTYPE(cid_setOptions);
+
+REXX_METHOD_PROTOTYPE(cid_uninit);
+REXX_METHOD_PROTOTYPE(cid_init);
+
+REXX_METHOD_PROTOTYPE(cid_getResult);
+REXX_METHOD_PROTOTYPE(cid_initCOM);
+REXX_METHOD_PROTOTYPE(cid_releaseCOM);
+REXX_METHOD_PROTOTYPE(cid_setFolder);
+REXX_METHOD_PROTOTYPE(cid_show);
+
+REXX_METHOD_PROTOTYPE(ofd_init);
+
+REXX_METHOD_PROTOTYPE(sfd_init);
+
 
 RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_init_cls,               dlgutil_init_cls),
@@ -2677,6 +2694,23 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(bff_test,                       bff_test),
 
     REXX_METHOD(sfb_getFolder,                  sfb_getFolder),
+
+// CommonItemDialog
+    REXX_METHOD(cid_options,                    cid_options),
+    REXX_METHOD(cid_setOptions,                 cid_setOptions),
+
+    REXX_METHOD(cid_uninit,                     cid_uninit),
+    REXX_METHOD(cid_init,                    	cid_init),
+
+    REXX_METHOD(cid_getResult,                  cid_getResult),
+    REXX_METHOD(cid_initCOM,                    cid_initCOM),
+    REXX_METHOD(cid_releaseCOM,                 cid_releaseCOM),
+    REXX_METHOD(cid_setFolder,                  cid_setFolder),
+    REXX_METHOD(cid_show,                       cid_show),
+
+    REXX_METHOD(ofd_init,                    	ofd_init),
+
+    REXX_METHOD(sfd_init,                    	sfd_init),
 
     REXX_LAST_METHOD()
 };
