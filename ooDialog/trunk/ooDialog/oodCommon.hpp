@@ -172,6 +172,7 @@ extern bool rxNumberFromDirectory(RexxMethodContext *, RexxDirectoryObject, CSTR
 extern bool rxIntFromDirectory(RexxMethodContext *, RexxDirectoryObject, CSTRING, int *, int, bool);
 
 extern int               putUnicodeText(LPWORD dest, const char *text);
+extern int               putUnicodeText(LPWORD dest, const char *text, HRESULT *pHR);
 extern LPWSTR            ansi2unicode(LPCSTR str);
 extern RexxStringObject  unicode2string(RexxThreadContext *c, PWSTR wstr);
 extern RexxObjectPtr     unicode2NilString(RexxThreadContext *c, LPWSTR wstr);

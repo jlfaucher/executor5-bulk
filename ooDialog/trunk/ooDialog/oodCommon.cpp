@@ -2336,7 +2336,7 @@ RexxObjectPtr setWindowStyle(RexxMethodContext *c, HWND hwnd, uint32_t style)
 
 
 /**
- *  Pust an ANSI character string converted to a wide (Unicode) character string
+ *  Puts an ANSI character string converted to a wide (Unicode) character string
  *  in the specified buffer.
  *
  *  This is a convenience function that assumes the caller has passed a buffer
@@ -2374,6 +2374,47 @@ int putUnicodeText(LPWORD dest, const char *text)
             // string.
             *dest = 0;
             count++;
+        }
+    }
+    return count;
+}
+
+
+/**
+ *  Puts an ANSI character string converted to a wide (Unicode) character string
+ *  in the specified buffer.
+ *
+ *  This is a convenience function that assumes the caller has passed a buffer
+ *  known to be big enough.
+ *
+ *  It works correctly for the empty string "" and is designed to treat a null
+ *  pointer for text as an error.
+ *
+ * @param dest  Buffer in which to place the converted string.  Must be big
+ *              enough.
+ * @param text  The text to convert.
+ * @param pHR   Pointer to a return code. This is set on error to the system
+ *              error code, or to 0x8000ffff Catastrophic failure if text is
+ *              null.
+ *
+ * @return The number of wide character values copied to the buffer.  On error
+ *         this is zero.
+ */
+int putUnicodeText(LPWORD dest, const char *text, HRESULT *pHR)
+{
+    int count = 0;
+    if ( text == NULL )
+    {
+        *pHR = 0x8000ffff; // Catastrophic failure
+    }
+    else
+    {
+        int countWideChars = (int)strlen(text) + 1;
+
+        count = MultiByteToWideChar(CP_ACP, 0, text, -1, (LPWSTR)dest, countWideChars);
+        if ( count == 0 )
+        {
+            *pHR = GetLastError();
         }
     }
     return count;

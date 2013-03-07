@@ -39,17 +39,19 @@
 #define oodShellObjects_Included
 
 
-#define HINT_ID                     0x00003749
-#define DEFAULT_BIF_FLAGS           BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS
+#define HINT_ID                         0x00003749
+#define DEFAULT_BIF_FLAGS               BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS
 
-#define WRONG_IDL_TYPE_LIST         "a CSIDL_xxx keyword, a full path name, or a pointer to an Item ID List"
-#define WRONG_IDL_TYPE_LIST_SHORT   "a CSIDL_xxx keyword or a full path name"
-#define NO_ITEMID_MSG               "the Windows Shell did not return the item ID for %s"
+#define WRONG_IDL_TYPE_LIST             "a CSIDL_xxx keyword, a full path name, or a pointer to an Item ID List"
+#define WRONG_IDL_TYPE_LIST_SHORT       "a CSIDL_xxx keyword or a full path name"
+#define NO_ITEMID_MSG                   "the Windows Shell did not return the item ID for %s"
+#define NO_IFILEDIALOG_POINTER          "the Windows Common Item Dialog information is no longer valid"
+#define FILE_FILTER_ARRAY_MUST_BE_EVEN  "file types filter array items must be even"
 
-#define BFF_TITLE                   "ooDialog Browse for Folder"
-#define BFF_BANNER                  "Select the folder needed"
-#define BFF_HINT                    "If the needed folder does not exist it can be created"
-#define BFF_STARTDIR                ""
+#define BFF_TITLE                       "ooDialog Browse for Folder"
+#define BFF_BANNER                      "Select the folder needed"
+#define BFF_HINT                        "If the needed folder does not exist it can be created"
+#define BFF_STARTDIR                    ""
 
 
 /* Struct for the BrowseForFolder CSelf */

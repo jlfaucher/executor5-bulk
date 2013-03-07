@@ -50,104 +50,9 @@
 
 
 /**
- * Methods for the ooDialog .BrowseForFolder class.
+ * General purpose stuff for working with the Shell.
  */
-#define BROWSEFORFOLDER_CLASS  "BrowseForFolder"
-
-/**
- * Ensures the BrowseForFolder CSelf pointer is not null.
- *
- * @param c
- * @param pCSelf
- *
- * @return pCBrowseForFolder
- */
-static pCBrowseForFolder getBffCSelf(RexxMethodContext *c, void * pCSelf)
-{
-    pCBrowseForFolder pcbff = (pCBrowseForFolder)pCSelf;
-    if ( pcbff == NULL )
-    {
-        baseClassInitializationException(c, BROWSEFORFOLDER_CLASS);
-    }
-    return pcbff;
-}
-
-/**
- * This is the Browse for Folder dialog call back function used by the
- * BrowseForFolder and SimpleFolderBrowse classes to customize the appearance
- * and behavior of the standard dialog.
- */
-int32_t CALLBACK BrowseCallbackProc(HWND hwnd, uint32_t uMsg, LPARAM lp, LPARAM pData)
-{
-    TCHAR szDir[MAX_PATH];
-    pCBrowseForFolder pbff = NULL;
-
-    switch ( uMsg )
-    {
-        case BFFM_INITIALIZED:
-            pbff = (pCBrowseForFolder)pData;
-
-            if ( pbff->dlgTitle != NULL )
-            {
-                SetWindowText(hwnd, pbff->dlgTitle);
-            }
-            if ( pbff->useHint )
-            {
-                if ( pbff->usePathForHint && pbff->startDir != NULL )
-                {
-                    SetDlgItemText(hwnd, HINT_ID, pbff->startDir);
-                }
-                else if ( pbff->hint != NULL )
-                {
-                    SetDlgItemText(hwnd, HINT_ID, pbff->hint);
-                }
-            }
-
-            // WParam should be TRUE when passing a path and should be FALSE
-            // when passing a pidl.
-            if ( pbff->startDir != NULL )
-            {
-                SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)pbff->startDir);
-            }
-            break;
-
-        case BFFM_SELCHANGED:
-            pbff = (pCBrowseForFolder)pData;
-
-            // Set the hint static control to the currently selected path if
-            // wanted.
-            if ( pbff->usePathForHint )
-            {
-                if ( SHGetPathFromIDList((LPITEMIDLIST)lp, szDir) )
-                {
-                    SetDlgItemText(hwnd, HINT_ID, szDir);
-                }
-            }
-            break;
-    }
-    return 0;
-}
-
-/**
- * Uses CoUninitialize() to uninit COM, when executing on the same thread as the
- * BrowseForFolder object was instantiated on.
- *
- * @param pcbff
- */
-static void uninitCom(pCBrowseForFolder pcbff)
-{
-    if ( pcbff->countCoInitialized > 0 && pcbff->coThreadID == GetCurrentThreadId() )
-    {
-        do
-        {
-#ifdef _DEBUG
-    printf("uninitCom() thread ID=%d\n", GetCurrentThreadId());
-#endif
-            CoUninitialize();
-            pcbff->countCoInitialized--;
-        } while ( pcbff->countCoInitialized > 0 );
-    }
-}
+#define GENERAL_PUPOSE_SHELL
 
 /**
  * Checks that a path is a full path name and not a relative path name.  We
@@ -250,37 +155,6 @@ static uint32_t keyword2csidl(RexxMethodContext *c, CSTRING keyword, size_t argP
     return csidl;
 }
 
-/**
- * Converts a string of keywords to its BIF_xx value.
- *
- * @param c
- * @param keyword
- * @param argPos
- *
- * @return uint32_t
- */
-static uint32_t keywords2bif(RexxMethodContext *c, CSTRING keyword, size_t argPos)
-{
-    uint32_t bif = 0;
-
-    if ( StrStrI(keyword, "BROWSEFILEJUNCTIONS") != NULL ) bif |= BIF_BROWSEFILEJUNCTIONS;
-    if ( StrStrI(keyword, "BROWSEFORCOMPUTER"  ) != NULL ) bif |= BIF_BROWSEFORCOMPUTER  ;
-    if ( StrStrI(keyword, "BROWSEFORPRINTER"   ) != NULL ) bif |= BIF_BROWSEFORPRINTER   ;
-    if ( StrStrI(keyword, "BROWSEINCLUDEFILES" ) != NULL ) bif |= BIF_BROWSEINCLUDEFILES ;
-    if ( StrStrI(keyword, "BROWSEINCLUDEURLS"  ) != NULL ) bif |= BIF_BROWSEINCLUDEURLS  ;
-    if ( StrStrI(keyword, "DONTGOBELOWDOMAIN"  ) != NULL ) bif |= BIF_DONTGOBELOWDOMAIN  ;
-    if ( StrStrI(keyword, "NEWDIALOGSTYLE"     ) != NULL ) bif |= BIF_NEWDIALOGSTYLE     ;
-    if ( StrStrI(keyword, "NONEWFOLDERBUTTON"  ) != NULL ) bif |= BIF_NONEWFOLDERBUTTON  ;
-    if ( StrStrI(keyword, "NOTRANSLATETARGETS" ) != NULL ) bif |= BIF_NOTRANSLATETARGETS ;
-    if ( StrStrI(keyword, "RETURNFSANCESTORS"  ) != NULL ) bif |= BIF_RETURNFSANCESTORS  ;
-    if ( StrStrI(keyword, "RETURNONLYFSDIRS"   ) != NULL ) bif |= BIF_RETURNONLYFSDIRS   ;
-    if ( StrStrI(keyword, "SHAREABLE"          ) != NULL ) bif |= BIF_SHAREABLE          ;
-    if ( StrStrI(keyword, "STATUSTEXT"         ) != NULL ) bif |= BIF_STATUSTEXT         ;
-    if ( StrStrI(keyword, "UAHINT"             ) != NULL ) bif |= BIF_UAHINT             ;
-    if ( StrStrI(keyword, "USENEWUI"           ) != NULL ) bif |= BIF_USENEWUI           ;
-
-    return bif;
-}
 
 /**
  * Converts a keyword to its SIGDN_xx value. Raises an exception if keyword is
@@ -313,6 +187,389 @@ static bool keyword2sigdn(RexxMethodContext *c, CSTRING keyword, SIGDN *pSigdn, 
 
     *pSigdn = sigdn;
     return true;
+}
+
+
+/**
+ * Obtains a pointer to an item ID list from a path string.
+ *
+ * This function is used because it will work on W2K (and all the way back to
+ * Windows 95.)
+ *
+ * @param path   Get the item ID list for this path.
+ * @param ppidl  The item ID list is returned in this variable.
+ *
+ * @return True on success, otherwise false.
+ *
+ * @note   If this function fails, *ppidl will be null on return.  This function
+ *         does not raise an exception, that is left to the caller.
+ */
+static bool pidlFromPath(RexxMethodContext *c, LPCSTR path, LPITEMIDLIST *ppidl)
+{
+   LPSHELLFOLDER pShellFolder = NULL;
+   HRESULT       hr;
+   WCHAR         wPath[MAX_PATH];
+
+   *ppidl = NULL;
+
+   if ( MultiByteToWideChar(CP_ACP, 0, path, -1, wPath, MAX_PATH) == 0 )
+   {
+       oodSetSysErrCode(c->threadContext);
+       return false;
+   }
+
+   // Need the desktop IShellFolder interface.
+   hr = SHGetDesktopFolder(&pShellFolder);
+   if ( FAILED(hr) )
+   {
+       oodSetSysErrCode(c->threadContext, hr);
+       return false;
+   }
+
+   // convert the path to an ITEMIDLIST
+   hr = pShellFolder->ParseDisplayName(NULL, NULL, wPath, NULL, ppidl, NULL);
+
+   pShellFolder->Release();
+
+   if ( FAILED(hr) )
+   {
+       oodSetSysErrCode(c->threadContext, hr);
+      *ppidl = NULL;  // Docs are unclear as to the value of this on failure.
+      return false;
+   }
+   return true;
+}
+
+/**
+ * Takes a CSIDL_xxx constant and returns its item ID list pointer.
+ *
+ * @param csidl
+ * @param ppidl
+ *
+ * @return bool
+ */
+static bool pidlForSpecialFolder(uint32_t csidl, LPITEMIDLIST *ppidl, HRESULT *pHR)
+{
+    HRESULT  hr;
+    bool     success = true;
+
+    hr = SHGetFolderLocation(NULL, csidl, NULL, 0, ppidl);
+    if ( FAILED(hr) )
+    {
+        *ppidl  = NULL;
+        *pHR    = hr;
+        success = false;
+    }
+    return success;
+}
+
+
+/**
+ * Converts a string into a LPITEMIDLIST.  The string must either be one of the
+ * CSIDL_xxx constants or a full path name.
+ *
+ * @param c
+ * @param idl
+ * @param argPos
+ * @param canFail
+ * @param pHR
+ *
+ * @return LPITEMIDLIST
+ *
+ * @remarks  If the string starts with CSIDL_, but is not a recognized, an
+ *           exception is raised.
+ */
+LPITEMIDLIST getPidlFromString(RexxMethodContext *c, CSTRING idl, size_t argPos, bool canFail, HRESULT *pHR)
+{
+    LPITEMIDLIST pidl = NULL;
+
+    // See if it looks like a CSIDL_ constant.
+    if ( strlen(idl) > 6 && StrCmpNI("CSIDL_", idl, 6) == 0 )
+    {
+        uint32_t csidl = keyword2csidl(c, idl, argPos);
+
+        if ( csidl == OOD_ID_EXCEPTION )
+        {
+            return NULL;
+        }
+        pidlForSpecialFolder(csidl, &pidl, pHR);
+    }
+    else if ( _PathIsFull(idl) )
+    {
+        pidlFromPath(c, idl, &pidl);
+    }
+    else
+    {
+        wrongArgValueException(c->threadContext, argPos, WRONG_IDL_TYPE_LIST_SHORT, idl);
+        return NULL;
+    }
+
+    if ( pidl == NULL && ! canFail )
+    {
+        systemServiceException(c->threadContext, NO_ITEMID_MSG, idl);
+    }
+    return pidl;
+}
+
+/**
+ * Extracts a pointer to an item ID list from a Rexx object sent as arg to a
+ * method.  The object must resolve to a CSIDL_xxx constant, a full path, or a
+ * Pointer object.
+ *
+ * @param c
+ * @param obj
+ * @param argPos
+ *
+ * @return LPITEMIDLIST
+ */
+LPITEMIDLIST getPidlFromObject(RexxMethodContext *c, RexxObjectPtr obj, size_t argPos, HRESULT *pHR)
+{
+    LPITEMIDLIST pidl = NULL;
+
+    if ( c->IsString(obj) )
+    {
+        CSTRING idl = c->ObjectToStringValue(obj);
+        pidl = getPidlFromString(c, idl, argPos, true, pHR);
+    }
+    else if ( c->IsPointer(obj) )
+    {
+        pidl = (LPITEMIDLIST)c->PointerValue((RexxPointerObject)obj);
+        if ( pidl == NULL )
+        {
+            nullObjectException(c->threadContext, "pointer to an Item ID List", argPos);
+        }
+    }
+    else
+    {
+        wrongArgValueException(c->threadContext, argPos, WRONG_IDL_TYPE_LIST, obj);
+    }
+
+    return pidl;
+}
+
+
+/**
+ * Transform a Rexx object used as an argument to a method to a pointer to an
+ * IShellItem object.
+ *
+ * @param c
+ * @param folder
+ * @param argPos
+ *
+ * @return IShellItem*
+ *
+ * @remarks  Although the function name does not indicate it, the Rexx object
+ *           argument is assumed to be a folder in this case.
+ *
+ *           This uses a depracated method so that it will / should work on XP.
+ *           When ooDialog becomes Vista or later this should be reworked.
+ */
+static IShellItem *getShellItemFromObject(RexxMethodContext *c, RexxObjectPtr folder, size_t argPos, HRESULT *pHR)
+{
+    LPITEMIDLIST pidl = getPidlFromObject(c, folder, argPos, pHR);
+    if ( pidl == NULL )
+    {
+        return NULL;
+    }
+
+    IShellItem *psi = NULL;
+    HRESULT hr = SHCreateShellItem(NULL, NULL, pidl, &psi);
+    if ( FAILED(hr) )
+    {
+        oodSetSysErrCode(c->threadContext, hr);
+        *pHR = hr;
+    }
+
+    return psi;
+}
+
+
+/**
+ * Returns the display name for the specified item ID list as a Rexx object.
+ *
+ * @param c
+ * @param pidl
+ * @param sigdn
+ *
+ * @return RexxObjectPtr
+ *
+ * @note  Sets the .systemErrorCode for errors.  The calling function should
+ *        have reset the .systemErrorCode to 0.
+ */
+RexxObjectPtr getDisplayNameRx(RexxThreadContext *c, PIDLIST_ABSOLUTE pidl, SIGDN sigdn)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    IShellFolder    *psfParent;
+    PCUITEMID_CHILD  pidlRelative;
+
+    HRESULT hr = SHBindToParent(pidl, IID_PPV_ARGS(&psfParent), &pidlRelative);
+    if ( SUCCEEDED(hr) )
+    {
+        STRRET strDispName;
+
+        hr = psfParent->GetDisplayNameOf(pidlRelative, sigdn, &strDispName);
+        if ( SUCCEEDED(hr) )
+        {
+            char szDisplayName[MAX_PATH];
+
+            hr = StrRetToBuf(&strDispName, pidlRelative, szDisplayName, ARRAYSIZE(szDisplayName));
+            if ( SUCCEEDED(hr) )
+            {
+                result = c->String(szDisplayName);
+            }
+            else
+            {
+                oodSetSysErrCode(c, hr);
+            }
+        }
+        else
+        {
+            oodSetSysErrCode(c);
+        }
+
+        psfParent->Release();
+    }
+    else
+    {
+        oodSetSysErrCode(c, hr);
+    }
+
+    return result;
+}
+
+
+/**
+ * Methods for the ooDialog .BrowseForFolder class.
+ */
+#define BROWSEFORFOLDER_CLASS  "BrowseForFolder"
+
+
+/**
+ * Ensures the BrowseForFolder CSelf pointer is not null.
+ *
+ * @param c
+ * @param pCSelf
+ *
+ * @return pCBrowseForFolder
+ */
+static pCBrowseForFolder getBffCSelf(RexxMethodContext *c, void * pCSelf)
+{
+    pCBrowseForFolder pcbff = (pCBrowseForFolder)pCSelf;
+    if ( pcbff == NULL )
+    {
+        baseClassInitializationException(c, BROWSEFORFOLDER_CLASS);
+    }
+    return pcbff;
+}
+
+/**
+ * This is the Browse for Folder dialog call back function used by the
+ * BrowseForFolder and SimpleFolderBrowse classes to customize the appearance
+ * and behavior of the standard dialog.
+ */
+int32_t CALLBACK BrowseCallbackProc(HWND hwnd, uint32_t uMsg, LPARAM lp, LPARAM pData)
+{
+    TCHAR szDir[MAX_PATH];
+    pCBrowseForFolder pbff = NULL;
+
+    switch ( uMsg )
+    {
+        case BFFM_INITIALIZED:
+            pbff = (pCBrowseForFolder)pData;
+
+            if ( pbff->dlgTitle != NULL )
+            {
+                SetWindowText(hwnd, pbff->dlgTitle);
+            }
+            if ( pbff->useHint )
+            {
+                if ( pbff->usePathForHint && pbff->startDir != NULL )
+                {
+                    SetDlgItemText(hwnd, HINT_ID, pbff->startDir);
+                }
+                else if ( pbff->hint != NULL )
+                {
+                    SetDlgItemText(hwnd, HINT_ID, pbff->hint);
+                }
+            }
+
+            // WParam should be TRUE when passing a path and should be FALSE
+            // when passing a pidl.
+            if ( pbff->startDir != NULL )
+            {
+                SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)pbff->startDir);
+            }
+            break;
+
+        case BFFM_SELCHANGED:
+            pbff = (pCBrowseForFolder)pData;
+
+            // Set the hint static control to the currently selected path if
+            // wanted.
+            if ( pbff->usePathForHint )
+            {
+                if ( SHGetPathFromIDList((LPITEMIDLIST)lp, szDir) )
+                {
+                    SetDlgItemText(hwnd, HINT_ID, szDir);
+                }
+            }
+            break;
+    }
+    return 0;
+}
+
+/**
+ * Uses CoUninitialize() to uninit COM, when executing on the same thread as the
+ * BrowseForFolder object was instantiated on.
+ *
+ * @param pcbff
+ */
+static void uninitCom(pCBrowseForFolder pcbff)
+{
+    if ( pcbff->countCoInitialized > 0 && pcbff->coThreadID == GetCurrentThreadId() )
+    {
+        do
+        {
+#ifdef _DEBUG
+    printf("uninitCom() thread ID=%d\n", GetCurrentThreadId());
+#endif
+            CoUninitialize();
+            pcbff->countCoInitialized--;
+        } while ( pcbff->countCoInitialized > 0 );
+    }
+}
+
+/**
+ * Converts a string of keywords to its BIF_xx value.
+ *
+ * @param c
+ * @param keyword
+ * @param argPos
+ *
+ * @return uint32_t
+ */
+static uint32_t keywords2bif(RexxMethodContext *c, CSTRING keyword, size_t argPos)
+{
+    uint32_t bif = 0;
+
+    if ( StrStrI(keyword, "BROWSEFILEJUNCTIONS") != NULL ) bif |= BIF_BROWSEFILEJUNCTIONS;
+    if ( StrStrI(keyword, "BROWSEFORCOMPUTER"  ) != NULL ) bif |= BIF_BROWSEFORCOMPUTER  ;
+    if ( StrStrI(keyword, "BROWSEFORPRINTER"   ) != NULL ) bif |= BIF_BROWSEFORPRINTER   ;
+    if ( StrStrI(keyword, "BROWSEINCLUDEFILES" ) != NULL ) bif |= BIF_BROWSEINCLUDEFILES ;
+    if ( StrStrI(keyword, "BROWSEINCLUDEURLS"  ) != NULL ) bif |= BIF_BROWSEINCLUDEURLS  ;
+    if ( StrStrI(keyword, "DONTGOBELOWDOMAIN"  ) != NULL ) bif |= BIF_DONTGOBELOWDOMAIN  ;
+    if ( StrStrI(keyword, "NEWDIALOGSTYLE"     ) != NULL ) bif |= BIF_NEWDIALOGSTYLE     ;
+    if ( StrStrI(keyword, "NONEWFOLDERBUTTON"  ) != NULL ) bif |= BIF_NONEWFOLDERBUTTON  ;
+    if ( StrStrI(keyword, "NOTRANSLATETARGETS" ) != NULL ) bif |= BIF_NOTRANSLATETARGETS ;
+    if ( StrStrI(keyword, "RETURNFSANCESTORS"  ) != NULL ) bif |= BIF_RETURNFSANCESTORS  ;
+    if ( StrStrI(keyword, "RETURNONLYFSDIRS"   ) != NULL ) bif |= BIF_RETURNONLYFSDIRS   ;
+    if ( StrStrI(keyword, "SHAREABLE"          ) != NULL ) bif |= BIF_SHAREABLE          ;
+    if ( StrStrI(keyword, "STATUSTEXT"         ) != NULL ) bif |= BIF_STATUSTEXT         ;
+    if ( StrStrI(keyword, "UAHINT"             ) != NULL ) bif |= BIF_UAHINT             ;
+    if ( StrStrI(keyword, "USENEWUI"           ) != NULL ) bif |= BIF_USENEWUI           ;
+
+    return bif;
 }
 
 /**
@@ -439,79 +696,6 @@ void setTextAttribute(RexxMethodContext *c, pCBrowseForFolder pcbff, RexxObjectP
 }
 
 /**
- * Obtains a pointer to an item ID list from a path string.
- *
- * This function is used because it will work on W2K (and all the way back to
- * Windows 95.)
- *
- * @param path   Get the item ID list for this path.
- * @param ppidl  The item ID list is returned in this variable.
- *
- * @return True on success, otherwise false.
- *
- * @note   If this function fails, *ppidl will be null on return.  This function
- *         does not raise an exception, that is left to the caller.
- */
-static bool pidlFromPath(RexxMethodContext *c, LPCSTR path, LPITEMIDLIST *ppidl)
-{
-   LPSHELLFOLDER pShellFolder = NULL;
-   HRESULT       hr;
-   WCHAR         wPath[MAX_PATH];
-
-   *ppidl = NULL;
-
-   if ( MultiByteToWideChar(CP_ACP, 0, path, -1, wPath, MAX_PATH) == 0 )
-   {
-       oodSetSysErrCode(c->threadContext);
-       return false;
-   }
-
-   // Need the desktop IShellFolder interface.
-   hr = SHGetDesktopFolder(&pShellFolder);
-   if ( FAILED(hr) )
-   {
-       oodSetSysErrCode(c->threadContext, hr);
-       return false;
-   }
-
-   // convert the path to an ITEMIDLIST
-   hr = pShellFolder->ParseDisplayName(NULL, NULL, wPath, NULL, ppidl, NULL);
-
-   pShellFolder->Release();
-
-   if ( FAILED(hr) )
-   {
-       oodSetSysErrCode(c->threadContext, hr);
-      *ppidl = NULL;  // Docs are unclear as to the value of this on failure.
-      return false;
-   }
-   return true;
-}
-
-/**
- * Takes a CSIDL_xxx constant and returns its item ID list pointer.
- *
- * @param csidl
- * @param ppidl
- *
- * @return bool
- */
-static bool pidlForSpecialFolder(uint32_t csidl, LPITEMIDLIST *ppidl)
-{
-    HRESULT  hr;
-    bool     success = true;
-
-    hr = SHGetFolderLocation(NULL, csidl, NULL, 0, ppidl);
-    if ( FAILED(hr) )
-    {
-        *ppidl = NULL;
-        success = false;
-    }
-    return success;
-}
-
-
-/**
  * Invokes CoUninitialize() once on the current thread. However, if the current
  * thread is the same thread as instantiation of the BrowseForFolder object,
  * then the inovocation will be dependent on the state flags.
@@ -570,123 +754,6 @@ static RexxObjectPtr reInitCOM(RexxMethodContext *c, pCBrowseForFolder pcbff)
     return TheFalseObj;
 }
 
-
-/**
- * Converts a string into a LPITEMIDLIST.  The string must either be one of the
- * CSIDL_xxx constants or a full path name.
- *
- * @param c
- * @param idl
- * @param argPos
- * @param canFail
- *
- * @return LPITEMIDLIST
- *
- * @remarks  Ife th string starts with CSIDL_, but is not a recognized, an
- *           exception is raised.
- */
-LPITEMIDLIST getPidlFromString(RexxMethodContext *c, CSTRING idl, size_t argPos, bool canFail)
-{
-    LPITEMIDLIST pidl = NULL;
-
-    // See if it looks like a CSIDL_ constant.
-    if ( strlen(idl) > 6 && StrCmpNI("CSIDL_", idl, 6) == 0 )
-    {
-        uint32_t csidl = keyword2csidl(c, idl, argPos);
-
-        if ( csidl == OOD_ID_EXCEPTION )
-        {
-            return NULL;
-        }
-        pidlForSpecialFolder(csidl, &pidl);
-    }
-    else if ( _PathIsFull(idl) )
-    {
-        pidlFromPath(c, idl, &pidl);
-    }
-    else
-    {
-        wrongArgValueException(c->threadContext, argPos, WRONG_IDL_TYPE_LIST_SHORT, idl);
-        return NULL;
-    }
-
-    if ( pidl == NULL && ! canFail )
-    {
-        systemServiceException(c->threadContext, NO_ITEMID_MSG, idl);
-    }
-    return pidl;
-}
-
-/**
- * Extracts a pointer to an item ID list from a Rexx object sent as arg to a
- * method.  The object must resolve to a CSIDL_xxx constant, a full path, or a
- * Pointer object.
- *
- * @param c
- * @param obj
- * @param argPos
- *
- * @return LPITEMIDLIST
- */
-LPITEMIDLIST getPidlFromObject(RexxMethodContext *c, RexxObjectPtr obj, size_t argPos)
-{
-    LPITEMIDLIST pidl = NULL;
-
-    if ( c->IsString(obj) )
-    {
-        CSTRING idl = c->ObjectToStringValue(obj);
-        pidl = getPidlFromString(c, idl, argPos, true);
-    }
-    else if ( c->IsPointer(obj) )
-    {
-        pidl = (LPITEMIDLIST)c->PointerValue((RexxPointerObject)obj);
-        if ( pidl == NULL )
-        {
-            nullObjectException(c->threadContext, "pointer to an Item ID List", argPos);
-        }
-    }
-    else
-    {
-        wrongArgValueException(c->threadContext, argPos, WRONG_IDL_TYPE_LIST, obj);
-    }
-
-    return pidl;
-}
-
-
-/**
- * Transform a Rexx object used as an argument to a method to a pointer to an
- * IShellItem object.
- *
- * @param c
- * @param folder
- * @param argPos
- *
- * @return IShellItem*
- *
- * @remarks  Although the function name does not indicate it, the Rexx object
- *           argument is assumed to be a folder in this case.
- *
- *           This uses a depracated method so that it will / should work on XP.
- *           When ooDialog becomes Vista or later this should be reworked.
- */
-static IShellItem *getShellItemFromObject(RexxMethodContext *c, RexxObjectPtr folder, size_t argPos)
-{
-    LPITEMIDLIST pidl = getPidlFromObject(c, folder, argPos);
-    if ( pidl == NULL )
-    {
-        return NULL;
-    }
-
-    IShellItem *psi = NULL;
-    HRESULT hr = SHCreateShellItem(NULL, NULL, pidl, &psi);
-    if ( FAILED(hr) )
-    {
-        oodSetSysErrCode(c->threadContext, hr);
-    }
-
-    return psi;
-}
 
 /**
  * Puts up the Browse for Folder dialog using the supplied browse info
@@ -792,7 +859,7 @@ static void fillInBrowseInfo(RexxMethodContext *context, PBROWSEINFO pBI, pCBrow
  *           BrowseForFolder class has sufficient methods for that to be done in
  *           Rexx, but the user will need to take care.
  */
-RexxObjectPtr getFolderOrIDL(RexxMethodContext *c, void *pCSelf, logical_t reuse, bool getPath)
+RexxObjectPtr bffGetFolderOrIDL(RexxMethodContext *c, void *pCSelf, logical_t reuse, bool getPath)
 {
     pCBrowseForFolder pcbff = (pCBrowseForFolder)getBffCSelf(c, pCSelf);
     if ( pcbff == NULL )
@@ -814,62 +881,6 @@ RexxObjectPtr getFolderOrIDL(RexxMethodContext *c, void *pCSelf, logical_t reuse
 
     return result;
 }
-
-/**
- * Returns the display name for the specified item ID list as a Rexx object.
- *
- * @param c
- * @param pidl
- * @param pcbff
- * @param sigdn
- *
- * @return RexxObjectPtr
- *
- * @note  Sets the .systemErrorCode for errors.  The calling function should
- *        have reset the .systemErrorCode to 0.
- */
-RexxObjectPtr getDisplayNameRx(RexxThreadContext *c, PIDLIST_ABSOLUTE pidl, pCBrowseForFolder pcbff, SIGDN sigdn)
-{
-    RexxObjectPtr result = TheNilObj;
-
-    IShellFolder    *psfParent;
-    PCUITEMID_CHILD  pidlRelative;
-
-    HRESULT hr = SHBindToParent(pidl, IID_PPV_ARGS(&psfParent), &pidlRelative);
-    if ( SUCCEEDED(hr) )
-    {
-        STRRET strDispName;
-
-        hr = psfParent->GetDisplayNameOf(pidlRelative, sigdn, &strDispName);
-        if ( SUCCEEDED(hr) )
-        {
-            char szDisplayName[MAX_PATH];
-
-            hr = StrRetToBuf(&strDispName, pidlRelative, szDisplayName, ARRAYSIZE(szDisplayName));
-            if ( SUCCEEDED(hr) )
-            {
-                result = c->String(szDisplayName);
-            }
-            else
-            {
-                oodSetSysErrCode(c, hr);
-            }
-        }
-        else
-        {
-            oodSetSysErrCode(c);
-        }
-
-        psfParent->Release();
-    }
-    else
-    {
-        oodSetSysErrCode(c, hr);
-    }
-
-    return result;
-}
-
 
 /** BrowseForFolder::banner                  [attribute]
  */
@@ -1050,7 +1061,9 @@ RexxMethod2(RexxObjectPtr, bff_setRoot, RexxObjectPtr, root, CSELF, pCSelf)
         // If the empty string, we do nothing, pidl is already NULL
         if ( *idl != '\0' )
         {
-            pidl = getPidlFromString(context, idl, 1, false);
+            HRESULT hr = S_OK;
+
+            pidl = getPidlFromString(context, idl, 1, false, &hr);
             if ( pidl == NULL )
             {
                 return NULLOBJECT;
@@ -1181,6 +1194,7 @@ RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_Rex
     if ( hr == S_FALSE )
     {
         CoUninitialize();
+        hr = S_OK;
     }
     else if ( hr == S_OK )
     {
@@ -1221,7 +1235,7 @@ RexxMethod4(RexxObjectPtr, bff_init, OPTIONAL_RexxObjectPtr, title, OPTIONAL_Rex
     setTextAttribute(context, pcbff, startDir, DlgStartDir);
 
 	LPITEMIDLIST pidl = NULL;
-    if ( pidlForSpecialFolder(CSIDL_DRIVES, &pidl) )
+    if ( pidlForSpecialFolder(CSIDL_DRIVES, &pidl, &hr) )
     {
         pcbff->root = pidl;
     }
@@ -1266,10 +1280,10 @@ RexxMethod3(RexxObjectPtr, bff_getDisplayName, POINTER, pidl, OPTIONAL_CSTRING, 
 
     if ( argumentOmitted(2) )
     {
-        result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, pcbff, SIGDN_FILESYSPATH);
+        result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, SIGDN_FILESYSPATH);
         if ( result == TheNilObj )
         {
-            result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, pcbff, SIGDN_DESKTOPABSOLUTEEDITING);
+            result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, SIGDN_DESKTOPABSOLUTEEDITING);
         }
     }
     else
@@ -1278,7 +1292,7 @@ RexxMethod3(RexxObjectPtr, bff_getDisplayName, POINTER, pidl, OPTIONAL_CSTRING, 
 
         if ( keyword2sigdn(context, _sigdn, &sigdn, 2) )
         {
-            result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, pcbff, sigdn);
+            result = getDisplayNameRx(context->threadContext, (PIDLIST_ABSOLUTE)pidl, sigdn);
         }
     }
 
@@ -1303,7 +1317,7 @@ RexxMethod3(RexxObjectPtr, bff_getDisplayName, POINTER, pidl, OPTIONAL_CSTRING, 
  */
 RexxMethod2(RexxObjectPtr, bff_getFolder, OPTIONAL_logical_t, reuse, CSELF, pCSelf)
 {
-    return getFolderOrIDL(context, pCSelf, reuse, true);
+    return bffGetFolderOrIDL(context, pCSelf, reuse, true);
 }
 
 
@@ -1322,7 +1336,7 @@ RexxMethod2(RexxObjectPtr, bff_getFolder, OPTIONAL_logical_t, reuse, CSELF, pCSe
  */
 RexxMethod2(RexxObjectPtr, bff_getItemIDList, OPTIONAL_logical_t, reuse, CSELF, pCSelf)
 {
-    return getFolderOrIDL(context, pCSelf, reuse, false);
+    return bffGetFolderOrIDL(context, pCSelf, reuse, false);
 }
 
 
@@ -1727,7 +1741,7 @@ RexxMethod6(RexxObjectPtr, sfb_getFolder, OPTIONAL_CSTRING, title, OPTIONAL_CSTR
 
     if ( argumentExists(5) )
     {
-        bi.pidlRoot = getPidlFromString(context, root, 5, false);
+        bi.pidlRoot = getPidlFromString(context, root, 5, false, &hr);
         if ( bi.pidlRoot == NULL )
         {
             goto done_out;
@@ -1773,6 +1787,38 @@ done_out:
  */
 #define COMMONITEMDIALOG_CLASS  "CommonItemDialog"
 
+
+/**
+ * Ensures the CommonItemDialog CSelf pointer is not null and sets the HRESULT
+ * value.
+ *
+ * @param c
+ * @param pCSelf
+ * @param pHR
+ *
+ * @return pCCommonItemDialog
+ */
+static pCCommonItemDialog getCidCSelf(RexxMethodContext *c, void * pCSelf, HRESULT *pHR)
+{
+    oodResetSysErrCode(c->threadContext);
+    *pHR = S_OK;
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)pCSelf;
+    if ( pccid == NULL )
+    {
+        *pHR = ERROR_INVALID_FUNCTION;
+        oodSetSysErrCode(c->threadContext, ERROR_INVALID_FUNCTION);
+        baseClassInitializationException(c, COMMONITEMDIALOG_CLASS);
+    }
+    else if ( pccid->pfd == NULL )
+    {
+        pccid = NULL;
+        *pHR  = ERROR_INVALID_FUNCTION;
+        oodSetSysErrCode(c->threadContext, ERROR_INVALID_FUNCTION);
+        userDefinedMsgException(c, NO_IFILEDIALOG_POINTER);
+    }
+    return pccid;
+}
 
 /**
  * Parse the FOS_xx flags and returns the matching keyword string.
@@ -1853,27 +1899,66 @@ static FILEOPENDIALOGOPTIONS keywords2fos(RexxMethodContext *c, CSTRING keywords
     return fos;
 }
 
-
+/**
+ * Releases the IFileDialog pointer and releases the COM library if we are on
+ * the proper thread.
+ *
+ * @param pccid
+ */
+static void cidDone(pCCommonItemDialog pccid)
+{
+    if ( pccid->pfd != NULL )
+    {
+        pccid->pfd->Release();
+        pccid->pfd = NULL;
+#ifdef _DEBUG
+        printf("cidDone(), pccid->pfd-Release() invoked\n");
+#endif
+    }
+    if ( pccid->comInitialized && pccid->comThreadID == GetCurrentThreadId() )
+    {
+        CoUninitialize();
+        pccid->comInitialized = false;
+#ifdef _DEBUG
+        printf("cidDone(), CoUninitialize() invoked\n");
+#endif
+    }
+}
 
 /**
- * Ensures the CommonItemDialog CSelf pointer is not null.
+ * Common code for:
+ *
+ * CommonItemDialog::setFolder() and CommonItemDialog::setDefaultFolder()
  *
  * @param c
  * @param pCSelf
+ * @param folder
+ * @param isDefaultFolder
  *
- * @return pCCommonItemDialog
+ * @return HRESULT
  */
-static pCCommonItemDialog getCidCSelf(RexxMethodContext *c, void * pCSelf)
+static HRESULT cidSetFolder(RexxMethodContext *c, void *pCSelf, RexxObjectPtr folder, bool isDefaultFolder)
 {
-    oodResetSysErrCode(c->threadContext);
-
-    pCCommonItemDialog pccid = (pCCommonItemDialog)pCSelf;
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(c, pCSelf, &hr);
     if ( pccid == NULL )
     {
-        oodSetSysErrCode(c->threadContext, ERROR_INVALID_FUNCTION);
-        baseClassInitializationException(c, COMMONITEMDIALOG_CLASS);
+        goto done_out;
     }
-    return pccid;
+
+    IShellItem *psi = getShellItemFromObject(c, folder, 1, &hr);
+    if ( psi != NULL )
+    {
+        hr = isDefaultFolder ? pccid->pfd->SetDefaultFolder(psi) : pccid->pfd->SetFolder(psi);
+        if ( FAILED(hr) )
+        {
+            oodSetSysErrCode(c->threadContext, hr);
+        }
+        psi->Release();
+    }
+
+done_out:
+    return hr;
 }
 
 
@@ -1881,12 +1966,13 @@ static pCCommonItemDialog getCidCSelf(RexxMethodContext *c, void * pCSelf)
  */
 RexxMethod1(RexxObjectPtr, cid_options, CSELF, pCSelf)
 {
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid != NULL )
     {
         FILEOPENDIALOGOPTIONS fos;
 
-        HRESULT hr = pccid->pfd->GetOptions(&fos);
+        hr = pccid->pfd->GetOptions(&fos);
         if ( SUCCEEDED(hr) )
         {
             return fos2keywords(context, fos);
@@ -1900,12 +1986,13 @@ RexxMethod1(RexxObjectPtr, cid_options, CSELF, pCSelf)
 }
 RexxMethod2(RexxObjectPtr, cid_setOptions, CSTRING, opts, CSELF, pCSelf)
 {
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid != NULL )
     {
         uint32_t fos = keywords2fos(context, opts, 1);
-        HRESULT  hr  = pccid->pfd->SetOptions(fos);
-        if ( ! SUCCEEDED(hr) )
+        hr = pccid->pfd->SetOptions(fos);
+        if ( FAILED(hr) )
         {
             oodSetSysErrCode(context->threadContext, hr);
         }
@@ -1913,24 +2000,17 @@ RexxMethod2(RexxObjectPtr, cid_setOptions, CSTRING, opts, CSELF, pCSelf)
     return NULLOBJECT;
 }
 
-
 /** CommonItemDialog::uninit()
  *
  * Does clean up for this CommonItemDialog.  May not be needed
  */
 RexxMethod1(RexxObjectPtr, cid_uninit, CSELF, pCSelf)
 {
-    pCCommonItemDialog pccid = getCidCSelf(context, pCSelf);
+    HRESULT hr;
+    pCCommonItemDialog pccid = getCidCSelf(context, pCSelf, &hr);
     if ( pccid != NULL )
     {
-        if ( pccid->comInitialized && pccid->comThreadID == GetCurrentThreadId() )
-        {
-            CoUninitialize();
-            pccid->comInitialized = false;
-#ifdef _DEBUG
-    printf("cid_uninit(), CoUninitialize() invoked\n");
-#endif
-        }
+        cidDone(pccid);
     }
     return NULLOBJECT;
 }
@@ -1955,6 +2035,71 @@ RexxMethod1(RexxObjectPtr, cid_init, RexxObjectPtr, cselfBuf)
 }
 
 
+/** CommonItemDialog::addPlace()
+ *
+ *
+ *
+ *  @param folder  [required] The folder ...  This can be specified as a full
+ *                 path, a CSIDL_XX name, or an item ID list.
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes
+ */
+RexxMethod2(uint32_t, cid_addPlace, RexxObjectPtr, folder, CSELF, pCSelf)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        goto done_out;
+    }
+
+    IShellItem *psi = getShellItemFromObject(context, folder, 1, &hr);
+    if ( psi != NULL )
+    {
+        hr = pccid->pfd->AddPlace(psi, FDAP_TOP);
+        if ( FAILED(hr) )
+        {
+            oodSetSysErrCode(context->threadContext, hr);
+        }
+        psi->Release();
+    }
+
+done_out:
+    return hr;
+}
+
+
+/** CommonItemDialog::clearClientData()
+ *
+ * Instructs the dialog to clear all persisted state information.
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  Persisted information can be associated with an application or a
+ *          GUID. If a GUID was set by using IFileDialog::SetClientGuid, that
+ *          GUID is used to clear persisted information.
+ */
+RexxMethod1(uint32_t, cid_clearClientData, CSELF, pCSelf)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        return hr;
+    }
+
+    hr = pccid->pfd->ClearClientData();
+    if ( FAILED(hr) )
+    {
+        oodSetSysErrCode(context->threadContext, hr);
+    }
+
+    return hr;
+}
+
+
 /** CommonItemDialog::getResult()
  *
  *
@@ -1964,9 +2109,9 @@ RexxMethod1(RexxObjectPtr, cid_init, RexxObjectPtr, cselfBuf)
 RexxMethod2(RexxObjectPtr, cid_getResult, OPTIONAL_CSTRING, _sigdn, CSELF, pCSelf)
 {
     RexxObjectPtr result = TheNilObj;
-    HRESULT       hr     = ERROR_INVALID_FUNCTION;
+    HRESULT       hr;
 
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid == NULL )
     {
         goto done_out;
@@ -2024,7 +2169,8 @@ done_out:
  */
 RexxMethod1(RexxObjectPtr, cid_initCOM, CSELF, pCSelf)
 {
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid == NULL )
     {
         return TheFalseObj;
@@ -2036,7 +2182,7 @@ RexxMethod1(RexxObjectPtr, cid_initCOM, CSELF, pCSelf)
         return TheFalseObj;
     }
 
-    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+    hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
     oodSetSysErrCode(context->threadContext, hr);
     if ( hr == S_OK )
     {
@@ -2054,7 +2200,33 @@ RexxMethod1(RexxObjectPtr, cid_initCOM, CSELF, pCSelf)
 }
 
 
-/** CommonItemDialog::releaseCom
+/** CommonItemDialog::release()
+ *
+ *  Releases the operating system resources used by this Rexx object.
+ *
+ *  @return True if this is the first invocation of release() on this object.
+ *
+ *  @notes  The relese method must be invoked once and only once on this object
+ *          to release the system resources used by the common file dialog.
+ *          This also releases the COM library if the library was initialized on
+ *          the current thread.
+ *
+ *          After release() has been invoked, no other methods on this object
+ *          can be invoked.
+ */
+RexxMethod1(RexxObjectPtr, cid_release, CSELF, pCSelf)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        return TheFalseObj;
+    }
+    cidDone(pccid);
+    return TheTrueObj;
+}
+
+/** CommonItemDialog::releaseCom()
  *
  *  Calls CoUninitialize() on the current thread.
  *
@@ -2071,7 +2243,8 @@ RexxMethod1(RexxObjectPtr, cid_initCOM, CSELF, pCSelf)
  */
 RexxMethod1(RexxObjectPtr, cid_releaseCOM, CSELF, pCSelf)
 {
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid == NULL )
     {
         return TheFalseObj;
@@ -2091,50 +2264,225 @@ RexxMethod1(RexxObjectPtr, cid_releaseCOM, CSELF, pCSelf)
     return TheTrueObj;
 }
 
-/** CommonItemDialog::setFolder()
+/** CommonItemDialog::setDefaultFolder()
  *
+ *  Sets the folder used as a default if there is not a recently used folder
+ *  value available.
  *
+ *  @param folder  [required] The folder that is set as the default folder when
+ *                 the dialog opens.  This can be specified as a full path, a
+ *                 CSIDL_XX name, or an item ID list.
  *
- *
+ *  @param  Returns the system result code.
  */
-RexxMethod2(uint32_t, cid_setFolder, RexxObjectPtr, folder, CSELF, pCSelf)
+RexxMethod2(uint32_t, cid_setDefaultFolder, RexxObjectPtr, folder, CSELF, pCSelf)
 {
-    HRESULT hr = 0;
+    return cidSetFolder(context, pCSelf, folder, true);
+}
 
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+
+/** CommonItemDialog::setFileName()
+ *
+ *  Sets the file anme
+ *
+ *  @param name  [required] The file name ...
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  This folder overrides any "most recently used" folder. If this
+ *          method is called while the dialog is displayed, it causes the dialog
+ *          to navigate to the specified folder.
+ */
+RexxMethod2(uint32_t, cid_setFileName, CSTRING, fileName, CSELF, pCSelf)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid == NULL )
     {
-        hr = ERROR_INVALID_FUNCTION;
-        goto done_out;
+        return hr;
     }
 
-    IShellItem *psi = getShellItemFromObject(context, folder, 1);
-    if ( psi != NULL )
+    size_t len = strlen(fileName);
+    if (  len >= MAX_PATH )
     {
-        printf("Got psi=%p\n", psi);
-        hr = pccid->pfd->SetFolder(psi);
+        stringTooLongException(context->threadContext, 1, MAX_PATH - 1, len);
+        return hr;
     }
 
-done_out:
+    WCHAR wName[MAX_PATH];
+
+    if ( putUnicodeText((LPWORD)wName, fileName, &hr) != 0 )
+    {
+        hr = pccid->pfd->SetFileName(wName);
+    }
+
     oodSetSysErrCode(context->threadContext, hr);
     return hr;
 }
 
 
+/** CommonItemDialog::setFileTypeIndex()
+ *
+ *  Sets the file type that appears as selected in the dialog.
+ *
+ *  @param index  [required] The 1-based index in the file types filter array
+ *                that should be the selected file type when the dialog is
+ *                shown.
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  The OS seems to set the file type to that closet to the index
+ *          number.  If index is 0, then file type 1 in the array is selected.
+ *          In an array of 4 file types, if index is 566, the file type 4 is
+ *          selected.
+ */
+RexxMethod2(uint32_t, cid_setFileTypeIndex, uint32_t, index, CSELF, pCSelf)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        return hr;
+    }
+
+    hr = pccid->pfd->SetFileTypeIndex(index);
+    if ( FAILED(hr) )
+    {
+        oodSetSysErrCode(context->threadContext, hr);
+    }
+
+    return hr;
+}
+
+
+/** CommonItemDialog::setFileTypes()
+ *
+ *  Sets the file types filter.
+ *
+ *  @param types  [required] An array of types.  Index 1 is friendly name of the
+ *                filter, index 2 is the filter pattern. Index 3 is friendly
+ *                name, index 4 pattern ...
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  The types array must not be sparse and it must contain an even
+ *          number of items.
+ */
+RexxMethod2(uint32_t, cid_setFileTypes, RexxArrayObject, types, CSELF, pCSelf)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        return hr;
+    }
+
+    COMDLG_FILTERSPEC *fSpec  = NULL;
+    size_t             cFSpec = 0;
+
+    hr = ERROR_INVALID_FUNCTION;
+    RexxMethodContext *c = context;
+
+    size_t count = c->ArrayItems(types);
+    if ( count % 2 != 0 )
+    {
+        userDefinedMsgException(c, FILE_FILTER_ARRAY_MUST_BE_EVEN);
+        goto done_out;
+    }
+
+    count /= 2;
+    fSpec = (COMDLG_FILTERSPEC *)LocalAlloc(LPTR, count * sizeof(COMDLG_FILTERSPEC ));
+    if ( fSpec == NULL )
+    {
+        outOfMemoryException(context->threadContext);
+        goto done_out;
+    }
+    cFSpec = count;
+
+    size_t j;
+    size_t i;
+
+    for ( i = 0; i < count; i++ )
+    {
+        j = (2 * i) + 1;
+        RexxObjectPtr _name = c->ArrayAt(types, j);
+        if ( _name == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 1, j);
+            goto done_out;
+        }
+
+        j++;
+        RexxObjectPtr _pattern = c->ArrayAt(types, j);
+        if ( _name == NULLOBJECT || _pattern == NULLOBJECT )
+        {
+            sparseArrayException(context->threadContext, 1, j);
+            goto done_out;
+        }
+
+        fSpec[i].pszName = ansi2unicode(c->ObjectToStringValue(_name));
+        fSpec[i].pszSpec = ansi2unicode(c->ObjectToStringValue(_pattern));
+        if ( fSpec[i].pszName == NULL || fSpec[i].pszSpec == NULL )
+        {
+            outOfMemoryException(context->threadContext);
+            goto done_out;
+        }
+    }
+
+    hr = pccid->pfd->SetFileTypes((uint32_t)count, fSpec);
+
+done_out:
+    if ( fSpec != NULL )
+    {
+        for ( i = 0; i < cFSpec; i++ )
+        {
+            safeLocalFree((void *)fSpec[i].pszName);
+            safeLocalFree((void *)fSpec[i].pszSpec);
+        }
+        LocalFree(fSpec);
+    }
+
+    oodSetSysErrCode(context->threadContext, hr);
+    return hr;
+}
+
+
+/** CommonItemDialog::setFolder()
+ *
+ *  Sets the folder that is selected when the dialog is opened
+ *
+ *  @param folder  [required] The folder that is set as the selected folder when
+ *                 the dialog opens.  This can be specified as a full path, a
+ *                 CSIDL_XX name, or an item ID list.
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  This folder overrides any "most recently used" folder. If this
+ *          method is called while the dialog is displayed, it causes the dialog
+ *          to navigate to the specified folder.
+ */
+RexxMethod2(uint32_t, cid_setFolder, RexxObjectPtr, folder, CSELF, pCSelf)
+{
+    return cidSetFolder(context, pCSelf, folder, false);
+}
+
+
 /** CommonItemDialog::show()
  *
+ *  Launches the modal dialog window.
  *
+ *  @param  owner  [optional] The dialog object that is the owner of the modal
+ *                 dialog window.
  *
- *
+ *  @param  Returns the system result code.
  */
 RexxMethod2(uint32_t, cid_show, OPTIONAL_RexxObjectPtr, owner, CSELF, pCSelf)
 {
-    HRESULT hr = ERROR_INVALID_FUNCTION;
-
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf);
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid == NULL )
     {
-        goto done_out;
+        return hr;
     }
 
     HWND hOwner = NULL;

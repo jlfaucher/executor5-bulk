@@ -1564,9 +1564,16 @@ REXX_METHOD_PROTOTYPE(cid_setOptions);
 REXX_METHOD_PROTOTYPE(cid_uninit);
 REXX_METHOD_PROTOTYPE(cid_init);
 
+REXX_METHOD_PROTOTYPE(cid_addPlace);
+REXX_METHOD_PROTOTYPE(cid_clearClientData);
 REXX_METHOD_PROTOTYPE(cid_getResult);
 REXX_METHOD_PROTOTYPE(cid_initCOM);
+REXX_METHOD_PROTOTYPE(cid_release);
 REXX_METHOD_PROTOTYPE(cid_releaseCOM);
+REXX_METHOD_PROTOTYPE(cid_setDefaultFolder);
+REXX_METHOD_PROTOTYPE(cid_setFileName);
+REXX_METHOD_PROTOTYPE(cid_setFileTypeIndex);
+REXX_METHOD_PROTOTYPE(cid_setFileTypes);
 REXX_METHOD_PROTOTYPE(cid_setFolder);
 REXX_METHOD_PROTOTYPE(cid_show);
 
@@ -2702,9 +2709,16 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cid_uninit,                     cid_uninit),
     REXX_METHOD(cid_init,                    	cid_init),
 
+    REXX_METHOD(cid_addPlace,                   cid_addPlace),
+    REXX_METHOD(cid_clearClientData,            cid_clearClientData),
     REXX_METHOD(cid_getResult,                  cid_getResult),
     REXX_METHOD(cid_initCOM,                    cid_initCOM),
+    REXX_METHOD(cid_release,                    cid_release),
     REXX_METHOD(cid_releaseCOM,                 cid_releaseCOM),
+    REXX_METHOD(cid_setDefaultFolder,           cid_setDefaultFolder),
+    REXX_METHOD(cid_setFileName,                cid_setFileName),
+    REXX_METHOD(cid_setFileTypeIndex,           cid_setFileTypeIndex),
+    REXX_METHOD(cid_setFileTypes,               cid_setFileTypes),
     REXX_METHOD(cid_setFolder,                  cid_setFolder),
     REXX_METHOD(cid_show,                       cid_show),
 
