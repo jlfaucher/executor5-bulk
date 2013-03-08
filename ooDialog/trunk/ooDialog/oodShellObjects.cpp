@@ -44,6 +44,7 @@
 
 #include <shlobj.h>
 #include <shlwapi.h>
+#include <Rpc.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
 #include "oodShellObjects.hpp"
@@ -1910,7 +1911,8 @@ static void cidDone(pCCommonItemDialog pccid)
     if ( pccid->pfd != NULL )
     {
         pccid->pfd->Release();
-        pccid->pfd = NULL;
+
+        pccid->pfd  = NULL;
 #ifdef _DEBUG
         printf("cidDone(), pccid->pfd-Release() invoked\n");
 #endif
@@ -1958,6 +1960,67 @@ static HRESULT cidSetFolder(RexxMethodContext *c, void *pCSelf, RexxObjectPtr fo
     }
 
 done_out:
+    return hr;
+}
+
+/**
+ * Common code to set some type of text item in the Common Item Dialog.
+ *
+ * @param c
+ * @param text
+ * @param type
+ * @param pCSelf
+ *
+ * @return HRESULT
+ *
+ * @remarks  All text items have the same max length, which is the max length
+ *           for the file name text.
+ */
+static HRESULT cidSetText(RexxMethodContext *c, CSTRING text, CidTextType type, void *pCSelf)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(c, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        return hr;
+    }
+
+    size_t len = strlen(text);
+    if (  len >= MAX_PATH )
+    {
+        stringTooLongException(c->threadContext, 1, MAX_PATH - 1, len);
+        return hr;
+    }
+
+    WCHAR wName[MAX_PATH];
+
+    if ( putUnicodeText((LPWORD)wName, text, &hr) != 0 )
+    {
+        switch ( type )
+        {
+            case CidDefaultExtension :
+                hr = pccid->pfd->SetDefaultExtension(wName);
+                break;
+
+            case CidFileName :
+                hr = pccid->pfd->SetFileName(wName);
+                break;
+
+            case CidFileNameLabel :
+                hr = pccid->pfd->SetFileNameLabel(wName);
+                break;
+
+            case CidOkButtonLabel :
+                hr = pccid->pfd->SetOkButtonLabel(wName);
+                break;
+
+            case CidTitle :
+                hr = pccid->pfd->SetTitle(wName);
+                break;
+        }
+    }
+
+    oodSetSysErrCode(c->threadContext, hr);
     return hr;
 }
 
@@ -2080,6 +2143,14 @@ done_out:
  *  @notes  Persisted information can be associated with an application or a
  *          GUID. If a GUID was set by using IFileDialog::SetClientGuid, that
  *          GUID is used to clear persisted information.
+ *
+ *          The ClearClientData() method always returns:
+ *
+ *            0x80004005 -> Unspecified error
+ *
+ *          This is true even in the MSDN samples.  We just pass it on to the
+ *          Rexx programmer, but the method seems to work, sometimes ... at
+ *          least when a GUID is assigned.
  */
 RexxMethod1(uint32_t, cid_clearClientData, CSELF, pCSelf)
 {
@@ -2264,6 +2335,56 @@ RexxMethod1(RexxObjectPtr, cid_releaseCOM, CSELF, pCSelf)
     return TheTrueObj;
 }
 
+
+/** CommonItemDialog::setClientGuid()
+ *
+ *
+ */
+RexxMethod2(uint32_t, cid_setClientGuid, CSTRING, _guid, CSELF, pCSelf)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        goto done_out;
+    }
+
+    UUID uuid;
+    hr = UuidFromString((RPC_CSTR)_guid, &uuid);
+    if ( hr != RPC_S_OK )
+    {
+        oodSetSysErrCode(context->threadContext, hr);
+        goto done_out;
+    }
+
+    hr = pccid->pfd->SetClientGuid(uuid);
+    if ( FAILED(hr) )
+    {
+        oodSetSysErrCode(context->threadContext, hr);
+    }
+
+done_out:
+    return hr;
+}
+
+ /** CommonItemDialog::setDefaultExtension()
+ *
+ *  Sets the title for the dialog.
+ *
+ *  @param extension  [required] The defualt extension for the common item
+ *                    dialog.  Do not include the period.  'jpg' is correct,
+ *                    while '.jpg' is not.
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  The extension must be less than 260 characters in length.
+ */
+RexxMethod2(uint32_t, cid_setDefaultExtension, CSTRING, extension, CSELF, pCSelf)
+{
+    return cidSetText(context, extension, CidDefaultExtension, pCSelf);
+}
+
+
 /** CommonItemDialog::setDefaultFolder()
  *
  *  Sets the folder used as a default if there is not a recently used folder
@@ -2283,41 +2404,33 @@ RexxMethod2(uint32_t, cid_setDefaultFolder, RexxObjectPtr, folder, CSELF, pCSelf
 
 /** CommonItemDialog::setFileName()
  *
- *  Sets the file anme
+ *  Sets the file name initially placed in the edit box of the dialog
  *
- *  @param name  [required] The file name ...
+ *  @param name  [required] The initial file name displayed in the  edit box.
  *
  *  @param  Returns the system result code.
  *
- *  @notes  This folder overrides any "most recently used" folder. If this
- *          method is called while the dialog is displayed, it causes the dialog
- *          to navigate to the specified folder.
+ *  @notes  The length of the name must be less than 260 characters.
  */
 RexxMethod2(uint32_t, cid_setFileName, CSTRING, fileName, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
-    if ( pccid == NULL )
-    {
-        return hr;
-    }
+    return cidSetText(context, fileName, CidFileName, pCSelf);
+}
 
-    size_t len = strlen(fileName);
-    if (  len >= MAX_PATH )
-    {
-        stringTooLongException(context->threadContext, 1, MAX_PATH - 1, len);
-        return hr;
-    }
 
-    WCHAR wName[MAX_PATH];
-
-    if ( putUnicodeText((LPWORD)wName, fileName, &hr) != 0 )
-    {
-        hr = pccid->pfd->SetFileName(wName);
-    }
-
-    oodSetSysErrCode(context->threadContext, hr);
-    return hr;
+/** CommonItemDialog::setFileNameLabel()
+ *
+ *  Sets the text of the label next to the file name edit box.
+ *
+ *  @param label  [required] The label for the edit box.
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  The length of the label must be less than 260 characters.
+ */
+RexxMethod2(uint32_t, cid_setFileNameLabel, CSTRING, label, CSELF, pCSelf)
+{
+    return cidSetText(context, label, CidFileNameLabel, pCSelf);
 }
 
 
@@ -2467,6 +2580,38 @@ RexxMethod2(uint32_t, cid_setFolder, RexxObjectPtr, folder, CSELF, pCSelf)
 }
 
 
+ /** CommonItemDialog::setTitle()
+ *
+ *  Sets the title for the dialog.
+ *
+ *  @param title  [required] The title for the common item dialog
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  The title must be less than 260 characters in length.
+ */
+RexxMethod2(uint32_t, cid_setOkButtonLabel, CSTRING, title, CSELF, pCSelf)
+{
+    return cidSetText(context, title, CidOkButtonLabel, pCSelf);
+}
+
+
+ /** CommonItemDialog::setTitle()
+ *
+ *  Sets the title for the dialog.
+ *
+ *  @param title  [required] The title for the common item dialog
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  The title must be less than 260 characters in length.
+ */
+RexxMethod2(uint32_t, cid_setTitle, CSTRING, title, CSELF, pCSelf)
+{
+    return cidSetText(context, title, CidTitle, pCSelf);
+}
+
+
 /** CommonItemDialog::show()
  *
  *  Launches the modal dialog window.
@@ -2513,7 +2658,7 @@ done_out:
  */
 #define OPENFILEDIALOG_CLASS  "OpenFileDialog"
 
-RexxObjectPtr commonFileDialogInit(RexxMethodContext *c, RexxClassObject super, REFCLSID rclsid, CSTRING name)
+RexxObjectPtr commonFileDialogInit(RexxMethodContext *c, RexxClassObject super, REFCLSID rclsid, CSTRING name, bool isOpen)
 {
     oodResetSysErrCode(c->threadContext);
     RexxObjectPtr result = TheOneObj;
@@ -2544,13 +2689,29 @@ RexxObjectPtr commonFileDialogInit(RexxMethodContext *c, RexxClassObject super, 
         return result;
     }
 
-    IFileDialog *pfd;
-    hr = CoCreateInstance(rclsid, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
+    if ( isOpen )
+    {
+        IFileOpenDialog *pfd;
+
+        hr = CoCreateInstance(rclsid, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
+        if ( SUCCEEDED(hr) )
+        {
+            pccid->pfd  = pfd;
+        }
+    }
+    else
+    {
+        IFileSaveDialog *pfd;
+
+        hr = CoCreateInstance(rclsid, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
+        if ( SUCCEEDED(hr) )
+        {
+            pccid->pfd  = pfd;
+        }
+    }
 
     if ( SUCCEEDED(hr) )
     {
-        pccid->pfd = pfd;
-
         RexxArrayObject newArgs = c->NewArray(1);
         c->ArrayPut(newArgs, bufObj, 1);
 
@@ -2578,7 +2739,96 @@ RexxObjectPtr commonFileDialogInit(RexxMethodContext *c, RexxClassObject super, 
  */
 RexxMethod1(RexxObjectPtr, ofd_init, SUPER, super)
 {
-    return commonFileDialogInit(context, super, CLSID_FileOpenDialog, "OpenFileDialog");
+    return commonFileDialogInit(context, super, CLSID_FileOpenDialog, "OpenFileDialog", true);
+}
+
+
+/** OpenFileDialog::getResults()
+ *
+ *
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, ofd_getResults, OPTIONAL_CSTRING, _sigdn, CSELF, pCSelf)
+{
+    RexxObjectPtr    result = TheNilObj;
+    IShellItemArray *psia   = NULL;
+    IShellItem      *psi    = NULL;
+    HRESULT          hr;
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        goto done_out;
+    }
+
+    SIGDN sigdn = SIGDN_FILESYSPATH;
+    if ( argumentExists(1) )
+    {
+        if ( ! keyword2sigdn(context, _sigdn, &sigdn, 1) )
+        {
+            goto done_out;
+        }
+    }
+
+    IFileOpenDialog *pfod = (IFileOpenDialog *)pccid->pfd;
+
+    hr = pfod->GetResults(&psia);
+    if ( psia != NULL )
+    {
+        uint32_t cItems;
+
+        hr = psia->GetCount((DWORD *)&cItems);
+        if ( FAILED(hr) )
+        {
+            goto done_out;
+        }
+
+        RexxArrayObject files = context->NewArray(cItems);
+        for ( uint32_t i = 0; i < cItems; i++ )
+        {
+            PWSTR pszPath;
+
+            hr = psia->GetItemAt(i, &psi);
+            if ( FAILED(hr) )
+            {
+                goto done_out;
+            }
+
+            hr = psi->GetDisplayName(sigdn, &pszPath);
+            if( FAILED(hr) )
+            {
+                goto done_out;
+            }
+
+            // rxItem could be .nil if unicode2NilString() fails.  We just
+            // ignore that and put the object in the array.
+            RexxObjectPtr rxItem = unicode2NilString(context->threadContext, pszPath);
+            context->ArrayPut(files, rxItem, i + 1);
+
+            CoTaskMemFree(pszPath);
+            psi->Release();
+            psi = NULL;
+        }
+
+        psia->Release();
+        psia = NULL;
+
+        result = files;
+    }
+
+done_out:
+    if ( psi != NULL )
+    {
+        psi->Release();
+    }
+    if ( psia != NULL )
+    {
+        psia->Release();
+    }
+
+    oodSetSysErrCode(context->threadContext, hr);
+    return result;
 }
 
 
@@ -2597,7 +2847,7 @@ RexxMethod1(RexxObjectPtr, ofd_init, SUPER, super)
  */
 RexxMethod1(RexxObjectPtr, sfd_init, SUPER, super)
 {
-    return commonFileDialogInit(context, super, CLSID_FileSaveDialog, "SaveFileDialog");
+    return commonFileDialogInit(context, super, CLSID_FileSaveDialog, "SaveFileDialog", true);
 }
 
 

@@ -85,11 +85,21 @@ typedef enum
 /* Struct for the CommonItemDialog CSelf */
 typedef struct _cidCSelf
 {
-    IFileDialog   *pfd;
-    uint32_t       comThreadID;
-    bool           comInitialized;
+    IFileDialog      *pfd;
+    uint32_t          comThreadID;
+    bool              comInitialized;
 } CCommonItemDialog;
 typedef CCommonItemDialog *pCCommonItemDialog;
+
+// Identifies a type of text that can be set in IFileDialog
+typedef enum
+{
+    CidTitle,
+    CidFileName,
+    CidFileNameLabel,
+    CidDefaultExtension,
+    CidOkButtonLabel
+} CidTextType;
 
 
 

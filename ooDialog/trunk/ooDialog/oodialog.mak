@@ -176,6 +176,7 @@ $(OOD_OUTDIR)\oodialog.dll: $(SOURCEF)
     shlwapi.lib \
     Oleacc.lib \
     UxTheme.lib \
+    Rpcrt4.lib \
     -def:$(OOD_OODIALOGSRC)\ooDialog.def \
     -out:$(OOD_OUTDIR)\$(@B).dll
 

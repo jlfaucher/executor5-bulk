@@ -412,6 +412,7 @@ RexxRoutineEntry oodialog_functions[] =
 // DlgUtil
 REXX_METHOD_PROTOTYPE(dlgutil_init_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_comctl32Version_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_getGuid_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_version_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_errMsg_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_hiWord_cls);
@@ -1570,14 +1571,20 @@ REXX_METHOD_PROTOTYPE(cid_getResult);
 REXX_METHOD_PROTOTYPE(cid_initCOM);
 REXX_METHOD_PROTOTYPE(cid_release);
 REXX_METHOD_PROTOTYPE(cid_releaseCOM);
+REXX_METHOD_PROTOTYPE(cid_setClientGuid);
+REXX_METHOD_PROTOTYPE(cid_setDefaultExtension);
 REXX_METHOD_PROTOTYPE(cid_setDefaultFolder);
 REXX_METHOD_PROTOTYPE(cid_setFileName);
+REXX_METHOD_PROTOTYPE(cid_setFileNameLabel);
 REXX_METHOD_PROTOTYPE(cid_setFileTypeIndex);
 REXX_METHOD_PROTOTYPE(cid_setFileTypes);
 REXX_METHOD_PROTOTYPE(cid_setFolder);
+REXX_METHOD_PROTOTYPE(cid_setOkButtonLabel);
+REXX_METHOD_PROTOTYPE(cid_setTitle);
 REXX_METHOD_PROTOTYPE(cid_show);
 
 REXX_METHOD_PROTOTYPE(ofd_init);
+REXX_METHOD_PROTOTYPE(ofd_getResults);
 
 REXX_METHOD_PROTOTYPE(sfd_init);
 
@@ -1585,6 +1592,7 @@ REXX_METHOD_PROTOTYPE(sfd_init);
 RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_init_cls,               dlgutil_init_cls),
     REXX_METHOD(dlgutil_comctl32Version_cls,    dlgutil_comctl32Version_cls),
+    REXX_METHOD(dlgutil_getGuid_cls,            dlgutil_getGuid_cls),
     REXX_METHOD(dlgutil_version_cls,            dlgutil_version_cls),
     REXX_METHOD(dlgutil_errMsg_cls,             dlgutil_errMsg_cls),
     REXX_METHOD(dlgutil_hiWord_cls,             dlgutil_hiWord_cls),
@@ -2715,14 +2723,20 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cid_initCOM,                    cid_initCOM),
     REXX_METHOD(cid_release,                    cid_release),
     REXX_METHOD(cid_releaseCOM,                 cid_releaseCOM),
+    REXX_METHOD(cid_setClientGuid,              cid_setClientGuid),
+    REXX_METHOD(cid_setDefaultExtension,        cid_setDefaultExtension),
     REXX_METHOD(cid_setDefaultFolder,           cid_setDefaultFolder),
     REXX_METHOD(cid_setFileName,                cid_setFileName),
+    REXX_METHOD(cid_setFileNameLabel,           cid_setFileNameLabel),
     REXX_METHOD(cid_setFileTypeIndex,           cid_setFileTypeIndex),
     REXX_METHOD(cid_setFileTypes,               cid_setFileTypes),
     REXX_METHOD(cid_setFolder,                  cid_setFolder),
+    REXX_METHOD(cid_setOkButtonLabel,           cid_setOkButtonLabel),
+    REXX_METHOD(cid_setTitle,                   cid_setTitle),
     REXX_METHOD(cid_show,                       cid_show),
 
     REXX_METHOD(ofd_init,                    	ofd_init),
+    REXX_METHOD(ofd_getResults,                 ofd_getResults),
 
     REXX_METHOD(sfd_init,                    	sfd_init),
 

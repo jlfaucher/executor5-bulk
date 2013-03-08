@@ -89,24 +89,30 @@
 
 ::method init external "LIBRARY oodialog cid_init"
 ::method uninit external "LIBRARY oodialog cid_uninit"
-
 ::method addPlace external "LIBRARY oodialog cid_addPlace"
 ::method clearClientData external "LIBRARY oodialog cid_clearClientData"
+
 ::method getResult external "LIBRARY oodialog cid_getResult"
 ::method initCOM external "LIBRARY oodialog cid_initCOM"
 ::method release external "LIBRARY oodialog cid_release"
 ::method releaseCOM external "LIBRARY oodialog cid_releaseCOM"
+::method setClientGuid external "LIBRARY oodialog cid_setClientGuid"
+::method setDefaultExtension external "LIBRARY oodialog cid_setDefaultExtension"
 ::method setDefaultFolder external "LIBRARY oodialog cid_setDefaultFolder"
 ::method setFileName external "LIBRARY oodialog cid_setFileName"
+::method setFileNameLabel external "LIBRARY oodialog cid_setFileNameLabel"
 ::method setFileTypeIndex external "LIBRARY oodialog cid_setFileTypeIndex"
 ::method setFileTypes external "LIBRARY oodialog cid_setFileTypes"
 ::method setFolder external "LIBRARY oodialog cid_setFolder"
+::method setOkButtonLabel external "LIBRARY oodialog cid_setOkButtonLabel"
+::method setTitle external "LIBRARY oodialog cid_setTitle"
 ::method show external "LIBRARY oodialog cid_show"
 
 
 ::class 'OpenFileDialog' public subclass CommonItemDialog
 
 ::method init external "LIBRARY oodialog ofd_init"
+::method getResults external "LIBRARY oodialog ofd_getResults"
 
 
 ::class 'SaveFileDialog' public subclass CommonItemDialog

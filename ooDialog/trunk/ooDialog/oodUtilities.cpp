@@ -46,6 +46,7 @@
 #include <stdio.h>          // For printf()
 #include <shlwapi.h>        // For StrStrI()
 #include <shlobj.h>         // For ShChangeNotify()
+#include <Rpc.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
 #include "oodDeviceGraphics.hpp"
@@ -1097,6 +1098,74 @@ RexxMethod1(RexxStringObject, dlgutil_version_cls, OPTIONAL_CSTRING, format)
     }
     return context->String(buf);
 }
+
+
+/** DlgUtil::getGuid()  [class method]
+ *
+ * Returns a GUID as a string .
+ *
+ * @param conventional  [optional] True or false to specify Microsoft's
+ *                      conventional format or universal format.  By default
+ *                      conventional is false.
+ *
+ * @return  A string representation of a GUID in the format specified, or .nil
+ *          on error.
+ *
+ * @notes   Sets the .systemErrorCode.
+ *
+ *          A new GUID is generated for each invocation of this method.
+ *
+ *          By default the string GUID will be similar to:
+ *
+ *             3d2c9438-a3b0-494d-ba5d-10f53e6ec9cf
+ *
+ *          If Microsoft's convention is requested the same GUID would be
+ *          returned as:
+ *
+ *             {3d2c9438-a3b0-494d-ba5d-10f53e6ec9cf}
+ *
+ *          A GUID and a UUID are synomous and can be used interchangable in
+ *          ooDialog.
+ */
+RexxMethod1(RexxObjectPtr, dlgutil_getGuid_cls, OPTIONAL_logical_t, conventional)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    RexxObjectPtr result = TheNilObj;
+    UUID          uuid;
+
+    RPC_STATUS rpc = UuidCreate(&uuid);
+    if ( ! (rpc == RPC_S_OK || rpc == RPC_S_UUID_LOCAL_ONLY) )
+    {
+        oodSetSysErrCode(context->threadContext, rpc);
+        return result;
+    }
+
+    unsigned char *strUuid = NULL;
+    rpc = UuidToString(&uuid, &strUuid);
+    if ( rpc != RPC_S_OK )
+    {
+        oodSetSysErrCode(context->threadContext, rpc);
+        return result;
+    }
+
+    if ( conventional )
+    {
+        char buf[64];
+
+        _snprintf(buf, sizeof(buf), "{%s}", strUuid);
+        result = context->String(buf);
+    }
+    else
+    {
+        result = context->String((CSTRING)strUuid);
+    }
+
+     RpcStringFree(&strUuid);
+
+    return result;
+}
+
 
 RexxMethod1(int16_t, dlgutil_shiWord_cls, int32_t, dw) { return HIWORD(dw); }
 RexxMethod1(int16_t, dlgutil_sloWord_cls, int32_t, dw) { return LOWORD(dw); }
