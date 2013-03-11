@@ -2414,7 +2414,7 @@ int putUnicodeText(LPWORD dest, const char *text, HRESULT *pHR)
         count = MultiByteToWideChar(CP_ACP, 0, text, -1, (LPWSTR)dest, countWideChars);
         if ( count == 0 )
         {
-            *pHR = GetLastError();
+            *pHR = HRESULT_FROM_WIN32(GetLastError());
         }
     }
     return count;

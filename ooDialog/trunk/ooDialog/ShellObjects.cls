@@ -89,13 +89,18 @@
 
 ::method init external "LIBRARY oodialog cid_init"
 ::method uninit external "LIBRARY oodialog cid_uninit"
-::method addPlace external "LIBRARY oodialog cid_addPlace"
-::method clearClientData external "LIBRARY oodialog cid_clearClientData"
 
+::method addPlace external "LIBRARY oodialog cid_addPlace"
+::method advise external "LIBRARY oodialog cid_advise"
+::method clearClientData external "LIBRARY oodialog cid_clearClientData"
+::method close unguarded external "LIBRARY oodialog cid_close"
+::method getCurrentSelection unguarded external "LIBRARY oodialog cid_getCurrentSelection"
+::method getFileName unguarded external "LIBRARY oodialog cid_getFileName"
+::method getFileTypeIndex unguarded external "LIBRARY oodialog cid_getFileTypeIndex"
 ::method getResult external "LIBRARY oodialog cid_getResult"
-::method initCOM external "LIBRARY oodialog cid_initCOM"
+::method initCOM unguarded external "LIBRARY oodialog cid_initCOM"
 ::method release external "LIBRARY oodialog cid_release"
-::method releaseCOM external "LIBRARY oodialog cid_releaseCOM"
+::method releaseCOM unguarded external "LIBRARY oodialog cid_releaseCOM"
 ::method setClientGuid external "LIBRARY oodialog cid_setClientGuid"
 ::method setDefaultExtension external "LIBRARY oodialog cid_setDefaultExtension"
 ::method setDefaultFolder external "LIBRARY oodialog cid_setDefaultFolder"
@@ -106,21 +111,54 @@
 ::method setFolder external "LIBRARY oodialog cid_setFolder"
 ::method setOkButtonLabel external "LIBRARY oodialog cid_setOkButtonLabel"
 ::method setTitle external "LIBRARY oodialog cid_setTitle"
-::method show external "LIBRARY oodialog cid_show"
+::method show unguarded external "LIBRARY oodialog cid_show"
 
 
 ::class 'OpenFileDialog' public subclass CommonItemDialog
-
 ::method init external "LIBRARY oodialog ofd_init"
 ::method getResults external "LIBRARY oodialog ofd_getResults"
 
 
 ::class 'SaveFileDialog' public subclass CommonItemDialog
-
 ::method init external "LIBRARY oodialog sfd_init"
+::method setSaveAsItem external "LIBRARY oodialog sfd_setSaveAsItem"
+
+
+::class 'CommonDialogCustomizations' public mixinclass Object
+::method initCustomizations private external "LIBRARY oodialog cid_initCustomizations"
+::method addCheckButton external "LIBRARY oodialog cid_addCheckButton"
+::method addControlItem external "LIBRARY oodialog cid_addControlItem"
+::method addPushButton external "LIBRARY oodialog cid_addPushButton"
+::method addRadioButtonList external "LIBRARY oodialog cid_addRadioButtonList"
+::method endVisualGroup external "LIBRARY oodialog cid_endVisualGroup"
+::method isChecked external "LIBRARY oodialog cid_isChecked"
+::method makeProminent external "LIBRARY oodialog cid_makeProminent"
+::method setSelectedControlItem external "LIBRARY oodialog cid_setSelectedControlItem"
+::method startVisualGroup external "LIBRARY oodialog cid_startVisualGroup"
+
+
+::class 'CommonDialogEvents' public
+::constant  S_OK              0
+::constant  S_FALSE           1
+::constant  E_NOTIMPL         34360000513  -- _HRESULT_TYPEDEF_(0x80004001L)
+
+::method init external "LIBRARY oodialog cde_init"
+::method onButtonClicked unguarded
+    return self~S_OK
+
+::method onFileOk unguarded
+    return self~S_OK
+
+::method onFolderChange unguarded
+    return self~S_OK
+
+::method onItemSelected unguarded
+    return self~S_OK
+
+::method onTypeChange unguarded
+    return self~S_OK
 
 
 ::class 'SimpleFolderBrowse' public
-
 ::method getFolder class external "LIBRARY oodialog sfb_getFolder"
 

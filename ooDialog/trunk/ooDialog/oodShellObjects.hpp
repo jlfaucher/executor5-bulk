@@ -53,6 +53,8 @@
 #define BFF_HINT                        "If the needed folder does not exist it can be created"
 #define BFF_STARTDIR                    ""
 
+#define CID_EVENTHANDLER_VAR            "CID_EVENTHANDLER_OBJECT_VAR"
+
 
 /* Struct for the BrowseForFolder CSelf */
 typedef struct _bffCSelf
@@ -82,14 +84,92 @@ typedef enum
     BffRoot
 } BffAttributeType;
 
+/* COM class for the Rexx CommonDialogEvents class */
+class CommonDialogEvents : public IFileDialogEvents,
+                           public IFileDialogControlEvents
+{
+public:
+    // IUnknown methods
+    IFACEMETHODIMP QueryInterface(REFIID riid, void** ppv)
+    {
+        static const QITAB qit[] =
+        {
+            QITABENT(CommonDialogEvents, IFileDialogEvents),
+            QITABENT(CommonDialogEvents, IFileDialogControlEvents),
+            { 0 },
+        };
+        return QISearch(this, qit, riid, ppv);
+    }
+
+    IFACEMETHODIMP_(ULONG) AddRef()
+    {
+        return InterlockedIncrement(&cRef);
+    }
+
+    IFACEMETHODIMP_(ULONG) Release()
+    {
+        long _cRef = InterlockedDecrement(&cRef);
+        if ( _cRef == 0 )
+        {
+            delete this;
+        }
+        return _cRef;
+    }
+
+    // IFileDialogEvents methods
+    IFACEMETHODIMP OnFileOk(IFileDialog *);
+    IFACEMETHODIMP OnFolderChange(IFileDialog *);
+    IFACEMETHODIMP OnFolderChanging(IFileDialog *, IShellItem *) { return S_OK; };
+    IFACEMETHODIMP OnHelp(IFileDialog *) { return S_OK; };
+    IFACEMETHODIMP OnSelectionChange(IFileDialog *) { return S_OK; };
+    IFACEMETHODIMP OnShareViolation(IFileDialog *, IShellItem *, FDE_SHAREVIOLATION_RESPONSE *) { return S_OK; };
+    IFACEMETHODIMP OnTypeChange(IFileDialog *pfd);
+    IFACEMETHODIMP OnOverwrite(IFileDialog *, IShellItem *, FDE_OVERWRITE_RESPONSE *) { return S_OK; };
+
+    // IFileDialogControlEvents methods
+    IFACEMETHODIMP OnButtonClicked(IFileDialogCustomize *, DWORD);
+    IFACEMETHODIMP OnCheckButtonToggled(IFileDialogCustomize *, DWORD, BOOL) { return S_OK; };
+    IFACEMETHODIMP OnControlActivating(IFileDialogCustomize *, DWORD) { return S_OK; };
+    IFACEMETHODIMP OnItemSelected(IFileDialogCustomize *pfdc, DWORD dwIDCtl, DWORD dwIDItem);
+
+    inline RexxObjectPtr getRexxPFD() { return rexxPFD; }
+    inline void setRexxPFD(RexxObjectPtr rxPFD) { rexxPFD = rxPFD; }
+
+    CommonDialogEvents(RexxObjectPtr rxSelf, RexxInstance *c);
+
+private:
+    RexxObjectPtr getCommonDialogHwnd(RexxThreadContext *c, IFileDialog *pfd);
+    HRESULT checkEventReply(RexxThreadContext *c, RexxObjectPtr reply);
+
+    ~CommonDialogEvents() { };
+
+    RexxObjectPtr  rexxSelf;            // Our Rexx self
+    RexxObjectPtr  rexxPFD;             // The Rexx CommonItemDialog object we are receiving events for.
+    RexxInstance  *interpreter;         // The Rexx interpreter instance we're running under.
+    long cRef;
+};
+
+
 /* Struct for the CommonItemDialog CSelf */
 typedef struct _cidCSelf
 {
-    IFileDialog      *pfd;
-    uint32_t          comThreadID;
-    bool              comInitialized;
+    IFileDialog        *pfd;
+    RexxObjectPtr       rexxSelf;
+    CommonDialogEvents *pcde;
+    uint32_t            cookie;
+    uint32_t            comThreadID;
+    bool                comInitialized;
 } CCommonItemDialog;
 typedef CCommonItemDialog *pCCommonItemDialog;
+
+/* Struct for the CommonDialogEvents CSelf */
+typedef struct _cdeCSelf
+{
+    CommonDialogEvents *pcde;
+    RexxObjectPtr       rexxSelf;
+    bool                inUse;
+} CCommonDialogEvents;
+typedef CCommonDialogEvents *pCCommonDialogEvents;
 
 // Identifies a type of text that can be set in IFileDialog
 typedef enum
@@ -100,6 +180,8 @@ typedef enum
     CidDefaultExtension,
     CidOkButtonLabel
 } CidTextType;
+
+
 
 
 

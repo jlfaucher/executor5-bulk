@@ -90,7 +90,6 @@
  * ERROR_INVALID_PARAMETER        87 -
  * The parameter is incorrect.
  *
- *
  * ERROR_INVALID_WINDOW_HANDLE  1400 -
  * Invalid window handle.
  *
