@@ -43,10 +43,11 @@
     #########################################################################
 -->
 
-<!-- Chapter03 - Re-Structuring the Code			  v01-00 31May12
+<!-- Chapter03 - Re-Structuring the Code			  v01-00 12Mar13
 
      Changes:
      v01-00 31May12: First version.
+            12Mar13: Changed emphasis of code terms to conform with conventions.
 -->
 <chapter id="chapThree"><title>Re-Structuring the Code</title>
 <indexterm><primary>Code structure</primary></indexterm>
@@ -141,48 +142,43 @@
         "Wow" in the names is short for "words of wisdom". </para>
 
 <section id="chap03-struc-ui"><title>The "View" Component</title><!-- section 3.1.1 -->
-  <para>The <computeroutput>WowView</computeroutput> class implements the UI area of
-          concern (it's a single-class component). The <emphasis role="italic">init</emphasis>
-          method is identical to that of
-          Exercise02's <computeroutput>Wow2</computeroutput> except that it also creates an instance
-          of <computeroutput>WowPicker</computeroutput> called (unsurprisingly) <emphasis
-            role="italic">wowPicker</emphasis>. There's also an
-            <emphasis role="italic">expose</emphasis> statement to make the
-            <emphasis role="italic">wowPicker</emphasis> object available to other methods.
-        </para>
+  <para>The <computeroutput>WowView</computeroutput> class implements the UI area of concern (it's a
+    single-class component). The <computeroutput>init</computeroutput> method is
+    identical to that of Exercise02's
+    <computeroutput>Wow2</computeroutput> except that it also creates an instance of
+    <computeroutput>WowPicker</computeroutput> called (unsurprisingly) <computeroutput>wowPicker</computeroutput>.
+    There's also an <computeroutput>expose</computeroutput> statement
+    to make the <computeroutput>wowPicker</computeroutput> object available to other methods.</para>
 <para>
-  The <emphasis role="italic">defineDialog</emphasis> method has not changed. But the
-  <emphasis role="italic">okClicked</emphasis> method is different - and much shorter:
-  <programlisting>
-    <![CDATA[
+  The <computeroutput>defineDialog</computeroutput> method has not changed. But the
+  <computeroutput>okClicked</computeroutput> method is different - and much shorter:
+<programlisting><![CDATA[
     ::method okClicked
       expose wowPicker newText
       wow = wowPicker~pickWow
       newText~setText(wow)
       return
-    ]]>
-  </programlisting>
+]]></programlisting>
 To get the "words of wisdom" to display, it now merely asks
-  <emphasis role="italic">wowPicker</emphasis> for a string to display.
+  <computeroutput>wowPicker</computeroutput> for a string to display.
 </para>
 <para>One other change is that instead of creating a new static text control every time the button
-          is pressed, the control is created once in the new <emphasis role="italic"
-            >initDialog</emphasis> method and re-used in the <emphasis role="italic"
-            >okClicked</emphasis> method. The <emphasis role="italic">initDialog</emphasis> method
-          is called automatically by ooDialog after the dialog has been created in order to allow
-          controls to be initialized (the "init" in "initDialog" stands for "initialize").</para>
+  is pressed, the control is created once in the new <computeroutput>initDialog</computeroutput>
+  method and re-used in the <computeroutput>okClicked</computeroutput> method. 
+  The <computeroutput>initDialog</computeroutput> method is called automatically by ooDialog after
+  the dialog has been created in order to allow controls to be initialized (the "init" in "initDialog"
+  stands for "initialize").</para>
 <para>In summary, all knowledge of picking a string, and of the set from which to pick, has been
           exported elsewhere. The <computeroutput>WowView</computeroutput> class now addresses only
           the areas of GUI display and GUI interaction. This is crucially important. A good way to
           make a complex task hopelessly complicated is to mix "model" and "data" concerns with the
           "view" concerns. </para>
-
 </section>
 
 <section id="chap03-struc-bus"><title>The "Model" Component</title><!-- section 3.1.2 -->
 <para> The class implementing the model component - <computeroutput>WowPicker</computeroutput>
-          - is very simple: <programlisting>
-    <![CDATA[
+          - is very simple:
+<programlisting><![CDATA[
     ::METHOD init
       expose wowSet
       dataSource = .WowData~new
@@ -193,28 +189,28 @@ To get the "words of wisdom" to display, it now merely asks
       expose wowSet
       i = random(1,7)
       return wowSet[i]
-    ]]>
-  </programlisting>The <emphasis role="italic">init</emphasis>method gets a reference to an
-          instance of the class <computeroutput>WowData</computeroutput> - which handles the data
-          area of concern - and then gets a set of Words of Wisdom into the array variable <emphasis
-            role="italic">wowSet</emphasis>. Then in the method <emphasis role="italic"
-            >pickWow</emphasis> a Words of Wisdom string is picked randomly from <emphasis
-            role="italic">wowSet</emphasis> and returned. </para>
+]]></programlisting>
+  The <computeroutput>init</computeroutput>method gets a reference to an
+  instance of the class <computeroutput>WowData</computeroutput> - which handles the data
+  area of concern - and then gets a set of Words of Wisdom into the array variable
+  <computeroutput>wowSet</computeroutput>. Then in the method <computeroutput>pickWow</computeroutput>
+  a Words of Wisdom string is picked randomly from <computeroutput>wowSet</computeroutput> and returned.
+</para>
 </section>
 
 <section id="chap03-struc-dat"><title>The "Data" Component</title><!-- section 3.1.3 -->
-<para>The last (extremely simple) class in <computeroutput>Wow3.rex</computeroutput> is
-            <computeroutput>WowData</computeroutput>. In its <emphasis role="italic">init</emphasis>
-          method, it loads up an array of seven text strings into the instance variable <emphasis
-            role="italic">arrWow</emphasis>, and in its <emphasis role="italic"
-            >readWowSet</emphasis> method returns that array to the caller. One can see how this it
-          might be enhanced, for example by providing a method that renews the set of "words of
-          wisdom" from a larger set in a disk file. But that is nothing to do with ooDialog, so
-          we'll leave it as it is. </para>
+  <para>The last (extremely simple) class in <computeroutput>Wow3.rex</computeroutput> is
+    <computeroutput>WowData</computeroutput>. In its <computeroutput>init</computeroutput>
+    method, it loads up an array of seven text strings into the instance variable 
+    <computeroutput>arrWow</computeroutput>, and in its <computeroutput>readWowSet</computeroutput>
+    method returns that array to the caller. One can see how this it
+    might be enhanced, for example by providing a method that renews the set of "words of
+    wisdom" from a larger set in a disk file. 
+  </para>
 </section>
 </section>
 <section id="chap03-cplg"><title id="reduce-cplg">Reducing Coupling</title><!-- section 3.2 -->
-    <indexterm><primary>Coupling</primary></indexterm>
+<indexterm><primary>Coupling</primary></indexterm>
 <para>The three classes in <computeroutput>Wow3.rex</computeroutput> are reasonably decoupled: the
         dialog is in one class, the business logic (such as it is) in another, and the data in a
         third. Notice however that both <computeroutput>WowView</computeroutput> and
@@ -257,8 +253,8 @@ To get the "words of wisdom" to display, it now merely asks
         four *.rex files: <computeroutput>Startup</computeroutput>,
           <computeroutput>WowView</computeroutput>, <computeroutput>WowModel</computeroutput>, and
           <computeroutput>WowData</computeroutput>. The code in
-          <computeroutput>Startup.rex</computeroutput> is very simple: <programlisting>
-    <![CDATA[
+          <computeroutput>Startup.rex</computeroutput> is very simple:
+<programlisting><![CDATA[
     .local~my.idWowData = .WowData~new
     .local~my.idWowPicker = .WowPicker~new
      dlg = .WowView~new
@@ -270,63 +266,62 @@ To get the "words of wisdom" to display, it now merely asks
     ::REQUIRES "WowView.rex"
     ::REQUIRES "WowModel.rex"
     ::REQUIRES "WowData.rex"
-    ]]>
-  </programlisting>The first three statements create the three classes, with the ids of the
+]]></programlisting>The first three statements create the three classes, with the ids of the
         first two being stored in <computeroutput>.local</computeroutput>. Creation of the dialog is
         done by the third statement (<computeroutput>dlg = .WowView~new</computeroutput>). The next
-        three statements send an <emphasis role="italic">activate</emphasis> message to each of the
+    three statements send an <computeroutput>activate</computeroutput> message to each of the
         three classes. This is because when dealing with complex applications with "main" classes
         (each in their own component),
         it is very useful to distinguish between two kinds of class setups: firstly the
-        technical creation of a class (done by invoking the <emphasis role="italic">init</emphasis>
-        method), and secondly the setup of various required application-related things (done by
-        invoking an <emphasis role="italic">activate</emphasis> method. </para>
+        technical creation of a class (done by invoking the <computeroutput>init</computeroutput>
+        method), and secondly the initial setup of various application-related things (done by
+        invoking an <computeroutput>activate</computeroutput> method.</para>
   <para>
   Notice that <computeroutput>WowView</computeroutput>'s
-  <emphasis role="italic">init</emphasis>
-  method returns to the caller. The <emphasis role='italic'>activate</emphasis> method, on the other hand,
+    <computeroutput>init</computeroutput>>
+    method returns to the caller. The <computeroutput>activate</computeroutput> method, on the other hand,
   does not return until the dialog is closed. This is because
   the statement that actually surfaces the dialog -
-  <emphasis role="italic">self~execute("SHOWTOP", IDI_DLG_OOREXX)</emphasis> is the
+    <computeroutput>self~execute("SHOWTOP", IDI_DLG_OOREXX)</computeroutput> is the
   last statement in <computeroutput>WowView</computeroutput>'s
-  <emphasis role="italic">activate</emphasis> method. And once the dialog is surfaced
+    <computeroutput>activate</computeroutput> method. And once the dialog is surfaced
   using <computeroutput>SHOWTOP</computeroutput>,
   control only returns to the application (that is, to <computeroutput>Startup.rex</computeroutput>)
   when the dialog is closed (although, as will be discussed later, there are ways
   to return control much sooner).
   </para>
-  <para>But why move the <emphasis role="italic">self~execute("SHOWTOP"...)</emphasis> statement into
-        the <emphasis role="italic">activate</emphasis> method of the
+  <para>But why move the <computeroutput>self~execute("SHOWTOP"...)</computeroutput> statement into
+    the <computeroutput>activate</computeroutput> method of the
           <computeroutput>MyDialog</computeroutput> class? After all, it would work just as well if
         it were the last statement in the Startup file. The reason is that the business of surfacing
         the dialog window is arguably not that of the application; rather it's the business of the
-        dialog class. Thus the application is reduced as much as possible to a simple "kickoff"
+        view's class object. Thus the application is reduced as much as possible to a simple "kickoff"
         script, while the real work is done by the classes that are kicked off. </para>
   <para>There is, however, one important consequence of this move. Since the
-          <emphasis role="italic">self~execute("SHOWTOP"...)</emphasis> statement does not return
+    <computeroutput>self~execute("SHOWTOP"...)</computeroutput> statement does not return
         until the dialog is closed, the method blocks on this statement, and there is potential for
         a hang. In <computeroutput>Wow3.rex</computeroutput>, this statement was at the end of the
         "application" part of the program, and as there was nothing after it, the block didn't
-        matter. But refactoring the classes into different files has moved it to the <emphasis
-          role="italic">activate</emphasis> method of <computeroutput>WowView</computeroutput>. This
-        introduces a concurrency issue. If not dealt with, then when the user clicks the <emphasis
-          role="italic">More wisdom</emphasis> button, the <emphasis role="italic"
-          >okClicked</emphasis> method can not run until the <emphasis role="italic"
-          >activate</emphasis> method ends - that is, until the user closes the dialog window - a
-        real catch 22, where the result is that no words of wisdom will appear. </para>
-        <indexterm><primary>Concurrency issue</primary></indexterm>
-        <indexterm><primary>Blocking</primary><secondary>concurrency issue</secondary></indexterm>
+        matter. But re-factoring the classes into different files has moved it to the
+    <computeroutput>activate</computeroutput> method of <computeroutput>WowView</computeroutput>. This
+    introduces a concurrency issue. If not dealt with, then when the user clicks the
+    <computeroutput>More wisdom</computeroutput> button, the <computeroutput>okClicked</computeroutput>
+    method can not run until the <computeroutput>activate</computeroutput> method ends - that is,
+    until the user closes the dialog window - a real catch 22, where the result is that no words
+    of wisdom will appear.</para>
+    <indexterm><primary>Concurrency issue</primary></indexterm>
+    <indexterm><primary>Blocking</primary><secondary>concurrency issue</secondary></indexterm>
   <para>
   The reason <computeroutput>WowView</computeroutput> works is because its
-  <emphasis role="italic">activate</emphasis> method
-  has the <emphasis role="italic">unguarded</emphasis> option specified on its
+    <computeroutput>activate</computeroutput> method
+    has the <computeroutput>unguarded</computeroutput> option specified on its
   method statement. Try commenting "UNGUARDED" out and running the exercise without it.
   </para>
   <indexterm><primary>Unguarded</primary></indexterm>
   <para> As a general rule, event handling methods such as
-    <emphasis role="italic">okClicked</emphasis> should be unguarded. Indeed, <computeroutput>WowView</computeroutput> runs happily if the "unguarded"
-        option is moved to the <emphasis role="italic">okClicked</emphasis> method statement - or
-        indeed if it's on both method statements. </para>
+    <computeroutput>okClicked</computeroutput> should be unguarded. Indeed, <computeroutput>WowView</computeroutput> runs happily if the "unguarded"
+    option is moved to the <computeroutput>okClicked</computeroutput> method statement - or
+        indeed if it's on both method statements.</para>
   <para>
   In the next chapter, we leave "words of wisdom", and start building a more realistic application.
   </para>
