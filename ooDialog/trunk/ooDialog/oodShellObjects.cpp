@@ -420,6 +420,35 @@ static IShellItem *getShellItemFromPath(RexxMethodContext *c, LPCSTR path, size_
     return psi;
 }
 
+/**
+ * Converts the specified shell item to its display name.
+ *
+ * @param c
+ * @param psi
+ * @param sigdn   Specifies the display name format.  Use SIGDN_FILESYSPATH to
+ *                get the normal full path.
+ * @param pHR
+ *
+ * @return RexxObjectPtr
+ *
+ * @remarks  The caller is responsible for releasing psi
+ */
+RexxObjectPtr shellItem2name(RexxThreadContext *c, IShellItem *psi, SIGDN sigdn, HRESULT *pHR)
+{
+    RexxObjectPtr result = TheNilObj;
+    HRESULT       hr;
+    PWSTR         pszPath;
+
+    hr = psi->GetDisplayName(sigdn, &pszPath);
+    if( SUCCEEDED(hr) )
+    {
+        result = unicode2StringOrNil(c, pszPath);
+        CoTaskMemFree(pszPath);
+    }
+
+    *pHR = hr;
+    return result;
+}
 
 /**
  * Returns the display name for the specified item ID list as a Rexx object.
@@ -1942,7 +1971,11 @@ static HRESULT cidUnadvise(RexxMethodContext *c, pCCommonItemDialog pccid)
 
     if ( pccid != NULL && pccid->pcde != NULL && pccid->cookie != 0 )
     {
-        hr = pccid->pfd->Unadvise(pccid->cookie);
+        if ( ! pccid->errorUnadviseIsDone )
+        {
+            hr = pccid->pfd->Unadvise(pccid->cookie);
+            pccid->errorUnadviseIsDone = false;
+        }
         pccid->pcde->Release();
 
         c->DropObjectVariable(CID_EVENTHANDLER_VAR);
@@ -2365,14 +2398,7 @@ RexxMethod2(RexxObjectPtr, cid_getCurrentSelection, OPTIONAL_CSTRING, _sigdn, CS
     hr = pccid->pfd->GetCurrentSelection(&psi);
     if ( SUCCEEDED(hr) )
     {
-        PWSTR pszPath;
-
-        hr = psi->GetDisplayName(sigdn, &pszPath);
-        if( SUCCEEDED(hr) )
-        {
-            result = unicode2NilString(context->threadContext, pszPath);
-            CoTaskMemFree(pszPath);
-        }
+        result = shellItem2name(context->threadContext, psi, sigdn, &hr);
         psi->Release();
     }
 
@@ -2414,7 +2440,7 @@ RexxMethod1(RexxObjectPtr, cid_getFileName, CSELF, pCSelf)
     hr = pccid->pfd->GetFileName(&pszPath);
     if( SUCCEEDED(hr) )
     {
-        result = unicode2NilString(context->threadContext, pszPath);
+        result = unicode2StringOrNil(context->threadContext, pszPath);
         CoTaskMemFree(pszPath);
     }
 
@@ -2454,6 +2480,51 @@ RexxMethod1(int32_t, cid_getFileTypeIndex, CSELF, pCSelf)
 }
 
 
+/** CommonItemDialog::getFolder()
+ *
+ *
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, cid_getFolder, OPTIONAL_CSTRING, _sigdn, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+    HRESULT       hr;
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        return result;
+    }
+
+    SIGDN sigdn = SIGDN_FILESYSPATH;
+    if ( argumentExists(1) )
+    {
+        if ( ! keyword2sigdn(context, _sigdn, &sigdn, 1) )
+        {
+            hr = ERROR_INVALID_FUNCTION;
+            goto done_out;
+        }
+    }
+
+    IShellItem *psi;
+
+    hr = pccid->pfd->GetFolder(&psi);
+    if ( SUCCEEDED(hr) )
+    {
+        result = shellItem2name(context->threadContext, psi, sigdn, &hr);
+        psi->Release();
+    }
+
+done_out:
+    if ( hr != S_OK )
+    {
+        oodSetSysErrCode(context->threadContext, hr);
+    }
+    return result;
+}
+
+
 /** CommonItemDialog::getResult()
  *
  *
@@ -2468,7 +2539,7 @@ RexxMethod2(RexxObjectPtr, cid_getResult, OPTIONAL_CSTRING, _sigdn, CSELF, pCSel
     pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid == NULL )
     {
-        goto done_out;
+        return result;
     }
 
     SIGDN sigdn = SIGDN_FILESYSPATH;
@@ -2476,6 +2547,7 @@ RexxMethod2(RexxObjectPtr, cid_getResult, OPTIONAL_CSTRING, _sigdn, CSELF, pCSel
     {
         if ( ! keyword2sigdn(context, _sigdn, &sigdn, 1) )
         {
+            hr = ERROR_INVALID_FUNCTION;
             goto done_out;
         }
     }
@@ -2485,19 +2557,15 @@ RexxMethod2(RexxObjectPtr, cid_getResult, OPTIONAL_CSTRING, _sigdn, CSELF, pCSel
     hr = pccid->pfd->GetResult(&psi);
     if ( SUCCEEDED(hr) )
     {
-        PWSTR pszPath;
-
-        hr = psi->GetDisplayName(sigdn, &pszPath);
-        if( SUCCEEDED(hr) )
-        {
-            result = unicode2NilString(context->threadContext, pszPath);
-            CoTaskMemFree(pszPath);
-        }
+        result = shellItem2name(context->threadContext, psi, sigdn, &hr);
         psi->Release();
     }
 
 done_out:
-    oodSetSysErrCode(context->threadContext, hr);
+    if ( hr != S_OK )
+    {
+        oodSetSysErrCode(context->threadContext, hr);
+    }
     return result;
 }
 
@@ -3127,26 +3195,17 @@ RexxMethod2(RexxObjectPtr, ofd_getResults, OPTIONAL_CSTRING, _sigdn, CSELF, pCSe
         RexxArrayObject files = context->NewArray(cItems);
         for ( uint32_t i = 0; i < cItems; i++ )
         {
-            PWSTR pszPath;
-
             hr = psia->GetItemAt(i, &psi);
             if ( FAILED(hr) )
             {
                 goto done_out;
             }
 
-            hr = psi->GetDisplayName(sigdn, &pszPath);
-            if( FAILED(hr) )
-            {
-                goto done_out;
-            }
-
-            // rxItem could be .nil if unicode2NilString() fails.  We just
+            // rxItem could be .nil if unicode2StringOrNil() fails.  We just
             // ignore that and put the object in the array.
-            RexxObjectPtr rxItem = unicode2NilString(context->threadContext, pszPath);
+            RexxObjectPtr rxItem = shellItem2name(context->threadContext, psi, sigdn, &hr);
             context->ArrayPut(files, rxItem, i + 1);
 
-            CoTaskMemFree(pszPath);
             psi->Release();
             psi = NULL;
         }
@@ -3288,7 +3347,7 @@ static bool cdcGetIdCheckText(RexxMethodContext *c, RexxObjectPtr rxID, CSTRING 
         }
     }
 
-    if ( id2 != NULL )
+    if ( rxID2 != NULL )
     {
         uint32_t ctrlID2 = oodGlobalID(c, rxID2, 3, true);
         if ( ctrlID2 == OOD_ID_EXCEPTION )
@@ -3309,6 +3368,90 @@ err_out:
 }
 
 
+static uint32_t cdcAddControl(RexxMethodContext *c, RexxObjectPtr rxID1, CSTRING text, RexxObjectPtr rxID2,
+                              size_t misc, void *pCSelf, CdcControlType ctl)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(c, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        return hr;
+    }
+
+    uint32_t ctrlID1;
+    uint32_t ctrlID2;
+    if ( ! cdcGetIdCheckText(c, rxID1, text, rxID2, &ctrlID1, &ctrlID2, &hr) )
+    {
+        return hr;
+    }
+
+    WCHAR wName[MAX_PATH];
+    if ( text != NULL )
+    {
+        if ( putUnicodeText((LPWORD)wName, text, &hr) == 0 )
+        {
+            oodSetSysErrCode(c->threadContext, hr);
+            return hr;
+        }
+    }
+
+    IFileDialogCustomize *pfdc;
+
+    hr = pccid->pfd->QueryInterface(IID_PPV_ARGS(&pfdc));
+    if ( SUCCEEDED(hr) )
+    {
+        switch ( ctl )
+        {
+            case CdcCheckButton :
+                hr = pfdc->AddCheckButton(ctrlID1, wName, (BOOL)misc);
+                break;
+
+            case CdcComboBox :
+                hr = pfdc->AddComboBox(ctrlID1);
+                break;
+
+            case CdcControlItem :
+                hr = pfdc->AddControlItem(ctrlID1, ctrlID2, wName);
+                break;
+
+            case CdcEditBox :
+                hr = pfdc->AddEditBox(ctrlID1, wName);
+                break;
+
+            case CdcEnableOpenDropDown :
+                hr = pfdc->EnableOpenDropDown(ctrlID1);
+                break;
+
+            case CdcMenu :
+                hr = pfdc->AddMenu(ctrlID1, wName);
+                break;
+
+            case CdcPushButton :
+                hr = pfdc->AddPushButton(ctrlID1, wName);
+                break;
+
+            case CdcRadioButtonList :
+                hr = pfdc->AddRadioButtonList(ctrlID1);
+                break;
+
+            case CdcSeparator :
+                hr = pfdc->AddSeparator(ctrlID1);
+                break;
+
+            case CdcText :
+                hr = pfdc->AddText(ctrlID1, wName);
+                break;
+        }
+        pfdc->Release();
+    }
+
+    if ( hr != S_OK )
+    {
+        oodSetSysErrCode(c->threadContext, hr);
+    }
+    return hr;
+}
+
 /** CommonDialogCustomizations::initCustomizations()
  *
  * Called internally to set the CSelf point for this class.
@@ -3328,39 +3471,12 @@ RexxMethod1(RexxObjectPtr, cid_initCustomizations, RexxObjectPtr, cselfBuf)
 
 RexxMethod4(uint32_t, cid_addCheckButton, RexxObjectPtr, rxID, CSTRING, label, OPTIONAL_logical_t, checked, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
-    if ( pccid == NULL )
-    {
-        return hr;
-    }
+    return cdcAddControl(context, rxID, label, NULLOBJECT, checked, pCSelf, CdcPushButton);
+}
 
-    uint32_t ctrlID;
-    if ( ! cdcGetIdCheckText(context, rxID, label, NULLOBJECT, &ctrlID, NULL, &hr) )
-    {
-        return hr;
-    }
-
-    IFileDialogCustomize *pfdc;
-
-    hr = pccid->pfd->QueryInterface(&pfdc);
-    if ( SUCCEEDED(hr) )
-    {
-        WCHAR wName[MAX_PATH];
-
-        if ( putUnicodeText((LPWORD)wName, label, &hr) != 0 )
-        {
-            hr = pfdc->AddCheckButton(ctrlID, wName, (BOOL)checked);
-        }
-
-        pfdc->Release();
-    }
-
-    if ( hr != S_OK )
-    {
-        oodSetSysErrCode(context->threadContext, hr);
-    }
-    return hr;
+RexxMethod2(uint32_t, cid_addComboBox, RexxObjectPtr, rxID, CSELF, pCSelf)
+{
+    return cdcAddControl(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcComboBox);
 }
 
 
@@ -3377,110 +3493,50 @@ RexxMethod4(uint32_t, cid_addCheckButton, RexxObjectPtr, rxID, CSTRING, label, O
  */
 RexxMethod4(uint32_t, cid_addControlItem, RexxObjectPtr, rxContainerID, CSTRING, label, RexxObjectPtr, rxItemID, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
-    if ( pccid == NULL )
-    {
-        return hr;
-    }
+    return cdcAddControl(context, rxContainerID, label, rxItemID, 0, pCSelf, CdcControlItem);
+}
 
-    uint32_t cntnrID;
-    uint32_t itemID;
-    if ( ! cdcGetIdCheckText(context, rxContainerID, label, rxItemID, &cntnrID, &itemID, &hr) )
-    {
-        return hr;
-    }
 
-    IFileDialogCustomize *pfdc;
+RexxMethod3(uint32_t, cid_addEditBox, RexxObjectPtr, rxID, CSTRING, label, CSELF, pCSelf)
+{
+    return cdcAddControl(context, rxID, label, NULLOBJECT, 0, pCSelf, CdcEditBox);
+}
 
-    hr = pccid->pfd->QueryInterface(&pfdc);
-    if ( SUCCEEDED(hr) )
-    {
-        WCHAR wName[MAX_PATH];
 
-        if ( putUnicodeText((LPWORD)wName, label, &hr) != 0 )
-        {
-            hr = pfdc->AddControlItem(cntnrID, itemID, wName);
-        }
-
-        pfdc->Release();
-    }
-
-    if ( hr != S_OK )
-    {
-        oodSetSysErrCode(context->threadContext, hr);
-    }
-    return hr;
+RexxMethod3(uint32_t, cid_addMenu, RexxObjectPtr, rxID, CSTRING, text, CSELF, pCSelf)
+{
+    return cdcAddControl(context, rxID, text, NULLOBJECT, 0, pCSelf, CdcMenu);
 }
 
 
 RexxMethod3(uint32_t, cid_addPushButton, RexxObjectPtr, rxID, CSTRING, label, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
-    if ( pccid == NULL )
-    {
-        return hr;
-    }
-
-    uint32_t ctrlID;
-    if ( ! cdcGetIdCheckText(context, rxID, label, NULLOBJECT, &ctrlID, NULL, &hr) )
-    {
-        return hr;
-    }
-
-    IFileDialogCustomize *pfdc;
-
-    hr = pccid->pfd->QueryInterface(&pfdc);
-    if ( SUCCEEDED(hr) )
-    {
-        WCHAR wName[MAX_PATH];
-
-        if ( putUnicodeText((LPWORD)wName, label, &hr) != 0 )
-        {
-            pfdc->AddPushButton(ctrlID, wName);
-        }
-
-        pfdc->Release();
-    }
-
-    if ( hr != S_OK )
-    {
-        oodSetSysErrCode(context->threadContext, hr);
-    }
-    return hr;
+    return cdcAddControl(context, rxID, label, NULLOBJECT, 0, pCSelf, CdcPushButton);
 }
 
 
 RexxMethod2(uint32_t, cid_addRadioButtonList, RexxObjectPtr, rxID, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
-    if ( pccid == NULL )
-    {
-        return hr;
-    }
+    return cdcAddControl(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcRadioButtonList);
+}
 
-    uint32_t ctrlID;
-    if ( ! cdcGetIdCheckText(context, rxID, NULL,  NULLOBJECT, &ctrlID, NULL, &hr) )
-    {
-        return hr;
-    }
 
-    IFileDialogCustomize *pfdc;
+RexxMethod2(uint32_t, cid_addSeparator, RexxObjectPtr, rxID, CSELF, pCSelf)
+{
+    return cdcAddControl(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcSeparator);
+}
 
-    hr = pccid->pfd->QueryInterface(IID_PPV_ARGS(&pfdc));
-    if ( SUCCEEDED(hr) )
-    {
-        hr = pfdc->AddRadioButtonList(ctrlID);
-        pfdc->Release();
-    }
 
-    if ( hr != S_OK )
-    {
-        oodSetSysErrCode(context->threadContext, hr);
-    }
-    return hr;
+RexxMethod3(uint32_t, cid_addText, RexxObjectPtr, rxID, CSTRING, text, CSELF, pCSelf)
+{
+    return cdcAddControl(context, rxID, text, NULLOBJECT, 0, pCSelf, CdcText);
+}
+
+
+RexxMethod2(uint32_t, cid_enableOpenDropDown, RexxObjectPtr, rxID, CSELF, pCSelf)
+{
+    // We use addControl() even though this isn't technically adding a control.
+    return cdcAddControl(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcEnableOpenDropDown);
 }
 
 
@@ -3601,13 +3657,15 @@ RexxMethod3(uint32_t, cid_setSelectedControlItem, RexxObjectPtr, rxContainerID, 
     uint32_t cntnrID = oodGlobalID(context, rxContainerID, 1, true);
     if ( cntnrID == OOD_ID_EXCEPTION )
     {
-        return ERROR_INVALID_FUNCTION;
+        hr = ERROR_INVALID_FUNCTION;
+        goto done_out;
     }
 
     uint32_t itemID = oodGlobalID(context, rxItemID, 2, true);
     if ( itemID == OOD_ID_EXCEPTION )
     {
-        return ERROR_INVALID_FUNCTION;
+        hr = ERROR_INVALID_FUNCTION;
+        goto done_out;
     }
 
     IFileDialogCustomize *pfdc;
@@ -3619,6 +3677,7 @@ RexxMethod3(uint32_t, cid_setSelectedControlItem, RexxObjectPtr, rxContainerID, 
         pfdc->Release();
     }
 
+done_out:
     if ( hr != S_OK )
     {
         oodSetSysErrCode(context->threadContext, hr);
@@ -3700,7 +3759,6 @@ RexxMethod1(RexxObjectPtr, cde_init, OSELF, self)
  COM class for the Rexx CommonDialogEvents class
 \*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - -*/
 
-
 /**
  * A private helper method to get the window handle of the Common Item Dialog.
  *
@@ -3728,25 +3786,59 @@ RexxObjectPtr CommonDialogEvents::getCommonDialogHwnd(RexxThreadContext *c, IFil
 }
 
 /**
+ * A private method to end things if one of the Rexx methods has a condition
+ * pending, or if the user does not return a value.
+ *
+ * We do this by unadvising ourself from the Common Item File dialog and setting
+ * a flag that tells the ooDialog framework that Unadvise() has been already
+ * called.  Then we close the file dialog with a cancel.
+ *
+ * @param c
+ *
+ * @return HRESULT
+ */
+HRESULT CommonDialogEvents::abortCommonDialog(RexxThreadContext *c)
+{
+    HRESULT hr;
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)c->ObjectToCSelf(rexxPFD);
+
+    hr = pccid->pfd->Unadvise(pccid->cookie);
+    pccid->errorUnadviseIsDone = true;
+
+    hr = pccid->pfd->Close(HRESULT_FROM_WIN32(ERROR_CANCELLED));
+
+    return E_NOTIMPL;
+}
+
+/**
  * A private method to check the Rexx reply from the event handler.
  *
  * @param c
  * @param reply
  *
- * @remarks  The idea here is to unadvise if reply is NULLOBJECT, or if a syntax
- *           condition exists.  Just haven't quite worked out what to do to
- *           release the last CommonDialogEvents pointer
+ * @remarks  The idea here is to unadvise and close the dialog, if reply is
+ *           NULLOBJECT, or if a syntax condition exists.  This works well.
  */
-HRESULT CommonDialogEvents::checkEventReply(RexxThreadContext *c, RexxObjectPtr reply)
+HRESULT CommonDialogEvents::checkEventReply(RexxThreadContext *c, RexxObjectPtr reply, CSTRING methodName)
 {
     uint32_t hr = S_OK;
 
-    if ( reply != NULLOBJECT )
+    if ( checkForCondition(c, true) )
     {
-        if ( ! c->UnsignedInt32(reply, &hr) )
-        {
-            hr = E_NOTIMPL;
-        }
+        return abortCommonDialog(c);
+    }
+
+    if ( reply == NULLOBJECT )
+    {
+        noMsgReturnException(c, methodName);
+        checkForCondition(c, true);
+        return abortCommonDialog(c);
+    }
+
+    if ( ! c->UnsignedInt32(reply, &hr) )
+    {
+        hr = E_NOTIMPL;
     }
     return hr;
 }
@@ -3765,6 +3857,113 @@ CommonDialogEvents::CommonDialogEvents(RexxObjectPtr rxSelf, RexxInstance *c) :
     ;
 }
 
+
+HRESULT CommonDialogEvents::dialogEvent(IFileDialog *pfd, IShellItem *psi, CdeDialogEvent evt)
+{
+    RexxThreadContext *c;
+    RexxObjectPtr      result = TheNilObj;
+    HRESULT            hr = S_OK;
+
+    if ( ! interpreter->AttachThread(&c))
+    {
+        return E_NOTIMPL;
+    }
+
+    RexxObjectPtr   rxHwnd = getCommonDialogHwnd(c, pfd);
+    RexxArrayObject args   = c->ArrayOfTwo(rexxPFD, rxHwnd);
+
+    CSTRING mthName;
+    switch ( evt )
+    {
+        case FileOk :
+            mthName = "onFileOk";
+            break;
+
+        case FolderChange :
+            mthName = "onFolderChange";
+            break;
+
+        case FolderChanging :
+            result = shellItem2name(c, psi, SIGDN_FILESYSPATH, &hr);
+            c->ArrayPut(args, result, 3);
+
+            mthName = "onFolderChanging";
+            break;
+
+        case Help :
+            mthName = "onHelp";
+            break;
+
+        case SelectionChange :
+            mthName = "onSelectionChange";
+            break;
+
+        case TypeChange :
+            mthName = "onTypeChange";
+            break;
+    }
+
+    RexxObjectPtr reply = c->SendMessage(rexxSelf, mthName, args);
+
+    hr = checkEventReply(c, reply, mthName);
+
+    c->DetachThread();
+    return hr;
+}
+
+
+HRESULT CommonDialogEvents::dialogEventWithResp(IFileDialog *pfd, IShellItem *psi,
+                                                uint32_t *resp, CdeDialogEvent evt)
+{
+    RexxThreadContext *c;
+    HRESULT            hr = S_OK;
+
+    if ( ! interpreter->AttachThread(&c))
+    {
+        return E_NOTIMPL;
+    }
+
+    RexxObjectPtr rxHwnd = getCommonDialogHwnd(c, pfd);
+    RexxObjectPtr result = shellItem2name(c, psi, SIGDN_FILESYSPATH, &hr);
+
+    if ( SUCCEEDED(hr) )
+    {
+        RexxArrayObject args = c->ArrayOfThree(rexxPFD, rxHwnd, result);
+
+        CSTRING mthName;
+        switch ( evt )
+        {
+            case Overwrite :
+                mthName = "onOverwrite";
+                break;
+
+            case ShareViolation :
+                mthName = "onShareViolation";
+                break;
+        }
+
+        RexxObjectPtr reply = c->SendMessage(rexxSelf, mthName, args);
+
+        hr = checkEventReply(c, reply, mthName);
+        if ( hr != E_NOTIMPL )
+        {
+            if ( hr == FDESVR_ACCEPT || hr == FDESVR_DEFAULT || hr == FDESVR_REFUSE )
+            {
+                *resp = hr;
+                hr    = S_OK;
+            }
+            else
+            {
+                wrongReplyListException(c, mthName, "one of the FDESVR_xx constants", reply);
+                checkForCondition(c, true);
+                hr = abortCommonDialog(c);
+            }
+        }
+    }
+
+    c->DetachThread();
+    return hr;
+}
 
 /** CommonDialogEvents::OnFileOk()
  *
@@ -3787,21 +3986,7 @@ CommonDialogEvents::CommonDialogEvents(RexxObjectPtr rxSelf, RexxInstance *c) :
  */
 HRESULT CommonDialogEvents::OnFileOk(IFileDialog *pfd)
 {
-    RexxThreadContext *c;
-    HRESULT            hr = S_OK;
-
-    if ( ! interpreter->AttachThread(&c))
-    {
-        return E_NOTIMPL;
-    }
-
-    RexxObjectPtr rxHwnd = getCommonDialogHwnd(c, pfd);
-    RexxObjectPtr reply  = c->SendMessage2(rexxSelf, "ONFILEOK", rexxPFD, rxHwnd);
-
-    hr = checkEventReply(c, reply);
-
-    c->DetachThread();
-    return hr;
+    return dialogEvent(pfd, NULL, FileOk);
 }
 
 
@@ -3816,23 +4001,106 @@ HRESULT CommonDialogEvents::OnFileOk(IFileDialog *pfd)
  */
 HRESULT CommonDialogEvents::OnFolderChange(IFileDialog *pfd)
 {
-    RexxThreadContext *c;
-    HRESULT            hr = S_OK;
-
-    if ( ! interpreter->AttachThread(&c))
-    {
-        return E_NOTIMPL;
-    }
-
-    RexxObjectPtr rxHwnd = getCommonDialogHwnd(c, pfd);
-    RexxObjectPtr reply  = c->SendMessage2(rexxSelf, "ONFOLDERCHANGE", rexxPFD, rxHwnd);
-
-    hr = checkEventReply(c, reply);
-
-    c->DetachThread();
-    return hr;
+    return dialogEvent(pfd, NULL, FolderChange);
 }
 
+
+/** CommonDialogEvents::OnFolderChanging()
+ *
+ *  Invoked before OnFolderChange. This allows the application to stop
+ *  navigation to a particular location.
+ *
+ * @param pfd
+ * @param psiFolder
+ *
+ * @return HRESULT
+ *
+ * @remarks  The calling application can call IFileDialog::SetFolder during this
+ *           callback to redirect navigation to an alternate folder. The actual
+ *           navigation does not occur until OnFolderChanging has returned.
+ *
+ *           If the calling application simply prevents navigation to a
+ *           particular folder, a user interface (UI) should be displayed with
+ *           an explanation of the restriction.
+ */
+HRESULT CommonDialogEvents::OnFolderChanging(IFileDialog *pfd, IShellItem *psiFolder)
+{
+    return dialogEvent(pfd, psiFolder, FolderChanging);
+}
+
+
+/** CommonDialogEvents::OnHelp()
+ *
+ *  This method was in the MSDN example for common dialog events.  But, it is
+ *  not documented and doesn't seem to get called.
+ *
+ *  Leaving the code in for now.
+ *
+ * @param pfd
+ *
+ * @return HRESULT
+ */
+HRESULT CommonDialogEvents::OnHelp(IFileDialog *pfd)
+{
+    return dialogEvent(pfd, NULL, Help);
+}
+
+
+/** CommonDialogEvents::OnOverwrite()
+ *
+ *  Invoked from the save dialog when the user chooses to overwrite a file.
+ *
+ *
+ * @param pfd
+ * @param psi
+ * @param resp
+ *
+ * @return HRESULT
+ */
+HRESULT CommonDialogEvents::OnOverwrite(IFileDialog *pfd, IShellItem *psi, FDE_OVERWRITE_RESPONSE *resp)
+{
+    return dialogEventWithResp(pfd, psi, (uint32_t *)resp, Overwrite);
+}
+
+
+/** CommonDialogEvents::OnSelectionChange()
+ *
+ * Invokded when the user changes the selection in the dialog's view.
+ *
+ *
+ * @param pfd
+ *
+ * @return HRESULT
+ */
+HRESULT CommonDialogEvents::OnSelectionChange(IFileDialog *pfd)
+{
+    return dialogEvent(pfd, NULL, SelectionChange);
+}
+
+
+/** CommonDialogEvents::OnShareViolation()
+ *
+ *  Enables an application to respond to sharing violations that arise from Open
+ *  or Save operations.
+ *
+ * @param pfd
+ * @param psi
+ * @param resp
+ *
+ * @return HRESULT
+ *
+ * @notes  The FOS_SHAREAWARE flag must be set through IFileDialog::SetOptions
+ *         before this method is called.
+ *
+ *         A sharing violation could possibly arise when the application
+ *         attempts to open a file, because the file could have been locked
+ *         between the time that the dialog tested it and the application opened
+ *         it.
+ */
+HRESULT CommonDialogEvents::OnShareViolation(IFileDialog *pfd, IShellItem *psi, FDE_SHAREVIOLATION_RESPONSE *resp)
+{
+    return dialogEventWithResp(pfd, psi, (uint32_t *)resp, ShareViolation);
+}
 
 /** CommonDialogEvents::OnTypeChange()
  *
@@ -3845,34 +4113,22 @@ HRESULT CommonDialogEvents::OnFolderChange(IFileDialog *pfd)
  */
 HRESULT CommonDialogEvents::OnTypeChange(IFileDialog *pfd)
 {
-    RexxThreadContext *c;
-    HRESULT            hr = S_OK;
-
-    if ( ! interpreter->AttachThread(&c))
-    {
-        return E_NOTIMPL;
-    }
-
-    RexxObjectPtr rxHwnd = getCommonDialogHwnd(c, pfd);
-    RexxObjectPtr reply  = c->SendMessage2(rexxSelf, "ONTYPECHANGE", rexxPFD, rxHwnd);
-
-    hr = checkEventReply(c, reply);
-
-    c->DetachThread();
-    return hr;
+    return dialogEvent(pfd, NULL, TypeChange);
 }
 
-
-/** CommonDialogEvents::OnButtonClicked()
+/** CommonDialogEvents::dialogControlEvent()
  *
- *  Invoked when the user clicks a command button.
+ *  Generic cod to Handle all the IFileDialogControlEvents method responses.
  *
  * @param pfdc
  * @param itemID
+ * @param ctlID   Can be either the control ID parameter or the checked
+ *                parameter dependin on the event
+ * @param evt     Identifies which event we are handling.
  *
  * @return HRESULT
  */
-HRESULT CommonDialogEvents::OnButtonClicked(IFileDialogCustomize *pfdc, DWORD itemID)
+HRESULT CommonDialogEvents::dialogControlEvent(IFileDialogCustomize *pfdc, DWORD itemID, DWORD ctlID, CdeDialogEvent evt)
 {
     RexxThreadContext *c;
     HRESULT            hr = S_OK;
@@ -3890,15 +4146,83 @@ HRESULT CommonDialogEvents::OnButtonClicked(IFileDialogCustomize *pfdc, DWORD it
         RexxObjectPtr   rxHwnd = getCommonDialogHwnd(c, pfd);
         RexxArrayObject args   = c->ArrayOfThree(rexxPFD, rxHwnd, c->UnsignedInt32(itemID));
 
-        RexxObjectPtr reply = c->SendMessage(rexxSelf, "ONBUTTONCLICKED", args);
+        CSTRING mthName;
+        switch ( evt )
+        {
+            case ButtonClicked :
+                mthName = "onButtonClicked";
+                break;
 
-        hr = checkEventReply(c, reply);
+            case CheckButtonToggled :
+                mthName = "onCheckButtonToggled";
+                c->ArrayPut(args, ctlID ? TheTrueObj : TheFalseObj, 4);
+                break;
+
+            case ControlActivating :
+                mthName = "onControlActivating";
+                break;
+
+            case ItemSelected :
+                mthName = "onItemSelected";
+                c->ArrayPut(args, c->UnsignedInt32(ctlID), 4);
+                break;
+        }
+
+        RexxObjectPtr reply = c->SendMessage(rexxSelf, mthName, args);
+
+        hr = checkEventReply(c, reply, mthName);
 
         pfd->Release();
     }
 
     c->DetachThread();
     return hr;
+}
+
+/** CommonDialogEvents::OnButtonClicked()
+ *
+ *  Invoked when the user clicks a command button.
+ *
+ * @param pfdc
+ * @param itemID
+ *
+ * @return HRESULT
+ */
+HRESULT CommonDialogEvents::OnButtonClicked(IFileDialogCustomize *pfdc, DWORD itemID)
+{
+    return dialogControlEvent(pfdc, itemID, 0, ButtonClicked);
+}
+
+
+/** CommonDialogEvents::OnCheckButtonToggled()
+ *
+ *  Invoked when the user changes the state of a check button.
+ *
+ * @param pfdc
+ * @param itemID
+ * @param checked
+ *
+ * @return HRESULT
+ */
+HRESULT CommonDialogEvents::OnCheckButtonToggled(IFileDialogCustomize *pfdc, DWORD itemID, BOOL checked)
+{
+    return dialogControlEvent(pfdc, itemID, checked, CheckButtonToggled);
+}
+
+
+/** CommonDialofEvents::OnControlActivating()
+ *
+ *  Invoked when an Open button drop-down list customized through
+ *  EnableOpenDropDown or a Tools menu is about to display its contents.
+ *
+ * @param pfdc
+ * @param itemID
+ *
+ * @return HRESULT
+ */
+HRESULT CommonDialogEvents::OnControlActivating(IFileDialogCustomize *pfdc, DWORD itemID)
+{
+    return dialogControlEvent(pfdc, itemID, 0, ControlActivating);
 }
 
 
@@ -3915,31 +4239,7 @@ HRESULT CommonDialogEvents::OnButtonClicked(IFileDialogCustomize *pfdc, DWORD it
  */
 HRESULT CommonDialogEvents::OnItemSelected(IFileDialogCustomize *pfdc, DWORD ctlID, DWORD itemID)
 {
-    RexxThreadContext *c;
-    HRESULT            hr = S_OK;
-
-    if ( ! interpreter->AttachThread(&c))
-    {
-        return E_NOTIMPL;
-    }
-
-    IFileDialog *pfd = NULL;
-
-    hr = pfdc->QueryInterface(IID_PPV_ARGS(&pfd));
-    if ( SUCCEEDED(hr) )
-    {
-        RexxObjectPtr   rxHwnd = getCommonDialogHwnd(c, pfd);
-        RexxArrayObject args   = c->ArrayOfFour(rexxPFD, rxHwnd, c->UnsignedInt32(ctlID), c->UnsignedInt32(itemID));
-
-        RexxObjectPtr reply = c->SendMessage(rexxSelf, "ONITEMSELECTED", args);
-
-        hr = checkEventReply(c, reply);
-
-        pfd->Release();
-    }
-
-    c->DetachThread();
-    return hr;
+    return dialogControlEvent(pfdc, itemID, ctlID, ItemSelected);
 }
 
 

@@ -1572,6 +1572,7 @@ REXX_METHOD_PROTOTYPE(cid_close);
 REXX_METHOD_PROTOTYPE(cid_getCurrentSelection);
 REXX_METHOD_PROTOTYPE(cid_getFileName);
 REXX_METHOD_PROTOTYPE(cid_getFileTypeIndex);
+REXX_METHOD_PROTOTYPE(cid_getFolder);
 REXX_METHOD_PROTOTYPE(cid_getResult);
 REXX_METHOD_PROTOTYPE(cid_initCOM);
 REXX_METHOD_PROTOTYPE(cid_release);
@@ -1587,6 +1588,7 @@ REXX_METHOD_PROTOTYPE(cid_setFolder);
 REXX_METHOD_PROTOTYPE(cid_setOkButtonLabel);
 REXX_METHOD_PROTOTYPE(cid_setTitle);
 REXX_METHOD_PROTOTYPE(cid_show);
+REXX_METHOD_PROTOTYPE(cid_unadvise);
 
 // OpenFileDialog
 REXX_METHOD_PROTOTYPE(ofd_init);
@@ -1599,9 +1601,15 @@ REXX_METHOD_PROTOTYPE(sfd_setSaveAsItem);
 // CommonDialogCustomizations
 REXX_METHOD_PROTOTYPE(cid_initCustomizations);
 REXX_METHOD_PROTOTYPE(cid_addCheckButton);
+REXX_METHOD_PROTOTYPE(cid_addComboBox);
 REXX_METHOD_PROTOTYPE(cid_addControlItem);
+REXX_METHOD_PROTOTYPE(cid_addEditBox);
+REXX_METHOD_PROTOTYPE(cid_addMenu);
 REXX_METHOD_PROTOTYPE(cid_addPushButton);
 REXX_METHOD_PROTOTYPE(cid_addRadioButtonList);
+REXX_METHOD_PROTOTYPE(cid_addSeparator);
+REXX_METHOD_PROTOTYPE(cid_addText);
+REXX_METHOD_PROTOTYPE(cid_enableOpenDropDown);
 REXX_METHOD_PROTOTYPE(cid_endVisualGroup);
 REXX_METHOD_PROTOTYPE(cid_isChecked);
 REXX_METHOD_PROTOTYPE(cid_makeProminent);
@@ -2747,6 +2755,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cid_getCurrentSelection,        cid_getCurrentSelection),
     REXX_METHOD(cid_getFileName,                cid_getFileName),
     REXX_METHOD(cid_getFileTypeIndex,           cid_getFileTypeIndex),
+    REXX_METHOD(cid_getFolder,                  cid_getFolder),
     REXX_METHOD(cid_getResult,                  cid_getResult),
     REXX_METHOD(cid_initCOM,                    cid_initCOM),
     REXX_METHOD(cid_release,                    cid_release),
@@ -2762,6 +2771,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cid_setOkButtonLabel,           cid_setOkButtonLabel),
     REXX_METHOD(cid_setTitle,                   cid_setTitle),
     REXX_METHOD(cid_show,                       cid_show),
+    REXX_METHOD(cid_unadvise,                   cid_unadvise),
 
     REXX_METHOD(ofd_init,                    	ofd_init),
     REXX_METHOD(ofd_getResults,                 ofd_getResults),
@@ -2771,9 +2781,15 @@ RexxMethodEntry oodialog_methods[] = {
 
     REXX_METHOD(cid_initCustomizations,         cid_initCustomizations),
     REXX_METHOD(cid_addCheckButton,             cid_addCheckButton),
+    REXX_METHOD(cid_addComboBox,                cid_addComboBox),
     REXX_METHOD(cid_addControlItem,             cid_addControlItem),
+    REXX_METHOD(cid_addEditBox,                 cid_addEditBox),
+    REXX_METHOD(cid_addMenu,                    cid_addMenu),
     REXX_METHOD(cid_addPushButton,              cid_addPushButton),
     REXX_METHOD(cid_addRadioButtonList,         cid_addRadioButtonList),
+    REXX_METHOD(cid_addSeparator,               cid_addSeparator),
+    REXX_METHOD(cid_addText,                    cid_addText),
+    REXX_METHOD(cid_enableOpenDropDown,         cid_enableOpenDropDown),
     REXX_METHOD(cid_endVisualGroup,             cid_endVisualGroup),
     REXX_METHOD(cid_isChecked,                  cid_isChecked),
     REXX_METHOD(cid_makeProminent,              cid_makeProminent),

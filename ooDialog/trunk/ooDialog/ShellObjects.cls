@@ -97,6 +97,7 @@
 ::method getCurrentSelection unguarded external "LIBRARY oodialog cid_getCurrentSelection"
 ::method getFileName unguarded external "LIBRARY oodialog cid_getFileName"
 ::method getFileTypeIndex unguarded external "LIBRARY oodialog cid_getFileTypeIndex"
+::method getFolder external "LIBRARY oodialog cid_getFolder"
 ::method getResult external "LIBRARY oodialog cid_getResult"
 ::method initCOM unguarded external "LIBRARY oodialog cid_initCOM"
 ::method release external "LIBRARY oodialog cid_release"
@@ -112,6 +113,7 @@
 ::method setOkButtonLabel external "LIBRARY oodialog cid_setOkButtonLabel"
 ::method setTitle external "LIBRARY oodialog cid_setTitle"
 ::method show unguarded external "LIBRARY oodialog cid_show"
+::method unadvise unguarded external "LIBRARY oodialog cid_unadvise"
 
 
 ::class 'OpenFileDialog' public subclass CommonItemDialog
@@ -127,9 +129,15 @@
 ::class 'CommonDialogCustomizations' public mixinclass Object
 ::method initCustomizations private external "LIBRARY oodialog cid_initCustomizations"
 ::method addCheckButton external "LIBRARY oodialog cid_addCheckButton"
+::method addComboBox external "LIBRARY oodialog cid_addComboBox"
 ::method addControlItem external "LIBRARY oodialog cid_addControlItem"
+::method addEditBox external "LIBRARY oodialog cid_addEditBox"
+::method addMenu external "LIBRARY oodialog cid_addMenu"
 ::method addPushButton external "LIBRARY oodialog cid_addPushButton"
 ::method addRadioButtonList external "LIBRARY oodialog cid_addRadioButtonList"
+::method addSeparator external "LIBRARY oodialog cid_addSeparator"
+::method addText external "LIBRARY oodialog cid_addText"
+::method enableOpenDropDown external "LIBRARY oodialog cid_enableOpenDropDown"
 ::method endVisualGroup external "LIBRARY oodialog cid_endVisualGroup"
 ::method isChecked external "LIBRARY oodialog cid_isChecked"
 ::method makeProminent external "LIBRARY oodialog cid_makeProminent"
@@ -142,8 +150,20 @@
 ::constant  S_FALSE           1
 ::constant  E_NOTIMPL         34360000513  -- _HRESULT_TYPEDEF_(0x80004001L)
 
+-- OnOverwrite and OnShareViolation response constants
+::constant  FDESVR_DEFAULT    0
+::constant  FDESVR_ACCEPT     1
+::constant  FDESVR_REFUSE     2
+
+
 ::method init external "LIBRARY oodialog cde_init"
 ::method onButtonClicked unguarded
+    return self~S_OK
+
+::method onCheckButtonToggled unguarded
+    return self~S_OK
+
+::method onControlActivating unguarded
     return self~S_OK
 
 ::method onFileOk unguarded
@@ -152,8 +172,23 @@
 ::method onFolderChange unguarded
     return self~S_OK
 
+::method onFolderChanging unguarded
+    return self~S_OK
+
+::method onHelp unguarded
+    return self~S_OK
+
 ::method onItemSelected unguarded
     return self~S_OK
+
+::method onOverwrite unguarded
+    return self~FDESVR_DEFAULT
+
+::method onSelectionChange unguarded
+    return self~S_OK
+
+::method onShareViolation unguarded
+    return self~FDESVR_DEFAULT
 
 ::method onTypeChange unguarded
     return self~S_OK

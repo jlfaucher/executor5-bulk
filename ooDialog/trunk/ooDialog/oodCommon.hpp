@@ -175,7 +175,7 @@ extern int               putUnicodeText(LPWORD dest, const char *text);
 extern int               putUnicodeText(LPWORD dest, const char *text, HRESULT *pHR);
 extern LPWSTR            ansi2unicode(LPCSTR str);
 extern RexxStringObject  unicode2string(RexxThreadContext *c, PWSTR wstr);
-extern RexxObjectPtr     unicode2NilString(RexxThreadContext *c, LPWSTR wstr);
+extern RexxObjectPtr     unicode2StringOrNil(RexxThreadContext *c, LPWSTR wstr);
 extern char             *unicode2ansi(PWSTR wstr);
 extern bool              printHResultErr(CSTRING api, HRESULT hr);
 extern bool              getFormattedErrMsg(char **errBuff, uint32_t errCode, uint32_t *thisErr);

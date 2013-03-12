@@ -89,6 +89,24 @@ class CommonDialogEvents : public IFileDialogEvents,
                            public IFileDialogControlEvents
 {
 public:
+
+    typedef enum
+    {
+        ButtonClicked        = 0,
+        CheckButtonToggled,
+        ControlActivating,
+        ItemSelected,
+
+        FileOk,
+        FolderChange,
+        FolderChanging,
+        Help,
+        Overwrite,
+        SelectionChange,
+        ShareViolation,
+        TypeChange
+    } CdeDialogEvent;
+
     // IUnknown methods
     IFACEMETHODIMP QueryInterface(REFIID riid, void** ppv)
     {
@@ -119,17 +137,17 @@ public:
     // IFileDialogEvents methods
     IFACEMETHODIMP OnFileOk(IFileDialog *);
     IFACEMETHODIMP OnFolderChange(IFileDialog *);
-    IFACEMETHODIMP OnFolderChanging(IFileDialog *, IShellItem *) { return S_OK; };
-    IFACEMETHODIMP OnHelp(IFileDialog *) { return S_OK; };
-    IFACEMETHODIMP OnSelectionChange(IFileDialog *) { return S_OK; };
-    IFACEMETHODIMP OnShareViolation(IFileDialog *, IShellItem *, FDE_SHAREVIOLATION_RESPONSE *) { return S_OK; };
+    IFACEMETHODIMP OnFolderChanging(IFileDialog *, IShellItem *);
+    IFACEMETHODIMP OnHelp(IFileDialog *);
+    IFACEMETHODIMP OnSelectionChange(IFileDialog *);
+    IFACEMETHODIMP OnShareViolation(IFileDialog *, IShellItem *, FDE_SHAREVIOLATION_RESPONSE *);
     IFACEMETHODIMP OnTypeChange(IFileDialog *pfd);
-    IFACEMETHODIMP OnOverwrite(IFileDialog *, IShellItem *, FDE_OVERWRITE_RESPONSE *) { return S_OK; };
+    IFACEMETHODIMP OnOverwrite(IFileDialog *, IShellItem *, FDE_OVERWRITE_RESPONSE *);
 
     // IFileDialogControlEvents methods
     IFACEMETHODIMP OnButtonClicked(IFileDialogCustomize *, DWORD);
-    IFACEMETHODIMP OnCheckButtonToggled(IFileDialogCustomize *, DWORD, BOOL) { return S_OK; };
-    IFACEMETHODIMP OnControlActivating(IFileDialogCustomize *, DWORD) { return S_OK; };
+    IFACEMETHODIMP OnCheckButtonToggled(IFileDialogCustomize *, DWORD, BOOL);
+    IFACEMETHODIMP OnControlActivating(IFileDialogCustomize *, DWORD);
     IFACEMETHODIMP OnItemSelected(IFileDialogCustomize *pfdc, DWORD dwIDCtl, DWORD dwIDItem);
 
     inline RexxObjectPtr getRexxPFD() { return rexxPFD; }
@@ -139,9 +157,13 @@ public:
 
 private:
     RexxObjectPtr getCommonDialogHwnd(RexxThreadContext *c, IFileDialog *pfd);
-    HRESULT checkEventReply(RexxThreadContext *c, RexxObjectPtr reply);
+    HRESULT       checkEventReply(RexxThreadContext *c, RexxObjectPtr reply, CSTRING methodName);
+    HRESULT       dialogEvent(IFileDialog *pfd, IShellItem *psi, CdeDialogEvent evt);
+    HRESULT 	  dialogEventWithResp(IFileDialog *pfd, IShellItem *psi, uint32_t *resp, CdeDialogEvent evt);
+    HRESULT       dialogControlEvent(IFileDialogCustomize *pfdc, DWORD itemID, DWORD ctlID, CdeDialogEvent evt);
+    HRESULT       abortCommonDialog(RexxThreadContext *c);
 
-    ~CommonDialogEvents() { };
+    ~CommonDialogEvents() {  };
 
     RexxObjectPtr  rexxSelf;            // Our Rexx self
     RexxObjectPtr  rexxPFD;             // The Rexx CommonItemDialog object we are receiving events for.
@@ -159,6 +181,7 @@ typedef struct _cidCSelf
     uint32_t            cookie;
     uint32_t            comThreadID;
     bool                comInitialized;
+    bool                errorUnadviseIsDone;
 } CCommonItemDialog;
 typedef CCommonItemDialog *pCCommonItemDialog;
 
@@ -181,6 +204,21 @@ typedef enum
     CidOkButtonLabel
 } CidTextType;
 
+
+// Identifies a type of control that can be added / set in IFileDialogCustomize
+typedef enum
+{
+    CdcCheckButton,
+    CdcComboBox,
+    CdcControlItem,
+    CdcEditBox,
+    CdcEnableOpenDropDown,
+    CdcMenu,
+    CdcPushButton,
+    CdcRadioButtonList,
+    CdcSeparator,
+    CdcText
+} CdcControlType;
 
 
 

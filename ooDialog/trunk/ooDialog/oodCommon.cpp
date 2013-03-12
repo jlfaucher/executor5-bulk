@@ -2516,7 +2516,7 @@ char *unicode2ansi(LPWSTR wstr)
  * @return The conveted string as a new Rexx string object on success.
  *
  * @remarks  The Rexx null string is returned if an error occurs.  Use
- *           unicode2NilString() to return the .nil ojbect on errors.
+ *           unicode2StringOrNil() to return the .nil ojbect on errors.
  */
 RexxStringObject unicode2string(RexxThreadContext *c, LPWSTR wstr)
 {
@@ -2550,7 +2550,7 @@ done_out:
  * @return The conveted string as a new Rexx string object on success, .nil on
  *         error.
  */
-RexxObjectPtr unicode2NilString(RexxThreadContext *c, LPWSTR wstr)
+RexxObjectPtr unicode2StringOrNil(RexxThreadContext *c, LPWSTR wstr)
 {
     RexxObjectPtr result = TheNilObj;
     if ( wstr == NULL )
