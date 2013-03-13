@@ -183,7 +183,7 @@ public:
     {
         static const QITAB qit[] =
         {
-            QITABENT(CommonDialogEvents, IShellItemFilter),
+            QITABENT(ShellItemFilter, IShellItemFilter),
             { 0 },
         };
         return QISearch(this, qit, riid, ppv);
