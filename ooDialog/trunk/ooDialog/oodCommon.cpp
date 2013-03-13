@@ -2277,6 +2277,21 @@ const char *comctl32VersionPart(DWORD id, DWORD type)
             }
             break;
 
+        case COMCTL32_6_16 :
+            if ( type == COMCTL32_NUMBER_PART )
+            {
+                part = "6.16";
+            }
+            else if ( type == COMCTL32_OS_PART )
+            {
+                part = "Windows 7";
+            }
+            else
+            {
+                part = "comctl32.dll version 6.16 (Windows 7)";
+            }
+            break;
+
         default :
             part = "Unknown";
             break;

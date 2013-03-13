@@ -1990,6 +1990,25 @@ static HRESULT cidUnadvise(RexxMethodContext *c, pCCommonItemDialog pccid)
 }
 
 
+static HRESULT cidReleaseFilter(RexxMethodContext *c, pCCommonItemDialog pccid)
+{
+    HRESULT hr = ERROR_INVALID_FUNCTION;
+
+    if ( pccid != NULL && pccid->psif != NULL )
+    {
+        pccid->psif->Release();
+
+        c->DropObjectVariable(CID_FILTER_VAR);
+        pccid->psif   = NULL;
+#ifdef _DEBUG
+        printf("cidReleaseFilter(), pccid->psif->Release() invoked\n");
+#endif
+    }
+
+    return hr;
+}
+
+
 /**
  * Releases the IFileDialog pointer and releases the COM library if we are on
  * the proper thread.
@@ -2001,6 +2020,7 @@ static void cidDone(RexxMethodContext *c, pCCommonItemDialog pccid)
     if ( pccid->pfd != NULL )
     {
         cidUnadvise(c, pccid);
+        cidReleaseFilter(c, pccid);
 
         pccid->pfd->Release();
         pccid->pfd  = NULL;
@@ -2289,7 +2309,6 @@ RexxMethod2(uint32_t, cid_advise, RexxObjectPtr, eventHandler, CSELF, pCSelf)
             pccid->pcde   = pcde;
 
             context->SetObjectVariable(CID_EVENTHANDLER_VAR, eventHandler);
-            printf("Success onAdvise pfd=%p\n", pccid->pfd);
         }
         pfde->Release();
     }
@@ -2916,6 +2935,88 @@ done_out:
 }
 
 
+/** CommonItemDialog::setFilter()
+ *
+ *
+ *
+ *  @param filter  [required] The ShellItemFilter object that will be used to
+ *                 filter items from the common item dialog view.
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  The filter can only be set one time and can not be removed.  The
+ *          filter ojbect can not be reused.
+ *
+ *          MSDN says both:
+ *
+ *          To filter by file type, setFileTypes() should be used, because in
+ *          folders with a large number of items it may offer better performance
+ *          than applying a ShellItemFilter.
+ *
+ *          Deprecated. SetFilter is no longer available for use as of Windows 7
+ */
+RexxMethod2(uint32_t, cid_setFilter, RexxObjectPtr, filter, CSELF, pCSelf)
+{
+    HRESULT hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        goto done_out;
+    }
+    RexxMethodContext *c = context;
+    if ( ! c->IsOfType(filter, "ShellItemFilter") )
+    {
+        cidDone(context, pccid);
+        wrongClassException(c->threadContext, 1, "ShellItemFilter", filter);
+        hr = ERROR_INVALID_FUNCTION;
+        goto done_out;
+    }
+
+    if ( pccid->psif != NULL )
+    {
+        cidDone(context, pccid);
+        userDefinedMsgException(context, 1, "a shell item filter is already assigned");
+        hr = ERROR_INVALID_FUNCTION;
+        goto done_out;
+    }
+
+    pCShellItemFilter pcsif = (pCShellItemFilter)c->ObjectToCSelf(filter);
+
+    if ( pcsif->inUse )
+    {
+        cidDone(context, pccid);
+        userDefinedMsgException(context, 1, "the shell item filter is invalid, it has been used previously and disposed of");
+        hr = ERROR_INVALID_FUNCTION;
+        goto done_out;
+    }
+
+
+    IShellItemFilter *psif = NULL;
+    hr = pcsif->psif->QueryInterface(IID_PPV_ARGS(&psif));
+    if ( SUCCEEDED(hr) )
+    {
+        hr = pccid->pfd->SetFilter(psif);
+        if ( SUCCEEDED(hr) )
+        {
+            pcsif->psif->setRexxPFD(pccid->rexxSelf);
+            pcsif->inUse = true;
+
+            pccid->psif = pcsif->psif;
+
+            context->SetObjectVariable(CID_FILTER_VAR, filter);
+        }
+        psif->Release();
+    }
+
+done_out:
+    if ( hr != S_OK )
+    {
+        oodSetSysErrCode(context->threadContext, hr);
+    }
+    return hr;
+}
+
+
 /** CommonItemDialog::setFolder()
  *
  *  Sets the folder that is selected when the dialog is opened
@@ -3368,8 +3469,45 @@ err_out:
 }
 
 
-static uint32_t cdcAddControl(RexxMethodContext *c, RexxObjectPtr rxID1, CSTRING text, RexxObjectPtr rxID2,
-                              size_t misc, void *pCSelf, CdcControlType ctl)
+static bool cdcKeyword2state(RexxMethodContext *c, CSTRING keyword, CDCONTROLSTATEF *state, size_t argPos)
+{
+    *state = CDCS_INACTIVE;
+
+    if (      StrCmpI(keyword, "INACTIVE")       == 0 ) *state = CDCS_INACTIVE;
+    else if ( StrCmpI(keyword, "ENABLED")        == 0 ) *state = CDCS_ENABLED;
+    else if ( StrCmpI(keyword, "VISIBLE")        == 0 ) *state = CDCS_VISIBLE;
+    else if ( StrCmpI(keyword, "ENABLEDVISIBLE") == 0 ) *state = CDCS_ENABLEDVISIBLE;
+    else
+    {
+        wrongArgValueException(c->threadContext, argPos, CDC_STATE_KEYWORDS, keyword);
+        return false;
+    }
+    return true;
+}
+
+static RexxObjectPtr cdcState2keyword(RexxMethodContext *c, CDCONTROLSTATEF state)
+{
+    CSTRING str = "";
+    switch ( state )
+    {
+        case 0 :
+            str = "Inactive";
+            break;
+        case 1 :
+            str = "Enabled";
+            break;
+        case 2 :
+            str = "Visible";
+            break;
+        case 3 :
+            str = "EnabledVisible";
+            break;
+    }
+    return c->String(str);
+}
+
+static uint32_t cdcControlFunc(RexxMethodContext *c, RexxObjectPtr rxID1, CSTRING text, RexxObjectPtr rxID2,
+                               size_t misc, void *pCSelf, CdcControlType ctl)
 {
     HRESULT hr;
     pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(c, pCSelf, &hr);
@@ -3422,6 +3560,10 @@ static uint32_t cdcAddControl(RexxMethodContext *c, RexxObjectPtr rxID1, CSTRING
                 hr = pfdc->EnableOpenDropDown(ctrlID1);
                 break;
 
+            case CdcMakeProminent :
+                hr = pfdc->MakeProminent(ctrlID1);
+                break;
+
             case CdcMenu :
                 hr = pfdc->AddMenu(ctrlID1, wName);
                 break;
@@ -3434,8 +3576,48 @@ static uint32_t cdcAddControl(RexxMethodContext *c, RexxObjectPtr rxID1, CSTRING
                 hr = pfdc->AddRadioButtonList(ctrlID1);
                 break;
 
+            case CdcRemoveAll :
+                hr = pfdc->RemoveAllControlItems(ctrlID1);
+                break;
+
+            case CdcRemoveItem :
+                hr = pfdc->RemoveControlItem(ctrlID1, ctrlID2);
+                break;
+
             case CdcSeparator :
                 hr = pfdc->AddSeparator(ctrlID1);
+                break;
+
+            case CdcSetCheckButton :
+                hr = pfdc->SetCheckButtonState(ctrlID1, (BOOL)misc);
+                break;
+
+            case CdcSetControlItemState :
+                hr = pfdc->SetControlItemState(ctrlID1, ctrlID2, (CDCONTROLSTATEF)misc);
+                break;
+
+            case CdcSetControlItemText :
+                hr = pfdc->SetControlItemText(ctrlID1, ctrlID2, wName);
+                break;
+
+            case CdcSetControlLabel :
+                hr = pfdc->SetControlLabel(ctrlID1, wName);
+                break;
+
+            case CdcSetControlState :
+                hr = pfdc->SetControlState(ctrlID1, (CDCONTROLSTATEF)misc);
+                break;
+
+            case CdcSetEditBoxText :
+                hr = pfdc->SetEditBoxText(ctrlID1, wName);
+                break;
+
+            case CdcSetSelectedControlItem :
+                hr = pfdc->SetSelectedControlItem(ctrlID1, ctrlID2);
+                break;
+
+            case CdcStartVisualGroup :
+                hr = pfdc->StartVisualGroup(ctrlID1, wName);
                 break;
 
             case CdcText :
@@ -3451,6 +3633,105 @@ static uint32_t cdcAddControl(RexxMethodContext *c, RexxObjectPtr rxID1, CSTRING
     }
     return hr;
 }
+
+static uint32_t cdcControlStateFunc(RexxMethodContext *c, RexxObjectPtr rxID1, CSTRING text, RexxObjectPtr rxID2,
+                                    size_t argPos, void *pCSelf, CdcControlType ctl)
+{
+    CDCONTROLSTATEF state;
+    if ( ! cdcKeyword2state(c, text, &state, ctl == CdcSetControlItemState ? 3 : 2) )
+    {
+        oodSetSysErrCode(c->threadContext, ERROR_INVALID_FUNCTION);
+        return ERROR_INVALID_FUNCTION;
+    }
+
+    return cdcControlFunc(c, rxID1, NULL, rxID2, state, pCSelf, ctl);
+}
+
+static RexxObjectPtr cdcGetControlState(RexxMethodContext *c, RexxObjectPtr rxID1, RexxObjectPtr rxID2,
+                                        void *pCSelf, CdcControlType ctl)
+{
+    RexxObjectPtr result = TheNilObj;
+    HRESULT       hr;
+    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(c, pCSelf, &hr);
+    if ( pccid == NULL )
+    {
+        return result;
+    }
+
+    uint32_t ctrlID1;
+    uint32_t ctrlID2;
+    if ( ! cdcGetIdCheckText(c, rxID1, NULL,  rxID2, &ctrlID1, &ctrlID2, &hr) )
+    {
+        return result;
+    }
+
+    IFileDialogCustomize *pfdc;
+
+    hr = pccid->pfd->QueryInterface(IID_PPV_ARGS(&pfdc));
+    if ( SUCCEEDED(hr) )
+    {
+        switch ( ctl )
+        {
+            case CdcCheckButtonState :
+                BOOL chkd;
+
+                hr = pfdc->GetCheckButtonState(ctrlID1, &chkd);
+                if ( SUCCEEDED(hr) )
+                {
+                    result = c->Logical(chkd);
+                }
+                break;
+
+            case CdcControlItemState :
+            case CdcControlState :
+                CDCONTROLSTATEF state;
+
+                if ( ctl == CdcControlItemState )
+                {
+                    hr = pfdc->GetControlItemState(ctrlID1, ctrlID2, &state);
+                }
+                else
+                {
+                    hr = pfdc->GetControlState(ctrlID1, &state);
+                }
+                if ( SUCCEEDED(hr) )
+                {
+                    result = cdcState2keyword(c, state);
+                }
+                break;
+
+            case CdcEditBoxState :
+                WCHAR *text;
+
+                hr = pfdc->GetEditBoxText(ctrlID1, &text);
+                if ( SUCCEEDED(hr) )
+                {
+                    result = unicode2StringOrNil(c->threadContext, text);
+                    CoTaskMemFree(text);
+                }
+                break;
+
+            case CdcSelectedControlItem :
+                DWORD id;
+
+                hr = pfdc->GetSelectedControlItem(ctrlID1, &id);
+                if ( SUCCEEDED(hr) )
+                {
+                    result = c->UnsignedInt32(id);
+                }
+                break;
+        }
+
+        pfdc->Release();
+    }
+
+    if ( hr != S_OK )
+    {
+        oodSetSysErrCode(c->threadContext, hr);
+    }
+    return result;
+}
+
 
 /** CommonDialogCustomizations::initCustomizations()
  *
@@ -3471,12 +3752,12 @@ RexxMethod1(RexxObjectPtr, cid_initCustomizations, RexxObjectPtr, cselfBuf)
 
 RexxMethod4(uint32_t, cid_addCheckButton, RexxObjectPtr, rxID, CSTRING, label, OPTIONAL_logical_t, checked, CSELF, pCSelf)
 {
-    return cdcAddControl(context, rxID, label, NULLOBJECT, checked, pCSelf, CdcPushButton);
+    return cdcControlFunc(context, rxID, label, NULLOBJECT, checked, pCSelf, CdcPushButton);
 }
 
 RexxMethod2(uint32_t, cid_addComboBox, RexxObjectPtr, rxID, CSELF, pCSelf)
 {
-    return cdcAddControl(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcComboBox);
+    return cdcControlFunc(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcComboBox);
 }
 
 
@@ -3493,50 +3774,49 @@ RexxMethod2(uint32_t, cid_addComboBox, RexxObjectPtr, rxID, CSELF, pCSelf)
  */
 RexxMethod4(uint32_t, cid_addControlItem, RexxObjectPtr, rxContainerID, CSTRING, label, RexxObjectPtr, rxItemID, CSELF, pCSelf)
 {
-    return cdcAddControl(context, rxContainerID, label, rxItemID, 0, pCSelf, CdcControlItem);
+    return cdcControlFunc(context, rxContainerID, label, rxItemID, 0, pCSelf, CdcControlItem);
 }
 
 
 RexxMethod3(uint32_t, cid_addEditBox, RexxObjectPtr, rxID, CSTRING, label, CSELF, pCSelf)
 {
-    return cdcAddControl(context, rxID, label, NULLOBJECT, 0, pCSelf, CdcEditBox);
+    return cdcControlFunc(context, rxID, label, NULLOBJECT, 0, pCSelf, CdcEditBox);
 }
 
 
 RexxMethod3(uint32_t, cid_addMenu, RexxObjectPtr, rxID, CSTRING, text, CSELF, pCSelf)
 {
-    return cdcAddControl(context, rxID, text, NULLOBJECT, 0, pCSelf, CdcMenu);
+    return cdcControlFunc(context, rxID, text, NULLOBJECT, 0, pCSelf, CdcMenu);
 }
 
 
 RexxMethod3(uint32_t, cid_addPushButton, RexxObjectPtr, rxID, CSTRING, label, CSELF, pCSelf)
 {
-    return cdcAddControl(context, rxID, label, NULLOBJECT, 0, pCSelf, CdcPushButton);
+    return cdcControlFunc(context, rxID, label, NULLOBJECT, 0, pCSelf, CdcPushButton);
 }
 
 
 RexxMethod2(uint32_t, cid_addRadioButtonList, RexxObjectPtr, rxID, CSELF, pCSelf)
 {
-    return cdcAddControl(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcRadioButtonList);
+    return cdcControlFunc(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcRadioButtonList);
 }
 
 
 RexxMethod2(uint32_t, cid_addSeparator, RexxObjectPtr, rxID, CSELF, pCSelf)
 {
-    return cdcAddControl(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcSeparator);
+    return cdcControlFunc(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcSeparator);
 }
 
 
 RexxMethod3(uint32_t, cid_addText, RexxObjectPtr, rxID, CSTRING, text, CSELF, pCSelf)
 {
-    return cdcAddControl(context, rxID, text, NULLOBJECT, 0, pCSelf, CdcText);
+    return cdcControlFunc(context, rxID, text, NULLOBJECT, 0, pCSelf, CdcText);
 }
 
 
 RexxMethod2(uint32_t, cid_enableOpenDropDown, RexxObjectPtr, rxID, CSELF, pCSelf)
 {
-    // We use addControl() even though this isn't technically adding a control.
-    return cdcAddControl(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcEnableOpenDropDown);
+    return cdcControlFunc(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcEnableOpenDropDown);
 }
 
 
@@ -3569,68 +3849,163 @@ RexxMethod1(uint32_t, cid_endVisualGroup, CSELF, pCSelf)
     return hr;
 }
 
-RexxMethod2(logical_t, cid_isChecked, RexxObjectPtr, rxID, CSELF, pCSelf)
+
+/**  CommonDialogCustomizations::getCheckButtonState()
+ *
+ *   Gets the checked state of the specified check button.
+ *
+ *   @param id  [required]  The ID for the check button.
+ *
+ *   @return True if checked, otherwise false.
+ *
+ *   @notes  Also aliased to the isChecked() method
+ */
+RexxMethod2(RexxObjectPtr, cid_getCheckButtonState, RexxObjectPtr, rxID, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
-    if ( pccid == NULL )
-    {
-        return FALSE;
-    }
-
-    uint32_t ctrlID;
-    if ( ! cdcGetIdCheckText(context, rxID, NULL,  NULLOBJECT, &ctrlID, NULL, &hr) )
-    {
-        return FALSE;
-    }
-
-    IFileDialogCustomize *pfdc;
-    BOOL                  chkd = FALSE;
-
-    hr = pccid->pfd->QueryInterface(IID_PPV_ARGS(&pfdc));
-    if ( SUCCEEDED(hr) )
-    {
-        hr = pfdc->GetCheckButtonState(ctrlID, &chkd);
-        pfdc->Release();
-    }
-
-    if ( hr != S_OK )
-    {
-        oodSetSysErrCode(context->threadContext, hr);
-    }
-    return chkd;
+    return cdcGetControlState(context, rxID, NULLOBJECT, pCSelf, CdcCheckButtonState);
 }
 
 
+/**  CommonDialogCustomizations::getControlItemState()
+ *
+ *
+ */
+RexxMethod3(RexxObjectPtr, cid_getControlItemState, RexxObjectPtr, rxContainerID, RexxObjectPtr, rxItemID, CSELF, pCSelf)
+{
+    return cdcGetControlState(context, rxContainerID, rxItemID, pCSelf, CdcControlItemState);
+}
+
+
+/**  CommonDialogCustomizations::getControlState()
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, cid_getControlState, RexxObjectPtr, rxID, CSELF, pCSelf)
+{
+    return cdcGetControlState(context, rxID, NULLOBJECT, pCSelf, CdcControlState);
+}
+
+
+/**  CommonDialogCustomizations::getEditBoxText()
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, cid_getEditBoxText, RexxObjectPtr, rxID, CSELF, pCSelf)
+{
+    return cdcGetControlState(context, rxID, NULLOBJECT, pCSelf, CdcEditBoxState);
+}
+
+
+/**  CommonDialogCustomizations::getSelectedControlItem()
+ *
+ *   @param  rxID  [required] The *container* control id.
+ *
+ *   @return  The selected control item within the specified container control.
+ */
+RexxMethod2(RexxObjectPtr, cid_getSelectedControlItem, RexxObjectPtr, rxID, CSELF, pCSelf)
+{
+    return cdcGetControlState(context, rxID, NULLOBJECT, pCSelf, CdcSelectedControlItem);
+}
+
+
+/**  CommonDialogCustomizations::makeProminent()
+ *
+ *
+ */
 RexxMethod2(uint32_t, cid_makeProminent, RexxObjectPtr, rxID, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
-    if ( pccid == NULL )
-    {
-        return hr;
-    }
+    return cdcControlFunc(context, rxID, NULL, NULLOBJECT, 0, pCSelf, CdcMakeProminent);
+}
 
-    uint32_t ctrlID;
-    if ( ! cdcGetIdCheckText(context, rxID, NULL,  NULLOBJECT, &ctrlID, NULL, &hr) )
-    {
-        return hr;
-    }
 
-    IFileDialogCustomize *pfdc;
+/**  CommonDialogCustomizations::removeAllControlItems()
+ *
+ *
+ *   @notes  IFileDialogCustomize::removeAllControlItems() returns (0x80004001):
+ *           Not implemented.  Search on Google reveals this method is not
+ *           implemented.
+ */
+RexxMethod2(uint32_t, cid_removeAllControlItems, RexxObjectPtr, rxContainerID, CSELF, pCSelf)
+{
+    return cdcControlFunc(context, rxContainerID, NULL, NULLOBJECT, 0, pCSelf, CdcRemoveAll);
+}
 
-    hr = pccid->pfd->QueryInterface(&pfdc);
-    if ( SUCCEEDED(hr) )
-    {
-        pfdc->MakeProminent(ctrlID);
-        pfdc->Release();
-    }
 
-    if ( hr != S_OK )
-    {
-        oodSetSysErrCode(context->threadContext, hr);
-    }
-    return hr;
+/**  CommonDialogCustomizations::removeControlItem()
+ *
+ *
+ *   @notes  IFileDialogCustomize::removeControlItem() returns (0x80004001): Not
+ *           implemented, for items in a radio button list.  But, I do not see
+ *           any confirmation of that anywhere.
+ *
+ *           However, it does work for items in other types of containers.
+ *           Menus, combo boxes, and the drop down list in the Open / Save
+ *           button.
+ */
+RexxMethod3(uint32_t, cid_removeControlItem, RexxObjectPtr, rxContainerID, RexxObjectPtr, rxItemID, CSELF, pCSelf)
+{
+    return cdcControlFunc(context, rxContainerID, NULL, rxItemID, 0, pCSelf, CdcRemoveItem);
+}
+
+
+/**  CommonDialogCustomizations::setCheckBoxState()
+ *
+ *
+ */
+RexxMethod3(uint32_t, cid_setCheckButtonState, RexxObjectPtr, rxID, logical_t, checked, CSELF, pCSelf)
+{
+    return cdcControlFunc(context, rxID, NULL, NULLOBJECT, checked, pCSelf, CdcSetCheckButton);
+}
+
+
+/**  CommonDialogCustomizations::setControlItemState()
+ *
+ *
+ */
+RexxMethod4(uint32_t, cid_setControlItemState, RexxObjectPtr, rxContainerID, RexxObjectPtr, rxItemID,
+            CSTRING, _state, CSELF, pCSelf)
+{
+    return cdcControlStateFunc(context, rxContainerID, _state, rxItemID, 3, pCSelf, CdcSetControlItemState);
+}
+
+
+/**  CommonDialogCustomizations::setControlItemText()
+ *
+ *
+ */
+RexxMethod4(uint32_t, cid_setControlItemText, RexxObjectPtr, rxContainerID, CSTRING, text, RexxObjectPtr, rxItemID, CSELF, pCSelf)
+{
+    return cdcControlFunc(context, rxContainerID, text, rxItemID, 0, pCSelf, CdcSetControlItemText);
+}
+
+
+/**  CommonDialogCustomizations::setControlLabel()
+ *
+ *
+ */
+RexxMethod3(uint32_t, cid_setControlLabel, RexxObjectPtr, rxID, CSTRING, text, CSELF, pCSelf)
+{
+    return cdcControlFunc(context, rxID, text, NULLOBJECT, 0, pCSelf, CdcSetControlLabel);
+}
+
+
+/**  CommonDialogCustomizations::setControlState()
+ *
+ *
+ */
+RexxMethod3(uint32_t, cid_setControlState, RexxObjectPtr, rxID, CSTRING, _state, CSELF, pCSelf)
+{
+    return cdcControlStateFunc(context, rxID, _state, NULLOBJECT, 2, pCSelf, CdcSetControlState);
+}
+
+
+/**  CommonDialogCustomizations::setEditBoxText()
+ *
+ *
+ */
+RexxMethod3(uint32_t, cid_setEditBoxText, RexxObjectPtr, rxID, CSTRING, text, CSELF, pCSelf)
+{
+    return cdcControlFunc(context, rxID, text, NULLOBJECT, 0, pCSelf, CdcSetEditBoxText);
 }
 
 
@@ -3647,80 +4022,17 @@ RexxMethod2(uint32_t, cid_makeProminent, RexxObjectPtr, rxID, CSELF, pCSelf)
  */
 RexxMethod3(uint32_t, cid_setSelectedControlItem, RexxObjectPtr, rxContainerID, RexxObjectPtr, rxItemID, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
-    if ( pccid == NULL )
-    {
-        return hr;
-    }
-
-    uint32_t cntnrID = oodGlobalID(context, rxContainerID, 1, true);
-    if ( cntnrID == OOD_ID_EXCEPTION )
-    {
-        hr = ERROR_INVALID_FUNCTION;
-        goto done_out;
-    }
-
-    uint32_t itemID = oodGlobalID(context, rxItemID, 2, true);
-    if ( itemID == OOD_ID_EXCEPTION )
-    {
-        hr = ERROR_INVALID_FUNCTION;
-        goto done_out;
-    }
-
-    IFileDialogCustomize *pfdc;
-
-    hr = pccid->pfd->QueryInterface(&pfdc);
-    if ( SUCCEEDED(hr) )
-    {
-        hr = pfdc->SetSelectedControlItem(cntnrID, itemID);
-        pfdc->Release();
-    }
-
-done_out:
-    if ( hr != S_OK )
-    {
-        oodSetSysErrCode(context->threadContext, hr);
-    }
-    return hr;
+    return cdcControlFunc(context, rxContainerID, NULL, rxItemID, 0, pCSelf, CdcSetSelectedControlItem);
 }
 
 
+/** CommonDialogCustomizations::startVisualGroup()
+ *
+ *
+ */
 RexxMethod3(uint32_t, cid_startVisualGroup, RexxObjectPtr, rxID, CSTRING, label, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
-    if ( pccid == NULL )
-    {
-        return hr;
-    }
-
-    uint32_t ctrlID;
-    if ( ! cdcGetIdCheckText(context, rxID, label, NULLOBJECT, &ctrlID, NULL, &hr) )
-    {
-        return hr;
-    }
-
-    IFileDialogCustomize *pfdc;
-
-    hr = pccid->pfd->QueryInterface(&pfdc);
-    if ( SUCCEEDED(hr) )
-    {
-        WCHAR wName[MAX_PATH];
-
-        if ( putUnicodeText((LPWORD)wName, label, &hr) != 0 )
-        {
-            pfdc->StartVisualGroup(ctrlID, wName);
-        }
-
-        pfdc->Release();
-    }
-
-    if ( hr != S_OK )
-    {
-        oodSetSysErrCode(context->threadContext, hr);
-    }
-    return hr;
+    return cdcControlFunc(context, rxID, label, NULLOBJECT, 0, pCSelf, CdcStartVisualGroup);
 }
 
 
@@ -3760,7 +4072,7 @@ RexxMethod1(RexxObjectPtr, cde_init, OSELF, self)
 \*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - -*/
 
 /**
- * A private helper method to get the window handle of the Common Item Dialog.
+ * A helper function to get the window handle of the Common Item Dialog.
  *
  * @param c
  * @param pfd
@@ -3770,7 +4082,7 @@ RexxMethod1(RexxObjectPtr, cde_init, OSELF, self)
  * @remarks  We ignore any errors here and just return a NULL handle.  Seems to
  *           work every time, though.
  */
-RexxObjectPtr CommonDialogEvents::getCommonDialogHwnd(RexxThreadContext *c, IFileDialog *pfd)
+RexxObjectPtr getCommonDialogHwnd(RexxThreadContext *c, IFileDialog *pfd)
 {
     IOleWindow  *piow  = NULL;
     HWND         hwnd  = NULL;
@@ -4240,6 +4552,175 @@ HRESULT CommonDialogEvents::OnControlActivating(IFileDialogCustomize *pfdc, DWOR
 HRESULT CommonDialogEvents::OnItemSelected(IFileDialogCustomize *pfdc, DWORD ctlID, DWORD itemID)
 {
     return dialogControlEvent(pfdc, itemID, ctlID, ItemSelected);
+}
+
+
+
+/**
+ * Methods for the ooDialog .ShellItemFilter class.
+ */
+#define SHELLITEMFILTER_CLASS  "ShellItemFilter"
+
+
+
+/** ShellItemFilter::init()
+ *
+ * Initializes
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, sif_init, OSELF, self)
+{
+    ShellItemFilter *psif = new (std::nothrow) ShellItemFilter(self, context->threadContext->instance);
+
+    RexxBufferObject bufObj = context->NewBuffer(sizeof(CShellItemFilter));
+
+    pCShellItemFilter pcsif = (pCShellItemFilter)context->BufferData(bufObj);
+    memset(pcsif, 0, sizeof(CShellItemFilter));
+
+    pcsif->rexxSelf = self;
+    pcsif->psif     = psif;
+
+    context->SetObjectVariable("CSELF", bufObj);
+
+    return TheZeroObj;
+}
+
+
+/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - -*\
+ COM class for the Rexx ShellItemFilter class
+\*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - -*/
+
+/** ShellItemFilter::commonDialogHwnd()
+ *
+ *
+ * @param c
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr ShellItemFilter::commonDialogHwnd(RexxThreadContext *c)
+{
+    RexxObjectPtr rxHwnd = TheZeroObj;
+    HRESULT        hr;
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)c->ObjectToCSelf(rexxPFD);
+
+    IFileDialog *pfd = NULL;
+    hr = pccid->pfd->QueryInterface(IID_PPV_ARGS(&pfd));
+    if ( SUCCEEDED(hr) )
+    {
+        rxHwnd = getCommonDialogHwnd(c, pfd);
+    }
+
+    return rxHwnd;
+}
+
+
+/**
+ * A private method to end things if one of the Rexx methods has a condition
+ * pending, or if the user does not return a value.
+ *
+ * We do this by closing the file dialog with a cancel.
+ *
+ * @param c
+ *
+ * @return HRESULT
+ */
+HRESULT ShellItemFilter::abortCommonDialog(RexxThreadContext *c)
+{
+    HRESULT hr;
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)c->ObjectToCSelf(rexxPFD);
+
+    hr = pccid->pfd->Close(HRESULT_FROM_WIN32(ERROR_CANCELLED));
+
+    return E_NOTIMPL;
+}
+
+/**
+ * A private method to check the Rexx reply from the event handler.
+ *
+ * @param c
+ * @param reply
+ *
+ * @remarks  The idea here is to close the dialog, if reply is NULLOBJECT, or if
+ *           a syntax condition exists.  This works well.
+ */
+HRESULT ShellItemFilter::checkEventReply(RexxThreadContext *c, RexxObjectPtr reply, CSTRING methodName)
+{
+    uint32_t hr = S_OK;
+
+    if ( checkForCondition(c, true) )
+    {
+        return abortCommonDialog(c);
+    }
+
+    if ( reply == NULLOBJECT )
+    {
+        noMsgReturnException(c, methodName);
+        checkForCondition(c, true);
+        return abortCommonDialog(c);
+    }
+
+    if ( ! c->UnsignedInt32(reply, &hr) )
+    {
+        hr = E_NOTIMPL;
+    }
+    return hr;
+}
+
+
+/** ShellItemFilter::ShellItemFilter()
+ *
+ *  The constructor for the class.  We don't do anything at this time.
+ *
+ * @param rxSelf
+ * @param c
+ */
+ShellItemFilter::ShellItemFilter(RexxObjectPtr rxSelf, RexxInstance *c) :
+    cRef(1), rexxSelf(rxSelf), interpreter(c), rexxPFD(TheNilObj)
+{
+    ;
+}
+
+
+/** ShellItemFilter::IncludeItem()
+ *
+ *  The host invokes this method for each item in the folder. Return S_OK to
+ *  have the item enumerated for inclusion in the view. Return S_FALSE to
+ *  prevent the item from being enumerated for inclusion in the view.
+ *
+ * @param pfd
+ * @param psi
+ * @param resp
+ *
+ * @return HRESULT
+ */
+HRESULT ShellItemFilter::IncludeItem(IShellItem *psi)
+{
+    RexxThreadContext *c;
+    HRESULT            hr = S_OK;
+
+    if ( ! interpreter->AttachThread(&c))
+    {
+        return E_NOTIMPL;
+    }
+
+    RexxObjectPtr rxHwnd = commonDialogHwnd(c);
+    RexxObjectPtr result = shellItem2name(c, psi, SIGDN_FILESYSPATH, &hr);
+
+    if ( SUCCEEDED(hr) )
+    {
+        RexxArrayObject args = c->ArrayOfThree(rexxPFD, rxHwnd, result);
+
+        RexxObjectPtr reply = c->SendMessage(rexxSelf, "includeItem", args);
+
+        hr = checkEventReply(c, reply, "includeItem");
+
+    }
+
+    c->DetachThread();
+    return hr;
 }
 
 

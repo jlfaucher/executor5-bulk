@@ -1499,11 +1499,13 @@ RexxMethod1(RexxStringObject, dlgutil_windowFromPoint_cls, RexxObjectPtr, pt)
  *
  *  Simple method to use for testing.
  */
-RexxMethod1(uint64_t, dlgutil_test_cls, int64_t, n)
+RexxMethod1(RexxObjectPtr, dlgutil_test_cls, OPTIONAL_int64_t, n)
 {
-    printf("DlgUtil::test() No tests at this time.\n");
+    char buf[256];
 
-    return 0;
+    _snprintf(buf, sizeof(buf), "%s.\n", ComCtl32VersionStr);
+
+    return context->String(buf);
 }
 
 /**

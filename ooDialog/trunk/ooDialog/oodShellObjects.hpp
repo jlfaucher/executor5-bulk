@@ -54,6 +54,8 @@
 #define BFF_STARTDIR                    ""
 
 #define CID_EVENTHANDLER_VAR            "CID_EVENTHANDLER_OBJECT_VAR"
+#define CID_FILTER_VAR                  "CID_FILTER_OBJECT_VAR"
+#define CDC_STATE_KEYWORDS              "Inactive, Enabled, Visible, EnabledVisible"
 
 
 /* Struct for the BrowseForFolder CSelf */
@@ -156,7 +158,6 @@ public:
     CommonDialogEvents(RexxObjectPtr rxSelf, RexxInstance *c);
 
 private:
-    RexxObjectPtr getCommonDialogHwnd(RexxThreadContext *c, IFileDialog *pfd);
     HRESULT       checkEventReply(RexxThreadContext *c, RexxObjectPtr reply, CSTRING methodName);
     HRESULT       dialogEvent(IFileDialog *pfd, IShellItem *psi, CdeDialogEvent evt);
     HRESULT 	  dialogEventWithResp(IFileDialog *pfd, IShellItem *psi, uint32_t *resp, CdeDialogEvent evt);
@@ -172,12 +173,68 @@ private:
 };
 
 
+/* COM class for the Rexx ShellItemFilter class */
+class ShellItemFilter : public IShellItemFilter
+{
+public:
+
+    // IUnknown methods
+    IFACEMETHODIMP QueryInterface(REFIID riid, void** ppv)
+    {
+        static const QITAB qit[] =
+        {
+            QITABENT(CommonDialogEvents, IShellItemFilter),
+            { 0 },
+        };
+        return QISearch(this, qit, riid, ppv);
+    }
+
+    IFACEMETHODIMP_(ULONG) AddRef()
+    {
+        return InterlockedIncrement(&cRef);
+    }
+
+    IFACEMETHODIMP_(ULONG) Release()
+    {
+        long _cRef = InterlockedDecrement(&cRef);
+        if ( _cRef == 0 )
+        {
+            delete this;
+        }
+        return _cRef;
+    }
+
+    // IShellItemFilter methods
+    IFACEMETHODIMP IncludeItem(IShellItem *psi);
+    IFACEMETHODIMP GetEnumFlagsForItem(IShellItem *psi, SHCONTF *pgrfFlags) { return E_NOTIMPL; };
+
+    inline RexxObjectPtr getRexxPFD() { return rexxPFD; }
+    inline void setRexxPFD(RexxObjectPtr rxPFD) { rexxPFD = rxPFD; }
+
+    ShellItemFilter(RexxObjectPtr rxSelf, RexxInstance *c);
+
+private:
+
+    RexxObjectPtr commonDialogHwnd(RexxThreadContext *c);
+    HRESULT       abortCommonDialog(RexxThreadContext *c);
+    HRESULT       checkEventReply(RexxThreadContext *c, RexxObjectPtr reply, CSTRING methodName);
+
+    ~ShellItemFilter() {  };
+
+    RexxObjectPtr  rexxSelf;            // Our Rexx self
+    RexxObjectPtr  rexxPFD;             // The Rexx CommonItemDialog object we are filtering shell items for.
+    RexxInstance  *interpreter;         // The Rexx interpreter instance we're running under.
+    long cRef;
+};
+
+
 /* Struct for the CommonItemDialog CSelf */
 typedef struct _cidCSelf
 {
     IFileDialog        *pfd;
     RexxObjectPtr       rexxSelf;
     CommonDialogEvents *pcde;
+    ShellItemFilter    *psif;
     uint32_t            cookie;
     uint32_t            comThreadID;
     bool                comInitialized;
@@ -194,6 +251,15 @@ typedef struct _cdeCSelf
 } CCommonDialogEvents;
 typedef CCommonDialogEvents *pCCommonDialogEvents;
 
+/* Struct for the Rexx ShellItemFilter CSelf */
+typedef struct _sifCSelf
+{
+    ShellItemFilter    *psif;
+    RexxObjectPtr       rexxSelf;
+    bool                inUse;
+} CShellItemFilter;
+typedef CShellItemFilter *pCShellItemFilter;
+
 // Identifies a type of text that can be set in IFileDialog
 typedef enum
 {
@@ -205,22 +271,38 @@ typedef enum
 } CidTextType;
 
 
-// Identifies a type of control that can be added / set in IFileDialogCustomize
+// Identifies a type of control or a method related to a control.  Used by
+// CdcControlFunc() to identify which IFileDialogCustomize method is to be
+// invoked.
 typedef enum
 {
     CdcCheckButton,
+    CdcCheckButtonState,
     CdcComboBox,
     CdcControlItem,
+    CdcControlItemState,
+    CdcControlState,
     CdcEditBox,
+    CdcEditBoxState,
     CdcEnableOpenDropDown,
+    CdcMakeProminent,
     CdcMenu,
     CdcPushButton,
     CdcRadioButtonList,
+    CdcRemoveAll,
+    CdcRemoveItem,
+    CdcSelectedControlItem,
     CdcSeparator,
+    CdcSetCheckButton,
+    CdcSetControlItemState,
+    CdcSetControlItemText,
+    CdcSetControlLabel,
+    CdcSetControlState,
+    CdcSetEditBoxText,
+    CdcSetSelectedControlItem,
+    CdcStartVisualGroup,
     CdcText
 } CdcControlType;
-
-
 
 
 #endif

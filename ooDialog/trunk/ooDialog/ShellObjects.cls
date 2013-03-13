@@ -109,6 +109,7 @@
 ::method setFileNameLabel external "LIBRARY oodialog cid_setFileNameLabel"
 ::method setFileTypeIndex external "LIBRARY oodialog cid_setFileTypeIndex"
 ::method setFileTypes external "LIBRARY oodialog cid_setFileTypes"
+::method setFilter external "LIBRARY oodialog cid_setFilter"
 ::method setFolder external "LIBRARY oodialog cid_setFolder"
 ::method setOkButtonLabel external "LIBRARY oodialog cid_setOkButtonLabel"
 ::method setTitle external "LIBRARY oodialog cid_setTitle"
@@ -137,18 +138,40 @@
 ::method addRadioButtonList external "LIBRARY oodialog cid_addRadioButtonList"
 ::method addSeparator external "LIBRARY oodialog cid_addSeparator"
 ::method addText external "LIBRARY oodialog cid_addText"
+::method check external "LIBRARY oodialog cid_setCheckButtonState"
 ::method enableOpenDropDown external "LIBRARY oodialog cid_enableOpenDropDown"
 ::method endVisualGroup external "LIBRARY oodialog cid_endVisualGroup"
-::method isChecked external "LIBRARY oodialog cid_isChecked"
+::method getCheckButtonState external "LIBRARY oodialog cid_getCheckButtonState"
+::method getControlItemState external "LIBRARY oodialog cid_getControlItemState"
+::method getControlState external "LIBRARY oodialog cid_getControlState"
+::method getEditBoxText external "LIBRARY oodialog cid_getEditBoxText"
+::method getSelectedControlItem external "LIBRARY oodialog cid_getSelectedControlItem"
+::method isChecked external "LIBRARY oodialog cid_getCheckButtonState"
 ::method makeProminent external "LIBRARY oodialog cid_makeProminent"
+::method removeAllControlItems external "LIBRARY oodialog cid_removeAllControlItems"
+::method removeControlItem external "LIBRARY oodialog cid_removeControlItem"
+::method setCheckButtonState external "LIBRARY oodialog cid_setCheckButtonState"
+::method setControlItemState external "LIBRARY oodialog cid_setControlItemState"
+::method setControlItemText external "LIBRARY oodialog cid_setControlItemText"
+::method setControlLabel external "LIBRARY oodialog cid_setControlLabel"
+::method setControlState external "LIBRARY oodialog cid_setControlState"
+::method setEditBoxText external "LIBRARY oodialog cid_setEditBoxText"
 ::method setSelectedControlItem external "LIBRARY oodialog cid_setSelectedControlItem"
 ::method startVisualGroup external "LIBRARY oodialog cid_startVisualGroup"
 
-
-::class 'CommonDialogEvents' public
+::class 'ComConstants' mixinclass Object
 ::constant  S_OK              0
 ::constant  S_FALSE           1
 ::constant  E_NOTIMPL         34360000513  -- _HRESULT_TYPEDEF_(0x80004001L)
+
+
+::class 'ShellItemFilter' public inherit ComConstants
+::method init external "LIBRARY oodialog sif_init"
+::method includeItem unguarded
+    return self~S_OK
+
+
+::class 'CommonDialogEvents' public inherit ComConstants
 
 -- OnOverwrite and OnShareViolation response constants
 ::constant  FDESVR_DEFAULT    0
