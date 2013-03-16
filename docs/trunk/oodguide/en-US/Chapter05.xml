@@ -62,13 +62,13 @@
     <indexterm><primary>ResDialog</primary></indexterm>
     <para>This chapter uses a "Product View" class as the context for discussing
       the following topics:
-      first, dialog initiation (<xref linkend="chap05-initdialog"/>);
-      second the use of binary resource files (<xref linkend="chap05-resfile"/>)
+      first, <xref linkend="chap05-initdialog"/>;
+      second (<xref linkend="chap05-resfile"/>)
       (that is, *.dll files) and the differences in using these as opposed to script resource files;
-      third dialog controls (<xref linkend="chap05-dlgcontrols"/>) not met in previous exercises;
-      fourth some changes to program structure (<xref linkend="chap05-codestructure"/>);
-      fifth a brief visit to some dialog design considerations (<xref linkend="chap05-dlgdesign"/>);
-      and sixth, controlling cancel (<xref linkend="chap05-cancel"/>).
+      third <xref linkend="chap05-dlgcontrols"/> not met in previous exercises;
+      fourth some changes to <xref linkend="chap05-codestructure"/>;
+      fifth a brief visit to some <xref linkend="chap05-dlgdesign"/> considerations;
+      and sixth, <xref linkend="chap05-cancel"/>.
     </para>
     <para>But first, run <computeroutput>Startup.rex</computeroutput> in the
       <computeroutput>Exercise05</computeroutput> folder. A ProductView dialog appears. Check out
@@ -81,7 +81,7 @@
       then change the UOM (Unit of Measure) from 6
       to 20, and then press the <emphasis role="bold">Save Changes</emphasis> button.</para>
 
-  <section id="chap05-initdialog">
+  <section id="chap05-initdialog" xreflabel="Dialog Initiation">
       <title>Dialog Initiation</title>
       <!-- section 5.1 -->
       <para>Previous exercise have used either the "application" or "startup" program, or a separate
@@ -94,12 +94,12 @@
       thing. The question is, how? Well, ooRexx has a mature implementation of OO that (among other
       things) allows for class methods (as opposed to instance methods). Using this feature of
       ooRexx, the initiation statements can be quite happily moved into a class method. Thus the
-        <computeroutput>ProductView</computeroutput> class has a method called <emphasis
-        role="italic">newInstance</emphasis> which, with comments and "say" instructions removed, is
-      as follows:<programlisting><![CDATA[ ::METHOD newInstance CLASS PUBLIC UNGUARDED
+        <computeroutput>ProductView</computeroutput> class has a method called
+        <computeroutput>newInstance</computeroutput> which, with comments and "say" instructions removed, is
+      as follows:<programlisting><![CDATA[  ::METHOD newInstance CLASS PUBLIC UNGUARDED
     .Application~setDefaults("O", "ProductView.h", .false)
     dlg = .ProductView~new("res\ProductView.dll", IDD_PRODUCT_VIEW)
-    dlg~activate]]></programlisting>The <emphasis role="italic">newInstance</emphasis> method is
+    dlg~activate]]></programlisting>The <computeroutput>newInstance</computeroutput> method is
       invoked from <computeroutput>Startup.rex</computeroutput> by the statement
         <computeroutput>.ProductView~newInstance</computeroutput>. So all knowledge about initiating
       a dialog is moved inside that dialog's class, and from now on this approach will be used. <indexterm>
@@ -117,11 +117,9 @@
     <!-- End of section 5.1 -->
 
     <!-- section 5.2 -->
-  <section id="chap05-resfile"><title>Using a Binary Resource File</title>
-      <indexterm><primary>Binary resource files</primary></indexterm>
-      <indexterm><primary>Resource file</primary><secondary>Binary</secondary></indexterm>
-      <indexterm><primary>Resource file</primary><secondary>Compiling</secondary></indexterm>
-
+  <section id="chap05-resfile" xreflabel="Using a Binary Resource File"><title>Using a Binary Resource File</title>
+<indexterm><primary>Binary resource files</primary></indexterm><indexterm><primary>Resource file</primary><secondary>Binary</secondary></indexterm>
+<indexterm><primary>Resource file</primary><secondary>Compiling</secondary></indexterm>
   <section><title>DLL Compilation</title>     <!-- section 5.2.1 -->
     <indexterm><primary>Compilation</primary><secondary>DLLs</secondary></indexterm>
     <indexterm><primary>DLL</primary><secondary>Compiling</secondary></indexterm>
@@ -159,11 +157,11 @@
           <computeroutput>RC.exe</computeroutput>, and outputs a *.res file. This is them linked
         using <computeroutput>link.exe</computeroutput> to produce the DLL. For example, the
         following illustrates <computeroutput>ProductView.rc</computeroutput> being compiled then
-        linked to produce <computeroutput>ProductView.dll</computeroutput>: <programlisting><![CDATA[     C:�>rc ProductView.rc
+        linked to produce <computeroutput>ProductView.dll</computeroutput>: <programlisting><![CDATA[      C:\>rc ProductView.rc
       Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
       Copyright (C) Microsoft Corporation.  All rights reserved.
 
-      C:�>link ProductView.res /NOENTRY /DLL /MACHINE:X86 /OUT:ProductView.dll
+      C:\>link ProductView.res /NOENTRY /DLL /MACHINE:X86 /OUT:ProductView.dll
       Microsoft (R) Incremental Linker Version 10.00.30319.01
       Copyright (C) Microsoft Corporation.  All rights reserved.]]>      </programlisting>Successful
         compilation depends on both the PATH and the "INCLUDE" environment variable containing the
@@ -176,7 +174,7 @@
         C:\Program Files\Microsoft Visual Studio 10.0\VC\BIN;
         C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE
 
-      'Include' Environment Variable:
+     'Include' Environment Variable:
         INCLUDE=C:\Program Files\Microsoft SDKs\Windows\v7.0A\Include;
         C:\Program Files\Microsoft Visual Studio 10.0\VC\include]]></programlisting>
       The first
@@ -206,7 +204,8 @@ Visual Studio 10.0\VC\include</computeroutput>
         (aside from the resource file) is mainly in the handling of the menubar. Console outputs
         from dialog creation for <computeroutput>CustomerView</computeroutput> (an
           <computeroutput>RcDialog</computeroutput> subclass) and ProductView (a
-          <computeroutput>ResDialog</computeroutput> subclass) are as follows: <programlisting><![CDATA[CustomerView                                ProductView
+          <computeroutput>ResDialog</computeroutput> subclass) are as follows:
+          <programlisting><![CDATA[CustomerView                                ProductView
 
 StartCustomerView Routine-01: Start.         .ProductView-newInstance-01: Start.
 CustomerView-init-01.                        ProductView-init-01.
@@ -218,7 +217,7 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
         creating the <computeroutput>ProductView</computeroutput> instance in a routine, as was the
           case for CustomerView, the startup file invokes a class method - <computeroutput>newInstance</computeroutput>
           - which does much the same as CustomerView's routine.</para>
-      <para>The second difference is the absence of a <computeroutput>createMenuBar</computeroutput> method. 
+      <para>The second difference is the absence of a <computeroutput>createMenuBar</computeroutput> method.
         Now this method was not strictly necessary in
             <computeroutput>CustomerView</computeroutput> - the menu could have been created in the
         <computeroutput>init</computeroutput> or the<computeroutput>initDialog</computeroutput> methods.
@@ -238,7 +237,7 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
     <!-- End of section 5.2 -->
 
     <section>
-      <title id="chap05-dlgcontrols">Dialog Controls</title>
+      <title id="chap05-dlgcontrols" xreflabel="Dialog Controls">Dialog Controls</title>
       <!-- section 5.3 -->
       <para>There are five features of <computeroutput>ProductView</computeroutput>'s controls that
         have not yet been introduced in this Guide. They are: radio buttons, a numeric-only edit
@@ -311,14 +310,14 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
                 method on the control instance. In <computeroutput>ProductView</computeroutput> this
                 is done for the product price control by this statement:
 <programlisting><![CDATA[prodControls[ecProdPrice]~initDecimalOnly(2,.false)]]>
-</programlisting>              
+</programlisting>
                 The first parameter defines the allowable number of decimal places,
                 the second whether or not a sign is
                 allowed. As in <computeroutput>CustomerView</computeroutput> the controls are
                 grouped in the directory object <computeroutput>prodControls</computeroutput> for
                 ease of "exposing" them across methods; also, edit
                 control instances have the prefix "ec" in conformance with the
-                <link linkend='chap04-convs-names'>naming conventions</link><!--(<xref linkend="chap04-convs-names" />)-->
+                <link linkend='chap04-convs-names'>Naming Conventions</link><!--(<xref linkend="chap04-convs-names" />)-->
                 mentioned in Chapter 4.
               </para>
             </listitem>
@@ -328,7 +327,7 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
                 <computeroutput>ProductView</computeroutput>, this is done in the
               <computeroutput>initDialog</computeroutput> method as follows:</para>
 <programlisting><![CDATA[    prodControls[ecProdPrice]~connectCharEvent(onChar)]]>
-</programlisting>              
+</programlisting>
             </listitem>
             <listitem>
               <para>Provide the event handler method. The event handler method <computeroutput>onChar</computeroutput>
@@ -353,16 +352,16 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
         <para>Open the Product View dialog, and then press the Alt key on the keyboard, followed by
           the down-arrow key. The <emphasis role="bold">Actions</emphasis> menu is first highlighted
           and then opened. The top menu item is <emphasis role="bold">Update Product</emphasis>
-          - with an underscore beneath the "U". 
+          - with an underscore beneath the "U".
           Pressing the "U" key will then initiate the Update Product behavior. The
           underlined letter is known as an "accelerator" key. It is produced by placing an ampersand
           (&amp;) immediately before the letter that's to be the accelerator key in the *.rc file.
-          In <computeroutput>ProductView.rc</computeroutput>, you'll see the 
+          In <computeroutput>ProductView.rc</computeroutput>, you'll see the
           <emphasis role="bold">Update</emphasis> menu item
           defined as <computeroutput>MENUITEM "&amp;Update Product",IDM_PROD_UPDATE</computeroutput>.</para>
         <para>Interestingly, if you mouse-click on the <emphasis role="bold">Actions</emphasis> menu
           to open it, the "U" is not underscored - although pressing the "U" key still initiates the
-          update action. This is standard Windows behavior, and ooDialog does not change it 
+          update action. This is standard Windows behavior, and ooDialog does not change it
           (although some third-party Windows apps such as Adobe's Reader do preserve the underscore
           when a menu is mouse-opened).</para>
       </section>
@@ -397,15 +396,15 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
             <listitem><para>Select the bitmap file and click <emphasis role="bold">Open</emphasis>.
               This produces a <emphasis role="bold">Path designation</emphasis>
               messagebox with two options: <emphasis role="bold">Absolute path</emphasis> or
-              <emphasis role="bold">Relative path</emphasis>. It is usually best to choose 
+              <emphasis role="bold">Relative path</emphasis>. It is usually best to choose
               "relative path". On clicking <emphasis role="bold">OK</emphasis> ...</para></listitem>
             <listitem><para>...a bitmap resource (named <emphasis role="bold">IDB_BITMAP1</emphasis>
               or some such) is added to the project and the bitmap image is displayed. If you want to
-              change the name, then right-click on the bitmap in the Resources pane and select 
+              change the name, then right-click on the bitmap in the Resources pane and select
               <emphasis role="bold">Rename</emphasis>. Note that the bitmap file is shown in the
               bitmap resource's "Path" property</para></listitem>
             <listitem><para>Finally, drag a Picture Control from the controls palette and place it in
-              the dialog. Then change the Picture Control's <emphasis role="bold">Notify</emphasis>, 
+              the dialog. Then change the Picture Control's <emphasis role="bold">Notify</emphasis>,
               <emphasis role="bold">Type</emphasis>, and <emphasis role="bold">RealSizeControl</emphasis>
               attributes to <emphasis role="bold">True</emphasis>, <emphasis role="bold">Bitmap</emphasis>
               and <emphasis role="bold">True</emphasis> respectively. These attributes define
@@ -511,7 +510,7 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
       </section> <!-- End of section 5.3.5 -->
       </section> <!-- End of section 5.3   -->
 
-<section id="chap05-codestructure"><title>Code Structure</title>  <!-- section 5.4 -->
+<section id="chap05-codestructure" xreflabel="Code Structure"><title>Code Structure</title>  <!-- section 5.4 -->
 <para>Although broadly similar to the code structure in Exercise04, Exercise05
   introduces several new structural concepts (at least new in this Guide). These are: the use of "data
   types", differentiation between view data and application data, more than one dialog in a file,
@@ -552,7 +551,7 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
           to the DB programming interface (e.g. SQL) as possible, meaning that most of the
           application code across the system can use the same normative data formats.) Following
           this principle, the first thing the event handler method <computeroutput>saveChanges</computeroutput>
-          does is to invoke the dialog's method <computeroutput>xformView2App</computeroutput> 
+          does is to invoke the dialog's method <computeroutput>xformView2App</computeroutput>
           (transform view to app format). For example, a new price may
           have been entered with one or zero decimal digits, and so needs to be converted
           correctly to a whole number of cents. Conversely, reformatting for display is
@@ -599,7 +598,7 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
 </section>  <!-- End of section 5.4.4 -->
 </section>  <!-- End of section 5.4 -->
 
-<section><title id="chap05-dlgdesign">Designing a Dialog</title>  <!-- Section 5.5 -->
+<section><title id="chap05-dlgdesign" xreflabel="Dialog Design">Designing a Dialog</title>  <!-- Section 5.5 -->
   <indexterm><primary>Design of a dialog</primary></indexterm>
   <indexterm><primary>Dialog</primary><secondary>Design</secondary></indexterm>
   <para>A program does only what its programmer specifies. But a user could do anything. This is why
@@ -624,7 +623,7 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
     beginning and start again. </para>
 </section>  <!-- End of section 5.5 -->
 
-<section id="chap05-cancel"><title id="chap05-cancel.title">Controlling Dialog Cancel</title>
+<section id="chap05-cancel" xreflabel="Controlling Dialog Cancel"><title id="chap05-cancel.title">Controlling Dialog Cancel</title>
 <!-- Section 5.6 -->
 <para>Windows provides three ways for the user to cancel a dialog: by pressing the
   <emphasis role="bold">Esc</emphasis> key, by clicking on the "close" icon at the extreme top right
@@ -662,7 +661,7 @@ CustomerView-initDialog-01.                  ProductView-initDialog-01
                 <computeroutput>dialogState</computeroutput> attribute is "inUpdate". If the user
                 selects any of the close actions in this state, then the third
                 state is entered. The "InUpdate" state is terminated by the user menu selecting
-                <emphasis role="bold">Refresh Data</emphasis> or pressing the 
+                <emphasis role="bold">Refresh Data</emphasis> or pressing the
                 <emphasis role="bold">Save Changes</emphasis> button - either of which cause
                 the dialog to return to the "Closable" state. </para>
             </listitem>
