@@ -42,10 +42,11 @@
     #
     #########################################################################
 -->
-<!-- Chapter07 - A Working Application		 		  v01-00 16Mar13
+<!-- Chapter07 - A Working Application		 		  v01-00 17Mar13
 
     Changes:
      v01-00 16Mar13: First version.
+            17Mar13: Very minor adjustments to spacing.
 
     7   *  Towards A Working Application	                                          chapSeven
     7.1   * Introduction                                                              chap07-intro
@@ -123,10 +124,10 @@
       The customer's data is returned in the <emphasis role="bold">Reply</emphasis> field as a
       name-value string. </para>
     <para>Now try using the Message Sender to surface a Product dialog - say the view for Product
-      CU003. To do this, select <emphasis role="bold">ObjectMgr The</emphasis> in the 
+      CU003. To do this, select <emphasis role="bold">ObjectMgr The</emphasis> in the
       <emphasis role="bold">Target</emphasis> combo-box pull-down, <emphasis role="bold">showModel</emphasis>
       in the <emphasis role="bold">Method</emphasis> field, and type <computeroutput>ProductModel CU003</computeroutput>
-      in the <emphasis role="bold">Data</emphasis> field. 
+      in the <emphasis role="bold">Data</emphasis> field.
       Now press <emphasis role="bold">Send</emphasis>. The Product dialog for instance CU003 appears.</para>
     <para>The "Object Manager" (which could also be called "ComponentManager" since it manages
       application components as opposed to any old ooRexx object) is a support class that
@@ -269,7 +270,7 @@
         placed in some configuration file).</para>
     </section>
     <!-- End of Section 7.2.1 -->
-    
+
     <section id="chap07-mvf-oview">
       <title id="ch7-mvf-oview.title">MVF Overview</title>
       <!-- Section 7.2.2 -->
@@ -297,16 +298,16 @@
         key (e.g. "CustomerModel BA0314"). For components that are "singletons" - that is, there can
         logically be only one instance, the name is "The". An example of a singleton is a data
         component (e.g. "CustomerData The"). Finally, some components - such as lists - are
-        anonymous: when an anonymous component is instantiated, its instance name is given as "a" or "A", 
+        anonymous: when an anonymous component is instantiated, its instance name is given as "a" or "A",
         and its real instance name - such as a number as in "CustomerList 3" - is assigned by the
-        <computeroutput>Model</computeroutput> super-class (part of the MVF) during instantiation. 
+        <computeroutput>Model</computeroutput> super-class (part of the MVF) during instantiation.
         The instance name is important to MVF since its internal logic differs slightly depending on which kind of
         instance name is used - a "key" name, a singleton name, or an anonymous name. (Note that
         this naming convention could be relaxed if components were named in a configuration file;
         however, the distinctions between the different kinds of component would remain.)
         See <xref linkend="chap07-mvfuse-kinds"/> for further discussion. </para>
       <section id="chap07-mvf-oview-person">
-        
+
         <!-- Section 7.2.2.1 -->
         <title id="ch7-mvf-oview-person.title">An Example - The 'Person' Component</title>
         <indexterm>
@@ -317,8 +318,8 @@
           <secondary>Person</secondary>
         </indexterm>
         <para>A key question is, what does the MVF look like to the programmer? This section answers
-          this question using the Person component (which has minimal function) as an example. 
-          But first, using the Message Sender, try sending a 
+          this question using the Person component (which has minimal function) as an example.
+          But first, using the Message Sender, try sending a
           <computeroutput>showModel</computeroutput> message to <emphasis role="bold">ObjectMgr The</emphasis>
           with the data <computeroutput>PersonModel PA150</computeroutput>.
           The Person dialog appears, and the MVF has handled the task of ensuring that both the Data
@@ -329,7 +330,7 @@
           Third, <computeroutput>PersonView</computeroutput>'s superclass asks
             <computeroutput>PersonModel</computeroutput> for its data. Finally, the dialog for
           Person PA150 appears. </para>
-        <para>The code required to use the MVF is shown in the Person component in
+        <para>The code required to conform with the MVF is shown in the Person component in
             <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Samples\Person</computeroutput>,
           and those requirements are as follows:</para>
         <itemizedlist>
@@ -339,6 +340,7 @@
               <para><programlisting><![CDATA[::METHOD newInstance CLASS PUBLIC
   ...
   -- Check if an instance has already been created; if so, return .false.
+  ...
   idData = self~new()
   return idData
 
@@ -428,21 +430,24 @@
           <itemizedlist>
             <listitem>
               <para><computeroutput>getComponentId</computeroutput> (with parameters
-                  <computeroutput>className</computeroutput> and
-                  <computeroutput>instanceName</computeroutput>) - Returns the id of the requested
+                  <emphasis role="italic"><emphasis role="bold">className</emphasis></emphasis> and
+                  <emphasis role="italic"><emphasis role="bold">instanceName</emphasis></emphasis>)
+                  - Returns the id of the requested
                 component. If the id is not in the Object Bag, then it sends
-                  <computeroutput>newInstance</computeroutput> to
-                  <computeroutput>className</computeroutput>. If one or both of these do not exist,
+                  <computeroutput>newInstance</computeroutput> to the class object
+                  <emphasis role="italic"><emphasis role="bold">className</emphasis></emphasis>.
+                  If the class does not not exist,
                 <computeroutput>.false</computeroutput> is returned.</para>
             </listitem>
             <listitem>
               <para><computeroutput>list</computeroutput> - Lists the contents of the ObjectBag on
-                the Command Prompt. The instance name for a View component is derived by invoking
-                  <computeroutput>identityHash</computeroutput> on its id. The following shows the
-                contents of the Object Bag after (a) a CustomerList was double-clicked on the Order
-                Management dialog, (b) a Customer in the list was double-clicked, and (c) the <link
-                  linkend="chap07-msgsender">Message Sender</link> was used to send a 'query'
-                message to <emphasis role="italic">ProductModel LM400</emphasis>:
+                the Command Prompt. The following shows the
+                results of sending <emphasis role="bold">list</emphasis> to the Object Bag after
+                (a) the application was started, then (b) the
+                <emphasis role="bold">Customer List</emphasis> icon was double-clicked,
+                (c) a Customer in the list was double-clicked, and (d) the
+                <link linkend="chap07-msgsender">Message Sender</link> was used to send a
+                <computeroutput>query</computeroutput> message to <emphasis role="bold">ProductModel LM400</emphasis>:
                 <programlisting><![CDATA[Object Bag List:
 ----------------------------------------------------------------------------
 Class-Instance            Model Id                ViewClass-Inst
@@ -456,7 +461,8 @@ Class-Instance            Model Id                ViewClass-Inst
   CUSTOMERMODEL-BA0314      a CUSTOMERMODEL           CUSTOMERVIEW-267047652
   ----------------------------------------------------------------------------
 ]]>
-              </programlisting></para>
+              </programlisting>The instance name for a View component is derived by invoking
+                  <computeroutput>identityHash</computeroutput> on its id.</para>
             </listitem>
             <listitem>
               <para><computeroutput>showModel</computeroutput>(className, instanceName) - Shows the
@@ -465,7 +471,7 @@ Class-Instance            Model Id                ViewClass-Inst
                 component is not already instantiated, it is instantiated. Then the View is
                 instantiated. All instantiations use the <emphasis role="italic"
                   >newInstance</emphasis> method. All dialogs except the "application" dialog (that
-                is, Order Manager) are created and/or surfaced using the
+                is, Order Manager) and the Message Sender are created and/or surfaced using the
                   <computeroutput>showModel</computeroutput> method. </para>
             </listitem>
           </itemizedlist>
@@ -475,7 +481,7 @@ Class-Instance            Model Id                ViewClass-Inst
         </para>
       </section>
       <!-- End of Section 7.2.2.2 -->
-      
+
       <section id="chap07-mvf-oview-model">
         <title>The 'Model' Superclass</title>
         <!-- Section 7.2.2.3 -->
@@ -492,7 +498,8 @@ Class-Instance            Model Id                ViewClass-Inst
           <secondary>Model</secondary>
         </indexterm>
         <para><computeroutput>Model</computeroutput> is the MVF superclass for all model components,
-          and provides key methods for subclasses as follows: <itemizedlist>
+          and provides key methods for subclasses as follows:</para>
+        <itemizedlist>
             <listitem>
               <para><computeroutput>newInstance</computeroutput>
                 <indexterm>
@@ -509,12 +516,15 @@ Class-Instance            Model Id                ViewClass-Inst
             </listitem>
             <listitem>
               <para><computeroutput>getInstanceName</computeroutput>
-                <indexterm><primary>getInstanceName</primary></indexterm>
-                is invoked by the Object Manager's <computeroutput>showModel</computeroutput>
-                method for anonymous components only (such as a <computeroutput>CustomerListModel</computeroutput>).
-                It adds 1 to a class variable and returns it. Note - for
-                <computeroutput>OrderFormModel</computeroutput>, <indexterm><primary>OrderFormModel</primary></indexterm>
-                the method is over-ridden and a new order number is returned.</para>
+              <indexterm>
+                <primary>getInstanceName</primary>
+              </indexterm> is invoked by the Object Manager's
+                <computeroutput>showModel</computeroutput> method for anonymous components only
+              (such as a <computeroutput>CustomerListModel</computeroutput>). It adds 1 to a class
+              variable and returns it. (However, for <computeroutput>OrderFormModel</computeroutput>,
+                <indexterm><primary>OrderFormModel</primary></indexterm>
+                the method is over-ridden and <computeroutput>OrderFormModel</computeroutput> itself
+                returns a new order number (see <xref linkend="chap07-orderform"/>).</para>
             </listitem>
             <listitem>
               <para><computeroutput>query</computeroutput>
@@ -565,10 +575,10 @@ familyName: James; firstName: Alfred;
                   </listitem>
                 </itemizedlist></para>
             </listitem>
-          </itemizedlist></para>
+          </itemizedlist>
       </section>
       <!-- End of Section 7.2.2.3 -->
-      
+
       <section id="chap07-mvf-oview-view">
         <title>The 'View' Superclass</title>
         <!-- Section 7.2.2.4 -->
@@ -587,7 +597,6 @@ familyName: James; firstName: Alfred;
             <computeroutput>UserDialog</computeroutput> respectively (their function could be
           provided by a single mixin class, and this is planned for a later version of the User
           Guide exercises). Important methods are:</para>
-        <para>
           <itemizedlist>
             <listitem>
               <para><computeroutput>activate</computeroutput>
@@ -636,10 +645,10 @@ familyName: James; firstName: Alfred;
                 offset (from the Message Sender).</para>
             </listitem>
           </itemizedlist>
-        </para>
-      </section>      
+        
+      </section>
       <!-- End of Section 7.2.2.4 -->
-      
+
       <section id="chap07-mvf-oview-data">
         <title>The 'GenericFile' Superclass</title>
         <!-- Section 7.2.2.5 -->
@@ -653,7 +662,7 @@ familyName: James; firstName: Alfred;
           the first line in the file must be the column names (or labels). A label must not
           contain spaces. Lines 2 to <emphasis role="italic">n</emphasis> are the data values,
           each separated by a vertical bar character.
-          The main methods are: 
+          The main methods are:</para>
           <itemizedlist>
             <listitem>
               <para><computeroutput>getRecord</computeroutput><indexterm>
@@ -672,10 +681,10 @@ familyName: James; firstName: Alfred;
                   <primary>list method</primary>
                 </indexterm> - Lists the file on the console.</para>
             </listitem>
-          </itemizedlist>See <xref linkend="chap07-mvfuse-datafmts"/> for a description of the
+          </itemizedlist><para>See <xref linkend="chap07-mvfuse-datafmts"/> for a description of the
           "record directory" and "file as directory" formats.</para>
       </section>
-      
+
       <section id="chap07-mvf-comp">
         <title>Compound Data</title>
         <para>"Compound data" is data assembled from two or more files. In Relational Data Base
@@ -688,7 +697,7 @@ familyName: James; firstName: Alfred;
             <computeroutput>dirOrderLines</computeroutput>. Then the
             <computeroutput>addCustomerInfo</computeroutput> method is called to get selected Customer data
           (e.g. Customer Addresses) from the <computeroutput>CustomerData</computeroutput> component,
-          and this data is then added to the <computeroutput>dirOrderHeaders</computeroutput> attribute. 
+          and this data is then added to the <computeroutput>dirOrderHeaders</computeroutput> attribute.
           Finally, the <computeroutput>addProductInfo</computeroutput> method accesses the
             <computeroutput>ProductData</computeroutput> component to get selected Product data (e.g.
           Product Names) which is added to the <computeroutput>dirOrderLines</computeroutput>
@@ -717,12 +726,12 @@ familyName: James; firstName: Alfred;
      | Headers | OrderNo | ProdNo  | Qty | ProdName    |    <a 1D array>
      |- - - - -+- - - - -+- - - - -+- - -+- - - - - - -|
      | Records | SO-1234 | AB100/W |   5 | Baffle      |    <a 2D array>
-     +- - - - -+- - - - -+- - - - -+- - -+- - - - - - -| 
+     +- - - - -+- - - - -+- - - - -+- - -+- - - - - - -|
                | SO-1234 | CF300/X |   6 | Widget Box  |
                |- - - - -+- - - - -+- - -+- - - - - - -|
                | SO-1234 | EF500/W  | 15 | Slodget     |
                |- - - - -+- - - - -+- - -+- - - - - - -|
-                 ...       ...       ...   ...  
+                 ...       ...       ...   ...
                |- - - - -+- - - - -+- - -+- - - - - - -|
                | SO-4569 | XY200   |  12 | Blad Anchor |
                +- - - - -+- - - - -+- - -+- - - - - - -+]]></programlisting>Since the Order data is
@@ -821,7 +830,7 @@ familyName: James; firstName: Alfred;
             <computeroutput>Model</computeroutput> returns a number starting at "1".</para></listitem>
           <listitem><para>A "<emphasis role="bold">form</emphasis>" instance such as a Sales Order Form or
             a Purchase Request form is a special kind of component. Initially it is anonymous, and
-            although when created there is no database record of it, there will be when it's
+            although when created there is no database record of it, there will be after it's
             completed and the user hits OK. A new number (e.g. an order number) is assigned to a
             form when it is created, and this number is used as the database key when, after
             completion, the form is committed to the database. For example, the Order Form component
@@ -844,7 +853,7 @@ familyName: James; firstName: Alfred;
         </footnote>As mentioned above, this whole approach of having component names define
         the type of component is not particularly scalable. A better approach - certainly for
         production-strength apps - is to provide a configuration file that names the classes and
-        states what type they are. Such a file might look something like this, and would remove any
+        states what type they are. Such a file might look something like this, and would remove the
         need for using class names as the basis for managing instances: <programlisting><![CDATA[<modelClass name="Product",     type="named", dataClass="ProductDB"/>
 <modelClass name="NewOrder",    type="form"/>
 <modelClass name="CustomerList",type="anonymous"/>
@@ -860,7 +869,7 @@ familyName: James; firstName: Alfred;
       <!-- Section 7.3.2 -->
       <para>Fields in a file record are separated by a vertical bar character, and field names are
         defined in the first line of the file. All data files have the file extension ".txt".
-        <computeroutput>GenericFile</computeroutput>'s <computeroutput>getRecord</computeroutput> method 
+        <computeroutput>GenericFile</computeroutput>'s <computeroutput>getRecord</computeroutput> method
         returns a single record (for example a
         Customer record) in a "record directory", whose format is as follows:<programlisting><![CDATA[    "Record Directory" format (using sample data values):
 
@@ -901,7 +910,7 @@ familyName: James; firstName: Alfred;
   <section id="chap07-msgsender">
     <title id="ch7-msgsender.title">The Message Sender</title>
     <!-- Section 7.4 -->
-    <para>The Message Sender <indexterm><primary>Message Sender</primary></indexterm>      
+    <para>The Message Sender <indexterm><primary>Message Sender</primary></indexterm>
       is launched from the <emphasis role="bold">Help</emphasis> menu of the
         <emphasis role="bold">Sales Order Management</emphasis> dialog and is used to "send messages
       to" (aka "invoke methods on") components. It illustrates a useful kind of debugging aid, and
@@ -921,8 +930,8 @@ familyName: James; firstName: Alfred;
       either a string, an array, or a directory. To send an array, place a "|" (vertical bar)
       character before each array element. To send a directory, use square brackets for indexes- for
       example, [Name] Jim Brooks [Age] 34. </para>
-    <para>The Message Sender is located in the <computeroutput>Support</computeroutput> folder. It is 
-      implemented as two ooRexx classes and a routine. The classes are a main class and a separate
+    <para>The Message Sender is located in the <computeroutput>Support</computeroutput> folder. It is
+      implemented as two ooRexx classes and a routine. The classes are a main dialog class and a separate
       data-only class for visible strings. The routine sends
       a message by constructing an instance of the ooRexx <computeroutput>Message</computeroutput>
       class, then invoking its <computeroutput>send</computeroutput> method. Multiple copies of the
@@ -980,7 +989,7 @@ familyName: James; firstName: Alfred;
     <para>Consider the last parameter - the array 'MYTOP', 'TOP'. The keyword 'MYTOP' is a special keyword that
       can only be used for the bottom edge of a control.  It pins the bottom edge of the control to its top
       edge. This has the effect of keeping the height of the control constant. Similarly, 'MYLEFT' pins the right side
-      of the control to the left side, so keeping the width of the control constant. Note that 
+      of the control to the left side, so keeping the width of the control constant. Note that
       in this case the second parameter
       is ignored, although it must be a valid sizing parameter.</para>
     <para>The result of all this is that the Reset button does not move from the bottom left corner of the dialog,
@@ -994,7 +1003,7 @@ familyName: James; firstName: Alfred;
   </section> <!-- End of Section 7.5 -->
 
   <!-- *********************************************************************************************** -->
-  <section id="chap07-orderform">
+  <section id="chap07-orderform" xreflabel="The Order Form">
     <title id="ch7-orderform.title">The Order Form</title>
     <!-- comment: Section 7.6 -->
     <indexterm><primary>Order Form dialog</primary></indexterm>
@@ -1020,7 +1029,7 @@ familyName: James; firstName: Alfred;
        Dialogs - is used for the Order Form. </para>
     <para>The instance name for the new Order Form is the Order Number. When the icon on the Order
       Management dialog is double-clicked, the MVF is used to surface the OrderForm dialog. The
-      sequence of operation is as follows (with detail irrelevant to the Order Form omitted):
+      sequence of operation is as follows (with detail irrelevant to the Order Form omitted):</para>
       <itemizedlist>
         <listitem>
           <para><computeroutput>OrderMgrView</computeroutput> sends
@@ -1041,7 +1050,7 @@ familyName: James; firstName: Alfred;
             Form, and...</para>
         </listitem>
         <listitem>
-          <para>sends <computeroutput>newInstance(instanceName,...)</computeroutput> to
+          <para>... sends <computeroutput>newInstance(instanceName,...)</computeroutput> to
               <computeroutput>.OrderFormModel</computeroutput>, which then instantiates an
               <computeroutput>OrderModel</computeroutput> instance.</para>
         </listitem>
@@ -1050,7 +1059,7 @@ familyName: James; firstName: Alfred;
               <computeroutput>.OrderFormView</computeroutput>, which then creates an instance of the
               <computeroutput>OrderFormView</computeroutput> dialog.</para>
         </listitem>
-      </itemizedlist></para>
+      </itemizedlist>
     <para>The Order Form consists of three dialogs - the main Resource File Dialog (an <computeroutput>RcDialog</computeroutput>)
       plus two Control Dialogs (<computeroutput>RcControlDialog</computeroutput>) in a Tab Control. The two Control Dialogs -
       one for Customer Details and one for details of Products ordered, are
@@ -1069,7 +1078,8 @@ familyName: James; firstName: Alfred;
     self~connectTabEvent(IDC_ORDFORM_TABS, SELCHANGE, onNewTab)
     ]]></programlisting>The 'havePositioned' array is used to determine if the page dialogs have been
     positioned, and both are marked as not positioned. Then "no tab yet selected" is set. Finally, an
-    event handling method is connected to the event <computeroutput>onNewTab</computeroutput>.</para>
+    event handling method is connected to the event <computeroutput>onNewTab</computeroutput> 
+    (which is invoked when the user clicks on a tab).</para>
     <para>Next, in the <computeroutput>initDialog</computeroutput> method, the tabs are added to the tab control,
       their size is calculated, and the control dialog used for the first page is positioned and
       shown:
@@ -1095,10 +1105,10 @@ familyName: James; firstName: Alfred;
       method.</para>
     <para>Finally, the Order Form illustrates one use of the <computeroutput>DateTimePicker</computeroutput>
       control.
- <indexterm><primary>DateTime class</primary></indexterm>
- <indexterm><primary>DateTimePicker</primary></indexterm>
- <indexterm><primary>OrderForm</primary><secondary>DateTime class</secondary></indexterm>
- <indexterm><primary>OrderForm</primary><secondary>DateTimePicker</secondary></indexterm>
+<indexterm><primary>DateTime class</primary></indexterm>
+<indexterm><primary>DateTimePicker</primary></indexterm>
+<indexterm><primary>OrderForm</primary><secondary>DateTime class</secondary></indexterm>
+<indexterm><primary>OrderForm</primary><secondary>DateTimePicker</secondary></indexterm>
       This is a very fully-featured control, providing many ways of displaying and manipulating date and time.
       For the Order Form it allows the user easily to specify the Order Date. It's partly configured in the
       .rc file (in ResEdit, <emphasis role="bold">Use Spin Control</emphasis> is set to <emphasis role="bold">false</emphasis>
