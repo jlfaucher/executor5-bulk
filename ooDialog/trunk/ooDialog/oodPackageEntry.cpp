@@ -446,6 +446,7 @@ REXX_METHOD_PROTOTYPE(app_autoDetection);
 REXX_METHOD_PROTOTYPE(app_defaultFont);
 REXX_METHOD_PROTOTYPE(app_defaultIcon);
 REXX_METHOD_PROTOTYPE(app_initAutoDetection);
+REXX_METHOD_PROTOTYPE(app_requiredOS);
 REXX_METHOD_PROTOTYPE(app_setDefaults);
 REXX_METHOD_PROTOTYPE(app_useGlobalConstDir);
 
@@ -1671,6 +1672,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(app_autoDetection,              app_autoDetection),
     REXX_METHOD(app_defaultFont,                app_defaultFont),
     REXX_METHOD(app_defaultIcon,                app_defaultIcon),
+    REXX_METHOD(app_requiredOS,                 app_requiredOS),
     REXX_METHOD(app_setDefaults,                app_setDefaults),
     REXX_METHOD(app_initAutoDetection,          app_initAutoDetection),
     REXX_METHOD(app_useGlobalConstDir,          app_useGlobalConstDir),

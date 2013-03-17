@@ -235,9 +235,9 @@
 ::method defaultFont external "LIBRARY oodialog app_defaultFont"
 ::method defaultIcon external "LIBRARY oodialog app_defaultIcon"
 ::method initAutoDetection external "LIBRARY oodialog app_initAutoDetection"  -- Internal use only.
-::method useGlobalConstDir external "LIBRARY oodialog app_useGlobalConstDir"
-
+::method requiredOS external "LIBRARY oodialog app_requiredOS"
 ::method setDefaults external "LIBRARY oodialog app_setDefaults"
+::method useGlobalConstDir external "LIBRARY oodialog app_useGlobalConstDir"
 
 ::class 'DlgUtil' public
 ::method init class external "LIBRARY oodialog dlgutil_init_cls"

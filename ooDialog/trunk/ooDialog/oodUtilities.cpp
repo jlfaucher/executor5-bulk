@@ -253,25 +253,18 @@ inline bool checkApplicationMagic(RexxMethodContext *c, RexxObjectPtr magic)
     return false;
 }
 
-void putDefaultSymbols(RexxMethodContext *c, RexxDirectoryObject constDir)
+static CSTRING getWindowsName(void)
 {
-    c->DirectoryPut(constDir, c->Int32(IDC_STATIC),       "IDC_STATIC");       // -1
-    c->DirectoryPut(constDir, c->Int32(IDOK      ),       "IDOK");             // 1
-    c->DirectoryPut(constDir, c->Int32(IDCANCEL  ),       "IDCANCEL");         // 2
-    c->DirectoryPut(constDir, c->Int32(IDABORT   ),       "IDABORT");          //  ...
-    c->DirectoryPut(constDir, c->Int32(IDRETRY   ),       "IDRETRY");
-    c->DirectoryPut(constDir, c->Int32(IDIGNORE  ),       "IDIGNORE");
-    c->DirectoryPut(constDir, c->Int32(IDYES     ),       "IDYES");
-    c->DirectoryPut(constDir, c->Int32(IDNO      ),       "IDNO");
-    c->DirectoryPut(constDir, c->Int32(IDCLOSE   ),       "IDCLOSE");
-    c->DirectoryPut(constDir, c->Int32(IDHELP    ),       "IDHELP");           // 9
-    c->DirectoryPut(constDir, c->Int32(IDTRYAGAIN),       "IDTRYAGAIN");       // 10
-    c->DirectoryPut(constDir, c->Int32(IDCONTINUE),       "IDCONTINUE");       // 11
-    c->DirectoryPut(constDir, c->Int32(IDI_DLG_OODIALOG), "IDI_DLG_OODIALOG"); // This is 12
-    c->DirectoryPut(constDir, c->Int32(IDI_DLG_APPICON),  "IDI_DLG_APPICON");
-    c->DirectoryPut(constDir, c->Int32(IDI_DLG_APPICON2), "IDI_DLG_APPICON2");
-    c->DirectoryPut(constDir, c->Int32(IDI_DLG_OOREXX),   "IDI_DLG_OOREXX");
-    c->DirectoryPut(constDir, c->Int32(IDI_DLG_DEFAULT),  "IDI_DLG_DEFAULT");
+    char *name = "unknown";
+
+    if ( _isW2K()            )  return "W2K";
+    else if ( _isXP()        )  return "XP";
+    else if ( _isW2K3()      )  return "W2K3";
+    else if ( _isVista()     )  return "Vista";
+    else if ( _isServer2008() ) return "Server 2008";
+    else if ( _isWindows7()   ) return "Windows 7";
+
+    return "unknown";
 }
 
 static RexxObjectPtr setConstDirUsage(RexxMethodContext *c, CSTRING _mode, size_t argPos, CSTRING index)
@@ -633,6 +626,27 @@ done_out:
     return NULLOBJECT;
 }
 
+void putDefaultSymbols(RexxMethodContext *c, RexxDirectoryObject constDir)
+{
+    c->DirectoryPut(constDir, c->Int32(IDC_STATIC),       "IDC_STATIC");       // -1
+    c->DirectoryPut(constDir, c->Int32(IDOK      ),       "IDOK");             // 1
+    c->DirectoryPut(constDir, c->Int32(IDCANCEL  ),       "IDCANCEL");         // 2
+    c->DirectoryPut(constDir, c->Int32(IDABORT   ),       "IDABORT");          //  ...
+    c->DirectoryPut(constDir, c->Int32(IDRETRY   ),       "IDRETRY");
+    c->DirectoryPut(constDir, c->Int32(IDIGNORE  ),       "IDIGNORE");
+    c->DirectoryPut(constDir, c->Int32(IDYES     ),       "IDYES");
+    c->DirectoryPut(constDir, c->Int32(IDNO      ),       "IDNO");
+    c->DirectoryPut(constDir, c->Int32(IDCLOSE   ),       "IDCLOSE");
+    c->DirectoryPut(constDir, c->Int32(IDHELP    ),       "IDHELP");           // 9
+    c->DirectoryPut(constDir, c->Int32(IDTRYAGAIN),       "IDTRYAGAIN");       // 10
+    c->DirectoryPut(constDir, c->Int32(IDCONTINUE),       "IDCONTINUE");       // 11
+    c->DirectoryPut(constDir, c->Int32(IDI_DLG_OODIALOG), "IDI_DLG_OODIALOG"); // This is 12
+    c->DirectoryPut(constDir, c->Int32(IDI_DLG_APPICON),  "IDI_DLG_APPICON");
+    c->DirectoryPut(constDir, c->Int32(IDI_DLG_APPICON2), "IDI_DLG_APPICON2");
+    c->DirectoryPut(constDir, c->Int32(IDI_DLG_OOREXX),   "IDI_DLG_OOREXX");
+    c->DirectoryPut(constDir, c->Int32(IDI_DLG_DEFAULT),  "IDI_DLG_DEFAULT");
+}
+
 
 /** ApplicationManger::useGlobalConstDir()
  *
@@ -714,6 +728,59 @@ RexxMethod2(uint32_t, app_initAutoDetection, RexxObjectPtr, dlg, CSELF, pCSelf)
     return 0;
 }
 
+
+/** ApplicationManager::requiredOS()
+ *
+ *  Checks that we are operating on a required minimum Windows version
+ *
+ *  @param  os   [required]  The minimum Windows version the application needs
+ *                to execute. W2K, XP, W2K3, Vista, Windows7, case is not
+ *                significant.
+ *
+ *  @param  name [required]  The name of the application.
+ *
+ *  @return True if the minimum is meet, otherwise false.
+ *
+ *  @notes  Need to add Windows 8.
+ */
+RexxMethod3(RexxObjectPtr, app_requiredOS, CSTRING, os, CSTRING, name, CSELF, pCSelf)
+{
+    pCApplicationManager pcam = (pCApplicationManager)pCSelf;
+
+    bool allowed = false;
+
+    if (      StrCmpI(os, "W2K") == 0      ) allowed = _isAtLeastW2K();
+    else if ( StrCmpI(os, "XP") == 0       ) allowed = _isAtLeastXP();
+    else if ( StrCmpI(os, "W2K3") == 0     ) allowed = _isAtLeastW2K3();
+    else if ( StrCmpI(os, "VISTA") == 0    ) allowed = _isAtLeastVista();
+    else if ( StrCmpI(os, "WINDOWS7") == 0 ) allowed = _isAtLeastWindows7();
+    else
+    {
+        wrongArgValueException(context->threadContext, 1, "W2K, XP, W2K3, Vista, or Windows7", os);
+        return TheFalseObj;
+    }
+
+    size_t len = strlen(name);
+    if ( len >= 256 )
+    {
+        stringTooLongException(context->threadContext, 2, 255, len);
+        return TheFalseObj;
+    }
+
+    if ( ! allowed )
+    {
+        char buf[512];
+
+        _snprintf(buf, 511, "The %s application requires Windows %s or\n"
+                            "later.  It can not run on %s\n", name, getWindowsName());
+
+        MessageBox(NULL, buf, "ooDialog Application Error", MB_OK | MB_ICONWARNING | MB_SETFOREGROUND);
+
+        return TheFalseObj;
+    }
+
+    return TheTrueObj;
+}
 
 /** ApplicationManager::defaultFont()
  *
