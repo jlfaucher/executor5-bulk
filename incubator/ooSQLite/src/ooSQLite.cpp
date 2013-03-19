@@ -3095,7 +3095,16 @@ RexxMethod1(int, oosql_test_cls, ARGLIST, args)
 
     size_t size = c->ArraySize(args);
 
-    printf("Arg list: size=%d\n", size);
+    printf("CONSTRAINT_CHECK     =%d\n", SQLITE_CONSTRAINT_CHECK     );
+    printf("CONSTRAINT_COMMITHOOK=%d\n", SQLITE_CONSTRAINT_COMMITHOOK);
+    printf("CONSTRAINT_FOREIGNKEY=%d\n", SQLITE_CONSTRAINT_FOREIGNKEY);
+    printf("CONSTRAINT_FUNCTION  =%d\n", SQLITE_CONSTRAINT_FUNCTION  );
+    printf("CONSTRAINT_NOTNULL   =%d\n", SQLITE_CONSTRAINT_NOTNULL   );
+    printf("CONSTRAINT_PRIMARYKEY=%d\n", SQLITE_CONSTRAINT_PRIMARYKEY);
+    printf("CONSTRAINT_TRIGGER   =%d\n", SQLITE_CONSTRAINT_TRIGGER   );
+    printf("CONSTRAINT_UNIQUE    =%d\n", SQLITE_CONSTRAINT_UNIQUE    );
+    printf("CONSTRAINT_VTAB      =%d\n", SQLITE_CONSTRAINT_VTAB      );
+    printf("READONLY_ROLLBACK    =%d\n", SQLITE_READONLY_ROLLBACK    );
 
     return 0;
 }
@@ -3435,6 +3444,7 @@ PragmaType getPragmaType(RexxThreadContext *c, CSTRING name)
     if ( strcmp(pName, "compile_options")           == 0 ) return compileOptions;
     if ( strcmp(pName, "database_list")             == 0 ) return databaseList;
     if ( strcmp(pName, "encoding")                  == 0 ) return encoding;
+    if ( strcmp(pName, "foreign_key_check")         == 0 ) return foreignKeyCheck;
     if ( strcmp(pName, "foreign_key_list")          == 0 ) return foreignKeyList;
     if ( strcmp(pName, "foreign_keys")              == 0 ) return foreignKeys;
     if ( strcmp(pName, "freelist_count")            == 0 ) return freelistCount;
@@ -3591,7 +3601,7 @@ RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING nam
     char     buf[256];
     sqlite3 *db = pConn->db;
 
-    if ( pragma == collationList || pragma == databaseList || pragma == compileOptions )
+    if ( pragma == collationList || pragma == databaseList || pragma == compileOptions || pragma == foreignKeyCheck )
     {
         snprintf(buf, sizeof(buf), "PRAGMA %s;", name);
     }
@@ -4821,7 +4831,7 @@ RexxMethod3(RexxObjectPtr, oosqlconn_pragma, RexxStringObject, _name, OPTIONAL_R
             if (argumentOmitted(2) )
             {
                 // SQLite allows the argument to be omitted entirely.  0
-                // produces the same effect in SQLite as omitting the argumen.
+                // produces the same effect in SQLite as omitting the argument.
                 value = TheZeroObj;
             }
             return pragmaSet(context, pConn, name, value, pragma);

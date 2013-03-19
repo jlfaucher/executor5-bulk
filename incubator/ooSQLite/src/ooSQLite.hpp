@@ -73,6 +73,7 @@ typedef enum
     compileOptions,
     databaseList,
     encoding,
+    foreignKeyCheck,
     foreignKeyList,
     foreignKeys,
     freelistCount,

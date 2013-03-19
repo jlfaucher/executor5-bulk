@@ -377,9 +377,9 @@
 -- (oosqlite.dll / oosqlite.so depending on platform.)
 --
 -- Copy the values directly from the top of sqlit3.hpp.
-::constant VERSION        "3.7.15"
-::constant VERSION_NUMBER 3007015
-::constant SOURCE_ID      "2012-12-12 13:36:53 cd0b37c52658bfdf992b1e3dc467bae1835a94ae"
+::constant VERSION        "3.7.16"
+::constant VERSION_NUMBER 3007016
+::constant SOURCE_ID      "2013-03-18 11:39:23 66d5f2b76750f3520eb7a495f6247206758f5b90"
 
 
 -- OO_ prefix indicates constant is not from the SQLite library.
@@ -462,7 +462,18 @@
 ::constant CORRUPT_VTAB             267
 ::constant READONLY_RECOVERY        264
 ::constant READONLY_CANTLOCK        520
+::constant READONLY_ROLLBACK        776
 ::constant ABORT_ROLLBACK           516
+::constant CONSTRAINT_CHECK         275
+::constant CONSTRAINT_COMMITHOOK    531
+::constant CONSTRAINT_FOREIGNKEY    787
+::constant CONSTRAINT_FUNCTION     1043
+::constant CONSTRAINT_NOTNULL      1299
+::constant CONSTRAINT_PRIMARYKEY   1555
+::constant CONSTRAINT_TRIGGER      1811
+::constant CONSTRAINT_UNIQUE       2067
+::constant CONSTRAINT_VTAB         2323
+
 /* end-of-extended-error-codes */
 
 /* Flags For File Open Operations */
