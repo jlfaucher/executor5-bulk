@@ -2080,7 +2080,7 @@ do forever
       ObjId = dlgObject~resolveSymbolicID(ObjId)
 
       if ObjId > 0 then
-         interpret 'dlgObjList~Insert(ObjId"@"'ObjX'"@"'ObjY'"@"'ObjW'"@"'ObjH')'
+         interpret 'dlgObjList~Insert(ObjId"@"' ObjX '"@"' ObjY '"@"' ObjW '"@"' ObjH ')'
    end
    else do
       -- skip past this create
@@ -2119,7 +2119,7 @@ do forever
       ObjId = dlgObject~resolveSymbolicID(ObjId)
 
       if ObjId > 0 then
-         interpret 'dlgObjList~Insert(ObjId"@"'ObjX'"@"'ObjY'"@"'ObjW'"@"'ObjH')'
+         interpret 'dlgObjList~Insert(ObjId"@"' ObjX '"@"' ObjY '"@"' ObjW '"@"' ObjH ')'
    end
    else do
      -- skip past this add
