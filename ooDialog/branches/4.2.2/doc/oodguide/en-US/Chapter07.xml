@@ -42,11 +42,11 @@
     #
     #########################################################################
 -->
-<!-- Chapter07 - A Working Application		 		  v01-00 17Mar13
+<!-- Chapter07 - A Working Application		 		  v01-00 21Mar13
 
     Changes:
      v01-00 16Mar13: First version.
-            17Mar13: Very minor adjustments to spacing.
+            21Mar13: Very minor adjustments to spacing and links.
 
     7   *  Towards A Working Application	                                            chapSeven
     7.1   * Introduction                                                              chap07-intro
@@ -107,9 +107,9 @@
     <!-- Section 7.1 -->
     <para>This chapter, and the accompanying Exercise, provides much of the infrastructure for an
       application that uses model-view-data component concepts. The infrastructure implements a
-      pattern called the "Model-View Framework" and removes from the application developer most of
+      pattern called the "Model-View Framework" which removes from the application developer most of
       the work involved in instantiating View, Model and Data components, reading data from disk,
-      and providing that data to a dialog.  </para>
+      and providing that data to a dialog. </para>
     <para>Open the <computeroutput>Exercise07</computeroutput> folder and start the Order
       Management application by double-clicking on <computeroutput>startup.rex</computeroutput>. Try
       it out. Explore the function which, while not complete, is much more so than in the previous
@@ -149,12 +149,13 @@
     <para>This sequence is a pattern - the "Model-View Framework" pattern - that can be applied to
       most business components, and hence can be handled by superclasses instead of by duplicated
       code in application components. </para>
-    <para>The first section in this chapter introduces the Model-View Framework. Second, the various
-      parts of the <xref linkend="chap07-mvf"/> are described. <xref linkend="chap07-cmpntdata"/>
-      discusses both the different "kinds" of application component and the data formats used by
-      data components. The fourth section provides additional detail on the <xref
-        linkend="chap07-msgsender"/>, following which the use of Control Dialogs for the <xref
-        linkend="chap07-orderform"/> is described.</para>
+    <para>The next section in this chapter introduces the Model-View Framework - its objectives, a
+      brief overview of its function, an example of use, and the classes that implement it. Then
+        <xref linkend="chap07-cmpntdata"/> discusses first the different "kinds" of application
+      component and also the data formats returned by data components. The fourth section provides
+      additional detail on the <xref linkend="chap07-msgsender"/>, and then <xref
+        linkend="chap07-ordermgr"/> for the Order Manager dialog is re-visited. Finally the use of
+      Control Dialogs for the <xref linkend="chap07-orderform"/> is described.</para>
   </section>
   <!-- End of Section 7.1 -->
 
@@ -287,7 +288,8 @@
       <para> The MVF consists of five classes: <computeroutput>ObjectMgr</computeroutput>,
           <computeroutput>ViewMgr</computeroutput>, <computeroutput>Model</computeroutput>,
           <computeroutput>xxView</computeroutput> (i.e. RcView, ResView, and UdView), and
-          <computeroutput>GenericFile</computeroutput>. These are all located in the folder
+          <computeroutput>GenericFile</computeroutput> (see <xref linkend="chap07-mvf-classes"/>
+          for more detail). These are all located in the folder
           <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Support</computeroutput>.
         Together, they handle the three different types of application component - view, model, and
         data. Each model gets its data from its data component, and each model has a single view. (A
@@ -317,7 +319,7 @@
         however, the distinctions between the different kinds of component would remain.)
         See <xref linkend="chap07-cmpntdata-kinds"/> for further discussion. </para>
     </section>
-    
+
     <section id="chap07-mvf-oview-person" xreflabel="The 'Person' Component">        <!-- Section 7.2.3 -->
         <title id="ch7-mvf-oview-person.title">An Example - The 'Person' Component</title>
         <indexterm>
@@ -420,13 +422,13 @@
           List. These are discussed below in <xref linkend="chap07-cmpntdata-kinds"/>.</para>
       </section>
       <!-- End of 7.2.3 -->
-    
+
       <section id="chap07-mvf-classes" xreflabel="MVF Classes">     <!-- Section 7.2.4 -->
         <title id="ch7-mvf-classes.title">MVF Classes</title>
     <para>This section describes each of the classes that comprise the MVF. They are, the Object Manager,
-      the View Manager, plus three superclasses, one for each of Model, View, and Data components. 
+      the View Manager, plus three superclasses, one for each of Model, View, and Data components.
     </para>
-        
+
       <section id="chap07-mvf-classes-objmgr" xreflabel="The Object Manager">
         <title id="ch7-mvf-classeso-objmgr.title">The Object Manager</title>
         <!-- Section 7.2.4.1 -->
@@ -662,7 +664,7 @@ familyName: James; firstName: Alfred;
                 offset (from the Message Sender).</para>
             </listitem>
           </itemizedlist>
-        
+
       </section>
       <!-- End of Section 7.2.4.3 -->
 
@@ -831,19 +833,20 @@ familyName: James; firstName: Alfred;
 
     <section id="chap07-cmpntdata-compdata" xreflabel="Compound Data">
       <title id="cmpntdata-cmpntdata-compdata.title">Compound Data</title>     <!-- Section 7.3.3 -->
-      <para>"Compound data" is data assembled from two or more files. In Relational Data Base
-        terms, this is a "join". The one example of compound data in Exercise 7 is the
-        <computeroutput>OrderData</computeroutput> class, where the
-        <computeroutput>init</computeroutput> method uses the superclass's
-        <computeroutput>getFile</computeroutput> method to read each of the two Order files
+      <para>"Compound data" is data assembled from two or more files. In Relational Data Base terms,
+        this is a "join". The one example of compound data in Exercise 7 is the
+          <computeroutput>OrderData</computeroutput> class, where the
+          <computeroutput>init</computeroutput> method uses the superclass's
+          <computeroutput>getFile</computeroutput> method to read each of the two Order files
         (OrderHeader.txt and OrderDetail.txt). This data is stored in two attributes,
-        <computeroutput>dirOrderHeaders</computeroutput> and
-        <computeroutput>dirOrderLines</computeroutput>. Then the
-        <computeroutput>addCustomerInfo</computeroutput> method is called to get selected Customer data
-        (e.g. Customer Addresses) from the <computeroutput>CustomerData</computeroutput> component,
-        and this data is then added to the <computeroutput>dirOrderHeaders</computeroutput> attribute.
-        Finally, the <computeroutput>addProductInfo</computeroutput> method accesses the
-        <computeroutput>ProductData</computeroutput> component to get selected Product data (e.g.
+          <computeroutput>dirOrderHeaders</computeroutput> and
+          <computeroutput>dirOrderLines</computeroutput>. Then the
+          <computeroutput>addCustomerInfo</computeroutput> method is called to get selected Customer
+        data (e.g. Customer Addresses) from the <computeroutput>CustomerData</computeroutput>
+        component, and this data is then added to the
+          <computeroutput>dirOrderHeaders</computeroutput> attribute. Finally, the
+          <computeroutput>addProductInfo</computeroutput> method accesses the
+          <computeroutput>ProductData</computeroutput> component to get selected Product data (e.g.
         Product Names) which is added to the <computeroutput>dirOrderLines</computeroutput>
         attribute.</para>
       <para>The <computeroutput>dirOrderHeaders</computeroutput> format is
@@ -959,7 +962,7 @@ familyName: James; firstName: Alfred;
   <!-- End of Section 7.4 -->
 
 <!-- *********************************************************************************************** -->
-  <section id="chap07-ordermgr" xreflabel="Re-sizing Revisited">
+  <section id="chap07-ordermgr" xreflabel="Dialog Re-sizing">
     <title id="ch7-ordermgr.title">Revisiting Re-sizing</title> <!-- Section 7.5 -->
     <indexterm><primary>Re-sizing</primary><secondary>Dialogs</secondary></indexterm>
     <indexterm><primary>Re-sizing</primary><secondary>Controls</secondary></indexterm>
@@ -1023,8 +1026,7 @@ familyName: James; firstName: Alfred;
 
   <!-- *********************************************************************************************** -->
   <section id="chap07-orderform" xreflabel="Order Form">
-    <title id="ch7-orderform.title">The Order Form</title>
-    <!-- comment: Section 7.6 -->
+    <title id="ch7-orderform.title">The Order Form</title><!-- comment: Section 7.6 -->
     <indexterm><primary>Order Form dialog</primary></indexterm>
     <para>Open an Order Form from the icon in the Order Management dialog. Although still not
       functional, the format of the dialog <emphasis role="italic">looks</emphasis> much more like a
@@ -1097,7 +1099,7 @@ familyName: James; firstName: Alfred;
     self~connectTabEvent(IDC_ORDFORM_TABS, SELCHANGE, onNewTab)
     ]]></programlisting>The 'havePositioned' array is used to determine if the page dialogs have been
     positioned, and both are marked as not positioned. Then "no tab yet selected" is set. Finally, an
-    event handling method is connected to the event <computeroutput>onNewTab</computeroutput> 
+    event handling method is connected to the event <computeroutput>onNewTab</computeroutput>
     (which is invoked when the user clicks on a tab).</para>
     <para>Next, in the <computeroutput>initDialog</computeroutput> method, the tabs are added to the tab control,
       their size is calculated, and the control dialog used for the first page is positioned and
