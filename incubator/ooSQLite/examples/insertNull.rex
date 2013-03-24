@@ -44,7 +44,7 @@
  *
  * The approach taken here is to use a parameterized SQL statement.  There is
  * also the insertNullTwo.rex program that shows a second approach.  Both
- * approaches are useful for preventin SQL Injection flaws in an application.
+ * approaches are useful for preventing SQL Injection flaws in an application.
  *
  */
 

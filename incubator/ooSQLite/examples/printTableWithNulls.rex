@@ -81,6 +81,7 @@
   say '='~copies(80)
 
   -- In this approach a NULL in a column will be printed as NULL
+  stmt~null = 'NULL'
   do while stmt~step == stmt~ROW
     row = ''
     do i = 1 to n
@@ -100,7 +101,8 @@
   say header
   say '='~copies(80)
 
-  -- In this approach a NULL is the table will be set to the .nil object.
+  -- In this approach a NULL in the table will be set to the .nil object.
+  stmt~null = .nil
   do while stmt~step == stmt~ROW
     row = ''
 

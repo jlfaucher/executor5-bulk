@@ -135,6 +135,8 @@ typedef enum
 
 /* Struct for the ooSQLite class object CSelf. */
 typedef struct _oosqlclassCSelf {
+    RexxObjectPtr      nullObj;            // Default representation of SQL NULL
+    CSTRING            nullStr;            // If nullObj is a Rexx string object, the string value of the object
     ResultSetType      format;             // The default format of a result set for the current process.
 } CooSQLiteClass;
 typedef CooSQLiteClass *pCooSQLiteClass;
@@ -144,6 +146,8 @@ typedef struct _oosqlConnCSelf {
     sqlite3            *db;                 // The actual database connection.
     const char         *fileName;           // The database file name.
     RexxObjectPtr       rexxSelf;           // The Rexx ooSQLiteConnection object.
+    RexxObjectPtr       nullObj;            // Default representation of SQL NULL for this connection
+    CSTRING             nullStr;            // If nullObj is a Rexx string object, the string value of the object
     RexxObjectPtr       stmtBag;            // The bag holding prepared statments (which is really a set.)
     RexxStringObject    rxFileName;         // The Rexx string object database file name.
     RexxStringObject    lastErrMsg;         // sqlite3_errmsg()
@@ -166,6 +170,7 @@ typedef struct _oosqlstmtCSelf {
     pCooSQLiteConn      pConn;             // The CSelf database connection used with the statement.
     RexxObjectPtr       rexxSelf;          // The Rexx ooSQLiteStmt object.
     RexxStringObject    tail;              // The tail pointer returned from SQLite.
+    RexxObjectPtr       nullObj;           // Default representation of SQL NULL for this statement
     RexxStringObject    lastErrMsg;        // Set during .ooSQLiteStmt~new(), maybe never changed. Uses sqlite3_errmsg() for the msg
     ResultSetType       format;            // The default format of a result set for this statment.
     int                 lastErrCode;       // Set during .ooSQLiteStmt~new(), maybe never changed

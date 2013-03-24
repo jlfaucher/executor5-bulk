@@ -54,6 +54,8 @@
  */
 ::class 'ooSQLite' public inherit ooSQLiteConstants
 
+::attribute null get class external "LIBRARY oosqlite oosql_getNull_atr_cls"
+::attribute null set class external "LIBRARY oosqlite oosql_setNull_atr_cls"
 ::attribute recordFormat get class external "LIBRARY oosqlite oosql_getRecordFormat_atr_cls"
 ::attribute recordFormat set class external "LIBRARY oosqlite oosql_setRecordFormat_atr_cls"
 
@@ -93,6 +95,8 @@
 ::attribute initCode get external "LIBRARY oosqlite oosqlconn_getInitCode_atr"
 ::attribute lastErrCode get external "LIBRARY oosqlite oosqlconn_getLastErrCode_atr"
 ::attribute lastErrMsg get external "LIBRARY oosqlite oosqlconn_getLastErrMsg_atr"
+::attribute null get external "LIBRARY oosqlite oosqlconn_getNull_atr"
+::attribute null set external "LIBRARY oosqlite oosqlconn_setNull_atr"
 ::attribute recordFormat get external "LIBRARY oosqlite oosqlconn_getRecordFormat_atr"
 ::attribute recordFormat set external "LIBRARY oosqlite oosqlconn_setRecordFormat_atr"
 
@@ -148,6 +152,8 @@
 ::attribute initCode get external "LIBRARY oosqlite oosqlstmt_getInitCode_atr"
 ::attribute lastErrCode get external "LIBRARY oosqlite oosqlstmt_getLastErrCode_atr"
 ::attribute lastErrMsg get external "LIBRARY oosqlite oosqlstmt_getLastErrMsg_atr"
+::attribute null get external "LIBRARY oosqlite oosqlstmt_getNull_atr"
+::attribute null set external "LIBRARY oosqlite oosqlstmt_setNull_atr"
 ::attribute recordFormat get external "LIBRARY oosqlite oosqlconn_getRecordFormat_atr"
 ::attribute recordFormat set external "LIBRARY oosqlite oosqlconn_setRecordFormat_atr"
 

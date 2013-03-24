@@ -171,17 +171,20 @@ static void sqliteErrorException(RexxThreadContext *c, sqlite3 *db, const char *
  * sqlite3_column_text() returns a null pointer
  *
  * We can't pass a null pointer ito the native API, so if null, we use the
- * string "NULL" instead.
+ * passed in nulObj instead.  'nullObj' allows the user to set the
+ * representation they want for SQL NULL.  The default is .nil.
  *
  * @param stmt
  * @param col
+ * @param nullObj
  *
- * @return a non-null string.
+ * @return a Rexx object representing the value of the column text, which could
+ *         be SQL NULL.
  */
-static inline CSTRING safeColumnText(sqlite3_stmt *stmt, int col)
+static inline RexxObjectPtr safeColumnText(RexxThreadContext *c, sqlite3_stmt *stmt, int col, RexxObjectPtr nullObj)
 {
     CSTRING data = (CSTRING)sqlite3_column_text(stmt, col);
-    return (data == NULL ? "NULL" : data);
+    return (data == NULL ? nullObj : c->String(data));
 }
 
 /**
@@ -194,6 +197,12 @@ static inline CSTRING safeColumnText(sqlite3_stmt *stmt, int col)
  *
  * @return "str" converted to a Rexx string, using the word "NULL" if str is
  *         null.
+ *
+ * @note  This function is used for values returned from SQLite, *other*, than
+ *        database column values.  Many of the SQLite functions that return
+ *        strings can return null, as can the sqlite3_column_text() function.
+ *        Use this function for those other function.  Use the safeColumnText()
+ *        function for sqlite3_column_text().
  */
 static inline RexxStringObject safeRexxString(RexxThreadContext *c, CSTRING str)
 {
@@ -677,8 +686,9 @@ static void freeHeadersUpper(char **headers, int count)
 /**
  * Returns a result set in the "array of arrays" format
  *
- * @param c     Thread context we are operating in.
- * @param stmt  A prepared sqlite3 statemnt.
+ * @param c        Thread context we are operating in.
+ * @param stmt     A prepared sqlite3 statemnt.
+ * @param nullObj  How SQL NULL should be represented.
  *
  * @return An array of the records produced by the statement.
  *
@@ -689,7 +699,7 @@ static void freeHeadersUpper(char **headers, int count)
  * @note  If there are no rows returned by stepping the statement, then an empty
  *        array is returned.
  */
-static RexxArrayObject getRecordsArray(RexxThreadContext *c, sqlite3_stmt *stmt)
+static RexxArrayObject getRecordsArray(RexxThreadContext *c, sqlite3_stmt *stmt, RexxObjectPtr nullObj)
 {
     RexxArrayObject a = c->NewArray(10);  // An array of records
     RexxArrayObject r;                    // A single record
@@ -697,8 +707,9 @@ static RexxArrayObject getRecordsArray(RexxThreadContext *c, sqlite3_stmt *stmt)
 
     while ( sqlite3_step(stmt) == SQLITE_ROW )
     {
-        CSTRING data;
-        int     count;
+        RexxObjectPtr colValue;
+        CSTRING       colName;
+        int           count;
 
         if ( i == 1 )
         {
@@ -707,8 +718,8 @@ static RexxArrayObject getRecordsArray(RexxThreadContext *c, sqlite3_stmt *stmt)
             r = c->NewArray(count);
             for ( j = 0; j < count; j++)
             {
-                data = sqlite3_column_name(stmt, j);
-                c->ArrayAppendString(r, data, strlen(data));
+                colName = sqlite3_column_name(stmt, j);
+                c->ArrayAppendString(r, colName, strlen(colName));
             }
             c->ArrayPut(a, r, i++);
 
@@ -716,8 +727,8 @@ static RexxArrayObject getRecordsArray(RexxThreadContext *c, sqlite3_stmt *stmt)
             r = c->NewArray(count);
             for ( j = 0; j < count; j++)
             {
-                data = safeColumnText(stmt, j);
-                c->ArrayAppendString(r, data, strlen(data));
+                colValue = safeColumnText(c, stmt, j, nullObj);
+                c->ArrayAppend(r, colValue);
             }
         }
         else
@@ -725,8 +736,8 @@ static RexxArrayObject getRecordsArray(RexxThreadContext *c, sqlite3_stmt *stmt)
             r = c->NewArray(count);
             for ( int j = 0; j < count; j++)
             {
-                data = safeColumnText(stmt, j);
-                c->ArrayAppendString(r, data, strlen(data));
+                colValue = safeColumnText(c, stmt, j, nullObj);
+                c->ArrayAppend(r, colValue);
             }
         }
         c->ArrayPut(a, r, i++);
@@ -2797,8 +2808,57 @@ RexxMethod1(RexxObjectPtr, oosql_init_cls, OSELF, self)
         pCooSQLiteClass pCoosql = (pCooSQLiteClass)context->BufferData(cselfBuffer);
         memset(pCoosql, 0, sizeof(CooSQLiteClass));
 
-        pCoosql->format = anArrayOfDirectories;
+        pCoosql->format  = anArrayOfDirectories;
+        pCoosql->nullObj = TheNilObj;
     }
+    return NULLOBJECT;
+}
+
+
+/** ooSQLite::null  [attribute get]
+ */
+RexxMethod1(RexxObjectPtr, oosql_getNull_atr_cls, CSELF, pCSelf)
+{
+    return ((pCooSQLiteClass)pCSelf)->nullObj;
+}
+/** ooSQLite::null  [attribute get]
+ *
+ *  @note  The default value to use for SQL NULL is set in this, the ooSQLite
+ *         class. When a new connection object is created, the default value of
+ *         NULL is set for that object using the default value.
+ *
+ *         If the NULL value is the nil object, we do not need to worry about
+ *         garbage collection.  If it is a Rexx string value, we do.  When the
+ *         NULL attribute is set, we release the global reference on the old
+ *         value if it was a Rexx string object.  For the connection object, we
+ *         do not want to release the global reference on the global default
+ *         value, so for that object we create a new Rexx string  for the
+ *         object.  This is why we save the CSTRING value of the global NULL
+ *         value.
+ */
+RexxMethod2(RexxObjectPtr, oosql_setNull_atr_cls, RexxObjectPtr, nullObj, CSELF, pCSelf)
+{
+    pCooSQLiteClass pCoosql = (pCooSQLiteClass)pCSelf;
+    RexxObjectPtr   oldNull = pCoosql->nullObj;
+
+    if ( nullObj == TheNilObj )
+    {
+        pCoosql->nullObj = nullObj;
+        pCoosql->nullStr = NULL;
+    }
+    else
+    {
+        pCoosql->nullStr = context->ObjectToStringValue(nullObj);
+        pCoosql->nullObj = context->String(pCoosql->nullStr);
+
+        context->RequestGlobalReference(pCoosql->nullObj);
+    }
+
+    if ( oldNull != TheNilObj )
+    {
+        context->ReleaseGlobalReference(oldNull);
+    }
+
     return NULLOBJECT;
 }
 
@@ -3540,7 +3600,7 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
             switch ( pConn->format )
             {
                 case anArrayOfArrays :
-                    result = getRecordsArray(c->threadContext, stmt);
+                    result = getRecordsArray(c->threadContext, stmt, pConn->nullObj);
                     break;
                 case anArrayOfDirectories :
                     result = getRecordsDirectory(c->threadContext, stmt);
@@ -3625,7 +3685,7 @@ RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING nam
         switch ( pConn->format )
         {
             case anArrayOfArrays :
-                result = getRecordsArray(c->threadContext, stmt);
+                result = getRecordsArray(c->threadContext, stmt, pConn->nullObj);
                 break;
             case anArrayOfDirectories :
                 result = getRecordsDirectory(c->threadContext, stmt);
@@ -3692,7 +3752,7 @@ RexxObjectPtr pragmaGet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
     rc = sqlite3_step(stmt);
     if ( rc == SQLITE_ROW && sqlite3_column_count(stmt) == 1 )
     {
-        result = c->String(safeColumnText(stmt, 0));
+        result = safeColumnText(c->threadContext,stmt , 0, pConn->nullObj);
     }
     else
     {
@@ -3919,7 +3979,7 @@ RexxMethod1(uint32_t, oosqlconn_getRecordFormat_atr, CSELF, pCSelf)
     }
     return pConn->format;
 }
-/** ooSQLite::recordFormat  [attribute get]
+/** ooSQLite::recordFormat  [attribute set]
  */
 RexxMethod2(RexxObjectPtr, oosqlconn_setRecordFormat_atr, uint32_t, format, CSELF, pCSelf)
 {
@@ -3936,6 +3996,62 @@ RexxMethod2(RexxObjectPtr, oosqlconn_setRecordFormat_atr, uint32_t, format, CSEL
     {
         pConn->format = (ResultSetType)format;
     }
+    return NULLOBJECT;
+}
+
+
+/** ooSQLiteConnection::null  [attribute get]
+ */
+RexxMethod1(RexxObjectPtr, oosqlconn_getNull_atr, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return TheZeroObj;
+    }
+    return pConn->nullObj;
+}
+/** ooSQLiteConnection::null  [attribute set]
+ *
+ *  @note  The default value to use for SQL NULL, for this connection, is first
+ *         set in the init() method.  That used the global default value from
+ *         the ooSQLite class.  If the global default value is a Rexx string, we
+ *         create a new Rexx string object and request a global reference.
+ *
+ *         If the user changes the attribute we release the global reference for
+ *         the existing, (if it is not the nil object,) and create a new Rexx
+ *         string if needed.
+ *
+ *         This same pattern is followed for a new statement object, which is
+ *         why we save the CSTRING value of the attribute here.
+ */
+RexxMethod2(RexxObjectPtr, oosqlconn_setNull_atr, RexxObjectPtr, nullObj, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return NULLOBJECT;
+    }
+    RexxObjectPtr  oldNull = pConn->nullObj;
+
+    if ( nullObj == TheNilObj )
+    {
+        pConn->nullObj = nullObj;
+        pConn->nullStr = NULL;
+    }
+    else
+    {
+        pConn->nullStr = context->ObjectToStringValue(nullObj);
+        pConn->nullObj = context->String(pConn->nullStr);
+
+        context->RequestGlobalReference(pConn->nullObj);
+    }
+
+    if ( oldNull != TheNilObj )
+    {
+        context->ReleaseGlobalReference(oldNull);
+    }
+
     return NULLOBJECT;
 }
 
@@ -3990,6 +4106,8 @@ RexxMethod5(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _fla
 
     if ( success )
     {
+        pCooSQLiteClass pCsc = (pCooSQLiteClass)context->ObjectToCSelf(TheOOSQLiteClass);
+
         if ( argumentExists(3) )
         {
             if ( defFormat < anArrayOfArrays || defFormat > aClassicStem )
@@ -4004,8 +4122,19 @@ RexxMethod5(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _fla
         }
         else
         {
-            pCooSQLiteClass pCsc = (pCooSQLiteClass)context->ObjectToCSelf(TheOOSQLiteClass);
             pConn->format = pCsc->format;
+        }
+
+        if ( pCsc->nullObj == TheNilObj )
+        {
+            pConn->nullObj = pCsc->nullObj;
+        }
+        else
+        {
+            pConn->nullStr = pCsc->nullStr;
+            pConn->nullObj = context->String(pConn->nullStr);
+
+            context->RequestGlobalReference(pConn->nullObj);
         }
     }
 
@@ -4037,6 +4166,11 @@ RexxMethod1(RexxObjectPtr, oosqlconn_uninit, CSELF, pCSelf)
             cleanupCallbacks(context);
 
             ensureFinalized(context, pConn);
+
+            if ( pConn->nullObj != TheNilObj )
+            {
+                context->ReleaseGlobalReference(pConn->nullObj);
+            }
 
             int rc = sqlite3_close(pConn->db);
 
@@ -5410,6 +5544,47 @@ RexxMethod1(RexxStringObject, oosqlstmt_getLastErrMsg_atr, CSELF, pCSelf)
     return pCstmt->lastErrMsg;
 }
 
+/** ooSQLiteStmt::null  [attribute get]
+ */
+RexxMethod1(RexxObjectPtr, oosqlstmt_getNull_atr, CSELF, pCSelf)
+{
+    pCooSQLiteStmt pCstmt = requiredStmtCSelf(context, pCSelf);
+    if ( pCstmt == NULL )
+    {
+        return NULLOBJECT;
+    }
+    return pCstmt->nullObj;
+}
+/** ooSQLiteStmt::null  [attribute set]
+ */
+RexxMethod2(RexxObjectPtr, oosqlstmt_setNull_atr, RexxObjectPtr, nullObj, CSELF, pCSelf)
+{
+    pCooSQLiteStmt pCstmt = requiredStmtCSelf(context, pCSelf);
+    if ( pCstmt == NULL )
+    {
+        return NULLOBJECT;
+    }
+    RexxObjectPtr  oldNull = pCstmt->nullObj;
+
+    if ( nullObj == TheNilObj )
+    {
+        pCstmt->nullObj = nullObj;
+    }
+    else
+    {
+        pCstmt->nullObj = context->String(context->ObjectToStringValue(nullObj));
+        context->RequestGlobalReference(pCstmt->nullObj);
+    }
+
+    if ( oldNull != TheNilObj )
+    {
+        context->ReleaseGlobalReference(oldNull);
+    }
+
+    return NULLOBJECT;
+}
+
+
 /** ooSQLiteStmt::recordFormat  [attribute get]
  */
 RexxMethod1(uint32_t, oosqlstmt_getRecordFormat_atr, CSELF, pCSelf)
@@ -5504,6 +5679,16 @@ RexxMethod4(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OPTI
         pCstmt->rexxSelf = self;
         pCstmt->tail     = safeRexxStringRx(context->threadContext, tail);
 
+        if ( pConn->nullObj == TheNilObj )
+        {
+            pCstmt->nullObj = TheNilObj;
+        }
+        else
+        {
+            pCstmt->nullObj = context->String(pConn->nullStr);
+            context->RequestGlobalReference(pCstmt->nullObj);
+        }
+
         context->SetObjectVariable("__rxTail", pCstmt->tail);
 
         context->SendMessage1(db, "PUTSTMT", self);
@@ -5554,6 +5739,11 @@ RexxMethod1(RexxObjectPtr, oosqlstmt_uninit, CSELF, pCSelf)
             pCstmt->db        = NULL;
             pCstmt->tail      = NULL;
             pCstmt->finalized = true;
+
+            if ( pCstmt->nullObj != TheNilObj )
+            {
+                context->ReleaseGlobalReference(pCstmt->nullObj);
+            }
         }
 
         CRITICAL_SECTION_LEAVE
@@ -6154,7 +6344,7 @@ RexxMethod2(RexxObjectPtr, oosqlstmt_columnText, int32_t, col, CSELF, pCSelf)
         return context->WholeNumber(SQLITE_MISUSE);
     }
     col--;
-    return context->String(safeColumnText(pCstmt->stmt, col));
+    return safeColumnText(context->threadContext, pCstmt->stmt, col, pCstmt->nullObj);
 }
 
 
@@ -8531,8 +8721,13 @@ RexxRoutine2(RexxObjectPtr, oosqlColumnTableName_rtn, POINTER, _stmt, int32_t, c
  *                          Rexx programmer should use 1-based numbers as is
  *                          normal for Rexx.
  *
+ *  @param nullObj [optional]  If the column value is SQL NULL, by default the
+ *                             .nil object is returned.  This argument allows
+ *                             the user to specify an alternative value to be
+ *                             returned for SQL NULL.
+ *
  */
-RexxRoutine2(RexxObjectPtr, oosqlColumnText_rtn, POINTER, _stmt, int32_t, col)
+RexxRoutine3(RexxObjectPtr, oosqlColumnText_rtn, POINTER, _stmt, int32_t, col, OPTIONAL_RexxObjectPtr, nullObj)
 {
     sqlite3_stmt *stmt = routineStmt(context, _stmt);
     if ( stmt == NULL )
@@ -8540,8 +8735,13 @@ RexxRoutine2(RexxObjectPtr, oosqlColumnText_rtn, POINTER, _stmt, int32_t, col)
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
+    if ( argumentOmitted(3) )
+    {
+        nullObj = TheNilObj;
+    }
+
     col--;
-    return context->String(safeColumnText(stmt, col));
+    return safeColumnText(context->threadContext, stmt, col, nullObj);
 }
 
 /** oosqlColumnType()
@@ -10293,6 +10493,8 @@ REXX_METHOD_PROTOTYPE(oosqlC_merge_cls);
 
 // .ooSQLite
 REXX_METHOD_PROTOTYPE(oosql_init_cls);
+REXX_METHOD_PROTOTYPE(oosql_getNull_atr_cls);
+REXX_METHOD_PROTOTYPE(oosql_setNull_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_getRecordFormat_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_setRecordFormat_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionGet_cls);
@@ -10324,6 +10526,8 @@ REXX_METHOD_PROTOTYPE(oosqlconn_getFileName_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getInitCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getLastErrMsg_atr);
+REXX_METHOD_PROTOTYPE(oosqlconn_getNull_atr);
+REXX_METHOD_PROTOTYPE(oosqlconn_setNull_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getRecordFormat_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_setRecordFormat_atr);
 
@@ -10371,6 +10575,8 @@ REXX_METHOD_PROTOTYPE(oosqlstmt_getFinalize_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_getInitCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_getLastErrMsg_atr);
+REXX_METHOD_PROTOTYPE(oosqlstmt_getNull_atr);
+REXX_METHOD_PROTOTYPE(oosqlstmt_setNull_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_getRecordFormat_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_setRecordFormat_atr);
 
@@ -10459,6 +10665,8 @@ RexxMethodEntry ooSQLite_methods[] = {
 
     // .ooSQLite
     REXX_METHOD(oosql_init_cls,                       oosql_init_cls),
+    REXX_METHOD(oosql_getNull_atr_cls,                oosql_getNull_atr_cls),
+    REXX_METHOD(oosql_setNull_atr_cls,                oosql_setNull_atr_cls),
     REXX_METHOD(oosql_getRecordFormat_atr_cls,        oosql_getRecordFormat_atr_cls),
     REXX_METHOD(oosql_setRecordFormat_atr_cls,        oosql_setRecordFormat_atr_cls),
     REXX_METHOD(oosql_compileOptionGet_cls,           oosql_compileOptionGet_cls),
@@ -10490,6 +10698,8 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlconn_getInitCode_atr,            oosqlconn_getInitCode_atr),
     REXX_METHOD(oosqlconn_getLastErrCode_atr,         oosqlconn_getLastErrCode_atr),
     REXX_METHOD(oosqlconn_getLastErrMsg_atr,          oosqlconn_getLastErrMsg_atr),
+    REXX_METHOD(oosqlconn_getNull_atr,                oosqlconn_getNull_atr),
+    REXX_METHOD(oosqlconn_setNull_atr,                oosqlconn_setNull_atr),
     REXX_METHOD(oosqlconn_getRecordFormat_atr,        oosqlconn_getRecordFormat_atr),
     REXX_METHOD(oosqlconn_setRecordFormat_atr,        oosqlconn_setRecordFormat_atr),
 
@@ -10537,6 +10747,8 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlstmt_getInitCode_atr,            oosqlstmt_getInitCode_atr),
     REXX_METHOD(oosqlstmt_getLastErrCode_atr,         oosqlstmt_getLastErrCode_atr),
     REXX_METHOD(oosqlstmt_getLastErrMsg_atr,          oosqlstmt_getLastErrMsg_atr),
+    REXX_METHOD(oosqlstmt_getNull_atr,                oosqlstmt_getNull_atr),
+    REXX_METHOD(oosqlstmt_setNull_atr,                oosqlstmt_setNull_atr),
     REXX_METHOD(oosqlstmt_getRecordFormat_atr,        oosqlconn_getRecordFormat_atr),
     REXX_METHOD(oosqlstmt_setRecordFormat_atr,        oosqlconn_setRecordFormat_atr),
 
