@@ -101,15 +101,15 @@
   say header
   say '='~copies(80)
 
-  -- In this approach a NULL in the table will be set to the .nil object.
+  -- In this approach NULLs in the table are returned as the .nil object.  This
+  -- is actually the default, but since we set the null attribute for the stmt
+  -- above to a non-default, we need to reset the attribute here.
   stmt~null = .nil
   do while stmt~step == stmt~ROW
     row = ''
 
     do i = 1 to n
-      if stmt~columnType(i) == stmt~NULL then f = .nil
-      else f = stmt~columnText(i)
-
+      f = stmt~columnText(i)
       row ||= left(f, 17)
     end
 
