@@ -200,6 +200,7 @@
     ofd~release
 
     -- Have the edit box display the result.
+    self~showResult(text)
     edit~setText(text)
 
     return 0
@@ -241,33 +242,27 @@
 
 
 ::method openFolderExample unguarded private
-    expose edit
 
 
     -- Have the edit box display the result.
-    edit~setText(text)
-
-    return 0
+    return self~showResult(text)
 
 
 ::method saveDefaultExample unguarded private
-    expose edit
 
 
     -- Have the edit box display the result.
-    edit~setText(text)
-
-    return 0
+    return self~showResult(text)
 
 
 ::method openCustonExample unguarded private
+
+
+
+
+::method showResult unguarded private
     expose edit
+    use strict arg text
 
-
-    -- Have the edit box display the result.
     edit~setText(text)
-
     return 0
-
-
-
