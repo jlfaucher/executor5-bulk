@@ -217,6 +217,7 @@ typedef struct _genericCallback {
     RexxRoutineObject    callbackRtn;     // Rexx routine to call.
     RexxObjectPtr        callbackObj;     // Rexx object to invoke the callback() method on.
     RexxObjectPtr        userData;        // A Rexx object that the user wants sent to its Rexx callback.
+    RexxObjectPtr        nullObj;
     RexxInstance        *interpreter;
     RexxThreadContext   *callbackContext;
     char               **indexes;

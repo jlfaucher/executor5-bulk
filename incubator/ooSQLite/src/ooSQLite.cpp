@@ -2000,7 +2000,7 @@ static int execCallBackArray(void *data, int ncols, char **values, char **header
     {
         if ( values[i] == NULL )
         {
-            c->ArrayPut(record, TheNilObj, i + 1);
+            c->ArrayPut(record, d->nullObj, i + 1);
         }
         else
         {
@@ -2122,7 +2122,7 @@ static int execCallBackDirectory(void *data, int ncols, char **values, char **he
         RexxObjectPtr value;
         if ( values[i] == NULL )
         {
-            value = TheNilObj;
+            value = d->nullObj;
         }
         else
         {
@@ -2190,7 +2190,7 @@ static int execCallBackStem(void *data, int ncols, char **values, char **headers
         RexxObjectPtr value;
         if ( values[i] == NULL )
         {
-            value = TheNilObj;
+            value = d->nullObj;
         }
         else
         {
@@ -2271,7 +2271,7 @@ static int execCallBackClassicStem(void *data, int ncols, char **values, char **
             RexxObjectPtr value;
             if ( values[i] == NULL )
             {
-                value = TheNilObj;
+                value = d->nullObj;
             }
             else
             {
@@ -4585,7 +4585,7 @@ RexxMethod1(RexxObjectPtr, oosqlconn_errMsg, CSELF, pCSelf)
  *
  *  @return  A result code, or a result set as described above.
  *
- *  @note  If the user requests a result set be returned, then we alway return
+ *  @note  If the user requests a result set be returned, then we always return
  *         the result set, even if there was an error.  On error, the
  *         lastErrCode and lastErrMsg get set.  If there was no error, they are
  *         cleared.  This way the user can determine if there was an error, but
