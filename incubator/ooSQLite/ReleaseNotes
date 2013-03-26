@@ -221,7 +221,7 @@ The SQLite library is updated to 3.7.16
 
   The following bugs reported on SourceForge have been fixed:
 
-  *
+  * #1158 ooSQLite ooSQLiteConnection tableColumnMetaData Catch22 error
 
 
 
@@ -259,6 +259,25 @@ The SQLite library is updated to 3.7.16
     ooSQLiteConstants class:
     ------------------------
       READONLY_ROLLBACK
+
+  * SQLite 3.7.16 has a large number of other enhancements and
+  performance improvements, however taking advantage of these
+  improvements does not require any other code changes to ooSQLite.
+  They are available automatically by updating ooSQLite to use the
+  SQLite 3.7.16 library.
+
+
+  Feature Requests:
+  -----------------
+
+  * #533 ooSQLite NULL output presentation
+
+  The Rexx programmer can specify how the SQL NULL value should be
+  returned to the application.  By default the .nil object is returned
+  for any NULL value in the database.  This returned value can be
+  changed to any string value desired by setting the nullObj attribute
+  of the ooSQLite, ooSQLiteConn, or ooSQLiteStmt classes.
+
 
 
   Documentation:
