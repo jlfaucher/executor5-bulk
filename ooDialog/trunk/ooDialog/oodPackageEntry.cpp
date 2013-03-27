@@ -47,6 +47,7 @@
 #include "ooDialog.hpp"     // Must be first, includes windows.h, commctrl.h, and oorexxapi.h
 #include <shlwapi.h>
 #include <stdio.h>
+#include <delayimp.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
 
@@ -383,6 +384,112 @@ void RexxEntry ooDialogUnload(RexxThreadContext *c)
 {
     /* GdiplusShutdown(gdiplusToken); */
 }
+
+
+/**
+ * As ooDialog is enhanced to support more of Windows 7 features, it is linked
+ * to Windows library procedures that are not available in the XP systen DLLs.
+ * This causes oodialog.dll to fail to load on XP.  In an attempt to extend the
+ * life of ooDialog on XP, we are going to use delayed loading of one or more
+ * DLLs.
+ *
+ * This hook function is called by the delayed DLL library loading mechanism
+ * when the delayed load fails.  Typically this is because the DLL can not be
+ * found.  But, in our case it is more likely that the procedure entrance is not
+ * found
+ *
+ * There is nothing we can do about this, so a message is printed and the
+ * application is terminated.
+ *
+ * @param dliNotify   Reason for the failure.
+ * @param pdli        Information about the failure.
+ *
+ * @return Return a proper HMODULE or valid proc address if this function can
+ *         recover from the error, otherwise NULL.  We can not recover from this
+ *         so we return NULL.
+ */
+FARPROC WINAPI delayFailHook(unsigned int dliNotify, PDelayLoadInfo pdli)
+{
+    switch (dliNotify)
+    {
+        case dliFailLoadLib :
+            printf("Failed to load %s, error code: %d.  Ensure %s is available.\n",
+                   pdli->szDll, pdli->dwLastError, pdli->szDll);
+            break;
+
+        case dliFailGetProc :
+            if (pdli->dlp.fImportByName)
+            {
+                printf("Failed to get procedure: %s in %s.  Last error: %d\n",
+                       pdli->dlp.szProcName, pdli->szDll, pdli->dwLastError);
+            }
+            else
+            {
+                printf("Failed to get procedure, ordinal: %s in %s.  Last error: %d\n",
+                       pdli->dlp.szProcName, pdli->szDll, pdli->dwLastError);
+            }
+            break;
+
+        default :
+            printf("Unknown error trying to delay load %s.\n", pdli->szDll);
+            break;
+    }
+
+    printf("The error is unrecoverable, have to abort.\n");
+
+    return NULL;
+}
+
+PfnDliHook __pfnDliFailureHook2 = delayFailHook;
+
+#if 0
+/**
+ * Temp for testing, will be removed.
+ *
+ * @param dliNotify
+ * @param pdli
+ *
+ * @return FARPROC
+ */
+FARPROC WINAPI delayNoteHook(unsigned int dliNotify, PDelayLoadInfo pdli)
+{
+    switch (dliNotify)
+    {
+        case dliStartProcessing :
+            printf("Check to see if library %s is already loaded.\n", pdli->szDll);
+            break;
+
+        case dliNotePreLoadLibrary :
+            printf("Going to call LoadLibrary() for library %s.\n", pdli->szDll);
+            break;
+
+        case dliNotePreGetProcAddress :
+            if (pdli->dlp.fImportByName)
+            {
+                printf("Going to call GetProcAddress() to get procedure: %s in %s.\n", pdli->dlp.szProcName, pdli->szDll);
+            }
+            else
+            {
+                printf("Failed to get procedure, ordinal: %d in %s.  Last error: %d\n", pdli->dlp.dwOrdinal, pdli->szDll);
+            }
+            break;
+
+        case dliNoteEndProcessing :
+            printf("Done processing for library %s.\n", pdli->szDll);
+            break;
+
+        default :
+            printf("Unknown notification for delayed load library %s.\n", pdli->szDll);
+            break;
+    }
+
+    return NULL;
+}
+PfnDliHook __pfnDliNotifyHook2 = delayNoteHook;
+#endif
+
+
+
 
 REXX_TYPED_ROUTINE_PROTOTYPE(fileNameDlg_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(findWindow_rtn);

@@ -169,6 +169,7 @@ $(OOD_OUTDIR)\oodialog.dll: $(SOURCEF)
     $(OR_LINK) \
     $(SOURCEF)  \
     $(lflags_common) $(lflags_dll) \
+    /DELAYLOAD:shell32.dll \
     $(REXXAPI_LIBS) \
     WINMM.LIB \
     COMDLG32.LIB \
@@ -178,6 +179,7 @@ $(OOD_OUTDIR)\oodialog.dll: $(SOURCEF)
     UxTheme.lib \
     Rpcrt4.lib \
     propsys.lib \
+    delayimp.lib \
     -def:$(OOD_OODIALOGSRC)\ooDialog.def \
     -out:$(OOD_OUTDIR)\$(@B).dll
 

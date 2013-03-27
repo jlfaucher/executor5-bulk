@@ -1562,17 +1562,21 @@ RexxMethod1(RexxStringObject, dlgutil_windowFromPoint_cls, RexxObjectPtr, pt)
     return NULLOBJECT;
 }
 
+
 /** DlgUtil::test()  [class method]
  *
  *  Simple method to use for testing.
  */
-RexxMethod1(RexxObjectPtr, dlgutil_test_cls, OPTIONAL_int64_t, n)
+RexxMethod0(RexxObjectPtr, dlgutil_test_cls)
 {
-    char buf[256];
+#ifdef _WIN64
+    printf("_WIN64 is defined\n");
+#else
+    printf("_WIN64 is NOT defined\n");
+#endif
+    printf("No test at this time.\n");
 
-    _snprintf(buf, sizeof(buf), "%s.\n", ComCtl32VersionStr);
-
-    return context->String(buf);
+    return TheZeroObj;
 }
 
 /**
