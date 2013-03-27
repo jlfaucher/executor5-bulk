@@ -3661,9 +3661,20 @@ RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING nam
     char     buf[256];
     sqlite3 *db = pConn->db;
 
-    if ( pragma == collationList || pragma == databaseList || pragma == compileOptions || pragma == foreignKeyCheck )
+    if ( pragma == collationList || pragma == databaseList || pragma == compileOptions )
     {
         snprintf(buf, sizeof(buf), "PRAGMA %s;", name);
+    }
+    else if ( pragma == foreignKeyCheck )
+    {
+        if ( value == NULLOBJECT )
+        {
+            snprintf(buf, sizeof(buf), "PRAGMA %s;", name);
+        }
+        else
+        {
+            snprintf(buf, sizeof(buf), "PRAGMA %s(%s);", name, c->ObjectToStringValue(value));
+        }
     }
     else
     {
@@ -4939,13 +4950,14 @@ RexxMethod3(RexxObjectPtr, oosqlconn_pragma, RexxStringObject, _name, OPTIONAL_R
 
     switch ( pragma )
     {
-        case compileOptions :
-        case collationList  :
-        case databaseList   :
-        case foreignKeyList :
-        case indexInfo      :
-        case indexList      :
-        case tableInfo      :
+        case compileOptions  :
+        case collationList   :
+        case databaseList    :
+        case foreignKeyCheck :
+        case foreignKeyList  :
+        case indexInfo       :
+        case indexList       :
+        case tableInfo       :
             return pragmaList(context, pConn, name, value, pragma);
 
         case integrityCheck :

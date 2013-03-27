@@ -619,7 +619,7 @@
 ::constant INTEGER  1
 ::constant FLOAT    2
 ::constant BLOB     4
-::constant NULL     5
+::constant SQLNULL  5
 ::constant TEXT     3
 
 
