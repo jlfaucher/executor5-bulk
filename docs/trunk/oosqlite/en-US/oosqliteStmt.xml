@@ -118,6 +118,10 @@
 <entry>Reflects the finialized state of this statement.</entry>
 </row>
 <row>
+<entry><xref linkend="atrNullClsOOSQLiteStmt"/></entry>
+<entry>Reflects the representation for the SQL NULL value that is returned by the interpreter, for this statment, for database values that are NULL.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
@@ -474,6 +478,99 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ooSQLiteStmt::lastErrMsg() [attribute]  -->
+
+
+<section id="atrNullClsOOSQLiteStmt" xreflabel="null"><title>null (Attribute)</title>
+<indexterm><primary>null</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>null</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--null-----------------------------------------><
+
+>>--null = nullObj-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the representation for the SQL NULL value that is returned by the interpreter, for this statment, for database
+  values that are NULL.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">null get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the current object the interpreter uses for this statement for the SQL NULL value. If the programmer has not
+    changed this attribute, its value is the value of the <xref linkend="atrNullClsOOSQLiteConnection"/> attribute of the
+    database connection this statement is assigned to. Normally this is the <computeroutput>.nil</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">null set:</emphasis></term>
+  <listitem>
+  <para>
+    Set this attribute to either the <computeroutput>.nil</computeroutput> object, or some alternative <emphasis
+    role="italic">string</emphasis> value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By default, ooSQLite uses the <computeroutput>.nil</computeroutput> object to represent the SQL NULL value. Queries for
+    values stored in the database will return the <computeroutput>.nil</computeroutput> object for any value that is SQL
+    NULL. However, by changing the value of the <emphasis role="italic">null</emphasis> attribute, the Rexx programmer can
+    change the value the interpreter returns for NULL when this statement is executed. Typically this would be done when the
+    returned values are going to be displayed as text and the programmer would prefer to work with a string directly.
+    Perhaps <emphasis role="italic">NULL</emphasis>, or <emphasis role="italic">no value</emphasis>.
+  </para>
+  <para>
+    When a <computeroutput>ooSQLiteStmt</computeroutput> object is instantiated, the <emphasis role="italic">null</emphasis>
+    attribute is assigned the value of the <xref linkend="atrNullClsOOSQLiteConnection"/> object that is used to instantiate
+    the statement.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that this attribute does not affect the value the programmer must use to assign a
+    SQL NULL to the database. The programmer must use the <computeroutput>.nil</computeroutput> object for that.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    This attribute is provided by ooSQLite, there is no similar feature provided by SQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the <emphasis role="italic">null</emphasis> attribute of the statment to <emphasis role="italic">no
+    value</emphasis>. This allows the application to invoke the <emphasis role="italic">left</emphasis> method on the
+    returned value without having to check that the return is the <computeroutput>.nil</computeroutput> object. Note that
+    invoking the <emphasis role="italic">left</emphasis> method on the <computeroutput>.nil</computeroutput> object will
+    raise a syntax condition:
+<programlisting>
+<![CDATA[
+
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  sql = 'SELECT * FROM foods ORDER BY name;'
+  stmt = .ooSQLiteStmt~new(dbConn, sql)
+  stmt~null = 'no value'
+
+  say stmt~columnName(1)~left(25) || stmt~columnName(2)~left(25) || stmt~columnName(3)~left(25)
+  say '='~copies(80)
+
+  do while stmt~step == stmt~ROW
+    say stmt~columnText(1)~left(25) || stmt~columnText(2)~left(25) || stmt~columnText(3)~left(25)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::nullObj() [attribute]  -->
 
 
 <section id="atrRecordFormatClsStmt"><title>recordFormat (Attribute)</title>
