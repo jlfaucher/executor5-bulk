@@ -2039,7 +2039,14 @@ static int execCallBackArray(void *data, int ncols, char **values, char **header
 
         for ( int i = 0; i < ncols; i++ )
         {
-            c->ArrayAppendString(header, headers[i], strlen(headers[i]));
+            if ( values[i] == NULL )
+            {
+                c->ArrayPut(record, d->nullObj, i + 1);
+            }
+            else
+            {
+                c->ArrayAppendString(record, values[i], strlen(values[i]));
+            }
         }
 
         c->ArrayPut(rows, header, 1);
@@ -4647,6 +4654,7 @@ RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
         }
 
         cbc.callbackContext = context->threadContext;
+        cbc.nullObj         = pConn->nullObj;
 
         if ( argumentExists(4) )
         {
