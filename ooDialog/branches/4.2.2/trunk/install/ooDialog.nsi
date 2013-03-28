@@ -530,6 +530,8 @@ Section  doInstall
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\res\*.ico"
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\res\*.bmp"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\res\*.dll"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\res\res.mak"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples

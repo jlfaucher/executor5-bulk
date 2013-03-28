@@ -122,13 +122,13 @@
  * We also use this method to find the installed directory of ooRexx.
  */
 ::method initDialog
-		expose rbOpen rbSave rbOpenFolder rbSaveDefault rbOpenCustom edit rexx_home
+		expose rbOpen rbSave rbOpenCustom rbSaveDefault rbOpenFolder edit rexx_home
 
     rbOpen        = self~newRadioButton(IDC_RB_OPEN)~~check
     rbSave        = self~newRadioButton(IDC_RB_SAVE)
-    rbOpenFolder  = self~newRadioButton(IDC_RB_OPEN_FOLDER)
+    rbOpenCustom  = self~newRadioButton(IDC_RB_OPEN_CUSTOM)
     rbSaveDefault = self~newRadioButton(IDC_RB_SAVE_DEFAULT)
-    rbOpenCusom   = self~newRadioButton(IDC_RB_OPEN_CUSTOM)
+    rbOpenFolder  = self~newRadioButton(IDC_RB_OPEN_FOLDER)
 
     edit = self~newEdit(IDC_EDIT_OSF)
 
@@ -148,21 +148,26 @@
  * open file dialog, examine the associated method.
  */
 ::method onShowOSFDialog unguarded
-    expose rbOpen rbSave rbOpenFolder rbSaveDefault rbOpenCustom
+    expose rbOpen rbSave rbOpenCustom rbOpenFolder rbSaveDefault
 
     select
       when rbOpen~checked then return self~openExample
       when rbSave~checked then return self~saveExample
-      when rbOpenFolder~checked then return self~openFolderExample
+      when rbOpenCustom~checked then return self~openCustomExample
       when rbSaveDefault~checked then return self~saveDefaultExample
-      when rbOpendCustom~checked then return self~openCustomExample
+      when rbOpenFolder~checked then return self~openFolderExample
       otherwise return 0  -- Can not really happen
     end
     -- End select
 
 
+/** openExample()
+ *
+ *  Displays the most simple Open File Dialog example.  We just show the dialog
+ *  and get the result.  We do not use any customization or advanced features,
+ *  other than slightly changing the options.
+ */
 ::method openExample unguarded private
-    expose edit
 
     -- Setting the client GUID has the operating system preserve the state for
     -- this specific open file dialog.
@@ -171,11 +176,12 @@
 
     -- The default flags for the Open File Dialog contain the file must exsit
     -- flag.  This prevents the user from typing in their own file name; the
-    -- user can only save to an exsiting file name.
+    -- user can only open exsiting file name.
     --
     -- For certain applications, this behaviour may be desired.  But for this
     -- example, we want the user to be able to type in any file name, so we
-    -- remove that flag:
+    -- remove that flag.  We get the exsiting flags and set the flags to the
+    -- existing flags minus the FILEMUSTEXIST keyword.
     ofd~options = ofd~options~delWord(ofd~options~wordPos('FILEMUSTEXIST'), 1)
 
     -- Very simple, we are all set, show the dialog and get the user's response:
@@ -201,13 +207,16 @@
 
     -- Have the edit box display the result.
     self~showResult(text)
-    edit~setText(text)
 
     return 0
 
 
+/** saveExample()
+ *
+ *  Displays the most simple Save File Dialog example.  We just show the dialog
+ *  and get the result.  We do not use any customization or advanced features.
+ */
 ::method saveExample unguarded private
-    expose edit
 
     -- Setting the client GUID has the operating system preserve the state for
     -- this specific save file dialog.
@@ -236,13 +245,40 @@
     sfd~release
 
     -- Have the edit box display the result.
-    edit~setText(text)
+    return self~showResult(text)
 
     return 0
 
 
-::method openFolderExample unguarded private
+/** openCustomExample()
+ *
+ *  Displays an Open File Dialog that has some easy to use customizations.
+ */
+::method openCustomExample unguarded private
 
+    ofd = .OpenFileDialog~new
+    ret = ofd~setClientGuid(self~GUID_OPEN_CUSTOM)
+
+    ofd~options = ofd~options~delWord(ofd~options~wordPos('FILEMUSTEXIST'), 1)
+
+    -- With the Common Item Dialog you can easily change the title for the
+    -- dialog, the label for the edit box, and the label for the ok button:
+    ofd~setTitle("The ooRexx Project's Open File Dialog")
+    ofd~setFileNameLabel('Type in, or select an existing, file to open here:')
+    ofd~setOkButtonLabel('Finished')
+
+    -- There are also a large number of options that can be set or changed.
+    -- Here, we show just a few that effect the appearance of the dialog:
+    opts = 'FORCEPREVIEWPANEON HIDEMRUPLACES HIDEPINNEDPLACES'
+    ofd~options = ofd~options opts
+
+    -- Okay, we are all set, show the dialog and get the user's response:
+    ret = ofd~show(self)
+
+    if ret == ofd~canceled then text = 'The user canceled the opne'
+    else text = 'Open file:' ofd~getResult
+
+    ofd~release
 
     -- Have the edit box display the result.
     return self~showResult(text)
@@ -255,9 +291,11 @@
     return self~showResult(text)
 
 
-::method openCustonExample unguarded private
+::method openFolderExample unguarded private
 
 
+    -- Have the edit box display the result.
+    return self~showResult(text)
 
 
 ::method showResult unguarded private

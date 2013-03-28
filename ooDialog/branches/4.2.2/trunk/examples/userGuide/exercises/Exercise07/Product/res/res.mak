@@ -1,11 +1,11 @@
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
-#/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
+#/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
 #/* distribution. A copy is also available at the following address:           */
-#/* http://www.oorexx.org/license.html                                         */
+#/* http://www.oorexx.org/license.html                          */
 #/*                                                                            */
 #/* Redistribution and use in source and binary forms, with or                 */
 #/* without modification, are permitted provided that the following            */
@@ -35,9 +35,16 @@
 #/*                                                                            */
 #/*----------------------------------------------------------------------------*/
 
-.NOTPARALLEL:
+# nMake-compatible Make file for the ProductView resource-only DLL.
 
-MAINTAINERCLEANFILES	= Makefile.in *~
+all:  ProductView.dll
 
-EXTRA_DIST		= *.bmp *.ico *.mak
+ProductView.dll: ProductView.res
+    link /NOLOGO $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) /OUT:$(@B).dll
 
+# Create .res from .rc
+ProductView.res: ..\ProductView.rc
+    rc -r -fo$(@B).res ..\$(@B).rc
+
+clean:
+    del *.res *.dll 1>nul 2>&1
