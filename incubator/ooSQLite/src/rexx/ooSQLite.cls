@@ -383,9 +383,9 @@
 -- (oosqlite.dll / oosqlite.so depending on platform.)
 --
 -- Copy the values directly from the top of sqlit3.hpp.
-::constant VERSION        "3.7.16"
+::constant VERSION        "3.7.16.1"
 ::constant VERSION_NUMBER 3007016
-::constant SOURCE_ID      "2013-03-18 11:39:23 66d5f2b76750f3520eb7a495f6247206758f5b90"
+::constant SOURCE_ID      "2013-03-29 13:44:34 527231bc67285f01fb18d4451b28f61da3c4e39d"
 
 
 -- OO_ prefix indicates constant is not from the SQLite library.
