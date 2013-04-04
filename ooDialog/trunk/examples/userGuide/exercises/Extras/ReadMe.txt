@@ -41,7 +41,7 @@
   -----------------------------------------------------------------------
 
   This subdirectory tree contains the example programs referred to in the
-  appendix of the ooDialog User Guide.  The programs are intended to give
+  ooDialog User Guide.  The programs are intended to give
   context to the discussions in the User Guide, and may, or may not, be of
   use to ooRexx programmers by themselves.
 
