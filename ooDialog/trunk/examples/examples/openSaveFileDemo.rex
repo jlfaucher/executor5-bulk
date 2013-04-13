@@ -109,6 +109,7 @@
 -- Do not copy these GUIDs into your own code.  Always generate your own GUID.
 ::constant GUID_OPEN          '021b0a3d-cb16-4def-ab42-7fc259fd84d9'
 ::constant GUID_SAVE          'beff4495-fa60-468b-90c3-1dcb6fde0e78'
+::constant GUID_OPEN_MULTI    'b6c25d80-198e-4baa-aad8-1249e4f15b3f'
 ::constant GUID_OPEN_CUSTOM   '745c45cb-3464-46fc-96cf-8628ad4bf63b'
 ::constant GUID_SAVE_DEFAULT  'fe2c5305-d7f9-43cd-9d7b-9c3d4d1b79be'
 ::constant GUID_OPEN_FOLDER   'ce5ad183-b42f-4f37-a5d6-78d1cffea2e6'
@@ -122,10 +123,11 @@
  * We also use this method to find the installed directory of ooRexx.
  */
 ::method initDialog
-		expose rbOpen rbSave rbOpenCustom rbSaveDefault rbOpenFolder edit rexx_home
+		expose rbOpen rbSave rbOpenMulti rbOpenCustom rbSaveDefault rbOpenFolder edit rexx_home
 
     rbOpen        = self~newRadioButton(IDC_RB_OPEN)~~check
     rbSave        = self~newRadioButton(IDC_RB_SAVE)
+    rbOpenMulti   = self~newRadioButton(IDC_RB_OPEN_MULTI)
     rbOpenCustom  = self~newRadioButton(IDC_RB_OPEN_CUSTOM)
     rbSaveDefault = self~newRadioButton(IDC_RB_SAVE_DEFAULT)
     rbOpenFolder  = self~newRadioButton(IDC_RB_OPEN_FOLDER)
@@ -136,6 +138,8 @@
 
     rexx_home = value('REXX_HOME', , 'ENVIRONMENT')
     if rexx_home == '' then rexx_home = 'C:\Program Files'
+
+    self~addToolTips
 
 
 /** onShowOSFDialog()
@@ -148,11 +152,12 @@
  * open file dialog, examine the associated method.
  */
 ::method onShowOSFDialog unguarded
-    expose rbOpen rbSave rbOpenCustom rbOpenFolder rbSaveDefault
+    expose rbOpen rbSave rbOpenMulti rbOpenCustom rbOpenFolder rbSaveDefault
 
     select
       when rbOpen~checked then return self~openExample
       when rbSave~checked then return self~saveExample
+      when rbOpenMulti~checked then return self~openMultifilesExample
       when rbOpenCustom~checked then return self~openCustomExample
       when rbSaveDefault~checked then return self~saveDefaultExample
       when rbOpenFolder~checked then return self~openFolderExample
@@ -176,7 +181,7 @@
 
     -- The default flags for the Open File Dialog contain the file must exsit
     -- flag.  This prevents the user from typing in their own file name; the
-    -- user can only open exsiting file name.
+    -- user can only open an exsiting file.
     --
     -- For certain applications, this behaviour may be desired.  But for this
     -- example, we want the user to be able to type in any file name, so we
@@ -187,7 +192,7 @@
     -- Very simple, we are all set, show the dialog and get the user's response:
     ret = ofd~show(self)
 
-    if ret == ofd~canceled then text = 'The user canceled the opne'
+    if ret == ofd~canceled then text = 'The user canceled the open'
     else text = 'Open file:' ofd~getResult
 
     -- The proper use of both the .SaveFileDialog and the .OpenFileDialog is to
@@ -250,6 +255,59 @@
     return 0
 
 
+/** openMultiFilesExample()
+ *
+ * Displays a basic open file dialog that allows the user to pick multiple file
+ * names at one time.
+ */
+
+::method openMultiFilesExample unguarded private
+    expose rexx_home
+
+    ofd = .OpenFileDialog~new
+    ret = ofd~setClientGuid(self~GUID_OPEN_MULTI)
+
+    -- To allow the user to select multiple files, we need to add this keywod
+    -- to the options:
+    ofd~options = ofd~options 'ALLOWMULTISELECT'
+
+    -- Show the dialog and get the response
+    ret = ofd~show(self)
+
+    -- If msg ends up not being .nil, we show a message box ...
+    msg = .nil
+
+    if ret == ofd~canceled then do
+        text = 'The user canceled the open operation.'
+    end
+    else do
+        files = ofd~getResults
+        if files~items == 1 then do
+            text = 'Open file:' files[1]
+        end
+        else do
+            text = 'Open files (file names only):'
+            msg = 'Open files (complete file names as returned):' || .endOfLine~copies(2)
+
+            do f over files
+                text ||= ' ' || fileSpec('N', f)
+                msg  ||= f || .endOfLine
+            end
+        end
+    end
+    ofd~release
+
+    -- Have the edit box display the result.
+    self~showResult(text)
+
+    if msg \== .nil then do
+        title = 'Complete Open File Names'
+        j = MessageDialog(msg, self~hwnd, title, 'OK', 'INFORMATION')
+    end
+
+    return 0
+
+
 /** openCustomExample()
  *
  *  Displays an Open File Dialog that has some easy to use customizations.
@@ -275,7 +333,7 @@
     -- Okay, we are all set, show the dialog and get the user's response:
     ret = ofd~show(self)
 
-    if ret == ofd~canceled then text = 'The user canceled the opne'
+    if ret == ofd~canceled then text = 'The user canceled the open'
     else text = 'Open file:' ofd~getResult
 
     ofd~release
@@ -284,23 +342,195 @@
     return self~showResult(text)
 
 
+/** saveDefaultExample()
+ *
+ * Displays a save file dialog that uses file type filters and sets the initial
+ * file name and directory location.
+ */
 ::method saveDefaultExample unguarded private
+    expose rexx_home
 
+    sfd = .SaveFileDialog~new
+    ret = sfd~setClientGuid(self~GUID_SAVE_DEFAULT)
+
+    -- Add a file types filter.  To do this you use an array containing the
+    -- filter values.  Each single filter consists of 2 parts, the description
+    -- and the extension, so the array must contain an even number of items.
+    filter = .array~of('Rexx Program File', '*.rex', 'Rexx Class File', '*.cls', 'Text File', '*.txt')
+    sfd~setFileTypes(filter)
+
+    -- Set the initial filter selected.  This is done by using the index for
+    -- the filter in the array.  Each filter consists of a pair, so in the above
+    -- we have 3 filters.  The second filter is the 'Rexx Class File' filter
+    sfd~setFileTypeIndex(2)
+
+    -- Set the default extension.  Note that you do not include the period.  The
+    -- default extension governs whether or not an extension is added if the
+    -- user leaves off the extension.  If you do not set a deault extension, no
+    -- extension is added when the user does not type an extension, even if a
+    -- file type filter is in effect.  When a default extension is set, if the
+    -- user picks a new filter, the extension is updated automatically by the
+    -- operating system.
+    sfd~setDefaultExtension('cls')
+
+    -- Set the initial save as file name.  You must provide a complete path
+    -- name or an error is generated.  Likewise the file must exist.  The
+    -- complete path name also serves to specifiy the directory that the save
+    -- file dialog is initially opened in.
+    ret = sfd~setSaveAsItem(rexx_home'\ooDialog.cls')
+
+    -- The default options for the Save File Dialog contain the OVERWRITEPROMPT
+    -- keyword.  This option causes the operating system to prompt the user if
+    -- they select a save file name that is the name of an existing file.  If
+    -- that behaviour is not desired it can be changed by removing the keyword
+    -- as in this code.  Uncomment to see the effect:
+
+    /* sfd~options = sfd~options~delWord(sfd~options~wordPos('OVERWRITEPROMPT'), 1) */
+
+    -- Show the dialog and get the response
+    ret = sfd~show(self)
+
+    if ret == sfd~canceled then text = 'The user canceled the save operation.'
+    else text = 'Save file:' sfd~getResult
+
+    sfd~release
 
     -- Have the edit box display the result.
     return self~showResult(text)
 
+
+/** openFolderExample()
+ *
+ * Displays a basic open file dialog.  The main point here is to demonstrate
+ * how to control which directory is initially selected when the dialog opens.
+ */
 
 ::method openFolderExample unguarded private
+    expose rexx_home
 
+    ofd = .OpenFileDialog~new
+    ret = ofd~setClientGuid(self~GUID_OPEN_FOLDER)
+
+    -- Normally the operating system will pick the initial directory that is
+    -- selected when the open file dialog is first shown.  Usually this is the
+    -- last directory the user had selected.  The setFolder() method over-rides
+    -- this behaviour and forces the dialog to open with the specified directory
+    -- selected.
+    ofd~setFolder(rexx_home)
+
+    -- In this example we do not change the default options.  One of the
+    -- defaults is that the file must exist.  This is useful in the case where
+    -- we want to ensure the user picks an exsisting file.  We do not need to
+    -- check for file existence.  The operating system forces the user to pick
+    -- an exsiting file or cancel.
+
+    -- Show the dialog and get the response
+    ret = ofd~show(self)
+
+    if ret == ofd~canceled then text = 'The user canceled the open operation.'
+    else text = 'Open file:' ofd~getResult
+
+    ofd~release
 
     -- Have the edit box display the result.
     return self~showResult(text)
 
 
+/** showResult()
+ *
+ * A convenience method that updates the edit box with the results for each
+ * open / save file dialog.
+ */
 ::method showResult unguarded private
     expose edit
     use strict arg text
 
     edit~setText(text)
     return 0
+
+
+/** addToolTips()
+ *
+ * A convenience method to add a tool tip for each radio button.  The tool tips
+ * let us shwo some text explaining the tip of Open / Save File dialog that will
+ * be displayed when the specific radio button is selected.
+ *
+ * Notes:  A tool tip will display the text on multiple lines, and will break
+ *         the text at embedded new line characters.  But - it will only do this
+ *         if setMaxTipWidth() is invoked.  However, if the width is set to less
+ *         than the width up to the new line, the tool tip will break the text
+ *         at a word break.  So, what we do is set the max width to very large,
+ *         the width of an entire text, and then the tool tip breaks the text at
+ *         every new line.
+ *
+ *         The text is pretty long, so to ensure the user has enough time to
+ *         read it all, we set the delay before the tool tip disappears to twice
+ *         the default delay time.
+ */
+::method addToolTips private
+		expose rbOpen rbSave rbOpenMulti rbOpenCustom rbSaveDefault rbOpenFolder edit
+
+    text = "Select this Radio Button to show " || .endOfLine || -
+           "a simple Open File Dialog that"    || .endOfLine || -
+           "allows the user to type in a"      || .endOfLine || -
+           "file name."
+    s = self~getTextSizePX(text)
+
+    ttOpen = self~createToolTip('IDC_TT_OPEN')
+    ttOpen~addTool(rbOpen, text)
+    ttOpen~setMaxTipWidth(s~width)
+
+    delayTime = ttOpen~getDelayTime('AUTOPOP') * 2
+
+    ttOpen~setDelayTime('AUTOPOP', delayTime)
+
+    text = "Select this Radio Button to show " || .endOfLine || -
+           "a simple Save File Dialog that"    || .endOfLine || -
+           "allows the user to type in a"      || .endOfLine || -
+           "file name."
+
+    ttSave = self~createToolTip('IDC_TT_SAVE')
+    ttSave~addTool(rbSave, text)
+    ttSave~setMaxTipWidth(s~width)
+    ttSave~setDelayTime('AUTOPOP', delayTime)
+
+    text = "Select this Radio Button to show"  || .endOfLine || -
+           "an Open File Dialog that allows"   || .endOfLine || -
+           "the user to select multiple files" || .endOfLine || -
+           "at one time."
+
+    ttMulti = self~createToolTip('IDC_TT_OPEN_MULTI')
+    ttMulti~addTool(rbOpenMulti, text)
+    ttMulti~setMaxTipWidth(s~width)
+    ttMulti~setDelayTime('AUTOPOP', delayTime)
+
+    text = "Select this Radio Button to show"       || .endOfLine || -
+           "an Open File Dialog that has some"      || .endOfLine || -
+           "simple customizations of the apparence" || .endOfLine || -
+           "of the dialog."
+
+    ttCustom = self~createToolTip('IDC_TT_OPEN_CUSTOM')
+    ttCustom~addTool(rbOpenCustom, text)
+    ttCustom~setMaxTipWidth(s~width)
+    ttCustom~setDelayTime('AUTOPOP', delayTime)
+
+    text = "Select this Radio Button to show"  || .endOfLine || -
+           "a Save File Dialog that sets a"    || .endOfLine || -
+           "default save as file name and a"   || .endOfLine || -
+           "file type filter."
+
+    ttDefault = self~createToolTip('IDC_TT_SAVE_DEFAULT')
+    ttDefault~addTool(rbSaveDefault, text)
+    ttDefault~setMaxTipWidth(s~width)
+    ttDefault~setDelayTime('AUTOPOP', delayTime)
+
+    text = "Select this Radio Button to show"  || .endOfLine || -
+           "an Open File Dialog that sets"    || .endOfLine || -
+           "the initial direcotry that the"    || .endOfLine || -
+           "dialog opens in."
+
+    ttFolder = self~createToolTip('IDC_TT_OPEN_FOLDER')
+    ttFolder~addTool(rbOpenFolder, text)
+    ttFolder~setMaxTipWidth(s~width)
+    ttFolder~setDelayTime('AUTOPOP', delayTime)
+

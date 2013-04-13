@@ -61,19 +61,20 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
 
 
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-IDD_SIMPLE_OSF_DIALOGS DIALOGEX 0, 0, 256, 169
+IDD_SIMPLE_OSF_DIALOGS DIALOGEX 0, 0, 256, 193
 STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
 CAPTION "Open File or Save File Demonstration"
 FONT 8, "Ms Shell Dlg", 400, 0, 1
 {
-    GROUPBOX        "Pick the Open / Save File Dialog to display:", IDC_STATIC, 10, 10, 236, 84
+    GROUPBOX        "Pick the Open / Save File Dialog to display:", IDC_STATIC, 10, 10, 236, 106
     AUTORADIOBUTTON "Simple Open File", IDC_RB_OPEN, 23, 27, 66, 11
     AUTORADIOBUTTON "Simple Save File", IDC_RB_SAVE, 23, 49, 66, 11
-    AUTORADIOBUTTON "Open File in Specified Folder", IDC_RB_OPEN_FOLDER, 104, 73, 110, 11
-    AUTORADIOBUTTON "Save File Default Name", IDC_RB_SAVE_DEFAULT, 104, 49, 110, 11
-    AUTORADIOBUTTON "Open File Easy Customizations", IDC_RB_OPEN_CUSTOM, 104, 27, 110, 11
-    DEFPUSHBUTTON   "Show", IDC_PB_SHOW_OSF, 23, 72, 50, 14
-    LTEXT           "Result of the Open / Save File Dialog execution will be shown here:", IDC_STATIC, 10, 112, 235, 11, SS_LEFT | SS_CENTERIMAGE
-    EDITTEXT        IDC_EDIT_OSF, 10, 125, 236, 12, NOT WS_TABSTOP | ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "Done", IDCANCEL, 196, 145, 50, 14
+    AUTORADIOBUTTON "Open Multiple Files", IDC_RB_OPEN_MULTI, 23, 72, 85, 11
+    AUTORADIOBUTTON "Open File Easy Customizations", IDC_RB_OPEN_CUSTOM, 117, 27, 110, 11
+    AUTORADIOBUTTON "Save File Default Name", IDC_RB_SAVE_DEFAULT, 117, 49, 110, 11
+    AUTORADIOBUTTON "Open File in Specified Folder", IDC_RB_OPEN_FOLDER, 117, 72, 110, 11
+    DEFPUSHBUTTON   "Show", IDC_PB_SHOW_OSF, 84, 93, 50, 14
+    LTEXT           "Result of the Open / Save File Dialog execution will be shown here:", IDC_STATIC, 10, 136, 235, 11, SS_LEFT | SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_OSF, 10, 149, 236, 12, NOT WS_TABSTOP | ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "Done", IDCANCEL, 196, 169, 50, 14
 }
