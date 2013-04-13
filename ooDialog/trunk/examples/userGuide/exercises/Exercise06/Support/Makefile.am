@@ -37,9 +37,6 @@
 
 .NOTPARALLEL:
 
-SUBDIRS		= Customer Order OrderMgr Product Support
-DIST_SUBDIRS		= Customer Order OrderMgr Product Support
-
 MAINTAINERCLEANFILES	= Makefile.in *~
 
 EXTRA_DIST		= *.rex

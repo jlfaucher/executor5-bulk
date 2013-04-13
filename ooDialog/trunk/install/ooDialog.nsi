@@ -479,6 +479,11 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Exercise06\Product\res\res.mak"
 
     ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Support
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise06\Support\*.rex"
+
+    ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Exercise07\*.rex"
@@ -534,6 +539,14 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Product\res\res.mak"
 
     ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Support
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Support\*.cls"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Support\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Support\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Support\*.rex"
+
+    ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Samples\ReadMe.txt"
@@ -569,14 +582,6 @@ Section  doInstall
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.rex"
     File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.txt"
-
-    ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Support
-    ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Support\*.cls"
-    File "${ExamplesDir}\userGuide\exercises\Support\*.h"
-    File "${ExamplesDir}\userGuide\exercises\Support\*.rc"
-    File "${ExamplesDir}\userGuide\exercises\Support\*.rex"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\wav
