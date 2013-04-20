@@ -44,6 +44,7 @@
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
 #include "oodMessaging.hpp"
+#include "oodShared.hpp"
 #include "oodMenu.hpp"
 
 

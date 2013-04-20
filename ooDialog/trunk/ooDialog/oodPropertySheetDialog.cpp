@@ -57,6 +57,7 @@
 #include "oodResourceIDs.hpp"
 #include "oodControl.hpp"
 #include "oodResizableDialog.hpp"
+#include "oodShared.hpp"
 #include "oodPropertySheetDialog.hpp"
 
 

@@ -53,6 +53,7 @@
 #include "oodDeviceGraphics.hpp"
 #include "oodData.hpp"
 #include "oodMouse.hpp"
+#include "oodShared.hpp"
 #include "oodControl.hpp"
 
 const char *controlType2winName(oodControl_t control)

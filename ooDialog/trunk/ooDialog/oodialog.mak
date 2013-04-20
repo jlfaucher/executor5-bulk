@@ -41,6 +41,10 @@
 
 # NMAKE-compatible MAKE file for ooDialog
 
+# If you are using this make file and your version of rc does not support the
+# /nologo flag, comment out this next define:
+RC_NOLOGO = /nologo
+
 # If OOD_INDEPENDENT is defined we are operating outside of the interpreter
 # build.  In that case, OOD_OUTDIR, OOD_OODIALOGSRC, and OOD_INCLUDE_File are
 # defined in the parent make file that calls us.  When called in the interpreter
@@ -72,23 +76,23 @@ OOD_INCLUDE_FILE = "$(OR_LIBSRC)\ORXWIN32.MAK"
 ood_ver_def = -DOOD_VER=$(OOD_MAJOR) -DOOD_REL=$(OOD_MINOR) -DOOD_MOD=$(OOD_MOD_LVL) -DOOD_BLD=$(OOD_BLD_LVL) -DOOD_COPY_YEAR=\"$(OOD_COPY_YEAR)\"
 
 # We use our own rc flags version.
-rcflags_oodialog = rc /DWIN32 -dOODIALOG_VER=$(OOD_MAJOR) -dOODIALOG_REL=$(OOD_MINOR) -dOODIALOG_SUB=$(OOD_MOD_LVL) -dOODIALOG_BLD=$(OOD_BLD_LVL) -dOODIALOG_VER_STR=\"$(OOD_VER_STR)\" -dOODIALOG_COPY_YEAR=\"$(OOD_COPY_YEAR)\" -dMANIFEST_FILE=$(M_FILE)
+rcflags_oodialog = rc $(RC_NOLOGO) /DWIN32 -dOODIALOG_VER=$(OOD_MAJOR) -dOODIALOG_REL=$(OOD_MINOR) -dOODIALOG_SUB=$(OOD_MOD_LVL) -dOODIALOG_BLD=$(OOD_BLD_LVL) -dOODIALOG_VER_STR=\"$(OOD_VER_STR)\" -dOODIALOG_COPY_YEAR=\"$(OOD_COPY_YEAR)\" -dMANIFEST_FILE=$(M_FILE)
 
 C=cl
 OPTIONS= $(cflags_common) $(ood_ver_def) $(cflags_dll) $(OR_ORYXINCL)
 
-all:  $(OOD_OUTDIR)\oodialog.dll
+all:  $(OOD_OUTDIR)\oodialog.dll $(OOD_OUTDIR)\ooDialog.exe $(OOD_OUTDIR)\ooDialog.com
 
-# All Source Files
+# All Source Files for DLL
 SOURCEF= $(OOD_OUTDIR)\APICommon.obj               $(OOD_OUTDIR)\oodBarControls.obj      $(OOD_OUTDIR)\oodBaseDialog.obj    \
          $(OOD_OUTDIR)\oodBasicControls.obj        $(OOD_OUTDIR)\oodCommon.obj           $(OOD_OUTDIR)\oodControl.obj       \
          $(OOD_OUTDIR)\oodData.obj                 $(OOD_OUTDIR)\oodDeviceGraphics.obj   $(OOD_OUTDIR)\ooDialog.obj         \
          $(OOD_OUTDIR)\oodKeyboard.obj             $(OOD_OUTDIR)\oodListView.obj         $(OOD_OUTDIR)\oodMenu.obj          \
          $(OOD_OUTDIR)\oodMessaging.obj            $(OOD_OUTDIR)\oodMouse.obj            $(OOD_OUTDIR)\oodPackageEntry.obj  \
          $(OOD_OUTDIR)\oodPropertySheetDialog.obj  $(OOD_OUTDIR)\oodResizableDialog.obj  $(OOD_OUTDIR)\oodResources.obj     \
-         $(OOD_OUTDIR)\oodRoutines.obj             $(OOD_OUTDIR)\oodShellObjects.obj     $(OOD_OUTDIR)\oodToolTip.obj       \
-         $(OOD_OUTDIR)\oodTreeView.obj             $(OOD_OUTDIR)\oodUser.obj             $(OOD_OUTDIR)\oodUtilities.obj     \
-         $(OOD_OUTDIR)\oodViewControls.obj         $(OOD_OUTDIR)\oodialog.res
+         $(OOD_OUTDIR)\oodRoutines.obj             $(OOD_OUTDIR)\oodShared.obj           $(OOD_OUTDIR)\oodShellObjects.obj  \
+         $(OOD_OUTDIR)\oodToolTip.obj              $(OOD_OUTDIR)\oodTreeView.obj         $(OOD_OUTDIR)\oodUser.obj          \
+         $(OOD_OUTDIR)\oodUtilities.obj            $(OOD_OUTDIR)\oodViewControls.obj     $(OOD_OUTDIR)\oodialog.res
 
 # All Source files that include APICommon.hpp
 APICOMMON_SOURCEF = $(OOD_OUTDIR)\APICommon.obj              $(OOD_OUTDIR)\oodBarControls.obj     $(OOD_OUTDIR)\oodBaseDialog.obj    \
@@ -127,24 +131,30 @@ OODCONTROL_SOURCEF = $(OOD_OUTDIR)\oodBarControls.obj $(OOD_OUTDIR)\oodBaseDialo
 
 # All Source files that include oodMessaging.hpp
 OODMESSAGING_SOURCEF = \
-                 $(OOD_OUTDIR)\oodBaseDialog.obj     $(OOD_OUTDIR)\oodBasicControls.obj       $(OOD_OUTDIR)\oodControl.obj \
-                 $(OOD_OUTDIR)\oodDeviceGraphics.obj $(OOD_OUTDIR)\ooDialog.obj               $(OOD_OUTDIR)\oodMenu.obj    \
+                 $(OOD_OUTDIR)\oodBaseDialog.obj     $(OOD_OUTDIR)\oodBasicControls.obj       $(OOD_OUTDIR)\oodControl.obj         \
+                 $(OOD_OUTDIR)\oodDeviceGraphics.obj $(OOD_OUTDIR)\ooDialog.obj               $(OOD_OUTDIR)\oodMenu.obj            \
                  $(OOD_OUTDIR)\oodMessaging.obj      $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodResizableDialog.obj \
                  $(OOD_OUTDIR)\oodUser.obj           $(OOD_OUTDIR)\oodViewControls.obj
 
 # All Source files that include oodResizableDialog.hpp
 OODRESIZABLEDIALOG_SOURCEF = \
-                 $(OOD_OUTDIR)\oodBaseDialog.obj     $(OOD_OUTDIR)\ooDialog.cpp               $(OOD_OUTDIR)\oodResizable.obj \
+                 $(OOD_OUTDIR)\oodBaseDialog.obj     $(OOD_OUTDIR)\ooDialog.cpp               $(OOD_OUTDIR)\oodResizable.obj  \
                  $(OOD_OUTDIR)\oodUser.obj
 
 # All Source files that include oodResources.hpp
 OODRESOURCES_SOURCEF = \
-                 $(OOD_OUTDIR)\oodBasicControls.obj  $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodResources.obj \
+                 $(OOD_OUTDIR)\oodBasicControls.obj  $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodResources.obj  \
                  $(OOD_OUTDIR)\oodViewControls.obj
+
+# All Source files that include oodShared.hpp
+OODSHARED_SOURCEF = $(OOD_OUTDIR)\ApiCommon.obj       $(OOD_OUTDIR)\oodBasicControls.obj       $(OOD_OUTDIR)\oodControl.obj   \
+                    $(OOD_OUTDIR)\oodCommon.obj       $(OOD_OUTDIR)\oodMenu.obj                $(OOD_OUTDIR)\oodMessaging.obj \
+                    $(OOD_OUTDIR)\oodPackageEntry.obj $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodShared.obj    \
+                    $(OOD_OUTDIR)\oodShellObjects.obj $(OOD_OUTDIR)\oodToolTip.obj             $(OOD_OUTDIR)\oodUser.obj      \
+                    $(OOD_OUTDIR)\oodUtilities.obj    $(OOD_OUTDIR)\oodViewControls.obj
 
 # All Source files that include oodUser.hpp
 OODUSER_SOURCEF = $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodUser.obj
-
 
 
 .c{$(OOD_OUTDIR)}.obj:
@@ -166,6 +176,8 @@ OODUSER_SOURCEF = $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodUser
 
 
 $(OOD_OUTDIR)\oodialog.dll: $(SOURCEF)
+    @ECHO .
+    @ECHO Linking $(@B).dll
     $(OR_LINK) \
     $(SOURCEF)  \
     $(lflags_common) $(lflags_dll) \
@@ -184,11 +196,58 @@ $(OOD_OUTDIR)\oodialog.dll: $(SOURCEF)
     -out:$(OOD_OUTDIR)\$(@B).dll
 
 
-# Update the version information block
+#
+# *** Inference Rule for oodWinMain.cpp -> OBJ
+#
+$(OOD_OUTDIR)\oodWinMain.obj : $(OOD_OODIALOGSRC)\oodWinMain.cpp  $(OOD_OODIALOGSRC)\oodExecutable.hpp $(OOD_OODIALOGSRC)\oodShared.hpp
+    @ECHO .
+    @ECHO Compiling $(@B).cpp
+    $(OR_CC) $(cflags_common) $(cflags_dll) /Fo$(@) $(OR_ORYXINCL) $(Tp)$(OOD_OODIALOGSRC)\$(@B).cpp
+
+$(OOD_OUTDIR)\oodMain.obj : $(OOD_OODIALOGSRC)\oodMain.cpp  $(OOD_OODIALOGSRC)\oodExecutable.hpp $(OOD_OODIALOGSRC)\oodShared.hpp
+    @ECHO .
+    @ECHO Compiling $(@B).cpp
+    $(OR_CC) $(cflags_common) $(cflags_dll) /Fo$(@) $(OR_ORYXINCL) $(Tp)$(OOD_OODIALOGSRC)\$(@B).cpp
+
+$(OOD_OUTDIR)\ooDialog.exe : $(OOD_OUTDIR)\oodWinMain.obj $(OOD_OUTDIR)\oodShared.obj $(OOD_OUTDIR)\ooDialogWinMain.res
+    @ECHO .
+    @ECHO Linking $(@B).exe
+    $(OR_LINK) \
+    $(OOD_OUTDIR)\oodWinMain.obj $(OOD_OUTDIR)\oodShared.obj $(OOD_OUTDIR)\ooDialogWinMain.res \
+    $(lflags_common) \
+    /STACK:524288 \
+    $(REXXAPI_LIBS) \
+    -out:$(OOD_OUTDIR)\ooDialog.exe
+
+$(OOD_OUTDIR)\ooDialog.com : $(OOD_OUTDIR)\oodMain.obj $(OOD_OUTDIR)\oodShared.obj $(OOD_OUTDIR)\ooDialogMain.res
+    @ECHO .
+    @ECHO Linking $(@B).com
+    $(OR_LINK) \
+    $(OOD_OUTDIR)\oodMain.obj $(OOD_OUTDIR)\oodShared.obj $(OOD_OUTDIR)\ooDialogMain.res \
+    $(lflags_common_console) \
+    /STACK:262144 \
+    $(REXXAPI_LIBS) \
+    shell32.lib \
+    -out:$(OOD_OUTDIR)\ooDialog.com
+
+
+# Resource file for oodialog.dll
 $(OOD_OUTDIR)\oodialog.res: $(OOD_OODIALOGSRC)\oodialog.rc
     @ECHO .
     @ECHO ResourceCompiling $(@B).res
-        $(rc) $(rcflags_oodialog) /i $(OOD_OODIALOGSRC) /i $(OR_WINKERNELSRC) -r -fo$(OOD_OUTDIR)\$(@B).res $(OOD_OODIALOGSRC)\$(@B).rc
+        $(rc) $(rcflags_oodialog) -dOODIALOG_BIN_NAME=\"oodialog.dll\" /i $(OOD_OODIALOGSRC) /i $(OR_WINKERNELSRC) -r -fo$(OOD_OUTDIR)\$(@B).res $(OOD_OODIALOGSRC)\$(@B).rc
+
+# Resource file for ooDialog.exe
+$(OOD_OUTDIR)\ooDialogWinMain.res: $(OOD_OODIALOGSRC)\ooDialogWinMain.rc
+    @ECHO .
+    @ECHO ResourceCompiling $(@B).res
+        $(rc) $(rcflags_oodialog) -dOODIALOG_BIN_NAME=\"ooDialog.exe\" /i $(OOD_OODIALOGSRC) /i $(OR_WINKERNELSRC) -r -fo$(OOD_OUTDIR)\$(@B).res $(OOD_OODIALOGSRC)\$(@B).rc
+
+# Resource file for ooDialog.com
+$(OOD_OUTDIR)\ooDialogMain.res: $(OOD_OODIALOGSRC)\ooDialogMain.rc
+    @ECHO .
+    @ECHO ResourceCompiling $(@B).res
+        $(rc) $(rcflags_oodialog) -dOODIALOG_BIN_NAME=\"ooDialog.com\" /i $(OOD_OODIALOGSRC) /i $(OR_WINKERNELSRC) -r -fo$(OOD_OUTDIR)\$(@B).res $(OOD_OODIALOGSRC)\$(@B).rc
 
 # Recompile everything if the make file changes.
 $(SOURCEF) : oodialog.mak
@@ -203,6 +262,7 @@ $(OODCONTROL_SOURCEF) : oodControl.hpp
 $(OODMESSAGING_SOURCEF) : oodMessaging.hpp
 $(OODRESIZABLEDIALOG_SOURCEF) : oodResizableDialog.hpp
 $(OODRESOURCES_SOURCEF) : oodResources.hpp
+$(OODSHARED_SOURCEF) : oodShared.hpp
 $(OODUSER_SOURCEF) : oodUser.hpp
 $(OOD_OUTDIR)\oodMenu.obj : oodMenu.hpp
 $(OOD_OUTDIR)\oodShellObjects.obj : oodShellObjects.hpp

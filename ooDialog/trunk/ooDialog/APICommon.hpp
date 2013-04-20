@@ -132,7 +132,6 @@ extern RexxObjectPtr   rxNewBuiltinObject(RexxThreadContext *c, CSTRING classNam
 
 extern bool    isOutOfMemoryException(RexxThreadContext *c);
 extern bool    checkForCondition(RexxThreadContext *c, bool clear);
-extern void    standardConditionMsg(RexxThreadContext *c, RexxDirectoryObject condObj, RexxCondition *condition);
 extern bool    isInt(int, RexxObjectPtr, RexxThreadContext *);
 extern bool    isOfClassType(RexxMethodContext *, RexxObjectPtr, CSTRING);
 extern void    dbgPrintClassID(RexxThreadContext *c, RexxObjectPtr obj);
@@ -334,15 +333,6 @@ inline void directoryIndexExceptionMsg(RexxThreadContext *c, size_t pos, CSTRING
 inline void missingIndexesInDirectoryException(RexxMethodContext *c, int argPos, CSTRING indexes)
 {
     missingIndexesInDirectoryException(c->threadContext, argPos, indexes);
-}
-
-/**
- * Given a condition object, extracts and returns as a whole number the subcode
- * of the condition.
- */
-inline wholenumber_t conditionSubCode(RexxCondition *condition)
-{
-    return (condition->code - (condition->rc * 1000));
 }
 
 inline RexxObjectPtr rxNewBag(RexxMethodContext *c)

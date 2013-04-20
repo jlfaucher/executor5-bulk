@@ -47,6 +47,7 @@
 #include <Rpc.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
+#include "oodShared.hpp"
 #include "oodShellObjects.hpp"
 
 

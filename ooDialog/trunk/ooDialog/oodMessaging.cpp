@@ -49,11 +49,12 @@
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodDeviceGraphics.hpp"
-#include "oodMessaging.hpp"
 #include "oodMouse.hpp"
 #include "oodData.hpp"
 #include "oodPropertySheetDialog.hpp"
 #include "oodResizableDialog.hpp"
+#include "oodShared.hpp"
+#include "oodMessaging.hpp"
 
 /**
  * The dialog procedure function for all regular ooDialog dialogs.  Handles and

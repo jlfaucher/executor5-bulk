@@ -58,6 +58,7 @@
 #include "oodMessaging.hpp"
 #include "oodResourceIDs.hpp"
 #include "oodResizableDialog.hpp"
+#include "oodShared.hpp"
 #include "oodUser.hpp"
 
 BOOL IsNestedDialogMessage(pCPlainBaseDialog pcpbd, LPMSG lpmsg);

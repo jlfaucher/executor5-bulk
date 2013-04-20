@@ -50,6 +50,7 @@
 #include <delayimp.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
+#include "oodShared.hpp"
 
 
 HINSTANCE            MyInstance = NULL;

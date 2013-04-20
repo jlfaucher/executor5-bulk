@@ -148,8 +148,10 @@ Section  doInstall
   SetOutPath "$INSTDIR"
 
     DetailPrint "********** ooDialog ${SHORTVERSION} Framework **********"
-    File "${BinDir}\oodialog.dll"
     File "${BinDir}\ooDialog.cls"
+    File "${BinDir}\ooDialog.com"
+    File "${BinDir}\oodialog.dll"
+    File "${BinDir}\ooDialog.exe"
     File "${BinDir}\oodPlain.cls"
     File "${BinDir}\oodWin32.cls"
     DetailPrint ""
@@ -481,7 +483,7 @@ Section  doInstall
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Support
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Exercise06\Support\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise06\Support\*.cls"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07

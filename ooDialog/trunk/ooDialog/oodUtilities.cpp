@@ -49,6 +49,7 @@
 #include <Rpc.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
+#include "oodShared.hpp"
 #include "oodDeviceGraphics.hpp"
 #include "oodResources.hpp"
 #include "oodResourceIDs.hpp"
@@ -1127,11 +1128,20 @@ RexxMethod1(RexxStringObject, dlgutil_comctl32Version_cls, OPTIONAL_CSTRING, for
  * @param  format  [optional]  Keyword indicating which format the returned
  *                 string should be in.  Keywords are:
  *
- *         Short   4.1.0.5814
+ *         Short    4.1.0.5814
  *
- *         Full    ooDialog Version 4.1.0.5814 (an ooRexx Windows Extension)
+ *         Full     ooDialog Version 4.1.0.5814 (an ooRexx Windows Extension)
  *
- *         Level   4.2.0
+ *         Level    4.2.0
+ *
+ *         Complete
+ *
+ *              ooDialog: ooDialog Version 4.2.3.9166 (64 bit)
+ *                        Built Apr 16 2013 13:41:25
+ *                        Copyright (c) RexxLA 2005-2013.
+ *                        All Rights Reserved.
+ *
+ *              Rexx:     Open Object Rexx Version 4.2.0
  *
  *                 Only the first letter is required and case is not
  *                 significant.  If the argument is omitted the Full format is
@@ -1155,6 +1165,21 @@ RexxMethod1(RexxStringObject, dlgutil_version_cls, OPTIONAL_CSTRING, format)
         case 'S' :
             _snprintf(buf, sizeof(buf), "%u.%u.%u.%u", OOD_VER, OOD_REL, OOD_MOD, OOD_BLD);
             break;
+
+        case 'C' :
+        {
+            char *buff = getCompleteVersion(context->threadContext);
+            if ( buff == NULL )
+            {
+                outOfMemoryException(context->threadContext);
+                return context->NullString();
+            }
+
+            RexxStringObject s = context->String(buff);
+            LocalFree(buff);
+
+            return s;
+        } break;
 
         case 'F' :
         default :

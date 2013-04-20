@@ -52,6 +52,7 @@
 #include "oodMessaging.hpp"
 #include "oodMouse.hpp"
 #include "oodResources.hpp"
+#include "oodShared.hpp"
 
 
 /**
