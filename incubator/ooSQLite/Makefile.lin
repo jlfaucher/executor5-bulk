@@ -100,7 +100,7 @@ BIN_DIR=bin/linux
 SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles
 EXE_LFLAGS=-D_REENTRANT=1
 
-SO_LLIBS=-ldl -lpthread  -lrexx -lrexxapi
+SO_LLIBS=-ldl -lpthread -L/usr/lib64/ooRexx/ -lrexx -lrexxapi
 EXE_LLIBS=-L$(OUT_DIR) -ldl -lpthread -lstdc++ -lreadline -lcurses
 
 CFLAGS=-c -fPIC $(BASEFLAGS)
@@ -138,14 +138,13 @@ $(BIN_DIR)/ooSQLite.cls: src/rexx/ooSQLite.cls
 	cp src/rexx/ooSQLite.cls $(BIN_DIR) 1>/dev/null 2>&1
 
 example_dlls:
-	echo
-	echo Building example shared library (libraries)
-	cd examples/user.extensions
-	make -f MakeFile.lin
-	cd ..\..\
+	@echo
+	@echo Building example shared library \(libraries\)
+	cd examples/user.extensions; make -f Makefile.lin
+	cd ../../
 
 dist: all
-	echo Create distribution file
+	@echo Create distribution file
 	rexx src/rexx/makeDistFile.rex $(OOSQLITE_VER_STR)
 
 dist_clean: clean_all
@@ -154,13 +153,11 @@ clean_all:
 	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/*.o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/cls
 	rm -f $(BIN_DIR)/*.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/*.cls
 	rm -f src/ooSQLite.ver.incl
-	cd examples/user.extensions
-	make -f MakeFile.lin clean
-	cd ..\..\
+	cd examples/user.extensions; make -f Makefile.lin clean
+	cd ../../
 
 clean:
 	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/oosqlite3
-	cd examples/user.extensions
-	make -f MakeFile.lin clean
-	cd ..\..\
+	cd examples/user.extensions; make -f Makefile.lin clean
+	cd ../../
 

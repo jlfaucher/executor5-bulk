@@ -919,7 +919,7 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
     char buf[512];
 
     size_t bits = 32;
-    char   *encrypt = "";
+    char   *encrypt = (char *)"";
 
 #ifdef __REXX64__
     bits = 64;
@@ -1486,7 +1486,8 @@ static int collationCallback(void* data, int len1, const void* str1, int len2, c
             // There is nothing to be done about this, we should just use a
             // default compare, maybe stricmp.  Or we should maybe kill
             // everything??
-            return sqlite3_strnicmp((char *)str1, (char *)str2, min(len1, len2));
+
+            return sqlite3_strnicmp((char *)str1, (char *)str2, len1 < len2 ? len1 : len2);
         }
     }
 
@@ -4771,7 +4772,7 @@ RexxMethod5(RexxObjectPtr, oosqlconn_createCollation, CSTRING, collationName, Re
     if ( argumentExists(4) )
     {
         CSTRING str = c->ObjectToStringValue(userData);
-        if ( stricmp(str, "REMOVE") == 0 )
+        if ( sqlite3_stricmp(str, "REMOVE") == 0 )
         {
             removeCollation = true;
         }

@@ -56,7 +56,7 @@
 #ifdef _WIN32
     #include <windows.h>
 #else
-    /* Linux or MAC includes if needed */
+    #define NULL 0
 #endif
 
 /* Normally use sqlite3ext.h, the ooSQLite source uses sqlite3ext.hpp */
@@ -86,7 +86,7 @@ static void halfFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
  */
 static int reverseCollation(void* data, int len1, const void* str1, int len2, const void* str2)
 {
-    return - sqlite3_strnicmp((char *)str1, (char *)str2, min(len1, len2));
+    return - sqlite3_strnicmp((char *)str1, (char *)str2, len1 < len2 ? len1 : len2);
 }
 
 /**
