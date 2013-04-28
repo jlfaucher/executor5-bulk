@@ -136,6 +136,7 @@ BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS)
 
 OUT_DIR = build\debug
 BIN_DIR = bin.dbg
+EXAMPLE_BUILD = DEBUG=1
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNULL=0 /DOOSQLDBG=0
 CFLAGS =  /nologo /EHsc /Zi /Od /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb $(BASEFLAGS) $(MISCDEFS) /c
@@ -158,7 +159,7 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM
 # What we want to build.  ooSQLite3.exe is the command line version of SQLite.
 # ooSQLite3.exe should be no different than what you can download from the
 # SQLite website as sqlite3.exe, except that it has a few defaults changed.
-all: $(BIN_DIR)\oosqlite.dll $(BIN_DIR)\ooSQLite3.exe $(BIN_DIR)\ooSQLite.cls
+all: $(BIN_DIR)\oosqlite.dll $(BIN_DIR)\ooSQLite3.exe $(BIN_DIR)\ooSQLite.cls example_dlls
 
 
 $(OUT_DIR)\sqlite3.obj: src\sqlite\sqlite3.c src\sqlite\sqlite3.hpp Makefile.win
@@ -188,6 +189,13 @@ $(BIN_DIR)\ooSQLite3.exe: $(OUT_DIR)\ooSQLite3.exe
 $(BIN_DIR)\ooSQLite.cls: src\rexx\ooSQLite.cls
     copy src\rexx\ooSQLite.cls $(BIN_DIR) 1>nul 2>&1
 
+example_dlls:
+    @echo .
+    @echo Building example DLL(s)
+    @cd examples\user.extensions
+    $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win
+    @cd ..\..\
+
 dist: all
     echo Create distribution file
     rexx src\rexx\makeDistFile.rex $(OOSQLITE_VER_STR)
@@ -196,10 +204,18 @@ clean:
     del /Q $(BIN_DIR)\*.dll $(BIN_DIR)\*exe $(BIN_DIR)\*.cls 1>nul 2>&1
 	  del /Q $(OUT_DIR)\* 1>nul 2>&1
 
+    @cd examples\user.extensions
+    $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win clean
+    @cd ..\..\
+
 clean_all:
     del /Q bin\windows\*.dll bin\windows\*exe bin\windows\*.cls 1>nul 2>&1
     del /Q bin\linux\*.dll bin\linux\*exe bin\linux\*.cls 1>nul 2>&1
 
 	  del /Q build\release\* 1>nul 2>&1
 	  del /Q build\debug\* 1>nul 2>&1
+
+    @cd examples\user.extensions
+    $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win clean
+    @cd ..\..\
 

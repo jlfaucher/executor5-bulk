@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,87 +36,101 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* This file is used to create the Linux distribution file. */
-
-use arg cmdLine
+/**
+ *  loadExtension.rex
+ *
+ *  Demonstrates how to load an SQLite extensions file.
+ *
+ *  The extensions are implemented in simpleExtension.cpp which is in the
+ *  user.extensions subdirectory.
+ *
+ */
 
   os = getOSName()
 
-  if os == "WINDOWS" then do
-    cpCmd      = 'copy'
-    mdCmd      = 'md'
-    rmCmd      = 'del'
-    rmDir      = 'rd /q /s'
-    toNull     = '> nul 2>&1'
-    sl         = '\'
-    zipCmd     = 'zip -X9r'
-    ext        = 'win.zip'
-    setEnvFile = 'setOOSQLiteEnv.bat'
-    osBinFiles = 'bin\windows\*'
+  if os == 'WINDOWS' then do
+    extensionFile = 'user.extensions\simpleExtension.dll'
   end
   else do
-    cpCmd      = 'cp'
-    mdCmd      = 'mkdir -p'
-    rmCmd      = 'rm -f'
-    rmDir      = 'rm -rf'
-    toNull     = '> /dev/null 2>&1'
-    sl         = '/'
-    zipCmd     = 'tar -czvf'
-    ext        = '_lin.tgz'
-    setEnvFile = 'setOOSQLiteEnv.sh'
-    osBinFiles = 'bin/linux/*'
+    extensionFile = 'user.extensions/libsimpleExtension.so'
   end
 
-  svn_rev = cmdLine~strip('B', '"')
+	dbName        = 'ooFoods.rdbx'
 
-  bitness = 'x86_32'
-  if getBitness() == 64 then bitness = 'x86_64'
+  -- Set the result set format to an array of arrays:
+  .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
 
-  parse var svn_rev major '.' minor '.' lvl '.' svn
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  outDir = 'ooSQLite.'svn_rev || sl
-  outFile = 'ooSQLite_'major'_'minor'_'lvl'_'svn'_' || bitness || ext
+  dbConn~enableLoadExtension(.true)
 
-  say 'outDir:' outDir
-  say 'outFile:' outFile
-
-  rmDir outDir toNull
-  rmCmd outFile toNull
-
-  mdCmd outDir'bin'
-  mdCmd outDir'doc'
-  mdCmd outDir'examples'sl'classic.rexx'
-  mdCmd outDir'examples'sl'user.extensions'
-  mdCmd outDir'misc'
-  mdCmd outDir'testing'
-
-  cpCmd 'CPLv1.0.txt' outDir
-  cpCmd 'NOTICE' outDir
-  cpCmd 'ReadMe.txt' outDir
-  cpCmd 'ReleaseNotes' outDir
-  cpCmd setEnvFile outDir
-
-  cpCmd osBinFiles                      outDir'bin'
-  cpCmd 'doc'sl'*'                      outDir'doc'
-  cpCmd 'examples'sl'*'                 outDir'examples'
-  cpCmd 'examples'sl'classic.rexx'sl'*' outDir'examples'sl'classic.rexx'
-  cpCmd 'misc'sl'*'                     outDir'misc'
-  cpCmd 'testing'sl'*'                  outDir'testing'
-
-  cpCmd 'examples'sl'user.extensions'sl'simpleExtension.cpp' outDir'examples'sl'user.externsions'
-
-  if os == "WINDOWS" then do
-    cpCmd 'examples'sl'user.extensions'sl'MakeFile.win' outDir'examples'sl'user.externsions'
-    cpCmd 'examples'sl'user.extensions'sl'simpleExtension.dll' outDir'examples'sl'user.externsions'
-    cpCmd 'examples'sl'user.extensions'sl'simpleExtension.def' outDir'examples'sl'user.externsions'
-  end
-  else do
-    cpCmd 'examples'sl'user.extensions'sl'MakeFile.lin' outDir'examples'sl'user.externsions'
-    cpCmd 'examples'sl'user.extensions'sl'libsimpleExtension.so' outDir'examples'sl'user.externsions'
+  ret = dbConn~loadExtension(extensionFile)
+  if ret <> dbConn~ok then do
+    say 'Error loading extension:' dbConn~lastErrMsg
+    return dbConn~lastErrCode
   end
 
-  zipCmd outFile outDir
+  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSESORT;"
+  resultSet = dbConn~exec(sql, .true)
 
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printResultSet(resultSet)
+
+  sql = "SELECT * FROM foods ORDER BY name COLLATE REVERSESORT;"
+  resultSet = dbConn~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printResultSet(resultSet)
+  ret = dbConn~close
+
+  return ret
+
+::requires 'ooSQLite.cls'
+
+::class 'Collater'
+
+::method reverseCollate
+  use arg str1, str2, userData
+
+  return - str1~caselessCompareTo(str2);
+
+::routine printResultSet
+  use arg rs
+
+  colCount = rs[1]~items
+  rowCount = rs~items
+
+  line = ''
+  headers = rs[1]
+  do j = 1 to colCount
+    line ||= headers[j]~left(25)
+  end
+
+  say line
+  say '='~copies(80)
+
+  do i = 2 to rowCount
+    line = ''
+    record = rs[i]
+    do j = 1 to colCount
+      line ||= record[j]~left(25)
+    end
+
+    say line
+  end
+  say
+
+  return 0
 
 ::routine getOSName
 
@@ -125,19 +139,3 @@ use arg cmdLine
   return os
 
 
-::routine getBitness
-
-  tmpOutFile = 'tmpXXX_delete.me'
-
-  'rexx -v >' tmpOutFile '2>&1'
-
-  fsObj = .stream~new(tmpOutFile)
-  tmpArray = fsObj~arrayin
-  parse value tmpArray[3] with . . mode
-  fsObj~close
-
-  j = SysFileDelete(tmpOutFile)
-
-  say 'mode is:' mode
-
-return mode

@@ -107,7 +107,7 @@ CFLAGS=-c -fPIC $(BASEFLAGS)
 
 
 # What we want to build.
-all: $(BIN_DIR)/liboosqlite.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls
+all: $(BIN_DIR)/liboosqlite.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls  example_dlls
 
 
 $(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.hpp Makefile.lin
@@ -137,6 +137,13 @@ $(BIN_DIR)/oosqlite3: $(OUT_DIR)/oosqlite3
 $(BIN_DIR)/ooSQLite.cls: src/rexx/ooSQLite.cls
 	cp src/rexx/ooSQLite.cls $(BIN_DIR) 1>/dev/null 2>&1
 
+example_dlls:
+	echo
+	echo Building example shared library (libraries)
+	cd examples/user.extensions
+	make -f MakeFile.lin
+	cd ..\..\
+
 dist: all
 	echo Create distribution file
 	rexx src/rexx/makeDistFile.rex $(OOSQLITE_VER_STR)
@@ -147,7 +154,13 @@ clean_all:
 	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/*.o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/cls
 	rm -f $(BIN_DIR)/*.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/*.cls
 	rm -f src/ooSQLite.ver.incl
+	cd examples/user.extensions
+	make -f MakeFile.lin clean
+	cd ..\..\
 
 clean:
 	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/oosqlite3
+	cd examples/user.extensions
+	make -f MakeFile.lin clean
+	cd ..\..\
 

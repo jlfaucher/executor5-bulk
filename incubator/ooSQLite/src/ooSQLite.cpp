@@ -331,7 +331,7 @@ static inline RexxStringObject ooSQLiteErr(RexxThreadContext *c, wholenumber_t r
 
 /**
  * Similar to the other ooSQLiteErr() functions above, but the primary purpose
- * is to set the databas connection last error message and last error code.
+ * is to set the database connection last error message and last error code.
  *
  * Note that this is the ooSQLiteConnection last error *attributes* which are
  * separate from the SQLite last error functions.  The attributes can be set to
@@ -3364,7 +3364,7 @@ RexxMethod1(RexxObjectPtr, oosql_version_cls, OPTIONAL_CSTRING, type)
 RexxMethod1(int, oosql_test_cls, ARGLIST, args)
 {
     RexxMethodContext *c = context;
-
+    /*
     size_t size = c->ArraySize(args);
 
     printf("CONSTRAINT_CHECK     =%d\n", SQLITE_CONSTRAINT_CHECK     );
@@ -3377,6 +3377,9 @@ RexxMethod1(int, oosql_test_cls, ARGLIST, args)
     printf("CONSTRAINT_UNIQUE    =%d\n", SQLITE_CONSTRAINT_UNIQUE    );
     printf("CONSTRAINT_VTAB      =%d\n", SQLITE_CONSTRAINT_VTAB      );
     printf("READONLY_ROLLBACK    =%d\n", SQLITE_READONLY_ROLLBACK    );
+    */
+
+    printf("collationCallback=%p &of=%p\n", collationCallback, &collationCallback);
 
     return 0;
 }
@@ -4914,6 +4917,21 @@ RexxMethod4(int, oosqlconn_dbStatus, int, param, RexxObjectPtr, _result, OPTIONA
 }
 
 
+/** ooSQLiteConnection::enableLoadExtension()
+ *
+ *
+ */
+RexxMethod2(int, oosqlconn_enableLoadExtension, OPTIONAL_logical_t, on, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_enable_load_extension(pConn->db, on ? 1 : 0);
+}
+
 /** ooSQLiteConnection::errCode()
  *  ooSQLiteConnection::extendedErrCode()
  *
@@ -5270,6 +5288,33 @@ RexxMethod3(int, oosqlconn_limit, int, id, int, value, CSELF, pCSelf)
     }
 
     return sqlite3_limit(pConn->db, id, value);
+}
+
+
+/** ooSQLiteConnection::loadExtension()
+ *
+ *
+ *  @notes  If an error happens loading the extension, the lastErrMsg and
+ *          lastErrCode attributes are set.
+ */
+RexxMethod3(int, oosqlconn_loadExtension, CSTRING, library, OPTIONAL_CSTRING, entryPoint, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    char *errMsg = NULL;
+
+    int rc = sqlite3_load_extension(pConn->db, library, entryPoint, &errMsg);
+    if ( rc != SQLITE_OK && errMsg != NULL )
+    {
+        ooSQLiteErr(context, pConn, rc, errMsg, true);
+        sqlite3_free(errMsg);
+    }
+
+    return rc;
 }
 
 
@@ -10963,6 +11008,7 @@ REXX_METHOD_PROTOTYPE(oosqlconn_dbMutex);
 REXX_METHOD_PROTOTYPE(oosqlconn_dbReadOnly);
 REXX_METHOD_PROTOTYPE(oosqlconn_dbReleaseMemory);
 REXX_METHOD_PROTOTYPE(oosqlconn_dbStatus);
+REXX_METHOD_PROTOTYPE(oosqlconn_enableLoadExtension);
 REXX_METHOD_PROTOTYPE(oosqlconn_errCode);
 REXX_METHOD_PROTOTYPE(oosqlconn_errMsg);
 REXX_METHOD_PROTOTYPE(oosqlconn_exec);
@@ -10972,6 +11018,7 @@ REXX_METHOD_PROTOTYPE(oosqlconn_interrupt);
 REXX_METHOD_PROTOTYPE(oosqlconn_key);
 REXX_METHOD_PROTOTYPE(oosqlconn_lastInsertRowID);
 REXX_METHOD_PROTOTYPE(oosqlconn_limit);
+REXX_METHOD_PROTOTYPE(oosqlconn_loadExtension);
 REXX_METHOD_PROTOTYPE(oosqlconn_nextStmt);
 REXX_METHOD_PROTOTYPE(oosqlconn_pragma);
 REXX_METHOD_PROTOTYPE(oosqlconn_profile);
@@ -11136,6 +11183,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlconn_dbReadOnly,                 oosqlconn_dbReadOnly),
     REXX_METHOD(oosqlconn_dbReleaseMemory,            oosqlconn_dbReleaseMemory),
     REXX_METHOD(oosqlconn_dbStatus,                   oosqlconn_dbStatus),
+    REXX_METHOD(oosqlconn_enableLoadExtension,        oosqlconn_enableLoadExtension),
     REXX_METHOD(oosqlconn_errCode,                    oosqlconn_errCode),
     REXX_METHOD(oosqlconn_errMsg,                     oosqlconn_errMsg),
     REXX_METHOD(oosqlconn_exec,                       oosqlconn_exec),
@@ -11145,6 +11193,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlconn_key,                        oosqlconn_key),
     REXX_METHOD(oosqlconn_lastInsertRowID,            oosqlconn_lastInsertRowID),
     REXX_METHOD(oosqlconn_limit,                      oosqlconn_limit),
+    REXX_METHOD(oosqlconn_loadExtension,              oosqlconn_loadExtension),
     REXX_METHOD(oosqlconn_nextStmt,                   oosqlconn_nextStmt),
     REXX_METHOD(oosqlconn_pragma,                     oosqlconn_pragma),
     REXX_METHOD(oosqlconn_profile,                    oosqlconn_profile),
