@@ -107,6 +107,7 @@
 ::method busyTimeOut external "LIBRARY oosqlite oosqlconn_busyTimeOut"
 ::method changes external "LIBRARY oosqlite oosqlconn_changes"
 ::method close external "LIBRARY oosqlite oosqlconn_close"
+::method createCollation external "LIBRARY oosqlite oosqlconn_createCollation"
 ::method commitHook external "LIBRARY oosqlite oosqlconn_commitHook"
 ::method dbFileName external "LIBRARY oosqlite oosqlconn_dbFileName"
 ::method dbMutex external "LIBRARY oosqlite oosqlconn_dbMutex"

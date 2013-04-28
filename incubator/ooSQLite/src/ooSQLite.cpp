@@ -1411,7 +1411,6 @@ static int authorizerCallback(void *data, int op, const char *str1, const char *
 /**
  * The call back function for sqlite3_busy_handler()
  *
- *
  * @param data
  *
  * @return If the busy callback returns 0, then no additional attempts are made
@@ -1474,6 +1473,65 @@ static int busyCallBack(void *data, int countInvoked)
     return (int)rc;
 }
 
+
+static int collationCallback(void* data, int len1, const void* str1, int len2, const void* str2)
+{
+    pCGenericCallback  d = (pCGenericCallback)data;
+    RexxThreadContext *c = d->callbackContext;
+
+    if ( d->initialThreadID != oosqlGetCurrentThreadId() )
+    {
+        if ( ! d->interpreter->AttachThread(&c) )
+        {
+            // There is nothing to be done about this, we should just use a
+            // default compare, maybe stricmp.  Or we should maybe kill
+            // everything??
+            return sqlite3_strnicmp((char *)str1, (char *)str2, min(len1, len2));
+        }
+    }
+
+    RexxArrayObject   args;
+    RexxObjectPtr     reply = NULLOBJECT;
+    RexxStringObject  rxStr1 = c->String((char *)str1, len1);
+    RexxStringObject  rxStr2 = c->String((char *)str2, len2);
+    wholenumber_t     cmp    = 0;
+
+    bool isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
+
+    if ( d->userData == NULL )
+    {
+       args = c->ArrayOfThree(rxStr1, rxStr2, TheNilObj);
+    }
+    else
+    {
+        args = c->ArrayOfThree(rxStr1, rxStr2, d->userData);
+    }
+
+    if ( isMethod )
+    {
+        reply = c->SendMessage(d->callbackObj, d->callbackMethod, args);
+    }
+    else
+    {
+        reply = c->CallRoutine(d->callbackRtn, args);
+    }
+
+    if ( ! replyIsGood(c, reply, &cmp, d->callbackMethod, d->routineName, isMethod) )
+    {
+        cmp = 0;
+    }
+
+    c->ReleaseLocalReference(rxStr1);
+    c->ReleaseLocalReference(rxStr2);
+    c->ReleaseLocalReference(reply);
+    c->ReleaseLocalReference(args);
+
+    if ( c != d->callbackContext )
+    {
+        c->DetachThread();
+    }
+    return (int)cmp;
+}
 
 /**
  * The call back function for sqlite3_commit_hook()
@@ -2490,7 +2548,7 @@ static inline pCooSQLiteConn requiredDBCSelf(RexxMethodContext *c, void *pCSelf)
 {
     if ( pCSelf == NULL )
     {
-        baseClassIntializationException(c, "ooSQLiteConnection");
+        baseClassInitializationException(c, "ooSQLiteConnection");
     }
     return (pCooSQLiteConn)pCSelf;
 }
@@ -2527,7 +2585,7 @@ static inline pCooSQLiteMutex requiredMtxCSelf(RexxMethodContext *c, void *pCSel
 {
     if ( pCSelf == NULL )
     {
-        baseClassIntializationException(c, "ooSQLiteMutex");
+        baseClassInitializationException(c, "ooSQLiteMutex");
     }
     return (pCooSQLiteMutex)pCSelf;
 }
@@ -2550,7 +2608,7 @@ static inline pCooSQLiteStmt requiredStmtCSelf(RexxMethodContext *c, void *pCSel
 {
     if ( pCSelf == NULL )
     {
-        baseClassIntializationException(c, "ooSQLiteStmt");
+        baseClassInitializationException(c, "ooSQLiteStmt");
     }
     return (pCooSQLiteStmt)pCSelf;
 }
@@ -2574,7 +2632,7 @@ static inline pCooSQLiteBackup requiredBuCSelf(RexxMethodContext *c, void *pCSel
 {
     if ( pCSelf == NULL )
     {
-        baseClassIntializationException(c, "ooSQLiteBackup");
+        baseClassInitializationException(c, "ooSQLiteBackup");
     }
     return (pCooSQLiteBackup)pCSelf;
 }
@@ -2625,7 +2683,7 @@ static pCooSQLiteConn requiredOpenConnection(RexxMethodContext *c, RexxObjectPtr
 
     if ( pConn == NULL )
     {
-        baseClassIntializationException(c, "ooSQLiteConnection");
+        baseClassInitializationException(c, "ooSQLiteConnection");
         return NULL;
     }
 
@@ -2653,6 +2711,16 @@ static pCooSQLiteConn requiredDBConnectionArg(RexxMethodContext *c, RexxObjectPt
     return requiredOpenConnection(c, dbConn, pos);
 }
 
+/**
+ * Each different callback type has an unique string name for the object
+ * variable used to store the callback's Rexx buffer object
+ *
+ * This function returns the unique name.
+ *
+ * @param cb
+ *
+ * @return CSTRING
+ */
 static inline CSTRING getCallbackVarName(CallbackType cb)
 {
     switch ( cb )
@@ -2661,6 +2729,8 @@ static inline CSTRING getCallbackVarName(CallbackType cb)
             return "__rxAuthorizer";
         case busyHandler :
             return "__rxBusyHandler";
+        case collation :
+            return "__rxCollation";
         case commitHook :
             return "__rxCommitHook";
         case profileHook :
@@ -2680,14 +2750,132 @@ static inline CSTRING getCallbackVarName(CallbackType cb)
     }
 }
 
-inline static RexxBufferObject getCallbackVar(RexxMethodContext *c, CallbackType cb)
+/**
+ * Each Rexx callback registered for a database connection allocates a generic
+ * callback struct as a RexxBufferObject.  The Rexx buffer object is stored as
+ * an object variable of the Rexx database connection.
+ *
+ * This function retrieves the Rexx buffer object.
+ *
+ * @param c
+ * @param cb
+ * @param zName
+ *
+ * @return RexxBufferObject
+ *
+ * @remarks  This is somewhat complicated for a collation callback because any
+ *           single database connection can have more than one collation
+ *           function.
+ */
+static RexxBufferObject getCallbackVar(RexxMethodContext *c, CallbackType cb, CSTRING zName)
 {
-    return (RexxBufferObject)c->GetObjectVariable(getCallbackVarName(cb));
+    CSTRING varName = getCallbackVarName(cb);
+
+    if ( cb == collation )
+    {
+        RexxObjectPtr table = c->GetObjectVariable(varName);
+        if ( table != NULLOBJECT )
+        {
+            RexxStringObject index = c->String(zName);
+            return (RexxBufferObject)c->SendMessage1(table, "REMOVE", c->StringUpper(index));
+        }
+        return NULLOBJECT;
+    }
+    return (RexxBufferObject)c->GetObjectVariable(varName);
 }
 
-inline static void setCallbackVar(RexxMethodContext *c, RexxBufferObject buf, CallbackType cb)
+/**
+ * Each Rexx callback registered for a database connection allocates a generic
+ * callback struct as a RexxBufferObject.  The Rexx buffer object is stored as
+ * an object variable of the Rexx database connection.
+ *
+ * This function sets the object variable with the Rexx buffer object.
+ *
+ * @param c
+ * @param buf
+ * @param cb
+ * @param zName
+ *
+ * @remarks  This is somewhat complicated for a collation callback because any
+ *           single database connection can have more than one collation
+ *           function.
+ */
+static void setCallbackVar(RexxMethodContext *c, RexxBufferObject buf, CallbackType cb, CSTRING zName)
 {
-    c->SetObjectVariable(getCallbackVarName(cb), buf);
+    CSTRING varName = getCallbackVarName(cb);
+
+    if ( cb == collation )
+    {
+        RexxObjectPtr table = c->GetObjectVariable(varName);
+        if ( table == NULLOBJECT )
+        {
+            table = rxNewBuiltinObject(c, "TABLE");
+            if ( table != NULLOBJECT )
+            {
+                c->SetObjectVariable(varName, table);
+            }
+        }
+
+        if ( table != NULLOBJECT )
+        {
+            RexxStringObject index = c->String(zName);
+            c->SendMessage2(table, "PUT", buf, index);
+        }
+
+        return;
+    }
+
+    c->SetObjectVariable(varName, buf);
+}
+
+/**
+ * For each Rexx callback registered for a database connection, a generic
+ * callback struct is allocated as a RexxBufferObject and stored as an object
+ * variable of the Rexx database connection object.  When the callback is
+ * removed, the RexxBufferObject needs to be cleaned up.
+ *
+ * This is somewhat complicated for a collation callback, because any single
+ * database connection can have multiple collations.
+ *
+ * This function cleans up all the collations for the database connection.  The
+ * Rexx buffer objects are stored in an object variable that is a table.  We
+ * retrieve all the items in the table, clean them up and remove the table
+ * itself.
+ *
+ * @param c
+ * @param varName
+ */
+static void cleanupAllCollationBuffers(RexxMethodContext *c, CSTRING varName)
+{
+    RexxObjectPtr table = c->GetObjectVariable(varName);
+
+    if ( table != NULLOBJECT )
+    {
+        RexxArrayObject items = (RexxArrayObject)c->SendMessage0(table, "ALLITEMS");
+
+        if ( items != NULLOBJECT )
+        {
+            size_t count = c->ArrayItems(items);
+            for ( size_t i = 1; i <= count; i++ )
+            {
+                RexxBufferObject cbcBuffer = (RexxBufferObject)c->ArrayAt(items, i);
+
+                if ( cbcBuffer != NULLOBJECT )
+                {
+                    pCGenericCallback cbc = (pCGenericCallback)c->BufferData(cbcBuffer);
+
+                    c->ReleaseGlobalReference(cbc->callbackObj);
+
+                    if ( cbc->userData != NULL )
+                    {
+                        c->ReleaseGlobalReference(cbc->userData);
+                    }
+                }
+            }
+        }
+        c->SendMessage0(table, "EMPTY");
+        c->DropObjectVariable(varName);
+    }
 }
 
 /**
@@ -2708,22 +2896,38 @@ inline static void setCallbackVar(RexxMethodContext *c, RexxBufferObject buf, Ca
  *
  * @param cb  Identifies the callback type so that the object variable can be
  *            retrieved.
+ *
+ * @param zName  For a collation callback only, this identifies the collation.
+ *               Any single database connection can have multiple collations.
+ *               If this is a collation callback, and zName is null, it means
+ *               clean up all of the collations for the connection.
  */
-static void cleanupCallback(RexxMethodContext *c, CallbackType cb)
+static void cleanupCallback(RexxMethodContext *c, CallbackType cb, CSTRING zName)
 {
-    RexxBufferObject cbcBuffer = getCallbackVar(c, cb);
+    CSTRING varName = getCallbackVarName(cb);
+
+    if ( cb == collation && zName == NULL )
+    {
+        cleanupAllCollationBuffers(c, varName);
+        return;
+    }
+
+    RexxBufferObject cbcBuffer = getCallbackVar(c, cb, zName);
 
     if ( cbcBuffer != NULLOBJECT )
     {
-        CSTRING varName = getCallbackVarName(cb);
-
         pCGenericCallback cbc = (pCGenericCallback)c->BufferData(cbcBuffer);
+
+        c->ReleaseGlobalReference(cbc->callbackObj);
 
         if ( cbc->userData != NULL )
         {
             c->ReleaseGlobalReference(cbc->userData);
         }
-        c->DropObjectVariable(varName);
+        if ( cb != collation )
+        {
+            c->DropObjectVariable(varName);
+        }
     }
 }
 
@@ -2737,14 +2941,15 @@ static void cleanupCallback(RexxMethodContext *c, CallbackType cb)
  */
 static void cleanupCallbacks(RexxMethodContext *c)
 {
-    cleanupCallback(c, authorizer);
-    cleanupCallback(c, busyHandler);
-    cleanupCallback(c, commitHook);
-    cleanupCallback(c, profileHook);
-    cleanupCallback(c, progressHandler);
-    cleanupCallback(c, rollbackHook);
-    cleanupCallback(c, traceHook);
-    cleanupCallback(c, updateHook);
+    cleanupCallback(c, authorizer, NULL);
+    cleanupCallback(c, busyHandler, NULL);
+    cleanupCallback(c, collation, NULL);
+    cleanupCallback(c, commitHook, NULL);
+    cleanupCallback(c, profileHook, NULL);
+    cleanupCallback(c, progressHandler, NULL);
+    cleanupCallback(c, rollbackHook, NULL);
+    cleanupCallback(c, traceHook, NULL);
+    cleanupCallback(c, updateHook, NULL);
 }
 
 
@@ -3272,6 +3477,10 @@ static CSTRING defaultCallbackMethod(CallbackType cbt)
     {
         return "BUSYCALLBACK";         // busyCallback()
     }
+    else if ( cbt == collation )
+    {
+        return "COLLATIONCALLBACK";   // collationCallback()
+    }
     else if ( cbt == commitHook )
     {
         return "COMMITHOOKCALLBACK";   // commitHookCallback()
@@ -3299,7 +3508,7 @@ static CSTRING defaultCallbackMethod(CallbackType cbt)
 }
 
 
-static RexxObjectPtr removeCallback(RexxMethodContext *c, sqlite3 *db, CallbackType cbt)
+static RexxObjectPtr removeCallback(RexxMethodContext *c, sqlite3 *db, CallbackType cbt, CSTRING zName)
 {
     RexxObjectPtr     result = TheNilObj;
     pCGenericCallback cbc    = NULL;
@@ -3313,6 +3522,11 @@ static RexxObjectPtr removeCallback(RexxMethodContext *c, sqlite3 *db, CallbackT
     else if ( cbt == busyHandler )
     {
         rc = sqlite3_busy_handler(db, NULL, NULL);
+        result = c->WholeNumber(rc);
+    }
+    else if ( cbt == collation )
+    {
+        rc = sqlite3_create_collation_v2(db, zName, SQLITE_UTF8, NULL, NULL, NULL);
         result = c->WholeNumber(rc);
     }
     else if ( cbt == commitHook )
@@ -3349,14 +3563,14 @@ static RexxObjectPtr removeCallback(RexxMethodContext *c, sqlite3 *db, CallbackT
         }
     }
 
-    cleanupCallback(c, cbt);
+    cleanupCallback(c, cbt, zName);
 
     return result;
 }
 
 
-static RexxObjectPtr installCallback(RexxMethodContext *c, sqlite3 *db, pCGenericCallback cbc,
-                                     CallbackType cbt, RexxBufferObject oldCallback, int instructions)
+static RexxObjectPtr installCallback(RexxMethodContext *c, sqlite3 *db, pCGenericCallback cbc, CallbackType cbt,
+                                     RexxBufferObject oldCallback, int instructions, CSTRING zName)
 {
     RexxObjectPtr     result = TheNilObj;
     pCGenericCallback oldCbc = NULL;
@@ -3370,6 +3584,11 @@ static RexxObjectPtr installCallback(RexxMethodContext *c, sqlite3 *db, pCGeneri
     else if ( cbt == busyHandler )
     {
         rc = sqlite3_busy_handler(db, busyCallBack, (void *)cbc);
+        result = c->WholeNumber(rc);
+    }
+    else if ( cbt == collation )
+    {
+        rc = sqlite3_create_collation_v2(db, zName, SQLITE_UTF8, (void *)cbc, collationCallback, NULL);
         result = c->WholeNumber(rc);
     }
     else if ( cbt == commitHook )
@@ -3413,9 +3632,9 @@ static RexxObjectPtr installCallback(RexxMethodContext *c, sqlite3 *db, pCGeneri
 
 
 /**
- * Does the basic setup, which is the same, for one of the 3 SQLite provided
- * callback registrations: sqlite3_commit_hook(), sqlite3_rollback_hook(), or
- * sqlite3_update_hook().
+ * Does the setup, which is basically the same, for most of the SQLite provided
+ * callback registrations: sqlite3_commit_hook(), sqlite3_rollback_hook(),
+ * sqlite3_update_hook(), etc., etc..
  *
  * @param c
  * @param db
@@ -3424,6 +3643,12 @@ static RexxObjectPtr installCallback(RexxMethodContext *c, sqlite3 *db, pCGeneri
  * @param userData
  * @param cbt        Identifies which callback registration this is for.
  *
+ * @param instructions Only used for the progressHandler callback.  Value is
+ *                     ignored for all other callback types
+ *
+ * @param zName        Only used for the create collation callback.  Value is
+ *                     ignored for all other callback types
+ *
  * @return RexxObjectPtr
  *
  * @notes  We request a global reference for both the user data *and* the call
@@ -3431,15 +3656,15 @@ static RexxObjectPtr installCallback(RexxMethodContext *c, sqlite3 *db, pCGeneri
  *         of them and we don't want them garbage collected out from under us
  *         during a callback.
  */
-static RexxObjectPtr doCallbackSetup(RexxMethodContext *c, sqlite3 *db, RexxObjectPtr callbackObj,
-                                     CSTRING mthName, RexxObjectPtr userData, CallbackType cbt, int instructions)
+static RexxObjectPtr doCallbackSetup(RexxMethodContext *c, sqlite3 *db, RexxObjectPtr callbackObj, CSTRING mthName,
+                                     RexxObjectPtr userData, CallbackType cbt, int instructions, CSTRING zName)
 {
     if ( callbackObj == TheNilObj )
     {
-        return removeCallback(c, db, cbt);
+        return removeCallback(c, db, cbt, zName);
     }
 
-    RexxBufferObject oldCallback = getCallbackVar(c, cbt);
+    RexxBufferObject oldCallback = getCallbackVar(c, cbt, zName);
     RexxBufferObject cbcBuffer   = c->NewBuffer(sizeof(CGenericCallback));
     if ( cbcBuffer == NULLOBJECT )
     {
@@ -3447,7 +3672,7 @@ static RexxObjectPtr doCallbackSetup(RexxMethodContext *c, sqlite3 *db, RexxObje
         return c->WholeNumber(SQLITE_MISUSE);
     }
 
-    setCallbackVar(c, cbcBuffer, cbt);
+    setCallbackVar(c, cbcBuffer, cbt, zName);
 
     pCGenericCallback cbc = (pCGenericCallback)c->BufferData(cbcBuffer);
     memset(cbc, 0, sizeof(CGenericCallback));
@@ -3471,7 +3696,7 @@ static RexxObjectPtr doCallbackSetup(RexxMethodContext *c, sqlite3 *db, RexxObje
         cbc->userData = c->RequestGlobalReference(userData);
     }
 
-    return installCallback(c, db, cbc, cbt, oldCallback, instructions);
+    return installCallback(c, db, cbc, cbt, oldCallback, instructions, zName);
 }
 
 /**
@@ -4286,7 +4511,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_busyHandler, RexxObjectPtr, callbackObj, OP
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    RexxObjectPtr rc = doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, busyHandler, 0);
+    RexxObjectPtr rc = doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, busyHandler, 0, NULL);
 
     if ( objIsSqliteOK(context, rc) )
     {
@@ -4302,6 +4527,12 @@ RexxMethod4(RexxObjectPtr, oosqlconn_busyHandler, RexxObjectPtr, callbackObj, OP
  *           the side effect of removing any existing handler, which could have
  *           been a user registered handler.  So, we need to clean up a possible
  *           user registered handler.
+ *
+ *           It is safe to call cleanupCallback() even if there has not been a
+ *           user registered handler.  We will attempt to get the generic
+ *           callback buffer from this ooSQLiteConnection object's context
+ *           variable and get back NULLOBJECT.  There is a check for NULLOBJECT
+ *           that will prevent us from crashing.
  */
 RexxMethod2(int, oosqlconn_busyTimeOut, int, ms, CSELF, pCSelf)
 {
@@ -4312,7 +4543,7 @@ RexxMethod2(int, oosqlconn_busyTimeOut, int, ms, CSELF, pCSelf)
     }
 
     int rc = sqlite3_busy_timeout(pConn->db, ms);
-    cleanupCallback(context, busyHandler);
+    cleanupCallback(context, busyHandler, NULL);
 
     pConn->hasBusyHandler = (ms > 0) ? true : false;
 
@@ -4422,7 +4653,174 @@ RexxMethod4(RexxObjectPtr, oosqlconn_commitHook, RexxObjectPtr, callbackObj, OPT
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, commitHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, commitHook, 0, NULL);
+}
+
+
+/** ooSQLiteConnection::createCollation()
+ *
+ *  Adds, removes, or modifies a collation associated with this database
+ *  connection. A collation defines how two strings are compared.  SQLite uses
+ *  the collation whenever it needs to compare two strings in the database.
+ *
+ *  @param  collationName [required] The collation name.  This is the name that
+ *                        identifies the collation to SQLite.
+ *
+ *  @param  callbackObj   [required] Identifies where 'callBackName' comes from.
+ *
+ *                        If this is an instantiated Rexx object, then
+ *                        'callBackName' is a method within the class of the
+ *                        object.
+ *
+ *                        If this is a .Pointer object then it identifies an
+ *                        already loaded library of external functions
+ *
+ *                        If this is a .Directory object then the NAME index of
+ *                        the directory is the string name of an external
+ *                        library that should be loaded, if it is not already
+ *                        loaded.  The HANDLE index is used to return the
+ *                        .Pointer object when the library is loaded
+ *                        successfully.  If this method fails then the value for
+ *                        the HANDLE index is undefined.
+ *
+ *  @param  callBackName  [optional]  Identifies the callback method or external
+ *                        function that is registered with SQLite for the
+ *                        collation.
+ *
+ *                        If 'callBackObj' is a Rexx object, then 'callBackName'
+ *                        is name of the method to be invoked for the
+ *                        coallation.  In this case only, if the argument is
+ *                        omitted the default name for the method is
+ *                        collationCallBack().
+ *
+ *                        If 'callBackObj' is a .Directory object or a .Pointer
+ *                        object then a similar pattern is used as is used for
+ *                        the 'callBackObj'.
+ *
+ *                        If it is a .Pointer object then it identifies and
+ *                        already loaded external *function*.  Note that a
+ *                        loaded library and a loaded function are two different
+ *                        things.
+ *
+ *                        If 'callBackName' is a directory object, then the NAME
+ *                        index identifies an external function to be loaded
+ *                        from the external library identified by 'callBackObj'.
+ *                        On success the HANDLE index is used to return the
+ *                        .Pointer object for the external function.  If this
+ *                        method fails, the value for the HANDLE index is
+ *                        undefined.
+ *
+ *
+ *  @param userData       [optional] This can be any Rexx object the user
+ *                        desires.
+ *
+ *                        If the 'callBackObj' is a Rexx object, then this
+ *                        object will be sent as the first argument to the
+ *                        callback method.
+ *
+ *                        If the 'callBackObj is an external library, then this
+ *                        is a little more complicated and is described in the
+ *                        section on how to write an external collation
+ *                        function.
+ *
+ *                        If, the string value of this object is exactly
+ *                        "REMOVE", case does not matter, then the collation
+ *                        callback identified by 'callBackObj' and
+ *                        'callBackName' is removed.  Please note that "REMOVE
+ *                        ", " REMOVE", and "REMOVE" are all not exactly the
+ *                        same.
+ *
+ *  @return  ??
+ *
+ *  @notes
+ */
+RexxMethod5(RexxObjectPtr, oosqlconn_createCollation, CSTRING, collationName, RexxObjectPtr, callbackObj,
+            OPTIONAL_RexxObjectPtr, callbackName, OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
+{
+    RexxObjectPtr result = context->WholeNumber(SQLITE_MISUSE);
+
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return result;
+    }
+    RexxMethodContext *c = context;
+
+    bool isExternal      = true;
+    bool removeCollation = false;
+
+    if ( c->IsOfType(callbackObj, "POINTER") )
+    {
+        c->RaiseException0(Rexx_Error_Unsupported_method);
+        return result;
+    }
+    else if ( c->IsDirectory(callbackObj) )
+    {
+        c->RaiseException0(Rexx_Error_Unsupported_method);
+        return result;
+    }
+    else
+    {
+        isExternal = false;
+    }
+
+    // Determine if we are removing this collation.
+    if ( argumentExists(4) )
+    {
+        CSTRING str = c->ObjectToStringValue(userData);
+        if ( stricmp(str, "REMOVE") == 0 )
+        {
+            removeCollation = true;
+        }
+    }
+
+    if ( isExternal )
+    {
+        if ( argumentOmitted(3) )
+        {
+            c->RaiseException1(Rexx_Error_Incorrect_method_noarg, c->WholeNumber(3));
+            return result;
+        }
+
+        if ( c->IsOfType(callbackName, "POINTER") )
+        {
+            c->RaiseException0(Rexx_Error_Unsupported_method);
+            return result;
+        }
+        else if ( c->IsDirectory(callbackName) )
+        {
+            c->RaiseException0(Rexx_Error_Unsupported_method);
+            return result;
+        }
+        else
+        {
+            wrongArgValueException(c->threadContext, 3, "Pointer or Directory", callbackName);
+            return result;
+        }
+
+        // Here do set up for external collation function
+        // sqlite3_create_collation.  Until implemented we just return misuse
+        return result;
+    }
+
+    // Okay we are installing a Rexx callback.  If we are removing, we do not
+    // care what the method name is, otherwise we need to get it from the
+    // object, if arg 3 exists.
+    CSTRING mthName = NULL;
+
+    if ( removeCollation )
+    {
+        // Will cause doCallbackSetup() to remove the collation.
+        callbackObj = TheNilObj;
+    }
+    if ( argumentExists(3) )
+    {
+        mthName = c->ObjectToStringValue(callbackName);
+    }
+
+    result = doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, collation, 0, collationName);
+
+    return result;
 }
 
 
@@ -5069,7 +5467,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_profile, RexxObjectPtr, callbackObj, OPTION
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, profileHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, profileHook, 0, NULL);
 }
 
 
@@ -5135,7 +5533,7 @@ RexxMethod5(RexxObjectPtr, oosqlconn_progressHandler, RexxObjectPtr, callbackObj
         callbackObj = TheNilObj;
     }
 
-    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, progressHandler, instructions);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, progressHandler, instructions, NULL);
 }
 
 
@@ -5217,7 +5615,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_rollbackHook, RexxObjectPtr, callbackObj, O
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, rollbackHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, rollbackHook, 0, NULL);
 }
 
 
@@ -5295,7 +5693,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_setAuthorizer, RexxObjectPtr, callbackObj,
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, authorizer, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, authorizer, 0, NULL);
 }
 
 
@@ -5391,7 +5789,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_trace, RexxObjectPtr, callbackObj, OPTIONAL
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, traceHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, traceHook, 0, NULL);
 }
 
 
@@ -5447,7 +5845,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_updateHook, RexxObjectPtr, callbackObj, OPT
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, updateHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, updateHook, 0, NULL);
 }
 
 
@@ -10558,6 +10956,7 @@ REXX_METHOD_PROTOTYPE(oosqlconn_busyHandler);
 REXX_METHOD_PROTOTYPE(oosqlconn_busyTimeOut);
 REXX_METHOD_PROTOTYPE(oosqlconn_changes);
 REXX_METHOD_PROTOTYPE(oosqlconn_close);
+REXX_METHOD_PROTOTYPE(oosqlconn_createCollation);
 REXX_METHOD_PROTOTYPE(oosqlconn_commitHook);
 REXX_METHOD_PROTOTYPE(oosqlconn_dbFileName);
 REXX_METHOD_PROTOTYPE(oosqlconn_dbMutex);
@@ -10730,6 +11129,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlconn_busyTimeOut,                oosqlconn_busyTimeOut),
     REXX_METHOD(oosqlconn_changes,                    oosqlconn_changes),
     REXX_METHOD(oosqlconn_close,                      oosqlconn_close),
+    REXX_METHOD(oosqlconn_createCollation,            oosqlconn_createCollation),
     REXX_METHOD(oosqlconn_commitHook,                 oosqlconn_commitHook),
     REXX_METHOD(oosqlconn_dbFileName,                 oosqlconn_dbFileName),
     REXX_METHOD(oosqlconn_dbMutex,                    oosqlconn_dbMutex),

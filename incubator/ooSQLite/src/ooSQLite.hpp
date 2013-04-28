@@ -115,6 +115,7 @@ typedef enum
     execCallbackHook,
     busyHandler,
     commitHook,
+    collation,
     profileHook,
     progressHandler,
     rollbackHook,
