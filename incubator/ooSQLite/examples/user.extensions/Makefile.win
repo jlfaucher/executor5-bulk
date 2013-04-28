@@ -71,8 +71,8 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(WIN_LIBS) -def:simpleExtension.def /DL
 # What we want to build.
 all: simpleExtension.dll
 
-simpleExtension.obj: simpleExtension.cpp
-  cl $(CFLAGS) simpleExtension.cpp
+simpleExtension.obj: simpleExtension.c
+  cl $(CFLAGS) simpleExtension.c
 
 simpleExtension.dll: simpleExtension.obj
     link $(LFLAGS_DLL) simpleExtension.obj -out:simpleExtension.dll

@@ -51,8 +51,8 @@ CFLAGS=-c -fPIC $(BASEFLAGS)
 # What we want to build.
 all: libsimpleExtension.so
 
-simpleExtension.o: simpleExtension.cpp Makefile.lin
-	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o simpleExtension.o simpleExtension.cpp
+simpleExtension.o: simpleExtension.c Makefile.lin
+	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o simpleExtension.o simpleExtension.c
 
 libsimpleExtension.so: simpleExtension.o
 	gcc $(SO_LFLAGS) -o libsimpleExtension.so simpleExtension.o $(SO_LLIBS)

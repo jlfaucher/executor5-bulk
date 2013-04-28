@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- * simpleExtension.cpp
+ * simpleExtension.c
  *
  * Example of how to write a loadable extension file for SQLite.  This file is
  * built as a shared library, which can be loaded through the loadExtension()

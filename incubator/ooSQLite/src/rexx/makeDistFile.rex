@@ -103,7 +103,7 @@ use arg cmdLine
   cpCmd 'misc'sl'*'                     outDir'misc'
   cpCmd 'testing'sl'*'                  outDir'testing'
 
-  cpCmd 'examples'sl'user.extensions'sl'simpleExtension.cpp' outDir'examples'sl'user.externsions'
+  cpCmd 'examples'sl'user.extensions'sl'simpleExtension.c' outDir'examples'sl'user.extensions'
 
   if os == "WINDOWS" then do
     cpCmd 'examples'sl'user.extensions'sl'Makefile.win' outDir'examples'sl'user.extensions'
