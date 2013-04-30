@@ -50,42 +50,91 @@
 #define IDC_STATIC (-1)
 #endif
 
+// ResEdit IDs
 #define IDD_OODIALOG_DISPLAY                    102
+#define IDD_FILEASSOC                           104
+#define IDD_CONFIGURE_SERVICES                  106
+#define IDC_ST_SCOPE                            1000
 #define IDC_ST_DISPLAY_ICON                     1001
-#define IDC_EDIT                                1003
-#define IDC_ST_SHORT_MSG                        1004
+#define IDC_ST_RUNAS                            1002
+#define IDC_CK_FILEASSOC                        1003
+#define IDC_ST_FTYPE                            1004
+#define IDC_EDIT                                1005
+#define IDC_ST_ELEVATED                         1006
+#define IDC_ST_SHORT_MSG                        1007
+#define IDC_GB_SERVICES                         1008
+#define IDC_PB_REMOVE_PATHEXT                   1009
+#define IDC_EDIT_EXTENSION                      1010
+#define IDC_LB_SUGGESTED                        1011
+#define IDC_LB_CURRENT                          1012
+#define IDC_LB_PATHEXT                          1013
+#define IDC_PB_ADD_CURRENT                      1014
+#define IDC_PB_REMOVE_CURRENT                   1015
+#define IDC_PB_ADD_PATHEXT                      1016
+#define IDC_RB_CURRENT                          1017
+#define IDC_PB_ADD_EXTENSION                    1018
+#define IDC_RB_ALL                              1019
+#define IDC_PB_CONFIGURE                        1020
+#define IDC_ST_INADMINGROUP                     1021
+#define IDC_ST_ISRUNASADMIN                     1022
+#define IDC_ST_ISELEVATED                       1023
+#define IDC_ST_IL                               1024
+
+
+
+// Other IDs
 #define IDI_APP_ICON                            200
 
 #ifndef RC_INVOKED
 
 static char *long_syntax_text =
-"The ooDialog executable is a stand alone interface to run ooDialog programs, "
-"or to optionally provide other ooDialog services and information.\r\n\r\n"
+"The ooDialog executable is a stand alone interface to run ooDialog\r\n"
+"programs, or to optionally provide other ooDialog services and\r\n"
+"information.\r\n\r\n"
 "Syntax:\r\n\r\n"
 "    ooDialog [option flags] [programName] [arg1 arg2 ... argN]\r\n\r\n"
-"If no arguments are given, this help is shown.  All option flags start with "
-"the '-' character.  The first argument that does not start with the '-' char"
-"acter is taken to be the name of an ooRexx program to be executed.  All argu"
-"ments following programName are passed as arguments to programName.  When "
-"programName is executed, it is executed with no console window.  This is simi"
-"lar to rexxHide.\r\n\r\n"
+"If no arguments are given, this help is shown.  All option flags start\r\n"
+"with the '-' character.  The first argument that does not start with\r\n"
+"the '-' character is taken to be the name of an ooRexx program to be\r\n"
+"executed.  All arguments following programName are passed as arguments\r\n"
+"to programName.  When programName is executed, it is executed with no\r\n"
+"console window.  This is similar to rexxHide.\r\n\r\n"
 "option flags:\r\n"
-"  -h        Show the short help.\r\n"
-"  -H        Show this, longer, help.\r\n"
+"  -h        Show the short help text.\r\n"
+"  /?        Same as -h.\r\n"
+"  -H        Show this, the long, help text.\r\n"
 "  --help    When run from a console window, show the long help.\r\n"
 "  -s        Display the ooDialog Setup dialog.\r\n"
 "  -v        Print the short version string.\r\n"
 "  -V        Print the long version string.\r\n"
-"  --version When run from a console window, print the long version string.\r\n\r\n"
+"  --version If from a console window, print the long version string.\r\n\r\n"
 "programName:\r\n"
-"  The first argument that does not begin with '-' is taken as the name"
-"  of a Rexxx program to be executed.  The program is executed without"
-"  creating a console window."
+"  The first argument that does not begin with '-' is taken as the name\r\n"
+"  of a Rexxx program to be executed.  The program is executed without\r\n"
+"  creating a console window.  This implies that say, pull, and trace\r\n"
+"  statements have no effect.\r\n\r\n"
+"arg1 ... argN:\r\n"
+"  Arguments following the perceived program name are passed on as\r\n"
+"  arguments to programName\r\n"
 "\r\n";
 
 static char *short_syntax_text =
 "Syntax:\r\n\r\n"
-"    ooDialog [option flags] [programName] [arg1 arg2 ... argN]\r\n\r\n";
+"    ooDialog [option flags] [programName] [arg1 arg2 ... argN]\r\n\r\n"
+"option flags:\r\n"
+"  -h        Show the short help text.\r\n"
+"  /?        Same as -h.\r\n"
+"  -H        Show this, the long, help text.\r\n"
+"  --help    If from a console window, show the long help.\r\n"
+"  -s        Display the ooDialog Setup dialog.\r\n"
+"  -v        Print the short version string.\r\n"
+"  -V        Print the long version string.\r\n"
+"  --version If from a console window, print the long version string.\r\n\r\n"
+"programName:\r\n"
+"  The first argument that does not begin with '-' is taken as the name\r\n"
+"  of a Rexxx program to be executed.\r\n\r\n"
+"arg1 ... argN:\r\n"
+"  Arguments 1 through N are passed on to programName.\r\n\r\n";
 
 #endif /* not defined RC_COMPILER_INVOKED*/
 

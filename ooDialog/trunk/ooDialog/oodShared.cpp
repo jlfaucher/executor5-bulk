@@ -456,8 +456,13 @@ char *getCompleteVersion(RexxThreadContext *c)
     bits = 64;
 #endif
 
+#ifdef _DEBUG
+    _snprintf(buf, MEDIUM_BUF_SIZE, "\r\nooDialog: ooDialog Version %d.%d.%d.%d (%d bit) - Internal Test Version\r\n",
+             OOD_VER, OOD_REL, OOD_MOD, OOD_BLD, bits);
+#else
     _snprintf(buf, MEDIUM_BUF_SIZE, "\r\nooDialog: ooDialog Version %d.%d.%d.%d (%d bit)\r\n",
              OOD_VER, OOD_REL, OOD_MOD, OOD_BLD, bits);
+#endif
 
     char buf1[SMALL_BUF_SIZE];
 

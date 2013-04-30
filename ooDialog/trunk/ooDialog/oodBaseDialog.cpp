@@ -50,6 +50,7 @@
 #include <shlwapi.h>
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
+#include "oodShared.hpp"
 #include "oodControl.hpp"
 #include "oodData.hpp"
 #include "oodMessaging.hpp"

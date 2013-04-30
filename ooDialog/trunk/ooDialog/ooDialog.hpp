@@ -307,38 +307,6 @@ typedef enum {globalOnly, globalFirst, globalLast, globalNever} oodConstDir_t;
 
 #define APPLICATION_MANAGER_MAGIC  0xdeadfeed
 
-inline LONG_PTR setWindowPtr(HWND hwnd, int index, LONG_PTR newPtr)
-{
-#ifndef __REXX64__
-#pragma warning(disable:4244)
-#endif
-    return SetWindowLongPtr(hwnd, index, newPtr);
-#ifndef __REXX64__
-#pragma warning(default:4244)
-#endif
-}
-
-inline LONG_PTR getWindowPtr(HWND hwnd, int index)
-{
-    return GetWindowLongPtr(hwnd, index);
-}
-
-inline LONG_PTR setClassPtr(HWND hwnd, int index, LONG_PTR newPtr)
-{
-#ifndef __REXX64__
-#pragma warning(disable:4244)
-#endif
-    return SetClassLongPtr(hwnd, index, newPtr);
-#ifndef __REXX64__
-#pragma warning(default:4244)
-#endif
-}
-
-inline LONG_PTR getClassPtr(HWND hwnd, int index)
-{
-    return GetClassLongPtr(hwnd, index);
-}
-
 /* structures to manage the dialogs */
 typedef struct {
    PCHAR      rexxMethod;

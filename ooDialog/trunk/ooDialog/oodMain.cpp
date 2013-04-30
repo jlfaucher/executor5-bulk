@@ -68,7 +68,17 @@ inline bool haveFlag(const char *a)
 
 inline void printStandardVersion(void)
 {
-    printf("ooDialog %u.%u.%u.%u\n", OOD_VER, OOD_REL, OOD_MOD, OOD_BLD);
+    printf(OOD_VER_STR"\n");
+}
+
+inline void printShortHelp(void)
+{
+    printf(short_syntax_text);
+}
+
+inline void printLongHelp(void)
+{
+    printf(long_syntax_text);
 }
 
 /**
@@ -120,6 +130,11 @@ static bool isVersionRequest(int argc, char **argv)
     {
         switch ( argv[i][1] )
         {
+            case 'h' :
+            case '?' :
+                printShortHelp();
+                return true;
+
             case 'v' :
                 printStandardVersion();
                 return true;
@@ -128,6 +143,11 @@ static bool isVersionRequest(int argc, char **argv)
                 if ( stricmp(argv[i], "--version") == 0 )
                 {
                     printFullVersion();
+                    return true;
+                }
+                else if ( stricmp(argv[i], "--help") == 0 )
+                {
+                    printLongHelp();
                     return true;
                 }
                 break;
@@ -139,7 +159,6 @@ static bool isVersionRequest(int argc, char **argv)
 
     return false;
 }
-
 
 /**
  * Standard main entry point.
@@ -157,11 +176,11 @@ int __cdecl main(int argc, char *argv[])
     LPTSTR  cmdLine = GetCommandLineA();
     char   *tmp     = cmdLine;
 
-    while( ! isspace(*tmp) )
+    while( *tmp && ! isspace(*tmp) )
     {
         tmp++;
     }
-    while( isspace(*tmp) )
+    while( *tmp && isspace(*tmp) )
     {
         tmp++;
     }
