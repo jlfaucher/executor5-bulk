@@ -41,8 +41,12 @@
  *
  *  Demonstrates how to load an SQLite extensions file.
  *
- *  The extensions are implemented in simpleExtension.cpp which is in the
- *  user.extensions subdirectory.
+ *  The extensions are implemented in simpleExtension.c which is in the
+ *  user.extensions subdirectory.  On Windows simpleExtension.c is compiled into
+ *  a DLL, on Linux it is compiled into a .so file.
+ *
+ *  One of the extensions is a collation, REVERSESORT.  After loading the
+ *  extension file, we can use the REVERSESORT collation here.
  *
  */
 
@@ -55,7 +59,7 @@
     extensionFile = 'user.extensions/libsimpleExtension.so'
   end
 
-	dbName        = 'ooFoods.rdbx'
+	dbName = 'ooFoods.rdbx'
 
   -- Set the result set format to an array of arrays:
   .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS

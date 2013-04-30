@@ -68,6 +68,7 @@
 ::method errStr class external "LIBRARY oosqlite oosql_errStr_cls"
 ::method libVersion class external "LIBRARY oosqlite oosql_libVersion_cls"
 ::method libVersionNumber class external "LIBRARY oosqlite oosql_libVersionNumber_cls"
+::method loadLibrary class external "LIBRARY oosqlite oosql_loadLibrary_cls"
 ::method memoryHighWater class external "LIBRARY oosqlite oosql_memoryHighWater_cls"
 ::method memoryUsed class external "LIBRARY oosqlite oosql_memoryUsed_cls"
 ::method releaseMemory class external "LIBRARY oosqlite oosql_releaseMemory_cls"
@@ -107,8 +108,9 @@
 ::method busyTimeOut external "LIBRARY oosqlite oosqlconn_busyTimeOut"
 ::method changes external "LIBRARY oosqlite oosqlconn_changes"
 ::method close external "LIBRARY oosqlite oosqlconn_close"
-::method createCollation external "LIBRARY oosqlite oosqlconn_createCollation"
+::method collationNeeded external "LIBRARY oosqlite oosqlconn_collationNeeded"
 ::method commitHook external "LIBRARY oosqlite oosqlconn_commitHook"
+::method createCollation external "LIBRARY oosqlite oosqlconn_createCollation"
 ::method dbFileName external "LIBRARY oosqlite oosqlconn_dbFileName"
 ::method dbMutex external "LIBRARY oosqlite oosqlconn_dbMutex"
 ::method dbReadOnly external "LIBRARY oosqlite oosqlconn_dbReadOnly"
@@ -137,6 +139,8 @@
 ::method totalChanges external "LIBRARY oosqlite oosqlconn_totalChanges"
 ::method trace external "LIBRARY oosqlite oosqlconn_trace"
 ::method updateHook external "LIBRARY oosqlite oosqlconn_updateHook"
+
+::method test external "LIBRARY oosqlite oosqlconn_test"
 
 ::method    putStmt external "LIBRARY oosqlite oosqlconn_putStmt"                    -- Internal use only
 ::method    delStmt external "LIBRARY oosqlite oosqlconn_delStmt"                    -- Internal use only

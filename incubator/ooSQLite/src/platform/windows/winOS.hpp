@@ -50,18 +50,18 @@
 #include <windows.h>
 #include <shlwapi.h>
 
-#define snprintf _snprintf
+#define snprintf                   _snprintf
+#define oosqlGetCurrentThreadId()  GetCurrentThreadId()
+
+
+#ifdef NEED_DLL_MAIN
 
 CRITICAL_SECTION     crit_sec = {0};
 
 #define CRITICAL_SECTION_ENTER EnterCriticalSection(&crit_sec);
 #define CRITICAL_SECTION_LEAVE LeaveCriticalSection(&crit_sec);
 
-#define oosqlGetCurrentThreadId()  GetCurrentThreadId()
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_EXTERN_C()
 
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -76,10 +76,8 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
     return(TRUE);
 }
 
-#ifdef __cplusplus
-}
-#endif
+END_EXTERN_C()
 
-
+#endif  /* If defined NEE_DLL_MAIN*/
 
 #endif

@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -37,10 +37,11 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  collationText.rex
+ *  collationCustom.rex
  *
- *  ??
- *
+ *  This example demonstrates the createCollation() and collationNeeded()
+ *  methods of the ooSQLiteConnection class.  Both of these methods register
+ *  callback methods in a Rexx object.
  */
 
   -- Set the result set format to an array of arrays:
@@ -50,35 +51,107 @@
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
+  -- Instantiate our Rexx object that contains our callback methods.
   collater = .Collater~new
 
+  -- In this first example we created a custom collation using a callback method
+  -- in a Rexx object.
+  --
   -- 1st arg name of COLLATE function, 2nd arg Rexx object with method
   -- 3rd arg collation method, 4th arg any Rexx object
   dbConn~createCollation('ReverseSort', collater, 'reverseCollate', collater)
 
-  --sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSESORT;"
   sql = "SELECT * FROM foods ORDER BY name COLLATE REVERSESORT;"
   resultSet = dbConn~exec(sql, .true)
 
   z = printResultSet(resultSet)
-
-  say 'Result Set:      ' resultSet
-  say 'Result Set Class:' resultSet~class
   say
 
+  -- When the database connection is closed, the custom collation is unregisterd
   ret = dbConn~close
+
+  -- In this second example, we do not create a custom collation.  Instead we
+  -- register a collation needed callback.  When SQLite encounters an undefined
+  -- collation it invokes the callback.  Within the callback, the programmer
+  -- should create the needed collation.
+
+  -- We use a different name for the database connection to emphasis that this
+  -- is a completely different connection than the dbConn connection above.
+  connection = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  connection~collationNeeded(collater, collationNeeded, collater)
+
+  -- With this connection we are going to use 2 different custom collations.
+  -- Just to show how the collation need call back works.
+  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSESORT;"
+  resultSet = connection~exec(sql, .true)
+
+  z = printResultSet(resultSet)
+  say
+
+  -- Use a second collation here.
+  sql = "SELECT * FROM foods ORDER BY name COLLATE CASEDREVERSESORT;"
+  resultSet = connection~exec(sql, .true)
+
+  z = printResultSet(resultSet)
+  say
+
+  -- Always close any open database connections.
+  ret = connection~close
 
   return ret
 
 ::requires 'ooSQLite.cls'
 
+-- The Collater class is used to define our callback methods.
 ::class 'Collater'
 
+-- Our registered callback method.  SQLite invokes this method when it
+-- encounters and undefined collation.
+::method collationNeeded
+  use arg dbConn, collationName, userData
+
+  say 'collationNeeded() collation name:' collationName
+  say
+
+  -- We check the collation name to determine which collation to create.
+  if collationName~caseLessCompare('ReverseSort') == 0 then do
+      -- 1st arg name of COLLATE function, 2nd arg Rexx object with method
+      -- 3rd arg collation method, 4th arg any Rexx object
+      dbConn~createCollation('ReverseSort', self, 'reverseCollate', self)
+  end
+
+  if collationName~caseLessCompare('CasedReverseSort') == 0 then do
+      -- 1st arg name of COLLATE function, 2nd arg Rexx object with method
+      -- 3rd arg collation method, 4th arg any Rexx object
+      dbConn~createCollation('CasedReverseSort', self, 'reverseCollateWithCase', self)
+  end
+
+  -- Must return a result
+  return .ooSQLiteConstants~OK
+
+-- Our first registered collation method.  SQLite invokes this method to compare
+-- 2  strings.  We must return 0 if the strings are equal, a negative number if the
+-- first string is less than the second, and a positive number if the first
+-- string is greater than the second.
+--
+-- We just do a caseless reverse sort by negating the return from
+-- caselessCompareTo()
 ::method reverseCollate
   use arg str1, str2, userData
 
   return - str1~caselessCompareTo(str2);
 
+
+-- Our second registere collation method. Here we also do a reverse sort, but
+-- we use case sensitive sort.
+::method reverseCollateWithCase
+  use arg str1, str2, userData
+
+  return - str1~CompareTo(str2);
+
+
+-- Common utility routine used to print a result set that is an array of arrays.
 ::routine printResultSet
   use arg rs
 

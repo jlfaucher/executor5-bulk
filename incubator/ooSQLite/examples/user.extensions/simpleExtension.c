@@ -53,11 +53,6 @@
  *   loadExtension() call.
  */
 
-#ifdef _WIN32
-    #include <windows.h>
-#else
-    #define NULL 0
-#endif
 
 /* Normally use sqlite3ext.h, the ooSQLite source uses sqlite3ext.hpp */
 #include <sqlite3ext.hpp>

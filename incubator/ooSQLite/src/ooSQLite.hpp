@@ -38,6 +38,23 @@
 #ifndef ooSQLite_Included
 #define ooSQLite_Included
 
+#ifdef __cplusplus
+#define BEGIN_EXTERN_C() extern "C" {
+#define END_EXTERN_C() }
+#else
+#define BEGIN_EXTERN_C()
+#define END_EXTERN_C()
+#endif
+
+#ifdef _WIN32
+    #define NEED_DLL_MAIN
+    #include "platform\windows\winOS.hpp"
+#else
+    #include "platform/unix/unixOS.hpp"
+#endif
+
+#include "oorexxapi.h"
+
 // The range of errors needs to be contiguous and not include any SQLite error
 // rc.  The next SQLite error rc is 1034.
 #define OO_ERR_FIRST                     1000
@@ -59,6 +76,9 @@
 
 // Buffer size must be plus one -> 4096
 #define MAX_ENQUOTE_STRING  4095
+
+// Type def for the SQLite collation callback.
+typedef int(*fnXCompare)(void*,int,const void*,int,const void*);
 
 // Enum for the pragma commands in SQLite3.
 typedef enum
@@ -114,8 +134,9 @@ typedef enum
     authorizer,
     execCallbackHook,
     busyHandler,
-    commitHook,
     collation,
+    collationNeeded,
+    commitHook,
     profileHook,
     progressHandler,
     rollbackHook,
@@ -136,6 +157,7 @@ typedef enum
 
 /* Struct for the ooSQLite class object CSelf. */
 typedef struct _oosqlclassCSelf {
+    RexxObjectPtr      externTable;        // A Rexx table object used to hold shared library handles and external function pointers
     RexxObjectPtr      nullObj;            // Default representation of SQL NULL
     CSTRING            nullStr;            // If nullObj is a Rexx string object, the string value of the object
     ResultSetType      format;             // The default format of a result set for the current process.
@@ -218,7 +240,8 @@ typedef struct _genericCallback {
     RexxRoutineObject    callbackRtn;     // Rexx routine to call.
     RexxObjectPtr        callbackObj;     // Rexx object to invoke the callback() method on.
     RexxObjectPtr        userData;        // A Rexx object that the user wants sent to its Rexx callback.
-    RexxObjectPtr        nullObj;
+    RexxObjectPtr        rexxDB;          // The Rexx database connection object, RexxSelf.
+    RexxObjectPtr        nullObj;         // The Rexx object that represents SQL NULL for the database connection
     RexxInstance        *interpreter;
     RexxThreadContext   *callbackContext;
     char               **indexes;
