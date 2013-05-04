@@ -1454,7 +1454,8 @@ RexxMethod1(logical_t, winex_removeBitmap, POINTERSTRING, hBitmap)
 }
 
 
-/** WindowExtensions::objectToDC()
+/** WindowExtensions::fontToDc()
+ *  WindowExtensions::objectToDc()
  *
  *  Selects a graphics object into the specified device context (DC). The new
  *  object replaces the previous object of the same type.
@@ -1483,6 +1484,10 @@ RexxMethod1(logical_t, winex_removeBitmap, POINTERSTRING, hBitmap)
  *
  *  @remarks  Note that this method does not make sense as a windows extension,
  *            it does not require a valid window handle.
+ *
+ *            Previously, fontTodc() just called this method.  Now we simply map
+ *
+ *            ::method fontToDc directly to this method.
  */
 RexxMethod2(POINTERSTRING, winex_objectToDC, POINTERSTRING, hDC, POINTERSTRING, hObj)
 {
