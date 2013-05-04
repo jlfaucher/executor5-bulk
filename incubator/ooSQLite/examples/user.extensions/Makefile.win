@@ -50,7 +50,7 @@ WIN_LIBS  = user32.lib
 
 WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 
-EXTRAINCLUDE = /I ..\..\src\sqlite
+EXTRAINCLUDE = /I ..\..\src\sqlite /I ..\..\src
 
 BASEFLAGS = $(WARNINGFLAGS) $(EXTRAINCLUDE)
 
@@ -58,7 +58,7 @@ BASEFLAGS = $(WARNINGFLAGS) $(EXTRAINCLUDE)
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNULL=0 /DOOSQLDBG=0
 CFLAGS =  /nologo /EHsc /Zi /Od /MTd /D_DEBUG /DEBUGTYPE:CV $(BASEFLAGS) $(MISCDEFS) /c
-LFLAGS_DLL = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Windows $(WIN_LIBS) -def:simpleExtension.def /DLL
+LFLAGS_DLL = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Windows $(WIN_LIBS) /DLL
 
 !ELSE
 
@@ -69,14 +69,20 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(WIN_LIBS) -def:simpleExtension.def /DL
 !ENDIF
 
 # What we want to build.
-all: simpleExtension.dll
+all: simpleExtension.dll examplePackage.dll
 
 simpleExtension.obj: simpleExtension.c
   cl $(CFLAGS) simpleExtension.c
 
 simpleExtension.dll: simpleExtension.obj
-    link $(LFLAGS_DLL) simpleExtension.obj -out:simpleExtension.dll
+    link $(LFLAGS_DLL) simpleExtension.obj -out:simpleExtension.dll -def:simpleExtension.def
+
+examplePackage.obj: examplePackage.cpp
+  cl $(CFLAGS) examplePackage.cpp
+
+examplePackage.dll: examplePackage.obj
+    link $(LFLAGS_DLL) examplePackage.obj -out:examplePackage.dll -def:examplePackage.def
 
 clean:
-    del /Q simpleExtension.dll simpleExtension.obj simpleExtension.exp simpleExtension.asm *.pdb simpleExtension.lib 1>nul 2>&1
+    del /Q *.dll *.obj *.exp *.asm *.pdb *.lib 1>nul 2>&1
 

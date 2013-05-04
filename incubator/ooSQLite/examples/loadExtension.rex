@@ -45,8 +45,8 @@
  *  user.extensions subdirectory.  On Windows simpleExtension.c is compiled into
  *  a DLL, on Linux it is compiled into a .so file.
  *
- *  One of the extensions is a collation, REVERSESORT.  After loading the
- *  extension file, we can use the REVERSESORT collation here.
+ *  One of the extensions is a collation, REVERSE.  After loading the
+ *  extension file, we can use the REVERSE collation here.
  *
  */
 
@@ -74,7 +74,7 @@
     return dbConn~lastErrCode
   end
 
-  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSESORT;"
+  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSE;"
   resultSet = dbConn~exec(sql, .true)
 
   say 'SQL:             ' sql
@@ -85,7 +85,7 @@
   pull
   z = printResultSet(resultSet)
 
-  sql = "SELECT * FROM foods ORDER BY name COLLATE REVERSESORT;"
+  sql = "SELECT * FROM foods ORDER BY name COLLATE REVERSE;"
   resultSet = dbConn~exec(sql, .true)
 
   say 'SQL:             ' sql

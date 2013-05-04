@@ -68,7 +68,6 @@
 ::method errStr class external "LIBRARY oosqlite oosql_errStr_cls"
 ::method libVersion class external "LIBRARY oosqlite oosql_libVersion_cls"
 ::method libVersionNumber class external "LIBRARY oosqlite oosql_libVersionNumber_cls"
-::method loadLibrary class external "LIBRARY oosqlite oosql_loadLibrary_cls"
 ::method memoryHighWater class external "LIBRARY oosqlite oosql_memoryHighWater_cls"
 ::method memoryUsed class external "LIBRARY oosqlite oosql_memoryUsed_cls"
 ::method releaseMemory class external "LIBRARY oosqlite oosql_releaseMemory_cls"
@@ -248,6 +247,16 @@
 ::method try unguarded external "LIBRARY oosqlite oosqlmtx_try"
 
 
+/** class: ooSQLExtensions
+ * ...
+ *
+ */
+::class 'ooSQLExtensions' public inherit ooSQLiteConstants
+
+::method init class external "LIBRARY oosqlite oosqlext_init_cls"                           -- Do not document, internal use only
+
+::method loadLibrary class external "LIBRARY oosqlite oosqlext_loadLibrary_cls"
+::method loadPackage class external "LIBRARY oosqlite oosqlext_loadPackage_cls"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -389,10 +398,10 @@
 -- extension to check that ooSQLite.cls matches the oosqlite library.
 -- (oosqlite.dll / oosqlite.so depending on platform.)
 --
--- Copy the values directly from the top of sqlit3.hpp.
-::constant VERSION        "3.7.16.1"
+-- Copy the values directly from the top of sqlite3.h.
+::constant VERSION        "3.7.16.2"
 ::constant VERSION_NUMBER 3007016
-::constant SOURCE_ID      "2013-03-29 13:44:34 527231bc67285f01fb18d4451b28f61da3c4e39d"
+::constant SOURCE_ID      "2013-04-12 11:52:43 cbea02d93865ce0e06789db95fd9168ebac970c7"
 
 
 -- OO_ prefix indicates constant is not from the SQLite library.

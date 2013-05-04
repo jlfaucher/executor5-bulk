@@ -60,6 +60,8 @@ include src/ooSQLite.ver
 OOSQLITE_BLD_LVL:= $(SVN_REV)
 OOSQLITE_VER_STR:= "$(OOSQLITE_MAJOR).$(OOSQLITE_MINOR).$(OOSQLITE_MOD_LVL).$(OOSQLITE_BLD_LVL)"
 
+PLATFORM_DIR=src/platform/unix
+
 # These definitions come from the Makefile produced by running configure in the
 # ooSQLite/src/platform/unix/sqlite-autoconf directory.  The DEFS =
 # comes directly from the DEFS define in the Makefle, minus the things like
@@ -88,7 +90,7 @@ CONFFLAGS = -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STD
 
 WARNINGFLAGS=
 VERDEFS=-DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) -DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) -DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) -DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) -DOOSQLITE_VER_STRING=$(OOSQLITE_VER_STR) -DOOSQLITE_COPYRIGHT_YEAR=$(OOSQLITE_COPY_YEAR)
-EXTRAINCLUDE=-I src/sqlite
+EXTRAINCLUDE=-I src/sqlite -I $(PLATFORM_DIR)
 
 SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_DEFAULT_FOREIGN_KEYS=1
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS) $(CONFFLAGS)
@@ -110,13 +112,13 @@ CFLAGS=-c -fPIC $(BASEFLAGS)
 all: $(BIN_DIR)/liboosqlite.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls  example_dlls
 
 
-$(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.hpp Makefile.lin
+$(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.h Makefile.lin
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/sqlite3.o src/sqlite/sqlite3.c
 
-$(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.hpp Makefile.lin
+$(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.h Makefile.lin
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/shell.o src/sqlite/shell.c
 
-$(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/sqlite/sqlite3.hpp Makefile.lin
+$(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/sqlite/sqlite3.h Makefile.lin
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/ooSQLite.o src/ooSQLite.cpp
 
 $(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.lin

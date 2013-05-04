@@ -124,7 +124,7 @@ PLATFORM_DIR = src\platform\windows
 
 WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 VERDEFS = /DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) /DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) /DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) /DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) /DOOSQLITE_VER_STRING=$(OOSQLITE_VER_STR) /DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
-EXTRAINCLUDE = /I src\sqlite
+EXTRAINCLUDE = /I src\sqlite /I $(PLATFORM_DIR)
 
 SQLITEFLAGS=/DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_MEMORY_MANAGEMENT /DSQLITE_ENABLE_FTS3 /DSQLITE_ENABLE_FTS3_PARENTHESIS /DSQLITE_DEFAULT_FOREIGN_KEYS=1
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS)
@@ -162,20 +162,23 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM
 all: $(BIN_DIR)\oosqlite.dll $(BIN_DIR)\ooSQLite3.exe $(BIN_DIR)\ooSQLite.cls example_dlls
 
 
-$(OUT_DIR)\sqlite3.obj: src\sqlite\sqlite3.c src\sqlite\sqlite3.hpp Makefile.win
-  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\sqlite3.c
+$(OUT_DIR)\sqlite3.obj: src\sqlite\sqlite3.c src\sqlite\sqlite3.h Makefile.win
+  cl $(CFLAGS) /DOOSQLITE_BUILD /Fo.\$(OUT_DIR)\ src\sqlite\sqlite3.c
 
-$(OUT_DIR)\shell.obj: src\sqlite\shell.c src\sqlite\sqlite3.hpp Makefile.win
+$(OUT_DIR)\shell.obj: src\sqlite\shell.c src\sqlite\sqlite3.h Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\shell.c
 
-$(OUT_DIR)\ooSQLite.obj: src\ooSQLite.cpp src\ooSQLite.hpp src\APICommon.hpp src\sqlite\sqlite3.hpp Makefile.win
-  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\ooSQLite.cpp
+$(OUT_DIR)\ooSQLite.obj: src\ooSQLite.cpp src\ooSQLite.hpp src\APICommon.hpp src\sqlite\sqlite3.h Makefile.win
+  cl $(CFLAGS) /DOOSQLITE_BUILD /Fo.\$(OUT_DIR)\ src\ooSQLite.cpp
 
 $(OUT_DIR)\APICommon.obj: src\APICommon.cpp src\APICommon.hpp Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\APICommon.cpp
 
-$(OUT_DIR)\oosqlite.dll: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj
-    link $(LFLAGS_DLL) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj -out:$(OUT_DIR)\oosqlite.dll
+$(OUT_DIR)\SysLibrary.obj: $(PLATFORM_DIR)\SysLibrary.cpp $(PLATFORM_DIR)\SysLibrary.hpp Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ $(PLATFORM_DIR)\SysLibrary.cpp
+
+$(OUT_DIR)\oosqlite.dll: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\SysLibrary.obj
+    link $(LFLAGS_DLL) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\SysLibrary.obj -out:$(OUT_DIR)\oosqlite.dll
 
 $(OUT_DIR)\ooSQLite3.exe: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\shell.obj
     link $(LFLAGS_EXE) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\shell.obj -out:$(OUT_DIR)\ooSQLite3.exe

@@ -41,13 +41,17 @@
  * ...
  */
 
-#include "sqlite3.hpp"
+#include "sqlite3.h"
 #include "ooSQLite.hpp"
 
 #include <stdio.h>
 #include <string.h>
 
 #include "APICommon.hpp"
+#include "SysLibrary.hpp"
+
+#include <new>
+using namespace std;
 
 
 // Initialized in ooSQLiteLoad().
@@ -79,7 +83,7 @@ RexxObjectPtr       TheHiddenHelper       = NULLOBJECT;
  * done prior to the Rexx program start up.  We call sqlite3_initialize() and
  * set up a few global values.
  *
- * @param c  Thread context pointer passed from the intepreter when this package
+ * @param c  Thread context pointer passed from the interpreter when this package
  *           is loaded.
  *
  * @return Nothing is returned
@@ -3273,52 +3277,6 @@ RexxMethod0(RexxObjectPtr, oosql_libVersion_cls)
 RexxMethod0(RexxObjectPtr, oosql_libVersionNumber_cls)
 {
     return context->Int32(sqlite3_libversion_number());
-}
-
-typedef void * (CALLBACK* LPFNDLLFUNC1)(void);
-
-/** ooSQLite::loadLibrary()  [class method]
- *
- *  Loads a shared library and optionally the extension functions in the
- *  library.
- *
- */
-RexxMethod3(RexxObjectPtr, oosql_loadLibrary_cls, CSTRING, libName, OPTIONAL_RexxObjectPtr, procedures, CSELF, pCSelf)
-{
-    RexxMethodContext *c = context;
-    pCooSQLiteClass pcoosc = (pCooSQLiteClass)pCSelf;
-
-    CSTRING       procName      = NULL;
-    LPFNDLLFUNC1  procedure     = NULL;
-    HMODULE  libraryHandle = LoadLibrary(libName);
-
-    if ( libraryHandle == NULL )
-    {
-        printf("oosql_loadLibrary_cls LoadLibrary (%s) failed err=%d\n", libName, GetLastError());
-        return TheFalseObj;
-    }
-
-    if ( argumentExists(2) )
-    {
-        // check if it is an array.
-
-        procName  = c->ObjectToStringValue(procedures);
-        procedure = (LPFNDLLFUNC1)GetProcAddress(libraryHandle, procName);
-        printf("procName=%s pointer=%p\n", procName, procedure);
-
-        if ( procedure != NULL )
-        {
-            void *handle = procedure();
-            printf("procName=%s pointer=%p\n", procName, handle);
-
-            if ( handle != NULL )
-            {
-                return c->NewPointer(handle);
-            }
-        }
-    }
-
-    return TheTrueObj;
 }
 
 /** ooSQLite::memoryHighWater()
@@ -8159,6 +8117,229 @@ RexxMethod1(int, oosqlmtx_try, CSELF, pCSelf)
 }
 
 
+/**
+ *  Methods for the .ooSQLExtensions class.
+ *
+ *  The ooSQLExtensions class can load packages and load libraries.  It acts
+ *  as a container to hold them, retrieve them, and unload / release them.
+ */
+#define OOSQLEXTENSIONS_CLASS    "ooSQLExtensions"
+#define SYSLIB_ATTRIBUTE         "ooSQLExtensionsSysLibraryAttribute"
+
+
+/** ooSQLExtensions::init()
+ */
+RexxMethod1(RexxObjectPtr, oosqlext_init_cls, OSELF, self)
+{
+    if ( isOfClassType(context, self, OOSQLEXTENSIONS_CLASS) )
+    {
+        // Get a buffer for the CSelf.
+        RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLExtensions));
+        if ( cselfBuffer == NULLOBJECT )
+        {
+            outOfMemoryException(context->threadContext);
+            return NULLOBJECT;
+        }
+
+        context->SetObjectVariable("CSELF", cselfBuffer);
+
+        pCooSQLExtensions pcext = (pCooSQLExtensions)context->BufferData(cselfBuffer);
+        memset(pcext, 0, sizeof(CooSQLExtensions));
+
+        RexxMethodContext *c = context;
+        pcext->externTable = rxNewBuiltinObject(c->threadContext, "TABLE");
+    }
+    return NULLOBJECT;
+}
+
+
+/** ooSQLExtensions::someThing?  [attribute get]
+ */
+RexxMethod1(RexxObjectPtr, oosqlext_someThing_atr_cls, CSELF, pCSelf)
+{
+    // return ((pCooSQLiteClass)pCSelf)->nullObj;
+    return NULLOBJECT;
+}
+/** ooSQLExtensions::someThing?  [attribute set]
+ *
+ */
+RexxMethod2(RexxObjectPtr, oosqlext_setSomeThing_atr_cls, RexxObjectPtr, obj, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
+
+    return NULLOBJECT;
+}
+
+
+
+/** ooSQLite::loadLibrary()  [class method]
+ *
+ *  Loads a shared library and optionally the extension functions in the
+ *  library.
+ *
+ */
+RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, CSTRING, libName, OPTIONAL_RexxObjectPtr, procedures, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCooSQLiteClass pcoosc = (pCooSQLiteClass)pCSelf;
+
+    // create a buffer for my internal data.
+    RexxBufferObject libBuffer = context->NewBuffer(sizeof(SysLibrary));
+
+    // store this someplace safe -- put in table
+    //context->SetObjectVariable("MYDATA", libBuffer);
+
+    // get access to the data area
+    void *sysLibBuf = context->BufferData(libBuffer);
+
+    // construct a C++ object to place in the buffer
+    SysLibrary *lib = new (sysLibBuf) SysLibrary();
+
+    bool success = lib->load(libName);
+    if ( ! success )
+    {
+        printf("oosqlext_loadLibrary_cls LoadLibrary (%s) failed\n", libName);
+        return TheFalseObj;
+    }
+
+    CSTRING       procName      = NULL;
+
+    if ( argumentExists(2) )
+    {
+        // check if it is an array.
+
+        procName  = c->ObjectToStringValue(procedures);
+
+        void *procedure = lib->getProcedure(procName);
+        printf("procName=%s pointer=%p\n", procName, procedure);
+
+        if ( procedure != NULL )
+        {
+            return c->NewPointer(procedure);
+        }
+    }
+
+    return TheTrueObj;
+}
+
+/** ooSQLite::loadPackage()  [class method]
+ *
+ *  Loads an ooSQLite package library and optionally regsiters the collations,
+ *  functions, modules in the package.
+ *
+ *  ooSQLExtesnions:
+ *
+ *  Move this to a ooSQLExtensions. The ooSQLExtensions class can load packages
+ *  and load libraries and acts as a container to hold them, retrieve them, and
+ *  unload /release them.
+ *
+ *  ooSQLPackage:
+ *
+ *  Very similar to ooRexx Package.  Loads an ooSQLitePackage package which
+ *  contains user defined collations, functions, and modules.  Holds all the
+ *  information neeeded to create collation, create function, and create module.
+ *  If passed a database connection can automatically register all the
+ *  functions.  Can return a collation, function, or module RexxBufferObject (or
+ *  a Collation class Object?)
+ *
+ */
+RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_RexxObjectPtr, dbConn, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
+
+    printf("oosqlext_loadPackage_cls package=%p\n", package);
+    if ( package == NULL )
+    {
+        printf("oosqlext_loadPackage_cls (%s) failed to return the package entry table\n", "ooSQLiteGetPackage");
+        return TheFalseObj;
+    }
+
+    printf("package name=%s version=%s\n", package->packageName, package->packageVersion);
+
+    // 1. check required version
+
+    // 2. check if we have a database connection to immediately register the functions
+    pCooSQLiteConn pConn = NULL;
+    if ( argumentExists(2) )
+    {
+        if ( ! c->IsOfType(dbConn, "ooSQliteConnection") )
+        {
+            // raise condition
+            return TheFalseObj;
+        }
+        pConn = dbToCSelf(c,  dbConn);
+    }
+
+    // 3. create a table to store stuff.
+
+    SQLiteCollationEntry *e = package->collations;
+    printf("collation name=%s pointer=%p\n", e->name, e->entryCompare);
+
+    sqlite3_create_collation(pConn->db, e->name, SQLITE_UTF8, NULL, e->entryCompare);
+    return TheTrueObj;
+}
+
+
+/**
+ *  Methods for the .ooSQLPackage class.
+ *
+ */
+#define OOSQLPACKAGE_CLASS    "ooSQLPackage"
+#define SYSLIB_ATTRIBUTE      "ooSQLPackageSysLibraryAttribute"
+
+
+/** ooSQLPackage::init()
+ */
+RexxMethod2(RexxObjectPtr, oosqlpack_init, CSTRING, libName, OSELF, self)
+{
+    // Get a buffer for the CSelf.
+    RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLPackage));
+    if ( cselfBuffer == NULLOBJECT )
+    {
+        outOfMemoryException(context->threadContext);
+        return NULLOBJECT;
+    }
+
+    context->SetObjectVariable("CSELF", cselfBuffer);
+
+    pCooSQLPackage pck = (pCooSQLPackage)context->BufferData(cselfBuffer);
+    memset(pck, 0, sizeof(CooSQLPackage));
+
+    RexxMethodContext *c = context;
+
+    RexxBufferObject libBuffer = context->NewBuffer(sizeof(SysLibrary));
+
+    context->SetObjectVariable(SYSLIB_ATTRIBUTE, libBuffer);
+
+    void *sysLibBuf = context->BufferData(libBuffer);
+    SysLibrary *lib = new (sysLibBuf) SysLibrary();
+
+    bool success = lib->load(libName);
+    if ( ! success )
+    {
+        printf("oosqlpakc_init LoadLibrary (%s) failed\n", libName);
+        return TheFalseObj;
+    }
+
+    const sqlite3_api_routines *apis = oosqlite3_get_routines();
+    printf("apis=%p\n", apis);
+
+    OOSQLITE_LOADER loader = (OOSQLITE_LOADER)lib->getProcedure("ooSQLiteGetPackage");
+    if ( loader == NULL )
+    {
+        printf("oosqlext_loadPackage_cls getProcedure (%s) failed\n", "ooSQLiteGetPackage");
+        return TheFalseObj;
+    }
+
+    // Get the package table and through that the function tables.
+    ooSQLitePackageEntry *package = (*loader)(apis);
+
+    return NULLOBJECT;
+}
+
+
+
 
 #define ooSQLite_Routines_Section
 
@@ -11157,8 +11338,6 @@ REXX_METHOD_PROTOTYPE(oosql_enquote_cls);
 REXX_METHOD_PROTOTYPE(oosql_errStr_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersion_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersionNumber_cls);
-REXX_METHOD_PROTOTYPE(oosql_loadLibrary_cls);
-REXX_METHOD_PROTOTYPE(oosql_memoryHighWater_cls);
 REXX_METHOD_PROTOTYPE(oosql_memoryUsed_cls);
 REXX_METHOD_PROTOTYPE(oosql_releaseMemory_cls);
 REXX_METHOD_PROTOTYPE(oosql_softHeapLimit64_cls);
@@ -11309,6 +11488,12 @@ REXX_METHOD_PROTOTYPE(oosqlmtx_free);
 REXX_METHOD_PROTOTYPE(oosqlmtx_leave);
 REXX_METHOD_PROTOTYPE(oosqlmtx_try);
 
+// .ooSQLExtensions
+REXX_METHOD_PROTOTYPE(oosqlext_init_cls);
+
+REXX_METHOD_PROTOTYPE(oosqlext_loadLibrary_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_loadPackage_cls);
+
 // __rtn_helper_class
 REXX_METHOD_PROTOTYPE(hlpr_init_cls);
 
@@ -11335,7 +11520,6 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosql_errStr_cls,                     oosql_errStr_cls),
     REXX_METHOD(oosql_libVersion_cls,                 oosql_libVersion_cls),
     REXX_METHOD(oosql_libVersionNumber_cls,           oosql_libVersionNumber_cls),
-    REXX_METHOD(oosql_loadLibrary_cls,                oosql_loadLibrary_cls),
     REXX_METHOD(oosql_memoryUsed_cls,                 oosql_memoryUsed_cls),
     REXX_METHOD(oosql_memoryHighWater_cls,            oosql_memoryHighWater_cls),
     REXX_METHOD(oosql_releaseMemory_cls,              oosql_releaseMemory_cls),
@@ -11487,6 +11671,11 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlmtx_free,                        oosqlmtx_free),
     REXX_METHOD(oosqlmtx_leave,                       oosqlmtx_leave),
     REXX_METHOD(oosqlmtx_try,                         oosqlmtx_try),
+
+    // .ooSQLExtensions
+    REXX_METHOD(oosqlext_init_cls,                    oosqlext_init_cls),
+    REXX_METHOD(oosqlext_loadLibrary_cls,             oosqlext_loadLibrary_cls),
+    REXX_METHOD(oosqlext_loadPackage_cls,             oosqlext_loadPackage_cls),
 
     // __rtn_helper_class
     REXX_METHOD(hlpr_init_cls,                        hlpr_init_cls),

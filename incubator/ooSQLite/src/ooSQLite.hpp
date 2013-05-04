@@ -38,22 +38,18 @@
 #ifndef ooSQLite_Included
 #define ooSQLite_Included
 
-#ifdef __cplusplus
-#define BEGIN_EXTERN_C() extern "C" {
-#define END_EXTERN_C() }
-#else
-#define BEGIN_EXTERN_C()
-#define END_EXTERN_C()
-#endif
+#define NO_SQLITEEXT_H
+#include "oosqlPackage.hpp"
 
 #ifdef _WIN32
     #define NEED_DLL_MAIN
-    #include "platform\windows\winOS.hpp"
+    #include "winOS.hpp"
 #else
-    #include "platform/unix/unixOS.hpp"
+    #include "unixOS.hpp"
 #endif
 
 #include "oorexxapi.h"
+
 
 // The range of errors needs to be contiguous and not include any SQLite error
 // rc.  The next SQLite error rc is 1034.
@@ -76,9 +72,6 @@
 
 // Buffer size must be plus one -> 4096
 #define MAX_ENQUOTE_STRING  4095
-
-// Type def for the SQLite collation callback.
-typedef int(*fnXCompare)(void*,int,const void*,int,const void*);
 
 // Enum for the pragma commands in SQLite3.
 typedef enum
@@ -217,7 +210,7 @@ typedef struct _oosqlbuCSelf {
     bool                initializationErr; // sqlite3_backup_init failed.
     bool                finished;          // Finish has been called on the back up object.
     bool                dstDbWasName;      // In new() the destination DB was a file name, not a connection object
-    bool                saveDest;          // Indicates that if the destionation connection was opened, it should not be closed.
+    bool                saveDest;          // Indicates that if the destination connection was opened, it should not be closed.
 } CooSQLiteBackup;
 typedef CooSQLiteBackup *pCooSQLiteBackup;
 
@@ -234,6 +227,19 @@ typedef CooSQLiteMutex *pCooSQLiteMutex;
 
 #define MutexMagic                  0xFD74CA32
 #define SQLITE_MUTEX_RECURSIVE_DB   999    // Our own mutex define to indicate the mutex is the sqlite3_db_mutex()
+
+/* Struct for the ooSQLExtensions class object CSelf. */
+typedef struct _oosqlExtensionsCSelf {
+    RexxObjectPtr      externTable; // A Rexx table object used to hold Library and Package objects / buffers (?)
+} CooSQLExtensions;
+typedef CooSQLExtensions *pCooSQLExtensions;
+
+/* Struct for the ooSQLPackage object CSelf. */
+typedef struct _oosqlPackageCSelf {
+    ooSQLitePackageEntry *packageEntry;  // Pointer to the package entry table in the external package.
+    SysLibrary   *lib;                   // SysLibrary object used to load the package.
+} CooSQLPackage;
+typedef CooSQLPackage *pCooSQLPackage;
 
 /* Generic struct passed to several sqlite3 call back functions */
 typedef struct _genericCallback {

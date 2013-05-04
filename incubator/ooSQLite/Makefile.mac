@@ -113,13 +113,13 @@ CFLAGS=-c -fPIC $(BASEFLAGS)
 all: $(BIN_DIR)/liboosqlite.dylib $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls
 
 
-$(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.hpp Makefile.mac
+$(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.h Makefile.mac
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/sqlite3.o src/sqlite/sqlite3.c
 
-$(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.hpp Makefile.mac
+$(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.h Makefile.mac
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/shell.o src/sqlite/shell.c
 
-$(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/sqlite/sqlite3.hpp Makefile.mac
+$(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/sqlite/sqlite3.h Makefile.mac
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/ooSQLite.o src/ooSQLite.cpp
 
 $(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.mac
