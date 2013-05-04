@@ -8124,7 +8124,6 @@ RexxMethod1(int, oosqlmtx_try, CSELF, pCSelf)
  *  as a container to hold them, retrieve them, and unload / release them.
  */
 #define OOSQLEXTENSIONS_CLASS    "ooSQLExtensions"
-#define SYSLIB_ATTRIBUTE         "ooSQLExtensionsSysLibraryAttribute"
 
 
 /** ooSQLExtensions::init()
@@ -8248,6 +8247,7 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
     RexxMethodContext *c = context;
     pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
 
+#if 0
     printf("oosqlext_loadPackage_cls package=%p\n", package);
     if ( package == NULL )
     {
@@ -8277,6 +8277,7 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
     printf("collation name=%s pointer=%p\n", e->name, e->entryCompare);
 
     sqlite3_create_collation(pConn->db, e->name, SQLITE_UTF8, NULL, e->entryCompare);
+#endif
     return TheTrueObj;
 }
 

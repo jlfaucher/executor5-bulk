@@ -44,8 +44,10 @@
 #ifdef _WIN32
     #define NEED_DLL_MAIN
     #include "winOS.hpp"
+    #include "SysLibrary.hpp"
 #else
     #include "unixOS.hpp"
+    #include "SysLibrary.hpp"
 #endif
 
 #include "oorexxapi.h"

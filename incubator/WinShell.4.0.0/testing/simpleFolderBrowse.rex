@@ -93,6 +93,7 @@ exit
   csidls[3] = "CSIDL_CONNECTIONS"
   csidls[4] = "CSIDL_COOKIES"
   csidls[5] = "CSIDL_DESKTOP"
+  csidls[6] = "CSIDL_COMMON_STARTMENU"
 
 ::method DefineDialog
 
@@ -117,7 +118,7 @@ exit
   expose staticControl browser counter csidls
 
   if counter > 0 then do
-    if counter > 5 then do
+    if counter > csidls~items then do
       counter = 0
       browser~root = .nil
     end

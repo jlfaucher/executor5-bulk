@@ -1,11 +1,15 @@
 
+a = .a~new
 
-  fileOp = .ShellFileOp~new
-  say 'got fileOp:' fileOp
+::class a
+::method init
+b = .b~new
+b~hi
 
-  n = fileOp~myTest("Mark")
-  say n
+::class b
+::method hi
+say "Object" self "invoked this method"
 
-  say 'Call the private method:' fileOp~name("Tom")
+
 
 ::requires 'WinShell.cls'
