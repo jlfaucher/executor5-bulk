@@ -1,12 +1,12 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,34 +36,113 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/** SysLibrary.cpp
+/**
+ *  loadPackage.rex
  *
- *  Windows implementation of SysLibrary for ooSQLite.  This file is adapted
- *  from the interpreter's SysLibrary implmentation.
+ *  Demonstrates how to load and use an ooSQLite package file.
+ *
+ *  Loading an ooSQLite package file is very similar to using the loadExtension
+ *  method to load a SQLite extension library
  *
  */
 
-#ifndef SysLibrary_DEFINED
-#define SysLibrary_DEFINED
+  -- Set the result set format to an array of arrays:
+  .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
 
-class SysLibrary
-{
-public:
-     SysLibrary();
-     void *getProcedure(const char *name);
-     bool load(const char *name);
-     bool unload();
-     void resetLastErr();
-     void reset();
-     inline char *getLastErrMsg() { return lastErrMsg; }
-     inline unsigned long getLastErrCode() { return lastErrCode; }
+	dbName = 'ooFoods.rdbx'
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-protected:
-    void setLastErr(const char *api, const char *name);
+  success = .ooSQLExtensions~loadPackage('user.extensions\examplePackage.dll', dbConn)
+  if \ success then do
+    say 'Failed to load package'
+    say '  Error code:   ' .ooSQLExtensions~lastErrCode
+    say '  Error message:' .ooSQLExtensions~lastErrMsg
 
-    HMODULE        libraryHandle;
-    char          *lastErrMsg;
-    unsigned long  lastErrCode;
-};
+    return .ooSQLExtensions~lastErrCode
+  end
 
-#endif
+  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSE;"
+  resultSet = dbConn~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printResultSet(resultSet)
+
+  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE EBCDIC;"
+  resultSet = dbConn~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printResultSet(resultSet)
+
+  sql = "SELECT * FROM foods ORDER BY name COLLATE REVERSE;"
+  resultSet = dbConn~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printResultSet(resultSet)
+
+  sql = "SELECT half(11);"
+  resultSet = dbConn~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printResultSet(resultSet)
+
+  ret = dbConn~close
+
+  return ret
+
+::requires 'ooSQLite.cls'
+
+::routine printResultSet
+  use arg rs
+
+  colCount = rs[1]~items
+  rowCount = rs~items
+
+  line = ''
+  headers = rs[1]
+  do j = 1 to colCount
+    line ||= headers[j]~left(25)
+  end
+
+  say line
+  say '='~copies(80)
+
+  do i = 2 to rowCount
+    line = ''
+    record = rs[i]
+    do j = 1 to colCount
+      line ||= record[j]~left(25)
+    end
+
+    say line
+  end
+  say
+
+  return 0
+
+::routine getOSName
+
+  parse upper source os .
+  if os~abbrev("WIN") then os = "WINDOWS"
+  return os
+
+

@@ -69,7 +69,7 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(WIN_LIBS) -def:simpleExtension.def /DL
 !ENDIF
 
 # What we want to build.
-all: simpleExtension.dll examplePackage.dll
+all: simpleExtension.dll examplePackage.dll exampleLibrary.dll
 
 simpleExtension.obj: simpleExtension.c
   cl $(CFLAGS) simpleExtension.c
@@ -82,6 +82,12 @@ examplePackage.obj: examplePackage.cpp
 
 examplePackage.dll: examplePackage.obj
     link $(LFLAGS_DLL) examplePackage.obj -out:examplePackage.dll -def:examplePackage.def
+
+exampleLibrary.obj: exampleLibrary.cpp
+  cl $(CFLAGS) exampleLibrary.cpp
+
+exampleLibrary.dll: exampleLibrary.obj
+    link $(LFLAGS_DLL) exampleLibrary.obj -out:exampleLibrary.dll -def:exampleLibrary.def
 
 clean:
     del /Q *.dll *.obj *.exp *.asm *.pdb *.lib 1>nul 2>&1

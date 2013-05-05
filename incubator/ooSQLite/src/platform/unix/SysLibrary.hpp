@@ -35,29 +35,34 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/*****************************************************************************/
-/* REXX Windows Support                                                      */
-/*                                                                           */
-/* Dynamic library support for Unix systems                                  */
-/*                                                                           */
-/*****************************************************************************/
 
+/** SysLibrary.cpp
+ *
+ *  Unix implementation of SysLibrary for ooSQLite.  This file is adapted from
+ *  the interpreter's SysLibrary implmentation.
+ *
+ */
 #ifndef SysLibrary_DEFINED
 #define SysLibrary_DEFINED
-
-#include "rexx.h"
 
 class SysLibrary
 {
 public:
-     SysLibrary();
-     void *getProcedure(const char *name);
-     bool load(const char *name);
-     bool unload();
-     void reset() { libraryHandle = NULL; }
+    SysLibrary();
+    void *getProcedure(const char *name);
+    bool load(const char *name);
+    bool unload();
+    void resetLastErr();
+    void reset();
+    inline char *getLastErrMsg() { return lastErrMsg; }
+    inline int getLastErrCode() { return lastErrCode; }
 
 protected:
-    void *libraryHandle;              // *ix library handle
+    void setLastErr();
+
+    void *libraryHandle;
+    char *lastErrMsg;
+    int   lastErrCode;
 };
 
 #endif

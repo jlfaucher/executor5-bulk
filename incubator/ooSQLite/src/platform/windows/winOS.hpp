@@ -78,6 +78,6 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 
 END_EXTERN_C()
 
-#endif  /* If defined NEE_DLL_MAIN*/
+#endif  /* If defined NEED_DLL_MAIN*/
 
 #endif

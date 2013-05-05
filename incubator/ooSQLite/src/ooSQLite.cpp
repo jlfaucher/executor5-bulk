@@ -8123,8 +8123,232 @@ RexxMethod1(int, oosqlmtx_try, CSELF, pCSelf)
  *  The ooSQLExtensions class can load packages and load libraries.  It acts
  *  as a container to hold them, retrieve them, and unload / release them.
  */
-#define OOSQLEXTENSIONS_CLASS    "ooSQLExtensions"
+#define OOSQLEXTENSIONS_CLASS     "ooSQLExtensions"
+#define LAST_ERR_MSG_ATTRIBUTE    "extensionsLastErrMsgAttribute"
+#define LAST_ERR_CODE_ATTRIBUTE   "extensionsLastErrCodeAttribute"
 
+/**
+ * Sets the last error attributes of the object whose method context we are
+ * operating in.
+ *
+ * @param c
+ * @param lastErrMsg   Error message.
+ * @param lastErrCode  Error code.
+ *
+ * @note We use this as a generic function for the ooSQLExtensions,
+ *       ooSQLPackage, and ooSQLLibrary classes.
+ */
+void extensionsSetLastErr(RexxMethodContext *c, RexxStringObject lastErrMsg, RexxObjectPtr lastErrCode)
+{
+    c->SetObjectVariable(LAST_ERR_MSG_ATTRIBUTE, lastErrMsg);
+    c->SetObjectVariable(LAST_ERR_CODE_ATTRIBUTE, lastErrCode);
+}
+
+/**
+ * Sets the last error attributes of the ooSQLExensions object back to the no
+ * error state.
+ *
+ * @param c
+ */
+void resetExtensionsLastErr(RexxMethodContext *c, pCooSQLExtensions pcext)
+{
+    pcext->lastErrCode = TheZeroObj;
+    pcext->lastErrMsg  = c->NullString();
+    extensionsSetLastErr(c, c->NullString(), TheZeroObj);
+}
+
+/**
+ * Sets the last error attributes of the ooSQLPackage object back to the no
+ * error state.
+ *
+ * @param c
+ */
+void resetPackageLastErr(RexxMethodContext *c, pCooSQLPackage pcp)
+{
+    pcp->lastErrCode = TheZeroObj;
+    pcp->lastErrMsg  = c->NullString();
+    extensionsSetLastErr(c, c->NullString(), TheZeroObj);
+}
+
+/**
+ * Sets the last error attributes of the ooSQLLibrary object back to the no
+ * error state.
+ *
+ * @param c
+ */
+void resetLibraryLastErr(RexxMethodContext *c, pCooSQLLibrary pcl)
+{
+    pcl->lastErrCode = TheZeroObj;
+    pcl->lastErrMsg  = c->NullString();
+    extensionsSetLastErr(c, c->NullString(), TheZeroObj);
+}
+
+/**
+ * Format a last error message and then set the last error message and last
+ * error code attributes.
+ *
+ *
+ * @param c
+ * @param code
+ * @param fmt
+ * @param insert
+ *
+ * @note  We expect fmt to have exactly 1 %s in it.
+ */
+void extensionsFormatLastErr(RexxMethodContext *c, uint32_t code, char *fmt, char *insert)
+{
+    char buf[512];
+
+    snprintf(buf, 512, fmt, insert);
+    extensionsSetLastErr(c, c->String(buf), c->UnsignedInt32(code));
+}
+
+bool validPackageVersion(RexxMethodContext *c, pCooSQLPackage pcp)
+{
+    ooSQLitePackageEntry *pa = pcp->packageEntry;
+
+    if ( OOSQLITE_CURRENT_VERSION < pa->reqOOSQLVersion || sqlite3_libversion_number() < pa->reqSQLiteVersion )
+    {
+        char buf[512];
+
+        if ( OOSQLITE_CURRENT_VERSION < pa->reqOOSQLVersion )
+        {
+            snprintf(buf, 512, "Package: %s requires ooSQLite version: %d current version: %d",
+                     pa->packageName, pa->reqOOSQLVersion, OOSQLITE_CURRENT_VERSION);
+        }
+        else
+        {
+            snprintf(buf, 512, "Package: %s requires SQLite version: %d current version: %d",
+                     pa->packageName, pa->reqSQLiteVersion, sqlite3_libversion_number());
+        }
+        userDefinedMsgException(c->threadContext, buf);
+        return false;
+    }
+    return true;
+}
+
+bool registerCollation(RexxMethodContext *c, pSQLiteCollationEntry e, pCooSQLiteConn pConn)
+{
+    if ( e->entryCompare == NULL )
+    {
+        char buf[256];
+
+        snprintf(buf, 256, "the compare function for the collation: %s can not be null", e->name);
+        userDefinedMsgException(c->threadContext, buf);
+        return false;
+    }
+
+    void *userData = NULL;
+    if ( e->entryGetUserData != NULL )
+    {
+        userData = e->entryGetUserData();
+    }
+    else if ( e->pUserData != NULL )
+    {
+        userData = e->pUserData;
+    }
+
+    int ret = sqlite3_create_collation_v2(pConn->db, e->name, SQLITE_UTF8, userData, e->entryCompare, e->entryDestroy);
+
+    return ret == SQLITE_OK;
+}
+
+bool registerFunction(RexxMethodContext *c, pSQLiteFunctionEntry e, pCooSQLiteConn pConn)
+{
+    if ( e->entryFunc == NULL )
+    {
+        char buf[256];
+
+        snprintf(buf, 256, "the function entry for the user defined function: %s can not be null", e->name);
+        userDefinedMsgException(c->threadContext, buf);
+        return false;
+    }
+    void *userData = NULL;
+    if ( e->entryGetUserData != NULL )
+    {
+        userData = e->entryGetUserData();
+    }
+    else if ( e->pUserData != NULL )
+    {
+        userData = e->pUserData;
+    }
+
+    int ret = sqlite3_create_function_v2(pConn->db, e->name, e->countArgs, SQLITE_UTF8, userData, e->entryFunc,
+                                         e->entryStep, e->entryFinal, e->entryDestroy);
+
+    return ret == SQLITE_OK;
+}
+
+bool registerModule(RexxMethodContext *c, pSQLiteModuleEntry e, pCooSQLiteConn pConn)
+{
+    if ( e->moduleTab == NULL )
+    {
+        char buf[256];
+
+        snprintf(buf, 256, "the module table for the user defined module: %s can not be null", e->name);
+        userDefinedMsgException(c->threadContext, buf);
+        return false;
+    }
+    void *userData = NULL;
+    if ( e->entryGetUserData != NULL )
+    {
+        userData = e->entryGetUserData();
+    }
+    else if ( e->pUserData != NULL )
+    {
+        userData = e->pUserData;
+    }
+
+    int ret = sqlite3_create_module_v2(pConn->db, e->name, e->moduleTab, userData, e->entryDestroy);
+
+    return ret == SQLITE_OK;
+}
+
+bool packageRegister(RexxMethodContext *c, pCooSQLPackage pcp, pCooSQLiteConn pConn)
+{
+    ooSQLitePackageEntry *pa = pcp->packageEntry;
+
+    if ( pa->collations != NULL )
+    {
+        pSQLiteCollationEntry e = pa->collations;
+        while ( e->name != NULL )
+        {
+            if ( ! registerCollation(c, e, pConn) )
+            {
+                return false;
+            }
+            e++;
+        }
+    }
+
+    if ( pa->functions != NULL )
+    {
+        pSQLiteFunctionEntry e = pa->functions;
+        while ( e->name != NULL )
+        {
+            if ( ! registerFunction(c, e, pConn) )
+            {
+                return false;
+            }
+            e++;
+        }
+    }
+
+    if ( pa->modules != NULL )
+    {
+        pSQLiteModuleEntry e = pa->modules;
+        while ( e->name != NULL )
+        {
+            if ( ! registerModule(c, e, pConn) )
+            {
+                return false;
+            }
+            e++;
+        }
+    }
+
+    return true;
+}
 
 /** ooSQLExtensions::init()
  */
@@ -8132,7 +8356,6 @@ RexxMethod1(RexxObjectPtr, oosqlext_init_cls, OSELF, self)
 {
     if ( isOfClassType(context, self, OOSQLEXTENSIONS_CLASS) )
     {
-        // Get a buffer for the CSelf.
         RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLExtensions));
         if ( cselfBuffer == NULLOBJECT )
         {
@@ -8145,31 +8368,29 @@ RexxMethod1(RexxObjectPtr, oosqlext_init_cls, OSELF, self)
         pCooSQLExtensions pcext = (pCooSQLExtensions)context->BufferData(cselfBuffer);
         memset(pcext, 0, sizeof(CooSQLExtensions));
 
-        RexxMethodContext *c = context;
-        pcext->externTable = rxNewBuiltinObject(c->threadContext, "TABLE");
+        pcext->libraryTable = rxNewBuiltinObject(context->threadContext, "TABLE");
+        pcext->packageTable = rxNewBuiltinObject(context->threadContext, "TABLE");
+        resetExtensionsLastErr(context, pcext);
     }
     return NULLOBJECT;
 }
 
 
-/** ooSQLExtensions::someThing?  [attribute get]
+/** ooSQLExtensions::lastErrCode  [attribute get]
  */
-RexxMethod1(RexxObjectPtr, oosqlext_someThing_atr_cls, CSELF, pCSelf)
-{
-    // return ((pCooSQLiteClass)pCSelf)->nullObj;
-    return NULLOBJECT;
-}
-/** ooSQLExtensions::someThing?  [attribute set]
- *
- */
-RexxMethod2(RexxObjectPtr, oosqlext_setSomeThing_atr_cls, RexxObjectPtr, obj, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, oosqlext_getLastErrCode_atr, CSELF, pCSelf)
 {
     pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
-
-    return NULLOBJECT;
+    return pcext->lastErrCode;
 }
 
-
+/** ooSQLExtensions::lastErrMsg  [attribute get]
+ */
+RexxMethod1(RexxStringObject, oosqlext_getLastErrMsg_atr, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
+    return pcext->lastErrMsg;
+}
 
 /** ooSQLite::loadLibrary()  [class method]
  *
@@ -8177,29 +8398,40 @@ RexxMethod2(RexxObjectPtr, oosqlext_setSomeThing_atr_cls, RexxObjectPtr, obj, CS
  *  library.
  *
  */
-RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, CSTRING, libName, OPTIONAL_RexxObjectPtr, procedures, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, RexxObjectPtr, libName, OPTIONAL_RexxObjectPtr, procedures, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
-    pCooSQLiteClass pcoosc = (pCooSQLiteClass)pCSelf;
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+    RexxObjectPtr     result = TheNilObj;
 
-    // create a buffer for my internal data.
-    RexxBufferObject libBuffer = context->NewBuffer(sizeof(SysLibrary));
-
-    // store this someplace safe -- put in table
-    //context->SetObjectVariable("MYDATA", libBuffer);
-
-    // get access to the data area
-    void *sysLibBuf = context->BufferData(libBuffer);
-
-    // construct a C++ object to place in the buffer
-    SysLibrary *lib = new (sysLibBuf) SysLibrary();
-
-    bool success = lib->load(libName);
-    if ( ! success )
+    RexxClassObject libCls = rxGetContextClass(context, "ooSQLLibrary");
+    if ( libCls == NULLOBJECT )
     {
-        printf("oosqlext_loadLibrary_cls LoadLibrary (%s) failed\n", libName);
-        return TheFalseObj;
+        goto done_out;
     }
+
+    RexxObjectPtr library = c->SendMessage1(libCls, "NEW", libName);
+    if ( library == NULLOBJECT )
+    {
+        goto done_out;
+    }
+
+    pCooSQLLibrary pcl = (pCooSQLLibrary)context->ObjectToCSelf(library);
+
+    printf("oosqlext_loadLibrary_cls library CSelf=%p\n", pcl);
+    if ( pcl == NULL )
+    {
+        printf("oosqlext_loadPackage_cls failed to get ooSQLLibrary CSelf\n");
+        goto done_out;
+    }
+
+    if ( ! pcl->valid )
+    {
+        printf("oosqlext_loadPackage_cls ooSQLLibrary is not valid errCode=%d msg=%s\n",
+               pcl->lib->getLastErrCode(), pcl->lib->getLastErrMsg());
+        goto done_out;
+    }
+
 
     CSTRING       procName      = NULL;
 
@@ -8209,7 +8441,7 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, CSTRING, libName, OPTIONAL_
 
         procName  = c->ObjectToStringValue(procedures);
 
-        void *procedure = lib->getProcedure(procName);
+        void *procedure = pcl->lib->getProcedure(procName);
         printf("procName=%s pointer=%p\n", procName, procedure);
 
         if ( procedure != NULL )
@@ -8218,7 +8450,8 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, CSTRING, libName, OPTIONAL_
         }
     }
 
-    return TheTrueObj;
+done_out:
+    return result;
 }
 
 /** ooSQLite::loadPackage()  [class method]
@@ -8226,65 +8459,84 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, CSTRING, libName, OPTIONAL_
  *  Loads an ooSQLite package library and optionally regsiters the collations,
  *  functions, modules in the package.
  *
- *  ooSQLExtesnions:
- *
- *  Move this to a ooSQLExtensions. The ooSQLExtensions class can load packages
- *  and load libraries and acts as a container to hold them, retrieve them, and
- *  unload /release them.
- *
  *  ooSQLPackage:
  *
- *  Very similar to ooRexx Package.  Loads an ooSQLitePackage package which
- *  contains user defined collations, functions, and modules.  Holds all the
- *  information neeeded to create collation, create function, and create module.
- *  If passed a database connection can automatically register all the
- *  functions.  Can return a collation, function, or module RexxBufferObject (or
- *  a Collation class Object?)
  *
  */
 RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_RexxObjectPtr, dbConn, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
-    pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
+    RexxObjectPtr     result = TheFalseObj;
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
 
-#if 0
-    printf("oosqlext_loadPackage_cls package=%p\n", package);
-    if ( package == NULL )
+    RexxClassObject packageCls = rxGetContextClass(context, "ooSQLPackage");
+    if ( packageCls == NULLOBJECT )
     {
-        printf("oosqlext_loadPackage_cls (%s) failed to return the package entry table\n", "ooSQLiteGetPackage");
-        return TheFalseObj;
+        goto done_out;
     }
 
-    printf("package name=%s version=%s\n", package->packageName, package->packageVersion);
+    RexxObjectPtr package = context->SendMessage1(packageCls, "NEW", context->String(libName));
+    if ( package == NULLOBJECT )
+    {
+        goto done_out;
+    }
 
-    // 1. check required version
+    pCooSQLPackage pcp = (pCooSQLPackage)c->ObjectToCSelf(package);
+    if ( pcp == NULL )
+    {
+        extensionsFormatLastErr(context, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLPackage");
+        goto done_out;
+    }
 
-    // 2. check if we have a database connection to immediately register the functions
-    pCooSQLiteConn pConn = NULL;
+    if ( ! pcp->valid )
+    {
+        pcext->lastErrMsg  = pcp->lastErrMsg;
+        pcext->lastErrCode = pcp->lastErrCode;
+
+        extensionsSetLastErr(context, pcp->lastErrMsg, pcp->lastErrCode);
+        goto done_out;
+    }
+
+    if ( ! validPackageVersion(context, pcp) )
+    {
+        goto done_out;
+    }
+
+    c->SendMessage2(pcext->packageTable, "PUT", package, c->String(pcp->packageEntry->packageName));
+    result = TheTrueObj;
+
+    // Check if we have a database connection to immediately register the functions
     if ( argumentExists(2) )
     {
         if ( ! c->IsOfType(dbConn, "ooSQliteConnection") )
         {
-            // raise condition
-            return TheFalseObj;
+            wrongArgValueException(context->threadContext, 2, "ooSQliteConnection object", dbConn);
+            goto done_out;
         }
-        pConn = dbToCSelf(c,  dbConn);
+        pCooSQLiteConn pConn = dbToCSelf(context,  dbConn);
+
+        packageRegister(context, pcp, pConn);
     }
 
-    // 3. create a table to store stuff.
-
-    SQLiteCollationEntry *e = package->collations;
-    printf("collation name=%s pointer=%p\n", e->name, e->entryCompare);
-
-    sqlite3_create_collation(pConn->db, e->name, SQLITE_UTF8, NULL, e->entryCompare);
-#endif
-    return TheTrueObj;
+done_out:
+    return result;
 }
 
 
 /**
  *  Methods for the .ooSQLPackage class.
  *
+ *  An ooSQLite package is very similar to ooRexx Package.  an ooSQLitePackage
+ *  package contains user defined collations, functions, and modules.  The
+ *  external package file is built as a shared library containing collations,
+ *  functionts and modules defined in C / C++.
+ *
+ *  An ooSQLite package object holds all the information neeeded to create
+ *  collation, create function, and create module.  If passed a database
+ *  connection it can automatically register all the functions in the package.
+ *
+ *  The object can return a collation, function, or module as a RexxBufferObject
+ *  (or as Collation, Function, or Module class objects?)
  */
 #define OOSQLPACKAGE_CLASS    "ooSQLPackage"
 #define SYSLIB_ATTRIBUTE      "ooSQLPackageSysLibraryAttribute"
@@ -8294,7 +8546,8 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
  */
 RexxMethod2(RexxObjectPtr, oosqlpack_init, CSTRING, libName, OSELF, self)
 {
-    // Get a buffer for the CSelf.
+    RexxMethodContext *c = context;
+
     RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLPackage));
     if ( cselfBuffer == NULLOBJECT )
     {
@@ -8304,10 +8557,8 @@ RexxMethod2(RexxObjectPtr, oosqlpack_init, CSTRING, libName, OSELF, self)
 
     context->SetObjectVariable("CSELF", cselfBuffer);
 
-    pCooSQLPackage pck = (pCooSQLPackage)context->BufferData(cselfBuffer);
-    memset(pck, 0, sizeof(CooSQLPackage));
-
-    RexxMethodContext *c = context;
+    pCooSQLPackage pcp = (pCooSQLPackage)context->BufferData(cselfBuffer);
+    memset(pcp, 0, sizeof(CooSQLPackage));
 
     RexxBufferObject libBuffer = context->NewBuffer(sizeof(SysLibrary));
 
@@ -8316,30 +8567,138 @@ RexxMethod2(RexxObjectPtr, oosqlpack_init, CSTRING, libName, OSELF, self)
     void *sysLibBuf = context->BufferData(libBuffer);
     SysLibrary *lib = new (sysLibBuf) SysLibrary();
 
-    bool success = lib->load(libName);
-    if ( ! success )
-    {
-        printf("oosqlpakc_init LoadLibrary (%s) failed\n", libName);
-        return TheFalseObj;
-    }
+    pcp->sqliteAPIs  = oosqlite3_get_routines();
+    pcp->rexxSelf    = self;
+    pcp->lib         = lib;
+    resetPackageLastErr(context, pcp);
 
-    const sqlite3_api_routines *apis = oosqlite3_get_routines();
-    printf("apis=%p\n", apis);
+    if ( ! lib->load(libName) )
+    {
+        pcp->lastErrMsg  = context->String(lib->getLastErrMsg());
+        pcp->lastErrCode = c->UnsignedInt32(lib->getLastErrCode());
+
+        lib->resetLastErr();
+        extensionsSetLastErr(context, pcp->lastErrMsg, pcp->lastErrCode);
+        return NULLOBJECT;
+    }
 
     OOSQLITE_LOADER loader = (OOSQLITE_LOADER)lib->getProcedure("ooSQLiteGetPackage");
     if ( loader == NULL )
     {
-        printf("oosqlext_loadPackage_cls getProcedure (%s) failed\n", "ooSQLiteGetPackage");
-        return TheFalseObj;
+        pcp->lastErrMsg  = context->String(lib->getLastErrMsg());
+        pcp->lastErrCode = c->UnsignedInt32(lib->getLastErrCode());
+
+        lib->resetLastErr();
+        extensionsSetLastErr(context, pcp->lastErrMsg, pcp->lastErrCode);
+        return NULLOBJECT;
     }
 
-    // Get the package table and through that the function tables.
-    ooSQLitePackageEntry *package = (*loader)(apis);
+    pcp->packageEntry = (*loader)(pcp->sqliteAPIs);
+    pcp->valid        = true;
 
     return NULLOBJECT;
 }
 
 
+/** ooSQLPackage::lastErrCode  [attribute get]
+ */
+RexxMethod1(RexxObjectPtr, oosqlpack_getLastErrCode_atr, CSELF, pCSelf)
+{
+    pCooSQLPackage pcp = (pCooSQLPackage)pCSelf;
+    return pcp->lastErrCode;
+}
+
+/** ooSQLPackage::lastErrMsg  [attribute get]
+ */
+RexxMethod1(RexxStringObject, oosqlpack_getLastErrMsg_atr, CSELF, pCSelf)
+{
+    pCooSQLPackage pcp = (pCooSQLPackage)pCSelf;
+    return pcp->lastErrMsg;
+}
+
+/**
+ *  Methods for the .ooSQLLibrary class.
+ *
+ */
+#define OOSQLIBRARY_CLASS               "ooSQLLibrary"
+#define SYSLIB_OOSQLLIBRARY_ATTRIBUTE   "ooSQLLibrarySysLibraryAttribute"
+
+
+/** ooSQLLibrary::init()
+ */
+RexxMethod2(RexxObjectPtr, oosqllib_init, CSTRING, libName, OSELF, self)
+{
+    RexxMethodContext *c = context;
+
+    RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLLibrary));
+    if ( cselfBuffer == NULLOBJECT )
+    {
+        outOfMemoryException(context->threadContext);
+        return NULLOBJECT;
+    }
+
+    context->SetObjectVariable("CSELF", cselfBuffer);
+
+    pCooSQLLibrary pcl = (pCooSQLLibrary)context->BufferData(cselfBuffer);
+    memset(pcl, 0, sizeof(CooSQLLibrary));
+
+    RexxBufferObject libBuffer = context->NewBuffer(sizeof(SysLibrary));
+
+    context->SetObjectVariable(SYSLIB_OOSQLLIBRARY_ATTRIBUTE, libBuffer);
+
+    void *sysLibBuf = context->BufferData(libBuffer);
+    SysLibrary *lib = new (sysLibBuf) SysLibrary();
+
+    pcl->sqliteAPIs  = oosqlite3_get_routines();
+    pcl->rexxSelf    = self;
+    pcl->lib         = lib;
+    resetLibraryLastErr(context, pcl);
+
+    if ( ! lib->load(libName) )
+    {
+        pcl->lastErrMsg  = context->String(lib->getLastErrMsg());
+        pcl->lastErrCode = c->UnsignedInt32(lib->getLastErrCode());
+
+        lib->resetLastErr();
+        extensionsSetLastErr(context, pcl->lastErrMsg, pcl->lastErrCode);
+        return NULLOBJECT;
+    }
+
+    OOSQLITE_API_SETTER setter = (OOSQLITE_API_SETTER)lib->getProcedure("ooSQLiteSetApi");
+    if ( setter == NULL )
+    {
+        pcl->lastErrMsg  = context->String(lib->getLastErrMsg());
+        pcl->lastErrCode = c->UnsignedInt32(lib->getLastErrCode());
+
+        lib->resetLastErr();
+        extensionsSetLastErr(context, pcl->lastErrMsg, pcl->lastErrCode);
+        return NULLOBJECT;
+    }
+
+    pcl->functionTable = rxNewBuiltinObject(context->threadContext, "TABLE");
+    pcl->valid         = true;
+
+    (*setter)(pcl->sqliteAPIs);
+
+    return NULLOBJECT;
+}
+
+
+/** ooSQLLibrary::lastErrCode  [attribute get]
+ */
+RexxMethod1(RexxObjectPtr, oosqllib_getLastErrCode_atr, CSELF, pCSelf)
+{
+    pCooSQLLibrary pcl = (pCooSQLLibrary)pCSelf;
+    return pcl->lastErrCode;
+}
+
+/** ooSQLExtensions::lastErrMsg  [attribute get]
+ */
+RexxMethod1(RexxStringObject, oosqllib_getLastErrMsg_atr, CSELF, pCSelf)
+{
+    pCooSQLLibrary pcl = (pCooSQLLibrary)pCSelf;
+    return pcl->lastErrMsg;
+}
 
 
 #define ooSQLite_Routines_Section
@@ -11492,8 +11851,23 @@ REXX_METHOD_PROTOTYPE(oosqlmtx_try);
 // .ooSQLExtensions
 REXX_METHOD_PROTOTYPE(oosqlext_init_cls);
 
+REXX_METHOD_PROTOTYPE(oosqlext_getLastErrCode_atr);
+REXX_METHOD_PROTOTYPE(oosqlext_getLastErrMsg_atr);
+
 REXX_METHOD_PROTOTYPE(oosqlext_loadLibrary_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadPackage_cls);
+
+// .ooSQLPackage
+REXX_METHOD_PROTOTYPE(oosqlpack_init);
+
+REXX_METHOD_PROTOTYPE(oosqlpack_getLastErrCode_atr);
+REXX_METHOD_PROTOTYPE(oosqlpack_getLastErrMsg_atr);
+
+// .ooSQLLibrary
+REXX_METHOD_PROTOTYPE(oosqllib_init);
+
+REXX_METHOD_PROTOTYPE(oosqllib_getLastErrCode_atr);
+REXX_METHOD_PROTOTYPE(oosqllib_getLastErrMsg_atr);
 
 // __rtn_helper_class
 REXX_METHOD_PROTOTYPE(hlpr_init_cls);
@@ -11675,8 +12049,24 @@ RexxMethodEntry ooSQLite_methods[] = {
 
     // .ooSQLExtensions
     REXX_METHOD(oosqlext_init_cls,                    oosqlext_init_cls),
+
+    REXX_METHOD(oosqlext_getLastErrCode_atr,          oosqlext_getLastErrCode_atr),
+    REXX_METHOD(oosqlext_getLastErrMsg_atr,           oosqlext_getLastErrMsg_atr),
+
     REXX_METHOD(oosqlext_loadLibrary_cls,             oosqlext_loadLibrary_cls),
     REXX_METHOD(oosqlext_loadPackage_cls,             oosqlext_loadPackage_cls),
+
+    // .ooSQLPackage
+    REXX_METHOD(oosqlpack_init,                       oosqlpack_init),
+
+    REXX_METHOD(oosqlpack_getLastErrCode_atr,         oosqlpack_getLastErrCode_atr),
+    REXX_METHOD(oosqlpack_getLastErrMsg_atr,          oosqlpack_getLastErrMsg_atr),
+
+    // .ooSQLLibrary
+    REXX_METHOD(oosqllib_init,                        oosqllib_init),
+
+    REXX_METHOD(oosqllib_getLastErrCode_atr,          oosqllib_getLastErrCode_atr),
+    REXX_METHOD(oosqllib_getLastErrMsg_atr,           oosqllib_getLastErrMsg_atr),
 
     // __rtn_helper_class
     REXX_METHOD(hlpr_init_cls,                        hlpr_init_cls),

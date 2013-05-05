@@ -62,6 +62,7 @@ const sqlite3_api_routines *sqlite3_api = 0;
 
 #endif
 
+typedef const sqlite3_api_routines *SqlApiVector;
 
 BEGIN_EXTERN_C()
 
@@ -102,6 +103,7 @@ typedef struct _SQLiteCollationEntry
     void           *pUserData;        // User (client)) data that can be passed to the compare function
     int             reserved2;        // reserved for future use
 } SQLiteCollationEntry;
+typedef SQLiteCollationEntry *pSQLiteCollationEntry;
 
 #define OOSQL_COLLATION_ENTRY(n, eC, eD, eGUD, uD) { 0, #n, eC, eD, eGUD, uD, 0 }
 
@@ -122,6 +124,7 @@ typedef struct _SQLiteFunctionEntry
     int            countArgs;         // Count of args passed to the callback(s)
     int            reserved2;         // reserved for future use
 } SQLiteFunctionEntry;
+typedef SQLiteFunctionEntry *pSQLiteFunctionEntry;
 
 #define OOSQL_FUNCTION_ENTRY(n, eF, eS, eFi, eD, eGUD, uD, cA) { 0, #n, eF, eS, eFi, eD, eGUD, uD, cA, 0 }
 
@@ -130,35 +133,57 @@ typedef struct _SQLiteFunctionEntry
 
 typedef struct _SQLiteModuleEntry
 {
-    void                 *reserved1;   // reserved for future use
-    const char           *name;        // name of the module
-    const sqlite3_module *moduleTab;   // The SQLite3 defined struct holding the callbacks
-    void                 *pUserData;   // User (client)) data for xCreate/xConnect
-    int                   reserved2;   // reserved for future use
+    void                 *reserved1;        // reserved for future use
+    const char           *name;             // name of the module
+    const sqlite3_module *moduleTab;        // The SQLite3 defined struct holding the callbacks
+    fnXDestroy            entryDestroy;     // resolved destroy function entry point
+    fnXGetUserData        entryGetUserData; // If not null will be invoked before sqlite3_create_collation to retrieve user data
+                                            //pointer instead of using pUserData.
+    void                 *pUserData;        // User (client)) data for xCreate/xConnect
+    int                   reserved2;        // reserved for future use
 } SQLiteModuleEntry;
+typedef SQLiteModuleEntry *pSQLiteModuleEntry;
 
 #define OOSQL_MODULE_ENTRY(n, mT, uD) { 0, #n, eC, eD, uD, 0 }
 
 #define OOSQL_MODULE(n, mT, uD) OOSQL_COLLATION_ENTRY(n, mT, uD)
 #define OOSQL_LAST_MODULE()  { NULL, NULL, NULL, NULL, 0 }
 
+// Package API number is essentially a sortable date, implying later numbers
+// are greate than earlier numbers.
 #define OOSQL_PACKAGE_API_NO 20130501
 
+// The ooSQLite version number uses 2 digits for major, minor, and level.  The
+// svn build number is not used.
 #define OOSQLITE_1_0_0           0x00010000
 #define OOSQLITE_CURRENT_VERSION OOSQLITE_1_0_0
+
+/**
+ * A note on SQLite version numbers.  We use the same format that SQLite defines
+ * for itself:
+ *
+ * "An integer with the value (X*1000000 + Y*1000 + Z) where X, Y, and Z are the
+ * same numbers used in SQLITE_VERSION."  Such as 3.7.17.
+ *
+ * Set reqSQLiteVersion field in the ooSQLitePackageEntry table to the minimum
+ * required SQLite version numbe in this format.
+ *
+ * This is the same value as returned by sqlite3_libversion_number().
+ */
 
 #define OOSQL_STANDARD_PACKAGE_HEADER sizeof(ooSQLitePackageEntry), OOSQL_PACKAGE_API_NO,
 
 typedef struct _ooSQLitePackageEntry
 {
-    int                           size;            // size of the structure...helps compatibility
-    int                           apiVersion;      // ooSQLite API version this was compiled with
-    int                           requiredVersion; // minimum required ooSQLite version (0 means any)
-    const char                   *packageName;     // package identifier
-    const char                   *packageVersion;  // package version #
-    struct _SQLiteCollationEntry *collations;      // routines contained in this package
-    struct _SQLiteFunctionEntry  *functions;       // methods contained in this package
-    struct _SQLiteModuleEntry    *modules;         // methods contained in this package
+    int                          size;             // size of the structure...helps compatibility
+    int                          apiVersion;       // ooSQLite API version this was compiled with
+    int                          reqOOSQLVersion;  // minimum required ooSQLite version (0 means any)
+    int                          reqSQLiteVersion; // minimum required SQLite version (0 means any)
+    const char                  *packageName;      // package identifier
+    const char                  *packageVersion;   // package version #
+    pSQLiteCollationEntry        collations;       // routines contained in this package
+    pSQLiteFunctionEntry         functions;        // methods contained in this package
+    pSQLiteModuleEntry           modules;          // methods contained in this package
 } ooSQLitePackageEntry;
 
 #define OOSQLITE_GET_PACKAGE(name) \
@@ -170,8 +195,18 @@ typedef struct _ooSQLitePackageEntry
     }\
     END_EXTERN_C()
 
+#define OOSQLITE_SET_API() \
+    BEGIN_EXTERN_C()\
+    void ooSQLiteEntry ooSQLiteSetApi(const sqlite3_api_routines *pAPI)\
+    {\
+        sqlite3_api = pAPI;\
+    }\
+    END_EXTERN_C()
+
+
 END_EXTERN_C()
 
 typedef ooSQLitePackageEntry * (*OOSQLITE_LOADER)(const sqlite3_api_routines *);
+typedef void (*OOSQLITE_API_SETTER)(const sqlite3_api_routines *);
 
 #endif

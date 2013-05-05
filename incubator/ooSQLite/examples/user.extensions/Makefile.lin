@@ -36,7 +36,7 @@
 #/*----------------------------------------------------------------------------*/
 
 
-# Makefile for simpleExtension.cpp on Linux.
+# Makefile for the user defined functions in native code on Linux.
 
 EXTRAINCLUDE=-I ../../src/sqlite
 
@@ -49,15 +49,26 @@ SO_LLIBS=-ldl
 CFLAGS=-c -fPIC $(BASEFLAGS)
 
 # What we want to build.
-all: libsimpleExtension.so
+all: libsimpleextension.so libexamplepackage.so libexamplelibrary.so
 
 simpleExtension.o: simpleExtension.c Makefile.lin
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o simpleExtension.o simpleExtension.c
 
-libsimpleExtension.so: simpleExtension.o
-	gcc $(SO_LFLAGS) -o libsimpleExtension.so simpleExtension.o $(SO_LLIBS)
+libsimpleextension.so: simpleExtension.o
+	gcc $(SO_LFLAGS) -o libsimpleextension.so simpleExtension.o $(SO_LLIBS)
 
+examplePackage.o: examplePackage.c Makefile.lin
+	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o examplePackage.o examplePackage.c
+
+libexamplepackage.so: examplePackage.o
+	gcc $(SO_LFLAGS) -o libexamplepackage.so examplePackage.o $(SO_LLIBS)
+
+exampleLibrary.o: exampleLibrary.c Makefile.lin
+	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o exampleLibrary.o exampleLibrary.c
+
+libexamplelibrary.so: exampleLibrary.o
+	gcc $(SO_LFLAGS) -o libexamplelibrary.so exampleLibrary.o $(SO_LLIBS)
 
 clean:
-	rm -f libsimpleExtension.so simpleExtension.o
+	rm -f *.so *.o
 

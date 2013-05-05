@@ -42,11 +42,17 @@
  *  from the interpreter's SysLibrary implmentation.
  *
  */
+
+#include "winOS.hpp"
+#include <oorexxapi.h>
 #include "SysLibrary.hpp"
+#include "stdio.h"
 
 SysLibrary::SysLibrary()
 {
     libraryHandle = NULL;
+    lastErrMsg    = NULL;
+    lastErrCode   = 0;
 }
 
 /**
@@ -58,7 +64,15 @@ SysLibrary::SysLibrary()
  */
 void *SysLibrary::getProcedure(const char *name)
 {
-  return (void *)GetProcAddress(libraryHandle, name);
+    SetLastError(0);
+    resetLastErr();
+
+    void *func = (void *)GetProcAddress(libraryHandle, name);
+    if ( func == NULL )
+    {
+        setLastErr("GetProcAddress", name);
+    }
+    return func;
 }
 
 
@@ -71,17 +85,81 @@ void *SysLibrary::getProcedure(const char *name)
  *
  * @note  We always use LoadLibrary to load this, to bump the reference count on
  *        the module if it is already loaded in this process.
+ *
+ *        We make no attempt to construct a file name like we do in the Unix
+ *        version.  Still, the user does not need to specify the .dll extension,
+ *        Windows will add it automatically if there is no extension.
  */
 bool SysLibrary::load(const char *name)
 {
     if ( libraryHandle == NULL )
     {
-        libraryHandle = LoadLibrary(name);
-        return libraryHandle != NULL;
+        SetLastError(0);
+        resetLastErr();
 
+        libraryHandle = LoadLibrary(name);
+        if ( libraryHandle == NULL )
+        {
+            setLastErr("LoadLibrary", name);
+            return false;
+        }
     }
     return true;
 }
+
+
+/**
+ * Sets the last error variables.
+ */
+void SysLibrary::setLastErr(const char *api, const char *name)
+{
+    lastErrCode = GetLastError();
+
+    void     *tmpBuf = NULL;
+    uint16_t  lang   = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
+    uint32_t  flags  = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
+
+    uint32_t count = FormatMessage(flags, NULL, lastErrCode, lang, (char *)&tmpBuf, FORMAT_MESSAGE_MAX_WIDTH_MASK, NULL);
+
+    // tmpBuf is null if count is 0.
+    if ( count > 1 )
+    {
+        // Remove the trailing new line characters
+        count--;
+        *((char *)tmpBuf + count--) = '\0';
+        *((char *)tmpBuf + count) = '\0';
+
+        char buff[512];
+
+        snprintf(buff, 512, "%s - %s (%s)", api, tmpBuf, name);
+        LocalFree(tmpBuf);
+
+        lastErrMsg = (char *)LocalAlloc(LPTR, strlen(buff) + 1);
+        if ( lastErrMsg != NULL )
+        {
+            strcpy(lastErrMsg, buff);
+        }
+    }
+}
+
+/**
+ * Frees any memory allocated for the laste error message and sets the error
+ * message to null and the error code to 0.
+ *
+ * @note  Not very object orientated, we require the user of this class to
+ *        invoke resetLastErr() after retrieving an error message and making a
+ *        copy of it.
+ */
+void SysLibrary::resetLastErr()
+{
+    if ( lastErrMsg != NULL )
+    {
+        LocalFree(lastErrMsg);
+        lastErrMsg = NULL;
+    }
+    lastErrCode = 0;
+}
+
 
 /**
  * Free a loaded library if the library is still loaded.
@@ -90,9 +168,20 @@ bool SysLibrary::load(const char *name)
  */
 bool SysLibrary::unload()
 {
-    if (libraryHandle != NULL)
+    if ( libraryHandle != NULL )
     {
+        resetLastErr();
         return FreeLibrary(libraryHandle) != FALSE;
     }
     return false;
+}
+
+
+/**
+ * Resets this object to unused.
+ */
+void SysLibrary::reset()
+{
+    resetLastErr();
+    libraryHandle = NULL;
 }

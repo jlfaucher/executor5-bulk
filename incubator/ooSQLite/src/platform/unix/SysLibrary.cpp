@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,17 +35,13 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Shared runtime                                                        */
-/*                                                                            */
-/* Unix implementation of the SysLibrary                                      */
-/*                                                                            */
-/******************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
+/** SysLibrary.cpp
+ *
+ *  Unix implementation of SysLibrary for ooSQLite.  This file is adapted
+ *  from the interpreter's SysLibrary implmentation.
+ *
+ */
 #include "SysLibrary.hpp"
 #include <stdlib.h>
 #include <string.h>
@@ -53,53 +49,129 @@
 #include <dlfcn.h>
 
 
-#define MAX_LIBRARY_NAME_LENGTH 250
-#define LIBARY_NAME_BUFFER_LENGTH (MAX_LIBRARY_NAME_LENGTH + sizeof("/usr/lib/lib") + sizeof(ORX_SHARED_LIBRARY_EXT))
+#define MAX_LIBRARY_NAME_LENGTH 255
+#define LIBARY_NAME_BUFFER_LENGTH (MAX_LIBRARY_NAME_LENGTH + sizeof("/usr/lib/lib") + sizeof(OOSQLITE_SHARED_LIBRARY_EXT))
 
 SysLibrary::SysLibrary()
 {
     libraryHandle = NULL;
+    lastErrMsg    = NULL;
+    lastErrCode   = 0;
 }
 
 
-void * SysLibrary::getProcedure(
-  const char *name)                      /* required procedure name           */
-/******************************************************************************/
-/* Function:  Resolve a named procedure in a library                          */
-/******************************************************************************/
+/**
+ * Resolve a named procedure in a library
+ *
+ * @param name  The procdure / function name
+ *
+ * @return The resolved function address or null on error.
+ */
+void * SysLibrary::getProcedure(const char *name)
 {
-    return dlsym(libraryHandle, name);
+    resetLastErr();
+    dlerror();
+
+    void *func = dlsym(libraryHandle, name);
+    if ( func == NULL )
+    {
+        setLastErr();
+    }
+    return func;
 }
 
 
-bool SysLibrary::load(
-    const char *name)                    /* required library name             */
-/******************************************************************************/
-/* Function:  Load a named library, returning success/failure flag            */
-/******************************************************************************/
+/**
+ * Load a named library, returning success/failure flag
+ *
+ * @param name  The name of the library.
+ *
+ * @return True on success or false on error.
+ *
+ * @note  If the user passes a pathname, we try opening the library with the
+ *        name as is.  If this fails, we quit then.  This is different than the
+ *        interpreter's implementation.
+ */
+bool SysLibrary::load(const char *name)
 {
     char nameBuffer[LIBARY_NAME_BUFFER_LENGTH];
 
-    if (strlen(name) > MAX_LIBRARY_NAME_LENGTH)
+    resetLastErr();
+    dlerror();
+
+    if ( strlen(name) > MAX_LIBRARY_NAME_LENGTH )
     {
+        char *fmt = "Library name: %s is too long";
+
+        lastErrMsg = (char *)malloc(strlen(name) + strlen(fmt) + 1);
+        if ( lastErrMsg != NULL )
+        {
+            sprintf(lastErrMsg, fmt, name);
+            lastErrCode = 1;
+        }
         return false;
     }
 
-    sprintf(nameBuffer, "lib%s%s", name, ORX_SHARED_LIBRARY_EXT);
-    // try loading directly
+    if ( strchr(name, '/') != NULL )
+    {
+        libraryHandle = dlopen(nameBuffer, RTLD_LAZY);
+        if ( libraryHandle == NULL )
+        {
+            setLastErr();
+            return false;
+        }
+        return true;
+    }
+    else
+
+    sprintf(nameBuffer, "lib%s%s", name, OOSQLITE_SHARED_LIBRARY_EXT);
+
     libraryHandle = dlopen(nameBuffer, RTLD_LAZY);
-    // if not found, then try from /usr/lib
     if (libraryHandle == NULL)
     {
-        sprintf(nameBuffer, "/usr/lib/lib%s%s", name, ORX_SHARED_LIBRARY_EXT);
+        sprintf(nameBuffer, "/usr/lib/lib%s%s", name, OOSQLITE_SHARED_LIBRARY_EXT);
         libraryHandle = dlopen(nameBuffer, RTLD_LAZY);
-        // still can't find it?
         if (libraryHandle == NULL)
         {
+            setLastErr();
             return false;
         }
     }
-    return true;     // loaded successfully
+    return true;
+}
+
+
+/**
+ * Sets the last error variables.
+ */
+void SysLibrary::setLastErr()
+{
+    char *temp = dlerror();
+
+    lastErrMsg = (char *)malloc(strlen(temp) + 1);
+    if ( lastErrMsg != NULL )
+    {
+        strcpy(lastErrMsg, temp);
+        lastErrCode = 1;
+    }
+}
+
+/**
+ * Frees any memory allocated for the laste error message and sets the error
+ * message to null and the error code to 0.
+ *
+ * @note  Not very object orientated, we require the user of this class to
+ *        invoke resetLastErr() after retrieving an error message and making a
+ *        copy of it.
+ */
+void SysLibrary::resetLastErr()
+{
+    if ( lastErrMsg != NULL )
+    {
+        free(lastErrMsg);
+        lastErrMsg = NULL;
+    }
+    lastErrCode = 0;
 }
 
 
@@ -113,7 +185,18 @@ bool SysLibrary::unload()
     if (libraryHandle != NULL)
     {
         dlclose(libraryHandle);
+        resetLastErr();
         return true;
     }
     return false;
+}
+
+
+/**
+ * Resets this object to unused.
+ */
+void SysLibrary::reset()
+{
+    resetLastErr();
+    libraryHandle = NULL;
 }

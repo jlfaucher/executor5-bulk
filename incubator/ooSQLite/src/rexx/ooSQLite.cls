@@ -253,10 +253,38 @@
  */
 ::class 'ooSQLExtensions' public inherit ooSQLiteConstants
 
-::method init class external "LIBRARY oosqlite oosqlext_init_cls"                           -- Do not document, internal use only
+::method init class external "LIBRARY oosqlite oosqlext_init_cls"
+
+::attribute lastErrCode get class external "LIBRARY oosqlite oosqlext_getLastErrCode_atr"
+::attribute lastErrMsg get class external "LIBRARY oosqlite oosqlext_getLastErrMsg_atr"
 
 ::method loadLibrary class external "LIBRARY oosqlite oosqlext_loadLibrary_cls"
 ::method loadPackage class external "LIBRARY oosqlite oosqlext_loadPackage_cls"
+
+
+/** class: ooSQLPackage
+ * ...
+ *
+ */
+::class 'ooSQLPackage' public inherit ooSQLiteConstants  -- TODO not sure we need to inherit constants
+
+::method init external "LIBRARY oosqlite oosqlpack_init"
+
+::attribute lastErrCode get class external "LIBRARY oosqlite oosqlpack_getLastErrCode_atr"
+::attribute lastErrMsg get class external "LIBRARY oosqlite oosqlpack_getLastErrMsg_atr"
+
+
+/** class: ooSQLLibrary
+ * ...
+ *
+ */
+::class 'ooSQLLibrary' public inherit ooSQLiteConstants  -- TODO not sure we need to inherit constants
+
+::method init external "LIBRARY oosqlite oosqllib_init"
+
+::attribute lastErrCode get class external "LIBRARY oosqlite oosqllib_getLastErrCode_atr"
+::attribute lastErrMsg get class external "LIBRARY oosqlite oosqllib_getLastErrMsg_atr"
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 

@@ -129,6 +129,8 @@ EXTRAINCLUDE = /I src\sqlite /I $(PLATFORM_DIR)
 SQLITEFLAGS=/DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_MEMORY_MANAGEMENT /DSQLITE_ENABLE_FTS3 /DSQLITE_ENABLE_FTS3_PARENTHESIS /DSQLITE_DEFAULT_FOREIGN_KEYS=1
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS)
 
+SYSLIB_FLAGS = /DOOSQLITE_SHARED_LIBRARY_EXT=\".dll\"
+
 # The linker flag /OPT:REF removes unreferenced functions and data.  In order for
 # /OPT:REF to work, the code must be compiled with /Gy.  /Gy is automatically turned
 # on with /Zi.  /OPT:REF is the default unless /DEBUG is specified.
@@ -175,7 +177,7 @@ $(OUT_DIR)\APICommon.obj: src\APICommon.cpp src\APICommon.hpp Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\APICommon.cpp
 
 $(OUT_DIR)\SysLibrary.obj: $(PLATFORM_DIR)\SysLibrary.cpp $(PLATFORM_DIR)\SysLibrary.hpp Makefile.win
-  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ $(PLATFORM_DIR)\SysLibrary.cpp
+  cl $(CFLAGS) $(SYSLIB_FLAGS) /Fo.\$(OUT_DIR)\ $(PLATFORM_DIR)\SysLibrary.cpp
 
 $(OUT_DIR)\oosqlite.dll: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\SysLibrary.obj
     link $(LFLAGS_DLL) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\SysLibrary.obj -out:$(OUT_DIR)\oosqlite.dll

@@ -44,6 +44,7 @@
 #ifdef _WIN32
     #define NEED_DLL_MAIN
     #include "winOS.hpp"
+    #undef  NEED_DLL_MAIN
     #include "SysLibrary.hpp"
 #else
     #include "unixOS.hpp"
@@ -61,13 +62,15 @@
 #define OO_UNEXPECTED_RESULT             1002
 #define OO_BACKUP_IN_PROGRESS            1003
 #define OO_BACKUP_DB_ERRSTATE            1004
-#define OO_ERR_LAST                      1004
+#define OO_NO_CSELF                      1005
+#define OO_ERR_LAST                      1005
 
 #define OO_INTERNAL_ERR_STR              "an unexpected ooSQLite internal error occurred"
 #define OO_WRONG_ARG_TYPE_STR            "an argument to a ooSQLite method or fucntion is the wrong type"
 #define OO_UNEXPECTED_RESULT_STR         "a SQLite API returned a result that is not believed possible"
 #define OO_BACKUP_IN_PROGRESS_STR        "ooSQLite method or function can not be invoked when backup is in progress"
 #define OO_BACKUP_DB_ERRSTATE_STR        "backup not possible, source or destination database is in error state"
+#define OO_NO_CSELF_STR                  "internal error failed to get %s C Self"
 
 #define VALID_VERSION_TYPES "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
 #define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, OO_STEM_OF_STEMS, or OO_CLASSIC_STEM"
@@ -232,16 +235,37 @@ typedef CooSQLiteMutex *pCooSQLiteMutex;
 
 /* Struct for the ooSQLExtensions class object CSelf. */
 typedef struct _oosqlExtensionsCSelf {
-    RexxObjectPtr      externTable; // A Rexx table object used to hold Library and Package objects / buffers (?)
+    RexxObjectPtr      libraryTable;  // A Rexx table object used to hold loaded library objects / buffers or ooSQLLibrary (?)
+    RexxObjectPtr      packageTable;  // A Rexx table object used to hold loaded package objects / buffers or ooSQLPackage (?)
+    RexxObjectPtr      rexxSelf;
+    RexxStringObject   lastErrMsg;
+    RexxObjectPtr      lastErrCode;
 } CooSQLExtensions;
 typedef CooSQLExtensions *pCooSQLExtensions;
 
 /* Struct for the ooSQLPackage object CSelf. */
 typedef struct _oosqlPackageCSelf {
-    ooSQLitePackageEntry *packageEntry;  // Pointer to the package entry table in the external package.
-    SysLibrary   *lib;                   // SysLibrary object used to load the package.
+    ooSQLitePackageEntry *packageEntry;     // Pointer to the package entry table in the external package.
+    SysLibrary           *lib;              // SysLibrary object used to load the package.
+    SqlApiVector          sqliteAPIs;       // Pointer to the SQLite API vector.
+    RexxObjectPtr         rexxSelf;
+    RexxStringObject      lastErrMsg;
+    RexxObjectPtr         lastErrCode;
+    bool                  valid;            // False if we failed to load the package table, this object is not usable
 } CooSQLPackage;
 typedef CooSQLPackage *pCooSQLPackage;
+
+/* Struct for the ooSQLLibrary object CSelf. */
+typedef struct _oosqlLibraryCSelf {
+    RexxObjectPtr         functionTable;    // A Rexx table object used to hold the resolved functions in the library
+    SysLibrary           *lib;              // SysLibrary object used to load the package.
+    SqlApiVector          sqliteAPIs;       // Pointer to the SQLite API vector.
+    RexxObjectPtr         rexxSelf;
+    RexxStringObject      lastErrMsg;
+    RexxObjectPtr         lastErrCode;
+    bool                  valid;            // False if some error happened during init(), this object is not usable
+} CooSQLLibrary;
+typedef CooSQLLibrary *pCooSQLLibrary;
 
 /* Generic struct passed to several sqlite3 call back functions */
 typedef struct _genericCallback {
