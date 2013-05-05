@@ -104,15 +104,17 @@ use arg cmdLine
   cpCmd 'testing'sl'*'                  outDir'testing'
 
   cpCmd 'examples'sl'user.extensions'sl'simpleExtension.c' outDir'examples'sl'user.extensions'
+  cpCmd 'examples'sl'user.extensions'sl'examplePackage.cpp' outDir'examples'sl'user.extensions'
+  cpCmd 'examples'sl'user.extensions'sl'exampleLibrary.cpp' outDir'examples'sl'user.extensions'
 
   if os == "WINDOWS" then do
     cpCmd 'examples'sl'user.extensions'sl'Makefile.win' outDir'examples'sl'user.extensions'
-    cpCmd 'examples'sl'user.extensions'sl'simpleExtension.dll' outDir'examples'sl'user.extensions'
-    cpCmd 'examples'sl'user.extensions'sl'simpleExtension.def' outDir'examples'sl'user.extensions'
+    cpCmd 'examples'sl'user.extensions'sl'*.dll' outDir'examples'sl'user.extensions'
+    cpCmd 'examples'sl'user.extensions'sl'*.def' outDir'examples'sl'user.extensions'
   end
   else do
     cpCmd 'examples'sl'user.extensions'sl'Makefile.lin' outDir'examples'sl'user.extensions'
-    cpCmd 'examples'sl'user.extensions'sl'libsimpleExtension.so' outDir'examples'sl'user.extensions'
+    cpCmd 'examples'sl'user.extensions'sl'*.so' outDir'examples'sl'user.extensions'
   end
 
   zipCmd outFile outDir
