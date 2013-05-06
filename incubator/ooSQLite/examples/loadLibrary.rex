@@ -37,22 +37,22 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  loadPackage.rex
+ *  loadLibrary.rex
  *
- *  Demonstrates how to load and use an ooSQLite package file.
+ *  Demonstrates how to load and use an ooSQLite library file.
  *
- *  Loading an ooSQLite package file is very similar to using the loadExtension
- *  method to load a SQLite extension library
+ *  The loadLibrary() method loads a shared library containing, presumably, user
+ *  defined SQLite collations, functions, or modules.
  *
  */
 
   os = getOSName()
 
   if os == 'WINDOWS' then do
-    packageFile = 'user.extensions\examplePackage.dll'
+    libFile = 'user.extensions\examplelibrary.dll'
   end
   else do
-    packageFile = 'user.extensions/libexamplePackage.so'
+    libFile = 'user.extensions/libexamplelibrary.so'
   end
 
   -- Set the result set format to an array of arrays:
@@ -61,14 +61,27 @@
 	dbName = 'ooFoods.rdbx'
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  success = .ooSQLExtensions~loadPackage(packageFile, dbConn)
+  success = .ooSQLExtensions~loadLibrary(libFile, .array~of('ebcdic', 'reverse', 'halfFunc'))
   if \ success then do
-    say 'Failed to load package'
+    say 'Failed to load library'
     say '  Error code:   ' .ooSQLExtensions~lastErrCode
     say '  Error message:' .ooSQLExtensions~lastErrMsg
 
     return .ooSQLExtensions~lastErrCode
   end
+
+  lib = .ooSQLExtensions~getLibrary('examplelibrary')
+  if lib == .nil then do
+    say 'Failed to retrieve library from extensions manager'
+    say '  Error code:   ' .ooSQLExtensions~lastErrCode
+    say '  Error message:' .ooSQLExtensions~lastErrMsg
+
+    return .ooSQLExtensions~lastErrCode
+  end
+
+  hFunc = lib~getHandle('reverse'); say 'hFunc:' hFunc
+
+  return 0
 
   sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSE;"
   resultSet = dbConn~exec(sql, .true)

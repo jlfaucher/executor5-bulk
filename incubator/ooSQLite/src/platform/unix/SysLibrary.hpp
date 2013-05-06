@@ -55,14 +55,14 @@ public:
     void resetLastErr();
     void reset();
     inline char *getLastErrMsg() { return lastErrMsg; }
-    inline int getLastErrCode() { return lastErrCode; }
+    inline uint32_t getLastErrCode() { return lastErrCode; }
 
 protected:
-    void setLastErr();
+    void setLastErr(uint32_t);
 
-    void *libraryHandle;
-    char *lastErrMsg;
-    int   lastErrCode;
+    void      *libraryHandle;
+    char      *lastErrMsg;
+    uint32_t   lastErrCode;
 };
 
 #endif

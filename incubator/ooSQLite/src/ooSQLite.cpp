@@ -8127,6 +8127,51 @@ RexxMethod1(int, oosqlmtx_try, CSELF, pCSelf)
 #define LAST_ERR_MSG_ATTRIBUTE    "extensionsLastErrMsgAttribute"
 #define LAST_ERR_CODE_ATTRIBUTE   "extensionsLastErrCodeAttribute"
 
+
+/**
+ * Set the library base name.  ooSQLLibrary objects are stored in a Rexx table
+ * using the library base name as the index.
+ *
+ * @param pcl
+ * @param libName
+ *
+ * @note  We know libName will fit in buf, because the name length is checked in
+ *        SysLibrary.  We also know that this library was loaded, we are not
+ *        invoked if the library was not loaded.  So we do not need to worry
+ *        about things like libName == "/"
+ */
+static void setLibBaseName(pCooSQLLibrary pcl, CSTRING libName)
+{
+    char buf[MAX_LIBRARY_NAME_LENGTH + 1] = { '\0'};
+
+    char *p = strrchr((char *)libName, OOSQL_SLASH_CHR);
+    if ( p == NULL )
+    {
+        p = (char *)libName;
+    }
+    else
+    {
+        p++;
+    }
+    strcpy(buf, p);
+
+    p = strrchr(buf, '.');
+    if ( p != NULL )
+    {
+        *p = '\0';
+    }
+
+    if ( OOSQL_LIBRARY_PREFIX != NULL && strncmp(buf, OOSQL_LIBRARY_PREFIX, OOSQL_LIBRARY_PREFIX_LEN) == 0 )
+    {
+        p = buf + OOSQL_LIBRARY_PREFIX_LEN;
+    }
+    else
+    {
+        p = buf;
+    }
+    strcpy(pcl->baseName, p);
+}
+
 /**
  * Sets the last error attributes of the object whose method context we are
  * operating in.
@@ -8153,7 +8198,7 @@ void extensionsSetLastErr(RexxMethodContext *c, RexxStringObject lastErrMsg, Rex
 void resetExtensionsLastErr(RexxMethodContext *c, pCooSQLExtensions pcext)
 {
     pcext->lastErrCode = TheZeroObj;
-    pcext->lastErrMsg  = c->NullString();
+    pcext->lastErrMsg  = c->String("no error");
     extensionsSetLastErr(c, c->NullString(), TheZeroObj);
 }
 
@@ -8195,7 +8240,7 @@ void resetLibraryLastErr(RexxMethodContext *c, pCooSQLLibrary pcl)
  *
  * @note  We expect fmt to have exactly 1 %s in it.
  */
-void extensionsFormatLastErr(RexxMethodContext *c, uint32_t code, char *fmt, char *insert)
+void extensionsFormatLastErr(RexxMethodContext *c, uint32_t code, char *fmt, CSTRING insert)
 {
     char buf[512];
 
@@ -8203,6 +8248,24 @@ void extensionsFormatLastErr(RexxMethodContext *c, uint32_t code, char *fmt, cha
     extensionsSetLastErr(c, c->String(buf), c->UnsignedInt32(code));
 }
 
+void extensionsFormatLastErr(RexxMethodContext *c, uint32_t code, char *fmt, RexxObjectPtr insert)
+{
+    extensionsFormatLastErr(c, code, fmt, c->ObjectToStringValue(insert));
+}
+
+/**
+ * Checks that the current version of ooSQLite and SQLite meets the package
+ * requirements
+ *
+ * @param c
+ * @param pcp
+ *
+ * @return bool
+ *
+ * @note  The interpreter raises an exception for a similar situation.  We
+ *        decided to set the last error attributes instead.  This could change
+ *        in the future.
+ */
 bool validPackageVersion(RexxMethodContext *c, pCooSQLPackage pcp)
 {
     ooSQLitePackageEntry *pa = pcp->packageEntry;
@@ -8221,7 +8284,8 @@ bool validPackageVersion(RexxMethodContext *c, pCooSQLPackage pcp)
             snprintf(buf, 512, "Package: %s requires SQLite version: %d current version: %d",
                      pa->packageName, pa->reqSQLiteVersion, sqlite3_libversion_number());
         }
-        userDefinedMsgException(c->threadContext, buf);
+
+        extensionsSetLastErr(c, c->String(buf), c->UnsignedInt32(OO_PACKAGE_NOT_VALID));
         return false;
     }
     return true;
@@ -8350,6 +8414,31 @@ bool packageRegister(RexxMethodContext *c, pCooSQLPackage pcp, pCooSQLiteConn pC
     return true;
 }
 
+bool resolveFunction(RexxMethodContext *c, pCooSQLLibrary pcl, RexxObjectPtr rxName)
+{
+    resetLibraryLastErr(c, pcl);
+
+    CSTRING procName = c->ObjectToStringValue(rxName);
+
+    SysLibrary *lib  = pcl->lib;
+    void       *func = lib->getProcedure(procName);
+    if ( func == NULL )
+    {
+        pcl->lastErrMsg  = c->String(lib->getLastErrMsg());
+        pcl->lastErrCode = c->UnsignedInt32(lib->getLastErrCode());
+
+        lib->resetLastErr();
+        extensionsSetLastErr(c, pcl->lastErrMsg, pcl->lastErrCode);
+        return false;
+    }
+
+    RexxPointerObject p = c->NewPointer(func);
+    c->SendMessage2(pcl->functionTable, "PUT", p, rxName);
+
+    return true;
+}
+
+
 /** ooSQLExtensions::init()
  */
 RexxMethod1(RexxObjectPtr, oosqlext_init_cls, OSELF, self)
@@ -8392,17 +8481,55 @@ RexxMethod1(RexxStringObject, oosqlext_getLastErrMsg_atr, CSELF, pCSelf)
     return pcext->lastErrMsg;
 }
 
-/** ooSQLite::loadLibrary()  [class method]
+/** ooSQLExtensions::loadLibrary()  [class method]
  *
  *  Loads a shared library and optionally the extension functions in the
  *  library.
  *
+ *  @param  libName  The name of the shared library.  This can be simply the
+ *                   librayr name, or a pathname for the library.  The shared
+ *                   library extension can be left off of the name.
+ *
+ *                   If libName contains path information, on both Windows and
+ *                   Unix the library loader attempts to load the library
+ *                   exactly as specified.  If the name is incorrect, the
+ *                   library will fail to load.  On Unix, the library name
+ *                   portion must be exact.  For example libexamplepackage.so.
+ *                   On Windows, the .dll extension can be left off in this
+ *                   case.
+ *
+ *                   If libName does not contain path information, the library
+ *                   loader searches for the library in the operating specific
+ *                   search order.  On Unix, the library name should be
+ *                   specified as is customary for Unix.  For example
+ *                   examplepackage.  On Windows, the DLL extension, can be left
+ *                   on or off and the name is of course case insensitive.  This
+ *                   implies that if the shared library is in the path, it can
+ *                   be specified exactly the same without regard for the
+ *                   operating system. For example: examplepackage
+ *
+ *  @param  procdeures  [optional] A function name, or an array of function
+ *                      names.  If this argument is used, the named function(s)
+ *                      in the shared library are resolved at this time.  If it
+ *                      is omitted, functions are resolved when requested.
+ *
+ *                      If this argument is an array of function names, the
+ *                      array must not be sparse.  The functions are resolved in
+ *                      the order they occur in the array.  If an error ocurrs
+ *                      while resolving a function, processing the array halts
+ *                      at that point.  Resolved functions prior to that point
+ *                      remain accessible, function names after that point are
+ *                      not processed.
+ *
+ *  @return  True on success, false on error.  On error, the last error message
+ *           and last error code can be used to determine the cause of the
+ *           error.
  */
 RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, RexxObjectPtr, libName, OPTIONAL_RexxObjectPtr, procedures, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
     pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
-    RexxObjectPtr     result = TheNilObj;
+    RexxObjectPtr     result = TheFalseObj;
 
     RexxClassObject libCls = rxGetContextClass(context, "ooSQLLibrary");
     if ( libCls == NULLOBJECT )
@@ -8417,36 +8544,72 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, RexxObjectPtr, libName, OPT
     }
 
     pCooSQLLibrary pcl = (pCooSQLLibrary)context->ObjectToCSelf(library);
-
-    printf("oosqlext_loadLibrary_cls library CSelf=%p\n", pcl);
     if ( pcl == NULL )
     {
-        printf("oosqlext_loadPackage_cls failed to get ooSQLLibrary CSelf\n");
+        extensionsFormatLastErr(context, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLLibrary");
+
+        pcext->lastErrMsg  = (RexxStringObject)c->GetObjectVariable(LAST_ERR_MSG_ATTRIBUTE);
+        pcext->lastErrCode = c->GetObjectVariable(LAST_ERR_CODE_ATTRIBUTE);
         goto done_out;
     }
 
     if ( ! pcl->valid )
     {
-        printf("oosqlext_loadPackage_cls ooSQLLibrary is not valid errCode=%d msg=%s\n",
-               pcl->lib->getLastErrCode(), pcl->lib->getLastErrMsg());
+        pcext->lastErrMsg  = pcl->lastErrMsg;
+        pcext->lastErrCode = pcl->lastErrCode;
+
+        extensionsSetLastErr(context, pcl->lastErrMsg, pcl->lastErrCode);
         goto done_out;
     }
 
-
-    CSTRING       procName      = NULL;
+    // If there is a sparse array exception, we will undo this.  If there is an
+    // error resolving a function address, we will set result to false, but keep
+    // everything else as is up to that point.
+    c->SendMessage2(pcext->libraryTable, "PUT", library, c->String(pcl->baseName));
+    result = TheTrueObj;
 
     if ( argumentExists(2) )
     {
-        // check if it is an array.
-
-        procName  = c->ObjectToStringValue(procedures);
-
-        void *procedure = pcl->lib->getProcedure(procName);
-        printf("procName=%s pointer=%p\n", procName, procedure);
-
-        if ( procedure != NULL )
+        if ( c->IsArray(procedures) )
         {
-            return c->NewPointer(procedure);
+            RexxArrayObject names = (RexxArrayObject)procedures;
+            size_t          count = c->ArrayItems(names);
+
+            for ( size_t i = 1; i <= count; i++ )
+            {
+                RexxObjectPtr rxName = c->ArrayAt(names, i);
+                if ( rxName == NULLOBJECT )
+                {
+                    sparseArrayException(c->threadContext, 2, i);
+
+                    c->SendMessage1(pcext->libraryTable, "REMOVE", c->String(pcl->baseName));
+                    result = TheFalseObj;
+
+                    pcl->lib->unload();
+                    goto done_out;
+                }
+
+                if ( ! resolveFunction(context, pcl, rxName) )
+                {
+                    pcext->lastErrMsg  = pcl->lastErrMsg;
+                    pcext->lastErrCode = pcl->lastErrCode;
+
+                    extensionsSetLastErr(context, pcl->lastErrMsg, pcl->lastErrCode);
+                    result = TheFalseObj;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            if ( ! resolveFunction(context, pcl, procedures) )
+            {
+                pcext->lastErrMsg  = pcl->lastErrMsg;
+                pcext->lastErrCode = pcl->lastErrCode;
+
+                extensionsSetLastErr(context, pcl->lastErrMsg, pcl->lastErrCode);
+                result = TheFalseObj;
+            }
         }
     }
 
@@ -8454,7 +8617,7 @@ done_out:
     return result;
 }
 
-/** ooSQLite::loadPackage()  [class method]
+/** ooSQLExtensions::loadPackage()  [class method]
  *
  *  Loads an ooSQLite package library and optionally regsiters the collations,
  *  functions, modules in the package.
@@ -8485,6 +8648,9 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
     if ( pcp == NULL )
     {
         extensionsFormatLastErr(context, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLPackage");
+
+        pcext->lastErrMsg  = (RexxStringObject)c->GetObjectVariable(LAST_ERR_MSG_ATTRIBUTE);
+        pcext->lastErrCode = c->GetObjectVariable(LAST_ERR_CODE_ATTRIBUTE);
         goto done_out;
     }
 
@@ -8521,6 +8687,57 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
 done_out:
     return result;
 }
+
+
+/** ooSQLExtensions::getPackage()  [class method]
+ *
+ *  Gets an ooSQLite package from the extensions manager, if it exists.
+ *
+ */
+RexxMethod2(RexxObjectPtr, oosqlext_getPackage_cls, RexxObjectPtr, packageName, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+
+    RexxObjectPtr result = c->SendMessage1(pcext->packageTable, "AT", packageName);
+    if ( result == NULLOBJECT )
+    {
+        extensionsFormatLastErr(context, OO_NO_SUCH_PACKAGE, OO_NO_SUCH_PACKAGE_STR, (char *)c->ObjectToStringValue(packageName));
+
+        pcext->lastErrMsg  = (RexxStringObject)c->GetObjectVariable(LAST_ERR_MSG_ATTRIBUTE);
+        pcext->lastErrCode = c->GetObjectVariable(LAST_ERR_CODE_ATTRIBUTE);
+        result = TheNilObj;
+    }
+    return result;
+}
+
+
+/** ooSQLExtensions::getLibrary()  [class method]
+ *
+ *  Gets an ooSQLite library from the extensions manager, if it exists.
+ *
+ */
+RexxMethod2(RexxObjectPtr, oosqlext_getLibrary_cls, RexxObjectPtr, libraryName, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+
+    RexxObjectPtr result = c->SendMessage1(pcext->libraryTable, "AT", libraryName);
+    if ( result == TheNilObj )
+    {
+        extensionsFormatLastErr(context, OO_NO_SUCH_LIBRARY, OO_NO_SUCH_LIBRARY_STR, libraryName);
+
+        pcext->lastErrMsg  = (RexxStringObject)c->GetObjectVariable(LAST_ERR_MSG_ATTRIBUTE);
+        pcext->lastErrCode = c->GetObjectVariable(LAST_ERR_CODE_ATTRIBUTE);
+        result = TheNilObj;
+    }
+    return result;
+}
+
 
 
 /**
@@ -8678,11 +8895,12 @@ RexxMethod2(RexxObjectPtr, oosqllib_init, CSTRING, libName, OSELF, self)
     pcl->functionTable = rxNewBuiltinObject(context->threadContext, "TABLE");
     pcl->valid         = true;
 
+    setLibBaseName(pcl, libName);
+
     (*setter)(pcl->sqliteAPIs);
 
     return NULLOBJECT;
 }
-
 
 /** ooSQLLibrary::lastErrCode  [attribute get]
  */
@@ -8692,13 +8910,46 @@ RexxMethod1(RexxObjectPtr, oosqllib_getLastErrCode_atr, CSELF, pCSelf)
     return pcl->lastErrCode;
 }
 
-/** ooSQLExtensions::lastErrMsg  [attribute get]
+/** ooSQLLibrary::lastErrMsg  [attribute get]
  */
 RexxMethod1(RexxStringObject, oosqllib_getLastErrMsg_atr, CSELF, pCSelf)
 {
     pCooSQLLibrary pcl = (pCooSQLLibrary)pCSelf;
     return pcl->lastErrMsg;
 }
+
+
+/** ooSQLLibrary::getHandle()  [class method]
+ *
+ *  Gets the function handle from an ooSQLite library.
+ *
+ */
+RexxMethod2(RexxObjectPtr, oosqllib_getHandle_cls, RexxObjectPtr, funcName, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCooSQLLibrary pcl  = (pCooSQLLibrary)pCSelf;
+
+    resetLibraryLastErr(context, pcl);
+
+    RexxObjectPtr result = c->SendMessage1(pcl->functionTable, "AT", funcName);
+    if ( result != TheNilObj )
+    {
+        return result;
+    }
+
+    if ( resolveFunction(context, pcl, funcName) )
+    {
+        result = c->SendMessage1(pcl->functionTable, "AT", funcName);
+    }
+    else
+    {
+        extensionsSetLastErr(context, pcl->lastErrMsg, pcl->lastErrCode);
+        result = TheNilObj;
+    }
+
+    return result;
+}
+
 
 
 #define ooSQLite_Routines_Section
@@ -11854,6 +12105,8 @@ REXX_METHOD_PROTOTYPE(oosqlext_init_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlext_getLastErrMsg_atr);
 
+REXX_METHOD_PROTOTYPE(oosqlext_getLibrary_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_getPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadLibrary_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadPackage_cls);
 
@@ -11868,6 +12121,8 @@ REXX_METHOD_PROTOTYPE(oosqllib_init);
 
 REXX_METHOD_PROTOTYPE(oosqllib_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqllib_getLastErrMsg_atr);
+
+REXX_METHOD_PROTOTYPE(oosqllib_getHandle_cls);
 
 // __rtn_helper_class
 REXX_METHOD_PROTOTYPE(hlpr_init_cls);
@@ -12053,6 +12308,8 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlext_getLastErrCode_atr,          oosqlext_getLastErrCode_atr),
     REXX_METHOD(oosqlext_getLastErrMsg_atr,           oosqlext_getLastErrMsg_atr),
 
+    REXX_METHOD(oosqlext_getLibrary_cls,              oosqlext_getLibrary_cls),
+    REXX_METHOD(oosqlext_getPackage_cls,              oosqlext_getPackage_cls),
     REXX_METHOD(oosqlext_loadLibrary_cls,             oosqlext_loadLibrary_cls),
     REXX_METHOD(oosqlext_loadPackage_cls,             oosqlext_loadPackage_cls),
 
@@ -12067,6 +12324,8 @@ RexxMethodEntry ooSQLite_methods[] = {
 
     REXX_METHOD(oosqllib_getLastErrCode_atr,          oosqllib_getLastErrCode_atr),
     REXX_METHOD(oosqllib_getLastErrMsg_atr,           oosqllib_getLastErrMsg_atr),
+
+    REXX_METHOD(oosqllib_getHandle_cls,               oosqllib_getHandle_cls),
 
     // __rtn_helper_class
     REXX_METHOD(hlpr_init_cls,                        hlpr_init_cls),

@@ -42,6 +42,9 @@
  *  from the interpreter's SysLibrary implmentation.
  *
  */
+
+#include "unixOS.hpp"
+#include <oorexxapi.h>
 #include "SysLibrary.hpp"
 #include <stdlib.h>
 #include <string.h>
@@ -49,7 +52,6 @@
 #include <dlfcn.h>
 
 
-#define MAX_LIBRARY_NAME_LENGTH 255
 #define LIBARY_NAME_BUFFER_LENGTH (MAX_LIBRARY_NAME_LENGTH + sizeof("/usr/lib/lib") + sizeof(OOSQLITE_SHARED_LIBRARY_EXT))
 
 SysLibrary::SysLibrary()
@@ -75,7 +77,7 @@ void * SysLibrary::getProcedure(const char *name)
     void *func = dlsym(libraryHandle, name);
     if ( func == NULL )
     {
-        setLastErr();
+        setLastErr(PROCEDURE_NOT_FOUND_RC);
     }
     return func;
 }
@@ -94,6 +96,11 @@ void * SysLibrary::getProcedure(const char *name)
  */
 bool SysLibrary::load(const char *name)
 {
+    if ( libraryHandle != NULL )
+    {
+        return true;
+    }
+
     char nameBuffer[LIBARY_NAME_BUFFER_LENGTH];
 
     resetLastErr();
@@ -117,7 +124,7 @@ bool SysLibrary::load(const char *name)
         libraryHandle = dlopen(nameBuffer, RTLD_LAZY);
         if ( libraryHandle == NULL )
         {
-            setLastErr();
+            setLastErr(MODULE_NOT_FOUND_RC);
             return false;
         }
         return true;
@@ -144,7 +151,7 @@ bool SysLibrary::load(const char *name)
 /**
  * Sets the last error variables.
  */
-void SysLibrary::setLastErr()
+void SysLibrary::setLastErr(uint32_t rc)
 {
     char *temp = dlerror();
 
@@ -152,7 +159,7 @@ void SysLibrary::setLastErr()
     if ( lastErrMsg != NULL )
     {
         strcpy(lastErrMsg, temp);
-        lastErrCode = 1;
+        lastErrCode = rc;
     }
 }
 

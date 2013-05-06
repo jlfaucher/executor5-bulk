@@ -63,7 +63,10 @@
 #define OO_BACKUP_IN_PROGRESS            1003
 #define OO_BACKUP_DB_ERRSTATE            1004
 #define OO_NO_CSELF                      1005
-#define OO_ERR_LAST                      1005
+#define OO_PACKAGE_NOT_VALID             1006
+#define OO_NO_SUCH_PACKAGE               1007
+#define OO_NO_SUCH_LIBRARY               1008
+#define OO_ERR_LAST                      1008
 
 #define OO_INTERNAL_ERR_STR              "an unexpected ooSQLite internal error occurred"
 #define OO_WRONG_ARG_TYPE_STR            "an argument to a ooSQLite method or fucntion is the wrong type"
@@ -71,6 +74,9 @@
 #define OO_BACKUP_IN_PROGRESS_STR        "ooSQLite method or function can not be invoked when backup is in progress"
 #define OO_BACKUP_DB_ERRSTATE_STR        "backup not possible, source or destination database is in error state"
 #define OO_NO_CSELF_STR                  "internal error failed to get %s C Self"
+#define OO_PACKAGE_NOT_VALID_STR         "the current version of ooSQLite or SQLite does not meet the package requirements"
+#define OO_NO_SUCH_PACKAGE_STR           "package %s is not loaded"
+#define OO_NO_SUCH_LIBRARY_STR           "library %s is not loaded"
 
 #define VALID_VERSION_TYPES "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
 #define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, OO_STEM_OF_STEMS, or OO_CLASSIC_STEM"
@@ -257,6 +263,7 @@ typedef CooSQLPackage *pCooSQLPackage;
 
 /* Struct for the ooSQLLibrary object CSelf. */
 typedef struct _oosqlLibraryCSelf {
+    char                  baseName[MAX_LIBRARY_NAME_LENGTH + 1];
     RexxObjectPtr         functionTable;    // A Rexx table object used to hold the resolved functions in the library
     SysLibrary           *lib;              // SysLibrary object used to load the package.
     SqlApiVector          sqliteAPIs;       // Pointer to the SQLite API vector.

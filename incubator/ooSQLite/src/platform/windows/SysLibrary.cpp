@@ -92,17 +92,32 @@ void *SysLibrary::getProcedure(const char *name)
  */
 bool SysLibrary::load(const char *name)
 {
+    if ( libraryHandle != NULL )
+    {
+        return true;
+    }
+
+    if ( strlen(name) > MAX_LIBRARY_NAME_LENGTH )
+    {
+        char *fmt = "Library name: %s is too long";
+
+        lastErrMsg = (char *)LocalAlloc(LPTR, strlen(name) + strlen(fmt) + 1);
+        if ( lastErrMsg != NULL )
+        {
+            sprintf(lastErrMsg, fmt, name);
+            lastErrCode = 1;
+        }
+        return false;
+    }
+
+    SetLastError(0);
+    resetLastErr();
+
+    libraryHandle = LoadLibrary(name);
     if ( libraryHandle == NULL )
     {
-        SetLastError(0);
-        resetLastErr();
-
-        libraryHandle = LoadLibrary(name);
-        if ( libraryHandle == NULL )
-        {
-            setLastErr("LoadLibrary", name);
-            return false;
-        }
+        setLastErr("LoadLibrary", name);
+        return false;
     }
     return true;
 }

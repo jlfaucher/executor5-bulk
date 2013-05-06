@@ -258,6 +258,8 @@
 ::attribute lastErrCode get class external "LIBRARY oosqlite oosqlext_getLastErrCode_atr"
 ::attribute lastErrMsg get class external "LIBRARY oosqlite oosqlext_getLastErrMsg_atr"
 
+::method getLibrary class external "LIBRARY oosqlite oosqlext_getLibrary_cls"
+::method getPackage class external "LIBRARY oosqlite oosqlext_getPackage_cls"
 ::method loadLibrary class external "LIBRARY oosqlite oosqlext_loadLibrary_cls"
 ::method loadPackage class external "LIBRARY oosqlite oosqlext_loadPackage_cls"
 
@@ -284,6 +286,8 @@
 
 ::attribute lastErrCode get class external "LIBRARY oosqlite oosqllib_getLastErrCode_atr"
 ::attribute lastErrMsg get class external "LIBRARY oosqlite oosqllib_getLastErrMsg_atr"
+
+::method getHandle get class external "LIBRARY oosqlite oosqllib_getHandle_cls"
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

@@ -44,6 +44,15 @@
 #define TRUE   1
 #define FALSE  0
 
+#define MAX_LIBRARY_NAME_LENGTH     255
+#define OOSQL_SLASH_CHR             '/'
+#define OOSQL_LIBRARY_PREFIX        "lib"
+#define OOSQL_LIBRARY_PREFIX_LEN    3
+
+// These are the Windows system error codes, we will use the same codes on Unix.
+#define MODULE_NOT_FOUND_RC         126
+#define PROCEDURE_NOT_FOUND_RC      127
+
 sqlite3_mutex *crit_sec = (sqlite3_mutex *)0;
 
 #define CRITICAL_SECTION_ENTER sqlite3_mutex_enter(crit_sec);

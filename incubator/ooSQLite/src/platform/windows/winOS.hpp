@@ -53,6 +53,11 @@
 #define snprintf                   _snprintf
 #define oosqlGetCurrentThreadId()  GetCurrentThreadId()
 
+#define MAX_LIBRARY_NAME_LENGTH     255
+#define OOSQL_SLASH_CHR             '\\'
+#define OOSQL_LIBRARY_PREFIX        NULL
+#define OOSQL_LIBRARY_PREFIX_LEN    0
+
 
 #ifdef NEED_DLL_MAIN
 
