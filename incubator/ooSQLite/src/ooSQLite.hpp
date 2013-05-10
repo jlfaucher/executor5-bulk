@@ -141,6 +141,7 @@ typedef enum
     collation,
     collationNeeded,
     commitHook,
+    function,
     profileHook,
     progressHandler,
     rollbackHook,
@@ -255,6 +256,9 @@ typedef struct _oosqlPackageCSelf {
     SysLibrary           *lib;              // SysLibrary object used to load the package.
     SqlApiVector          sqliteAPIs;       // Pointer to the SQLite API vector.
     RexxObjectPtr         rexxSelf;
+    RexxObjectPtr         collationTable;
+    RexxObjectPtr         functionTable;
+    RexxObjectPtr         moduleTable;
     RexxStringObject      lastErrMsg;
     RexxObjectPtr         lastErrCode;
     bool                  valid;            // False if we failed to load the package table, this object is not usable
@@ -295,6 +299,32 @@ typedef struct _genericCallback {
     bool                 createRS;        // Determines if we are creating a record set or invoking a Rexx callback.
 } CGenericCallback;
 typedef CGenericCallback *pCGenericCallback;
+
+/* Non-generic struct for Rexx defined SQL function or aggregates. */
+typedef struct _functionCallback {
+    RexxObjectPtr        callbackObj;     // Rexx object to invoke the callback() methods on.
+    RexxRoutineObject    funcRtn;         // Rexx routine to call for xFunction.
+    RexxRoutineObject    stepRtn;         // Rexx routine to call for xStep.
+    RexxRoutineObject    finalRtn;        // Rexx routine to call for xFinal.
+    RexxObjectPtr        userData;        // A Rexx object that the user wants sent to its Rexx callback.
+    RexxObjectPtr        rexxDB;          // The Rexx database connection object, RexxSelf.
+    RexxInstance        *interpreter;
+    RexxThreadContext   *callbackContext;
+    CSTRING              funcMethod;
+    CSTRING              stepMethod;
+    CSTRING              finalMethod;
+    CSTRING              funcName;        // The name of the Rexx routine, needed for exception messages.
+    CSTRING              stepName;        // The name of the Rexx routine, needed for exception messages.
+    CSTRING              finalName;       // The name of the Rexx routine, needed for exception messages.
+    thread_id_t          initialThreadID;
+} CFunctionCallback;
+typedef CFunctionCallback *pCFunctionCallback;
+
+typedef struct _AggregateCallback {
+    pCFunctionCallback   pcfcb;           // Pointer to our callback information block
+    RexxObjectPtr        aggregateObj;    // Sent to Rexx implementation to use as its context
+} CAggregateCallback;
+typedef CAggregateCallback *pCAggregateCallback;
 
 
 #endif

@@ -37,140 +37,179 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  loadPackage.rex
+ *  udfExample.rex
  *
- *  Demonstrates how to load and use an ooSQLite package file.
+ *  This example demonstrates the createFunction() method of the
+ *  ooSQLiteConnection class.  The createFunction() method is used to add SQL
+ *  functions or aggregates, or to redefine the behavior of existing SQL
+ *  functions or aggregates.
  *
- *  Loading an ooSQLite package file is very similar to using the loadExtension
- *  method to load a SQLite extension library
- *
+ *  The functions or aggregates can be implemented externally in C / C++ code,
+ *  or they can be implemented in Rexx.  This example shows the implementaion of
+ *  some user defined functions implmented in Rexx.
  */
-
-  os = getOSName()
-
-  if os == 'WINDOWS' then do
-    packageFile = 'user.extensions\examplePackage.dll'
-  end
-  else do
-    packageFile = 'user.extensions/libexamplePackage.so'
-  end
 
   -- Set the result set format to an array of arrays:
   .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
 
 	dbName = 'ooFoods.rdbx'
+
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  success = .ooSQLExtensions~loadPackage(packageFile, dbConn)
-  if \ success then do
-    say 'Failed to load package'
-    say '  Error code:   ' .ooSQLExtensions~lastErrCode
-    say '  Error message:' .ooSQLExtensions~lastErrMsg
+  -- Instantiate our Rexx object that contains our callback methods.
+  callBackObj = .FunctionImpl~new
 
-    return .ooSQLExtensions~lastErrCode
-  end
+  -- Create an aggregate
+  dbConn~createFunction('strAggregate', callBackObj, 1, , 'strAggStep', 'strAggFinal')
 
   sql = "SELECT season, strAggregate(name) from episodes group by season;"
   resultSet = dbConn~exec(sql, .true)
 
-  say 'SQL:             ' sql
-  say 'Result Set:      ' resultSet
-  say 'Result Set Class:' resultSet~class
-  say
-  say 'Hit enter to continue'
-  pull
   z = printStrAgg(resultSet)
   say
+  return 0
 
-  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSE;"
+
+  dbConn~createFunction('helloWorld', callBackObj, 1, 'helloWorld')
+  dbConn~createFunction('half', callBackObj, 1, 'half')
+  dbConn~createFunction('echo', callBackObj, 1, 'echo')
+
+  sql = "SELECT helloWorld('Rick');"
   resultSet = dbConn~exec(sql, .true)
 
-  say 'SQL:             ' sql
-  say 'Result Set:      ' resultSet
-  say 'Result Set Class:' resultSet~class
-  say
-  say 'Hit enter to continue'
-  pull
   z = printResultSet(resultSet)
+  say
 
-  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE EBCDIC;"
+  sql = "SELECT helloWorld('ooRexx');"
   resultSet = dbConn~exec(sql, .true)
 
-  say 'SQL:             ' sql
-  say 'Result Set:      ' resultSet
-  say 'Result Set Class:' resultSet~class
-  say
-  say 'Hit enter to continue'
-  pull
   z = printResultSet(resultSet)
-
-  sql = "SELECT * FROM foods ORDER BY name COLLATE REVERSE;"
-  resultSet = dbConn~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say 'Result Set:      ' resultSet
-  say 'Result Set Class:' resultSet~class
   say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
 
   sql = "SELECT half(11);"
   resultSet = dbConn~exec(sql, .true)
 
-  say 'SQL:             ' sql
-  say 'Result Set:      ' resultSet
-  say 'Result Set Class:' resultSet~class
-  say
-  say 'Hit enter to continue'
-  pull
   z = printResultSet(resultSet)
+  say
 
+  sql = "SELECT half(197);"
+  resultSet = dbConn~exec(sql, .true)
+
+  z = printResultSet(resultSet)
+  say
+
+  sql = "SELECT half(114599);"
+  resultSet = dbConn~exec(sql, .true)
+
+  z = printResultSet(resultSet)
+  say
+
+  sql = "SELECT echo(56.78) as reply, typeof(echo(56.78)) as type;"
+  resultSet = dbConn~exec(sql, .true)
+
+  z = printResultSet(resultSet)
+  say
+
+  sql = "SELECT echo(X'ab24') as reply, typeof(echo(X'ab24')) as type;"
+  resultSet = dbConn~exec(sql, .true)
+
+  z = printResultSet(resultSet)
+  say
+
+  sql = "SELECT echo(NULL) as reply, typeof(echo(NULL)) as type;"
+  resultSet = dbConn~exec(sql, .true)
+
+  z = printResultSet(resultSet)
+  say
+
+  -- When the database connection is closed, the user defined functions are
+  -- unregisterd.
   ret = dbConn~close
-
-  -- Open a new database connection to the same database.
-  dbConn2 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
-  package = .ooSQLExtensions~getPackage('examplePackage')
-
-  package~register(dbConn2)
-
-  sql = "SELECT half(11);"
-  resultSet = dbConn2~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say 'Result Set:      ' resultSet
-  say 'Result Set Class:' resultSet~class
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-
-  dbConn2~close
-
-
-  dbConn3 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
-  package = .ooSQLExtensions~getPackage('examplePackage')
-
-  collation = package~getCollation('reverse')
-  dbConn3~createCollation('reverse', collation)
-
-  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSE;"
-  resultSet = dbConn3~exec(sql, .true)
-
-  say 'SQL:             ' sql
-  say 'Result Set:      ' resultSet
-  say 'Result Set Class:' resultSet~class
-  say
-  say 'Hit enter to continue'
-  pull
-  z = printResultSet(resultSet)
-
-  dbConn3~close
 
   return ret
 
 ::requires 'ooSQLite.cls'
 
+::class 'strCollecter'
+::attribute str
+::method init
+  use arg firstStr
+  self~str = firstStr
+
+::method addStr
+  use arg str
+  self~str ||= ',' str
+
+
+
+-- The FunctionImpl class is used to define the callback methods for our
+-- functions.
+::class 'FunctionImpl' inherit ooSQLiteConstants
+
+::method strAggStep
+  use arg dbConn, cntx, values, collecterObj, userData
+
+  str = .OOSQLValue~text(values[1])
+
+  if collecterObj == .nil then do
+    collObj = .strCollecter~new(str)
+    return collObj
+  end
+
+  collecterObj~addStr(str)
+  return self~OK
+
+
+::method strAggFinal
+  use arg dbConn, cntx, collecterObj, userData
+
+  .ooSQLResult~text(cntx, collecterObj~str)
+
+  -- Must return a result code. You do not return an .ooSQLResult.
+  return self~OK
+
+
+-- Our registered helloWorld() callback method.  SQLite invokes this method when
+-- it encounters a SQL function named helloWord
+::method helloWorld
+  use arg dbConn, cntx, values, userData
+
+  name = .ooSQLValue~text(values[1])
+  txt  = 'Hello' name'|'
+
+  .ooSQLResult~text(cntx, txt)
+
+  -- Must return a result code. You do not return an .ooSQLResult.
+  return self~OK
+
+
+-- Our registered half() callback method.  SQLite invokes this method when it
+-- encounters a SQL function named half
+::method half
+  use arg dbConn, cntx, values, userData
+
+  d = .ooSQLValue~double(values[1])
+  d = d / 2
+
+  .ooSQLResult~double(cntx, d)
+
+  -- Must return a result code. You do not return an .ooSQLResult.
+  return self~OK
+
+
+-- Our registered echo() callback method.  SQLite invokes this method when it
+-- encounters a SQL function named ehco
+::method echo
+  use arg dbConn, cntx, values, userData
+
+  .ooSQLResult~value(cntx, values[1])
+
+  -- Must return a result code. You do not return an .ooSQLResult.
+  return self~OK
+
+
+
+-- Common utility routine used to print a result set that is an array of arrays.
 ::routine printResultSet
   use arg rs
 
@@ -190,7 +229,8 @@
     line = ''
     record = rs[i]
     do j = 1 to colCount
-      line ||= record[j]~left(25)
+      if record[j] == .nil then line ||= ''~left(25)
+      else line ||= record[j]~left(25)
     end
 
     say line
@@ -235,11 +275,3 @@
   say
 
   return 0
-
-::routine getOSName
-
-  parse upper source os .
-  if os~abbrev("WIN") then os = "WINDOWS"
-  return os
-
-

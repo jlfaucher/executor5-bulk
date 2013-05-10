@@ -204,6 +204,64 @@ static int ebcdic(void* data, int len1, const void* str1, int len2, const void* 
 }
 
 
+typedef struct _StrAggCntx
+{
+    size_t   count;
+    char    *result;
+} StrAggCntx;
+typedef StrAggCntx *pStrAggCntx;
+
+void strAggStep(sqlite3_context* sqlCntx, int countArgs, sqlite3_value** values)
+{
+  pStrAggCntx psac = (pStrAggCntx) sqlite3_aggregate_context(sqlCntx, sizeof(StrAggCntx));
+  if ( psac == NULL )
+  {
+      sqlite3_result_error_nomem(sqlCntx);
+      return;
+  }
+
+  static const char comma[] = ", ";
+
+  const  char *txt = (const char *)sqlite3_value_text(values[0]);
+  size_t len       = strlen(txt);
+
+  if ( psac->result == NULL )
+  {
+    psac->result = (char *)sqlite3_malloc((int)len + 1);
+    if ( psac->result == NULL )
+    {
+        sqlite3_result_error_nomem(sqlCntx);
+        return;
+    }
+
+    memcpy(psac->result, txt, len + 1);
+    psac->count = len;
+  }
+  else
+  {
+    //const size_t commaLen = sizeof(comma);
+    const size_t commaLen = strlen(comma);
+    psac->result = (char *)sqlite3_realloc(psac->result, (int)(psac->count + len + commaLen + 1));
+    memcpy(psac->result +  psac->count, comma, commaLen);
+    psac->count += commaLen;
+    memcpy(psac->result + psac->count, txt, len + 1);
+    psac->count += len;
+  }
+}
+
+void strAggFinalize(sqlite3_context* sqlCntx)
+{
+    pStrAggCntx psac = (pStrAggCntx) sqlite3_aggregate_context(sqlCntx, sizeof(StrAggCntx));
+    if ( psac == NULL || psac->result == NULL )
+    {
+        sqlite3_result_error_nomem(sqlCntx);
+        return;
+    }
+
+    sqlite3_result_text(sqlCntx, psac->result, (int)psac->count, sqlite3_free);
+}
+
+
 /**
  * examplePackage_collations is an array of SQLiteCollationEntry structs.  See
  * the SQLiteCollationEntry struct in oosqlPackage.hpp for the fields in the
@@ -219,12 +277,13 @@ static int ebcdic(void* data, int len1, const void* str1, int len2, const void* 
  * SQLite.
  */
 SQLiteCollationEntry examplePackage_collations[] = {
-    // The REVERSE collation.  No destroy callback, no user data pointer.
-    OOSQL_COLLATION(reverse, reverse, NULL, NULL, NULL),
+    // The REVERSE collation.  No destroy callback, no user data pointer, no
+    // collation needed callback.
+    OOSQL_COLLATION(reverse, reverse, NULL, NULL, NULL, NULL),
 
     // The EBCDIC collation. We fill out the struct fields completely instead of
     // using the OOSQL_COLLATION macro.
-    {NULL, "ebcdic", ebcdic, NULL, NULL, NULL, 0},
+    {NULL, "ebcdic", ebcdic, NULL, NULL, NULL, NULL, 0},
 
     // The last entry in the struc, must always be present.  Here the macro is
     // simplier to use.  To fill it in manually, use all NULLs.
@@ -243,6 +302,7 @@ SQLiteFunctionEntry examplePackage_functions[] = {
     // Only 1 function. Only the function callback is used, the other callbacks
     // are NULL.  The function callback takes 1 arg.
     OOSQL_FUNCTION(half, half, NULL, NULL, NULL, NULL, NULL, 1),
+    {NULL, "strAggregate", NULL, strAggStep, strAggFinalize, NULL, NULL, NULL, 1, 0},
 
     OOSQL_LAST_FUNCTION()
 };

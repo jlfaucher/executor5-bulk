@@ -79,9 +79,11 @@
     return .ooSQLExtensions~lastErrCode
   end
 
-  hFunc = lib~getHandle('reverse'); say 'hFunc:' hFunc
+  hReverse = lib~getHandle('reverse'); say 'hReverse:' hReverse
+  hEbcdic = lib~getHandle('ebcdic'); say   'hEbcdic: ' hEbcdic
 
-  return 0
+  ret = dbConn~createCollation('REVERSE', hReverse)
+  ret = dbConn~createCollation('EBCDIC', hEbcdic)
 
   sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE REVERSE;"
   resultSet = dbConn~exec(sql, .true)

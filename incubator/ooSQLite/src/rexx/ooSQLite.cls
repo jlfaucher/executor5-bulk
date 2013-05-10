@@ -58,6 +58,7 @@
 ::attribute null set class external "LIBRARY oosqlite oosql_setNull_atr_cls"
 ::attribute recordFormat get class external "LIBRARY oosqlite oosql_getRecordFormat_atr_cls"
 ::attribute recordFormat set class external "LIBRARY oosqlite oosql_setRecordFormat_atr_cls"
+::attribute zeroPointer get class external "LIBRARY oosqlite oosql_zeroPointer_atr_cls"
 
 ::method init class external "LIBRARY oosqlite oosql_init_cls"                                -- Do not document, internal use only
 ::method compileOptionGet class external "LIBRARY oosqlite oosql_compileOptionGet_cls"
@@ -110,6 +111,7 @@
 ::method collationNeeded external "LIBRARY oosqlite oosqlconn_collationNeeded"
 ::method commitHook external "LIBRARY oosqlite oosqlconn_commitHook"
 ::method createCollation external "LIBRARY oosqlite oosqlconn_createCollation"
+::method createFunction external "LIBRARY oosqlite oosqlconn_createFunction"
 ::method dbFileName external "LIBRARY oosqlite oosqlconn_dbFileName"
 ::method dbMutex external "LIBRARY oosqlite oosqlconn_dbMutex"
 ::method dbReadOnly external "LIBRARY oosqlite oosqlconn_dbReadOnly"
@@ -144,6 +146,42 @@
 ::method    putStmt external "LIBRARY oosqlite oosqlconn_putStmt"                    -- Internal use only
 ::method    delStmt external "LIBRARY oosqlite oosqlconn_delStmt"                    -- Internal use only
 ::attribute ooSQLiteConnectionStmtBag private                                        -- Internal use only
+
+
+/** class: ooSQLResult
+ * ...
+ *
+ */
+::class 'ooSQLResult' public inherit ooSQLiteConstants
+
+::method blob class external "LIBRARY oosqlite oosqlrslt_blob"
+::method double class external "LIBRARY oosqlite oosqlrslt_double"
+::method error class external "LIBRARY oosqlite oosqlrslt_error"
+::method errorCode class external "LIBRARY oosqlite oosqlrslt_errorCode"
+::method errorNoMem class external "LIBRARY oosqlite oosqlrslt_errorNoMem"
+::method errorTooBig class external "LIBRARY oosqlite oosqlrslt_errorTooBig"
+::method int class external "LIBRARY oosqlite oosqlrslt_int"
+::method int64 class external "LIBRARY oosqlite oosqlrslt_int64"
+::method null class external "LIBRARY oosqlite oosqlrslt_null"
+::method text class external "LIBRARY oosqlite oosqlrslt_text"
+::method value class external "LIBRARY oosqlite oosqlrslt_value"
+::method zeroBlob class external "LIBRARY oosqlite oosqlrslt_zeroBlob"
+
+
+/** class: ooSQLValue
+ * ...
+ *
+ */
+::class 'ooSQLValue' public inherit ooSQLiteConstants
+
+::method blob class external "LIBRARY oosqlite oosqlval_blob"
+::method bytes class external "LIBRARY oosqlite oosqlval_bytes"
+::method double class external "LIBRARY oosqlite oosqlval_double"
+::method int class external "LIBRARY oosqlite oosqlval_int"
+::method int64 class external "LIBRARY oosqlite oosqlval_int64"
+::method numericType class external "LIBRARY oosqlite oosqlval_numericType"
+::method text class external "LIBRARY oosqlite oosqlval_text"
+::method type class external "LIBRARY oosqlite oosqlval_type"
 
 
 /** class: ooSQLiteStmt
@@ -275,6 +313,10 @@
 ::attribute lastErrCode get external "LIBRARY oosqlite oosqlpack_getLastErrCode_atr"
 ::attribute lastErrMsg get external "LIBRARY oosqlite oosqlpack_getLastErrMsg_atr"
 
+::method getCollation external "LIBRARY oosqlite oosqlpack_getCollation"
+::method getFunction external "LIBRARY oosqlite oosqlpack_getFunction"
+::method register external "LIBRARY oosqlite oosqlpack_register"
+
 
 /** class: ooSQLLibrary
  * ...
@@ -288,6 +330,24 @@
 ::attribute lastErrMsg get external "LIBRARY oosqlite oosqllib_getLastErrMsg_atr"
 
 ::method getHandle external "LIBRARY oosqlite oosqllib_getHandle_cls"
+
+
+/** class: ooSQLCollation
+ * ...
+ *
+ */
+::class 'ooSQLCollation' public inherit ooSQLiteConstants  -- TODO not sure we need to inherit constants
+
+::method init external "LIBRARY oosqlite oosqlcol_init"
+
+
+/** class: ooSQLFunction
+ * ...
+ *
+ */
+::class 'ooSQLFunction' public inherit ooSQLiteConstants  -- TODO not sure we need to inherit constants
+
+::method init external "LIBRARY oosqlite oosqlfunc_init"
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
