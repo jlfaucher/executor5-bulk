@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY % BOOK_ENTITIES SYSTEM "oodguide.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file
+    #
+    # Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<!-- Chapter08 - <Title?>		 		  	  v01-00 10May13
+
+    Changes:
+     v01-00 10May13: First version.
+
+    8   *  ???	                                                       chapEight
+    8.1   * Introduction                                               chap08-intro
+    8.2   * Event Management                                               chap08-???
+    
+Topics (some may not appear in this chapter - if not, they'll go into the next and final chapter 9):
+  1. Sorting out the hang when close OrderMgr before closing OrderForm (in Ex 7)
+  2. Need for Event Management - tell OrderForm when app is closing (also addition of method ok).
+  3. Added function in OrderForm.
+  4. "Saving" the OrderForm when complete
+  5. moving the View supers into a single mixin.
+  6. Drag/Drop
+  7. Use of ooSQL (but might be postponed to Chap 9).
+  8. ???
+-->
+<chapter id="chapEight">
+  <title>A Chapter Title</title>
+
+<!-- *********************************************************************************************** -->
+  <section id="chap08-intro"><title>Introduction</title>    <!-- Section 8.1 -->
+    <para>This chapter ... 
+      You may have noticed in Exercise 7 that the process hangs when you close the Order Management
+      dialog without first closing all Order Form dialogs. This problem, and its solution, is addressed in 
+      <xref linkend="chap08-eventMgmt"/> 
+      This is </para>
+  </section>
+
+  <!-- *********************************************************************************************** -->
+  <section id="chap08-orderForm"><title>The Order Form</title> <!-- Section 8.2 -->
+    <!--  added an ok method to catch enter key.
+          use event management f/w - see section chap08-eventMgmt 
+    -->
+    <para>xxx</para>
+  </section>
+
+  <!-- *********************************************************************************************** -->  
+   <section id="chap08-eventMgmt" xreflabel="Event Management">
+   <title>Event Management</title>
+   <para>If an Order Form is open when the Order Management application is closed, then the process
+      hangs. The reason for this is that the OrderForm's control dialogs must be cleaned up
+      explicitly when the Order Form dialog is closed - else the control dialogs are left in limbo,
+      and the process cannot close. The solution is to tell all Order Form dialogs to close when the
+      user closes the application (that is, when the Order Management dialog is closed). The only
+      question is how should this be done? Somehow, all active Order Form dialogs must be told about
+      the "application close" event so they can clean up the two control dialogs.</para>
+    <para>One solution is for the Order Management dialog to tell each Order Form that the
+      application is about to close. Perhaps the Order Management dilaog could inquire of the Object
+      Manager as to which Order Form dialogs exist, and then send each of them a "close now"
+      message. However, a more elegant solution - and one that has much wider potential use - is to
+      provide an event management framework. </para>
+    <para>A simple event management framework (EMF) is introduce in Exercise 8, and is in the 
+      file <computeroutput>EventMgr.rex</computeroutput> in the <computeroutput>Support</computeroutput> folder.
+      </para>
+     <para>The EMF works like this. First, a component decides that it's interested in some event -
+      say "AppClosing". When this event occurs, it wants to be sent a message so that it can take
+      appropriate action. To express its interest, the component sends a
+        <computeroutput>registerInterest</computeroutput> message to the Event Manager with two
+      parameters - the its object id, and the event in which it's interested: <programlisting><![CDATA[   eventMgr = .local~my.eventMgr
+    eventMgr~registerInterest(self,"appClosing")]]>      </programlisting> Some time later, when the
+      Order Manager is being closed, it asks the Event Manager to trigger the event "appClosing":
+      <programlisting><![CDATA[   eventMgr~triggerEvent("appClosing")]]>      </programlisting>This
+      results in a <computeroutput>notify</computeroutput> message, with the event name as an
+      argument, to be sent to each component that has registered interest in the "appClosing" event: <programlisting><![CDATA[   EventMgr:              <interestedComponent>~notify("appClosing")
+
+    Interested Component:  ::method notify public
+                             use arg event
+                             if event = "appClosing" then do
+                             -- takes appropriate action]]>    </programlisting>Note that this
+      simple event management framework is fairly generic, and can be used for any event by any
+      component. The only constraint is that event names must be unique. </para>
+   </section>
+  
+</chapter>
