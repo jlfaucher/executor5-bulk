@@ -35,30 +35,48 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: RequiresList.rex 				  v02-00 09May13
+   Exercise 08: View.rex 				  	  v01-00 09May13
 
-   Contains: 	   The list of View components that OrderMgrView requires.
+   Contains: 	   class: "View"
 
-   Pre-requisites: Class "OrderMgrView
+   Description: A superclass for the OrderMgr class - provides for interest
+                registration.
 
-   Description: This script is called by OrderMgrView.
+   Pre-requisites: MVF.
 
    Outstanding Problems: None reported.
 
    Changes:
-     v01-00 07Jun12: First Version
-            01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
-                     folder, so change to ::Requires needed. 
-     v02-00 09May13: Added View.rex to the requires list.
-     
+     v01-00 09May13: First Version.
+
 ------------------------------------------------------------------------------*/
 
---say "OrderMgr RequiresList."
+-- Use the global .constDir for symbolic IDs - load them from OrderMgrView.h
+--.Application~addToConstDir("OrderMgr\OrderMgrView.h")
 
-::REQUIRES "Customer\CustomerListView.rex"
-::REQUIRES "Product\ProductListView.rex"
-::REQUIRES "Order\OrderListView.rex"
-::REQUIRES "Order\OrderFormView.rex"
-::REQUIRES "Support\MessageSender.rex"
---::REQUIRES "Support\View.rex"
+--call "OrderMgr\RequiresList.rex"
+--say "View.rex loaded OK."
+::REQUIRES "ooDialog.cls"
 
+/*//////////////////////////////////////////////////////////////////////////////
+  ==============================================================================
+  View							  	  v01-00 09May13
+  --------------------
+  A superclass for the Order Management dialog. Handles interest registration,
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+::CLASS View SUBCLASS RcDialog PUBLIC
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD triggerEvent
+    use strict arg event
+    idEventMgr = .local~my.EventMgr
+    
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD viewDoIt
+    say "View-viewDoIt-01."
+    
+      
+/*============================================================================*/
+    

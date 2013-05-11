@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: OrderMgrView.rex 				  v02-00 27Feb13
+   Exercise 08: OrderMgrView.rex 				  v03-00 11May13
 
    Contains: 	   class: "OrderMgrView", "HRSomv"
 
@@ -64,6 +64,8 @@
        5. Added methods "person" and "messageSender" which launch a PersonModel
           and a Message Sender respectively.
        27Feb13: Commented-out several 'say's.
+       08May13: Modified some comments - no change to function.
+     v03-00 11May13: Added triggering of event "appClosing".  
 
 ------------------------------------------------------------------------------*/
 
@@ -73,6 +75,7 @@
 call "OrderMgr\RequiresList.rex"
 
 ::REQUIRES "ooDialog.cls"
+::REQUIRES "Support\View.rex"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
@@ -82,8 +85,8 @@ call "OrderMgr\RequiresList.rex"
   access to the various functions required for managing Sales orders.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderMgrView SUBCLASS RcDialog PUBLIC INHERIT ResizingAdmin
-
+--::CLASS OrderMgrView SUBCLASS RcDialog PUBLIC INHERIT ResizingAdmin
+  ::CLASS OrderMgrView SUBCLASS View PUBLIC INHERIT ResizingAdmin
   ::ATTRIBUTE lv PRIVATE	-- The ListView that contains the icons.
 
   /*----------------------------------------------------------------------------
@@ -343,9 +346,14 @@ call "OrderMgr\RequiresList.rex"
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD cancel
-    --say "OrderMgrView-cancel-01."
     response = askDialog(.HRSomv~QExit, "N")
-    if response = 1 then forward class (super)
+    say "OrderMgrView-cancel-01: response to ask dialog =" response
+    if response = 0 then return
+    -- Response was 1 so close down:
+    eventMgr = .local~my.EventMgr
+    r = eventMgr~triggerEvent("appClosing")  -- if r = 0 then no-one's registered.
+    say "OrderMgrView-cancel: triggerEvent response =" r
+    forward class (super)				-- Closes the whole app.
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD ok
@@ -360,8 +368,7 @@ call "OrderMgr\RequiresList.rex"
     /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD showModel UNGUARDED
     /* Surface the view of an icon (i.e. view of the model represented by the icon).
-       Ideally, if already instantiated, surface it, else makeInstance.
-       In this version, get as many as you like - but all have the same data!.*/
+    */
     expose idObjectMgr
     use arg record				-- record is a directory object.
     className = record~ID

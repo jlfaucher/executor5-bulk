@@ -80,6 +80,7 @@
 ::CLASS OrderFormView SUBCLASS RcView PUBLIC
 
   ::ATTRIBUTE tabContent
+  ::ATTRIBUTE orderTotals
 
   ::METHOD newInstance CLASS PUBLIC
     use strict arg idModel, rootDlg
@@ -118,7 +119,7 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate unguarded
-    expose rootDlg idModelInstance orderData cd1 cd2
+    expose rootDlg idModelInstance orderData cd1 cd2 orderTotal custDiscount taxRate eventMgr
     use strict arg idModelInstance, rootDlg
     forward class (super) continue
     orderData = RESULT
@@ -129,23 +130,33 @@
     tabContent = .array~of(cd1, cd2)
     --say "OrderFormView-activate-01: tabContent =" tabContent[1]||"," tabContent[2]
     cd1~ownerDialog = self
-    self~prep(tabContent)
-    say "OrderFormView-activate-03: OrderLinesDlg idHash =" cd2~identityHash 
+    self~prep(tabContent)     
     
     -- Send dlg id to the two Control Dialogs:
     cd1~setOrderFormDlg(self)
     cd2~setOrderFormDlg(self)
     
+    -- Set up Order Totals and initialise CustDiscount:
+    orderTotal = 0
+    --orderTotals = .OrderTotals~new
+    custDiscount = 0		-- Default customer discount
+    taxRate = 0.05		-- 5% tax on discounted order total
+    
+    -- Tell EventMgr that we want to know when app closes:
+    eventMgr = .local~my.EventMgr
+    r = eventMgr~registerInterest("appClosing",self)
+    say "OrderFormView-activate-03: eventMgr response =" r
+    
     self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_ORDFORM_DLGICON")
-    --say "OrderFormView-activate-03."
+    --say "OrderFormView-activate-04."
     return
-
+    
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
     -- Called by ooDialog after SHOWTOP.
     expose menuBar ecOrderNo orderData tabContent tabControl orderDate -
-           stCost stDisc stDiscCost stTax stTot orderTotals
+           stCost stDisc stDiscCost stTax stTot orderTotals controlDialogsClosed
     --say "OrderFormView-initDialog-01"
 
     menuBar~attachTo(self)
@@ -182,21 +193,43 @@
     
     ecOrderNo~setText(orderData[formNumber])
     
-    orderTotals = .OrderTotals~new
-    
     -- Tab stuff starts:
     -- Determine the position and size of the display area of the tab control.
     self~calculateDisplayArea
     -- Position and show the control dialog used for the first page of the tab.
     self~positionAndShow(1)
     -- tab stuff ends
-
+    controlDialogsClosed = .false
 
     
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD addOrderLineToTotals PUBLIC
-    expose custDiscount  
-    use arg totals
+  ::METHOD showTotals PUBLIC
+    expose custDiscount taxRate stCost stDisc stDiscCost stTax stTot orderTotal
+    use arg orderLineAmount
+    --if custDiscount = "CUSTDISCOUNT" then custDiscount = 0  -- If user enters products first.
+    --say "OrderFormView-showTotals-01: custDiscount, orderLineAmount =" custDiscount orderLineAmount
+    
+    orderTotal = orderTotal + orderLineAmount
+    discount = (orderTotal * custDiscount)~format(,0)
+    say "OrderFormView-showTotals-01: discount =" discount
+    discountedTotal = orderTotal - discount
+    tax = (discountedTotal * taxRate)~format(,0)
+    finalTotal = discountedTotal + tax  
+    --say "OrderFormView-showTotals-02: discount / tax =" discount||" / "||tax
+
+    -- Format numbers from nnnnn to nnn.nn for display:
+    x = myFormat(orderTotal); say "OrderFormView-showTotals-03:" x
+    stCost~setText(myFormat(orderTotal))
+    --stCost~setText(         (orderTotal/100)~format(,2))
+    stDisc~setText(myFormat(discount))
+    --if discount = 0 then do; stDisc~setText("0.00"); end
+    --else do; stDisc~setText((discount/100)~format(,2)); end
+    stDiscCost~setText(myFormat(discountedTotal))
+    --stDiscCost~setText(     (discountedTotal/100)~format(,2))
+    stTax~setText(myFormat(tax))
+    --stTax~setText(          (tax/100)~format(,2))
+    stTot~setText(myFormat(finalTotal))
+    --stTot~setText(          (finalTotal/100)~format(,2))
     
     
     
@@ -204,7 +237,7 @@
   ::METHOD setCustDiscount
     expose custDiscount
     use arg custDiscount
-    --say "OrderFormView-setDustDiscount-01: discount =" custDiscount
+    say "OrderFormView-setDustDiscount-01: discount =" custDiscount
     -- Use only first character - A, B or C:
     code = custDiscount~left(1)
     select    
@@ -215,6 +248,10 @@
     end
     say "OrderFormView-setDustDiscount-01: discount =" custDiscount
 
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  --::METHOD updateTotals
+  
+    
   /*----------------------------------------------------------------------------
     Event-Handler Methods - Button Events
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -247,6 +284,104 @@
   ::METHOD noMenuFunction UNGUARDED
     use arg title
     ret = MessageDialog(.HRSofv~NoMenu, self~hwnd, title, 'WARNING')
+
+  /*----------------------------------------------------------------------------
+    Methods to tidy up when Order Form is closed.
+   ---------------------------------------------------------------------------*/
+
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Cancel: This method over-rides the default Windows action of 'cancel window'
+            for an Escape key. 'endExecution' is required else dialog hangs when
+            user tried to close.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD cancel
+    expose tabContent controlDialogsClosed
+    say "OrderFormView-cancel-01."
+    self~deRegisterInterest 		-- de-register interest in any events
+    if controlDialogsClosed = .true then do
+      say "OrderFormView-cancel-02: Control Dilaogs closed."
+      return self~cancel~super
+    end
+    else do -- Control dialogs not yet cancelled
+      response = askDialog(.HRSofv~QExit, "N")
+      if response = 1 then do   		   -- '1' means the 'Yes' button pressed
+        self~closeControlDialogs
+      end
+      return self~cancel:super
+    end
+    
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD ok
+    -- Invoked when enter key pressed - if passed to superclass, cancels dialog.
+    say "OrderFormView-ok-01."
+    return  -- do not close dialog - appears as a no-op to the user.
+    
+  
+  /*----------------------------------------------------------------------------
+    notify - Invoked by the Event Manager when a registered event occurs.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD notify PUBLIC
+    expose controlDialogsClosed
+    use strict arg event
+    say "OrderFormView-notify-01: event =" event
+    if event = "appClosing" then do    	    
+      self~closeControlDialogs
+      controlDialogsClosed = .true
+    end
+
+
+  /*----------------------------------------------------------------------------
+    closeControlDialogs.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD closeControlDialogs PRIVATE
+    expose tabContent
+    do dlg over tabContent
+      dlg~endExecution(.false)
+    end
+  
+    
+  /*----------------------------------------------------------------------------
+    myFormat - A routine to format numbers into currency - e.g. converts
+               "123456" into "1.234.56".
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::ROUTINE myFormat
+    use arg number
+    number = number~right(9,0)	-- left-pad with zeros
+    parse var number mill 2 thou 5 hun 8 dec
+    decs = "."||dec
+    select
+      when mill > 0 then number = mill||","||thou||","||hun||decs
+      when thou > 0 then number = thou~strip(,0)||","||hun||decs
+      when hun  > 0 then number = hun~strip(,0)||decs
+      otherwise number = "0"||decs
+    end
+    return number
+  /*--------------------------------------------------------------------------*/
+
+
+  /*----------------------------------------------------------------------------
+    deRegisterInterest - tell Event Manager that any events registered are no
+                         longer of interest.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD deRegisterInterest PRIVATE
+    expose eventMgr
+    say "OrderFormView-deRegisterInterest-01."
+    eventMgr~deRegisterInterest("appClosing",self)
+
+    
+  /*----------------------------------------------------------------------------
+    leaving - invoked by ooDialog when a dialog closes - but not when it's 
+              closed by closing the app - i.e. closing OrderMgrView.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD leaving UNGUARDED
+    expose tabcontent cd1 cd2
+    say "OrderFormView-leaving-01."
+/*    do dlg over tabContent
+      dlg~endExecution(.false)
+    end
+*/    --forward class (super) continue
 
    
   /*----------------------------------------------------------------------------
@@ -359,41 +494,8 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-  /*----------------------------------------------------------------------------
-    Methods to tidy up when Order Form is closed.
-   ---------------------------------------------------------------------------*/
-
-  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    Cancel: This method over-rides the default Windows action of 'cancel window'
-            for an Escape key. 'endExecution' is required else dialog hangs when
-            user tried to close.
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD cancel
-    expose tabContent
-    say "OrderFormView-cancel-01."
-
-    response = askDialog(.HRSofv~QExit, "N")
-    if response = 1 then do /*forward class (super) */ -- '1' means the 'Yes' button pressed
-    do dlg over tabContent
-      dlg~endExecution(.false)
-    end
-    return self~cancel:super
-    --return self~ok:super
-    end
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-
-
-  /*----------------------------------------------------------------------------
-    leaving - invoked by ooDialog when a dialog closes.
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/*  ::METHOD leaving UNGUARDED
-    expose tabcontent ???
-    expose cd1 cd2
-    say "OrderFormView-leaving-01."
-    forward class (super) continue
-*/
 /*============================================================================*/
 
 
@@ -401,10 +503,8 @@
 /*==============================================================================
   CustDetailsDlg - a Page in the OrderFormView
   -------------
-
   The "view" (or "gui") Customer Ordering part of the OrderFormView component.
   ----------------------------------------------------------------------------*/
-
   ::CLASS CustDetailsDlg SUBCLASS RcControlDialog
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -454,7 +554,8 @@
 
   
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    findCustomer - Get Customer details for the Cust Number in ecCustNum. 
+    findCustomer - invoke when the "Find Customer" button is pressed.
+                   Gets Customer details for the Cust Number in ecCustNum. 
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD findCustomer UNGUARDED
     expose ecCustNum ecCustName ecCustAddr ecCustDisc pbFindCust objectMgr dlgOrderForm
@@ -480,8 +581,14 @@
     strCustAddr = strCustAddr||" "||dirCustData["Zip"]
     ecCustAddr~setText(strCustAddr)
     ecCustDisc~setText(dirCustData["CustDisc"])
-
+    -- disble the "Find Customer" button.
+    pbFindCust~disable  
+    -- Finally, tell the OrderFormView about what the Customer discount code is:
     dlgOrderForm~setCustDiscount(dirCustData["CustDisc"])
+    -- Re-calc totals to take account of Customer Discount if Cust entered after
+    -- order lines or a different Customer is selected half-way through the order.
+    dlgOrderForm~showTotals(0)		-- provide ordeLineAmount as zero.		
+  /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
     
     
 /*==============================================================================
@@ -518,7 +625,10 @@
     self~connectButtonEvent("IDC_ORDLINES_ADD","CLICKED",addOrderLine)
     self~connectButtonEvent("IDC_ORDLINES_DELETE","CLICKED",deleteOrderLine)
     
-    say "OrderLinesDlg-initDialog-02: self idHash =" self~identityHash 
+    --say "OrderLinesDlg-initDialog-02: self idHash =" self~identityHash
+    -- Set focus on the Product Number field:
+    self~focusControl("IDC_ORDLINES_PRODNO")
+    --pbAddOrderLine~state = "FOCUS"
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
   
@@ -541,26 +651,27 @@
 
   
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    addProduct
+    addOrderLine
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD addOrderLine UNGUARDED
     expose ecProdNum ecQty lvOrderItems objectMgr OrderFormDlg
     say "OrderFormView/OrderLinesDlg-addOrderLine-01."
-    prodNum = ecProdNum~getLine(1)
-    qtyOrdered     = ecQty~getLine(1)
+    -- Get data that user has entered:
+    prodNum    = ecProdNum~getLine(1)
+    qtyOrdered = ecQty~getLine(1)
     --say "OrderFormView/OrderLinesDlg-addOrderLine-02: prodNum =" prodNum
     if qtyOrdered < 1 then do
       r = ErrorDialog(.HRSofv~noQty)      
       return
     end
+    -- Get product details from Product Model component:
     idProduct = objectMgr~getComponentId("ProductModel",prodNum)
-    say "OrderFormView/OrderLinesDlg-addOrderLine-03: idProduct =" idProduct
+    --say "OrderFormView/OrderLinesDlg-addOrderLine-03: idProduct =" idProduct
     if idProduct = .false then do
       r = ErrorDialog(.HRSofv~noProduct)
       --pbFindCust~disable
       return
     end
-    -- Get product data:
     dirProductData = idProduct~query
     if dirProductData = .false then do
       say "OrderFormView//OrderLinesDlg-addOrderLine-04: Product not found."
@@ -571,13 +682,18 @@
     total = qtyOrdered*dirProductData["ListPrice"]
     --say "OrderFormView//OrderLinesDlg-addOrderLine-05: total =" total
     -- Ensure display total has 2 decimal places:
-    displayTotal = total/100~format(,2) 
+    --displayTotal = total/100~format(,2) 
+    displayTotal = myFormat(total)
     lvOrderItems~addRow( , , prodnum, dirProductData["ProdName"], -
                              dirProductData["UOM"], qtyOrdered, displayTotal)
     
     -- Send amount of Order to the OrderFormView dialog:
-    OrderFormDlg~addOrderLineToTotals(total)
+    OrderFormDlg~showTotals(total)
     
+    -- Blank out fields ready for next order line:
+    ecProdNum~settext("")
+    ecQty~settext("")
+    self~focusControl("IDC_ORDLINES_PRODNO")
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
 
@@ -605,7 +721,6 @@
     --objectMgr~removeView(viewClass, viewInstance)
     say "OrderFormView/OrderLinesDlg-leaving-01."
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
-    
 
 /*============================================================================*/
 
@@ -618,18 +733,18 @@
    This class is the set of Order Totals. 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
   ::CLASS OrderTotals PUBLIC
-  ::ATTRIBUTE cost
-  ::ATTRIBUTE discount
-  ::ATTRIBUTE discountedCost
-  ::ATTRIBUTE tax
-  ::ATTRIBUTE taxedCost
+    ::ATTRIBUTE amount
+    ::ATTRIBUTE discount
+    ::ATTRIBUTE discountedAmount
+    ::ATTRIBUTE tax
+    ::ATTRIBUTE taxedAmount
   
   ::METHOD init
-    self~cost           = 0.00
-    self~discount       = 0.00
-    self~discountedCost = 0.00
-    self~tax            = 0.00
-    self~taxedCost      = 0.00
+    self~amount           = 0.00
+    self~discount         = 0.00
+    self~discountedAmount   = 0.00
+    self~tax              = 0.00
+    self~taxedAmount      = 0.00
   
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -660,16 +775,34 @@
   ::METHOD addLine
     use strict arg dirLine
         
-    
-  
   ::METHOD delLine
     use strict arg lineNo
-    
-
-  
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
-    
+/*//////////////////////////////////////////////////////////////////////////////
+  ==============================================================================
+  Order Header		  				          v01-00 06May13
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+  ::CLASS OrderHeader
+    ::attribute orderNumber
+    ::attribute orderDate
+    ::attribute custNo
+    ::attribute custName
+    ::attribute address
+    ::attribute discount
+/*============================================================================*/
+
+
+/*//////////////////////////////////////////////////////////////////////////////
+  ==============================================================================
+  Order Line		  				          v01-00 06May13
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+  ::CLASS OrderLine
+    ::attribute prodNo
+    ::attribute prodName
+    ::attribute UOM
+    ::attribute qty
+    ::attribute amount    
 /*============================================================================*/
 
 
