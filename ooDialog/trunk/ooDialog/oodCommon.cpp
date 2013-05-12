@@ -2419,6 +2419,7 @@ bool getFormattedErrMsg(char **errBuff, uint32_t errCode, uint32_t *thisErr)
 
     return true;
 }
+
 /**
  * Formats a HRESULT error code and prints it to the console.  This is more for
  * use as an internal debugging tool.
@@ -2446,6 +2447,7 @@ bool printHResultErr(CSTRING api, HRESULT hr)
     safeLocalFree(msg);
     return false;
 }
+
 /**
  * Fills in a RECT structure using an argument array passed to a Rexx object
  * method.

@@ -982,9 +982,9 @@ RexxObjectPtr invalidReturnWholeNumberException(RexxThreadContext *c, CSTRING na
  */
 void notBooleanReplyException(RexxThreadContext *c, CSTRING method, RexxObjectPtr actual)
 {
-    TCHAR buf[256];
-    _snprintf(buf, sizeof(buf), "The return from method %s() must be a logical; found %s",
-              method, c->ObjectToStringValue(actual));
+    char buf[256];
+    snprintf(buf, sizeof(buf), "The return from method %s() must be a logical; found %s",
+             method, c->ObjectToStringValue(actual));
 
     c->RaiseException1(Rexx_Error_Execution_user_defined, c->String(buf));
 }
