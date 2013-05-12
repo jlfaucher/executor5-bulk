@@ -42,7 +42,17 @@
  *  Demonstrates how to load and use an ooSQLite package file.
  *
  *  Loading an ooSQLite package file is very similar to using the loadExtension
- *  method to load a SQLite extension library
+ *  method to load a SQLite extension library.  If the loadPackage() method is
+ *  passed a valid database connection, all the collations, functions, and
+ *  aggragetes are automatically registered for the database connection.
+ *
+ *  Once loaded, the register() method can be used to automatically register
+ *  everything in the pacakge for any database connection passed to the register
+ *  method.
+ *
+ *  Also, once loaded, individual collations and functions can be retrieved from
+ *  the package object and used individually in the createCollation() or
+ *  createFunction() methods.
  *
  */
 
@@ -61,6 +71,8 @@
 	dbName = 'ooFoods.rdbx'
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
+  -- Load the package and automatically register everything in the package for
+  -- out open database connection.
   success = .ooSQLExtensions~loadPackage(packageFile, dbConn)
   if \ success then do
     say 'Failed to load package'
@@ -128,10 +140,17 @@
 
   ret = dbConn~close
 
-  -- Open a new database connection to the same database.
+  -- Open a new database connection.  This new connection will not have any
+  -- user defined collations, functions, or aggregates.  These user defined
+  -- things can only be registered per database connection.
   dbConn2 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  -- Get our already loaded package from the .ooSQLExtensions class object.
+  -- This object is essentially a manager for all external extensions.
   package = .ooSQLExtensions~getPackage('examplePackage')
 
+  -- Now have the package register everything in it automatically with the
+  -- second database connection.
   package~register(dbConn2)
 
   sql = "SELECT half(11);"
@@ -147,8 +166,11 @@
 
   dbConn2~close
 
-
+  -- Another example with a new database connection.
   dbConn3 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  -- Get the package and rather than register everything in the package,
+  -- register a single collation from the package.
   package = .ooSQLExtensions~getPackage('examplePackage')
 
   collation = package~getCollation('reverse')
@@ -166,6 +188,46 @@
   z = printResultSet(resultSet)
 
   dbConn3~close
+
+  -- Similar example to the last one.  This time only register a function and
+  -- an aggregate with a new database connection.
+  dbConn4 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  -- Get the package and register a single function and a single aggregate from
+  -- the package.
+  package = .ooSQLExtensions~getPackage('examplePackage')
+
+  function  = package~getFunction('half')
+  aggregate = package~getFunction('strAggregate')
+
+  dbConn4~createFunction('half', function)
+  dbConn4~createFunction('strAggregate', aggregate)
+
+  sql = "SELECT half(11);"
+  resultSet = dbConn4~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printResultSet(resultSet)
+
+
+  sql = "SELECT season, strAggregate(name) from episodes group by season;"
+  resultSet = dbConn4~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printStrAgg(resultSet)
+  say
+
+  ret = dbConn4~close
 
   return ret
 

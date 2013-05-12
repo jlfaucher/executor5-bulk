@@ -204,6 +204,7 @@ static int ebcdic(void* data, int len1, const void* str1, int len2, const void* 
 }
 
 
+/* struct for use in the strAggregate aggregate function below. */
 typedef struct _StrAggCntx
 {
     size_t   count;
@@ -211,9 +212,40 @@ typedef struct _StrAggCntx
 } StrAggCntx;
 typedef StrAggCntx *pStrAggCntx;
 
+/**
+ * An example of a user defined aggregate.  This example is a simple rewrite of
+ * an example in "Definitive Guide to SQLite", Second Edition, by Grant Allen
+ * and Mike Owens, published by Apress.
+ *
+ * The aggregate expects 1 text argument and concatenates each string to produce
+ * its result.
+ *
+ * An example usage:
+ *
+ * SELECT season, strAggregate(name) from episodes group by season;
+ *
+ * This will concatenate the name of each episode into a single string listing
+ * each episode name, grouped by season.
+ *
+ * Each aggregate can, and probably needs to, allocate its individual block to
+ * keep track of what it is aggragating.  This then is specific to the unique
+ * instance of the aggregate.  Allocationg the block is done through
+ * sqlite3_aggregate_context().
+ *
+ * At the first invocation, this SQLite function will allocated a zero filled
+ * block of the size requested.  On each subsequent invocation, this function
+ * simple returns the already allocated block.
+ *
+ * After that, is is simply a matter of concatenating the new string to the
+ * accumulated result string.
+ *
+ * @param sqlCntx
+ * @param countArgs
+ * @param values
+ */
 void strAggStep(sqlite3_context* sqlCntx, int countArgs, sqlite3_value** values)
 {
-  pStrAggCntx psac = (pStrAggCntx) sqlite3_aggregate_context(sqlCntx, sizeof(StrAggCntx));
+  pStrAggCntx psac = (pStrAggCntx)sqlite3_aggregate_context(sqlCntx, sizeof(StrAggCntx));
   if ( psac == NULL )
   {
       sqlite3_result_error_nomem(sqlCntx);
@@ -222,8 +254,8 @@ void strAggStep(sqlite3_context* sqlCntx, int countArgs, sqlite3_value** values)
 
   static const char comma[] = ", ";
 
-  const  char *txt = (const char *)sqlite3_value_text(values[0]);
-  size_t len       = strlen(txt);
+  const  char *text = (const char *)sqlite3_value_text(values[0]);
+  size_t len       = strlen(text);
 
   if ( psac->result == NULL )
   {
@@ -234,21 +266,29 @@ void strAggStep(sqlite3_context* sqlCntx, int countArgs, sqlite3_value** values)
         return;
     }
 
-    memcpy(psac->result, txt, len + 1);
+    memcpy(psac->result, text, len + 1);
     psac->count = len;
   }
   else
   {
-    //const size_t commaLen = sizeof(comma);
     const size_t commaLen = strlen(comma);
     psac->result = (char *)sqlite3_realloc(psac->result, (int)(psac->count + len + commaLen + 1));
     memcpy(psac->result +  psac->count, comma, commaLen);
     psac->count += commaLen;
-    memcpy(psac->result + psac->count, txt, len + 1);
+    memcpy(psac->result + psac->count, text, len + 1);
     psac->count += len;
   }
 }
 
+/**
+ * Implementation of the xFinal function for the strAggregate user define
+ * aggregate.
+ *
+ * Here we simple set the result of the aggregate to the text value in our
+ * accumulator.
+ *
+ * @param sqlCntx
+ */
 void strAggFinalize(sqlite3_context* sqlCntx)
 {
     pStrAggCntx psac = (pStrAggCntx) sqlite3_aggregate_context(sqlCntx, sizeof(StrAggCntx));

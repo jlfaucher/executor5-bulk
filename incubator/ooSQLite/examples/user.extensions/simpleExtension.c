@@ -73,6 +73,7 @@
 
 
 #include <sqlite3ext.h>
+#include <string.h>
 
 SQLITE_EXTENSION_INIT1
 
@@ -218,6 +219,106 @@ static int ebcdicCollation(void* data, int len1, const void* str1, int len2, con
     return (i == min) ? len1 - len2 : asciiToEbcdic[*a] - asciiToEbcdic[*b];
 }
 
+/* struct for use in the strAggregate aggregate function below. */
+typedef struct _StrAggCntx
+{
+    size_t   count;
+    char    *result;
+} StrAggCntx;
+typedef StrAggCntx *pStrAggCntx;
+
+/**
+ * An example of a user defined aggregate.  This example is a simple rewrite of
+ * an example in "Definitive Guide to SQLite", Second Edition, by Grant Allen
+ * and Mike Owens, published by Apress.
+ *
+ * The aggregate expects 1 text argument and concatenates each string to produce
+ * its result.
+ *
+ * An example usage:
+ *
+ * SELECT season, strAggregate(name) from episodes group by season;
+ *
+ * This will concatenate the name of each episode into a single string listing
+ * each episode name, grouped by season.
+ *
+ * Each aggregate can, and probably needs to, allocate its individual block to
+ * keep track of what it is aggragating.  This then is specific to the unique
+ * instance of the aggregate.  Allocationg the block is done through
+ * sqlite3_aggregate_context().
+ *
+ * At the first invocation, this SQLite function will allocated a zero filled
+ * block of the size requested.  On each subsequent invocation, this function
+ * simple returns the already allocated block.
+ *
+ * After that, is is simply a matter of concatenating the new string to the
+ * accumulated result string.
+ *
+ * @param sqlCntx
+ * @param countArgs
+ * @param values
+ */
+void strAggStep(sqlite3_context* sqlCntx, int countArgs, sqlite3_value** values)
+{
+    static const char  comma[] = ", ";
+    const  char       *text    = NULL;
+    size_t            len      = 0;
+
+  pStrAggCntx psac = (pStrAggCntx)sqlite3_aggregate_context(sqlCntx, sizeof(StrAggCntx));
+  if ( psac == NULL )
+  {
+      sqlite3_result_error_nomem(sqlCntx);
+      return;
+  }
+
+  text = (const char *)sqlite3_value_text(values[0]);
+  len  = strlen(text);
+
+  if ( psac->result == NULL )
+  {
+    psac->result = (char *)sqlite3_malloc((int)len + 1);
+    if ( psac->result == NULL )
+    {
+        sqlite3_result_error_nomem(sqlCntx);
+        return;
+    }
+
+    memcpy(psac->result, text, len + 1);
+    psac->count = len;
+  }
+  else
+  {
+    const size_t commaLen = strlen(comma);
+    psac->result = (char *)sqlite3_realloc(psac->result, (int)(psac->count + len + commaLen + 1));
+    memcpy(psac->result +  psac->count, comma, commaLen);
+    psac->count += commaLen;
+    memcpy(psac->result + psac->count, text, len + 1);
+    psac->count += len;
+  }
+}
+
+/**
+ * Implementation of the xFinal function for the strAggregate user define
+ * aggregate.
+ *
+ * Here we simple set the result of the aggregate to the text value in our
+ * accumulator.
+ *
+ * @param sqlCntx
+ */
+void strAggFinalize(sqlite3_context* sqlCntx)
+{
+    pStrAggCntx psac = (pStrAggCntx) sqlite3_aggregate_context(sqlCntx, sizeof(StrAggCntx));
+    if ( psac == NULL || psac->result == NULL )
+    {
+        sqlite3_result_error_nomem(sqlCntx);
+        return;
+    }
+
+    sqlite3_result_text(sqlCntx, psac->result, (int)psac->count, sqlite3_free);
+}
+
+
 /**
  * SQLite invokes this routine once when it loads the extension.  Create new
  * functions, collating sequences, and virtual table modules here.  This is
@@ -235,7 +336,8 @@ int sqlite3_extension_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routi
 {
   SQLITE_EXTENSION_INIT2(pApi)
 
-  sqlite3_create_function(db, "half", 1, SQLITE_ANY, 0, halfFunc, 0, 0);
+  sqlite3_create_function(db, "half", 1, SQLITE_UTF8, 0, halfFunc, 0, 0);
+  sqlite3_create_function(db, "strAggregate", 1, SQLITE_UTF8, 0, 0, strAggStep, strAggFinalize);
   sqlite3_create_collation_v2(db, "reverse", SQLITE_UTF8, NULL, reverseCollation, NULL);
   sqlite3_create_collation_v2(db, "ebcdic", SQLITE_UTF8, NULL, ebcdicCollation, NULL);
 

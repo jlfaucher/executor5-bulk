@@ -140,7 +140,7 @@ typedef struct _SQLiteModuleEntry
     const sqlite3_module *moduleTab;        // The SQLite3 defined struct holding the callbacks
     fnXDestroy            entryDestroy;     // resolved destroy function entry point
     fnXGetUserData        entryGetUserData; // If not null will be invoked before sqlite3_create_collation to retrieve user data
-                                            //pointer instead of using pUserData.
+                                            // pointer instead of using pUserData.
     void                 *pUserData;        // User (client)) data for xCreate/xConnect
     int                   reserved2;        // reserved for future use
 } SQLiteModuleEntry;

@@ -141,6 +141,25 @@ extern void    dbgPrintClassID(RexxMethodContext *c, RexxObjectPtr obj);
 extern CSTRING strPrintClassID(RexxThreadContext *c, RexxObjectPtr obj);
 extern CSTRING strPrintClassID(RexxMethodContext *c, RexxObjectPtr obj);
 
+/**
+ * Return true if the Rexx object is equivalent to true, otherwise return false.
+ *
+ * Note that a return of false does not imply that the Rexx object is equivalent
+ * to false.
+ *
+ * @param c
+ * @param obj
+ *
+ * @return bool
+ */
+inline bool isTrue(RexxThreadContext *c, RexxObjectPtr obj)
+{
+    return getLogical(c, obj) == 1;
+}
+inline bool isTrue(RexxMethodContext *c, RexxObjectPtr obj)
+{
+    return getLogical(c->threadContext, obj) == 1;
+}
 
 /**
  *  Message "msg" did not return a result

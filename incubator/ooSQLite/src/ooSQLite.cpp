@@ -5618,7 +5618,6 @@ RexxMethod8(RexxObjectPtr, oosqlconn_createFunction, CSTRING, functionName, Rexx
     {
         return result;
     }
-    RexxMethodContext *c = context;
 
     // Determine if we are removing this function.
     if ( callbackObj == TheZeroPointerObj && callbackOpt2 == TheZeroPointerObj && callbackOpt3 == TheZeroPointerObj )
@@ -5638,21 +5637,21 @@ RexxMethod8(RexxObjectPtr, oosqlconn_createFunction, CSTRING, functionName, Rexx
         return context->Int32(rc);
     }
 
-    // We are not removing, arg 3 is required.
-    if ( argumentOmitted(3) )
-    {
-        missingArgException(context->threadContext, 3);
-        return result;
-    }
-
-    if ( c->IsPointer(callbackObj) )
+    if ( context->IsPointer(callbackObj) )
     {
         fnXStep     xStep = NULL;
         fnXFinal    xFnl  = NULL;
         fnXDestroy  xDst  = NULL;
         void       *usrD = NULL;
 
-        fnXFunc xFunc = (fnXFunc)c->PointerValue((RexxPointerObject)callbackObj);
+        // If callbackObj is a pointer, arg 3 is required.
+        if ( argumentOmitted(3) )
+        {
+            missingArgException(context->threadContext, 3);
+            return result;
+        }
+
+        fnXFunc xFunc = (fnXFunc)context->PointerValue((RexxPointerObject)callbackObj);
         if ( xFunc == NULL )
         {
             if ( argumentOmitted(4) )
@@ -5667,49 +5666,49 @@ RexxMethod8(RexxObjectPtr, oosqlconn_createFunction, CSTRING, functionName, Rexx
                 return result;
             }
 
-            if ( ! c->IsPointer(callbackOpt2) )
+            if ( ! context->IsPointer(callbackOpt2) )
             {
                 wrongClassException(context->threadContext, 4, "Pointer", callbackOpt2);
                 return result;
             }
-            if ( ! c->IsPointer(callbackOpt3) )
+            if ( ! context->IsPointer(callbackOpt3) )
             {
                 wrongClassException(context->threadContext, 5, "Pointer", callbackOpt3);
                 return result;
             }
 
-            xStep = (fnXStep)c->PointerValue((RexxPointerObject)callbackOpt2);
-            xFnl  = (fnXFinal)c->PointerValue((RexxPointerObject)callbackOpt3);
+            xStep = (fnXStep)context->PointerValue((RexxPointerObject)callbackOpt2);
+            xFnl  = (fnXFinal)context->PointerValue((RexxPointerObject)callbackOpt3);
         }
 
         if ( argumentExists(6) )
         {
-            if ( ! c->IsPointer(callbackOpt4) )
+            if ( ! context->IsPointer(callbackOpt4) )
             {
                 wrongClassException(context->threadContext, 6, "Pointer", callbackOpt4);
                 return result;
             }
-            xDst = (fnXDestroy)c->PointerValue((RexxPointerObject)callbackOpt2);
+            xDst = (fnXDestroy)context->PointerValue((RexxPointerObject)callbackOpt2);
         }
 
         if ( argumentExists(7) )
         {
-            if ( ! c->IsPointer(userData) )
+            if ( ! context->IsPointer(userData) )
             {
                 wrongClassException(context->threadContext, 7, "Pointer", userData);
                 return result;
             }
-            usrD = c->PointerValue((RexxPointerObject)userData);
+            usrD = context->PointerValue((RexxPointerObject)userData);
         }
 
         rc = sqlite3_create_function_v2(pConn->db, functionName, countArgs, SQLITE_UTF8, usrD, xFunc, xStep, xFnl, xDst);
-        return c->Int32(rc);
+        return context->Int32(rc);
     }
-    else if ( c->IsOfType(callbackObj, "OOSQLFUNCTION") )
+    else if ( context->IsOfType(callbackObj, "OOSQLFUNCTION") )
     {
-        pSQLiteFunctionEntry e = (pSQLiteFunctionEntry)c->ObjectToCSelf(callbackObj);
+        pSQLiteFunctionEntry e = (pSQLiteFunctionEntry)context->ObjectToCSelf(callbackObj);
         rc = registerFunction(context, e, pConn);
-        return c->Int32(rc);
+        return context->Int32(rc);
     }
 
     // Okay we are installing a function implemented in Rexx.
@@ -5717,7 +5716,7 @@ RexxMethod8(RexxObjectPtr, oosqlconn_createFunction, CSTRING, functionName, Rexx
     {
         if ( argumentExists(5) || argumentExists(6) )
         {
-            userDefinedMsgException(c->threadContext, "when defining a SQL function arguments 5 and 6 must be omitted");
+            userDefinedMsgException(context->threadContext, "when defining a SQL function arguments 5 and 6 must be omitted");
             return result;
         }
     }
@@ -9259,18 +9258,34 @@ void resetLibraryLastErr(RexxMethodContext *c, pCooSQLLibrary pcl)
  *
  * @note  We expect fmt to have exactly 1 %s in it.
  */
-void extensionsFormatLastErr(RexxMethodContext *c, uint32_t code, char *fmt, CSTRING insert)
+static void extensionsFormatLastErr(RexxMethodContext *c, pCooSQLExtensions pcext, uint32_t code, char *fmt, CSTRING insert)
 {
     char buf[512];
 
     snprintf(buf, 512, fmt, insert);
-    extensionsSetLastErr(c, c->String(buf), c->UnsignedInt32(code));
+
+    pcext->lastErrMsg  = c->String(buf);
+    pcext->lastErrCode = c->UnsignedInt32(code);
+    extensionsSetLastErr(c, pcext->lastErrMsg, pcext->lastErrCode);
 }
 
-void extensionsFormatLastErr(RexxMethodContext *c, uint32_t code, char *fmt, RexxObjectPtr insert)
+static void extensionsFormatLastErr(RexxMethodContext *c, pCooSQLExtensions pcext, uint32_t code, char *fmt, RexxObjectPtr insert)
 {
-    extensionsFormatLastErr(c, code, fmt, c->ObjectToStringValue(insert));
+    extensionsFormatLastErr(c, pcext, code, fmt, c->ObjectToStringValue(insert));
 }
+
+static void tooManyAutoRegistrations(RexxMethodContext *c, pCooSQLExtensions pcext, CSTRING type, size_t n)
+{
+    char buf[256];
+
+    snprintf(buf, 256, "the number of automatically registered % can not exceed %d", type, n);
+
+    pcext->lastErrCode = c->Int32(SQLITE_MISUSE);
+    pcext->lastErrMsg  = c->String(buf);
+
+    extensionsSetLastErr(c, pcext->lastErrMsg, pcext->lastErrCode);
+}
+
 
 /**
  * Checks that the current version of ooSQLite and SQLite meets the package
@@ -9577,10 +9592,7 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, RexxObjectPtr, libName, OPT
     pCooSQLLibrary pcl = (pCooSQLLibrary)context->ObjectToCSelf(library);
     if ( pcl == NULL )
     {
-        extensionsFormatLastErr(context, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLLibrary");
-
-        pcext->lastErrMsg  = (RexxStringObject)c->GetObjectVariable(LAST_ERR_MSG_ATTRIBUTE);
-        pcext->lastErrCode = c->GetObjectVariable(LAST_ERR_CODE_ATTRIBUTE);
+        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLLibrary");
         goto done_out;
     }
 
@@ -9653,15 +9665,45 @@ done_out:
  *  Loads an ooSQLite package library and optionally regsiters the collations,
  *  functions, modules in the package.
  *
- *  ooSQLPackage:
+ *  In addition, the package can be marked as an automatically registered
+ *  package.  Automatically registered packages are registered for every
+ *  database connection when the connection is opened.
  *
+ *  @param  libName  The name of the shared library in which the package
+ *                   resides.
  *
+ *  @param  makeAuto Make the package an automatically regisetered package
+ *
+ *  @param  dbConn   If this is an open database connection, the package will be
+ *                   registered on that connection immediately.
+ *
+ *  @return  True on success, false on error.  Check the lastErrMsg and
+ *           lastErrCode attributes for the reason on error.
+ *
+ *  @notes  Some errors will cause the last error attributes to be set, a few
+ *          raise exceptions.
+ *
+ *          We check for a valid argument 2 immediately, and quit on error,
+ *          rather than load the package and then quit.
  */
-RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_RexxObjectPtr, dbConn, CSELF, pCSelf)
+RexxMethod4(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_RexxObjectPtr, dbConn,
+            OPTIONAL_logical_t, makeAuto, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
     RexxObjectPtr     result = TheFalseObj;
     pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+
+    pCooSQLiteConn pConn = NULL;
+    if ( argumentExists(2) )
+    {
+        pConn = requiredDBConnectionArg(context, dbConn, 2);
+        if ( pConn == NULL )
+        {
+            goto done_out;
+        }
+    }
 
     RexxClassObject packageCls = rxGetContextClass(context, "ooSQLPackage");
     if ( packageCls == NULLOBJECT )
@@ -9678,10 +9720,7 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
     pCooSQLPackage pcp = (pCooSQLPackage)c->ObjectToCSelf(package);
     if ( pcp == NULL )
     {
-        extensionsFormatLastErr(context, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLPackage");
-
-        pcext->lastErrMsg  = (RexxStringObject)c->GetObjectVariable(LAST_ERR_MSG_ATTRIBUTE);
-        pcext->lastErrCode = c->GetObjectVariable(LAST_ERR_CODE_ATTRIBUTE);
+        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLPackage");
         goto done_out;
     }
 
@@ -9700,18 +9739,22 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
     }
 
     c->SendMessage2(pcext->packageTable, "PUT", package, c->String(pcp->packageEntry->packageName));
-    result = TheTrueObj;
 
-    // Check if we have a database connection to immediately register the functions
-    if ( argumentExists(2) )
+    if ( makeAuto )
     {
-        if ( ! c->IsOfType(dbConn, "ooSQliteConnection") )
+        pCooSQLiteClass pCsc = (pCooSQLiteClass)context->ObjectToCSelf(TheOOSQLiteClass);
+        if ( pCsc->countPackages >= MAX_AUTO_PACKAGES )
         {
-            wrongArgValueException(context->threadContext, 2, "ooSQliteConnection object", dbConn);
+            tooManyAutoRegistrations(context, pcext, "packages", MAX_AUTO_PACKAGES);
             goto done_out;
         }
-        pCooSQLiteConn pConn = dbToCSelf(context,  dbConn);
+        pCsc->autoPackages[pCsc->countPackages++] = pcp;
+    }
 
+    result = TheTrueObj;
+
+    if ( pConn != NULL )
+    {
         packageRegister(context, pcp, pConn);
     }
 
@@ -9732,13 +9775,12 @@ RexxMethod2(RexxObjectPtr, oosqlext_getPackage_cls, RexxObjectPtr, packageName, 
 
     resetExtensionsLastErr(context, pcext);
 
+    // TODO something wrong, is it NULLObject of .nil  see next function
     RexxObjectPtr result = c->SendMessage1(pcext->packageTable, "AT", packageName);
     if ( result == NULLOBJECT )
     {
-        extensionsFormatLastErr(context, OO_NO_SUCH_PACKAGE, OO_NO_SUCH_PACKAGE_STR, (char *)c->ObjectToStringValue(packageName));
-
-        pcext->lastErrMsg  = (RexxStringObject)c->GetObjectVariable(LAST_ERR_MSG_ATTRIBUTE);
-        pcext->lastErrCode = c->GetObjectVariable(LAST_ERR_CODE_ATTRIBUTE);
+        extensionsFormatLastErr(context, pcext, OO_NO_SUCH_PACKAGE, OO_NO_SUCH_PACKAGE_STR,
+                                (char *)c->ObjectToStringValue(packageName));
         result = TheNilObj;
     }
     return result;
@@ -9757,14 +9799,11 @@ RexxMethod2(RexxObjectPtr, oosqlext_getLibrary_cls, RexxObjectPtr, libraryName, 
 
     resetExtensionsLastErr(context, pcext);
 
+    // TODO something wrong, is it NULLObject of .nil  see above function
     RexxObjectPtr result = c->SendMessage1(pcext->libraryTable, "AT", libraryName);
     if ( result == TheNilObj )
     {
-        extensionsFormatLastErr(context, OO_NO_SUCH_LIBRARY, OO_NO_SUCH_LIBRARY_STR, libraryName);
-
-        pcext->lastErrMsg  = (RexxStringObject)c->GetObjectVariable(LAST_ERR_MSG_ATTRIBUTE);
-        pcext->lastErrCode = c->GetObjectVariable(LAST_ERR_CODE_ATTRIBUTE);
-        result = TheNilObj;
+        extensionsFormatLastErr(context, pcext, OO_NO_SUCH_LIBRARY, OO_NO_SUCH_LIBRARY_STR, libraryName);
     }
     return result;
 }
@@ -10108,7 +10147,8 @@ RexxMethod2(RexxObjectPtr, oosqllib_getHandle_cls, RexxObjectPtr, funcName, CSEL
     }
     else
     {
-        extensionsSetLastErr(context, pcl->lastErrMsg, pcl->lastErrCode);
+        // resolveFunction will have set this library's lastErrCode and
+        // lastErrMsg attributes.
         result = TheNilObj;
     }
 

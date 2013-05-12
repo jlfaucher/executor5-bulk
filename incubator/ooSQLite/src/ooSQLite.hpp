@@ -73,7 +73,7 @@
 #define OO_UNEXPECTED_RESULT_STR         "a SQLite API returned a result that is not believed possible"
 #define OO_BACKUP_IN_PROGRESS_STR        "ooSQLite method or function can not be invoked when backup is in progress"
 #define OO_BACKUP_DB_ERRSTATE_STR        "backup not possible, source or destination database is in error state"
-#define OO_NO_CSELF_STR                  "internal error failed to get %s C Self"
+#define OO_NO_CSELF_STR                  "internal error, failed to get %s C Self"
 #define OO_PACKAGE_NOT_VALID_STR         "the current version of ooSQLite or SQLite does not meet the package requirements"
 #define OO_NO_SUCH_PACKAGE_STR           "package %s is not loaded"
 #define OO_NO_SUCH_LIBRARY_STR           "library %s is not loaded"
@@ -83,6 +83,10 @@
 
 // Buffer size must be plus one -> 4096
 #define MAX_ENQUOTE_STRING  4095
+
+#define MAX_AUTO_PACKAGES         10
+#define MAX_AUTO_FUNCTIONS        10
+#define MAX_AUTO_COLLATIONS       10
 
 // Enum for the pragma commands in SQLite3.
 typedef enum
@@ -159,15 +163,6 @@ typedef enum
     aClassicStem         = 4
 } ResultSetType;
 
-
-/* Struct for the ooSQLite class object CSelf. */
-typedef struct _oosqlclassCSelf {
-    RexxObjectPtr      externTable;        // A Rexx table object used to hold shared library handles and external function pointers
-    RexxObjectPtr      nullObj;            // Default representation of SQL NULL
-    CSTRING            nullStr;            // If nullObj is a Rexx string object, the string value of the object
-    ResultSetType      format;             // The default format of a result set for the current process.
-} CooSQLiteClass;
-typedef CooSQLiteClass *pCooSQLiteClass;
 
 /* Struct for the ooSQLiteConnection object CSelf. */
 typedef struct _oosqlConnCSelf {
@@ -277,6 +272,20 @@ typedef struct _oosqlLibraryCSelf {
     bool                  valid;            // False if some error happened during init(), this object is not usable
 } CooSQLLibrary;
 typedef CooSQLLibrary *pCooSQLLibrary;
+
+/* Struct for the ooSQLite class object CSelf. */
+typedef struct _oosqlclassCSelf {
+    pCooSQLPackage        autoPackages[MAX_AUTO_PACKAGES];
+    pSQLiteFunctionEntry  autoFunctions[MAX_AUTO_FUNCTIONS];
+    pSQLiteCollationEntry autoCollations[MAX_AUTO_COLLATIONS];
+    RexxObjectPtr         nullObj;            // Default representation of SQL NULL
+    CSTRING               nullStr;            // If nullObj is a Rexx string object, the string value of the object
+    ResultSetType         format;             // The default format of a result set for the current process.
+    size_t                countPackages;
+    size_t                countFunctions;
+    size_t                countCollations;
+} CooSQLiteClass;
+typedef CooSQLiteClass *pCooSQLiteClass;
 
 /* Generic struct passed to several sqlite3 call back functions */
 typedef struct _genericCallback {

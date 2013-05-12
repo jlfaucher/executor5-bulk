@@ -79,8 +79,8 @@
     return .ooSQLExtensions~lastErrCode
   end
 
-  hReverse = lib~getHandle('reverse'); say 'hReverse:' hReverse
-  hEbcdic = lib~getHandle('ebcdic'); say   'hEbcdic: ' hEbcdic
+  hReverse = lib~getHandle('reverse')
+  hEbcdic = lib~getHandle('ebcdic')
 
   ret = dbConn~createCollation('REVERSE', hReverse)
   ret = dbConn~createCollation('EBCDIC', hEbcdic)
@@ -118,6 +118,46 @@
   pull
   z = printResultSet(resultSet)
 
+  -- Register a user defined function.  SQLite allows the creation of user
+  -- defined SQL functions and aggregates.  They are both created / registered
+  -- the same way.  There are 3 callbacks involve here: the function callback,
+  -- the step callback, and the final callback.
+  --
+  -- To register a function you must provide a valid function handle.  To
+  -- register an aggregate you must provide valid step and final handles.  In
+  -- the createFunction() method you can provide a zero pointer for the unneeded
+  -- handles.  The second argument in createFunction() is required.  The
+  -- ooSQLite nees this argument to determine the proper action.  So, to
+  -- register an aggregate you must use a zero pointer for the function callback
+  -- handle.  To register a function, you can either omit the step and final
+  -- callback handles, or provide zero pointers.
+
+
+  hHalf = lib~getHandle('halfFunc')
+  if hHalf == .nil then do
+    say 'Failed to get halfFunc function handle for the library "exampleLibrary"'
+    say '  Error code:   ' lib~lastErrCode
+    say '  Error message:' lib~lastErrMsg
+
+    return .ooSQLExtensions~lastErrCode
+  end
+
+  -- Create the function. We need the SQL name for the function, the handle to
+  -- the function, and the number of arguments to the function
+
+  -- We show 2 ways to create the function here.  One using the 4th and 5th
+  -- arguments, the other way omits the argumens.
+  --
+  -- Note that when you register a function or collation with the same name as
+  -- an existing collation or function, the second simply replaces the first.
+  -- So we can register the half function here twice and have the same effect.
+  -- Normally it would not make sense to do this in a regular program.  This is
+  -- just to illustrate how to use the createFunction
+  dbConn~createFunction('half', hHalf, 1, .ooSQLite~zeroPointer, .ooSQLite~zeroPointer)
+
+  -- and again, omit arg 4 and 5 has the same effect as using zero pointers.
+  dbConn~createFunction('half', hHalf, 1)
+
   sql = "SELECT half(11);"
   resultSet = dbConn~exec(sql, .true)
 
@@ -128,6 +168,44 @@
   say 'Hit enter to continue'
   pull
   z = printResultSet(resultSet)
+
+  -- Register a user defined aggregate.  For an aggregate we need the step and
+  -- the final function handles.  And we must provide a zero handle for the
+  -- function handle.
+  hStrAggFunc = .ooSQLite~zeroPointer
+  hStrAggStep = lib~getHandle('strAggStep')
+  if hStrAggStep == .nil then do
+    say 'Failed to get strAppStep function handle for the library "exampleLibrary"'
+    say '  Error code:   ' lib~lastErrCode
+    say '  Error message:' lib~lastErrMsg
+
+    return .ooSQLExtensions~lastErrCode
+  end
+
+  hStrAggFinal = lib~getHandle('strAggFinalize')
+  if hStrAggStep == .nil then do
+    say 'Failed to get strAggFinalize function handle for the library "exampleLibrary"'
+    say '  Error code:   ' lib~lastErrCode
+    say '  Error message:' lib~lastErrMsg
+
+    return .ooSQLExtensions~lastErrCode
+  end
+
+  -- Create the aggregate. We need the SQL name for the aggregate, the handle to
+  -- the function, which must be a zero pointer, the number of arguments to the
+  -- aggregate, and the step and final handles.
+  dbConn~createFunction('strAggregate', hStrAggFunc, 1, hStrAggStep, hStrAggFinal)
+
+  sql = "SELECT season, strAggregate(name) from episodes group by season;"
+  resultSet = dbConn~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printStrAgg(resultSet)
 
   ret = dbConn~close
 
@@ -162,6 +240,44 @@
   say
 
   return 0
+
+-- strAggregate specific utility routine used to print the strAggregate result
+-- set.
+::routine printStrAgg
+  use arg rs
+
+  colCount = 2
+  rowCount = rs~items
+
+  headers = rs[1]
+  line = headers[1]~left(9) || headers[2]
+
+  say line
+  say '='~copies(80)
+
+  do i = 2 to rowCount
+    record = rs[i]
+    if record[1] == .nil then line = 'NULL'~left(9) || record[2]
+    else line = record[1]~left(9) || record[2]
+
+    if line~length > 80 then do
+      say line~left(80)
+
+      line = ' '~copies(9) || line~substr(81)
+      do while line~length > 80
+        say line~left(80)
+        line = ' '~copies(9) || line~substr(81)
+      end
+    end
+    else do
+      say line
+    end
+    say
+  end
+  say
+
+  return 0
+
 
 ::routine getOSName
 
