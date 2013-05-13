@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2012 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -34,46 +34,55 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide
-   Exercise 08: The Order Management Application
-   Startup.rex 							  v01-02 11May13
+/* ooDialog User Guide - Support
+   Exercise 08: View.rex 				  	  
 
-   Description: This file is the "application" or "root" or "starter" part
-                of the sample Order Management application.
+   Component							  v01-00 13May13
+   ---------
+   A superclass for all components (View, Model and data). Part of the MVF. 
+   
+   Contains: 	   class: "Component"
+
+   Description: *** To be provided. ***
+
+   Pre-requisites: None.
+
+   Outstanding Problems: None reported.
 
    Changes:
-     v01-00 06Jun12: First version.
-     v01-01 07Aug12: Support for ObjectMgr and ViewMgr added. MessageSender is
-                     optional.
-            11Jan13: Deleted Commented-out startup of MessageSender.
-            01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
-                     folder, so change to ::Requires needed. 
-     v01-02 11May13: Added instantiation of Event Manager (class EventMgr)
+     v01-00 13May13: First Version.
 
 ------------------------------------------------------------------------------*/
 
-parse arg pwOption
-if pwOption = "enterPW" then do
-  pwd = PasswordBox("Please enter your password","Sign In")
-  if pwd \= "Password" then exit
-end
 
--- Set application defaults:
-.Application~setDefaults("O", , .false)
 
--- Create Object Manager and View Manager:
-om = .ObjectMgr~new
-vm = .ViewMgr~new
-em = .EventMgr~new
+/*//////////////////////////////////////////////////////////////////////////////
+  ==============================================================================
+  Object						  	  v01-00 13May13
+  ------
+  The superclass for all application components. 
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
--- Start OrderMgrView:
-.OrderMgrView~newInstance
+--::CLASS View SUBCLASS RcDialog PUBLIC
+::CLASS Component PUBLIC 
 
-::REQUIRES "OrderMgr\OrderMgrView.rex"
-::REQUIRES "Support\ObjectMgr.rex"
-::REQUIRES "Support\ViewMgr.rex"
-::REQUIRES "Support\EventMgr.rex"
-::REQUIRES "Support\MessageSender.rex"
---::REQUIRES "Support\View.rex"
 
-/******************************************************************************/
+  /*----------------------------------------------------------------------------
+    init - initialises the dialog
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD saySomething
+    say "Component-saySomething: Hi there!."
+    return
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+  /*----------------------------------------------------------------------------
+    dummy 
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+    
+      
+/*============================================================================*/
+    

@@ -174,7 +174,7 @@ call "RequiresList.rex"
   ::METHOD showModel PUBLIC
     expose objectBag
     use arg modelClass, modelInstance, parentDlg
-    --say "ObjectMgr-showModel-01a - modelNames:" modelClass modelInstance
+    say "ObjectMgr-showModel-01a - modelNames:" modelClass modelInstance
     --say "ObjectMgr-showModel-01b - parentDlg: " parentDlg
     --say "ObjectMgr-showModel-02 - modelClass: '"||modelClass||"';  modelInstance: '"||modelInstance||"'"
     -- If this is an "anonymous" component (instance name "A"|"a"), ask its

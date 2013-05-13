@@ -58,6 +58,7 @@
 
 ::REQUIRES "ooDialog.cls"
 ::REQUIRES "customer\customerview.rex"
+::REQUIRES "support\rcview.rex"
 
 
 

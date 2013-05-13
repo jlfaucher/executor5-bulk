@@ -75,7 +75,7 @@
 call "OrderMgr\RequiresList.rex"
 
 ::REQUIRES "ooDialog.cls"
-::REQUIRES "Support\View.rex"
+--::REQUIRES "Support\View.rex"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
@@ -85,8 +85,8 @@ call "OrderMgr\RequiresList.rex"
   access to the various functions required for managing Sales orders.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
---::CLASS OrderMgrView SUBCLASS RcDialog PUBLIC INHERIT ResizingAdmin
-  ::CLASS OrderMgrView SUBCLASS View PUBLIC INHERIT ResizingAdmin
+::CLASS OrderMgrView SUBCLASS RcDialog PUBLIC INHERIT ResizingAdmin
+--  ::CLASS OrderMgrView SUBCLASS View PUBLIC INHERIT ResizingAdmin
   ::ATTRIBUTE lv PRIVATE	-- The ListView that contains the icons.
 
   /*----------------------------------------------------------------------------
@@ -372,9 +372,14 @@ call "OrderMgr\RequiresList.rex"
     expose idObjectMgr
     use arg record				-- record is a directory object.
     className = record~ID
-    --say "OrderMgrView-showModel-01: className =" className		-- Ex07
+    say "OrderMgrView-showModel-01: className =" className		-- Ex07
     r = idObjectMgr~showModel(classname, "a", self)			-- Ex07
 
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD triggerEvent
+    use strict arg event
+    idEventMgr = .local~my.EventMgr
+    
 /*============================================================================*/
 
 

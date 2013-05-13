@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The CustomerView component             		  v02-00 01Apr13
+   Exercise 08: The CustomerView component             		  v03-00 12May13
 
    Contains: 	   class "CustomerView";  routine "startCustomerView".
    Pre-requisites: RcView.rex, CustomerView.rc, CustomerView.h.
@@ -53,14 +53,17 @@
                    Changes to CustomerView (not at v03-00).
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
+   v03-00 12May13: Now inherits directly from RcDialog plus the View mixin
+   
 ------------------------------------------------------------------------------*/
 
 
 .Application~addToConstDir("Customer\CustomerView.h")
-
+say "CustomerView after .Application."
 
 ::REQUIRES "ooDialog.cls"
-::REQUIRES "support\RcView.rex"
+--::REQUIRES "support\RcView.rex"
+::REQUIRES "support\ViewMixin.rex"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
@@ -94,10 +97,11 @@
                       format of Cust Address (now provided as string via MVF
                       from Customer File).
                     Deleted a number of "say" instructions.
+           12May13: Changed inheritance to use the View mixin.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-  ::CLASS CustomerView SUBCLASS RcView PUBLIC			       -- v03-00
+  ::CLASS CustomerView SUBCLASS RcDialog PUBLIC inherit ViewMixin      -- v03-00
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -107,6 +111,7 @@
     -- Create an instance of CustomerView and show it:
     dlg = .CustomerView~new("Customer\CustomerView.rc", "IDD_CUST_DIALOG")
     dlg~activate(idCustomerModel, rootDlg)					-- Ex07
+    say ".CustomerView-newInstance-01: dlg =" dlg
     return dlg									-- Ex07
 
 
@@ -118,9 +123,10 @@
     Init - creates the dialog instance but does not make it visible.        --*/
   ::METHOD init
     expose menuBar
+    say "CustomerView-init-01."
 
     forward class (super) continue
-
+    self~initViewMixin 				-- initialize the mixin.
     if \ self~createMenuBar then do		-- if there was a problem
       self~initCode = 1
       return
@@ -143,7 +149,9 @@
     forward class (super) continue	-- Ex07: Required for MV framework.
     custData = RESULT			-- Ex07: instance data returned by super
     					-- Ex07: ('forward' returns any result via 'RESULT'.)
+    say "CustomerView-activate-01."    					
     self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_CUST_DLGICON")			-- Ex07: deleted "standalone" startup.
+    say "CustomerView-activate-01."  
     return
 
 
@@ -151,6 +159,7 @@
     InitDialog - Called by ooDialog 					   -- */
   ::METHOD initDialog
     expose menuBar custControls
+    say "CustomerView-initDialog-01."
     menuBar~attachTo(self)
     -- Create objects that map to the edit controls defined by the "customer.rc"
     --   so they can be programmatically used elsewhere in the class:
