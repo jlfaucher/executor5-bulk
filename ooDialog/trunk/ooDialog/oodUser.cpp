@@ -595,6 +595,10 @@ RexxMethod7(RexxObjectPtr, userdlg_init, OPTIONAL_RexxObjectPtr, dlgData, OPTION
             result = context->SendMessage1(self, "TABOWNERDLGINIT", p);
         }
     }
+    else
+    {
+        baseClassInitializationException(context, "UserDialog", "DynamicDialog initialization has been skipped");
+    }
 
     return result;
 }
