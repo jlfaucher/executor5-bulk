@@ -72,13 +72,13 @@
   ::ATTRIBUTE viewMgr
 
   /*----------------------------------------------------------------------------
-    init - initialises the dialog
+    initViewMixin - initialises the mixin instance - invoked from ???
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    ::method init
-    --  ::METHOD initViewMixin
+    --::method init  -- Results in hang!
+    ::METHOD initViewMixin
     expose objectMgr
     say "ViewMixin-initViewMixin-01."
-    forward class (super) continue		-- BAD - REMOVE ASAP
+    --forward class (super) continue		-- BAD - REMOVE ASAP
     objectMgr = .local~my.ObjectMgr	-- Needed to clear up when dialog closed.
     self~viewMgr = .local~myViewMgr
     return
