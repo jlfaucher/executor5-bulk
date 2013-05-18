@@ -1,0 +1,144 @@
+<chapter id="xattr"><title id="xattr.title">Extended Attribute Functions</title>
+
+<para>This chapter covers the available extended attribute functions.
+These functions are probably not available on anything but a Linux
+system. They are definately not available for AIX.</para>
+
+
+<section id="utlSysGetxattr"><title>SysGetxattr (not available on all systems)</title>
+<indexterm><primary>SysGetxattr</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysGetxattr(fname, xname)-----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Gets an extended attribute from the specified file.</para>
+<para>This function uses the <filename>getxattr()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">fname</emphasis></term>
+<listitem><para>The file name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">xname</emphasis></term>
+<listitem><para>The extended attribute name.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns the extended attribute value on success or a zero-length string on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* get an extended attribute */
+
+mimetype = SysGetxattr('/home/dashley/example.txt', 'mimetype')
+]]>
+</programlisting>
+</section>
+
+
+<section id="utlSysListxattr"><title>SysListxattr (not available on all systems)</title>
+<indexterm><primary>SysListxattr</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysListxattr(fname)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns an array of the extended attribut names from the specified file.</para>
+<para>This function uses the <filename>listxattr()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">fname</emphasis></term>
+<listitem><para>The file name.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns an array of the extended attribute names on success. The array will be empty on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* list the extended attribute names */
+
+names = SysListxattr('/home/dashley/example.txt')
+do name over names
+   say name
+end
+]]>
+</programlisting>
+</section>
+
+
+<section id="utlSysRemovexattr"><title>SysRemovexattr (not available on all systems)</title>
+<indexterm><primary>SysRemovexattr</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysRemovexattr(fname, xname)--------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Removes an extended attribute from the specified file.</para>
+<para>This function uses the <filename>removexattr()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">fname</emphasis></term>
+<listitem><para>The file name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">xname</emphasis></term>
+<listitem><para>The extended attribute name.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns 0 on success or -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* remove an extended attribute */
+
+retc = SysRemovexattr('/home/dashley/example.txt', 'mimetype')
+]]>
+</programlisting>
+</section>
+
+
+<section id="utlSysSetxattr"><title>SysSetxattr (not available on all systems)</title>
+<indexterm><primary>SysSetxattr</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysSetxattr(fname, xname, val)------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Sets/replaces an extended attribute on the specified file.</para>
+<para>This function uses the <filename>removexattr()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">fname</emphasis></term>
+<listitem><para>The file name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">xname</emphasis></term>
+<listitem><para>The extended attribute name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">val</emphasis></term>
+<listitem><para>The value to be set for the extended attribute.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns the 0 on success or -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* set an extended attribute */
+
+retc = SysSetxattr('/home/dashley/example.txt', 'mimetype', 'text/plain')
+]]>
+</programlisting>
+</section>
+
+
+
+
+
+
+</chapter>
+
