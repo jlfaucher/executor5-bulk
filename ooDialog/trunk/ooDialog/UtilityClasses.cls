@@ -1226,7 +1226,10 @@
     self~createPushButtonGroup(dlgCX - 100, dlgCY - 18, 0, 0, buttonTxt, 1, "DEFAULT")
 
 ::method initDialog
-    self~newRadioButton(self~selected)~check
+    rb = self~newRadioButton(self~selected)
+    if rb == .nil then rb = self~newRadioButton(self~MIN_RB_ID)
+    if rb == .nil then return
+    rb~check
 
 ::method execute
     expose dlgCX dlgCY title count
