@@ -1227,7 +1227,6 @@
 
 ::method initDialog
     rb = self~newRadioButton(self~selected)
-    if rb == .nil then rb = self~newRadioButton(self~MIN_RB_ID)
     if rb == .nil then return
     rb~check
 
