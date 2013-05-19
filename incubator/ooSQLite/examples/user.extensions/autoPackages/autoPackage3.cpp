@@ -36,50 +36,30 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- * simpleExtension.c
+ * autoPackage3.cpp
  *
- * Example of how to write a loadable extension file for SQLite.  This file is
- * built as a shared library, which can be loaded through the loadExtension()
- * method of the ooSQLiteConnection class.
+ * Example of how to write a loadable package file for ooSQLite.  This file is
+ * built as a shared library, which can be loaded through the ??() class
+ * method of the ooSQLite class.
  *
  * Note these points:
  *
- *   Include sqlite3ext.h instead of sqlite3.h.
  *
- *   Use the SQLITE_EXTENSION_INIT1 and SQLITE_EXTENSION_INIT2 macros as they
- *   are used in this file.
  *
- *   Name the entry function sqlite3_extension_init to have it invoked
- *   automatically.  Otherwise, you need to specify the entry point name in the
- *   loadExtension() call.  On Windows, sqlite3_extension_init must be exported.
- *   An easy way to do this is to use a .def file as is used in this example.
  *
- *   This extension file contains 1 user defined function and 2 user defined
- *   collations.  The 3 are registered automatically within the
- *   sqlite3_extension_init().  In this example the 3 registered names are
- *   different from the 3 function names.  This does not need to be done this
- *   way, the registered names could just as easily have been the same as the
- *   function names.
  *
- *   However, to use the function or collations in your Rexx code, you need to
- *   use the registered names
  *
- *   Function Name           Registered Name
- *   =======================================
- *   halfFunc           ->   half
- *   reverseCollation   ->   reverse
- *   ebcdicCollation    ->   ebcdic
- *
- *   Aggregate Name                    Registered Name
- *   =================================================
- *   strAggStep / strAggFinalize  ->   strAggregate
  */
 
+#include "oosqlPackage.hpp"
 
-#include <sqlite3ext.h>
-#include <string.h>
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #define NULL 0
+#endif
 
-SQLITE_EXTENSION_INIT1
+#include <stdio.h> // printf() if needed
 
 /**
  * ASCII to EBCDIC tranlation table.  Not sure what version of EBCDIC, values
@@ -168,9 +148,9 @@ static unsigned char ebcdicToAscii[256] =
  * The half() SQL function returns half of its input value.  This is an example
  * from the SQLite website.
  */
-static void halfFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+void half(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
-  sqlite3_result_double(context, 0.5 * sqlite3_value_double(argv[0]));
+  sqlite3_result_double(context, 0.5*sqlite3_value_double(argv[0]));
 }
 
 /**
@@ -184,7 +164,7 @@ static void halfFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
  *
  * @return int
  */
-static int reverseCollation(void* data, int len1, const void* str1, int len2, const void* str2)
+int reverse(void* data, int len1, const void* str1, int len2, const void* str2)
 {
     return - sqlite3_strnicmp((char *)str1, (char *)str2, len1 < len2 ? len1 : len2);
 }
@@ -201,7 +181,7 @@ static int reverseCollation(void* data, int len1, const void* str1, int len2, co
  *
  * @return int
  */
-static int ebcdicCollation(void* data, int len1, const void* str1, int len2, const void* str2)
+static int ebcdic(void* data, int len1, const void* str1, int len2, const void* str2)
 {
     register unsigned char *a = (unsigned char *)str1;
     register unsigned char *b = (unsigned char *)str2;
@@ -222,6 +202,7 @@ static int ebcdicCollation(void* data, int len1, const void* str1, int len2, con
 
     return (i == min) ? len1 - len2 : asciiToEbcdic[*a] - asciiToEbcdic[*b];
 }
+
 
 /* struct for use in the strAggregate aggregate function below. */
 typedef struct _StrAggCntx
@@ -264,10 +245,6 @@ typedef StrAggCntx *pStrAggCntx;
  */
 void strAggStep(sqlite3_context* sqlCntx, int countArgs, sqlite3_value** values)
 {
-    static const char  comma[] = ", ";
-    const  char       *text    = NULL;
-    size_t            len      = 0;
-
   pStrAggCntx psac = (pStrAggCntx)sqlite3_aggregate_context(sqlCntx, sizeof(StrAggCntx));
   if ( psac == NULL )
   {
@@ -275,8 +252,10 @@ void strAggStep(sqlite3_context* sqlCntx, int countArgs, sqlite3_value** values)
       return;
   }
 
-  text = (const char *)sqlite3_value_text(values[0]);
-  len  = strlen(text);
+  static const char comma[] = ", ";
+
+  const  char *text = (const char *)sqlite3_value_text(values[0]);
+  size_t len       = strlen(text);
 
   if ( psac->result == NULL )
   {
@@ -324,26 +303,67 @@ void strAggFinalize(sqlite3_context* sqlCntx)
 
 
 /**
- * SQLite invokes this routine once when it loads the extension.  Create new
- * functions, collating sequences, and virtual table modules here.  This is
- * usually the only exported symbol in the shared library.
+ * autoPackage_collations is an array of SQLiteCollationEntry structs.  See
+ * the SQLiteCollationEntry struct in oosqlPackage.hpp for the fields in the
+ * struct.
  *
- * Here we create 1 function and 2 collations.
+ * The OOSQL_COLLATION() is intended to make it somewhat easier to fill in the
+ * struct fields.  But, it might be just as easy to skip using it and fill in
+ * the fields individually.
  *
- * @param db
- * @param pzErrMsg
- * @param pApi
- *
- * @return int
+ * Note that, with the OOSQL_COLLATION macro, the string name of the collation
+ * is derived from the function name.  If you do not use the macro, the second
+ * entry must be the string name for the collation.  That is the name used by
+ * SQLite.
  */
-int sqlite3_extension_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi)
+SQLiteCollationEntry autoPackage_collations[] = {
+    // The REVERSE collation.  No destroy callback, no user data pointer, no
+    // collation needed callback.
+    {NULL, "reversible", reverse, NULL, NULL, NULL, NULL, 0},
+
+    // The EBCDIC collation. We fill out the struct fields completely instead of
+    // using the OOSQL_COLLATION macro.
+    {NULL, "ebcdicSort", ebcdic, NULL, NULL, NULL, NULL, 0},
+
+    // The last entry in the struc, must always be present.  Here the macro is
+    // simplier to use.  To fill it in manually, use all NULLs.
+    OOSQL_LAST_COLLATION()
+};
+
+/**
+ * autoPackage_functions is an array of SQLiteFunctionEntry structs.  See
+ * oosqlPackage.hpp for its definition.
+ *
+ * Again, the OOSQL_FUNCTION macro() is meant to make things a little easier.
+ * You can always assing the field values manually as shown above for the
+ * collations.
+ */
+SQLiteFunctionEntry autoPackage_functions[] = {
+    // Only 1 function. Only the function callback is used, the other callbacks
+    // are NULL.  The function callback takes 1 arg.
+    {NULL, "toHalf", half, NULL, NULL, NULL, NULL, NULL, 1, 0},
+    {NULL, "stringAgg", NULL, strAggStep, strAggFinalize, NULL, NULL, NULL, 1, 0},
+
+    OOSQL_LAST_FUNCTION()
+};
+
+/**
+ * Each package must fill out the package entry struct
+ *
+ */
+ooSQLitePackageEntry autoPackage_package_entry =
 {
-  SQLITE_EXTENSION_INIT2(pApi)
+    OOSQL_STANDARD_PACKAGE_HEADER
+    OOSQLITE_1_0_0,               // needs at least the 1.0.0 ooSQLite
+    SQLITE_VERSION_NUMBER,
+    "autoPackage3",               // name of the package
+    "0.0.1",                      // package information
+    autoPackage_collations,       // the exported collations
+    autoPackage_functions,        // the exported functions
+    NULL                          // no  exported modules
+};
 
-  sqlite3_create_function(db, "half", 1, SQLITE_UTF8, 0, halfFunc, 0, 0);
-  sqlite3_create_function(db, "strAggregate", 1, SQLITE_UTF8, 0, 0, strAggStep, strAggFinalize);
-  sqlite3_create_collation_v2(db, "reverse", SQLITE_UTF8, NULL, reverseCollation, NULL);
-  sqlite3_create_collation_v2(db, "ebcdic", SQLITE_UTF8, NULL, ebcdicCollation, NULL);
-
-  return 0;
-}
+// This macro expands to the package entry function used to load the package.
+// The name "autoPackage" must match the prefix of _package_entry in the
+// ooSQLitePackage entry table above.
+OOSQLITE_GET_PACKAGE(autoPackage);

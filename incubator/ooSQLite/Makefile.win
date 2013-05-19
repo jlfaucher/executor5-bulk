@@ -199,7 +199,9 @@ example_dlls:
     @echo Building example DLL(s)
     @cd examples\user.extensions
     $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win
-    @cd ..\..\
+    @cd autoPackages
+    $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win
+    @cd ..\..\..\
 
 dist: all
     @echo Create distribution file
@@ -211,7 +213,9 @@ clean:
 
     @cd examples\user.extensions
     $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win clean
-    @cd ..\..\
+    @cd autoPackages
+    $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win clean
+    @cd ..\..\..\
 
 clean_all:
     del /Q bin\windows\*.dll bin\windows\*exe bin\windows\*.cls 1>nul 2>&1
@@ -222,5 +226,7 @@ clean_all:
 
     @cd examples\user.extensions
     $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win clean
-    @cd ..\..\
+    @cd autoPackages
+    $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win clean
+    @cd ..\..\..\
 

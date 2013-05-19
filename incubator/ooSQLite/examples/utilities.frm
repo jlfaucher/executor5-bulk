@@ -37,19 +37,118 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  printTableWtihNulls.rex
+ *  utilities.frm
  *
- * This program is called from some of the other examples to print out the
+ *  This file contains some utility routines used by some of the example
+ *  programs.  Rather than copy and paste the same routines into different
+ *  examples, the routines have been gathered together here.
+ */
+
+
+::routine getOSName public
+
+  parse upper source os .
+  if os~abbrev("WIN") then os = "WINDOWS"
+  return os
+
+
+/** printResultSet()
+ *
+ *  Prints out a result set that is an array of arrays.
+ */
+::routine printResultSet public
+  use arg rs
+
+  if rs~items == 0 then do
+    say 'NO result set'
+    say
+    return 0
+  end
+
+  colCount = rs[1]~items
+  rowCount = rs~items
+
+  line = ''
+  headers = rs[1]
+  do j = 1 to colCount
+    line ||= headers[j]~left(25)
+  end
+
+  say line
+  say '='~copies(80)
+
+  do i = 2 to rowCount
+    line = ''
+    record = rs[i]
+    do j = 1 to colCount
+      line ||= record[j]~left(25)
+    end
+
+    say line
+  end
+  say
+
+  return 0
+
+/** printStrAgg()
+ *
+ *  Prints out a result set that is very specific to the strAggregate user
+ *  defined collation.
+ */
+::routine printStrAgg public
+  use arg rs
+
+  if rs~items == 0 then do
+    say 'NO result set'
+    say
+    return 0
+  end
+
+  colCount = 2
+  rowCount = rs~items
+
+  headers = rs[1]
+  line = headers[1]~left(9) || headers[2]
+
+  say line
+  say '='~copies(80)
+
+  do i = 2 to rowCount
+    record = rs[i]
+    if record[1] == .nil then line = 'NULL'~left(9) || record[2]
+    else line = record[1]~left(9) || record[2]
+
+    if line~length > 80 then do
+      say line~left(80)
+
+      line = ' '~copies(9) || line~substr(81)
+      do while line~length > 80
+        say line~left(80)
+        line = ' '~copies(9) || line~substr(81)
+      end
+      say line
+    end
+    else do
+      say line
+    end
+    say
+  end
+  say
+
+  return 0
+
+
+/**
+ *  printTableWtihNulls()
+ *
+ * This routine is called from some of the other examples to print out the
  * values of a table where the table can contain SQL NULL values.
  *
- * It is an error to run this from the command line.
- *
  * For example, the insertNull.rex and insertNullTwo.rex examples call this
- * program as a function.  To see the output from this example, execute one of
- * those 2 examples.
- *
+ * routine.
  */
- use strict arg db, table
+ ::routine printTableWithNulls public
+   use strict arg db, table
 
   if \ db~isA(.ooSQLiteConnection) then do
     say "Incorrect usage of 'printTableWithNulls'."

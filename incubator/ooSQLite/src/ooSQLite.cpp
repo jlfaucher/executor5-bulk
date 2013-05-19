@@ -3886,6 +3886,22 @@ RexxMethod1(int, oosql_test_cls, ARGLIST, args)
 
 
 /**
+ * Ensures that the pCsc field in the ooSQLExtensios CSelf is set
+ *
+ * @param pcext
+ *
+ * @return pCooSQLiteClass
+ */
+inline pCooSQLiteClass ensureCSelf(RexxMethodContext *c, pCooSQLExtensions pcext)
+{
+    if ( pcext->pCsc == NULL )
+    {
+        pcext->pCsc = (pCooSQLiteClass)c->ObjectToCSelf(TheOOSQLiteClass);
+    }
+    return pcext->pCsc;
+}
+
+/**
  * This function ensures that any unfinalized prepared statements for the
  * specified database connection are finalized.
  *
@@ -4296,6 +4312,52 @@ static RexxObjectPtr rexxFunctionCallbacks(RexxMethodContext *c, pCooSQLiteConn 
     }
 
     return result;
+}
+
+bool packageRegister(RexxMethodContext *c, pCooSQLPackage pcp, pCooSQLiteConn pConn)
+{
+    ooSQLitePackageEntry *pa = pcp->packageEntry;
+
+    if ( pa->collations != NULL )
+    {
+        pSQLiteCollationEntry e = pa->collations;
+        while ( e->name != NULL )
+        {
+            if ( registerCollation(c, e, pConn) != SQLITE_OK )
+            {
+                return false;
+            }
+            e++;
+        }
+    }
+
+    if ( pa->functions != NULL )
+    {
+        pSQLiteFunctionEntry e = pa->functions;
+        while ( e->name != NULL )
+        {
+            if ( registerFunction(c, e, pConn) != SQLITE_OK )
+            {
+                return false;
+            }
+            e++;
+        }
+    }
+
+    if ( pa->modules != NULL )
+    {
+        pSQLiteModuleEntry e = pa->modules;
+        while ( e->name != NULL )
+        {
+            if ( ! registerModule(c, e, pConn) )
+            {
+                return false;
+            }
+            e++;
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -4724,6 +4786,98 @@ static bool setDBInitStatus(RexxMethodContext *c, pCooSQLiteConn pConn, sqlite3 
     return result;
 }
 
+/**
+ * Sets the default result set format and SQL NULL format for the specified
+ * database connection.
+ *
+ * @param c
+ * @param pConn
+ * @param pCsc
+ * @param defFormat
+ * @param arg3exists
+ *
+ * @return bool
+ */
+static bool setDBDefaults(RexxMethodContext *c, pCooSQLiteConn pConn, pCooSQLiteClass pCsc, uint32_t defFormat, bool arg3exists)
+{
+    if ( arg3exists )
+    {
+        if ( defFormat < anArrayOfArrays || defFormat > aClassicStem )
+        {
+            wrongArgValueException(c->threadContext, 3, RECORD_FORMATS_LIST, c->UnsignedInt32(defFormat));
+            return false;
+        }
+        else
+        {
+            pConn->format = (ResultSetType)defFormat;
+        }
+    }
+    else
+    {
+        pConn->format = pCsc->format;
+    }
+
+    if ( pCsc->nullObj == TheNilObj )
+    {
+        pConn->nullObj = pCsc->nullObj;
+    }
+    else
+    {
+        pConn->nullStr = pCsc->nullStr;
+        pConn->nullObj = c->String(pConn->nullStr);
+
+        c->RequestGlobalReference(pConn->nullObj);
+    }
+    return true;
+}
+
+/**
+ * Checks for user defined extensions that are to be automatically registered
+ * for each opened database connection and registers all that are found.
+ *
+ * @param c
+ * @param pConn
+ * @param pCsc
+ */
+static void autoRegisterExtensions(RexxMethodContext *c, pCooSQLiteConn pConn, pCooSQLiteClass pCsc)
+{
+    if ( pCsc->autoPackages != NULL )
+    {
+        for ( size_t i = 0; i < pCsc->countPackages; i++ )
+        {
+            pCooSQLPackage pcp = pCsc->autoPackages[i];
+            if ( ! packageRegister(c, pcp, pConn) )
+            {
+                return;
+            }
+        }
+    }
+
+    if ( pCsc->autoCollations != NULL )
+    {
+        for ( size_t i = 0; i < pCsc->countCollations; i++ )
+        {
+            pSQLiteCollationEntry psce = pCsc->autoCollations[i];
+            if ( registerCollation(c, psce, pConn) != SQLITE_OK )
+            {
+                return;
+            }
+        }
+    }
+
+    if ( pCsc->autoFunctions != NULL )
+    {
+        for ( size_t i = 0; i < pCsc->countFunctions; i++ )
+        {
+            pSQLiteFunctionEntry psfe = pCsc->autoFunctions[i];
+            if ( registerFunction(c, psfe, pConn) != SQLITE_OK )
+            {
+                return;
+            }
+        }
+    }
+}
+
 
 /** ooSQLiteConnection:Class::init()
  */
@@ -4950,34 +5104,12 @@ RexxMethod5(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _fla
     {
         pCooSQLiteClass pCsc = (pCooSQLiteClass)context->ObjectToCSelf(TheOOSQLiteClass);
 
-        if ( argumentExists(3) )
+        if ( ! setDBDefaults(context, pConn, pCsc, defFormat, argumentExists(3)) )
         {
-            if ( defFormat < anArrayOfArrays || defFormat > aClassicStem )
-            {
-                wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
-                                       context->UnsignedInt32(defFormat));
-            }
-            else
-            {
-                pConn->format = (ResultSetType)defFormat;
-            }
-        }
-        else
-        {
-            pConn->format = pCsc->format;
+            return NULLOBJECT;
         }
 
-        if ( pCsc->nullObj == TheNilObj )
-        {
-            pConn->nullObj = pCsc->nullObj;
-        }
-        else
-        {
-            pConn->nullStr = pCsc->nullStr;
-            pConn->nullObj = context->String(pConn->nullStr);
-
-            context->RequestGlobalReference(pConn->nullObj);
-        }
+        autoRegisterExtensions(context, pConn, pCsc);
     }
 
     return NULLOBJECT;
@@ -9325,49 +9457,104 @@ bool validPackageVersion(RexxMethodContext *c, pCooSQLPackage pcp)
     return true;
 }
 
-bool packageRegister(RexxMethodContext *c, pCooSQLPackage pcp, pCooSQLiteConn pConn)
+/**
+ * Adds an .ooSQLCollation CSelf to the list of automatically registered
+ * collations.
+ *
+ * @param c
+ * @param pcext
+ * @param psce
+ *
+ * @return bool
+ */
+static bool makeAutoCollation(RexxMethodContext *c, pCooSQLExtensions pcext, pSQLiteCollationEntry psce)
 {
-    ooSQLitePackageEntry *pa = pcp->packageEntry;
+    pCooSQLiteClass pCsc = ensureCSelf(c, pcext);
 
-    if ( pa->collations != NULL )
+    if ( pCsc->autoCollations == NULL )
     {
-        pSQLiteCollationEntry e = pa->collations;
-        while ( e->name != NULL )
+        pCsc->autoCollations = (pSQLiteCollationEntry *)LocalAlloc(LPTR, MAX_AUTO_COLLATIONS * sizeof(pSQLiteCollationEntry));
+        if ( pCsc->autoCollations == NULL )
         {
-            if ( registerCollation(c, e, pConn) != SQLITE_OK )
-            {
-                return false;
-            }
-            e++;
+            outOfMemoryException(c->threadContext);
+            return false;
         }
     }
 
-    if ( pa->functions != NULL )
+    if ( pCsc->countCollations >= MAX_AUTO_COLLATIONS )
     {
-        pSQLiteFunctionEntry e = pa->functions;
-        while ( e->name != NULL )
+        tooManyAutoRegistrations(c, pcext, "collations", MAX_AUTO_COLLATIONS);
+        return false;
+    }
+
+    pCsc->autoCollations[pCsc->countCollations++] = psce;
+    return true;
+}
+
+/**
+ * Adds an .ooSQLFunction CSelf to the list of automatically registered
+ * functions.
+ *
+ * @param c
+ * @param pcext
+ * @param psce
+ *
+ * @return bool
+ */
+static bool makeAutoFunction(RexxMethodContext *c, pCooSQLExtensions pcext, pSQLiteFunctionEntry psfe)
+{
+    pCooSQLiteClass pCsc = ensureCSelf(c, pcext);
+
+    if ( pCsc->autoFunctions == NULL )
+    {
+        pCsc->autoFunctions = (pSQLiteFunctionEntry *)LocalAlloc(LPTR, MAX_AUTO_FUNCTIONS * sizeof(pSQLiteFunctionEntry));
+        if ( pCsc->autoFunctions == NULL )
         {
-            if ( registerFunction(c, e, pConn) != SQLITE_OK )
-            {
-                return false;
-            }
-            e++;
+            outOfMemoryException(c->threadContext);
+            return false;
         }
     }
 
-    if ( pa->modules != NULL )
+    if ( pCsc->countFunctions >= MAX_AUTO_FUNCTIONS )
     {
-        pSQLiteModuleEntry e = pa->modules;
-        while ( e->name != NULL )
+        tooManyAutoRegistrations(c, pcext, "functions", MAX_AUTO_FUNCTIONS);
+        return false;
+    }
+
+    pCsc->autoFunctions[pCsc->countFunctions++] = psfe;
+    return true;
+}
+
+/**
+ * Adds an .ooSQLPackage CSelf to the list of automatically registered packages.
+ *
+ * @param c
+ * @param pcext
+ * @param pcp
+ *
+ * @return bool
+ */
+static bool makeAutoPackage(RexxMethodContext *c, pCooSQLExtensions pcext, pCooSQLPackage pcp)
+{
+    pCooSQLiteClass pCsc = ensureCSelf(c, pcext);
+
+    if ( pCsc->autoPackages == NULL )
+    {
+        pCsc->autoPackages = (pCooSQLPackage *)LocalAlloc(LPTR, MAX_AUTO_PACKAGES * sizeof(pCooSQLPackage));
+        if ( pCsc->autoPackages == NULL )
         {
-            if ( ! registerModule(c, e, pConn) )
-            {
-                return false;
-            }
-            e++;
+            outOfMemoryException(c->threadContext);
+            return false;
         }
     }
 
+    if ( pCsc->countPackages >= MAX_AUTO_PACKAGES )
+    {
+        tooManyAutoRegistrations(c, pcext, "packages", MAX_AUTO_PACKAGES);
+        return false;
+    }
+
+    pCsc->autoPackages[pCsc->countPackages++] = pcp;
     return true;
 }
 
@@ -9503,6 +9690,7 @@ RexxMethod1(RexxObjectPtr, oosqlext_init_cls, OSELF, self)
         pCooSQLExtensions pcext = (pCooSQLExtensions)context->BufferData(cselfBuffer);
         memset(pcext, 0, sizeof(CooSQLExtensions));
 
+        pcext->rexxSelf     = self;
         pcext->libraryTable = rxNewBuiltinObject(context->threadContext, "TABLE");
         pcext->packageTable = rxNewBuiltinObject(context->threadContext, "TABLE");
         resetExtensionsLastErr(context, pcext);
@@ -9526,6 +9714,45 @@ RexxMethod1(RexxStringObject, oosqlext_getLastErrMsg_atr, CSELF, pCSelf)
     pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
     return pcext->lastErrMsg;
 }
+
+/** ooSQLExtensions::getLibrary()  [class method]
+ *
+ *  Gets an ooSQLite library from the extensions manager, if it exists.
+ *
+ */
+RexxMethod2(RexxObjectPtr, oosqlext_getLibrary_cls, RexxObjectPtr, libraryName, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+
+    RexxObjectPtr result = context->SendMessage1(pcext->libraryTable, "AT", libraryName);
+    if ( result == TheNilObj )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_SUCH_LIBRARY, OO_NO_SUCH_LIBRARY_STR, libraryName);
+    }
+    return result;
+}
+
+/** ooSQLExtensions::getPackage()  [class method]
+ *
+ *  Gets an ooSQLite package from the extensions manager, if it exists.
+ *
+ */
+RexxMethod2(RexxObjectPtr, oosqlext_getPackage_cls, RexxObjectPtr, packageName, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+
+    RexxObjectPtr result  = context->SendMessage1(pcext->packageTable, "AT", packageName);
+    if ( result == TheNilObj )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_SUCH_PACKAGE, OO_NO_SUCH_PACKAGE_STR, packageName);
+    }
+    return result;
+}
+
 
 /** ooSQLExtensions::loadLibrary()  [class method]
  *
@@ -9672,10 +9899,10 @@ done_out:
  *  @param  libName  The name of the shared library in which the package
  *                   resides.
  *
- *  @param  makeAuto Make the package an automatically regisetered package
- *
  *  @param  dbConn   If this is an open database connection, the package will be
  *                   registered on that connection immediately.
+ *
+ *  @param  makeAuto Make the package an automatically regisetered package
  *
  *  @return  True on success, false on error.  Check the lastErrMsg and
  *           lastErrCode attributes for the reason on error.
@@ -9742,13 +9969,10 @@ RexxMethod4(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
 
     if ( makeAuto )
     {
-        pCooSQLiteClass pCsc = (pCooSQLiteClass)context->ObjectToCSelf(TheOOSQLiteClass);
-        if ( pCsc->countPackages >= MAX_AUTO_PACKAGES )
+        if ( ! makeAutoPackage(context, pcext, pcp) )
         {
-            tooManyAutoRegistrations(context, pcext, "packages", MAX_AUTO_PACKAGES);
             goto done_out;
         }
-        pCsc->autoPackages[pCsc->countPackages++] = pcp;
     }
 
     result = TheTrueObj;
@@ -9763,50 +9987,279 @@ done_out:
 }
 
 
-/** ooSQLExtensions::getPackage()  [class method]
+/** ooSQLExtensions::makeAutoCollation()  [class method]
  *
- *  Gets an ooSQLite package from the extensions manager, if it exists.
+ *  Marks, or unmarks, the specified collation as a collation that is
+ *  automatically registered when a database connection is opened.
+ *
+ *  @param  packageName    [required] The name of the loaded package that
+ *                         contains the collation.
+ *
+ *  @param  collationName  [required] The name of the collation to mark or
+ *                         unmark.
+ *
+ *  @param  enable         [optional] True to mark the collation, false to
+ *                         unmark. The default is false.
  *
  */
-RexxMethod2(RexxObjectPtr, oosqlext_getPackage_cls, RexxObjectPtr, packageName, CSELF, pCSelf)
+RexxMethod4(RexxObjectPtr, oosqlext_makeAutoCollation_cls, RexxObjectPtr, packageName, RexxObjectPtr, collationName,
+            OPTIONAL_logical_t, enable, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
     pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
 
-    resetExtensionsLastErr(context, pcext);
-
-    // TODO something wrong, is it NULLObject of .nil  see next function
-    RexxObjectPtr result = c->SendMessage1(pcext->packageTable, "AT", packageName);
-    if ( result == NULLOBJECT )
+    RexxObjectPtr package = c->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
+    if ( package == TheNilObj )
     {
-        extensionsFormatLastErr(context, pcext, OO_NO_SUCH_PACKAGE, OO_NO_SUCH_PACKAGE_STR,
-                                (char *)c->ObjectToStringValue(packageName));
-        result = TheNilObj;
+        return TheFalseObj;
     }
-    return result;
+
+    RexxObjectPtr collation = c->SendMessage1(package, "GETCOLLATION", collationName);
+    if ( collation == TheNilObj )
+    {
+        pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
+
+        pcext->lastErrCode = pcp->lastErrCode;
+        pcext->lastErrMsg  = pcp->lastErrMsg;
+        extensionsSetLastErr(context, pcext->lastErrMsg, pcext->lastErrCode);
+
+        return TheFalseObj;
+    }
+
+    resetExtensionsLastErr(context, pcext);
+    enable = argumentOmitted(3) ? TRUE : enable;
+
+    pSQLiteCollationEntry psce = (pSQLiteCollationEntry)context->ObjectToCSelf(collation);
+    if ( psce == NULL )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLCollation");
+        return TheFalseObj;
+    }
+
+    if ( enable )
+    {
+        if ( ! makeAutoCollation(context, pcext, psce) )
+        {
+            return TheFalseObj;
+        }
+    }
+    else
+    {
+        pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
+
+        if ( pCsc->autoCollations == NULL )
+        {
+            extensionsFormatLastErr(context, pcext, OO_COLLATION_NOT_AUTOMATIC, OO_COLLATION_NOT_AUTOMATIC_STR, collationName);
+            return TheFalseObj;
+        }
+
+        bool found = false;
+        for ( size_t i = 0; i < pCsc->countCollations; i++ )
+        {
+            if ( pCsc->autoCollations[i] == psce)
+            {
+                if ( i + 1 == MAX_AUTO_COLLATIONS )
+                {
+                    pCsc->autoCollations[i] = NULL;
+                }
+                else
+                {
+                    memmove(&pCsc->autoCollations[i], &pCsc->autoCollations[i + 1],
+                            (MAX_AUTO_COLLATIONS - 1 - i) * sizeof(pSQLiteCollationEntry));
+                }
+
+                found = true;
+                pCsc->countCollations--;
+                break;
+            }
+        }
+        if ( ! found )
+        {
+            extensionsFormatLastErr(context, pcext, OO_COLLATION_NOT_AUTOMATIC, OO_COLLATION_NOT_AUTOMATIC_STR, collationName);
+            return TheFalseObj;
+        }
+    }
+
+    return TheTrueObj;
 }
 
 
-/** ooSQLExtensions::getLibrary()  [class method]
+/** ooSQLExtensions::makeAutoFunction()  [class method]
  *
- *  Gets an ooSQLite library from the extensions manager, if it exists.
+ *  Marks, or unmarks, the specified function as a function that is
+ *  automatically registered when a database connection is opened.
+ *
+ *  @param  packageName    [required] The name of the loaded package that
+ *                         contains the function.
+ *
+ *  @param  collationName  [required] The name of the function to mark or
+ *                         unmark.
+ *
+ *  @param  enable         [optional] True to mark the function, false to
+ *                         unmark. The default is false.
  *
  */
-RexxMethod2(RexxObjectPtr, oosqlext_getLibrary_cls, RexxObjectPtr, libraryName, CSELF, pCSelf)
+RexxMethod4(RexxObjectPtr, oosqlext_makeAutoFunction_cls, RexxObjectPtr, packageName, RexxObjectPtr, functionName,
+            OPTIONAL_logical_t, enable, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
     pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
 
-    resetExtensionsLastErr(context, pcext);
-
-    // TODO something wrong, is it NULLObject of .nil  see above function
-    RexxObjectPtr result = c->SendMessage1(pcext->libraryTable, "AT", libraryName);
-    if ( result == TheNilObj )
+    RexxObjectPtr package = c->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
+    if ( package == TheNilObj )
     {
-        extensionsFormatLastErr(context, pcext, OO_NO_SUCH_LIBRARY, OO_NO_SUCH_LIBRARY_STR, libraryName);
+        return TheFalseObj;
     }
-    return result;
+
+    RexxObjectPtr function = c->SendMessage1(package, "GETFUNCTION", functionName);
+    if ( function == TheNilObj )
+    {
+        pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
+
+        pcext->lastErrCode = pcp->lastErrCode;
+        pcext->lastErrMsg  = pcp->lastErrMsg;
+        extensionsSetLastErr(context, pcext->lastErrMsg, pcext->lastErrCode);
+
+        return TheFalseObj;
+    }
+
+    resetExtensionsLastErr(context, pcext);
+    enable = argumentOmitted(3) ? TRUE : enable;
+
+    pSQLiteFunctionEntry psfe = (pSQLiteFunctionEntry)context->ObjectToCSelf(function);
+    if ( psfe == NULL )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLFunction");
+        return TheFalseObj;
+    }
+
+    if ( enable )
+    {
+        if ( ! makeAutoFunction(context, pcext, psfe) )
+        {
+            return TheFalseObj;
+        }
+    }
+    else
+    {
+        pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
+
+        if ( pCsc->autoFunctions == NULL )
+        {
+            extensionsFormatLastErr(context, pcext, OO_FUNCTION_NOT_AUTOMATIC, OO_FUNCTION_NOT_AUTOMATIC_STR, functionName);
+            return TheFalseObj;
+        }
+
+        bool found = false;
+        for ( size_t i = 0; i < pCsc->countFunctions; i++ )
+        {
+            if ( pCsc->autoFunctions[i] == psfe)
+            {
+                if ( i + 1 == MAX_AUTO_FUNCTIONS )
+                {
+                    pCsc->autoFunctions[i] = NULL;
+                }
+                else
+                {
+                    memmove(&pCsc->autoFunctions[i], &pCsc->autoFunctions[i + 1],
+                            (MAX_AUTO_FUNCTIONS - 1 - i) * sizeof(pSQLiteFunctionEntry));
+                }
+
+                found = true;
+                pCsc->countFunctions--;
+                break;
+            }
+        }
+        if ( ! found )
+        {
+            extensionsFormatLastErr(context, pcext, OO_FUNCTION_NOT_AUTOMATIC, OO_FUNCTION_NOT_AUTOMATIC_STR, functionName);
+            return TheFalseObj;
+        }
+    }
+
+    return TheTrueObj;
 }
+
+
+/** ooSQLExtensions::makeAutoPackage()  [class method]
+ *
+ *  Marks, or unmarks, the specified package as a package that is automatically
+ *  registered when a database connection is opened.
+ *
+ *  @param  packageName  [required] The name of the package to mark or unmark.
+ *
+ *  @param  enable       [optional] True to mark the package, false to unmark.
+ *                       The default is false.
+ *
+ */
+RexxMethod3(RexxObjectPtr, oosqlext_makeAutoPackage_cls, RexxObjectPtr, packageName, OPTIONAL_logical_t, enable, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+    enable = argumentOmitted(2) ? TRUE : enable;
+
+    RexxObjectPtr package = context->SendMessage1(pcext->packageTable, "AT", packageName);
+    if ( package == TheNilObj )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_SUCH_PACKAGE, OO_NO_SUCH_PACKAGE_STR, packageName);
+        return TheFalseObj;
+    }
+
+    pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
+    if ( pcp == NULL )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLPackage");
+        return TheFalseObj;
+    }
+
+    if ( enable )
+    {
+        if ( ! makeAutoPackage(context, pcext, pcp) )
+        {
+            return TheFalseObj;
+        }
+    }
+    else
+    {
+        pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
+
+        if ( pCsc->autoPackages == NULL )
+        {
+            extensionsFormatLastErr(context, pcext, OO_PACKAGE_NOT_AUTOMATIC, OO_PACKAGE_NOT_AUTOMATIC_STR, packageName);
+            return TheFalseObj;
+        }
+
+        bool found = false;
+        for ( size_t i = 0; i < pCsc->countPackages; i++ )
+        {
+            if ( pCsc->autoPackages[i] == pcp)
+            {
+                if ( i + 1 == MAX_AUTO_PACKAGES )
+                {
+                    pCsc->autoPackages[i] = NULL;
+                }
+                else
+                {
+                    memmove(&pCsc->autoPackages[i], &pCsc->autoPackages[i + 1],
+                            (MAX_AUTO_PACKAGES - 1 - i) * sizeof(pCooSQLPackage));
+                }
+
+                pCsc->countPackages--;
+                found = true;
+                break;
+            }
+        }
+        if ( ! found )
+        {
+            extensionsFormatLastErr(context, pcext, OO_PACKAGE_NOT_AUTOMATIC, OO_PACKAGE_NOT_AUTOMATIC_STR, packageName);
+            return TheFalseObj;
+        }
+    }
+
+    return TheTrueObj;
+}
+
 
 
 
@@ -10167,7 +10620,6 @@ RexxMethod2(RexxObjectPtr, oosqllib_getHandle_cls, RexxObjectPtr, funcName, CSEL
  */
 RexxMethod2(RexxObjectPtr, oosqlcol_init, RexxObjectPtr, collationEntry, OSELF, self)
 {
-    RexxMethodContext *c = context;
     if ( ! context->IsBuffer(collationEntry) )
     {
         wrongClassException(context->threadContext, 1, "Buffer", collationEntry);
@@ -10192,7 +10644,6 @@ RexxMethod2(RexxObjectPtr, oosqlcol_init, RexxObjectPtr, collationEntry, OSELF, 
  */
 RexxMethod2(RexxObjectPtr, oosqlfunc_init, RexxObjectPtr, functionEntry, OSELF, self)
 {
-    RexxMethodContext *c = context;
     if ( ! context->IsBuffer(functionEntry) )
     {
         wrongClassException(context->threadContext, 1, "Buffer", functionEntry);
@@ -13388,6 +13839,9 @@ REXX_METHOD_PROTOTYPE(oosqlext_getLibrary_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_getPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadLibrary_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadPackage_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_makeAutoCollation_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_makeAutoFunction_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_makeAutoPackage_cls);
 
 // .ooSQLPackage
 REXX_METHOD_PROTOTYPE(oosqlpack_init);
@@ -13627,6 +14081,9 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlext_getPackage_cls,              oosqlext_getPackage_cls),
     REXX_METHOD(oosqlext_loadLibrary_cls,             oosqlext_loadLibrary_cls),
     REXX_METHOD(oosqlext_loadPackage_cls,             oosqlext_loadPackage_cls),
+    REXX_METHOD(oosqlext_makeAutoCollation_cls,       oosqlext_makeAutoCollation_cls),
+    REXX_METHOD(oosqlext_makeAutoFunction_cls,        oosqlext_makeAutoFunction_cls),
+    REXX_METHOD(oosqlext_makeAutoPackage_cls,         oosqlext_makeAutoPackage_cls),
 
     // .ooSQLPackage
     REXX_METHOD(oosqlpack_init,                       oosqlpack_init),

@@ -102,6 +102,7 @@
   return ret
 
 ::requires 'ooSQLite.cls'
+::requires 'utilities.frm'
 
 -- The Collater class is used to define our callback methods.
 ::class 'Collater'
@@ -143,39 +144,10 @@
   return - str1~caselessCompareTo(str2);
 
 
--- Our second registere collation method. Here we also do a reverse sort, but
+-- Our second registered collation method. Here we also do a reverse sort, but
 -- we use case sensitive sort.
 ::method reverseCollateWithCase
   use arg str1, str2, userData
 
   return - str1~CompareTo(str2);
 
-
--- Common utility routine used to print a result set that is an array of arrays.
-::routine printResultSet
-  use arg rs
-
-  colCount = rs[1]~items
-  rowCount = rs~items
-
-  line = ''
-  headers = rs[1]
-  do j = 1 to colCount
-    line ||= headers[j]~left(25)
-  end
-
-  say line
-  say '='~copies(80)
-
-  do i = 2 to rowCount
-    line = ''
-    record = rs[i]
-    do j = 1 to colCount
-      line ||= record[j]~left(25)
-    end
-
-    say line
-  end
-  say
-
-  return 0

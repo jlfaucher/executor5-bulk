@@ -37,7 +37,7 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  insertNull.rex
+ *  insertNullOne.rex
  *
  * This example shows how to insert records into a table where the value for a
  * column in the table can be / is NULL.
@@ -49,6 +49,7 @@
  */
 
   -- Open the database.  We don't check for error here, an error is unlikely.
+  -- If the database does not exist, it is created.
   db = .ooSQLiteConnection~new('nullTest.rdbx')
 
   -- Drop the table we are going to use so that this example can be run multiple
@@ -133,14 +134,15 @@
   end
   stmt~finalize
 
-  -- Print out the data in the table. printTableWithNulls() is a .rex program
-  -- in this directory.  Here we are calling it as a function.
-  ret = 'printTableWithNulls'(db, "test_table")
+  -- Print out the data in the table. printTableWithNulls() is a routine in the
+  -- utilities.frm file.
+  ret = printTableWithNulls(db, "test_table")
 
   db~close
   return 0
 
 ::requires 'ooSQLite.cls'
+::requires 'utilities.frm'
 
 /* Just generate some random data for the test_table table. */
 ::routine getRecordValues

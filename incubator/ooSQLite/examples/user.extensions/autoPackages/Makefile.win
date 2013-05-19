@@ -1,0 +1,106 @@
+#/*----------------------------------------------------------------------------*/
+#/*                                                                            */
+#/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
+#/*                                                                            */
+#/* This program and the accompanying materials are made available under       */
+#/* the terms of the Common Public License v1.0 which accompanies this         */
+#/* distribution. A copy is also available at the following address:           */
+#/* http://www.oorexx.org/license.html                                         */
+#/*                                                                            */
+#/* Redistribution and use in source and binary forms, with or                 */
+#/* without modification, are permitted provided that the following            */
+#/* conditions are met:                                                        */
+#/*                                                                            */
+#/* Redistributions of source code must retain the above copyright             */
+#/* notice, this list of conditions and the following disclaimer.              */
+#/* Redistributions in binary form must reproduce the above copyright          */
+#/* notice, this list of conditions and the following disclaimer in            */
+#/* the documentation and/or other materials provided with the distribution.   */
+#/*                                                                            */
+#/* Neither the name of Rexx Language Association nor the names                */
+#/* of its contributors may be used to endorse or promote products             */
+#/* derived from this software without specific prior written permission.      */
+#/*                                                                            */
+#/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+#/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+#/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+#/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+#/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+#/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+#/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+#/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+#/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+#/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+#/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+#/*                                                                            */
+#/*----------------------------------------------------------------------------*/
+
+
+# This is a Visual C++, nMake compatible make file to build the autoPackage
+# shared libraries  The shared libraries are used for the
+# packageAutoRegistration.rex example.
+#
+
+# Define DEBUG on the command line, or here, to build a debug version.  By
+# default non-debug (release) versions are built.
+# I.e. nMake DEBUG=1 /F Makefile.win
+#DEBUG = 1
+
+WIN_LIBS  = user32.lib
+
+WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
+
+EXTRAINCLUDE = /I ..\..\..\src\sqlite /I ..\..\..\src
+
+BASEFLAGS = $(WARNINGFLAGS) $(EXTRAINCLUDE)
+
+!IF DEFINED(DEBUG)
+
+MISCDEFS = /D:_X86_ /DWIN32 /DNULL=0 /DOOSQLDBG=0
+CFLAGS =  /nologo /EHsc /Zi /Od /MTd /D_DEBUG /DEBUGTYPE:CV $(BASEFLAGS) $(MISCDEFS) /c
+LFLAGS_DLL = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Windows $(WIN_LIBS) /DLL
+
+!ELSE
+
+MISCDEFS = /D:_X86_ /DWIN32 /DNDEBUG /DNULL=0
+CFLAGS = /nologo /EHsc /O2 /Gs /Gy /FAs /MT $(BASEFLAGS) $(MISCDEFS) /c
+LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(WIN_LIBS) -def:autoPackage.def /DLL
+
+!ENDIF
+
+# What we want to build.
+all: autoPackage1.dll autoPackage2.dll autoPackage3.dll autoPackage4.dll autoPackage5.dll
+
+autoPackage1.obj: autoPackage1.cpp
+  cl $(CFLAGS) autoPackage1.cpp
+
+autoPackage1.dll: autoPackage1.obj
+    link $(LFLAGS_DLL) autoPackage1.obj -out:autoPackage1.dll -def:autoPackage.def
+
+autoPackage2.obj: autoPackage2.cpp
+  cl $(CFLAGS) autoPackage2.cpp
+
+autoPackage2.dll: autoPackage2.obj
+    link $(LFLAGS_DLL) autoPackage2.obj -out:autoPackage2.dll -def:autoPackage.def
+
+autoPackage3.obj: autoPackage3.cpp
+  cl $(CFLAGS) autoPackage3.cpp
+
+autoPackage3.dll: autoPackage3.obj
+    link $(LFLAGS_DLL) autoPackage3.obj -out:autoPackage3.dll -def:autoPackage.def
+
+autoPackage4.obj: autoPackage4.cpp
+  cl $(CFLAGS) autoPackage4.cpp
+
+autoPackage4.dll: autoPackage4.obj
+    link $(LFLAGS_DLL) autoPackage4.obj -out:autoPackage4.dll -def:autoPackage.def
+
+autoPackage5.obj: autoPackage5.cpp
+  cl $(CFLAGS) autoPackage5.cpp
+
+autoPackage5.dll: autoPackage5.obj
+    link $(LFLAGS_DLL) autoPackage5.obj -out:autoPackage5.dll -def:autoPackage.def
+
+clean:
+    del /Q *.dll *.obj *.exp *.asm *.pdb *.lib 1>nul 2>&1
+

@@ -266,6 +266,7 @@
         say line~left(80)
         line = ' '~copies(9) || line~substr(81)
       end
+      say line
     end
     else do
       say line

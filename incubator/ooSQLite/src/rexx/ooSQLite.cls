@@ -300,6 +300,9 @@
 ::method getPackage class external "LIBRARY oosqlite oosqlext_getPackage_cls"
 ::method loadLibrary class external "LIBRARY oosqlite oosqlext_loadLibrary_cls"
 ::method loadPackage class external "LIBRARY oosqlite oosqlext_loadPackage_cls"
+::method makeAutoCollation class external "LIBRARY oosqlite oosqlext_makeAutoCollation_cls"
+::method makeAutoFunction class external "LIBRARY oosqlite oosqlext_makeAutoFunction_cls"
+::method makeAutoPackage class external "LIBRARY oosqlite oosqlext_makeAutoPackage_cls"
 
 
 /** class: ooSQLPackage

@@ -66,7 +66,10 @@
 #define OO_PACKAGE_NOT_VALID             1006
 #define OO_NO_SUCH_PACKAGE               1007
 #define OO_NO_SUCH_LIBRARY               1008
-#define OO_ERR_LAST                      1008
+#define OO_PACKAGE_NOT_AUTOMATIC         1009
+#define OO_COLLATION_NOT_AUTOMATIC       1010
+#define OO_FUNCTION_NOT_AUTOMATIC        1011
+#define OO_ERR_LAST                      1011
 
 #define OO_INTERNAL_ERR_STR              "an unexpected ooSQLite internal error occurred"
 #define OO_WRONG_ARG_TYPE_STR            "an argument to a ooSQLite method or fucntion is the wrong type"
@@ -77,6 +80,9 @@
 #define OO_PACKAGE_NOT_VALID_STR         "the current version of ooSQLite or SQLite does not meet the package requirements"
 #define OO_NO_SUCH_PACKAGE_STR           "package %s is not loaded"
 #define OO_NO_SUCH_LIBRARY_STR           "library %s is not loaded"
+#define OO_PACKAGE_NOT_AUTOMATIC_STR     "package %s is not an automatically registered package"
+#define OO_COLLATION_NOT_AUTOMATIC_STR   "collations %s is not an automatically registered collation"
+#define OO_FUNCTION_NOT_AUTOMATIC_STR    "function %s is not an automatically registered function"
 
 #define VALID_VERSION_TYPES "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
 #define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, OO_STEM_OF_STEMS, or OO_CLASSIC_STEM"
@@ -235,16 +241,6 @@ typedef CooSQLiteMutex *pCooSQLiteMutex;
 #define MutexMagic                  0xFD74CA32
 #define SQLITE_MUTEX_RECURSIVE_DB   999    // Our own mutex define to indicate the mutex is the sqlite3_db_mutex()
 
-/* Struct for the ooSQLExtensions class object CSelf. */
-typedef struct _oosqlExtensionsCSelf {
-    RexxObjectPtr      libraryTable;  // A Rexx table object used to hold loaded library objects / buffers or ooSQLLibrary (?)
-    RexxObjectPtr      packageTable;  // A Rexx table object used to hold loaded package objects / buffers or ooSQLPackage (?)
-    RexxObjectPtr      rexxSelf;
-    RexxStringObject   lastErrMsg;
-    RexxObjectPtr      lastErrCode;
-} CooSQLExtensions;
-typedef CooSQLExtensions *pCooSQLExtensions;
-
 /* Struct for the ooSQLPackage object CSelf. */
 typedef struct _oosqlPackageCSelf {
     ooSQLitePackageEntry *packageEntry;     // Pointer to the package entry table in the external package.
@@ -275,9 +271,9 @@ typedef CooSQLLibrary *pCooSQLLibrary;
 
 /* Struct for the ooSQLite class object CSelf. */
 typedef struct _oosqlclassCSelf {
-    pCooSQLPackage        autoPackages[MAX_AUTO_PACKAGES];
-    pSQLiteFunctionEntry  autoFunctions[MAX_AUTO_FUNCTIONS];
-    pSQLiteCollationEntry autoCollations[MAX_AUTO_COLLATIONS];
+    pCooSQLPackage        *autoPackages;
+    pSQLiteFunctionEntry  *autoFunctions;
+    pSQLiteCollationEntry *autoCollations;
     RexxObjectPtr         nullObj;            // Default representation of SQL NULL
     CSTRING               nullStr;            // If nullObj is a Rexx string object, the string value of the object
     ResultSetType         format;             // The default format of a result set for the current process.
@@ -286,6 +282,17 @@ typedef struct _oosqlclassCSelf {
     size_t                countCollations;
 } CooSQLiteClass;
 typedef CooSQLiteClass *pCooSQLiteClass;
+
+/* Struct for the ooSQLExtensions class object CSelf. */
+typedef struct _oosqlExtensionsCSelf {
+    RexxObjectPtr      libraryTable;  // A Rexx table object used to hold loaded library objects
+    RexxObjectPtr      packageTable;  // A Rexx table object used to hold loaded package objects
+    RexxObjectPtr      rexxSelf;
+    RexxStringObject   lastErrMsg;
+    RexxObjectPtr      lastErrCode;
+    pCooSQLiteClass    pCsc;          // Pointer to the .ooSQLite CSelf struct, uses a lazy init.
+} CooSQLExtensions;
+typedef CooSQLExtensions *pCooSQLExtensions;
 
 /* Generic struct passed to several sqlite3 call back functions */
 typedef struct _genericCallback {

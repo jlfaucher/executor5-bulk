@@ -70,7 +70,7 @@
     return .ooSQLExtensions~lastErrCode
   end
 
-  lib = .ooSQLExtensions~getLibrary('examplelibrary')
+  lib = .ooSQLExtensions~getLibrary('examplelibsrary')
   if lib == .nil then do
     say 'Failed to retrieve library from extensions manager'
     say '  Error code:   ' .ooSQLExtensions~lastErrCode
@@ -212,77 +212,4 @@
   return ret
 
 ::requires 'ooSQLite.cls'
-
-::routine printResultSet
-  use arg rs
-
-  colCount = rs[1]~items
-  rowCount = rs~items
-
-  line = ''
-  headers = rs[1]
-  do j = 1 to colCount
-    line ||= headers[j]~left(25)
-  end
-
-  say line
-  say '='~copies(80)
-
-  do i = 2 to rowCount
-    line = ''
-    record = rs[i]
-    do j = 1 to colCount
-      line ||= record[j]~left(25)
-    end
-
-    say line
-  end
-  say
-
-  return 0
-
--- strAggregate specific utility routine used to print the strAggregate result
--- set.
-::routine printStrAgg
-  use arg rs
-
-  colCount = 2
-  rowCount = rs~items
-
-  headers = rs[1]
-  line = headers[1]~left(9) || headers[2]
-
-  say line
-  say '='~copies(80)
-
-  do i = 2 to rowCount
-    record = rs[i]
-    if record[1] == .nil then line = 'NULL'~left(9) || record[2]
-    else line = record[1]~left(9) || record[2]
-
-    if line~length > 80 then do
-      say line~left(80)
-
-      line = ' '~copies(9) || line~substr(81)
-      do while line~length > 80
-        say line~left(80)
-        line = ' '~copies(9) || line~substr(81)
-      end
-    end
-    else do
-      say line
-    end
-    say
-  end
-  say
-
-  return 0
-
-
-::routine getOSName
-
-  parse upper source os .
-  if os~abbrev("WIN") then os = "WINDOWS"
-  return os
-
-
+::requires 'utilities.frm'

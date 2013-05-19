@@ -85,6 +85,17 @@
   pull
   z = printResultSet(resultSet)
 
+  sql = "SELECT * FROM foods where name like 'J%' ORDER BY name COLLATE EBCDIC;"
+  resultSet = dbConn~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printResultSet(resultSet)
+
   sql = "SELECT * FROM foods ORDER BY name COLLATE REVERSE;"
   resultSet = dbConn~exec(sql, .true)
 
@@ -95,11 +106,24 @@
   say 'Hit enter to continue'
   pull
   z = printResultSet(resultSet)
-  ret = dbConn~close
 
+  sql = "SELECT season, strAggregate(name) from episodes group by season;"
+  resultSet = dbConn~exec(sql, .true)
+
+  say 'SQL:             ' sql
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
+  say
+  say 'Hit enter to continue'
+  pull
+  z = printStrAgg(resultSet)
+  say
+
+  ret = dbConn~close
   return ret
 
 ::requires 'ooSQLite.cls'
+::requires 'utilities.frm'
 
 ::class 'Collater'
 
@@ -107,39 +131,4 @@
   use arg str1, str2, userData
 
   return - str1~caselessCompareTo(str2);
-
-::routine printResultSet
-  use arg rs
-
-  colCount = rs[1]~items
-  rowCount = rs~items
-
-  line = ''
-  headers = rs[1]
-  do j = 1 to colCount
-    line ||= headers[j]~left(25)
-  end
-
-  say line
-  say '='~copies(80)
-
-  do i = 2 to rowCount
-    line = ''
-    record = rs[i]
-    do j = 1 to colCount
-      line ||= record[j]~left(25)
-    end
-
-    say line
-  end
-  say
-
-  return 0
-
-::routine getOSName
-
-  parse upper source os .
-  if os~abbrev("WIN") then os = "WINDOWS"
-  return os
-
 

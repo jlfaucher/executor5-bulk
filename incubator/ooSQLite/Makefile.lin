@@ -148,7 +148,8 @@ example_dlls:
 	@echo
 	@echo Building example shared library \(libraries\)
 	cd examples/user.extensions; make -f Makefile.lin
-	cd ../../
+	cd autoPackages; make -f Makefile.lin
+	cd ../../../
 
 dist: all
 	@echo Create distribution file
@@ -166,5 +167,6 @@ clean_all:
 clean:
 	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/oosqlite3
 	cd examples/user.extensions; make -f Makefile.lin clean
-	cd ../../
+	cd autoPackages; make -f Makefile.lin clean
+	cd ../../../
 

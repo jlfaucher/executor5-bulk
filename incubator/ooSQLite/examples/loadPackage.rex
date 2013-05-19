@@ -44,7 +44,7 @@
  *  Loading an ooSQLite package file is very similar to using the loadExtension
  *  method to load a SQLite extension library.  If the loadPackage() method is
  *  passed a valid database connection, all the collations, functions, and
- *  aggragetes are automatically registered for the database connection.
+ *  aggregates are automatically registered for the database connection.
  *
  *  Once loaded, the register() method can be used to automatically register
  *  everything in the pacakge for any database connection passed to the register
@@ -53,7 +53,6 @@
  *  Also, once loaded, individual collations and functions can be retrieved from
  *  the package object and used individually in the createCollation() or
  *  createFunction() methods.
- *
  */
 
   os = getOSName()
@@ -232,76 +231,4 @@
   return ret
 
 ::requires 'ooSQLite.cls'
-
-::routine printResultSet
-  use arg rs
-
-  colCount = rs[1]~items
-  rowCount = rs~items
-
-  line = ''
-  headers = rs[1]
-  do j = 1 to colCount
-    line ||= headers[j]~left(25)
-  end
-
-  say line
-  say '='~copies(80)
-
-  do i = 2 to rowCount
-    line = ''
-    record = rs[i]
-    do j = 1 to colCount
-      line ||= record[j]~left(25)
-    end
-
-    say line
-  end
-  say
-
-  return 0
-
--- strAggregate specific utility routine used to print the strAggregate result
--- set.
-::routine printStrAgg
-  use arg rs
-
-  colCount = 2
-  rowCount = rs~items
-
-  headers = rs[1]
-  line = headers[1]~left(9) || headers[2]
-
-  say line
-  say '='~copies(80)
-
-  do i = 2 to rowCount
-    record = rs[i]
-    if record[1] == .nil then line = 'NULL'~left(9) || record[2]
-    else line = record[1]~left(9) || record[2]
-
-    if line~length > 80 then do
-      say line~left(80)
-
-      line = ' '~copies(9) || line~substr(81)
-      do while line~length > 80
-        say line~left(80)
-        line = ' '~copies(9) || line~substr(81)
-      end
-    end
-    else do
-      say line
-    end
-    say
-  end
-  say
-
-  return 0
-
-::routine getOSName
-
-  parse upper source os .
-  if os~abbrev("WIN") then os = "WINDOWS"
-  return os
-
-
+::requires 'utilities.frm'
