@@ -87,6 +87,7 @@ use arg cmdLine
   mdCmd outDir'doc'
   mdCmd outDir'examples'sl'classic.rexx'
   mdCmd outDir'examples'sl'user.extensions'
+  mdCmd outDir'examples'sl'user.extensions'sl'autoPackages'
   mdCmd outDir'misc'
   mdCmd outDir'testing'
 
