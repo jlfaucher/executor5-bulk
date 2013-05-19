@@ -1,4 +1,4 @@
-                  ooSQLite Version 1.0.0.9160 (Preview)
+                  ooSQLite Version 1.0.0.9224 (Preview)
                   ========================================
 
 ooSQLite is an ooRexx extension that provides an interface to the SQLite
@@ -120,6 +120,10 @@ ooSQLite.1.0.0.xxxx
    *---examples
    |     |
    |     *---classic.rexx
+   |     |
+   |     *---user.extensions
+   |           |
+   |           *---autoPackages
    |
    *---misc
    |
@@ -210,6 +214,48 @@ the entire user community.
 
                           Cumulative Changes:
                           ===================
+
+Changes since ooSQLite Version 1.0.0.9160 (Preview)
+------------------------------------------------------------------------
+
+The SQLite library is updated to 3.7.16.2
+
+  Enhancements:
+  -------------
+
+  SQLite has the functionality to add user defined collations,
+  functions, and aggregates.  This release adds the infrastructure to
+  ooSQLite to take advantage of this.  The following specific Request
+  For Enhancements address this, however the changes encompass more than
+  is explicitly listed in the RFEs.
+
+  * #541 Allow registration of user defined collations in ooSQLite
+
+  * #543 Add access to sqlite3_load_extension in ooSQLite
+
+  * #544 Allow the registration of user defined SQL functions and
+         aggregates
+
+  The overall changes related to the new infrastruce include:
+
+  * The .ooSQLResult class has been added.
+
+  * The .ooSQLValue class has been added.
+
+  * The .ooSQLExtensions class has been added.
+
+  * The .ooSQLPackage class has been added.
+
+  * The .ooSQLLibrary class has been added.
+
+  * The .ooSQLCollation class has been added.
+
+  * The .ooSQLFunction class has been added.
+
+  * A number of new examples have been added to demonstrate the new
+    functionality
+
+
 
 Changes since ooSQLite Version 1.0.0.8707 (Preview)
 ------------------------------------------------------------------------
