@@ -142,6 +142,8 @@
   -- Now, for the purpose of demonstration, we go through the two packages that
   -- were unmarked and mark the individual collations and functions as
   -- automatically regestered.
+  -- 
+  -- For package 3
   if \ .ooSQLExtensions~makeAutoCollation('autoPackage3', 'reversible') then do
       say 'Failed to make auto collation: reversible'
       say '  Error code:   ' .ooSQLExtensions~lastErrCode
@@ -219,6 +221,122 @@
   pull
 
   ret = runTest()
+                  
+  -- Now unmark some of the auto collations and functions
+  if \ .ooSQLExtensions~makeAutoFunction('autoPackage5', 'aHalf1', .false) then do
+      say 'Failed to un-mark auto collation: aHalf1'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'aHalf1 is no longer an auto function'
+  end
+
+  if \ .ooSQLExtensions~makeAutoCollation('autoPackage3', 'ebcdicSort', .false) then do
+      say 'Failed to un-mark auto collation: ebcdicSort'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'ebcdicSort is no longer an auto collation'
+  end
+
+  if \ .ooSQLExtensions~makeAutoFunction('autoPackage5', 'strAgg1', .false) then do
+      say 'Failed to un-mark auto function: strAgg1'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'strAgg1 is no longer an auto function'
+  end
+  say
+  say 'Hit enter to continue'
+  pull
+
+  ret = runTest()
+                             
+  -- Un-mark all the auto collations and functions we first registered.  Some of
+  -- these were un-marked above.  So, the second attempt to un-mark it will 
+  -- produce an error.
+  if \ .ooSQLExtensions~makeAutoCollation('autoPackage3', 'reversible', .false) then do
+      say 'Failed to un-mark auto collation: reversible'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'reversible is no longer an auto collation'
+  end
+
+  if \ .ooSQLExtensions~makeAutoCollation('autoPackage3', 'ebcdicSort', .false) then do
+      say 'Failed to un-mark auto collation: ebcdicSort'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'ebcdicSort is no longer an auto collation'
+  end
+
+  if \ .ooSQLExtensions~makeAutoFunction('autoPackage3', 'toHalf', .false) then do
+      say 'Failed to un-mark auto fucntion: toHalf'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'toHalf is no longer an auto function'
+  end
+
+  if \ .ooSQLExtensions~makeAutoFunction('autoPackage3', 'stringAgg', .false) then do
+      say 'Failed to un-mark auto function: stringAgg'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'stringAgg is no longer an auto function'
+  end
+
+  -- For package 5
+  if \ .ooSQLExtensions~makeAutoCollation('autoPackage5', 'reverseTo1', .false) then do
+      say 'Failed to un-mark auto collation: reverseTo1'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'reverseTo1 is no longer an auto collation'
+  end
+
+  if \ .ooSQLExtensions~makeAutoCollation('autoPackage5', 'sortEbcdic1', .false) then do
+      say 'Failed to un-mark auto collation: sortEbcdic1'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'sortEbcdic1 is no longer an auto collation'
+  end
+
+  if \ .ooSQLExtensions~makeAutoFunction('autoPackage5', 'aHalf1', .false) then do
+      say 'Failed to un-mark auto collation: aHalf1'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'aHalf1 is no longer an auto function'
+  end
+
+  if \ .ooSQLExtensions~makeAutoFunction('autoPackage5', 'strAgg1', .false) then do
+      say 'Failed to un-mark auto function: strAgg1'
+      say '  Error code:   ' .ooSQLExtensions~lastErrCode
+      say '  Error message:' .ooSQLExtensions~lastErrMsg
+  end
+  else do
+    say 'strAgg1 is no longer an auto function'
+  end
+  say
+  say 'Hit enter to continue'
+  pull
+
+  ret = runTest()
+                  
+                            
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
