@@ -52,7 +52,7 @@ use arg cmdLine
     zipCmd     = 'zip -X9r'
     ext        = 'win.zip'
     setEnvFile = 'setOOSQLiteEnv.bat'
-    osBinFiles = 'bin\windows\*'
+    osBinDir    = 'bin\windows\'
   end
   else do
     cpCmd      = 'cp'
@@ -64,7 +64,7 @@ use arg cmdLine
     zipCmd     = 'tar -czvf'
     ext        = '_lin.tgz'
     setEnvFile = 'setOOSQLiteEnv.sh'
-    osBinFiles = 'bin/linux/*'
+    osBinDir   = 'bin/linux/'
   end
 
   svn_rev = cmdLine~strip('B', '"')
@@ -97,26 +97,114 @@ use arg cmdLine
   cpCmd 'ReleaseNotes' outDir
   cpCmd setEnvFile outDir
 
-  cpCmd osBinFiles                      outDir'bin'
-  cpCmd 'doc'sl'*'                      outDir'doc'
-  cpCmd 'examples'sl'*'                 outDir'examples'
-  cpCmd 'examples'sl'classic.rexx'sl'*' outDir'examples'sl'classic.rexx'
-  cpCmd 'misc'sl'*'                     outDir'misc'
-  cpCmd 'testing'sl'*'                  outDir'testing'
-
-  cpCmd 'examples'sl'user.extensions'sl'simpleExtension.c' outDir'examples'sl'user.extensions'
-  cpCmd 'examples'sl'user.extensions'sl'examplePackage.cpp' outDir'examples'sl'user.extensions'
-  cpCmd 'examples'sl'user.extensions'sl'exampleLibrary.cpp' outDir'examples'sl'user.extensions'
-
   if os == "WINDOWS" then do
-    cpCmd 'examples'sl'user.extensions'sl'Makefile.win' outDir'examples'sl'user.extensions'
-    cpCmd 'examples'sl'user.extensions'sl'*.dll' outDir'examples'sl'user.extensions'
-    cpCmd 'examples'sl'user.extensions'sl'*.def' outDir'examples'sl'user.extensions'
+    cpCmd osBinDir'ooSQLite.cls'       outDir'bin'
+    cpCmd osBinDir'oosqlite.dll'       outDir'bin'
+    cpCmd osBinDir'ooSQLite3.exe'      outDir'bin'
   end
   else do
-    cpCmd 'examples'sl'user.extensions'sl'Makefile.lin' outDir'examples'sl'user.extensions'
-    cpCmd 'examples'sl'user.extensions'sl'*.so' outDir'examples'sl'user.extensions'
+    cpCmd osBinDir'liboosqlite.so'     outDir'bin'
+    cpCmd osBinDir'oosqlite3'          outDir'bin'
+    cpCmd osBinDir'ooSQLite.cls'       outDir'bin'
   end
+
+  cpCmd 'doc'sl'oosqlite.pdf'           outDir'doc'
+  if os == "WINDOWS" then do
+    cpCmd 'doc'sl'StatusAllSQLiteFunctions.xlsx' outDir'doc'
+  end
+
+  cpCmd 'examples'sl'collationCustom.rex'          outDir'examples'
+  cpCmd 'examples'sl'createDatabase.rex'           outDir'examples'
+  cpCmd 'examples'sl'enquote.rex'                  outDir'examples'
+  cpCmd 'examples'sl'insertIntoDatabase.rex'       outDir'examples'
+  cpCmd 'examples'sl'insertNullOne.rex'            outDir'examples'
+  cpCmd 'examples'sl'insertNullThree.rex'          outDir'examples'
+  cpCmd 'examples'sl'insertNullTwo.rex'            outDir'examples'
+  cpCmd 'examples'sl'loadExtension.rex'            outDir'examples'
+  cpCmd 'examples'sl'loadLibrary.rex'              outDir'examples'
+  cpCmd 'examples'sl'loadPackage.rex'              outDir'examples'
+  cpCmd 'examples'sl'ooFoods.rdbx'                 outDir'examples'
+  cpCmd 'examples'sl'packageAutoRegistration.rex'  outDir'examples'
+  cpCmd 'examples'sl'pullColumnData.rex'           outDir'examples'
+  cpCmd 'examples'sl'udfExample.rex'               outDir'examples'
+  cpCmd 'examples'sl'utilities.frm'                outDir'examples'
+
+  cpCmd 'examples'sl'classic.rexx'sl'backupDB.rex'          outDir'examples'sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'ooFoods.rdbx'          outDir'examples'sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'preparedStmtRtn.rex'   outDir'examples'sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'pullColumnDataRtn.rex' outDir'examples'sl'classic.rexx'
+
+  -- user.extensions subdirectory
+  srcDirNow = 'examples'sl'user.extensions'sl
+  dstDirNow = outDir'examples'sl'user.extensions'sl
+
+  cpCmd dstDirNow'simpleExtension.c'  dstDirNow
+  cpCmd srcDirNow'examplePackage.cpp' dstDirNow
+  cpCmd srcDirNow'exampleLibrary.cpp' dstDirNow
+  if os == "WINDOWS" then do
+    cpCmd srcDirNow'Makefile.win'        dstDirNow
+    cpCmd srcDirNow'simpleExtension.dll' dstDirNow
+    cpCmd srcDirNow'examplePackage.dll'  dstDirNow
+    cpCmd srcDirNow'exampleLibrary.dll'  dstDirNow
+    cpCmd srcDirNow'simpleExtension.def' dstDirNow
+    cpCmd srcDirNow'examplePackage.def'  dstDirNow
+    cpCmd srcDirNow'exampleLibrary.def'  dstDirNow
+  end
+  else do
+    cpCmd srcDirNow'Makefile.lin'          dstDirNow
+    cpCmd srcDirNow'libsimpleextension.so' dstDirNow
+    cpCmd srcDirNow'libexamplepackage.so'  dstDirNow
+    cpCmd srcDirNow'libexamplelibrary.so'  dstDirNow
+  end
+
+  -- autoPackages subdirectory
+  srcDirNow = 'examples'sl'user.extensions'sl'autoPackages'sl
+  dstDirNow = outDir'examples'sl'user.extensions'sl'autoPackages'
+
+  cpCmd srcDirNow'autoPackage1.cpp' dstDirNow
+  cpCmd srcDirNow'autoPackage2.cpp' dstDirNow
+  cpCmd srcDirNow'autoPackage3.cpp' dstDirNow
+  cpCmd srcDirNow'autoPackage4.cpp' dstDirNow
+  cpCmd srcDirNow'autoPackage5.cpp' dstDirNow
+  cpCmd srcDirNow'ReadMe.txt'       dstDirNow
+  if os == "WINDOWS" then do
+    cpCmd srcDirNow'Makefile.win'      dstDirNow
+    cpCmd srcDirNow'autoPackage1.dll'  dstDirNow
+    cpCmd srcDirNow'autoPackage2.dll'  dstDirNow
+    cpCmd srcDirNow'autoPackage3.dll'  dstDirNow
+    cpCmd srcDirNow'autoPackage4.dll'  dstDirNow
+    cpCmd srcDirNow'autoPackage5.dll'  dstDirNow
+    cpCmd srcDirNow'autoPackage.def'   dstDirNow
+  end
+  else do
+    cpCmd srcDirNow'Makefile.lin'       dstDirNow
+    cpCmd srcDirNow'libautopackage1.so' dstDirNow
+    cpCmd srcDirNow'libautopackage2.so' dstDirNow
+    cpCmd srcDirNow'libautopackage3.so' dstDirNow
+    cpCmd srcDirNow'libautopackage4.so' dstDirNow
+    cpCmd srcDirNow'libautopackage5.so' dstDirNow
+  end
+
+  cpCmd 'misc'sl'foodsPristine.rdbx'    outDir'misc'
+  cpCmd 'misc'sl'ReadMe.txt'            outDir'misc'
+
+  -- testing subdirectory
+  srcDirNow = 'testing'sl
+  dstDirNow = outDir'testing'
+
+  cpCmd srcDirNow'execTestA.rex'          dstDirNow
+  cpCmd srcDirNow'execTestD.rex'          dstDirNow
+  cpCmd srcDirNow'execTestNoExec.rex'     dstDirNow
+  cpCmd srcDirNow'execTestS.rex'          dstDirNow
+  cpCmd srcDirNow'loadDatabase.rex'       dstDirNow
+  cpCmd srcDirNow'ooFoods.rdbx'           dstDirNow
+  cpCmd srcDirNow'pragmaGetTest.rex'      dstDirNow
+  cpCmd srcDirNow'pragmaSetTest.rex'      dstDirNow
+  cpCmd srcDirNow'pragmaSpecialTest.rex'  dstDirNow
+  cpCmd srcDirNow'pragmaTriggerTest.rex'  dstDirNow
+  cpCmd srcDirNow'preparedStmtTest.rex'   dstDirNow
+  cpCmd srcDirNow'statusTest.rex'         dstDirNow
+  cpCmd srcDirNow'versionTest.rex'        dstDirNow
 
   zipCmd outFile outDir
 
