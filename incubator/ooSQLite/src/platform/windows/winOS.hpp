@@ -50,6 +50,8 @@
 #include <windows.h>
 #include <shlwapi.h>
 
+#define strcasecmp                 _stricmp
+#define strncasecmp                _strnicmp
 #define snprintf                   _snprintf
 #define oosqlGetCurrentThreadId()  GetCurrentThreadId()
 
