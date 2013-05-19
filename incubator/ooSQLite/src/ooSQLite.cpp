@@ -9390,7 +9390,8 @@ void resetLibraryLastErr(RexxMethodContext *c, pCooSQLLibrary pcl)
  *
  * @note  We expect fmt to have exactly 1 %s in it.
  */
-static void extensionsFormatLastErr(RexxMethodContext *c, pCooSQLExtensions pcext, uint32_t code, char *fmt, CSTRING insert)
+static void extensionsFormatLastErr(RexxMethodContext *c, pCooSQLExtensions pcext, uint32_t code, CSTRING fmt,
+                                    CSTRING insert)
 {
     char buf[512];
 
@@ -9401,7 +9402,8 @@ static void extensionsFormatLastErr(RexxMethodContext *c, pCooSQLExtensions pcex
     extensionsSetLastErr(c, pcext->lastErrMsg, pcext->lastErrCode);
 }
 
-static void extensionsFormatLastErr(RexxMethodContext *c, pCooSQLExtensions pcext, uint32_t code, char *fmt, RexxObjectPtr insert)
+static void extensionsFormatLastErr(RexxMethodContext *c, pCooSQLExtensions pcext, uint32_t code, CSTRING fmt,
+                                    RexxObjectPtr insert)
 {
     extensionsFormatLastErr(c, pcext, code, fmt, c->ObjectToStringValue(insert));
 }
@@ -9473,7 +9475,7 @@ static bool makeAutoCollation(RexxMethodContext *c, pCooSQLExtensions pcext, pSQ
 
     if ( pCsc->autoCollations == NULL )
     {
-        pCsc->autoCollations = (pSQLiteCollationEntry *)LocalAlloc(LPTR, MAX_AUTO_COLLATIONS * sizeof(pSQLiteCollationEntry));
+        pCsc->autoCollations = (pSQLiteCollationEntry *)sqlite3_malloc(MAX_AUTO_COLLATIONS * sizeof(pSQLiteCollationEntry));
         if ( pCsc->autoCollations == NULL )
         {
             outOfMemoryException(c->threadContext);
@@ -9507,7 +9509,7 @@ static bool makeAutoFunction(RexxMethodContext *c, pCooSQLExtensions pcext, pSQL
 
     if ( pCsc->autoFunctions == NULL )
     {
-        pCsc->autoFunctions = (pSQLiteFunctionEntry *)LocalAlloc(LPTR, MAX_AUTO_FUNCTIONS * sizeof(pSQLiteFunctionEntry));
+        pCsc->autoFunctions = (pSQLiteFunctionEntry *)sqlite3_malloc(MAX_AUTO_FUNCTIONS * sizeof(pSQLiteFunctionEntry));
         if ( pCsc->autoFunctions == NULL )
         {
             outOfMemoryException(c->threadContext);
@@ -9540,7 +9542,7 @@ static bool makeAutoPackage(RexxMethodContext *c, pCooSQLExtensions pcext, pCooS
 
     if ( pCsc->autoPackages == NULL )
     {
-        pCsc->autoPackages = (pCooSQLPackage *)LocalAlloc(LPTR, MAX_AUTO_PACKAGES * sizeof(pCooSQLPackage));
+        pCsc->autoPackages = (pCooSQLPackage *)sqlite3_malloc(MAX_AUTO_PACKAGES * sizeof(pCooSQLPackage));
         if ( pCsc->autoPackages == NULL )
         {
             outOfMemoryException(c->threadContext);
@@ -9592,7 +9594,11 @@ bool resolveFunction(RexxMethodContext *c, pCooSQLLibrary pcl, RexxObjectPtr rxN
  */
 RexxObjectPtr createCollationObject(RexxMethodContext *c, pSQLiteCollationEntry e)
 {
-    RexxObjectPtr result = TheNilObj;
+    RexxClassObject       collationCls   = NULLOBJECT;
+    RexxBufferObject      collationCSelf = NULLOBJECT;
+    pSQLiteCollationEntry cpy            = NULLOBJECT;
+    RexxObjectPtr         collation      = NULLOBJECT;
+    RexxObjectPtr         result         = TheNilObj;
 
     if ( e->entryCompare == NULL )
     {
@@ -9600,23 +9606,23 @@ RexxObjectPtr createCollationObject(RexxMethodContext *c, pSQLiteCollationEntry 
         goto done_out;
     }
 
-    RexxClassObject collationCls = rxGetContextClass(c, "ooSQLCollation");
+    collationCls = rxGetContextClass(c, "ooSQLCollation");
     if ( collationCls == NULLOBJECT )
     {
         goto done_out;
     }
 
-    RexxBufferObject collationCSelf = c->NewBuffer(sizeof(SQLiteCollationEntry));
+    collationCSelf = c->NewBuffer(sizeof(SQLiteCollationEntry));
     if ( collationCSelf == NULLOBJECT )
     {
         outOfMemoryException(c->threadContext);
         goto done_out;
     }
 
-    pSQLiteCollationEntry cpy = (pSQLiteCollationEntry)c->BufferData(collationCSelf);
+    cpy = (pSQLiteCollationEntry)c->BufferData(collationCSelf);
     memcpy(cpy, e, sizeof(SQLiteCollationEntry));
 
-    RexxObjectPtr collation = c->SendMessage1(collationCls, "NEW", collationCSelf);
+    collation = c->SendMessage1(collationCls, "NEW", collationCSelf);
     if ( collation != NULLOBJECT )
     {
         result = collation;
@@ -9637,7 +9643,11 @@ done_out:
  */
 RexxObjectPtr createFunctionObject(RexxMethodContext *c, pSQLiteFunctionEntry e)
 {
-    RexxObjectPtr result = TheNilObj;
+    RexxClassObject       functionCls   = NULLOBJECT;
+    RexxBufferObject      functionCSelf = NULLOBJECT;
+    pSQLiteFunctionEntry  cpy           = NULLOBJECT;
+    RexxObjectPtr         function      = NULLOBJECT;
+    RexxObjectPtr         result        = TheNilObj;
 
     if ( e->entryFunc == NULL && e->entryStep == NULL && e->entryFinal == NULL )
     {
@@ -9645,23 +9655,23 @@ RexxObjectPtr createFunctionObject(RexxMethodContext *c, pSQLiteFunctionEntry e)
         goto done_out;
     }
 
-    RexxClassObject functionCls = rxGetContextClass(c, "ooSQLFunction");
+    functionCls = rxGetContextClass(c, "ooSQLFunction");
     if ( functionCls == NULLOBJECT )
     {
         goto done_out;
     }
 
-    RexxBufferObject functionCSelf = c->NewBuffer(sizeof(SQLiteFunctionEntry));
+    functionCSelf = c->NewBuffer(sizeof(SQLiteFunctionEntry));
     if ( functionCSelf == NULLOBJECT )
     {
         outOfMemoryException(c->threadContext);
         goto done_out;
     }
 
-    pSQLiteFunctionEntry cpy = (pSQLiteFunctionEntry)c->BufferData(functionCSelf);
+    cpy = (pSQLiteFunctionEntry)c->BufferData(functionCSelf);
     memcpy(cpy, e, sizeof(SQLiteFunctionEntry));
 
-    RexxObjectPtr function = c->SendMessage1(functionCls, "NEW", functionCSelf);
+    function = c->SendMessage1(functionCls, "NEW", functionCSelf);
     if ( function != NULLOBJECT )
     {
         result = function;
@@ -9800,23 +9810,26 @@ RexxMethod2(RexxObjectPtr, oosqlext_getPackage_cls, RexxObjectPtr, packageName, 
  */
 RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, RexxObjectPtr, libName, OPTIONAL_RexxObjectPtr, procedures, CSELF, pCSelf)
 {
-    RexxMethodContext *c = context;
-    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
-    RexxObjectPtr     result = TheFalseObj;
+    pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
 
-    RexxClassObject libCls = rxGetContextClass(context, "ooSQLLibrary");
+    RexxClassObject libCls  =  NULLOBJECT;
+    RexxObjectPtr   library = NULLOBJECT;
+    pCooSQLLibrary  pcl     = NULLOBJECT;
+    RexxObjectPtr   result  = TheFalseObj;
+
+    libCls = rxGetContextClass(context, "ooSQLLibrary");
     if ( libCls == NULLOBJECT )
     {
         goto done_out;
     }
 
-    RexxObjectPtr library = c->SendMessage1(libCls, "NEW", libName);
+    library = context->SendMessage1(libCls, "NEW", libName);
     if ( library == NULLOBJECT )
     {
         goto done_out;
     }
 
-    pCooSQLLibrary pcl = (pCooSQLLibrary)context->ObjectToCSelf(library);
+    pcl = (pCooSQLLibrary)context->ObjectToCSelf(library);
     if ( pcl == NULL )
     {
         extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLLibrary");
@@ -9835,24 +9848,24 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, RexxObjectPtr, libName, OPT
     // If there is a sparse array exception, we will undo this.  If there is an
     // error resolving a function address, we will set result to false, but keep
     // everything else as is up to that point.
-    c->SendMessage2(pcext->libraryTable, "PUT", library, c->String(pcl->baseName));
+    context->SendMessage2(pcext->libraryTable, "PUT", library, context->String(pcl->baseName));
     result = TheTrueObj;
 
     if ( argumentExists(2) )
     {
-        if ( c->IsArray(procedures) )
+        if ( context->IsArray(procedures) )
         {
             RexxArrayObject names = (RexxArrayObject)procedures;
-            size_t          count = c->ArrayItems(names);
+            size_t          count = context->ArrayItems(names);
 
             for ( size_t i = 1; i <= count; i++ )
             {
-                RexxObjectPtr rxName = c->ArrayAt(names, i);
+                RexxObjectPtr rxName = context->ArrayAt(names, i);
                 if ( rxName == NULLOBJECT )
                 {
-                    sparseArrayException(c->threadContext, 2, i);
+                    sparseArrayException(context->threadContext, 2, i);
 
-                    c->SendMessage1(pcext->libraryTable, "REMOVE", c->String(pcl->baseName));
+                    context->SendMessage1(pcext->libraryTable, "REMOVE", context->String(pcl->baseName));
                     result = TheFalseObj;
 
                     pcl->lib->unload();
@@ -9916,9 +9929,12 @@ done_out:
 RexxMethod4(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_RexxObjectPtr, dbConn,
             OPTIONAL_logical_t, makeAuto, CSELF, pCSelf)
 {
-    RexxMethodContext *c = context;
-    RexxObjectPtr     result = TheFalseObj;
-    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+    pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
+
+    RexxClassObject packageCls = NULLOBJECT;
+    RexxObjectPtr   package    = NULLOBJECT;
+    pCooSQLPackage  pcp        = NULLOBJECT;
+    RexxObjectPtr   result     = TheFalseObj;
 
     resetExtensionsLastErr(context, pcext);
 
@@ -9932,19 +9948,19 @@ RexxMethod4(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
         }
     }
 
-    RexxClassObject packageCls = rxGetContextClass(context, "ooSQLPackage");
+    packageCls = rxGetContextClass(context, "ooSQLPackage");
     if ( packageCls == NULLOBJECT )
     {
         goto done_out;
     }
 
-    RexxObjectPtr package = context->SendMessage1(packageCls, "NEW", context->String(libName));
+    package = context->SendMessage1(packageCls, "NEW", context->String(libName));
     if ( package == NULLOBJECT )
     {
         goto done_out;
     }
 
-    pCooSQLPackage pcp = (pCooSQLPackage)c->ObjectToCSelf(package);
+    pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
     if ( pcp == NULL )
     {
         extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLPackage");
@@ -9965,7 +9981,7 @@ RexxMethod4(RexxObjectPtr, oosqlext_loadPackage_cls, CSTRING, libName, OPTIONAL_
         goto done_out;
     }
 
-    c->SendMessage2(pcext->packageTable, "PUT", package, c->String(pcp->packageEntry->packageName));
+    context->SendMessage2(pcext->packageTable, "PUT", package, context->String(pcp->packageEntry->packageName));
 
     if ( makeAuto )
     {

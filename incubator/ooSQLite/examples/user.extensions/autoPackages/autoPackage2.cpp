@@ -43,10 +43,9 @@
 
 #ifdef _WIN32
     #include <windows.h>
-#else
-    #define NULL 0
 #endif
 
+#include <string.h>
 #include <stdio.h> // printf() if needed
 
 /**

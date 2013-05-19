@@ -43,8 +43,9 @@
  *
  */
 
-#include "unixOS.hpp"
+#include "sqlite3.h"
 #include <oorexxapi.h>
+#include "unixOS.hpp"
 #include "SysLibrary.hpp"
 #include <stdlib.h>
 #include <string.h>
@@ -108,7 +109,7 @@ bool SysLibrary::load(const char *name)
 
     if ( strlen(name) > MAX_LIBRARY_NAME_LENGTH )
     {
-        char *fmt = "Library name: %s is too long";
+        CSTRING fmt = "Library name: %s is too long";
 
         lastErrMsg = (char *)malloc(strlen(name) + strlen(fmt) + 1);
         if ( lastErrMsg != NULL )
@@ -140,7 +141,7 @@ bool SysLibrary::load(const char *name)
         libraryHandle = dlopen(nameBuffer, RTLD_LAZY);
         if (libraryHandle == NULL)
         {
-            setLastErr();
+            setLastErr(MODULE_NOT_FOUND_RC);
             return false;
         }
     }

@@ -38,6 +38,8 @@
 #ifndef ooSQLite_Included
 #define ooSQLite_Included
 
+#include "oorexxapi.h"
+
 #define NO_SQLITEEXT_H
 #include "oosqlPackage.hpp"
 
@@ -47,11 +49,11 @@
     #undef  NEED_DLL_MAIN
     #include "SysLibrary.hpp"
 #else
+    #define NEED_CRIT_SECT
     #include "unixOS.hpp"
+    #undef  NEED_CRIT_SECT
     #include "SysLibrary.hpp"
 #endif
-
-#include "oorexxapi.h"
 
 
 // The range of errors needs to be contiguous and not include any SQLite error

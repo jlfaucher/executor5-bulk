@@ -53,10 +53,12 @@
 #define MODULE_NOT_FOUND_RC         126
 #define PROCEDURE_NOT_FOUND_RC      127
 
+#ifdef NEED_CRIT_SECT
 sqlite3_mutex *crit_sec = (sqlite3_mutex *)0;
 
 #define CRITICAL_SECTION_ENTER sqlite3_mutex_enter(crit_sec);
 #define CRITICAL_SECTION_LEAVE sqlite3_mutex_leave(crit_sec);
+#endif
 
 #define oosqlGetCurrentThreadId()  pthread_self()
 

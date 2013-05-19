@@ -66,6 +66,10 @@ typedef const sqlite3_api_routines *SqlApiVector;
 
 BEGIN_EXTERN_C()
 
+#ifndef _WIN32
+#define APIENTRY
+#endif
+
 #define OOSQLITEENTRY APIENTRY
 #define ooSQLiteEntry OOSQLITEENTRY
 

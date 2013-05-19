@@ -38,7 +38,7 @@
 
 # Makefile for the user defined functions in native code on Linux.
 
-EXTRAINCLUDE=-I ../../src/sqlite
+EXTRAINCLUDE=-I ../../src -I ../../src/sqlite
 
 BASEFLAGS = $(EXTRAINCLUDE) -DNULL=1
 
@@ -57,14 +57,14 @@ simpleExtension.o: simpleExtension.c Makefile.lin
 libsimpleextension.so: simpleExtension.o
 	gcc $(SO_LFLAGS) -o libsimpleextension.so simpleExtension.o $(SO_LLIBS)
 
-examplePackage.o: examplePackage.c Makefile.lin
-	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o examplePackage.o examplePackage.c
+examplePackage.o: examplePackage.cpp Makefile.lin
+	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o examplePackage.o examplePackage.cpp
 
 libexamplepackage.so: examplePackage.o
 	gcc $(SO_LFLAGS) -o libexamplepackage.so examplePackage.o $(SO_LLIBS)
 
-exampleLibrary.o: exampleLibrary.c Makefile.lin
-	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o exampleLibrary.o exampleLibrary.c
+exampleLibrary.o: exampleLibrary.cpp Makefile.lin
+	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o exampleLibrary.o exampleLibrary.cpp
 
 libexamplelibrary.so: exampleLibrary.o
 	gcc $(SO_LFLAGS) -o libexamplelibrary.so exampleLibrary.o $(SO_LLIBS)

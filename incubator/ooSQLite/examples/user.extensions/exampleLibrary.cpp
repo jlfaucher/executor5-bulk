@@ -66,6 +66,7 @@
     #include <windows.h>
 #endif
 
+#include <string.h>
 #include <stdio.h> // printf() if needed
 
 /**
