@@ -74,6 +74,5 @@ em = .EventMgr~new
 ::REQUIRES "Support\ViewMgr.rex"
 ::REQUIRES "Support\EventMgr.rex"
 ::REQUIRES "Support\MessageSender.rex"
---::REQUIRES "Support\View.rex"
 
 /******************************************************************************/

@@ -34,45 +34,136 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide
-   Exercise 08: View.rex 				  	  v01-00 09May13
+/* ooDialog User Guide - Support
+   Exercise 08: View.rex 				  	  
 
-   Contains: 	   class: "View"
+   ViewMixin							  v01-00 12May13
+   ---------
+   A mixin superclass for View components (part of the Model-View Framework).
+   
+   Contains: 	   class: "ViewMixin"
 
-   Description: A superclass for the OrderMgr class - provides for interest
-                registration.
+   Description: A mixin superclass for all xxxView components.
 
    Pre-requisites: MVF.
 
    Outstanding Problems: None reported.
 
    Changes:
-     v01-00 09May13: First Version.
+     v01-00 12May13: First Version.
 
 ------------------------------------------------------------------------------*/
 
--- Use the global .constDir for symbolic IDs - load them from OrderMgrView.h
---.Application~addToConstDir("OrderMgr\OrderMgrView.h")
-
---call "OrderMgr\RequiresList.rex"
---say "View.rex loaded OK."
 ::REQUIRES "ooDialog.cls"
+::REQUIRES "support\Component"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  View							  	  v01-00 09May13
+  ViewMixin							  	  v01-00 13May13
   --------------------
-  A superclass for the Order Management dialog. Handles interest registration,
+  A mixin superclass for View classes.  the Order Management dialog. Handles interest registration,
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS View SUBCLASS RcDialog PUBLIC
+--::CLASS View SUBCLASS RcDialog PUBLIC
+::CLASS View PUBLIC MIXINCLASS PlainBaseDialog
+-- wring: ::CLASS ViewMixin PUBLIC MIXINCLASS Component
+-- wrong: ::CLASS ViewMixin SUBCLASS Component PUBLIC 
+
+  ::ATTRIBUTE viewMgr
+
+  /*----------------------------------------------------------------------------
+    initViewMixin - initialises the mixin instance - invoked from ???
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    --::method init  -- Results in hang!
+    ::METHOD initViewMixin
+    expose objectMgr
+    say "ViewMixin-initViewMixin-01."
+    --forward class (super) continue		-- BAD - REMOVE ASAP
+    objectMgr = .local~my.ObjectMgr	-- Needed to clear up when dialog closed.
+    self~viewMgr = .local~myViewMgr
+    return
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+  /*----------------------------------------------------------------------------
+    activate - must be invoked by subclass.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD activate UNGUARDED
+    expose viewClass viewInstance		-- needed for tidy-up on close.
+    use arg modelId
+    say "ViewMixin-activate-01: self =" self
+    -- Get View Instance name and View Class for tidy-up when dialog is closed.
+    viewInstance = self~identityHash
+    dlgName = self~objectName
+    parse var dlgName . viewClass
+    modelData = modelId~query
+    say "ViewMixin-activate-02."
+    return modelData
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*----------------------------------------------------------------------------
+    loadList - must be invoked by subclass.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  --::METHOD loadList Wait till check out how do ShowModel for List.
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+  /*----------------------------------------------------------------------------
+    leaving - invoked by ooDialog when a dialog closes.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD leaving UNGUARDED
+    expose objectMgr viewClass viewInstance
+    objectMgr~removeView(viewClass, viewInstance)
+    -- Note - we do not remove the Model. Should we? If so, not from here!
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+  /*----------------------------------------------------------------------------
+    Popup Offsets
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    setOffsetParent - set the parent dialog id for later offsetting of a child
+                      dialog.
+         **** Note: This method not used in Exercise07. ****                  */
+  ::METHOD setOffsetParent
+    use strict arg parentDlg
+    viewMgr = .local~my.ViewMgr
+    viewMgr~parentOffsetDlg = self
+
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    offset - offsets a "child" dialog from its "parent" dialog (i.e. the dialog
+             from which the child is "popped up").
+         **** Note: This method not used in Exercise07. ****                  */
+  ::METHOD offset
+    --say "RcView-offset-1."
+    offset    = .local~my.ViewMgr~dlgOffset
+    parentDlg = .local~my.ViewMgr~parentOffsetDlg
+    popupPos  = parentDlg~getRealPos
+    popupPos~incr(offset,offset)
+    self~moveTo(popupPos, "SHOWWINDOW")
+    self~ensureVisible()
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*----------------------------------------------------------------------------
+    initDialog - invokes offset.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD initDialog
+    say "ViewMixin-initDialog-01."
+    self~offset
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+  /*----------------------------------------------------------------------------
+    Event Management Methods. *** INCOMPLETE ***
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */  
+
+    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD triggerEvent
     use strict arg event
     idEventMgr = .local~my.EventMgr
     
-
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD viewDoIt
     say "View-viewDoIt-01."

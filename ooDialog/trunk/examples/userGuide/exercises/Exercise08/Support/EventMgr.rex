@@ -64,9 +64,12 @@
   
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */  
   ::METHOD init
+    -- Initiated by the MVF object.
     self~dirEvents = .directory~new
     .local~my.EventMgr = self
+    return self
 
+    
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */  
   ::METHOD registerInterest PUBLIC
     use strict arg event, object
@@ -107,7 +110,7 @@
     -- Returns .false if event not registered or if object not registered;
     -- else removes the object from the event array and returns .true.
     use strict arg event, object
-    say "EventMgr-deRegisterInterest-01: event =" event
+    --say "EventMgr-deRegisterInterest-01: event =" event
     arr = self~dirEvents[event]
     if arr = .nil then return .false	-- event not registered.
     r = arr~removeItem(object)

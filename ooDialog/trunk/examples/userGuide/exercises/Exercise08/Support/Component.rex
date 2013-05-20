@@ -64,7 +64,7 @@
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 --::CLASS View SUBCLASS RcDialog PUBLIC
-::CLASS Component PUBLIC 
+::CLASS Component PUBLIC MIXINCLASS Object 
 
 
   /*----------------------------------------------------------------------------
@@ -77,9 +77,11 @@
 
 
   /*----------------------------------------------------------------------------
-    dummy 
+    triggerEvent 
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
+  ::METHOD triggerEvent
+    use arg eventName 
+    say "Component~triggerEvent-01: event =" eventName
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     

@@ -145,7 +145,7 @@
     -- Tell EventMgr that we want to know when app closes:
     eventMgr = .local~my.EventMgr
     r = eventMgr~registerInterest("appClosing",self)
-    say "OrderFormView-activate-03: eventMgr response =" r
+    --say "OrderFormView-activate-03: eventMgr response =" r
     
     self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_ORDFORM_DLGICON")
     --say "OrderFormView-activate-04."
@@ -296,7 +296,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD cancel
     expose tabContent controlDialogsClosed
-    say "OrderFormView-cancel-01."
+    --say "OrderFormView-cancel-01."
     self~deRegisterInterest 		-- de-register interest in any events
     if controlDialogsClosed = .true then do
       say "OrderFormView-cancel-02: Control Dilaogs closed."
@@ -325,7 +325,7 @@
   ::METHOD notify PUBLIC
     expose controlDialogsClosed
     use strict arg event
-    say "OrderFormView-notify-01: event =" event
+    --say "OrderFormView-notify-01: event =" event
     if event = "appClosing" then do    	    
       self~closeControlDialogs
       controlDialogsClosed = .true
@@ -367,7 +367,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD deRegisterInterest PRIVATE
     expose eventMgr
-    say "OrderFormView-deRegisterInterest-01."
+    --say "OrderFormView-deRegisterInterest-01."
     eventMgr~deRegisterInterest("appClosing",self)
 
     
@@ -377,7 +377,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD leaving UNGUARDED
     expose tabcontent cd1 cd2
-    say "OrderFormView-leaving-01."
+    --say "OrderFormView-leaving-01."
 /*    do dlg over tabContent
       dlg~endExecution(.false)
     end

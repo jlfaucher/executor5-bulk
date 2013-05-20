@@ -59,11 +59,11 @@
 
 
 .Application~addToConstDir("Customer\CustomerView.h")
-say "CustomerView after .Application."
 
 ::REQUIRES "ooDialog.cls"
 --::REQUIRES "support\RcView.rex"
-::REQUIRES "support\ViewMixin.rex"
+::REQUIRES "support\View.rex"
+::REQUIRES "support\Component.rex"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
@@ -101,7 +101,7 @@ say "CustomerView after .Application."
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-  ::CLASS CustomerView SUBCLASS RcDialog PUBLIC inherit ViewMixin      -- v03-00
+  ::CLASS CustomerView SUBCLASS RcDialog PUBLIC inherit View Component -- v03-00
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -181,6 +181,7 @@ say "CustomerView after .Application."
 
     -- Show app data:
     self~showData
+    self~saySomething -- Test for Component mixin - delete any time.
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

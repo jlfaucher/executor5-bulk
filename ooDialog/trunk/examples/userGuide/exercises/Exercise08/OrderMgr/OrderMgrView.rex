@@ -75,7 +75,7 @@
 call "OrderMgr\RequiresList.rex"
 
 ::REQUIRES "ooDialog.cls"
---::REQUIRES "Support\View.rex"
+::REQUIRES "Support\Component.rex"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
@@ -85,7 +85,7 @@ call "OrderMgr\RequiresList.rex"
   access to the various functions required for managing Sales orders.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderMgrView SUBCLASS RcDialog PUBLIC INHERIT ResizingAdmin
+::CLASS OrderMgrView SUBCLASS RcDialog PUBLIC INHERIT ResizingAdmin Component
 --  ::CLASS OrderMgrView SUBCLASS View PUBLIC INHERIT ResizingAdmin
   ::ATTRIBUTE lv PRIVATE	-- The ListView that contains the icons.
 
@@ -151,6 +151,7 @@ call "OrderMgr\RequiresList.rex"
     self~connectButtonEvent("IDC_ORDMGR_RESET","CLICKED",resetIcons)
     self~setTitle(.HRSomv~WindowTitle)		-- set dialog title.
 
+    self~saySomething -- Test for Component mixin - delete any time.
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD defineSizing
@@ -347,7 +348,7 @@ call "OrderMgr\RequiresList.rex"
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD cancel
     response = askDialog(.HRSomv~QExit, "N")
-    say "OrderMgrView-cancel-01: response to ask dialog =" response
+    --say "OrderMgrView-cancel-01: response to ask dialog =" response
     if response = 0 then return
     -- Response was 1 so close down:
     eventMgr = .local~my.EventMgr
@@ -372,14 +373,14 @@ call "OrderMgr\RequiresList.rex"
     expose idObjectMgr
     use arg record				-- record is a directory object.
     className = record~ID
-    say "OrderMgrView-showModel-01: className =" className		-- Ex07
+    --say "OrderMgrView-showModel-01: className =" className		-- Ex07
     r = idObjectMgr~showModel(classname, "a", self)			-- Ex07
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD triggerEvent
+  /*::METHOD triggerEvent
     use strict arg event
     idEventMgr = .local~my.EventMgr
-    
+  */  
 /*============================================================================*/
 
 
