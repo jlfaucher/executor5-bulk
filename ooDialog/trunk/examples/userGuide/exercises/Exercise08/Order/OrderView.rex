@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The OrderView class				  v02-00 01Apr13
+   Exercise 08: The OrderView class				  v03-00 20May13
 
    OrderFormView.rex
 
@@ -55,7 +55,8 @@
                      Commented-out 'say' instructions.
             01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                      folder, so change to ::Requires needed. 
-
+     v03-00 20May13: Update to use View mixin.
+     
 ------------------------------------------------------------------------------*/
 
 
@@ -64,8 +65,8 @@
 
 ::REQUIRES "ooDialog.cls"
 ::REQUIRES "Order\OrderModelsData.rex"
-::REQUIRES "Support\RcView.rex"
-
+--::REQUIRES "Support\RcView.rex"
+::REQUIRES "Support\View.rex"
 
 /*==============================================================================
   OrderView							  v01-01 25Aug12
@@ -80,7 +81,7 @@
            11Jan13: Commented-out 'say' instructions.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderView SUBCLASS RcView PUBLIC				-- Ex07
+::CLASS OrderView SUBCLASS RcDialog PUBLIC INHERIT View Component		-- Ex08
 
   ::METHOD newInstance CLASS PUBLIC
     use strict arg idModel, rootDlg					-- Ex07
@@ -100,7 +101,7 @@
     --say "OrderView-init-01"
 
     forward class (super) continue
-
+    self~initView							 -- Ex08
     if \ self~createMenuBar then do		-- if there was a problem
       self~initCode = 1
       return

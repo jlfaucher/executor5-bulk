@@ -34,9 +34,9 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide - Exercise07
+/* ooDialog User Guide - Exercise08
 
-  ProductListView						  v02-00 01Apr13
+  ProductListView						  v03-00 20May13
   -------------
   The view of a list of products.
 
@@ -46,7 +46,8 @@
            11Jan13: Commented-out 'say' instructions.
            01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                     folder, so change to ::Requires needed. 
-
+    v03-00 20May13: Now inherits directly from RcDialog plus the View mixin.
+    
   Contains: classes "ProductListView, HRSplv (for human-readable strings)
 
   Pre-requisites: ProductListView.rc, ProductListView.h, ProdList.ico
@@ -62,7 +63,7 @@
 
 ::REQUIRES "ooDialog.cls"
 ::REQUIRES "Product\ProductView.rex"
-::REQUIRES "Support\RcView.rex"
+::REQUIRES "Support\View.rex"
 
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -78,7 +79,7 @@
                     Standalone operation removed (not now needed).
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS ProductListView SUBCLASS RcView PUBLIC
+::CLASS ProductListView SUBCLASS RcDialog PUBLIC INHERIT View Component
 
   /*----------------------------------------------------------------------------
     Class Methods
@@ -103,6 +104,7 @@
 
   ::METHOD init
     forward class (super) continue
+    self~initView
     if \ self~createMenuBar then do		-- if there was a problem
       self~initCode = 1
       return

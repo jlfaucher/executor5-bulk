@@ -101,7 +101,7 @@
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-  ::CLASS CustomerView SUBCLASS RcDialog PUBLIC inherit View Component -- v03-00
+::CLASS CustomerView SUBCLASS RcDialog PUBLIC INHERIT View Component -- v03-00
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -111,7 +111,7 @@
     -- Create an instance of CustomerView and show it:
     dlg = .CustomerView~new("Customer\CustomerView.rc", "IDD_CUST_DIALOG")
     dlg~activate(idCustomerModel, rootDlg)					-- Ex07
-    say ".CustomerView-newInstance-01: dlg =" dlg
+    --say ".CustomerView-newInstance-01: dlg =" dlg
     return dlg									-- Ex07
 
 
@@ -123,10 +123,10 @@
     Init - creates the dialog instance but does not make it visible.        --*/
   ::METHOD init
     expose menuBar
-    say "CustomerView-init-01."
+    --say "CustomerView-init-01."
 
     forward class (super) continue
-    self~initViewMixin 				-- initialize the mixin.
+    self~initView 				-- initialize the mixin.
     if \ self~createMenuBar then do		-- if there was a problem
       self~initCode = 1
       return
@@ -149,9 +149,9 @@
     forward class (super) continue	-- Ex07: Required for MV framework.
     custData = RESULT			-- Ex07: instance data returned by super
     					-- Ex07: ('forward' returns any result via 'RESULT'.)
-    say "CustomerView-activate-01."    					
+    --say "CustomerView-activate-01."    					
     self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_CUST_DLGICON")			-- Ex07: deleted "standalone" startup.
-    say "CustomerView-activate-01."  
+    --say "CustomerView-activate-01."  
     return
 
 

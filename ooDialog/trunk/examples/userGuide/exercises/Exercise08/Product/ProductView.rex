@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: ProductView.rex - The ProductView component       v02-00 01Apr13
+   Exercise 08: ProductView.rex - The ProductView component       v03-00 20May13
 
    Contains: 	   classes "ProductView", "AboutDialog", and "HRSpv".
 
@@ -55,6 +55,7 @@
                    Method 'getData' removed (now redundant).
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
+   v03-00 20May13: ProducView now inherits directly from ResDialog plus the View mixin.                   
 ------------------------------------------------------------------------------*/
 
 .Application~addToConstDir("Product\ProductView.h")
@@ -63,12 +64,12 @@
 ::requires "ooDialog.cls"
 ::requires "Support\NumberOnlyEditEx.cls"
 ::requires "Product\ProductModelsData.rex"
-::REQUIRES "support\ResView.rex"
+::REQUIRES "support\View.rex"
 
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ProductView							  v02-00 09Jan13
+  ProductView							  v03-00 20May13
   -----------
   The "view" part of the Product component. Now designed to operate from its own
   folder. Should be invoked from immediately outside the Product folder.
@@ -79,10 +80,11 @@
   v01-01 06Jun12: Minor changes for Exercise06.
   v02-00 09Jan13: Removed stand-alone startup (not now needed), plus some
                   comments.
+  v03-00 20May13: ProducView now inherits directly from ResDialog plus the View mixin.                   
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS ProductView SUBCLASS ResView PUBLIC
+::CLASS ProductView SUBCLASS ResDialog PUBLIC INHERIT View Component
 
   ::ATTRIBUTE dialogState PRIVATE	-- States are: 'closable' or 'inUpdate".
 
@@ -110,7 +112,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     forward class (super) continue
-
+    self~initView							-- v03
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate UNGUARDED

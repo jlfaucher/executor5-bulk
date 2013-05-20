@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The Order ListView 				  v02-00 01Apr13
+   Exercise 08: The Order ListView 				  v03-00 20May13
 
    Contains: class "OrderListView", "HRSolv"
 
@@ -53,6 +53,7 @@
           11Jan13: Commented-out 'say' instructions.
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
+   v03-00 20May13: Update to use View mixin.
 
    Outstanding Problems: None reported.
 
@@ -64,8 +65,8 @@
 
 ::REQUIRES "ooDialog.cls"
 ::REQUIRES "Order\OrderView.rex"
-::REQUIRES "Support\RcView.rex"
-
+--::REQUIRES "Support\RcView.rex"
+::REQUIRES "Support\View.rex"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
@@ -77,7 +78,7 @@
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderListView SUBCLASS RcView PUBLIC
+::CLASS OrderListView SUBCLASS RcDialog PUBLIC INHERIT View Component	  -- v03
 
   /*----------------------------------------------------------------------------
     Class Methods
@@ -101,6 +102,7 @@
 
   ::METHOD init
     forward class (super) continue
+    self~initView
     if \ self~createMenuBar then do		-- if there was a problem
       self~initCode = 1
       return

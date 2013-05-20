@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The Customer ListView				  v02-00 08Jan13
+   Exercise 08: The Customer ListView				  v03-00 20May13
 
    Contains: classes "CustomerListView" and "HRSclv".
 
@@ -49,6 +49,7 @@
    v01-00 06Jun12: First Version.
    v02-00 08Jan13: Removed stand-alone startup code (not needed after Ex06)
                    Commented out say's.
+   v03-00 20May13: Updated to use View and Component mixins.
 
    Outstanding Problems: None reported.
 *******************************************************************************/
@@ -58,13 +59,13 @@
 
 ::REQUIRES "ooDialog.cls"
 ::REQUIRES "customer\customerview.rex"
-::REQUIRES "support\rcview.rex"
+::REQUIRES "Support\View.rex"
 
 
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  CustomerListView						  v02-00 08Jan13
+  CustomerListView						  v03-00 20May13
   ----------------
   The view of a list of Customers.
   Changes:
@@ -82,8 +83,8 @@
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS CustomerListView SUBCLASS RcView PUBLIC
-
+--::CLASS CustomerListView SUBCLASS RcView PUBLIC
+::CLASS CustomerListView SUBCLASS RcDialog PUBLIC INHERIT View
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -107,6 +108,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     forward class (super) continue
+    self~initView
     if \ self~createMenuBar then do		-- if there was a problem
       self~initCode = 1
       return

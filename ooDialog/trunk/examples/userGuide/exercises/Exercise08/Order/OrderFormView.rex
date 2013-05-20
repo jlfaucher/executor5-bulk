@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The OrderFormView class				  v03-00 30Apr13
+   Exercise 08: The OrderFormView class				  v03-01 20May13
    OrderFormView.rex
 
    Contains: class "OrderFormView", class "HRSofv".
@@ -51,6 +51,7 @@
                      folder, so change to ::Requires needed. 
      v03-00 27Apr13: Add ability to populate Order with Customer Details and
                      Order Lines.
+            20May13: Now inherits directly from RcDialog plus the View mixin
             
 ------------------------------------------------------------------------------*/
 
@@ -59,7 +60,7 @@
 
 
 ::REQUIRES "ooDialog.cls"
-::REQUIRES "support\RcView.rex"
+::REQUIRES "support\View.rex"						-- v03
 
 /*==============================================================================
   OrderFormView							  v02-00 27Feb13
@@ -74,10 +75,12 @@
                   Corrected the Order Date control and limited order date to
                     one year ahead.
                   Commented-out say's.
+         20May13: Now inherits directly from RcDialog plus the View mixin
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderFormView SUBCLASS RcView PUBLIC
+--::CLASS OrderFormView SUBCLASS RcView PUBLIC
+::CLASS OrderFormView SUBCLASS RcDialog PUBLIC INHERIT View Component	-- v03
 
   ::ATTRIBUTE tabContent
   ::ATTRIBUTE orderTotals
@@ -100,7 +103,7 @@
     --say "OrderFormView-init-01"
 
     forward class (super) continue
-
+    self~initView
     if \ self~createMenuBar then do		-- if there was a problem
       self~initCode = 1
       return

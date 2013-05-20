@@ -72,12 +72,12 @@
   ::ATTRIBUTE viewMgr
 
   /*----------------------------------------------------------------------------
-    initViewMixin - initialises the mixin instance - invoked from ???
+    initView - initialises the mixin instance - invoked from ???
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     --::method init  -- Results in hang!
-    ::METHOD initViewMixin
+  ::METHOD initView
     expose objectMgr
-    say "ViewMixin-initViewMixin-01."
+    say "View-initView-01."
     --forward class (super) continue		-- BAD - REMOVE ASAP
     objectMgr = .local~my.ObjectMgr	-- Needed to clear up when dialog closed.
     self~viewMgr = .local~myViewMgr
@@ -91,13 +91,13 @@
   ::METHOD activate UNGUARDED
     expose viewClass viewInstance		-- needed for tidy-up on close.
     use arg modelId
-    say "ViewMixin-activate-01: self =" self
+    say "View-activate-01: self =" self
     -- Get View Instance name and View Class for tidy-up when dialog is closed.
     viewInstance = self~identityHash
     dlgName = self~objectName
     parse var dlgName . viewClass
     modelData = modelId~query
-    say "ViewMixin-activate-02."
+    say "View-activate-02."
     return modelData
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
