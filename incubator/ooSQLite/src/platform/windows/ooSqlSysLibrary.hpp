@@ -36,22 +36,22 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/** SysLibrary.cpp
+/** ooSqlSysLibrary.cpp
  *
- *  Windows implementation of SysLibrary for ooSQLite.  This file is adapted
- *  from the interpreter's SysLibrary implmentation.
+ *  Windows implementation of ooSqlSysLibrary for ooSQLite.  This file is adapted
+ *  from the interpreter's ooSqlSysLibrary implmentation.
  *
  */
 
 #ifndef SysLibrary_DEFINED
 #define SysLibrary_DEFINED
 
-class SysLibrary
+class ooSqlSysLibrary
 {
 public:
-     SysLibrary();
-     void *getProcedure(const char *name);
-     bool load(const char *name);
+    ooSqlSysLibrary(uint32_t rc);
+    void *getLibProcedure(const char *name);
+    bool loadLibrary(const char *name);
      bool unload();
      void resetLastErr();
      void reset();

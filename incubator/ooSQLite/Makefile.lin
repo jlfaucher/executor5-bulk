@@ -89,7 +89,7 @@ PLATFORM_DIR=src/platform/unix
 CONFFLAGS = -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_FDATASYNC=1 -DHAVE_USLEEP=1 -DHAVE_LOCALTIME_R=1 -DHAVE_GMTIME_R=1 -DHAVE_DECL_STRERROR_R=1 -DHAVE_STRERROR_R=1 -DHAVE_POSIX_FALLOCATE=1 -DHAVE_READLINE=1 -D_REENTRANT=1
 
 WARNINGFLAGS=
-VERDEFS=-DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) -DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) -DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) -DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) -DOOSQLITE_VER_STRING=$(OOSQLITE_VER_STR) -DOOSQLITE_COPYRIGHT_YEAR=$(OOSQLITE_COPY_YEAR)
+VERDEFS=-DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) -DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) -DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) -DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) -DOOSQLITE_VER_STRING=\"$(OOSQLITE_VER_STR)\" -DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
 EXTRAINCLUDE=-I src/sqlite -I $(PLATFORM_DIR)
 
 SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_DEFAULT_FOREIGN_KEYS=1
@@ -98,42 +98,43 @@ BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS) $(CONFFLAG
 OUT_DIR=build/release
 BIN_DIR=bin/linux
 
+DBG=-g
 SYSLIB_FLAGS=-DOOSQLITE_SHARED_LIBRARY_EXT=\".so\"
 
 SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles
 EXE_LFLAGS=-D_REENTRANT=1
 
-SO_LLIBS=-ldl -lpthread -L/usr/lib64/ooRexx/ -lrexx -lrexxapi
+SO_LLIBS=-ldl -lpthread  -lstdc++  -L/usr/lib64/ooRexx/ -lrexx -lrexxapi
 EXE_LLIBS=-L$(OUT_DIR) -ldl -lpthread -lstdc++ -lreadline -lcurses
 
 CFLAGS=-c -fPIC $(BASEFLAGS)
 
-OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/SysLibrary.o
+OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/ooSqlSysLibrary.o
 
 # What we want to build.
 all: $(BIN_DIR)/liboosqlite.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls  example_dlls
 
 
 $(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.h Makefile.lin
-	gcc $(CFLAGS) -DOOSQLITE_BUILD $(EXTRA_INCLUDE) -o $(OUT_DIR)/sqlite3.o src/sqlite/sqlite3.c
+	gcc $(DBG) $(CFLAGS) -DOOSQLITE_BUILD $(EXTRA_INCLUDE) -o $(OUT_DIR)/sqlite3.o src/sqlite/sqlite3.c
 
 $(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.h Makefile.lin
-	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/shell.o src/sqlite/shell.c
+	gcc $(DBG) $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/shell.o src/sqlite/shell.c
 
 $(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/sqlite/sqlite3.h Makefile.lin
-	gcc $(CFLAGS) -DOOSQLITE_BUILD $(EXTRA_INCLUDE) -o $(OUT_DIR)/ooSQLite.o src/ooSQLite.cpp
+	gcc $(DBG)  $(CFLAGS) -DOOSQLITE_BUILD $(EXTRA_INCLUDE) -o $(OUT_DIR)/ooSQLite.o src/ooSQLite.cpp
 
 $(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.lin
-	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
+	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
 
-$(OUT_DIR)/SysLibrary.o: $(PLATFORM_DIR)/SysLibrary.cpp $(PLATFORM_DIR)/SysLibrary.hpp Makefile.lin
-	gcc $(CFLAGS) $(EXTRA_INCLUDE) $(SYSLIB_FLAGS) -o $(OUT_DIR)/SysLibrary.o $(PLATFORM_DIR)/SysLibrary.cpp
+$(OUT_DIR)/ooSqlSysLibrary.o: $(PLATFORM_DIR)/ooSqlSysLibrary.cpp $(PLATFORM_DIR)/ooSqlSysLibrary.hpp Makefile.lin
+	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) $(SYSLIB_FLAGS) -o $(OUT_DIR)/ooSqlSysLibrary.o $(PLATFORM_DIR)/ooSqlSysLibrary.cpp
 
 $(OUT_DIR)/liboosqlite.so: $(OOSQLITE_OBJS)
-	gcc $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.so $(OOSQLITE_OBJS) $(SO_LLIBS)
+	gcc $(DBG)  $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.so $(OOSQLITE_OBJS) $(SO_LLIBS)
 
 $(OUT_DIR)/oosqlite3: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o
-	gcc $(EXE_LFLAGS) -o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o $(EXE_LLIBS)
+	gcc $(DBG) $(EXE_LFLAGS) -o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o $(EXE_LLIBS)
 
 $(BIN_DIR)/liboosqlite.so: $(OUT_DIR)/liboosqlite.so
 	cp $(OUT_DIR)/liboosqlite.so $(BIN_DIR) 1>/dev/null 2>&1

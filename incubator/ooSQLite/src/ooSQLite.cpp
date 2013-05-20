@@ -48,8 +48,9 @@
 #include <string.h>
 
 #include "APICommon.hpp"
-#include "SysLibrary.hpp"
+#include "ooSqlSysLibrary.hpp"
 
+#include <memory>
 #include <new>
 using namespace std;
 
@@ -943,7 +944,7 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
                      OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
         }
 
-        char buf1[256];
+        char buf1[512];
 
         snprintf(buf1, sizeof(buf1), "          Built %s %s\n          Copyright (c) RexxLA %s.\n"
                                      "          All Rights Reserved.\n\n",
@@ -9286,7 +9287,7 @@ RexxMethod1(int, oosqlmtx_try, CSELF, pCSelf)
  * @param libName
  *
  * @note  We know libName will fit in buf, because the name length is checked in
- *        SysLibrary.  We also know that this library was loaded, we are not
+ *        ooSqlSysLibrary.  We also know that this library was loaded, we are not
  *        invoked if the library was not loaded.  So we do not need to worry
  *        about things like libName == "/"
  */
@@ -9566,7 +9567,7 @@ bool resolveFunction(RexxMethodContext *c, pCooSQLLibrary pcl, RexxObjectPtr rxN
 
     CSTRING procName = c->ObjectToStringValue(rxName);
 
-    SysLibrary *lib  = pcl->lib;
+    ooSqlSysLibrary *lib  = pcl->lib;
     void       *func = lib->getProcedure(procName);
     if ( func == NULL )
     {
@@ -9812,7 +9813,7 @@ RexxMethod3(RexxObjectPtr, oosqlext_loadLibrary_cls, RexxObjectPtr, libName, OPT
 {
     pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
 
-    RexxClassObject libCls  =  NULLOBJECT;
+    RexxClassObject libCls  = NULLOBJECT;
     RexxObjectPtr   library = NULLOBJECT;
     pCooSQLLibrary  pcl     = NULLOBJECT;
     RexxObjectPtr   result  = TheFalseObj;
@@ -10316,12 +10317,12 @@ RexxMethod2(RexxObjectPtr, oosqlpack_init, CSTRING, libName, OSELF, self)
     pCooSQLPackage pcp = (pCooSQLPackage)context->BufferData(cselfBuffer);
     memset(pcp, 0, sizeof(CooSQLPackage));
 
-    RexxBufferObject libBuffer = context->NewBuffer(sizeof(SysLibrary));
+    RexxBufferObject libBuffer = context->NewBuffer(sizeof(ooSqlSysLibrary));
 
     context->SetObjectVariable(SYSLIB_ATTRIBUTE, libBuffer);
 
     void *sysLibBuf = context->BufferData(libBuffer);
-    SysLibrary *lib = new (sysLibBuf) SysLibrary();
+    ooSqlSysLibrary *lib = new (sysLibBuf) ooSqlSysLibrary();
 
     pcp->sqliteAPIs  = oosqlite3_get_routines();
     pcp->rexxSelf    = self;
@@ -10532,12 +10533,12 @@ RexxMethod2(RexxObjectPtr, oosqllib_init, CSTRING, libName, OSELF, self)
     pCooSQLLibrary pcl = (pCooSQLLibrary)context->BufferData(cselfBuffer);
     memset(pcl, 0, sizeof(CooSQLLibrary));
 
-    RexxBufferObject libBuffer = context->NewBuffer(sizeof(SysLibrary));
+    RexxBufferObject libBuffer = context->NewBuffer(sizeof(ooSqlSysLibrary));
 
     context->SetObjectVariable(SYSLIB_OOSQLLIBRARY_ATTRIBUTE, libBuffer);
 
     void *sysLibBuf = context->BufferData(libBuffer);
-    SysLibrary *lib = new (sysLibBuf) SysLibrary();
+    ooSqlSysLibrary *lib = new (sysLibBuf) ooSqlSysLibrary();
 
     pcl->sqliteAPIs  = oosqlite3_get_routines();
     pcl->rexxSelf    = self;

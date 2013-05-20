@@ -151,7 +151,9 @@
       line = record[1]~left(7) record[2]~left(7) record[3]
     end
     else do j = 1 to colCount
-      line ||= record[j]~left(width)
+      col = record[j]
+      if col == .nil then col = 'NULL'
+      line ||= col~left(width)
     end
 
     say line

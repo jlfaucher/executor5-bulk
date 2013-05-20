@@ -36,72 +36,81 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/** SysLibrary.cpp
+/** ooSqlSysLibrary.cpp
  *
- *  Windows implementation of SysLibrary for ooSQLite.  This file is adapted
- *  from the interpreter's SysLibrary implmentation.
+ *  Unix implementation of ooSqlSysLibrary for ooSQLite.  This file is adapted
+ *  from the interpreter's ooSqlSysLibrary implmentation.
  *
  */
 
-#include "winOS.hpp"
+#include "sqlite3.h"
 #include <oorexxapi.h>
-#include "SysLibrary.hpp"
-#include "stdio.h"
+#include "unixOS.hpp"
+#include "ooSqlSysLibrary.hpp"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <dlfcn.h>
 
-SysLibrary::SysLibrary()
+
+#define LIBARY_NAME_BUFFER_LENGTH (MAX_LIBRARY_NAME_LENGTH + sizeof("/usr/lib/lib") + sizeof(OOSQLITE_SHARED_LIBRARY_EXT))
+
+ooSqlSysLibrary::ooSqlSysLibrary()
 {
     libraryHandle = NULL;
-    lastErrMsg    = NULL;
-    lastErrCode   = 0;
+    resetLastErr();
 }
+
 
 /**
  * Resolve a named function in a library.
  *
  * @param name   Function name.
  *
- * @return void*
+ * @return The resolved function address or null on error.
  */
-void *SysLibrary::getProcedure(const char *name)
+void * ooSqlSysLibrary::getProcedure(const char *name)
 {
-    SetLastError(0);
     resetLastErr();
+    dlerror();
 
-    void *func = (void *)GetProcAddress(libraryHandle, name);
+    void *func = dlsym(libraryHandle, name);
     if ( func == NULL )
     {
-        setLastErr("GetProcAddress", name);
+        setLastErr(PROCEDURE_NOT_FOUND_RC);
     }
     return func;
 }
 
 
 /**
- * Load a named library in this process.
+ * Load a named library, returning success/failure flag
  *
- * @param name   Character string name of the library.
+ * @param name  The name of the library.
  *
- * @return True if able to load the library ok, false otherwise.
+ * @return True on success or false on error.
  *
- * @note  We always use LoadLibrary to load this, to bump the reference count on
- *        the module if it is already loaded in this process.
- *
- *        We make no attempt to construct a file name like we do in the Unix
- *        version.  Still, the user does not need to specify the .dll extension,
- *        Windows will add it automatically if there is no extension.
+ * @note  If the user passes a pathname, we try opening the library with the
+ *        name as is.  If this fails, we quit then.  This is different than the
+ *        interpreter's implementation.
  */
-bool SysLibrary::load(const char *name)
+bool ooSqlSysLibrary::load(const char *name)
 {
     if ( libraryHandle != NULL )
     {
         return true;
     }
 
+    char nameBuffer[LIBARY_NAME_BUFFER_LENGTH];
+
+    resetLastErr();
+    dlerror();
+
     if ( strlen(name) > MAX_LIBRARY_NAME_LENGTH )
     {
-        char *fmt = "Library name: %s is too long";
+        CSTRING fmt = "Library name: %s is too long";
 
-        lastErrMsg = (char *)LocalAlloc(LPTR, strlen(name) + strlen(fmt) + 1);
+        lastErrMsg = (char *)malloc(strlen(name) + strlen(fmt) + 1);
         if ( lastErrMsg != NULL )
         {
             sprintf(lastErrMsg, fmt, name);
@@ -110,67 +119,76 @@ bool SysLibrary::load(const char *name)
         return false;
     }
 
-    SetLastError(0);
-    resetLastErr();
+    if ( strchr(name, '/') != NULL )
+    {
+        libraryHandle = dlopen(name, RTLD_LAZY);
+        if ( libraryHandle == NULL )
+        {
+            setLastErr(MODULE_NOT_FOUND_RC);
+            return false;
+        }
+        return true;
+    }
+    else
 
-    libraryHandle = LoadLibrary(name);
+    sprintf(nameBuffer, "lib%s%s", name, OOSQLITE_SHARED_LIBRARY_EXT);
+
+    libraryHandle = dlopen(nameBuffer, RTLD_LAZY);
     if ( libraryHandle == NULL )
     {
-        setLastErr("LoadLibrary", name);
-        return false;
+        sprintf(nameBuffer, "/usr/lib/lib%s%s", name, OOSQLITE_SHARED_LIBRARY_EXT);
+        libraryHandle = dlopen(nameBuffer, RTLD_LAZY);
+        if ( libraryHandle == NULL )
+        {
+            setLastErr(MODULE_NOT_FOUND_RC);
+            return false;
+        }
     }
     return true;
 }
 
 
 /**
- * Sets the last error variables.
+ * Sets the last error variables when a dl library function indicates an error
+ * has happened.
  */
-void SysLibrary::setLastErr(const char *api, const char *name)
+void ooSqlSysLibrary::setLastErr(uint32_t rc)
 {
-    lastErrCode = GetLastError();
+    char *temp = dlerror();
 
-    void     *tmpBuf = NULL;
-    uint16_t  lang   = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
-    uint32_t  flags  = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
-
-    uint32_t count = FormatMessage(flags, NULL, lastErrCode, lang, (char *)&tmpBuf, FORMAT_MESSAGE_MAX_WIDTH_MASK, NULL);
-
-    // tmpBuf is null if count is 0.
-    if ( count > 1 )
+    if ( temp == NULL )
     {
-        // Remove the trailing new line characters
-        count--;
-        *((char *)tmpBuf + count--) = '\0';
-        *((char *)tmpBuf + count) = '\0';
+        temp = (char *)"no error";
+    }
 
-        char buff[512];
-
-        snprintf(buff, 512, "%s - %s (%s)", api, tmpBuf, name);
-        LocalFree(tmpBuf);
-
-        lastErrMsg = (char *)LocalAlloc(LPTR, strlen(buff) + 1);
-        if ( lastErrMsg != NULL )
-        {
-            strcpy(lastErrMsg, buff);
-        }
+    lastErrMsg = (char *)malloc(strlen(temp) + 1);
+    if ( lastErrMsg != NULL )
+    {
+        strcpy(lastErrMsg, temp);
+        lastErrCode = rc;
     }
 }
 
 /**
  * Frees any memory allocated for the laste error message and sets the error
- * message to null and the error code to 0.
+ * message to no error and the error code to 0.
  *
  * @note  Not very object orientated, we require the user of this class to
  *        invoke resetLastErr() after retrieving an error message and making a
  *        copy of it.
  */
-void SysLibrary::resetLastErr()
+void ooSqlSysLibrary::resetLastErr()
 {
     if ( lastErrMsg != NULL )
     {
-        LocalFree(lastErrMsg);
+        free(lastErrMsg);
         lastErrMsg = NULL;
+    }
+
+    lastErrMsg = (char *)malloc(strlen("no error") + 1);
+    if ( lastErrMsg != NULL )
+    {
+        strcpy(lastErrMsg, "no error");
     }
     lastErrCode = 0;
 }
@@ -181,12 +199,13 @@ void SysLibrary::resetLastErr()
  *
  * @return True if we unloaded ok, false otherwise.
  */
-bool SysLibrary::unload()
+bool ooSqlSysLibrary::unload()
 {
     if ( libraryHandle != NULL )
     {
+        dlclose(libraryHandle);
         resetLastErr();
-        return FreeLibrary(libraryHandle) != FALSE;
+        return true;
     }
     return false;
 }
@@ -195,7 +214,7 @@ bool SysLibrary::unload()
 /**
  * Resets this object to unused.
  */
-void SysLibrary::reset()
+void ooSqlSysLibrary::reset()
 {
     resetLastErr();
     libraryHandle = NULL;

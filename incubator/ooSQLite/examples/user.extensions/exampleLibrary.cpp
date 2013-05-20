@@ -151,6 +151,7 @@ static unsigned char ebcdicToAscii[256] =
     0x39, 0x2E, 0x2E, 0x2E, 0x2E, 0x2E, 0x2E
 };
 
+BEGIN_EXTERN_C()
 
 /**
  * The half() SQL function returns half of its input value.  This is an example
@@ -309,6 +310,7 @@ void strAggFinalize(sqlite3_context* sqlCntx)
     sqlite3_result_text(sqlCntx, psac->result, (int)psac->count, sqlite3_free);
 }
 
+END_EXTERN_C()
 
 
 

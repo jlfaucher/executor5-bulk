@@ -56,7 +56,7 @@
     extensionFile = 'user.extensions\simpleExtension.dll'
   end
   else do
-    extensionFile = 'user.extensions/libsimpleExtension.so'
+    extensionFile = 'user.extensions/libsimpleextension.so'
   end
 
 	dbName = 'ooFoods.rdbx'

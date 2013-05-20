@@ -38,6 +38,9 @@
 
 /* Quick test that version works */
 
+  say 'ooSQLite version (one line):   ' .ooSQLite~version('O')
+  say; say '='~copies(40); say
+
   say 'SQLite3 version:' .ooSQLite~sqlite3Version
   say '    lib version:' .ooSQLite~libVersion
   say '    lib number :' .ooSQLite~libVersionNumber

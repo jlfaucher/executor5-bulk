@@ -128,6 +128,7 @@
   return 0
 
 ::requires 'ooSQLite.cls'
+::requires 'utilities.frm'
 
 
 /* Returns the correct SQL INSERT string to insert the row represented by the array "v" */

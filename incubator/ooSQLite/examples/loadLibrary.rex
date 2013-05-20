@@ -70,7 +70,7 @@
     return .ooSQLExtensions~lastErrCode
   end
 
-  lib = .ooSQLExtensions~getLibrary('examplelibsrary')
+  lib = .ooSQLExtensions~getLibrary('examplelibrary')
   if lib == .nil then do
     say 'Failed to retrieve library from extensions manager'
     say '  Error code:   ' .ooSQLExtensions~lastErrCode

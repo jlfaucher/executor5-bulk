@@ -87,11 +87,11 @@
     packageFile5 = 'user.extensions\autoPackages\autoPackage5.dll'
   end
   else do
-    packageFile1 = 'user.extensions/autoPackages/libautoPackage1.so'
-    packageFile2 = 'user.extensions/autoPackages/libautoPackage2.so'
-    packageFile3 = 'user.extensions/autoPackages/libautoPackage3.so'
-    packageFile4 = 'user.extensions/autoPackages/libautoPackage4.so'
-    packageFile5 = 'user.extensions/autoPackages/libautoPackage5.so'
+    packageFile1 = 'user.extensions/autoPackages/libautopackage1.so'
+    packageFile2 = 'user.extensions/autoPackages/libautopackage2.so'
+    packageFile3 = 'user.extensions/autoPackages/libautopackage3.so'
+    packageFile4 = 'user.extensions/autoPackages/libautopackage4.so'
+    packageFile5 = 'user.extensions/autoPackages/libautopackage5.so'
   end
 
   packages = .Array~of(packageFile1, packageFile2, packageFile3, packageFile4, packageFile5)

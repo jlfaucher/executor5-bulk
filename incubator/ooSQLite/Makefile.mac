@@ -110,7 +110,7 @@ EXE_LLIBS=-L$(OUT_DIR) -ldl -lpthread
 
 CFLAGS=-c -fPIC $(BASEFLAGS)
 
-OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/SysLibrary.o
+OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/ooSqlSysLibrary.o
 
 
 # What we want to build.
@@ -129,8 +129,8 @@ $(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/s
 $(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.mac
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
 
-$(OUT_DIR)/SysLibrary.o: $(PLATFORM_DIR)/SysLibrary.cpp $(PLATFORM_DIR)/SysLibrary.hpp Makefile.lin
-  cl $(CFLAGS) $(EXTRA_INCLUDE) $(SYSLIB_FLAGS) -o $(OUT_DIR)/SysLibrary.o $(PLATFORM_DIR)/SysLibrary.cpp
+$(OUT_DIR)/ooSqlSysLibrary.o: $(PLATFORM_DIR)/ooSqlSysLibrary.cpp $(PLATFORM_DIR)/ooSqlSysLibrary.hpp Makefile.lin
+  cl $(CFLAGS) $(EXTRA_INCLUDE) $(SYSLIB_FLAGS) -o $(OUT_DIR)/ooSqlSysLibrary.o $(PLATFORM_DIR)/ooSqlSysLibrary.cpp
 
 $(OUT_DIR)/liboosqlite.dylib: $(OOSQLITE_OBJS)
 	gcc $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.dylib $(OOSQLITE_OBJS) $(SO_LLIBS)

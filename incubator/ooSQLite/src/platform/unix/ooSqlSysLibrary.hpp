@@ -36,25 +36,25 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/** SysLibrary.cpp
+/** ooSqlSysLibrary.cpp
  *
- *  Unix implementation of SysLibrary for ooSQLite.  This file is adapted from
- *  the interpreter's SysLibrary implmentation.
+ *  Unix implementation of ooSqlSysLibrary for ooSQLite.  This file is adapted
+ *  from the interpreter's ooSqlSysLibrary implmentation.
  *
  */
 #ifndef SysLibrary_DEFINED
 #define SysLibrary_DEFINED
 
-class SysLibrary
+class ooSqlSysLibrary
 {
 public:
-    SysLibrary();
+    ooSqlSysLibrary();
     void *getProcedure(const char *name);
     bool load(const char *name);
     bool unload();
     void resetLastErr();
     void reset();
-    inline char *getLastErrMsg() { return lastErrMsg; }
+    inline char *getLastErrMsg() { return lastErrMsg == NULL ? (char *)"no error" : lastErrMsg; }
     inline uint32_t getLastErrCode() { return lastErrCode; }
 
 protected:

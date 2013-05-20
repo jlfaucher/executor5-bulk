@@ -47,12 +47,12 @@
     #define NEED_DLL_MAIN
     #include "winOS.hpp"
     #undef  NEED_DLL_MAIN
-    #include "SysLibrary.hpp"
+    #include "ooSqlSysLibrary.hpp"
 #else
     #define NEED_CRIT_SECT
     #include "unixOS.hpp"
     #undef  NEED_CRIT_SECT
-    #include "SysLibrary.hpp"
+    #include "ooSqlSysLibrary.hpp"
 #endif
 
 
@@ -246,7 +246,7 @@ typedef CooSQLiteMutex *pCooSQLiteMutex;
 /* Struct for the ooSQLPackage object CSelf. */
 typedef struct _oosqlPackageCSelf {
     ooSQLitePackageEntry *packageEntry;     // Pointer to the package entry table in the external package.
-    SysLibrary           *lib;              // SysLibrary object used to load the package.
+    ooSqlSysLibrary           *lib;              // ooSqlSysLibrary object used to load the package.
     SqlApiVector          sqliteAPIs;       // Pointer to the SQLite API vector.
     RexxObjectPtr         rexxSelf;
     RexxObjectPtr         collationTable;
@@ -262,7 +262,7 @@ typedef CooSQLPackage *pCooSQLPackage;
 typedef struct _oosqlLibraryCSelf {
     char                  baseName[MAX_LIBRARY_NAME_LENGTH + 1];
     RexxObjectPtr         functionTable;    // A Rexx table object used to hold the resolved functions in the library
-    SysLibrary           *lib;              // SysLibrary object used to load the package.
+    ooSqlSysLibrary           *lib;              // ooSqlSysLibrary object used to load the package.
     SqlApiVector          sqliteAPIs;       // Pointer to the SQLite API vector.
     RexxObjectPtr         rexxSelf;
     RexxStringObject      lastErrMsg;

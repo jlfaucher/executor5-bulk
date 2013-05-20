@@ -61,7 +61,7 @@
     packageFile = 'user.extensions\examplePackage.dll'
   end
   else do
-    packageFile = 'user.extensions/libexamplePackage.so'
+    packageFile = 'user.extensions/libexamplepackage.so'
   end
 
   -- Set the result set format to an array of arrays:
