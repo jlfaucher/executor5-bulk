@@ -39,7 +39,7 @@
 /** ooSqlSysLibrary.cpp
  *
  *  Windows implementation of ooSqlSysLibrary for ooSQLite.  This file is adapted
- *  from the interpreter's ooSqlSysLibrary implmentation.
+ *  from the interpreter's SysLibrary implmentation.
  *
  */
 
@@ -48,7 +48,7 @@
 #include "ooSqlSysLibrary.hpp"
 #include "stdio.h"
 
-ooSqlSysLibrary::ooSqlSysLibrary(uint32_t rc)
+ooSqlSysLibrary::ooSqlSysLibrary()
 {
     libraryHandle = NULL;
     resetLastErr();
@@ -62,7 +62,7 @@ ooSqlSysLibrary::ooSqlSysLibrary(uint32_t rc)
  *
  * @return The resolved function address or null on error.
  */
-void * ooSqlSysLibrary::getLibProcedure(const char *name)
+void * ooSqlSysLibrary::getProcedure(const char *name)
 {
     SetLastError(0);
     resetLastErr();
@@ -90,7 +90,7 @@ void * ooSqlSysLibrary::getLibProcedure(const char *name)
  *        version.  Still, the user does not need to specify the .dll extension,
  *        Windows will add it automatically if there is no extension.
  */
-bool ooSqlSysLibrary::loadLibrary(const char *name)
+bool ooSqlSysLibrary::load(const char *name)
 {
     if ( libraryHandle != NULL )
     {
@@ -171,6 +171,12 @@ void ooSqlSysLibrary::resetLastErr()
     {
         LocalFree(lastErrMsg);
         lastErrMsg = NULL;
+    }
+
+    lastErrMsg = (char *)LocalAlloc(LPTR, strlen("no error") + 1);
+    if ( lastErrMsg != NULL )
+    {
+        strcpy(lastErrMsg, "no error");
     }
     lastErrCode = 0;
 }

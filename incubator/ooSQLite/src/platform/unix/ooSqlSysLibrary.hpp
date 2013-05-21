@@ -39,9 +39,10 @@
 /** ooSqlSysLibrary.cpp
  *
  *  Unix implementation of ooSqlSysLibrary for ooSQLite.  This file is adapted
- *  from the interpreter's ooSqlSysLibrary implmentation.
+ *  from the interpreter's SysLibrary implmentation.
  *
  */
+
 #ifndef SysLibrary_DEFINED
 #define SysLibrary_DEFINED
 

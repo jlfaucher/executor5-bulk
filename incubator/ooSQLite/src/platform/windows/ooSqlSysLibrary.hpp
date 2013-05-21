@@ -38,8 +38,8 @@
 
 /** ooSqlSysLibrary.cpp
  *
- *  Windows implementation of ooSqlSysLibrary for ooSQLite.  This file is adapted
- *  from the interpreter's ooSqlSysLibrary implmentation.
+ *  Windows implementation of ooSqlSysLibrary for ooSQLite.  This file is
+ *  adapted from the interpreter's SysLibrary implmentation.
  *
  */
 
@@ -49,21 +49,21 @@
 class ooSqlSysLibrary
 {
 public:
-    ooSqlSysLibrary(uint32_t rc);
-    void *getLibProcedure(const char *name);
-    bool loadLibrary(const char *name);
-     bool unload();
-     void resetLastErr();
-     void reset();
-     inline char *getLastErrMsg() { return lastErrMsg; }
-     inline unsigned long getLastErrCode() { return lastErrCode; }
+    ooSqlSysLibrary();
+    void *getProcedure(const char *name);
+    bool load(const char *name);
+    bool unload();
+    void resetLastErr();
+    void reset();
+    inline char *getLastErrMsg() { return lastErrMsg == NULL ? (char *)"no error" : lastErrMsg; }
+    inline uint32_t getLastErrCode() { return lastErrCode; }
 
 protected:
     void setLastErr(const char *api, const char *name);
 
-    HMODULE        libraryHandle;
-    char          *lastErrMsg;
-    unsigned long  lastErrCode;
+    HMODULE    libraryHandle;
+    char      *lastErrMsg;
+    uint32_t   lastErrCode;
 };
 
 #endif

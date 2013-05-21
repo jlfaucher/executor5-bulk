@@ -38,23 +38,23 @@
 #ifndef ooSQLite_Included
 #define ooSQLite_Included
 
-#include "oorexxapi.h"
 
 #define NO_SQLITEEXT_H
 #include "oosqlPackage.hpp"
+#undef  NO_SQLITEEXT_H
 
 #ifdef _WIN32
     #define NEED_DLL_MAIN
     #include "winOS.hpp"
     #undef  NEED_DLL_MAIN
-    #include "ooSqlSysLibrary.hpp"
 #else
     #define NEED_CRIT_SECT
     #include "unixOS.hpp"
     #undef  NEED_CRIT_SECT
-    #include "ooSqlSysLibrary.hpp"
 #endif
 
+#include "oorexxapi.h"
+#include "ooSqlSysLibrary.hpp"
 
 // The range of errors needs to be contiguous and not include any SQLite error
 // rc.  The next SQLite error rc is 1034.
