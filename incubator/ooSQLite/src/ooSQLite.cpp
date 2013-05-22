@@ -3466,6 +3466,142 @@ static void cleanupThisFunctionCallback(RexxThreadContext *c, RexxBufferObject b
 }
 
 
+inline size_t builtinName2index(CSTRING name)
+{
+    for ( register size_t i = 0; i < BUILTINS_COUNT; i++ )
+    {
+        if ( strcasecmp(name, builtinNames[i]) == 0 )
+        {
+            return i;
+        }
+    }
+    return (size_t)-1;
+}
+
+static void ooSQLBuiltinErr(RexxMethodContext *c, pCooSQLiteConn pConn, int rc, CSTRING name, CSTRING fmt)
+{
+    char buffer[256];
+
+    snprintf(buffer, sizeof(buffer), fmt, name);
+    ooSQLiteErr(c, pConn, rc, buffer, true);
+}
+
+static int autoBuiltin(RexxMethodContext *c, CSTRING name)
+{
+    size_t index = builtinName2index(name);
+    if ( index == (size_t)-1 )
+    {
+        wrongArgKeywordException(c, 1, BUILTIN_NAMES, name);
+        return SQLITE_MISUSE;
+    }
+
+    int rc = sqlite3_auto_extension((fnXInit)builtins[index]);
+
+    if ( rc != SQLITE_OK )
+    {
+        return rc;
+    }
+
+    return rc;
+}
+
+static int registerBuiltin(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name)
+{
+    char *errMsg = NULL;
+    int   rc     = SQLITE_OK;
+
+    size_t index = builtinName2index(name);
+    if ( index == (size_t)-1 )
+    {
+        wrongArgKeywordException(c, 1, BUILTIN_NAMES, name);
+        return SQLITE_MISUSE;
+    }
+
+    fnXExtensionInit fn = builtins[index];
+    rc = fn(pConn->db, &errMsg, NULL);
+
+    if ( rc != SQLITE_OK )
+    {
+        if ( errMsg != NULL )
+        {
+            ooSQLiteErr(c, pConn, rc, errMsg, true);
+            sqlite3_free(errMsg);
+        }
+        else
+        {
+            ooSQLBuiltinErr(c, pConn, rc, builtinNames[index], BUILTIN_LOAD_ERR_FMT);
+        }
+        return rc;
+    }
+    return rc;
+}
+
+/**
+ * Makes all the builtin extensions automatic.  The source code for these
+ * extensions comes from SQLite.  They are compiled and statically linked into
+ * the ooSQLite shared library.  This is very similar to the registerAllBuiltins
+ * function.
+ *
+ * @param c
+ * @param pConn
+ *
+ * @return int
+ */
+static int autoAllBuiltins(RexxMethodContext *c)
+{
+    int rc = SQLITE_OK;
+
+    for ( size_t i = 0; i < BUILTINS_COUNT; i++ )
+    {
+        rc = sqlite3_auto_extension((fnXInit)builtins[i]);
+
+        if ( rc != SQLITE_OK )
+        {
+            return rc;
+        }
+    }
+    return rc;
+}
+
+/**
+ * Registers all the builtin extensions.  The source code for these extensions
+ * comes from SQLite.  They are compiled and statically linked into the ooSQLite
+ * shared library.
+ *
+ * @param c
+ * @param pConn
+ *
+ * @return int
+ */
+static int registerAllBuiltins(RexxMethodContext *c, pCooSQLiteConn pConn)
+{
+    char *errMsg = NULL;
+    int   rc     = SQLITE_OK;
+
+    for ( size_t i = 0; i < BUILTINS_COUNT; i++ )
+    {
+        fnXExtensionInit fn = builtins[i];
+        rc = fn(pConn->db, &errMsg, NULL);
+
+        if ( rc != SQLITE_OK )
+        {
+            if ( errMsg != NULL )
+            {
+                ooSQLiteErr(c, pConn, rc, errMsg, true);
+                sqlite3_free(errMsg);
+            }
+            else
+            {
+                ooSQLBuiltinErr(c, pConn, rc, builtinNames[i], BUILTIN_LOAD_ERR_FMT);
+            }
+            return rc;
+        }
+    }
+
+    return rc;
+}
+
+
 /**
  *  Methods for the .ooSQLiteConstants class.
  */
@@ -3587,12 +3723,65 @@ RexxMethod2(RexxObjectPtr, oosql_setRecordFormat_atr_cls, uint32_t, format, CSEL
 
 /** ooSQLite::zeroPointer  [attribute get]
  */
-RexxMethod1(RexxObjectPtr, oosql_zeroPointer_atr_cls, CSELF, pCSelf)
+RexxMethod0(RexxObjectPtr, oosql_zeroPointer_atr_cls)
 {
     return TheZeroPointerObj;
 }
 
-/** ooSQLite::compileOptionGet  [class method]
+/** ooSQLite::autoExtension()  [class method]
+ *
+ *  Registers some or all of the extensions builtin to ooSQLite as automatic.
+ *  This means that each time a database connection is opened, the builtin
+ *  extesnsions will be automaticallyh registered for that connection.
+ *
+ *  These extensions come from the SQLite source tree. and are statically linked
+ *  to the ooSQLite shared library.
+ *
+ *  @param  entryNames  [optional]  A single extension name or an array of
+ *                      extension names to be made automatic.  If omitted all
+ *                      builtin extensions are made automatic.
+ *
+ *  @notes
+ */
+RexxMethod1(int, oosql_autoExtension, OPTIONAL_RexxObjectPtr, entryPoints)
+{
+    if ( argumentOmitted(1) )
+    {
+        return autoAllBuiltins(context);
+    }
+
+    if ( context->IsArray(entryPoints) )
+    {
+        RexxArrayObject entries = (RexxArrayObject)entryPoints;
+        size_t          count   = context->ArrayItems(entries);
+
+        for ( size_t i = 1; i <= count; i++ )
+        {
+            RexxObjectPtr rxName = context->ArrayAt(entries, i);
+            if ( rxName == NULLOBJECT )
+            {
+                sparseArrayException(context->threadContext, 1, i);
+                return SQLITE_MISUSE;
+            }
+
+            int rc = autoBuiltin(context, context->ObjectToStringValue(rxName));
+            if ( rc != SQLITE_OK )
+            {
+                return rc;
+            }
+        }
+    }
+    else
+    {
+        CSTRING name = context->ObjectToStringValue(entryPoints);
+        return autoBuiltin(context, name);
+    }
+
+    return SQLITE_OK;
+}
+
+
+/** ooSQLite::compileOptionGet()  [class method]
  *
  *  sqlite3_compileoption_get() uses 0 through N - 1  to get the Nth compile
  *  option.  We adjust for using 1 through N in Rexx.
@@ -3606,7 +3795,7 @@ RexxMethod1(RexxObjectPtr, oosql_compileOptionGet_cls, int, index)
 }
 
 
-/** ooSQLite::compileOptionUsed  [class method]
+/** ooSQLite::compileOptionUsed()  [class method]
  *
  *
  */
@@ -3738,6 +3927,20 @@ RexxMethod1(int, oosql_releaseMemory_cls, int, nBytes)
     return sqlite3_release_memory(nBytes);
 }
 
+/** ooSQLite::resetAutoExtension()  [class method]
+ *
+ *  Disables all automatic extensions previously registered using the
+ *  autoExtension() method.
+ *
+ *  @notes
+ */
+RexxMethod0(int, oosql_resetAutoExtension)
+{
+    sqlite3_reset_auto_extension();
+    return SQLITE_OK;
+}
+
+
 /** ooSQLite::softHeapLimit64()
  *
  *  Imposes a limit on the heap size, or queries the current size.
@@ -3783,6 +3986,26 @@ RexxMethod0(RexxStringObject, oosql_sqlite3Version_cls)
 RexxMethod3(int, oosql_status_cls, int, param, RexxObjectPtr, _result, OPTIONAL_logical_t, reset)
 {
     return genStatus(context->threadContext, param, _result, reset, 2, true);
+}
+
+/** ooSQLite::strGlob()
+ *
+ *  Returns zero if string 'str' matches the glob pattern 'glob', and returns
+ *  non-zero if string 'str' does not match the glob pattern 'glob'.
+ *
+ *  @param glob  [required]  The glob pattern used for matching.
+ *
+ *  @param str   [required]  The string to be matched
+ *
+ *  @return  Returns 0 on a match and non-zero if no match.
+ *
+ *  @note  The definition of glob pattern matching used in in this method is the
+ *         same as for the "X GLOB P" operator in the SQL dialect used by
+ *         SQLite. The method is case sensitive.
+ */
+RexxMethod2(int, oosql_strGlob_cls, CSTRING, glob, CSTRING, str)
+{
+    return sqlite3_strglob(glob, str);
 }
 
 /** ooSQLite::threadSafe()
@@ -3864,16 +4087,51 @@ RexxMethod1(int, oosql_test_cls, ARGLIST, args)
 
     size_t size = c->ArraySize(args);
 
-    printf("CONSTRAINT_CHECK     =%d\n", SQLITE_CONSTRAINT_CHECK     );
-    printf("CONSTRAINT_COMMITHOOK=%d\n", SQLITE_CONSTRAINT_COMMITHOOK);
-    printf("CONSTRAINT_FOREIGNKEY=%d\n", SQLITE_CONSTRAINT_FOREIGNKEY);
-    printf("CONSTRAINT_FUNCTION  =%d\n", SQLITE_CONSTRAINT_FUNCTION  );
-    printf("CONSTRAINT_NOTNULL   =%d\n", SQLITE_CONSTRAINT_NOTNULL   );
-    printf("CONSTRAINT_PRIMARYKEY=%d\n", SQLITE_CONSTRAINT_PRIMARYKEY);
-    printf("CONSTRAINT_TRIGGER   =%d\n", SQLITE_CONSTRAINT_TRIGGER   );
-    printf("CONSTRAINT_UNIQUE    =%d\n", SQLITE_CONSTRAINT_UNIQUE    );
-    printf("CONSTRAINT_VTAB      =%d\n", SQLITE_CONSTRAINT_VTAB      );
-    printf("READONLY_ROLLBACK    =%d\n", SQLITE_READONLY_ROLLBACK    );
+    printf("IOERR_READ              =%d\n", SQLITE_IOERR_READ              );
+    printf("IOERR_SHORT_READ        =%d\n", SQLITE_IOERR_SHORT_READ        );
+    printf("IOERR_WRITE             =%d\n", SQLITE_IOERR_WRITE             );
+    printf("IOERR_FSYNC             =%d\n", SQLITE_IOERR_FSYNC             );
+    printf("IOERR_DIR_FSYNC         =%d\n", SQLITE_IOERR_DIR_FSYNC         );
+    printf("IOERR_TRUNCATE          =%d\n", SQLITE_IOERR_TRUNCATE          );
+    printf("IOERR_FSTAT             =%d\n", SQLITE_IOERR_FSTAT             );
+    printf("IOERR_UNLOCK            =%d\n", SQLITE_IOERR_UNLOCK            );
+    printf("IOERR_RDLOCK            =%d\n", SQLITE_IOERR_RDLOCK            );
+    printf("IOERR_DELETE            =%d\n", SQLITE_IOERR_DELETE            );
+    printf("IOERR_BLOCKED           =%d\n", SQLITE_IOERR_BLOCKED           );
+    printf("IOERR_NOMEM             =%d\n", SQLITE_IOERR_NOMEM             );
+    printf("IOERR_ACCESS            =%d\n", SQLITE_IOERR_ACCESS            );
+    printf("IOERR_CHECKRESERVEDLOCK =%d\n", SQLITE_IOERR_CHECKRESERVEDLOCK );
+    printf("IOERR_LOCK              =%d\n", SQLITE_IOERR_LOCK              );
+    printf("IOERR_CLOSE             =%d\n", SQLITE_IOERR_CLOSE             );
+    printf("IOERR_DIR_CLOSE         =%d\n", SQLITE_IOERR_DIR_CLOSE         );
+    printf("IOERR_SHMOPEN           =%d\n", SQLITE_IOERR_SHMOPEN           );
+    printf("IOERR_SHMSIZE           =%d\n", SQLITE_IOERR_SHMSIZE           );
+    printf("IOERR_SHMLOCK           =%d\n", SQLITE_IOERR_SHMLOCK           );
+    printf("IOERR_SHMMAP            =%d\n", SQLITE_IOERR_SHMMAP            );
+    printf("IOERR_SEEK              =%d\n", SQLITE_IOERR_SEEK              );
+    printf("IOERR_DELETE_NOENT      =%d\n", SQLITE_IOERR_DELETE_NOENT      );
+    printf("IOERR_MMAP              =%d\n", SQLITE_IOERR_MMAP              );
+    printf("LOCKED_SHAREDCACHE      =%d\n", SQLITE_LOCKED_SHAREDCACHE      );
+    printf("BUSY_RECOVERY           =%d\n", SQLITE_BUSY_RECOVERY           );
+    printf("CANTOPEN_NOTEMPDIR      =%d\n", SQLITE_CANTOPEN_NOTEMPDIR      );
+    printf("CANTOPEN_ISDIR          =%d\n", SQLITE_CANTOPEN_ISDIR          );
+    printf("CANTOPEN_FULLPATH       =%d\n", SQLITE_CANTOPEN_FULLPATH       );
+    printf("CORRUPT_VTAB            =%d\n", SQLITE_CORRUPT_VTAB            );
+    printf("READONLY_RECOVERY       =%d\n", SQLITE_READONLY_RECOVERY       );
+    printf("READONLY_CANTLOCK       =%d\n", SQLITE_READONLY_CANTLOCK       );
+    printf("READONLY_ROLLBACK       =%d\n", SQLITE_READONLY_ROLLBACK       );
+    printf("ABORT_ROLLBACK          =%d\n", SQLITE_ABORT_ROLLBACK          );
+    printf("CONSTRAINT_CHECK        =%d\n", SQLITE_CONSTRAINT_CHECK        );
+    printf("CONSTRAINT_COMMITHOOK   =%d\n", SQLITE_CONSTRAINT_COMMITHOOK   );
+    printf("CONSTRAINT_FOREIGNKEY   =%d\n", SQLITE_CONSTRAINT_FOREIGNKEY   );
+    printf("CONSTRAINT_FUNCTION     =%d\n", SQLITE_CONSTRAINT_FUNCTION     );
+    printf("CONSTRAINT_NOTNULL      =%d\n", SQLITE_CONSTRAINT_NOTNULL      );
+    printf("CONSTRAINT_PRIMARYKEY   =%d\n", SQLITE_CONSTRAINT_PRIMARYKEY   );
+    printf("CONSTRAINT_TRIGGER      =%d\n", SQLITE_CONSTRAINT_TRIGGER      );
+    printf("CONSTRAINT_UNIQUE       =%d\n", SQLITE_CONSTRAINT_UNIQUE       );
+    printf("CONSTRAINT_VTAB         =%d\n", SQLITE_CONSTRAINT_VTAB         );
+    printf("NOTICE_RECOVER_WAL      =%d\n", SQLITE_NOTICE_RECOVER_WAL      );
+    printf("NOTICE_RECOVER_ROLLBACK =%d\n", SQLITE_NOTICE_RECOVER_ROLLBACK );
 
     return 0;
 }
@@ -4388,6 +4646,7 @@ PragmaType getPragmaType(RexxThreadContext *c, CSTRING name)
         ++pName;
     }
 
+    if ( strcmp(pName, "application_id")            == 0 ) return applicationID;
     if ( strcmp(pName, "auto_vacuum")               == 0 ) return autoVacuum;
     if ( strcmp(pName, "automatic_index")           == 0 ) return automaticIndex;
     if ( strcmp(pName, "busy_timeout")              == 0 ) return busyTimeout;
@@ -4413,6 +4672,7 @@ PragmaType getPragmaType(RexxThreadContext *c, CSTRING name)
     if ( strcmp(pName, "legacy_file_format")        == 0 ) return legacyFileFormat;
     if ( strcmp(pName, "locking_mode")              == 0 ) return lockingMode;
     if ( strcmp(pName, "max_page_count")            == 0 ) return maxPageCount;
+    if ( strcmp(pName, "mmap_size")                 == 0 ) return mmapSize;
     if ( strcmp(pName, "page_count")                == 0 ) return pageCount;
     if ( strcmp(pName, "page_size")                 == 0 ) return pageSize;
     if ( strcmp(pName, "quick_check")               == 0 ) return quickCheck;
@@ -6624,6 +6884,64 @@ RexxMethod5(RexxObjectPtr, oosqlconn_progressHandler, RexxObjectPtr, callbackObj
     }
 
     return doCallbackSetup(context, pConn, callbackObj, mthName, userData, progressHandler, instructions, NULL);
+}
+
+
+/** ooSQLiteConnection::registerBuiltinExtension()
+ *
+ *  Registers some or all of the extensions builtin to ooSQLite with this
+ *  database connections.  These extensions come from the SQLite source tree.
+ *  and are statically linked to the ooSQLite shared library.
+ *
+ *  @param  entryNames  [optional]  A single extension name or an array of
+ *                      extension names.  If omitted all builtin extensions are
+ *                      registered.
+ *
+ *  @notes  If an error happens registering the extension, the lastErrMsg and
+ *          lastErrCode attributes are set.
+ */
+RexxMethod2(int, oosqlconn_registerBuiltinExtension, OPTIONAL_RexxObjectPtr, entryPoints, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    if ( argumentOmitted(1) )
+    {
+        return registerAllBuiltins(context, pConn);
+    }
+
+    RexxMethodContext *c = context;
+    if ( context->IsArray(entryPoints) )
+    {
+        RexxArrayObject entries = (RexxArrayObject)entryPoints;
+        size_t          count   = c->ArrayItems(entries);
+
+        for ( size_t i = 1; i <= count; i++ )
+        {
+            RexxObjectPtr rxName = c->ArrayAt(entries, i);
+            if ( rxName == NULLOBJECT )
+            {
+                sparseArrayException(c->threadContext, 1, i);
+                return SQLITE_MISUSE;
+            }
+
+            int rc = registerBuiltin(context, pConn, c->ObjectToStringValue(rxName));
+            if ( rc != SQLITE_OK )
+            {
+                return rc;
+            }
+        }
+    }
+    else
+    {
+        CSTRING name = context->ObjectToStringValue(entryPoints);
+        return registerBuiltin(context, pConn, name);
+    }
+
+    return SQLITE_MISUSE;
 }
 
 
@@ -13229,6 +13547,26 @@ RexxRoutine3(int, oosqlStmtStatus_rtn, POINTER, _stmt, int, param, OPTIONAL_logi
     return sqlite3_stmt_status(stmt, param, (int)reset);
 }
 
+/** oosqlStrGlob()
+ *
+ *  Returns zero if string 'str' matches the glob pattern 'glob', and returns
+ *  non-zero if string 'str' does not match the glob pattern 'glob'.
+ *
+ *  @param glob  [required]  The glob pattern used for matching.
+ *
+ *  @param str   [required]  The string to be matched
+ *
+ *  @return  Returns 0 on a match and non-zero if no match.
+ *
+ *  @note  The definition of glob pattern matching used in in this function is
+ *         the same as for the "X GLOB P" operator in the SQL dialect used by
+ *         SQLite. The function is case sensitive.
+ */
+RexxRoutine2(int, oosqlStrGlob_rtn, CSTRING, glob, CSTRING, str)
+{
+    return sqlite3_strglob(glob, str);
+}
+
 /** oosqlTableColumnMetadata()
  *
  *  @param  results  A Stem object in which the metadata is returned.
@@ -13541,6 +13879,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlStatus_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlStmtBusy_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlStmtBusy_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlStmtReadonly_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlStrGlob_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlTableColumnMetadata_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlThreadSafe_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlTrace_rtn);
@@ -13640,6 +13979,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlStmtBusy_rtn,             oosqlStmtBusy_rtn),
     REXX_TYPED_ROUTINE(oosqlStmtReadonly_rtn,         oosqlStmtReadonly_rtn),
     REXX_TYPED_ROUTINE(oosqlStmtStatus_rtn,           oosqlStmtStatus_rtn),
+    REXX_TYPED_ROUTINE(oosqlStrGlob_rtn,              oosqlStrGlob_rtn),
     REXX_TYPED_ROUTINE(oosqlTableColumnMetadata_rtn,  oosqlTableColumnMetadata_rtn),
     REXX_TYPED_ROUTINE(oosqlThreadSafe_rtn,           oosqlThreadSafe_rtn),
     REXX_TYPED_ROUTINE(oosqlTotalChanges_rtn,         oosqlTotalChanges_rtn),
@@ -13663,6 +14003,7 @@ REXX_METHOD_PROTOTYPE(oosql_getNull_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_setNull_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_getRecordFormat_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_setRecordFormat_atr_cls);
+REXX_METHOD_PROTOTYPE(oosql_autoExtension);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionGet_cls);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionUsed_cls);
 REXX_METHOD_PROTOTYPE(oosql_complete_cls);
@@ -13673,10 +14014,12 @@ REXX_METHOD_PROTOTYPE(oosql_libVersion_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersionNumber_cls);
 REXX_METHOD_PROTOTYPE(oosql_memoryUsed_cls);
 REXX_METHOD_PROTOTYPE(oosql_releaseMemory_cls);
+REXX_METHOD_PROTOTYPE(oosql_resetAutoExtension);
 REXX_METHOD_PROTOTYPE(oosql_softHeapLimit64_cls);
 REXX_METHOD_PROTOTYPE(oosql_sourceID_cls);
 REXX_METHOD_PROTOTYPE(oosql_sqlite3Version_cls);
 REXX_METHOD_PROTOTYPE(oosql_status_cls);
+REXX_METHOD_PROTOTYPE(oosql_strGlob_cls);
 REXX_METHOD_PROTOTYPE(oosql_threadSafe_cls);
 REXX_METHOD_PROTOTYPE(oosql_version_cls);
 
@@ -13726,7 +14069,8 @@ REXX_METHOD_PROTOTYPE(oosqlconn_loadExtension);
 REXX_METHOD_PROTOTYPE(oosqlconn_nextStmt);
 REXX_METHOD_PROTOTYPE(oosqlconn_pragma);
 REXX_METHOD_PROTOTYPE(oosqlconn_profile);
-REXX_METHOD_PROTOTYPE(oosqlconn_progressHandler);
+REXX_METHOD_PROTOTYPE(roosqlconn_progressHandler);
+REXX_METHOD_PROTOTYPE(oosqlconn_registerBuiltinExtension);
 REXX_METHOD_PROTOTYPE(oosqlconn_rekey);
 REXX_METHOD_PROTOTYPE(oosqlconn_rollbackHook);
 REXX_METHOD_PROTOTYPE(oosqlconn_setAuthorizer);
@@ -13903,6 +14247,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosql_getRecordFormat_atr_cls,        oosql_getRecordFormat_atr_cls),
     REXX_METHOD(oosql_setRecordFormat_atr_cls,        oosql_setRecordFormat_atr_cls),
     REXX_METHOD(oosql_zeroPointer_atr_cls,            oosql_zeroPointer_atr_cls),
+    REXX_METHOD(oosql_autoExtension,                  oosql_autoExtension),
     REXX_METHOD(oosql_compileOptionGet_cls,           oosql_compileOptionGet_cls),
     REXX_METHOD(oosql_compileOptionUsed_cls,          oosql_compileOptionUsed_cls),
     REXX_METHOD(oosql_complete_cls,                   oosql_complete_cls),
@@ -13914,10 +14259,12 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosql_memoryUsed_cls,                 oosql_memoryUsed_cls),
     REXX_METHOD(oosql_memoryHighWater_cls,            oosql_memoryHighWater_cls),
     REXX_METHOD(oosql_releaseMemory_cls,              oosql_releaseMemory_cls),
+    REXX_METHOD(oosql_resetAutoExtension,             oosql_resetAutoExtension),
     REXX_METHOD(oosql_softHeapLimit64_cls,            oosql_softHeapLimit64_cls),
     REXX_METHOD(oosql_sourceID_cls,                   oosql_sourceID_cls),
     REXX_METHOD(oosql_sqlite3Version_cls,             oosql_sqlite3Version_cls),
     REXX_METHOD(oosql_status_cls,                     oosql_status_cls),
+    REXX_METHOD(oosql_strGlob_cls,                    oosql_strGlob_cls),
     REXX_METHOD(oosql_threadSafe_cls,                 oosql_threadSafe_cls),
     REXX_METHOD(oosql_version_cls,                    oosql_version_cls),
 
@@ -13968,6 +14315,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlconn_pragma,                     oosqlconn_pragma),
     REXX_METHOD(oosqlconn_profile,                    oosqlconn_profile),
     REXX_METHOD(oosqlconn_progressHandler,            oosqlconn_progressHandler),
+    REXX_METHOD(oosqlconn_registerBuiltinExtension,   oosqlconn_registerBuiltinExtension),
     REXX_METHOD(oosqlconn_rekey,                      oosqlconn_rekey),
     REXX_METHOD(oosqlconn_rollbackHook,               oosqlconn_rollbackHook),
     REXX_METHOD(oosqlconn_setAuthorizer,              oosqlconn_setAuthorizer),

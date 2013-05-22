@@ -73,6 +73,12 @@ BEGIN_EXTERN_C()
 #define OOSQLITEENTRY APIENTRY
 #define ooSQLiteEntry OOSQLITEENTRY
 
+// Type def for the typical SQLite extension file init routine.  We use it so we
+// can keep a table of our builtin extenaions.  Then the fnXInit type def is for
+// the sqlite3_auto_extension() call.
+typedef int (*fnXExtensionInit)(sqlite3 *, char **, const sqlite3_api_routines *);
+typedef void (*fnXInit)(void);
+
 // Type def for the SQLite collation and collation needed callbacks.
 typedef int  (*fnXCompare)(void*, int, const void*, int, const void*);
 typedef void (*fnXCollNeeded)(void*, sqlite3*, int, const char*);
@@ -87,7 +93,6 @@ typedef void (*fnXFinal)(sqlite3_context*);
 
 // Type def for the common destroy callback.
 typedef void (*fnXDestroy)(void*);
-
 
 // Many of the SQLite callbacks can take a void pointer to user defined data.
 // Rather than pass in pUserData in the entry table, a function pointer can be

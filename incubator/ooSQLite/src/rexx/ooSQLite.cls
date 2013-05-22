@@ -61,6 +61,7 @@
 ::attribute zeroPointer get class external "LIBRARY oosqlite oosql_zeroPointer_atr_cls"
 
 ::method init class external "LIBRARY oosqlite oosql_init_cls"                                -- Do not document, internal use only
+::method autoExtension class external "LIBRARY oosqlite oosql_resetAutoExtension"
 ::method compileOptionGet class external "LIBRARY oosqlite oosql_compileOptionGet_cls"
 ::method compileOptionUsed class external "LIBRARY oosqlite oosql_compileOptionUsed_cls"
 ::method complete class external "LIBRARY oosqlite oosql_complete_cls"
@@ -72,10 +73,12 @@
 ::method memoryHighWater class external "LIBRARY oosqlite oosql_memoryHighWater_cls"
 ::method memoryUsed class external "LIBRARY oosqlite oosql_memoryUsed_cls"
 ::method releaseMemory class external "LIBRARY oosqlite oosql_releaseMemory_cls"
+::method resetAutoExtension class external "LIBRARY oosqlite oosql_resetAutoExtension"
 ::method softHeapLimit64 class external "LIBRARY oosqlite oosql_softHeapLimit64_cls"
 ::method sourceID class external "LIBRARY oosqlite oosql_sourceID_cls"
 ::method sqlite3Version class external "LIBRARY oosqlite oosql_sqlite3Version_cls"
 ::method status class external "LIBRARY oosqlite oosql_status_cls"
+::method strGlob class external "LIBRARY oosqlite oosql_strGlob_cls"
 ::method threadSafe class external "LIBRARY oosqlite oosql_threadSafe_cls"
 ::method version class external "LIBRARY oosqlite oosql_version_cls"
 
@@ -133,6 +136,7 @@
 ::method profile external "LIBRARY oosqlite oosqlconn_profile"
 ::method progressHandler external "LIBRARY oosqlite oosqlconn_progressHandler"
 ::method pragma external "LIBRARY oosqlite oosqlconn_pragma"
+::method registerBuiltinExtension external "LIBRARY oosqlite oosqlconn_registerBuiltinExtension"
 ::method rekey external "LIBRARY oosqlite oosqlconn_rekey"
 ::method rollbackHook external "LIBRARY oosqlite oosqlconn_rollbackHook"
 ::method setAuthorizer external "LIBRARY oosqlite oosqlconn_setAuthorizer"
@@ -455,6 +459,7 @@
 ::routine oosqlStmtBusy public external "LIBRARY oosqlite oosqlStmtBusy_rtn"
 ::routine oosqlStmtReadonly public external "LIBRARY oosqlite oosqlStmtReadonly_rtn"
 ::routine oosqlStmtStatus public external "LIBRARY oosqlite oosqlStmtStatus_rtn"
+::routine oosqlStrGlob public external "LIBRARY oosqlite oosqlStrGlob_rtn"
 ::routine oosqlTableColumnMetadata public external "LIBRARY oosqlite oosqlTableColumnMetadata_rtn"
 ::routine oosqlThreadSafe public external "LIBRARY oosqlite oosqlThreadSafe_rtn"
 ::routine oosqlTotalChanges public external "LIBRARY oosqlite oosqlTotalChanges_rtn"
@@ -494,9 +499,9 @@
 -- (oosqlite.dll / oosqlite.so depending on platform.)
 --
 -- Copy the values directly from the top of sqlite3.h.
-::constant VERSION        "3.7.16.2"
-::constant VERSION_NUMBER 3007016
-::constant SOURCE_ID      "2013-04-12 11:52:43 cbea02d93865ce0e06789db95fd9168ebac970c7"
+::constant VERSION        "3.7.17"
+::constant VERSION_NUMBER 3007017
+::constant SOURCE_ID      "2013-05-20 00:56:22 118a3b35693b134d56ebd780123b7fd6f1497668"
 
 
 -- OO_ prefix indicates constant is not from the SQLite library.
@@ -545,6 +550,8 @@
 ::constant FORMAT      24   /* Auxiliary database format error */
 ::constant RANGE       25   /* 2nd parameter to sqlite3_bind out of range */
 ::constant NOTADB      26   /* File opened that is not a database file */
+::constant NOTICE      27   /* Notifications from sqlite3_log() */
+::constant WARNING     28   /* Warnings from sqlite3_log() */
 ::constant ROW         100  /* sqlite3_step() has another row ready */
 ::constant DONE        101  /* sqlite3_step() has finished executing */
 /* end-of-error-codes */
@@ -554,28 +561,32 @@
 ::constant IOERR_READ               266
 ::constant IOERR_SHORT_READ         522
 ::constant IOERR_WRITE              778
-::constant IOERR_FSYNC             1034
-::constant IOERR_DIR_FSYNC         1290
-::constant IOERR_TRUNCATE          1546
-::constant IOERR_FSTAT             1802
-::constant IOERR_UNLOCK            2058
-::constant IOERR_RDLOCK            2314
-::constant IOERR_DELETE            2570
-::constant IOERR_BLOCKED           2826
-::constant IOERR_NOMEM             3082
-::constant IOERR_ACCESS            3338
-::constant IOERR_CHECKRESERVEDLOCK 3594
-::constant IOERR_LOCK              3850
-::constant IOERR_CLOSE             4106
-::constant IOERR_DIR_CLOSE         4362
-::constant IOERR_SHMOPEN           4618
-::constant IOERR_SHMSIZE           4874
-::constant IOERR_SHMLOCK           5130
-::constant IOERR_SHMMAP            5386
-::constant IOERR_SEEK              5642
+::constant IOERR_FSYNC              1034
+::constant IOERR_DIR_FSYNC          1290
+::constant IOERR_TRUNCATE           1546
+::constant IOERR_FSTAT              1802
+::constant IOERR_UNLOCK             2058
+::constant IOERR_RDLOCK             2314
+::constant IOERR_DELETE             2570
+::constant IOERR_BLOCKED            2826
+::constant IOERR_NOMEM              3082
+::constant IOERR_ACCESS             3338
+::constant IOERR_CHECKRESERVEDLOCK  3594
+::constant IOERR_LOCK               3850
+::constant IOERR_CLOSE              4106
+::constant IOERR_DIR_CLOSE          4362
+::constant IOERR_SHMOPEN            4618
+::constant IOERR_SHMSIZE            4874
+::constant IOERR_SHMLOCK            5130
+::constant IOERR_SHMMAP             5386
+::constant IOERR_SEEK               5642
+::constant IOERR_DELETE_NOENT       5898
+::constant IOERR_MMAP               6154
 ::constant LOCKED_SHAREDCACHE       262
 ::constant BUSY_RECOVERY            261
 ::constant CANTOPEN_NOTEMPDIR       270
+::constant CANTOPEN_ISDIR           526
+::constant CANTOPEN_FULLPATH        782
 ::constant CORRUPT_VTAB             267
 ::constant READONLY_RECOVERY        264
 ::constant READONLY_CANTLOCK        520
@@ -584,12 +595,15 @@
 ::constant CONSTRAINT_CHECK         275
 ::constant CONSTRAINT_COMMITHOOK    531
 ::constant CONSTRAINT_FOREIGNKEY    787
-::constant CONSTRAINT_FUNCTION     1043
-::constant CONSTRAINT_NOTNULL      1299
-::constant CONSTRAINT_PRIMARYKEY   1555
-::constant CONSTRAINT_TRIGGER      1811
-::constant CONSTRAINT_UNIQUE       2067
-::constant CONSTRAINT_VTAB         2323
+::constant CONSTRAINT_FUNCTION      1043
+::constant CONSTRAINT_NOTNULL       1299
+::constant CONSTRAINT_PRIMARYKEY    1555
+::constant CONSTRAINT_TRIGGER       1811
+::constant CONSTRAINT_UNIQUE        2067
+::constant CONSTRAINT_VTAB          2323
+::constant NOTICE_RECOVER_WAL       283
+::constant NOTICE_RECOVER_ROLLBACK  539
+
 
 /* end-of-extended-error-codes */
 
@@ -724,6 +738,9 @@
 ::constant FCNTL_VFSNAME                12
 ::constant FCNTL_POWERSAFE_OVERWRITE    13
 ::constant FCNTL_PRAGMA                 14
+::constant FCNTL_BUSYHANDLER            15
+::constant FCNTL_TEMPFILENAME           16
+::constant FCNTL_MMAP_SIZE              18
 
 
 /* Fundamental Datatypes */
@@ -811,15 +828,15 @@
 
 
 /* Status Parameters for prepared statements */
-::constant STMTSTATUS_FULLSCAN_STEP     1
-::constant STMTSTATUS_SORT              2
-::constant STMTSTATUS_AUTOINDEX         3
+::constant STMTSTATUS_FULLSCAN_STEP    1
+::constant STMTSTATUS_SORT             2
+::constant STMTSTATUS_AUTOINDEX        3
 
 
 /* Synchronization Type Flags */
-::constant SYNC_NORMAL                   2
-::constant SYNC_FULL                     3
-::constant SYNC_DATAONLY                16
+::constant SYNC_NORMAL                 2
+::constant SYNC_FULL                   3
+::constant SYNC_DATAONLY              16
 
 
 /* Text Encodings */

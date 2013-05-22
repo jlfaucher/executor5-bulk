@@ -96,9 +96,48 @@
 #define MAX_AUTO_FUNCTIONS        10
 #define MAX_AUTO_COLLATIONS       10
 
+// Function prototypes for the builtin extensions
+BEGIN_EXTERN_C()
+
+extern int sqlite3_ieee_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
+extern int sqlite3_nextchar_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
+extern int sqlite3_regexp_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
+extern int sqlite3_rot_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
+extern int sqlite3_spellfix_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
+extern int sqlite3_wholenumber_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
+
+END_EXTERN_C()
+
+const fnXExtensionInit builtins[] =
+{
+    sqlite3_ieee_init,
+    sqlite3_nextchar_init,
+    sqlite3_regexp_init,
+    sqlite3_rot_init,
+    sqlite3_spellfix_init,
+    sqlite3_wholenumber_init
+};
+
+const char *builtinNames[] =
+{
+    "ieee754",
+    "nextChar",
+    "regExp",
+    "rot13",
+    "spellFix",
+    "wholeNumber"
+};
+
+#define BUILTINS_COUNT sizeof(builtins) / sizeof(fnXExtensionInit)
+
+#define BUILTIN_NAMES          "ieee754, nextChar, regExp, rot13, spellFix, or wholeNumber"
+#define BUILTIN_LOAD_ERR_FMT   "Error loading builtin extension %s"
+#define BUILTIN_AUTO_ERR_FMT   "Failed to make builtin extension %s automatic"
+
 // Enum for the pragma commands in SQLite3.
 typedef enum
 {
+    applicationID,
     autoVacuum,
     automaticIndex,
     busyTimeout,
@@ -124,6 +163,7 @@ typedef enum
     legacyFileFormat,
     lockingMode,
     maxPageCount,
+    mmapSize,
     pageCount,
     pageSize,
     quickCheck,

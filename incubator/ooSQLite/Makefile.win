@@ -126,7 +126,7 @@ WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 VERDEFS = /DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) /DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) /DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) /DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) /DOOSQLITE_VER_STRING=\"$(OOSQLITE_VER_STR)\" /DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
 EXTRAINCLUDE = /I src\sqlite /I $(PLATFORM_DIR)
 
-SQLITEFLAGS=/DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_MEMORY_MANAGEMENT /DSQLITE_ENABLE_FTS3 /DSQLITE_ENABLE_FTS3_PARENTHESIS /DSQLITE_DEFAULT_FOREIGN_KEYS=1
+SQLITEFLAGS=/DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_MEMORY_MANAGEMENT /DSQLITE_ENABLE_FTS3 /DSQLITE_ENABLE_FTS3_PARENTHESIS /DSQLITE_DEFAULT_FOREIGN_KEYS=1 /DSQLITE_CORE
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS)
 
 SYSLIB_FLAGS = /DOOSQLITE_SHARED_LIBRARY_EXT=\".dll\"
@@ -158,6 +158,11 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM
 
 !ENDIF
 
+OBJ_FILES = $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\ooSqlSysLibrary.obj \
+            $(OUT_DIR)\nextchar.obj $(OUT_DIR)\ieee754.obj $(OUT_DIR)\rot13.obj $(OUT_DIR)\regexp.obj $(OUT_DIR)\spellfix.obj \
+            $(OUT_DIR)\wholenumber.obj
+
+
 # What we want to build.  ooSQLite3.exe is the command line version of SQLite.
 # ooSQLite3.exe should be no different than what you can download from the
 # SQLite website as sqlite3.exe, except that it has a few defaults changed.
@@ -179,8 +184,26 @@ $(OUT_DIR)\APICommon.obj: src\APICommon.cpp src\APICommon.hpp Makefile.win
 $(OUT_DIR)\ooSqlSysLibrary.obj: $(PLATFORM_DIR)\ooSqlSysLibrary.cpp $(PLATFORM_DIR)\ooSqlSysLibrary.hpp Makefile.win
   cl $(CFLAGS) $(SYSLIB_FLAGS) /Fo.\$(OUT_DIR)\ $(PLATFORM_DIR)\ooSqlSysLibrary.cpp
 
-$(OUT_DIR)\oosqlite.dll: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\ooSqlSysLibrary.obj
-    link $(LFLAGS_DLL) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\ooSqlSysLibrary.obj -out:$(OUT_DIR)\oosqlite.dll
+$(OUT_DIR)\ieee754.obj: src\sqlite\extensions\ieee754.c Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\ieee754.c
+
+$(OUT_DIR)\nextchar.obj: src\sqlite\extensions\nextchar.c Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\nextchar.c
+
+$(OUT_DIR)\regexp.obj: src\sqlite\extensions\regexp.c Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\regexp.c
+
+$(OUT_DIR)\rot13.obj: src\sqlite\extensions\rot13.c Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\rot13.c
+
+$(OUT_DIR)\spellfix.obj: src\sqlite\extensions\spellfix.c Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\spellfix.c
+
+$(OUT_DIR)\wholenumber.obj: src\sqlite\extensions\wholenumber.c Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\wholenumber.c
+
+$(OUT_DIR)\oosqlite.dll: $(OBJ_FILES)
+    link $(LFLAGS_DLL) $(OBJ_FILES) -out:$(OUT_DIR)\oosqlite.dll
 
 $(OUT_DIR)\ooSQLite3.exe: $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\shell.obj
     link $(LFLAGS_EXE) $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\shell.obj -out:$(OUT_DIR)\ooSQLite3.exe
