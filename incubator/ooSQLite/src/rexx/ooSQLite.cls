@@ -61,7 +61,6 @@
 ::attribute zeroPointer get class external "LIBRARY oosqlite oosql_zeroPointer_atr_cls"
 
 ::method init class external "LIBRARY oosqlite oosql_init_cls"                                -- Do not document, internal use only
-::method autoExtension class external "LIBRARY oosqlite oosql_resetAutoExtension"
 ::method compileOptionGet class external "LIBRARY oosqlite oosql_compileOptionGet_cls"
 ::method compileOptionUsed class external "LIBRARY oosqlite oosql_compileOptionUsed_cls"
 ::method complete class external "LIBRARY oosqlite oosql_complete_cls"
@@ -73,7 +72,6 @@
 ::method memoryHighWater class external "LIBRARY oosqlite oosql_memoryHighWater_cls"
 ::method memoryUsed class external "LIBRARY oosqlite oosql_memoryUsed_cls"
 ::method releaseMemory class external "LIBRARY oosqlite oosql_releaseMemory_cls"
-::method resetAutoExtension class external "LIBRARY oosqlite oosql_resetAutoExtension"
 ::method softHeapLimit64 class external "LIBRARY oosqlite oosql_softHeapLimit64_cls"
 ::method sourceID class external "LIBRARY oosqlite oosql_sourceID_cls"
 ::method sqlite3Version class external "LIBRARY oosqlite oosql_sqlite3Version_cls"
@@ -300,6 +298,7 @@
 ::attribute lastErrCode get class external "LIBRARY oosqlite oosqlext_getLastErrCode_atr"
 ::attribute lastErrMsg get class external "LIBRARY oosqlite oosqlext_getLastErrMsg_atr"
 
+::method autoExtension class external "LIBRARY oosqlite oosqlext_autoExtension"
 ::method getLibrary class external "LIBRARY oosqlite oosqlext_getLibrary_cls"
 ::method getPackage class external "LIBRARY oosqlite oosqlext_getPackage_cls"
 ::method loadLibrary class external "LIBRARY oosqlite oosqlext_loadLibrary_cls"
@@ -307,6 +306,7 @@
 ::method makeAutoCollation class external "LIBRARY oosqlite oosqlext_makeAutoCollation_cls"
 ::method makeAutoFunction class external "LIBRARY oosqlite oosqlext_makeAutoFunction_cls"
 ::method makeAutoPackage class external "LIBRARY oosqlite oosqlext_makeAutoPackage_cls"
+::method resetAutoExtension class external "LIBRARY oosqlite oosqlext_resetAutoExtension"
 
 
 /** class: ooSQLPackage
@@ -370,8 +370,10 @@
 ::routine ooSQLiteEncryptionAvailable public external "LIBRARY oosqlite ooSQLiteEncryptionAvailable_rtn"
 ::routine ooSQLiteEnquote public external "LIBRARY oosqlite ooSQLiteEnquote_rtn"
 ::routine ooSQLiteMerge public external "LIBRARY oosqlite ooSQLiteMerge_rtn"
+::routine ooSQLiteRegisterBuiltin public external "LIBRARY oosqlite ooSQLiteRegisterBuiltin_rtn"
 ::routine ooSQLiteVersion public external "LIBRARY oosqlite ooSQLiteVersion_rtn"
 
+::routine oosqlAutoExtension public external "LIBRARY oosqlite oosqlAutoExtension_rtn"
 ::routine oosqlBackupFinish public external "LIBRARY oosqlite oosqlBackupFinish_rtn"
 ::routine oosqlBackupInit public external "LIBRARY oosqlite oosqlBackupInit_rtn"
 ::routine oosqlBackupPageCount public external "LIBRARY oosqlite oosqlBackupRemaining_rtn"
@@ -449,6 +451,7 @@
 ::routine oosqlRekey public external "LIBRARY oosqlite oosqlRekey_rtn"
 ::routine oosqlReleaseMemory public external "LIBRARY oosqlite oosqlReleaseMemory_rtn"
 ::routine oosqlReset public external "LIBRARY oosqlite oosqlReset_rtn"
+::routine oosqlResetAutoExtension public external "LIBRARY oosqlite oosqlResetAutoExtension_rtn"
 ::routine oosqlRollbackHook public external "LIBRARY oosqlite oosqlRollbackHook_rtn"
 ::routine oosqlSetAuthorizer public external "LIBRARY oosqlite oosqlSetAuthorizer_rtn"
 ::routine oosqlSoftHeapLimit64 public external "LIBRARY oosqlite oosqlSoftHeapLimit64_rtn"

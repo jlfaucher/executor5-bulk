@@ -3486,25 +3486,6 @@ static void ooSQLBuiltinErr(RexxMethodContext *c, pCooSQLiteConn pConn, int rc, 
     ooSQLiteErr(c, pConn, rc, buffer, true);
 }
 
-static int autoBuiltin(RexxMethodContext *c, CSTRING name)
-{
-    size_t index = builtinName2index(name);
-    if ( index == (size_t)-1 )
-    {
-        wrongArgKeywordException(c, 1, BUILTIN_NAMES, name);
-        return SQLITE_MISUSE;
-    }
-
-    int rc = sqlite3_auto_extension((fnXInit)builtins[index]);
-
-    if ( rc != SQLITE_OK )
-    {
-        return rc;
-    }
-
-    return rc;
-}
-
 static int registerBuiltin(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name)
 {
     char *errMsg = NULL;
@@ -3513,7 +3494,7 @@ static int registerBuiltin(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING n
     size_t index = builtinName2index(name);
     if ( index == (size_t)-1 )
     {
-        wrongArgKeywordException(c, 1, BUILTIN_NAMES, name);
+        wrongArgKeywordException(c->threadContext, 1, BUILTIN_NAMES, name);
         return SQLITE_MISUSE;
     }
 
@@ -3532,33 +3513,6 @@ static int registerBuiltin(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING n
             ooSQLBuiltinErr(c, pConn, rc, builtinNames[index], BUILTIN_LOAD_ERR_FMT);
         }
         return rc;
-    }
-    return rc;
-}
-
-/**
- * Makes all the builtin extensions automatic.  The source code for these
- * extensions comes from SQLite.  They are compiled and statically linked into
- * the ooSQLite shared library.  This is very similar to the registerAllBuiltins
- * function.
- *
- * @param c
- * @param pConn
- *
- * @return int
- */
-static int autoAllBuiltins(RexxMethodContext *c)
-{
-    int rc = SQLITE_OK;
-
-    for ( size_t i = 0; i < BUILTINS_COUNT; i++ )
-    {
-        rc = sqlite3_auto_extension((fnXInit)builtins[i]);
-
-        if ( rc != SQLITE_OK )
-        {
-            return rc;
-        }
     }
     return rc;
 }
@@ -3728,59 +3682,6 @@ RexxMethod0(RexxObjectPtr, oosql_zeroPointer_atr_cls)
     return TheZeroPointerObj;
 }
 
-/** ooSQLite::autoExtension()  [class method]
- *
- *  Registers some or all of the extensions builtin to ooSQLite as automatic.
- *  This means that each time a database connection is opened, the builtin
- *  extesnsions will be automaticallyh registered for that connection.
- *
- *  These extensions come from the SQLite source tree. and are statically linked
- *  to the ooSQLite shared library.
- *
- *  @param  entryNames  [optional]  A single extension name or an array of
- *                      extension names to be made automatic.  If omitted all
- *                      builtin extensions are made automatic.
- *
- *  @notes
- */
-RexxMethod1(int, oosql_autoExtension, OPTIONAL_RexxObjectPtr, entryPoints)
-{
-    if ( argumentOmitted(1) )
-    {
-        return autoAllBuiltins(context);
-    }
-
-    if ( context->IsArray(entryPoints) )
-    {
-        RexxArrayObject entries = (RexxArrayObject)entryPoints;
-        size_t          count   = context->ArrayItems(entries);
-
-        for ( size_t i = 1; i <= count; i++ )
-        {
-            RexxObjectPtr rxName = context->ArrayAt(entries, i);
-            if ( rxName == NULLOBJECT )
-            {
-                sparseArrayException(context->threadContext, 1, i);
-                return SQLITE_MISUSE;
-            }
-
-            int rc = autoBuiltin(context, context->ObjectToStringValue(rxName));
-            if ( rc != SQLITE_OK )
-            {
-                return rc;
-            }
-        }
-    }
-    else
-    {
-        CSTRING name = context->ObjectToStringValue(entryPoints);
-        return autoBuiltin(context, name);
-    }
-
-    return SQLITE_OK;
-}
-
-
 /** ooSQLite::compileOptionGet()  [class method]
  *
  *  sqlite3_compileoption_get() uses 0 through N - 1  to get the Nth compile
@@ -3926,20 +3827,6 @@ RexxMethod1(int, oosql_releaseMemory_cls, int, nBytes)
 {
     return sqlite3_release_memory(nBytes);
 }
-
-/** ooSQLite::resetAutoExtension()  [class method]
- *
- *  Disables all automatic extensions previously registered using the
- *  autoExtension() method.
- *
- *  @notes
- */
-RexxMethod0(int, oosql_resetAutoExtension)
-{
-    sqlite3_reset_auto_extension();
-    return SQLITE_OK;
-}
-
 
 /** ooSQLite::softHeapLimit64()
  *
@@ -9779,6 +9666,59 @@ bool validPackageVersion(RexxMethodContext *c, pCooSQLPackage pcp)
 }
 
 /**
+ * Makes all the builtin extensions automatic.
+ *
+ * The source code for these extensions comes from SQLite.  They are compiled
+ * and statically linked into the ooSQLite shared library.  This is very similar
+ * to the registerAllBuiltins function.
+ *
+ * @param c
+ *
+ * @return int
+ */
+static int autoAllBuiltins(RexxMethodContext *c, pCooSQLExtensions pcext)
+{
+    int rc = SQLITE_OK;
+
+    for ( size_t i = 0; i < BUILTINS_COUNT; i++ )
+    {
+        rc = sqlite3_auto_extension((fnXInit)builtins[i]);
+
+        if ( rc != SQLITE_OK )
+        {
+            extensionsFormatLastErr(c, pcext, rc, BUILTIN_AUTO_ERR_FMT, builtinNames[i]);
+            return rc;
+        }
+    }
+    return rc;
+}
+
+/**
+ * Makes the specified extension automatic.
+ *
+ * @param c
+ * @param name
+ *
+ * @return int
+ */
+static int autoBuiltin(RexxMethodContext *c, CSTRING name, pCooSQLExtensions pcext)
+{
+    size_t index = builtinName2index(name);
+    if ( index == (size_t)-1 )
+    {
+        wrongArgKeywordException(c->threadContext, 1, BUILTIN_NAMES, name);
+        return SQLITE_MISUSE;
+    }
+
+    int rc = sqlite3_auto_extension((fnXInit)builtins[index]);
+    if ( rc != SQLITE_OK )
+    {
+        extensionsFormatLastErr(c, pcext, rc, BUILTIN_AUTO_ERR_FMT, name);
+    }
+    return rc;
+}
+
+/**
  * Adds an .ooSQLCollation CSelf to the list of automatically registered
  * collations.
  *
@@ -10027,7 +9967,6 @@ RexxMethod1(RexxObjectPtr, oosqlext_init_cls, OSELF, self)
     return NULLOBJECT;
 }
 
-
 /** ooSQLExtensions::lastErrCode  [attribute get]
  */
 RexxMethod1(RexxObjectPtr, oosqlext_getLastErrCode_atr, CSELF, pCSelf)
@@ -10043,6 +9982,70 @@ RexxMethod1(RexxStringObject, oosqlext_getLastErrMsg_atr, CSELF, pCSelf)
     pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
     return pcext->lastErrMsg;
 }
+
+/** ooSQLExtensions::autoExtension()  [class method]
+ *
+ *  Registers some or all of the extensions builtin to ooSQLite as automatic.
+ *  This means that each time a database connection is opened, the builtin
+ *  extesnsions will be automaticallyh registered for that connection.
+ *
+ *  These extensions come from the SQLite source tree. and are statically linked
+ *  to the ooSQLite shared library.
+ *
+ *  @param  entryNames  [optional]  The keyword ALL, a single extension name, or
+ *                      an array of extension names to be made automatic. If ALL
+ *                      or omitted all builtin extensions are made automatic.
+ *
+ *  @return An ooSQLite result code.
+ *
+ *  @notes
+ */
+RexxMethod2(int, oosqlext_autoExtension, OPTIONAL_RexxObjectPtr, entryPoints, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+
+    if ( argumentOmitted(1) )
+    {
+        return autoAllBuiltins(context, pcext);
+    }
+
+    if ( context->IsArray(entryPoints) )
+    {
+        RexxArrayObject entries = (RexxArrayObject)entryPoints;
+        size_t          count   = context->ArrayItems(entries);
+
+        for ( size_t i = 1; i <= count; i++ )
+        {
+            RexxObjectPtr rxName = context->ArrayAt(entries, i);
+            if ( rxName == NULLOBJECT )
+            {
+                sparseArrayException(context->threadContext, 1, i);
+                return SQLITE_MISUSE;
+            }
+
+            int rc = autoBuiltin(context, context->ObjectToStringValue(rxName), pcext);
+            if ( rc != SQLITE_OK )
+            {
+                return rc;
+            }
+        }
+    }
+    else
+    {
+        CSTRING name = context->ObjectToStringValue(entryPoints);
+
+        if ( strcasecmp(name, "ALL") == 0 )
+        {
+            return autoAllBuiltins(context, pcext);
+        }
+        return autoBuiltin(context, name, pcext);
+    }
+
+    return SQLITE_OK;
+}
+
 
 /** ooSQLExtensions::getLibrary()  [class method]
  *
@@ -10593,6 +10596,20 @@ RexxMethod3(RexxObjectPtr, oosqlext_makeAutoPackage_cls, RexxObjectPtr, packageN
     }
 
     return TheTrueObj;
+}
+
+
+/** ooSQLite::resetAutoExtension()  [class method]
+ *
+ *  Disables all automatic extensions previously registered using the
+ *  autoExtension() method.
+ *
+ *  @notes
+ */
+RexxMethod0(int, oosqlext_resetAutoExtension)
+{
+    sqlite3_reset_auto_extension();
+    return SQLITE_OK;
 }
 
 
@@ -11385,6 +11402,51 @@ RexxRoutine1(RexxObjectPtr, ooSQLiteEnquote_rtn, OPTIONAL_RexxObjectPtr, values)
 }
 
 
+/** ooSQLiteRegisterBuiltin()
+ *
+ *  Registers on of the ooSQLite builtin extensions with the speciifed database
+ *  connection.
+ *
+ *  @param type  Specifies the version type: Full, OneLine, or Compact.  Only
+ *               the first letter is checked, F O C, and case is not
+ *               significant.  The default is OneLine
+ *
+ *  @return  A string, either the full version string, or the one line version
+ *           string.
+ */
+RexxRoutine2(int, ooSQLiteRegisterBuiltin_rtn, POINTER, _db, CSTRING, name)
+{
+    sqlite3 *db = routineDB(context, _db, 1);
+    if ( db == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    char *errMsg = NULL;
+    int   rc     = SQLITE_OK;
+
+    size_t index = builtinName2index(name);
+    if ( index == (size_t)-1 )
+    {
+        wrongArgKeywordException(context->threadContext, 2, BUILTIN_NAMES, name);
+        return SQLITE_MISUSE;
+    }
+
+    fnXExtensionInit fn = builtins[index];
+    rc = fn(db, &errMsg, NULL);
+
+    if ( rc != SQLITE_OK )
+    {
+        // TODO figure out a way to return the error messag?
+        if ( errMsg != NULL )
+        {
+            sqlite3_free(errMsg);
+        }
+    }
+    return rc;
+}
+
+
 /** ooSQLiteVersion()
  *
  *  Returns the ooSQLite version string
@@ -11434,6 +11496,32 @@ RexxRoutine1(RexxObjectPtr, ooSQLiteVersion_rtn, OPTIONAL_CSTRING, type)
     }
 
     return genGetVersion(context->threadContext, FALSE, FALSE);
+}
+
+
+/** oosqlAutoExtension()
+ *
+ *  Registers one of the extensions builtin to ooSQLite as automatic. This means
+ *  that each time a database connection is opened, the builtin extesnsions will
+ *  be automaticallyh registered for that connection.
+ *
+ *  These extensions come from the SQLite source tree. and are statically linked
+ *  to the ooSQLite shared library.
+ *
+ *  @param  extensionName  [required]  Then name of the extension.
+ *
+ *  @return An ooSQLite result code.
+ */
+RexxRoutine1(int, oosqlAutoExtension_rtn, CSTRING, extensionName)
+{
+    size_t index = builtinName2index(extensionName);
+    if ( index == (size_t)-1 )
+    {
+        wrongArgKeywordException(context->threadContext, 1, BUILTIN_NAMES, extensionName);
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_auto_extension((fnXInit)builtins[index]);
 }
 
 
@@ -13332,6 +13420,19 @@ RexxRoutine1(int, oosqlReset_rtn, POINTER, _stmt)
     return sqlite3_reset(stmt);
 }
 
+/** oosqlResetAutoExtension()
+ *
+ *  Disables all automatic extensions previously registered using the
+ *  oosqlAutoExtension() routined.
+ *
+ *  @notes
+ */
+RexxRoutine0(int, oosqlResetAutoExtension_rtn)
+{
+    sqlite3_reset_auto_extension();
+    return SQLITE_OK;
+}
+
 /** oosqlRollbackHook()
  *
  *  Registers a callback routine to be called whenever a transaction is rolled
@@ -13794,8 +13895,10 @@ RexxMethod1(int, db_cb_releaseBuffer, RexxObjectPtr, buffer)
 
 REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteEnquote_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteMerge_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteRegisterBuiltin_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteVersion_rtn);
 
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlAutoExtension_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupFinish_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupInit_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupPageCount_rtn);
@@ -13871,6 +13974,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlProgressHandler_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlRekey_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlReleaseMemory_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlReset_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResetAutoExtension_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlRollbackHook_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlSetAuthorizer_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlSoftHeapLimit64_rtn);
@@ -13893,8 +13997,10 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(ooSQLiteEncryptionAvailable_rtn, ooSQLiteEncryptionAvailable_rtn),
     REXX_TYPED_ROUTINE(ooSQLiteEnquote_rtn,             ooSQLiteEnquote_rtn),
     REXX_TYPED_ROUTINE(ooSQLiteMerge_rtn,               ooSQLiteMerge_rtn),
+    REXX_TYPED_ROUTINE(ooSQLiteRegisterBuiltin_rtn,     ooSQLiteRegisterBuiltin_rtn),
     REXX_TYPED_ROUTINE(ooSQLiteVersion_rtn,             ooSQLiteVersion_rtn),
 
+    REXX_TYPED_ROUTINE(oosqlAutoExtension_rtn,        oosqlAutoExtension_rtn),
     REXX_TYPED_ROUTINE(oosqlBackupFinish_rtn,         oosqlBackupFinish_rtn),
     REXX_TYPED_ROUTINE(oosqlBackupInit_rtn,           oosqlBackupInit_rtn),
     REXX_TYPED_ROUTINE(oosqlBackupPageCount_rtn,      oosqlBackupRemaining_rtn),
@@ -13970,6 +14076,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlRekey_rtn,                oosqlRekey_rtn),
     REXX_TYPED_ROUTINE(oosqlReleaseMemory_rtn,        oosqlReleaseMemory_rtn),
     REXX_TYPED_ROUTINE(oosqlReset_rtn,                oosqlReset_rtn),
+    REXX_TYPED_ROUTINE(oosqlResetAutoExtension_rtn,   oosqlResetAutoExtension_rtn),
     REXX_TYPED_ROUTINE(oosqlRollbackHook_rtn,         oosqlRollbackHook_rtn),
     REXX_TYPED_ROUTINE(oosqlSetAuthorizer_rtn,        oosqlSetAuthorizer_rtn),
     REXX_TYPED_ROUTINE(oosqlSoftHeapLimit64_rtn,      oosqlSoftHeapLimit64_rtn),
@@ -14003,7 +14110,6 @@ REXX_METHOD_PROTOTYPE(oosql_getNull_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_setNull_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_getRecordFormat_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_setRecordFormat_atr_cls);
-REXX_METHOD_PROTOTYPE(oosql_autoExtension);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionGet_cls);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionUsed_cls);
 REXX_METHOD_PROTOTYPE(oosql_complete_cls);
@@ -14014,7 +14120,6 @@ REXX_METHOD_PROTOTYPE(oosql_libVersion_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersionNumber_cls);
 REXX_METHOD_PROTOTYPE(oosql_memoryUsed_cls);
 REXX_METHOD_PROTOTYPE(oosql_releaseMemory_cls);
-REXX_METHOD_PROTOTYPE(oosql_resetAutoExtension);
 REXX_METHOD_PROTOTYPE(oosql_softHeapLimit64_cls);
 REXX_METHOD_PROTOTYPE(oosql_sourceID_cls);
 REXX_METHOD_PROTOTYPE(oosql_sqlite3Version_cls);
@@ -14196,6 +14301,7 @@ REXX_METHOD_PROTOTYPE(oosqlext_init_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlext_getLastErrMsg_atr);
 
+REXX_METHOD_PROTOTYPE(oosqlext_autoExtension);
 REXX_METHOD_PROTOTYPE(oosqlext_getLibrary_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_getPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadLibrary_cls);
@@ -14203,6 +14309,7 @@ REXX_METHOD_PROTOTYPE(oosqlext_loadPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_makeAutoCollation_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_makeAutoFunction_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_makeAutoPackage_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_resetAutoExtension);
 
 // .ooSQLPackage
 REXX_METHOD_PROTOTYPE(oosqlpack_init);
@@ -14247,7 +14354,6 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosql_getRecordFormat_atr_cls,        oosql_getRecordFormat_atr_cls),
     REXX_METHOD(oosql_setRecordFormat_atr_cls,        oosql_setRecordFormat_atr_cls),
     REXX_METHOD(oosql_zeroPointer_atr_cls,            oosql_zeroPointer_atr_cls),
-    REXX_METHOD(oosql_autoExtension,                  oosql_autoExtension),
     REXX_METHOD(oosql_compileOptionGet_cls,           oosql_compileOptionGet_cls),
     REXX_METHOD(oosql_compileOptionUsed_cls,          oosql_compileOptionUsed_cls),
     REXX_METHOD(oosql_complete_cls,                   oosql_complete_cls),
@@ -14259,7 +14365,6 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosql_memoryUsed_cls,                 oosql_memoryUsed_cls),
     REXX_METHOD(oosql_memoryHighWater_cls,            oosql_memoryHighWater_cls),
     REXX_METHOD(oosql_releaseMemory_cls,              oosql_releaseMemory_cls),
-    REXX_METHOD(oosql_resetAutoExtension,             oosql_resetAutoExtension),
     REXX_METHOD(oosql_softHeapLimit64_cls,            oosql_softHeapLimit64_cls),
     REXX_METHOD(oosql_sourceID_cls,                   oosql_sourceID_cls),
     REXX_METHOD(oosql_sqlite3Version_cls,             oosql_sqlite3Version_cls),
@@ -14442,6 +14547,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlext_getLastErrCode_atr,          oosqlext_getLastErrCode_atr),
     REXX_METHOD(oosqlext_getLastErrMsg_atr,           oosqlext_getLastErrMsg_atr),
 
+    REXX_METHOD(oosqlext_autoExtension,               oosqlext_autoExtension),
     REXX_METHOD(oosqlext_getLibrary_cls,              oosqlext_getLibrary_cls),
     REXX_METHOD(oosqlext_getPackage_cls,              oosqlext_getPackage_cls),
     REXX_METHOD(oosqlext_loadLibrary_cls,             oosqlext_loadLibrary_cls),
@@ -14449,6 +14555,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlext_makeAutoCollation_cls,       oosqlext_makeAutoCollation_cls),
     REXX_METHOD(oosqlext_makeAutoFunction_cls,        oosqlext_makeAutoFunction_cls),
     REXX_METHOD(oosqlext_makeAutoPackage_cls,         oosqlext_makeAutoPackage_cls),
+    REXX_METHOD(oosqlext_resetAutoExtension,          oosqlext_resetAutoExtension),
 
     // .ooSQLPackage
     REXX_METHOD(oosqlpack_init,                       oosqlpack_init),

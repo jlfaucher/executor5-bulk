@@ -835,7 +835,7 @@ RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRIN
 {
 
     char buffer[512];
-    snprintf(buffer, sizeof(buffer), "Method argument %d, must contain one or more of %s; found \"%s\"",
+    snprintf(buffer, sizeof(buffer), "Argument %d, must contain one or more of %s; found \"%s\"",
               pos, list, actual);
     userDefinedMsgException(c, buffer);
     return NULLOBJECT;
@@ -862,10 +862,10 @@ RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRIN
  *
  * @return RexxObjectPtr
  */
-RexxObjectPtr wrongArgKeywordException(RexxMethodContext *c, size_t pos, CSTRING list, CSTRING actual)
+RexxObjectPtr wrongArgKeywordException(RexxThreadContext *c, size_t pos, CSTRING list, CSTRING actual)
 {
     char buffer[512];
-    snprintf(buffer, sizeof(buffer), "Method argument %d, keyword must be exactly one of %s; found \"%s\"", pos, list, actual);
+    snprintf(buffer, sizeof(buffer), "Argument %d, keyword must be exactly one of %s; found \"%s\"", pos, list, actual);
     userDefinedMsgException(c, buffer);
     return NULLOBJECT;
 }

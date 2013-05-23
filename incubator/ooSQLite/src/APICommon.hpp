@@ -99,7 +99,7 @@ extern RexxObjectPtr wrongArgValueException(RexxThreadContext *c, size_t pos, co
 extern RexxObjectPtr wrongArgValueException(RexxThreadContext *c, size_t pos, const char *list, const char *actual);
 extern RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRING list, CSTRING actual);
 extern RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual);
-extern RexxObjectPtr wrongArgKeywordException(RexxMethodContext *c, size_t pos, CSTRING list, CSTRING actual);
+extern RexxObjectPtr wrongArgKeywordException(RexxThreadContext *c, size_t pos, CSTRING list, CSTRING actual);
 extern RexxObjectPtr invalidConstantException(RexxMethodContext *c, size_t argNumber, char *msg, const char *sub, RexxObjectPtr actual);
 extern RexxObjectPtr invalidConstantException(RexxMethodContext *c, size_t argNumber, char *msg, const char *sub, const char *actual);
 extern RexxObjectPtr wrongRangeException(RexxThreadContext *c, size_t pos, int min, int max, RexxObjectPtr actual);
@@ -284,11 +284,10 @@ inline void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t
 /**
  * Similar to 93.915 and 93.914  (actually a combination of the two.)
  *
- * Method argument <pos>, keyword must be exactly one of <list>; found
+ * Argument <pos>, keyword must be exactly one of <list>; found
  * "<actual>"
  *
- * Method argument 2 must be exactly one of left, right, top, or bottom found
- * "Side"
+ * Argument 2 must be exactly one of left, right, top, or bottom found "Side"
  *
  * @param c
  * @param pos
@@ -297,9 +296,13 @@ inline void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t
  *
  * @return RexxObjectPtr
  */
-inline RexxObjectPtr wrongArgKeywordException(RexxMethodContext *c, size_t pos, CSTRING list, RexxObjectPtr actual)
+inline RexxObjectPtr wrongArgKeywordException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual)
 {
     return wrongArgKeywordException(c, pos, list, c->ObjectToStringValue(actual));
+}
+inline RexxObjectPtr wrongArgKeywordException(RexxMethodContext *c, size_t pos, CSTRING list, RexxObjectPtr actual)
+{
+    return wrongArgKeywordException(c->threadContext, pos, list, c->ObjectToStringValue(actual));
 }
 
 /**
