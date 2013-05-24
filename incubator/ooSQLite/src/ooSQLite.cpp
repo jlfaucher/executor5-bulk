@@ -63,7 +63,8 @@ RexxObjectPtr       TheZeroObj        = NULLOBJECT;
 RexxObjectPtr       TheOneObj         = NULLOBJECT;
 RexxObjectPtr       TheTwoObj         = NULLOBJECT;
 RexxObjectPtr       TheNegativeOneObj = NULLOBJECT;
-RexxObjectPtr       TheZeroPointerObj    = NULLOBJECT;
+RexxObjectPtr       TheZeroPointerObj = NULLOBJECT;
+RexxDirectoryObject TheDotLocalObj    = NULLOBJECT;
 
 // Initialized in the class init methods.
 RexxClassObject     TheOOSQLiteClass            = NULLOBJECT;
@@ -112,6 +113,19 @@ void RexxEntry ooSQLiteLoad(RexxThreadContext *c)
 
     TheZeroPointerObj = c->NewPointer(NULL);
     c->RequestGlobalReference(TheZeroPointerObj);
+
+    RexxDirectoryObject local = c->GetLocalEnvironment();
+    if ( local != NULLOBJECT )
+    {
+        TheDotLocalObj = local;
+
+        c->DirectoryPut(local, c->NullString(), "ROUTINEERRORMESSAGE");
+    }
+    else
+    {
+        severeErrorException(c, NO_LOCAL_ENVIRONMENT_MSG);
+        return;
+    }
 
 #ifndef _WIN32
     crit_sec = sqlite3_mutex_alloc(SQLITE_MUTEX_FAST);
@@ -166,6 +180,17 @@ static void sqliteErrorException(RexxThreadContext *c, sqlite3 *db, const char *
     snprintf(buffer, sizeof(buffer), "SQLite API error:  API(%s) rc(%d) msg(%s)",
              function, sqlite3_errcode(db), sqlite3_errmsg(db) ? sqlite3_errmsg(db) : "none");
     systemServiceException(c, buffer);
+}
+
+// Used for error messages during the classic Rexx routines.
+inline void setRoutineErrMsg(RexxThreadContext *c, CSTRING msg)
+{
+    c->DirectoryPut(TheDotLocalObj, c->String(msg), "ROUTINEERRORMESSAGE");
+}
+
+void resetRoutineErrMsg(RexxThreadContext *c)
+{
+    c->DirectoryPut(TheDotLocalObj, c->NullString(), "ROUTINEERRORMESSAGE");
 }
 
 /**
@@ -7206,7 +7231,7 @@ RexxMethod2(int, oosqlconn_test, POINTER, functPointer, CSELF, pCSelf)
  */
 RexxMethod1(RexxObjectPtr, oosqlval_blob, POINTER, sqlValue)
 {
-    // TODO not sure what is needed here?  Should be copy the blob to a
+    // TODO not sure what is needed here?  Should we copy the blob to a
     // RexxBuffer? Or what?
 
     const void *b = sqlite3_value_blob((sqlite3_value *)sqlValue);
@@ -11422,6 +11447,8 @@ RexxRoutine2(int, ooSQLiteRegisterBuiltin_rtn, POINTER, _db, CSTRING, name)
         return SQLITE_MISUSE;
     }
 
+    resetRoutineErrMsg(context->threadContext);
+
     char *errMsg = NULL;
     int   rc     = SQLITE_OK;
 
@@ -11435,13 +11462,10 @@ RexxRoutine2(int, ooSQLiteRegisterBuiltin_rtn, POINTER, _db, CSTRING, name)
     fnXExtensionInit fn = builtins[index];
     rc = fn(db, &errMsg, NULL);
 
-    if ( rc != SQLITE_OK )
+    if ( rc != SQLITE_OK && errMsg != NULL )
     {
-        // TODO figure out a way to return the error messag?
-        if ( errMsg != NULL )
-        {
-            sqlite3_free(errMsg);
-        }
+        setRoutineErrMsg(context->threadContext, errMsg);
+        sqlite3_free(errMsg);
     }
     return rc;
 }
@@ -12914,6 +12938,35 @@ RexxRoutine3(int, oosqlLimit_rtn, POINTER, _db, int, id, int, value)
     return sqlite3_limit(db, id, value);
 }
 
+/** oosqlLoadExtension()
+ *
+ *
+ *  @notes  If an error happens loading the extension, the lastErrMsg and
+ *          lastErrCode attributes are set.
+ */
+RexxRoutine3(int, oosqlLoadExtension_rtn, POINTER, _db, CSTRING, library, OPTIONAL_CSTRING, entryPoint)
+{
+    sqlite3 *db = routineDB(context, _db, 1);
+    if ( db == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    resetRoutineErrMsg(context->threadContext);
+
+    char *errMsg = NULL;
+
+    int rc = sqlite3_load_extension(db, library, entryPoint, &errMsg);
+    if ( rc != SQLITE_OK && errMsg != NULL )
+    {
+        setRoutineErrMsg(context->threadContext, errMsg);
+        sqlite3_free(errMsg);
+    }
+
+    return rc;
+}
+
+
 /** oosqlMemoryHighWater()
  *
  *
@@ -13959,6 +14012,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlKey_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLastInsertRowID_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLibVersion_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLimit_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLoadExtension_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlMemoryHighWater_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlMemoryUsed_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlMutexAlloc_rtn);
@@ -14061,6 +14115,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlLastInsertRowID_rtn,      oosqlLastInsertRowID_rtn),
     REXX_TYPED_ROUTINE(oosqlLibVersion_rtn,           oosqlLibVersion_rtn),
     REXX_TYPED_ROUTINE(oosqlLimit_rtn,                oosqlLimit_rtn),
+    REXX_TYPED_ROUTINE(oosqlLoadExtension_rtn,        oosqlLoadExtension_rtn),
     REXX_TYPED_ROUTINE(oosqlMemoryHighWater_rtn,      oosqlMemoryHighWater_rtn),
     REXX_TYPED_ROUTINE(oosqlMemoryUsed_rtn,           oosqlMemoryUsed_rtn),
     REXX_TYPED_ROUTINE(oosqlMutexAlloc_rtn,           oosqlMutexAlloc_rtn),

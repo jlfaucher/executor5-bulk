@@ -89,12 +89,15 @@
 #define VALID_VERSION_TYPES "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
 #define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, OO_STEM_OF_STEMS, or OO_CLASSIC_STEM"
 
+#define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
+
 // Buffer size must be plus one -> 4096
 #define MAX_ENQUOTE_STRING  4095
 
 #define MAX_AUTO_PACKAGES         10
 #define MAX_AUTO_FUNCTIONS        10
 #define MAX_AUTO_COLLATIONS       10
+
 
 // Function prototypes for the builtin extensions
 BEGIN_EXTERN_C()

@@ -436,6 +436,7 @@
 ::routine oosqlLibVersion public external "LIBRARY oosqlite oosqlLibVersion_rtn"
 ::routine oosqlLibVersionNumber public external "LIBRARY oosqlite oosqlLibVersion_rtn"
 ::routine oosqlLimit public external "LIBRARY oosqlite oosqlLimit_rtn"
+::routine oosqlLoadExtension public external "LIBRARY oosqlite oosqlLoadExtension_rtn"
 ::routine oosqlMemoryHighWater public external "LIBRARY oosqlite oosqlMemoryHighWater_rtn"
 ::routine oosqlMemoryUsed public external "LIBRARY oosqlite oosqlMemoryUsed_rtn"
 ::routine oosqlMutexAlloc public external "LIBRARY oosqlite oosqlMutexAlloc_rtn"
