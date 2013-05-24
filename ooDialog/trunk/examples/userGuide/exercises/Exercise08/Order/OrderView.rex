@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The OrderView class				  v03-00 20May13
+   Exercise 08: The OrderView class				  v03-00 24May13
 
    OrderFormView.rex
 
@@ -55,7 +55,7 @@
                      Commented-out 'say' instructions.
             01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                      folder, so change to ::Requires needed. 
-     v03-00 20May13: Update to use View mixin.
+     v03-00 24May13: Update to use View & Component mixins.
      
 ------------------------------------------------------------------------------*/
 
@@ -79,9 +79,10 @@
     v02-00 25Aug12: Ex07 - changed to use the MVF.
            08Jan13: Extraneous comments removed; some 'say' stmts commented out.
            11Jan13: Commented-out 'say' instructions.
+    v03-00 20May13: Update to use View & Component mixins.           
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderView SUBCLASS RcDialog PUBLIC INHERIT View Component		-- Ex08
+::CLASS OrderView SUBCLASS RcDialog PUBLIC INHERIT View Component	-- Ex08
 
   ::METHOD newInstance CLASS PUBLIC
     use strict arg idModel, rootDlg					-- Ex07

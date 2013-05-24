@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The CustomerView component             		  v03-00 12May13
+   Exercise 08: The CustomerView component             		  v03-00 24May13
 
    Contains: 	   class "CustomerView";  routine "startCustomerView".
    Pre-requisites: RcView.rex, CustomerView.rc, CustomerView.h.
@@ -53,7 +53,7 @@
                    Changes to CustomerView (not at v03-00).
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
-   v03-00 12May13: Now inherits directly from RcDialog plus the View mixin
+   v03-00 24May13: Inherits directly from RcDialog plus the View & Component mixins
    
 ------------------------------------------------------------------------------*/
 
@@ -67,7 +67,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  CustomerView							  v03-00 01Apr13
+  CustomerView							  v03-00 24May13
   -------------
   The "view" (or "gui") part of the Customer component - part of the sample
   Order Management application.
@@ -97,7 +97,7 @@
                       format of Cust Address (now provided as string via MVF
                       from Customer File).
                     Deleted a number of "say" instructions.
-           12May13: Changed inheritance to use the View mixin.
+           24May13: Changed inheritance to use the View & Component mixins.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 

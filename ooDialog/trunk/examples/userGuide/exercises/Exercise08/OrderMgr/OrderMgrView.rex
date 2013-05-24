@@ -151,7 +151,7 @@ call "OrderMgr\RequiresList.rex"
     self~connectButtonEvent("IDC_ORDMGR_RESET","CLICKED",resetIcons)
     self~setTitle(.HRSomv~WindowTitle)		-- set dialog title.
 
-    self~saySomething -- Test for Component mixin - delete any time.
+    --self~saySomething -- Test for Component mixin - delete any time.
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD defineSizing

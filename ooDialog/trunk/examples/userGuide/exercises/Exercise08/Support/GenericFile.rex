@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise07: GenericFile					  v01-00 11Jan13
+   Exercise08: GenericFile					  v02-00 24May13
 
   Contains:	class "GenericFile".
 
@@ -51,6 +51,8 @@
     25Aug12: Moved file open from init method to a separate method.
     16Dec12: Trivial correction of a couple of comments.
     11Jan13: Commented-out 'say' instructions.
+  v02-00
+    24May13: Added inherit from the 'Component' mixin.
 
   Constraints: Format of each record must be:
                recordId | field2 | field3 | .... | fieldn
@@ -58,6 +60,7 @@
   }
 ------------------------------------------------------------------------------*/
 
+::REQUIRES "Support\Component.rex"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
@@ -65,7 +68,7 @@
   -----------
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS GenericFile PUBLIC
+::CLASS GenericFile PUBLIC INHERIT Component
 
   ::ATTRIBUTE fileHeaders     GET PUBLIC	-- a 1D array of column labels/headers
   ::ATTRIBUTE fileHeaders     SET PRIVATE

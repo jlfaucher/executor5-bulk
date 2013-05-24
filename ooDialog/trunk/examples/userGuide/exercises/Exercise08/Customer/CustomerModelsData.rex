@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: Customer Models and Data Classes	  	  v02-00 01Apr13
+   Exercise 08: Customer Models and Data Classes	  	  v02-00 24May13
 
    Contains: 	   classes "CustomerModel" "CustomerListModel" and "CustomerData".
 
@@ -54,6 +54,7 @@
                    in self~myData.
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
+          24May13: Updated comments only to say Ex08. 
                    
 ------------------------------------------------------------------------------*/
 

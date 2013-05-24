@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The Order ListView 				  v03-00 20May13
+   Exercise 08: The Order ListView 				  v03-00 24May13
 
    Contains: class "OrderListView", "HRSolv"
 
@@ -53,7 +53,7 @@
           11Jan13: Commented-out 'say' instructions.
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
-   v03-00 20May13: Update to use View mixin.
+   v03-00 24May13: Exercice08 Update to use View & Component mixin.
 
    Outstanding Problems: None reported.
 
@@ -75,6 +75,8 @@
   The view of a list of products.
   Changes:
     v01-00 07Jun12: First version
+    v02-00 25Aug12: Updated for Ex07 using the MVF.
+    v03-00 24May13: Update for Ex08 to use View & Component mixin.    
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 

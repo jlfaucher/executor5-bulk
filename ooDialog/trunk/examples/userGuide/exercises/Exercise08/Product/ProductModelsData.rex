@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07:          					  v02-00 01Apr13
+   Exercise 08:          					  v02-00 24May13
 
    The ProductModel, ProductListModel, and ProductData Classes
 
@@ -55,6 +55,7 @@
    v02-00 13Jan12: Ex07: Some 'say' instructions removed or commented out.
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
+          24May13: Minor changes to comments for Ex08. 
 
 ------------------------------------------------------------------------------*/
 

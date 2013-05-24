@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The Customer ListView				  v03-00 20May13
+   Exercise 08: The Customer ListView				  v03-00 24May13
 
    Contains: classes "CustomerListView" and "HRSclv".
 
@@ -49,7 +49,7 @@
    v01-00 06Jun12: First Version.
    v02-00 08Jan13: Removed stand-alone startup code (not needed after Ex06)
                    Commented out say's.
-   v03-00 20May13: Updated to use View and Component mixins.
+   v03-00 24May13: Updated to use View and Component mixins.
 
    Outstanding Problems: None reported.
 *******************************************************************************/
@@ -60,12 +60,12 @@
 ::REQUIRES "ooDialog.cls"
 ::REQUIRES "customer\customerview.rex"
 ::REQUIRES "Support\View.rex"
-
+::REQUIRES "Support\Component.rex"
 
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  CustomerListView						  v03-00 20May13
+  CustomerListView						  v03-00 24May13
   ----------------
   The view of a list of Customers.
   Changes:
@@ -79,12 +79,14 @@
     v01-06 29Mar12: Very minor mods - all just minor clean-ups. All comments removed
     v02-00 17Aug12: Exercise07 - modified to use the MVF.
            08Jan13: Removed stand-alone startup (not now needed).
+    v03-00 24May13: Inherits directly from RcDialog plus the View & Component mixins
+ 
 
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 --::CLASS CustomerListView SUBCLASS RcView PUBLIC
-::CLASS CustomerListView SUBCLASS RcDialog PUBLIC INHERIT View
+::CLASS CustomerListView SUBCLASS RcDialog PUBLIC INHERIT View Component
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

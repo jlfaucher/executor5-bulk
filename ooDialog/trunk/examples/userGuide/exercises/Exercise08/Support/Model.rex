@@ -35,8 +35,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-
-   Support - Model						 v01-00  27Feb13
+   Exercise08
+   
+   Support - Model						 v02-00  24May13
    ----------------
    A superclass for the Model-View framework.
 
@@ -44,15 +45,15 @@
           11Jan13: Commented-out "say"s.
           31Jan13: Store model's data in 'myData'.
           27Feb13: Commented-out some "say" instructions.
+   v02-00 24May13: Added inherit from the 'Component' mixin.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
---::REQUIRES "ooDialog.cls"
---::REQUIRES "ObjectMgr.rex"
+::REQUIRES "Support\Component.rex"
 
 /*============================================================================*/
 
-::CLASS 'Model' PUBLIC
+::CLASS 'Model' PUBLIC INHERIT Component
 
   ::ATTRIBUTE wantList     CLASS PUBLIC		-- for List subclasses
   ::ATTRIBUTE myData

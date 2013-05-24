@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The OrderFormView class				  v03-01 20May13
+   Exercise 08: The OrderFormView class				  v03-01 24May13
    OrderFormView.rex
 
    Contains: class "OrderFormView", class "HRSofv".
@@ -51,7 +51,8 @@
                      folder, so change to ::Requires needed. 
      v03-00 27Apr13: Add ability to populate Order with Customer Details and
                      Order Lines.
-            20May13: Now inherits directly from RcDialog plus the View mixin
+            24May13: Now inherits directly from RcDialog plus the View & 
+                     Component mixins.
             
 ------------------------------------------------------------------------------*/
 
@@ -75,7 +76,7 @@
                   Corrected the Order Date control and limited order date to
                     one year ahead.
                   Commented-out say's.
-         20May13: Now inherits directly from RcDialog plus the View mixin
+         20May13: Now inherits directly from RcDialog plus the View & Component mixins
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 

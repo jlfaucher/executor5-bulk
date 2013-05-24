@@ -46,7 +46,8 @@
            11Jan13: Commented-out 'say' instructions.
            01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                     folder, so change to ::Requires needed. 
-    v03-00 20May13: Now inherits directly from RcDialog plus the View mixin.
+    v03-00 20May13: Now inherits directly from RcDialog plus the View &
+                    Component mixins.
     
   Contains: classes "ProductListView, HRSplv (for human-readable strings)
 
@@ -68,7 +69,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ProductListView						  v02-00 21Aug12
+  ProductListView						  v03-00 24May13
   -------------
   The view of a list of products.
   Changes:
@@ -77,6 +78,9 @@
     		    Comment "Ex07" shows where changes from Ex06 have been made.
            09Jan13: 'Say' instructions commented out or removed.
                     Standalone operation removed (not now needed).
+    v03-00 24May13: ProducView now inherits directly from ResDialog plus the
+                    View & Compoment mixins.                   
+                   
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS ProductListView SUBCLASS RcDialog PUBLIC INHERIT View Component

@@ -72,7 +72,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD saySomething
     say "Component-saySomething: Hi there!."
-    return
+    return .true
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
