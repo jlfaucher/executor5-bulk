@@ -147,8 +147,9 @@
     taxRate = 0.05		-- 5% tax on discounted order total
     
     -- Tell EventMgr that we want to know when app closes:
-    eventMgr = .local~my.EventMgr
-    r = eventMgr~registerInterest("appClosing",self)
+    --eventMgr = .local~my.EventMgr
+    --r = eventMgr~registerInterest("appClosing",self)
+    self~registerInterest("appClosing",self)
     --say "OrderFormView-activate-03: eventMgr response =" r
     
     self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_ORDFORM_DLGICON")
@@ -301,7 +302,7 @@
   ::METHOD cancel
     expose tabContent controlDialogsClosed
     --say "OrderFormView-cancel-01."
-    self~deRegisterInterest 		-- de-register interest in any events
+    self~deRegisterInterest("appClosing",self) 		-- de-register interest in any events
     if controlDialogsClosed = .true then do
       say "OrderFormView-cancel-02: Control Dilaogs closed."
       return self~cancel~super
@@ -369,11 +370,11 @@
     deRegisterInterest - tell Event Manager that any events registered are no
                          longer of interest.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD deRegisterInterest PRIVATE
+/*  ::METHOD deRegisterInterest PRIVATE
     expose eventMgr
     --say "OrderFormView-deRegisterInterest-01."
     eventMgr~deRegisterInterest("appClosing",self)
-
+*/
     
   /*----------------------------------------------------------------------------
     leaving - invoked by ooDialog when a dialog closes - but not when it's 

@@ -70,20 +70,18 @@
 -- wrong: ::CLASS ViewMixin SUBCLASS Component PUBLIC 
 
   ::ATTRIBUTE viewMgr
+  ::ATTRIBUTE objectMgr
 
   /*----------------------------------------------------------------------------
     initView - initialises the mixin instance - invoked from ???
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     --::method init  -- Results in hang!
   ::METHOD initView
-    expose objectMgr
-    say "View-initView-01."
-    --forward class (super) continue		-- BAD - REMOVE ASAP
-    objectMgr = .local~my.ObjectMgr	-- Needed to clear up when dialog closed.
+    --say "View-initView-01."
+    self~objectMgr = .local~my.ObjectMgr	-- Needed to clear up when dialog closed.
     self~viewMgr = .local~myViewMgr
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
 
   /*----------------------------------------------------------------------------
     activate - must be invoked by subclass.
@@ -91,13 +89,13 @@
   ::METHOD activate UNGUARDED
     expose viewClass viewInstance		-- needed for tidy-up on close.
     use arg modelId
-    say "View-activate-01: self =" self
+    --say "View-activate-01: self =" self
     -- Get View Instance name and View Class for tidy-up when dialog is closed.
     viewInstance = self~identityHash
     dlgName = self~objectName
     parse var dlgName . viewClass
     modelData = modelId~query
-    say "View-activate-02."
+    --say "View-activate-02."
     return modelData
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -112,8 +110,9 @@
     leaving - invoked by ooDialog when a dialog closes.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD leaving UNGUARDED
-    expose objectMgr viewClass viewInstance
-    objectMgr~removeView(viewClass, viewInstance)
+    expose viewClass viewInstance
+    --say "View-leaving-01. objectMgr =" objectMgr
+    self~objectMgr~removeView(viewClass, viewInstance)
     -- Note - we do not remove the Model. Should we? If so, not from here!
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -160,9 +159,9 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */  
 
     /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD triggerEvent
-    use strict arg event
-    idEventMgr = .local~my.EventMgr
+  --::METHOD triggerEvent
+  --  use strict arg event
+  --  idEventMgr = .local~my.EventMgr
     
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD viewDoIt

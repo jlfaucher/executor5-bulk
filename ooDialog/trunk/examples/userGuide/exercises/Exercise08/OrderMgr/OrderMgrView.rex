@@ -351,9 +351,10 @@ call "OrderMgr\RequiresList.rex"
     --say "OrderMgrView-cancel-01: response to ask dialog =" response
     if response = 0 then return
     -- Response was 1 so close down:
-    eventMgr = .local~my.EventMgr
-    r = eventMgr~triggerEvent("appClosing")  -- if r = 0 then no-one's registered.
-    say "OrderMgrView-cancel: triggerEvent response =" r
+    self~triggerEvent("appClosing")
+    --eventMgr = .local~my.EventMgr
+    --r = eventMgr~triggerEvent("appClosing")  -- if r = 0 then no-one's registered.
+    --say "OrderMgrView-cancel: triggerEvent response =" r
     forward class (super)				-- Closes the whole app.
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

@@ -34,86 +34,115 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide - Support
-   Exercise 08: View.rex 				  	  
+/* ooDialog User Guide
+   Samples:  Person View Class			  	  	  v02-00 25May13
 
-   Component							  v01-00 13May13
-   ---------
-   A superclass for all components (View, Model and data). Part of the MVF. 
-   
-   Contains: 	   class: "Component"
+   Contains: classes "PersonView".
 
-   Description: *** To be provided. ***
+   Pre-requisites: Model-View Framework.
 
-   Pre-requisites: None.
-
-   Outstanding Problems: None reported.
+   Outstanding Problems:
+   None.
 
    Changes:
-     v01-00 13May13: First Version.
+   v01-00 01Oct12: First version.
+          01Apr13: After ooDialog 4.2.2, Samples folder renamed to 'Extras'
+                   and Support moved to within execise foldes. 
+                   so changes to ::Requires and ~addToConstDir needed.
+   v02-00 25May13: For exercise 8, Person folder copied to Person2 so that 
+                   Person components can be updated to use mixins without 
+                   affecting earlier exercises.  
+
 
 ------------------------------------------------------------------------------*/
 
 
+.Application~addToConstDir("..\Extras\Person\PersonView.h")
+
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  Object						  	  v01-00 13May13
-  ------
-  The superclass for all application components. 
+  PersonView							 v01-00  01Oct12
+  ----------
+  A simple class that shows how to exploit the Model-View framework.
+  See comments that include the string 'MFV'.
+
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
---::CLASS View SUBCLASS RcDialog PUBLIC
-::CLASS Component PUBLIC MIXINCLASS Object 
 
+::REQUIRES "ooDialog.cls"
+::REQUIRES "..\Exercise08\Support\View.rex"
+::REQUIRES "..\Exercise08\Support\Component.rex"
+
+
+::CLASS 'PersonView' SUBCLASS 'RcDialog' PUBLIC INHERIT View Component
 
   /*----------------------------------------------------------------------------
-    init - initialises the dialog - not used.
+    newInstance - creates an instance of the View:
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::method init
-    say "Component-init-01."
-    
-  ::METHOD saySomething
-    say "Component-saySomething: Hi there!."
-    return .true
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD newInstance CLASS
+    use strict arg modelId, rootDlg	-- MVF provides id of this view's Model;
+    					-- not used in this sample.
+    dlg = .PersonView~new("..\Extras\Person\PersonView.rc", "IDD_DIALOG1")
+    dlg~activate(modelId, rootDlg)
+    return dlg				-- required by MVF.
 
-  
-  /*----------------------------------------------------------------------------
-    Event Management
-    --------------------------------------------------------------------------*/
-    
-  /*----------------------------------------------------------------------------
-    registerInterest 
+
+    /*----------------------------------------------------------------------------
+    init - initialises the dialog
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD registerInterest
-    use strict arg eventName, interestedObject 
-    eventMgr = .local~my.EventMgr
-    say "Component~registerInterest-01: event =" eventName||"; object =" interestedObject
-    r = eventMgr~registerInterest(eventName,interestedObject)
-    return r
+  ::METHOD init
+    forward class (super) continue
+    self~initView					-- init the View mixin.
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
   /*----------------------------------------------------------------------------
-    triggerEvent 
+    activate - Model's data is provided by the superclass.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD triggerEvent
-    use arg eventName 
-    eventMgr = .local~my.EventMgr
-    say "Component-triggerEvent-01: event =" eventName||"; r =" r 
-    r = eventMgr~triggerEvent(eventName)  -- if r = 0 then no-one's registered.
+  ::METHOD activate UNGUARDED
+    expose personData
+    use strict arg modelId, rootDlg
+    forward class (super) continue	-- Required by MVF to get this View's
+    					--   data from its Model component.
+    personData = RESULT			-- personData returned by superclass
+    self~popupAsChild(rootDlg, "SHOWTOP")
+    return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+
   /*----------------------------------------------------------------------------
-    deRegisterInterest 
+    initDialog - invoked automatically after the dialog has been created.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD deRegisterInterest
-    use arg eventName, uninterestedObject 
-    eventMgr = .local~my.EventMgr
-    say "Component-deRegisterIntrest-01: event =" eventName||"; object =" uninterestedObject||" r =" r 
-    r = eventMgr~deregisterInterest(eventName, uninterestedObject)  -- if r = 0 then no-one's registered.
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */    
-      
+  ::METHOD initDialog
+    expose personData ecPersNo ecPersFamilyName ecPersFirstName ecPersDOB ecPersPosition ecPersSalary
+    --say "PersonView-initDialog-01."
+    ecPersNo         = self~newEdit("IDC_PERS_NO")
+    ecPersFamilyName = self~NewEdit("IDC_PERS_FAMILYNAME")
+    ecPersFirstName  = self~newEdit("IDC_PERS_FIRSTNAME")
+    ecPersDob        = self~newEdit("IDC_PERS_DOB")
+    ecPersPosition   = self~newEdit("IDC_PERS_POSITION")
+    ecPersSalary     = self~newEdit("IDC_PERS_SALARY")
+    self~setMyData(personData)		-- Note: cannor use 'setData' as this
+    					-- would conflict with ooDialog's
+    					-- setData method.
+    --self~offset:super			-- offsetting logic is in the superclass.
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+  /*----------------------------------------------------------------------------
+    setData - sets (or "populates") controls with data provided in the
+              method's argument.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD setMyData
+    expose ecPersNo ecPersFamilyName ecPersFirstName ecPersDOB ecPersPosition ecPersSalary
+    use arg personData
+    ecPersNo~setText(        personData["number"])
+    ecPersFamilyName~setText(personData["familyName"])
+    ecPersFirstName~setText( personData["firstName"])
+    ecPersDOB~setText(       personData["dob"])
+    ecPersPosition~setText(  personData["jobDescr"])
+    ecPersSalary~setText(    personData["baseSalary"])
+    return
+
 /*============================================================================*/
-    

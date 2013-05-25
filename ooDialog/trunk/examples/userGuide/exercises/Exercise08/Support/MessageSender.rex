@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: MessageSender.rex 				  v01-00 14Feb13
+   Exercise 08: MessageSender.rex 				  v01-01 25May13
 
    Contains:  classes: "MessageSender", "HRSms"
 
@@ -62,6 +62,7 @@
                      (not saved over a dialog close).
             11Feb13: No change to function - minor tidy-up of a few comments.
             14Feb13: Correct text in the Help dialog.
+     v01-01 25May13: Added Event Manager to list of target objects. 
 
   Description:
     Target: className instanceName
@@ -100,9 +101,11 @@
     init
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
-    expose objectMgr
+    expose objectMgr eventMgr
     --say "MessageSender-init-01."
     forward class (super) continue
+    objectMgr = .local~my.objectMgr
+    eventMgr = .local~my.eventMgr
     .local~my.MsgSender = self
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -143,14 +146,14 @@
     stErrorMsg~settext(.HRSms~helpMsg)
 
     -- Get id of ObjectMgr:
-    objectMgr = .local~my.objectMgr
+    --objectMgr = .local~my.objectMgr
     --say "MessageSender-initDialog-02 - objectMgr =" objectMgr
     if objectMgr = .nil then do	-- Check if ObjectMgr is present - .nil if not.
       stErrorMsg~setText(.HRSms~prefix1||.HRSms~noObjectMgr)
       btnSend~disable()
     end
 
-    arrTargets = .array~of("ObjectMgr The","PersonModel PA150")
+    arrTargets = .array~of("ObjectMgr The","EventMgr The","PersonModel PA150")
     arrMethods = .array~of("showModel","query","list")
     do i over arrTargets
       cbTarget~add(i)
@@ -177,8 +180,8 @@
                     resulting from errors in the data provided by the user.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD sendMessage
-    expose objectMgr ecReply stErrorMsg btnClear chkStoreTarget chkStoreMethod -
-           cbTarget cbMethod arrTargets arrMethods
+    expose objectMgr eventMgr ecReply stErrorMsg btnClear chkStoreTarget -
+           chkStoreMethod cbTarget cbMethod arrTargets arrMethods
     --say; say "---------------------------------------------------------"
     --say "MessageSender-sendMessage-01."
     ecReply~setText("")		-- Clear any reply data from previous requests.
@@ -335,7 +338,7 @@
       If format errors are found, a message is displayed, and .false is returned.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD parseData
-    expose cbTarget cbMethod ecData stErrorMsg objectMgr rootDlg
+    expose cbTarget cbMethod ecData stErrorMsg objectMgr eventMgr rootDlg
     stErrorMsg~setText("")	-- remove any previous error message.
     --say; say "MessageSender-parseData-01."
     message = .Directory~new
@@ -389,6 +392,18 @@
           targetMethodError = .true
           --return .false
         end
+      end
+    end
+    if message["class"] = "EventMgr" & message["instance"] = "The" then do
+      method = message["method"]
+      method = method~upper
+      if method = "LIST" then do
+        eventMgr~list
+        return "special"
+      end
+      else do 
+        targetMethodError = .true
+        return .false
       end
     end
 -- Following Code does not work - left here in case needed in any following exercises.

@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
    Exercise 08: The Order Management Application
-   Startup.rex 							  v01-02 11May13
+   Startup.rex 							  v01-02 25May13
 
    Description: This file is the "application" or "root" or "starter" part
                 of the sample Order Management application.
@@ -49,6 +49,7 @@
             01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                      folder, so change to ::Requires needed. 
      v01-02 11May13: Added instantiation of Event Manager (class EventMgr)
+            25May13: mods to comments only.
 
 ------------------------------------------------------------------------------*/
 
@@ -61,7 +62,7 @@ end
 -- Set application defaults:
 .Application~setDefaults("O", , .false)
 
--- Create Object Manager and View Manager:
+-- Create Object Manager, View Manager, and Event Manager:
 om = .ObjectMgr~new
 vm = .ViewMgr~new
 em = .EventMgr~new

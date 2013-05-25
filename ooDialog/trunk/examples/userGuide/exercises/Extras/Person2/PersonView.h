@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -34,53 +34,15 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide
-   Exercise 07: The Order Management Application
-   Startup.rex 							  v01-02 01Apr13
 
-   Description: This file is the "application" or "root" or "starter" part
-                of the sample Order Management application.
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
 
-   Changes:
-     v01-00 06Jun12: First version.
-     v01-01 07Aug12: Support for ObjectMgr and ViewMgr added. MessageSender is
-                     optional.
-            11Jan13: Deleted Commented-out startup of MessageSender.
-            21Mar13: Added Copyright notice.
-     v01-02 01Apr13: After ooDialog 4.2.2, "Samples" folder changed name to 
-                     "Extras", so change to ::Requires needed. 
-
-------------------------------------------------------------------------------*/
-
-
-/*//////////////////////////////////////////////////////////////////////////////
-  ==============================================================================
-  RequiresList							  v01-01 25May13
-  ----
-  The list of files containing classes invoked by the ObjectMgr
-
-  Changes:
-  v01-00 16Sep12: First version.
-         11Jan13: Commented-out 'say' instruction.
-  v01-01 25May13: Changed ::REQUIRES for Person is folder Person2 which uses
-                  new mixins introduced in Ex08.
-
-  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
---say "RequiresList-01."
-::REQUIRES "Customer\CustomerView.rex"
-::REQUIRES "Customer\CustomerModelsData.rex"
-::REQUIRES "Customer\CustomerListView.rex"
-::REQUIRES "Product\ProductModelsData.rex"
-::REQUIRES "Product\ProductListView.rex"
-::REQUIRES "Order\OrderFormView.rex"
-::REQUIRES "Order\OrderListView.rex"
-::REQUIRES "Order\OrderModelsData.rex"
-::REQUIRES "Order\OrderView.rex"
-::REQUIRES "..\Extras\Wow4\WowView.rex"
-::REQUIRES "..\Extras\Wow4\WowModel.rex"
-::REQUIRES "..\Extras\Wow4\WowData.rex"
-::REQUIRES "..\Extras\Person2\PersonView.rex"
-::REQUIRES "..\Extras\Person2\PersonModelData.rex"
-/*============================================================================*/
-
+#define IDD_DIALOG1                             100
+#define IDC_PERS_NO                             1000
+#define IDC_PERS_DOB                            1001
+#define IDC_PERS_FIRSTNAME                      1009
+#define IDC_PERS_FAMILYNAME                     1010
+#define IDC_PERS_POSITION                       1013
+#define IDC_PERS_SALARY                         1014
