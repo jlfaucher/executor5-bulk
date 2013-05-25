@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The OrderFormView class				  v03-01 24May13
+   Exercise 08: The OrderFormView class				  v03-01 25May13
    OrderFormView.rex
 
    Contains: class "OrderFormView", class "HRSofv".
@@ -51,7 +51,7 @@
                      folder, so change to ::Requires needed. 
      v03-00 27Apr13: Add ability to populate Order with Customer Details and
                      Order Lines.
-            24May13: Now inherits directly from RcDialog plus the View & 
+            25May13: Now inherits directly from RcDialog plus the View & 
                      Component mixins.
             
 ------------------------------------------------------------------------------*/
@@ -296,23 +296,26 @@
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     Cancel: This method over-rides the default Windows action of 'cancel window'
-            for an Escape key. 'endExecution' is required else dialog hangs when
-            user tried to close.
+            for an Escape key. 'endExecution' (via the closeControlDialogs method
+            is required else dialog hangs when user tried to close.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD cancel
     expose tabContent controlDialogsClosed
     --say "OrderFormView-cancel-01."
-    self~deRegisterInterest("appClosing",self) 		-- de-register interest in any events
     if controlDialogsClosed = .true then do
-      say "OrderFormView-cancel-02: Control Dilaogs closed."
+      --say "OrderFormView-cancel-02: Control Dialogs closed."
+      self~deRegisterInterest("appClosing",self) 		-- de-register interest in any events
       return self~cancel~super
     end
     else do -- Control dialogs not yet cancelled
       response = askDialog(.HRSofv~QExit, "N")
+      --say "OrderFormView-cancel-03: response =" response
       if response = 1 then do   		   -- '1' means the 'Yes' button pressed
+        self~deRegisterInterest("appClosing",self) 		-- de-register interest in any events
         self~closeControlDialogs
+        return self~cancel:super
       end
-      return self~cancel:super
+      -- if response = 0 then do nothing - user chnaged his/her mind about closing.
     end
     
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
