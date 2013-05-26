@@ -139,6 +139,7 @@
     -- Send dlg id to the two Control Dialogs:
     cd1~setOrderFormDlg(self)
     cd2~setOrderFormDlg(self)
+    cd2~rootDialog(rootDlg)		-- Tell cd2 what the root dialog is.
     
     -- Set up Order Totals and initialise CustDiscount:
     orderTotal = 0
@@ -601,11 +602,11 @@
     
 /*==============================================================================
   OrderLinesDlg - a Page in the OrderFormView
-  ----------------
+  -------------
 
   The "view" (or "gui") Products Ordering part of the OrderFormView.
   ----------------------------------------------------------------------------*/
-::CLASS OrderLinesDlg SUBCLASS RcControlDialog
+::CLASS OrderLinesDlg SUBCLASS RcControlDialog INHERIT View
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     initDialog
@@ -632,11 +633,15 @@
     self~connectEditEvent("IDC_ORDLINES_PRODNO","GOTFOCUS",prodNumGotFocus)
     self~connectButtonEvent("IDC_ORDLINES_ADD","CLICKED",addOrderLine)
     self~connectButtonEvent("IDC_ORDLINES_DELETE","CLICKED",deleteOrderLine)
+    self~connectListViewEvent("IDC_ORDLINES_LIST","ACTIVATE",showProduct)	-- double-click
     
     --say "OrderLinesDlg-initDialog-02: self idHash =" self~identityHash
     -- Set focus on the Product Number field:
     self~focusControl("IDC_ORDLINES_PRODNO")
     --pbAddOrderLine~state = "FOCUS"
+    self~initView		-- required by View mixin.
+    
+    
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
   
@@ -657,7 +662,7 @@
     return
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
-  
+   
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     addOrderLine
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
@@ -720,7 +725,31 @@
     
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
-  
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD rootDialog
+    expose rootDlg
+    use strict arg rootDlg
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    showProduct
+    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
+  ::METHOD showProduct UNGUARDED
+    expose lvOrderItems rootDlg		-- Do we need rootDlg?
+    item = lvOrderItems~selected
+    if item = -1 then do
+      ret = MessageDialog(.HRSofv~nilSelected, self~hwnd, title, 'WARNING')
+      return
+    end
+    info = .Directory~new
+    if lvOrderItems~getItemInfo(item, info) then do
+      --say "OrderLinesDlg-showProduct-01: info~text =" info~text
+      r = self~showModel:super("ProductModel", info~text, rootDlg)
+    end
+    else do
+      say "OrderLinesDlg-showProduct-04: ~getItemInfo returned .false."
+    end
+    
+    
   /*----------------------------------------------------------------------------
     leaving - invoked by ooDialog when a dialog closes.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -825,6 +854,7 @@
 ::CLASS HRSofv PRIVATE	   -- Human-Readable Strings
   ::CONSTANT CancelOrder "Cancel Order"
   ::CONSTANT HelpAbout   "Help - About"
+  ::CONSTANT nilSelected "Please select an item first."  
   ::CONSTANT NoBtn       "This button is not yet implemented."
   ::CONSTANT NoCust      "Customer not found."
   ::CONSTANT NoOrdLine   "No Order Line selected."

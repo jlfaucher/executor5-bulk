@@ -100,6 +100,16 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*----------------------------------------------------------------------------
+    showModel - forwards to ObjectMgrloadList - for invocation by subclasses.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD showModel
+    use strict arg  modelClass, modelInstance, parentDlg
+    r = self~ObjectMgr~showModel(modelClass, modelInstance, parentDlg)
+    if r = .false then say "View-showModel - ObjectMgr returned .false."
+    return r
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*----------------------------------------------------------------------------
     loadList - must be invoked by subclass.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   --::METHOD loadList Wait till check out how do ShowModel for List.
