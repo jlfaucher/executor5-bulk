@@ -66,7 +66,7 @@
            13Feb13: Changes to comments only.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::REQUIRES "..\Exercise07\Support\GenericFile.rex"					-- MVF
+::REQUIRES "..\Exercise07\Support\GenericFile.rex"			-- MVF
 
 --::CLASS WowData PUBLIC
   ::CLASS WowData SUBCLASS GenericFile PUBLIC			-- v01-00-->MVF
@@ -95,7 +95,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init								-- MVF
     expose filename records
-    filename = "..\Samples\Wow4\WowFile.txt"; columns = 1
+    filename = "Extras\Wow4\WowFile.txt"; columns = 1
     records = self~init:super(fileName, columns)
     return self
 

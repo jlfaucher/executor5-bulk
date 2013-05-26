@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Samples:  Person View Class			  	  	  v01-00 01Apr13
+   Samples:  Person View Class			  	  	  v01-00 26May13
 
    Contains: classes "PersonView".
 
@@ -49,12 +49,13 @@
           01Apr13: After ooDialog 4.2.2, Samples folder renamed to 'Extras'
                    and Support moved to within execise foldes. 
                    so changes to ::Requires and ~addToConstDir needed.
+          26May13: Corrected h path after re-factoring Extras folder.
 
 
 ------------------------------------------------------------------------------*/
 
 
-.Application~addToConstDir("..\Extras\Person\PersonView.h")
+.Application~addToConstDir("Extras\Person\PersonView.h")
 
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -68,7 +69,7 @@
 
 
 ::REQUIRES "ooDialog.cls"
-::REQUIRES "..\Exercise07\Support\RcView.rex"
+::REQUIRES "Support\RcView.rex"
 
 ::CLASS 'PersonView' SUBCLASS 'RcView' PUBLIC
 
@@ -78,7 +79,7 @@
   ::METHOD newInstance CLASS
     use strict arg modelId, rootDlg	-- MVF provides id of this view's Model;
     					-- not used in this sample.
-    dlg = .PersonView~new("..\Extras\Person\PersonView.rc", "IDD_DIALOG1")
+    dlg = .PersonView~new("Extras\Person\PersonView.rc", "IDD_DIALOG1")
     dlg~activate(modelId, rootDlg)
     return dlg				-- required by MVF.
 

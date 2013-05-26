@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
 
-   Samples:  Person Model and Data Classes	  	  	  v01-00 01Apr13
+   Samples:  Person Model and Data Classes	  	  	  v01-00 26May13
 
    Contains: classes "PersonModel" and "PersonData".
 
@@ -52,7 +52,8 @@
           14Feb13: Removed (commented-out) 'return self' from the init method.
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. Also, 'Samples' folder 
-                   chnaged name to 'Extras'.
+                   changed name to 'Extras'.
+          26May13: Corrected file path after re-factoring Extras folder.
           
 
 ------------------------------------------------------------------------------*/
@@ -143,7 +144,7 @@
 
 
   ::METHOD init PRIVATE
-    fileName = "..\Extras\Person\PersonFile.txt"
+    fileName = "Extras\Person\PersonFile.txt"
     columns = 6					-- colums in the Persons "table"
     records = self~init:super(fileName, columns)
     --say "PersonData-init-01: records:" records

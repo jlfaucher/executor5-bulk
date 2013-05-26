@@ -62,7 +62,8 @@
   Changes:
   v01-00 16Sep12: First version.
          11Jan13: Commented-out 'say' instruction.
-
+         26May13: Corrected paths for ::REQUIRES afrer re-factoring.
+         
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 --say "RequiresList-01."
 ::REQUIRES "Customer\CustomerView.rex"
@@ -74,10 +75,10 @@
 ::REQUIRES "Order\OrderListView.rex"
 ::REQUIRES "Order\OrderModelsData.rex"
 ::REQUIRES "Order\OrderView.rex"
-::REQUIRES "..\Extras\Wow4\WowView.rex"
-::REQUIRES "..\Extras\Wow4\WowModel.rex"
-::REQUIRES "..\Extras\Wow4\WowData.rex"
-::REQUIRES "..\Extras\Person\PersonView.rex"
-::REQUIRES "..\Extras\Person\PersonModelData.rex"
+::REQUIRES "Extras\Wow4\WowView.rex"
+::REQUIRES "Extras\Wow4\WowModel.rex"
+::REQUIRES "Extras\Wow4\WowData.rex"
+::REQUIRES "Extras\Person\PersonView.rex"
+::REQUIRES "Extras\Person\PersonModelData.rex"
 /*============================================================================*/
 
