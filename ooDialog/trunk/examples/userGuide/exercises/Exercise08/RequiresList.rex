@@ -35,8 +35,8 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 07: The Order Management Application
-   Startup.rex 							  v01-02 01Apr13
+   Exercise 08: The Order Management Application
+   Startup.rex 							  v01-02 26May13
 
    Description: This file is the "application" or "root" or "starter" part
                 of the sample Order Management application.
@@ -49,6 +49,7 @@
             21Mar13: Added Copyright notice.
      v01-02 01Apr13: After ooDialog 4.2.2, "Samples" folder changed name to 
                      "Extras", so change to ::Requires needed. 
+            26May13: Corrected paths for ::REQUIRES afrer re-factoring.
 
 ------------------------------------------------------------------------------*/
 
@@ -77,10 +78,10 @@
 ::REQUIRES "Order\OrderListView.rex"
 ::REQUIRES "Order\OrderModelsData.rex"
 ::REQUIRES "Order\OrderView.rex"
-::REQUIRES "..\Extras\Wow4\WowView.rex"
-::REQUIRES "..\Extras\Wow4\WowModel.rex"
-::REQUIRES "..\Extras\Wow4\WowData.rex"
-::REQUIRES "..\Extras\Person2\PersonView.rex"
-::REQUIRES "..\Extras\Person2\PersonModelData.rex"
+--::REQUIRES "Extras\Wow4\WowView.rex"
+--::REQUIRES "Extras\Wow4\WowModel.rex"
+--::REQUIRES "Extras\Wow4\WowData.rex"
+::REQUIRES "Extras\Person\PersonView.rex"
+::REQUIRES "Extras\Person\PersonModelData.rex"
 /*============================================================================*/
 
