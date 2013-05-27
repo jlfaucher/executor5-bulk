@@ -415,6 +415,23 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Exercise04\*.rex"
 
     ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise04\Extras
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise04\Extras\*.txt"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise04\Extras\DlgData
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise04\Extras\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise04\Extras\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise04\Extras\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise04\Extras\DlgData\res
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise04\Extras\DlgData\res\*.dll"
+    
+    ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise05
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Exercise05\*.h"
@@ -427,6 +444,11 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Exercise05\res\res.mak"
     File "${ExamplesDir}\userGuide\exercises\Exercise05\res\ProductView.dll"
     File "${ExamplesDir}\userGuide\exercises\Exercise05\res\ProductIcon.bmp"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise05\Support
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise05\Support\NumberOnlyEditEx.cls"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06
@@ -446,6 +468,16 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Exercise06\Customer\bmp\*.ico"
     File "${ExamplesDir}\userGuide\exercises\Exercise06\Customer\bmp\*.bmp"
 
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Extras
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise06\Extras\*.txt"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Extras\Popups
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise06\Customer\bmp\*.rex"
+    
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Order
     ; Add the files ...
@@ -505,6 +537,25 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\bmp\*.bmp"
 
     ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Extras
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\Extras\*.txt"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Extras\Person
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\Extras\Person\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\Extras\Person\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\Extras\Person\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\Extras\Person\*.txt"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Extras\Wow4
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\Extras\Wow4\*.rex"   
+    File "${ExamplesDir}\userGuide\exercises\Exercise07\Customer\Extras\Wow4\*.txt"   
+
+    ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Order
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Order\*.h"
@@ -549,42 +600,81 @@ Section  doInstall
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Support\*.rex"
 
     ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Samples\ReadMe.txt"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\*.rex"
 
     ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\DlgData
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Customer
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Samples\DlgData\*.h"
-    File "${ExamplesDir}\userGuide\exercises\Samples\DlgData\*.rc"
-    File "${ExamplesDir}\userGuide\exercises\Samples\DlgData\*rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\*.txt"
 
     ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\DlgData\res
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Customer\bmp
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Samples\DlgData\res\res.mak"
-    File "${ExamplesDir}\userGuide\exercises\Samples\DlgData\res\ASimpleDialog.dll"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\bmp\*.ico"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\bmp\*.bmp"
 
     ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Person
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Extras
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.h"
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rc"
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.rex"
-    File "${ExamplesDir}\userGuide\exercises\Samples\Person\*.txt"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\Extras\*.txt"
 
     ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Popups
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Extras\Person
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Samples\Popups\*rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\Extras\Person\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\Extras\Person\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\Extras\Person\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\Extras\Person\*.txt"
 
     ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Wow4
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Order
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.rex"
-    File "${ExamplesDir}\userGuide\exercises\Samples\Wow4\*.txt"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Order\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Order\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Order\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Order\*.txt"
 
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Order\bmp
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Order\bmp\*.ico"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Order\bmp\*.bmp"
+
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\OrderMgr
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\OrderMgr\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\OrderMgr\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\OrderMgr\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Product
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Product\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Product\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Product\*.rex"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Product\*.txt"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Product\res
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Product\res\*.ico"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Product\res\*.bmp"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Product\res\*.dll"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Product\res\res.mak"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Support
+    ; Add the files ...
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Support\*.cls"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Support\*.h"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Support\*.rc"
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Support\*.rex" 
+    
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\wav
     ; Add the files ...
