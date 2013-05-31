@@ -491,7 +491,7 @@ say points~defaultName        /* Default is still available.         */
                               /* Says "an Array"                     */
 say points                    /* Says string representation of       */
                               /* points "compass"                    */
-say points[3]                 /* Says: "E"Points is still an array   */
+say points[3]                 /* Says: "E"  Points is still an array */
                               /* of 4 items                          */
 </programlisting>
 </section>
@@ -1566,7 +1566,7 @@ the original class used on a <emphasis role="bold">subClass</emphasis> or a
 <indexterm><primary>examples</primary>
 <secondary>superClass method</secondary></indexterm>
 <programlisting>
-say .object~superclass    -- displays "The Nil object"
+say .object~superclass    -- displays "The NIL object"
 say .class~superclass     -- displays "The Object class"
 say .set~superclass       -- displays "The Table class"
 </programlisting>
@@ -1823,7 +1823,7 @@ to its string representation for the comparison.
 The one exception is when <emphasis role="italic">argument</emphasis> is the Nil object
 for the ==, \==, =, \=, &gt;&lt;, and &lt;&gt; operators.
 A string object will never compare equal to the Nil object, even when the
-string matches the string value of the Nil object ("The Nil object").
+string matches the string value of the Nil object ("The NIL object").
 </para>
 
 <para>The comparison operators you can use in a message are: </para>
@@ -4015,7 +4015,7 @@ characters converted to lowercase.  If <emphasis role="italic">n</emphasis> is s
 be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
-the default is to convert the remainder of the string.</para>
+is not specified, the default is to convert the remainder of the string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>lower method</secondary></indexterm>
@@ -4338,7 +4338,7 @@ extend beyond the end of the receiving string.
 The starting
 position,
 <emphasis role="italic">n</emphasis>, is required and must be a positive whole number. The <emphasis
-role="italic">length</emphasis> argument is opitonal must be a positive whole number or zero. If omitted, <emphasis
+role="italic">length</emphasis> argument is optional and must be a positive whole number or zero. If omitted, <emphasis
 role="italic">length</emphasis> defaults to the length of <emphasis role="italic">new</emphasis>.
 </para>
 <para>
@@ -4717,8 +4717,8 @@ the string from the starting position to the end is used. </para>
 "abcdef"~translate("12", "abcd", ".")      ->    "12..ef"
 "APQRV"~translate(, "PR")                  ->    "A Q V"
 "APQRV"~translate(XRANGE("00"X, "Q"))      ->    "APQ  "
+"4123"~translate("abcd", "1234", , 2, 2)   ->    "4ab3"
 "4123"~translate("abcd", "1234")           ->    "dabc"
-"4123"~translate("abcd", "1234", , 2, 2)   ->    "4ab1"
 </programlisting>
 
 <note><title>Note</title>
@@ -4797,7 +4797,7 @@ characters converted to uppercase.  If <emphasis role="italic">n</emphasis> is s
 be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
-the default is to convert the remainder of the string.</para>
+is not specified, the default is to convert the remainder of the string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>upper method</secondary></indexterm>
@@ -5287,7 +5287,7 @@ string.</para>
 Method object instance that can used to call the external method.  The
 <emphasis role="italic">descriptor</emphasis> is a string containing
 blank-delimited tokens that identify the location of the native method.
-function.  The first token identifies the type of native function and must be
+The first token identifies the type of native function and must be
 "LIBRARY".   The second token must identify
 the name of the external library.  The external library is located using
 platform-specific mechanisms for loading libraries.  For Unix-based systems, the
@@ -5577,7 +5577,7 @@ string.
 Routine object instance that can used to call the external routine.  The
 <emphasis role="italic">descriptor</emphasis> is a string containing
 blank-delimited tokens that identify the location of the native routine.
-function.  The first token identifies the type of native routine and must be
+The first token identifies the type of native routine and must be
 "LIBRARY".   The second token must identify
 the name of the external library.  The external library is located using
 platform-specific mechanisms for loading libraries.  For Unix-based systems, the

@@ -96,7 +96,7 @@ syntax error 93.965 to be raised.</para>
 <indexterm><primary>method</primary>
 <secondary>charOut method</secondary>
 <tertiary>of InputStream class</tertiary></indexterm>
-<para>This is an unsupported operation for InputSteams. Invoking it will cause
+<para>This is an unsupported operation for InputStreams. Invoking it will cause
 syntax error 93.963 to be raised.</para>
 </section>
 
@@ -136,7 +136,7 @@ syntax error 93.965 to be raised.</para>
 <indexterm><primary>method</primary>
 <secondary>lineOut method</secondary>
 <tertiary>of InputStream class</tertiary></indexterm>
-<para>This is an unsupported operation for InputSteams. Invoking it will cause
+<para>This is an unsupported operation for InputStreams. Invoking it will cause
 syntax error 93.963 to be raised.</para>
 </section>
 
@@ -212,7 +212,7 @@ stream using lineout.</para>
 <indexterm><primary>method</primary>
 <secondary>charIn method</secondary>
 <tertiary>of OutputStream class</tertiary></indexterm>
-<para>This is an unsupported operation for OutputSteams. Invoking it will cause
+<para>This is an unsupported operation for OutputStreams. Invoking it will cause
 syntax error 93.963 to be raised.</para>
 </section>
 
@@ -232,7 +232,7 @@ syntax error 93.965 to be raised.</para>
 <indexterm><primary>method</primary>
 <secondary>chars method</secondary>
 <tertiary>of OutputStream class</tertiary></indexterm>
-<para>This is an unsupported operation for OutputSteams. Invoking it will cause
+<para>This is an unsupported operation for OutputStreams. Invoking it will cause
 syntax error 93.963 to be raised.</para>
 </section>
 
@@ -252,7 +252,7 @@ syntax error 93.963 to be raised.</para>
 <indexterm><primary>method</primary>
 <secondary>lineIn method</secondary>
 <tertiary>of OutputStream class</tertiary></indexterm>
-<para>This is an unsupported operation for OutputSteams. Invoking it will cause
+<para>This is an unsupported operation for OutputStreams. Invoking it will cause
 syntax error 93.963 to be raised.</para>
 </section>
 
@@ -272,7 +272,7 @@ syntax error 93.965 to be raised.</para>
 <indexterm><primary>method</primary>
 <secondary>lines method</secondary>
 <tertiary>of OutputStream class</tertiary></indexterm>
-<para>This is an unsupported operation for OutputSteams. Invoking it will cause
+<para>This is an unsupported operation for OutputStreams. Invoking it will cause
 syntax error 93.963 to be raised.</para>
 </section>
 
@@ -505,7 +505,7 @@ advances the read pointer by the number of characters read. If you omit
 <emphasis role="italic">length</emphasis>, it defaults to
 <computeroutput>1</computeroutput>. If you specify
 <emphasis role="italic">start</emphasis>, this positions the read pointer
-before reading. The <emphasis role="italic">start</emphasis> value must be a positve whole number within
+before reading. The <emphasis role="italic">start</emphasis> value must be a positive whole number within
 the bounds of the stream. If the value is not a positive whole number, a syntax condition is raised. When
 the value is past the end of the stream, the empty string is returned and the NOTREADY condition is
 raised. If the stream is not already open, the stream attempts to open for reading and writing. If that
@@ -1120,7 +1120,7 @@ opened for output only.
 
 <para>Returns the number of completed lines that available for input.
 If the stream has already been read with
-<emphasis role="bold">charIn</emphasis>emphasis.
+<emphasis role="bold">charIn</emphasis>
 this can include an initial partial line. For persistent streams the count
 starts at the current read position. In effect,
 <emphasis role="bold">lines</emphasis> reports whether a read
@@ -1137,7 +1137,7 @@ returns the actual number of lines.
 <para>The <emphasis role="bold">chars</emphasis>
 method returns the number of characters in a
 persistent stream or the presence of data in a transient stream. The
-<emphasis role="bold">lines</emphasis>emphasis
+<emphasis role="bold">lines</emphasis>
 method determines the actual number of lines by scanning the stream starting
 at the current position and counting the lines. For large streams, this can
 be a time-consuming operation.  Therefore, avoid the use of the LINES method
