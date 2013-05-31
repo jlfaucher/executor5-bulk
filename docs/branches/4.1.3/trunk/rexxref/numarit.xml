@@ -68,7 +68,7 @@ are, for example:
 4E9            /* exponential notation                */
 0.73e-7        /* exponential notation                */
 </programlisting>
-<para>A number in Rexx is defined as follows:</para>
+<para>Ignoring <link linkend="expnot">exponential notation</link>, a number in Rexx is defined as follows:</para>
 <programlisting>
 <![CDATA[
 >>-+------------+--+----------------------+--+-digits--------+---------->
@@ -350,9 +350,9 @@ form. Because this is misleading, the result is expressed as
 represents a power of ten that is to be applied to the number. The
 <computeroutput>E</computeroutput> can be in uppercase or lowercase.</para>
 <para>Certain character strings are numbers even though they do not appear to
-be numeric, such as <computeroutput>0E123</computeroutput> (0 raised to the
-123 power) and <computeroutput>1E342</computeroutput> (1 raised to the 342
-power).  Also, a comparison such as
+be numeric, such as <computeroutput>0E123</computeroutput> (0 times 10 raised to the
+power of 123) and <computeroutput>1E342</computeroutput> (1 times 10 raised to the
+power of 342).  Also, a comparison such as
 <computeroutput>0E123=0E567</computeroutput> gives a true result of
 <computeroutput>1</computeroutput> (0 is equal to 0).
 To prevent problems when comparing nonnumeric strings, use the strict

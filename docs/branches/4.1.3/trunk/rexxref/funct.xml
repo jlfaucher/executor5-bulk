@@ -117,7 +117,7 @@ N1="abcdefghijk"
 Z1="Part of N1 is: "substr(N1,2,7)
 /* Sets Z1 to "Part of N1 is: bcdefgh" */
 </programlisting>
-<para>A function can have a variable number of arguments.You need to specify only those
+<para>A function can have a variable number of arguments. You need to specify only those
 required. For example, <computeroutput>SUBSTR("ABCDEF",4)</computeroutput>
 would return <computeroutput>DEF</computeroutput>.</para>
 </section>
@@ -481,7 +481,7 @@ function <link linkend="bifLeft">LEFT</link>.</para></listitem>
 <emphasis role="italic">option</emphasis> that you can select by specifying
 the first character of a string, that character can be in uppercase or
 lowercase.</para></listitem>
-<listitem><para>Many of the built-in functions invoked methos of the
+<listitem><para>Many of the built-in functions invoke methods of the
 <link linkend="clsString">String</link> class.
 For the functions ABBREV, ABS, BITAND, BITOR, BITXOR,
 B2X, CENTER, CENTRE, CHANGESTR, COMPARE, COPIES, COUNTSTR, C2D, C2X, DATATYPE,
@@ -1997,7 +1997,7 @@ corresponds to the current day of the week, where
 <para>The base date of 1 January 0001 is determined
 by extending the current Gregorian calendar backward (365 days each year,
 with an extra day every year that is divisible by 4 except century years that
-are not divisible by 400. It does not take into account any errors in the calendar
+are not divisible by 400). It does not take into account any errors in the calendar
 system that created the Gregorian calendar originally.</para></note>
 </listitem></varlistentry>
 <varlistentry><term>Days
@@ -2024,11 +2024,11 @@ whitespace).
 <para>The base date of 1 January 0001 is determined
 by extending the current Gregorian calendar backward (365 days each year,
 with an extra day every year that is divisible by 4 except century years that
-are not divisible by 400. It does not take into account any errors in the calendar
+are not divisible by 400). It does not take into account any errors in the calendar
 system that created the Gregorian calendar originally.</para>
 <para>The value returned by Date('F') can be used to calculate the interval between
 any two dates.  Note, however, that values returned generally contain more digits
-that the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
+than the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
 to a minimum value of 18 when performing timestamp arithmetic.</para>
 </note>
 </listitem></varlistentry>
@@ -2083,11 +2083,11 @@ whitespace).
 <para>The base date of 1 January 1970 is determined
 by extending the current Gregorian calendar backward (365 days each year,
 with an extra day every year that is divisible by 4 except century years that
-are not divisible by 400. It does not take into account any errors in the calendar
+are not divisible by 400). It does not take into account any errors in the calendar
 system that created the Gregorian calendar originally.</para>
 <para>The value returned by Date('T') can be used to calculate the interval between
 any two dates.  Note, however, that values returned generally contain more digits
-that the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
+than the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
 to a minimum value of 12 when performing timestamp arithmetic.</para>
 <para>Date('T') will return a negative number for dates prior to 1 January 1970.</para>
 </note>
@@ -2569,7 +2569,7 @@ FORM()    ->    "SCIENTIFIC"  /* by default */
 <indexterm><primary>built-in functions</primary>
 <secondary>FORMAT</secondary></indexterm>
 <indexterm><primary>conversion</primary>
-<secondary>formating numbers</secondary></indexterm>
+<secondary>formatting numbers</secondary></indexterm>
 <indexterm><primary>formatting</primary>
 <secondary>numbers for display</secondary></indexterm>
 <indexterm><primary>numbers</primary>
@@ -3175,7 +3175,7 @@ characters converted to lowercase.  If <emphasis role="italic">n</emphasis> is s
 be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
-the default is to convert the remainder of the string.</para>
+is not specified, the default is to convert the remainder of the string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>lower function</secondary></indexterm>
@@ -3573,7 +3573,7 @@ RIGHT("12",5,"0")     ->    "00012"
 ]]>
 </programlisting>
 
-<para>Registers the function ,
+<para>Registers the function,
 making it available to
 Rexx procedures.
 The <emphasis role="italic">module</emphasis> is the name of an
@@ -3581,7 +3581,7 @@ external library where the native function is located.  In some
 environments, such as Unix-based systems, the library name is
 case sensitive.
 The <emphasis role="italic">procedure</emphasis> is the name of
-the exported prodcure inside of <emphasis role="italic">module</emphasis>.
+the exported procedure inside of <emphasis role="italic">module</emphasis>.
 If procedure is not specified, it defaults to <emphasis role="italic">name</emphasis>.
 The <emphasis role="italic">procedure</emphasis> is generally case-sensitive.  RxFuncAdd
 will attempt to resolve the procedure address using the name as specified and if that
@@ -3793,9 +3793,9 @@ rxqueue("delete", "Fred")  -> "0"
 variables that are local to the current process.</para>
 <para>For example, SETLOCAL can be used to save the current environment before
 changing selected settings with the VALUE function (see
-<link linkend="bifValue">VALUE</link>.
+<link linkend="bifValue">VALUE</link>).
 To restore the directory and environment, use the ENDLOCAL function (see
-<link linkend="bifEndlocal">ENDLOCAL</link>.</para>
+<link linkend="bifEndlocal">ENDLOCAL</link>.)</para>
 <para>SETLOCAL returns a value of 1 if the initial directory and environment are
 successfully saved and a value of 0 if unsuccessful. If SETLOCAL is not followed
 by an ENDLOCAL function in a procedure, the initial environment saved by
@@ -4692,11 +4692,11 @@ whitespace).
 <para>The base date of 1 January 0001 is determined
 by extending the current Gregorian calendar backward (365 days each year,
 with an extra day every year that is divisible by 4 except century years that
-are not divisible by 400. It does not take into account any errors in the calendar
+are not divisible by 400). It does not take into account any errors in the calendar
 system that created the Gregorian calendar originally.</para>
 <para>The value returned by Time('F') can be used to calculate the interval between
 any two times.  Note, however, that values returned generally contain more digits
-that the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
+than the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
 to a minimum value of 18 when performing timestamp arithmetic.</para>
 </note>
 </listitem></varlistentry>
@@ -4764,11 +4764,11 @@ whitespace).
 <para>The base date of 1 January 1970 is determined
 by extending the current Gregorian calendar backward (365 days each year,
 with an extra day every year that is divisible by 4 except century years that
-are not divisible by 400. It does not take into account any errors in the calendar
+are not divisible by 400). It does not take into account any errors in the calendar
 system that created the Gregorian calendar originally.</para>
 <para>The value returned by Time('T') can be used to calculate the interval between
 any two times.  Note, however, that values returned generally contain more digits
-that the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
+than the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
 to a minimum value of 12 when performing timestamp arithmetic.</para>
 <para>Time('T') will return a negative number for dates prior to 1 January 1970.</para>
 </note>
@@ -4985,8 +4985,8 @@ TRANSLATE("abcdef", "12", "ec")            ->    "ab2d1f"
 TRANSLATE("abcdef", "12", "abcd", ".")     ->    "12..ef"
 TRANSLATE("APQRV", , "PR")                 ->    "A Q V"
 TRANSLATE("APQRV", XRANGE("00"X, "Q"))     ->    "APQ  "
+TRANSLATE("4123", "abcd", "1234", , 2, 2)  ->    "4ab3"
 TRANSLATE("4123", "abcd", "1234")          ->    "dabc"
-TRANSLATE("4123", "abcd", "1234", , 2, 2)  ->    "4ab1"
 </programlisting>
 
 <note><title>Note</title>
@@ -5075,7 +5075,7 @@ characters converted to uppercase.  If <emphasis role="italic">n</emphasis> is s
 be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
-the default is to convert the remainder of the string.</para>
+is not specified, the default is to convert the remainder of the string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>upper function</secondary></indexterm>
@@ -5206,7 +5206,7 @@ say value("PATH", ,env)     /* says "C:\EDIT\DOCS;"              */
 <emphasis role="italic">newvalue</emphasis>. To delete the environment
 variable "MYVAR" specify: value("MYVAR", .NIL, "ENVIRONMENT"). If you specify
 an empty string as the <emphasis role="italic">newvalue</emphasis> like in
-value("MYVAR", &quot;, <computeroutput>"ENVIRONMENT"</computeroutput>)
+value("MYVAR", &quot;&quot;, "ENVIRONMENT")
 the value of the external environment variable is set to an
 empty string which on Windows and *nix is not the same as deleting the
 environment variable.</para>
@@ -5342,7 +5342,7 @@ NOVALUE condition is trapped. See
 </programlisting>
 
 <para>Returns <computeroutput>1</computeroutput> if
-<emphasis role="italic">name</emphasis> is the name of a variable, that is,
+<emphasis role="italic">name</emphasis> is the name of a variable (that is,
 a symbol that has been assigned a value), or
 <computeroutput>0</computeroutput>.</para>
 <para>Here are some examples: </para>
