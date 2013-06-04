@@ -125,8 +125,7 @@
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -154,8 +153,7 @@
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -184,8 +182,7 @@
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -214,8 +211,7 @@
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -233,7 +229,7 @@
                       +--, precision--+
 ]]>
 </programlisting>
-<para>Returns the hyperbolic sine of number, expressed in radians.</para>
+<para>Returns the hyperbolic sine of <emphasis role="italic">number</emphasis>.</para>
 <para>Parameters:</para>
 <variablelist>
    <varlistentry>
@@ -244,8 +240,7 @@
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -263,7 +258,7 @@
                       +--, precision--+
 ]]>
 </programlisting>
-<para>Returns the hyperbolic cosine of number, expressed in radians.</para>
+<para>Returns the hyperbolic cosine of <emphasis role="italic">number</emphasis>.</para>
 <para>Parameters:</para>
 <variablelist>
    <varlistentry>
@@ -274,8 +269,7 @@
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -293,7 +287,7 @@
                       +--, precision--+
 ]]>
 </programlisting>
-<para>Returns the hyperbolic tangent of number, expressed in radians.</para>
+<para>Returns the hyperbolic tangent of <emphasis role="italic">number</emphasis>.</para>
 <para>Parameters:</para>
 <variablelist>
    <varlistentry>
@@ -304,8 +298,7 @@
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -341,8 +334,7 @@ exponent number2.</para>
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -358,8 +350,10 @@ exponent number2.</para>
 <![CDATA[
 >>-RxCalcSin(number--+--------------------------+--)-----------><
                      |                 +--D--+  |
-                     +--, precision, --+--R--+--+
+                     +--, precision, --+-----+--+
+                                       +--R--+
                                        +--G--+
+
 ]]>
 </programlisting>
 <para>Returns the sine value for number, where number is the angle size, expressed in
@@ -374,8 +368,7 @@ degree [D], radian [R], or grade [G] units.</para>
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
    <varlistentry>
@@ -406,7 +399,8 @@ degree [D], radian [R], or grade [G] units.</para>
 <![CDATA[
 >>-RxCalcCos(number--+--------------------------+--)-----------><
                      |                 +--D--+  |
-                     +--, precision, --+--R--+--+
+                     +--, precision, --+-----+--+
+                                       +--R--+
                                        +--G--+
 ]]>
 </programlisting>
@@ -422,8 +416,7 @@ degree [D], radian [R], or grade [G] units.</para>
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
    <varlistentry>
@@ -454,7 +447,8 @@ degree [D], radian [R], or grade [G] units.</para>
 <![CDATA[
 >>-RxCalcTan(number--+--------------------------+--)-----------><
                      |                 +--D--+  |
-                     +--, precision, --+--R--+--+
+                     +--, precision, --+-----+--+
+                                       +--R--+
                                        +--G--+
 ]]>
 </programlisting>
@@ -470,8 +464,7 @@ degree [D], radian [R], or grade [G] units.</para>
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
    <varlistentry>
@@ -502,7 +495,8 @@ degree [D], radian [R], or grade [G] units.</para>
 <![CDATA[
 >>-RxCalcCotan(number--+--------------------------+--)---------><
                        |                 +--D--+  |
-                       +--, precision, --+--R--+--+
+                       +--, precision, --+-----+--+
+                                         +--R--+
                                          +--G--+
 ]]>
 </programlisting>
@@ -518,8 +512,7 @@ in degree [D], radian [R], or grade [G] units.</para>
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
    <varlistentry>
@@ -558,8 +551,7 @@ in degree [D], radian [R], or grade [G] units.</para>
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
 </variablelist>
@@ -575,7 +567,8 @@ in degree [D], radian [R], or grade [G] units.</para>
 <![CDATA[
 >>-RxCalcArcSin(number--+--------------------------+--)--------><
                         |                 +--D--+  |
-                        +--, precision, --+--R--+--+
+                        +--, precision, --+-----+--+
+                                          +--R--+
                                           +--G--+
 ]]>
 </programlisting>
@@ -591,8 +584,7 @@ radian [R], or grade [G] units.</para>
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
    <varlistentry>
@@ -623,7 +615,8 @@ radian [R], or grade [G] units.</para>
 <![CDATA[
 >>-RxCalcArcCos(number--+--------------------------+--)--------><
                         |                 +--D--+  |
-                        +--, precision, --+--R--+--+
+                        +--, precision, --+-----+--+
+                                          +--R--+
                                           +--G--+
 ]]>
 </programlisting>
@@ -639,8 +632,7 @@ radian [R], or grade [G] units.</para>
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
    <varlistentry>
@@ -671,7 +663,8 @@ radian [R], or grade [G] units.</para>
 <![CDATA[
 >>-RxCalcArcTan(number--+--------------------------+--)--------><
                         |                 +--D--+  |
-                        +--, precision, --+--R--+--+
+                        +--, precision, --+-----+--+
+                                          +--R--+
                                           +--G--+
 ]]>
 </programlisting>
@@ -687,8 +680,7 @@ radian [R], or grade [G] units.</para>
    <varlistentry>
       <term>precision</term>
       <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
+      the calling Rexx activity is used. Precision is limited to 16 digits.
       </para></listitem>
    </varlistentry>
    <varlistentry>
