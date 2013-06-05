@@ -289,7 +289,7 @@ typedef CooSQLiteMutex *pCooSQLiteMutex;
 /* Struct for the ooSQLPackage object CSelf. */
 typedef struct _oosqlPackageCSelf {
     ooSQLitePackageEntry *packageEntry;     // Pointer to the package entry table in the external package.
-    ooSqlSysLibrary           *lib;              // ooSqlSysLibrary object used to load the package.
+    ooSqlSysLibrary      *lib;              // ooSqlSysLibrary object used to load the package.
     SqlApiVector          sqliteAPIs;       // Pointer to the SQLite API vector.
     RexxObjectPtr         rexxSelf;
     RexxObjectPtr         collationTable;
@@ -305,7 +305,7 @@ typedef CooSQLPackage *pCooSQLPackage;
 typedef struct _oosqlLibraryCSelf {
     char                  baseName[MAX_LIBRARY_NAME_LENGTH + 1];
     RexxObjectPtr         functionTable;    // A Rexx table object used to hold the resolved functions in the library
-    ooSqlSysLibrary           *lib;              // ooSqlSysLibrary object used to load the package.
+    ooSqlSysLibrary      *lib;              // ooSqlSysLibrary object used to load the package.
     SqlApiVector          sqliteAPIs;       // Pointer to the SQLite API vector.
     RexxObjectPtr         rexxSelf;
     RexxStringObject      lastErrMsg;
@@ -316,6 +316,7 @@ typedef CooSQLLibrary *pCooSQLLibrary;
 
 /* Struct for the ooSQLite class object CSelf. */
 typedef struct _oosqlclassCSelf {
+    pSQLiteCollationNeededEntry autoCollationNeeded;  // Only one at any time.
     pCooSQLPackage        *autoPackages;
     pSQLiteFunctionEntry  *autoFunctions;
     pSQLiteCollationEntry *autoCollations;

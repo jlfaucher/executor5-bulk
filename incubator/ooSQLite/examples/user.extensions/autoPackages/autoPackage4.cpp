@@ -306,11 +306,11 @@ void strAggFinalize(sqlite3_context* sqlCntx)
 SQLiteCollationEntry autoPackage_collations[] = {
     // The REVERSE collation.  No destroy callback, no user data pointer, no
     // collation needed callback.
-    {NULL, "reverseTo", reverse, NULL, NULL, NULL, NULL, 0},
+    {NULL, "reverseTo", reverse, NULL, NULL, NULL, 0},
 
     // The EBCDIC collation. We fill out the struct fields completely instead of
     // using the OOSQL_COLLATION macro.
-    {NULL, "sortEbcdic", ebcdic, NULL, NULL, NULL, NULL, 0},
+    {NULL, "sortEbcdic", ebcdic, NULL, NULL, NULL, 0},
 
     // The last entry in the struc, must always be present.  Here the macro is
     // simplier to use.  To fill it in manually, use all NULLs.
@@ -345,6 +345,7 @@ ooSQLitePackageEntry autoPackage_package_entry =
     SQLITE_VERSION_NUMBER,
     "autoPackage4",               // name of the package
     "0.0.1",                      // package information
+    NULL,                         // no exported collation needed function
     autoPackage_collations,       // the exported collations
     autoPackage_functions,        // the exported functions
     NULL                          // no  exported modules

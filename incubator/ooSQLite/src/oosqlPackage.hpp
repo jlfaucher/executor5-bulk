@@ -100,7 +100,6 @@ typedef void (*fnXDestroy)(void*);
 // the user data pointer.
 typedef void * (*fnXGetUserData)(void);
 
-
 /* Not sure that we will ever need the reserved fields. */
 typedef struct _SQLiteCollationEntry
 {
@@ -111,15 +110,27 @@ typedef struct _SQLiteCollationEntry
     // If not null will be invoked before sqlite3_create_collation to retrieve user data point instead of using pUserData.
     fnXGetUserData  entryGetUserData;
     void           *pUserData;        // User (client)) data that can be passed to the compare function
-    fnXCollNeeded   entryCollNeeded;  // Collation needed callback, not registered during automatic registration.
     int             reserved2;        // reserved for future use
 } SQLiteCollationEntry;
 typedef SQLiteCollationEntry *pSQLiteCollationEntry;
 
-#define OOSQL_COLLATION_ENTRY(n, eC, eD, eGUD, uD, eCN) { 0, #n, eC, eD, eGUD, uD, eCN, 0 }
+#define OOSQL_COLLATION_ENTRY(n, eC, eD, eGUD, uD) { 0, #n, eC, eD, eGUD, uD, 0 }
 
-#define OOSQL_COLLATION(n, eC, eD, eGUD, uD, eCN) OOSQL_COLLATION_ENTRY(n, eC, eD, eGUD, uD, eCN)
-#define OOSQL_LAST_COLLATION()  { NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0 }
+#define OOSQL_COLLATION(n, eC, eD, eGUD, uD) OOSQL_COLLATION_ENTRY(n, eC, eD, eGUD, uD)
+#define OOSQL_LAST_COLLATION()  { NULL, NULL, NULL, NULL, NULL, NULL, 0 }
+
+typedef struct _SQLiteCollationNeededEntry
+{
+    void           *reserved1;        // reserved for future use
+    fnXCollNeeded   entryCollNeeded;  // Collation needed callback
+    // If not null will be invoked before sqlite3_collation_needed to retrieve user data point instead of using pUserData.
+    fnXGetUserData  entryGetUserData;
+    void           *pUserData;        // User (client)) data that can be passed to the collation needed function
+    int             reserved2;        // reserved for future use
+} SQLiteCollationNeededEntry;
+typedef SQLiteCollationNeededEntry *pSQLiteCollationNeededEntry;
+
+#define OOSQL_COLLATION_NEEDED(eCN, eGUD, uD)  { 0, eCN, eGUD, uD, 0 }
 
 typedef struct _SQLiteFunctionEntry
 {
@@ -186,15 +197,16 @@ typedef SQLiteModuleEntry *pSQLiteModuleEntry;
 
 typedef struct _ooSQLitePackageEntry
 {
-    int                          size;             // size of the structure...helps compatibility
-    int                          apiVersion;       // ooSQLite API version this was compiled with
-    int                          reqOOSQLVersion;  // minimum required ooSQLite version (0 means any)
-    int                          reqSQLiteVersion; // minimum required SQLite version (0 means any)
-    const char                  *packageName;      // package identifier
-    const char                  *packageVersion;   // package version #
-    pSQLiteCollationEntry        collations;       // collations contained in this package
-    pSQLiteFunctionEntry         functions;        // functions contained in this package
-    pSQLiteModuleEntry           modules;          // modules contained in this package
+    int                         size;             // size of the structure...helps compatibility
+    int                         apiVersion;       // ooSQLite API version this was compiled with
+    int                         reqOOSQLVersion;  // minimum required ooSQLite version (0 means any)
+    int                         reqSQLiteVersion; // minimum required SQLite version (0 means any)
+    const char                 *packageName;      // package identifier
+    const char                 *packageVersion;   // package version #
+    pSQLiteCollationNeededEntry collationNeeded;  // a collation needed callback function
+    pSQLiteCollationEntry       collations;       // collations contained in this package
+    pSQLiteFunctionEntry        functions;        // functions contained in this package
+    pSQLiteModuleEntry          modules;          // modules contained in this package
 } ooSQLitePackageEntry;
 
 #define OOSQLITE_GET_PACKAGE(name) \

@@ -36,9 +36,31 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- * autoPackage1.cpp
+ * testLibrary.cpp
+ *
+ * This library is used for testing, but it can also be used as an example of
+ * how to write a shared library file for ooSQLite that contains user define
+ * collations, functions, or modules.
+ *
+ * This file does not contain any user defined modules, but if you know how to
+ * write a module, you could use this example as a template to include it.
+ *
+ * The shared library can be loaded through the loadLibrary() class method of
+ * the ooSQLExtension class.  You then use the ooSQLLibrary class to gain access
+ * to the function pointers in the library.
+ *
+ * Note these points:
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
+// You must include this header if you use this example as a template for your
+// own library.  Otherwise you could deconstruct the macros and build the
+// library any way you choose.
 #include "oosqlPackage.hpp"
 
 #ifdef _WIN32
@@ -46,7 +68,7 @@
 #endif
 
 #include <string.h>
-#include <stdio.h>
+#include <stdio.h> // printf() if needed
 
 /**
  * ASCII to EBCDIC tranlation table.  Not sure what version of EBCDIC, values
@@ -130,12 +152,13 @@ static unsigned char ebcdicToAscii[256] =
     0x39, 0x2E, 0x2E, 0x2E, 0x2E, 0x2E, 0x2E
 };
 
+BEGIN_EXTERN_C()
 
 /**
  * The half() SQL function returns half of its input value.  This is an example
  * from the SQLite website.
  */
-void half(sqlite3_context *context, int argc, sqlite3_value **argv)
+void halfFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
   sqlite3_result_double(context, 0.5*sqlite3_value_double(argv[0]));
 }
@@ -168,7 +191,7 @@ int reverse(void* data, int len1, const void* str1, int len2, const void* str2)
  *
  * @return int
  */
-static int ebcdic(void* data, int len1, const void* str1, int len2, const void* str2)
+int ebcdic(void* data, int len1, const void* str1, int len2, const void* str2)
 {
     register unsigned char *a = (unsigned char *)str1;
     register unsigned char *b = (unsigned char *)str2;
@@ -288,70 +311,16 @@ void strAggFinalize(sqlite3_context* sqlCntx)
     sqlite3_result_text(sqlCntx, psac->result, (int)psac->count, sqlite3_free);
 }
 
+END_EXTERN_C()
 
-/**
- * autoPackage_collations is an array of SQLiteCollationEntry structs.  See
- * the SQLiteCollationEntry struct in oosqlPackage.hpp for the fields in the
- * struct.
- *
- * The OOSQL_COLLATION() is intended to make it somewhat easier to fill in the
- * struct fields.  But, it might be just as easy to skip using it and fill in
- * the fields individually.
- *
- * Note that, with the OOSQL_COLLATION macro, the string name of the collation
- * is derived from the function name.  If you do not use the macro, the second
- * entry must be the string name for the collation.  That is the name used by
- * SQLite.
- */
-SQLiteCollationEntry autoPackage_collations[] = {
-    // The REVERSE collation.  No destroy callback, no user data pointer, no
-    // collation needed callback.
-    OOSQL_COLLATION(reverse, reverse, NULL, NULL, NULL),
 
-    // The EBCDIC collation. We fill out the struct fields completely instead of
-    // using the OOSQL_COLLATION macro.
-    {NULL, "ebcdic", ebcdic, NULL, NULL, NULL, 0},
 
-    // The last entry in the struc, must always be present.  Here the macro is
-    // simplier to use.  To fill it in manually, use all NULLs.
-    OOSQL_LAST_COLLATION()
-};
-
-/**
- * autoPackage_functions is an array of SQLiteFunctionEntry structs.  See
- * oosqlPackage.hpp for its definition.
- *
- * Again, the OOSQL_FUNCTION macro() is meant to make things a little easier.
- * You can always assing the field values manually as shown above for the
- * collations.
- */
-SQLiteFunctionEntry autoPackage_functions[] = {
-    // Only 1 function. Only the function callback is used, the other callbacks
-    // are NULL.  The function callback takes 1 arg.
-    OOSQL_FUNCTION(half, half, NULL, NULL, NULL, NULL, NULL, 1),
-    {NULL, "strAggregate", NULL, strAggStep, strAggFinalize, NULL, NULL, NULL, 1, 0},
-
-    OOSQL_LAST_FUNCTION()
-};
-
-/**
- * Each package must fill out the package entry struct
- *
- */
-ooSQLitePackageEntry autoPackage_package_entry =
-{
-    OOSQL_STANDARD_PACKAGE_HEADER
-    OOSQLITE_1_0_0,               // needs at least the 1.0.0 ooSQLite
-    SQLITE_VERSION_NUMBER,
-    "autoPackage1",               // name of the package
-    "0.0.1",                      // package information
-    NULL,                         // no exported collation needed function
-    autoPackage_collations,       // the exported collations
-    autoPackage_functions,        // the exported functions
-    NULL                          // no  exported modules
-};
-
-// This macro expands to the package entry function used to load the package.
-// The name "autoPackage" must match the prefix of _package_entry in the
-// ooSQLitePackage entry table above.
-OOSQLITE_GET_PACKAGE(autoPackage);
+// This macro expands to a function that gives access to the SQLite APIs in this
+// library.  Without it, your functions would not be able to access any SQLite
+// APIs.
+//
+// On Windows, you *must* declare an exportable function: ooSQLiteSetApi.
+// Personally, the author thinks the easist way to do this is through a .def
+// file as done in this example.  There are other ways to do it in Windows and
+// you are free to choose any method you prefer.
+OOSQLITE_SET_API();

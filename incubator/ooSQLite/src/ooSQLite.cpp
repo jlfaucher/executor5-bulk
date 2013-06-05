@@ -2766,6 +2766,36 @@ static int invalidModule(RexxThreadContext *c, CSTRING name)
 }
 
 /**
+ * Registers an external collation needed function with a SQLite database
+ * connection.
+ *
+ * @param c
+ * @param e
+ * @param pConn
+ *
+ * @return int
+ *
+ * @note  Typically a user would want a collation needed callback, or an array
+ *        of collation callbacks, not both.  But, we let the user do whatever
+ *        she wants.
+ */
+int registerCollationNeeded(pSQLiteCollationNeededEntry e, pCooSQLiteConn pConn)
+{
+    void *userData = NULL;
+
+    if ( e->entryGetUserData != NULL )
+    {
+        userData = e->entryGetUserData();
+    }
+    else if ( e->pUserData != NULL )
+    {
+        userData = e->pUserData;
+    }
+
+    return sqlite3_collation_needed(pConn->db, userData, e->entryCollNeeded);
+}
+
+/**
  * Registers an external collation with a SQLite database connection.
  *
  * @param c
@@ -2773,6 +2803,10 @@ static int invalidModule(RexxThreadContext *c, CSTRING name)
  * @param pConn
  *
  * @return int
+ *
+ * @note  Typically a user would want a collation needed callback, or an array
+ *        of collation callbacks, not both.  But, we let the user do whatever
+ *        she wants.
  */
 int registerCollation(RexxMethodContext *c, pSQLiteCollationEntry e, pCooSQLiteConn pConn)
 {
@@ -4489,6 +4523,13 @@ bool packageRegister(RexxMethodContext *c, pCooSQLPackage pcp, pCooSQLiteConn pC
 {
     ooSQLitePackageEntry *pa = pcp->packageEntry;
 
+    if ( pa->collationNeeded != NULL )
+    {
+        if ( registerCollationNeeded(pa->collationNeeded, pConn) != SQLITE_OK )
+        {
+            return false;
+        }
+    }
     if ( pa->collations != NULL )
     {
         pSQLiteCollationEntry e = pa->collations;
@@ -5038,6 +5079,14 @@ static void autoRegisterExtensions(RexxMethodContext *c, pCooSQLiteConn pConn, p
         }
     }
 
+    if ( pCsc->autoCollationNeeded != NULL )
+    {
+        if ( registerCollationNeeded(pCsc->autoCollationNeeded, pConn) != SQLITE_OK )
+        {
+            return;
+        }
+    }
+
     if ( pCsc->autoFunctions != NULL )
     {
         for ( size_t i = 0; i < pCsc->countFunctions; i++ )
@@ -5518,32 +5567,85 @@ RexxMethod1(int, oosqlconn_close, CSELF, pCSelf)
 
 /** ooSQLiteConnection::collationNeeded()
  *
- *  Registers a callback method to be invoked whenever whenever an undefined
- *  collation sequence is required.
+ *  Registers, or removes a callback that will be invoked whenever an undefined
+ *  collation sequence is required.  The callback can be implemented either in
+ *  Rexx code, or in C / C++ code as an extension residing in an external DLL.
  *
- *  @param  callbackObj  [required]  An instantiated class object with a method
- *                       that is invoked whenever an undefined collation is
- *                       needed.
+ *  @param  callbackObj  [required]  callbackObj signals how the callback is
+ *                       implemented.  This argument can be one of the following
+ *                       objects:
  *
- *                       However, this argument can also be .nil to indicate
- *                       that an already registered callback is to be removed.
+ *                       1.) If arg 1 is a Rexx Pointer object, Then this is
+ *                        the handle of an external function that implements the
+ *                        collation needed callback. The handle must be obtained
+ *                        though an ooSQLLibrary object.
+ *
+ *                        However, if the Pointer object is the null pointer,
+ *                        then the collation needed callback is removed from the
+ *                        database connection.  Do not use a null Pointer to
+ *                        remove a collation needed callback that was registered
+ *                        as a Rexx callback, the behavior is undefined.
+ *
+ *                        Argument 2 is ignored.
+ *
+ *                       2.) If arg 1 is an ooSQLCollationNeeded object then the
+ *                       information needed to register the callback is
+ *                       contained within the object.  ooSQLCollationNeeded
+ *                       objects must be obtained from an ooSQLPackag object.
+ *
+ *                        Argument 2 is ignored.
+ *
+ *                       3.) If arg 1 is the .nil object, the collation needed
+ *                       callback is removed from the database connection.  Do
+ *                       not use the .nil object unless the callback was
+ *                       registered as a Rexx callback.  The behavior is
+ *                       undefined.
+ *
+ *                        Argument 2 is ignored.
+ *
+ *                       4.) Otherwise, arg 1 must be an instantiated Rexx
+ *                       object with a method that is invoked whenever an
+ *                       undefined collation is needed.
+ *
+ *                       Argument 2 can be used to specify the name of the
+ *                       method to be invoked.
+ *
  *
  *  @param  mthName      [optional]  The method name that will be invoked during
- *                       the callback.  By default, the method invoked will be
- *                       collationNeededCallback().  However, the user can
- *                       specify an alternative method if desired.  This
- *                       argument is ignored when the callbackObj argument is
- *                       .nil.
+ *                       the callback implmented in Rexx.
  *
- *  @param userData      [optional] This can be any Rexx object the user
- *                       desires. The object will be sent as the second argument
- *                       to the callback method when it is invoked. This
- *                       argument is ignored when  the callbackObj argument is
- *                       .nil.
+ *                       The argument is ignored as specified in the explantion
+ *                       of arg 1.
+ *
+ *                       By default, the method invoked will be
+ *                       collationNeededCallback(). However, the user can
+ *                       specify an alternative method if desired.
+ *
+ *  @param userData      [optional]  Specifies user data that the SQLite
+ *                       database sends to the callback.
+ *
+ *                       1.) If argument 1 is a .Pointer, the this argument must
+ *                       also be a .Pointer.  The Pointer must also be obtained
+ *                       through an ooSQLLibrary object.
+ *
+ *                       2.) When argument 1 is an ooSQLCollationNeeded object,
+ *                       the userData argument is ignored.  User data is
+ *                       supplied throught the ooSQLCollationNeede object
+ *                       itself.
+ *
+ *                       3.) When the callback is implemented in Rexx code, then
+ *                       this can be any Rexx object the user desires. The
+ *                       object will be sent as the second argument to the
+ *                       callback method when it is invoked.
+ *
+ *                       This argument is alwways ignored when the callback is
+ *                       being removed.
  *
  *  @return  An ooSQLite result code.
  *
- *  @notes  When the callback is invoked, the method should register the desired
+ *  @notes  For a Rexx callback:
+ *
+ *          When the callback is invoked, the method should register the desired
  *          collation using createCollation().
  *
  *          The callback method is sent 3 arguments, the Rexx database
@@ -5553,10 +5655,49 @@ RexxMethod1(int, oosqlconn_close, CSELF, pCSelf)
 RexxMethod4(RexxObjectPtr, oosqlconn_collationNeeded, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
             OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
+    RexxObjectPtr result = context->Int32(SQLITE_MISUSE);
+
     pCooSQLiteConn pConn = requiredDB(context, pCSelf);
     if ( pConn == NULL )
     {
-        return context->WholeNumber(SQLITE_MISUSE);
+        return result;
+    }
+
+    int rc = SQLITE_MISUSE;
+
+    if ( context->IsPointer(callbackObj) )
+    {
+        if ( callbackObj == TheZeroPointerObj )
+        {
+            rc = sqlite3_collation_needed(pConn->db, NULL, NULL);
+            return context->Int32(rc);
+        }
+
+        fnXCollNeeded xCollNeeded = (fnXCollNeeded)context->PointerValue((RexxPointerObject)callbackObj);
+        void          *usrD = NULL;
+
+        if ( argumentExists(3) )
+        {
+            if ( ! context->IsPointer(userData) )
+            {
+                wrongClassException(context->threadContext, 3, "Pointer", userData);
+                return result;
+            }
+            usrD = (fnXDestroy)context->PointerValue((RexxPointerObject)userData);
+        }
+
+        rc = sqlite3_collation_needed(pConn->db, usrD, xCollNeeded);
+        return context->Int32(rc);
+    }
+    else if ( context->IsOfType(callbackObj, "OOSQLCOLLATIONNEEDED") )
+    {
+        pSQLiteCollationNeededEntry e = (pSQLiteCollationNeededEntry)context->ObjectToCSelf(callbackObj);
+        rc = registerCollationNeeded(e, pConn);
+        return context->Int32(rc);
+    }
+    else if ( callbackObj == TheNilObj )
+    {
+        return doCallbackSetup(context, pConn, TheNilObj, NULL, NULL, collation, 0, NULL);
     }
 
     return doCallbackSetup(context, pConn, callbackObj, mthName, userData, collationNeeded, 0, NULL);
@@ -5632,10 +5773,10 @@ RexxMethod4(RexxObjectPtr, oosqlconn_commitHook, RexxObjectPtr, callbackObj, OPT
  *                        The handle must be obtained though an ooSQLLibrary
  *                        object.
  *
- *                        3.) If this is a .Collation object then all the
+ *                        3.) If this is a .ooSQLCollation object then all the
  *                        information needed to register the collation with this
- *                        database connection is contained within the .Collation
- *                        object.
+ *                        database connection is contained within the
+ *                        .ooSQLCollation object.
  *
  *                        4.) If this a zero pointer (the zero pointer attribute
  *                        of the .ooSQLite class) than the external C collation
@@ -9869,6 +10010,49 @@ bool resolveFunction(RexxMethodContext *c, pCooSQLLibrary pcl, RexxObjectPtr rxN
 }
 
 /**
+ * Creates a .CollationNeeded object from a pointer to a collation needed entry
+ * struct.
+ *
+ * @param c
+ * @param e
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr createCollationNeededObj(RexxMethodContext *c, pSQLiteCollationNeededEntry e)
+{
+    pSQLiteCollationNeededEntry cpy             = NULLOBJECT;
+    RexxClassObject             collNeededCls   = NULLOBJECT;
+    RexxBufferObject            collNeededCSelf = NULLOBJECT;
+    RexxObjectPtr               collNeeded      = NULLOBJECT;
+    RexxObjectPtr               result          = TheNilObj;
+
+    collNeededCls = rxGetContextClass(c, "ooSQLCollationNeeded");
+    if ( collNeededCls == NULLOBJECT )
+    {
+        goto done_out;
+    }
+
+    collNeededCSelf = c->NewBuffer(sizeof(SQLiteCollationNeededEntry));
+    if ( collNeededCSelf == NULLOBJECT )
+    {
+        outOfMemoryException(c->threadContext);
+        goto done_out;
+    }
+
+    cpy = (pSQLiteCollationNeededEntry)c->BufferData(collNeededCSelf);
+    memcpy(cpy, e, sizeof(SQLiteCollationNeededEntry));
+
+    collNeeded = c->SendMessage1(collNeededCls, "NEW", collNeededCSelf);
+    if ( collNeeded != NULLOBJECT )
+    {
+        result = collNeeded;
+    }
+
+done_out:
+    return result;
+}
+
+/**
  * Creates a .Collation object from a pointer to a collation entry struct.
  *
  * @param c
@@ -9876,7 +10060,7 @@ bool resolveFunction(RexxMethodContext *c, pCooSQLLibrary pcl, RexxObjectPtr rxN
  *
  * @return RexxObjectPtr
  */
-RexxObjectPtr createCollationObject(RexxMethodContext *c, pSQLiteCollationEntry e)
+RexxObjectPtr createCollationObj(RexxMethodContext *c, pSQLiteCollationEntry e)
 {
     RexxClassObject       collationCls   = NULLOBJECT;
     RexxBufferObject      collationCSelf = NULLOBJECT;
@@ -9914,7 +10098,6 @@ RexxObjectPtr createCollationObject(RexxMethodContext *c, pSQLiteCollationEntry 
 
 done_out:
     return result;
-
 }
 
 /**
@@ -9925,7 +10108,7 @@ done_out:
  *
  * @return RexxObjectPtr
  */
-RexxObjectPtr createFunctionObject(RexxMethodContext *c, pSQLiteFunctionEntry e)
+RexxObjectPtr createFunctionObj(RexxMethodContext *c, pSQLiteFunctionEntry e)
 {
     RexxClassObject       functionCls   = NULLOBJECT;
     RexxBufferObject      functionCSelf = NULLOBJECT;
@@ -10447,6 +10630,77 @@ RexxMethod4(RexxObjectPtr, oosqlext_makeAutoCollation_cls, RexxObjectPtr, packag
 }
 
 
+/** ooSQLExtensions::makeAutoCollationNeeded()  [class method]
+ *
+ *  Marks, or unmarks, the collation needed entry in the specified package as a
+ *  collation needed callback that is automatically registered when a database
+ *  connection is opened.
+ *
+ *  Unlike collation or function callbacks, there can only be one collation
+ *  needed callback per database connection.  Marking the collation needed
+ *  callback in one package as automatically registered will remove any other
+ *  collation needed callback that is set to be automatically registered.
+ *
+ *  Likewise, unmarking a collation needed callback in one package would have
+ *  the effect of setting no automatically registered collation needed, even if
+ *  there were an automatically registered callback from some other pacakgae.
+ *
+ *  @param  packageName    [required] The name of the loaded package that
+ *                         contains the collation needed callback entry.
+ *
+ *  @param  enable         [optional] True to mark the collation, false to
+ *                         unmark. The default is false.
+ *
+ */
+RexxMethod3(RexxObjectPtr, oosqlext_makeAutoCollationNeeded_cls, RexxObjectPtr, packageName,
+            OPTIONAL_logical_t, enable, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    RexxObjectPtr package = c->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
+    if ( package == TheNilObj )
+    {
+        return TheFalseObj;
+    }
+
+    RexxObjectPtr collNeeded = c->SendMessage0(package, "GETCOLLATIONNEEDED");
+    if ( collNeeded == TheNilObj )
+    {
+        pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
+
+        pcext->lastErrCode = pcp->lastErrCode;
+        pcext->lastErrMsg  = pcp->lastErrMsg;
+        extensionsSetLastErr(context, pcext->lastErrMsg, pcext->lastErrCode);
+
+        return TheFalseObj;
+    }
+
+    resetExtensionsLastErr(context, pcext);
+    enable = argumentOmitted(3) ? TRUE : enable;
+
+    pSQLiteCollationNeededEntry pscne = (pSQLiteCollationNeededEntry)context->ObjectToCSelf(collNeeded);
+    if ( pscne == NULL )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLCollationNeeded");
+        return TheFalseObj;
+    }
+
+    pCooSQLiteClass pCsc = ensureCSelf(c, pcext);
+
+    if ( enable )
+    {
+        pCsc->autoCollationNeeded = pscne;
+    }
+    else
+    {
+        pCsc->autoCollationNeeded = NULL;
+    }
+
+    return TheTrueObj;
+}
+
+
 /** ooSQLExtensions::makeAutoFunction()  [class method]
  *
  *  Marks, or unmarks, the specified function as a function that is
@@ -10657,6 +10911,7 @@ RexxMethod0(int, oosqlext_resetAutoExtension)
  */
 #define OOSQLPACKAGE_CLASS    "ooSQLPackage"
 #define SYSLIB_ATTRIBUTE      "ooSQLPackageSysLibraryAttribute"
+#define COLLNEEDED_ATTRIBUTE  "ooSQLPackageCollationNeededAttribute"
 
 
 /** ooSQLPackage::init()
@@ -10709,6 +10964,8 @@ RexxMethod2(RexxObjectPtr, oosqlpack_init, CSTRING, libName, OSELF, self)
         extensionsSetLastErr(context, pcp->lastErrMsg, pcp->lastErrCode);
         return NULLOBJECT;
     }
+
+    context->SetObjectVariable(COLLNEEDED_ATTRIBUTE, TheNilObj);
 
     pcp->packageEntry   = (*loader)(pcp->sqliteAPIs);
     pcp->collationTable = rxNewBuiltinObject(context->threadContext, "TABLE");
@@ -10774,7 +11031,7 @@ RexxMethod2(RexxObjectPtr, oosqlpack_getCollation, RexxObjectPtr, rxName, CSELF,
     {
         if ( strcmp(e->name, cName) == 0 )
         {
-            result = createCollationObject(context, e);
+            result = createCollationObj(context, e);
             if ( result != TheNilObj )
             {
                 context->SendMessage2(pcp->collationTable, "PUT", result, rxName);
@@ -10782,6 +11039,46 @@ RexxMethod2(RexxObjectPtr, oosqlpack_getCollation, RexxObjectPtr, rxName, CSELF,
             break;
         }
         e++;
+    }
+
+    return result;
+}
+
+
+/** ooSQLPackage::getCollationNeeded()
+ *
+ *  Gets the CollationNeeded object for this package.  Each packagae can only
+ *  have 1 collation needed function.
+ *
+ */
+RexxMethod1(RexxObjectPtr, oosqlpack_getCollationNeeded, CSELF, pCSelf)
+{
+    pCooSQLPackage pcp  = (pCooSQLPackage)pCSelf;
+
+    resetPackageLastErr(context, pcp);
+
+    RexxMethodContext *c = context;
+    RexxObjectPtr result = c->GetObjectVariable(COLLNEEDED_ATTRIBUTE);
+    if ( result != TheNilObj )
+    {
+        return result;
+    }
+
+    ooSQLitePackageEntry *pEntry = pcp->packageEntry;
+
+    if ( pEntry->collationNeeded == NULL )
+    {
+        char buf[256];
+
+        snprintf(buf, 256, "this package (%s) contains no collation needed callback", pEntry->packageName);
+        userDefinedMsgException(context->threadContext, buf);
+        return TheNilObj;
+    }
+
+    result = createCollationNeededObj(context, pEntry->collationNeeded);
+    if ( result != TheNilObj )
+    {
+        c->SetObjectVariable(COLLNEEDED_ATTRIBUTE, result);
     }
 
     return result;
@@ -10825,7 +11122,7 @@ RexxMethod2(RexxObjectPtr, oosqlpack_getFunction, RexxObjectPtr, rxName, CSELF, 
     {
         if ( strcmp(e->name, cName) == 0 )
         {
-            result = createFunctionObject(context, e);
+            result = createFunctionObj(context, e);
             if ( result != TheNilObj )
             {
                 context->SendMessage2(pcp->functionTable, "PUT", result, rxName);
@@ -10983,6 +11280,30 @@ RexxMethod2(RexxObjectPtr, oosqllib_getHandle_cls, RexxObjectPtr, funcName, CSEL
     }
 
     return result;
+}
+
+
+/**
+ *  Methods for the .ooSQLCollationNeeded class.
+ *
+ */
+#define OOSQLCOLLATIONNEEDED_CLASS        "ooSQLCollationNeeded"
+
+
+/** ooSQLCollationNeeded::init()
+ */
+RexxMethod2(RexxObjectPtr, oosqlcolneed_init, RexxObjectPtr, collationNeeded, OSELF, self)
+{
+    if ( ! context->IsBuffer(collationNeeded) )
+    {
+        wrongClassException(context->threadContext, 1, "Buffer", collationNeeded);
+    }
+    else
+    {
+        context->SetObjectVariable("CSELF", collationNeeded);
+    }
+
+    return NULLOBJECT;
 }
 
 
@@ -14362,6 +14683,7 @@ REXX_METHOD_PROTOTYPE(oosqlext_getPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadLibrary_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_makeAutoCollation_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_makeAutoCollationNeeded_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_makeAutoFunction_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_makeAutoPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_resetAutoExtension);
@@ -14373,6 +14695,7 @@ REXX_METHOD_PROTOTYPE(oosqlpack_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlpack_getLastErrMsg_atr);
 
 REXX_METHOD_PROTOTYPE(oosqlpack_getCollation);
+REXX_METHOD_PROTOTYPE(oosqlpack_getCollationNeeded);
 REXX_METHOD_PROTOTYPE(oosqlpack_getFunction);
 REXX_METHOD_PROTOTYPE(oosqlpack_register);
 
@@ -14383,6 +14706,9 @@ REXX_METHOD_PROTOTYPE(oosqllib_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqllib_getLastErrMsg_atr);
 
 REXX_METHOD_PROTOTYPE(oosqllib_getHandle_cls);
+
+// .ooSQLCollationNeeded
+REXX_METHOD_PROTOTYPE(oosqlcolneed_init);
 
 // .ooSQLCollation
 REXX_METHOD_PROTOTYPE(oosqlcol_init);
@@ -14608,6 +14934,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlext_loadLibrary_cls,             oosqlext_loadLibrary_cls),
     REXX_METHOD(oosqlext_loadPackage_cls,             oosqlext_loadPackage_cls),
     REXX_METHOD(oosqlext_makeAutoCollation_cls,       oosqlext_makeAutoCollation_cls),
+    REXX_METHOD(oosqlext_makeAutoCollationNeeded_cls, oosqlext_makeAutoCollationNeeded_cls),
     REXX_METHOD(oosqlext_makeAutoFunction_cls,        oosqlext_makeAutoFunction_cls),
     REXX_METHOD(oosqlext_makeAutoPackage_cls,         oosqlext_makeAutoPackage_cls),
     REXX_METHOD(oosqlext_resetAutoExtension,          oosqlext_resetAutoExtension),
@@ -14618,9 +14945,10 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlpack_getLastErrCode_atr,         oosqlpack_getLastErrCode_atr),
     REXX_METHOD(oosqlpack_getLastErrMsg_atr,          oosqlpack_getLastErrMsg_atr),
 
-    REXX_METHOD(oosqlpack_getCollation,           oosqlpack_getCollation),
-    REXX_METHOD(oosqlpack_getFunction,            oosqlpack_getFunction),
-    REXX_METHOD(oosqlpack_register,               oosqlpack_register),
+    REXX_METHOD(oosqlpack_getCollation,               oosqlpack_getCollation),
+    REXX_METHOD(oosqlpack_getCollationNeeded,         oosqlpack_getCollationNeeded),
+    REXX_METHOD(oosqlpack_getFunction,                oosqlpack_getFunction),
+    REXX_METHOD(oosqlpack_register,                   oosqlpack_register),
 
     // .ooSQLLibrary
     REXX_METHOD(oosqllib_init,                        oosqllib_init),
@@ -14629,6 +14957,9 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqllib_getLastErrMsg_atr,           oosqllib_getLastErrMsg_atr),
 
     REXX_METHOD(oosqllib_getHandle_cls,               oosqllib_getHandle_cls),
+
+    // .ooSQLCollationNeeded
+    REXX_METHOD(oosqlcolneed_init,                    oosqlcolneed_init),
 
     // .ooSQLCollation
     REXX_METHOD(oosqlcol_init,                        oosqlcol_init),
