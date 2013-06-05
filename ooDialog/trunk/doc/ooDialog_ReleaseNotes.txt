@@ -1,0 +1,226 @@
+                      Release Notes ooDialog 4.2.3
+                      ============================
+
+The ooDialog 4.2.3 release is ?
+
+ooDialog 4.2.3 can be installed to any ooRexx installation, 4.1.0 or
+later.
+
+Beginning with the release of ooDialog 4.2.0, the installation of
+ooDialog has been decoupled from the interpreter.  ooDialog 4.2.2
+installs over the top of any ooRexx installation.  It replaces the
+version of ooDialog in the ooRexx installation with ooDialog 4.2.2.
+
+This type of ooDialog installation is called an "independent" ooDialog
+installation to indicate the ooDialog installation is independent of an
+ooRexx installation and, to a degree, the version of ooRexx installed.
+
+ooDialog 4.2.3 requires a minimum ooRexx version of 4.??.??.
+
+
+Installation
+========================================================================
+
+Installation is simple, done through a typical Windows installer.  Pick
+the installation package that matches the bitness of the ooRexx
+installation.  I.e., a 32-bit package for a 32-bit ooRexx and a 64-bit
+package for a 64-bit ooRexx.
+
+The installer will detect the installed ooRexx, location and version.
+If the ooRexx version is less than 4.1.0, or if there is no installed
+ooRexx, the installer will abort with a message explaining the problem.
+Otherwise the installer will replace the current ooDialog with ooDialog
+4.2.3.
+
+Note that the actions of the installer are dependent on the version of
+ooRexx, not the version of the installed ooDialog.  For instance, if the
+installed ooDialog is version 4.3.0, but for some reason the user is not
+happy with that version, running the ooDialog 4.2.3 installer will
+replace the 4.3.0 version with the 4.2.3 version.
+
+At the time of the installation, *all* ooDialog programs must be halted
+and the ooDialog PDFs must be closed if they happen to be opened.
+
+
+Changes in ooDialog 4.2.3 since the release of ooDialog 4.2.2
+========================================================================
+
+Bug Fixes in ooDialog:
+----------------------
+
+ *
+
+ *
+
+
+DocumentationBug Fixes in ooDialog:
+----------------------------------
+
+ *
+
+
+Feature Requests in ooDialog:
+-----------------------------
+
+ * #508 ooDialog - index for tree-view state images
+
+ *
+
+
+New Functionality in ooDialog:
+------------------------------
+
+?
+
+
+New dialog classes:
+-------------------
+
+? class:
+
+
+
+New utility classes:
+--------------------
+
+? class:
+
+
+
+New Public Routines:
+--------------------
+
+?
+
+
+
+New Methods:
+------------
+
+In the TreeView class:
+
+getStateImage()     Retrieves the state image index in the image list
+                    for the specified item.
+
+setStateImage()     Assigns the state image index in the image list for
+                    the specified item.
+
+
+
+
+New Attributes:
+---------------
+
+In the ?? class:
+
+
+??      Does what?
+
+
+
+
+Enhanced Methods:
+-----------------
+
+In the TreeView class:
+
+getImageList()      Enhanced to take a keyword for the type of image
+                    list in addition to the raw number.
+
+setImageList()      Enhanced to take a keyword for the type of image
+                    list in addition to the raw number.
+
+
+
+Enhanced Public Routines:
+-------------------------
+
+?()                 ??
+
+
+
+Deprecated Methods:
+-------------------
+
+In the ? class:
+
+??()         ??
+
+
+
+New samples:
+------------
+
+* oodialog\examples\saveFileWithFilter.rex
+
+An example showing how to use the Common Item Dialog in file save mode.
+This example shows 2 things.  1.) How to use a filter with the dialog.
+This is done with the .ShellItemFilter class.  2.) How to connect event
+notifications.  This is done with the .CommonDialogEvents class.
+
+* oodialog\examples\openSaveFileDemo.rex
+
+An example showing a number of different uses of both the Open File
+Dialog and the Save File Dialog.  Demonstrates the most common usage
+patterns.
+
+
+
+Enhanced samples:
+-----------------
+
+oodialog\???.rex
+
+
+
+Documentation:
+--------------
+
+???
+
+
+
+Known Problems, "Gotchas," and Solutions with Independent Installations
+========================================================================
+
+* Problem:
+
+The ooRexx installer creates a log of the files it installs.  When the
+uninstaller runs, the user can select to only uninstall files logged
+during installtion.  An indpendent ooDialog installation may install
+some example programs, documentation files, and shortcuts not recorded
+in the log file.  When ooRexx is uninstalled or upgraded, these files
+and shortcuts may not be deleted.
+
+  Solution 1:
+
+  Before uninstalling ooRexx, install the independent ooDialog that
+  matches the ooRexx installation.  I.e., if the ooRexx installation is
+  any 4.0.x, or 4.1.x ooRexx version, install the ooDialog 4.1.0
+  indpendent installation. Then when ooRexx is uninstalled, all ooDialog
+  files and shortcuts will be removed because the files and shortcuts
+  exactly match what was installed during the ooRexx installation.
+
+  Solution 2:
+
+  After uninstalling ooRexx, manually delete any files in the old ooRexx
+  installation directory.
+
+* Gotcha:
+
+  The independent ooDialog installation deletes the entire ooDialog
+  samples subdirectory tree.  This will delete any personal files
+  that may have been put there after ooRexx was installed.
+
+  Solution 1:
+
+  Do not put personal files in the %REXX_HOME%\samples\ooDialog
+  subdirectory tree.
+
+  Solution 2:
+
+  Before executing the independent ooDialog installer, move or back up
+  any personal files that may be in %REXX_HOME%\samples\ooDialog
+  subdirectory tree.
+
+
