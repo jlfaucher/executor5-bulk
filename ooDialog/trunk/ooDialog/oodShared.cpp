@@ -466,7 +466,9 @@ char *getCompleteVersion(RexxThreadContext *c)
 
     char buf1[SMALL_BUF_SIZE];
 
-    _snprintf(buf1, SMALL_BUF_SIZE, "          Built %s %s\r\n          Copyright (c) RexxLA %s.\r\n"
+    _snprintf(buf1, SMALL_BUF_SIZE, "          Built %s %s\r\n"
+                                    "          Copyright (c) IBM Corporation 1995, 2004.\r\n"
+                                    "          Copyright (c) RexxLA %s.\r\n"
                                     "          All Rights Reserved.\r\n\r\n",
               __DATE__, __TIME__, OOD_COPY_YEAR);
     strcat(buf, buf1);
