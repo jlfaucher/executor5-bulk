@@ -66,6 +66,7 @@ end
 om = .ObjectMgr~new
 vm = .ViewMgr~new
 em = .EventMgr~new
+dm = .DragMgr~new
 
 -- Start OrderMgrView:
 .OrderMgrView~newInstance
@@ -74,6 +75,7 @@ em = .EventMgr~new
 ::REQUIRES "Support\ObjectMgr.rex"
 ::REQUIRES "Support\ViewMgr.rex"
 ::REQUIRES "Support\EventMgr.rex"
+::REQUIRES "Support\DragMgr.rex"
 ::REQUIRES "Support\MessageSender.rex"
 
 /******************************************************************************/

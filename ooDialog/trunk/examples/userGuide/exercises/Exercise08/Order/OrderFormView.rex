@@ -206,7 +206,23 @@
     self~positionAndShow(1)
     -- tab stuff ends
     controlDialogsClosed = .false
+    
+    -- Set as target for Drag/Drop:
+        self~dmSetAsTarget:super()
 
+  ::METHOD dmQueryDrop
+    use strict arg sourceDlg, mousePos	-- try also without mousepos.
+    say "OrderFormView-dmQueryDrop-01."
+    return .true
+    
+  ::METHOD dmDrop
+    expose userText
+    use strict arg sourceDlg
+    say "OrderFormView-dmDrop-01."
+    --text = sourceDlg~query
+    say "OrderFormView-dmDrop-02; sourceDld =" sourceDlg
+    --userText~setText(text)
+    return .true
     
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD showTotals PUBLIC

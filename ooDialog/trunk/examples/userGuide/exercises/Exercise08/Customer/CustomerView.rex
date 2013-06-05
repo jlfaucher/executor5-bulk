@@ -178,7 +178,10 @@
     self~connectButtonEvent("IDC_CUST_BTN_SHOWLASTORDER","CLICKED",showLastOrder)
 
     self~setTitle(.HRScv~dlgTitle)		-- set dialog title.
-
+    
+    -- set self as drag/drop source.
+    r = self~dmSetAsSource:super("Customer\bmp\Customer.cur")
+    
     -- Show app data:
     self~showData
     self~saySomething -- Test for Component mixin - delete any time.

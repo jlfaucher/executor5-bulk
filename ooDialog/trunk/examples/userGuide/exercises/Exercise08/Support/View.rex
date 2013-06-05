@@ -37,7 +37,7 @@
 /* ooDialog User Guide - Support
    Exercise 08: View.rex 				  	  
 
-   ViewMixin							  v01-00 12May13
+   ViewMixin							  v01-01 05Jun13
    ---------
    A mixin superclass for View components (part of the Model-View Framework).
    
@@ -51,6 +51,7 @@
 
    Changes:
      v01-00 12May13: First Version.
+     v01-01 05Jun13: Added drag/drop methods.
 
 ------------------------------------------------------------------------------*/
 
@@ -66,11 +67,12 @@
 
 --::CLASS View SUBCLASS RcDialog PUBLIC
 ::CLASS View PUBLIC MIXINCLASS PlainBaseDialog
--- wring: ::CLASS ViewMixin PUBLIC MIXINCLASS Component
+-- wrong: ::CLASS ViewMixin PUBLIC MIXINCLASS Component
 -- wrong: ::CLASS ViewMixin SUBCLASS Component PUBLIC 
 
   ::ATTRIBUTE viewMgr
   ::ATTRIBUTE objectMgr
+  ::ATTRIBUTE dragMgr
 
   /*----------------------------------------------------------------------------
     initView - initialises the mixin instance - invoked from ???
@@ -80,6 +82,10 @@
     --say "View-initView-01."
     self~objectMgr = .local~my.ObjectMgr	-- Needed to clear up when dialog closed.
     self~viewMgr = .local~myViewMgr
+    -- Direct Manipulation:
+    self~dragMgr = .local~my.DragMgr
+    --say "View-initView-01: dragMgr =" self~dragMgr
+
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -123,6 +129,7 @@
     expose viewClass viewInstance
     --say "View-leaving-01. objectMgr =" objectMgr
     self~objectMgr~removeView(viewClass, viewInstance)
+    self~dragMgr~removeDlg(self) 		-- closing, so tell DragManager
     -- Note - we do not remove the Model. Should we? If so, not from here!
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -163,7 +170,125 @@
     self~offset
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+  
+  /*----------------------------------------------------------------------------
+    Drag/Drop Methods
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */  
 
+  /*----------------------------------------------------------------------------
+    dmSetAsSource - called by a view component to define itself as a drag source.
+		    Typically invoked from subclass' initDialog method.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD dmSetAsSource PRIVATE		-- DM setup method
+    -- Each source dialog should invoke this only once.
+    -- Invoking it more than once may well result in errors.
+    -- Note: a dialog may be both source and target.
+    expose mouse
+    use arg dmSourceCursorFile, dmSourceArea
+    if dmSourceCursorFile = .nil then do
+      say "View-dmSetAsSource-01:" .HRS~dmSrcNulCursor
+      return .false
+    end
+
+    if dmSourceArea = "DMSOURCEAREA" then do		-- set default pickup area
+      dmSourceArea = self~clientRect()
+      dmSourceArea~left += 10; dmSourceArea~top += 10; -
+        dmSourceArea~right -= 10; dmSourceArea~bottom -= 10
+      say "View-dmSetAsSource-02 - default pickup client area =" dmSourceArea
+    end
+
+    mouse = .Mouse~new(self)
+    mouse~connectEvent('MOUSEMOVE',dmOnMove)
+    mouse~connectEvent('LBUTTONDOWN', dmOnLBdown)
+    mouse~connectEvent('LBUTTONUP', dmOnLBup)
+    --mouse~connectEvent('MOUSELEAVE', dmLeave)
+
+    self~dragMgr~setSource(self, mouse, dmSourceCursorFile, dmSourceArea)
+
+    return .true
+
+  /*----------------------------------------------------------------------------
+    dmSetAsTarget - called by a view component to define itself as a drag target.
+		    Typically invoked from subclass' initDialog method.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD dmSetAsTarget				-- DM setup method
+    -- Each target dialog should invoke this only once.
+    -- Invoking it more than once may well result in errors.
+    -- Note: a dialog may be both source and target.
+    expose dmIsTargetDlg
+    use arg dmDropArea
+    say "View-dmSetAsTarget-01."
+
+    if dmDropArea = "DMDROPAREA" then do		-- set default. Better is to check the type.
+      dmDropArea = self~clientRect()
+      dmDropArea~left += 10; dmDropArea~top += 10; dmDropArea~right -= 30; dmDropArea~bottom -= 30
+    end
+
+    self~dragMgr~setTarget(self, self~hwnd, dmDropArea)
+
+    return .true
+
+  -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+  -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ::METHOD dmOnLBdown
+    use arg keyState, mousePos
+    say "View-dmOnLBdown; self =" self
+    self~DragMgr~pickup(self, keyState, mousePos)
+    return 0
+
+  -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ::METHOD dmOnMove
+    use arg keyState, mousePos
+    --say "View-dmOnMove: self =" self
+    self~dragMgr~moving(self, keystate, mousePos)
+    return 0
+
+  -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ::METHOD dmOnLBup
+    use arg keyState, mousePos
+    say "View-dmOnLBup-01; self =" self
+    self~dragMgr~drop(self, keyState, mousePos)
+    --return r -- throws error, as done no return at all.
+    return 0
+    --say 'DMSource-onLButtonUp: the mouse is at ('mousePos~x',' mousePos~y') with these qualifiers:' keyState
+
+  -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*  ::METHOD dmNeverDrop
+    -- Invoked by a target object to prevent any drop (e.g. if a sales order is
+    -- complete and should not now be altered). The red/white target icon is
+    -- changed to grey.
+    expose dmTargetIconImage dmIcons dmTargetInactive
+    use arg dmTargetInactive
+    if dmTargetInactive then dmTargetIconImage~setImage(dmIcons[dmTgtInactiveIcon])
+    else dmTargetIconImage~setImage(dmIcons[dmTgtReadyIcon])
+*/
+
+  ::METHOD dmQueryDrop
+    use arg dmSourceDlg, mousePos
+    say "View-dmQueryDrop-01."
+    return .true			-- Default is to accept the drop.
+
+  ::METHOD dmDrop
+    use arg sourceDlg
+    say "View-dmDrop-01."
+    return .true
+
+/*  ::METHOD cancel
+    expose dmDragMgr
+    say "View-Cancel-01."
+    dmDragMgr~removeDlg(self) 		-- closing, so tell DragManager
+    return self~cancel:super
+*/
+/*
+  ::METHOD ok
+    say "View-ok-01."
+    self~dragMgr~removeDlg(self) 		-- closing, so tell DragManager
+    return self~ok:super
+*/
+
+    
   /*----------------------------------------------------------------------------
     Event Management Methods. *** INCOMPLETE ***
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */  
@@ -179,4 +304,17 @@
     
       
 /*============================================================================*/
-    
+
+
+
+/*==============================================================================
+  Human-Readable Strings (HRS)					  v00-01 13Jan12
+  --------
+   The HRS class provides constant character strings for user-visible messages.
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+::CLASS HRS PRIVATE		-- Human-Readable Strings
+  ::CONSTANT dmSrcNulCursor  "View-dmSetAsSource - Error: Source Cursor is null."
+  ::CONSTANT dmTgtBadParam   "View-dmSetAsTarget - Error: null dlg or null hwnd or both."
+  
+  
