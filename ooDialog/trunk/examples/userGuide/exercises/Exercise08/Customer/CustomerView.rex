@@ -159,7 +159,7 @@
     InitDialog - Called by ooDialog 					   -- */
   ::METHOD initDialog
     expose menuBar custControls
-    say "CustomerView-initDialog-01."
+    --say "CustomerView-initDialog-01."
     menuBar~attachTo(self)
     -- Create objects that map to the edit controls defined by the "customer.rc"
     --   so they can be programmatically used elsewhere in the class:
@@ -184,7 +184,6 @@
     
     -- Show app data:
     self~showData
-    self~saySomething -- Test for Component mixin - delete any time.
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

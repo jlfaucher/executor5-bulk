@@ -145,7 +145,18 @@
     modelId = RESULT							--Ex07
     return modelId							--Ex07
 
+    
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    dmQueryDrop - Check whether a drag/drop operation is allowed to drop
+                  on an order form.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -.*/
+  ::METHOD dmQueryDrop CLASS PUBLIC
+    use arg sourceClassName
+    say ".OrderFormModel-dmQueryDrop-01 sourceClassName =" sourceClassName
+    if sourceClassName = "CUSTOMERMODEL" then return .true
+    else return .false
 
+    	    
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     getInstanceName - over-rides super's method.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -.*/

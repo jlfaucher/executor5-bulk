@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
 
-   Support - ObjectMgr						 v01-00  21Jan13
+   Support - ObjectMgr						 v01-01  06Jun13
    -------------------
    A singleton component that manages model objects.
 
@@ -59,6 +59,8 @@
            11Jan13: Commented-out 'say' instructions.
            21Jan13: Make 'addView' private and 'removeView' explicitly public.
                     Minor typos in comments corrected.
+    v01-01 06Jun13: Added method 'getModelClass' which returns the class of the
+                    model which has the given view.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -223,7 +225,53 @@ call "RequiresList.rex"
     return .true
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+  /*----------------------------------------------------------------------------
+    modelIdFromView - Returns the model for a given view.
+                        (Added to support drag/drop)
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD modelIdFromView PUBLIC
+    expose objectBag  
+    use strict arg viewId
+    parse var viewId . viewClassName
+    --say "ObjectMgr-modelIdFromView-01: viewName =" viewClassName
+    viewInstanceName = viewId~identityHash
+    searchClassInst = viewClassName||"-"||viewInstanceName
+    do label myLoop i over objectBag
+      arr = objectBag[i]
+      viewClassInst = arr[2]
+      if viewClassInst = searchClassInst then do
+        modelId = arr[1]
+        leave myLoop
+      end
+    end myLoop
+    say "ObjectMgr-modelIdFromView-02: modelId =" modelId
+    return modelId
+  
+  /*----------------------------------------------------------------------------
+    modelClassFromView - Returns the class name of the model for a given view.
+                        (Added to support drag/drop)
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD modelClassFromView PUBLIC
+    expose objectBag
+    use strict arg viewId	-- the object id of a View dialog.
+    modelName = .nil
+    parse var viewId . viewClassName
+    --say "ObjectMgr-modelClassFromView-01: viewName =" viewClassName
+    viewInstanceName = viewId~identityHash
+    searchClassInst = viewClassName||"-"||viewInstanceName
+    do label myLoop i over objectBag
+      arr = objectBag[i]
+      viewClassInst = arr[2]
+      if viewClassInst = searchClassInst then do
+        modelName = i
+        leave myLoop
+      end
+    end myLoop
+    parse var modelName className "-" .
+    --say "ObjectMgr-modelClassFromView-02: modelName, className =" modelName||"," classname
+    return className
 
+    
   /*----------------------------------------------------------------------------
     addView - Adds a View to the ObjectBag.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

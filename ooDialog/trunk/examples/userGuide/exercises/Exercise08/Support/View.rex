@@ -37,7 +37,7 @@
 /* ooDialog User Guide - Support
    Exercise 08: View.rex 				  	  
 
-   ViewMixin							  v01-01 05Jun13
+   ViewMixin							  v01-02 05Jun13
    ---------
    A mixin superclass for View components (part of the Model-View Framework).
    
@@ -51,7 +51,8 @@
 
    Changes:
      v01-00 12May13: First Version.
-     v01-01 05Jun13: Added drag/drop methods.
+     v01-01 05Jun13: Added drag/drop methods. Also store model id as an
+                     attribute to save subclases having to do it.                      
 
 ------------------------------------------------------------------------------*/
 
@@ -73,6 +74,7 @@
   ::ATTRIBUTE viewMgr
   ::ATTRIBUTE objectMgr
   ::ATTRIBUTE dragMgr
+  ::ATTRIBUTE myModel
 
   /*----------------------------------------------------------------------------
     initView - initialises the mixin instance - invoked from ???
@@ -95,6 +97,8 @@
   ::METHOD activate UNGUARDED
     expose viewClass viewInstance		-- needed for tidy-up on close.
     use arg modelId
+    -- Store model id for use by subclasses:
+    self~myModel = modelId
     --say "View-activate-01: self =" self
     -- Get View Instance name and View Class for tidy-up when dialog is closed.
     viewInstance = self~identityHash
@@ -186,7 +190,7 @@
     expose mouse
     use arg dmSourceCursorFile, dmSourceArea
     if dmSourceCursorFile = .nil then do
-      say "View-dmSetAsSource-01:" .HRS~dmSrcNulCursor
+      --say "View-dmSetAsSource-01:" .HRS~dmSrcNulCursor
       return .false
     end
 
@@ -194,7 +198,7 @@
       dmSourceArea = self~clientRect()
       dmSourceArea~left += 10; dmSourceArea~top += 10; -
         dmSourceArea~right -= 10; dmSourceArea~bottom -= 10
-      say "View-dmSetAsSource-02 - default pickup client area =" dmSourceArea
+      --say "View-dmSetAsSource-02 - default pickup client area =" dmSourceArea
     end
 
     mouse = .Mouse~new(self)
@@ -217,7 +221,7 @@
     -- Note: a dialog may be both source and target.
     expose dmIsTargetDlg
     use arg dmDropArea
-    say "View-dmSetAsTarget-01."
+    --say "View-dmSetAsTarget-01."
 
     if dmDropArea = "DMDROPAREA" then do		-- set default. Better is to check the type.
       dmDropArea = self~clientRect()
@@ -234,7 +238,7 @@
   -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ::METHOD dmOnLBdown
     use arg keyState, mousePos
-    say "View-dmOnLBdown; self =" self
+    --say "View-dmOnLBdown-01; self =" self
     self~DragMgr~pickup(self, keyState, mousePos)
     return 0
 
@@ -248,7 +252,7 @@
   -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ::METHOD dmOnLBup
     use arg keyState, mousePos
-    say "View-dmOnLBup-01; self =" self
+    --say "View-dmOnLBup-01; self =" self
     self~dragMgr~drop(self, keyState, mousePos)
     --return r -- throws error, as done no return at all.
     return 0

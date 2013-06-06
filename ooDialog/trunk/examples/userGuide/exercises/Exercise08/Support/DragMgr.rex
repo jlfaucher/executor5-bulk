@@ -68,6 +68,7 @@
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::REQUIRES ooDialog.cls
+::REQUIRES "Order\OrderModelsData.rex"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ============================================================================*/
@@ -85,7 +86,7 @@
   ::METHOD init
     expose icons dragging cursorIsNoDrop noDropCursor
     .local~my.DragMgr = self
-    say "DragMgr-init-01: .local~my.DragMgr =" .local~my.DragMgr 
+    --say "DragMgr-init-01: .local~my.DragMgr =" .local~my.DragMgr 
     self~dragInProgress = .false
     self~targetDialogs = .Table~new	-- Index = dlg id
     					-- Item = an Array: hwnd, dropArea,
@@ -149,7 +150,7 @@
     expose cursorIsNoDrop dragging dropOkCursor mouse noDropCursor oldCursor overTarget
     use strict arg sourceDlg, keyState, mousePos
 
-    say "------------------------------------------------------------"
+    --say "DragMgr-pickup-00."
     arrItems = self~sourceDialogs[sourceDlg]  	-- mouse,srcCursor,pickupArea
     mouse = arrItems[1]
     dropOkCursor = arrItems[2]
@@ -162,7 +163,7 @@
       if dropOkCursor == 0 then do
         say "DragManager-pickup-02:" .HRSdm~badOkCursor .SystemErrorCode
       end
-      say 'DragManager-pickup-03: Detected dragging.'
+      --say 'DragManager-pickup-03: Detected dragging.'
       mouse~capture()
       oldCursor = mouse~setCursor(noDropCursor)
       cursorIsNoDrop = .true
@@ -226,7 +227,15 @@
       if targetDlg = sourceDlg then return	-- If target is also the source
       	      					--   then it's not a target (in this version!).
       if \overTarget then do			-- if first time over target
-        r = targetDlg~dmQueryDrop(sourceDlg,mousePos)
+
+        --Get the model class for the source View:
+        objectMgr = .local~my.ObjectMgr
+        sourceClassName = objectMgr~modelClassFromView(sourceDlg)
+        targetClassName = objectMgr~modelClassFromView(targetDlg)
+        say "DragMgr-moving-06a: source Class =" sourceClassName
+        say "DragMgr-moving-06b: target Class =" targetClassName
+        --parse value a~class with . className .
+        interpret "r = ."||targetClassName||"~dmQueryDrop("||sourceClassName||")"
         say "DragManager-moving-07: first time - queryDrop returned" r
         if r = .true then do			-- if target accepts a drop
           validTarget = .true
@@ -258,13 +267,13 @@
 
   /*----------------------------------------------------------------------------
     drop - Handles things when the user drops onto a target.
+           Invoked by "View" (the superclass).
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD drop PUBLIC
     expose cursorIsNoDrop dragging mouse oldCursor dropTarget
     use strict arg sourceDlg, keyState, mousePos
-
-    say "DragManager-drop-01: the mouse is at ("mousePos~x", "mousePos~y")"
-    say "DragManager-drop-02: cursorIsNoDrop =" cursorIsNoDrop
+    --say "DragManager-drop-01: the mouse is at ("mousePos~x", "mousePos~y")"
+    --say "DragManager-drop-02: cursorIsNoDrop =" cursorIsNoDrop
 
     if dragging then do
       okayToDrop = (cursorIsNoDrop \== .true)	-- if cind = .false then okToDrop is true;
@@ -277,8 +286,13 @@
       p = mouse~getCursorPos; p~incr; mouse~setCursorPos(p)
 
       if okayToDrop then do
-      	say "DragManager-drop-03: sourceDlg =" sourceDlg
-        dropTarget~dmDrop(sourceDlg)
+      	--say "DragManager-drop-03: sourceDlg =" sourceDlg
+--        objectMgr = .local~my.ObjectMgr
+--        sourceClassName = objectMgr~modelClassFromView(sourceDlg)
+--        targetClassName = objectMgr~modelClassFromView(targetDlg)
+        objectMgr = .local~my.ObjectMgr
+        sourceModelId = objectMgr~modelIdFromView(sourceDlg)
+        dropTarget~dmDrop(sourceModelId, sourceDlg)
         say "DragManager-drop-04: Drop Happened OK!!"
       end
       else say "DragManager-drop-05: Drop Did Not Occur."

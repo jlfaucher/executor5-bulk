@@ -123,7 +123,8 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate unguarded
-    expose rootDlg idModelInstance orderData cd1 cd2 orderTotal custDiscount taxRate eventMgr
+    expose rootDlg idModelInstance orderData cd1 cd2 orderTotal custDiscount -
+           taxRate eventMgr cd1
     use strict arg idModelInstance, rootDlg
     forward class (super) continue
     orderData = RESULT
@@ -210,18 +211,23 @@
     -- Set as target for Drag/Drop:
         self~dmSetAsTarget:super()
 
-  ::METHOD dmQueryDrop
-    use strict arg sourceDlg, mousePos	-- try also without mousepos.
-    say "OrderFormView-dmQueryDrop-01."
-    return .true
-    
-  ::METHOD dmDrop
-    expose userText
-    use strict arg sourceDlg
-    say "OrderFormView-dmDrop-01."
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    -- This method not used - message goes to the class. Left in just for the
+    -- time being. Delete when all darg/drop OK. 
+  --::METHOD dmQueryDrop
+    --use strict arg sourceDlg, mousePos	-- try also without mousepos.
+    --say "OrderFormView-dmQueryDrop-01."
+    --return .true
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD dmDrop PUBLIC
+    expose cd1
+    use strict arg sourceModel, sourceDlg
+    say "OrderFormView-dmDrop-01; sourceModel, sourceDlg =" sourceModel||"," sourceDlg
     --text = sourceDlg~query
-    say "OrderFormView-dmDrop-02; sourceDld =" sourceDlg
+    --say "OrderFormView-dmDrop-02; sourceDld =" sourceDlg
     --userText~setText(text)
+    cd1~getCustomer(sourceModel)
     return .true
     
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -556,8 +562,8 @@
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    setOrderFormDlg - Incoked by OrderFormView dialog so that this Control Dialog
-                 can communicate with OrderFormView.
+    setOrderFormDlg - Invoked by OrderFormView dialog so that this Control Dialog
+                      can communicate with OrderFormView.
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD setOrderFormDlg
     expose dlgOrderForm
@@ -598,6 +604,29 @@
       say "OrderFormView/CustDetailsDlg-findCustomer-02: query returned error."
       return
     end
+    self~setCustomer(dirCustData)
+
+    
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    getCustomer - invoked by main OrderFormView dialog when a Customer is
+                  dropped on the Order Form. 
+    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
+  ::METHOD getCustomer UNGUARDED
+    expose ecCustNum 
+    use strict arg customerId
+    dirCustData = customerId~query
+    -- set Customer Number in dialog control - this not done by the setCustomer
+    --   method because it's keyed in by the user when not using drag/drop.
+    ecCustNum~setText(dirCustData["CustNo"])
+    self~setCustomer(dirCustData)    
+
+    
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    setCustomer - invoke when a Customer is dropped on the Order Form. 
+    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
+  ::METHOD setCustomer UNGUARDED
+    expose ecCustNum ecCustName ecCustAddr ecCustDisc pbFindCust objectMgr dlgOrderForm
+    use strict arg dirCustData  
     -- Got Cust details - now populate controls (Name, Address, Discount):
     ecCustName~setText(dirCustData["CustName"])
     -- Replace commas with eols:
