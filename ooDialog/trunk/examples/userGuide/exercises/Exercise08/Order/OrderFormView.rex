@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The OrderFormView class				  v03-01 25May13
+   Exercise 08: The OrderFormView class				  v03-01 06Jun13
    OrderFormView.rex
 
    Contains: class "OrderFormView", class "HRSofv".
@@ -53,6 +53,10 @@
                      Order Lines.
             25May13: Now inherits directly from RcDialog plus the View & 
                      Component mixins.
+     v03-01 06Jun13: Added drag/drop code (method 'dmDrop') to make 
+                     OrderFormView a target. Also added code to the Customer 
+                     Details control dialog so that Customer can be provided by
+                     drag/drop or by entering Cutomer Number. 
             
 ------------------------------------------------------------------------------*/
 
@@ -64,7 +68,7 @@
 ::REQUIRES "support\View.rex"						-- v03
 
 /*==============================================================================
-  OrderFormView							  v02-00 27Feb13
+  OrderFormView							  v02-01 06Jun13
   -------------
   The "view" (or "gui") Data Entry part of the Sales Order component.
 
@@ -77,6 +81,7 @@
                     one year ahead.
                   Commented-out say's.
          20May13: Now inherits directly from RcDialog plus the View & Component mixins
+  v02-01 06Jun13: Added drag/drop code to make OrderFormView a target.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 

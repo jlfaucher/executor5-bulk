@@ -59,8 +59,10 @@
            11Jan13: Commented-out 'say' instructions.
            21Jan13: Make 'addView' private and 'removeView' explicitly public.
                     Minor typos in comments corrected.
-    v01-01 06Jun13: Added method 'getModelClass' which returns the class of the
-                    model which has the given view.
+    v01-01 06Jun13: Added methods 'modelClassFromView and 'modelIdFromView -
+                    given a view (a dialog), which return the model class name 
+                    and model object id respectively. Purpose: to support 
+                    Drag/Drop.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 

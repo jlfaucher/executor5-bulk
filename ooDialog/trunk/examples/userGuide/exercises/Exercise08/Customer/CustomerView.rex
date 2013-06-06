@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The CustomerView component             		  v03-00 24May13
+   Exercise 08: The CustomerView component             		  v03-00 06Jun13
 
    Contains: 	   class "CustomerView";  routine "startCustomerView".
    Pre-requisites: RcView.rex, CustomerView.rc, CustomerView.h.
@@ -54,6 +54,7 @@
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
    v03-00 24May13: Inherits directly from RcDialog plus the View & Component mixins
+          06Jun13: Added set self as drag/drop source in initDialog method.
    
 ------------------------------------------------------------------------------*/
 

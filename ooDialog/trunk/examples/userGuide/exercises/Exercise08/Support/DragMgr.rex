@@ -34,9 +34,9 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide
+/* ooDialog User Guide - Exercise08
 
-   Support - DragMgr					 	 v01-00  03Jun13
+   Support - DragMgr					 	 v01-00  06Jun13
    ---------------------
    A singleton component that manages direct manipulation.
 
@@ -63,7 +63,7 @@
      }
 
   Changes:
-    v01-00 03Jun13: First version.
+    v01-00 06Jun13: First version.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 

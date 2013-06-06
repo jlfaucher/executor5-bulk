@@ -37,7 +37,7 @@
 /* ooDialog User Guide - Support
    Exercise 08: View.rex 				  	  
 
-   ViewMixin							  v01-02 05Jun13
+   ViewMixin							  v01-02 06Jun13
    ---------
    A mixin superclass for View components (part of the Model-View Framework).
    
@@ -51,8 +51,11 @@
 
    Changes:
      v01-00 12May13: First Version.
-     v01-01 05Jun13: Added drag/drop methods. Also store model id as an
-                     attribute to save subclases having to do it.                      
+     v01-01 06Jun13: Added drag/drop methods. Also store model id as an
+                     attribute ('myModel') to save subclases having to do it.
+                     Note - some drag/drop methods are there as catch-alls for
+                     when a subclass does not implement them. Default action 
+                     still to be verified. 
 
 ------------------------------------------------------------------------------*/
 
@@ -61,15 +64,13 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ViewMixin							  	  v01-00 13May13
-  --------------------
+  ViewMixin						  	  v01-00 13May13
+  ---------
   A mixin superclass for View classes.  the Order Management dialog. Handles interest registration,
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 --::CLASS View SUBCLASS RcDialog PUBLIC
 ::CLASS View PUBLIC MIXINCLASS PlainBaseDialog
--- wrong: ::CLASS ViewMixin PUBLIC MIXINCLASS Component
--- wrong: ::CLASS ViewMixin SUBCLASS Component PUBLIC 
 
   ::ATTRIBUTE viewMgr
   ::ATTRIBUTE objectMgr

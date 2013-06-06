@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The OrderModel and OrderData Classes	  	  v02-00 01Apr13
+   Exercise 08: The OrderModel and OrderData Classes	  	  v02-01 06Jun13
 
    Contains: 	   classes "OrderModel", OrderListModel, and "OrderData".  --Ex07
    Pre-requisites: None.
@@ -48,6 +48,7 @@
    v02-00 08Jan13: Modified to use the MVF.
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
+   v02-01 06Jun13: Added drag/drop code to OrderFormModel
 
 ------------------------------------------------------------------------------*/
 
@@ -118,12 +119,15 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  OrderFormModel						  v01-00 04Oct12
+  OrderFormModel						  v02-00 06Jun13
   --------------
   The model component for the OrderForm business component.
 
   Changes:
    v01-00 04Oct12.
+   v02-00 06Jun13: Added drag/drop class method (dmQueryDrop) which checks 
+                   whether the dragged source is a Customer. 
+
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
