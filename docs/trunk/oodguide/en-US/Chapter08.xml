@@ -47,19 +47,24 @@
     Changes:
      v01-00 10May13: First version.
 
-    8   *  ???	                                                       chapEight
-    8.1   * Introduction                                               chap08-intro
-    8.2   * Class Structure                                            chap08-classStructure
-    8.3   * The Order Form                                             chap-08-orderForm
-    8.4   * Event Management                                           chap08-eventMgmt
+    8   *  ???	                                           chapEight
+    8.1   * Introduction                                   chap08-intro
+    8.2   * MVF Class Structure                            chap08-classStructure
+    8.3   * Using the MVF                                  chap08-usingMVF
+    8.4   * The Order Form                                 chap08-orderForm
+    8.5   * Event Management                               chap08-eventMgmt
+    8.6   * Drag/Drop                                      chap08-dragdrop
     
 Topics (some may not appear in this chapter - if not, they'll go into the next and final chapter 9):
   1. Sorting out the hang when close OrderMgr before closing OrderForm (in Ex 7)
   2. Need for Event Management - tell OrderForm when app is closing (also addition of method ok).
-  3. Added function in OrderForm.
-  4. "Saving" the OrderForm when complete
-  5. moving the View supers into a single mixin.
-  6. Drag/Drop
+  3. OrderForm - added function:  
+     a. Can now select products and customer and tot up totals.
+     b. Dbl-click on order line surfaces the product. 
+     c. "Saving" the OrderForm when complete (but this needs write to file which may not be in Ex8!)
+     d. Drag/drop (see item 5)
+  4. Moving the View supers into a single mixin.
+  5. Drag/Drop Customer/Product to OrderForm (but may not be in this ex...)
   7. Use of ooSQL (but might be postponed to Chap 9).
   8. ???
 -->
@@ -138,15 +143,49 @@ Topics (some may not appear in this chapter - if not, they'll go into the next a
   </section> 
   
   <!-- *********************************************************************************************** -->
-  <section id="chap08-orderForm"><title>The Order Form</title> <!-- Section 8.3 -->
-    <!--  added an ok method to catch enter key.
-          use event management f/w - see section chap08-eventMgmt 
+  <section id="chap08-usingMVF"><title>Using the MVF</title>  <!-- Section 8.3 -->
+    <section><title>View Components</title>  <!-- Section 8.3.1 -->
+      <para>View components such as <computeroutput>CustomerView</computeroutput> must: <itemizedlist>
+          <listitem>
+            <para>add <computeroutput>::REQUIRES "Support\Component.rex"</computeroutput> and
+                <computeroutput>::REQUIRES "support\Component.rex"</computeroutput> at start of the
+              file.</para>
+          </listitem>
+          <listitem>
+            <para>Change the class statement to sublass from
+                <computeroutput>RcDialog</computeroutput> (or ResDialog or UserDialog) instead of
+                <computeroutput>RcView</computeroutput>.</para>
+          </listitem>
+          <listitem>
+            <para>To the end of the <computeroutput>::CLASS</computeroutput> statement add
+                <computeroutput>INHERIT View Component</computeroutput>.</para>
+          </listitem>
+          <listitem>
+            <para>In the <computeroutput>init</computeroutput> method, immediately after
+                <computeroutput>forward class (super) continue</computeroutput>", insert
+                <computeroutput>self~initView</computeroutput>" in place of supering
+                <computeroutput>init</computeroutput> which results in a run-time error.</para>
+          </listitem>
+        </itemizedlist></para>
+    </section>  <!-- End of 8.3.1 -->
+    <section><title>Model and Data Components</title>  <!-- Section 8.3.2 -->
+      <para>For model and data components, ensure there's <computeroutput>::REQUIRES
+          "Support\Model.rex"</computeroutput> and for data components <computeroutput>::REQUIRES
+          "Support\GenericFile.rex"</computeroutput> respectivley at the start of the file.  </para>
+    </section>  <!-- End of 8.3.2 -->
+  </section>  <!-- End of 8.3 -->
+  
+  <!-- *********************************************************************************************** -->
+  <section id="chap08-orderForm"><title>The Order Form</title> <!-- Section 8.4 -->
+    <!--  - added an ok method to catch enter key.
+          - use event management for control of close (else hangs)  - see section chap08-eventMgmt
+          - added open Product when dbl-click on a line in Order Details.
     -->
     <para>xxx</para>
   </section>
 
   <!-- *********************************************************************************************** -->  
-   <section id="chap08-eventMgmt" xreflabel="Event Management">  <!-- Section 8.4 -->
+   <section id="chap08-eventMgmt" xreflabel="Event Management">  <!-- Section 8.5-->
    <title>Event Management</title>
    <para>If an Order Form is open when the Order Management application is closed, then the process
       hangs. The reason for this is that the OrderForm's control dialogs must be cleaned up
@@ -156,30 +195,109 @@ Topics (some may not appear in this chapter - if not, they'll go into the next a
       question is how should this be done? Somehow, all active Order Form dialogs must be told about
       the "application close" event so they can clean up the two control dialogs.</para>
     <para>One solution is for the Order Management dialog to tell each Order Form that the
-      application is about to close. Perhaps the Order Management dilaog could inquire of the Object
+      application is about to close. Perhaps the Order Management dialog could inquire of the Object
       Manager as to which Order Form dialogs exist, and then send each of them a "close now"
       message. However, a more elegant solution - and one that has much wider potential use - is to
       provide an event management framework. </para>
-    <para>A simple event management framework (EMF) is introduce in Exercise 8, and is in the 
-      file <computeroutput>EventMgr.rex</computeroutput> in the <computeroutput>Support</computeroutput> folder.
-      </para>
+    <para>A simple event management framework (EMF) is introduce in Exercise 8. The object that
+      keeps track of events and who's interested in them is the Event Manager (the file
+        <computeroutput>EventMgr.rex</computeroutput> in the
+        <computeroutput>Support</computeroutput> folder). The code that "talks" directlly to the
+      Event Manager is in the <computeroutput>Component</computeroutput> mixin. Application-level
+      components merely super event requests, and <computeroutput>Component</computeroutput> does
+      the rest.</para>
      <para>The EMF works like this. First, a component decides that it's interested in some event -
-      say "AppClosing". When this event occurs, it wants to be sent a message so that it can take
-      appropriate action. To express its interest, the component sends a
-        <computeroutput>registerInterest</computeroutput> message to the Event Manager with two
-      parameters - the its object id, and the event in which it's interested: <programlisting><![CDATA[   eventMgr = .local~my.eventMgr
-    eventMgr~registerInterest(self,"appClosing")]]>      </programlisting> Some time later, when the
-      Order Manager is being closed, it asks the Event Manager to trigger the event "appClosing":
-      <programlisting><![CDATA[   eventMgr~triggerEvent("appClosing")]]>      </programlisting>This
-      results in a <computeroutput>notify</computeroutput> message, with the event name as an
-      argument, to be sent to each component that has registered interest in the "appClosing" event: <programlisting><![CDATA[   EventMgr:              <interestedComponent>~notify("appClosing")
-
-    Interested Component:  ::method notify public
-                             use arg event
-                             if event = "appClosing" then do
-                             -- takes appropriate action]]>    </programlisting>Note that this
+      say "AppClosing". (One such component is <computeroutput>OrderFormView</computeroutput>,
+      which, if an instance is open when the app is closed needs to close its Control Dialogs before
+      it is closed.) When this event occurs, it wants to be sent a message so that it can take
+      appropriate action. To express its interest, in its <computeroutput>activate</computeroutput>
+      method the component sends a <computeroutput>registerInterest</computeroutput> to itself with
+      two parameters - the event in which it's interested and its object
+      id:<programlisting><![CDATA[   self~registerInterest("appClosing", self)]]>      </programlisting>
+      Some time later, when the Order Manager dialog is being closed, it asks for the event
+      "appClosing" to be triggered:
+      <programlisting><![CDATA[   self~triggerEvent("appClosing")]]>      </programlisting>The
+        <computeroutput>Component</computeroutput> mixin sends this to the Event Manager which then
+      sends a <computeroutput>notify</computeroutput> message to each component that has registered
+      interest in this event. Note that this
       simple event management framework is fairly generic, and can be used for any event by any
       component. The only constraint is that event names must be unique. </para>
    </section>
   
+  <section id="chap08-dragdrop" xreflabel="Direct Manipulation">  <!-- Section 8.6 -->
+    <title>Direct Manipulation</title>
+    <indexterm><primary>Direct manipulation</primary></indexterm>
+    <indexterm><primary>Drag-Drop</primary></indexterm>
+    <para>Direct manipulation (or drag-drop) is the use of the mouse to drag dialogs around the screen
+      and drop them on other dialogs. But of course it isn't the dialog that's visibly dragged - it's a small icon 
+      that represents the dialog. To try this out, first surface a Customer dialog (e.g. by double-clicking
+      on an item in the Customer List dialog). Second, create an Order Form dialog by double-clicking on the
+      OrderForm icon in the Order Manager dialog. Now put the mouse cursor
+      over the Customer dialog then press and hold
+      the "primary" button (usually the left mouse button).<footnote><para>The "primary" button defaults to being the left-hand 
+      button, but this can be changed in the Windows Mouse Properties so that it's the right-hand button.</para></footnote>
+      Start dragging - you'll see the mouse cursor change to a no-entry (or "no-drop") symbol. Drag it over the OrderForm. 
+      The mouse cursor changes to a Customer symbol. Now release the mouse button - that it, "drop" the Customer onto 
+      the Order Form. The customer details appear on the Order Form. 
+    </para>
+    <para>Although behind this operation there is some quite complex code (discussed in <xref linkend="apx6-dm"/>, 
+      the code within application components
+      is very simple. In the drag-drop context, there are two kinds of component: a "source" dialog that is dragged,
+      and a "target" dialog that is dragged over and/or dropped upon (dragging more than one component is not supported).
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="italic"><emphasis role="bold">Source Dialog</emphasis></emphasis></para>
+        <para>To enable support for dragging from a source dialog, simply provide the following code
+          when the dialog is started (typically in the <computeroutput>initDialog</computeroutput>
+          method):
+          <programlisting><![CDATA[  r = self~dmSetAsSource:super("<cursor file name>")]]></programlisting>
+          The cursor file (with file extension "cur") must be given with its path. For example, the
+          cursor file name in <computeroutput>CustomerView</computeroutput> is
+            <computeroutput>Customer\bmp\Customer.cur</computeroutput>. A cursor file can be created
+          using an appropriate tool.<footnote>
+            <para>One such tool is <ulink url="http://www.gdgsoft.com/gconvert/index.aspx"
+                  ><citetitle>GConvert</citetitle></ulink>. However, there are others, and mention
+              of this particular product should not be interpreted as a preference.</para>
+          </footnote></para></listitem>
+      <listitem>
+        <para><emphasis role="italic"><emphasis role="bold">Target Dialog</emphasis></emphasis></para>
+        <para>In the target two things have to be done. First, when being dragged over, decide whether a drop
+          is acceptable, so that the mouse cursor can be set as either no-drop or ok-to-drop. 
+          Second, if acceptable, accept the drop if it happens.</para>
+          <itemizedlist>
+            <listitem><para><emphasis role="bold">Drop acceptable?</emphasis></para>
+              <para>Checking if a drop is acceptable is done in the class object of the target's
+              model component. For a drop on an Order Form, this is
+                <computeroutput>.OrderFormModel</computeroutput> which accepts a drop of a
+                <computeroutput>CustomerModel</computeroutput>, as follows:<programlisting><![CDATA[  ::METHOD dmQueryDrop CLASS PUBLIC
+     use arg sourceClassName
+     if sourceClassName = "CUSTOMERMODEL" then return .true
+     else return .false]]></programlisting>Why the class object? Well, in the general case, a user
+              might want to drop on some visible representation of a target such as an item in a
+              ListView. To get to the right item, the mouse cursor could be dragged over many items.
+              If each is asked if a drop is allowed, then each must first be instantiated, and this
+              could mean many database accesses. Much better to check with an object that's already
+              instantiated - such as the class object (class objects are instantiated when the
+              program starts). However, in Exercise 8 only instantiated dialogs (i.e. view objects)
+              can be drag-drop targets. </para>
+            </listitem>
+            <listitem><para><emphasis role="bold">Drop happens</emphasis></para>
+              <para>If a drop is acceptable, and if the user then releases the mouse button, then
+              the view instance receives a <computeroutput>dmDrop</computeroutput> message, upon
+              which the target typically asks the source object for data. For OrderFormView: <programlisting><![CDATA[  ::METHOD dmDrop PUBLIC
+     expose cd1
+     use strict arg sourceModel, sourceDlg
+     cd1~getCustomerData(sourceModel)           -- gets Customer data
+     return .true]]>                </programlisting>Note that the variable
+                <computeroutput>cd1</computeroutput> is the Customer Details control dialog. The
+              method <computeroutput>getCustomerData</computeroutput> invokes
+                <computeroutput>query</computeroutput> on the dragged Customer model
+                (<computeroutput>sourceModel</computeroutput>) and populates the Customer control
+              dialog in <computeroutput>OrderFormView</computeroutput>.  </para>
+            </listitem>
+         </itemizedlist>
+      </listitem>
+    </itemizedlist>
+  </section>
 </chapter>
