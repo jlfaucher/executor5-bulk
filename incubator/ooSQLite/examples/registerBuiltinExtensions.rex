@@ -37,22 +37,30 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  loadBuiltinExtensions.rex
+ *  registerBuiltinExtensions.rex
  *
- *  Demonstrates how to load the builtin SQLite extensions.
+ *  Demonstrates how to register the builtin SQLite extensions.
  *
- *  The extensions are implemented in simpleExtension.c which is in the
- *  user.extensions subdirectory.  On Windows simpleExtension.c is compiled into
- *  a DLL, on Linux it is compiled into a .so file.
+ *  The builtin extensions consist of some extensions provided by SQLite in C
+ *  source code.  These extensions are compiled into the ooSQLite shared library
+ *  and can be used by registering any of them with a database connection, or
+ *  by making any of them an automatic extension.
  *
- *  One of the extensions is a collation, REVERSE.  After loading the
- *  extension file, we can use the REVERSE collation here.
+ *  When a builtin extension is registered with a database connection, then that
+ *  extension can be used for the life of the database extension.  When the
+ *  database connection is closed, the builtin extension is no longer usable.
  *
+ *  The registerBuiltinExtension() method of the ooSQLiteConnection class is
+ *  used to register builtin extensions with a database connection.  The method
+ *  will register a single available extension, some of the available
+ *  extensions, or all of the available extensions.
+ *
+ *  This example is similar to the builtinExtensions.rex example, except that
+ *  example shows some other methods related to the builtin extensions.
  */
 
 	dbName = 'ooFoods.rdbx'
 
-  -- Set the result set format to an array of arrays:
   .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
@@ -96,7 +104,7 @@
   sql = "SELECT * FROM foods where name regexp 'o+' ORDER BY name;"
   resultSet = dbConn~exec(sql, .true)
 
-  say 'SQL:             ' sql
+  say 'SQL: ' sql
   say
   say 'Hit enter to continue'
   pull
@@ -105,7 +113,7 @@
   sql = "SELECT * FROM foods where name regexp 'Th.+r' ORDER BY name;"
   resultSet = dbConn~exec(sql, .true)
 
-  say 'SQL:             ' sql
+  say 'SQL: ' sql
   say
   say 'Hit enter to continue'
   pull
@@ -116,10 +124,8 @@
   dbConn~exec(sql1)
   resultSet = dbConn~exec(sql2, .true)
 
-  say 'SQL1:            ' sql1
-  say 'SQL2:            ' sql2
-  say 'Result Set:      ' resultSet
-  say 'Result Set Class:' resultSet~class
+  say 'SQL1: ' sql1
+  say 'SQL2: ' sql2
   say
   say 'Hit enter to continue'
   pull

@@ -120,7 +120,7 @@
       say '  Error message:' .ooSQLExtensions~lastErrMsg
   end
   else do
-    say 'autoPackage3 is not auto any more'
+    say 'autoPackage3 is NOT auto any more'
   end
 
   if \ .ooSQLExtensions~makeAutoPackage('autoPackage5', .false) then do
@@ -129,7 +129,7 @@
       say '  Error message:' .ooSQLExtensions~lastErrMsg
   end
   else do
-    say 'autoPackage5 is not auto any more'
+    say 'autoPackage5 is NOT auto any more'
   end
   say
   say 'Hit enter to continue'
@@ -142,7 +142,7 @@
   -- Now, for the purpose of demonstration, we go through the two packages that
   -- were unmarked and mark the individual collations and functions as
   -- automatically regestered.
-  -- 
+  --
   -- For package 3
   if \ .ooSQLExtensions~makeAutoCollation('autoPackage3', 'reversible') then do
       say 'Failed to make auto collation: reversible'
@@ -221,7 +221,7 @@
   pull
 
   ret = runTest()
-                  
+
   -- Now unmark some of the auto collations and functions
   if \ .ooSQLExtensions~makeAutoFunction('autoPackage5', 'aHalf1', .false) then do
       say 'Failed to un-mark auto collation: aHalf1'
@@ -254,9 +254,9 @@
   pull
 
   ret = runTest()
-                             
+
   -- Un-mark all the auto collations and functions we first registered.  Some of
-  -- these were un-marked above.  So, the second attempt to un-mark it will 
+  -- these were un-marked above.  So, the second attempt to un-mark it will
   -- produce an error.
   if \ .ooSQLExtensions~makeAutoCollation('autoPackage3', 'reversible', .false) then do
       say 'Failed to un-mark auto collation: reversible'
@@ -335,8 +335,8 @@
   pull
 
   ret = runTest()
-                  
-                            
+
+
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 

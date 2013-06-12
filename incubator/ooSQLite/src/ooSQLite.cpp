@@ -5591,11 +5591,19 @@ RexxMethod1(int, oosqlconn_close, CSELF, pCSelf)
  *                       2.) If arg 1 is an ooSQLCollationNeeded object then the
  *                       information needed to register the callback is
  *                       contained within the object.  ooSQLCollationNeeded
- *                       objects must be obtained from an ooSQLPackag object.
+ *                       objects must be obtained from an ooSQLPackage object.
  *
  *                        Argument 2 is ignored.
  *
- *                       3.) If arg 1 is the .nil object, the collation needed
+ *                       3.) Each ooSQLPackage object can only have 1 collation
+ *                       needed entry, so if arg 1 is an ooSQLPackage object
+ *                       then the information needed to register the collation
+ *                       needed callback is extracted from the ooSQLPackage
+ *                       object directly.
+ *
+ *                        Argument 2 is ignored.
+ *
+ *                       4.) If arg 1 is the .nil object, the collation needed
  *                       callback is removed from the database connection.  Do
  *                       not use the .nil object unless the callback was
  *                       registered as a Rexx callback.  The behavior is
@@ -5603,7 +5611,7 @@ RexxMethod1(int, oosqlconn_close, CSELF, pCSelf)
  *
  *                        Argument 2 is ignored.
  *
- *                       4.) Otherwise, arg 1 must be an instantiated Rexx
+ *                       5.) Otherwise, arg 1 must be an instantiated Rexx
  *                       object with a method that is invoked whenever an
  *                       undefined collation is needed.
  *
@@ -5633,7 +5641,11 @@ RexxMethod1(int, oosqlconn_close, CSELF, pCSelf)
  *                       supplied throught the ooSQLCollationNeede object
  *                       itself.
  *
- *                       3.) When the callback is implemented in Rexx code, then
+ *                       3.) When argument 1 is an ooSQLPackage object, the
+ *                       userData argument is ignored.  The user data is
+ *                       supplied by the extracted ooSQLCollationNeeded object.
+ *
+ *                       4.) When the callback is implemented in Rexx code, then
  *                       this can be any Rexx object the user desires. The
  *                       object will be sent as the second argument to the
  *                       callback method when it is invoked.
@@ -5692,6 +5704,13 @@ RexxMethod4(RexxObjectPtr, oosqlconn_collationNeeded, RexxObjectPtr, callbackObj
     else if ( context->IsOfType(callbackObj, "OOSQLCOLLATIONNEEDED") )
     {
         pSQLiteCollationNeededEntry e = (pSQLiteCollationNeededEntry)context->ObjectToCSelf(callbackObj);
+        rc = registerCollationNeeded(e, pConn);
+        return context->Int32(rc);
+    }
+    else if ( context->IsOfType(callbackObj, "OOSQLPACKAGE") )
+    {
+        pCooSQLPackage pcp  = (pCooSQLPackage)context->ObjectToCSelf(callbackObj);
+        pSQLiteCollationNeededEntry e = pcp->packageEntry->collationNeeded;
         rc = registerCollationNeeded(e, pConn);
         return context->Int32(rc);
     }
@@ -6943,8 +6962,8 @@ RexxMethod5(RexxObjectPtr, oosqlconn_progressHandler, RexxObjectPtr, callbackObj
 /** ooSQLiteConnection::registerBuiltinExtension()
  *
  *  Registers some or all of the extensions builtin to ooSQLite with this
- *  database connections.  These extensions come from the SQLite source tree.
- *  and are statically linked to the ooSQLite shared library.
+ *  database connection.  These extensions come from the SQLite source tree. and
+ *  are statically linked to the ooSQLite shared library.
  *
  *  @param  entryNames  [optional]  A single extension name or an array of
  *                      extension names.  If omitted all builtin extensions are
@@ -9658,8 +9677,8 @@ RexxMethod1(int, oosqlmtx_try, CSELF, pCSelf)
  * @param libName
  *
  * @note  We know libName will fit in buf, because the name length is checked in
- *        ooSqlSysLibrary.  We also know that this library was loaded, we are not
- *        invoked if the library was not loaded.  So we do not need to worry
+ *        ooSqlSysLibrary.  We also know that this library was loaded, we are
+ *        not invoked if the library was not loaded.  So we do not need to worry
  *        about things like libName == "/"
  */
 static void setLibBaseName(pCooSQLLibrary pcl, CSTRING libName)
@@ -10300,7 +10319,7 @@ RexxMethod2(RexxObjectPtr, oosqlext_getPackage_cls, RexxObjectPtr, packageName, 
  *  library.
  *
  *  @param  libName  The name of the shared library.  This can be simply the
- *                   librayr name, or a pathname for the library.  The shared
+ *                   library name, or a pathname for the library.  The shared
  *                   library extension can be left off of the name.
  *
  *                   If libName contains path information, on both Windows and
@@ -10658,35 +10677,29 @@ RexxMethod3(RexxObjectPtr, oosqlext_makeAutoCollationNeeded_cls, RexxObjectPtr, 
     RexxMethodContext *c = context;
     pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
 
-    RexxObjectPtr package = c->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
+    RexxObjectPtr package = context->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
     if ( package == TheNilObj )
     {
         return TheFalseObj;
     }
 
-    RexxObjectPtr collNeeded = c->SendMessage0(package, "GETCOLLATIONNEEDED");
-    if ( collNeeded == TheNilObj )
-    {
-        pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
-
-        pcext->lastErrCode = pcp->lastErrCode;
-        pcext->lastErrMsg  = pcp->lastErrMsg;
-        extensionsSetLastErr(context, pcext->lastErrMsg, pcext->lastErrCode);
-
-        return TheFalseObj;
-    }
-
     resetExtensionsLastErr(context, pcext);
-    enable = argumentOmitted(3) ? TRUE : enable;
 
-    pSQLiteCollationNeededEntry pscne = (pSQLiteCollationNeededEntry)context->ObjectToCSelf(collNeeded);
+    pCooSQLPackage              pcp   = (pCooSQLPackage)context->ObjectToCSelf(package);
+    pSQLiteCollationNeededEntry pscne = pcp->packageEntry->collationNeeded;
     if ( pscne == NULL )
     {
-        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLCollationNeeded");
+        char buf[256];
+
+        snprintf(buf, 256, "this package (%s) contains no collation needed callback", pcp->packageEntry->packageName);
+        extensionsSetLastErr(context, context->String(buf), context->Int32(SQLITE_MISUSE));
+
         return TheFalseObj;
     }
 
-    pCooSQLiteClass pCsc = ensureCSelf(c, pcext);
+    pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
+
+    enable = argumentOmitted(2) ? TRUE : enable;
 
     if ( enable )
     {
@@ -10890,7 +10903,6 @@ RexxMethod0(int, oosqlext_resetAutoExtension)
     sqlite3_reset_auto_extension();
     return SQLITE_OK;
 }
-
 
 
 

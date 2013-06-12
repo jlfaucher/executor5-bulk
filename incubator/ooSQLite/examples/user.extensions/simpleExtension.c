@@ -328,7 +328,7 @@ void strAggFinalize(sqlite3_context* sqlCntx)
  * functions, collating sequences, and virtual table modules here.  This is
  * usually the only exported symbol in the shared library.
  *
- * Here we create 1 function and 2 collations.
+ * Here we create 1 function, 1 aggregate, and 2 collations.
  *
  * @param db
  * @param pzErrMsg

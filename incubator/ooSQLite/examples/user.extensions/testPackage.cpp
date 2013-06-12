@@ -36,20 +36,18 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- * testLibrary.cpp
+ * testPackage.cpp
  *
- * This library is used for testing, but it can also be used as an example of
- * how to write a shared library file for ooSQLite that contains user defined
- * collations and functions.
+ * This package is meant for uses as a testing aid.  However, it also provides
+ * an example of how to write a loadable package file for ooSQLite.  It is
+ * really not much different from examplePackage.cpp which is the file meant to
+ * be used as an example.
  *
- * There are only 2 distinct collations here.  For testing purposes, these
- * collations are copied to give a larger number of collations.
+ *
+ *
  *
  */
 
-// You must include this header if you use this example as a template for your
-// own library.  Otherwise you could deconstruct the macros and build the
-// library any way you choose.
 #include "oosqlPackage.hpp"
 
 #ifdef _WIN32
@@ -141,13 +139,12 @@ static unsigned char ebcdicToAscii[256] =
     0x39, 0x2E, 0x2E, 0x2E, 0x2E, 0x2E, 0x2E
 };
 
-BEGIN_EXTERN_C()
 
 /**
  * The half() SQL function returns half of its input value.  This is an example
  * from the SQLite website.
  */
-void halfFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+void half(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
   sqlite3_result_double(context, 0.5*sqlite3_value_double(argv[0]));
 }
@@ -167,11 +164,11 @@ int reverse(void* data, int len1, const void* str1, int len2, const void* str2)
 {
     return - sqlite3_strnicmp((char *)str1, (char *)str2, len1 < len2 ? len1 : len2);
 }
-
-int reverseTwo(void* data, int len1, const void* str1, int len2, const void* str2)
+int reverseOrder(void* data, int len1, const void* str1, int len2, const void* str2)
 {
     return - sqlite3_strnicmp((char *)str1, (char *)str2, len1 < len2 ? len1 : len2);
 }
+
 /**
  * An example collation, it allows ascii data to be ordered as if it were
  * ebcdic.
@@ -184,7 +181,28 @@ int reverseTwo(void* data, int len1, const void* str1, int len2, const void* str
  *
  * @return int
  */
-int ebcdic(void* data, int len1, const void* str1, int len2, const void* str2)
+static int ebcdic(void* data, int len1, const void* str1, int len2, const void* str2)
+{
+    register unsigned char *a = (unsigned char *)str1;
+    register unsigned char *b = (unsigned char *)str2;
+
+    int min = len1 < len2 ? len1 : len2;
+    int i;
+
+    if ( min == 0 )
+    {
+        // I don't think this is possible, but just to make sure
+        return len1 - len2;
+    }
+    for ( i = 0; i < min, asciiToEbcdic[*a] == asciiToEbcdic[*b]; i++ )
+    {
+        a++;
+        b++;
+    }
+
+    return (i == min) ? len1 - len2 : asciiToEbcdic[*a] - asciiToEbcdic[*b];
+}
+static int fullEbcdic(void* data, int len1, const void* str1, int len2, const void* str2)
 {
     register unsigned char *a = (unsigned char *)str1;
     register unsigned char *b = (unsigned char *)str2;
@@ -206,30 +224,7 @@ int ebcdic(void* data, int len1, const void* str1, int len2, const void* str2)
     return (i == min) ? len1 - len2 : asciiToEbcdic[*a] - asciiToEbcdic[*b];
 }
 
-int halfEbcdic(void* data, int len1, const void* str1, int len2, const void* str2)
-{
-    register unsigned char *a = (unsigned char *)str1;
-    register unsigned char *b = (unsigned char *)str2;
-
-    int min = len1 < len2 ? len1 : len2;
-    int i;
-
-    if ( min == 0 )
-    {
-        // I don't think this is possible, but just to make sure
-        return len1 - len2;
-    }
-    for ( i = 0; i < min, asciiToEbcdic[*a] == asciiToEbcdic[*b]; i++ )
-    {
-        a++;
-        b++;
-    }
-
-    return (i == min) ? len1 - len2 : asciiToEbcdic[*a] - asciiToEbcdic[*b];
-}
-
-/* struct
-   for use in the strAggregate aggregate function below. */
+/* struct for use in the strAggregate aggregate function below. */
 typedef struct _StrAggCntx
 {
     size_t   count;
@@ -332,30 +327,86 @@ void collationNeeded(void *userData, sqlite3 *db, int txtRep, const char *collat
     {
         sqlite3_create_collation_v2(db, "reverse", SQLITE_UTF8, userData, reverse, NULL);
     }
-    else if ( sqlite3_stricmp(collation, "reverseTwo") == 0 )
+    else if ( sqlite3_stricmp(collation, "reverseOrder") == 0 )
     {
-        sqlite3_create_collation_v2(db, "reverseTwo", SQLITE_UTF8, userData, reverseTwo, NULL);
+        sqlite3_create_collation_v2(db, "reverseOrder", SQLITE_UTF8, userData, reverseOrder, NULL);
     }
     else if ( sqlite3_stricmp(collation, "ebcdic") == 0 )
     {
         sqlite3_create_collation_v2(db, "ebcdic", SQLITE_UTF8, userData, ebcdic, NULL);
     }
-    else if ( sqlite3_stricmp(collation, "halfEbcdic") == 0 )
+    else if ( sqlite3_stricmp(collation, "fullEbcdic") == 0 )
     {
-        sqlite3_create_collation_v2(db, "halfEbcdic", SQLITE_UTF8,  userData, halfEbcdic, NULL);
+        sqlite3_create_collation_v2(db, "fullEbcdic", SQLITE_UTF8,  userData, fullEbcdic, NULL);
     }
 }
 
-END_EXTERN_C()
 
+/**
+ * examplePackage_collations is an array of SQLiteCollationEntry structs.  See
+ * the SQLiteCollationEntry struct in oosqlPackage.hpp for the fields in the
+ * struct.
+ *
+ * The OOSQL_COLLATION() is intended to make it somewhat easier to fill in the
+ * struct fields.  But, it might be just as easy to skip using it and fill in
+ * the fields individually.
+ *
+ * Note that, with the OOSQL_COLLATION macro, the string name of the collation
+ * is derived from the function name.  If you do not use the macro, the second
+ * entry must be the string name for the collation.  That is the name used by
+ * SQLite.
+ */
+SQLiteCollationEntry examplePackage_collations[] = {
+    // The REVERSE collation.  No destroy callback, no user data pointer, no
+    // collation needed callback.
+    OOSQL_COLLATION(reverse, reverse, NULL, NULL, NULL),
 
+    // The EBCDIC collation. We fill out the struct fields completely instead of
+    // using the OOSQL_COLLATION macro.
+    {NULL, "ebcdic", ebcdic, NULL, NULL, NULL, 0},
 
-// This macro expands to a function that gives access to the SQLite APIs in this
-// library.  Without it, your functions would not be able to access any SQLite
-// APIs.
-//
-// On Windows, you *must* declare an exportable function: ooSQLiteSetApi.
-// Personally, the author thinks the easist way to do this is through a .def
-// file as done in this example.  There are other ways to do it in Windows and
-// you are free to choose any method you prefer.
-OOSQLITE_SET_API();
+    // The last entry in the struc, must always be present.  Here the macro is
+    // simplier to use.  To fill it in manually, use all NULLs.
+    OOSQL_LAST_COLLATION()
+};
+
+SQLiteCollationNeededEntry collationNeededEntry = OOSQL_COLLATION_NEEDED(collationNeeded, NULL, NULL);
+
+/**
+ * examplePackage_functions is an array of SQLiteFunctionEntry structs.  See
+ * oosqlPackage.hpp for its definition.
+ *
+ * Again, the OOSQL_FUNCTION macro() is meant to make things a little easier.
+ * You can always assing the field values manually as shown above for the
+ * collations.
+ */
+SQLiteFunctionEntry examplePackage_functions[] = {
+    // Only 1 function. Only the function callback is used, the other callbacks
+    // are NULL.  The function callback takes 1 arg.
+    OOSQL_FUNCTION(half, half, NULL, NULL, NULL, NULL, NULL, 1),
+    {NULL, "strAggregate", NULL, strAggStep, strAggFinalize, NULL, NULL, NULL, 1, 0},
+
+    OOSQL_LAST_FUNCTION()
+};
+
+/**
+ * Each package must fill out the package entry struct
+ *
+ */
+ooSQLitePackageEntry examplePackage_package_entry =
+{
+    OOSQL_STANDARD_PACKAGE_HEADER
+    OOSQLITE_1_0_0,               // needs at least the 1.0.0 ooSQLite
+    SQLITE_VERSION_NUMBER,
+    "testPackage",                // name of the package
+    "0.0.1",                      // package information
+    &collationNeededEntry,        // the exported collation needed function
+    examplePackage_collations,    // the exported collations
+    examplePackage_functions,     // the exported functions
+    NULL                          // no  exported modules
+};
+
+// This macro expands to the package entry function used to load the package.
+// The name "examplePackage" must match the prefix of _package_entry in the
+// ooSQLitePackage entry table above.
+OOSQLITE_GET_PACKAGE(examplePackage);

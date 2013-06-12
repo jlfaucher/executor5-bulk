@@ -93,7 +93,28 @@ WIN_LIBS  = user32.lib
 
 !include "src\ooSQLite.ver.incl"
 
+# Generate the compiler information.  Quit if there is an  error.
+!IF [install\platform\windows\determineCompiler.bat] != 0
+!  ERROR Build error: could not generate compiler informatin.
+!ENDIF
+
+!include install\platform\windows\compiler.info.incl
+
 PLATFORM_DIR = src\platform\windows
+
+# Stuff we pass to the nsis script
+ROOTDIR = $(MAKEDIR)
+SRCDIR = $(ROOTDIR)\src
+EXAMPLEDIR = $(ROOTDIR)\examples
+LONGVER = $(OOSQLITE_MAJOR).$(OOSQLITE_MINOR).$(OOSQLITE_MOD_LVL).$(OOSQLITE_BLD_LVL)
+SHORTVER = $(OOSQLITE_MAJOR).$(OOSQLITE_MINOR).$(OOSQLITE_MOD_LVL)
+
+!if "$(CPU)" == "X64"
+NSISCPU = x86_64
+!else
+NSISCPU = x86_32
+!endif
+
 
 # This section is for reference only:
 #
@@ -137,8 +158,9 @@ SYSLIB_FLAGS = /DOOSQLITE_SHARED_LIBRARY_EXT=\".dll\"
 !IF DEFINED(DEBUG)
 
 OUT_DIR = build\debug
-BIN_DIR = bin.dbg
+BIN_DIR = bin.dbg\windows
 EXAMPLE_BUILD = DEBUG=1
+DBGPACKAGE = -debug
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNULL=0 /DOOSQLDBG=0
 CFLAGS =  /nologo /EHsc /Zi /Od /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooSQLiteDbg.pdb $(BASEFLAGS) $(MISCDEFS) /c
@@ -157,6 +179,9 @@ LFLAGS_EXE = /nologo /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
 LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooSQLite.def /DLL
 
 !ENDIF
+
+# For NSIS
+OUTDIR = $(ROOTDIR)\$(BIN_DIR)
 
 OBJ_FILES = $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\ooSqlSysLibrary.obj \
             $(OUT_DIR)\nextchar.obj $(OUT_DIR)\ieee754.obj $(OUT_DIR)\rot13.obj $(OUT_DIR)\regexp.obj $(OUT_DIR)\spellfix.obj \
@@ -226,6 +251,14 @@ example_dlls:
     $(MAKE) /NOLOGO $(EXAMPLE_BUILD) /F MakeFile.win
     @cd ..\..\..\
 
+package: all
+    @echo .
+    @echo Creating installation package
+    @cd $(ROOTDIR)\install\platform\windows
+    makensis /DVERSION=$(LONGVER) /DSHORTVERSION=$(SHORTVER) /DROOTDIR=$(ROOTDIR) /DOUTDIR=$(OUTDIR) \
+             /DCPU=$(NSISCPU) /DDEBUGPKG=$(DBGPACKAGE) ooSQLite.nsi
+    @cd $(OOD_ROOT_DIR)
+
 dist: all
     @echo Create distribution file
     rexx src\rexx\makeDistFile.rex $(OOSQLITE_VER_STR)
@@ -241,8 +274,11 @@ clean:
     @cd ..\..\..\
 
 clean_all:
-    del /Q bin\windows\*.dll bin\windows\*exe bin\windows\*.cls 1>nul 2>&1
-    del /Q bin\linux\*.dll bin\linux\*exe bin\linux\*.cls 1>nul 2>&1
+    del /Q bin\windows\* 1>nul 2>&1
+    del /Q bin\linux\* 1>nul 2>&1
+
+    del /Q bin.dbg\windows\* 1>nul 2>&1
+    del /Q bin.dbg\linux\* 1>nul 2>&1
 
 	  del /Q build\release\* 1>nul 2>&1
 	  del /Q build\debug\* 1>nul 2>&1

@@ -41,8 +41,29 @@
  *
  *  Demonstrates how to load and use an ooSQLite library file.
  *
- *  The loadLibrary() method loads a shared library containing, presumably, user
- *  defined SQLite collations, functions, or modules.
+ *  An ooSQLite library is similar in idea to a SQLite extension library file.
+ *  User defined extensions are implemented in C / C++ in the library.  Then in
+ *  Rexx code in an ooSQLite program the library can be loaded and handles to
+ *  the user defined extensions can be retrieved.
+ *
+ *  The retrieved handles can then be used to register the extensions through
+ *  the createCollation() and createFunction() methods.
+ *
+ *  The loadLibrary() method of the .ooSQLExtensions class loads a shared
+ *  library containing, presumably, user defined SQLite collations, aggregates,
+ *  functions, or modules.
+ *
+ *  Once the library is loaded successfully, an ooSQLLibrary object can be
+ *  retrieved from the ooSQLExtensions class using the getLibrary() method.
+ *
+ *  Libraries are stored using their base name, which is the filename of the
+ *  library without any extension or file path information.  On unixes the
+ *  normal 'lib' suffix is also not considered part of the base name.  The
+ *  getLibrary() method retrieves a loaded library using its base name.
+ *
+ *  Then the getHandle() method of the ooSQLLibrary object is used to get the
+ *  handle of a user defined extension from the library.  Handles are retrived
+ *  using the name of the user defined function in the library.
  *
  */
 
