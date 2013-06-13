@@ -224,6 +224,25 @@ Section  doInstall
     File "${ExamplesDir}\classic.rexx\ooFoods.rdbx"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\ooSQLite\informal
+
+    ; Add the files ...
+    File "${ExamplesDir}\informal\execA.rex"
+    File "${ExamplesDir}\informal\execD.rex"
+    File "${ExamplesDir}\informal\execNoExec.rex"
+    File "${ExamplesDir}\informal\execS.rex"
+    File "${ExamplesDir}\informal\loadDatabase.rex"
+    File "${ExamplesDir}\informal\ooFoods.rdbx"
+    File "${ExamplesDir}\informal\pragmaGet.rex"
+    File "${ExamplesDir}\informal\pragmaSet.rex"
+    File "${ExamplesDir}\informal\pragmaSpecial.rex"
+    File "${ExamplesDir}\informal\pragmaTrigger.rex"
+    File "${ExamplesDir}\informal\preparedStmt.rex"
+    File "${ExamplesDir}\informal\status.rex"
+    File "${ExamplesDir}\informal\version.rex"
+    File "${ExamplesDir}\informal\versiont.rex"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\ooSQLite\misc
 
     ; Add the files ...

@@ -11,6 +11,6 @@ published by Apress.
 Apress and the authors have okayed the use and inlcusion of the binary file
 in the ooRexx project.
 
-foodsPristine.rdbx is then copied into both the ../testing and ../examples
-directories, as ooFoods.rdbx.  ooFoods.rdbx is used in some of the testing
-and example programs.
+foodsPristine.rdbx is then copied into the samples and samples/informal
+directories, as ooFoods.rdbx.  ooFoods.rdbx is used in a number of the
+example programs.
