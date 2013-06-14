@@ -149,7 +149,7 @@
 ::method strAggStep
   use arg dbConn, cntx, values, collecterObj, userData
 
-  str = .OOSQLValue~text(values[1])
+  str = .ooSQLValue~text(values[1])
 
   if collecterObj == .nil then do
     collObj = .strCollecter~new(str)

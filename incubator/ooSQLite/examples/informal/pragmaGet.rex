@@ -37,7 +37,7 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  pragmaGetTest.rex
+ *  pragmaGet.rex
  *
  *  One of the non-standard SQL features of SQLitet is the PRAGMA statement.
  *
@@ -52,7 +52,7 @@
  *  the pragma() method. You would not have to use the pragma() method, you
  *  could instantiate an ooSQLiteStmt and execute the SQL like any other SQL.
  *
- *  This test issues pragmas that return a single value.
+ *  This program issues pragmas that return a single value.
  */
 
   dbFile = 'ooFoods.rdbx'
@@ -82,8 +82,10 @@
 
 ::requires 'ooSQLite.cls'
 
-/*  Originally this test used all possible pragmas, but wasn't practical to use.
-    The complete list is left here as a reference.
+/*  Originally this program used all possible pragmas, but wasn't practical
+    to use.  The complete list is left here as a reference.  However, the list
+    is not necessarily up to date.
+
 ::routine getPragmaNames
 
   n = .array~of( -
