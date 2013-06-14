@@ -7392,7 +7392,8 @@ RexxMethod2(int, oosqlconn_test, POINTER, functPointer, CSELF, pCSelf)
 RexxMethod1(RexxObjectPtr, oosqlval_blob, POINTER, sqlValue)
 {
     // TODO not sure what is needed here?  Should we copy the blob to a
-    // RexxBuffer? Or what?
+    // RexxBuffer? Or what?  We need to create an ooSQLiteBlob class and use
+    // that.
 
     const void *b = sqlite3_value_blob((sqlite3_value *)sqlValue);
     if ( b == NULL )
@@ -8082,18 +8083,25 @@ RexxMethod3(int, oosqlstmt_bindText, int32_t, index, CSTRING, text, CSELF, pCSel
 
 /** ooSQLiteStmt::bindValue()
  *
- *  Not implemented.  A pointer to a sqlite3_value (sqlite3_value *) is not
- *  fully understood at this point.
+ *  Binds a sqlite3_value object to the specified parameter index.
  *
- *  SQLite allows the implementation of application-defined SQL functions and
- *  aggregates.  A possible future enhancement of ooSQLite would be to allow
- *  application-defined SQL functions and aggregates to be written in Rexx.
- *  This method is a place-holder for that enhancement.
+ *  From the SQLite docs concerning a sqlit3_value object:
+ *
+ *  SQLite uses the sqlite3_value object to represent all values that can be
+ *  stored in a database table.
+ *
+ *  The object returned by sqlite3_column_value() is an unprotected
+ *  sqlite3_value object. An unprotected sqlite3_value object may only be used
+ *  with sqlite3_bind_value() and sqlite3_result_value(). If the unprotected
+ *  sqlite3_value object returned by sqlite3_column_value() is used in any other
+ *  way, including calls to routines like sqlite3_value_int(),
+ *  sqlite3_value_text(), or sqlite3_value_bytes(), then the behavior is
+ *  undefined.
  *
  *  See also ooSQLiteStmt::columnValue()
  *
  */
-RexxMethod3(int, oosqlstmt_bindValue, int32_t, index, RexxObjectPtr, value, CSELF, pCSelf)
+RexxMethod3(int, oosqlstmt_bindValue, int32_t, index, POINTER, value, CSELF, pCSelf)
 {
     pCooSQLiteStmt pCstmt = requiredStmt(context, pCSelf);
     if ( pCstmt != NULL )
@@ -8101,8 +8109,7 @@ RexxMethod3(int, oosqlstmt_bindValue, int32_t, index, RexxObjectPtr, value, CSEL
         return SQLITE_MISUSE;
     }
 
-    context->RaiseException0(Rexx_Error_Unsupported_method);
-    return SQLITE_MISUSE;
+    return sqlite3_bind_value(pCstmt->stmt, index, (sqlite3_value *)value);
 }
 
 
@@ -8524,8 +8531,10 @@ RexxMethod2(int, oosqlstmt_columnType, int32_t, col, CSELF, pCSelf)
 
 /** ooSQLiteStmt::columnValue()
  *
- *  Not implemented.  A pointer to a sqlite3_value (sqlite3_value *) is not
- *  fully understood at this point.  From the SQLite docs:
+ *  Returns the column value as a sqlite3_value object.  In ooRexx this will be
+ *  a Pointer object.
+ *
+ *  From the SQLite docs concerning a sqlit3_value object:
  *
  *  The object returned by sqlite3_column_value() is an unprotected
  *  sqlite3_value object. An unprotected sqlite3_value object may only be used
@@ -8535,24 +8544,28 @@ RexxMethod2(int, oosqlstmt_columnType, int32_t, col, CSELF, pCSelf)
  *  sqlite3_value_text(), or sqlite3_value_bytes(), then the behavior is
  *  undefined.
  *
- *  SQLite allows the implementation of application-defined SQL functions and
- *  aggregates.  A possible future enhancement of ooSQLite would be to allow
- *  application-defined SQL functions and aggregates to be written in Rexx.
- *  This method is a place-holder for that enhancement.
+ *  For the ooSQLite programmer, this basically means that the object returned
+ *  from this method can only be used in the ooSQLiteStmt::bindValue() method
+ *  and possibly in the ooSQLResult::value() method.
+ *
+ *  The word 'possibly' is used because the author currently does not see how
+ *  this can be done in ooRexx.
  *
  *  See also ooSQLiteStmt::bindValue()
  *
  */
-RexxMethod2(int, oosqlstmt_columnValue, int32_t, index, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, oosqlstmt_columnValue, int32_t, col, CSELF, pCSelf)
 {
     pCooSQLiteStmt pCstmt = requiredStmt(context, pCSelf);
     if ( pCstmt != NULL )
     {
-        return SQLITE_MISUSE;
+        return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    context->RaiseException0(Rexx_Error_Unsupported_method);
-    return SQLITE_MISUSE;
+    col--;
+
+    sqlite3_value *val = sqlite3_column_value(pCstmt->stmt, col);
+    return context->NewPointer(val);
 }
 
 
@@ -11510,6 +11523,12 @@ static RexxObjectPtr removeCallbackRtn(RexxCallContext *c, sqlite3 *db, Callback
         rc = sqlite3_busy_handler(db, NULL, NULL);
         result = c->WholeNumber(rc);
     }
+    else if ( cbt == collationNeeded )
+    {
+        // Note that docs do not actually say this removes the callback.
+        rc = sqlite3_collation_needed(db, NULL, NULL);
+        result = c->WholeNumber(rc);
+    }
     else if ( cbt == commitHook )
     {
         cbc = (pCGenericCallback)sqlite3_commit_hook(db, NULL, NULL);
@@ -11564,6 +11583,11 @@ static RexxObjectPtr installCallbackRtn(RexxCallContext *c, sqlite3 *db, RexxBuf
     else if ( cbt == busyHandler )
     {
         rc = sqlite3_busy_handler(db, busyCallBack, (void *)cbc );
+        result = c->WholeNumber(rc);
+    }
+    else if ( cbt == collationNeeded )
+    {
+        rc = sqlite3_collation_needed(db, (void *)cbc, collationNeededCallback);
         result = c->WholeNumber(rc);
     }
     else if ( cbt == commitHook )
@@ -12158,19 +12182,25 @@ RexxRoutine3(int, oosqlBindText_rtn, POINTER, _stmt, int32_t, index, CSTRING, te
 
 /** oosqlBindValue()
  *
- *  Not implemented.  A pointer to a sqlite3_value (sqlite3_value *) is not
- *  fully understood at this point.
+ *  Binds a sqlite3_value object to the specified parameter index.
  *
- *  SQLite allows the implementation of application-defined SQL functions and
- *  aggregates.  A possible future enhancement of ooSQLite would be to allow
- *  application-defined SQL functions and aggregates to be written in Rexx.
- *  This method is a place-holder for that enhancement.
+ *  From the SQLite docs concerning a sqlit3_value object:
+ *
+ *  SQLite uses the sqlite3_value object to represent all values that can be
+ *  stored in a database table.
+ *
+ *  The object returned by sqlite3_column_value() is an unprotected
+ *  sqlite3_value object. An unprotected sqlite3_value object may only be used
+ *  with sqlite3_bind_value() and sqlite3_result_value(). If the unprotected
+ *  sqlite3_value object returned by sqlite3_column_value() is used in any other
+ *  way, including calls to routines like sqlite3_value_int(),
+ *  sqlite3_value_text(), or sqlite3_value_bytes(), then the behavior is
+ *  undefined.
  *
  *  See also oosqlColumnValue()
  *
- *
  */
-RexxRoutine3(int, oosqlBindValue_rtn, POINTER, _stmt, int32_t, index, RexxObjectPtr, value)
+RexxRoutine3(int, oosqlBindValue_rtn, POINTER, _stmt, int32_t, index, POINTER, value)
 {
     sqlite3_stmt *stmt = routineStmt(context, _stmt);
     if ( stmt == NULL )
@@ -12178,8 +12208,7 @@ RexxRoutine3(int, oosqlBindValue_rtn, POINTER, _stmt, int32_t, index, RexxObject
         return SQLITE_MISUSE;
     }
 
-    unsupportedRoutineException(context, "oosqlColumnValue");
-    return SQLITE_MISUSE;
+    return sqlite3_bind_value(stmt, index, (sqlite3_value *)value);
 }
 
 /** oosqlBindZeroBlob()
@@ -12695,8 +12724,10 @@ RexxRoutine2(int, oosqlColumnType_rtn, POINTER, _stmt, int32_t, col)
 
 /** oosqlColumnValue()
  *
- *  Not implemented.  A pointer to a sqlite3_value (sqlite3_value *) is not
- *  fully understood at this point.  From the SQLite docs:
+ *  Returns the column value as a sqlite3_value object.  In ooRexx this will be
+ *  a Pointer object.
+ *
+ *  From the SQLite docs concerning a sqlit3_value object:
  *
  *  The object returned by sqlite3_column_value() is an unprotected
  *  sqlite3_value object. An unprotected sqlite3_value object may only be used
@@ -12706,24 +12737,28 @@ RexxRoutine2(int, oosqlColumnType_rtn, POINTER, _stmt, int32_t, col)
  *  sqlite3_value_text(), or sqlite3_value_bytes(), then the behavior is
  *  undefined.
  *
- *  SQLite allows the implementation of application-defined SQL functions and
- *  aggregates.  A possible future enhancement of ooSQLite would be to allow
- *  application-defined SQL functions and aggregates to be written in Rexx.
- *  This method is a place-holder for that enhancement.
+ *  For the ooSQLite programmer, this basically means that the object returned
+ *  from this method can only be used in the oosqlBindValue() routine and
+ *  possibly in the oosqlResultValue() routine.
+ *
+ *  The word 'possibly' is used because the author currently does not see how
+ *  this can be done in ooRexx.
  *
  *  See also oosqlBindValue()
  *
  */
-RexxRoutine2(int, oosqlColumnValue_rtn, POINTER, _stmt, int32_t, index)
+RexxRoutine2(RexxObjectPtr, oosqlColumnValue_rtn, POINTER, _stmt, int32_t, col)
 {
     sqlite3_stmt *stmt = routineStmt(context, _stmt);
     if ( stmt == NULL )
     {
-        return SQLITE_MISUSE;
+        return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    unsupportedRoutineException(context, "oosqlColumnValue");
-    return SQLITE_MISUSE;
+    col--;
+
+    sqlite3_value *val = sqlite3_column_value(stmt, col);
+    return context->NewPointer(val);
 }
 
 /** oosqlCommitHook()
@@ -12763,6 +12798,53 @@ RexxRoutine3(RexxObjectPtr, oosqlCommitHook_rtn, POINTER, _db, CSTRING, rtnName,
 
     return doCallbackSetupRtn(context, db, rtnName, userData, commitHook, 0);
 }
+
+/** oosqlCollationNeeded()
+ *
+ *  Registers, or removes a callback that will be invoked whenever an undefined
+ *  collation sequence is required.  The callback can be implemented either in
+ *  Rexx code, or in C / C++ code as an extension residing in an external DLL.
+ *
+ *  @param  db       [required]  The open database connection that the commit
+ *                   hook is registered (installed) for.
+ *
+ *  @param  rntName  [required]  The name of the routine that will be invoked
+ *                   during a call back.  If this argument is the empty string,
+ *                   then any existing registered callback is removed.
+ *
+ *  @param userData  [optional] This can be any Rexx object the user desires.
+ *                   The object will be sent as the second argument to the
+ *                   commit hook callback routine when it is called.  If this
+ *                   argument is omitted, then only one argument is sent to the
+ *                   callback routine.
+ *
+ *
+ *  @return  An ooSQLite result code.
+ *
+ *  @notes  Within the Rexx callback:
+ *
+ *          When the callback is invoked, the rountine should register the
+ *          desired collation using oosqlCreateCollation().
+ *
+ *          The callback method is sent 3 arguments, the Rexx database
+ *          connection object, the name of the collation, and the userData
+ *          object, or .nil if no userData object was specified.
+ */
+RexxRoutine3(RexxObjectPtr, oosqlCollationNeeded_rtn, POINTER, _db, CSTRING, rtnName, OPTIONAL_RexxObjectPtr, userData)
+{
+    RexxObjectPtr result = context->Int32(SQLITE_MISUSE);
+
+    sqlite3 *db = routineDB(context, _db, 1);
+    if ( db == NULL )
+    {
+        return context->WholeNumber(SQLITE_MISUSE);
+    }
+
+    int rc = SQLITE_MISUSE;
+
+    return doCallbackSetupRtn(context, db, rtnName, userData, collationNeeded, 0);
+}
+
 
 /** oosqlCompileOptionGet()
  *
@@ -12894,6 +12976,20 @@ RexxRoutine4(int, oosqlDbStatus_rtn, POINTER, _db, int, param, RexxObjectPtr, _r
     }
 
     return genDbStatus(context->threadContext, db, param, _result, reset, 3);
+}
+
+/** oosqlEnableLoadExtension()
+ *
+ */
+RexxRoutine2(int, oosqlEnableLoadExtension_rtn, POINTER, _db, OPTIONAL_logical_t, on)
+{
+    sqlite3 *db = routineDB(context, _db, 1);
+    if ( db == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_enable_load_extension(db, on ? 1 : 0);
 }
 
 /** oosqlErrCode()
@@ -14321,6 +14417,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnTableName_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnText_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnType_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnValue_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlCollationNeeded_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlCommitHook_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlCompileOptionGet_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlCompileOptionUsed_rtn);
@@ -14332,6 +14429,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlDbMutex_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlDbReadOnly_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlDbReleaseMemory_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlDbStatus_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlEnableLoadExtension_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlErrCode_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlErrMsg_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlErrStr_rtn);
@@ -14424,6 +14522,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlColumnText_rtn,           oosqlColumnText_rtn),
     REXX_TYPED_ROUTINE(oosqlColumnType_rtn,           oosqlColumnType_rtn),
     REXX_TYPED_ROUTINE(oosqlColumnValue_rtn,          oosqlColumnValue_rtn),
+    REXX_TYPED_ROUTINE(oosqlCollationNeeded_rtn,      oosqlCollationNeeded_rtn),
     REXX_TYPED_ROUTINE(oosqlCommitHook_rtn,           oosqlCommitHook_rtn),
     REXX_TYPED_ROUTINE(oosqlCompileOptionGet_rtn,     oosqlCompileOptionGet_rtn),
     REXX_TYPED_ROUTINE(oosqlCompileOptionUsed_rtn,    oosqlCompileOptionUsed_rtn),
@@ -14435,6 +14534,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlDbReadOnly_rtn,           oosqlDbReadOnly_rtn),
     REXX_TYPED_ROUTINE(oosqlDbReleaseMemory_rtn,      oosqlDbReleaseMemory_rtn),
     REXX_TYPED_ROUTINE(oosqlDbStatus_rtn,             oosqlDbStatus_rtn),
+    REXX_TYPED_ROUTINE(oosqlEnableLoadExtension_rtn,  oosqlEnableLoadExtension_rtn),
     REXX_TYPED_ROUTINE(oosqlErrCode_rtn,              oosqlErrCode_rtn),
     REXX_TYPED_ROUTINE(oosqlErrMsg_rtn,               oosqlErrMsg_rtn),
     REXX_TYPED_ROUTINE(oosqlErrStr_rtn,	              oosqlErrStr_rtn),

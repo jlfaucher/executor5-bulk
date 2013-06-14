@@ -36,7 +36,14 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* This file is used to create the Linux distribution file. */
+/**
+ * This file is used to create a binary distribution of ooSQLite.  The binary
+ * distribution can just be unpacked where ever the user would like.
+ *
+ * Note that when packaging up the example programs, we just take everything
+ * in the directories.  Trying to maintain file lists of the examples is to
+ * hard to maintain.
+ */
 
 use arg cmdLine
 
@@ -86,10 +93,10 @@ use arg cmdLine
   mdCmd outDir'bin'
   mdCmd outDir'doc'
   mdCmd outDir'examples'sl'classic.rexx'
+  mdCmd outDir'examples'sl'informal'
+  mdCmd outDir'examples'sl'misc'
   mdCmd outDir'examples'sl'user.extensions'
   mdCmd outDir'examples'sl'user.extensions'sl'autoPackages'
-  mdCmd outDir'misc'
-  mdCmd outDir'testing'
 
   cpCmd 'CPLv1.0.txt' outDir
   cpCmd 'NOTICE' outDir
@@ -108,7 +115,9 @@ use arg cmdLine
     cpCmd osBinDir'ooSQLite.cls'       outDir'bin'
   end
 
-  cpCmd 'doc'sl'oosqlite.pdf'           outDir'doc'
+  cpCmd 'doc'sl'oosqlite.pdf'          outDir'doc'
+  cpCmd 'doc'sl'ooSQLite-ReadMe.txt'   outDir'doc'
+  cpCmd 'doc'sl'ooSQLite-ReleaseNotes' outDir'doc'
   if os == "WINDOWS" then do
     cpCmd 'doc'sl'StatusAllSQLiteFunctions.xlsx' outDir'doc'
   end
