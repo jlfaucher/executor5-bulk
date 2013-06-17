@@ -80,8 +80,10 @@
   do i = 2 to rowCount
     line = ''
     record = rs[i]
+
     do j = 1 to colCount
-      line ||= record[j]~left(25)
+      if record[j] == .nil then line ||= ''~left(25)
+      else line ||= record[j]~left(25)
     end
 
     say line

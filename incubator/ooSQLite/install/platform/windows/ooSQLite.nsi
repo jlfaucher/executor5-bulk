@@ -240,7 +240,6 @@ Section  doInstall
     File "${ExamplesDir}\informal\preparedStmt.rex"
     File "${ExamplesDir}\informal\status.rex"
     File "${ExamplesDir}\informal\version.rex"
-    File "${ExamplesDir}\informal\versiont.rex"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\ooSQLite\misc

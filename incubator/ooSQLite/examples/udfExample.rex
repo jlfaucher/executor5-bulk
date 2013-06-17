@@ -46,7 +46,7 @@
  *
  *  The functions or aggregates can be implemented externally in C / C++ code,
  *  or they can be implemented in Rexx.  This example shows the implementaion of
- *  some user defined functions implmented in Rexx.
+ *  some user defined functions in Rexx.
  */
 
   -- Set the result set format to an array of arrays:
@@ -67,8 +67,6 @@
 
   z = printStrAgg(resultSet)
   say
-  return 0
-
 
   dbConn~createFunction('helloWorld', callBackObj, 1, 'helloWorld')
   dbConn~createFunction('half', callBackObj, 1, 'half')
@@ -129,6 +127,7 @@
   return ret
 
 ::requires 'ooSQLite.cls'
+::requires 'utilities.frm'
 
 ::class 'strCollecter'
 ::attribute str
@@ -208,71 +207,3 @@
   return self~OK
 
 
-
--- Common utility routine used to print a result set that is an array of arrays.
-::routine printResultSet
-  use arg rs
-
-  colCount = rs[1]~items
-  rowCount = rs~items
-
-  line = ''
-  headers = rs[1]
-  do j = 1 to colCount
-    line ||= headers[j]~left(25)
-  end
-
-  say line
-  say '='~copies(80)
-
-  do i = 2 to rowCount
-    line = ''
-    record = rs[i]
-    do j = 1 to colCount
-      if record[j] == .nil then line ||= ''~left(25)
-      else line ||= record[j]~left(25)
-    end
-
-    say line
-  end
-  say
-
-  return 0
-
--- strAggregate specific utility routine used to print the strAggregate result
--- set.
-::routine printStrAgg
-  use arg rs
-
-  colCount = 2
-  rowCount = rs~items
-
-  headers = rs[1]
-  line = headers[1]~left(9) || headers[2]
-
-  say line
-  say '='~copies(80)
-
-  do i = 2 to rowCount
-    record = rs[i]
-    if record[1] == .nil then line = 'NULL'~left(9) || record[2]
-    else line = record[1]~left(9) || record[2]
-
-    if line~length > 80 then do
-      say line~left(80)
-
-      line = ' '~copies(9) || line~substr(81)
-      do while line~length > 80
-        say line~left(80)
-        line = ' '~copies(9) || line~substr(81)
-      end
-      say line
-    end
-    else do
-      say line
-    end
-    say
-  end
-  say
-
-  return 0

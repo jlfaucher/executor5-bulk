@@ -340,12 +340,15 @@ typedef struct _oosqlExtensionsCSelf {
 } CooSQLExtensions;
 typedef CooSQLExtensions *pCooSQLExtensions;
 
-/* Generic struct passed to several sqlite3 call back functions */
+/** Generic struct used for implementing most of the sqlite3 call back functions
+ *  in Rexx.
+ */
 typedef struct _genericCallback {
     RexxRoutineObject    callbackRtn;     // Rexx routine to call.
     RexxObjectPtr        callbackObj;     // Rexx object to invoke the callback() method on.
     RexxObjectPtr        userData;        // A Rexx object that the user wants sent to its Rexx callback.
     RexxObjectPtr        rexxDB;          // The Rexx database connection object, RexxSelf.
+    sqlite3             *rtnDB;           // The database connection, used for routine callbacks, like Rexx database for method callbacks
     RexxObjectPtr        nullObj;         // The Rexx object that represents SQL NULL for the database connection
     RexxInstance        *interpreter;
     RexxThreadContext   *callbackContext;
@@ -362,7 +365,10 @@ typedef struct _genericCallback {
 } CGenericCallback;
 typedef CGenericCallback *pCGenericCallback;
 
-/* Non-generic struct for Rexx defined SQL function or aggregates. */
+/**
+ *  Non-generic struct used to immplement user defined SQL functions or
+ *  aggregates in Rexx.
+ */
 typedef struct _functionCallback {
     RexxObjectPtr        callbackObj;     // Rexx object to invoke the callback() methods on.
     RexxRoutineObject    funcRtn;         // Rexx routine to call for xFunction.
@@ -370,6 +376,7 @@ typedef struct _functionCallback {
     RexxRoutineObject    finalRtn;        // Rexx routine to call for xFinal.
     RexxObjectPtr        userData;        // A Rexx object that the user wants sent to its Rexx callback.
     RexxObjectPtr        rexxDB;          // The Rexx database connection object, RexxSelf.
+    sqlite3             *rtnDB;           // The database connection, used for routine callbacks, like Rexx database for method callbacks
     RexxInstance        *interpreter;
     RexxThreadContext   *callbackContext;
     CSTRING              funcMethod;

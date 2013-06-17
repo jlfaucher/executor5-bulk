@@ -422,6 +422,7 @@
 ::routine oosqlCompileOptionGet public external "LIBRARY oosqlite oosqlCompileOptionGet_rtn"
 ::routine oosqlCompileOptionUsed public external "LIBRARY oosqlite oosqlCompileOptionUsed_rtn"
 ::routine oosqlComplete public external "LIBRARY oosqlite oosqlComplete_rtn"
+::routine oosqlCreateCollation public external "LIBRARY oosqlite oosqlCreateCollation_rtn"
 ::routine oosqlDataCount public external "LIBRARY oosqlite oosqlDataCount_rtn"
 ::routine oosqlDbFileName public external "LIBRARY oosqlite oosqlDbFileName_rtn"
 ::routine oosqlDbHandle public external "LIBRARY oosqlite oosqlDbHandle_rtn"
@@ -878,36 +879,36 @@
 ::attribute dbCallbacks
 
 ::method init
-  use arg db, buffer, callbackID
+  use strict arg db, buffer, callbackID, zName = .nil
 
   self~dbCallbacks = .table~new
 
-  dbObj = .__rtn_db_callback_class~new(buffer, callbackID)
+  dbObj = .__rtn_db_callback_class~new(buffer, callbackID, zName)
   self~dbCallbacks[db~string] = dbObj
 
 ::method putDbCallback
-  use arg db, buffer, callbackID
+  use strict arg db, buffer, callbackID, zName = .nil
 
   dbObj = self~dbCallbacks[db~string]
 
   if dbObj == .nil then do
-    dbObj = .__rtn_db_callback_class~new(buffer, callbackID)
+    dbObj = .__rtn_db_callback_class~new(buffer, callbackID, zName)
     self~dbCallbacks[db~string] = dbObj
     return .nil
   end
 
-  return dbObj~putCallback(buffer, callbackID)
+  return dbObj~putCallback(buffer, callbackID, zName)
 
 ::method delDbCallback
-  use arg db, callbackID
+  use strict arg db, callbackID, zName = .nil
 
   dbObj = self~dbCallbacks[db~string]
   if dbObj == .nil then return
 
-  dbObj~delCallback(callbackID)
+  dbObj~delCallback(callbackID, zName)
 
 ::method cleanUpDbCallbacks
-  use arg db
+  use strict arg db
 
   dbObj = self~dbCallbacks~remove(db~string)
   if dbObj == .nil then return
@@ -920,29 +921,73 @@
  * This class is for internal use only.  This class may be changed or removed
  * from ooSQLite at any time.  Do not use this class in any ooRexx program.
  *
+ * Each object of this class represents a database connection and is used to
+ * store RexxBuffer objects created to implement a SQLite callback in Rexx.
+ *
+ * The RexxBuffer objects are stored in tables.  For most SQLite callbacks,
+ * there can only be one callback registered at a time.  These buffers are
+ * stored in a single table where the index is the callback type.  However,
+ * there can be multiple collation and function callbacks for any single
+ * database connection.  These callbacks are stored in separate tables, indexed
+ * by thier name.
  */
 ::class '__rtn_db_callback_class'
 
 ::attribute callbackBuffers
+::attribute collationBuffers
+::attribute functionBuffers
 
 ::method init
-  use arg buffer, callbackID
+  use strict arg buffer, callbackID, zName = .nil
 
-  self~callbackBuffers = .table~new
-  self~callbackBuffers[callbackID] = buffer
+  self~callbackBuffers  = .table~new
+  self~collationBuffers = .table~new
+  self~functionBuffers  = .table~new
+
+  select
+    when zName == .nil then self~callbackBuffers[callbackID] = buffer
+    when callBackID == "__rxCollation" then self~collationBuffers[zName] = buffer
+    otherwise self~functionBuffers[zName] = buffer
+  end
+  -- End select
+
 
 ::method putCallback
-  use arg buffer, callbackID
+  use strict arg buffer, callbackID, zName = .nil
 
-  oldBuffer = self~callbackBuffers[callbackID]
-  self~callbackBuffers[callbackID] = buffer
+  select
+    when zName == .nil then do
+        oldBuffer = self~callbackBuffers[callbackID]
+        self~callbackBuffers[callbackID] = buffer
+    end
+    when callBackID == "__rxCollation" then do
+        oldBuffer = self~collationBuffers[zName]
+        self~collationBuffers[zName] = buffer
+    end
+    otherwise do
+        oldBuffer = self~functionBuffers[zName]
+        self~functionBuffers[zName] = buffer
+    end
+  end
+  -- End select
 
   return oldBuffer
 
-::method delCallback
-  use arg callbackID
 
-  buf = self~callbackBuffers~remove(callbackID)
+::method delCallback
+  use strict arg callbackID, zName = .nil
+
+  select
+    when zName == .nil then buf = self~callbackBuffers~remove(callbackID)
+    when callBackID == "__rxCollation" then buf = self~collationBuffers~remove(zName)
+    otherwise do
+        buf = self~functionBuffers~remove(zName)
+        if buf \== .nil then self~releaseFunctionBuffer(buf)
+        return
+    end
+  end
+  -- End select
+
   if buf \== .nil then self~releaseBuffer(buf)
 
 ::method releaseAll
@@ -954,5 +999,20 @@
     self~releaseBuffer(buf)
   end
 
+  indexes = self~collationBuffers~allIndexes
+
+  do i over indexes
+    buf = self~collationBuffers~remove(i)
+    self~releaseBuffer(buf)
+  end
+
+  indexes = self~functionBuffers~allIndexes
+
+  do i over indexes
+    buf = self~functionBuffers~remove(i)
+    self~releaseBuffer(buf)
+  end
+
 ::method releaseBuffer private external "LIBRARY oosqlite db_cb_releaseBuffer"
+::method releaseFunctionBuffer private external "LIBRARY oosqlite db_cb_releaseFunctionBuffer"
 
