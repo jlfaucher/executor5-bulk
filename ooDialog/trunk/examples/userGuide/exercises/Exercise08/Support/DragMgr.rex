@@ -50,7 +50,7 @@
      setSource
      removeDlg
      queryTables
-     pickup 	  captures mouse - i.e. sets the mouse capture to the window
+     dmPickup 	  captures mouse - i.e. sets the mouse capture to the window
            	  of this mouse instance. 
      moving	  If over a target (as supered by a dlg instance):
                   - check if this is a valid target AND is topmost window
@@ -58,7 +58,7 @@
 		    to target.
 		  - If response is .true then show dropOKCursor
 		    else show noDropCursor (system-provided).
-     drop	  - If cursor is no-drop then no-op.
+     dmDrop	  - If cursor is no-drop then no-op.
 		    Else send dmDrop(sourceDlg) to drop target. 
      }
 
@@ -145,13 +145,13 @@
 
     
   /*----------------------------------------------------------------------------
-    pickup - Handles drag initiation when the user "picks up" a dialog.
+    dmPickup - Handles drag initiation when the user "picks up" a dialog.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD pickup PUBLIC
+  ::METHOD dmPickup PUBLIC
     expose cursorIsNoDrop dragging dropOkCursor mouse noDropCursor oldCursor overTarget
     use strict arg sourceDlg, keyState, mousePos
 
-    --say "DragMgr-pickup-00."
+    --say "DragMgr-dmPickup-00."
     arrItems = self~sourceDialogs[sourceDlg]  	-- mouse,srcCursor,pickupArea
     mouse = arrItems[1]
     dropOkCursor = arrItems[2]
@@ -160,11 +160,11 @@
     if keyState \== 'lButton' | \ mousePos~inRect(arrItems[3]) then return .false
 
     if mouse~dragDetect(mousePos) then do
-      --say "DragManager-pickup-01: dropOkCursor =" dropOkCursor
+      --say "DragManager-dmPickup-01: dropOkCursor =" dropOkCursor
       if dropOkCursor == 0 then do
-        say "DragManager-pickup-02:" .HRSdm~badOkCursor .SystemErrorCode
+        say "DragManager-dmPickup-02:" .HRSdm~badOkCursor .SystemErrorCode
       end
-      --say 'DragManager-pickup-03: Detected dragging.'
+      --say 'DragManager-dmPickup-03: Detected dragging.'
       mouse~capture()
       oldCursor = mouse~setCursor(noDropCursor)
       cursorIsNoDrop = .true
@@ -172,7 +172,7 @@
       validTarget = .false
       overTarget = .false
     end
---say "DragManager-pickup-04: dragging =" dragging
+--say "DragManager-dmPickup-04: dragging =" dragging
     return
 
     

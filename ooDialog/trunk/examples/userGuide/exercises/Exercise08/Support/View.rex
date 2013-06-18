@@ -56,7 +56,8 @@
                      Note - some drag/drop methods are there as catch-alls for
                      when a subclass does not implement them. Default action 
                      still to be verified. 
-            18Jun13: Changed "drop" method to "dmDrop" (sent to DargMgr).
+            18Jun13: Changed "drop" method to "dmDrop" and "pickup" to "dmPickup"
+                     (both sent to DragMgr).
 
 ------------------------------------------------------------------------------*/
 
@@ -241,7 +242,7 @@
   ::METHOD dmOnLBdown
     use arg keyState, mousePos
     --say "View-dmOnLBdown-01; self =" self
-    self~DragMgr~pickup(self, keyState, mousePos)
+    self~DragMgr~dmPickup(self, keyState, mousePos)
     return 0
 
   -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
