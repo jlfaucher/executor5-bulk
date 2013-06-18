@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide - Exercise08
 
-   Support - DragMgr					 	 v01-00  06Jun13
+   Support - DragMgr					 	 v01-00  18Jun13
    ---------------------
    A singleton component that manages direct manipulation.
 
@@ -64,6 +64,7 @@
 
   Changes:
     v01-00 06Jun13: First version.
+           18Jun13: Changed 'drop' method name to 'dmDrop'.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -269,11 +270,11 @@
     drop - Handles things when the user drops onto a target.
            Invoked by "View" (the superclass).
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD drop PUBLIC
+  ::METHOD dmDrop PUBLIC
     expose cursorIsNoDrop dragging mouse oldCursor dropTarget
     use strict arg sourceDlg, keyState, mousePos
-    --say "DragManager-drop-01: the mouse is at ("mousePos~x", "mousePos~y")"
-    --say "DragManager-drop-02: cursorIsNoDrop =" cursorIsNoDrop
+    --say "DragManager-dmDrop-01: the mouse is at ("mousePos~x", "mousePos~y")"
+    --say "DragManager-dmDrop-02: cursorIsNoDrop =" cursorIsNoDrop
 
     if dragging then do
       okayToDrop = (cursorIsNoDrop \== .true)	-- if cind = .false then okToDrop is true;
@@ -286,16 +287,16 @@
       p = mouse~getCursorPos; p~incr; mouse~setCursorPos(p)
 
       if okayToDrop then do
-      	--say "DragManager-drop-03: sourceDlg =" sourceDlg
+      	--say "DragManager-dmDrop-03: sourceDlg =" sourceDlg
 --        objectMgr = .local~my.ObjectMgr
 --        sourceClassName = objectMgr~modelClassFromView(sourceDlg)
 --        targetClassName = objectMgr~modelClassFromView(targetDlg)
         objectMgr = .local~my.ObjectMgr
         sourceModelId = objectMgr~modelIdFromView(sourceDlg)
         dropTarget~dmDrop(sourceModelId, sourceDlg)
-        say "DragManager-drop-04: Drop Happened OK!!"
+        say "DragManager-dmDrop-04: Drop Happened OK!!"
       end
-      else say "DragManager-drop-05: Drop Did Not Occur."
+      else say "DragManager-dmDrop-05: Drop Did Not Occur."
     end
 
     return

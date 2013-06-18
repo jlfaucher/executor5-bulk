@@ -37,7 +37,7 @@
 /* ooDialog User Guide - Support
    Exercise 08: View.rex 				  	  
 
-   ViewMixin							  v01-02 06Jun13
+   ViewMixin							  v01-02 18Jun13
    ---------
    A mixin superclass for View components (part of the Model-View Framework).
    
@@ -56,6 +56,7 @@
                      Note - some drag/drop methods are there as catch-alls for
                      when a subclass does not implement them. Default action 
                      still to be verified. 
+            18Jun13: Changed "drop" method to "dmDrop" (sent to DargMgr).
 
 ------------------------------------------------------------------------------*/
 
@@ -254,7 +255,7 @@
   ::METHOD dmOnLBup
     use arg keyState, mousePos
     --say "View-dmOnLBup-01; self =" self
-    self~dragMgr~drop(self, keyState, mousePos)
+    self~dragMgr~dmDrop(self, keyState, mousePos)
     --return r -- throws error, as done no return at all.
     return 0
     --say 'DMSource-onLButtonUp: the mouse is at ('mousePos~x',' mousePos~y') with these qualifiers:' keyState
