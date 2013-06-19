@@ -355,6 +355,7 @@ typedef struct _genericCallback {
     char               **indexes;
     CSTRING              callbackMethod;
     CSTRING              routineName;     // The name of the Rexx routine, needed for exception messages.
+    CSTRING              sqlFuncName;     // The name of the function used by SQLite, the name the collations is registered with
     RexxArrayObject      rsArray;         // When creating a result set and format is arrayOfArrays or arrayOfDirectories
     RexxStemObject       rsStem;          // When creating a result set and format is stemOfStems
     ResultSetType        format;          // Format of a record, array, stem, or directory.
@@ -382,6 +383,7 @@ typedef struct _functionCallback {
     CSTRING              funcMethod;
     CSTRING              stepMethod;
     CSTRING              finalMethod;
+    CSTRING              sqlFuncName;     // The name of the function used by SQLite, the name the function is registered with
     CSTRING              funcName;        // The name of the Rexx routine, needed for exception messages.
     CSTRING              stepName;        // The name of the Rexx routine, needed for exception messages.
     CSTRING              finalName;       // The name of the Rexx routine, needed for exception messages.

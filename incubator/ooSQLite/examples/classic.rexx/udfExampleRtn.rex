@@ -37,10 +37,10 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  udfExample.rex
+ *  udfExampleRtn.rex
  *
- *  This example demonstrates the createFunction() method of the
- *  ooSQLiteConnection class.  The createFunction() method is used to add SQL
+ *  This example demonstrates the oosqlCreateFunction() routine of the classic
+ *  Rexx interface.  The oosqlCreateFunction() routine is used to add SQL
  *  functions or aggregates, or to redefine the behavior of existing SQL
  *  functions or aggregates.
  *
@@ -49,170 +49,143 @@
  *  some user defined functions in Rexx.
  */
 
-  -- Set the result set format to an array of arrays:
-  .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
-
 	dbName = 'ooFoods.rdbx'
+  dbConn = ''
 
-  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
-
-  -- Instantiate our Rexx object that contains our callback methods.
-  callBackObj = .FunctionImpl~new
+  ret = oosqlOpen(dbName, 'dbConn', .ooSQLite~OPEN_READWRITE)
 
   -- Create an aggregate
-  dbConn~createFunction('strAggregate', callBackObj, 1, , 'strAggStep', 'strAggFinal')
+  ret = oosqlCreateFunction(dbConn, 'strAggregate', 1,  , 'strAggStep', 'strAggFinal')
 
   sql = "SELECT season, strAggregate(name) from episodes group by season;"
-  resultSet = dbConn~exec(sql, .true)
+  resultSet = oosqlExec(dbConn, sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
 
   z = printStrAgg(resultSet)
   say
 
-  dbConn~createFunction('helloWorld', callBackObj, 1, 'helloWorld')
-  dbConn~createFunction('half', callBackObj, 1, 'half')
-  dbConn~createFunction('echo', callBackObj, 1, 'echo')
+  ret = oosqlCreateFunction(dbConn, 'helloWorld', 1, 'helloWorld')
+  ret = oosqlCreateFunction(dbConn, 'half', 1, 'half')
+  ret = oosqlCreateFunction(dbConn, 'echo', 1, 'echo')
 
   sql = "SELECT helloWorld('Rick');"
-  resultSet = dbConn~exec(sql, .true)
+  resultSet = oosqlExec(dbConn, sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
 
   z = printResultSet(resultSet)
   say
 
   sql = "SELECT helloWorld('ooRexx');"
-  resultSet = dbConn~exec(sql, .true)
+  resultSet = oosqlExec(dbConn, sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
 
   z = printResultSet(resultSet)
   say
 
   sql = "SELECT half(11);"
-  resultSet = dbConn~exec(sql, .true)
+  resultSet = oosqlExec(dbConn, sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
 
   z = printResultSet(resultSet)
   say
 
   sql = "SELECT half(197);"
-  resultSet = dbConn~exec(sql, .true)
+  resultSet = oosqlExec(dbConn, sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
 
   z = printResultSet(resultSet)
   say
 
   sql = "SELECT half(114599);"
-  resultSet = dbConn~exec(sql, .true)
+  resultSet = oosqlExec(dbConn, sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
 
   z = printResultSet(resultSet)
   say
 
   sql = "SELECT echo(56.78) as reply, typeof(echo(56.78)) as type;"
-  resultSet = dbConn~exec(sql, .true)
+  resultSet = oosqlExec(dbConn, sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
 
   z = printResultSet(resultSet)
   say
 
   sql = "SELECT echo(X'ab24') as reply, typeof(echo(X'ab24')) as type;"
-  resultSet = dbConn~exec(sql, .true)
+  resultSet = oosqlExec(dbConn, sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
 
   z = printResultSet(resultSet)
   say
 
   sql = "SELECT echo(NULL) as reply, typeof(echo(NULL)) as type;"
-  resultSet = dbConn~exec(sql, .true)
+  resultSet = oosqlExec(dbConn, sql, .true, .ooSQLite~OO_ARRAY_OF_ARRAYS)
 
   z = printResultSet(resultSet)
   say
 
   -- When the database connection is closed, the user defined functions are
   -- unregisterd.
-  ret = dbConn~close
+  ret = oosqlClose(dbConn)
 
   return ret
 
 ::requires 'ooSQLite.cls'
-::requires 'utilities.frm'
+::requires '..\utilities.frm'
 
-::class 'strCollecter'
-::attribute str
-::method init
-  use arg firstStr
-  self~str = firstStr
+::routine strAggStep public
+  use arg db, cntx, aggregater, userData, txtToAggregate
 
-::method addStr
-  use arg str
-  self~str ||= ',' str
+  str = oosqlValueText(txtToAggregate)
 
-
-
--- The FunctionImpl class is used to define the callback methods for our
--- functions.
-::class 'FunctionImpl' inherit ooSQLiteConstants
-
--- The argument I'm calling the collectrObj, is an object that is used to
--- aggregate, to keep track of, the result.
---
--- In the first invocation of the step callback, this will always be the .nil
--- object.  It is sent to us as the .nil object by ooSQLite.  In the first
--- invocation, only, we must return the Rexx object we are going to use for our
--- own purpose.  Whateve that purpose may be.  On each succesive invocation of
--- our step callback, that same object is sent back to us.  On all other
--- invocations we must return a SQLite result code.
-::method strAggStep
-  use arg dbConn, cntx, collecterObj, userData, txtToAggregate
-
-  str = .ooSQLValue~text(txtToAggregate)
-
-  if collecterObj == .nil then do
-    collObj = .strCollecter~new(str)
-    return collObj
+  if aggregater == .nil then do
+    aggStem.count = 1
+    aggStem.completeStr = str
+    return aggStem.
   end
 
-  collecterObj~addStr(str)
-  return self~OK
+  aggregater[count] += 1
+  aggregater[completeStr] ||= ' 'str
+  return .ooSQLite~OK
 
 
-::method strAggFinal
-  use arg dbConn, cntx, collecterObj, userData
+::routine strAggFinal public
+  use arg dbConn, cntx, aggregater, userData
 
-  .ooSQLResult~text(cntx, collecterObj~str)
+  ret = oosqlResultText(cntx, aggregater[completeStr])
 
   -- Must return a result code. You do not return an .ooSQLResult.
-  return self~OK
+  return .ooSQLite~OK
 
 
 -- Our registered helloWorld() callback method.  SQLite invokes this method when
 -- it encounters a SQL function named helloWord
-::method helloWorld
-  use arg dbConn, cntx, userData, sayHelloToPerson
+::routine helloWorld public
+  use arg dbConn, cntx, userData, echoValue
 
-  name = .ooSQLValue~text(sayHelloToPerson)
+  name = oosqlValueText(echoValue)
   txt  = 'Hello' name'|'
 
-  .ooSQLResult~text(cntx, txt)
+  z = oosqlResultText(cntx, txt)
 
   -- Must return a result code. You do not return an .ooSQLResult.
-  return self~OK
+  return .ooSQLite~OK
 
 
 -- Our registered half() callback method.  SQLite invokes this method when it
 -- encounters a SQL function named half
-::method half
-  use arg dbConn, cntx, userData, number
+::routine half public
+  use arg dbConn, cntx, userData, decimalNum
 
-  d = .ooSQLValue~double(number)
+  d = oosqlValueDouble(decimalNum)
   d = d / 2
 
-  .ooSQLResult~double(cntx, d)
+  z = oosqlResultDouble(cntx, d)
 
   -- Must return a result code. You do not return an .ooSQLResult.
-  return self~OK
+  return .ooSQLite~OK
 
 
 -- Our registered echo() callback method.  SQLite invokes this method when it
--- encounters a SQL function named ehco
-::method echo
-  use arg dbConn, cntx, userData, txtToEcho
+-- encounters a SQL function named ehco.  All this does is set the result of the
+-- function to the value it is invoked with.
+::routine echo public
+  use arg dbConn, cntx, userData, echoVal
 
-  .ooSQLResult~value(cntx, txtToEcho)
+  z = oosqlResultValue(cntx, echoVal)
 
   -- Must return a result code. You do not return an .ooSQLResult.
-  return self~OK
+  return .ooSQLite~OK
 
 

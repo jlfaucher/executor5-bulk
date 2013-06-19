@@ -423,6 +423,7 @@
 ::routine oosqlCompileOptionUsed public external "LIBRARY oosqlite oosqlCompileOptionUsed_rtn"
 ::routine oosqlComplete public external "LIBRARY oosqlite oosqlComplete_rtn"
 ::routine oosqlCreateCollation public external "LIBRARY oosqlite oosqlCreateCollation_rtn"
+::routine oosqlCreateFunction public external "LIBRARY oosqlite oosqlCreateFunction_rtn"
 ::routine oosqlDataCount public external "LIBRARY oosqlite oosqlDataCount_rtn"
 ::routine oosqlDbFileName public external "LIBRARY oosqlite oosqlDbFileName_rtn"
 ::routine oosqlDbHandle public external "LIBRARY oosqlite oosqlDbHandle_rtn"
@@ -463,6 +464,18 @@
 ::routine oosqlReleaseMemory public external "LIBRARY oosqlite oosqlReleaseMemory_rtn"
 ::routine oosqlReset public external "LIBRARY oosqlite oosqlReset_rtn"
 ::routine oosqlResetAutoExtension public external "LIBRARY oosqlite oosqlResetAutoExtension_rtn"
+::routine oosqlResultBlob public external "LIBRARY oosqlite oosqlResultBlob_rtn"
+::routine oosqlResultDouble public external "LIBRARY oosqlite oosqlResultDouble_rtn"
+::routine oosqlResultError public external "LIBRARY oosqlite oosqlResultError_rtn"
+::routine oosqlResultErrorCode public external "LIBRARY oosqlite oosqlResultErrorCode_rtn"
+::routine oosqlResultErrorNoMem public external "LIBRARY oosqlite oosqlResultErrorNoMem_rtn"
+::routine oosqlResultErrorTooBig public external "LIBRARY oosqlite oosqlResultErrorTooBig_rtn"
+::routine oosqlResultInt_ public external "LIBRARY oosqlite oosqlResultInt_rtn"
+::routine oosqlResultInt64 public external "LIBRARY oosqlite oosqlResultInt64_rtn"
+::routine oosqlResultNull public external "LIBRARY oosqlite oosqlResultNull_rtn"
+::routine oosqlResultText public external "LIBRARY oosqlite oosqlResultText_rtn"
+::routine oosqlResultValue public external "LIBRARY oosqlite oosqlResultValue_rtn"
+::routine oosqlResultZeroBlob public external "LIBRARY oosqlite oosqlResultZeroBlob_rtn"
 ::routine oosqlRollbackHook public external "LIBRARY oosqlite oosqlRollbackHook_rtn"
 ::routine oosqlSetAuthorizer public external "LIBRARY oosqlite oosqlSetAuthorizer_rtn"
 ::routine oosqlSoftHeapLimit64 public external "LIBRARY oosqlite oosqlSoftHeapLimit64_rtn"
@@ -479,6 +492,13 @@
 ::routine oosqlTotalChanges public external "LIBRARY oosqlite oosqlTotalChanges_rtn"
 ::routine oosqlTrace public external "LIBRARY oosqlite oosqlTrace_rtn"
 ::routine oosqlUpdateHook public external "LIBRARY oosqlite oosqlUpdateHook_rtn"
+::routine oosqlValueBlob public external "LIBRARY oosqlite oosqlValueBlob_rtn"
+::routine oosqlValueBytes public external "LIBRARY oosqlite oosqlValueBytes_rtn"
+::routine oosqlValueDouble public external "LIBRARY oosqlite oosqlValueDouble_rtn"
+::routine oosqlValueInt public external "LIBRARY oosqlite oosqlValueInt_rtn"
+::routine oosqlValueNumericType public external "LIBRARY oosqlite oosqlValueNumericType_rtn"
+::routine oosqlValueText public external "LIBRARY oosqlite oosqlValueText_rtn"
+::routine oosqlValueType public external "LIBRARY oosqlite oosqlValueType_rtn"
 ::routine oosqlVersion public external "LIBRARY oosqlite oosqlVersion_rtn"
 
 ::routine oosqlTest public external "LIBRARY oosqlite oosqlTest_rtn"            -- Internal use only
@@ -1010,7 +1030,7 @@
 
   do i over indexes
     buf = self~functionBuffers~remove(i)
-    self~releaseBuffer(buf)
+    self~releaseFunctionBuffer(buf)
   end
 
 ::method releaseBuffer private external "LIBRARY oosqlite db_cb_releaseBuffer"

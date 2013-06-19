@@ -45,11 +45,9 @@
  *
  */
 
-  -- Set the result set format to an array of arrays:
-  .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
-	dbName                 = 'ooFoods.rdbx'
-
+	dbName = 'ooFoods.rdbx'
   dbConn = ''
+
   ret = oosqlOpen(dbName, 'dbConn', .ooSQLite~OPEN_READWRITE)
 
   -- In this first example we created a custom collation using a public callback

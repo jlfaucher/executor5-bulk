@@ -2052,15 +2052,18 @@ static void updateHookCallback(void *data, int op, const char *dbName, const cha
     // routine has problems, but don't do anything else.
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
 
-    c->ReleaseLocalReference(rxOp);
-    c->ReleaseLocalReference(rxDbName);
-    c->ReleaseLocalReference(rxTableName);
-    c->ReleaseLocalReference(rxRowID);
-    c->ReleaseLocalReference(reply);
-    c->ReleaseLocalReference(args);
-
-    if ( c != d->callbackContext )
+    if ( c == d->callbackContext )
     {
+        c->ReleaseLocalReference(rxOp);
+        c->ReleaseLocalReference(rxDbName);
+        c->ReleaseLocalReference(rxTableName);
+        c->ReleaseLocalReference(rxRowID);
+        c->ReleaseLocalReference(reply);
+        c->ReleaseLocalReference(args);
+    }
+    else
+    {
+        // Detaching the thread releases the local references.
         c->DetachThread();
     }
 }
@@ -2113,7 +2116,7 @@ static void functionCallback(sqlite3_context *sqlContext, int argc, sqlite3_valu
     }
     c->ArrayPut(args, db, 1);
     c->ArrayPut(args, sqlCntx, 2);
-    c->ArrayPut(args, userData, 1);
+    c->ArrayPut(args, userData, 3);
 
     for ( int i = 0; i < argc; i++ )
     {
@@ -2139,7 +2142,7 @@ static void functionCallback(sqlite3_context *sqlContext, int argc, sqlite3_valu
     {
         c->ReleaseLocalReference(reply);
         c->ReleaseLocalReference(sqlCntx);
-        if ( isMethod )
+        if ( ! isMethod )
         {
             c->ReleaseLocalReference(db);
         }
@@ -2153,7 +2156,7 @@ static void functionCallback(sqlite3_context *sqlContext, int argc, sqlite3_valu
 }
 
 /**
- * The function callback method for user defined aggregates, implemented in Rexx
+ * The step callback method for user defined aggregates, implemented in Rexx
  * code.  In the sqlite3_create_function, we assign this function for the xStep
  * callback.  When SQLite invokes this function, we then assemble the
  * information and invoke a method in the Rexx code, where the user implements
@@ -2165,6 +2168,22 @@ static void functionCallback(sqlite3_context *sqlContext, int argc, sqlite3_valu
  *
  *  @note  This function and the functionCallback function are very similar.
  *         But, because of the subtle differences they do not share code.
+ *
+ *         The sqlite3_context allows the programmer to allocate some memory
+ *         specific to each running instance of the aggregate.  This is how the
+ *         progammer can keep track of what it is aggregating.  For callbacks
+ *         into Rexx we allocate a struct to contain our function callback
+ *         block, and a single Rexx object.
+ *
+ *         We need to use sqlite3_user_data to retrieve our function callback
+ *         block, which we do the first time through.  In addition, the first
+ *         time through we send the .nil object as the aggregatObj arg to the
+ *         callback in Rexx.  The Rexx programmer needs to check if this arg is
+ *         the .nil object so she knews when it is the first invocation.  For
+ *         the first invocation only, the Rexx programmer needs to return a
+ *         single Rexx object as the reply.  This Rexx object is then saved in
+ *         our struct and for every invocation after that, that object is
+ *         returned to the returned as the aggregateObj.
  */
 static void stepCallback(sqlite3_context *sqlContext, int argc, sqlite3_value **argv)
 {
@@ -2200,28 +2219,32 @@ static void stepCallback(sqlite3_context *sqlContext, int argc, sqlite3_value **
         }
     }
 
-    RexxPointerObject sqlCntx = c->NewPointer(sqlContext);
-    RexxArrayObject   args;
-    RexxObjectPtr     reply = NULLOBJECT;
-    wholenumber_t     rc    = 0;
+    RexxPointerObject sqlCntx  = c->NewPointer(sqlContext);
+    RexxObjectPtr     userData = TheNilObj;
+    RexxObjectPtr     db       = pcf->rexxDB;
+    RexxObjectPtr     reply    = NULLOBJECT;
+    wholenumber_t     rc       = 0;
 
-    RexxArrayObject values = c->NewArray(argc);
+    RexxArrayObject args = c->NewArray(argc + 4);
+
+    if ( pcf->userData != NULL )
+    {
+        userData = pcf->userData;
+    }
+    if ( ! isMethod )
+    {
+        db = c->NewPointer(pcf->rtnDB);
+    }
+    c->ArrayPut(args, db, 1);
+    c->ArrayPut(args, sqlCntx, 2);
+    c->ArrayPut(args, pcacb->aggregateObj, 3);
+    c->ArrayPut(args, userData, 4);
+
     for ( int i = 0; i < argc; i++ )
     {
         RexxPointerObject v = c->NewPointer(argv[i]);
-        c->ArrayPut(values, v, i + 1);
+        c->ArrayPut(args, v, i + 5);
         c->ReleaseLocalReference(v);
-    }
-
-    args = c->ArrayOfFour(pcf->rexxDB, sqlCntx, values, pcacb->aggregateObj);
-
-    if ( pcf->userData == NULL )
-    {
-        c->ArrayAppend(args, TheNilObj);
-    }
-    else
-    {
-        c->ArrayAppend(args, pcf->userData);
     }
 
     if ( isMethod )
@@ -2262,14 +2285,21 @@ static void stepCallback(sqlite3_context *sqlContext, int argc, sqlite3_value **
         pcacb->aggregateObj = c->RequestGlobalReference(reply);
     }
 
-    // We can release the local reference to reply because we have a global
-    // reference now.
-    c->ReleaseLocalReference(reply);
-    c->ReleaseLocalReference(values);
-    c->ReleaseLocalReference(args);
-
-    if ( c != pcf->callbackContext )
+    if ( c == pcf->callbackContext )
     {
+        // We can release the local reference to reply because we have a global
+        // reference now.
+        c->ReleaseLocalReference(reply);
+        c->ReleaseLocalReference(sqlCntx);
+        if ( ! isMethod )
+        {
+            c->ReleaseLocalReference(db);
+        }
+        c->ReleaseLocalReference(args);
+    }
+    else
+    {
+        // Detaching the thread will release all local references.
         c->DetachThread();
     }
 }
@@ -2298,19 +2328,22 @@ static void finalCallback(sqlite3_context *sqlContext)
         }
     }
 
-    RexxPointerObject sqlCntx = c->NewPointer(sqlContext);
-    RexxArrayObject   args;
-    RexxObjectPtr     reply = NULLOBJECT;
-    wholenumber_t     rc    = 0;
+    RexxPointerObject sqlCntx  = c->NewPointer(sqlContext);
+    RexxObjectPtr     userData = TheNilObj;
+    RexxObjectPtr     db       = pcf->rexxDB;
+    RexxObjectPtr     reply    = NULLOBJECT;
+    wholenumber_t     rc       = 0;
 
-    if ( pcf->userData == NULL )
+    if ( pcf->userData != NULL )
     {
-        args = c->ArrayOfFour(pcf->rexxDB, sqlCntx, pcacb->aggregateObj, TheNilObj);
+        userData = pcf->userData;
     }
-    else
+    if ( ! isMethod )
     {
-        args = c->ArrayOfFour(pcf->rexxDB, sqlCntx, pcacb->aggregateObj, pcf->userData);
+        db = c->NewPointer(pcf->rtnDB);
     }
+
+    RexxArrayObject args = c->ArrayOfFour(db, sqlCntx, pcacb->aggregateObj, userData);
 
     if ( isMethod )
     {
@@ -2324,12 +2357,19 @@ static void finalCallback(sqlite3_context *sqlContext)
     // We just check for errors, we do not actually use rc.
     replyIsGood(c, reply, &rc, pcf->stepMethod, pcf->finalName, isMethod);
 
-    c->ReleaseLocalReference(reply);
-    c->ReleaseLocalReference(args);
-
     c->ReleaseGlobalReference(pcacb->aggregateObj);
 
-    if ( c != pcf->callbackContext )
+    if ( c == pcf->callbackContext )
+    {
+        c->ReleaseLocalReference(reply);
+        c->ReleaseLocalReference(sqlCntx);
+        if ( ! isMethod )
+        {
+            c->ReleaseLocalReference(db);
+        }
+        c->ReleaseLocalReference(args);
+    }
+    else
     {
         c->DetachThread();
     }
@@ -11547,8 +11587,18 @@ static RexxRoutineObject getCallerRoutine(RexxCallContext *c, CSTRING rtnName)
 
     if ( pkg != NULLOBJECT )
     {
-        RexxDirectoryObject d = c->GetPackagePublicRoutines(pkg);
-        rtn = (RexxRoutineObject)c->DirectoryAt(d, rtnName);
+        char *uprName = strdupupr(rtnName);
+
+        if ( uprName != NULL )
+        {
+            RexxDirectoryObject d = c->GetPackagePublicRoutines(pkg);
+            rtn = (RexxRoutineObject)c->DirectoryAt(d, uprName);
+            sqlite3_free(uprName);
+        }
+        else
+        {
+            outOfMemoryException(c->threadContext);
+        }
     }
 
     return rtn;
@@ -11682,7 +11732,10 @@ static RexxObjectPtr installCallbackRtn(RexxCallContext *c, sqlite3 *db, RexxBuf
     }
 
     RexxBufferObject oldBuffer = helperPutCallback(c, db, cbcBuffer, cbt, zName);
-    releaseThisCbBuf(c->threadContext, oldBuffer);
+    if ( oldBuffer != TheNilObj )
+    {
+        releaseThisCbBuf(c->threadContext, oldBuffer);
+    }
 
     return result;
 }
@@ -11728,6 +11781,7 @@ static RexxObjectPtr doCallbackSetupRtn(RexxCallContext *c, sqlite3 *db, CSTRING
     memset(cbc, 0, sizeof(CGenericCallback));
 
     cbc->callbackContext = c->threadContext;
+    cbc->sqlFuncName     = zName;
     cbc->routineName     = rtnName;
     cbc->callbackRtn     = getCallerRoutine(c, rtnName);
     cbc->rtnDB           = db;
@@ -13046,22 +13100,12 @@ RexxRoutine4(RexxObjectPtr, oosqlCreateCollation_rtn, POINTER, _db, CSTRING, rtn
  *                        This argument may be omitted under the conditions
  *                        listed above.
  *
- *  @param  finalRtnName  [optional]  The value and meaning of this argument is
- *                        dependent on the value of the required 'callbackObj'
- *                        argument.
+ *  @param  finalRtnName  [optional]  The name of the Rexx routine that will be
+ *                        invoked for the final phase of the SQL aggregate named
+ *                        'funcSqlName'.
  *
- *                        1.) In this case 'callbackOpt3' is the name of the
- *                        method to be invoked for the step() callback function.
- *                        If this argument is omitted the user must be defining
- *                        a function.
- *
- *                        2.) 'callbackOpt3', if not omitted, must be a .Pointer
- *                        object that is the handle for the xFinal function
- *                        implemented in the external library.  The handle is
- *                        obtained through an ooSQLLibrary object.
- *
- *                        3.) This argument is ignored.  The xFinal function
- *                        infomation is contained within the .Function object.
+ *                        This argument may be omitted under the conditions
+ *                        listed above.
  *
  *  @param userData       [optional] This can be any Rexx object the user
  *                        desires. The object will be sent as the first argument
@@ -13069,7 +13113,6 @@ RexxRoutine4(RexxObjectPtr, oosqlCreateCollation_rtn, POINTER, _db, CSTRING, rtn
  *
  *                        This argument is ignored if the function is being
  *                        removed
- *
  *
  *  @return  An ooSQLite result code.
  *
@@ -13136,13 +13179,17 @@ RexxRoutine7(RexxObjectPtr, oosqlCreateFunction_rtn, POINTER, _db, CSTRING, func
     }
 
     RexxBufferObject oldBuffer = helperPutCallback(context, db, fncBuffer, function, funcSqlName);
-    releaseThisFunctionCbBuf(context->threadContext, oldBuffer);
+    if ( oldBuffer != TheNilObj )
+    {
+        releaseThisFunctionCbBuf(context->threadContext, oldBuffer);
+    }
 
     pCFunctionCallback cfcb = (pCFunctionCallback)context->BufferData(fncBuffer);
     memset(cfcb, 0, sizeof(CFunctionCallback));
 
     cfcb->callbackContext = context->threadContext;
     cfcb->rtnDB           = db;
+    cfcb->sqlFuncName     = funcSqlName;
     cfcb->interpreter     = context->threadContext->instance;
     cfcb->initialThreadID = oosqlGetCurrentThreadId();
 
@@ -14235,6 +14282,120 @@ RexxRoutine0(int, oosqlResetAutoExtension_rtn)
     return SQLITE_OK;
 }
 
+/** oosqlResultBlob()
+ *
+ */
+RexxRoutine3(int, oosqlResultBlob_rtn, POINTER, sqlCntxt, POINTER, blob, int, size)
+{
+    sqlite3_result_blob((sqlite3_context*)sqlCntxt, blob, size, SQLITE_TRANSIENT);
+    return 0;
+}
+
+/** oosqlResultDouble()
+ *
+ *
+ *  @note  The sqlite3 function has a void return, so we just return 0 always.
+ */
+RexxRoutine2(int, oosqlResultDouble_rtn, POINTER, sqlCntxt, double, value)
+{
+    sqlite3_result_double((sqlite3_context*)sqlCntxt, value);
+    return 0;
+}
+
+/** oosqlResultError()
+ *
+ */
+RexxRoutine2(int, oosqlResultError_rtn, POINTER, sqlCntxt, CSTRING, errMsg)
+{
+    sqlite3_result_error((sqlite3_context*)sqlCntxt, errMsg, -1);
+    return 0;
+}
+
+/** oosqlResultErrorCode()
+ *
+ */
+RexxRoutine2(int, oosqlResultErrorCode_rtn, POINTER, sqlCntxt, int, errCode)
+{
+    sqlite3_result_error_code((sqlite3_context*)sqlCntxt, errCode);
+    return 0;
+}
+
+/** oosqlResultErrorNoMem()
+ *
+ */
+RexxRoutine1(int, oosqlResultErrorNoMem_rtn, POINTER, sqlCntxt)
+{
+    sqlite3_result_error_nomem((sqlite3_context*)sqlCntxt);
+    return 0;
+}
+
+/** oosqlResultErrorTooBig
+ *
+ */
+RexxRoutine1(int, oosqlResultErrorTooBig_rtn, POINTER, sqlCntxt)
+{
+    sqlite3_result_error_toobig((sqlite3_context*)sqlCntxt);
+    return 0;
+}
+
+/** oosqlResultInt()
+ *
+ */
+RexxRoutine2(int, oosqlResultInt_rtn, POINTER, sqlCntxt, int, value)
+{
+    sqlite3_result_int((sqlite3_context*)sqlCntxt, value);
+    return 0;
+}
+
+/** oosqlResultInt64()
+ *
+ */
+RexxRoutine2(int, oosqlResultInt64_rtn, POINTER, sqlCntxt, int64_t, value)
+{
+    sqlite3_result_int64((sqlite3_context*)sqlCntxt, value);
+    return 0;
+}
+
+/** oosqlResultNull()
+ *
+ */
+RexxRoutine1(int, oosqlResultNull_rtn, POINTER, sqlCntxt)
+{
+    sqlite3_result_null((sqlite3_context*)sqlCntxt);
+    return 0;
+}
+
+/** oosqlResultText()
+ *
+ */
+RexxRoutine2(int, oosqlResultText_rtn, POINTER, sqlCntxt, CSTRING, txt)
+{
+    sqlite3_result_text((sqlite3_context*)sqlCntxt, txt, -1, SQLITE_TRANSIENT);
+    return 0;
+}
+
+/** oosqlResultValue()
+ *
+ *  The SQLite function sets the result value to be a copy of a sqlite3_value *
+ *  value passed into the user defined function.  In ooRexx these are pointers,
+ *  so the Rexx user needs to pass that Rexx pointer object unchanged to this
+ *  method.
+ */
+RexxRoutine2(int, oosqlResultValue_rtn, POINTER, sqlCntxt, POINTER, value)
+{
+    sqlite3_result_value((sqlite3_context*)sqlCntxt, (sqlite3_value *)value);
+    return 0;
+}
+
+/** oosqlResultZeroBlob()
+ *
+ */
+RexxRoutine2(int, oosqlResultZeroBlob_rtn, POINTER, sqlCntxt, int, size)
+{
+    sqlite3_result_zeroblob((sqlite3_context*)sqlCntxt, size);
+    return 0;
+}
+
 /** oosqlRollbackHook()
  *
  *  Registers a callback routine to be called whenever a transaction is rolled
@@ -14618,6 +14779,107 @@ RexxRoutine3(RexxObjectPtr, oosqlUpdateHook_rtn, POINTER, _db, CSTRING, rtnName,
     return doCallbackSetupRtn(context, db, rtnName, userData, updateHook, 0, NULL);
 }
 
+/** oosqlValueBlob()
+ *
+ *
+ */
+RexxRoutine1(RexxObjectPtr, oosqlValueBlob_rtn, POINTER, sqlValue)
+{
+    // TODO not sure what is needed here for the classic interface???
+
+    const void *b = sqlite3_value_blob((sqlite3_value *)sqlValue);
+    if ( b == NULL )
+    {
+        return TheNilObj;
+    }
+    return context->NewPointer((POINTER)b);
+}
+
+/** oosqlValueBytes()
+ *
+ *
+ */
+RexxRoutine1(int, oosqlValueBytes_rtn, POINTER, sqlValue)
+{
+    return sqlite3_value_bytes((sqlite3_value *)sqlValue);
+}
+
+/** oosqlValueDouble()
+ *
+ */
+RexxRoutine1(RexxObjectPtr, oosqlValueDouble_rtn, POINTER, sqlValue)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    if ( sqlite3_value_type((sqlite3_value *)sqlValue) !=  SQLITE_NULL )
+    {
+        result = context->Double(sqlite3_value_double((sqlite3_value *)sqlValue));
+    }
+    return result;
+}
+
+/** oosqlValueInt()
+ *
+ */
+RexxRoutine1(RexxObjectPtr, oosqlValueInt_rtn, POINTER, sqlValue)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    if ( sqlite3_value_type((sqlite3_value *)sqlValue) !=  SQLITE_NULL )
+    {
+        result = context->Int32(sqlite3_value_int((sqlite3_value *)sqlValue));
+    }
+    return result;
+}
+
+/** oosqlValueInt64()
+ *
+ */
+RexxRoutine1(RexxObjectPtr, oosqlValueInt64, POINTER, sqlValue)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    if ( sqlite3_value_type((sqlite3_value *)sqlValue) !=  SQLITE_NULL )
+    {
+        result = context->Int64(sqlite3_value_int64((sqlite3_value *)sqlValue));
+    }
+    return result;
+}
+
+/** oosqlValueNumericType()
+ *
+ *
+ */
+RexxRoutine1(int, oosqlValueNumericType_rtn, POINTER, sqlValue)
+{
+    return sqlite3_value_numeric_type((sqlite3_value *)sqlValue);
+}
+
+/** oosqlValueText()
+ *
+ *
+ */
+RexxRoutine1(RexxObjectPtr, oosqlValueText_rtn, POINTER, sqlValue)
+{
+    const char *t = (const char *)sqlite3_value_text((sqlite3_value *)sqlValue);
+
+    if ( t == NULL )
+    {
+        return TheNilObj;
+    }
+    return context->String(t);
+}
+
+/** oosqlValueType()
+ *
+ *
+ */
+RexxRoutine1(int, oosqlValueType_rtn, POINTER, sqlValue)
+{
+    return sqlite3_value_type((sqlite3_value *)sqlValue);
+}
+
+
 /** oosqlVersion()
  *
  *
@@ -14681,7 +14943,7 @@ RexxMethod1(int, db_cb_releaseBuffer, RexxObjectPtr, buffer)
     }
     else
     {
-        printf("db_cb_releaseBuffer routine name=%s\n", cbc->routineName);
+        printf("db_cb_releaseBuffer name=%s\n", cbc->sqlFuncName == NULL ? cbc->routineName : cbc->sqlFuncName);
     }
 #endif
 
@@ -14715,7 +14977,7 @@ RexxMethod1(int, db_cb_releaseFunctionBuffer, RexxObjectPtr, buffer)
     }
     else
     {
-        printf("db_cb_releaseBuffer func name=%s\n", cfcb->funcName);
+        printf("db_cb_releaseBuffer func name=%s\n", cfcb->sqlFuncName);
     }
 #endif
 
@@ -14781,6 +15043,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlCompileOptionGet_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlCompileOptionUsed_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlComplete_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlCreateCollation_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlCreateFunction_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlDataCount_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlDbFileName_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlDbHandle_rtn);
@@ -14819,6 +15082,18 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlRekey_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlReleaseMemory_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlReset_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResetAutoExtension_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultBlob_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultDouble_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultError_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultErrorCode_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultErrorNoMem_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultErrorTooBig_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultInt_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultInt64_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultNull_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultText_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultValue_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlResultZeroBlob_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlRollbackHook_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlSetAuthorizer_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlSoftHeapLimit64_rtn);
@@ -14832,6 +15107,13 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlTableColumnMetadata_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlThreadSafe_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlTrace_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlUpdateHook_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlValueBlob_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlValueBytes_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlValueDouble_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlValueInt_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlValueNumericType_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlValueText_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlValueType_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlVersion_rtn);
 
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlTest_rtn);
@@ -14887,6 +15169,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlCompileOptionUsed_rtn,    oosqlCompileOptionUsed_rtn),
     REXX_TYPED_ROUTINE(oosqlComplete_rtn,             oosqlComplete_rtn),
     REXX_TYPED_ROUTINE(oosqlCreateCollation_rtn,      oosqlCreateCollation_rtn),
+    REXX_TYPED_ROUTINE(oosqlCreateFunction_rtn,       oosqlCreateFunction_rtn),
     REXX_TYPED_ROUTINE(oosqlDataCount_rtn,            oosqlDataCount_rtn),
     REXX_TYPED_ROUTINE(oosqlDbFileName_rtn,           oosqlDbFileName_rtn),
     REXX_TYPED_ROUTINE(oosqlDbHandle_rtn,             oosqlDbHandle_rtn),
@@ -14926,6 +15209,18 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlReset_rtn,                oosqlReset_rtn),
     REXX_TYPED_ROUTINE(oosqlResetAutoExtension_rtn,   oosqlResetAutoExtension_rtn),
     REXX_TYPED_ROUTINE(oosqlRollbackHook_rtn,         oosqlRollbackHook_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultBlob_rtn,           oosqlResultBlob_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultDouble_rtn,         oosqlResultDouble_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultError_rtn,          oosqlResultError_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultErrorCode_rtn,      oosqlResultErrorCode_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultErrorNoMem_rtn,     oosqlResultErrorNoMem_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultErrorTooBig_rtn,    oosqlResultErrorTooBig_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultInt_rtn,            oosqlResultInt_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultInt64_rtn,          oosqlResultInt64_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultNull_rtn,           oosqlResultNull_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultText_rtn,           oosqlResultText_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultValue_rtn,          oosqlResultValue_rtn),
+    REXX_TYPED_ROUTINE(oosqlResultZeroBlob_rtn,       oosqlResultZeroBlob_rtn),
     REXX_TYPED_ROUTINE(oosqlSetAuthorizer_rtn,        oosqlSetAuthorizer_rtn),
     REXX_TYPED_ROUTINE(oosqlSoftHeapLimit64_rtn,      oosqlSoftHeapLimit64_rtn),
     REXX_TYPED_ROUTINE(oosqlSql_rtn,                  oosqlSql_rtn),
@@ -14940,6 +15235,13 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlTotalChanges_rtn,         oosqlTotalChanges_rtn),
     REXX_TYPED_ROUTINE(oosqlTrace_rtn,                oosqlTrace_rtn),
     REXX_TYPED_ROUTINE(oosqlUpdateHook_rtn,           oosqlUpdateHook_rtn),
+    REXX_TYPED_ROUTINE(oosqlValueBlob_rtn,            oosqlValueBlob_rtn),
+    REXX_TYPED_ROUTINE(oosqlValueBytes_rtn,           oosqlValueBytes_rtn),
+    REXX_TYPED_ROUTINE(oosqlValueDouble_rtn,          oosqlValueDouble_rtn),
+    REXX_TYPED_ROUTINE(oosqlValueInt_rtn,             oosqlValueInt_rtn),
+    REXX_TYPED_ROUTINE(oosqlValueNumericType_rtn,     oosqlValueNumericType_rtn),
+    REXX_TYPED_ROUTINE(oosqlValueText_rtn,            oosqlValueText_rtn),
+    REXX_TYPED_ROUTINE(oosqlValueType_rtn,            oosqlValueType_rtn),
     REXX_TYPED_ROUTINE(oosqlVersion_rtn,              oosqlVersion_rtn),
 
     REXX_TYPED_ROUTINE(oosqlTest_rtn,                 oosqlTest_rtn),
