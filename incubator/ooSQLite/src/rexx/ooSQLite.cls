@@ -470,7 +470,7 @@
 ::routine oosqlResultErrorCode public external "LIBRARY oosqlite oosqlResultErrorCode_rtn"
 ::routine oosqlResultErrorNoMem public external "LIBRARY oosqlite oosqlResultErrorNoMem_rtn"
 ::routine oosqlResultErrorTooBig public external "LIBRARY oosqlite oosqlResultErrorTooBig_rtn"
-::routine oosqlResultInt_ public external "LIBRARY oosqlite oosqlResultInt_rtn"
+::routine oosqlResultInt public external "LIBRARY oosqlite oosqlResultInt_rtn"
 ::routine oosqlResultInt64 public external "LIBRARY oosqlite oosqlResultInt64_rtn"
 ::routine oosqlResultNull public external "LIBRARY oosqlite oosqlResultNull_rtn"
 ::routine oosqlResultText public external "LIBRARY oosqlite oosqlResultText_rtn"
