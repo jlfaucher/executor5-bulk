@@ -42,10 +42,45 @@
     #
     #########################################################################
 -->
-<section id="clsOOSQLiteConstants"><title>The ooSQLiteConstants Class</title>
+<chapter id="chpOOSQLiteConstants"><title>The ooSQLite Constants</title>
+<indexterm><primary>ooSQLite Constants</primary></indexterm>
 <indexterm><primary>ooSQLiteConstants class</primary></indexterm>
 <para>
-  The <computeroutput>ooSQLiteConstants</computeroutput> class a mixin class that provides <emphasis
+  ooSQLite provides a number of constant values that are used to interact with the SQLite database engine. These constants
+  are needed in both the object orientated and classical Rexx interafaces, so they have been documented separately in this
+  chapter. Although the constants are provided through a class object, the syntax for using an ooRexx constant is extremely
+  simple and should present no problem for the ooSQLite programmer that is unfamiliar with classes and objects. The classic
+  Rexx programmer need simply prefix each constant value with: <computeroutput>.ooSQLite~</computeroutput>.
+</para>
+<para>
+  This rule is absolute for every constant listed in this chapter. If the classic Rexx programmer wants to use the constant
+  <computeroutput>CORRUPT</computeroutput> in her Rexx code, the prefix <computeroutput>.ooSQLite~</computeroutput> is added
+  to <computeroutput>CORRUPT</computeroutput> like so
+
+<programlisting>
+<![CDATA[
+
+  dbConn = ''
+  ret = oosqlOpen('ooFoods.rdbx', 'dbConn')
+
+  if ret == .ooSQLite~CORRUPT then do
+    -- handle error in some fashion
+    say 'Error return:' .ooSQLite~CORRUPT
+    say 'The "ooFoods.rdbx" database file has been corrupted.'
+    ...
+  end
+
+/* Output wouled be, if the file was indeed detected to be corrunt:
+
+Error return: 11
+The "ooFoods.rdbx" database file has been corrupted.
+
+*/
+
+]]>
+</programlisting>
+</para>
+<para>The <computeroutput>ooSQLiteConstants</computeroutput> class a mixin class that provides <emphasis
   role="italic">constant</emphasis> values defined using the <computeroutput>::constant</computeroutput> directive. Each
   constant maps to a SQLite constant and all SQLite constants have a corresponding ooSQLite constant.
 </para>
@@ -82,15 +117,15 @@
 </row>
 <row>
 <entry>VERSION</entry>
-<entry>"3.7.16.1" The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+<entry>&quot;3.7.17&quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
 </row>
 <row>
 <entry>VERSION_NUMBER</entry>
-<entry>3007016 The value of this constant will vary depending on the exact version of the SQLite database engin embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+<entry>3007017 The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
 </row>
 <row>
 <entry>SOURCE_ID</entry>
-<entry>"2013-03-29 13:44:34 527231bc67285f01fb18d4451b28f61da3c4e39d" The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+<entry>&quot;2013-05-20 00:56:22 118a3b35693b134d56ebd780123b7fd6f1497668 &quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
 </row>
 
 <row>
@@ -2885,5 +2920,4 @@
 </variablelist>
 </section>  <!-- End ooSQLiteConstant::merge() -->
 
-
-</section>
+</chapter>

@@ -42,25 +42,24 @@
     #
     #########################################################################
 -->
-<chapter id="chpOOInteface"><title>The Object Orientated Interface to SQLite</title>
-<indexterm><primary>Object Orientated Interface</primary></indexterm>
+<chapter id="chpPrimaryClasses"><title>Primary ooSQLite Classes</title>
+<indexterm><primary>Object Orientated Interface</primary><secondary>Primary Classes</secondary></indexterm>
 <para>
-  The object-orientated interface to SQLite provides a number of classes whose methods are used to work with SQLite
-  databases.
+  Most of the work to use the SQLite database engine is done through the primary ooSQLite classes documented in this chapter.
+  SQLite also allows extensions to the database engine to be written by the user of the engine. An SQLite extension is
+  typically a shared library or DLL and written in C / C++ code. ooSQLite provides full support for the loading of these
+  extensions with a number of classes. Those classes are documented in their own <link
+  linkend="chpUDExtensions">chapter</link>.
 </para>
 <para>
-  The intent is for the object-orientated interface to allow access to the complete functionality and feature set of
-  SQLite. The first release of ooSQLite will not meet, and is not intended to meet, that goal. Lesser used functionality
-  will be added over time.
+  As a note, support for user defined extensions written in Rexx are also part of ooSQLite. This support is done through the
+  <link linkend="mthCreateCollation">createCollation</link> and <link linkend="mthCreateFunction">createFunction</link>. In
+  the future support for user defined virtual tables is intended to be added to ooSQLite through a <emphasis
+  role="bold">createModule</emphasis> method.
 </para>
 <para>
-  The object-orientated and <link linkend="chpClassicInteface">classic</link> Rexx interfaces are developed in tandem.
-  As each new feature or functionality of SQLite is added to ooSQLite, access to the feature is added to both interfaces
-  at the same time. There is no SQLite functionality in the object-orientated interface that can not be accessed through
-  the classic Rexx interface. And, vice versa.
-</para>
-<para>
-  The following table lists the classes used in the object orientated interface of the ooSQLite package:
+  The following table lists the primary classes used in the object orientated interface of the ooSQLite package that are
+  documented in this chapter:
 </para>
 <table id="tblOOSQLiteClasses" frame="all"> <title>ooSQLite Class Listing</title>
 <tgroup cols="2">
@@ -86,10 +85,6 @@
 <entry>Each ooSQLiteConnection object represents an open connection to a SQLite database. Mulitple connections to the same database are allowed by instantiating multiple ooSQLiteConnection objects.</entry>
 </row>
 <row>
-<entry><link linkend="chpOOSQLiteConstants">The ooSQLiteConstants Class</link></entry>
-<entry>The ooSQLiteConstants class provides a CONSTANT value for each SQLite defined constant, and a small number of ooSQLite specific constants.</entry>
-</row>
-<row>
 <entry><link linkend="clsOOSQLiteMutex">The ooSQLiteMutex Class</link></entry>
 <entry>An ooSQLiteMutex object provides methods for allocating and using a mutex. In general a mutex is a synchronization object used in multi-threading programs to prevent different threads from acessing a shared resource at the same time.</entry>
 </row>
@@ -99,5 +94,25 @@
 </row>
 </tbody></tgroup>
 </table>
+
+<!-- <section id="clsOOSQLite"><title>The ooSQLite Class</title>  START -->
+<xi:include href="oosqliteClass.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="clsOOSQLite"><title>The ooSQLite Class</title>  END   -->
+
+<!-- <section id="clsOOSQLiteBackup"><title>The ooSQLiteBackup Class</title>  START -->
+<xi:include href="oosqliteBackup.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="clsOOSQLiteBackup"><title>The ooSQLiteBackup Class</title>  END   -->
+
+<!-- <section id="clsOOSQLiteConnection"><title>The ooSQLiteConnection Class</title>  START -->
+<xi:include href="oosqliteConnection.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="clsOOSQLiteConnection"><title>The ooSQLiteConnection Class</title>  END   -->
+
+<!-- <section id="clsOOSQLiteMutex"><title>The ooSQLiteMutex Class</title>  START -->
+<xi:include href="oosqliteMutex.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="clsOOSQLiteMutex"><title>The ooSQLiteMutex Class</title>  END   -->
+
+<!-- <section id="clsOOSQLiteStmt"><title>The ooSQLiteStmt Class</title>  START -->
+<xi:include href="oosqliteStmt.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- <section id="clsOOSQLiteStmt"><title>The ooSQLiteStmt Class</title>  END   -->
 
 </chapter>
