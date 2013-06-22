@@ -476,7 +476,7 @@
 </section>  <!-- End ooSQLiteBackup::initCode() [attribute]  -->
 
 <section id="atrLastErrCodeClsBackup"><title>lastErrCode (Attribute)</title>
-<indexterm><primary>lastErrCode</primary></indexterm>
+<indexterm><primary>lastErrCode</primary><secondary>ooSQLiteBackup class</secondary></indexterm>
 <indexterm><primary>ooSQLiteBackup class</primary><secondary>lastErrCode</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -514,9 +514,9 @@
     During a backup operation, the database engine sets error codes in the destination database connection. The
     <emphasis role="italic">lastErrCode</emphasis> attribute is the value of the error code in the destination database
     connection. If the programmer has a reference to the destination database connection, that reference can be used to
-    get the same value through the <link linkend="mthErrCode">errCode</link> method. However, the programmer if
-    initializes the backup object using the file name of the destination database she may not have a reference to that
-    database connection.
+    get the same value through the <link linkend="mthErrCode">errCode</link> method. However, if the programmer initializes
+    the backup object using the file name of the destination database she may not have a reference to that database
+    connection.
   </para>
   <para>
     The <emphasis role="italic">lastErrCode</emphasis> attribute can be accessed at any time, before or after <link
@@ -536,7 +536,7 @@
 
 
 <section id="atrLastErrMsgClsBackup"><title>lastErrMsg (Attribute)</title>
-<indexterm><primary>lastErrMsg</primary></indexterm>
+<indexterm><primary>lastErrMsg</primary><secondary>ooSQLiteBackup class</secondary></indexterm>
 <indexterm><primary>ooSQLiteBackup class</primary><secondary>lastErrMsg</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -575,9 +575,9 @@
     During a backup operation, the database engine sets error codes and messages in the destination database connection.
     The <emphasis role="italic">lastErrMsg</emphasis> attribute is the value of the error message in the destination
     database connection. If the programmer has a reference to the destination database connection, that reference can be
-    used to get the same value through the <link linkend="mthErrMsg">errMsg</link> method. However, the programmer if
-    initializes the backup object using the file name of the destination database he may not have a reference to that
-    database connection.
+    used to get the same value through the <link linkend="mthErrMsg">errMsg</link> method. However, if the programmer
+    initializes the backup object using the file name of the destination database he may not have a reference to
+    that database connection.
   </para>
   <para>
     The <emphasis role="italic">lastErrMsg</emphasis> attribute can be accessed at any time, before or after <link

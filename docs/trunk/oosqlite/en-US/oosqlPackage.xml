@@ -82,8 +82,32 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="atrLastErrCodeClsPack">lastErrCode</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrLastErrMsgClsPack">lastErrMsg</link></entry>
+<entry>.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthGetCollation">getCollation</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCollationNeeded">getCollationNeeded</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetFunction">getFunction</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthRegister">register</link></entry>
+<entry>.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -94,33 +118,66 @@
 <indexterm><primary>ooSQLPackage class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)--------------------------><
-          +--type--+
+>>--new------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  An <computeroutput>ooSQLPackage</computeroutput> object can not be instantiated from Rexx code. Rather, the programmer uses
+  the <link linkend="mthGetPackage">getPackage</link> method of the <computeroutput>ooSQLExtensions</computeroutput> class to
+  get a package object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In general an external ooSQLite package is loaded through the <link linkend="mthLoadPackage">loadPackage</link> method of
+    the <computeroutput>ooSQLExtensions</computeroutput> class. For many use cases, this may be sufficient. Some use cases,
+    such as registering a single function from the package to a specific database connection, require the package object. The
+    loaded package object can be obtained through the <emphasis role="italic">getPackage</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises an error condition if invoked from Rexx code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from a program where only a single function in an ooSQLite package is needed to be registered with a
+    database connection:
 <programlisting>
 <![CDATA[
+
+  -- Load the package
+  success = .ooSQLExtensions~loadPackage(packageFile)
+  if \ success then do
+    say 'Failed to load package'
+    say '  Error code:   ' .ooSQLExtensions~lastErrCode
+    say '  Error message:' .ooSQLExtensions~lastErrMsg
+
+    return .ooSQLExtensions~lastErrCode
+  end
+
+  ...
+
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  -- Get the package and register a single function
+  package = .ooSQLExtensions~getPackage('examplePackage')
+
+  function  = package~getFunction('half')
+  if function == .nil then do
+    say 'Failed to get function: half'
+    say '  Error code:   ' package~lastErrCode
+    say '  Error message:' package~lastErrMsg
+
+    return package~lastErrCode
+  end
+
+  dbConn~createFunction('half', function)
 
 ]]>
 </programlisting>
@@ -167,44 +224,22 @@
     <emphasis role="italic">lastErrMsg</emphasis> attributes are always updated together. The error message is always
     the message that goes with the error code.
   </para>
-  <para>
-    Each of the three major ooSQLite objects, an <link linkend="clsOOSQLiteConnection">ooSQLPackage</link>, an
-    <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link>, and an <link
-    linkend="clsOOSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
-    a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
-    hold the last error message and code recorded by ooSQLite.
-  </para>
-  <para>
-    The attributes are most useful when the invocation of <emphasis role="italic">new</emphasis> fails to initialize the
-    object correctly due to an error. The <emphasis role="italic">lastErrMsg</emphasis> and <emphasis
-    role="italic">lastErrCode</emphasis> attributes are always updated during <emphasis role="italic">new</emphasis>.
-    In general, these objects do not update the attributes after every method invocation.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example uses the <emphasis role="italic">lastErrCode</emphasis> attribute to produce a meaningful error message when
-    a database connection fails to open:
+    This example uses the <emphasis role="italic">lastErrCode</emphasis> attribute as part of producing a meaningful error
+    message when an <computeroutput>ooSQLFunction</computeroutput> object can not be retrieved from a package:
 <programlisting>
 <![CDATA[
+  function  = package~getFunction('half')
+  if function == .nil then do
+    say 'Failed to get function: half'
+    say '  Error code:   ' package~lastErrCode
+    say '  Error message:' package~lastErrMsg
 
-
-  dbName =  'ooFotods.rdbx'
-  dbConn = .ooSQLPackage~new(dbName, .ooSQLite~OPEN_READWRITE)
-
-  if dbConn~initCode <> 0 then do
-    errRC  = dbConn~lastErrCode
-    errMsg = dbConn~lastErrMsg
-
-    say 'ooSQLPackage initialization error:' dbConn~initCode
-    say '  Error code:' errRC '('errMsg')'
-
-    dbConn~close
-    return errRC
+    return package~lastErrCode
   end
-  ...
-
 ]]>
 </programlisting>
   </para>
@@ -248,18 +283,76 @@
     role="italic">lastErrCode</emphasis> and the <emphasis role="italic">lastErrMsg</emphasis> attributes are always
     updated together. The error message is always the message that goes with the error code.
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
   <para>
-    Each of the three major ooSQLite objects, an <link linkend="clsOOSQLiteConnection">ooSQLPackage</link>, an
-    <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link>, and an <link
-    linkend="clsOOSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
-    a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
-    hold the last error message and code recorded by ooSQLite.
+    This example uses the <emphasis role="italic">lastErrMsg</emphasis> attribute to produce a meaningful error message when
+    an <computeroutput>ooSQLFunction</computeroutput> object can not be retrieved from a package:
+<programlisting>
+<![CDATA[
+
+  function  = package~getFunction('half')
+  if function == .nil then do
+    say 'Failed to get function: half'
+    say '  Error code:   ' package~lastErrCode
+    say '  Error message:' package~lastErrMsg
+
+    return package~lastErrCode
+  end
+
+]]>
+</programlisting>
   </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLPackage::lastErrMsg() [attribute]  -->
+
+
+<section id="mthGetCollation"><title>getCollation</title>
+<indexterm><primary>getCollation</primary></indexterm>
+<indexterm><primary>ooSQLPackage class</primary><secondary>getCollation</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCollation(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
   <para>
-    The attributes are most useful when the invocation of <emphasis role="italic">new</emphasis> fails to initialize the
-    object correctly due to an error. The <emphasis role="italic">lastErrMsg</emphasis> and <emphasis
-    role="italic">lastErrCode</emphasis> attributes are always updated during <emphasis role="italic">new</emphasis>.
-    In general, these objects do not update the attributes after every method invocation.
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -274,9 +367,189 @@
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ooSQLPackage::lastErrMsg() [attribute]  -->
+</section>  <!-- End ooSQLPackage::getCollation() -->
 
 
+<section id="mthGetCollationNeeded"><title>getCollationNeeded</title>
+<indexterm><primary>getCollationNeeded</primary></indexterm>
+<indexterm><primary>ooSQLPackage class</primary><secondary>getCollationNeeded</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCollationNeeded(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
 
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLPackage::getCollationNeeded() -->
+
+
+<section id="mthGetFunction"><title>getFunction</title>
+<indexterm><primary>getFunction</primary></indexterm>
+<indexterm><primary>ooSQLPackage class</primary><secondary>getFunction</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFunction(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLPackage::getFunction() -->
+
+
+<section id="mthRegister"><title>register</title>
+<indexterm><primary>register</primary></indexterm>
+<indexterm><primary>ooSQLPackage class</primary><secondary>register</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--register(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLPackage::register() -->
 
 </section>

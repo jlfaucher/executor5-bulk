@@ -45,9 +45,11 @@
 <section id="clsOOSQLExtensions"><title>The ooSQLExtensions Class</title>
 <indexterm><primary>ooSQLExtensions class</primary></indexterm>
 <para>
-  text
+  The <computeroutput>ooSQLExtensions</computeroutput> class provides utilities to work with user defined SQLite extensions
+  written in native code, typically C / C++. In general these extensions are packaged in external shared libraries, although
+  there are a few extensions that are statically linked in to the ooSQLite library. The class can be thought of as a manager
+  of these extensions.
 </para>
-
 <para>
   text
 </para>
@@ -70,24 +72,212 @@
 </thead>
 <tbody>
 <row>
+<entry align="center"><emphasis role="bold">Class Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrLastErrCodeClsExt">lastErrCode</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrLastErrMsgClsExt">lastErrMsg</link></entry>
+<entry>.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthAutoExtensions">autoExtensions</link></entry>
-<entry></entry>
+<entry><link linkend="mthAutoBuiltin">autoBuiltin</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthAutoCollationNeeded">autoCollationNeeded</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthAutoCollation">autoCollation</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthAutoFunction">autoFunction</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthAutoPackage">autoPackage</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetLibrary">getLibrary</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetPackage">getPackage</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthLoadLibrary">LoadLibrary</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthLoadPackage">loadPackage</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthResetAutoBuiltin">resetAutoBuiltin</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthRegisterBuiltin">registerBuiltin</link></entry>
+<entry>.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </section>
 
-<section id="mthAutoExtensions"><title>autoExtensions (Class method)</title>
-<indexterm><primary>autoExtensions</primary></indexterm>
-<indexterm><primary>ooSQLExtensions class</primary><secondary>autoExtensions</secondary></indexterm>
+<section id="atrLastErrCodeClsExt"><title>lastErrCode (Attribute)</title>
+<indexterm><primary>lastErrCode</primary><secondary>ooSQLExtensions class</secondary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>lastErrCode</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--autoExtensions(--+--------+--)--------------------------><
-           +--type--+
+>>--lastErrCode-----------------------------------------------------><
+
+>>--lastErrCode = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the last error code set by for the <computeroutput>ooSQLPackage</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">lastErrCode get:</emphasis></term>
+  <listitem>
+  <para>
+    The value of the <emphasis role="italic">lastErrCode</emphasis> attribute will be a SQLite result <link
+    linkend="sctResultCode">code</link> or one of the ooSQLite specific result <link
+    linkend="sctOOSQLiteSpecificResultCodes">codes</link>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">lastErrCode set:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer can not set the value of this attribute, it is set internally by the ooSQLite framework.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The last error code attribute is similar to the <link linkend="atrLastErrMsgClsPack">lastErrMsg</link> attribute.
+    Its value is the last status code recorded by ooSQLite. The <emphasis role="italic">lastErrCode</emphasis> and the
+    <emphasis role="italic">lastErrMsg</emphasis> attributes are always updated together. The error message is always
+    the message that goes with the error code.
+  </para>
+  <para>
+    Each of the three major ooSQLite objects, an <link linkend="clsOOSQLiteConnection">ooSQLPackage</link>, an
+    <link linkend="clsOOSQLiteStmt">ooSQLiteStmt</link>, and an <link
+    linkend="clsOOSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
+    a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
+    hold the last error message and code recorded by ooSQLite.
+  </para>
+  <para>
+    The attributes are most useful when the invocation of <emphasis role="italic">new</emphasis> fails to initialize the
+    object correctly due to an error. The <emphasis role="italic">lastErrMsg</emphasis> and <emphasis
+    role="italic">lastErrCode</emphasis> attributes are always updated during <emphasis role="italic">new</emphasis>.
+    In general, these objects do not update the attributes after every method invocation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses the <emphasis role="italic">lastErrCode</emphasis> attribute to produce a meaningful error message when
+    a database connection fails to open:
+<programlisting>
+<![CDATA[
+
+	dbName = 'ooFoods.rdbx'
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+
+  -- Load the package and automatically register everything in the package for
+  -- our open database connection.
+  success = .ooSQLExtensions~loadPackage('myPackage', dbConn)
+  if \ success then do
+    say 'Failed to load package'
+    say '  Error code:   ' .ooSQLExtensions~lastErrCode
+    say '  Error message:' .ooSQLExtensions~lastErrMsg
+
+    return .ooSQLExtensions~lastErrCode
+  end
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::lastErrCode() [attribute]  -->
+
+
+<section id="atrLastErrMsg"><title>lastErrMsg (Attribute)</title>
+<indexterm><primary>lastErrMsg</primary><secondary>ooSQLExtensions class</secondary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>lastErrMsg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lastErrMsg-----------------------------------------------------><
+
+>>--lastErrMsg = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">lastErrMsg get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">lastErrMsg set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::lastErrMsg() [attribute]  -->
+
+<section id="mthAutoBuiltin"><title>autoBuiltin (Class method)</title>
+<indexterm><primary>autoBuiltin</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>autoBuiltin</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--autoBuiltin(--+--------+--)---------------------------------------------><
+                  +--type--+
 ]]>
 </programlisting>
 
@@ -98,16 +288,16 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>type [optional]</term>
-      <listitem>
-      <para>
-
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    The arguments are:
   </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -124,7 +314,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Anything?
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -139,9 +329,615 @@
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ooSQLExtensions::autoExtensions() -->
+</section>  <!-- End ooSQLExtensions::autoBuiltin() -->
+
+<section id="mthAutoCollationNeeded"><title>autoCollationNeeded (Class method)</title>
+<indexterm><primary>autoCollationNeeded</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>autoCollationNeeded</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--autoCollationNeeded(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::autoCollationNeeded() -->
 
 
+<section id="mthAutoCollation"><title>autoCollation</title>
+<indexterm><primary>autoCollation</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>autoCollation (Class method)</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--autoCollation(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
 
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::autoCollation() -->
+
+
+<section id="mthAutoFunction"><title>autoFunction</title>
+<indexterm><primary>autoFunction</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>autoFunction (Class method)</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--autoFunction(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::autoFunction() -->
+
+
+<section id="mthAutoPackage"><title>autoPackage</title>
+<indexterm><primary>autoPackage</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>autoPackage (Class method)</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--autoPackage(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::autoPackage() -->
+
+
+<section id="mthGetLibrary"><title>getLibrary</title>
+<indexterm><primary>getLibrary</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>getLibrary (Class method)</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getLibrary(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::getLibrary() -->
+
+
+<section id="mthGetPackage"><title>getPackage</title>
+<indexterm><primary>getPackage</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>getPackage (Class method)</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getPackage(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::getPackage() -->
+
+
+<section id="mthLoadLibrary"><title>loadLibrary</title>
+<indexterm><primary>loadLibrary</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>loadLibrary (Class method)</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--loadLibrary(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::loadLibrary() -->
+
+
+<section id="mthLoadPackage"><title>loadPackage</title>
+<indexterm><primary>loadPackage</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>loadPackage (Class method)</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--loadPackage(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::loadPackage() -->
+
+
+<section id="mthResetAutoBuiltin"><title>resetAutoBuiltin</title>
+<indexterm><primary>resetAutoBuiltin</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>resetAutoBuiltin (Class method)</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--resetAutoBuiltin(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::resetAutoBuiltin() -->
+
+
+<section id="mthRegisterBuiltin"><title>registerBuiltin</title>
+<indexterm><primary>registerBuiltin</primary></indexterm>
+<indexterm><primary>ooSQLExtensions class</primary><secondary>registerBuiltin (Class method)</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--registerBuiltin(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLExtensions::registerBuiltin() -->
 
 </section>

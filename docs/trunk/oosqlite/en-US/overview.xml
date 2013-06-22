@@ -213,12 +213,24 @@ C:\>
 
 <section id="defHandle"><title>Handle</title>
 <para>
-  A unique reference to a data structure assigned by the SQLite database engine to manage its databases. It can be a
-  reference to a database connection, a prepared statement, an online backup, etc.. Handles are used in the <link
-  linkend="chpClassicInteface">classic</link> Rexx interface and are required as arguments for certain functions. A
-  handle is an opaque type, the Rexx programmer need not be aware of the specific format of a handle. The ooSQLite
-  package provides functions that return handles. When a function requires a handle as an argument, the Rexx programmer
-  needs to obtain the handle from one of those provided functions.
+  A unique reference to a system resource managed by the operating system. In ooSQLite, most handles are references to data
+  structures assigned by the SQLite database engine to manage its databases. These can be references to a database
+  connection, a prepared statement, an online backup, etc.. Other handles not related to the database engine are also used by
+  ooSQLite.
+</para>
+<para>
+  Handles are mostly used in the <link linkend="chpClassicInteface">classic</link> Rexx interface and are required as
+  arguments for certain functions. Some handles are also used in the object orientated interface. A handle is an opaque type,
+  the Rexx programmer need not be aware of the specific format of a handle. For the classical interface, the ooSQLite package
+  provides functions that return handles. When a function requires a handle as an argument, the Rexx programmer needs to
+  obtain the handle from one of those provided functions. In the object orientated interface the situation is similar,
+  ooSQLite provides methods that return handles and methods that require handles as arguments. To obtain a handle required
+  for a method argument, the Rexx programmer needs to obtain the handle from one of the provided methods.
+</para>
+<para>
+  As a general rule, handles obtained from functions in the classic Rexx interface should not be used as handle arguments to
+  methods, and vice versa. However, as ooSQLite is enhanced, this may not be an absolute rule. The ooSQLite documentation
+  will point out exceptions to this rule if there are any.
 </para>
 </section>
 
