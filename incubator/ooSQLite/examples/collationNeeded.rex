@@ -161,7 +161,7 @@
   -- automatically registered collation needed callback.  An automatically
   -- registered collation needed callback wil be registered with every database
   -- connection that is opened.
-  if \ .ooSQLExtensions~makeAutoCollationNeeded('testPackage') then do
+  if \ .ooSQLExtensions~autoCollationNeeded('testPackage') then do
     say 'Failed to make collation needed callback automatic.'
     say '  Error code:   ' .ooSQLExtensions~lastErrCode
     say '  Error message:' .ooSQLExtensions~lastErrMsg
@@ -179,7 +179,7 @@
 
   -- We can also 'un-make' a collation needed callback automatically registered
   -- by setting the second optional argument to .false:
-  if \ .ooSQLExtensions~makeAutoCollationNeeded('testPackage', .false) then do
+  if \ .ooSQLExtensions~autoCollationNeeded('testPackage', .false) then do
     say 'Failed to un-make collation needed callback automatic.'
     say '  Error code:   ' .ooSQLExtensions~lastErrCode
     say '  Error message:' .ooSQLExtensions~lastErrMsg

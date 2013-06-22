@@ -359,7 +359,8 @@ ooSQLitePackageEntry examplePackage_package_entry =
     "0.0.1",                      // package information
     NULL,                         // no exported collation needed function
     examplePackage_collations,    // the exported collations
-    examplePackage_functions,     // the exported functions
+    //examplePackage_functions,     // the exported functions
+    NULL,     // the exported functions
     NULL                          // no  exported modules
 };
 

@@ -3589,96 +3589,6 @@ static void cleanupAllCAllbacks(RexxMethodContext *c)
 }
 
 
-inline size_t builtinName2index(CSTRING name)
-{
-    for ( register size_t i = 0; i < BUILTINS_COUNT; i++ )
-    {
-        if ( strcasecmp(name, builtinNames[i]) == 0 )
-        {
-            return i;
-        }
-    }
-    return (size_t)-1;
-}
-
-static void ooSQLBuiltinErr(RexxMethodContext *c, pCooSQLiteConn pConn, int rc, CSTRING name, CSTRING fmt)
-{
-    char buffer[256];
-
-    snprintf(buffer, sizeof(buffer), fmt, name);
-    ooSQLiteErr(c, pConn, rc, buffer, true);
-}
-
-static int registerBuiltin(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name)
-{
-    char *errMsg = NULL;
-    int   rc     = SQLITE_OK;
-
-    size_t index = builtinName2index(name);
-    if ( index == (size_t)-1 )
-    {
-        wrongArgKeywordException(c->threadContext, 1, BUILTIN_NAMES, name);
-        return SQLITE_MISUSE;
-    }
-
-    fnXExtensionInit fn = builtins[index];
-    rc = fn(pConn->db, &errMsg, NULL);
-
-    if ( rc != SQLITE_OK )
-    {
-        if ( errMsg != NULL )
-        {
-            ooSQLiteErr(c, pConn, rc, errMsg, true);
-            sqlite3_free(errMsg);
-        }
-        else
-        {
-            ooSQLBuiltinErr(c, pConn, rc, builtinNames[index], BUILTIN_LOAD_ERR_FMT);
-        }
-        return rc;
-    }
-    return rc;
-}
-
-/**
- * Registers all the builtin extensions.  The source code for these extensions
- * comes from SQLite.  They are compiled and statically linked into the ooSQLite
- * shared library.
- *
- * @param c
- * @param pConn
- *
- * @return int
- */
-static int registerAllBuiltins(RexxMethodContext *c, pCooSQLiteConn pConn)
-{
-    char *errMsg = NULL;
-    int   rc     = SQLITE_OK;
-
-    for ( size_t i = 0; i < BUILTINS_COUNT; i++ )
-    {
-        fnXExtensionInit fn = builtins[i];
-        rc = fn(pConn->db, &errMsg, NULL);
-
-        if ( rc != SQLITE_OK )
-        {
-            if ( errMsg != NULL )
-            {
-                ooSQLiteErr(c, pConn, rc, errMsg, true);
-                sqlite3_free(errMsg);
-            }
-            else
-            {
-                ooSQLBuiltinErr(c, pConn, rc, builtinNames[i], BUILTIN_LOAD_ERR_FMT);
-            }
-            return rc;
-        }
-    }
-
-    return rc;
-}
-
-
 /**
  *  Methods for the .ooSQLiteConstants class.
  */
@@ -7041,64 +6951,6 @@ RexxMethod5(RexxObjectPtr, oosqlconn_progressHandler, RexxObjectPtr, callbackObj
 }
 
 
-/** ooSQLiteConnection::registerBuiltinExtension()
- *
- *  Registers some or all of the extensions builtin to ooSQLite with this
- *  database connection.  These extensions come from the SQLite source tree. and
- *  are statically linked to the ooSQLite shared library.
- *
- *  @param  entryNames  [optional]  A single extension name or an array of
- *                      extension names.  If omitted all builtin extensions are
- *                      registered.
- *
- *  @notes  If an error happens registering the extension, the lastErrMsg and
- *          lastErrCode attributes are set.
- */
-RexxMethod2(int, oosqlconn_registerBuiltinExtension, OPTIONAL_RexxObjectPtr, entryPoints, CSELF, pCSelf)
-{
-    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
-    if ( pConn == NULL )
-    {
-        return SQLITE_MISUSE;
-    }
-
-    if ( argumentOmitted(1) )
-    {
-        return registerAllBuiltins(context, pConn);
-    }
-
-    RexxMethodContext *c = context;
-    if ( context->IsArray(entryPoints) )
-    {
-        RexxArrayObject entries = (RexxArrayObject)entryPoints;
-        size_t          count   = c->ArrayItems(entries);
-
-        for ( size_t i = 1; i <= count; i++ )
-        {
-            RexxObjectPtr rxName = c->ArrayAt(entries, i);
-            if ( rxName == NULLOBJECT )
-            {
-                sparseArrayException(c->threadContext, 1, i);
-                return SQLITE_MISUSE;
-            }
-
-            int rc = registerBuiltin(context, pConn, c->ObjectToStringValue(rxName));
-            if ( rc != SQLITE_OK )
-            {
-                return rc;
-            }
-        }
-    }
-    else
-    {
-        CSTRING name = context->ObjectToStringValue(entryPoints);
-        return registerBuiltin(context, pConn, name);
-    }
-
-    return SQLITE_MISUSE;
-}
-
-
 #ifdef SQLITE_HAS_CODEC
 /** ooSQLiteConnection::rekey()
  *
@@ -9824,6 +9676,49 @@ void extensionsSetLastErr(RexxMethodContext *c, RexxStringObject lastErrMsg, Rex
     c->SetObjectVariable(LAST_ERR_MSG_ATTRIBUTE, lastErrMsg);
     c->SetObjectVariable(LAST_ERR_CODE_ATTRIBUTE, lastErrCode);
 }
+void extensionsSetLastErr(RexxMethodContext *c, CSTRING lastErrMsg, int lastErrCode)
+{
+    extensionsSetLastErr(c, c->String(lastErrMsg), c->Int32(lastErrCode));
+}
+
+/**
+ * Sets the last error attributes for the ooSQLExtensions class object.
+ *
+ * @param c
+ * @param pcext
+ * @param lastErrMsg   Error message.
+ * @param lastErrCode  Error code.
+ */
+void extensionsSetLastErr(RexxMethodContext *c, pCooSQLExtensions pcext, RexxStringObject lastErrMsg,
+                          RexxObjectPtr lastErrCode)
+{
+    pcext->lastErrCode = lastErrCode;
+    pcext->lastErrMsg  = lastErrMsg;
+    extensionsSetLastErr(c, lastErrMsg, lastErrCode);
+}
+void extensionsSetLastErr(RexxMethodContext *c, pCooSQLExtensions pcext, CSTRING lastErrMsg, int lastErrCode)
+{
+    extensionsSetLastErr(c, pcext, c->String(lastErrMsg), c->Int32(lastErrCode));
+}
+
+/**
+ * Sets the last error attributes for a ooSQLPackage object.
+ *
+ * @param c
+ * @param pcp
+ * @param lastErrMsg   Error message.
+ * @param lastErrCode  Error code.
+ */
+void packageSetLastErr(RexxMethodContext *c, pCooSQLPackage pcp, RexxStringObject lastErrMsg, RexxObjectPtr lastErrCode)
+{
+    pcp->lastErrCode = lastErrCode;
+    pcp->lastErrMsg  = lastErrMsg;
+    extensionsSetLastErr(c, lastErrMsg, lastErrCode);
+}
+void packageSetLastErr(RexxMethodContext *c, pCooSQLPackage pcp, CSTRING lastErrMsg, int lastErrCode)
+{
+    packageSetLastErr(c, pcp, c->String(lastErrMsg), c->Int32(lastErrCode));
+}
 
 /**
  * Sets the last error attributes of the ooSQLExensions object back to the no
@@ -9847,7 +9742,7 @@ void resetExtensionsLastErr(RexxMethodContext *c, pCooSQLExtensions pcext)
 void resetPackageLastErr(RexxMethodContext *c, pCooSQLPackage pcp)
 {
     pcp->lastErrCode = TheZeroObj;
-    pcp->lastErrMsg  = c->NullString();
+    pcp->lastErrMsg  = c->String("no error");
     extensionsSetLastErr(c, c->NullString(), TheZeroObj);
 }
 
@@ -9860,14 +9755,13 @@ void resetPackageLastErr(RexxMethodContext *c, pCooSQLPackage pcp)
 void resetLibraryLastErr(RexxMethodContext *c, pCooSQLLibrary pcl)
 {
     pcl->lastErrCode = TheZeroObj;
-    pcl->lastErrMsg  = c->NullString();
+    pcl->lastErrMsg  = c->String("no error");
     extensionsSetLastErr(c, c->NullString(), TheZeroObj);
 }
 
 /**
- * Format a last error message and then set the last error message and last
- * error code attributes.
- *
+ * For the ooSQLExtensions class object, format a last error message and then
+ * set the last error message and last error code attributes.
  *
  * @param c
  * @param code
@@ -9887,11 +9781,49 @@ static void extensionsFormatLastErr(RexxMethodContext *c, pCooSQLExtensions pcex
     pcext->lastErrCode = c->UnsignedInt32(code);
     extensionsSetLastErr(c, pcext->lastErrMsg, pcext->lastErrCode);
 }
-
 static void extensionsFormatLastErr(RexxMethodContext *c, pCooSQLExtensions pcext, uint32_t code, CSTRING fmt,
                                     RexxObjectPtr insert)
 {
     extensionsFormatLastErr(c, pcext, code, fmt, c->ObjectToStringValue(insert));
+}
+
+/**
+ * For a ooSQLPackage object, format a last error message and then set the last
+ * error message and last error code attributes.
+ *
+ * @param c
+ * @param code
+ * @param fmt
+ * @param insert
+ *
+ * @note  We expect fmt to have exactly 1 %s in it.
+ */
+static void packageFormatLastErr(RexxMethodContext *c, pCooSQLPackage pcp, uint32_t code, CSTRING fmt, CSTRING insert)
+{
+    char buf[512];
+
+    snprintf(buf, 512, fmt, insert);
+
+    pcp->lastErrMsg  = c->String(buf);
+    pcp->lastErrCode = c->UnsignedInt32(code);
+    extensionsSetLastErr(c, pcp->lastErrMsg, pcp->lastErrCode);
+}
+static void packageFormatLastErr(RexxMethodContext *c, pCooSQLPackage pcp, uint32_t code, CSTRING fmt, RexxObjectPtr insert)
+{
+    packageFormatLastErr(c, pcp, code, fmt, c->ObjectToStringValue(insert));
+}
+
+static void extensionsFormatBuiltinErr(RexxMethodContext *c, pCooSQLExtensions pcext, int rc, size_t argPos,
+                                       CSTRING list, CSTRING name, CSTRING fmt)
+{
+    char buffer[256];
+
+    snprintf(buffer, sizeof(buffer), fmt, argPos, list, name);
+
+    pcext->lastErrCode = c->Int32(rc);
+    pcext->lastErrMsg  = c->String(buffer);
+
+    extensionsSetLastErr(c, pcext->lastErrMsg, pcext->lastErrCode);
 }
 
 static void tooManyAutoRegistrations(RexxMethodContext *c, pCooSQLExtensions pcext, CSTRING type, size_t n)
@@ -9944,6 +9876,99 @@ bool validPackageVersion(RexxMethodContext *c, pCooSQLPackage pcp)
     }
     return true;
 }
+
+
+/**
+ * Finds the index of the builtin extension in the extension table for the
+ * specifie name
+ *
+ * @author Administrator (6/21/2013)
+ *
+ * @param name
+ *
+ * @return The correct index on success, (size_t)-1 on error.
+ */
+inline size_t builtinName2index(CSTRING name)
+{
+    for ( register size_t i = 0; i < BUILTINS_COUNT; i++ )
+    {
+        if ( strcasecmp(name, builtinNames[i]) == 0 )
+        {
+            return i;
+        }
+    }
+    return (size_t)-1;
+}
+
+static int registerBuiltin(RexxMethodContext *c, pCooSQLExtensions pcext, pCooSQLiteConn pConn, CSTRING name)
+{
+    char *errMsg = NULL;
+    int   rc     = SQLITE_OK;
+
+    size_t index = builtinName2index(name);
+    if ( index == (size_t)-1 )
+    {
+        extensionsFormatBuiltinErr(c, pcext, SQLITE_MISUSE, 1, BUILTIN_NAMES, name, BUILTIN_NAME_ERR_FMT);
+        return SQLITE_MISUSE;
+    }
+
+    fnXExtensionInit fn = builtins[index];
+    rc = fn(pConn->db, &errMsg, NULL);
+
+    if ( rc != SQLITE_OK )
+    {
+        if ( errMsg != NULL )
+        {
+            extensionsSetLastErr(c, pcext, errMsg, rc);
+            sqlite3_free(errMsg);
+        }
+        else
+        {
+            extensionsFormatLastErr(c, pcext, rc, BUILTIN_LOAD_ERR_FMT, builtinNames[index]);
+        }
+        return rc;
+    }
+    return rc;
+}
+
+/**
+ * Registers all the builtin extensions.  The source code for these extensions
+ * comes from SQLite.  They are compiled and statically linked into the ooSQLite
+ * shared library.
+ *
+ * @param c
+ * @param pConn
+ *
+ * @return int
+ */
+static int registerAllBuiltins(RexxMethodContext *c, pCooSQLExtensions pcext, pCooSQLiteConn pConn)
+{
+    char *errMsg = NULL;
+    int   rc     = SQLITE_OK;
+
+    for ( size_t i = 0; i < BUILTINS_COUNT; i++ )
+    {
+        fnXExtensionInit fn = builtins[i];
+        rc = fn(pConn->db, &errMsg, NULL);
+
+        if ( rc != SQLITE_OK )
+        {
+            if ( errMsg != NULL )
+            {
+                extensionsSetLastErr(c, pcext, errMsg, rc);
+                sqlite3_free(errMsg);
+            }
+            else
+            {
+                extensionsFormatLastErr(c, pcext, rc, BUILTIN_LOAD_ERR_FMT, builtinNames[i]);
+            }
+            return rc;
+        }
+    }
+
+    return rc;
+}
+
 
 /**
  * Makes all the builtin extensions automatic.
@@ -10305,7 +10330,7 @@ RexxMethod1(RexxStringObject, oosqlext_getLastErrMsg_atr, CSELF, pCSelf)
     return pcext->lastErrMsg;
 }
 
-/** ooSQLExtensions::autoExtension()  [class method]
+/** ooSQLExtensions::autoBuiltin()  [class method]
  *
  *  Registers some or all of the extensions builtin to ooSQLite as automatic.
  *  This means that each time a database connection is opened, the builtin
@@ -10322,7 +10347,7 @@ RexxMethod1(RexxStringObject, oosqlext_getLastErrMsg_atr, CSELF, pCSelf)
  *
  *  @notes
  */
-RexxMethod2(int, oosqlext_autoExtension, OPTIONAL_RexxObjectPtr, entryPoints, CSELF, pCSelf)
+RexxMethod2(int, oosqlext_autoBuiltin, OPTIONAL_RexxObjectPtr, entryPoints, CSELF, pCSelf)
 {
     pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
 
@@ -10366,6 +10391,345 @@ RexxMethod2(int, oosqlext_autoExtension, OPTIONAL_RexxObjectPtr, entryPoints, CS
     }
 
     return SQLITE_OK;
+}
+
+
+/** ooSQLExtensions::autoCollation()  [class method]
+ *
+ *  Marks, or unmarks, the specified collation as a collation that is
+ *  automatically registered when a database connection is opened.
+ *
+ *  @param  packageName    [required] The name of the loaded package that
+ *                         contains the collation.
+ *
+ *  @param  collationName  [required] The name of the collation to mark or
+ *                         unmark.
+ *
+ *  @param  enable         [optional] True to mark the collation, false to
+ *                         unmark. The default is false.
+ *
+ */
+RexxMethod4(RexxObjectPtr, oosqlext_autoCollation_cls, RexxObjectPtr, packageName, RexxObjectPtr, collationName,
+            OPTIONAL_logical_t, enable, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    RexxObjectPtr package = c->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
+    if ( package == TheNilObj )
+    {
+        return TheFalseObj;
+    }
+
+    RexxObjectPtr collation = c->SendMessage1(package, "GETCOLLATION", collationName);
+    if ( collation == TheNilObj )
+    {
+        pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
+
+        pcext->lastErrCode = pcp->lastErrCode;
+        pcext->lastErrMsg  = pcp->lastErrMsg;
+        extensionsSetLastErr(context, pcext->lastErrMsg, pcext->lastErrCode);
+
+        return TheFalseObj;
+    }
+
+    resetExtensionsLastErr(context, pcext);
+    enable = argumentOmitted(3) ? TRUE : enable;
+
+    pSQLiteCollationEntry psce = (pSQLiteCollationEntry)context->ObjectToCSelf(collation);
+    if ( psce == NULL )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLCollation");
+        return TheFalseObj;
+    }
+
+    if ( enable )
+    {
+        if ( ! makeAutoCollation(context, pcext, psce) )
+        {
+            return TheFalseObj;
+        }
+    }
+    else
+    {
+        pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
+
+        if ( pCsc->autoCollations == NULL )
+        {
+            extensionsFormatLastErr(context, pcext, OO_COLLATION_NOT_AUTOMATIC, OO_COLLATION_NOT_AUTOMATIC_STR, collationName);
+            return TheFalseObj;
+        }
+
+        bool found = false;
+        for ( size_t i = 0; i < pCsc->countCollations; i++ )
+        {
+            if ( pCsc->autoCollations[i] == psce)
+            {
+                if ( i + 1 == MAX_AUTO_COLLATIONS )
+                {
+                    pCsc->autoCollations[i] = NULL;
+                }
+                else
+                {
+                    memmove(&pCsc->autoCollations[i], &pCsc->autoCollations[i + 1],
+                            (MAX_AUTO_COLLATIONS - 1 - i) * sizeof(pSQLiteCollationEntry));
+                }
+
+                found = true;
+                pCsc->countCollations--;
+                break;
+            }
+        }
+        if ( ! found )
+        {
+            extensionsFormatLastErr(context, pcext, OO_COLLATION_NOT_AUTOMATIC, OO_COLLATION_NOT_AUTOMATIC_STR, collationName);
+            return TheFalseObj;
+        }
+    }
+
+    return TheTrueObj;
+}
+
+
+/** ooSQLExtensions::autoCollationNeeded()  [class method]
+ *
+ *  Marks, or unmarks, the collation needed entry in the specified package as a
+ *  collation needed callback that is automatically registered when a database
+ *  connection is opened.
+ *
+ *  Unlike collation or function callbacks, there can only be one collation
+ *  needed callback per database connection.  Marking the collation needed
+ *  callback in one package as automatically registered will remove any other
+ *  collation needed callback that is set to be automatically registered.
+ *
+ *  Likewise, unmarking a collation needed callback in one package would have
+ *  the effect of setting no automatically registered collation needed, even if
+ *  there were an automatically registered callback from some other pacakgae.
+ *
+ *  @param  packageName    [required] The name of the loaded package that
+ *                         contains the collation needed callback entry.
+ *
+ *  @param  enable         [optional] True to mark the collation, false to
+ *                         unmark. The default is false.
+ *
+ */
+RexxMethod3(RexxObjectPtr, oosqlext_autoCollationNeeded_cls, RexxObjectPtr, packageName,
+            OPTIONAL_logical_t, enable, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    RexxObjectPtr package = context->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
+    if ( package == TheNilObj )
+    {
+        return TheFalseObj;
+    }
+
+    resetExtensionsLastErr(context, pcext);
+
+    pCooSQLPackage              pcp   = (pCooSQLPackage)context->ObjectToCSelf(package);
+    pSQLiteCollationNeededEntry pscne = pcp->packageEntry->collationNeeded;
+    if ( pscne == NULL )
+    {
+        char buf[256];
+
+        snprintf(buf, 256, "this package (%s) contains no collation needed callback", pcp->packageEntry->packageName);
+        extensionsSetLastErr(context, context->String(buf), context->Int32(SQLITE_MISUSE));
+
+        return TheFalseObj;
+    }
+
+    pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
+
+    enable = argumentOmitted(2) ? TRUE : enable;
+
+    if ( enable )
+    {
+        pCsc->autoCollationNeeded = pscne;
+    }
+    else
+    {
+        pCsc->autoCollationNeeded = NULL;
+    }
+
+    return TheTrueObj;
+}
+
+
+/** ooSQLExtensions::autoFunction()  [class method]
+ *
+ *  Marks, or unmarks, the specified function as a function that is
+ *  automatically registered when a database connection is opened.
+ *
+ *  @param  packageName    [required] The name of the loaded package that
+ *                         contains the function.
+ *
+ *  @param  collationName  [required] The name of the function to mark or
+ *                         unmark.
+ *
+ *  @param  enable         [optional] True to mark the function, false to
+ *                         unmark. The default is false.
+ *
+ */
+RexxMethod4(RexxObjectPtr, oosqlext_autoFunction_cls, RexxObjectPtr, packageName, RexxObjectPtr, functionName,
+            OPTIONAL_logical_t, enable, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    RexxObjectPtr package = c->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
+    if ( package == TheNilObj )
+    {
+        return TheFalseObj;
+    }
+
+    RexxObjectPtr function = c->SendMessage1(package, "GETFUNCTION", functionName);
+    if ( function == TheNilObj )
+    {
+        pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
+
+        pcext->lastErrCode = pcp->lastErrCode;
+        pcext->lastErrMsg  = pcp->lastErrMsg;
+        extensionsSetLastErr(context, pcext->lastErrMsg, pcext->lastErrCode);
+
+        return TheFalseObj;
+    }
+
+    resetExtensionsLastErr(context, pcext);
+    enable = argumentOmitted(3) ? TRUE : enable;
+
+    pSQLiteFunctionEntry psfe = (pSQLiteFunctionEntry)context->ObjectToCSelf(function);
+    if ( psfe == NULL )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLFunction");
+        return TheFalseObj;
+    }
+
+    if ( enable )
+    {
+        if ( ! makeAutoFunction(context, pcext, psfe) )
+        {
+            return TheFalseObj;
+        }
+    }
+    else
+    {
+        pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
+
+        if ( pCsc->autoFunctions == NULL )
+        {
+            extensionsFormatLastErr(context, pcext, OO_FUNCTION_NOT_AUTOMATIC, OO_FUNCTION_NOT_AUTOMATIC_STR, functionName);
+            return TheFalseObj;
+        }
+
+        bool found = false;
+        for ( size_t i = 0; i < pCsc->countFunctions; i++ )
+        {
+            if ( pCsc->autoFunctions[i] == psfe)
+            {
+                if ( i + 1 == MAX_AUTO_FUNCTIONS )
+                {
+                    pCsc->autoFunctions[i] = NULL;
+                }
+                else
+                {
+                    memmove(&pCsc->autoFunctions[i], &pCsc->autoFunctions[i + 1],
+                            (MAX_AUTO_FUNCTIONS - 1 - i) * sizeof(pSQLiteFunctionEntry));
+                }
+
+                found = true;
+                pCsc->countFunctions--;
+                break;
+            }
+        }
+        if ( ! found )
+        {
+            extensionsFormatLastErr(context, pcext, OO_FUNCTION_NOT_AUTOMATIC, OO_FUNCTION_NOT_AUTOMATIC_STR, functionName);
+            return TheFalseObj;
+        }
+    }
+
+    return TheTrueObj;
+}
+
+
+/** ooSQLExtensions::autoPackage()  [class method]
+ *
+ *  Marks, or unmarks, the specified package as a package that is automatically
+ *  registered when a database connection is opened.
+ *
+ *  @param  packageName  [required] The name of the package to mark or unmark.
+ *
+ *  @param  enable       [optional] True to mark the package, false to unmark.
+ *                       The default is false.
+ *
+ */
+RexxMethod3(RexxObjectPtr, oosqlext_autoPackage_cls, RexxObjectPtr, packageName, OPTIONAL_logical_t, enable, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+    enable = argumentOmitted(2) ? TRUE : enable;
+
+    RexxObjectPtr package = context->SendMessage1(pcext->packageTable, "AT", packageName);
+    if ( package == TheNilObj )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_SUCH_PACKAGE, OO_NO_SUCH_PACKAGE_STR, packageName);
+        return TheFalseObj;
+    }
+
+    pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
+    if ( pcp == NULL )
+    {
+        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLPackage");
+        return TheFalseObj;
+    }
+
+    if ( enable )
+    {
+        if ( ! makeAutoPackage(context, pcext, pcp) )
+        {
+            return TheFalseObj;
+        }
+    }
+    else
+    {
+        pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
+
+        if ( pCsc->autoPackages == NULL )
+        {
+            extensionsFormatLastErr(context, pcext, OO_PACKAGE_NOT_AUTOMATIC, OO_PACKAGE_NOT_AUTOMATIC_STR, packageName);
+            return TheFalseObj;
+        }
+
+        bool found = false;
+        for ( size_t i = 0; i < pCsc->countPackages; i++ )
+        {
+            if ( pCsc->autoPackages[i] == pcp)
+            {
+                if ( i + 1 == MAX_AUTO_PACKAGES )
+                {
+                    pCsc->autoPackages[i] = NULL;
+                }
+                else
+                {
+                    memmove(&pCsc->autoPackages[i], &pCsc->autoPackages[i + 1],
+                            (MAX_AUTO_PACKAGES - 1 - i) * sizeof(pCooSQLPackage));
+                }
+
+                pCsc->countPackages--;
+                found = true;
+                break;
+            }
+        }
+        if ( ! found )
+        {
+            extensionsFormatLastErr(context, pcext, OO_PACKAGE_NOT_AUTOMATIC, OO_PACKAGE_NOT_AUTOMATIC_STR, packageName);
+            return TheFalseObj;
+        }
+    }
+
+    return TheTrueObj;
 }
 
 
@@ -10647,345 +11011,6 @@ done_out:
 }
 
 
-/** ooSQLExtensions::makeAutoCollation()  [class method]
- *
- *  Marks, or unmarks, the specified collation as a collation that is
- *  automatically registered when a database connection is opened.
- *
- *  @param  packageName    [required] The name of the loaded package that
- *                         contains the collation.
- *
- *  @param  collationName  [required] The name of the collation to mark or
- *                         unmark.
- *
- *  @param  enable         [optional] True to mark the collation, false to
- *                         unmark. The default is false.
- *
- */
-RexxMethod4(RexxObjectPtr, oosqlext_makeAutoCollation_cls, RexxObjectPtr, packageName, RexxObjectPtr, collationName,
-            OPTIONAL_logical_t, enable, CSELF, pCSelf)
-{
-    RexxMethodContext *c = context;
-    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
-
-    RexxObjectPtr package = c->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
-    if ( package == TheNilObj )
-    {
-        return TheFalseObj;
-    }
-
-    RexxObjectPtr collation = c->SendMessage1(package, "GETCOLLATION", collationName);
-    if ( collation == TheNilObj )
-    {
-        pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
-
-        pcext->lastErrCode = pcp->lastErrCode;
-        pcext->lastErrMsg  = pcp->lastErrMsg;
-        extensionsSetLastErr(context, pcext->lastErrMsg, pcext->lastErrCode);
-
-        return TheFalseObj;
-    }
-
-    resetExtensionsLastErr(context, pcext);
-    enable = argumentOmitted(3) ? TRUE : enable;
-
-    pSQLiteCollationEntry psce = (pSQLiteCollationEntry)context->ObjectToCSelf(collation);
-    if ( psce == NULL )
-    {
-        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLCollation");
-        return TheFalseObj;
-    }
-
-    if ( enable )
-    {
-        if ( ! makeAutoCollation(context, pcext, psce) )
-        {
-            return TheFalseObj;
-        }
-    }
-    else
-    {
-        pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
-
-        if ( pCsc->autoCollations == NULL )
-        {
-            extensionsFormatLastErr(context, pcext, OO_COLLATION_NOT_AUTOMATIC, OO_COLLATION_NOT_AUTOMATIC_STR, collationName);
-            return TheFalseObj;
-        }
-
-        bool found = false;
-        for ( size_t i = 0; i < pCsc->countCollations; i++ )
-        {
-            if ( pCsc->autoCollations[i] == psce)
-            {
-                if ( i + 1 == MAX_AUTO_COLLATIONS )
-                {
-                    pCsc->autoCollations[i] = NULL;
-                }
-                else
-                {
-                    memmove(&pCsc->autoCollations[i], &pCsc->autoCollations[i + 1],
-                            (MAX_AUTO_COLLATIONS - 1 - i) * sizeof(pSQLiteCollationEntry));
-                }
-
-                found = true;
-                pCsc->countCollations--;
-                break;
-            }
-        }
-        if ( ! found )
-        {
-            extensionsFormatLastErr(context, pcext, OO_COLLATION_NOT_AUTOMATIC, OO_COLLATION_NOT_AUTOMATIC_STR, collationName);
-            return TheFalseObj;
-        }
-    }
-
-    return TheTrueObj;
-}
-
-
-/** ooSQLExtensions::makeAutoCollationNeeded()  [class method]
- *
- *  Marks, or unmarks, the collation needed entry in the specified package as a
- *  collation needed callback that is automatically registered when a database
- *  connection is opened.
- *
- *  Unlike collation or function callbacks, there can only be one collation
- *  needed callback per database connection.  Marking the collation needed
- *  callback in one package as automatically registered will remove any other
- *  collation needed callback that is set to be automatically registered.
- *
- *  Likewise, unmarking a collation needed callback in one package would have
- *  the effect of setting no automatically registered collation needed, even if
- *  there were an automatically registered callback from some other pacakgae.
- *
- *  @param  packageName    [required] The name of the loaded package that
- *                         contains the collation needed callback entry.
- *
- *  @param  enable         [optional] True to mark the collation, false to
- *                         unmark. The default is false.
- *
- */
-RexxMethod3(RexxObjectPtr, oosqlext_makeAutoCollationNeeded_cls, RexxObjectPtr, packageName,
-            OPTIONAL_logical_t, enable, CSELF, pCSelf)
-{
-    RexxMethodContext *c = context;
-    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
-
-    RexxObjectPtr package = context->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
-    if ( package == TheNilObj )
-    {
-        return TheFalseObj;
-    }
-
-    resetExtensionsLastErr(context, pcext);
-
-    pCooSQLPackage              pcp   = (pCooSQLPackage)context->ObjectToCSelf(package);
-    pSQLiteCollationNeededEntry pscne = pcp->packageEntry->collationNeeded;
-    if ( pscne == NULL )
-    {
-        char buf[256];
-
-        snprintf(buf, 256, "this package (%s) contains no collation needed callback", pcp->packageEntry->packageName);
-        extensionsSetLastErr(context, context->String(buf), context->Int32(SQLITE_MISUSE));
-
-        return TheFalseObj;
-    }
-
-    pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
-
-    enable = argumentOmitted(2) ? TRUE : enable;
-
-    if ( enable )
-    {
-        pCsc->autoCollationNeeded = pscne;
-    }
-    else
-    {
-        pCsc->autoCollationNeeded = NULL;
-    }
-
-    return TheTrueObj;
-}
-
-
-/** ooSQLExtensions::makeAutoFunction()  [class method]
- *
- *  Marks, or unmarks, the specified function as a function that is
- *  automatically registered when a database connection is opened.
- *
- *  @param  packageName    [required] The name of the loaded package that
- *                         contains the function.
- *
- *  @param  collationName  [required] The name of the function to mark or
- *                         unmark.
- *
- *  @param  enable         [optional] True to mark the function, false to
- *                         unmark. The default is false.
- *
- */
-RexxMethod4(RexxObjectPtr, oosqlext_makeAutoFunction_cls, RexxObjectPtr, packageName, RexxObjectPtr, functionName,
-            OPTIONAL_logical_t, enable, CSELF, pCSelf)
-{
-    RexxMethodContext *c = context;
-    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
-
-    RexxObjectPtr package = c->SendMessage1(pcext->rexxSelf, "GETPACKAGE", packageName);
-    if ( package == TheNilObj )
-    {
-        return TheFalseObj;
-    }
-
-    RexxObjectPtr function = c->SendMessage1(package, "GETFUNCTION", functionName);
-    if ( function == TheNilObj )
-    {
-        pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
-
-        pcext->lastErrCode = pcp->lastErrCode;
-        pcext->lastErrMsg  = pcp->lastErrMsg;
-        extensionsSetLastErr(context, pcext->lastErrMsg, pcext->lastErrCode);
-
-        return TheFalseObj;
-    }
-
-    resetExtensionsLastErr(context, pcext);
-    enable = argumentOmitted(3) ? TRUE : enable;
-
-    pSQLiteFunctionEntry psfe = (pSQLiteFunctionEntry)context->ObjectToCSelf(function);
-    if ( psfe == NULL )
-    {
-        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLFunction");
-        return TheFalseObj;
-    }
-
-    if ( enable )
-    {
-        if ( ! makeAutoFunction(context, pcext, psfe) )
-        {
-            return TheFalseObj;
-        }
-    }
-    else
-    {
-        pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
-
-        if ( pCsc->autoFunctions == NULL )
-        {
-            extensionsFormatLastErr(context, pcext, OO_FUNCTION_NOT_AUTOMATIC, OO_FUNCTION_NOT_AUTOMATIC_STR, functionName);
-            return TheFalseObj;
-        }
-
-        bool found = false;
-        for ( size_t i = 0; i < pCsc->countFunctions; i++ )
-        {
-            if ( pCsc->autoFunctions[i] == psfe)
-            {
-                if ( i + 1 == MAX_AUTO_FUNCTIONS )
-                {
-                    pCsc->autoFunctions[i] = NULL;
-                }
-                else
-                {
-                    memmove(&pCsc->autoFunctions[i], &pCsc->autoFunctions[i + 1],
-                            (MAX_AUTO_FUNCTIONS - 1 - i) * sizeof(pSQLiteFunctionEntry));
-                }
-
-                found = true;
-                pCsc->countFunctions--;
-                break;
-            }
-        }
-        if ( ! found )
-        {
-            extensionsFormatLastErr(context, pcext, OO_FUNCTION_NOT_AUTOMATIC, OO_FUNCTION_NOT_AUTOMATIC_STR, functionName);
-            return TheFalseObj;
-        }
-    }
-
-    return TheTrueObj;
-}
-
-
-/** ooSQLExtensions::makeAutoPackage()  [class method]
- *
- *  Marks, or unmarks, the specified package as a package that is automatically
- *  registered when a database connection is opened.
- *
- *  @param  packageName  [required] The name of the package to mark or unmark.
- *
- *  @param  enable       [optional] True to mark the package, false to unmark.
- *                       The default is false.
- *
- */
-RexxMethod3(RexxObjectPtr, oosqlext_makeAutoPackage_cls, RexxObjectPtr, packageName, OPTIONAL_logical_t, enable, CSELF, pCSelf)
-{
-    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
-
-    resetExtensionsLastErr(context, pcext);
-    enable = argumentOmitted(2) ? TRUE : enable;
-
-    RexxObjectPtr package = context->SendMessage1(pcext->packageTable, "AT", packageName);
-    if ( package == TheNilObj )
-    {
-        extensionsFormatLastErr(context, pcext, OO_NO_SUCH_PACKAGE, OO_NO_SUCH_PACKAGE_STR, packageName);
-        return TheFalseObj;
-    }
-
-    pCooSQLPackage pcp = (pCooSQLPackage)context->ObjectToCSelf(package);
-    if ( pcp == NULL )
-    {
-        extensionsFormatLastErr(context, pcext, OO_NO_CSELF, OO_NO_CSELF_STR, "ooSQLPackage");
-        return TheFalseObj;
-    }
-
-    if ( enable )
-    {
-        if ( ! makeAutoPackage(context, pcext, pcp) )
-        {
-            return TheFalseObj;
-        }
-    }
-    else
-    {
-        pCooSQLiteClass pCsc = ensureCSelf(context, pcext);
-
-        if ( pCsc->autoPackages == NULL )
-        {
-            extensionsFormatLastErr(context, pcext, OO_PACKAGE_NOT_AUTOMATIC, OO_PACKAGE_NOT_AUTOMATIC_STR, packageName);
-            return TheFalseObj;
-        }
-
-        bool found = false;
-        for ( size_t i = 0; i < pCsc->countPackages; i++ )
-        {
-            if ( pCsc->autoPackages[i] == pcp)
-            {
-                if ( i + 1 == MAX_AUTO_PACKAGES )
-                {
-                    pCsc->autoPackages[i] = NULL;
-                }
-                else
-                {
-                    memmove(&pCsc->autoPackages[i], &pCsc->autoPackages[i + 1],
-                            (MAX_AUTO_PACKAGES - 1 - i) * sizeof(pCooSQLPackage));
-                }
-
-                pCsc->countPackages--;
-                found = true;
-                break;
-            }
-        }
-        if ( ! found )
-        {
-            extensionsFormatLastErr(context, pcext, OO_PACKAGE_NOT_AUTOMATIC, OO_PACKAGE_NOT_AUTOMATIC_STR, packageName);
-            return TheFalseObj;
-        }
-    }
-
-    return TheTrueObj;
-}
-
-
 /** ooSQLite::resetAutoExtension()  [class method]
  *
  *  Disables all automatic extensions previously registered using the
@@ -10993,10 +11018,85 @@ RexxMethod3(RexxObjectPtr, oosqlext_makeAutoPackage_cls, RexxObjectPtr, packageN
  *
  *  @notes
  */
-RexxMethod0(int, oosqlext_resetAutoExtension)
+RexxMethod0(int, oosqlext_resetAutoBuiltin)
 {
     sqlite3_reset_auto_extension();
     return SQLITE_OK;
+}
+
+
+/** ooSQLiteConnection::registerBuiltinExtension()
+ *
+ *  Registers some or all of the extensions builtin to ooSQLite with the
+ *  specified database connection.  These extensions come from the SQLite source
+ *  tree, and are statically linked to the ooSQLite shared library.
+ *
+ *  @param  dbConn      [required]  The open, valid, databasc connection that
+ *                      the builtin extension is to be registered with.
+ *
+ *  @param  entryNames  [optional]  A single extension name or an array of
+ *                      extension names.  If this argument is omitted all
+ *                      builtin extensions are registered.  Name can also be the
+ *                      special keyword ALL, case is not significant, in which
+ *                      case all builtin extensions are registered.
+ *
+ *  @notes  If an error happens registering the extension, the lastErrMsg and
+ *          lastErrCode attributes are set.
+ */
+RexxMethod3(int, oosqlext_registerBuiltin, RexxObjectPtr, dbConn, OPTIONAL_RexxObjectPtr, entryPoints, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+
+    pCooSQLiteConn pConn = NULL;
+    pConn = requiredDBConnectionArg(context, dbConn, 1);
+    if ( pConn == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    if ( argumentOmitted(2) )
+    {
+        return registerAllBuiltins(context, pcext, pConn);
+    }
+
+    if ( context->IsArray(entryPoints) )
+    {
+        RexxArrayObject entries = (RexxArrayObject)entryPoints;
+        size_t          count   = context->ArrayItems(entries);
+
+        for ( size_t i = 1; i <= count; i++ )
+        {
+            RexxObjectPtr rxName = context->ArrayAt(entries, i);
+            if ( rxName == NULLOBJECT )
+            {
+                sparseArrayException(context->threadContext, 2, i);
+                return SQLITE_MISUSE;
+            }
+
+            int rc = registerBuiltin(context, pcext, pConn, context->ObjectToStringValue(rxName));
+            if ( rc != SQLITE_OK )
+            {
+                return rc;
+            }
+        }
+    }
+    else
+    {
+        CSTRING name = context->ObjectToStringValue(entryPoints);
+
+        if ( sqlite3_stricmp(name, "ALL") == 0 )
+        {
+            return registerAllBuiltins(context, pcext, pConn);
+        }
+        else
+        {
+            return registerBuiltin(context, pcext, pConn, name);
+        }
+    }
+
+    return SQLITE_MISUSE;
 }
 
 
@@ -11122,12 +11222,8 @@ RexxMethod2(RexxObjectPtr, oosqlpack_getCollation, RexxObjectPtr, rxName, CSELF,
 
     if ( pEntry->collations == NULL )
     {
-        char buf[256];
-
-        snprintf(buf, 256, "this package (%s) contains no collations", pEntry->packageName);
-        userDefinedMsgException(context->threadContext, buf);
+        packageFormatLastErr(context, pcp, SQLITE_MISUSE, PACKAGE_NO_COLLATIONS_FMT, pEntry->packageName);
         return TheNilObj;
-
     }
 
     CSTRING cName = context->ObjectToStringValue(rxName);
@@ -11142,8 +11238,8 @@ RexxMethod2(RexxObjectPtr, oosqlpack_getCollation, RexxObjectPtr, rxName, CSELF,
             if ( result != TheNilObj )
             {
                 context->SendMessage2(pcp->collationTable, "PUT", result, rxName);
+                break;
             }
-            break;
         }
         e++;
     }
@@ -11175,10 +11271,7 @@ RexxMethod1(RexxObjectPtr, oosqlpack_getCollationNeeded, CSELF, pCSelf)
 
     if ( pEntry->collationNeeded == NULL )
     {
-        char buf[256];
-
-        snprintf(buf, 256, "this package (%s) contains no collation needed callback", pEntry->packageName);
-        userDefinedMsgException(context->threadContext, buf);
+        packageFormatLastErr(context, pcp, SQLITE_MISUSE, PACKAGE_NO_COLLATIONNEEDED_FMT, pEntry->packageName);
         return TheNilObj;
     }
 
@@ -11210,15 +11303,11 @@ RexxMethod2(RexxObjectPtr, oosqlpack_getFunction, RexxObjectPtr, rxName, CSELF, 
     }
 
     ooSQLitePackageEntry *pEntry = pcp->packageEntry;
-
+    RexxMethodContext *c = context;
     if ( pEntry->functions == NULL )
     {
-        char buf[256];
-
-        snprintf(buf, 256, "this package (%s) contains no functions", pEntry->packageName);
-        userDefinedMsgException(context->threadContext, buf);
+        packageFormatLastErr(context, pcp, SQLITE_MISUSE, PACKAGE_NO_FUNCTIONS_FMT, pEntry->packageName);
         return TheNilObj;
-
     }
 
     CSTRING cName = context->ObjectToStringValue(rxName);
@@ -11233,8 +11322,8 @@ RexxMethod2(RexxObjectPtr, oosqlpack_getFunction, RexxObjectPtr, rxName, CSELF, 
             if ( result != TheNilObj )
             {
                 context->SendMessage2(pcp->functionTable, "PUT", result, rxName);
+                break;
             }
-            break;
         }
         e++;
     }
@@ -15325,7 +15414,6 @@ REXX_METHOD_PROTOTYPE(oosqlconn_nextStmt);
 REXX_METHOD_PROTOTYPE(oosqlconn_pragma);
 REXX_METHOD_PROTOTYPE(oosqlconn_profile);
 REXX_METHOD_PROTOTYPE(roosqlconn_progressHandler);
-REXX_METHOD_PROTOTYPE(oosqlconn_registerBuiltinExtension);
 REXX_METHOD_PROTOTYPE(oosqlconn_rekey);
 REXX_METHOD_PROTOTYPE(oosqlconn_rollbackHook);
 REXX_METHOD_PROTOTYPE(oosqlconn_setAuthorizer);
@@ -15451,16 +15539,17 @@ REXX_METHOD_PROTOTYPE(oosqlext_init_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlext_getLastErrMsg_atr);
 
-REXX_METHOD_PROTOTYPE(oosqlext_autoExtension);
+REXX_METHOD_PROTOTYPE(oosqlext_autoBuiltin);
 REXX_METHOD_PROTOTYPE(oosqlext_getLibrary_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_getPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadLibrary_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_loadPackage_cls);
-REXX_METHOD_PROTOTYPE(oosqlext_makeAutoCollation_cls);
-REXX_METHOD_PROTOTYPE(oosqlext_makeAutoCollationNeeded_cls);
-REXX_METHOD_PROTOTYPE(oosqlext_makeAutoFunction_cls);
-REXX_METHOD_PROTOTYPE(oosqlext_makeAutoPackage_cls);
-REXX_METHOD_PROTOTYPE(oosqlext_resetAutoExtension);
+REXX_METHOD_PROTOTYPE(oosqlext_autoCollation_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_autoCollationNeeded_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_autoFunction_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_autoPackage_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_resetAutoBuiltin);
+REXX_METHOD_PROTOTYPE(oosqlext_registerBuiltin);
 
 // .ooSQLPackage
 REXX_METHOD_PROTOTYPE(oosqlpack_init);
@@ -15576,7 +15665,6 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlconn_pragma,                     oosqlconn_pragma),
     REXX_METHOD(oosqlconn_profile,                    oosqlconn_profile),
     REXX_METHOD(oosqlconn_progressHandler,            oosqlconn_progressHandler),
-    REXX_METHOD(oosqlconn_registerBuiltinExtension,   oosqlconn_registerBuiltinExtension),
     REXX_METHOD(oosqlconn_rekey,                      oosqlconn_rekey),
     REXX_METHOD(oosqlconn_rollbackHook,               oosqlconn_rollbackHook),
     REXX_METHOD(oosqlconn_setAuthorizer,              oosqlconn_setAuthorizer),
@@ -15703,16 +15791,17 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlext_getLastErrCode_atr,          oosqlext_getLastErrCode_atr),
     REXX_METHOD(oosqlext_getLastErrMsg_atr,           oosqlext_getLastErrMsg_atr),
 
-    REXX_METHOD(oosqlext_autoExtension,               oosqlext_autoExtension),
+    REXX_METHOD(oosqlext_autoBuiltin,                 oosqlext_autoBuiltin),
+    REXX_METHOD(oosqlext_autoCollation_cls,           oosqlext_autoCollation_cls),
+    REXX_METHOD(oosqlext_autoCollationNeeded_cls,     oosqlext_autoCollationNeeded_cls),
+    REXX_METHOD(oosqlext_autoFunction_cls,            oosqlext_autoFunction_cls),
+    REXX_METHOD(oosqlext_autoPackage_cls,             oosqlext_autoPackage_cls),
     REXX_METHOD(oosqlext_getLibrary_cls,              oosqlext_getLibrary_cls),
     REXX_METHOD(oosqlext_getPackage_cls,              oosqlext_getPackage_cls),
     REXX_METHOD(oosqlext_loadLibrary_cls,             oosqlext_loadLibrary_cls),
     REXX_METHOD(oosqlext_loadPackage_cls,             oosqlext_loadPackage_cls),
-    REXX_METHOD(oosqlext_makeAutoCollation_cls,       oosqlext_makeAutoCollation_cls),
-    REXX_METHOD(oosqlext_makeAutoCollationNeeded_cls, oosqlext_makeAutoCollationNeeded_cls),
-    REXX_METHOD(oosqlext_makeAutoFunction_cls,        oosqlext_makeAutoFunction_cls),
-    REXX_METHOD(oosqlext_makeAutoPackage_cls,         oosqlext_makeAutoPackage_cls),
-    REXX_METHOD(oosqlext_resetAutoExtension,          oosqlext_resetAutoExtension),
+    REXX_METHOD(oosqlext_resetAutoBuiltin,            oosqlext_resetAutoBuiltin),
+    REXX_METHOD(oosqlext_registerBuiltin,             oosqlext_registerBuiltin),
 
     // .ooSQLPackage
     REXX_METHOD(oosqlpack_init,                       oosqlpack_init),

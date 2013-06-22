@@ -134,7 +134,6 @@
 ::method profile external "LIBRARY oosqlite oosqlconn_profile"
 ::method progressHandler external "LIBRARY oosqlite oosqlconn_progressHandler"
 ::method pragma external "LIBRARY oosqlite oosqlconn_pragma"
-::method registerBuiltinExtension external "LIBRARY oosqlite oosqlconn_registerBuiltinExtension"
 ::method rekey external "LIBRARY oosqlite oosqlconn_rekey"
 ::method rollbackHook external "LIBRARY oosqlite oosqlconn_rollbackHook"
 ::method setAuthorizer external "LIBRARY oosqlite oosqlconn_setAuthorizer"
@@ -298,16 +297,17 @@
 ::attribute lastErrCode get class external "LIBRARY oosqlite oosqlext_getLastErrCode_atr"
 ::attribute lastErrMsg get class external "LIBRARY oosqlite oosqlext_getLastErrMsg_atr"
 
-::method autoExtension class external "LIBRARY oosqlite oosqlext_autoExtension"
+::method autoBuiltin class external "LIBRARY oosqlite oosqlext_autoBuiltin"
+::method autoCollationNeeded class external "LIBRARY oosqlite oosqlext_autoCollationNeeded_cls"
+::method autoCollation class external "LIBRARY oosqlite oosqlext_autoCollation_cls"
+::method autoFunction class external "LIBRARY oosqlite oosqlext_autoFunction_cls"
+::method autoPackage class external "LIBRARY oosqlite oosqlext_autoPackage_cls"
 ::method getLibrary class external "LIBRARY oosqlite oosqlext_getLibrary_cls"
 ::method getPackage class external "LIBRARY oosqlite oosqlext_getPackage_cls"
 ::method loadLibrary class external "LIBRARY oosqlite oosqlext_loadLibrary_cls"
 ::method loadPackage class external "LIBRARY oosqlite oosqlext_loadPackage_cls"
-::method makeAutoCollationNeeded class external "LIBRARY oosqlite oosqlext_makeAutoCollationNeeded_cls"
-::method makeAutoCollation class external "LIBRARY oosqlite oosqlext_makeAutoCollation_cls"
-::method makeAutoFunction class external "LIBRARY oosqlite oosqlext_makeAutoFunction_cls"
-::method makeAutoPackage class external "LIBRARY oosqlite oosqlext_makeAutoPackage_cls"
-::method resetAutoExtension class external "LIBRARY oosqlite oosqlext_resetAutoExtension"
+::method resetAutoBuiltin class external "LIBRARY oosqlite oosqlext_resetAutoBuiltin"
+::method registerBuiltin class external "LIBRARY oosqlite oosqlext_registerBuiltin"
 
 
 /** class: ooSQLPackage
@@ -321,8 +321,8 @@
 ::attribute lastErrCode get external "LIBRARY oosqlite oosqlpack_getLastErrCode_atr"
 ::attribute lastErrMsg get external "LIBRARY oosqlite oosqlpack_getLastErrMsg_atr"
 
-::method getCollationNeeded external "LIBRARY oosqlite oosqlpack_getCollationNeeded"
 ::method getCollation external "LIBRARY oosqlite oosqlpack_getCollation"
+::method getCollationNeeded external "LIBRARY oosqlite oosqlpack_getCollationNeeded"
 ::method getFunction external "LIBRARY oosqlite oosqlpack_getFunction"
 ::method register external "LIBRARY oosqlite oosqlpack_register"
 
@@ -344,7 +344,6 @@
  * ...
  */
 ::class 'ooSQLCollation' public inherit ooSQLiteConstants  -- TODO not sure we need to inherit constants
-
 ::method init external "LIBRARY oosqlite oosqlcol_init"
 
 
@@ -352,15 +351,14 @@
  * ...
  */
 ::class 'ooSQLCollationNeeded' public inherit ooSQLiteConstants  -- TODO not sure we need to inherit constants
-
 ::method init external "LIBRARY oosqlite oosqlcolneed_init"
 
 
 /** class: ooSQLFunction
- * ...
+ * Instantiated internally by ooSQLite.  The only use of the object is as an
+ * argument to ooSQLiteConnection::createFunction()
  */
-::class 'ooSQLFunction' public inherit ooSQLiteConstants  -- TODO not sure we need to inherit constants
-
+::class 'ooSQLFunction' public
 ::method init external "LIBRARY oosqlite oosqlfunc_init"
 
 

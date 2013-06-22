@@ -86,6 +86,11 @@
 #define OO_COLLATION_NOT_AUTOMATIC_STR   "collations %s is not an automatically registered collation"
 #define OO_FUNCTION_NOT_AUTOMATIC_STR    "function %s is not an automatically registered function"
 
+// Use SQLITE_MISUSE for these:
+#define PACKAGE_NO_COLLATIONS_FMT        "this package (%s) contains no collations"
+#define PACKAGE_NO_COLLATIONNEEDED_FMT   "this package (%s) contains no collation needed callback"
+#define PACKAGE_NO_FUNCTIONS_FMT         "this package (%s) contains no functions"
+
 #define VALID_VERSION_TYPES "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
 #define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, OO_STEM_OF_STEMS, or OO_CLASSIC_STEM"
 
@@ -136,6 +141,7 @@ const char *builtinNames[] =
 #define BUILTIN_NAMES          "ieee754, nextChar, regExp, rot13, spellFix, or wholeNumber"
 #define BUILTIN_LOAD_ERR_FMT   "Error loading builtin extension %s"
 #define BUILTIN_AUTO_ERR_FMT   "Failed to make builtin extension %s automatic"
+#define BUILTIN_NAME_ERR_FMT   "Argument %d, keyword must be exactly one of %s; found \"%s\""
 
 // Enum for the pragma commands in SQLite3.
 typedef enum

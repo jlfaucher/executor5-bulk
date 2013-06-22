@@ -50,16 +50,16 @@
  *  extension can be used for the life of the database extension.  When the
  *  database connection is closed, the builtin extension is no longer usable.
  *
- *  The registerBuiltinExtension() method of the ooSQLiteConnection class is
- *  used to register builtin extensions with a database connection.  The method
- *  will register a single available extension, some of the available
- *  extensions, or all of the available extensions.
+ *  The registerBuiltin() method of the ooSQLiteExtensions class is used to
+ *  register builtin extensions with a database connection.  The method will
+ *  register a single available extension, some of the available extensions, or
+ *  all of the available extensions.
  *
  *  SQLite also provides a mechanism that will automatically register a builtin
- *  extension every time a database connection is opened.  The autoExtension()
+ *  extension every time a database connection is opened.  The autoBuiltin()
  *  method of the ooSQLExtensions class is used to make any, or all of the
  *  available builtin extensions automatically registered when any database
- *  connection is opened.  The resetAutoExtension method of the ooSQLExtensions
+ *  connection is opened.  The resetAutoBuiltin method of the ooSQLExtensions
  *  class removes all automatic extensions.
  *
  *  The list of currently available builtin extensions is:
@@ -80,7 +80,7 @@
 
   -- Set all the available builtin extensions to automatically be registered
   -- with any database connection when it is opened:
-  ret = .ooSQLExtensions~autoExtension
+  ret = .ooSQLExtensions~autoBuiltin
   if ret <> .ooSQLExtensions~ok then do
     say 'Error registering builtin extensions:' .ooSQLExtensions~lastErrMsg
     return .ooSQLExtensions~lastErrCode
@@ -99,7 +99,7 @@
   ret = dbConn~close
 
   -- This will reset the automatic extension list back to none.
-  .ooSQLExtensions~resetAutoExtension
+  .ooSQLExtensions~resetAutoBuiltin
 
   dbConn2 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
@@ -113,7 +113,7 @@
   -- This sets only the ieee754, nextChar, and rot13 extensions to be
   -- automatically registered.  Our execShortList() routine does not use
   -- nextChar
-  ret = .ooSQLExtensions~autoExtension(.array~of(ieee754, nextChar, rot13))
+  ret = .ooSQLExtensions~autoBuiltin(.array~of(ieee754, nextChar, rot13))
   if ret <> .ooSQLExtensions~ok then do
     say 'Error registering builtin extensions:' .ooSQLExtensions~lastErrMsg
     return .ooSQLExtensions~lastErrCode
@@ -128,12 +128,12 @@
   ret = dbConn3~close
 
   -- Reset the automatically registered extensions list
-  .ooSQLExtensions~resetAutoExtension
+  .ooSQLExtensions~resetAutoBuiltin
 
   dbConn4 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
   -- Register builtin extensions individually with opened database connections:
-  dbConn4~registerBuiltinExtension('ieee754')
+  .ooSQLExtensions~registerBuiltin(dbConn4, 'ieee754')
 
   say "Registering ieee754 only:"
   say '-------------------------'
@@ -152,7 +152,7 @@
 
   dbConn5 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  dbConn5~registerBuiltinExtension(.array~of('ieee754', 'rot13'))
+  .ooSQLExtensions~registerBuiltin(dbConn5, .array~of('ieee754', 'rot13'))
 
   say "Registering ieee754 and rot13 only:"
   say '-----------------------------------'
@@ -194,7 +194,7 @@
 
   dbConn6 = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-  dbConn6~registerBuiltinExtension
+  .ooSQLExtensions~registerBuiltin(dbConn6)
 
   say "No executed SQL should have an empty result set:"
   say '------------------------------------------------'

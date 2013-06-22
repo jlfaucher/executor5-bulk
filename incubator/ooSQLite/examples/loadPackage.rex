@@ -71,7 +71,7 @@
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
   -- Load the package and automatically register everything in the package for
-  -- out open database connection.
+  -- our open database connection.
   success = .ooSQLExtensions~loadPackage(packageFile, dbConn)
   if \ success then do
     say 'Failed to load package'
@@ -197,7 +197,22 @@
   package = .ooSQLExtensions~getPackage('examplePackage')
 
   function  = package~getFunction('half')
+  if function == .nil then do
+    say 'Failed to get function: half'
+    say '  Error code:   ' package~lastErrCode
+    say '  Error message:' package~lastErrMsg
+
+    return package~lastErrCode
+  end
+
   aggregate = package~getFunction('strAggregate')
+  if aggregat == .nil then do
+    say 'Failed to get aggregate: strAggregate'
+    say '  Error code:   ' package~lastErrCode
+    say '  Error message:' package~lastErrMsg
+
+    return package~lastErrCode
+  end
 
   dbConn4~createFunction('half', function)
   dbConn4~createFunction('strAggregate', aggregate)
