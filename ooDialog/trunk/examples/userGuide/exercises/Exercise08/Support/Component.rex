@@ -89,7 +89,7 @@
   ::METHOD registerInterest
     use strict arg eventName, interestedObject 
     eventMgr = .local~my.EventMgr
-    say "Component~registerInterest-01: event =" eventName||"; object =" interestedObject
+    --say "Component~registerInterest-01: event =" eventName||"; object =" interestedObject
     r = eventMgr~registerInterest(eventName,interestedObject)
     return r
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

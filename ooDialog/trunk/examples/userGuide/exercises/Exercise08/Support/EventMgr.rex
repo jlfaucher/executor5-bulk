@@ -82,7 +82,7 @@
       arr = .array~new
       self~dirEvents[event]=arr
     end
-    say "EventMgr-registerInterest-02: event= '" ||event||"' object = '"||object
+    --say "EventMgr-registerInterest-02: event= '" ||event||"' object = '"||object
     arr = self~dirEvents[event]
     if arr~hasItem(object) then nop -- no point in registering twice!
     else arr~append(object)
@@ -93,12 +93,12 @@
     -- If event not registered, returns .false; else invokes "notify" on all
     -- objects registered for the event and returns .true.
     use strict arg event
-    say "EventMgr-triggerEvent-01: event =" event
+    --say "EventMgr-triggerEvent-01: event =" event
     arr = self~dirEvents[event]
     if arr = .nil then return .false	-- event not registered.
     else do
       do i over arr
-        say "EventMgr-triggerEvent-02: sending 'notify' for" event "to" i	 
+        --say "EventMgr-triggerEvent-02: sending 'notify' for" event "to" i	 
         i~notify(event)
       end
       return .true

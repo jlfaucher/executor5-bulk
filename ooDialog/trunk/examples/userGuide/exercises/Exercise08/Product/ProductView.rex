@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: ProductView.rex - The ProductView component       v03-00 24May13
+   Exercise 08: ProductView.rex - The ProductView component       v03-00 18May13
 
    Contains: 	   classes "ProductView", "AboutDialog", and "HRSpv".
 
@@ -56,7 +56,8 @@
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
    v03-00 24May13: ProducView now inherits directly from ResDialog plus the View
-                   & Compoment mixins.                   
+                   & Compoment mixins.  
+          18Jun13: Make product a drag/drop source - added stmt in initDialog.                       
 ------------------------------------------------------------------------------*/
 
 .Application~addToConstDir("Product\ProductView.h")
@@ -70,7 +71,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ProductView							  v03-00 24May13
+  ProductView							  v03-00 18Jun13
   -----------
   The "view" part of the Product component. Now designed to operate from its own
   folder. Should be invoked from immediately outside the Product folder.
@@ -83,7 +84,8 @@
                   comments.
   v03-00 24May13: ProducView now inherits directly from ResDialog plus the
                   View & Component mixins.                   
-
+         18Jun13: Make product a drag/drop source - added stmt in initDialog.
+          
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS ProductView SUBCLASS ResDialog PUBLIC INHERIT View Component
@@ -156,6 +158,9 @@
     prodControls[ecUOM]~connectCharEvent(onChar)
 
     self~showData	-- Show the data
+    
+    -- Make product a drag/drop source:
+    r = self~dmSetAsSource:super("Product\res\Product.cur")
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 

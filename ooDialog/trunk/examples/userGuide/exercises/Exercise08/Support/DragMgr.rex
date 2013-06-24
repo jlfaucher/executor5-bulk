@@ -233,8 +233,8 @@
         objectMgr = .local~my.ObjectMgr
         sourceClassName = objectMgr~modelClassFromView(sourceDlg)
         targetClassName = objectMgr~modelClassFromView(targetDlg)
-        say "DragMgr-moving-06a: source Class =" sourceClassName
-        say "DragMgr-moving-06b: target Class =" targetClassName
+        --say "DragMgr-moving-06a: source Class =" sourceClassName
+        --say "DragMgr-moving-06b: target Class =" targetClassName
         --parse value a~class with . className .
         interpret "r = ."||targetClassName||"~dmQueryDrop("||sourceClassName||")"
         say "DragManager-moving-07: first time - queryDrop returned" r
@@ -267,8 +267,8 @@
 
 
   /*----------------------------------------------------------------------------
-    drop - Handles things when the user drops onto a target.
-           Invoked by "View" (the superclass).
+    dmDrop - Handles things when the user drops onto a target.
+             Invoked by "View" (the superclass).
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD dmDrop PUBLIC
     expose cursorIsNoDrop dragging mouse oldCursor dropTarget

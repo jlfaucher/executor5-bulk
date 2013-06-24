@@ -246,7 +246,7 @@ call "RequiresList.rex"
         leave myLoop
       end
     end myLoop
-    say "ObjectMgr-modelIdFromView-02: modelId =" modelId
+    --say "ObjectMgr-modelIdFromView-02: modelId =" modelId
     return modelId
   
   /*----------------------------------------------------------------------------

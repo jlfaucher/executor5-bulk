@@ -129,23 +129,34 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate unguarded
     expose rootDlg idModelInstance orderData cd1 cd2 orderTotal custDiscount -
-           taxRate eventMgr cd1
+           taxRate eventMgr
     use strict arg idModelInstance, rootDlg
     forward class (super) continue
     orderData = RESULT
 
     -- set up tabs for Customer Details and Order Lines:
-    cd1 = .CustDetailsDlg~new("Order\OrderFormView.rc", IDD_ORDFORM_CUST_DIALOG)
+    cd1 = .CustomerDetailsDlg~new("Order\OrderFormView.rc", IDD_ORDFORM_CUST_DIALOG)
     cd2 = .OrderLinesDlg~new("Order\OrderFormView.rc", IDD_ORDFORM_ORDLINES_DIALOG)
     tabContent = .array~of(cd1, cd2)
     --say "OrderFormView-activate-01: tabContent =" tabContent[1]||"," tabContent[2]
     cd1~ownerDialog = self
+/*
+    cd2~ownerDialog = self
+    
+    This barfed:
+    OrderFormView-onNewTab-03: dlg, havePositioned[index] = an ORDERLINESDLG 0
+    526 *-*       dlg~ownerDialog = self
+    Error 93 running C:\devood\Local-Exercises\Exercise08\Order\OrderFormView.rex
+    line 526:  Incorrect call to method
+    Error 93.900:  Once set, the owner dialog attribute can not be changed
+*/
     self~prep(tabContent)     
     
-    -- Send dlg id to the two Control Dialogs:
+    -- Send OrderFormView dlg id to the two Control Dialogs so that they can
+    --   communicate with OrderFormView.
     cd1~setOrderFormDlg(self)
     cd2~setOrderFormDlg(self)
-    cd2~rootDialog(rootDlg)		-- Tell cd2 what the root dialog is.
+    --cd2~rootDialog(rootDlg)		-- Tell cd2 what the root dialog is.
     
     -- Set up Order Totals and initialise CustDiscount:
     orderTotal = 0
@@ -176,7 +187,15 @@
     -- Tab stuff starts:
     cd1 = tabContent[1]
     cd1~execute
+/* error: the following two statements:
+    cd2 = tabContent[2]
+    cd2~execute
+    give:
+    Error 93.900:  The STARTCHILDDIALOG method can not be invoked on an ORDERLINESDLG
+    when the parent Rexx dialog has not been assigned
+*/
 
+    
     -- Add the tabs to the tab control.
     tabControl = self~newTab(IDC_ORDFORM_TABS)
     tabControl~addSequence("Customer Details", "Order Lines")
@@ -212,13 +231,19 @@
     self~positionAndShow(1)
     -- tab stuff ends
     controlDialogsClosed = .false
-    
+/*    
+    Following did not work - it gave Cust Details on both tabs!!
+    cd2 = tabContent[2]
+    say "***** cd2 =" cd2
+    cd2~ownerDialog = self	-- trial 21:45
+    cd2~execute
+*/
     -- Set as target for Drag/Drop:
         self~dmSetAsTarget:super()
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     -- This method not used - message goes to the class. Left in just for the
-    -- time being. Delete when all darg/drop OK. 
+    -- time being. Delete when all drag/drop OK. 
   --::METHOD dmQueryDrop
     --use strict arg sourceDlg, mousePos	-- try also without mousepos.
     --say "OrderFormView-dmQueryDrop-01."
@@ -226,14 +251,21 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD dmDrop PUBLIC
-    expose cd1
+    expose cd1 cd2
     use strict arg sourceModel, sourceDlg
-    say "OrderFormView-dmDrop-01; sourceModel, sourceDlg =" sourceModel||"," sourceDlg
-    --text = sourceDlg~query
-    --say "OrderFormView-dmDrop-02; sourceDld =" sourceDlg
-    --userText~setText(text)
-    cd1~getCustomer(sourceModel)
-    return .true
+    --say "OrderFormView-dmDrop-01; sourceModel, sourceDlg =" sourceModel||"," sourceDlg
+    say "OrderFormView-dmDrop-02: cd1, cd2 =" cd1||"," cd2
+    parse var sourceModel . modelName
+    select
+      when modelName = "CUSTOMERMODEL" then do
+        cd1~getCustomer(sourceModel); return .true
+        end
+      when modelName = "PRODUCTMODEL" then do
+        say "OrderFormView-dmDrop-03: Product dropped."; 
+        cd2~getProduct(sourceModel);  return .true
+        end
+    end
+    return .false
     
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD showTotals PUBLIC
@@ -497,7 +529,7 @@
     index = tabControl~selectedIndex + 1
     --say "OrderFormView-onNewTab-02: index =" index
     dlg = tabContent[index]
-    --say "OrderFormView-onNewTab-03: dlg, havePositioned[index] =" dlg havePositioned[index]
+    say "OrderFormView-onNewTab-03: dlg, havePositioned[index] =" dlg havePositioned[index]
 
     if havePositioned[index] then do
       last = tabContent[lastSelected]
@@ -537,18 +569,18 @@
 
 
 /*==============================================================================
-  CustDetailsDlg - a Page in the OrderFormView
-  -------------
+  CustomerDetailsDlg - a Page in the OrderFormView
+  ------------------
   The "view" (or "gui") Customer Ordering part of the OrderFormView component.
   ----------------------------------------------------------------------------*/
-  ::CLASS CustDetailsDlg SUBCLASS RcControlDialog
+  ::CLASS CustomerDetailsDlg SUBCLASS RcControlDialog
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     initDialog
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD initDialog
     expose  pbFindCust ecCustNum ecCustName ecCustAddr ecCustDisc objectMgr 
-    --say "OrderFormView/CustDetailsDlg-initDialog-01: tabControl =" tabControl
+    --say "OrderFormView/CustomerDetailsDlg-initDialog-01: tabControl =" tabControl
     
     -- Get ObjectMgr object id for later use.
     objectMgr = .local~my.objectMgr
@@ -562,7 +594,8 @@
     -- is placed on the Customer Number field. The button is disabled when pushed.
     self~connectEditEvent("IDC_CUSTDTLS_NUM","GOTFOCUS",custNumGotFocus)
     self~connectButtonEvent("IDC_CUSTDTLS_FIND","CLICKED",findCustomer)
-    --say "CustDetailsDlg-initDialog-01."
+    say "CustomerDetailsDlg-initDialog-01."
+    
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
 
@@ -578,11 +611,11 @@
   
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     CustNumGotFocus - invoked when user puts focus on Customer Number field,
-                      in which case the "Find Customer pushbutton is enabled. 
+                      in which case the "Find Customer" pushbutton is enabled. 
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD CustNumGotFocus UNGUARDED 
     expose pbFindCust
-    say "CustDetailsDlg-CustNumGotFocus-01."
+    say "CustomerDetailsDlg-CustNumGotFocus-01."
     pbFindCust~style = "DEFPUSHBUTTON"
     pbFindCust~enable
     --self~focusControl("IDC_CUSTDTLS_FIND")
@@ -595,10 +628,10 @@
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD findCustomer UNGUARDED
     expose ecCustNum ecCustName ecCustAddr ecCustDisc pbFindCust objectMgr dlgOrderForm
-    say "CustDetailsDlg-findCust-01."
+    say "CustomerDetailsDlg-findCust-01."
     custNo = ecCustNum~getLine(1) 
     idCust = objectMgr~getComponentId("CustomerModel",custNo)
-    say "OrderFormView/CustDetailsDlg-findCustomer-01: idCustNo =" idCust
+    say "OrderFormView/CustomerDetailsDlg-findCustomer-01: idCustNo =" idCust
     if idCust = .false then do
       r = ErrorDialog(.HRSofv~noCust)
       pbFindCust~disable
@@ -606,7 +639,7 @@
     end
     dirCustData = idCust~query
     if dirCustData = .false then do
-      say "OrderFormView/CustDetailsDlg-findCustomer-02: query returned error."
+      say "OrderFormView/CustomerDetailsDlg-findCustomer-02: query returned error."
       return
     end
     self~setCustomer(dirCustData)
@@ -674,10 +707,11 @@
     lvOrderItems~insertColumnPX(2,"UOM",           40,"RIGHT")
     lvOrderItems~insertColumnPX(3,"Qty",           40,"RIGHT")
     lvOrderItems~insertColumnPX(4,"Amount",        60,"RIGHT")
-    --say "OrderLinesDlg-initDialog-01."
+    say "OrderLinesDlg-initDialog-01."
 
     -- Test an edit field:
     ecProdNum      = self~newEdit("IDC_ORDLINES_PRODNO")
+    say "OrderLinesDlg-initDialog-02; ecProdNum =" ecProdNum
     ecQty          = self~newEdit("IDC_ORDLINES_QTY")
     pbAddOrderLine = self~newPushButton("IDC_ORDLINES_ADD") 
     self~connectEditEvent("IDC_ORDLINES_PRODNO","GOTFOCUS",prodNumGotFocus)
@@ -685,23 +719,23 @@
     self~connectButtonEvent("IDC_ORDLINES_DELETE","CLICKED",deleteOrderLine)
     self~connectListViewEvent("IDC_ORDLINES_LIST","ACTIVATE",showProduct)	-- double-click
     
-    --say "OrderLinesDlg-initDialog-02: self idHash =" self~identityHash
+    say "OrderLinesDlg-initDialog-03: ecProdNum =" ecProdNum
     -- Set focus on the Product Number field:
     self~focusControl("IDC_ORDLINES_PRODNO")
     --pbAddOrderLine~state = "FOCUS"
     self~initView		-- required by View mixin.
     
-    
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
   
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    setOrderFormDlg - Incoked by OrderFormView dialog so that this Control Dialog
+    setOrderFormDlg - Invoked by OrderFormView dialog so that this Control Dialog
                  can communicate with OrderFormView.
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD setOrderFormDlg
     expose OrderFormDlg
     use arg OrderFormDlg
+    say "OrderFormView/OrderLinesDlg-setOrderFormDlg-01."
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
   
@@ -714,7 +748,7 @@
 
    
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    addOrderLine
+    addOrderLine - invoked when user presses the "Add OrderLine" button.
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD addOrderLine UNGUARDED
     expose ecProdNum ecQty lvOrderItems objectMgr OrderFormDlg
@@ -741,9 +775,11 @@
       return
     end
     
+    -- State at this point: Product found and qty entered.
+    
     -- Calculate Total Price:
     total = qtyOrdered*dirProductData["ListPrice"]
-    --say "OrderFormView//OrderLinesDlg-addOrderLine-05: total =" total
+    --say "OrderFormView/OrderLinesDlg-addOrderLine-05: total =" total
     -- Ensure display total has 2 decimal places:
     --displayTotal = total/100~format(,2) 
     displayTotal = myFormat(total)
@@ -759,6 +795,20 @@
     self~focusControl("IDC_ORDLINES_PRODNO")
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    getProduct - invoked by main OrderFormView dialog when a Product is
+                  dropped on the Order Form. 
+    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
+  ::METHOD getProduct UNGUARDED
+    expose ecProdNum 
+    use strict arg productId
+    say "OrderFormView/OrderLinesDlg-getProduct: ecProdNum =" ecProdNum
+--trace i    
+    dirProdData = productId~query
+    -- set Product Number in dialog control:
+    ecProdNum~setText(dirProdData["ProdNo"]) 
+    self~focusControl("IDC_ORDLINES_QTY")
+--trace off
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     deleteOrderLine
