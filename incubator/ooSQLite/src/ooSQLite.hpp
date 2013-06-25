@@ -136,12 +136,26 @@ const char *builtinNames[] =
     "wholeNumber"
 };
 
+const char *builtinDescription[] =
+{
+    "Implements functions for the exact display and input of IEEE754 Binary64 floating-point numbers.",
+    "Implements next_char(A,T,F,H) that finds all \"next\" characters for string A given the vocabulary in T.F",
+    "Implements a compact regular-expression matcher for posix extended regular expressions against UTF8 text.",
+    "Implements a rot13() function and a rot13 collating sequence.",
+    "Implements the spellfix1 VIRTUAL TABLE that can be used to search a large vocabulary for close matches.",
+    "Implements a virtual table that returns the whole numbers between 1 and 4294967295, inclusive."
+};
+
+#define BUILTIN_ROW_FMT  "%-11s %s\n"
+#define BUILTIN_DASHED_LINE \
+    "---------------------------------------------------------------------------------------------------------"
 #define BUILTINS_COUNT sizeof(builtins) / sizeof(fnXExtensionInit)
 
 #define BUILTIN_NAMES          "ieee754, nextChar, regExp, rot13, spellFix, or wholeNumber"
 #define BUILTIN_LOAD_ERR_FMT   "Error loading builtin extension %s"
 #define BUILTIN_AUTO_ERR_FMT   "Failed to make builtin extension %s automatic"
 #define BUILTIN_NAME_ERR_FMT   "Argument %d, keyword must be exactly one of %s; found \"%s\""
+
 
 // Enum for the pragma commands in SQLite3.
 typedef enum

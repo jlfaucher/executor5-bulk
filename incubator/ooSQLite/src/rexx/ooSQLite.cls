@@ -304,6 +304,7 @@
 ::method autoPackage class external "LIBRARY oosqlite oosqlext_autoPackage_cls"
 ::method getLibrary class external "LIBRARY oosqlite oosqlext_getLibrary_cls"
 ::method getPackage class external "LIBRARY oosqlite oosqlext_getPackage_cls"
+::method listBuiltins class external "LIBRARY oosqlite oosqlext_listBuiltins_cls"
 ::method loadLibrary class external "LIBRARY oosqlite oosqlext_loadLibrary_cls"
 ::method loadPackage class external "LIBRARY oosqlite oosqlext_loadPackage_cls"
 ::method resetAutoBuiltin class external "LIBRARY oosqlite oosqlext_resetAutoBuiltin"

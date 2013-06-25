@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -37,7 +37,7 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  pragmaTrigger.rex
+ *  listBuiltins.rex
  *
  *  One of the non-standard SQL features of SQLitet is the PRAGMA statement.
  *
@@ -57,122 +57,67 @@
  *  set.
  */
 
-  dbFile = 'ooFoods.rdbx'
-
-  -- When opening the connection to the database here, we change the default
-  -- record format to an array of arrays:
-
-  db = .ooSQLiteConnection~new(dbFile, .ooSQLite~OPEN_READWRITE, .ooSQLite~OO_ARRAY_OF_ARRAYS)
-  if db~initCode <> 0 then do
-    say 'ooSQLiteConnection initialization err:' db~initCode
-    say '  Error code:' db~lastErrCode '('db~lastErrMsg')'
-    if db~initCode == db~CANTOPEN then do
-      say '  Database file name:' db~fileName '(Is this the correct database?)'
-    end
-    say;say;say
-    db~close
-    return 99
-  end
-
-  -- Since we are only going to be printing values in the database to the
-  -- screen, set the value for SQL null to a string.  Then we do not need to
-  -- check for .nil
-  db~null = '(NULL)'
-
-  names = getPragmaNames()
-
-  -- Here we invoke the pragma method for each pragma listed in names using the
-  -- 4 different formats for returning a result set:
+  -- Here we invoke the listBuiltins() method for each of the 4 different
+  -- formats for returning a result set.  The listBuiltins() method returns the
+  -- list of builtin extensions is the form of a result set.  This is intended
+  -- to make it similar to a pragma command.
 
   do i = 1 to 4
     if i == 1 then do
+      .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
       say 'Result set format is an array of arrays.'
       say
+
+      rs = .ooSQLExtensions~listBuiltins
+      z  = printResultSetA(rs)
     end
     else if i == 2 then do
+      .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_DIRECTORIES
       say 'Result set format is an array of directories (default.)'
       say
-      db~recordFormat = db~OO_ARRAY_OF_DIRECTORIES
+
+      rs = .ooSQLExtensions~listBuiltins
+      z  = printResultSetD(rs)
     end
     else if i == 3 then do
+      .ooSQLite~recordFormat = .ooSQLite~OO_STEM_OF_STEMS
       say 'Result set format is a stem of stems.'
       say
-      db~recordFormat = db~OO_STEM_OF_STEMS
+
+      rs = .ooSQLExtensions~listBuiltins
+      z  = printResultSetS(rs)
     end
     else if i == 4 then do
+      .ooSQLite~recordFormat = .ooSQLite~OO_CLASSIC_STEM
       say 'Result set format is a classic stem.'
       say
-      db~recordFormat = db~OO_CLASSIC_STEM
-    end
 
-    do n over names
-      ret = db~pragma(n)
-
-      if n == 'shrink_memory' then do
-        say 'Pragma:' n 'Result:' ret
-        say; say; say
-      end
-      else do
-        select
-          when db~recordFormat == db~OO_ARRAY_OF_ARRAYS then do
-            z = printResultSetA(n, ret)
-          end
-          when db~recordFormat == db~OO_ARRAY_OF_DIRECTORIES then do
-            z = printResultSetD(n, ret)
-          end
-          when db~recordFormat == db~OO_STEM_OF_STEMS then do
-            z = printResultSetS(n, ret)
-          end
-          when db~recordFormat == db~OO_CLASSIC_STEM then do
-            z = printResultSetCS(n, ret)
-          end
-        end
-        -- End select
-      end
-
+      rs = .ooSQLExtensions~listBuiltins
+      z  = printResultSetCS(rs)
     end
   end
 
-  db~close
 
 ::requires 'ooSQLite.cls'
 
-::routine getPragmaNames
-
-  n = .array~of( -
-    "integrity_check",  -
-    "quick_check",  -
-    "shrink_memory",  -
-    "main.wal_checkpoint",  -                -- must have .
-    )
-
-    return n
-
-
 ::routine printResultSetD
-  use arg n, rs
-
-  say 'Pragma:' n
-  if rs~items == 0 then do
-    say 'Result: No data'
-    return 0
-  end
+  use arg rs
 
   say 'Result:'
 
+  -- We cheat with the indexes.  I know that the indexes are NAME and
+  -- DESCRIPTION, so I could just use those.  I go ahead and get the indexes as
+  -- if I didn't already know them.  But, the because I want the NAME column
+  -- first, I reverse sort the indexes.
   indexes = rs[1]~allIndexes
-  line    = ''
-  do index over indexes
-    line ||= index~left(25)
-  end
+  indexes~sortWith(.DescendingComparator~new)
+
+  line = indexes[1]~left(11) indexes[2]
   say line
   say '='~copies(80)
 
   do rec over rs
-    line    = ''
-    do index over indexes
-      line ||= rec[index]~left(25)
-    end
+    line = rec[indexes[1]]~left(11) rec[indexes[2]]
     say line
   end
   say; say; say
@@ -181,34 +126,21 @@
 
 
 ::routine printResultSetA
-  use arg n, ret
-
-  say 'Pragma:' n
-  if ret~items == 0 then do
-    say 'Result: No data'
-    return 0
-  end
+  use arg rs
 
   say 'Result:'
 
-  colCount = ret[1]~items
-  rowCount = ret~items
+  rowCount = rs~items
 
-  line = ''
-  record = ret[1]
-  do j = 1 to colCount
-    line ||= record[j]~left(12)
-  end
+  record = rs[1]
+  line = record[1]~left(11) record[2]
 
   say line
   say '='~copies(80)
 
   do i = 2 to rowCount
-    line = ''
-    record = ret[i]
-    do j = 1 to colCount
-      line ||= record[j]~left(12)
-    end
+    record = rs[i]
+    line = record[1]~left(11) record[2]
 
     say line
   end
@@ -218,14 +150,7 @@
 
 
 ::routine printResultSetS
-  use arg n, rs.
-
-  say 'Pragma:' n
-  if rs.0 == 0 then do
-    say 'Result: No data'
-    say
-    return 0
-  end
+  use arg rs.
 
   say 'Result:'
 
@@ -233,19 +158,22 @@
   -- get the stem and then get its indexes
   st = rs.1
   indexes = st~allIndexes
-  line    = ''
-  do index over indexes
-    line ||= index~left(25)
-  end
+
+  -- We cheat with the indexes.  I know that the indexes are NAME and
+  -- DESCRIPTION, so I could just use those.  I go ahead and get the indexes as
+  -- if I didn't already know them.  But, the because I want the NAME column
+  -- first, I reverse sort the indexes.
+  indexes~sortWith(.DescendingComparator~new)
+
+  line = indexes[1]~left(11) indexes[2]
   say line
   say '='~copies(80)
 
   do i = 1 to rs.0
     rec. = rs.i
-    line    = ''
-    do index over indexes
-      line ||= rec.index~left(25)
-    end
+    idx1 = indexes[1]
+    idx2 = indexes[2]
+    line = rec.idx1~left(11) rec.idx2
     say line
   end
   say; say; say
@@ -254,31 +182,24 @@
 
 
 ::routine printResultSetCS
-  use arg n, rs.
-
-  say 'Pragma:' n
-  if rs.0 == 0 then do
-    say 'Result: No data'
-    say
-    return 0
-  end
+  use arg rs.
 
   say 'Result:'
 
   -- We know now there is at least one record at rs.1.
-  indexes = getIndexes(rs.)
-  line    = ''
-  do index over indexes
-    line ||= index~left(25)
-  end
+  indexSet = getIndexes(rs.)
+
+  indexes = indexSet~allIndexes
+  indexes~sortWith(.DescendingComparator~new)
+
+  line = indexes[1]~left(11) indexes[2]
   say line
   say '='~copies(80)
 
   do i = 1 to rs.0
-    line    = ''
-    do index over indexes
-      line ||= rs.i.index~left(25)
-    end
+    idx1 = i || '.' || indexes[1]
+    idx2 = i || '.' || indexes[2]
+    line = rs.idx1~left(11) rs.idx2
     say line
   end
   say; say; say

@@ -790,7 +790,7 @@ static RexxArrayObject getRecordsArray(RexxThreadContext *c, sqlite3_stmt *stmt,
  * @note  If there are no rows returned by stepping the statement, then an empty
  *        array is returned.
  */
-static RexxArrayObject getRecordsDirectory(RexxThreadContext *c, sqlite3_stmt *stmt)
+static RexxArrayObject getRecordsDirectory(RexxThreadContext *c, sqlite3_stmt *stmt, RexxObjectPtr nullObj)
 {
     RexxDirectoryObject record;                      // A single record
     RexxArrayObject     records = c->NewArray(100);  // An array of records
@@ -810,7 +810,7 @@ static RexxArrayObject getRecordsDirectory(RexxThreadContext *c, sqlite3_stmt *s
         for ( int i = 0; i < count; i++ )
         {
             CSTRING       data  = (CSTRING)sqlite3_column_text(stmt, i);
-            RexxObjectPtr value = (data == NULL) ? TheNilObj : c->String(data);
+            RexxObjectPtr value = (data == NULL) ? nullObj : c->String(data);
 
             c->DirectoryPut(record, value, headers[i]);
         }
@@ -840,7 +840,7 @@ static RexxArrayObject getRecordsDirectory(RexxThreadContext *c, sqlite3_stmt *s
  * @note  If there are no rows returned by stepping the statement, then a stem
  *        with stem.0 equal to zero is returned.
  */
-static RexxStemObject getRecordsStem(RexxThreadContext *c, sqlite3_stmt *stmt)
+static RexxStemObject getRecordsStem(RexxThreadContext *c, sqlite3_stmt *stmt, RexxObjectPtr nullObj)
 {
     RexxStemObject record;                           // A single record.
     RexxStemObject records = c->NewStem("records");  // A stem containing records.
@@ -862,7 +862,7 @@ static RexxStemObject getRecordsStem(RexxThreadContext *c, sqlite3_stmt *stmt)
         for ( int i = 0; i < count; i++ )
         {
             CSTRING       data  = (CSTRING)sqlite3_column_text(stmt, i);
-            RexxObjectPtr value = (data == NULL) ? TheNilObj : c->String(data);
+            RexxObjectPtr value = (data == NULL) ? nullObj : c->String(data);
 
             c->SetStemElement(record, headers[i], value);
         }
@@ -892,7 +892,7 @@ static RexxStemObject getRecordsStem(RexxThreadContext *c, sqlite3_stmt *stmt)
  * @note  If there are no rows returned by stepping the statement, then a stem
  *        with stem.0 equal to zero is returned.
  */
-static RexxStemObject getRecordsClassicStem(RexxThreadContext *c, sqlite3_stmt *stmt)
+static RexxStemObject getRecordsClassicStem(RexxThreadContext *c, sqlite3_stmt *stmt, RexxObjectPtr nullObj)
 {
     RexxStemObject records = c->NewStem("records");  // A stem containing records.
     c->SetStemArrayElement(records, 0, TheZeroObj);
@@ -912,15 +912,15 @@ static RexxStemObject getRecordsClassicStem(RexxThreadContext *c, sqlite3_stmt *
 
         for ( int i = 0; i < count; i++ )
         {
-            snprintf(buf, sizeof(buf) - 1, "%d.%s", i + 1, headers[i]);
+            snprintf(buf, sizeof(buf) - 1, "%d.%s", item, headers[i]);
 
             CSTRING       data  = (CSTRING)sqlite3_column_text(stmt, i);
-            RexxObjectPtr value = (data == NULL) ? TheNilObj : c->String(data);
+            RexxObjectPtr value = (data == NULL) ? nullObj : c->String(data);
 
             c->SetStemElement(records, buf, value);
         }
 
-        c->SetStemArrayElement(records, 0, c->StringSize(item));  // Update number of records in the stem.
+        c->SetStemArrayElement(records, 0, c->StringSize(item++));  // Update number of records in the stem.
     }
 
     freeHeadersUpper(headers, count);
@@ -4702,13 +4702,13 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
                     result = getRecordsArray(c->threadContext, stmt, pConn->nullObj);
                     break;
                 case anArrayOfDirectories :
-                    result = getRecordsDirectory(c->threadContext, stmt);
+                    result = getRecordsDirectory(c->threadContext, stmt, pConn->nullObj);
                     break;
                 case aClassicStem :
-                    result = getRecordsClassicStem(c->threadContext, stmt);
+                    result = getRecordsClassicStem(c->threadContext, stmt, pConn->nullObj);
                     break;
                 default :
-                    result = getRecordsStem(c->threadContext, stmt);
+                    result = getRecordsStem(c->threadContext, stmt, pConn->nullObj);
                     break;
             }
         }
@@ -4798,13 +4798,13 @@ RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING nam
                 result = getRecordsArray(c->threadContext, stmt, pConn->nullObj);
                 break;
             case anArrayOfDirectories :
-                result = getRecordsDirectory(c->threadContext, stmt);
+                result = getRecordsDirectory(c->threadContext, stmt, pConn->nullObj);
                 break;
             case aClassicStem :
-                result = getRecordsClassicStem(c->threadContext, stmt);
+                result = getRecordsClassicStem(c->threadContext, stmt, pConn->nullObj);
                 break;
             default :
-                result = getRecordsStem(c->threadContext, stmt);
+                result = getRecordsStem(c->threadContext, stmt, pConn->nullObj);
                 break;
         }
     }
@@ -10024,6 +10024,137 @@ static int autoBuiltin(RexxMethodContext *c, CSTRING name, pCooSQLExtensions pce
 }
 
 /**
+ * Produce a result set, in the format on an array of arrays, listing all the
+ * builtin extensions
+ *
+ * @param c
+ * @param print   If tree, print the result set to the screen as it is produced.
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr listBuiltinsArray(RexxMethodContext *c, bool print)
+{
+    RexxArrayObject result = c->NewArray(BUILTINS_COUNT + 1);
+    RexxArrayObject row    = c->ArrayOfTwo(c->String("Name"), c->String("Description"));
+
+    c->ArrayPut(result, row, 1);
+
+    for (size_t i = 0; i < BUILTINS_COUNT; i++)
+    {
+        row = c->ArrayOfTwo(c->String(builtinNames[i]), c->String(builtinDescription[i]));
+        c->ArrayPut(result, row, i + 2);
+
+        if ( print )
+        {
+            printf(BUILTIN_ROW_FMT, builtinNames[i], builtinDescription[i]);
+        }
+    }
+    return result;
+}
+
+/**
+ * Produce a result set, in the format on an array of directories, listing all
+ * the builtin extensions
+ *
+ * @param c
+ * @param print   If tree, print the result set to the screen as it is produced.
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr listBuiltinsDirectory(RexxMethodContext *c, bool print)
+{
+    RexxDirectoryObject record;
+    RexxArrayObject     result = c->NewArray(BUILTINS_COUNT);
+
+    for (size_t i = 0; i < BUILTINS_COUNT; i++)
+    {
+        record = c->NewDirectory();
+
+        c->DirectoryPut(record, c->String(builtinNames[i]), "NAME");
+        c->DirectoryPut(record, c->String(builtinDescription[i]), "DESCRIPTION");
+
+        c->ArrayPut(result, record, i + 1);
+
+        if ( print )
+        {
+            printf(BUILTIN_ROW_FMT, builtinNames[i], builtinDescription[i]);
+        }
+    }
+    return result;
+}
+
+/**
+ * Produce a result set, in the format on a classic stem, listing all the
+ * builtin extensions
+ *
+ * @param c
+ * @param print   If tree, print the result set to the screen as it is produced.
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr listBuiltinsClassicStem(RexxMethodContext *c, bool print)
+{
+    RexxStemObject records = c->NewStem("records");  // A stem containing records.
+    c->SetStemArrayElement(records, 0, TheZeroObj);
+
+    size_t item = 1;                                 // Current record index.
+
+    for (size_t i = 0; i < BUILTINS_COUNT; i++)
+    {
+        char buf[1024] = {0};
+
+        snprintf(buf, sizeof(buf) - 1, "%d.%s", item, "NAME");
+        c->SetStemElement(records, buf, c->String(builtinNames[i]));
+
+        snprintf(buf, sizeof(buf) - 1, "%d.%s", item, "DESCRIPTION");
+        c->SetStemElement(records, buf, c->String(builtinDescription[i]));
+
+        c->SetStemArrayElement(records, 0, c->StringSize(item++));  // Update number of records in the stem.
+
+        if ( print )
+        {
+            printf(BUILTIN_ROW_FMT, builtinNames[i], builtinDescription[i]);
+        }
+    }
+    return records;
+}
+
+/**
+ * Produce a result set, in the format on a stem of stems, listing all the
+ * builtin extensions
+ *
+ * @param c
+ * @param print   If tree, print the result set to the screen as it is produced.
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr listBuiltinsStem(RexxMethodContext *c, bool print)
+{
+    RexxStemObject record;                           // A single record.
+    RexxStemObject records = c->NewStem("records");  // A stem containing records.
+    c->SetStemArrayElement(records, 0, TheZeroObj);
+
+    size_t item = 1;                                 // Current record index.
+
+    for (size_t i = 0; i < BUILTINS_COUNT; i++)
+    {
+        record = c->NewStem("record");
+
+        c->SetStemElement(record, "NAME", c->String(builtinNames[i]));
+        c->SetStemElement(record, "DESCRIPTION", c->String(builtinDescription[i]));
+
+        c->SetStemArrayElement(records, 0, c->StringSize(item));  // Update number of records in the stem.
+        c->SetStemArrayElement(records, item++, record);          // Add the record.
+
+        if ( print )
+        {
+            printf(BUILTIN_ROW_FMT, builtinNames[i], builtinDescription[i]);
+        }
+    }
+    return records;
+}
+
+/**
  * Adds an .ooSQLCollation CSelf to the list of automatically registered
  * collations.
  *
@@ -10771,6 +10902,65 @@ RexxMethod2(RexxObjectPtr, oosqlext_getPackage_cls, RexxObjectPtr, packageName, 
     return result;
 }
 
+/** ooSQLExtension::listBuiltins()
+ *
+ *  Lists all of the user defined extensions builtin to ooSQLite.  These
+ *  extensions come from the SQLite source tree, and are statically linked to
+ *  the ooSQLite shared library.
+ *
+ *  The list is returned in the format of a result set, making this similiar to
+ *  a pragma command.  (Like the collation_list pragma for instance.)  Since
+ *  there is no database connection or statement associated with this, we use
+ *  the default result set format as determined by the ooSQLite class.
+ *
+ *  @param  printImmediate  [optional]  If .true, the listing is printed to the
+ *                          console as the array is being produced
+ *
+ *  @return A listing of the builtin extensions available in this version of
+ *          ooSQLite.
+ */
+RexxMethod2(RexxObjectPtr, oosqlext_listBuiltins_cls, OPTIONAL_logical_t, printImmediate, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext  = (pCooSQLExtensions)pCSelf;
+    RexxObjectPtr     result = context->Int32(SQLITE_MISUSE);
+
+    resetExtensionsLastErr(context, pcext);
+
+    if ( printImmediate )
+    {
+        printf(BUILTIN_ROW_FMT, "Name", "Description");
+        printf("%s\n", BUILTIN_DASHED_LINE);
+    }
+
+    pCooSQLiteClass pcsc = ensureCSelf(context, pcext);
+
+    switch ( pcsc->format )
+    {
+        case anArrayOfArrays :
+            result = listBuiltinsArray(context, printImmediate ? true : false);
+            break;
+
+        case anArrayOfDirectories :
+            result = listBuiltinsDirectory(context, printImmediate ? true : false);
+            break;
+
+        case aStemOfStems :
+            result = listBuiltinsStem(context, printImmediate ? true : false);
+            break;
+
+        case aClassicStem :
+            result = listBuiltinsClassicStem(context, printImmediate ? true : false);
+            break;
+    }
+
+    if ( printImmediate )
+    {
+        printf("\n");
+    }
+
+    return result;
+}
+
 
 /** ooSQLExtensions::loadLibrary()  [class method]
  *
@@ -11011,7 +11201,7 @@ done_out:
 }
 
 
-/** ooSQLite::resetAutoExtension()  [class method]
+/** ooSQLExtensions::resetAutoExtension()  [class method]
  *
  *  Disables all automatic extensions previously registered using the
  *  autoExtension() method.
@@ -11025,7 +11215,7 @@ RexxMethod0(int, oosqlext_resetAutoBuiltin)
 }
 
 
-/** ooSQLiteConnection::registerBuiltinExtension()
+/** ooSQLiteExtensions::registerBuiltin()
  *
  *  Registers some or all of the extensions builtin to ooSQLite with the
  *  specified database connection.  These extensions come from the SQLite source
@@ -11098,7 +11288,6 @@ RexxMethod3(int, oosqlext_registerBuiltin, RexxObjectPtr, dbConn, OPTIONAL_RexxO
 
     return SQLITE_MISUSE;
 }
-
 
 
 /**
@@ -15540,16 +15729,17 @@ REXX_METHOD_PROTOTYPE(oosqlext_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlext_getLastErrMsg_atr);
 
 REXX_METHOD_PROTOTYPE(oosqlext_autoBuiltin);
-REXX_METHOD_PROTOTYPE(oosqlext_getLibrary_cls);
-REXX_METHOD_PROTOTYPE(oosqlext_getPackage_cls);
-REXX_METHOD_PROTOTYPE(oosqlext_loadLibrary_cls);
-REXX_METHOD_PROTOTYPE(oosqlext_loadPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_autoCollation_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_autoCollationNeeded_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_autoFunction_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_autoPackage_cls);
-REXX_METHOD_PROTOTYPE(oosqlext_resetAutoBuiltin);
+REXX_METHOD_PROTOTYPE(oosqlext_getLibrary_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_getPackage_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_listBuiltins_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_loadLibrary_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_loadPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_registerBuiltin);
+REXX_METHOD_PROTOTYPE(oosqlext_resetAutoBuiltin);
 
 // .ooSQLPackage
 REXX_METHOD_PROTOTYPE(oosqlpack_init);
@@ -15798,6 +15988,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlext_autoPackage_cls,             oosqlext_autoPackage_cls),
     REXX_METHOD(oosqlext_getLibrary_cls,              oosqlext_getLibrary_cls),
     REXX_METHOD(oosqlext_getPackage_cls,              oosqlext_getPackage_cls),
+    REXX_METHOD(oosqlext_listBuiltins_cls,            oosqlext_listBuiltins_cls),
     REXX_METHOD(oosqlext_loadLibrary_cls,             oosqlext_loadLibrary_cls),
     REXX_METHOD(oosqlext_loadPackage_cls,             oosqlext_loadPackage_cls),
     REXX_METHOD(oosqlext_resetAutoBuiltin,            oosqlext_resetAutoBuiltin),
