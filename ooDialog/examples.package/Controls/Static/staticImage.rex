@@ -98,12 +98,12 @@ return 0
   expose iconImage questionIcon someIcon isQuestion iconText
 
   if isQuestion then do
-    iconImage~setImage(questionIcon)
+    iconImage~setIcon(questionIcon)
     iconText~setText("What is your question?")
     isQuestion = .false
   end
   else do
-    iconImage~setImage(someIcon)
+    iconImage~setIcon(someIcon)
     iconText~setText("This is where the question goes.")
     isQuestion = .true
   end
