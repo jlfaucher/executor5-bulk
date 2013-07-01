@@ -200,6 +200,11 @@ Section  doInstall
     File "${ExamplesDir}\controls\*.txt"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\ListBox
+    ; Add the files ...
+    File "${ExamplesDir}\controls\ListBox\*.rex"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\controls\ListView
     ; Add the files ...
     File "${ExamplesDir}\controls\ListView\*.rex"
@@ -617,7 +622,7 @@ Section  doInstall
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\bmp\*.ico"
     File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\bmp\*.bmp"
-    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\bmp\*.cur"    
+    File "${ExamplesDir}\userGuide\exercises\Exercise08\Customer\bmp\*.cur"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise08\Extras
