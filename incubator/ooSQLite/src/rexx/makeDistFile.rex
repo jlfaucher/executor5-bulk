@@ -197,8 +197,8 @@ use arg cmdLine
     cpCmd srcDirNow'libautopackage5.so' dstDirNow
   end
 
-  cpCmd 'examples'sl'misc'sl'foodsPristine.rdbx'  outDir'misc'
-  cpCmd 'examples'sl'misc'sl'ReadMe.txt'          outDir'misc'
+  cpCmd 'examples'sl'misc'sl'foodsPristine.rdbx'  outDir'examples'sl'misc'
+  cpCmd 'examples'sl'misc'sl'ReadMe.txt'          outDir'examples'sl'misc'
 
   -- informal subdirectory
   srcDirNow = 'examples'sl'informal'sl
