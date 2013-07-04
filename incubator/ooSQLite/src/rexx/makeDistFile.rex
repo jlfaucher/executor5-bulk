@@ -100,8 +100,6 @@ use arg cmdLine
 
   cpCmd 'CPLv1.0.txt' outDir
   cpCmd 'NOTICE' outDir
-  cpCmd 'ReadMe.txt' outDir
-  cpCmd 'ReleaseNotes' outDir
   cpCmd setEnvFile outDir
 
   if os == "WINDOWS" then do
@@ -122,32 +120,37 @@ use arg cmdLine
     cpCmd 'doc'sl'StatusAllSQLiteFunctions.xlsx' outDir'doc'
   end
 
-  cpCmd 'examples'sl'collationCustom.rex'          outDir'examples'
-  cpCmd 'examples'sl'createDatabase.rex'           outDir'examples'
-  cpCmd 'examples'sl'enquote.rex'                  outDir'examples'
-  cpCmd 'examples'sl'insertIntoDatabase.rex'       outDir'examples'
-  cpCmd 'examples'sl'insertNullOne.rex'            outDir'examples'
-  cpCmd 'examples'sl'insertNullThree.rex'          outDir'examples'
-  cpCmd 'examples'sl'insertNullTwo.rex'            outDir'examples'
-  cpCmd 'examples'sl'loadExtension.rex'            outDir'examples'
-  cpCmd 'examples'sl'loadLibrary.rex'              outDir'examples'
-  cpCmd 'examples'sl'loadPackage.rex'              outDir'examples'
-  cpCmd 'examples'sl'ooFoods.rdbx'                 outDir'examples'
-  cpCmd 'examples'sl'packageAutoRegistration.rex'  outDir'examples'
-  cpCmd 'examples'sl'pullColumnData.rex'           outDir'examples'
-  cpCmd 'examples'sl'udfExample.rex'               outDir'examples'
-  cpCmd 'examples'sl'utilities.frm'                outDir'examples'
+  cpCmd 'examples'sl'builtinExtensions.rex'         outDir'examples'
+  cpCmd 'examples'sl'collationCustom.rex'           outDir'examples'
+  cpCmd 'examples'sl'collationCustom.rex'           outDir'examples'
+  cpCmd 'examples'sl'createDatabase.rex'            outDir'examples'
+  cpCmd 'examples'sl'enquote.rex'                   outDir'examples'
+  cpCmd 'examples'sl'insertIntoDatabase.rex'        outDir'examples'
+  cpCmd 'examples'sl'insertNullOne.rex'             outDir'examples'
+  cpCmd 'examples'sl'insertNullThree.rex'           outDir'examples'
+  cpCmd 'examples'sl'insertNullTwo.rex'             outDir'examples'
+  cpCmd 'examples'sl'loadExtension.rex'             outDir'examples'
+  cpCmd 'examples'sl'loadLibrary.rex'               outDir'examples'
+  cpCmd 'examples'sl'loadPackage.rex'               outDir'examples'
+  cpCmd 'examples'sl'ooFoods.rdbx'                  outDir'examples'
+  cpCmd 'examples'sl'packageAutoRegistration.rex'   outDir'examples'
+  cpCmd 'examples'sl'pullColumnData.rex'            outDir'examples'
+  cpCmd 'examples'sl'registerBuiltinExtensions.rex' outDir'examples'
+  cpCmd 'examples'sl'udfExample.rex'                outDir'examples'
+  cpCmd 'examples'sl'utilities.frm'                 outDir'examples'
 
-  cpCmd 'examples'sl'classic.rexx'sl'backupDB.rex'          outDir'examples'sl'classic.rexx'
-  cpCmd 'examples'sl'classic.rexx'sl'ooFoods.rdbx'          outDir'examples'sl'classic.rexx'
-  cpCmd 'examples'sl'classic.rexx'sl'preparedStmtRtn.rex'   outDir'examples'sl'classic.rexx'
-  cpCmd 'examples'sl'classic.rexx'sl'pullColumnDataRtn.rex' outDir'examples'sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'backupDB.rex'           outDir'examples'sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'collationCustomRtn.rex' outDir'examples'sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'ooFoods.rdbx'           outDir'examples'sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'preparedStmtRtn.rex'    outDir'examples'sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'pullColumnDataRtn.rex'  outDir'examples'sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'udfExampleRtn.rex'      outDir'examples'sl'classic.rexx'
 
   -- user.extensions subdirectory
   srcDirNow = 'examples'sl'user.extensions'sl
   dstDirNow = outDir'examples'sl'user.extensions'sl
 
-  cpCmd dstDirNow'simpleExtension.c'  dstDirNow
+  cpCmd srcDirNow'simpleExtension.c'  dstDirNow
   cpCmd srcDirNow'examplePackage.cpp' dstDirNow
   cpCmd srcDirNow'exampleLibrary.cpp' dstDirNow
   if os == "WINDOWS" then do
@@ -194,26 +197,29 @@ use arg cmdLine
     cpCmd srcDirNow'libautopackage5.so' dstDirNow
   end
 
-  cpCmd 'misc'sl'foodsPristine.rdbx'    outDir'misc'
-  cpCmd 'misc'sl'ReadMe.txt'            outDir'misc'
+  cpCmd 'examples'sl'misc'sl'foodsPristine.rdbx'  outDir'misc'
+  cpCmd 'examples'sl'misc'sl'ReadMe.txt'          outDir'misc'
 
-  -- testing subdirectory
-  srcDirNow = 'testing'sl
-  dstDirNow = outDir'testing'
+  -- informal subdirectory
+  srcDirNow = 'examples'sl'informal'sl
+  dstDirNow = outDir'examples'sl'informal'
 
-  cpCmd srcDirNow'execTestA.rex'          dstDirNow
-  cpCmd srcDirNow'execTestD.rex'          dstDirNow
-  cpCmd srcDirNow'execTestNoExec.rex'     dstDirNow
-  cpCmd srcDirNow'execTestS.rex'          dstDirNow
-  cpCmd srcDirNow'loadDatabase.rex'       dstDirNow
-  cpCmd srcDirNow'ooFoods.rdbx'           dstDirNow
-  cpCmd srcDirNow'pragmaGetTest.rex'      dstDirNow
-  cpCmd srcDirNow'pragmaSetTest.rex'      dstDirNow
-  cpCmd srcDirNow'pragmaSpecialTest.rex'  dstDirNow
-  cpCmd srcDirNow'pragmaTriggerTest.rex'  dstDirNow
-  cpCmd srcDirNow'preparedStmtTest.rex'   dstDirNow
-  cpCmd srcDirNow'statusTest.rex'         dstDirNow
-  cpCmd srcDirNow'versionTest.rex'        dstDirNow
+  cpCmd srcDirNow'execA.rex'            dstDirNow
+  cpCmd srcDirNow'execCS.rex'           dstDirNow
+  cpCmd srcDirNow'execD.rex'            dstDirNow
+  cpCmd srcDirNow'execNoExec.rex'       dstDirNow
+  cpCmd srcDirNow'execS.rex'            dstDirNow
+  cpCmd srcDirNow'listBuiltins.rex'     dstDirNow
+  cpCmd srcDirNow'loadDatabase.rex'     dstDirNow
+  cpCmd srcDirNow'ooFoods.rdbx'         dstDirNow
+  cpCmd srcDirNow'pragmaGet.rex'        dstDirNow
+  cpCmd srcDirNow'pragmaSet.rex'        dstDirNow
+  cpCmd srcDirNow'pragmaSpecialCS.rex'  dstDirNow
+  cpCmd srcDirNow'pragmaSpecial.rex'    dstDirNow
+  cpCmd srcDirNow'pragmaTrigger.rex'    dstDirNow
+  cpCmd srcDirNow'preparedStmt.rex'     dstDirNow
+  cpCmd srcDirNow'status.rex'           dstDirNow
+  cpCmd srcDirNow'version.rex'          dstDirNow
 
   zipCmd outFile outDir
 

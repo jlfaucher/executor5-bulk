@@ -5687,7 +5687,7 @@ RexxMethod4(RexxObjectPtr, oosqlconn_collationNeeded, RexxObjectPtr, callbackObj
                 wrongClassException(context->threadContext, 3, "Pointer", userData);
                 return result;
             }
-            usrD = (fnXDestroy)context->PointerValue((RexxPointerObject)userData);
+            usrD = context->PointerValue((RexxPointerObject)userData);
         }
 
         rc = sqlite3_collation_needed(pConn->db, usrD, xCollNeeded);

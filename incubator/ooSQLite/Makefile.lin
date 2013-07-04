@@ -92,7 +92,7 @@ WARNINGFLAGS=
 VERDEFS=-DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) -DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) -DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) -DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) -DOOSQLITE_VER_STRING=\"$(OOSQLITE_VER_STR)\" -DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
 EXTRAINCLUDE=-I src/sqlite -I $(PLATFORM_DIR)
 
-SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_DEFAULT_FOREIGN_KEYS=1
+SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_DEFAULT_FOREIGN_KEYS=1 -DSQLITE_CORE
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS) $(CONFFLAGS)
 
 OUT_DIR=build/release
@@ -109,7 +109,10 @@ EXE_LLIBS=-L$(OUT_DIR) -ldl -lpthread -lstdc++ -lreadline -lcurses
 
 CFLAGS=-c -fPIC $(BASEFLAGS)
 
-OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/ooSqlSysLibrary.o
+OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/ooSqlSysLibrary.o \
+            $(OUT_DIR)/nextchar.o $(OUT_DIR)/ieee754.o $(OUT_DIR)/rot13.o $(OUT_DIR)/regexp.o $(OUT_DIR)/spellfix.o \
+            $(OUT_DIR)/wholenumber.o
+
 
 # What we want to build.
 all: $(BIN_DIR)/liboosqlite.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls  example_dlls
@@ -129,6 +132,24 @@ $(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.lin
 
 $(OUT_DIR)/ooSqlSysLibrary.o: $(PLATFORM_DIR)/ooSqlSysLibrary.cpp $(PLATFORM_DIR)/ooSqlSysLibrary.hpp Makefile.lin
 	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) $(SYSLIB_FLAGS) -o $(OUT_DIR)/ooSqlSysLibrary.o $(PLATFORM_DIR)/ooSqlSysLibrary.cpp
+
+$(OUT_DIR)/ieee754.o: src/sqlite/extensions/ieee754.c Makefile.lin
+	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/ieee754.o src/sqlite/extensions/ieee754.c
+
+$(OUT_DIR)/nextchar.o: src/sqlite/extensions/nextchar.c Makefile.lin
+	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/nextchar.o src/sqlite/extensions/nextchar.c
+
+$(OUT_DIR)/regexp.o: src/sqlite/extensions/regexp.c Makefile.lin
+	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/regexp.o src/sqlite/extensions/regexp.c
+
+$(OUT_DIR)/rot13.o: src/sqlite/extensions/rot13.c Makefile.lin
+	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/rot13.o src/sqlite/extensions/rot13.c
+
+$(OUT_DIR)/spellfix.o: src/sqlite/extensions/spellfix.c Makefile.lin
+	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/spellfix.o src/sqlite/extensions/spellfix.c
+
+$(OUT_DIR)/wholenumber.o: src/sqlite/extensions/wholenumber.c Makefile.lin
+	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/wholenumber.o src/sqlite/extensions/wholenumber.c
 
 $(OUT_DIR)/liboosqlite.so: $(OOSQLITE_OBJS)
 	gcc $(DBG)  $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.so $(OOSQLITE_OBJS) $(SO_LLIBS)
