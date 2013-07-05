@@ -9830,7 +9830,7 @@ static void tooManyAutoRegistrations(RexxMethodContext *c, pCooSQLExtensions pce
 {
     char buf[256];
 
-    snprintf(buf, 256, "the number of automatically registered % can not exceed %d", type, n);
+    snprintf(buf, 256, "the number of automatically registered %s can not exceed %d", type, n);
 
     pcext->lastErrCode = c->Int32(SQLITE_MISUSE);
     pcext->lastErrMsg  = c->String(buf);
