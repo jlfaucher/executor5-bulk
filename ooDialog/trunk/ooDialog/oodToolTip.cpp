@@ -693,7 +693,6 @@ void freeRelayData(pSubClassData pSCData)
         {
             pSCData->pcdc->pRelayEvent = NULL;
         }
-        LocalFree(pSCData);
     }
 
     LeaveCriticalSection(&crit_sec);
@@ -2321,6 +2320,7 @@ RexxMethod4(logical_t, tt_manageAtypicalTool, RexxObjectPtr, toolObject, OPTIONA
     if ( pred == NULL )
     {
         freeRelayData(pSCData);
+        LocalFree(pSCData);
         outOfMemoryException(context->threadContext);
         goto err_out;
     }
@@ -2398,6 +2398,7 @@ RexxMethod4(logical_t, tt_manageAtypicalTool, RexxObjectPtr, toolObject, OPTIONA
 
 err_out:
     freeRelayData(pSCData);
+    LocalFree(pSCData);
     return FALSE;
 }
 

@@ -1127,8 +1127,10 @@ REXX_METHOD_PROTOTYPE(cb_getText);
 REXX_METHOD_PROTOTYPE(cb_insert);
 REXX_METHOD_PROTOTYPE(cb_isDropDown);
 REXX_METHOD_PROTOTYPE(cb_isGrandchild);
+REXX_METHOD_PROTOTYPE(cb_removeFullColor);
 REXX_METHOD_PROTOTYPE(cb_select);
 REXX_METHOD_PROTOTYPE(cb_setCue);
+REXX_METHOD_PROTOTYPE(cb_setFullColor);
 REXX_METHOD_PROTOTYPE(cb_setItemHeight);
 REXX_METHOD_PROTOTYPE(cb_setMinVisible);
 
@@ -2342,8 +2344,10 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cb_insert,                      cb_insert),
     REXX_METHOD(cb_isDropDown,                  cb_isDropDown),
     REXX_METHOD(cb_isGrandchild,                cb_isGrandchild),
+    REXX_METHOD(cb_removeFullColor,             cb_removeFullColor),
     REXX_METHOD(cb_select,                      cb_select),
     REXX_METHOD(cb_setCue,                      cb_setCue),
+    REXX_METHOD(cb_setFullColor,                cb_setFullColor),
     REXX_METHOD(cb_setItemHeight,               cb_setItemHeight),
     REXX_METHOD(cb_setMinVisible,               cb_setMinVisible),
 

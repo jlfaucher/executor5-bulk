@@ -675,7 +675,7 @@
             when class = '"EDIT"' then
                self~createEdit(id, x, y, w, h, self~getRCStyle(style, "EDIT"), name)
 
-            when class = '"COMBOBOX"' then
+            when class = 'WC_COMBOBOX' | class = '"COMBOBOX"' then
                self~createComboBox(id, x, y, w, h, self~getRCStyle(style, "CB"), name)
 
             when class = '"LISTBOX"' then

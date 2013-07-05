@@ -114,9 +114,9 @@ return 0
     lb~addDirectory("C:\Windows\System32\*", "READWRITE READONLY HIDDEN SYSTEM DIRECTORY ARCHIVE")
 
     lb~connectCharEvent
-
     stSearchStr = self~newStatic(IDC_ST_SEARCHSTR)
 
+    self~setHorizontalExtent(lb)
 
 ::method onChar unguarded
     expose searchStr curIndex
@@ -225,6 +225,20 @@ return 0
 ::method setStatusBar private unguarded
     expose stSearchStr searchStr
     stSearchStr~setText(searchStr)
+
+-- If the internal width of the list box is less than the width of an item,
+-- not all of the item will be shown.  By default the internal width of the
+-- list box is 0.  Here we measure the width of each string and set the internal
+-- width of the list box to the width of the widest string, plus 4 for a margin.
+::method setHorizontalExtent private
+    use strict arg lb
+
+    max = 0
+    do i = 1 to lb~items
+        s = lb~getTextSizePx(lb~getText(i))
+        if s~width > max then max = s~width
+    end
+    lb~setWidthPx(max + 4)
 
 ::method ok unguarded
     expose lb selectedText timer

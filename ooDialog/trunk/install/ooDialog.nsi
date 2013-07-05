@@ -200,6 +200,13 @@ Section  doInstall
     File "${ExamplesDir}\controls\*.txt"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\ComboBox
+    ; Add the files ...
+    File "${ExamplesDir}\controls\ComboBox\*.h"
+    File "${ExamplesDir}\controls\ComboBox\*.rc"
+    File "${ExamplesDir}\controls\ComboBox\*.rex"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\controls\ListBox
     ; Add the files ...
     File "${ExamplesDir}\controls\ListBox\*.rex"
@@ -697,16 +704,23 @@ Section  doInstall
 
 
     ; Create start menu shortcuts
-    DetailPrint "********** ooDialog 4.2.2 Start Menu Shortcuts **********"
+    DetailPrint "********** ooDialog ${SHORTVERSION} Start Menu Shortcuts **********"
 
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk" "$INSTDIR\rexxpaws.exe" '"$INSTDIR\samples\oodialog\winsystem\eventlog.rex"' "$INSTDIR\rexx.exe"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Window Tree.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\winsystem\displayWindowTree.rex"' "$INSTDIR\rexx.exe"
     CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\winsystem\usewmgr.rex"' "$INSTDIR\rexx.exe"
 
     CreateDirectory "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog"
+
+    SetOutPath $INSTDIR\samples\oodialog\Controls\ComboBox
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Combo Box Types.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\Controls\ComboBox\comboBoxTypes.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+
+    SetOutPath $INSTDIR\samples\oodialog\Controls\ToolTip
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Custom Position Tool Tips.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\Controls\ToolTip\customPositionToolTip.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+
+    SetOutPath $INSTDIR\samples\oodialog\Controls\ListView
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\List-view Views.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\Controls\ListView\columnIcons.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+
     CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Samples.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\sample.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Calculator.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\calculator.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Change Editor.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\editrex.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\FTYPE Changer.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\ftyperex.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
     DetailPrint ""
 
 
@@ -962,7 +976,8 @@ Function RemoveFiles
   Delete "${SMooRexxFolder}\Documentation\ooDialog User Guide.lnk"
   Delete "${SMooRexxFolder}\Documentation\ooRexxTry Reference.lnk"
 
-  Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk"
+  Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk"  ; Only pre ooDialog 4.2.3
+  Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Window Tree.lnk"
   Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk"
   Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Samples.lnk"
   Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Calculator.lnk"
