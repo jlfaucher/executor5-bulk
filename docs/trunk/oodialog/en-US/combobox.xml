@@ -224,6 +224,10 @@
 <entry>Drops down the list of the combo box.</entry>
 </row>
 <row>
+<entry><xref linkend="mthRemoveFullColor"/></entry>
+<entry>Reverts the color for this combo box to its default, if the <xref linkend="mthSetFullColor"/> method has previously been invoked on this combo box.</entry>
+</row>
+<row>
 <entry><xref linkend="mthSelectClsComboBox"/></entry>
 <entry>Selects the list entry that matches the specified text.</entry>
 </row>
@@ -246,6 +250,10 @@
 <row>
 <entry><xref linkend="mthSetEditSelection"/></entry>
 <entry>Selects the specified text range in the edit control of the combo box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFullColor"/></entry>
+<entry>Sets the complete color of this combo box, this includes both the selection field and the list parts of the comb box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetHorizontalExtentClsComboBox"/></entry>
@@ -1703,6 +1711,78 @@ New minimum visible setting is:  10
 </variablelist>
 </section>
 
+<section id="mthRemoveFullColor" xreflabel="removeFullColor"><title>removeFullColor</title>
+<indexterm><primary>removeFullColor</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>removeFullColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeFullColor------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reverts the color for this combo box to its default, if the <xref linkend="mthSetFullColor"/> method has previously been
+  invoked on this combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the <emphasis role="italic">setFullColor</emphasis> method has not previously been invoked for this combo box, then
+    the method does nothing and false is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the <xref
+    linkend="mthComCtl32Version"/>() method to determine the current version of the library. A syntax error is raised if this
+    method is invoked on an operating system where it is not supported.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example restores the combo box to its default colors after it had been set to some custom colors:
+<programlisting>
+<![CDATA[
+::method initDialog
+    ...
+    mediumSpringGreen =  .Image~colorRef(0, 238, 118)
+    fireBrickRed      =  .Image~colorRef(205, 38, 38)
+
+    cbDropDown = self~getComboBox(IDC_CB_DROPDOWN)
+    cbDropDown~setFullColor(mediumSpringGreen, fireBrickRed)
+    ...
+
+::method restoreComboBox private
+    expose cpDropDown
+
+    cbDropDown~removeFullColor
+    return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::removeFullColor() -->
+
+
 <section id="mthSelectClsComboBox" xreflabel="select"><title>select</title>
 <indexterm><primary>select</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>select</secondary></indexterm>
@@ -2056,6 +2136,117 @@ New minimum visible setting is:  10
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ComboBox::setEditSelection() -->
+
+
+<section id="mthSetFullColor" xreflabel="setFullColor"><title>setFullColor</title>
+<indexterm><primary>setFullColor</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setFullColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFullColor(--+-----------+--+------------+--+---------------+--)---------><
+                   +--bkColor--+  +-,-fgColor--+  +-,-isSysColor--+
+]]>
+</programlisting>
+
+<para>
+  Sets the complete color of this combo box, this includes both the selection field and the list parts of the comb box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>bkColor [optional]</term>
+    <listitem>
+    <para>
+      Specifies the background color for the combo box. If this arugment is omitted, the background color of the combo box is
+      not changed. See the remarks for the details on how colors are specified. If both the <emphasis
+      role="italic">bkColor</emphasis> and the <emphasis role="italic">fgColor</emphasis> arguments are omitted, this method
+      returns false and does not do anything.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fgColor [optional]</term>
+    <listitem>
+    <para>
+      Specifies the foreground color for the combo box. If this arugment is omitted, the foreground color of the combo box is
+      not changed. See the remarks for the details on how colors are specified. If both the <emphasis
+      role="italic">bkColor</emphasis> and the <emphasis role="italic">fgColor</emphasis> arguments are omitted, this method
+      returns false and does not do anything.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isSysColor [optional]</term>
+    <listitem>
+    <para>
+      The colors can be either regular colors or system colors, but both the foreground and the background colors must be
+      the same type. The <emphasis role="italic">isSysColor</emphasis> argument is used to specify that the colors are system
+      colors. By default, the <emphasis role="italic">bkColor</emphasis> and <emphasis role="italic">fgColor</emphasis>
+      arguments are assumed to be regular colors specified as a <xref linkend="defColorRef"/>. If <emphasis
+      role="italic">isSysColor</emphasis> is true then the colors are assumed to be system colors.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success and false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Since a combo box is not a single control, but rather is composed of several different controls, the <xref
+    linkend="mthSetColor"/> and <xref linkend="mthSetSysColor"/> methods do not work well with a combo box. Typically only the
+    selection field is colored and the color for thelist part of the combo box is left unchanged. The <emphasis
+    role="italic">setFullColor</emphasis> method is used to set the color for all of the combo box.
+  </para>
+  <para>
+    Regular colors are specified as a <xref linkend="defColorRef"/> value, not as a palette <xref linkend="defColor"/>. To
+    ensure that the COLORREF value is correct, be sure to use one of the ooDialog methods that returns a COLORREF, such as
+    the <xref linkend="mthColorRef"/> class method of the <xref linkend="clsImage"/> class.
+  </para>
+  <para>
+    System colors are specified to the operating by an unique whole number ID. To specify a system color to the <emphasis
+    role="italic">setFullColor</emphasis> method, the programmer can either use the unique whole number ID known to the
+    operating system or a keyword, case insensitive. The keywords, a brief description, and the matching whole number IDs can
+    be looked up in the System Color Elements <link linkend="tblSysColors">table</link>.
+  </para>
+  <para>
+    The <emphasis role="italic">bkColor</emphasis> and the <emphasis role="italic">fgColor</emphasis> arguments must both be
+    system color IDs or both be COLORREF values.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Requires Common Control <xref linkend="ovvComctl32"/> version 6.0 or later. If necessary use the <xref
+    linkend="mthComCtl32Version"/>() method to determine the current version of the library. A syntax error is raised if this
+    method is invoked on an operating system where it is not supported.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the color for a drop down combo box to light green on red:
+<programlisting>
+<![CDATA[
+  mediumSpringGreen =  .Image~colorRef(0, 238, 118)
+  fireBrickRed      =  .Image~colorRef(205, 38, 38)
+
+  cbDropDown = self~getComboBox(IDC_CB_DROPDOWN)
+  cbDropDown~setFullColor(mediumSpringGreen, fireBrickRed)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ComboBox::setFullColor() -->
+
 
 <section id="mthSetHorizontalExtentClsComboBox" xreflabel="setHorizontalExtent"><title>setHorizontalExtent</title>
 <indexterm><primary>setHorizontalExtent</primary><secondary>ComboBox class</secondary></indexterm>
