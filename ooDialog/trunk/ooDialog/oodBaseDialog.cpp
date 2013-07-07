@@ -1004,7 +1004,7 @@ RexxMethod2(RexxObjectPtr, winex_getDC, OPTIONAL_logical_t, client, CSELF, pCSel
  *
  *  @param  hDC  The device context to free.
  *
- *  @return  True for success, false for failure.
+ *  @return  0 for success, 1 for failure.
  */
 RexxMethod2(RexxObjectPtr, winex_freeDC, POINTERSTRING, hDC, CSELF, pCSelf)
 {
@@ -1016,9 +1016,9 @@ RexxMethod2(RexxObjectPtr, winex_freeDC, POINTERSTRING, hDC, CSELF, pCSelf)
 
     if ( ReleaseDC(hwnd, (HDC)hDC) == 0 )
     {
-        return TheFalseObj;
+        return TheOneObj;
     }
-    return TheTrueObj;
+    return TheZeroObj;
 }
 
 
