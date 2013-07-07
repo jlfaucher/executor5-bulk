@@ -328,6 +328,14 @@
 <entry>Gets the text of the control.</entry>
 </row>
 <row>
+<entry><xref linkend="wedcoGetTextAlign"/></entry>
+<entry>Gets the text alignment setting for the specified device context.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoGetTextExtent"/></entry>
+<entry>Gets the bounding rectangle, as a <xref linkend="clsSize"/> object for the specified text, if it were to be drawn in the specified device context.</entry>
+</row>
+<row>
 <entry><xref linkend="mthGetTextSizeDlgClsDialogControl"/></entry>
 <entry>Calculates the size, (width and height,) in dialog units for a given string.</entry>
 </row>
@@ -460,10 +468,6 @@
 <entry>Sets the thumb position of the horizontal scroll bar contained in the dialog control.</entry>
 </row>
 <row>
-<entry><xref linkend="wedcoSetFont"/></entry>
-<entry>Sets a new parent for this dialog control.</entry>
-</row>
-<row>
 <entry><xref linkend="mthSetParent"/></entry>
 <entry>Sets a new parent for this dialog control.</entry>
 </row>
@@ -482,6 +486,10 @@
 <row>
 <entry><xref linkend="wbdcoSetText"/></entry>
 <entry>Sets the text of the control.</entry>
+</row>
+<row>
+<entry><xref linkend="wedcoSetTextAlign"/></entry>
+<entry>Sets the text alignment option for the specified device context.</entry>
 </row>
 <row>
 <entry><xref linkend="wbdcoSetTitle"/></entry>
@@ -958,9 +966,9 @@ Generic form:
     The operating system translates the numeric <xref linkend="clsVK"/> key code produced by a key down /
     key up combination into a numeric <emphasis role="italic">character</emphasis> code. The character code is sent to
     the window with the keyboard focus in a character event notification. For enhanced 101-key and 102-key keyboards, the
-    <link linkend="evtDialogControlCHAR">CHAR</link> <xref linkend="evtDialogControlCHAR"/> event handler will also
-    receive extended key notifications. The extended keys are the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and the arrow keys
-    in the clusters to the left of the numeric keypad.
+    <link linkend="evtDialogControlCHAR">CHAR</link> event handler will also receive extended key notifications. The extended
+    keys are the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and the arrow keys in the clusters to the left of the numeric
+    keypad.
   </para>
   <para>
     There is not a one to one correspondence between the numeric value of a virtual key code and the numeric character
@@ -969,8 +977,8 @@ Generic form:
     <computeroutput>45~d2c == -</computeroutput>.
   </para>
   <para>
-    The character codes expected to reach the <xref linkend="evtDialogControlCHAR"/> event handler are in the following
-    table. The explanation for the character event handler describes how to determine which character is received.
+    The character codes expected to reach the <xref linkend="evtDialogControlCHAR"/> are in the following table. The
+    explanation for the character event handler describes how to determine which character is received.
 
     <table id="tblCharacterCode" frame="all"> <title>Numeric Character Code for the Character Event</title>
     <tgroup cols="2">
@@ -1074,7 +1082,7 @@ Generic form:
 </variablelist>
 
 
-<section id="evtDialogControlCHAR"><title>Char Event Handler</title>
+<section id="evtDialogControlCHAR" xreflabel="character event handler"><title>Char Event Handler</title>
 <indexterm><primary>dialog control object Event</primary><secondary>CHAR</secondary></indexterm>
 <para>
   The <xref linkend="ovvEvents"/> handler for the char event is invoked when the dialog control has the
@@ -1116,7 +1124,7 @@ Generic form:
       To determine the character received use <computeroutput>char~d2c</computeroutput> when <emphasis
       role="italic">isCtrl</emphasis> is false and <emphasis role="italic">misc</emphasis> does <emphasis
       role="italic">not</emphasis> contain the word <emphasis role="italic">extended</emphasis>. Use the <xref
-      linkend="clsVK" />) class when <emphasis role="italic">isCtrl</emphasis> is false and <emphasis
+      linkend="clsVK"/> class when <emphasis role="italic">isCtrl</emphasis> is false and <emphasis
       role="italic">misc</emphasis> contains the word <emphasis role="italic">extended</emphasis>.
     </para>
     <para>

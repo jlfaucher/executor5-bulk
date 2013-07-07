@@ -159,11 +159,11 @@
 </row>
 <row>
 <entry><xref linkend="mthGetTextAlign"/></entry>
-<entry>xx</entry>
+<entry>Gets the text alignment setting for the specified device context.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetTextExtent"/></entry>
-<entry>xx</entry>
+<entry>Gets the bounding rectangle, as a <xref linkend="clsSize"/> object for the specified text, if it were to be drawn in the specified device context.</entry>
 </row>
 <row>
 <entry><xref linkend="mthHScrollPos"/></entry>
@@ -190,10 +190,6 @@
 <entry>Frees an in-memory bitmap that was loaded through the <emphasis role="italic">loadBitmap</emphasis> method.</entry>
 </row>
 <row>
-<entry><xref linkend="mthRestoreCursorShape"/></entry>
-<entry>Restores the shape of the mouse cursor.</entry>
-</row>
-<row>
 <entry><xref linkend="mthScrollClsWE"/></entry>
 <entry>Scrolls the contents of the dialog's client area by the amount specified.</entry>
 </row>
@@ -211,7 +207,7 @@
 </row>
 <row>
 <entry><xref linkend="mthSetTextAlign"/></entry>
-<entry>xx</entry>
+<entry>Sets the text alignment option for the specified device context.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetVScrollPos"/></entry>
@@ -1552,52 +1548,6 @@ color of the brush, in pixels.
 </section>
 
 
-<section id="mthFreeDC" xreflabel="freeDC"><title>freeDC</title>
-<indexterm><primary>freeDC</primary></indexterm>
-<indexterm><primary>WindowExtensions class</primary><secondary>freeDC</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>freeDC</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>freeDC</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--freeDC(--dc--)-----------------------------------><
-
-]]>
-</programlisting>
-
-<para>The freeDC method releases the device context resources
-that were reserved for <xref linkend="mthGetDC"/>.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>dc</term>
-<listitem><para>The handle to the device context that is to be released.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The device context resources were released.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Releasing the device context resources failed.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <xref linkend="mthGetDC"/> for an example.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-Always call this method when you have finished with the device
-context.
-</para></note>
-</section>
-
-
 <section id="mthFontColor" xreflabel="fontColor"><title>fontColor</title>
 <indexterm><primary>fontColor</primary></indexterm>
 <indexterm><primary>WindowExtensions class</primary><secondary>fontColor</secondary></indexterm>
@@ -1680,6 +1630,69 @@ MyDialog~freeDC(dc)
 </section>
 
 
+<section id="mthFreeDC" xreflabel="freeDC"><title>freeDC</title>
+<indexterm><primary>freeDC</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>freeDC</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>freeDC</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>freeDC</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--freeDC(--dc--)-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">freeDC</emphasis> method releases the device context resources that were reserved by the <xref
+  linkend="mthGetDC"/> method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>dc [required]</term>
+    <listitem>
+    <para>
+      The <link linkend="defHandle">handle</link> to the device context that is to be released.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer should always free a device context when the application is done using the device context.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the device context of a button window, draws something in the client space of the button, and then
+    releases the device context:
+<programlisting>
+<![CDATA[
+  pb = self~newPushButton("DRAWINGS")
+  if pb = .nil then return -1
+  dc = pb~getDC
+  if dc = 0 then return -1
+  ... /* draw something */
+  pb~freeDC(dc)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtensions::freeDC() -->
+
+
 <section id="mthGetArcDirection" xreflabel="getArcDirection"><title>getArcDirection</title>
 <indexterm><primary>getArcDirection</primary></indexterm>
 <indexterm><primary>WindowExtensions class</primary><secondary>getArcDirection</secondary></indexterm>
@@ -1692,9 +1705,9 @@ MyDialog~freeDC(dc)
 ]]>
 </programlisting>
 
-<para>The getArcDirection method returns the current
-drawing direction for the
-<xref linkend="mthDrawArc"/> method. </para>
+<para>
+  The getArcDirection method returns the current drawing direction for the <xref linkend="mthDrawArc"/> method.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -1836,25 +1849,24 @@ within the device context. </para>
 <indexterm><primary>dialog control object</primary><secondary>getTextAlign</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getTextAlign(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getTextAlign(--hDC--)------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the text alignment setting for the specified device context.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>hDC [required]</term>
     <listitem>
     <para>
-      xx
+      The device context whose text alignment is required.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1862,13 +1874,76 @@ within the device context. </para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A string of keywords specifying the text alignment.  The returned string will contain exactly one keyword from the
+    following 3 groups of keywords, in the same order as the groups are listed:
   </para>
+
+  <variablelist>
+    <varlistentry><term>LEFT</term>
+    <listitem>
+    <para>
+      The reference point is on the left edge of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>RIGHT</term>
+    <listitem>
+    <para>
+      The reference point is on the right edge of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CENTER</term>
+    <listitem>
+    <para>
+      The reference point is aligned horizontally with the center of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+
+  <variablelist>
+    <varlistentry><term>TOP</term>
+    <listitem>
+    <para>
+      The reference point is on the top edge of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>BOTTOM</term>
+    <listitem>
+    <para>
+      The reference point is on the bottom edge of the bounding rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>BASELINE</term>
+    <listitem>
+    <para>
+      The reference point is on the base line of the text.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+
+  <variablelist>
+    <varlistentry><term>NOUPDATECP</term>
+    <listitem>
+    <para>
+      The current position is not updated after each text output call.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>UPDATECP</term>
+    <listitem>
+    <para>
+      The current position is updated after each text output call.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The bounding rectangle is a rectangle bounding all of the character cells in a string of text. Its dimensions can be
+    obtained by using the <xref linkend="mthGetTextExtent"/> method.
+  </para>
+  <para>
+    The text-alignment flags determine how the text writing methods, such as <xref linkend="mthWrite"/> and <xref
+    linkend="mthWriteDirect"/>, align a string of text in relation to the string's reference point provided to the methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1878,17 +1953,6 @@ within the device context. </para>
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1901,13 +1965,13 @@ within the device context. </para>
 <indexterm><primary>dialog control object</primary><secondary>getTextExtent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getTextExtent(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getTextExtent(--hDC--,--text--)--------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the bounding rectangle, as a <xref linkend="clsSize"/> object for the specified text, if it were to be drawn in the
+  specified device context.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1916,10 +1980,16 @@ within the device context. </para>
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>hDC [required]</term>
     <listitem>
     <para>
-      xx
+      The device context in which the text will be drawn.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text</term>
+    <listitem>
+    <para>
+      The text string to be drawn in the device context.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1927,13 +1997,13 @@ within the device context. </para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A <computeroutput>Size</computeroutput> object that reflects the size of the bounding rectangle of the text.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The size is calculated using the currently selected font in the device context.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1943,17 +2013,6 @@ within the device context. </para>
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2253,44 +2312,6 @@ self~rectangle(dc, 40, 40, 210, 160) /* default */
 </section>
 
 
-<section id="mthRestoreCursorShape" xreflabel="restoreCursorShape"><title>restoreCursorShape</title>
-<indexterm><primary>restoreCursorShape</primary></indexterm>
-<indexterm><primary>WindowExtensions class</primary><secondary>restoreCursorShape</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>restoreCursorShape</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>restoreCursorShape</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--restoreCursorShape(--+--------------+--)---------><
-                         +-cursorHandle-+
-
-]]>
-</programlisting>
-
-<para>The restoreCursorShape method restores the shape
-of the mouse cursor.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:</para>
-<variablelist>
-<varlistentry><term>CursorHandle</term>
-<listitem><para>The handle to the mouse cursor shape returned by the cursor_arrow,
-cursor_appstarting, cursor_cross, cursor_no, or cursor_wait method.</para>
-<para>If you omit this argument, the cursor shape is set to an arrow. Therefore,
-it is recommended that you store the original mouse cursor shape by specifying
-its handle when you change its shape.</para>
-</listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the current cursor shape, that is, the shape that was
-used before the cursor was restored to the given shape.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <xref linkend="mthSetCursorPos"/> for an example on how to use this method.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthScrollClsWE" xreflabel="scroll"><title>scroll</title>
 <indexterm><primary>scroll</primary><secondary>WindowExtensions class</secondary></indexterm>
 <indexterm><primary>WindowExtensions class</primary><secondary>scroll</secondary></indexterm>
@@ -2480,13 +2501,12 @@ failed.
 <indexterm><primary>dialog control object</primary><secondary>setTextAlign</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setTextAlign(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setTextAlign(--hDC--,--align--)--------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the text alignment option for the specified device context.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2495,10 +2515,80 @@ failed.
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>hDC [required]</term>
     <listitem>
     <para>
-      xx
+      The device context whose text alignment is to be set.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>align [optional]</term>
+    <listitem>
+    <para>
+      A string of keywords specifying the text alignment. The following keywords are recognized. Specify exactly one keyword
+      from the following 3 groups of keywords, case and order are insignificant.
+    </para>
+    <para>
+      The default if this argument is omitted is: <computeroutput>LEFT TOP NOUPDATECP</computeroutput>. For any group that
+      has no keyword specified, the default for that group is used. I.e., if neither LEFT RIGHT nor CENTER is specified,
+      LEFT is used.
+    </para>
+    <para>
+      <variablelist>
+        <varlistentry><term>LEFT</term>
+        <listitem>
+        <para>
+          The reference point is on the left edge of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          The reference point is on the right edge of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CENTER</term>
+        <listitem>
+        <para>
+          The reference point is aligned horizontally with the center of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+
+      <variablelist>
+        <varlistentry><term>TOP</term>
+        <listitem>
+        <para>
+          The reference point is on the top edge of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BOTTOM</term>
+        <listitem>
+        <para>
+          The reference point is on the bottom edge of the bounding rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BASELINE</term>
+        <listitem>
+        <para>
+          The reference point is on the base line of the text.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+
+      <variablelist>
+        <varlistentry><term>NOUPDATECP</term>
+        <listitem>
+        <para>
+          The current position is not updated after each text output call.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UPDATECP</term>
+        <listitem>
+        <para>
+          The current position is updated after each text output call.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2506,13 +2596,16 @@ failed.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous alignment of the device context as a string of keywords. The string is indentical to what the <xref
+    linkend="mthGetTextAlign"/> method would have returned if the method was invoked immediately prior to invoking this
+    method. On error the empty string is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The text-alignment flags determine how the text writing methods, such as <xref linkend="mthWrite"/> and <xref
+    linkend="mthWriteDirect"/>, align a string of text in relation to the string's reference point provided to the methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2522,17 +2615,6 @@ failed.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
