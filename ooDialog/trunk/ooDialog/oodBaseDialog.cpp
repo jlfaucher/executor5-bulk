@@ -1117,7 +1117,7 @@ done_out:
 
 /** WindowsExtensions::setTextAlign()
  *
- *  Gets the text alignment setting for the specified device context.
+ *  Sets the text alignment setting for the specified device context.
  *
  *  @param  hDC   The device context whose text alignment is bein set.
  *
