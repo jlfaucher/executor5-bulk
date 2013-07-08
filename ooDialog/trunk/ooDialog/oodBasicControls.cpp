@@ -3376,8 +3376,8 @@ RexxMethod3(RexxObjectPtr, cb_isGrandchild, OPTIONAL_CSTRING, mthName, OPTIONAL_
 
 /** ComboBox::removeFullColor()
  *
- *  Removes the combo box suclass, if it exists, the provides the implementation
- *  of changing the combo box colors.
+ *  Removes the combo box suclass, if it exists, that provides the
+ *  implementation of changing the combo box colors.
  *
  * @return True on success, false otherwise
  *
@@ -3467,10 +3467,10 @@ RexxMethod2(RexxObjectPtr, cb_setCue, CSTRING, text, CSELF, pCSelf)
 
 /** ComboBox::setFullColor()
  *
- *  We require COLOREF colors and pallette index numbers can not be used.
+ *  Sets the color for this combobox.
  *
- *  Allow system colors ? but all colors must be the same ?  all system colors
- *  or all non-system colores
+ *  Allow system colors but all colors must be the same, all system colors or
+ *  all non-system colores
  *
  *  For system colors, the user specifies a keyword, or the system color number,
  *  we then get the COLORREF for that number.
@@ -3500,6 +3500,10 @@ RexxMethod4(RexxObjectPtr, cb_setFullColor, OPTIONAL_RexxObjectPtr, _bk, OPTIONA
         goto done_out;
     }
     if ( ! requiredComCtl32Version(context, "setFullColor", COMCTL32_6_0) )
+    {
+        goto done_out;
+    }
+    if ( argumentOmitted(1) && argumentOmitted(2) )
     {
         goto done_out;
     }
