@@ -38,9 +38,12 @@
 /**
  * oodExecutable.hpp
  *
- * This file contains defines and other data used by both ooDialog.com and
- * ooDialog.exe, along with the .rc file for those 2 executables.
+ * This file contains defines and other data used in ooDialog.com, ooDialog.exe,
+ * and the .rc file for those 2 executables.
  *
+ * The first portion includes all IDs needed in the .rc scripts.  Following the
+ * first portion is the more typical header stuff, struct definitions, et., used
+ * in the C / C++ code.
  */
 
 #ifndef oodExeuctable_Included
@@ -79,13 +82,78 @@
 #define IDC_ST_ISRUNASADMIN                     1022
 #define IDC_ST_ISELEVATED                       1023
 #define IDC_ST_IL                               1024
+#define IDC_GB_ASSOCIATE                        1025
 
 
 
 // Other IDs
 #define IDI_APP_ICON                            200
 
+// Eveything else is not passed to the resource compiler:
 #ifndef RC_INVOKED
+
+#define OODIALOG_PROGID              "ooRexx.ooDialog"
+#define OODIALOG_PROGID_VERSIONED    "ooRexx.ooDialog.1"
+
+static char *oodSuggestedExts[] =
+{
+    ".ood",
+    ".ooDlg",
+    ".rxooDlg",
+};
+
+#define OOD_SUGGESTED_EXT_COUNT      (sizeof(oodSuggestedExts) / sizeof(char *))
+
+typedef enum
+{
+    noDislpay = 0,
+    conditionDisplay,
+    versionDisplay,
+    syntaxDisplay
+} dlgType_t;
+
+typedef struct _programArguments
+{
+    RexxArrayObject    callArg;           // The legacy single string argument to a Rexx program
+    RexxArrayObject    rxCArgs;           // Array of C style program arguments for SysCArgs put in .local
+    RexxArrayObject    rxOodArgs;         // Similar to rxCArgs, but contains all arguments, .oodCArgs
+    HINSTANCE          hInstance;         // This exectuable's instance
+    const char        *oodProgram;        // Rexx progrm to run
+    const char        *mainMsg;           // Used to pass text to display to the dialog proc edure
+    dlgType_t          dlgType;           // If a display dialog is used, specifies what is displayed
+    bool               doSetupScreen;     // Show the set up dialog, not used since we only have file association at this time.
+    bool               showShortVersion;  // Show short version and quit
+    bool               showVersion;       // Show version and quit
+    bool               showShortHelp;     // Show short help and quit
+    bool               showHelp;          // Show help and quit
+    bool               allowServices;     // Show or don't show the configure services controls
+    bool               doConfigure;       // Show the configure services dialog
+} programArguments;
+typedef programArguments *pProgramArguments;
+
+typedef struct _assocArguments
+{
+    HINSTANCE          hInstance;         // This executable's instance
+    bool               allUsers;          // If true file associations is for all users, otherwise current user
+    bool               isRunAsAdmin;
+    bool               isElevated;
+} assocArguments;
+typedef assocArguments *pAssocArguments;
+
+typedef struct _configureArguments
+{
+    HINSTANCE          hInstance;         // This executable's instance
+    uint32_t           integrityLevel;
+    bool               isVistaOrLater;    // Os is at least Vista
+    bool               isInAdminGroup;
+    bool               isRunAsAdmin;
+    bool               isElevated;
+    bool               requiresElevation;
+    bool               wasElevated;
+} configureArguments;
+typedef configureArguments *pConfigureArguments;
+
+
 
 static char *long_syntax_text =
 "The ooDialog executable is a stand alone interface to run ooDialog\r\n"

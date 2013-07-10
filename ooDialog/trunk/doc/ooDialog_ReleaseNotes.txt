@@ -15,7 +15,7 @@ This type of ooDialog installation is called an "independent" ooDialog
 installation to indicate the ooDialog installation is independent of an
 ooRexx installation and, to a degree, the version of ooRexx installed.
 
-ooDialog 4.2.3 requires a minimum ooRexx version of 4.??.??.
+ooDialog 4.2.3 requires a minimum ooRexx version of 4.1.0.
 
 
 Installation
@@ -48,15 +48,20 @@ Changes in ooDialog 4.2.3 since the release of ooDialog 4.2.2
 Bug Fixes in ooDialog:
 ----------------------
 
- *
+ * #1175 Incorrect super class initialization can bypass DynamicDialog
+   init
 
- *
+ * #1176 ooDialog - the SingleSelection class has the potential of not
+   executing
 
 
 DocumentationBug Fixes in ooDialog:
 ----------------------------------
 
- *
+ * #201 getTextAlign(), getTextExtent(), setTextAlign() not documented
+
+ * #202 ooDialog Reference 4.2.3 - Text errors in Section 8.1 "Method
+   Table"
 
 
 Feature Requests in ooDialog:
@@ -64,7 +69,19 @@ Feature Requests in ooDialog:
 
  * #508 ooDialog - index for tree-view state images
 
- *
+ * #537 Add FIle Open Dialog to allow more options than available with
+   the FileNameDialog
+
+ * #540 Add a stand alone ooDialog program launcher
+
+ * #549 The setColor() method does not work well with comboboxes
+
+
+Miscellaneous Fixes:
+--------------------
+
+ * Fixed a problem detecting a ComboBox control in the .rc files
+   produced by some resource editors.
 
 
 New Functionality in ooDialog:
@@ -76,14 +93,24 @@ New Functionality in ooDialog:
 New dialog classes:
 -------------------
 
-? class:
+CommonItemDialog class
+
+OpenFileDialog class
+
+SaveFileDialog class
 
 
 
 New utility classes:
 --------------------
 
-? class:
+CommonDialogCustomizations class
+
+ComConstants class
+
+ShellItemFilter class
+
+CommonDialogEvents class
 
 
 
@@ -97,6 +124,25 @@ New Public Routines:
 New Methods:
 ------------
 
+In the Application class:
+
+requiredOS()       Checks that the current operating system is at least
+                   the minmum specified.
+
+In the ComboBox class:
+
+removeFullColor()  Restores the color of the combo box to its default
+                   color if the setFullColor() method has previousl been
+                   invoked.
+
+setFullColor()     Sets the color of a combo box for all parts of the
+                   combo box.
+
+In the DlgUtil class:
+
+getGUID()          Generates a GUID and returns it in the converntional
+                   string format.
+
 In the TreeView class:
 
 getStateImage()     Retrieves the state image index in the image list
@@ -106,15 +152,13 @@ setStateImage()     Assigns the state image index in the image list for
                     the specified item.
 
 
-
-
 New Attributes:
 ---------------
 
 In the ?? class:
 
 
-??      Does what?
+??
 
 
 
@@ -151,12 +195,23 @@ In the ? class:
 New samples:
 ------------
 
-* oodialog\examples\saveFileWithFilter.rex
+* oodialog\controls\ComboBox\comboBoxTypes.rex
 
-An example showing how to use the Common Item Dialog in file save mode.
-This example shows 2 things.  1.) How to use a filter with the dialog.
-This is done with the .ShellItemFilter class.  2.) How to connect event
-notifications.  This is done with the .CommonDialogEvents class.
+Demonstrates what the 3 types of combo boxes look like.  Shows how to
+use the removeFullColor() and setFullColor() methods of the ComboBox
+class.
+
+* oodialog\controls\ListBox\incrementalSearch.rex
+
+Shows how to implement an incremental search feature for the items in a
+list box and over-ride the list box control's internal incremental
+search.
+
+* oodialog\examples\genGUID.rex
+
+An example showing how to use the .DlgUtil's genGUID() method.  Also
+provides a simple application that can be used to generate GUIDs for any
+use.
 
 * oodialog\examples\openSaveFileDemo.rex
 
@@ -164,6 +219,12 @@ An example showing a number of different uses of both the Open File
 Dialog and the Save File Dialog.  Demonstrates the most common usage
 patterns.
 
+* oodialog\examples\saveFileWithFilter.rex
+
+An example showing how to use the Common Item Dialog in file save mode.
+This example shows 2 things.  1.) How to use a filter with the dialog.
+This is done with the .ShellItemFilter class.  2.) How to connect event
+notifications.  This is done with the .CommonDialogEvents class.
 
 
 Enhanced samples:

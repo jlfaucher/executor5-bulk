@@ -52,56 +52,6 @@
 #include "oodShared.hpp"
 #include "oodExecutable.hpp"
 
-typedef enum
-{
-    noDislpay = 0,
-    conditionDisplay,
-    versionDisplay,
-    syntaxDisplay
-} dlgType_t;
-
-typedef struct _programArguments
-{
-    RexxArrayObject    callArg;           // The legacy single string argument to a Rexx program
-    RexxArrayObject    rxCArgs;           // Array of C style program arguments for SysCArgs put in .local
-    RexxArrayObject    rxOodArgs;         // Similar to rxCArgs, but contains all arguments, .oodCArgs
-    HINSTANCE          hInstance;         // This exectuable's instance
-    const char        *oodProgram;        // Rexx progrm to run
-    const char        *mainMsg;           // Used to pass text to display to the dialog proc edure
-    dlgType_t          dlgType;           // If a display dialog is used, specifies what is displayed
-    bool               doSetupScreen;     // Show the set up dialog, not used since we only have file association at this time.
-    bool               showShortVersion;  // Show short version and quit
-    bool               showVersion;       // Show version and quit
-    bool               showShortHelp;     // Show short help and quit
-    bool               showHelp;          // Show help and quit
-    bool               allowServices;     // Show or don't show the configure services controls
-    bool               doConfigure;       // Show the configure services dialog
-} programArguments;
-typedef programArguments *pProgramArguments;
-
-typedef struct _assocArguments
-{
-    HINSTANCE          hInstance;         // This executable's instance
-    bool               allUsers;          // If true file associations is for all users, otherwise current user
-    bool               isRunAsAdmin;
-    bool               isElevated;
-} assocArguments;
-typedef assocArguments *pAssocArguments;
-
-typedef struct _configureArguments
-{
-    HINSTANCE          hInstance;         // This executable's instance
-    uint32_t           integrityLevel;
-    bool               isVistaOrLater;    // Os is at least Vista
-    bool               isInAdminGroup;
-    bool               isRunAsAdmin;
-    bool               isElevated;
-    bool               requiresElevation;
-    bool               wasElevated;
-} configureArguments;
-typedef configureArguments *pConfigureArguments;
-
-
 inline CSTRING level2text(uint32_t level)
 {
 
@@ -605,6 +555,20 @@ INT_PTR CALLBACK WinMainDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
     return FALSE;
 }
 
+void addSuggestedExt(HWND hDlg, HWND hLB)
+{
+    for ( size_t i = 0; i < OOD_SUGGESTED_EXT_COUNT; i++ )
+    {
+        SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)oodSuggestedExts[i]);
+    }
+
+}
+
+void addCurrentExt(HWND hDlg, HWND hLB, pAssocArguments paa)
+{
+
+}
+
 void testRegistry()
 {
     HKEY envKey;
@@ -688,10 +652,17 @@ INT_PTR CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 
         setDlgIcon(hDlg, paa->hInstance);
 
+        SetDlgItemText(hDlg, IDC_GB_ASSOCIATE, paa->allUsers ?
+                       "Associating File Extensions with ooDialog.exe for All Users" :
+                       "Associating File Extensions with ooDialog.exe for the Current User");
+
+        SetDlgItemText(hDlg, IDC_ST_FTYPE, OODIALOG_PROGID);
         SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "CurrentUser");
         SetDlgItemText(hDlg, IDC_ST_RUNAS, paa->isElevated ? "True" : "False");
         SetDlgItemText(hDlg, IDC_ST_ELEVATED, paa->isElevated ? "True" : "False");
 
+        addSuggestedExt(hDlg, GetDlgItem(hDlg, IDC_LB_SUGGESTED));
+        addCurrentExt(hDlg, GetDlgItem(hDlg, IDC_LB_CURRENT), paa);
 
         setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)paa);
 

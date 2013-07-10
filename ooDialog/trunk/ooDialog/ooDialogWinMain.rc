@@ -36,7 +36,7 @@
 //----------------------------------------------------------------------------*/
 
 #include <windows.h>
-#include <winuser.rh>
+#include <winuser.h>
 #include <commctrl.h>
 #include "oodExecutable.hpp"
 
@@ -71,10 +71,10 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 IDD_FILEASSOC DIALOGEX 0, 0, 318, 216
 STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
-CAPTION "ooDialog Configure File Associations"
+CAPTION "Configure ooDialog.exe File Associations"
 FONT 8, "Ms Shell Dlg", 400, 0, 1
 {
-    CONTROL         "Associating File Extensions with ooDialog.exe", IDC_STATIC, WC_BUTTON, BS_GROUPBOX, 11, 10, 296, 56
+    CONTROL         "Associating File Extensions with ooDialog.exe for All Users", IDC_GB_ASSOCIATE, WC_BUTTON, BS_GROUPBOX, 11, 10, 296, 56
     CONTROL         "File Type:", IDC_STATIC, WC_STATIC, NOT WS_GROUP | SS_LEFT, 25, 26, 31, 8
     CONTROL         "ooDialog.RexxScript", IDC_ST_FTYPE, WC_STATIC, NOT WS_GROUP | SS_LEFT, 60, 26, 67, 8
     CONTROL         "Running As Administrator:", IDC_STATIC, WC_STATIC, NOT WS_GROUP | SS_LEFT, 149, 26, 83, 8
