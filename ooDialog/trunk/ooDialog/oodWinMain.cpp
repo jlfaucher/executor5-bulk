@@ -49,6 +49,7 @@
 #include <commctrl.h>
 #include <oorexxapi.h>
 #include <stdio.h>
+#include <shlwapi.h>
 #include "oodShared.hpp"
 #include "oodExecutable.hpp"
 
@@ -105,6 +106,27 @@ static void reportError(HWND hwnd, CSTRING function, CSTRING title, HRESULT dw)
 
 	MessageBox(hwnd, (LPCTSTR)msgBuf, title, MB_ICONERROR);
 	LocalFree(formatMsgBuf);
+}
+
+
+/**
+ * Formats an error message using static memory and shows it in a message box.
+ *
+ * This is primarily for use in memory allocation errors.  The idea is to avoid
+ * allocating memory to display an out of memory message.  If we failed to
+ * allocate memory, I doubt this will work anyway.
+ *
+ * @param fmtStr
+ * @param title
+ * @param dw
+ */
+static void reportError(HWND hwnd, CSTRING fmtStr, CSTRING title, CSTRING function, uint32_t rc)
+{
+    char  msgBuf[HUGE_BUF_SIZE];
+
+    _snprintf(msgBuf, HUGE_BUF_SIZE, fmtStr, function, rc);
+
+	MessageBox(hwnd, (LPCTSTR)msgBuf, title, MB_ICONERROR);
 }
 
 
@@ -555,18 +577,278 @@ INT_PTR CALLBACK WinMainDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
     return FALSE;
 }
 
-void addSuggestedExt(HWND hDlg, HWND hLB)
+/**
+ * Given an extension information record for the specified ext, determines where
+ * (in which locations) the extension is associated with the specified progID,
+ * and or if it is associated with a different progID.
+ *
+ * Essentially this fills out the fields of the record for an extension that
+ * show where, or if, that extension is registered to a file type.
+ *
+ * @param keyName  The extension, .ood, for example
+ * @param rec      An allocated extension information record
+ * @param progID   The progID we are interested in.  Actually this should always
+ *                 be OODIALOG_PROGID_VERSIONED, but for testing and flexibility
+ *                 we use an input argument.
+ *
+ */
+void qualifyExtensionInfo(char *extKeyName, pExtensionInfo rec, char *progID)
+{
+    char     value[MAX_HKEY_VALUE] = {'\0'};
+    uint32_t maxValue              = MAX_HKEY_VALUE;
+    HKEY     hKey, hSubkey;
+
+    // See if extKeyName is a subkey for current user
+    if( RegOpenKeyEx(HKEY_CURRENT_USER, "SOFTWARE\\Classes", 0, KEY_READ, &hKey) == ERROR_SUCCESS )
+    {
+        if ( RegOpenKeyEx(hKey, extKeyName, 0, KEY_QUERY_VALUE, &hSubkey) == ERROR_SUCCESS )
+        {
+            if ( RegQueryValueEx(hSubkey, "", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue) == ERROR_SUCCESS )
+            {
+                if ( StrCmpI(value, progID) == 0 )
+                {
+                    rec->curUser = true;
+                }
+                else
+                {
+                    rec->curUserOther = true;
+                }
+            }
+
+            RegCloseKey(hSubkey);
+        }
+        RegCloseKey(hKey);
+    }
+
+    // See if extKeyName is a subkey for local machine classes
+    if( RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Classes", 0, KEY_READ, &hKey) == ERROR_SUCCESS )
+    {
+        if ( RegOpenKeyEx(hKey, extKeyName, 0, KEY_QUERY_VALUE, &hSubkey) == ERROR_SUCCESS )
+        {
+            value[0] = '\0';
+            maxValue = MAX_HKEY_VALUE;
+
+            if ( RegQueryValueEx(hSubkey, "", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue) == ERROR_SUCCESS )
+            {
+                if ( StrCmpI(value, progID) == 0 )
+                {
+                    rec->allUsers = true;
+                }
+                else
+                {
+                    rec->allUsersOther = true;
+                }
+            }
+            RegCloseKey(hSubkey);
+        }
+        RegCloseKey(hKey);
+    }
+
+    char *prefix = "-- ";
+    if ( rec->allUsers )
+    {
+        if ( rec->curUser )
+        {
+            prefix = "** ";
+        }
+        else if ( rec->curUserOther )
+        {
+            prefix = "*+ ";
+        }
+        else
+        {
+            prefix = "*-  ";
+        }
+    }
+    else if ( rec->curUser )
+    {
+        if ( rec->allUsersOther )
+        {
+            prefix = "+* ";
+        }
+        else
+        {
+            prefix = "-* ";
+        }
+    }
+    else
+    {
+        // Not associated with our program ID, but may be in use by others.
+        if ( rec->allUsersOther )
+        {
+            if ( rec->curUserOther )
+            {
+                prefix = "++ ";
+            }
+            else
+            {
+                prefix = "+- ";
+            }
+        }
+        else if ( rec->curUser )
+        {
+            prefix = "-+ ";
+        }
+    }
+
+    _snprintf(rec->displayName, MAX_EXT_DISPLAY, "%s%s", prefix, extKeyName);
+}
+
+/**
+ * Gets the extension information records for all extensions mapped to the
+ * specified progID currently in the registry.
+ *
+ * @param progID  The progID we are looking for IN
+ * @param count   The count of records found    OUT
+ *
+ * @return An allocated array of extension records.
+ *
+ * @note  The caller is responsible for freeing the array.
+ */
+pExtensionInfo getExtensionRecords(HWND hDlg, char *progID, size_t *count)
+{
+    uint32_t cSubKeys = 0;
+    HKEY     hKCR     = HKEY_CLASSES_ROOT;
+
+    // We only need the number of subkeys.
+    uint32_t retCode = RegQueryInfoKey(HKEY_CLASSES_ROOT, NULL, NULL, NULL, (LPDWORD)&cSubKeys,
+                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+    uint32_t maxName;                  // Size of name buffer
+    char     keyName[MAX_HKEY_NAME];   // Buffer for subkey name
+
+    uint32_t maxValue = MAX_HKEY_VALUE; // Size of value buffer
+    char     value[MAX_HKEY_VALUE];     // Buffer for default value for subkey
+
+    // Enumerate the subkeys, and see if the prog ID matches our ooDialog prog
+    // ID.  We go through the loop twice, once to count the number of matches so
+    // we can allocate the array of extension records.  Then a second time to
+    // actually fill in the records.
+
+    pExtensionInfo recs    = NULL;
+    size_t         matches = 0;
+
+    for ( uint32_t i = 0; i < cSubKeys; i++ )
+    {
+        maxName = MAX_HKEY_NAME;
+        retCode = RegEnumKeyEx(hKCR, i, keyName, (LPDWORD)&maxName, NULL, NULL, NULL, NULL);
+        if (retCode == ERROR_SUCCESS)
+        {
+            if ( *keyName == '.' )
+            {
+                HKEY hExtKey;
+
+                retCode = RegOpenKeyEx(hKCR, keyName, 0, KEY_QUERY_VALUE, &hExtKey);
+                if ( retCode == ERROR_SUCCESS )
+                {
+                    maxValue = MAX_HKEY_VALUE;
+                    value[0] = '\0';
+
+                    retCode = RegQueryValueEx(hExtKey, "", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue);
+                    if ( retCode == ERROR_SUCCESS )
+                    {
+                        if ( StrCmpI(value, progID) == 0 )
+                        {
+                            matches++;
+                        }
+                    }
+                    RegCloseKey(hExtKey);
+                }
+            }
+        }
+    }
+
+    if ( matches == 0 )
+    {
+        goto done_out;
+    }
+
+    recs = (pExtensionInfo)LocalAlloc(LPTR, matches * sizeof(extensionInfo));
+    if ( recs == NULL )
+    {
+        reportError(hDlg, OUT_OF_MEMORY_FMT_STR, "Windows Operating System Error", "LocalAlloc", GetLastError());
+        goto done_out;
+    }
+
+    size_t processed = 0;
+    for ( uint32_t i = 0; i < cSubKeys; i++ )
+    {
+        maxName = MAX_HKEY_NAME;
+        retCode = RegEnumKeyEx(hKCR, i, keyName, (LPDWORD)&maxName, NULL, NULL, NULL, NULL);
+        if (retCode == ERROR_SUCCESS)
+        {
+            if ( *keyName == '.' )
+            {
+                HKEY hExtKey;
+
+                retCode = RegOpenKeyEx(hKCR, keyName, 0, KEY_QUERY_VALUE, &hExtKey);
+                if ( retCode == ERROR_SUCCESS )
+                {
+                    maxValue = MAX_HKEY_VALUE;
+                    value[0] = '\0';
+
+                    retCode = RegQueryValueEx(hExtKey, "", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue);
+                    if ( retCode == ERROR_SUCCESS )
+                    {
+                        if ( StrCmpI(value, progID) == 0 )
+                        {
+                            pExtensionInfo current = &recs[processed++];
+
+                            current->exists = true;
+                            strcpy(current->extension, keyName);
+
+                            qualifyExtensionInfo(keyName, current, progID);
+
+                            printf("%s -> %s\n", keyName, value);
+                        }
+                    }
+                    RegCloseKey(hExtKey);
+                }
+            }
+        }
+    }
+
+done_out:
+    *count = matches;
+    return recs;
+}
+
+
+bool addSuggestedExt(HWND hDlg, HWND hLB, pAssocArguments paa)
 {
     for ( size_t i = 0; i < OOD_SUGGESTED_EXT_COUNT; i++ )
     {
-        SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)oodSuggestedExts[i]);
-    }
+        pExtensionInfo info = (pExtensionInfo)LocalAlloc(LPTR, sizeof(extensionInfo));
 
+        if ( info == NULL )
+        {
+            reportError(hDlg, OUT_OF_MEMORY_FMT_STR, "Windows Operating System Error", "LocalAlloc", GetLastError());
+            return false;
+        }
+
+        strcpy(info->extension, oodSuggestedExts[i]);
+        info->suggested = true;
+
+        qualifyExtensionInfo(oodSuggestedExts[i], info, paa->progID);
+
+        LRESULT index = SendMessage(hLB, LB_ADDSTRING, i, (LPARAM)info->displayName);
+        SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)info);
+    }
+    return true;
 }
 
 void addCurrentExt(HWND hDlg, HWND hLB, pAssocArguments paa)
 {
+    size_t count = 0;
+    pExtensionInfo recs = getExtensionRecords(hDlg, paa->progID, &count);
 
+    for ( size_t i = 0; i < count; i++ )
+    {
+        pExtensionInfo current = &recs[i];
+
+        LRESULT index = SendMessage(hLB, LB_ADDSTRING, i, (LPARAM)current->displayName);
+        SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+    }
 }
 
 void testRegistry()
@@ -631,6 +913,18 @@ void testRegistry()
 
 }
 
+void setStaticText(HWND hDlg, pAssocArguments paa)
+{
+    SetDlgItemText(hDlg, IDC_GB_ASSOCIATE, paa->allUsers ?
+                   "Associating File Extensions with ooDialog.exe for All Users" :
+                   "Associating File Extensions with ooDialog.exe for the Current User");
+
+    SetDlgItemText(hDlg, IDC_ST_FTYPE, paa->progID);
+    SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "CurrentUser");
+    SetDlgItemText(hDlg, IDC_ST_RUNAS, paa->isRunAsAdmin ? "True" : "False");
+    SetDlgItemText(hDlg, IDC_ST_ELEVATED, paa->isElevated ? "True" : "False");
+}
+
 /**
  *  HKEY_CURRENT_USER \ Environment
  *
@@ -650,18 +944,15 @@ INT_PTR CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
     {
         pAssocArguments paa = (pAssocArguments)lParam;
 
+        // Query the registry to see if ooDialog ftype / progID is already
+        // registered.  If so ...
+
+        strcpy(paa->progID, "SlickEdit"); // temp for testing
+
         setDlgIcon(hDlg, paa->hInstance);
+        setStaticText(hDlg, paa);
 
-        SetDlgItemText(hDlg, IDC_GB_ASSOCIATE, paa->allUsers ?
-                       "Associating File Extensions with ooDialog.exe for All Users" :
-                       "Associating File Extensions with ooDialog.exe for the Current User");
-
-        SetDlgItemText(hDlg, IDC_ST_FTYPE, OODIALOG_PROGID);
-        SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "CurrentUser");
-        SetDlgItemText(hDlg, IDC_ST_RUNAS, paa->isElevated ? "True" : "False");
-        SetDlgItemText(hDlg, IDC_ST_ELEVATED, paa->isElevated ? "True" : "False");
-
-        addSuggestedExt(hDlg, GetDlgItem(hDlg, IDC_LB_SUGGESTED));
+        addSuggestedExt(hDlg, GetDlgItem(hDlg, IDC_LB_SUGGESTED), paa);
         addCurrentExt(hDlg, GetDlgItem(hDlg, IDC_LB_CURRENT), paa);
 
         setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)paa);

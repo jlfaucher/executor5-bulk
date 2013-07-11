@@ -92,8 +92,14 @@
 // Eveything else is not passed to the resource compiler:
 #ifndef RC_INVOKED
 
+#define OUT_OF_MEMORY_FMT_STR        "Failed to allocate memory:\n\nFunction:\t\t%s\nError Code:\t%d"
+
 #define OODIALOG_PROGID              "ooRexx.ooDialog"
 #define OODIALOG_PROGID_VERSIONED    "ooRexx.ooDialog.1"
+
+// Buffer size for progID. We only currently need 18, but we add extra for
+// testing now and possible future changes.
+#define MAX_PROGID                   32
 
 static char *oodSuggestedExts[] =
 {
@@ -134,6 +140,7 @@ typedef programArguments *pProgramArguments;
 typedef struct _assocArguments
 {
     HINSTANCE          hInstance;         // This executable's instance
+    char               progID[MAX_PROGID];
     bool               allUsers;          // If true file associations is for all users, otherwise current user
     bool               isRunAsAdmin;
     bool               isElevated;
@@ -153,6 +160,25 @@ typedef struct _configureArguments
 } configureArguments;
 typedef configureArguments *pConfigureArguments;
 
+#define MAX_EXT_NAME   32                  // Length of an extension, includes the dot
+#define MAX_EXT_DISPLAY  MAX_EXT_NAME + 4  // Add a prefix, max 4 chars, to the extension name
+#define MAX_HKEY_NAME  255                 // Length for a subkey name buffer
+#define MAX_HKEY_VALUE 16383               // Length for a subky value buffer
+
+typedef struct _extInfo
+{
+    char    displayName[MAX_EXT_DISPLAY];
+    char    extension[MAX_EXT_NAME];
+    bool    exists;            // If true file association is in registry, otherwise not
+    bool    allUsers;          // If true our file association exists for all users
+    bool    curUser;           // If true our file association exists for the current user
+    bool    allUsersOther;     // If true file association exists for all users, but not our Prog ID
+    bool    curUserOther;      // If true file association exists for the current user, but not our Prog ID
+    bool    remove;            // If true file assoication should be removed from registry
+    bool    pathExt;           // If true extension should be added to PATHEXT
+    bool    suggested;         // If true this is one of the suggested extensions.
+} extensionInfo;
+typedef extensionInfo *pExtensionInfo;
 
 
 static char *long_syntax_text =

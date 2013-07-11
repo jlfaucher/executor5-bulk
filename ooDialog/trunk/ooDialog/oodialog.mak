@@ -232,7 +232,7 @@ $(OOD_OUTDIR)\ooDialog.com : $(OOD_OUTDIR)\oodMain.obj $(OOD_OUTDIR)\oodShared.o
     $(lflags_common_console) \
     /STACK:262144 \
     $(REXXAPI_LIBS) \
-    shell32.lib \
+    shell32.lib Advapi32.lib\
     -out:$(OOD_OUTDIR)\ooDialog.com
 
 
