@@ -644,31 +644,31 @@ void qualifyExtensionInfo(char *extKeyName, pExtensionInfo rec, char *progID)
         RegCloseKey(hKey);
     }
 
-    char *prefix = "-- ";
+    char *prefix = "- -  ";
     if ( rec->allUsers )
     {
         if ( rec->curUser )
         {
-            prefix = "** ";
+            prefix = "* *  ";
         }
         else if ( rec->curUserOther )
         {
-            prefix = "*+ ";
+            prefix = "* +  ";
         }
         else
         {
-            prefix = "*-  ";
+            prefix = "* -  ";
         }
     }
     else if ( rec->curUser )
     {
         if ( rec->allUsersOther )
         {
-            prefix = "+* ";
+            prefix = "+ *  ";
         }
         else
         {
-            prefix = "-* ";
+            prefix = "- *  ";
         }
     }
     else
@@ -678,16 +678,16 @@ void qualifyExtensionInfo(char *extKeyName, pExtensionInfo rec, char *progID)
         {
             if ( rec->curUserOther )
             {
-                prefix = "++ ";
+                prefix = "+ +  ";
             }
             else
             {
-                prefix = "+- ";
+                prefix = "+ -  ";
             }
         }
         else if ( rec->curUser )
         {
-            prefix = "-+ ";
+            prefix = "- +  ";
         }
     }
 
@@ -813,9 +813,48 @@ done_out:
     return recs;
 }
 
-
-bool addSuggestedExt(HWND hDlg, HWND hLB, pAssocArguments paa)
+void checkRegistration(pAssocArguments paa)
 {
+    char     value[MAX_HKEY_VALUE] = {'\0'};
+    uint32_t maxValue              = MAX_HKEY_VALUE;
+    HKEY     hKey, hSubkey;
+
+    paa->ftypeIsRegistered  = false;
+    paa->registeredAllUsers = false;
+    paa->registeredCurUsers = false;
+
+    // See if our progID is a subkey of classes root
+    if( RegOpenKeyEx(HKEY_CLASSES_ROOT, OODIALOG_PROGID, 0, KEY_QUERY_VALUE , &hKey) == ERROR_SUCCESS )
+    {
+        paa->ftypeIsRegistered = true;
+
+        char buf[MEDIUM_BUF_SIZE];
+
+        strcpy(buf, "SOFTWARE\\Classes\\");
+        strcat(buf, OODIALOG_PROGID);
+
+        // See if progID is a subkey for local machine
+        if( RegOpenKeyEx(HKEY_LOCAL_MACHINE, buf, 0, KEY_QUERY_VALUE, &hSubkey) == ERROR_SUCCESS )
+        {
+            paa->registeredAllUsers = true;
+            RegCloseKey(hSubkey);
+        }
+
+        // See if progID is a subkey for current user
+        if( RegOpenKeyEx(HKEY_CURRENT_USER, buf, 0, KEY_QUERY_VALUE, &hSubkey) == ERROR_SUCCESS )
+        {
+            paa->registeredCurUsers = true;
+            RegCloseKey(hSubkey);
+        }
+
+        RegCloseKey(hKey);
+    }
+}
+
+bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
+{
+    HWND hLB = paa->lbSuggested;
+
     for ( size_t i = 0; i < OOD_SUGGESTED_EXT_COUNT; i++ )
     {
         pExtensionInfo info = (pExtensionInfo)LocalAlloc(LPTR, sizeof(extensionInfo));
@@ -837,9 +876,11 @@ bool addSuggestedExt(HWND hDlg, HWND hLB, pAssocArguments paa)
     return true;
 }
 
-void addCurrentExt(HWND hDlg, HWND hLB, pAssocArguments paa)
+void addCurrentExt(HWND hDlg, pAssocArguments paa)
 {
+    HWND   hLB   = paa->lbCurrent;
     size_t count = 0;
+
     pExtensionInfo recs = getExtensionRecords(hDlg, paa->progID, &count);
 
     for ( size_t i = 0; i < count; i++ )
@@ -913,16 +954,189 @@ void testRegistry()
 
 }
 
+void setAssocControls(HWND hDlg, pAssocArguments paa, bool flag)
+{
+    BOOL enable = flag ? TRUE : FALSE;
+
+    EnableWindow(paa->lbCurrent, enable);
+    EnableWindow(paa->lbSuggested, enable);
+    EnableWindow(paa->lbPathExt, enable);
+
+    EnableWindow(GetDlgItem(hDlg, IDC_EDIT_EXTENSION), enable);
+    EnableWindow(GetDlgItem(hDlg, IDC_PB_ADD_EXTENSION), enable);
+    EnableWindow(GetDlgItem(hDlg, IDC_PB_ADD_CURRENT), enable);
+    EnableWindow(GetDlgItem(hDlg, IDC_PB_REMOVE_CURRENT), enable);
+    EnableWindow(GetDlgItem(hDlg, IDC_PB_ADD_PATHEXT), enable);
+    EnableWindow(GetDlgItem(hDlg, IDC_PB_REMOVE_PATHEXT), enable);
+}
+
+void setRegisterdState(HWND hDlg, pAssocArguments paa)
+{
+    if ( ! paa->ftypeIsRegistered )
+    {
+        if ( paa->allUsers )
+        {
+            SetWindowText(paa->pbRegister, "Register ooDialog File Type For All Users");
+        }
+        else
+        {
+            SetWindowText(paa->pbRegister, "Register ooDialog File Type For the Current User");
+        }
+
+        EnableWindow(paa->pbRegister, TRUE);
+        setAssocControls(hDlg, paa, false);
+        return;
+    }
+
+    if ( paa->allUsers && paa->registeredAllUsers )
+    {
+        SetWindowText(paa->pbRegister, "Un-register ooDialog File Type For All Users");
+        if ( ! paa->isRunAsAdmin )
+        {
+            EnableWindow(paa->pbRegister, FALSE);
+        }
+    }
+    else if ( ! paa->allUsers && paa->registeredCurUsers )
+    {
+        SetWindowText(paa->pbRegister, "Un-register ooDialog File Type For the Current User");
+    }
+    else
+    {
+        SetWindowText(paa->pbRegister, "N/A");
+        EnableWindow(paa->pbRegister, FALSE);
+    }
+
+    if ( paa->isRunAsAdmin )
+    {
+        setAssocControls(hDlg, paa, true);
+    }
+    else
+    {
+        if ( paa->registeredAllUsers )
+        {
+            // When our ftype is registered for all users, it doesn't matter if we
+            // are running as admin or not, we can set extension associations.
+            setAssocControls(hDlg, paa, true);
+        }
+        else if ( paa->registeredAllUsers )
+        {
+            setAssocControls(hDlg, paa, true);
+        }
+        else
+        {
+            setAssocControls(hDlg, paa, false);
+        }
+    }
+}
+
+HFONT fontCreate(int32_t fontSize)
+{
+    int   width = 0;                              // average character width
+    int   escapement = 0;                         // angle of escapement
+    int   orientation = 0;                        // base-line orientation angle
+    int   weight = FW_NORMAL;                     // font weight
+    BOOL  italic = FALSE;                         // italic attribute option
+    BOOL  underline = FALSE;                      // underline attribute option
+    BOOL  strikeOut = FALSE;                      // strikeout attribute option
+    uint32_t charSet = DEFAULT_CHARSET;           // character set identifier
+    uint32_t outputPrecision = OUT_TT_PRECIS;     // output precision
+    uint32_t clipPrecision = CLIP_DEFAULT_PRECIS; // clipping precision
+    uint32_t quality = DEFAULT_QUALITY;           // output quality
+    uint32_t pitchAndFamily = FF_DONTCARE;        // pitch and family
+
+    HDC hdc = CreateDC("DISPLAY", NULL, NULL, NULL);
+    int height = -MulDiv(fontSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    DeleteDC(hdc);
+
+    HFONT f = CreateFont(height, width, escapement, orientation, weight, italic, underline, strikeOut,
+                         charSet, outputPrecision, clipPrecision, quality, pitchAndFamily, "Courier New");
+    return f;
+}
+
 void setStaticText(HWND hDlg, pAssocArguments paa)
 {
     SetDlgItemText(hDlg, IDC_GB_ASSOCIATE, paa->allUsers ?
-                   "Associating File Extensions with ooDialog.exe for All Users" :
-                   "Associating File Extensions with ooDialog.exe for the Current User");
+                   "Associating File Extensions with ooDialog.exe File Type for All Users" :
+                   "Associating File Extensions with ooDialog.exe File Type for the Current User");
 
     SetDlgItemText(hDlg, IDC_ST_FTYPE, paa->progID);
     SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "CurrentUser");
     SetDlgItemText(hDlg, IDC_ST_RUNAS, paa->isRunAsAdmin ? "True" : "False");
     SetDlgItemText(hDlg, IDC_ST_ELEVATED, paa->isElevated ? "True" : "False");
+    SetDlgItemText(hDlg, IDC_ST_REGISTERED, paa->ftypeIsRegistered ? "True" : "False");
+    SetDlgItemText(hDlg, IDC_ST_REGALL, paa->registeredAllUsers ? "Yes" : "No");
+    SetDlgItemText(hDlg, IDC_ST_REGCURRENT, paa->registeredCurUsers ? "Yes" : "No");
+}
+
+void setUp(HWND hDlg, pAssocArguments paa)
+{
+    setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)paa);
+
+    paa->lbSuggested = GetDlgItem(hDlg, IDC_LB_SUGGESTED);
+    paa->lbCurrent   = GetDlgItem(hDlg, IDC_LB_CURRENT);
+    paa->lbPathExt   = GetDlgItem(hDlg, IDC_LB_PATHEXT);
+    paa->pbRegister  = GetDlgItem(hDlg, IDC_PB_REGISTER);
+
+    HFONT font = fontCreate(8);
+
+    SendMessage(paa->lbSuggested, WM_SETFONT, (WPARAM)font, FALSE);
+    SendMessage(paa->lbCurrent, WM_SETFONT, (WPARAM)font, FALSE);
+    SendMessage(paa->lbPathExt, WM_SETFONT, (WPARAM)font, FALSE);
+
+    setDlgIcon(hDlg, paa->hInstance);
+    setStaticText(hDlg, paa);
+
+    setRegisterdState(hDlg, paa);
+}
+
+INT_PTR pbRegister(HWND hDlg)
+{
+
+
+    return TRUE;
+}
+
+INT_PTR handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
+{
+
+    switch ( LOWORD(wParam) )
+    {
+        case IDOK:
+        case IDCANCEL:
+        {
+            EndDialog(hDlg, wParam);
+        }
+        return TRUE;
+
+        case IDC_PB_REGISTER :
+            return pbRegister(hDlg);
+            break;
+
+        case IDC_PB_ADD_EXTENSION :
+
+            break;
+
+        case IDC_PB_ADD_CURRENT :
+
+            break;
+
+        case IDC_PB_REMOVE_CURRENT :
+
+            break;
+
+        case IDC_PB_ADD_PATHEXT :
+
+            break;
+
+        case IDC_PB_REMOVE_PATHEXT :
+
+            break;
+
+
+        default:
+            break;
+    }
+    return FALSE;
 }
 
 /**
@@ -946,16 +1160,13 @@ INT_PTR CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 
         // Query the registry to see if ooDialog ftype / progID is already
         // registered.  If so ...
-
+        checkRegistration(paa);
         strcpy(paa->progID, "SlickEdit"); // temp for testing
 
-        setDlgIcon(hDlg, paa->hInstance);
-        setStaticText(hDlg, paa);
+        setUp(hDlg, paa);
 
-        addSuggestedExt(hDlg, GetDlgItem(hDlg, IDC_LB_SUGGESTED), paa);
-        addCurrentExt(hDlg, GetDlgItem(hDlg, IDC_LB_CURRENT), paa);
-
-        setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)paa);
+        addSuggestedExt(hDlg, paa);
+        addCurrentExt(hDlg, paa);
 
         return TRUE;
     }
@@ -963,18 +1174,12 @@ INT_PTR CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
     switch ( uMsg )
     {
         case WM_COMMAND:
-            switch ( LOWORD(wParam) )
+            // This is okay because we do not have any menus:
+            if ( HIWORD(wParam) == BN_CLICKED )
             {
-                case IDOK:
-                case IDCANCEL:
-                {
-                    EndDialog(hDlg, wParam);
-                }
-                return TRUE;
-
-                default:
-                    break;
+                return handleButtonClick(hDlg, wParam, lParam);
             }
+            break;
 
         default:
             break;

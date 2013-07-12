@@ -61,28 +61,32 @@
 #define IDC_ST_DISPLAY_ICON                     1001
 #define IDC_ST_RUNAS                            1002
 #define IDC_CK_FILEASSOC                        1003
-#define IDC_ST_FTYPE                            1004
-#define IDC_EDIT                                1005
-#define IDC_ST_ELEVATED                         1006
-#define IDC_ST_SHORT_MSG                        1007
-#define IDC_GB_SERVICES                         1008
-#define IDC_PB_REMOVE_PATHEXT                   1009
-#define IDC_EDIT_EXTENSION                      1010
-#define IDC_LB_SUGGESTED                        1011
-#define IDC_LB_CURRENT                          1012
-#define IDC_LB_PATHEXT                          1013
-#define IDC_PB_ADD_CURRENT                      1014
-#define IDC_PB_REMOVE_CURRENT                   1015
-#define IDC_PB_ADD_PATHEXT                      1016
-#define IDC_RB_CURRENT                          1017
-#define IDC_PB_ADD_EXTENSION                    1018
-#define IDC_RB_ALL                              1019
-#define IDC_PB_CONFIGURE                        1020
-#define IDC_ST_INADMINGROUP                     1021
-#define IDC_ST_ISRUNASADMIN                     1022
-#define IDC_ST_ISELEVATED                       1023
-#define IDC_ST_IL                               1024
-#define IDC_GB_ASSOCIATE                        1025
+#define IDC_ST_REGISTERED                       1004
+#define IDC_ST_FTYPE                            1005
+#define IDC_EDIT                                1006
+#define IDC_ST_REGALL                           1007
+#define IDC_ST_ELEVATED                         1008
+#define IDC_ST_SHORT_MSG                        1009
+#define IDC_GB_SERVICES                         1010
+#define IDC_ST_REGCURRENT                       1011
+#define IDC_PB_REMOVE_PATHEXT                   1012
+#define IDC_EDIT_EXTENSION                      1013
+#define IDC_LB_SUGGESTED                        1014
+#define IDC_LB_CURRENT                          1015
+#define IDC_LB_PATHEXT                          1016
+#define IDC_PB_ADD_CURRENT                      1017
+#define IDC_PB_REMOVE_CURRENT                   1018
+#define IDC_PB_ADD_PATHEXT                      1019
+#define IDC_PB_REGISTER                         1020
+#define IDC_RB_CURRENT                          1021
+#define IDC_PB_ADD_EXTENSION                    1022
+#define IDC_RB_ALL                              1023
+#define IDC_PB_CONFIGURE                        1024
+#define IDC_ST_INADMINGROUP                     1025
+#define IDC_ST_ISRUNASADMIN                     1026
+#define IDC_ST_ISELEVATED                       1027
+#define IDC_ST_IL                               1028
+#define IDC_GB_ASSOCIATE                        1029
 
 
 
@@ -139,11 +143,19 @@ typedef programArguments *pProgramArguments;
 
 typedef struct _assocArguments
 {
-    HINSTANCE          hInstance;         // This executable's instance
     char               progID[MAX_PROGID];
+    HINSTANCE          hInstance;         // This executable's instance
+    HFONT              lbFont;
+    HWND               lbSuggested;
+    HWND               lbCurrent;
+    HWND               lbPathExt;
+    HWND               pbRegister;
     bool               allUsers;          // If true file associations is for all users, otherwise current user
     bool               isRunAsAdmin;
     bool               isElevated;
+    bool               ftypeIsRegistered;
+    bool               registeredAllUsers;
+    bool               registeredCurUsers;
 } assocArguments;
 typedef assocArguments *pAssocArguments;
 

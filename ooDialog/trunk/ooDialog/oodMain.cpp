@@ -182,6 +182,41 @@ static bool isVersionRequest(int argc, char **argv)
     return false;
 }
 
+void checkRegistration(char *progID)
+{
+    char     value[MAX_HKEY_VALUE] = {'\0'};
+    uint32_t maxValue              = MAX_HKEY_VALUE;
+    HKEY     hKey, hSubkey;
+
+    // See if our progID is a subkey of classes root
+    if( RegOpenKeyEx(HKEY_CLASSES_ROOT, progID, 0, KEY_QUERY_VALUE , &hKey) == ERROR_SUCCESS )
+    {
+        printf("%s is registered\n", progID);
+
+        char buf[MEDIUM_BUF_SIZE];
+
+        strcpy(buf, "SOFTWARE\\Classes\\");
+        strcat(buf, progID);
+
+        // See if progID is a subkey for local machine
+        if( RegOpenKeyEx(HKEY_LOCAL_MACHINE, buf, 0, KEY_QUERY_VALUE, &hSubkey) == ERROR_SUCCESS )
+        {
+            printf("%s is registered for all users\n", progID);
+
+            RegCloseKey(hSubkey);
+        }
+
+        // See if progID is a subkey for current user
+        if( RegOpenKeyEx(HKEY_CURRENT_USER, buf, 0, KEY_QUERY_VALUE, &hSubkey) == ERROR_SUCCESS )
+        {
+            printf("%s is registered for current user\n", progID);
+            RegCloseKey(hSubkey);
+        }
+
+        RegCloseKey(hKey);
+    }
+}
+
 void qualifyExtensionInfo(char *keyName, pExtensionInfo rec, char *progID)
 {
     char     value[MAX_HKEY_VALUE] = {'\0'};
@@ -279,7 +314,7 @@ pExtensionInfo getExtensionRecords(char *progID, size_t *count)
     // We only need the number of subkeys.
     uint32_t retCode = RegQueryInfoKey(HKEY_CLASSES_ROOT, NULL, NULL, NULL, (LPDWORD)&cSubKeys,
                                        NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
+    printf("RegQueryInfoKey() retCode=%d retCode=0x%08x count=%d\n", retCode, retCode, cSubKeys);
     uint32_t maxName;                  // Size of name buffer
     char     keyName[MAX_HKEY_NAME];   // Buffer for subkey name
 
@@ -397,6 +432,12 @@ int __cdecl main(int argc, char *argv[])
             pExtensionInfo current = &recs[i];
             printf("%s\n", current->displayName);
         }
+
+        printf("\ncheck registration SlickEdit\n");
+        checkRegistration("SlickEdit");
+
+        printf("\ncheck registration soap\n");
+        checkRegistration("soap");
         return 0;
     }
 
