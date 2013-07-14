@@ -222,6 +222,7 @@ $(OOD_OUTDIR)\ooDialog.exe : $(OOD_OUTDIR)\oodWinMain.obj $(OOD_OUTDIR)\oodShare
     $(lflags_common) \
     /STACK:524288 \
     $(REXXAPI_LIBS) \
+    shlwapi.lib \
     -out:$(OOD_OUTDIR)\ooDialog.exe
 
 $(OOD_OUTDIR)\ooDialog.com : $(OOD_OUTDIR)\oodMain.obj $(OOD_OUTDIR)\oodShared.obj $(OOD_OUTDIR)\ooDialogMain.res

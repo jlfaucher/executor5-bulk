@@ -50,6 +50,7 @@
 #include <oorexxapi.h>
 #include <stdio.h>
 #include <shlwapi.h>
+#include <shlobj.h>
 #include "oodShared.hpp"
 #include "oodExecutable.hpp"
 
@@ -87,11 +88,11 @@ static void setDlgIcon(HWND hDlg, HINSTANCE hInstance)
 }
 
 /**
- * Formats an error message and shows it in a message box
+ * Formats an error message for a system error and shows it in a message box
  *
- * @param function
- * @param title
- * @param dw
+ * @param function  Name of system function that failed
+ * @param title     Caption for message box
+ * @param dw        System error code
  */
 static void reportError(HWND hwnd, CSTRING function, CSTRING title, HRESULT dw)
 {
@@ -103,6 +104,31 @@ static void reportError(HWND hwnd, CSTRING function, CSTRING title, HRESULT dw)
 
     _snprintf(msgBuf, HUGE_BUF_SIZE, "Error executing Windows API:\n\nFunction:\t\t%s\nError Code:\t%d\n\n%s",
               function, dw, formatMsgBuf);
+
+	MessageBox(hwnd, (LPCTSTR)msgBuf, title, MB_ICONERROR);
+	LocalFree(formatMsgBuf);
+}
+
+
+/**
+ * Formats an error message for a system error, plus some follow up text, and
+ * shows it in a message box
+ *
+ * @param function  Name of system function that failed
+ * @param title     Caption for message box
+ * @param dw        System error code
+ */
+static void reportErrorPlus(HWND hwnd, CSTRING function, CSTRING title, CSTRING extraMsg, HRESULT dw)
+{
+    char  msgBuf[HUGE_BUF_SIZE];
+	void *formatMsgBuf;
+
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                  NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&formatMsgBuf, 0, NULL);
+
+    _snprintf(msgBuf, HUGE_BUF_SIZE, "Error executing Windows API:\n\nFunction:\t\t%s\n"
+                                     "Error Code:\t%d\n\n%s\n\n%s",
+              function, dw, formatMsgBuf, extraMsg);
 
 	MessageBox(hwnd, (LPCTSTR)msgBuf, title, MB_ICONERROR);
 	LocalFree(formatMsgBuf);
@@ -824,14 +850,12 @@ void checkRegistration(pAssocArguments paa)
     paa->registeredCurUsers = false;
 
     // See if our progID is a subkey of classes root
-    if( RegOpenKeyEx(HKEY_CLASSES_ROOT, OODIALOG_PROGID, 0, KEY_QUERY_VALUE , &hKey) == ERROR_SUCCESS )
+    if( RegOpenKeyEx(HKEY_CLASSES_ROOT, paa->progID, 0, KEY_QUERY_VALUE , &hKey) == ERROR_SUCCESS )
     {
         paa->ftypeIsRegistered = true;
 
         char buf[MEDIUM_BUF_SIZE];
-
-        strcpy(buf, "SOFTWARE\\Classes\\");
-        strcat(buf, OODIALOG_PROGID);
+        _snprintf(buf, MEDIUM_BUF_SIZE, "SOFTWARE\\Classes\\%s", paa->progID);
 
         // See if progID is a subkey for local machine
         if( RegOpenKeyEx(HKEY_LOCAL_MACHINE, buf, 0, KEY_QUERY_VALUE, &hSubkey) == ERROR_SUCCESS )
@@ -851,9 +875,38 @@ void checkRegistration(pAssocArguments paa)
     }
 }
 
+void maybeEmptyLB(HWND hLB)
+{
+    LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
+    if ( count > 0 )
+    {
+        for (LRESULT i = 0; i > count; i++ )
+        {
+            pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
+            safeLocalFree(info);
+        }
+        SendMessage(hLB, LB_RESETCONTENT, 0, 0);
+    }
+}
+
+/**
+ * Adds the suggested file extensions to the list box.  The first time through,
+ * the list box will be empty.  But, we may do this several times if the user
+ * adds and / or removes the registration for the file type.
+ *
+ * If there are any items in the list box, we need to not only remove them, but
+ * to also free the extension memory.
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @return bool
+ */
 bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
 {
     HWND hLB = paa->lbSuggested;
+
+    maybeEmptyLB(hLB);
 
     for ( size_t i = 0; i < OOD_SUGGESTED_EXT_COUNT; i++ )
     {
@@ -878,8 +931,10 @@ bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
 
 void addCurrentExt(HWND hDlg, pAssocArguments paa)
 {
-    HWND   hLB   = paa->lbCurrent;
     size_t count = 0;
+    HWND   hLB   = paa->lbCurrent;
+
+    maybeEmptyLB(hLB);
 
     pExtensionInfo recs = getExtensionRecords(hDlg, paa->progID, &count);
 
@@ -970,8 +1025,23 @@ void setAssocControls(HWND hDlg, pAssocArguments paa, bool flag)
     EnableWindow(GetDlgItem(hDlg, IDC_PB_REMOVE_PATHEXT), enable);
 }
 
+/**
+ * Sets the state of the dialog controls.
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @note This is a little complex.  At this time I think the Register push
+ *       button should always be enabled.
+ */
 void setRegisterdState(HWND hDlg, pAssocArguments paa)
 {
+    // The static text for these controls can vary during the life-time of the
+    // dialog:
+    SetDlgItemText(hDlg, IDC_ST_REGISTERED, paa->ftypeIsRegistered ? "True" : "False");
+    SetDlgItemText(hDlg, IDC_ST_REGALL, paa->registeredAllUsers ? "Yes" : "No");
+    SetDlgItemText(hDlg, IDC_ST_REGCURRENT, paa->registeredCurUsers ? "Yes" : "No");
+
     if ( ! paa->ftypeIsRegistered )
     {
         if ( paa->allUsers )
@@ -983,50 +1053,53 @@ void setRegisterdState(HWND hDlg, pAssocArguments paa)
             SetWindowText(paa->pbRegister, "Register ooDialog File Type For the Current User");
         }
 
-        EnableWindow(paa->pbRegister, TRUE);
         setAssocControls(hDlg, paa, false);
+
+        addSuggestedExt(hDlg, paa);
+        addCurrentExt(hDlg, paa);
         return;
     }
 
-    if ( paa->allUsers && paa->registeredAllUsers )
+    // Our progID is registered for either all users or current user.  Maybe
+    // both, but not necessarily both.  How we set the state is dependent on the
+    // scope and if progID is registered for that scope.
+    if ( paa->registeredAllUsers && paa->registeredCurUsers )
     {
-        SetWindowText(paa->pbRegister, "Un-register ooDialog File Type For All Users");
-        if ( ! paa->isRunAsAdmin )
+        if ( paa->allUsers )
         {
-            EnableWindow(paa->pbRegister, FALSE);
-        }
-    }
-    else if ( ! paa->allUsers && paa->registeredCurUsers )
-    {
-        SetWindowText(paa->pbRegister, "Un-register ooDialog File Type For the Current User");
-    }
-    else
-    {
-        SetWindowText(paa->pbRegister, "N/A");
-        EnableWindow(paa->pbRegister, FALSE);
-    }
-
-    if ( paa->isRunAsAdmin )
-    {
-        setAssocControls(hDlg, paa, true);
-    }
-    else
-    {
-        if ( paa->registeredAllUsers )
-        {
-            // When our ftype is registered for all users, it doesn't matter if we
-            // are running as admin or not, we can set extension associations.
-            setAssocControls(hDlg, paa, true);
-        }
-        else if ( paa->registeredAllUsers )
-        {
-            setAssocControls(hDlg, paa, true);
+            SetWindowText(paa->pbRegister, "Un-register ooDialog File Type For All Users");
         }
         else
         {
-            setAssocControls(hDlg, paa, false);
+            SetWindowText(paa->pbRegister, "Un-register ooDialog File Type For the Current User");
         }
     }
+    else if ( paa->registeredAllUsers )
+    {
+        if ( paa->allUsers )
+        {
+            SetWindowText(paa->pbRegister, "Un-register ooDialog File Type For All Users");
+        }
+        else
+        {
+            SetWindowText(paa->pbRegister, "Register ooDialog File Type For the Current User");
+        }
+    }
+    else
+    {
+        if ( paa->allUsers )
+        {
+            SetWindowText(paa->pbRegister, "Register ooDialog File Type For All Users");
+        }
+        else
+        {
+            SetWindowText(paa->pbRegister, "Un-register ooDialog File Type For the Current User");
+        }
+    }
+
+    setAssocControls(hDlg, paa, true);
+    addSuggestedExt(hDlg, paa);
+    addCurrentExt(hDlg, paa);
 }
 
 HFONT fontCreate(int32_t fontSize)
@@ -1063,9 +1136,6 @@ void setStaticText(HWND hDlg, pAssocArguments paa)
     SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "CurrentUser");
     SetDlgItemText(hDlg, IDC_ST_RUNAS, paa->isRunAsAdmin ? "True" : "False");
     SetDlgItemText(hDlg, IDC_ST_ELEVATED, paa->isElevated ? "True" : "False");
-    SetDlgItemText(hDlg, IDC_ST_REGISTERED, paa->ftypeIsRegistered ? "True" : "False");
-    SetDlgItemText(hDlg, IDC_ST_REGALL, paa->registeredAllUsers ? "Yes" : "No");
-    SetDlgItemText(hDlg, IDC_ST_REGCURRENT, paa->registeredCurUsers ? "Yes" : "No");
 }
 
 void setUp(HWND hDlg, pAssocArguments paa)
@@ -1089,9 +1159,287 @@ void setUp(HWND hDlg, pAssocArguments paa)
     setRegisterdState(hDlg, paa);
 }
 
+/**
+ * Creates, or opens, a subkey and, optionally, writes its Default string value.
+ *
+ * @param openedKey  An already open registry key
+ * @param subkey     A subkey of 'openedKey to create or open
+ * @param defValue   The value for the Default entry for subkey.  If this is
+ *                   null, then writing a value for Default is just skipped.
+ *
+ * @param hDlg       The window handle of the dialog, for error displary
+ * @param user       A string for the error dispaly that specifies if we are
+ *                   writing the subkey in current user or all users (local
+ *                   machine.)
+ *
+ * @return The opened subkey on success, otherwise NULL.
+ */
+HKEY writeRegSubkeyValue(HKEY openedKey, char *subkey, char *defValue, HWND hDlg, char *user)
+{
+    uint32_t disp;
+    uint32_t rc;
+    char     extraMsg[SMALL_BUF_SIZE];
+    HKEY     hKey = NULL;
+
+    rc = RegCreateKeyEx(openedKey, subkey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE | DELETE, NULL, &hKey, (LPDWORD)&disp);
+    if ( rc != ERROR_SUCCESS )
+    {
+        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to create or open the %s registry key for %s", subkey, user);
+
+        reportErrorPlus(hDlg, "RegCreateKeyEx", "Windows Registry Error", extraMsg, rc);
+        return NULL;
+    }
+
+    // Set the default value, if requested ...
+    if ( defValue != NULL )
+    {
+        size_t  len  = strlen(defValue) + 1;
+
+        rc = RegSetValueEx(hKey, "", 0, REG_SZ, (LPBYTE)defValue, (uint32_t)len);
+        if ( rc != ERROR_SUCCESS )
+        {
+            _snprintf(extraMsg, SMALL_BUF_SIZE,
+                      "Failed to set the default value (%s) for the %s registry key for %s",
+                      defValue, subkey, user);
+
+            reportErrorPlus(hDlg, "RegSetValueEx", "Windows Registry Error", extraMsg, rc);
+
+            RegCloseKey(hKey);
+            hKey = NULL;
+        }
+    }
+    return hKey;
+}
+
+/**
+ * Writes a named string value for an opened registry key.
+ *
+ * @param openedKey  An already open registry key
+ * @param valueName  The name of the value to be written
+ * @param value      The value to be written
+ * @param hDlg       The window handle of the dialog, for error displary
+ * @param user       A string for the error dispaly that specifies if we are
+ *                   writing the subkey in current user or all users (local
+ *                   machine.)
+ *
+ * @return True on success, false on error.
+ */
+bool writeRegKeyValue(HKEY openedKey, char *valueName, char *value, HWND hDlg, char *user)
+{
+    uint32_t rc;
+    size_t  len = strlen(value) + 1;
+
+    rc = RegSetValueEx(openedKey, valueName, 0, REG_SZ, (LPBYTE)value, (uint32_t)len);
+    if ( rc != ERROR_SUCCESS )
+    {
+        char extraMsg[SMALL_BUF_SIZE];
+
+        _snprintf(extraMsg, SMALL_BUF_SIZE,
+                  "Failed to set the %s value (%s) for %s",
+                  valueName, value, user);
+
+        reportErrorPlus(hDlg, "RegSetValueEx", "Windows Registry Error", extraMsg, rc);
+
+        return false;
+    }
+    return true;
+}
+
+bool removeRegProgID(HWND hDlg, pAssocArguments paa)
+{
+    internalInfoMsgBox("removeProgID() not implemented", "ooDialog");
+    return false;
+}
+
+bool writeRegProgID(HWND hDlg, pAssocArguments paa)
+{
+    HKEY  hPreDefKey = HKEY_CURRENT_USER;
+    char *user       = "the current user.";
+
+    if ( paa->allUsers )
+    {
+        hPreDefKey = HKEY_LOCAL_MACHINE;
+        user       = "all users";
+    }
+
+    HKEY hProgIdKey = NULL;
+    HKEY hKey       = NULL;
+    char valueBuf[MEDIUM_BUF_SIZE];
+
+    // Do the ooRexx.ooDialog.1 subkey of software\classees
+    _snprintf(valueBuf, MEDIUM_BUF_SIZE, "SOFTWARE\\Classes\\%s", paa->progID);
+
+    hProgIdKey = writeRegSubkeyValue(hPreDefKey, valueBuf, OODIALOG_FRIENDLY_NAME, hDlg, user);
+    if ( hProgIdKey == NULL )
+    {
+        goto done_out;
+    }
+
+    // Do the DefaultIcon subkey of ooRexx.ooDialog.1
+    _snprintf(valueBuf, MEDIUM_BUF_SIZE, "%s,-%d", paa->exeName, IDI_APP_BLUE_BEAKER_ICON);
+
+    hKey = writeRegSubkeyValue(hProgIdKey, "DefaultIcon", valueBuf, hDlg, user);
+    if ( hKey == NULL )
+    {
+        goto done_out;
+    }
+    RegCloseKey(hKey);
+
+    // Do the CurVer subkey of ooRexx.ooDilaog.1
+    hKey = writeRegSubkeyValue(hProgIdKey, "CurVer", paa->progID, hDlg, user);
+    if ( hKey == NULL )
+    {
+        goto done_out;
+    }
+    RegCloseKey(hKey);
+
+    // Do the FiendlyTypeName value of ooRexx.ooDialog.1
+    _snprintf(valueBuf, MEDIUM_BUF_SIZE, "@%s,-%d", paa->exeName, IDS_FRIENDLY_NAME);
+
+    if ( ! writeRegKeyValue(hProgIdKey, "FriendlyTypeName", valueBuf, hDlg, user) )
+    {
+        goto done_out;
+    }
+
+    // Do the InfoTip value of ooRexx.ooDailog.1
+    _snprintf(valueBuf, MEDIUM_BUF_SIZE, "@%s,-%d", paa->exeName, IDS_INFOTIP);
+
+    if ( ! writeRegKeyValue(hProgIdKey, "InfoTip", valueBuf, hDlg, user) )
+    {
+        goto done_out;
+    }
+
+    // Do the shell subkey of ooRexx.ooDiallog.1 and its subkeys.
+    // This will create the shell\open sub subky and set its default to Run
+    hKey = writeRegSubkeyValue(hProgIdKey, "shell\\open", "Run", hDlg, user);
+    if ( hKey == NULL )
+    {
+        goto done_out;
+    }
+    RegCloseKey(hKey);
+
+    // Now create the shell\open\command sub sub subkey
+    _snprintf(valueBuf, MEDIUM_BUF_SIZE, "\"%s\" \"%%1\" %%*", paa->exeName);
+
+    hKey = writeRegSubkeyValue(hProgIdKey, "shell\\open\\command", valueBuf, hDlg, user);
+    if ( hKey == NULL )
+    {
+        goto done_out;
+    }
+    RegCloseKey(hKey);
+
+    // Write the default value for shell\open.  This won't created the subkey,
+    // it was just created, it will just open it.
+    /* TODO add code to set an editor. (shell\edit) */
+
+    /* TODO add code to use rexxc ? (shell\compile) */
+
+    // Do the shellex\DropHandler subkey of ooRexx.ooDialog.1
+    hKey = writeRegSubkeyValue(hProgIdKey, "ShellEx\\DropHandler", OODIALOG_DROP_HANDLER, hDlg, user);
+    if ( hKey == NULL )
+    {
+        goto done_out;
+    }
+
+    RegCloseKey(hKey);
+    RegCloseKey(hProgIdKey);
+
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+
+    return true;
+
+done_out:
+    if ( hProgIdKey != NULL )
+    {
+        RegCloseKey(hProgIdKey);
+
+        // We delete the key because it was not completely written.
+        _snprintf(valueBuf, MEDIUM_BUF_SIZE, "SOFTWARE\\Classes\\%s", paa->progID);
+
+        uint32_t rc = SHDeleteKey(hPreDefKey, valueBuf);
+        if ( rc != ERROR_SUCCESS )
+        {
+            char extraMsg[SMALL_BUF_SIZE];
+
+            _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to delete the %s key for %s", valueBuf, user);
+
+            reportErrorPlus(hDlg, "RegSetValueEx", "Windows Registry Error", extraMsg, rc);
+        }
+    }
+    return false;
+}
+
+/**
+ * Handles a click on the Register / Un-register push button
+ *
+ * @param hDlg
+ *
+ * @return INT_PTR
+ */
 INT_PTR pbRegister(HWND hDlg)
 {
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
+    if ( paa->allUsers )
+    {
+        if ( paa->registeredAllUsers )
+        {
+            removeRegProgID(hDlg, paa);
+        }
+        else
+        {
+            if ( writeRegProgID(hDlg, paa) )
+            {
+                paa->ftypeIsRegistered = true;
+                if ( paa->allUsers )
+                {
+                    paa->registeredAllUsers = true;
+                }
+                else
+                {
+                    paa->registeredCurUsers = true;
+                }
+
+                setRegisterdState(hDlg, paa);
+            }
+            else
+            {
+                // Failed to create the progID entry, disable this push button so
+                // the user can't try this again.
+                EnableWindow(paa->pbRegister, FALSE);
+            }
+        }
+    }
+    else
+    {
+        if ( paa->registeredCurUsers )
+        {
+            removeRegProgID(hDlg, paa);
+        }
+        else
+        {
+            if ( writeRegProgID(hDlg, paa) )
+            {
+                paa->ftypeIsRegistered = true;
+                if ( paa->allUsers )
+                {
+                    paa->registeredAllUsers = true;
+                }
+                else
+                {
+                    paa->registeredCurUsers = true;
+                }
+
+                setRegisterdState(hDlg, paa);
+            }
+            else
+            {
+                // Failed to create the progID entry, disable this push button
+                // so the user can't try this again.
+                EnableWindow(paa->pbRegister, FALSE);
+            }
+        }
+    }
 
     return TRUE;
 }
@@ -1161,12 +1509,10 @@ INT_PTR CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
         // Query the registry to see if ooDialog ftype / progID is already
         // registered.  If so ...
         checkRegistration(paa);
-        strcpy(paa->progID, "SlickEdit"); // temp for testing
+
+        //strcpy(paa->progID, "SlickEdit"); // temp for testing
 
         setUp(hDlg, paa);
-
-        addSuggestedExt(hDlg, paa);
-        addCurrentExt(hDlg, paa);
 
         return TRUE;
     }
@@ -1329,6 +1675,10 @@ INT_PTR CALLBACK ConfigureDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
                             aa.hInstance    = pca->hInstance;
                             aa.allUsers     = isAllUsers;
                             aa.isElevated   = pca->isElevated;
+                            aa.exeName      = pca->exeName;
+
+                            strcpy(aa.progID, OODIALOG_PROGID_VERSIONED);
+
                             DialogBoxParam(pca->hInstance, MAKEINTRESOURCE(IDD_FILEASSOC), hDlg, FileAssocDlgProc, (LPARAM)&aa);
                         }
                     }
@@ -1350,14 +1700,6 @@ INT_PTR CALLBACK ConfigureDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
     return FALSE;
 }
 
-
-inline void safeLocalFree(void *p)
-{
-    if ( p != NULL )
-    {
-        LocalFree(p);
-    }
-}
 
 inline bool haveFlag(CSTRING a)
 {
@@ -1385,6 +1727,7 @@ static int32_t ooDialogServices(pProgramArguments pa)
 {
     configureArguments ca = { 0 };
     ca.hInstance = pa->hInstance;
+    ca.exeName   = pa->exeName;
 
     DialogBoxParam(pa->hInstance, MAKEINTRESOURCE(IDD_CONFIGURE_SERVICES), NULL, ConfigureDlgProc, (LPARAM)&ca);
 
@@ -1434,6 +1777,48 @@ static int32_t displayVersion(RexxThreadContext *c, pProgramArguments pa)
 }
 
 /**
+ * Grabs the fully qualified executable name.
+ *
+ * @param exeName
+ *
+ * @return bool
+ *
+ * @note This function duplicates some code from commandLineToArgv()
+ */
+static bool saveExecutableName(char *exeName)
+{
+    LPWSTR  *szArglist = NULL;
+    int32_t  nArgs     = 0;
+
+    char buf[512] = {'\0'};  // Possible error message buffer
+
+    szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+    if ( NULL == szArglist || nArgs < 1 )
+    {
+        sprintf(buf, "Operating system parsing of the command line failed.\n\n"
+                     "Last reported error code: %d\n", GetLastError());
+        internalErrorMsgBox(buf, "ooDialog Execute Program: Windows Error");
+        return false;
+    }
+
+    char *tmp = unicode2ansi(szArglist[0]);
+    if ( tmp )
+    {
+        // TODO need to check for fully qualified name ...
+        strcpy(exeName, tmp);
+        LocalFree(tmp);
+    }
+    else
+    {
+        sprintf(buf, "Conversion from Unicode to ANSI, or memory\n"
+                     "allocation, failed.");
+        internalErrorMsgBox(buf, "ooDialog Execute Program: Windows Error");
+        return false;
+    }
+    return true;
+}
+
+/**
  * Gets the wide character string command line arguments in conventional argv /
  * argc format and converst the argument array to an array of ANSI strings.
  *
@@ -1452,7 +1837,7 @@ static int32_t displayVersion(RexxThreadContext *c, pProgramArguments pa)
  *        the OS will free the memory.  We just do it because it looks a little
  *        cleaner.
  */
-static char **commandLineToArgv(int32_t *count)
+static char **commandLineToArgv(int32_t *count, char *exeName)
 {
     LPWSTR  *szArglist = NULL;
     char   **args      = NULL;
@@ -1470,7 +1855,28 @@ static char **commandLineToArgv(int32_t *count)
         goto done_out;
     }
 
-    // We are going skip the first arg which is the executable name.
+    // Need to save the fully qualified executable name.
+    char *tmp = unicode2ansi(szArglist[0]);
+    if ( tmp )
+    {
+        strcpy(exeName, tmp);
+        LocalFree(tmp);
+
+        if ( PathIsRelative(exeName) )
+        {
+            PathFindOnPath(exeName, NULL);
+        }
+    }
+    else
+    {
+        sprintf(buf, "Conversion from Unicode to ANSI, or memory\n"
+                     "allocation, failed.");
+        internalErrorMsgBox(buf, "ooDialog Execute Program: Windows Error");
+        goto done_out;
+    }
+
+    // For the returned argument array, we are going skip the first arg, the
+    // executable name.
     nArgs--;
 
     args = (char **)LocalAlloc(LPTR, nArgs * sizeof(char **));
@@ -1494,7 +1900,7 @@ static char **commandLineToArgv(int32_t *count)
             goto error_out;
         }
 
-        char *tmp = unicode2ansi(a);
+        tmp = unicode2ansi(a);
         if ( tmp )
         {
             args[i] = tmp;
@@ -1708,7 +2114,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     // Get the command line in a C style argument vector form.
     int32_t   argc;
-    char    **argv = commandLineToArgv(&argc);
+    char    **argv = commandLineToArgv(&argc, pa.exeName);
     if ( argv == NULL )
     {
         return -1;
@@ -1720,11 +2126,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         ca.hInstance   = hInstance;
         ca.wasElevated = true;
+        ca.exeName     = pa.exeName;
 
         DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_CONFIGURE_SERVICES), NULL, ConfigureDlgProc, (LPARAM)&ca);
         return 0;
     }
 
+    // Mostly, we will be executing a Rexx program.  parseArgs() needs an
+    // interpreter thread context, so we create the interpreter here.  For the
+    // few times it is not needed, the overhead is negligible.
     RexxThreadContext *c;
     RexxInstance      *interpreter;
 

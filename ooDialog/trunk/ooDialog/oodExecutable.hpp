@@ -57,6 +57,8 @@
 #define IDD_OODIALOG_DISPLAY                    102
 #define IDD_FILEASSOC                           104
 #define IDD_CONFIGURE_SERVICES                  106
+#define IDI_APP_ICON                            107
+#define IDI_APP_BLUE_BEAKER_ICON                108
 #define IDC_ST_SCOPE                            1000
 #define IDC_ST_DISPLAY_ICON                     1001
 #define IDC_ST_RUNAS                            1002
@@ -87,11 +89,9 @@
 #define IDC_ST_ISELEVATED                       1027
 #define IDC_ST_IL                               1028
 #define IDC_GB_ASSOCIATE                        1029
+#define IDS_FRIENDLY_NAME                       40000
+#define IDS_INFOTIP                             40001
 
-
-
-// Other IDs
-#define IDI_APP_ICON                            200
 
 // Eveything else is not passed to the resource compiler:
 #ifndef RC_INVOKED
@@ -100,10 +100,20 @@
 
 #define OODIALOG_PROGID              "ooRexx.ooDialog"
 #define OODIALOG_PROGID_VERSIONED    "ooRexx.ooDialog.1"
+#define OODIALOG_FRIENDLY_NAME       "ooDialog Program"
+#define OODIALOG_DROP_HANDLER        "{86C86720-42A0-1069-A2E8-08002B30309D}"
 
 // Buffer size for progID. We only currently need 18, but we add extra for
 // testing now and possible future changes.
 #define MAX_PROGID                   32
+
+inline void safeLocalFree(void *p)
+{
+    if ( p != NULL )
+    {
+        LocalFree(p);
+    }
+}
 
 static char *oodSuggestedExts[] =
 {
@@ -124,6 +134,7 @@ typedef enum
 
 typedef struct _programArguments
 {
+    char               exeName[MAX_PATH]; // The fully qualified executable, C:\ooRexx\ooDialog.exe perhaps
     RexxArrayObject    callArg;           // The legacy single string argument to a Rexx program
     RexxArrayObject    rxCArgs;           // Array of C style program arguments for SysCArgs put in .local
     RexxArrayObject    rxOodArgs;         // Similar to rxCArgs, but contains all arguments, .oodCArgs
@@ -145,6 +156,7 @@ typedef struct _assocArguments
 {
     char               progID[MAX_PROGID];
     HINSTANCE          hInstance;         // This executable's instance
+    char              *exeName;
     HFONT              lbFont;
     HWND               lbSuggested;
     HWND               lbCurrent;
@@ -162,6 +174,7 @@ typedef assocArguments *pAssocArguments;
 typedef struct _configureArguments
 {
     HINSTANCE          hInstance;         // This executable's instance
+    char              *exeName;
     uint32_t           integrityLevel;
     bool               isVistaOrLater;    // Os is at least Vista
     bool               isInAdminGroup;

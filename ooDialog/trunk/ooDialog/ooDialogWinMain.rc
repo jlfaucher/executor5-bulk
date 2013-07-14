@@ -36,13 +36,11 @@
 //----------------------------------------------------------------------------*/
 
 #include <windows.h>
-#include <winuser.h>
 #include <commctrl.h>
 #include "oodExecutable.hpp"
 
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST MANIFEST_FILE
 
-IDI_APP_ICON ICON "AppIcon2.ico"
 
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 IDD_CONFIGURE_SERVICES DIALOGEX 0, 0, 229, 164
@@ -91,7 +89,7 @@ FONT 8, "Ms Shell Dlg", 400, 0, 1
     CONTROL         "Yes", IDC_ST_REGCURRENT, WC_STATIC, NOT WS_GROUP | SS_LEFT, 292, 79, 25, 8
     CONTROL         "Un-register ooDialog File Type", IDC_PB_REGISTER, WC_BUTTON, WS_TABSTOP | BS_PUSHBUTTON, 19, 109, 176, 14
     CONTROL         "Extension:", IDC_STATIC, WC_STATIC, NOT WS_GROUP | SS_LEFT, 19, 137, 35, 8
-    CONTROL         "", IDC_EDIT_EXTENSION, WC_EDIT, NOT WS_BORDER | ES_AUTOHSCROLL, 55, 136, 33, 12
+    CONTROL         "", IDC_EDIT_EXTENSION, WC_EDIT, NOT WS_BORDER | WS_TABSTOP | ES_AUTOHSCROLL, 55, 136, 33, 12
     CONTROL         "Add", IDC_PB_ADD_EXTENSION, WC_BUTTON, WS_TABSTOP | BS_PUSHBUTTON, 92, 135, 43, 14
     CONTROL         "Suggested\nExtensions", IDC_STATIC, WC_STATIC, NOT WS_GROUP | SS_CENTER, 10, 155, 70, 19
     CONTROL         "", IDC_LB_SUGGESTED, WC_LISTBOX, WS_TABSTOP | WS_VSCROLL | NOT WS_BORDER | LBS_NOINTEGRALHEIGHT | LBS_SORT | LBS_USETABSTOPS | LBS_NOTIFY, 10, 173, 70, 75
@@ -125,6 +123,24 @@ FONT 10, "Ms Shell Dlg", 400, 0, 0
 }
 
 
+LANGUAGE LANG_NEUTRAL, SUBLANG_SYS_DEFAULT
+STRINGTABLE
+{
+    IDS_FRIENDLY_NAME             "ooDialog Program"
+    IDS_INFOTIP                   "Double-click to run this ooDialog program"
+}
+
+
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDI_APP_BLUE_BEAKER_ICON ICON           "AppIconBlueBeaker.ico"
+
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDI_APP_ICON       ICON           "AppIcon2.ico"
+
+
+
 1 VERSIONINFO
  FILEVERSION OODIALOG_VER,OODIALOG_REL,OODIALOG_SUB,OODIALOG_BLD
  PRODUCTVERSION OODIALOG_VER,OODIALOG_REL,OODIALOG_SUB,OODIALOG_BLD
@@ -148,7 +164,7 @@ BEGIN
             VALUE "InternalName", "ooDialog\0"
             VALUE "LegalCopyright", "Copyright © RexxLA " OODIALOG_COPY_YEAR ".\0"
             VALUE "OriginalFilename", OODIALOG_BIN_NAME "\0"
-            VALUE "ProductName", "ooDialog a Windows Extension to Open Object Rexx\0"
+            VALUE "ProductName", "ooDialog, a Windows Extension to Open Object Rexx\0"
             VALUE "ProductVersion",  OODIALOG_VER_STR "\0"
         END
     END
