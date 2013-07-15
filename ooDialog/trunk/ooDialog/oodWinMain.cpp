@@ -105,10 +105,9 @@ static void reportError(HWND hwnd, CSTRING function, CSTRING title, HRESULT dw)
     _snprintf(msgBuf, HUGE_BUF_SIZE, "Error executing Windows API:\n\nFunction:\t\t%s\nError Code:\t%d\n\n%s",
               function, dw, formatMsgBuf);
 
-	MessageBox(hwnd, (LPCTSTR)msgBuf, title, MB_ICONERROR);
+	internalErrorMsgBox(hwnd, msgBuf, title);
 	LocalFree(formatMsgBuf);
 }
-
 
 /**
  * Formats an error message for a system error, plus some follow up text, and
@@ -130,10 +129,9 @@ static void reportErrorPlus(HWND hwnd, CSTRING function, CSTRING title, CSTRING 
                                      "Error Code:\t%d\n\n%s\n\n%s",
               function, dw, formatMsgBuf, extraMsg);
 
-	MessageBox(hwnd, (LPCTSTR)msgBuf, title, MB_ICONERROR);
+	internalErrorMsgBox(hwnd, msgBuf, title);
 	LocalFree(formatMsgBuf);
 }
-
 
 /**
  * Formats an error message using static memory and shows it in a message box.
@@ -151,8 +149,27 @@ static void reportError(HWND hwnd, CSTRING fmtStr, CSTRING title, CSTRING functi
     char  msgBuf[HUGE_BUF_SIZE];
 
     _snprintf(msgBuf, HUGE_BUF_SIZE, fmtStr, function, rc);
+	internalErrorMsgBox(hwnd, msgBuf, title);
+}
 
-	MessageBox(hwnd, (LPCTSTR)msgBuf, title, MB_ICONERROR);
+/**
+ * Formats an error message that uses a single, numerical, insert and shows it
+ * in a message box.
+ *
+ * @param fmt
+ * @param insert
+ */
+static void reportError(CSTRING fmt, uint32_t insert, CSTRING title)
+{
+    char buf[MEDIUM_BUF_SIZE];
+
+    _snprintf(buf, MEDIUM_BUF_SIZE, fmt, insert);
+    internalErrorMsgBox(buf, title);
+}
+
+inline void unicodeConversionErr(void)
+{
+    internalErrorMsgBox(UNICODE_CONVERSION_ERR, OS_ERR_TITLE);
 }
 
 
@@ -177,7 +194,7 @@ uint32_t getProcessIntegrityLevel(HWND hwnd, uint32_t *rc)
     if ( ! OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken) )
     {
         error = GetLastError();
-        reportError(hwnd, "OpenProcessToken", "Windows Operating System Error", error);
+        reportError(hwnd, "OpenProcessToken", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -188,7 +205,7 @@ uint32_t getProcessIntegrityLevel(HWND hwnd, uint32_t *rc)
         if ( GetLastError() != ERROR_INSUFFICIENT_BUFFER )
         {
             error = GetLastError();
-            reportError(hwnd, "GetTokenInformation", "Windows Operating System Error", error);
+            reportError(hwnd, "GetTokenInformation", OS_ERR_TITLE, error);
             goto done_out;
         }
     }
@@ -198,7 +215,7 @@ uint32_t getProcessIntegrityLevel(HWND hwnd, uint32_t *rc)
     if (pTokenIL == NULL)
     {
         error = GetLastError();
-        reportError(hwnd, "LocalAlloc", "Windows Operating System Error", error);
+        reportError(hwnd, "LocalAlloc", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -206,7 +223,7 @@ uint32_t getProcessIntegrityLevel(HWND hwnd, uint32_t *rc)
     if ( ! GetTokenInformation(hToken, TokenIntegrityLevel, pTokenIL, tokenSize, (DWORD *)&tokenSize))
     {
         error = GetLastError();
-        reportError(hwnd, "GetTokenInformation", "Windows Operating System Error", error);
+        reportError(hwnd, "GetTokenInformation", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -253,7 +270,7 @@ bool isUserInAdminGroup(HWND hwnd, bool isVistaOrLater, uint32_t *rc)
     if ( ! OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY | TOKEN_DUPLICATE, &hToken) )
     {
         error = GetLastError();
-        reportError(hwnd, "OpenProcessToken", "Windows Operating System Error", error);
+        reportError(hwnd, "OpenProcessToken", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -265,7 +282,7 @@ bool isUserInAdminGroup(HWND hwnd, bool isVistaOrLater, uint32_t *rc)
         if ( ! GetTokenInformation(hToken, TokenElevationType, &elevType, sizeof(elevType), &cbSize) )
         {
             error = GetLastError();
-            reportError(hwnd, "GetTokenInformation", "Windows Operating System Error", error);
+            reportError(hwnd, "GetTokenInformation", OS_ERR_TITLE, error);
             goto done_out;
         }
 
@@ -275,7 +292,7 @@ bool isUserInAdminGroup(HWND hwnd, bool isVistaOrLater, uint32_t *rc)
             if ( ! GetTokenInformation(hToken, TokenLinkedToken, &hTokenToCheck, sizeof(hTokenToCheck), &cbSize) )
             {
                 error = GetLastError();
-                reportError(hwnd, "GetTokenInformation", "Windows Operating System Error", error);
+                reportError(hwnd, "GetTokenInformation", OS_ERR_TITLE, error);
                 goto done_out;
             }
         }
@@ -290,7 +307,7 @@ bool isUserInAdminGroup(HWND hwnd, bool isVistaOrLater, uint32_t *rc)
         if ( ! DuplicateToken(hToken, SecurityIdentification, &hTokenToCheck) )
         {
             error = GetLastError();
-            reportError(hwnd, "DuplicateToken", "Windows Operating System Error", error);
+            reportError(hwnd, "DuplicateToken", OS_ERR_TITLE, error);
             goto done_out;
         }
     }
@@ -302,7 +319,7 @@ bool isUserInAdminGroup(HWND hwnd, bool isVistaOrLater, uint32_t *rc)
     if ( ! CreateWellKnownSid(WinBuiltinAdministratorsSid, NULL, &adminSID, &cbSize) )
     {
         error = GetLastError();
-        reportError(hwnd, "CreateWellKnownSid", "Windows Operating System Error", error);
+        reportError(hwnd, "CreateWellKnownSid", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -314,7 +331,7 @@ bool isUserInAdminGroup(HWND hwnd, bool isVistaOrLater, uint32_t *rc)
     if ( ! CheckTokenMembership(hTokenToCheck, &adminSID, &inAdminGroup) )
     {
         error = GetLastError();
-        reportError(hwnd, "CheckTokenMembership", "Windows Operating System Error", error);
+        reportError(hwnd, "CheckTokenMembership", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -355,7 +372,7 @@ bool isProcessElevated(HWND hwnd, uint32_t *rc)
     if ( ! OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
     {
         error = GetLastError();
-        reportError(hwnd, "OpenProcessToken", "Windows Operating System Error", error);
+        reportError(hwnd, "OpenProcessToken", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -365,7 +382,7 @@ bool isProcessElevated(HWND hwnd, uint32_t *rc)
     if ( ! GetTokenInformation(hToken, TokenElevation, &elevation, sizeof(elevation), (DWORD *)&size) )
     {
         error = GetLastError();
-        reportError(hwnd, "GetTokenInformation", "Windows Operating System Error", error);
+        reportError(hwnd, "GetTokenInformation", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -403,7 +420,7 @@ bool runningAsAdmin(HWND hwnd, uint32_t *rc)
                                     0, 0, 0, 0, 0, 0, &adminGroup) )
     {
         error = GetLastError();
-        reportError(hwnd, "AllocateAndInitializeSid", "Windows Operating System Error", error);
+        reportError(hwnd, "AllocateAndInitializeSid", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -413,7 +430,7 @@ bool runningAsAdmin(HWND hwnd, uint32_t *rc)
     if ( ! CheckTokenMembership(NULL, adminGroup, &isAdmin) )
     {
         error = GetLastError();
-        reportError(hwnd, "CheckTokenMembership", "Windows Operating System Error", error);
+        reportError(hwnd, "CheckTokenMembership", OS_ERR_TITLE, error);
         goto done_out;
     }
 
@@ -438,7 +455,7 @@ uint32_t determineStatus(HWND hDlg, pConfigureArguments pca)
     if ( ! GetVersionEx(&osver) )
     {
         rc = GetLastError();
-        reportError(hDlg, "GetVersionEx", "Windows Operating System Error", rc);
+        reportError(hDlg, "GetVersionEx", OS_ERR_TITLE, rc);
         goto done_out;
     }
 
@@ -476,6 +493,50 @@ done_out:
     return rc;
 }
 
+/**
+ * Creates a mono spaced font for the size specified.
+ *
+ * @param fontSize
+ *
+ * @return HFONT
+ */
+HFONT createMonoSpacedFont(int32_t fontSize)
+{
+    int   width = 0;                              // average character width
+    int   escapement = 0;                         // angle of escapement
+    int   orientation = 0;                        // base-line orientation angle
+    int   weight = FW_NORMAL;                     // font weight
+    BOOL  italic = FALSE;                         // italic attribute option
+    BOOL  underline = FALSE;                      // underline attribute option
+    BOOL  strikeOut = FALSE;                      // strikeout attribute option
+    uint32_t charSet = DEFAULT_CHARSET;           // character set identifier
+    uint32_t outputPrecision = OUT_TT_PRECIS;     // output precision
+    uint32_t clipPrecision = CLIP_DEFAULT_PRECIS; // clipping precision
+    uint32_t quality = DEFAULT_QUALITY;           // output quality
+    uint32_t pitchAndFamily = FF_DONTCARE;        // pitch and family
+
+    HDC hdc = CreateDC("DISPLAY", NULL, NULL, NULL);
+    int height = -MulDiv(fontSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    DeleteDC(hdc);
+
+    HFONT f = CreateFont(height, width, escapement, orientation, weight, italic, underline, strikeOut,
+                         charSet, outputPrecision, clipPrecision, quality, pitchAndFamily, "Courier New");
+    return f;
+}
+
+
+/**
+ * The dialog procedure for the 'main' dialog.  This is the dialog that displays
+ * if the ooDialog.exe executable is run with no arguments, or with the -H
+ * option flag.
+ *
+ * @param hDlg
+ * @param uMsg
+ * @param wParam
+ * @param lParam
+ *
+ * @return INT_PTR CALLBACK
+ */
 INT_PTR CALLBACK WinMainDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     static HFONT font = NULL;
@@ -487,11 +548,9 @@ INT_PTR CALLBACK WinMainDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
         setDlgIcon(hDlg, pa->hInstance);
 
         // Initialize the edit control that displays the long text.
-        HWND hEdit  = GetDlgItem(hDlg, IDC_EDIT);
-        int  height = -MulDiv(10, GetDeviceCaps(GetDC(hDlg), LOGPIXELSY), 72);
+        font = createMonoSpacedFont(10);
 
-        font = CreateFont(height, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_TT_ONLY_PRECIS,
-                          CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, FF_MODERN, "Courier New");
+        HWND hEdit  = GetDlgItem(hDlg, IDC_EDIT);
 
         SendMessage(hEdit, WM_SETFONT, (WPARAM)font, TRUE);
         SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)pa->mainMsg);
@@ -604,6 +663,75 @@ INT_PTR CALLBACK WinMainDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 }
 
 /**
+ * Generates the 'display name' in the extension record to match what the
+ * variables in the record indicate.  That is, if the variables in the record
+ * indicate that the .ext is registered for all users, the display name is marde
+ * accordingly.
+ *
+ * @param rec
+ *
+ * @note  We use this scheme:  The display name has 3 columns.  The first
+ *        column indicates the registered status for all users, the second
+ *        column indicates the registered status for the current user, and the
+ *        third column is the .ext name.
+ *
+ *        A '-' character indicates the .ext is not registered.  A '*' character
+ *        indicates the .ext is registered.  A '+' character indicates the .ext
+ *        is registered, but not registered to the ooDialog prog ID.
+ */
+static void updateExtDisplayName(pExtensionInfo rec)
+{
+    char *prefix = "- -  ";
+    if ( rec->allUsers )
+    {
+        if ( rec->curUser )
+        {
+            prefix = "* *  ";
+        }
+        else if ( rec->curUserOther )
+        {
+            prefix = "* +  ";
+        }
+        else
+        {
+            prefix = "* -  ";
+        }
+    }
+    else if ( rec->curUser )
+    {
+        if ( rec->allUsersOther )
+        {
+            prefix = "+ *  ";
+        }
+        else
+        {
+            prefix = "- *  ";
+        }
+    }
+    else
+    {
+        // Not associated with our program ID, but may be in use by others.
+        if ( rec->allUsersOther )
+        {
+            if ( rec->curUserOther )
+            {
+                prefix = "+ +  ";
+            }
+            else
+            {
+                prefix = "+ -  ";
+            }
+        }
+        else if ( rec->curUser )
+        {
+            prefix = "- +  ";
+        }
+    }
+
+    _snprintf(rec->displayName, MAX_EXT_DISPLAY, "%s%s", prefix, rec->extension);
+}
+
+/**
  * Given an extension information record for the specified ext, determines where
  * (in which locations) the extension is associated with the specified progID,
  * and or if it is associated with a different progID.
@@ -670,54 +798,80 @@ void qualifyExtensionInfo(char *extKeyName, pExtensionInfo rec, char *progID)
         RegCloseKey(hKey);
     }
 
-    char *prefix = "- -  ";
-    if ( rec->allUsers )
+    updateExtDisplayName(rec);
+}
+
+/**
+ * Searches the specified list box for an extension record that matches the
+ * extension specified.  Returns NULL if no recored is found.
+ *
+ * @param hLB
+ * @param extension
+ * @param index  [out]
+ *
+ * @return pExtensionInfo
+ */
+pExtensionInfo getExtRec(HWND hLB, CSTRING extension, uint32_t *index)
+{
+    LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
+    if ( count > 0 )
     {
-        if ( rec->curUser )
+        for (LRESULT i = 0; i < count; i++ )
         {
-            prefix = "* *  ";
-        }
-        else if ( rec->curUserOther )
-        {
-            prefix = "* +  ";
-        }
-        else
-        {
-            prefix = "* -  ";
+            pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
+            if ( StrCmpI(info->extension, extension) == 0 )
+            {
+                *index = (uint32_t)i;
+                return info;
+            }
         }
     }
-    else if ( rec->curUser )
+    return NULL;
+}
+
+/**
+ * Checks an extension record to see if the extension is registered in the
+ * current scope.  That is, if the current scope is all users, is the extension
+ * registered for all users?
+ *
+ * @return bool
+ */
+inline bool extRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
+{
+    if ( paa->allUsers )
     {
-        if ( rec->allUsersOther )
-        {
-            prefix = "+ *  ";
-        }
-        else
-        {
-            prefix = "- *  ";
-        }
+        return existing->allUsers;
     }
     else
     {
-        // Not associated with our program ID, but may be in use by others.
-        if ( rec->allUsersOther )
-        {
-            if ( rec->curUserOther )
-            {
-                prefix = "+ +  ";
-            }
-            else
-            {
-                prefix = "+ -  ";
-            }
-        }
-        else if ( rec->curUser )
-        {
-            prefix = "- +  ";
-        }
+        return existing->curUser;
     }
+}
 
-    _snprintf(rec->displayName, MAX_EXT_DISPLAY, "%s%s", prefix, extKeyName);
+/**
+ * Updates the extension record using the assumption that it is registered in
+ * the current scope.
+ *
+ * @param paa
+ * @param existing
+ *
+ * @note  If the record has the 'other' set to true, we change it to false
+ *        because the extension was just updated to point to our prog ID.  We
+ *        don't actuall need to check what it was, we just do it.
+ */
+void nowRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
+{
+    if ( paa->allUsers )
+    {
+        existing->allUsers      = true;
+        existing->allUsersOther = false;
+    }
+    else
+    {
+        existing->curUser       = true;
+        existing->curUserOther  = false;
+    }
+    updateExtDisplayName(existing);
 }
 
 /**
@@ -792,7 +946,7 @@ pExtensionInfo getExtensionRecords(HWND hDlg, char *progID, size_t *count)
     recs = (pExtensionInfo)LocalAlloc(LPTR, matches * sizeof(extensionInfo));
     if ( recs == NULL )
     {
-        reportError(hDlg, OUT_OF_MEMORY_FMT_STR, "Windows Operating System Error", "LocalAlloc", GetLastError());
+        reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
         goto done_out;
     }
 
@@ -839,6 +993,12 @@ done_out:
     return recs;
 }
 
+/**
+ * Determines if our ooDialog file type is registered, and if so if it is
+ * registered for all users and if it is registered for the current user.
+ *
+ * @param paa
+ */
 void checkRegistration(pAssocArguments paa)
 {
     char     value[MAX_HKEY_VALUE] = {'\0'};
@@ -875,6 +1035,15 @@ void checkRegistration(pAssocArguments paa)
     }
 }
 
+/**
+ * Removes all items from the specified list box, if there are any items.
+ *
+ * Each item in any of the list boxes has an extension record struct set as the
+ * item data for the item.  These records need to be freed before the list box
+ * is emptied.
+ *
+ * @param hLB
+ */
 void maybeEmptyLB(HWND hLB)
 {
     LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
@@ -890,6 +1059,28 @@ void maybeEmptyLB(HWND hLB)
 }
 
 /**
+ * Not used at this time, maybe, probably, not needed
+ *
+ * @param info
+ *
+ * @return bool
+ */
+static bool isSuggestedExt(pExtensionInfo info)
+{
+    for ( size_t i = 0; i < OOD_SUGGESTED_EXT_COUNT; i++ )
+    {
+        if ( StrCmpI(oodSuggestedExts[i], info->extension) == 0 )
+        {
+            // We change the case to match the suggested case. NOTE may need to make this conditional.
+            memset(info->extension, 0, sizeof(info->extension));
+            strcpy(info->extension, oodSuggestedExts[i]);
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Adds the suggested file extensions to the list box.  The first time through,
  * the list box will be empty.  But, we may do this several times if the user
  * adds and / or removes the registration for the file type.
@@ -902,7 +1093,7 @@ void maybeEmptyLB(HWND hLB)
  *
  * @return bool
  */
-bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
+static bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
 {
     HWND hLB = paa->lbSuggested;
 
@@ -914,7 +1105,7 @@ bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
 
         if ( info == NULL )
         {
-            reportError(hDlg, OUT_OF_MEMORY_FMT_STR, "Windows Operating System Error", "LocalAlloc", GetLastError());
+            reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
             return false;
         }
 
@@ -929,6 +1120,17 @@ bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
     return true;
 }
 
+/**
+ * Fills the current extensions list box.
+ *
+ * This should always be called after the suggested extensions list box is
+ * filled, because if a currently registered extension matches one of the
+ * suggested extensions we remove the suggested extension from its list box and
+ * use its record.
+ *
+ * @param hDlg
+ * @param paa
+ */
 void addCurrentExt(HWND hDlg, pAssocArguments paa)
 {
     size_t count = 0;
@@ -940,9 +1142,20 @@ void addCurrentExt(HWND hDlg, pAssocArguments paa)
 
     for ( size_t i = 0; i < count; i++ )
     {
-        pExtensionInfo current = &recs[i];
+        uint32_t idx;
+        LRESULT  index;
 
-        LRESULT index = SendMessage(hLB, LB_ADDSTRING, i, (LPARAM)current->displayName);
+        pExtensionInfo current  = &recs[i];
+        pExtensionInfo existing = getExtRec(paa->lbSuggested, current->extension, &idx);
+
+        if ( existing != NULL )
+        {
+            SendMessage(paa->lbSuggested, LB_DELETESTRING, idx, 0);
+            LocalFree(current);
+            current = existing;
+        }
+
+        index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
         SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
     }
 }
@@ -1025,6 +1238,7 @@ void setAssocControls(HWND hDlg, pAssocArguments paa, bool flag)
     EnableWindow(GetDlgItem(hDlg, IDC_PB_REMOVE_PATHEXT), enable);
 }
 
+
 /**
  * Sets the state of the dialog controls.
  *
@@ -1102,37 +1316,13 @@ void setRegisterdState(HWND hDlg, pAssocArguments paa)
     addCurrentExt(hDlg, paa);
 }
 
-HFONT fontCreate(int32_t fontSize)
-{
-    int   width = 0;                              // average character width
-    int   escapement = 0;                         // angle of escapement
-    int   orientation = 0;                        // base-line orientation angle
-    int   weight = FW_NORMAL;                     // font weight
-    BOOL  italic = FALSE;                         // italic attribute option
-    BOOL  underline = FALSE;                      // underline attribute option
-    BOOL  strikeOut = FALSE;                      // strikeout attribute option
-    uint32_t charSet = DEFAULT_CHARSET;           // character set identifier
-    uint32_t outputPrecision = OUT_TT_PRECIS;     // output precision
-    uint32_t clipPrecision = CLIP_DEFAULT_PRECIS; // clipping precision
-    uint32_t quality = DEFAULT_QUALITY;           // output quality
-    uint32_t pitchAndFamily = FF_DONTCARE;        // pitch and family
-
-    HDC hdc = CreateDC("DISPLAY", NULL, NULL, NULL);
-    int height = -MulDiv(fontSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-    DeleteDC(hdc);
-
-    HFONT f = CreateFont(height, width, escapement, orientation, weight, italic, underline, strikeOut,
-                         charSet, outputPrecision, clipPrecision, quality, pitchAndFamily, "Courier New");
-    return f;
-}
-
 void setStaticText(HWND hDlg, pAssocArguments paa)
 {
     SetDlgItemText(hDlg, IDC_GB_ASSOCIATE, paa->allUsers ?
                    "Associating File Extensions with ooDialog.exe File Type for All Users" :
                    "Associating File Extensions with ooDialog.exe File Type for the Current User");
 
-    SetDlgItemText(hDlg, IDC_ST_FTYPE, paa->progID);
+    SetDlgItemText(hDlg, IDC_ST_FTYPE, paa->friendlyName);
     SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "CurrentUser");
     SetDlgItemText(hDlg, IDC_ST_RUNAS, paa->isRunAsAdmin ? "True" : "False");
     SetDlgItemText(hDlg, IDC_ST_ELEVATED, paa->isElevated ? "True" : "False");
@@ -1146,17 +1336,230 @@ void setUp(HWND hDlg, pAssocArguments paa)
     paa->lbCurrent   = GetDlgItem(hDlg, IDC_LB_CURRENT);
     paa->lbPathExt   = GetDlgItem(hDlg, IDC_LB_PATHEXT);
     paa->pbRegister  = GetDlgItem(hDlg, IDC_PB_REGISTER);
+    paa->edit        = GetDlgItem(hDlg, IDC_EDIT_EXTENSION);
 
-    HFONT font = fontCreate(8);
+    LoadString(paa->hInstance, IDS_FRIENDLY_NAME, paa->friendlyName, MAX_FRIENDLY_NAME);
+
+    HFONT font = createMonoSpacedFont(8);
 
     SendMessage(paa->lbSuggested, WM_SETFONT, (WPARAM)font, FALSE);
     SendMessage(paa->lbCurrent, WM_SETFONT, (WPARAM)font, FALSE);
     SendMessage(paa->lbPathExt, WM_SETFONT, (WPARAM)font, FALSE);
 
+    // Leave room for both the ending NULL and to add a '.'
+    SendMessage(paa->edit, EM_SETLIMITTEXT, MAX_EXT_NAME - 2, 0);
+
     setDlgIcon(hDlg, paa->hInstance);
     setStaticText(hDlg, paa);
 
     setRegisterdState(hDlg, paa);
+}
+
+/**
+ * Determines and returns the predefined registry key and its descriptive string
+ * that matches the scope we are using.  Local machine or  current user.
+ *
+ * @param paa
+ * @param user  Descriptive string [out]
+ *
+ * @return HKEY
+ */
+HKEY getScopeVars(pAssocArguments paa, char **user)
+{
+    HKEY  hPreDefKey = HKEY_CURRENT_USER;
+    char *u          = "the current user.";
+
+    if ( paa->allUsers )
+    {
+        hPreDefKey = HKEY_LOCAL_MACHINE;
+        u          = "all users";
+    }
+    *user = u;
+    return hPreDefKey;
+}
+
+
+/**
+ *
+ *
+ * @author Administrator (7/14/2013)
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @return bool
+ */
+bool deleteRegProgID(HWND hDlg, pAssocArguments paa)
+{
+    char *user;
+    HKEY hPreDefKey = getScopeVars(paa, & user);
+
+    char valueBuf[MEDIUM_BUF_SIZE];
+    _snprintf(valueBuf, MEDIUM_BUF_SIZE, "SOFTWARE\\Classes\\%s", paa->progID);
+
+    uint32_t rc = SHDeleteKey(hPreDefKey, valueBuf);
+    if ( rc != ERROR_SUCCESS )
+    {
+        char extraMsg[SMALL_BUF_SIZE];
+
+        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to delete the %s key for %s", valueBuf, user);
+
+        reportErrorPlus(hDlg, "SHDeleteKey", REG_ERR_TITLE, extraMsg, rc);
+        return false;
+    }
+    return true;
+}
+
+
+/**
+ * Deletes all extension (.xxx) subkeys for our ooDialog file type (prog ID)
+ * within the scope (all users / current user) we are under.
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @return bool
+ *
+ * @note  When querying a subkey value, I have had a problem with file not found
+ *        error.  This seems to be when the default value for the subkey is not
+ *        set.  So, I ignore that specific error.  In getExtensionRecords() we
+ *        just ignore all errors and that might be what we should do here.
+ *        After all, if we can't query the default value for an extension
+ *        subkey, it was probably not set by use.
+ */
+static bool deleteRegAllExt(HWND hDlg, pAssocArguments paa)
+{
+    char     *user;
+    HKEY      hPreDefKey = getScopeVars(paa, & user);
+    uint32_t  rc = 0;
+    HKEY      hClassesKey;
+    char      extraMsg[SMALL_BUF_SIZE];
+
+    rc = RegOpenKeyEx(hPreDefKey, "SOFTWARE\\Classes\\", 0, KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE, &hClassesKey);
+    if ( rc != ERROR_SUCCESS )
+    {
+        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to open the %s registry key for %s", "SOFTWARE\\Classes\\", user);
+
+        reportErrorPlus(hDlg, "RegOpenKeyEx", REG_ERR_TITLE, extraMsg, rc);
+        return false;
+    }
+
+    bool success = true;
+    HWND hLB     = paa->lbCurrent;
+    char buf[512];
+
+    LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
+   // sprintf(buf, "Found %d items in lbCurrent", count);
+   // internalErrorMsgBox(hDlg, buf, "Going to delete");
+    if ( count > 0 )
+    {
+        for ( LRESULT i = 0; i < count; i++ )
+        {
+            pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
+           // internalErrorMsgBox(hDlg, info->extension, "Going to delete");
+            if ( extRegisteredInScope(paa, info) )
+            {
+                rc = RegDeleteKey(hClassesKey, info->extension);
+                if ( rc != ERROR_SUCCESS )
+                {
+                    _snprintf(extraMsg, SMALL_BUF_SIZE,
+                              "Failed to delete the SOFTWARE\\Classes\\%s registry subkey for %s",
+                              info->extension, user);
+
+                    reportErrorPlus(hDlg, "RegDeleteKey", REG_ERR_TITLE, extraMsg, rc);
+                    success = false;
+                }
+            }
+        }
+    }
+
+    RegCloseKey(hClassesKey);
+    return success;
+
+    /* old code
+    // We only need the number of subkeys.
+    uint32_t cSubkeys;
+    rc = RegQueryInfoKey(HKEY_CLASSES_ROOT, NULL, NULL, NULL, (LPDWORD)&cSubkeys,
+                         NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+    uint32_t maxName;                  // Size of name buffer
+    char     keyName[MAX_HKEY_NAME];   // Buffer for subkey name
+
+    uint32_t maxValue = MAX_HKEY_VALUE; // Size of value buffer
+    char     value[MAX_HKEY_VALUE];     // Buffer for default value for subkey
+    bool     success = true;
+    uint32_t i       = 0;
+    CSTRING  progID  = paa->progID;
+
+    for ( i = 0; i < cSubkeys; i++ )
+    {
+        maxName = MAX_HKEY_NAME;
+        rc = RegEnumKeyEx(hClassesKey, i, keyName, (LPDWORD)&maxName, NULL, NULL, NULL, NULL);
+        if ( rc == ERROR_SUCCESS )
+        {
+            if ( *keyName == '.' )
+            {
+                HKEY hExtKey;
+                if ( StrStrI(keyName, "rxd") != NULL )
+                {
+                    internalErrorMsgBox(hDlg, keyName, "Found .rxd");
+                }
+                rc = RegOpenKeyEx(hClassesKey, keyName, 0, DELETE | KEY_QUERY_VALUE, &hExtKey);
+                if ( rc == ERROR_SUCCESS )
+                {
+                    maxValue = MAX_HKEY_VALUE;
+                    value[0] = '\0';
+
+                    rc = RegQueryValueEx(hExtKey, "", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue);
+                    RegCloseKey(hExtKey);
+
+                    if ( rc == ERROR_SUCCESS )
+                    {
+                        if ( StrCmpI(value, progID) == 0 )
+                        {
+                            rc = RegDeleteKey(hClassesKey, keyName);
+                            if ( rc != ERROR_SUCCESS )
+                            {
+                                _snprintf(extraMsg, SMALL_BUF_SIZE,
+                                          "Failed to delete the SOFTWARE\\Classes\\%s registry subkey for %s",
+                                          keyName, user);
+
+                                reportErrorPlus(hDlg, "RegDeleteKey", REG_ERR_TITLE, extraMsg, rc);
+                                success = false;
+                            }
+                        }
+                    }
+                    else if ( rc != ERROR_FILE_NOT_FOUND )
+                    {
+                        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to query the SOFTWARE\\Classes\\%s registry subkey for %s",
+                                  keyName, user);
+
+                        reportErrorPlus(hDlg, "RegQueryValueEx", REG_ERR_TITLE, extraMsg, rc);
+                        success = false;
+                    }
+                }
+                else
+                {
+                    _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to open the SOFTWARE\\Classes\\%s registry subkey for %s",
+                              keyName, user);
+
+                    reportErrorPlus(hDlg, "RegOpenKeyEx", REG_ERR_TITLE, extraMsg, rc);
+                    success = false;
+                }
+            }
+        }
+        else if ( rc != ERROR_NO_MORE_ITEMS )
+        {
+            _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to enumerate the %s registry subkey for %s", "SOFTWARE\\Classes\\", user);
+
+            reportErrorPlus(hDlg, "RegEnumKeyEx", REG_ERR_TITLE, extraMsg, rc);
+            success = false;
+        }
+    }
+
+    RegCloseKey(hClassesKey);
+    return success;
+    */
 }
 
 /**
@@ -1173,6 +1576,11 @@ void setUp(HWND hDlg, pAssocArguments paa)
  *                   machine.)
  *
  * @return The opened subkey on success, otherwise NULL.
+ *
+ * @note  There may be one problem here, if we create the key, but fail to set
+ *        the default value, we don't clean up the created key.  TODO  We could
+ *        check the disposition and if was created, we could delete the key if
+ *        we fail to set the default value.
  */
 HKEY writeRegSubkeyValue(HKEY openedKey, char *subkey, char *defValue, HWND hDlg, char *user)
 {
@@ -1186,7 +1594,7 @@ HKEY writeRegSubkeyValue(HKEY openedKey, char *subkey, char *defValue, HWND hDlg
     {
         _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to create or open the %s registry key for %s", subkey, user);
 
-        reportErrorPlus(hDlg, "RegCreateKeyEx", "Windows Registry Error", extraMsg, rc);
+        reportErrorPlus(hDlg, "RegCreateKeyEx", REG_ERR_TITLE, extraMsg, rc);
         return NULL;
     }
 
@@ -1202,7 +1610,7 @@ HKEY writeRegSubkeyValue(HKEY openedKey, char *subkey, char *defValue, HWND hDlg
                       "Failed to set the default value (%s) for the %s registry key for %s",
                       defValue, subkey, user);
 
-            reportErrorPlus(hDlg, "RegSetValueEx", "Windows Registry Error", extraMsg, rc);
+            reportErrorPlus(hDlg, "RegSetValueEx", REG_ERR_TITLE, extraMsg, rc);
 
             RegCloseKey(hKey);
             hKey = NULL;
@@ -1224,7 +1632,7 @@ HKEY writeRegSubkeyValue(HKEY openedKey, char *subkey, char *defValue, HWND hDlg
  *
  * @return True on success, false on error.
  */
-bool writeRegKeyValue(HKEY openedKey, char *valueName, char *value, HWND hDlg, char *user)
+static bool writeRegKeyValue(HKEY openedKey, char *valueName, char *value, HWND hDlg, char *user)
 {
     uint32_t rc;
     size_t  len = strlen(value) + 1;
@@ -1238,30 +1646,75 @@ bool writeRegKeyValue(HKEY openedKey, char *valueName, char *value, HWND hDlg, c
                   "Failed to set the %s value (%s) for %s",
                   valueName, value, user);
 
-        reportErrorPlus(hDlg, "RegSetValueEx", "Windows Registry Error", extraMsg, rc);
+        reportErrorPlus(hDlg, "RegSetValueEx", REG_ERR_TITLE, extraMsg, rc);
 
         return false;
     }
     return true;
 }
 
-bool removeRegProgID(HWND hDlg, pAssocArguments paa)
+static bool registerRegExt(HWND hDlg, pAssocArguments paa, CSTRING extension)
 {
-    internalInfoMsgBox("removeProgID() not implemented", "ooDialog");
-    return false;
-}
+    char *user;
+    HKEY hPreDefKey = getScopeVars(paa, & user);
+    HKEY hKey       = NULL;
+    char subkeyName[MEDIUM_BUF_SIZE];
 
-bool writeRegProgID(HWND hDlg, pAssocArguments paa)
-{
-    HKEY  hPreDefKey = HKEY_CURRENT_USER;
-    char *user       = "the current user.";
+    // Creae, or overwrite, the .ext subkey of software\classees, and set the
+    // default value to our prog ID
+    _snprintf(subkeyName, MEDIUM_BUF_SIZE, "SOFTWARE\\Classes\\%s", extension);
 
-    if ( paa->allUsers )
+    hKey = writeRegSubkeyValue(hPreDefKey, subkeyName, paa->progID, hDlg, user);
+    if ( hKey == NULL )
     {
-        hPreDefKey = HKEY_LOCAL_MACHINE;
-        user       = "all users";
+        return false;
     }
 
+    return true;
+}
+
+// HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ood
+
+// HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.rxd
+
+/**
+ * Removes the ooDialog ftype and (optionally ?) its associated extensions
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @return bool
+ *
+ * @note  TODO add code to check if the user wants the extensions removed.  For
+ *        now we just do it. Possibly add code, or another function, to
+ *        completely clean up the registry stuff that was, or may have been
+ *        added by us.
+ *
+ * @note  We need to be sure to remove the extensions (if we are going to)
+ *        before we remove the ftype (progID).  If we remove the progID first
+ *        and an error happens removing the extension, we end up with a problem
+ *        with any extension not removed where the registry refuses to open that
+ *        extension.
+ */
+static bool removeProgID(HWND hDlg, pAssocArguments paa)
+{
+    if ( ! deleteRegAllExt(hDlg, paa) )
+    {
+        return false;
+    }
+
+    if ( ! deleteRegProgID(hDlg, paa) )
+    {
+        return false;
+    }
+
+    return true;
+}
+
+static bool addProgID(HWND hDlg, pAssocArguments paa)
+{
+    char *user;
+    HKEY hPreDefKey = getScopeVars(paa, & user);
     HKEY hProgIdKey = NULL;
     HKEY hKey       = NULL;
     char valueBuf[MEDIUM_BUF_SIZE];
@@ -1328,8 +1781,6 @@ bool writeRegProgID(HWND hDlg, pAssocArguments paa)
     }
     RegCloseKey(hKey);
 
-    // Write the default value for shell\open.  This won't created the subkey,
-    // it was just created, it will just open it.
     /* TODO add code to set an editor. (shell\edit) */
 
     /* TODO add code to use rexxc ? (shell\compile) */
@@ -1353,20 +1804,115 @@ done_out:
     {
         RegCloseKey(hProgIdKey);
 
-        // We delete the key because it was not completely written.
-        _snprintf(valueBuf, MEDIUM_BUF_SIZE, "SOFTWARE\\Classes\\%s", paa->progID);
+        // We delete the key because it was not completely written.  We don't
+        // care if it fails or not because if it fails we can't do any thing
+        // about it.
+        deleteRegProgID(hDlg, paa);
 
-        uint32_t rc = SHDeleteKey(hPreDefKey, valueBuf);
-        if ( rc != ERROR_SUCCESS )
-        {
-            char extraMsg[SMALL_BUF_SIZE];
-
-            _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to delete the %s key for %s", valueBuf, user);
-
-            reportErrorPlus(hDlg, "RegSetValueEx", "Windows Registry Error", extraMsg, rc);
-        }
     }
     return false;
+}
+
+INT_PTR pbAddExtension(HWND hDlg)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    pExtensionInfo info = NULL;
+    char           text[MAX_EXT_NAME];
+    int32_t        count = MAX_EXT_NAME;
+
+    count = GetWindowText(paa->edit, text, count);
+    if ( count == 0 )
+    {
+        goto err_out;
+    }
+
+    info = (pExtensionInfo)LocalAlloc(LPTR, sizeof(extensionInfo));
+    if ( info == NULL )
+    {
+        reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
+        goto err_out;
+    }
+    if ( *text != '.' )
+    {
+        strcpy(info->extension, ".");
+    }
+    strcat(info->extension, text);
+
+    qualifyExtensionInfo(info->extension, info, paa->progID);
+
+    // If this extension is already registered in this scope, do nothing
+    if ( extRegisteredInScope(paa, info) )
+    {
+        goto err_out;
+    }
+
+    // See if extension is already listed in the current list box
+    uint32_t index;
+    pExtensionInfo existing = getExtRec(paa->lbCurrent, info->extension, &index);
+    if ( existing != NULL )
+    {
+        // It can't be registered in this scope, we already checked. We just
+        // want to register and update the existing item.
+        if ( ! registerRegExt(hDlg, paa, existing->extension) )
+        {
+            goto err_out;
+        }
+
+        nowRegisteredInScope(paa, existing);
+
+        SendMessage(paa->lbCurrent, LB_DELETESTRING, index, 0);
+
+        index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)existing->displayName);
+        SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)existing);
+
+        LocalFree(info);
+        goto done_out;
+    }
+
+    // See if the user entered an extenstion that is also in the suggested list
+    // box.
+    existing = getExtRec(paa->lbSuggested, info->extension, &index);
+    if ( existing != NULL )
+    {
+        // It can't be registered in this scope, we already checked. We just
+        // want to register, update the existing item, update the list boxes.
+        if ( ! registerRegExt(hDlg, paa, existing->extension) )
+        {
+            goto err_out;
+        }
+
+        nowRegisteredInScope(paa, existing);
+
+        SendMessage(paa->lbSuggested, LB_DELETESTRING, index, 0);
+
+        index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)existing->displayName);
+        SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)existing);
+
+        LocalFree(info);
+        goto done_out;
+    }
+
+    // Okay, completely new, just register it and update the list box
+    if ( ! registerRegExt(hDlg, paa, info->extension) )
+    {
+        goto err_out;
+    }
+
+    nowRegisteredInScope(paa, info);
+
+    index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)info->displayName);
+    SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)info);
+
+    goto done_out;
+
+err_out:
+    safeLocalFree(info);
+
+done_out:
+    SetWindowText(paa->edit, "");
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+    return TRUE;
 }
 
 /**
@@ -1375,72 +1921,85 @@ done_out:
  * @param hDlg
  *
  * @return INT_PTR
+ *
+ * @note  If scope is all users and all users is registered, then we must be
+ *        removing the prog ID.  Otherwise we must be adding the prog ID.
+ *
+ *        Same logic if scope is current user.  If current user is registered,
+ *        we must be removing the prog ID, otherwise we are adding.
+ *
+ *        If the operation is not a success, then we disable the push button so
+ *        that the user does not try again.
+ *
+ *        When the operation is a success, then the state of the dialog must
+ *        always be reset.
  */
 INT_PTR pbRegister(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
+    bool removing;
+    bool success;
+
     if ( paa->allUsers )
     {
         if ( paa->registeredAllUsers )
         {
-            removeRegProgID(hDlg, paa);
+            success  = removeProgID(hDlg, paa);
+            removing = true;
         }
         else
         {
-            if ( writeRegProgID(hDlg, paa) )
-            {
-                paa->ftypeIsRegistered = true;
-                if ( paa->allUsers )
-                {
-                    paa->registeredAllUsers = true;
-                }
-                else
-                {
-                    paa->registeredCurUsers = true;
-                }
-
-                setRegisterdState(hDlg, paa);
-            }
-            else
-            {
-                // Failed to create the progID entry, disable this push button so
-                // the user can't try this again.
-                EnableWindow(paa->pbRegister, FALSE);
-            }
+            success  = addProgID(hDlg, paa);
+            removing = false;
         }
     }
     else
     {
         if ( paa->registeredCurUsers )
         {
-            removeRegProgID(hDlg, paa);
+            success  = removeProgID(hDlg, paa);
+            removing = true;
         }
         else
         {
-            if ( writeRegProgID(hDlg, paa) )
-            {
-                paa->ftypeIsRegistered = true;
-                if ( paa->allUsers )
-                {
-                    paa->registeredAllUsers = true;
-                }
-                else
-                {
-                    paa->registeredCurUsers = true;
-                }
-
-                setRegisterdState(hDlg, paa);
-            }
-            else
-            {
-                // Failed to create the progID entry, disable this push button
-                // so the user can't try this again.
-                EnableWindow(paa->pbRegister, FALSE);
-            }
+            success  = addProgID(hDlg, paa);
+            removing = false;
         }
     }
 
+    if ( success )
+    {
+        if ( removing )
+        {
+            if ( paa->allUsers )
+            {
+                paa->registeredAllUsers = false;
+            }
+            else
+            {
+                paa->registeredCurUsers = false;
+            }
+        }
+        else
+        {
+            if ( paa->allUsers )
+            {
+                paa->registeredAllUsers = true;
+            }
+            else
+            {
+                paa->registeredCurUsers = true;
+            }
+        }
+
+        paa->ftypeIsRegistered = (paa->registeredAllUsers || paa->registeredCurUsers) ? true : false;
+        setRegisterdState(hDlg, paa);
+    }
+    else
+    {
+        EnableWindow(paa->pbRegister, FALSE);
+    }
     return TRUE;
 }
 
@@ -1451,18 +2010,14 @@ INT_PTR handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
     {
         case IDOK:
         case IDCANCEL:
-        {
             EndDialog(hDlg, wParam);
-        }
-        return TRUE;
+            return TRUE;
 
         case IDC_PB_REGISTER :
             return pbRegister(hDlg);
-            break;
 
         case IDC_PB_ADD_EXTENSION :
-
-            break;
+            return pbAddExtension(hDlg);
 
         case IDC_PB_ADD_CURRENT :
 
@@ -1650,7 +2205,7 @@ INT_PTR CALLBACK ConfigureDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
                                     }
                                     else
                                     {
-                                        reportError(hDlg, "ShellExecuteEx", "Windows Operating System Error", error);
+                                        reportError(hDlg, "ShellExecuteEx", OS_ERR_TITLE, error);
                                     }
                                 }
                                 else
@@ -1663,7 +2218,7 @@ INT_PTR CALLBACK ConfigureDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
                             else
                             {
                                 error = GetLastError();
-                                reportError(hDlg, "GetModuleFileName", "Windows Operating System Error", error);
+                                reportError(hDlg, "GetModuleFileName", OS_ERR_TITLE, error);
                             }
                         }
                         else
@@ -1777,48 +2332,6 @@ static int32_t displayVersion(RexxThreadContext *c, pProgramArguments pa)
 }
 
 /**
- * Grabs the fully qualified executable name.
- *
- * @param exeName
- *
- * @return bool
- *
- * @note This function duplicates some code from commandLineToArgv()
- */
-static bool saveExecutableName(char *exeName)
-{
-    LPWSTR  *szArglist = NULL;
-    int32_t  nArgs     = 0;
-
-    char buf[512] = {'\0'};  // Possible error message buffer
-
-    szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-    if ( NULL == szArglist || nArgs < 1 )
-    {
-        sprintf(buf, "Operating system parsing of the command line failed.\n\n"
-                     "Last reported error code: %d\n", GetLastError());
-        internalErrorMsgBox(buf, "ooDialog Execute Program: Windows Error");
-        return false;
-    }
-
-    char *tmp = unicode2ansi(szArglist[0]);
-    if ( tmp )
-    {
-        // TODO need to check for fully qualified name ...
-        strcpy(exeName, tmp);
-        LocalFree(tmp);
-    }
-    else
-    {
-        sprintf(buf, "Conversion from Unicode to ANSI, or memory\n"
-                     "allocation, failed.");
-        internalErrorMsgBox(buf, "ooDialog Execute Program: Windows Error");
-        return false;
-    }
-    return true;
-}
-
-/**
  * Gets the wide character string command line arguments in conventional argv /
  * argc format and converst the argument array to an array of ANSI strings.
  *
@@ -1849,9 +2362,7 @@ static char **commandLineToArgv(int32_t *count, char *exeName)
     szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
     if ( NULL == szArglist )
     {
-        sprintf(buf, "Operating system parsing of the command line failed.\n\n"
-                     "Last reported error code: %d\n", GetLastError());
-        internalErrorMsgBox(buf, "ooDialog Execute Program: Windows Error");
+        reportError(OS_PARSING_ERR_FMT, GetLastError(), OS_ERR_TITLE);
         goto done_out;
     }
 
@@ -1869,9 +2380,7 @@ static char **commandLineToArgv(int32_t *count, char *exeName)
     }
     else
     {
-        sprintf(buf, "Conversion from Unicode to ANSI, or memory\n"
-                     "allocation, failed.");
-        internalErrorMsgBox(buf, "ooDialog Execute Program: Windows Error");
+        unicodeConversionErr();
         goto done_out;
     }
 
@@ -1882,9 +2391,7 @@ static char **commandLineToArgv(int32_t *count, char *exeName)
     args = (char **)LocalAlloc(LPTR, nArgs * sizeof(char **));
     if ( args == NULL )
     {
-        sprintf(buf, "Conversion from Unicode to ANSI, or memory\n"
-                     "allocation, failed.");
-        internalErrorMsgBox(buf, "ooDialog Execute Program: Windows Error");
+        unicodeConversionErr();
         goto done_out;
     }
 
@@ -1894,9 +2401,7 @@ static char **commandLineToArgv(int32_t *count, char *exeName)
 
         if ( wcslen(a) == 0 )
         {
-            sprintf(buf, "Argument %d is the empty string (\"\").\n\n"
-                         "This is not allowed.\n", i + 1);
-            internalErrorMsgBox(buf, "ooDialog Execute Program: User Error");
+            reportError(EMPTY_STRING_ARG_ERR_FMT, i + 1, USER_ERR_TITLE);
             goto error_out;
         }
 
@@ -1907,9 +2412,7 @@ static char **commandLineToArgv(int32_t *count, char *exeName)
         }
         else
         {
-            sprintf(buf, "Conversion from Unicode to ANSI, or memory\n"
-                         "allocation, failed.");
-            internalErrorMsgBox(buf, "ooDialog Execute Program: Windows Error");
+            unicodeConversionErr();
             goto error_out;
         }
     }

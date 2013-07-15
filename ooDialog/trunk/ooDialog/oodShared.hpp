@@ -44,6 +44,9 @@
 #define LARGE_BUF_SIZE                1024
 #define HUGE_BUF_SIZE                 2048
 
+#define ERR_MB_FLAGS                  MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL
+#define INFO_MB_FLAGS                 MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND | MB_TASKMODAL
+
 
 inline LONG_PTR setWindowPtr(HWND hwnd, int index, LONG_PTR newPtr)
 {
@@ -108,7 +111,19 @@ inline wholenumber_t conditionSubCode(RexxCondition *condition)
  */
 inline void internalErrorMsgBox(CSTRING pszMsg, CSTRING pszTitle)
 {
-    MessageBox(0, pszMsg, pszTitle, MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
+    MessageBox(0, pszMsg, pszTitle, ERR_MB_FLAGS);
+}
+
+/**
+ * Convenience function to put up an error message box.
+ *
+ * @param hwnd      Owner window handle
+ * @param pszMsg    The message.
+ * @param pszTitle  The title of for the message box.
+ */
+inline void internalErrorMsgBox(HWND owner, CSTRING pszMsg, CSTRING pszTitle)
+{
+    MessageBox(owner, pszMsg, pszTitle, ERR_MB_FLAGS);
 }
 
 /**
@@ -119,7 +134,7 @@ inline void internalErrorMsgBox(CSTRING pszMsg, CSTRING pszTitle)
  */
 inline void internalInfoMsgBox(CSTRING pszMsg, CSTRING pszTitle)
 {
-    MessageBox(0, pszMsg, pszTitle, MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND | MB_TASKMODAL);
+    MessageBox(0, pszMsg, pszTitle, INFO_MB_FLAGS);
 }
 
 

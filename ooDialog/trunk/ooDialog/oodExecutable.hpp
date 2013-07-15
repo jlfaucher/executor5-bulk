@@ -96,7 +96,14 @@
 // Eveything else is not passed to the resource compiler:
 #ifndef RC_INVOKED
 
-#define OUT_OF_MEMORY_FMT_STR        "Failed to allocate memory:\n\nFunction:\t\t%s\nError Code:\t%d"
+#define OS_ERR_TITLE                 "ooDialog Execute Program: Windows Error"
+#define USER_ERR_TITLE               "ooDialog Execute Program: User Error"
+#define REG_ERR_TITLE                "ooDialog Execute Program: Registry Error"
+
+#define UNICODE_CONVERSION_ERR       "Conversion from Unicode to ANSI, or memory\nallocation, failed."
+#define OUT_OF_MEMORY_ERR_FMT        "Failed to allocate memory:\n\nFunction:\t\t%s\nError Code:\t%d"
+#define OS_PARSING_ERR_FMT           "Operating system parsing of the command line failed.\n\nLast reported error code: %d\n"
+#define EMPTY_STRING_ARG_ERR_FMT     "Argument %d is the empty string (\"\").\n\nThis is not allowed.\n"
 
 #define OODIALOG_PROGID              "ooRexx.ooDialog"
 #define OODIALOG_PROGID_VERSIONED    "ooRexx.ooDialog.1"
@@ -106,6 +113,7 @@
 // Buffer size for progID. We only currently need 18, but we add extra for
 // testing now and possible future changes.
 #define MAX_PROGID                   32
+#define MAX_FRIENDLY_NAME            64
 
 inline void safeLocalFree(void *p)
 {
@@ -117,6 +125,7 @@ inline void safeLocalFree(void *p)
 
 static char *oodSuggestedExts[] =
 {
+    ".rxd",
     ".ood",
     ".ooDlg",
     ".rxooDlg",
@@ -154,6 +163,7 @@ typedef programArguments *pProgramArguments;
 
 typedef struct _assocArguments
 {
+    char               friendlyName[MAX_FRIENDLY_NAME];
     char               progID[MAX_PROGID];
     HINSTANCE          hInstance;         // This executable's instance
     char              *exeName;
@@ -162,6 +172,7 @@ typedef struct _assocArguments
     HWND               lbCurrent;
     HWND               lbPathExt;
     HWND               pbRegister;
+    HWND               edit;
     bool               allUsers;          // If true file associations is for all users, otherwise current user
     bool               isRunAsAdmin;
     bool               isElevated;
