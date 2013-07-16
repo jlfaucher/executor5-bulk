@@ -732,6 +732,29 @@ static void updateExtDisplayName(pExtensionInfo rec)
 }
 
 /**
+ * Marks this extension record as one of the 'suggested' extensions.  We use
+ * this function to set things correctly, even when we already know it is a
+ * suggested function.
+ *
+ * @param info
+ *
+ * @return bool
+ */
+static bool suggestedExt(pExtensionInfo info)
+{
+    for ( size_t i = 0; i < OOD_SUGGESTED_EXT_COUNT; i++ )
+    {
+        if ( StrCmpI(oodSuggestedExts[i], info->extension) == 0 )
+        {
+            strcpy(info->extension, oodSuggestedExts[i]);
+            info->suggested = true;
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Given an extension information record for the specified ext, determines where
  * (in which locations) the extension is associated with the specified progID,
  * and or if it is associated with a different progID.
@@ -798,6 +821,7 @@ void qualifyExtensionInfo(char *extKeyName, pExtensionInfo rec, char *progID)
         RegCloseKey(hKey);
     }
 
+    suggestedExt(rec);
     updateExtDisplayName(rec);
 }
 
@@ -827,6 +851,29 @@ pExtensionInfo getExtRec(HWND hLB, CSTRING extension, uint32_t *index)
         }
     }
     return NULL;
+}
+
+/**
+ * Returns the extension record for the currently selected item in the specified
+ * list box.
+ *
+ * We return NULL if there is no selected item.  An enhancement to this program
+ * would be to disable / enable things when items are not selected.
+ *
+ * @param extension
+ * @param index
+ *
+ * @return pExtensionInfo
+ */
+pExtensionInfo getSelectedExtRec(HWND hLB, uint32_t *index)
+{
+    LRESULT selected = SendMessage(hLB, LB_GETCURSEL, NULL, NULL);
+    if ( selected == LB_ERR )
+    {
+        return NULL;
+    }
+
+    return (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, selected, 0);
 }
 
 /**
@@ -1059,34 +1106,21 @@ void maybeEmptyLB(HWND hLB)
 }
 
 /**
- * Not used at this time, maybe, probably, not needed
- *
- * @param info
- *
- * @return bool
- */
-static bool isSuggestedExt(pExtensionInfo info)
-{
-    for ( size_t i = 0; i < OOD_SUGGESTED_EXT_COUNT; i++ )
-    {
-        if ( StrCmpI(oodSuggestedExts[i], info->extension) == 0 )
-        {
-            // We change the case to match the suggested case. NOTE may need to make this conditional.
-            memset(info->extension, 0, sizeof(info->extension));
-            strcpy(info->extension, oodSuggestedExts[i]);
-            return true;
-        }
-    }
-    return false;
-}
-
-/**
  * Adds the suggested file extensions to the list box.  The first time through,
  * the list box will be empty.  But, we may do this several times if the user
  * adds and / or removes the registration for the file type.
  *
  * If there are any items in the list box, we need to not only remove them, but
  * to also free the extension memory.
+ *
+ * For the suggested extensions, we may end up with 2 records.  If the extension
+ * is not registered in this scope, then we want it to be an item in the
+ * suggested list box so the user can register it.  If it is registered in this
+ * scope then we do not want the item in the suggested list box, but do want it
+ * in the current list box.
+ *
+ * We handle not putting it in the suggested list box here, and handle putting
+ * it in the current list box in addCurrentExt().
  *
  * @param hDlg
  * @param paa
@@ -1114,8 +1148,15 @@ static bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
 
         qualifyExtensionInfo(oodSuggestedExts[i], info, paa->progID);
 
-        LRESULT index = SendMessage(hLB, LB_ADDSTRING, i, (LPARAM)info->displayName);
-        SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)info);
+        if ( extRegisteredInScope(paa, info) )
+        {
+            LocalFree(info);
+        }
+        else
+        {
+            LRESULT index = SendMessage(hLB, LB_ADDSTRING, i, (LPARAM)info->displayName);
+            SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)info);
+        }
     }
     return true;
 }
@@ -1130,6 +1171,11 @@ static bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
  *
  * @param hDlg
  * @param paa
+ *
+ * @note  When we get the extension records we get a record for every .ext
+ *        registered to our prog ID.  As we go through the records, if the .ext
+ *        is a suggested extension, we want to put it in the current list box
+ *        only if it is registered in the current scope.
  */
 void addCurrentExt(HWND hDlg, pAssocArguments paa)
 {
@@ -1142,20 +1188,17 @@ void addCurrentExt(HWND hDlg, pAssocArguments paa)
 
     for ( size_t i = 0; i < count; i++ )
     {
-        uint32_t idx;
-        LRESULT  index;
-
         pExtensionInfo current  = &recs[i];
-        pExtensionInfo existing = getExtRec(paa->lbSuggested, current->extension, &idx);
-
-        if ( existing != NULL )
+        if ( current->suggested )
         {
-            SendMessage(paa->lbSuggested, LB_DELETESTRING, idx, 0);
-            LocalFree(current);
-            current = existing;
+            if ( ! extRegisteredInScope(paa, current) )
+            {
+                LocalFree(current);
+                continue;
+            }
         }
 
-        index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+        LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
         SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
     }
 }
@@ -1248,7 +1291,7 @@ void setAssocControls(HWND hDlg, pAssocArguments paa, bool flag)
  * @note This is a little complex.  At this time I think the Register push
  *       button should always be enabled.
  */
-void setRegisterdState(HWND hDlg, pAssocArguments paa)
+static void setRegisteredState(HWND hDlg, pAssocArguments paa)
 {
     // The static text for these controls can vary during the life-time of the
     // dialog:
@@ -1316,7 +1359,7 @@ void setRegisterdState(HWND hDlg, pAssocArguments paa)
     addCurrentExt(hDlg, paa);
 }
 
-void setStaticText(HWND hDlg, pAssocArguments paa)
+static void setStaticText(HWND hDlg, pAssocArguments paa)
 {
     SetDlgItemText(hDlg, IDC_GB_ASSOCIATE, paa->allUsers ?
                    "Associating File Extensions with ooDialog.exe File Type for All Users" :
@@ -1328,7 +1371,7 @@ void setStaticText(HWND hDlg, pAssocArguments paa)
     SetDlgItemText(hDlg, IDC_ST_ELEVATED, paa->isElevated ? "True" : "False");
 }
 
-void setUp(HWND hDlg, pAssocArguments paa)
+static void setUp(HWND hDlg, pAssocArguments paa)
 {
     setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)paa);
 
@@ -1352,7 +1395,7 @@ void setUp(HWND hDlg, pAssocArguments paa)
     setDlgIcon(hDlg, paa->hInstance);
     setStaticText(hDlg, paa);
 
-    setRegisterdState(hDlg, paa);
+    setRegisteredState(hDlg, paa);
 }
 
 /**
@@ -1426,6 +1469,19 @@ bool deleteRegProgID(HWND hDlg, pAssocArguments paa)
  *        just ignore all errors and that might be what we should do here.
  *        After all, if we can't query the default value for an extension
  *        subkey, it was probably not set by use.
+ *
+ *        If we enumerate through the .ext keys and check each one for our prog
+ *        ID, and delete it on a match, the index gets screwed up and we fail to
+ *        delete extensions if there are more than on.
+ *
+ *        Theoretically, all registered extension will be in our current list
+ *        box.  So what we do, is enumerate the list box items and delete each
+ *        extension that is is registered in our scope.  This seems to work
+ *        will, but it is dependent on the list box items being accurate.
+ *
+ *        The other approach would be to enumerate all subkeys and keep track of
+ *        our matches.  The current approach is simplier and we'll use it unless
+ *        we run into problems.
  */
 static bool deleteRegAllExt(HWND hDlg, pAssocArguments paa)
 {
@@ -1435,6 +1491,8 @@ static bool deleteRegAllExt(HWND hDlg, pAssocArguments paa)
     HKEY      hClassesKey;
     char      extraMsg[SMALL_BUF_SIZE];
 
+    // It seems like this should be opened with the DELETE flag also.  But it
+    // seems to work as is.
     rc = RegOpenKeyEx(hPreDefKey, "SOFTWARE\\Classes\\", 0, KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE, &hClassesKey);
     if ( rc != ERROR_SUCCESS )
     {
@@ -1446,17 +1504,14 @@ static bool deleteRegAllExt(HWND hDlg, pAssocArguments paa)
 
     bool success = true;
     HWND hLB     = paa->lbCurrent;
-    char buf[512];
 
     LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
-   // sprintf(buf, "Found %d items in lbCurrent", count);
-   // internalErrorMsgBox(hDlg, buf, "Going to delete");
     if ( count > 0 )
     {
         for ( LRESULT i = 0; i < count; i++ )
         {
             pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
-           // internalErrorMsgBox(hDlg, info->extension, "Going to delete");
+
             if ( extRegisteredInScope(paa, info) )
             {
                 rc = RegDeleteKey(hClassesKey, info->extension);
@@ -1475,91 +1530,6 @@ static bool deleteRegAllExt(HWND hDlg, pAssocArguments paa)
 
     RegCloseKey(hClassesKey);
     return success;
-
-    /* old code
-    // We only need the number of subkeys.
-    uint32_t cSubkeys;
-    rc = RegQueryInfoKey(HKEY_CLASSES_ROOT, NULL, NULL, NULL, (LPDWORD)&cSubkeys,
-                         NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
-    uint32_t maxName;                  // Size of name buffer
-    char     keyName[MAX_HKEY_NAME];   // Buffer for subkey name
-
-    uint32_t maxValue = MAX_HKEY_VALUE; // Size of value buffer
-    char     value[MAX_HKEY_VALUE];     // Buffer for default value for subkey
-    bool     success = true;
-    uint32_t i       = 0;
-    CSTRING  progID  = paa->progID;
-
-    for ( i = 0; i < cSubkeys; i++ )
-    {
-        maxName = MAX_HKEY_NAME;
-        rc = RegEnumKeyEx(hClassesKey, i, keyName, (LPDWORD)&maxName, NULL, NULL, NULL, NULL);
-        if ( rc == ERROR_SUCCESS )
-        {
-            if ( *keyName == '.' )
-            {
-                HKEY hExtKey;
-                if ( StrStrI(keyName, "rxd") != NULL )
-                {
-                    internalErrorMsgBox(hDlg, keyName, "Found .rxd");
-                }
-                rc = RegOpenKeyEx(hClassesKey, keyName, 0, DELETE | KEY_QUERY_VALUE, &hExtKey);
-                if ( rc == ERROR_SUCCESS )
-                {
-                    maxValue = MAX_HKEY_VALUE;
-                    value[0] = '\0';
-
-                    rc = RegQueryValueEx(hExtKey, "", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue);
-                    RegCloseKey(hExtKey);
-
-                    if ( rc == ERROR_SUCCESS )
-                    {
-                        if ( StrCmpI(value, progID) == 0 )
-                        {
-                            rc = RegDeleteKey(hClassesKey, keyName);
-                            if ( rc != ERROR_SUCCESS )
-                            {
-                                _snprintf(extraMsg, SMALL_BUF_SIZE,
-                                          "Failed to delete the SOFTWARE\\Classes\\%s registry subkey for %s",
-                                          keyName, user);
-
-                                reportErrorPlus(hDlg, "RegDeleteKey", REG_ERR_TITLE, extraMsg, rc);
-                                success = false;
-                            }
-                        }
-                    }
-                    else if ( rc != ERROR_FILE_NOT_FOUND )
-                    {
-                        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to query the SOFTWARE\\Classes\\%s registry subkey for %s",
-                                  keyName, user);
-
-                        reportErrorPlus(hDlg, "RegQueryValueEx", REG_ERR_TITLE, extraMsg, rc);
-                        success = false;
-                    }
-                }
-                else
-                {
-                    _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to open the SOFTWARE\\Classes\\%s registry subkey for %s",
-                              keyName, user);
-
-                    reportErrorPlus(hDlg, "RegOpenKeyEx", REG_ERR_TITLE, extraMsg, rc);
-                    success = false;
-                }
-            }
-        }
-        else if ( rc != ERROR_NO_MORE_ITEMS )
-        {
-            _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to enumerate the %s registry subkey for %s", "SOFTWARE\\Classes\\", user);
-
-            reportErrorPlus(hDlg, "RegEnumKeyEx", REG_ERR_TITLE, extraMsg, rc);
-            success = false;
-        }
-    }
-
-    RegCloseKey(hClassesKey);
-    return success;
-    */
 }
 
 /**
@@ -1653,6 +1623,52 @@ static bool writeRegKeyValue(HKEY openedKey, char *valueName, char *value, HWND 
     return true;
 }
 
+/**
+ * Deletes (un-registers) the specified extension in our current scope.
+ *
+ * @param hDlg
+ * @param paa
+ * @param extension
+ *
+ * @return bool
+ *
+ * @note  We do no checking - it is the caller's responsibility to ensure the
+ *        .ext is actually registered in our scope.  If the extension is not
+ *        registered, it probably would do no harm, but it should generate a
+ *        warning that would be confusing to the user.
+ */
+static bool deleteRegExt(HWND hDlg, pAssocArguments paa, CSTRING extension)
+{
+    char *user;
+    HKEY  hPreDefKey = getScopeVars(paa, & user);
+    HKEY  hClassesKey;
+    char  extraMsg[SMALL_BUF_SIZE];
+
+    // Open the Software\Classes key.  It seems that we should be adding the
+    // DELETE flag, but this seems to work okay.
+    uint32_t rc = RegOpenKeyEx(hPreDefKey, "SOFTWARE\\Classes\\", 0, KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE, &hClassesKey);
+    if ( rc != ERROR_SUCCESS )
+    {
+        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to open the %s registry key for %s", "SOFTWARE\\Classes\\", user);
+
+        reportErrorPlus(hDlg, "RegOpenKeyEx", REG_ERR_TITLE, extraMsg, rc);
+        return false;
+    }
+
+    // Delete the key.
+    rc = RegDeleteKey(hClassesKey, extension);
+    if ( rc != ERROR_SUCCESS )
+    {
+        _snprintf(extraMsg, SMALL_BUF_SIZE,
+                  "Failed to delete the SOFTWARE\\Classes\\%s registry subkey for %s", extension, user);
+
+        reportErrorPlus(hDlg, "RegDeleteKey", REG_ERR_TITLE, extraMsg, rc);
+        return false;
+    }
+
+    return true;
+}
+
 static bool registerRegExt(HWND hDlg, pAssocArguments paa, CSTRING extension)
 {
     char *user;
@@ -1660,7 +1676,7 @@ static bool registerRegExt(HWND hDlg, pAssocArguments paa, CSTRING extension)
     HKEY hKey       = NULL;
     char subkeyName[MEDIUM_BUF_SIZE];
 
-    // Creae, or overwrite, the .ext subkey of software\classees, and set the
+    // Create, or overwrite, the .ext subkey of software\classees, and set the
     // default value to our prog ID
     _snprintf(subkeyName, MEDIUM_BUF_SIZE, "SOFTWARE\\Classes\\%s", extension);
 
@@ -1813,6 +1829,71 @@ done_out:
     return false;
 }
 
+/**
+ * Handles the click on the arrow button that moves an exension from the
+ * suggested list box to the current list box.
+ *
+ * This needs to get the record of the suggested item, register the extension,
+ * adjust the list boxes to the new status.
+ *
+ * @param hDlg
+ *
+ * @return INT_PTR  We always return true.
+ */
+INT_PTR pbAddCurrent(HWND hDlg)
+{
+    // NOT DONE just return true for now
+    return TRUE;
+
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    uint32_t       index;
+    pExtensionInfo existing = getSelectedExtRec(paa->lbSuggested, &index);
+    if ( existing == NULL )
+    {
+        goto done_out;
+    }
+
+    // It can't be registered in this scope, we already checked. We just
+    // want to register and update the existing item.
+    if ( ! registerRegExt(hDlg, paa, existing->extension) )
+    {
+        goto err_out;
+    }
+
+    nowRegisteredInScope(paa, existing);
+
+    SendMessage(paa->lbCurrent, LB_DELETESTRING, index, 0);
+
+    index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)existing->displayName);
+    SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)existing);
+
+err_out:
+
+done_out:
+    return TRUE;
+}
+
+/**
+ * Handles the click on the arrow button that moves the extension from the
+ * current list box to the suggested list box.
+ *
+ * This needs to get the record from the current list box, un-register the
+ * extension, adjust the list boxes to the new status.
+ *
+ * @param hDlg
+ *
+ * @return INT_PTR
+ */
+INT_PTR pbRemoveCurrent(HWND hDlg)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    pExtensionInfo info = NULL;
+
+    return TRUE;
+}
+
 INT_PTR pbAddExtension(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
@@ -1867,7 +1948,7 @@ INT_PTR pbAddExtension(HWND hDlg)
         SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)existing);
 
         LocalFree(info);
-        goto done_out;
+        goto good_out;
     }
 
     // See if the user entered an extenstion that is also in the suggested list
@@ -1890,7 +1971,7 @@ INT_PTR pbAddExtension(HWND hDlg)
         SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)existing);
 
         LocalFree(info);
-        goto done_out;
+        goto good_out;
     }
 
     // Okay, completely new, just register it and update the list box
@@ -1904,12 +1985,14 @@ INT_PTR pbAddExtension(HWND hDlg)
     index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)info->displayName);
     SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)info);
 
-    goto done_out;
+    goto good_out;
 
 err_out:
     safeLocalFree(info);
+    SetWindowText(paa->edit, "");
+    return TRUE;
 
-done_out:
+good_out:
     SetWindowText(paa->edit, "");
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
     return TRUE;
@@ -1994,7 +2077,7 @@ INT_PTR pbRegister(HWND hDlg)
         }
 
         paa->ftypeIsRegistered = (paa->registeredAllUsers || paa->registeredCurUsers) ? true : false;
-        setRegisterdState(hDlg, paa);
+        setRegisteredState(hDlg, paa);
     }
     else
     {
@@ -2020,12 +2103,10 @@ INT_PTR handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
             return pbAddExtension(hDlg);
 
         case IDC_PB_ADD_CURRENT :
-
-            break;
+            return pbAddCurrent(hDlg);
 
         case IDC_PB_REMOVE_CURRENT :
-
-            break;
+            return pbRemoveCurrent(hDlg);
 
         case IDC_PB_ADD_PATHEXT :
 
