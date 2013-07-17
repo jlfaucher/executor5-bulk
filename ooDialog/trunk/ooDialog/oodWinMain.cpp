@@ -868,11 +868,12 @@ pExtensionInfo getExtRec(HWND hLB, CSTRING extension, uint32_t *index)
 pExtensionInfo getSelectedExtRec(HWND hLB, uint32_t *index)
 {
     LRESULT selected = SendMessage(hLB, LB_GETCURSEL, NULL, NULL);
-    if ( selected == LB_ERR )
+    if ( selected < 0 )
     {
         return NULL;
     }
 
+    *index = (uint32_t)selected;
     return (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, selected, 0);
 }
 
@@ -922,6 +923,77 @@ void nowRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
 }
 
 /**
+ * Updates the extension record using the assumption that it is no longer
+ * registered in the current scope.
+ *
+ * @param paa
+ * @param existing
+ *
+ * @note
+ */
+void notRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
+{
+    if ( paa->allUsers )
+    {
+        existing->allUsers = false;
+    }
+    else
+    {
+        existing->curUser = false;
+    }
+    updateExtDisplayName(existing);
+}
+
+/**
+ * Allocates the extension records for the extensions mapped to the ooDialog
+ * file type that were found in the registry.  We allocate an array of pointes
+ * to an extensionInfo block and then allocate each record individually because
+ * we need (may need) to free individual records.
+ *
+ * @param matches
+ * @param hDlg
+ *
+ * @return pExtensionInfo*
+ */
+pExtensionInfo *allocExtRecords(size_t matches, HWND hDlg)
+{
+    pExtensionInfo *recs  = NULL;
+    size_t          count = 0;
+
+    recs = (pExtensionInfo *)LocalAlloc(LPTR, matches * sizeof(pExtensionInfo));
+    if ( recs == NULL )
+    {
+        reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
+        goto err_out;
+    }
+
+    for (size_t i = 0; i < matches; i++)
+    {
+        pExtensionInfo r = (pExtensionInfo)LocalAlloc(LPTR, sizeof(extensionInfo));
+        if ( r == NULL )
+        {
+            reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
+            goto err_out;
+        }
+
+        recs[i] = r;
+        count++;
+    }
+    goto done_out;
+
+err_out:
+    for ( size_t i = 0; i < count; i++ )
+    {
+        safeLocalFree(recs[i]);
+    }
+    safeLocalFree(recs);
+    recs = NULL;
+
+done_out:
+    return recs;
+}
+
+/**
  * Gets the extension information records for all extensions mapped to the
  * specified progID currently in the registry.
  *
@@ -932,7 +1004,7 @@ void nowRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
  *
  * @note  The caller is responsible for freeing the array.
  */
-pExtensionInfo getExtensionRecords(HWND hDlg, char *progID, size_t *count)
+pExtensionInfo *getExtensionRecords(HWND hDlg, char *progID, size_t *count)
 {
     uint32_t cSubKeys = 0;
     HKEY     hKCR     = HKEY_CLASSES_ROOT;
@@ -952,8 +1024,8 @@ pExtensionInfo getExtensionRecords(HWND hDlg, char *progID, size_t *count)
     // we can allocate the array of extension records.  Then a second time to
     // actually fill in the records.
 
-    pExtensionInfo recs    = NULL;
-    size_t         matches = 0;
+    pExtensionInfo *recs    = NULL;
+    size_t         matches  = 0;
 
     for ( uint32_t i = 0; i < cSubKeys; i++ )
     {
@@ -990,10 +1062,9 @@ pExtensionInfo getExtensionRecords(HWND hDlg, char *progID, size_t *count)
         goto done_out;
     }
 
-    recs = (pExtensionInfo)LocalAlloc(LPTR, matches * sizeof(extensionInfo));
+    recs = allocExtRecords(matches, hDlg);
     if ( recs == NULL )
     {
-        reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
         goto done_out;
     }
 
@@ -1019,14 +1090,12 @@ pExtensionInfo getExtensionRecords(HWND hDlg, char *progID, size_t *count)
                     {
                         if ( StrCmpI(value, progID) == 0 )
                         {
-                            pExtensionInfo current = &recs[processed++];
+                            pExtensionInfo current = recs[processed++];
 
                             current->exists = true;
                             strcpy(current->extension, keyName);
 
                             qualifyExtensionInfo(keyName, current, progID);
-
-                            printf("%s -> %s\n", keyName, value);
                         }
                     }
                     RegCloseKey(hExtKey);
@@ -1154,7 +1223,11 @@ static bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
         }
         else
         {
-            LRESULT index = SendMessage(hLB, LB_ADDSTRING, i, (LPARAM)info->displayName);
+            if ( strcmp(info->displayName, "") == 0 )
+            {
+                internalErrorMsgBox(hDlg, info->extension, "Display Name is empty string");
+            }
+            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)info->displayName);
             SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)info);
         }
     }
@@ -1173,9 +1246,19 @@ static bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
  * @param paa
  *
  * @note  When we get the extension records we get a record for every .ext
- *        registered to our prog ID.  As we go through the records, if the .ext
- *        is a suggested extension, we want to put it in the current list box
- *        only if it is registered in the current scope.
+ *        registered to our prog ID.
+ *
+ *        As we go through the records, if the .ext is a suggested extension, we
+ *        want to put it in the current list box only if it is registered in the
+ *        current scope.  If it is registered in the other scope, a record in
+ *        the suggested list box already exists.  (Provided we stick to filling
+ *        the suggested list box first.)
+ *
+ *        If the .ext is not a suggested extension, if the .ext is registered in
+ *        this scope we put it in the current list box.  If it is not registered
+ *        in this scope, then it is registered in the other scope, which makes
+ *        it a good candidate for a 'suggestion', so we put it in the suggested
+ *        list box.
  */
 void addCurrentExt(HWND hDlg, pAssocArguments paa)
 {
@@ -1184,11 +1267,11 @@ void addCurrentExt(HWND hDlg, pAssocArguments paa)
 
     maybeEmptyLB(hLB);
 
-    pExtensionInfo recs = getExtensionRecords(hDlg, paa->progID, &count);
+    pExtensionInfo *recs = getExtensionRecords(hDlg, paa->progID, &count);
 
     for ( size_t i = 0; i < count; i++ )
     {
-        pExtensionInfo current  = &recs[i];
+        pExtensionInfo current = recs[i];
         if ( current->suggested )
         {
             if ( ! extRegisteredInScope(paa, current) )
@@ -1196,75 +1279,51 @@ void addCurrentExt(HWND hDlg, pAssocArguments paa)
                 LocalFree(current);
                 continue;
             }
-        }
 
-        LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
-        SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
-    }
-}
-
-void testRegistry()
-{
-    HKEY envKey;
-    char msg[MEDIUM_BUF_SIZE];
-    char buf[MEDIUM_BUF_SIZE];
-
-    char *key = "Console\\Left";
-    HKEY hKey;
-    uint32_t rc = RegOpenKeyEx(HKEY_CURRENT_USER, key, 0, STANDARD_RIGHTS_READ | KEY_QUERY_VALUE, &hKey);
-    if ( rc == ERROR_SUCCESS )
-    {
-        uint32_t type;
-        uint32_t count = MEDIUM_BUF_SIZE;
-
-        rc = RegQueryValueEx(hKey, "FaceName", NULL, (LPDWORD)&type, (LPBYTE)buf, (LPDWORD)&count);
-        if ( rc == ERROR_SUCCESS )
-        {
-            _snprintf(msg, MEDIUM_BUF_SIZE, "Queried key=%s for FaceName value=%s, type=0x%x count=%d\n", key, buf, type, count);
-            internalInfoMsgBox(msg, "ooDialog");
+            if ( strcmp(current->displayName, "") == 0 )
+            {
+                internalErrorMsgBox(hDlg, current->extension, "Current Suggested Display Name is empty string");
+            }
+            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+            SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
         }
         else
         {
-            _snprintf(msg, MEDIUM_BUF_SIZE, "RegQueryValueEx() for default rc=%d\n", rc);
-            internalInfoMsgBox(msg, "ooDialog");
+            if ( extRegisteredInScope(paa, current) )
+            {
+                if ( strcmp(current->displayName, "") == 0 )
+                {
+                    internalErrorMsgBox(hDlg, current->extension, "Current NOT Suggested IN SCOPE Display Name is empty string");
+                }
+                LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+                SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+            }
+            else
+            {
+                if ( strcmp(current->displayName, "") == 0 )
+                {
+                    internalErrorMsgBox(hDlg, current->extension, "Current NOT Suggested NOT IN SCOPE Display Name is empty string");
+                }
+                LRESULT index = SendMessage(paa->lbSuggested, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+                SendMessage(paa->lbSuggested, LB_SETITEMDATA, index, (LPARAM)current);
+            }
         }
-        RegCloseKey(hKey);
     }
-    else
-    {
-        _snprintf(msg, MEDIUM_BUF_SIZE, "RegOpenKeyEx() for %s failed rc=%d\n", key, rc);
-        internalInfoMsgBox(msg, "ooDialog");
-    }
-
-
-    rc = RegOpenKeyEx(HKEY_CURRENT_USER, "Environment", 0, STANDARD_RIGHTS_READ | KEY_QUERY_VALUE, &envKey);
-    if ( rc == ERROR_SUCCESS )
-    {
-        uint32_t type;
-        uint32_t count = MEDIUM_BUF_SIZE;
-
-        rc = RegQueryValueEx(envKey, "PATHEXT", NULL, (LPDWORD)&type, (LPBYTE)buf, (LPDWORD)&count);
-        if ( rc == ERROR_SUCCESS )
-        {
-            _snprintf(msg, MEDIUM_BUF_SIZE, "PATHEXT=%s, type=0x%x count=%d\n", buf, type, count);
-            internalInfoMsgBox(msg, "ooDialog");
-        }
-        else
-        {
-            _snprintf(msg, MEDIUM_BUF_SIZE, "RegQueryValueEx() failed rc=%d\n", rc);
-            internalInfoMsgBox(msg, "ooDialog");
-        }
-        RegCloseKey(envKey);
-    }
-    else
-    {
-        _snprintf(msg, MEDIUM_BUF_SIZE, "RegOpenKeyEx() failed rc=%d\n", rc);
-        internalInfoMsgBox(msg, "ooDialog");
-    }
-
-
 }
 
+/**
+ * Used to enable or disable the controls related to associating an .ext with
+ * our ooDialg file type.
+ *
+ * If the file type is not registered in any scope, then no .ext can be
+ * associated.  To make it easy for the user to understand this, we disable all
+ * the controls related to associating an .ext.  Then, when the user registers
+ * our file type we enable the controls.
+ *
+ * @param hDlg
+ * @param paa
+ * @param flag
+ */
 void setAssocControls(HWND hDlg, pAssocArguments paa, bool flag)
 {
     BOOL enable = flag ? TRUE : FALSE;
@@ -1359,6 +1418,16 @@ static void setRegisteredState(HWND hDlg, pAssocArguments paa)
     addCurrentExt(hDlg, paa);
 }
 
+/**
+ * Sets the text for the static text controls that does not change for the life
+ * time of the dialog.
+ *
+ * For these controls, we set the text on start up and then do not have to touch
+ * them again.
+ *
+ * @param hDlg
+ * @param paa
+ */
 static void setStaticText(HWND hDlg, pAssocArguments paa)
 {
     SetDlgItemText(hDlg, IDC_GB_ASSOCIATE, paa->allUsers ?
@@ -1366,36 +1435,9 @@ static void setStaticText(HWND hDlg, pAssocArguments paa)
                    "Associating File Extensions with ooDialog.exe File Type for the Current User");
 
     SetDlgItemText(hDlg, IDC_ST_FTYPE, paa->friendlyName);
-    SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "CurrentUser");
+    SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "Current User");
     SetDlgItemText(hDlg, IDC_ST_RUNAS, paa->isRunAsAdmin ? "True" : "False");
     SetDlgItemText(hDlg, IDC_ST_ELEVATED, paa->isElevated ? "True" : "False");
-}
-
-static void setUp(HWND hDlg, pAssocArguments paa)
-{
-    setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)paa);
-
-    paa->lbSuggested = GetDlgItem(hDlg, IDC_LB_SUGGESTED);
-    paa->lbCurrent   = GetDlgItem(hDlg, IDC_LB_CURRENT);
-    paa->lbPathExt   = GetDlgItem(hDlg, IDC_LB_PATHEXT);
-    paa->pbRegister  = GetDlgItem(hDlg, IDC_PB_REGISTER);
-    paa->edit        = GetDlgItem(hDlg, IDC_EDIT_EXTENSION);
-
-    LoadString(paa->hInstance, IDS_FRIENDLY_NAME, paa->friendlyName, MAX_FRIENDLY_NAME);
-
-    HFONT font = createMonoSpacedFont(8);
-
-    SendMessage(paa->lbSuggested, WM_SETFONT, (WPARAM)font, FALSE);
-    SendMessage(paa->lbCurrent, WM_SETFONT, (WPARAM)font, FALSE);
-    SendMessage(paa->lbPathExt, WM_SETFONT, (WPARAM)font, FALSE);
-
-    // Leave room for both the ending NULL and to add a '.'
-    SendMessage(paa->edit, EM_SETLIMITTEXT, MAX_EXT_NAME - 2, 0);
-
-    setDlgIcon(hDlg, paa->hInstance);
-    setStaticText(hDlg, paa);
-
-    setRegisteredState(hDlg, paa);
 }
 
 /**
@@ -1842,33 +1884,36 @@ done_out:
  */
 INT_PTR pbAddCurrent(HWND hDlg)
 {
-    // NOT DONE just return true for now
-    return TRUE;
-
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
     uint32_t       index;
-    pExtensionInfo existing = getSelectedExtRec(paa->lbSuggested, &index);
-    if ( existing == NULL )
+    pExtensionInfo suggestedRec = getSelectedExtRec(paa->lbSuggested, &index);
+    if ( suggestedRec == NULL )
     {
         goto done_out;
     }
 
-    // It can't be registered in this scope, we already checked. We just
-    // want to register and update the existing item.
-    if ( ! registerRegExt(hDlg, paa, existing->extension) )
+    // It can't be registered in this scope, or it wouldn't have a record in the
+    // suggested list box. We want to register the extension.
+    if ( ! registerRegExt(hDlg, paa, suggestedRec->extension) )
     {
-        goto err_out;
+        goto done_out;
     }
 
-    nowRegisteredInScope(paa, existing);
+    // The extension is now registered in the current scope, so the suggested
+    // item must be removed no matter what we do in the current list box
+    SendMessage(paa->lbSuggested, LB_DELETESTRING, index, 0);
 
-    SendMessage(paa->lbCurrent, LB_DELETESTRING, index, 0);
+    // An item for the extension can not already be in the current list box,
+    // because it was not registered in this scope.  We update the record we got
+    // from the suggested list box which automatically updates the display name.
+    nowRegisteredInScope(paa, suggestedRec);
 
-    index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)existing->displayName);
-    SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)existing);
+    // Now update the current list box
+    index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)suggestedRec->displayName);
+    SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)suggestedRec);
 
-err_out:
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
 
 done_out:
     return TRUE;
@@ -1889,8 +1934,38 @@ INT_PTR pbRemoveCurrent(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
-    pExtensionInfo info = NULL;
+    uint32_t       index;
+    pExtensionInfo currentRec = getSelectedExtRec(paa->lbCurrent, &index);
+    if ( currentRec == NULL )
+    {
+        goto done_out;
+    }
 
+    // It must be registered in this scope, or it wouldn't have a record in the
+    // current list box. We want to un-register the extension.
+    if ( ! deleteRegExt(hDlg, paa, currentRec->extension) )
+    {
+        goto done_out;
+    }
+
+    // The extension is no longer registered in the current scope, so the
+    // current list box item must be removed no matter what we do in the
+    // suggested list box.
+    SendMessage(paa->lbCurrent, LB_DELETESTRING, index, 0);
+
+    // An item for the extension can not already be in the suggested list box,
+    // because it was  registered in this scope.  We update the record we got
+    // from the current list box, which automatically updates the display
+    // name.
+    notRegisteredInScope(paa, currentRec);
+
+    // Now update the suggested list box
+    index = (uint32_t)SendMessage(paa->lbSuggested, LB_ADDSTRING, 0, (LPARAM)currentRec->displayName);
+    SendMessage(paa->lbSuggested, LB_SETITEMDATA, index, (LPARAM)currentRec);
+
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+
+done_out:
     return TRUE;
 }
 
@@ -2124,6 +2199,40 @@ INT_PTR handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
 }
 
 /**
+ * This function handles the initial set up for the dialog when it is first
+ * opened.
+ *
+ * @param hDlg
+ * @param paa
+ */
+static void setUp(HWND hDlg, pAssocArguments paa)
+{
+    setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)paa);
+
+    paa->lbSuggested = GetDlgItem(hDlg, IDC_LB_SUGGESTED);
+    paa->lbCurrent   = GetDlgItem(hDlg, IDC_LB_CURRENT);
+    paa->lbPathExt   = GetDlgItem(hDlg, IDC_LB_PATHEXT);
+    paa->pbRegister  = GetDlgItem(hDlg, IDC_PB_REGISTER);
+    paa->edit        = GetDlgItem(hDlg, IDC_EDIT_EXTENSION);
+
+    LoadString(paa->hInstance, IDS_FRIENDLY_NAME, paa->friendlyName, MAX_FRIENDLY_NAME);
+
+    HFONT font = createMonoSpacedFont(8);
+
+    SendMessage(paa->lbSuggested, WM_SETFONT, (WPARAM)font, FALSE);
+    SendMessage(paa->lbCurrent, WM_SETFONT, (WPARAM)font, FALSE);
+    SendMessage(paa->lbPathExt, WM_SETFONT, (WPARAM)font, FALSE);
+
+    // Leave room for both the ending NULL and to add a '.'
+    SendMessage(paa->edit, EM_SETLIMITTEXT, MAX_EXT_NAME - 2, 0);
+
+    setDlgIcon(hDlg, paa->hInstance);
+    setStaticText(hDlg, paa);
+
+    setRegisteredState(hDlg, paa);
+}
+
+/**
  *  HKEY_CURRENT_USER \ Environment
  *
  *  HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session
@@ -2143,10 +2252,8 @@ INT_PTR CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
         pAssocArguments paa = (pAssocArguments)lParam;
 
         // Query the registry to see if ooDialog ftype / progID is already
-        // registered.  If so ...
+        // registered. This information is used to correctly set up the dialog.
         checkRegistration(paa);
-
-        //strcpy(paa->progID, "SlickEdit"); // temp for testing
 
         setUp(hDlg, paa);
 

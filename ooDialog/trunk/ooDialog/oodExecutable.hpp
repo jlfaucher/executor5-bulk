@@ -108,7 +108,7 @@
 #define OODIALOG_PROGID              "ooRexx.ooDialog"
 #define OODIALOG_PROGID_VERSIONED    "ooRexx.ooDialog.1"
 #define OODIALOG_FRIENDLY_NAME       "ooDialog Program"
-#define OODIALOG_DROP_HANDLER        "{86C86720-42A0-1069-A2E8-08002B30309D}"
+#define OODIALOG_DROP_HANDLER        "{60254CA5-953B-11CF-8C96-00AA00B8708C}"
 
 // Buffer size for progID. We only currently need 18, but we add extra for
 // testing now and possible future changes.
