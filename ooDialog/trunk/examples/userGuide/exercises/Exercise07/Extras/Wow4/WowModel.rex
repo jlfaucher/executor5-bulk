@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise07 Part 2: The WowModel component.			  v02-00 01Apr13
+   Exercise07 Part 2: The WowModel component.			  v02-00 20Jly13
 
    Contains:       Classes: WowModel.
 
@@ -49,7 +49,9 @@
                      WowPicker to WowModel.
             09Jan13: Comment-out 'say's.
             01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
-                     folder, so change to ::Requires needed. 
+                     folder, so change to ::Requires needed.
+            20Jly13: Added another "wise saying" to the data file so had to add 
+                     1 to upped bound for random selection in 'pickWow' method.
             
 ------------------------------------------------------------------------------*/
 
@@ -110,7 +112,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD pickWow						 -- v01-00 & MVF
     expose arrWowSet
-    i = random(1,25)
+    i = random(1,26)
     return arrWowSet[i,1]
 
   /*----------------------------------------------------------------------------

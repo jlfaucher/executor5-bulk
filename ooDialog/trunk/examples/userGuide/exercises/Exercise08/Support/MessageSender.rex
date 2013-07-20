@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: MessageSender.rex 				  v01-01 25May13
+   Exercise 08: MessageSender.rex 				  v01-01 26Jun13
 
    Contains:  classes: "MessageSender", "HRSms"
 
@@ -63,6 +63,8 @@
             11Feb13: No change to function - minor tidy-up of a few comments.
             14Feb13: Correct text in the Help dialog.
      v01-01 25May13: Added Event Manager to list of target objects. 
+            26Jun13: Added Drag Manager to list of target objects.
+            03Jly13: Changed "Exercise07" to "Exercise08" for .h file folder.
 
   Description:
     Target: className instanceName
@@ -75,7 +77,7 @@
 
 ------------------------------------------------------------------------------*/
 
-.Application~addToConstDir("..\Exercise07\Support\MessageSender.h")
+.Application~addToConstDir("..\Exercise08\Support\MessageSender.h")
 
 ::REQUIRES "ooDialog.cls"
 
@@ -92,7 +94,7 @@
   ::METHOD newInstance CLASS PUBLIC
     use arg rootDlg
     --say ".MessageSender-newInstance."
-    dlg = .MessageSender~new("..\Exercise07\Support\MessageSender.rc", "DLG_MESSAGESENDER") --,,"MessageSender.h")
+    dlg = .MessageSender~new("..\Exercise08\Support\MessageSender.rc", "DLG_MESSAGESENDER") --,,"MessageSender.h")
     dlg~activate(rootDlg)
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -101,11 +103,12 @@
     init
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
-    expose objectMgr eventMgr
+    expose objectMgr eventMgr dragMgr
     --say "MessageSender-init-01."
     forward class (super) continue
     objectMgr = .local~my.objectMgr
     eventMgr = .local~my.eventMgr
+    dragMgr  = .local~my.dragMgr
     .local~my.MsgSender = self
     return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -338,7 +341,7 @@
       If format errors are found, a message is displayed, and .false is returned.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD parseData
-    expose cbTarget cbMethod ecData stErrorMsg objectMgr eventMgr rootDlg
+    expose cbTarget cbMethod ecData stErrorMsg objectMgr eventMgr dragMgr rootDlg
     stErrorMsg~setText("")	-- remove any previous error message.
     --say; say "MessageSender-parseData-01."
     message = .Directory~new
@@ -406,6 +409,19 @@
         return .false
       end
     end
+    if message["class"] = "DragMgr" & message["instance"] = "The" then do
+      method = message["method"]
+      method = method~upper
+      if method = "LIST" then do
+        dragMgr~list
+        return "special"
+      end
+      else do 
+        targetMethodError = .true
+        return .false
+      end
+    end    
+    	    
 -- Following Code does not work - left here in case needed in any following exercises.
 /*    else do
       --say "MessageSender-parseData-01d."
