@@ -118,7 +118,7 @@
   ::METHOD showModel
     use strict arg  modelClass, modelInstance, parentDlg
     r = self~ObjectMgr~showModel(modelClass, modelInstance, parentDlg)
-    if r = .false then say "View-showModel - ObjectMgr returned .false."
+    if r = .false then say "View-showModel-01: ObjectMgr returned .false."
     return r
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -190,12 +190,14 @@
     -- Each source dialog should invoke this only once.
     -- Invoking it more than once may well result in errors.
     -- Note: a dialog may be both source and target.
-    expose mouse
-    use arg dmSourceCursorFile, dmSourceArea
+    expose mouse dmSourceControl sourceWin
+    use arg dmSourceCursorFile, dmSourceArea, dmSourceControl
     if dmSourceCursorFile = .nil then do
-      --say "View-dmSetAsSource-01:" .HRS~dmSrcNulCursor
+      say "View-dmSetAsSource-00:" .HRS~dmSrcNulCursor
       return .false
     end
+    --say "View-dmSetAsSource-01: dmSourceCursorFile, dmSourceArea, dmSourceControl:"
+    --say "   '"||dmSourceCursorFile||"', "||dmSourceArea", "||dmSourceControl
 
     if dmSourceArea = "DMSOURCEAREA" then do		-- set default pickup area
       dmSourceArea = self~clientRect()
@@ -203,14 +205,31 @@
         dmSourceArea~right -= 10; dmSourceArea~bottom -= 10
       --say "View-dmSetAsSource-02 - default pickup client area =" dmSourceArea
     end
-
-    mouse = .Mouse~new(self)
-    mouse~connectEvent('MOUSEMOVE',dmOnMove)
-    mouse~connectEvent('LBUTTONDOWN', dmOnLBdown)
-    mouse~connectEvent('LBUTTONUP', dmOnLBup)
+    --else say "View-dmSetAsSource-03 - pickup client area =" dmSourceArea
+    
+    if dmSourceControl = "DMSOURCECONTROL" then do 	-- The source is a dialog.
+      --say "View-dmSetAsSource-04: source is a dialog."
+      sourceWin = self
+      mouse = .Mouse~new(sourceWin)
+      mouse~connectEvent('MOUSEMOVE',dmOnMove)
+      mouse~connectEvent('LBUTTONDOWN', dmOnLBdown)
+      mouse~connectEvent('LBUTTONUP', dmOnLBup)
+      --self~dragMgr~setSource(self, mouse, dmSourceCursorFile, dmSourceArea, .nil)
+      self~dragMgr~setSource(self, mouse, dmSourceCursorFile, dmSourceArea, self)  -- ***
+    end
+    else do					        -- The source is a control (such as a ListView).
+      --say "View-dmSetAsSource-05: source is a control."
+      sourceWin = dmSourceControl
+      mouse = .Mouse~new(dmSourceControl)
+      mouse~connectEvent('MOUSEMOVE',dmOnMove)
+      mouse~connectEvent('LBUTTONDOWN', dmOnLBdown)
+      mouse~connectEvent('LBUTTONUP', dmOnLBup)
+      --self~dragMgr~setSource(self, mouse, dmSourceCursorFile, dmSourceArea, dmSourceControl)
+      self~dragMgr~setSource(sourceWin, mouse, dmSourceCursorFile, dmSourceArea, self)  -- ***
+    end
     --mouse~connectEvent('MOUSELEAVE', dmLeave)
+--say "View-dmSetAsSource-06: source is:" sourceWin
 
-    self~dragMgr~setSource(self, mouse, dmSourceCursorFile, dmSourceArea)
 
     return .true
 
@@ -240,16 +259,33 @@
 
   -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ::METHOD dmOnLBdown
+    expose sourceWin
     use arg keyState, mousePos
-    --say "View-dmOnLBdown-01; self =" self
-    self~DragMgr~dmPickup(self, keyState, mousePos)
+    --say "View-dmOnLBdown-00; self, keystate, mousePos =" self||"," keystate||"," mousePos
+    info = self~dmGetItemInfo				-- for listviews
+/*    if info = 0 then say "View-dmOnLBdown-01 - info is zero."
+    else do
+      say "View-dmOnLBdown-02; info, sourceWin =" info||"," sourceWin
+      -- store the info somewhere - how about "drag data"?.
+      -- Drag data = classname, instance name.
+    end
+*/
+    --self~DragMgr~dmPickup(self, keyState, mousePos, dragData) - not right yet
+    self~DragMgr~dmPickup(sourceWin, keyState, mousePos)  -- pre-listview
     return 0
 
+  ::METHOD dmGetItemInfo	-- Dummy method for when sublcass does not 
+                                -- implement it.
+    return 0
+    
+    
   -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ::METHOD dmOnMove
+    expose sourceWin
     use arg keyState, mousePos
-    --say "View-dmOnMove: self =" self
-    self~dragMgr~moving(self, keystate, mousePos)
+    --say "View-dmOnMove: self, sourceWin =" self||"," sourceWin
+    self~dragMgr~moving(sourceWin, self, keystate, mousePos)
+    --say "View-dmOnMove"
     return 0
 
   -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -259,7 +295,7 @@
     self~dragMgr~dmDrop(self, keyState, mousePos)
     --return r -- throws error, as done no return at all.
     return 0
-    --say 'DMSource-onLButtonUp: the mouse is at ('mousePos~x',' mousePos~y') with these qualifiers:' keyState
+    say 'DMSource-onLButtonUp: the mouse is at ('mousePos~x',' mousePos~y') with these qualifiers:' keyState
 
   -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*  ::METHOD dmNeverDrop

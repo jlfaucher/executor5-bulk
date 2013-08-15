@@ -156,7 +156,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -.*/
   ::METHOD dmQueryDrop CLASS PUBLIC
     use arg sourceClassName
-    say ".OrderFormModel-dmQueryDrop-01 sourceClassName =" sourceClassName
+    --say ".OrderFormModel-dmQueryDrop-01 sourceClassName =" sourceClassName
     if sourceClassName = "CUSTOMERMODEL" then return .true
     if sourceClassName = "PRODUCTMODEL" then return .true
     else return .false

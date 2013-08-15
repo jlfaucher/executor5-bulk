@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide - Exercise08
 
-   Support - DragMgr					 	 v01-00  18Jun13
+   Support - DragMgr					 	 v01-00  26Jun13
    ---------------------
    A singleton component that manages direct manipulation.
 
@@ -49,7 +49,7 @@
      setTarget
      setSource
      removeDlg
-     queryTables
+     list         lists tables of source & target dialogs.
      dmPickup 	  captures mouse - i.e. sets the mouse capture to the window
            	  of this mouse instance. 
      moving	  If over a target (as supered by a dlg instance):
@@ -65,6 +65,8 @@
   Changes:
     v01-00 06Jun13: First version.
            18Jun13: Changed 'drop' method name to 'dmDrop'.
+           26Jun13: Change 'queryTables' method name to 'list' (to conform with
+                    other Managers).
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -120,18 +122,20 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD setSource PUBLIC
     --expose sourceDialogs dropOkCursor
-    use strict arg dlg, mouse, cursorFile, pickupArea
+    --use strict arg dlg, mouse, cursorFile, pickupArea, control
+    use strict arg sourceWin, mouse, cursorFile, pickupArea, srcDlg	-- ***
     -- cursorFile is relative path and filename e.g. "bmp\customer.cur".
-    --say "DragManager-setSource: sourceArea =" pickupArea
-
+    --say "DragManager-setSource-01: sourceWin, Area =" sourceWin||"," pickupArea
+    
     dropOkCursor = .Mouse~loadCursorFromFile(cursorFile)
     if dropOkCursor == 0 then do
-      say "DragManager-init:" .HRSdm~badOkCursor .SystemErrorCode
+      say "DragManager-setSource-02:" .HRSdm~badOkCursor .SystemErrorCode
     end
 
     items    = .Array~new
-    items[1] = mouse;  items[2] = dropOkCursor;  items[3] = pickupArea
-    self~sourceDialogs[dlg] = items
+    items[1] = mouse;  items[2] = dropOkCursor;  
+    items[3] = pickupArea;  items[4] = srcDlg
+    self~sourceDialogs[sourceWin] = items
 
     
   /*----------------------------------------------------------------------------
@@ -149,16 +153,16 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD dmPickup PUBLIC
     expose cursorIsNoDrop dragging dropOkCursor mouse noDropCursor oldCursor overTarget
-    use strict arg sourceDlg, keyState, mousePos
+    use strict arg sourceWin, keyState, mousePos
 
-    --say "DragMgr-dmPickup-00."
-    arrItems = self~sourceDialogs[sourceDlg]  	-- mouse,srcCursor,pickupArea
+    --say "DragMgr-dmPickup-00; sourceWin =" sourceWin
+    arrItems = self~sourceDialogs[sourceWin]  	-- mouse,srcCursor,pickupArea,sourceDlg
     mouse = arrItems[1]
     dropOkCursor = arrItems[2]
     dragging = .false
-
+--trace i
     if keyState \== 'lButton' | \ mousePos~inRect(arrItems[3]) then return .false
-
+--trace off
     if mouse~dragDetect(mousePos) then do
       --say "DragManager-dmPickup-01: dropOkCursor =" dropOkCursor
       if dropOkCursor == 0 then do
@@ -172,47 +176,50 @@
       validTarget = .false
       overTarget = .false
     end
---say "DragManager-dmPickup-04: dragging =" dragging
+    --say "DragManager-dmPickup-04: dragging =" dragging
     return
 
     
   /*----------------------------------------------------------------------------
-    moving - Handles mouse movements - detects when mouse over a dilaog, and if
+    moving - Handles mouse movements - detects when mouse over a dialog, and if
              it's a 'target' dialog, asks it whether it will accept a drop.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD moving PUBLIC
     expose cursorIsNoDrop dragging dropOkCursor mouse noDropCursor overTarget dropTarget
-    use arg sourceDlg, keyState, mousePos
+    use arg sourceWin, sourceDlg, keyState, mousePos
     -- overTarget - true when the cursor is over a potential target dialog,
     --   regardless of whether the target refuses a drop or not.
-    -- sourceDlg is the dialog that has captured the mouse.
+    -- sourceWin is the window (dialog or control) that has captured the mouse.
     -- Note: new APIs introduced in ooDialog Build 7449
-
+    --say "DragManager-moving-00; sourceDlg, sourceWin, dragging =" sourceDlg||"," sourceWin||"," dragging
     if \dragging then return
-    --say "Flags:" cursorIsNoDrop dragging overTarget
+    --say "DragManager-moving-00A: Flags:" cursorIsNoDrop dragging overTarget
     -- Find out if mouse is over a target dialog:
     targetDlg = 0
     do i over self~targetDialogs		-- items: 1 = hwnd, 2 = droparea
       targetHwnd = self~targetDialogs[i][1]
       droparea   = self~targetDialogs[i][2]
-
+      --say "DragMgr-moving-00B: targetHwnd, dropArea =" targetHwnd||"," dropArea
       -- Prevent showing drop when over a target that is under another window:
       screenPt = mousePos~copy()			-- Point in source dialog (i.e. top left of dlg is 0,0)
       --say "DragManager-moving-01: screenPt =" screenPt
-      sourceDlg~client2screen(screenPt)			-- screenPt is set to screen position (i.e. top left of screen is 0,0)
+      sourceWin~client2screen(screenPt)
+      --sourceDlg~client2screen(screenPt)			-- screenPt is set to screen position (i.e. top left of screen is 0,0)
       --say "DragManager-moving-02: screenPt =" screenPt
       screenHwnd = .DlgUtil~windowFromPoint(screenPt)	-- Get hwd of topmost window that mouse is over
       --say "DragManager-moving-03: screenHwnd =" screenHwnd
 
       pDlg = mousePos~copy
-      sourceDlg~mapWindowPoints(targetHwnd, pDlg)	-- MousePos relative to targetHwnd
+      --sourceDlg~mapWindowPoints(targetHwnd, pDlg)	-- MousePos relative to targetHwnd
+      sourceWin~mapWindowPoints(targetHwnd, pDlg)	-- MousePos relative to targetHwnd
       --say "DragManager-moving-04: pDlg =" pDlg
       childHwnd = i~childWindowFromPoint(pDlg)		-- Get the hwnd visible under mouse pointer
-      --say "DragManager-moving-05: childHwnd / pDlg =" childHwnd "/" pDlg
+      --say "DragManager-moving-05: childHwnd, pDlg =" childHwnd||"." pDlg
 
       if screenHwnd == childHwnd then do
       	p1 = mousePos~copy()
-      	sourceDlg~mapWindowPoints(targetHwnd,p1)
+      	--sourceDlg~mapWindowPoints(targetHwnd,p1)
+      	sourceWin~mapWindowPoints(targetHwnd,p1)
       	--say "DragManager-moving-06: p1 =" p1
         if p1~inRect(droparea) then do
           targetDlg = i
@@ -223,7 +230,7 @@
         end
       end
     end
-
+--say "DragManager-moving-060."
     if targetDlg \= 0 then do			-- If we're over a target
       if targetDlg = sourceDlg then return	-- If target is also the source
       	      					--   then it's not a target (in this version!).
@@ -237,7 +244,7 @@
         --say "DragMgr-moving-06b: target Class =" targetClassName
         --parse value a~class with . className .
         interpret "r = ."||targetClassName||"~dmQueryDrop("||sourceClassName||")"
-        say "DragManager-moving-07: first time - queryDrop returned" r
+        --say "DragManager-moving-07: first time - queryDrop returned" r
         if r = .true then do			-- if target accepts a drop
           validTarget = .true
           dropTarget = targetDlg		-- for drop method ...
@@ -283,6 +290,7 @@
       cursorIsNoDrop = .false
       mouse~releaseCapture()
       mouse~setCursor(oldCursor)
+      --say "DragManager-dmDrop-02a: mouse released; old cursor set."
       -- Jiggle the mouse so it is redrawn immediately (OS: seems to make no diff.)
       p = mouse~getCursorPos; p~incr; mouse~setCursorPos(p)
 
@@ -294,7 +302,7 @@
         objectMgr = .local~my.ObjectMgr
         sourceModelId = objectMgr~modelIdFromView(sourceDlg)
         dropTarget~dmDrop(sourceModelId, sourceDlg)
-        say "DragManager-dmDrop-04: Drop Happened OK!!"
+        --say "DragManager-dmDrop-04: Drop Happened OK!!"
       end
       else say "DragManager-dmDrop-05: Drop Did Not Occur."
     end
@@ -303,10 +311,9 @@
 
     
   /*----------------------------------------------------------------------------
-    queryTables - A debug mehod that lists source and target dialogs 
-                  on the console.
+    list - A debug mehod that lists source and target dialogs on the console.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD queryTables PUBLIC		-- Debug method
+  ::METHOD list PUBLIC		-- Debug method
     say; say "======================================="
     say "DragManager Tables"
     say "-------------------------------------"
@@ -318,6 +325,7 @@
       say "mouse  = " items[1]
       say "cursor = " items[2]
       say "area   = " items[3]
+      say "dialog = " items[4]
     end
     say "-------------------------------------"
     say "Targets:"
