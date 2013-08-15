@@ -47,6 +47,7 @@
     Changes:
      v01-00 16Mar13: First version.
             21Mar13: Very minor adjustments to spacing and links.
+            15Aug13: Corrected folder names after folder structure change.            
 
     7   *  Towards A Working Application	                                            chapSeven
     7.1   * Introduction                                                              chap07-intro
@@ -290,8 +291,8 @@
           <computeroutput>xxView</computeroutput> (i.e. RcView, ResView, and UdView), and
           <computeroutput>GenericFile</computeroutput> (see <xref linkend="chap07-mvf-classes"/>
           for more detail). These are all located in the folder
-          <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Support</computeroutput>.
-        Together, they handle the three different types of application component - view, model, and
+          <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Exercise07\Support</computeroutput>.
+        Together, they provide for the three different types of application component - view, model, and
         data. Each model gets its data from its data component, and each model has a single view. (A
         production-strength MVF could support multiple views of the same model by providing an "Open
         as..." option for a given icon or list item. This would display a selection of views,
@@ -343,7 +344,7 @@
             <computeroutput>PersonModel</computeroutput> for its data. Finally, the dialog for
           Person PA150 appears. </para>
         <para>The code required to conform with the MVF is shown in the Person component in
-            <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Samples\Person</computeroutput>,
+            <computeroutput>ooRexx\samples\oodialog\userGuide\exercises\Exercise07\Extras\Person</computeroutput>,
           and those requirements are as follows:</para>
         <itemizedlist>
             <listitem>
@@ -644,7 +645,7 @@ familyName: James; firstName: Alfred;
                   <indexterm><primary>View superclass</primary><secondary>offset method</secondary></indexterm>
                - This method offsets dialogs from the Order Management dialog when
                 first opened. Although not used elsewhere in this exercise, the effect can be seen
-                using the "Person" component in the <computeroutput>Samples\Person</computeroutput>
+                using the "Person" component in the <computeroutput>Exercise07\Extras\Person</computeroutput>
                 folder. First, use the Message Sender to launch a Person dialog (for example send
                   <emphasis role="bold"><emphasis role="italic">showModel</emphasis></emphasis> to
                   <emphasis role="bold"><emphasis role="italic">ObjectMgr The</emphasis></emphasis>
@@ -768,7 +769,7 @@ familyName: James; firstName: Alfred;
         </itemizedlist>The above classification covers almost all the kinds of dialog found in a
         typical UI environment handling business systems. To test this, consider the "Words of
         Wisdom" business component in Exercise03, which was implemented as a view, a model, and a
-        data component. The <computeroutput>.../samples/Wow4</computeroutput> folder contains the
+        data component. The <computeroutput>...Exercise07\Extras\Wow4</computeroutput> folder contains the
         same set of components, but modified to use the MVF. Code no longer required is commented
         out with the comment "v01-00"; methods or statements added or for MVF use are commented with
         "MVF"; statements changed are commented "v01-00-->MVF"; unchanged statements are commented
