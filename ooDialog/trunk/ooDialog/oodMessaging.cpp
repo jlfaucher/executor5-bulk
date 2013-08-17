@@ -481,7 +481,7 @@ LRESULT handleWmUser(pCPlainBaseDialog pcpbd, HWND hDlg, UINT uMsg, WPARAM wPara
             if ( setPropSheetHook(pcpsd) )
             {
                 SetLastError(0);
-                INT_PTR ret = PropertySheet((PROPSHEETHEADER *)wParam);
+                intptr_t ret = PropertySheet((PROPSHEETHEADER *)wParam);
                 oodSetSysErrCode(pcpbd->dlgProcContext);
                 ReplyMessage((LRESULT)ret);
             }

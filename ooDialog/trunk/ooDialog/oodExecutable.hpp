@@ -59,6 +59,9 @@
 #define IDD_CONFIGURE_SERVICES                  106
 #define IDI_APP_ICON                            107
 #define IDI_APP_BLUE_BEAKER_ICON                108
+#define IDI_UP_ARROW                            110
+#define IDI_DOWN_ARROW                          112
+#define IDI_DELETE                              114
 #define IDC_ST_SCOPE                            1000
 #define IDC_ST_DISPLAY_ICON                     1001
 #define IDC_ST_RUNAS                            1002
@@ -68,33 +71,43 @@
 #define IDC_EDIT                                1006
 #define IDC_ST_REGALL                           1007
 #define IDC_ST_ELEVATED                         1008
-#define IDC_ST_SHORT_MSG                        1009
-#define IDC_GB_SERVICES                         1010
-#define IDC_ST_REGCURRENT                       1011
-#define IDC_PB_REMOVE_PATHEXT                   1012
-#define IDC_EDIT_EXTENSION                      1013
-#define IDC_LB_SUGGESTED                        1014
-#define IDC_LB_CURRENT                          1015
-#define IDC_LB_PATHEXT                          1016
-#define IDC_PB_ADD_CURRENT                      1017
-#define IDC_PB_REMOVE_CURRENT                   1018
-#define IDC_PB_ADD_PATHEXT                      1019
-#define IDC_PB_REGISTER                         1020
-#define IDC_RB_CURRENT                          1021
-#define IDC_PB_ADD_EXTENSION                    1022
-#define IDC_RB_ALL                              1023
-#define IDC_PB_CONFIGURE                        1024
-#define IDC_ST_INADMINGROUP                     1025
-#define IDC_ST_ISRUNASADMIN                     1026
-#define IDC_ST_ISELEVATED                       1027
-#define IDC_ST_IL                               1028
-#define IDC_GB_ASSOCIATE                        1029
+#define IDC_PB_UP                               1009
+#define IDC_ST_SHORT_MSG                        1010
+#define IDC_GB_SERVICES                         1011
+#define IDC_PB_DOWN                             1012
+#define IDC_ST_REGCURRENT                       1013
+#define IDC_EDIT_EXTENSION                      1014
+#define IDC_LB_SUGGESTED                        1015
+#define IDC_LB_CURRENT                          1016
+#define IDC_LB_PATHEXT                          1017
+#define IDC_PB_ADD_CURRENT                      1018
+#define IDC_PB_REMOVE_CURRENT                   1019
+#define IDC_PB_ADD_PATHEXT                      1020
+#define IDC_PB_REGISTER                         1021
+#define IDC_PB_DEL                              1022
+#define IDC_RB_CURRENT                          1023
+#define IDC_PB_ADD_EXTENSION                    1024
+#define IDC_RB_ALL                              1025
+#define IDC_PB_CONFIGURE                        1026
+#define IDC_ST_INADMINGROUP                     1027
+#define IDC_ST_ISRUNASADMIN                     1028
+#define IDC_ST_ISELEVATED                       1029
+#define IDC_ST_IL                               1030
+#define IDC_GB_ASSOCIATE                        1031
+#define IDC_CK_UPDATE                           1032
+#define IDC_ST_PATHEXT_DETAILS                  1033
 #define IDS_FRIENDLY_NAME                       40000
 #define IDS_INFOTIP                             40001
 
 
 // Eveything else is not passed to the resource compiler:
 #ifndef RC_INVOKED
+
+#define PATHEXT_DETAILS              "PATHEXT is only changed when Update is checked and Done is clicked. "    \
+                                     "All changes are written for the Current User only. Use the Up / Down "   \
+                                     "buttons to change the order of the extensions; the X button to delete "  \
+                                     "an extension. To prevent an error, the common extensions, .com, .exe, "  \
+                                     ".bat, and .cmd, can not be deleted."
 
 #define OS_ERR_TITLE                 "ooDialog Execute Program: Windows Error"
 #define USER_ERR_TITLE               "ooDialog Execute Program: User Error"

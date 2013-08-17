@@ -79,12 +79,41 @@ inline bool requiresElevation(pConfigureArguments pca)
 
 static void setDlgIcon(HWND hDlg, HINSTANCE hInstance)
 {
-     HANDLE hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_APP_ICON), IMAGE_ICON,
-                              GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
-      if( hIcon )
-      {
-          SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-      }
+    HANDLE hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_APP_ICON), IMAGE_ICON,
+                             GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
+     if( hIcon )
+     {
+         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+     }
+}
+
+static void setButtonIcons(HWND hDlg, HINSTANCE hInstance)
+{
+    int32_t cx   = GetSystemMetrics(SM_CXSMICON);
+    int32_t cy   = GetSystemMetrics(SM_CYSMICON);
+    HANDLE hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_UP_ARROW), IMAGE_ICON, cx, cy, 0);
+    HWND hButton = GetDlgItem(hDlg, IDC_PB_UP);
+
+     if( hIcon )
+     {
+         SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
+     }
+
+     hButton = GetDlgItem(hDlg, IDC_PB_DOWN);
+     hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_DOWN_ARROW), IMAGE_ICON, cx, cy, 0);
+
+     if( hIcon )
+     {
+         SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
+     }
+
+     hButton = GetDlgItem(hDlg, IDC_PB_DEL);
+     hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_DELETE), IMAGE_ICON, cx, cy, 0);
+
+     if( hIcon )
+     {
+         SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
+     }
 }
 
 /**
@@ -535,9 +564,9 @@ HFONT createMonoSpacedFont(int32_t fontSize)
  * @param wParam
  * @param lParam
  *
- * @return INT_PTR CALLBACK
+ * @return intptr_t CALLBACK
  */
-INT_PTR CALLBACK WinMainDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+intptr_t CALLBACK WinMainDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     static HFONT font = NULL;
 
@@ -663,10 +692,20 @@ INT_PTR CALLBACK WinMainDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 }
 
 /**
+ * In place string upper.
+ *
+ * @param s
+ */
+static void strUpper(char *s)
+{
+     while(*s++=toupper(*s));
+}
+
+/**
  * Generates the 'display name' in the extension record to match what the
  * variables in the record indicate.  That is, if the variables in the record
- * indicate that the .ext is registered for all users, the display name is marde
- * accordingly.
+ * indicate that the .ext is registered for all users, the display name is
+ * marked accordingly.
  *
  * @param rec
  *
@@ -944,6 +983,54 @@ void notRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
     updateExtDisplayName(existing);
 }
 
+static void eliminateDups(HWND hLB)
+{
+    LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
+    if ( count > 0 )
+    {
+        for ( LRESULT currentIndex = 0; currentIndex <= count - 2; currentIndex++ )
+        {
+            pExtensionInfo currentRec = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, currentIndex, 0);
+
+            for ( LRESULT newIndex = count -1; newIndex >= currentIndex + 1; newIndex-- )
+            {
+                pExtensionInfo newRec = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, newIndex, 0);
+
+                if ( StrCmpI(currentRec->extension, newRec->extension) == 0 )
+                {
+                    SendMessage(hLB, LB_DELETESTRING, newIndex, 0);
+                    safeLocalFree(newRec);
+                }
+            }
+        }
+    }
+}
+
+static pExtensionInfo dupExtRec(HWND hDlg, pExtensionInfo rec)
+{
+    pExtensionInfo r = (pExtensionInfo)LocalAlloc(LPTR, sizeof(extensionInfo));
+    if ( r == NULL )
+    {
+        reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
+        return NULL;
+    }
+    memcpy(r->extension, rec->extension, sizeof(rec->extension));
+    return r;
+}
+
+static bool isRequiredPathExt(char *ext)
+{
+    if ( StrCmpI(".COM", ext) == 0 ||
+         StrCmpI(".EXE", ext) == 0 ||
+         StrCmpI(".BAT", ext) == 0 ||
+         StrCmpI(".CMD", ext) == 0
+       )
+    {
+        return true;
+    }
+    return false;
+}
+
 /**
  * Allocates the extension records for the extensions mapped to the ooDialog
  * file type that were found in the registry.  We allocate an array of pointes
@@ -1107,6 +1194,253 @@ pExtensionInfo *getExtensionRecords(HWND hDlg, char *progID, size_t *count)
 done_out:
     *count = matches;
     return recs;
+}
+
+static size_t countPathExt(char *value)
+{
+    size_t cnt = 0;
+    char *p;
+
+    // Remove any possible trailing semi-colons.
+    p = value + strlen(value) - 1;
+    while( p > value && *p == ';' )
+    {
+        p--;
+    }
+    *(p + 1) = '\0';
+
+    p = strchr(value, ';');
+    while ( p != NULL )
+    {
+        cnt++;
+        ++p = strchr(p, ';');
+    }
+
+    // Since there are no trailing semi-colons, count == count + 1, if we have
+    // at least one.
+    if ( cnt > 0 )
+    {
+        cnt++;
+    }
+    return cnt;
+}
+
+static int32_t findPathExt(pExtensionInfo *recs, size_t count, char *extension)
+{
+    for ( size_t i = 0; i < count; i++ )
+    {
+        pExtensionInfo current = recs[i];
+
+        if ( StrCmpI(current->extension, extension) == 0 )
+        {
+            return (int32_t)i;
+        }
+    }
+    return -1;
+}
+
+static void fillPathExtRecs(pExtensionInfo *recs, char *pathExt, size_t count, bool isAllUsers)
+{
+    char *start = pathExt;
+    char *p;
+
+    for ( size_t i = 0; i < count; i++ )
+    {
+        p = strchr(start, ';');
+        if ( p != NULL )
+        {
+            *p = '\0';
+            p++;
+        }
+
+        pExtensionInfo current = recs[i];
+
+        current->exists = true;
+        strcpy(current->extension, start);
+        if ( isAllUsers )
+        {
+            current->allUsers = true;
+        }
+        else
+        {
+            current->curUser = true;
+        }
+        strUpper(current->extension);
+
+        start = p;
+    }
+
+}
+
+
+static void getAddPathExtRecords(HWND hDlg, HWND hLB)
+{
+    char  *keyName = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
+    HKEY   hKey    = HKEY_LOCAL_MACHINE;
+    HKEY   hEnvKey;
+    size_t allCnt = 0;
+    size_t curCnt = 0;
+
+    uint32_t maxValue = MAX_HKEY_VALUE;       // Size of value buffer
+    char     value[MAX_HKEY_VALUE] = {'\0'};  // Buffer for value
+    char     extraMsg[SMALL_BUF_SIZE];
+    char     expanded[MAX_HKEY_VALUE];        // Buffer for expanded string.
+
+    pExtensionInfo *recs     = NULL;
+    pExtensionInfo *userRecs = NULL;
+
+    uint32_t retCode = RegOpenKeyEx(hKey, keyName, 0, KEY_QUERY_VALUE, &hEnvKey);
+    if ( retCode == ERROR_SUCCESS )
+    {
+        retCode = RegQueryValueEx(hEnvKey, "PATHEXT", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue);
+        if ( retCode == ERROR_SUCCESS )
+        {
+            uint32_t size = ExpandEnvironmentStrings(value, expanded, MAX_HKEY_VALUE);
+            if ( size > MAX_HKEY_VALUE || size == 0 )
+            {
+                _snprintf(extraMsg, SMALL_BUF_SIZE, "PATHEXT listing may be incorrect");
+                reportErrorPlus(hDlg, "ExpandEnvironmentStrings", REG_ERR_TITLE, extraMsg, GetLastError());
+
+                StrNCpy(expanded, value, MAX_HKEY_VALUE - 1);
+                expanded[MAX_HKEY_VALUE - 1] = '\0';
+            }
+            allCnt = countPathExt(expanded);
+        }
+        else
+        {
+            _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to query value of PATHEXT for all users.");
+            reportErrorPlus(hDlg, "RegQueryValueEx", REG_ERR_TITLE, extraMsg, retCode);
+        }
+
+        RegCloseKey(hEnvKey);
+    }
+    else
+    {
+        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to open the HKLM\\%s registry key.", keyName);
+        reportErrorPlus(hDlg, "RegOpenKeyEx", REG_ERR_TITLE, extraMsg, retCode);
+        goto done_out;
+    }
+
+    recs = allocExtRecords(allCnt, hDlg);
+    if ( recs == NULL )
+    {
+        goto done_out;
+    }
+
+    fillPathExtRecs(recs, expanded, allCnt, true);
+
+    value[0] = '\0';
+    maxValue = MAX_HKEY_VALUE;
+    hKey     = HKEY_CURRENT_USER;
+
+    retCode = RegOpenKeyEx(hKey, "Environment", 0, KEY_QUERY_VALUE, &hEnvKey);
+    if ( retCode == ERROR_SUCCESS )
+    {
+        retCode = RegQueryValueEx(hEnvKey, "PATHEXT", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue);
+        if ( retCode == ERROR_SUCCESS )
+        {
+            uint32_t size = ExpandEnvironmentStrings(value, expanded, MAX_HKEY_VALUE);
+            if ( size > MAX_HKEY_VALUE || size == 0 )
+            {
+                _snprintf(extraMsg, SMALL_BUF_SIZE, "PATHEXT listing for current user may be incorrect");
+                reportErrorPlus(hDlg, "ExpandEnvironmentStrings", REG_ERR_TITLE, extraMsg, GetLastError());
+
+                StrNCpy(expanded, value, MAX_HKEY_VALUE - 1);
+                expanded[MAX_HKEY_VALUE - 1] = '\0';
+            }
+            curCnt = countPathExt(expanded);
+        }
+        else if ( retCode == ERROR_FILE_NOT_FOUND )
+        {
+            // This simply means the user didn't define a current user PATHEXT,
+            // do nothing on purpose.
+            ;
+        }
+        else
+        {
+            _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to query value of PathEXT.");
+            reportErrorPlus(hDlg, "RegQueryValueEx", REG_ERR_TITLE, extraMsg, retCode);
+        }
+        RegCloseKey(hEnvKey);
+    }
+    else
+    {
+        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to open the HKCU\\%s registry key.", "Environment");
+        reportErrorPlus(hDlg, "RegOpenKeyEx", REG_ERR_TITLE, extraMsg, retCode);
+        goto err_out;
+    }
+
+    if ( curCnt > 0 )
+    {
+        // This will fill the list box with *all* the PATHEXT records.  It
+        // combines the all users and current users PATHEXT.
+        userRecs = allocExtRecords(curCnt, hDlg);
+        if ( userRecs == NULL )
+        {
+            goto err_out;
+        }
+        fillPathExtRecs(userRecs, expanded, curCnt, false);
+
+        for ( size_t i = 0; i < curCnt; i++)
+        {
+            pExtensionInfo current = userRecs[i];
+
+            int32_t idx = findPathExt(recs, allCnt, current->extension);
+            if ( idx < 0 )
+            {
+                updateExtDisplayName(current);
+
+                LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+                SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+            }
+            else
+            {
+                // Use the all users record and free the current user record.
+                safeLocalFree(current);
+                current = recs[idx];
+                current->curUser = true;
+                updateExtDisplayName(current);
+
+                LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+                SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+            }
+        }
+    }
+    else
+    {
+        // Nothing is current user's PATHEXT, fill the list box with the all
+        // users PATHEXT.
+        for ( size_t i = 0; i < allCnt; i++)
+        {
+            pExtensionInfo current = recs[i];
+
+            updateExtDisplayName(current);
+
+            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+            SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+        }
+    }
+
+    eliminateDups(hLB);
+
+    // All the individual records are stored in the item data for each item in
+    // the list box, so we no longer need the record containers.
+    safeLocalFree(recs);
+    safeLocalFree(userRecs);
+    goto done_out;
+
+err_out:
+    if ( recs != NULL )
+    {
+        for ( size_t i = 0; i < allCnt; i++ )
+        {
+            safeLocalFree(recs[i]);
+        }
+        safeLocalFree(recs);
+    }
+
+done_out:
+    return;
 }
 
 /**
@@ -1311,6 +1645,15 @@ void addCurrentExt(HWND hDlg, pAssocArguments paa)
     }
 }
 
+static void addPathExt(HWND hDlg, pAssocArguments paa)
+{
+    size_t count = 0;
+    HWND   hLB   = paa->lbPathExt;
+
+    maybeEmptyLB(hLB);
+    getAddPathExtRecords(hDlg, hLB);
+}
+
 /**
  * Used to enable or disable the controls related to associating an .ext with
  * our ooDialg file type.
@@ -1337,7 +1680,6 @@ void setAssocControls(HWND hDlg, pAssocArguments paa, bool flag)
     EnableWindow(GetDlgItem(hDlg, IDC_PB_ADD_CURRENT), enable);
     EnableWindow(GetDlgItem(hDlg, IDC_PB_REMOVE_CURRENT), enable);
     EnableWindow(GetDlgItem(hDlg, IDC_PB_ADD_PATHEXT), enable);
-    EnableWindow(GetDlgItem(hDlg, IDC_PB_REMOVE_PATHEXT), enable);
 }
 
 
@@ -1373,6 +1715,7 @@ static void setRegisteredState(HWND hDlg, pAssocArguments paa)
 
         addSuggestedExt(hDlg, paa);
         addCurrentExt(hDlg, paa);
+        addPathExt(hDlg, paa);
         return;
     }
 
@@ -1416,6 +1759,7 @@ static void setRegisteredState(HWND hDlg, pAssocArguments paa)
     setAssocControls(hDlg, paa, true);
     addSuggestedExt(hDlg, paa);
     addCurrentExt(hDlg, paa);
+    addPathExt(hDlg, paa);
 }
 
 /**
@@ -1438,6 +1782,7 @@ static void setStaticText(HWND hDlg, pAssocArguments paa)
     SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "Current User");
     SetDlgItemText(hDlg, IDC_ST_RUNAS, paa->isRunAsAdmin ? "True" : "False");
     SetDlgItemText(hDlg, IDC_ST_ELEVATED, paa->isElevated ? "True" : "False");
+    SetDlgItemText(hDlg, IDC_ST_PATHEXT_DETAILS, PATHEXT_DETAILS);
 }
 
 /**
@@ -1465,9 +1810,6 @@ HKEY getScopeVars(pAssocArguments paa, char **user)
 
 
 /**
- *
- *
- * @author Administrator (7/14/2013)
  *
  * @param hDlg
  * @param paa
@@ -1880,9 +2222,9 @@ done_out:
  *
  * @param hDlg
  *
- * @return INT_PTR  We always return true.
+ * @return intptr_t  We always return true.
  */
-INT_PTR pbAddCurrent(HWND hDlg)
+intptr_t pbAddCurrent(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
@@ -1928,9 +2270,9 @@ done_out:
  *
  * @param hDlg
  *
- * @return INT_PTR
+ * @return intptr_t
  */
-INT_PTR pbRemoveCurrent(HWND hDlg)
+intptr_t pbRemoveCurrent(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
@@ -1969,7 +2311,146 @@ done_out:
     return TRUE;
 }
 
-INT_PTR pbAddExtension(HWND hDlg)
+/**
+ * Handles the click on the arrow button that adds an exension in the current
+ * list box to the PATHEXT list box.  Note that this does not remove the
+ * extension from the current list box.
+ *
+ * This needs to get the record of the selected item in the current list box,
+ * alloc a new extension record, and add the new item to the PATHEXT list box.
+ *
+ * Note that we check to see if the extension is already in the PATHEXT list
+ * box, and do nothing if that is the case.
+ *
+ * @param hDlg
+ *
+ * @return intptr_t  We always return true.
+ */
+intptr_t pbAddPathExt(HWND hDlg)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    uint32_t       index;
+    pExtensionInfo currentRec = getSelectedExtRec(paa->lbCurrent, &index);
+    if ( currentRec == NULL )
+    {
+        goto done_out;
+    }
+
+    // We just use this to test if the extension is already present in the list
+    // box.
+    pExtensionInfo rec = getExtRec(paa->lbPathExt, currentRec->extension, &index);
+    if ( rec != NULL )
+    {
+        goto done_out;
+    }
+
+    rec = dupExtRec(hDlg, currentRec);
+    if ( rec == NULL )
+    {
+        goto done_out;
+    }
+
+    strUpper(rec->extension);
+    updateExtDisplayName(rec);
+
+    index = (uint32_t)SendMessage(paa->lbPathExt, LB_ADDSTRING, 0, (LPARAM)rec->displayName);
+    SendMessage(paa->lbPathExt, LB_SETITEMDATA, index, (LPARAM)rec);
+
+done_out:
+    return TRUE;
+}
+
+intptr_t pbMovePathExt(HWND hDlg, bool up)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    uint32_t       index;
+    pExtensionInfo currentRec = getSelectedExtRec(paa->lbPathExt, &index);
+    if ( currentRec == NULL )
+    {
+        goto done_out;
+    }
+
+    /*
+    char msg[SMALL_BUF_SIZE];
+    _snprintf(msg, SMALL_BUF_SIZE, "Current rec %p", currnetRec);
+    internalInfoMsgBox(msg, "Move item UP");
+    */
+
+    if ( up )
+    {
+        if ( index == 0 )
+        {
+            // Already at the top.
+            SendMessage(paa->lbPathExt, LB_SETCURSEL, -1, 0);
+            Sleep(0);
+            SendMessage(paa->lbPathExt, LB_SETCURSEL, 0, 0);
+            goto done_out;
+        }
+
+        // If we delete the item above, this should move our item up.
+        pExtensionInfo rec = (pExtensionInfo)SendMessage(paa->lbPathExt, LB_GETITEMDATA, index - 1, 0);
+        SendMessage(paa->lbPathExt, LB_DELETESTRING, index - 1, 0);
+
+        // Now reinsert the deleted item at the position of our item
+        SendMessage(paa->lbPathExt, LB_INSERTSTRING, index, (LPARAM)rec->displayName);
+        SendMessage(paa->lbPathExt, LB_SETITEMDATA, index, (LPARAM)rec);
+        SendMessage(paa->lbPathExt, LB_SETTOPINDEX, index - 1, 0);
+    }
+    else
+    {
+        LRESULT count = SendMessage(paa->lbPathExt, LB_GETCOUNT, 0, 0);
+        if ( count == index + 1 )
+        {
+            // Already at the bottom.
+            goto done_out;
+        }
+        // If we delete this item, this should move the below items up.  We
+        // don't need the extension record, we already have ti.
+        SendMessage(paa->lbPathExt, LB_DELETESTRING, index, 0);
+
+        // Now reinsert the item above its old index.
+        index ++;
+        SendMessage(paa->lbPathExt, LB_INSERTSTRING, index, (LPARAM)currentRec->displayName);
+        SendMessage(paa->lbPathExt, LB_SETITEMDATA, index, (LPARAM)currentRec);
+        SendMessage(paa->lbPathExt, LB_SETCURSEL, index, 0);
+    }
+
+done_out:
+    return TRUE;
+}
+
+intptr_t pbDelPathExt(HWND hDlg)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    uint32_t       index;
+    pExtensionInfo currentRec = getSelectedExtRec(paa->lbPathExt, &index);
+    ///*
+    char msg[SMALL_BUF_SIZE];
+    _snprintf(msg, SMALL_BUF_SIZE, "Current rec %p", currentRec);
+    internalInfoMsgBox(msg, "Delete Item");
+    //*/
+
+    if ( currentRec == NULL )
+    {
+        goto done_out;
+    }
+
+    if ( isRequiredPathExt(currentRec->extension) )
+    {
+        goto done_out;
+    }
+
+    SendMessage(paa->lbPathExt, LB_DELETESTRING, index, 0);
+    safeLocalFree(currentRec);
+
+done_out:
+    return TRUE;
+}
+
+intptr_t pbAddExtension(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
@@ -2078,7 +2559,7 @@ good_out:
  *
  * @param hDlg
  *
- * @return INT_PTR
+ * @return intptr_t
  *
  * @note  If scope is all users and all users is registered, then we must be
  *        removing the prog ID.  Otherwise we must be adding the prog ID.
@@ -2092,7 +2573,7 @@ good_out:
  *        When the operation is a success, then the state of the dialog must
  *        always be reset.
  */
-INT_PTR pbRegister(HWND hDlg)
+intptr_t pbRegister(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
@@ -2161,7 +2642,7 @@ INT_PTR pbRegister(HWND hDlg)
     return TRUE;
 }
 
-INT_PTR handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
+intptr_t handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
 {
 
     switch ( LOWORD(wParam) )
@@ -2184,13 +2665,19 @@ INT_PTR handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
             return pbRemoveCurrent(hDlg);
 
         case IDC_PB_ADD_PATHEXT :
+            return pbAddPathExt(hDlg);
 
+        case IDC_PB_UP :
+            return pbMovePathExt(hDlg, true);
             break;
 
-        case IDC_PB_REMOVE_PATHEXT :
-
+        case IDC_PB_DOWN :
+            return pbMovePathExt(hDlg, false);
             break;
 
+        case IDC_PB_DEL :
+            return pbDelPathExt(hDlg);
+            break;
 
         default:
             break;
@@ -2227,6 +2714,7 @@ static void setUp(HWND hDlg, pAssocArguments paa)
     SendMessage(paa->edit, EM_SETLIMITTEXT, MAX_EXT_NAME - 2, 0);
 
     setDlgIcon(hDlg, paa->hInstance);
+    setButtonIcons(hDlg, paa->hInstance);
     setStaticText(hDlg, paa);
 
     setRegisteredState(hDlg, paa);
@@ -2243,9 +2731,9 @@ static void setUp(HWND hDlg, pAssocArguments paa)
  * @param wParam
  * @param lParam
  *
- * @return INT_PTR CALLBACK
+ * @return intptr_t CALLBACK
  */
-INT_PTR CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+intptr_t CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if ( uMsg == WM_INITDIALOG )
     {
@@ -2278,7 +2766,7 @@ INT_PTR CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 }
 
 
-INT_PTR CALLBACK ConfigureDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+intptr_t CALLBACK ConfigureDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if ( uMsg == WM_INITDIALOG )
     {

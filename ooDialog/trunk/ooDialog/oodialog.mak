@@ -221,6 +221,7 @@ $(OOD_OUTDIR)\ooDialog.exe : $(OOD_OUTDIR)\oodWinMain.obj $(OOD_OUTDIR)\oodShare
     $(OOD_OUTDIR)\oodWinMain.obj $(OOD_OUTDIR)\oodShared.obj $(OOD_OUTDIR)\ooDialogWinMain.res \
     $(lflags_common) \
     /STACK:524288 \
+    /PDB:ooDialogM.pdb \
     $(REXXAPI_LIBS) \
     shlwapi.lib \
     -out:$(OOD_OUTDIR)\ooDialog.exe
@@ -232,6 +233,7 @@ $(OOD_OUTDIR)\ooDialog.com : $(OOD_OUTDIR)\oodMain.obj $(OOD_OUTDIR)\oodShared.o
     $(OOD_OUTDIR)\oodMain.obj $(OOD_OUTDIR)\oodShared.obj $(OOD_OUTDIR)\ooDialogMain.res \
     $(lflags_common_console) \
     /STACK:262144 \
+    /PDB:ooDialogC.pdb \
     $(REXXAPI_LIBS) \
     shell32.lib Advapi32.lib\
     -out:$(OOD_OUTDIR)\ooDialog.com
