@@ -42,20 +42,19 @@
     #
     #########################################################################
 -->
-<!-- Appendix 06 - Direct Manipulation				  v01-00 07Jun13
+<!-- Appendix 06 - Direct Manipulation				  v01-00 22Aug13
 
      An overview of drag-drop or direct manipulation - part of the 
      Model-View Framework (MVF).
 
      Changes:
-     v01-00 07Jun13: First version.
+     v01-00 22Aug13: First version.
 
-     A6   *  Direct Manipulation                                                apx6-dm
-     A6.1    * ???                                   apx6-dm-xx1
-     A6.2    * ???                                                      apx6-dm-xx2
-     A6.3    * ???                                                   apx6-dm-xx3
-     A6.4    * ???                                         apx6-dm-xx4
-     A6.5    * ???                                              apx6-dm-xx5
+     A6   *  Direct Manipulation                              apx6-dm
+     A6.1    * The Mouse Class                              apx6-dm-ms
+     A6.2    * Enabling Drag/Drop                          apx6-dm-setup
+     A6.3    * Pickup and Drag                               apx6-dm-pickup
+     A6.4    * Drop on Target                                 apx6-dm-drop
 
 -->
 <appendix id="apx6-dm">
@@ -63,77 +62,110 @@
   <indexterm><primary>Direct manipulation</primary></indexterm>
   <indexterm><primary>Drag-drop</primary></indexterm>
   <para>This appendix provides an overview of the internals of the drag/drop or "direct
-    manipulation" function provided from Exercise08 onwards. The design of this function is aimed at
-    relieving the component developer from almost all of the complexities inherent in drag/drop.
-    These complexities are handled by a cooperation between the
-      <computeroutput>View</computeroutput> superclass and the Drag Manager
+    manipulation" function provided from Exercise08 onwards. Drag/drop is handled by a framework
+    that relieves the application developer from almost all of the complexities inherent in
+    drag/drop. This framework is implemented by a cooperation between the
+      <computeroutput>View</computeroutput> superclass and a new "manager" class, the Drag Manager
       (<computeroutput>DragMgr.rex</computeroutput>) both of which are located in the
-      <computeroutput>Support</computeroutput> folder. A description of the component developer's
-    view of drag/drop is provided in Chapter 8, section <xref linkend="chap08-dragdrop"/>.</para>
-  <para>The structure of this Appendix is as follows:</para>
+      <computeroutput>Exercise08\Support</computeroutput> folder. A description of the application
+    developer's view of drag/drop is provided in Chapter 8, <xref linkend="chap08-dragdrop"
+    />.</para>
+  <para>This Appendix discusses the following four aspects of the "mechanics" of direct manipulation
+    or drag/drop:</para>
   <itemizedlist>
-      <listitem>
-        <para><xref linkend="apx6-dm-setup"/></para>
-      </listitem>
-      <listitem>
-        <para>yyy</para>
-      </listitem>
-      <listitem>
-        <para>zzz</para>
-      </listitem>
-    </itemizedlist>
+    <listitem><para><xref linkend="apx6-dm-mouse"/></para></listitem>
+    <listitem><para><xref linkend="apx6-dm-setup"/></para></listitem>
+    <listitem><para><xref linkend="apx6-dm-drag"/>yyy</para></listitem>
+    <listitem><para><xref linkend="apx6-dm-drop"/>zzz</para></listitem>
+  </itemizedlist>
   <!-- Section A6.1: ??? -->
+  <section id="apx6-dm-mouse" xreflabel="The Mouse Class">
+    <title>The Mouse Class</title>
+    <para>Drag/drop is enabled through ooDialog's <computeroutput>.Mouse</computeroutput> class.
+      When a window (a dialog window or a control window such as a List View) is to be the source of
+      a drag operation, then an instance of the <computeroutput>.Mouse</computeroutput> class must
+      be instantiated (typically in the <computeroutput>initDialog</computeroutput> method). Mouse
+      events are then connected to the mouse instance. For example, here's a sample code statement
+      for connecting a "pickup" (left-button down) event:
+        <computeroutput>mouse~connectEvent('LBUTTONDOWN', dmOnLBdown)</computeroutput>. This defines
+      the method <computeroutput>dmOnLBdown</computeroutput> as the event handler for a
+      left-button-down event. Other drag/drop events include mouse movement (dragging with the left
+      button down) and a drop (left button up).. </para>
+    <para>In Exercise08, all mouse events are registered in and handled by the
+        <computeroutput>View</computeroutput> superclass. However, only an application-level dialog
+      knows when it is created, and so, to define itself as a potential source for a drag operation,
+      it informs its <computeroutput>View</computeroutput> superclass of this fact. It does this by
+      supering (from its <computeroutput>initDialog</computeroutput> method) a
+        <computeroutput>dmSetAsSource</computeroutput> message, as described in the next section. It
+      is in the superclass's <computeroutput>dmSetAsSource</computeroutput> method that a mouse is
+      instantiated and the three events mentioned above are connected. Finally,
+        <computeroutput>View</computeroutput> tells the Drag/Drop Manager
+        (<computeroutput>DragMgr.rex</computeroutput>) that a new source dialog is present. When a
+      drag is started, it is the Drag/Drop Manager that manages the fine detail of the
+      operation.</para>
+    <para>Now, if mouse events are fired during drag/drop, then what object instance receives these
+      events? The answer is the class that has "captured". This is done very simply using the
+        <computeroutput>capture</computeroutput>: method of the
+        <computeroutput>.Mouse</computeroutput> class.  </para>
+  </section>
   <section id="apx6-dm-setup" xreflabel="Enabling Drag/Drop">
     <title id="apx6-dm-setup.title">Enabling Drag/Drop</title>
-    <para>The following diagram shows how components are enabled (or set up) for either dragging or
-      dropping or both. <figure id="fig-apx6-01">
+    <para>The diagram "<xref linkend="fig-apx6-01"/>" shows how components are enabled (or set up)
+      for either dragging or dropping. <figure id="fig-apx6-01">
         <title>Drag/Drop Setup</title>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Appendix06-image1.jpg" scale="75"/>
           </imageobject>
         </mediaobject>
-      </figure>If a component view can be "picked up and dragged", then it is called a <emphasis
-        role="italic">source</emphasis> (or "drag/drop source"). It defines itself as a source by
-      supering a <computeroutput>dmSetAsSource</computeroutput> message (typically in its
-        <computeroutput>initDialog</computeroutput> method). There are two parameters to this
-      message: first (obligatory) is the file name of the cursor to show when dragging (a
-        <computeroutput>*.cur</computeroutput> file), and second (optional) the area of the source
-      dialog from which it's valid to "pick up" - i.e. to start dragging. If the second parameter is
-      not provided, then the superclass defaults to the dialog area less 10 on each side. In its
-        <computeroutput>dmSetAsSource</computeroutput> method, <computeroutput>View</computeroutput>
-      first creates an instance of the Mouse class, and registers three event handling methods -
-      mouse move, left button down, and left button up. It then invokes the
-        <computeroutput>*setSource</computeroutput> method of the Drag Manager with four arguments:
-      self (i.e. the source dialog), the mouse instance, the cursor filename, and the source's valid
-      pickup area . The Drag Manager then adds the source dialog to its table of source dialogs.
-      Note that if a <computeroutput>dmSetAsSource</computeroutput> message is not supered by a
-      dialog, then no mouse events are handled, and so nothing happens mouse button 1 is pressed and
-      held.. </para>
+      </figure>In the diagram, a component view that can be "picked up and dragged" is called a
+        <emphasis role="italic">source dialog</emphasis> (or "drag/drop source"). <indexterm>
+        <primary>Source dialog</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Direct manipulation</primary>
+        <secondary>Source dialog</secondary>
+      </indexterm> It defines itself as a "source" by supering to
+        <computeroutput>View</computeroutput> a <computeroutput>dmSetAsSource</computeroutput>
+      message (typically from its <computeroutput>initDialog</computeroutput> method). There are two
+      parameters to this message: first (obligatory) is the file name of the cursor to show when
+      dragging (a <computeroutput>*.cur</computeroutput> file), and second (optional) the area of
+      the source dialog from which it's valid to "pick up" - i.e. to start dragging. If the second
+      parameter is not provided, then the superclass defaults to the dialog area less 10 on each
+      side. In its <computeroutput>dmSetAsSource</computeroutput> method,
+        <computeroutput>View</computeroutput> first creates an instance of the
+        <computeroutput>.Mouse</computeroutput> class, and registers three event handling methods -
+        <computeroutput>LBUTTONDOWN</computeroutput>), <computeroutput>MOUSEMOVE</computeroutput>
+      and <computeroutput>LBUTTONUP</computeroutput>. If these events are not defined then drag/drop
+      operations are ignored. It then invokes the <computeroutput>*setSource</computeroutput> method
+      of the Drag Manager with four arguments: self (i.e. the source dialog), the mouse instance,
+      the cursor filename, and the source's valid pickup area . The Drag Manager then adds the
+      source dialog to its table of source dialogs. Note that if a
+        <computeroutput>dmSetAsSource</computeroutput> message is not supered by a dialog, then no
+      mouse events are handled, and so nothing happens mouse button 1 is pressed and held.</para>
     <para>A view component that will accept a drop is called a <emphasis role="italic"
-        >target</emphasis>. It defines itself as a target by supering a
-        <computeroutput>dmSetAsTarget</computeroutput> message (typically in its
-        <computeroutput>initDialog</computeroutput> method).  </para>
-    <para>In the <computeroutput>dmSetAsSource</computeroutput> method of the
-        <computeroutput>View</computeroutput> superclass, an instance of ooDialog's
-        <computeroutput>Mouse</computeroutput> class is created. Then three mouse events are
-      defined: <computeroutput>LBUTTONDOWN</computeroutput>),
-        <computeroutput>MOUSEMOVE</computeroutput> and <computeroutput>LBUTTONUP</computeroutput>
-      (if these events are not defined then drag/drop operations as ignored). Finally,
-        <computeroutput>View</computeroutput> sends <computeroutput>setSource</computeroutput> to
-      the Drag Manager. This method has four arguments: self (i.e. the source dialog), the mouse
-      instance, the file name of the cursor to use (a <computeroutput>*.cur</computeroutput> file),
-      and  the area of the source dialog in which a pickup is valid. </para>
-    <para>usually a dmSourceCursorFile, dmSourceAreaparameters  is told (by its  method being
-      invoked) that this dialog is the drag "source" - i.e. the dialog being "dragged". invliked the
-      button down, events statement mouse~connectEvent(“LBUTTONDOWN”, dmOnLBdown)</para>
-    <para>In the <computeroutput>dmSetAsSource</computeroutput> method, mouse~connectEvent(“LBUTTONDOWN”, dmOnLBdown)</para>
+        >target</emphasis>. <indexterm>
+        <primary>Target dialog</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Direct manipulation</primary>
+        <secondary>Target dialog</secondary>
+      </indexterm> It defines itself as a target by supering a
+        <computeroutput>dmSetAsTarget</computeroutput> message (typically from its
+        <computeroutput>initDialog</computeroutput> method) to its
+        <computeroutput>View</computeroutput> superclass. The only argument is the area in the
+      dialog in which a drop is allowed. If omitted, it defaults to the dialog client area less 10
+      on each side. <computeroutput>View</computeroutput> then invokes the Drag Manager's
+        <computeroutput>setTarget</computeroutput> method with three parameters: the dialog id, the
+      window within the dialog upon which a drop is allowed (if anywahere, then this window 's id is
+      the dialog's id), and the drop area within the window. </para>
     <para>Finally, note that a view component can be both a source and a target.</para>
   </section>
   
   <section id="apx6-dm-drag" xreflabel="Pickup and Drag">
     <title id="apx6-dm-drag.title">Pickup and Drag</title>
-    <para>The top part of the following figure shows the pickup and drag operation.</para>
+    <para>The top part of the following figure shows the pickup and drag operation. The lower half
+      shows a drop.</para>
   <figure id="fig-apx6-02" xreflabel="Drag/Drop Operation"><title>Drag/Drop Operation</title>
       <mediaobject>
         <imageobject>
@@ -141,26 +173,61 @@
         </imageobject>
       </mediaobject>
     </figure>
-    <para>The operation is as follows: <orderedlist>
-        <listitem>
-          <para>The operation starts with the user pressing and holding the "primary" button
-            (usually the left button) of the mouse while over a "source" dialog. If the dialog has
-            registered itself as a "source" the mouse pointer turns into a no-entry sign (meaning a
-            drop would be a no-op). This results in the event LBUTTONDOWN being signalled to the
-            source dialog. The application component ignores this. However, it's View superclass has
-            registered this event, and has defined the method dmOnLBdown as its event-handling
-            method. er an sent to the sopur </para>
-        </listitem>
-      </orderedlist>1. Multiple “moving” messages received. On each, check if mouse over a target
-      that’s registered in the Target Table. If no, then nop. If yes, then posible target found: (a)
-      Send dmQueryDrop to target dialog (to class object of the target view's model) (b) If return =
-      .true, set cursor to dropOkCursor 2. In dmSetAsSource method: mouse~connectEvent(“LBUTTONUP”,
-      dmOnLBup) 3. Drag-drop operation complete. If Target did returned .true to dmQueryDrop, then a
-      dmDrop message is sent to it. not informed what has been dropped on it. </para>
+    <para>The operation is as follows: 
+    <orderedlist>
+      <listitem><para>The operation starts with the user pressing and holding the "primary" button (usually the left
+        button) of the mouse while over a "source" dialog. This results in the event
+        <computeroutput>LBUTTONDOWN</computeroutput> being signaled to the source dialog. This
+        is handled by the <computeroutput>View</computeroutput> superclass's
+        <computeroutput>dmOnLBdown</computeroutput> method, which in turn invokes the Drag
+        Manager's <computeroutput>dmPickup</computeroutput> method. The Drag Manager then
+        "captures" the mouse (using the Mouse class's <computeroutput>capture</computeroutput>
+        method). This results in all mouse messages being sent to the Drag Manager (because it
+        has "captured" the mouse and all events generated by it). </para>
+      </listitem>
+      <listitem><para>As the mouse is dragged, multiple <computeroutput>moving</computeroutput> messages are
+        received. On each, the Drag Manager checks if the mouse is over a target that’s
+        registered in its Target Table. If no, then nop. If yes, then a possible target has been
+        found, at which point the Drag Manager:</para>
+        <itemizedlist>
+          <listitem><para>Sends a <computeroutput>dmQueryDrop</computeroutput> message to the class object of the target
+            view's model with source's model class name as the single parameter. Why the class
+            object? And why that of the target view's model? The reason is that, in the general
+            case, the user may drag the mouse across a large number of possible targets such as
+            multiple entries in a list view. And it could well be the case that each item in the
+            list represents a model and view instance (e.g. in the case of a list of Customers).
+            Further, it may well be that none of them are instantiated (which could well involve
+            accessing a data base of some sort). Now all that's required for the drag operation
+            is a simple yes/no answer: can the source be dropped or not. Thus in order to avoid
+            excessive and pointless processing, the model's class object is invoked. The target
+            object returns a simple yes or no as to whether as drop on an instance of the target
+            class is permissible.</para></listitem>
+          <listitem><para>If the potential target returns true, then the Drag Manager set the cursor to the "drop OK"
+            cursor - that is, the cursor provided by the source object when it told its
+            superclass that it was a potential drag source. </para></listitem>
+        </itemizedlist></listitem>
+    </orderedlist>
+    </para>
   </section>
   <section id="apx6-dm-drop" xreflabel="Drop on Target">
-    <title>Drop on Target</title>
-    <para>See lower half of <xref linkend="fig-apx6-02"/></para>
+    <title>Drop on a Target</title>
+    <para>The drop is illustrated diagrammatically in the bottom half of <xref linkend="fig-apx6-02"
+      />. A view component (or a control within a View component) sets itself as a potential drop
+      target by supering a <computeroutput>dmSetAsTarget</computeroutput> message. The
+        <computeroutput>View</computeroutput> superclass then sends the Drag Manager a
+        <computeroutput>setTarget</computeroutput> message with three parameters: the dialog id, the
+      dialog's window id, and the drop area. The Drag Manager stores this information in a table. A
+      drop occurs when the user releases the left button. When this happens, the event handling
+      method <computeroutput>dmOnLBup</computeroutput> in the <computeroutput>View</computeroutput>
+      superclass is invoked. <computeroutput>View</computeroutput> then sends the Drag Manager a
+        <computeroutput>dmDrop</computeroutput> message. This has three arguments: the dialog id,
+      the key state, and the mouse position. The Drag Manager first releases the mouse and resets
+      the mouse cursor. Then it sends a <computeroutput>dmDrop</computeroutput> message to the
+      target view's model object, with two arguments: the model id of the source object, and the
+      source dialog's id. </para>
+    <para>The target object then does whatever it wishes to do. Often target's action is to send a
+        <computeroutput>query</computeroutput> message to the source model in order to get its data.
+      The drag-drop operation is now complete.  </para>
   </section>
   <!--  End of A6.1.  -->
 </appendix>
