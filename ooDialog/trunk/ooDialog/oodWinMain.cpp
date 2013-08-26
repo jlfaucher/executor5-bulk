@@ -2111,6 +2111,44 @@ static bool removeProgID(HWND hDlg, pAssocArguments paa)
     return true;
 }
 
+static void writeNewPathExt(HWND hDlg, pAssocArguments paa, char *val)
+{
+    char  *keyName = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
+    char  *user;
+    HKEY   hKey = getScopeVars(paa, & user);
+    HKEY   hEnvKey;
+    char   extraMsg[SMALL_BUF_SIZE];
+
+    if ( hKey == HKEY_CURRENT_USER )
+    {
+        keyName = "Environment";
+    }
+
+    uint32_t retCode = RegOpenKeyEx(hKey, keyName, 0, KEY_WRITE, &hEnvKey);
+    if ( retCode == ERROR_SUCCESS )
+    {
+        retCode = RegSetValueEx(hEnvKey, "PATHEXT", 0, REG_EXPAND_SZ, (LPBYTE)val, (uint32_t)(strlen(val) + 1));
+        if ( retCode != ERROR_SUCCESS )
+        {
+            _snprintf(extraMsg, SMALL_BUF_SIZE,
+                      "Failed to set the %s value (%s) for %s",
+                      "PATHEXT", val, user);
+
+            reportErrorPlus(hDlg, "RegSetValueEx", REG_ERR_TITLE, extraMsg, retCode);
+        }
+
+        RegCloseKey(hEnvKey);
+    }
+    else
+    {
+        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to open the %s\\%s registry key for writing.",
+                  hKey == HKEY_LOCAL_MACHINE ? "HKLM" : "HKCU", keyName);
+        reportErrorPlus(hDlg, "RegOpenKeyEx", REG_ERR_TITLE, extraMsg, retCode);
+    }
+
+    return;
+}
+
 static bool addProgID(HWND hDlg, pAssocArguments paa)
 {
     char *user;
@@ -2211,6 +2249,52 @@ done_out:
 
     }
     return false;
+}
+
+/**
+ * Handles the button click on the Done button.  If the user has checked the
+ * Update when done check box, we update the PATHEXT, based on the current
+ * contents of the PATHEXT list box.  Otherwise we just return.
+ *
+ * @param hDlg
+ *
+ * @return intptr_t
+ */
+intptr_t pbDone(HWND hDlg)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    if ( IsDlgButtonChecked(hDlg, IDC_CK_UPDATE) != BST_CHECKED )
+    {
+        return TRUE;
+    }
+
+    char valBuf[MEDIUM_BUF_SIZE] = {'\0'};
+    HWND hLB = paa->lbPathExt;
+
+    LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
+    if ( count > 0 )
+    {
+        for ( LRESULT i = 0; i < count; i++ )
+        {
+            pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
+            strcat(valBuf, info->extension);
+            if ( i != count - 1 )
+            {
+                strcat(valBuf, ";");
+            }
+        }
+
+#ifdef _DEBUG
+        char msg[SMALL_BUF_SIZE];
+        _snprintf(msg, SMALL_BUF_SIZE, "New pathext=%s", valBuf);
+        internalInfoMsgBox(hDlg, msg, "Testing");
+#endif
+
+        writeNewPathExt(hDlg, paa, valBuf);
+    }
+
+    return TRUE;
 }
 
 /**
@@ -2427,11 +2511,6 @@ intptr_t pbDelPathExt(HWND hDlg)
 
     uint32_t       index;
     pExtensionInfo currentRec = getSelectedExtRec(paa->lbPathExt, &index);
-    ///*
-    char msg[SMALL_BUF_SIZE];
-    _snprintf(msg, SMALL_BUF_SIZE, "Current rec %p", currentRec);
-    internalInfoMsgBox(msg, "Delete Item");
-    //*/
 
     if ( currentRec == NULL )
     {
@@ -2440,6 +2519,10 @@ intptr_t pbDelPathExt(HWND hDlg)
 
     if ( isRequiredPathExt(currentRec->extension) )
     {
+        char msg[SMALL_BUF_SIZE];
+        _snprintf(msg, SMALL_BUF_SIZE, REQUIRED_PATHEXT_ERR_FMT, currentRec->extension);
+        internalInfoMsgBox(hDlg, msg, USER_ERR_TITLE);
+
         goto done_out;
     }
 
@@ -2642,12 +2725,54 @@ intptr_t pbRegister(HWND hDlg)
     return TRUE;
 }
 
+intptr_t pbHelp(HWND hDlg)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    char buf[MEDIUM_BUF_SIZE];
+
+    // Get the complete file name of ooDialog.pdf
+    strcpy(buf, paa->exeName);
+    char *p = StrRChr(buf, NULL, '\\');
+    if ( p == NULL )
+    {
+        internalErrorMsgBox("An unexpected internal error is preventing Help from being shown",
+                            "ooDialog Configure Services: Windows Error");
+        return TRUE;
+    }
+
+    *p = '\0';
+    strcat(buf, "\\doc\\oodialog.pdf");
+
+    SHELLEXECUTEINFO ShExecInfo = {sizeof(SHELLEXECUTEINFO)};
+
+    ShExecInfo.lpFile = buf;
+    ShExecInfo.nShow  = SW_NORMAL;
+
+    if ( ! ShellExecuteEx(&ShExecInfo) )
+    {
+        reportErrorPlus(hDlg, "ShellExecuteEx", OS_ERR_TITLE, "Failed to show the PDF help file", GetLastError());
+    }
+
+    /*
+    ShellExecute(NULL, "open", "\"D:\\program files\\Adobe Reader 9.exe\"",
+				"/A page=45 "
+                "\"C:\\Documents and Settings\\Prabakar\\My Documents\\Downloads\\How to Do "
+                "Everything _ Ubuntu (McGraw-Hill).pdf\"", NULL, SW_SHOWNORMAL);
+    */
+
+    return TRUE;
+}
+
 intptr_t handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
 {
 
     switch ( LOWORD(wParam) )
     {
         case IDOK:
+            pbDone(hDlg);
+            EndDialog(hDlg, wParam);
+            return TRUE;
+
         case IDCANCEL:
             EndDialog(hDlg, wParam);
             return TRUE;
@@ -2669,15 +2794,15 @@ intptr_t handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
 
         case IDC_PB_UP :
             return pbMovePathExt(hDlg, true);
-            break;
 
         case IDC_PB_DOWN :
             return pbMovePathExt(hDlg, false);
-            break;
 
         case IDC_PB_DEL :
             return pbDelPathExt(hDlg);
-            break;
+
+        case IDHELP :
+            return pbHelp(hDlg);
 
         default:
             break;

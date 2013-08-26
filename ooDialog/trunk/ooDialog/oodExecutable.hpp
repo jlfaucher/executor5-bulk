@@ -104,10 +104,9 @@
 #ifndef RC_INVOKED
 
 #define PATHEXT_DETAILS              "PATHEXT is only changed when Update is checked and Done is clicked. "    \
-                                     "All changes are written for the Current User only. Use the Up / Down "   \
-                                     "buttons to change the order of the extensions; the X button to delete "  \
-                                     "an extension. To prevent an error, the common extensions, .com, .exe, "  \
-                                     ".bat, and .cmd, can not be deleted."
+                                     " Use the Up / Down buttons to change the order of the extensions; the "  \
+                                     "X button to delete an extension. To prevent an error, the common "       \
+                                     "extensions, .com, .exe, .bat, and .cmd, can not be deleted."
 
 #define OS_ERR_TITLE                 "ooDialog Execute Program: Windows Error"
 #define USER_ERR_TITLE               "ooDialog Execute Program: User Error"
@@ -117,6 +116,7 @@
 #define OUT_OF_MEMORY_ERR_FMT        "Failed to allocate memory:\n\nFunction:\t\t%s\nError Code:\t%d"
 #define OS_PARSING_ERR_FMT           "Operating system parsing of the command line failed.\n\nLast reported error code: %d\n"
 #define EMPTY_STRING_ARG_ERR_FMT     "Argument %d is the empty string (\"\").\n\nThis is not allowed.\n"
+#define REQUIRED_PATHEXT_ERR_FMT     "To prevent your computer from becoming unusable, the %s extension can not be removed from your PATHEXT"
 
 #define OODIALOG_PROGID              "ooRexx.ooDialog"
 #define OODIALOG_PROGID_VERSIONED    "ooRexx.ooDialog.1"

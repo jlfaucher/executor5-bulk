@@ -137,5 +137,16 @@ inline void internalInfoMsgBox(CSTRING pszMsg, CSTRING pszTitle)
     MessageBox(0, pszMsg, pszTitle, INFO_MB_FLAGS);
 }
 
+/**
+ * Convenience function to put up an information message box.
+ *
+ * @param hwnd      Owner window handle
+ * @param pszMsg    The message.
+ * @param pszTitle  The title of for the message box.
+ */
+inline void internalInfoMsgBox(HWND owner, CSTRING pszMsg, CSTRING pszTitle)
+{
+    MessageBox(owner, pszMsg, pszTitle, INFO_MB_FLAGS);
+}
 
 #endif
