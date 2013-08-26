@@ -118,7 +118,7 @@
   ::METHOD showModel
     use strict arg  modelClass, modelInstance, parentDlg
     r = self~ObjectMgr~showModel(modelClass, modelInstance, parentDlg)
-    if r = .false then say "View-showModel-01: ObjectMgr returned .false."
+    if r = .false then say "View-showModel - ObjectMgr returned .false."
     return r
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -228,7 +228,7 @@
       self~dragMgr~setSource(sourceWin, mouse, dmSourceCursorFile, dmSourceArea, self)  -- ***
     end
     --mouse~connectEvent('MOUSELEAVE', dmLeave)
---say "View-dmSetAsSource-06: source is:" sourceWin
+    --say "View-dmSetAsSource-06: source is:" sourceWin
 
 
     return .true
@@ -263,13 +263,13 @@
     use arg keyState, mousePos
     --say "View-dmOnLBdown-00; self, keystate, mousePos =" self||"," keystate||"," mousePos
     info = self~dmGetItemInfo				-- for listviews
-/*    if info = 0 then say "View-dmOnLBdown-01 - info is zero."
+    if info = 0 then nop --say "View-dmOnLBdown-01 - info is zero."
+    
     else do
-      say "View-dmOnLBdown-02; info, sourceWin =" info||"," sourceWin
+      nop --say "View-dmOnLBdown-02; info, sourceWin =" info||"," sourceWin
       -- store the info somewhere - how about "drag data"?.
       -- Drag data = classname, instance name.
     end
-*/
     --self~DragMgr~dmPickup(self, keyState, mousePos, dragData) - not right yet
     self~DragMgr~dmPickup(sourceWin, keyState, mousePos)  -- pre-listview
     return 0
@@ -310,12 +310,12 @@
 
   ::METHOD dmQueryDrop
     use arg dmSourceDlg, mousePos
-    say "View-dmQueryDrop-01."
+    --say "View-dmQueryDrop-01."
     return .true			-- Default is to accept the drop.
 
   ::METHOD dmDrop
     use arg sourceDlg
-    say "View-dmDrop-01."
+    --say "View-dmDrop-01."
     return .true
 
 /*  ::METHOD cancel
@@ -343,7 +343,7 @@
     
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD viewDoIt
-    say "View-viewDoIt-01."
+    --say "View-viewDoIt-01."
     
       
 /*============================================================================*/

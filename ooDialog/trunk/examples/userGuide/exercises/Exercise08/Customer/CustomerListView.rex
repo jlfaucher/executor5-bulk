@@ -154,14 +154,14 @@
     self~connectListViewEvent("IDC_CUSTLIST_LIST","ACTIVATE",openItem)	 	-- Double-click
     --self~connectListViewEvent("IDC_CUSTLIST_LIST","BEGINDRAG",beginDM)	 	-- Button 1 down
     
---rect = self~getControlRect("IDC_CUSTLIST_LIST")
---say "CustomerListView-initDialog-01: rect =" rect
+/*rect = self~getControlRect("IDC_CUSTLIST_LIST")
+say "CustomerListView-initDialog-01: rect =" rect
 
---lvArea = .Rect~new(15,10,190,215)
+lvArea = .Rect~new(15,10,190,215)
 --r = self~dmSetAsSource:super("Customer\bmp\Customer.cur"), lvArea)
---r = self~dmSetAsSource:super("Customer\bmp\Customer.cur", lvArea, lvCustomers)
+r = self~dmSetAsSource:super("Customer\bmp\Customer.cur", lvArea, lvCustomers)
 --r = self~dmSetAsSource:super("Customer\bmp\Customer.cur")
-    
+*/    
     self~loadList
 
 
@@ -208,7 +208,7 @@
     self~showCustomer
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD beginDM		-- NOT USED!!!
+/*  ::METHOD beginDM		-- NOT USED!!!
     -- user starts drag operation (button 1 down and drag) from the ListView control.
     expose lvCustomers
     use arg id, item, point
@@ -231,7 +231,7 @@
     
     ::METHOD dmGetItemInfo	-- returns item info from selected list item.
       return "ABC123"		-- TO BE FIXED!!!
-    
+*/    
   /*----------------------------------------------------------------------------
     Application Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

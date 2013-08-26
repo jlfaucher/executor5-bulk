@@ -147,7 +147,7 @@
     --   communicate with OrderFormView.
     cd1~setOrderFormDlg(self)
     cd2~setOrderFormDlg(self)
-    cd2~rootDialog(rootDlg)		-- Tell cd2 what the root dialog is.
+    --cd2~rootDialog(rootDlg)		-- Tell cd2 what the root dialog is.
     
     -- Set up Order Totals and initialise CustDiscount:
     orderTotal = 0
@@ -261,14 +261,14 @@
     
     orderTotal = orderTotal + orderLineAmount
     discount = (orderTotal * custDiscount)~format(,0)
-    --say "OrderFormView-showTotals-01a: discount =" discount
+    --say "OrderFormView-showTotals-01: discount =" discount
     discountedTotal = orderTotal - discount
     tax = (discountedTotal * taxRate)~format(,0)
     finalTotal = discountedTotal + tax  
     --say "OrderFormView-showTotals-02: discount / tax =" discount||" / "||tax
 
     -- Format numbers from nnnnn to nnn.nn for display:
-    x = myFormat(orderTotal); -- say "OrderFormView-showTotals-03:" x
+    x = myFormat(orderTotal); --say "OrderFormView-showTotals-03:" x
     stCost~setText(myFormat(orderTotal))
     --stCost~setText(         (orderTotal/100)~format(,2))
     stDisc~setText(myFormat(discount))
@@ -287,7 +287,7 @@
   ::METHOD setCustDiscount
     expose custDiscount
     use arg custDiscount
-    --say "OrderFormView-setCustDiscount-01: discount =" custDiscount
+    --say "OrderFormView-setDustDiscount-01: discount =" custDiscount
     -- Use only first character - A, B or C:
     code = custDiscount~left(1)
     select    
@@ -579,7 +579,7 @@
     -- is placed on the Customer Number field. The button is disabled when pushed.
     self~connectEditEvent("IDC_CUSTDTLS_NUM","GOTFOCUS",custNumGotFocus)
     self~connectButtonEvent("IDC_CUSTDTLS_FIND","CLICKED",findCustomer)
-    --say "CustomerDetailsDlg-initDialog-02."
+    --say "CustomerDetailsDlg-initDialog-01."
     
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
@@ -827,7 +827,7 @@
     end
     info = .Directory~new
     if lvOrderItems~getItemInfo(item, info) then do
-      --say "OrderLinesDlg-showProduct-01: info~text, rootDlg =" info~text "," rootDlg
+      --say "OrderLinesDlg-showProduct-01: info~text =" info~text
       r = self~showModel:super("ProductModel", info~text, rootDlg)
     end
     else do

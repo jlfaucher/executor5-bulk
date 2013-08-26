@@ -101,7 +101,7 @@
   ::METHOD triggerEvent
     use arg eventName 
     eventMgr = .local~my.EventMgr
-    say "Component-triggerEvent-01: event =" eventName||"; r =" r 
+    --say "Component-triggerEvent-01: event =" eventName||"; r =" r 
     r = eventMgr~triggerEvent(eventName)  -- if r = 0 then no-one's registered.
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -111,7 +111,7 @@
   ::METHOD deRegisterInterest
     use arg eventName, uninterestedObject 
     eventMgr = .local~my.EventMgr
-    say "Component-deRegisterIntrest-01: event =" eventName||"; object =" uninterestedObject||" r =" r 
+    --say "Component-deRegisterIntrest-01: event =" eventName||"; object =" uninterestedObject||" r =" r 
     r = eventMgr~deregisterInterest(eventName, uninterestedObject)  -- if r = 0 then no-one's registered.
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */    
       

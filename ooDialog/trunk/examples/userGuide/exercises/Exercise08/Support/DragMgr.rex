@@ -166,7 +166,7 @@
     if mouse~dragDetect(mousePos) then do
       --say "DragManager-dmPickup-01: dropOkCursor =" dropOkCursor
       if dropOkCursor == 0 then do
-        say "DragManager-dmPickup-02:" .HRSdm~badOkCursor .SystemErrorCode
+        nop --say "DragManager-dmPickup-02:" .HRSdm~badOkCursor .SystemErrorCode
       end
       --say 'DragManager-dmPickup-03: Detected dragging.'
       mouse~capture()
@@ -230,7 +230,7 @@
         end
       end
     end
---say "DragManager-moving-060."
+    --say "DragManager-moving-060."
     if targetDlg \= 0 then do			-- If we're over a target
       if targetDlg = sourceDlg then return	-- If target is also the source
       	      					--   then it's not a target (in this version!).
@@ -244,7 +244,7 @@
         --say "DragMgr-moving-06b: target Class =" targetClassName
         --parse value a~class with . className .
         interpret "r = ."||targetClassName||"~dmQueryDrop("||sourceClassName||")"
-        --say "DragManager-moving-07: first time - queryDrop returned" r
+        --say "DragManager-moving-07a: first time - queryDrop returned" r
         if r = .true then do			-- if target accepts a drop
           validTarget = .true
           dropTarget = targetDlg		-- for drop method ...
@@ -304,7 +304,7 @@
         dropTarget~dmDrop(sourceModelId, sourceDlg)
         --say "DragManager-dmDrop-04: Drop Happened OK!!"
       end
-      else say "DragManager-dmDrop-05: Drop Did Not Occur."
+      else nop --say "DragManager-dmDrop-05: Drop Did Not Occur."
     end
 
     return
