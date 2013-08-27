@@ -4033,6 +4033,7 @@ RexxMethod1(int, oosql_test_cls, ARGLIST, args)
     printf("IOERR_MMAP              =%d\n", SQLITE_IOERR_MMAP              );
     printf("LOCKED_SHAREDCACHE      =%d\n", SQLITE_LOCKED_SHAREDCACHE      );
     printf("BUSY_RECOVERY           =%d\n", SQLITE_BUSY_RECOVERY           );
+    printf("BUSY_SNAPSHOT           =%d\n", SQLITE_BUSY_SNAPSHOT           );
     printf("CANTOPEN_NOTEMPDIR      =%d\n", SQLITE_CANTOPEN_NOTEMPDIR      );
     printf("CANTOPEN_ISDIR          =%d\n", SQLITE_CANTOPEN_ISDIR          );
     printf("CANTOPEN_FULLPATH       =%d\n", SQLITE_CANTOPEN_FULLPATH       );
@@ -4596,11 +4597,13 @@ PragmaType getPragmaType(RexxThreadContext *c, CSTRING name)
     if ( strcmp(pName, "automatic_index")           == 0 ) return automaticIndex;
     if ( strcmp(pName, "busy_timeout")              == 0 ) return busyTimeout;
     if ( strcmp(pName, "cache_size")                == 0 ) return cacheSize;
+    if ( strcmp(pName, "cache_spill")               == 0 ) return cacheSpill;
     if ( strcmp(pName, "case_sensitive_like")       == 0 ) return caseSensitiveLike;
     if ( strcmp(pName, "checkpoint_fullfsync")      == 0 ) return checkpointFullfsync;
     if ( strcmp(pName, "collation_list")            == 0 ) return collationList;
     if ( strcmp(pName, "compile_options")           == 0 ) return compileOptions;
     if ( strcmp(pName, "database_list")             == 0 ) return databaseList;
+    if ( strcmp(pName, "defer_foreign_keys ")       == 0 ) return deferForeignKeys;
     if ( strcmp(pName, "encoding")                  == 0 ) return encoding;
     if ( strcmp(pName, "foreign_key_check")         == 0 ) return foreignKeyCheck;
     if ( strcmp(pName, "foreign_key_list")          == 0 ) return foreignKeyList;
@@ -4620,6 +4623,7 @@ PragmaType getPragmaType(RexxThreadContext *c, CSTRING name)
     if ( strcmp(pName, "mmap_size")                 == 0 ) return mmapSize;
     if ( strcmp(pName, "page_count")                == 0 ) return pageCount;
     if ( strcmp(pName, "page_size")                 == 0 ) return pageSize;
+    if ( strcmp(pName, "query_only")                == 0 ) return queryOnly;
     if ( strcmp(pName, "quick_check")               == 0 ) return quickCheck;
     if ( strcmp(pName, "read_uncommitted")          == 0 ) return readUncommitted;
     if ( strcmp(pName, "recursive_triggers")        == 0 ) return recursiveTriggers;
@@ -10024,6 +10028,69 @@ static int autoBuiltin(RexxMethodContext *c, CSTRING name, pCooSQLExtensions pce
 }
 
 /**
+ * Cancels all the builtin extensions as automatic.
+ *
+ * The source code for these extensions comes from SQLite.  They are compiled
+ * and statically linked into the ooSQLite shared library.
+ *
+ * @param c
+ *
+ * @return int
+ *
+ * @note  This funtion walks through the array of builtin extensions and cancels
+ *        every one.  If there is an error for any one builtin we call it
+ *        SQLITE_MISUSE, format the last error, but continue.  That means if
+ *        there is an error for more than one builtin, only the last error is
+ *        reported.
+ */
+static int cancelAllAutoBuiltins(RexxMethodContext *c, pCooSQLExtensions pcext)
+{
+    int rc = SQLITE_OK;
+
+    for ( size_t i = 0; i < BUILTINS_COUNT; i++ )
+    {
+        if ( ! sqlite3_cancel_auto_extension((fnXInit)builtins[i]) )
+        {
+            rc = SQLITE_MISUSE;
+            extensionsFormatLastErr(c, pcext, rc, BUILTIN_AUTO_ERR_FMT, builtinNames[i]);
+        }
+    }
+    return rc;
+}
+
+/**
+ * If the specfied builtin extension was previously made automatic, cancels
+ * that.
+ *
+ * @param c
+ * @param name
+ *
+ * @return 0 always.
+ *
+ * @note  If the builtin extension was not previously registered, SQLite returns
+ *        false for sqlite3_cancel_auto_extension().  We change that to
+ *        SQLITE_MISUSE.
+ */
+static int cancelAutoBuiltin(RexxMethodContext *c, CSTRING name, pCooSQLExtensions pcext)
+{
+    size_t index = builtinName2index(name);
+    if ( index == (size_t)-1 )
+    {
+        wrongArgKeywordException(c->threadContext, 1, BUILTIN_NAMES, name);
+        return SQLITE_MISUSE;
+    }
+
+    int rc = SQLITE_OK;
+
+    if ( ! sqlite3_cancel_auto_extension((fnXInit)builtins[index]) )
+    {
+        rc = SQLITE_MISUSE;
+        extensionsFormatLastErr(c, pcext, rc, BUILTIN_CANCEL_AUTO_ERR_FMT, name);
+    }
+    return rc;
+}
+
+/**
  * Produce a result set, in the format on an array of arrays, listing all the
  * builtin extensions
  *
@@ -10861,6 +10928,82 @@ RexxMethod3(RexxObjectPtr, oosqlext_autoPackage_cls, RexxObjectPtr, packageName,
     }
 
     return TheTrueObj;
+}
+
+
+/** ooSQLExtensions::cancelAutoBuiltin()  [class method]
+ *
+ *  Cancels some or all of the extensions builtin to ooSQLite as automatic.
+ *
+ *  Automatic means that each time a database connection is opened, the builtin
+ *  extensions will be automatically registered for that connection.  The
+ *  cancelAutoBuiltion() undoes this automatic registration for the named
+ *  builtin extension
+ *
+ *  These extensions come from the SQLite source tree. and are statically linked
+ *  to the ooSQLite shared library.
+ *
+ *  @param  entryNames  [optional]  The keyword ALL, a single extension name, or
+ *                      an array of extension names to be made automatic. If
+ *                      ALL, or omitted, all builtin extensions are made
+ *                      automatic.
+ *
+ *  @return An ooSQLite result code.
+ *
+ *  @notes  When canceling ALL builtins, an attempt it made to cancel *every*
+ *          builtin.  If an error is encountered for an single builtin, it is
+ *          recorded in the last error message and last error code attributes,
+ *          but it is ignored until all builtins have been canceled.  This means
+ *          that if there is an error for more than one builtin, only the last
+ *          error is recorded.
+ *
+ *          On the other hand, if an array of builtins is passed as entryNames,
+ *          the method quits on the first error.
+ */
+RexxMethod2(int, oosqlext_cancelAutoBuiltin, OPTIONAL_RexxObjectPtr, entryPoints, CSELF, pCSelf)
+{
+    pCooSQLExtensions pcext = (pCooSQLExtensions)pCSelf;
+
+    resetExtensionsLastErr(context, pcext);
+
+    if ( argumentOmitted(1) )
+    {
+        return cancelAllAutoBuiltins(context, pcext);
+    }
+
+    if ( context->IsArray(entryPoints) )
+    {
+        RexxArrayObject entries = (RexxArrayObject)entryPoints;
+        size_t          count   = context->ArrayItems(entries);
+
+        for ( size_t i = 1; i <= count; i++ )
+        {
+            RexxObjectPtr rxName = context->ArrayAt(entries, i);
+            if ( rxName == NULLOBJECT )
+            {
+                sparseArrayException(context->threadContext, 1, i);
+                return SQLITE_MISUSE;
+            }
+
+            int rc = cancelAutoBuiltin(context, context->ObjectToStringValue(rxName), pcext);
+            if ( rc != SQLITE_OK )
+            {
+                return rc;
+            }
+        }
+    }
+    else
+    {
+        CSTRING name = context->ObjectToStringValue(entryPoints);
+
+        if ( strcasecmp(name, "ALL") == 0 )
+        {
+            return cancelAllAutoBuiltins(context, pcext);
+        }
+        return cancelAutoBuiltin(context, name, pcext);
+    }
+
+    return SQLITE_OK;
 }
 
 
@@ -12691,6 +12834,35 @@ RexxRoutine2(int, oosqlBusyTimeOut_rtn, POINTER, _db, int, ms)
 
     return rc;
 }
+
+
+/** oosqlCancelAutoExtension()
+ *
+ *  Unregisters one of the extensions builtin to ooSQLite as automatic.
+ *
+ *  When a builtin extension is registered as automatic, it means that each
+ *  time a database connection is opened, the builtin extesnsions will be
+ *  automatically registered for that connection.
+ *
+ *  These extensions come from the SQLite source tree. and are statically linked
+ *  to the ooSQLite shared library.
+ *
+ *  @param  extensionName  [required]  Then name of the extension to unregister.
+ *
+ *  @return An ooSQLite result code.
+ */
+RexxRoutine1(int, oosqlCancelAutoExtension_rtn, CSTRING, extensionName)
+{
+    size_t index = builtinName2index(extensionName);
+    if ( index == (size_t)-1 )
+    {
+        wrongArgKeywordException(context->threadContext, 1, BUILTIN_NAMES, extensionName);
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_cancel_auto_extension((fnXInit)builtins[index]);
+}
+
 
 /** oosqlChanges()
  *
@@ -15297,6 +15469,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBindValue_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBindZeroBlob_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBusyHandler_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBusyTimeOut_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlCancelAutoExtension_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlChanges_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlClearBindings_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlClose_rtn);
@@ -15423,6 +15596,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlBindZeroBlob_rtn,         oosqlBindZeroBlob_rtn),
     REXX_TYPED_ROUTINE(oosqlBusyHandler_rtn,          oosqlBusyHandler_rtn),
     REXX_TYPED_ROUTINE(oosqlBusyTimeOut_rtn,          oosqlBusyTimeOut_rtn),
+    REXX_TYPED_ROUTINE(oosqlCancelAutoExtension_rtn,  oosqlCancelAutoExtension_rtn),
     REXX_TYPED_ROUTINE(oosqlChanges_rtn,              oosqlChanges_rtn),
     REXX_TYPED_ROUTINE(oosqlClearBindings_rtn,        oosqlClearBindings_rtn),
     REXX_TYPED_ROUTINE(oosqlClose_rtn,                oosqlClose_rtn),
@@ -15733,6 +15907,7 @@ REXX_METHOD_PROTOTYPE(oosqlext_autoCollation_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_autoCollationNeeded_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_autoFunction_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_autoPackage_cls);
+REXX_METHOD_PROTOTYPE(oosqlext_cancelAutoBuiltin);
 REXX_METHOD_PROTOTYPE(oosqlext_getLibrary_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_getPackage_cls);
 REXX_METHOD_PROTOTYPE(oosqlext_listBuiltins_cls);
@@ -15986,6 +16161,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlext_autoCollationNeeded_cls,     oosqlext_autoCollationNeeded_cls),
     REXX_METHOD(oosqlext_autoFunction_cls,            oosqlext_autoFunction_cls),
     REXX_METHOD(oosqlext_autoPackage_cls,             oosqlext_autoPackage_cls),
+    REXX_METHOD(oosqlext_cancelAutoBuiltin,           oosqlext_cancelAutoBuiltin),
     REXX_METHOD(oosqlext_getLibrary_cls,              oosqlext_getLibrary_cls),
     REXX_METHOD(oosqlext_getPackage_cls,              oosqlext_getPackage_cls),
     REXX_METHOD(oosqlext_listBuiltins_cls,            oosqlext_listBuiltins_cls),

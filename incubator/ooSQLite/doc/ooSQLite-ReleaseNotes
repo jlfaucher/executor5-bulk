@@ -1,4 +1,4 @@
-                  ooSQLite Version 1.0.0.9230 (Preview)
+                  ooSQLite Version 1.0.0.9387 (Preview)
                   ========================================
 
 ooSQLite is an ooRexx extension that provides an interface to the SQLite
@@ -77,36 +77,45 @@ website.
 Distribution:
 -------------
 
-ooSQLite is currently distributed as a compressed archive file, with
-separate files for 32-bit, 64-bit, Windows, or Linux.  The future intent
-is to add ooSQLite to the ooRexx distribution.
+ooSQLite is currently distributed as a standard Windows installer for
+installing on Windows and as a compressed archive file for Linux.  There
+are separate files for 32-bit, 64-bit, Windows, or Linux.  The future
+intent is to add ooSQLite to the ooRexx distribution.
 
 Pick the distribution file to match the bitness, 32-bit or 64-bit, of
-the ooRexx interpreter installed on the system.  Pick the *.zip file for
-Windows and the *.tar.gz file for Linux:
+the ooRexx interpreter installed on the system.  Pick one of the *.exe
+files for Windows and one of the *_lin.tgz files for Linux:
 
-ooSQLite_1_0_0_xxxx_x86_32.zip     <- Windows 32-bit binaries
-ooSQLite_1_0_0_xxxx_x86_64.zip     <- Windows 64-bit binaries
-ooSQLite_1_0_0_xxxx_x86_32.tgz     <- Linux 32-bit binaries
-ooSQLite_1_0_0_xxxx_x86_32.tgz     <- Linux 64-bit binaries
+ooSQLite_1_0_0_xxxx_x86_32.exe         <- Windows 32-bit binaries
+ooSQLite_1_0_0_xxxx_x86_64.exe         <- Windows 64-bit binaries
+ooSQLite_1_0_0_xxxx_x86_32_lin.tgz     <- Linux 32-bit binaries
+ooSQLite_1_0_0_xxxx_x86_32_lin.tgz     <- Linux 64-bit binaries
 
 The 'xxxx' in the file name will be the svn revision number, which may
 vary slightly depending on the exact time the distribution file is
 built.
 
-Mac OS X, and hopefully AIX, pre-compiled binaries will be added
-shortly.  Unfortunately, this is dependent on a developer willing to
-build the binaries stepping forward.
+Mac OS X pre-compiled binaries are available, but out of date.
+Hopefully AIX pre-compiled binaries will be added shortly.
+Unfortunately, this is dependent on a developer willing to build the
+binaries stepping forward.
 
 
-Installation:
--------------
+Installation Windows:
+---------------------
+
+* Down load and execute the appropriate distribution file.  The Windows
+  installer will install ooSQLite to the ooRexx installation directory.
+  An uninstaller is included with the ooSQLite installation.
+
+
+Installation Linux:
+---------------------
 
 * Down load the appropriate distribution file to a directory of your
   choice on your system.
 
-* Unpack the file using a suitable tool for the type of compressed file.
-  Tar for a *.tar.gz file.  Zip, WinZip, etc., for a *.zip file.
+* Unpack the file using tar.  tar -xzfv <fileName>
 
 * Unpacking the distribution file will create a subdirectory tree that
   looks like this:
@@ -138,13 +147,9 @@ The root of the subdirectory tree (ooSQLite.1.0.0.xxxx) contains a few
 text documents, including this ReleaseNotes file, that are typically
 found in an open source software distribution.
 
-In addition it contains a .bat file and a .sh file that can be used to
-temporarily set up ooSQLite for use on the system.  The files simply add
-the bin directory to the path.
-
-On Windows execute setOOSQLiteEnv.bat:
-
-C:\Users\miesfeld\ooSQLite.1.0.0.7817>setOOSQLiteEnv.bat
+In addition it contains a .sh file that can be used to temporarily set
+up ooSQLite for use on the system.  The files simply adds the bin
+directory to the path.
 
 On Linux, if bash is your shell, source the setOOSQLiteEnv.sh file:
 
@@ -214,6 +219,25 @@ the entire user community.
 
                           Cumulative Changes:
                           ===================
+
+Changes since ooSQLite Version 1.0.0.9343 (Preview)
+------------------------------------------------------------------------
+
+The SQLite library is updated to 3.8.0.  All new features in 3.8.0 have
+been implemented.
+
+
+
+Changes since ooSQLite Version 1.0.0.9230 (Preview)
+------------------------------------------------------------------------
+
+The SQLite library is updated to 3.7.17
+
+A standard Windows installer has been added to make it easier to install
+ooSQLite on Windows.  The installer adds ooSQLite to the ooRexx
+installation directory.  An uninstall option is included.
+
+
 
 Changes since ooSQLite Version 1.0.0.9160 (Preview)
 ------------------------------------------------------------------------

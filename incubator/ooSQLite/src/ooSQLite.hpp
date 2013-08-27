@@ -109,6 +109,7 @@ BEGIN_EXTERN_C()
 
 extern int sqlite3_ieee_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_nextchar_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
+extern int sqlite3_percentile_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_regexp_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_rot_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_spellfix_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
@@ -120,6 +121,7 @@ const fnXExtensionInit builtins[] =
 {
     sqlite3_ieee_init,
     sqlite3_nextchar_init,
+    sqlite3_percentile_init,
     sqlite3_regexp_init,
     sqlite3_rot_init,
     sqlite3_spellfix_init,
@@ -130,6 +132,7 @@ const char *builtinNames[] =
 {
     "ieee754",
     "nextChar",
+    "percentile",
     "regExp",
     "rot13",
     "spellFix",
@@ -140,6 +143,7 @@ const char *builtinDescription[] =
 {
     "Implements functions for the exact display and input of IEEE754 Binary64 floating-point numbers.",
     "Implements next_char(A,T,F,H) that finds all \"next\" characters for string A given the vocabulary in T.F",
+    "implement the percentile(Y,P) SQL function as described in the documentation.",
     "Implements a compact regular-expression matcher for posix extended regular expressions against UTF8 text.",
     "Implements a rot13() function and a rot13 collating sequence.",
     "Implements the spellfix1 VIRTUAL TABLE that can be used to search a large vocabulary for close matches.",
@@ -151,10 +155,11 @@ const char *builtinDescription[] =
     "---------------------------------------------------------------------------------------------------------"
 #define BUILTINS_COUNT sizeof(builtins) / sizeof(fnXExtensionInit)
 
-#define BUILTIN_NAMES          "ieee754, nextChar, regExp, rot13, spellFix, or wholeNumber"
-#define BUILTIN_LOAD_ERR_FMT   "Error loading builtin extension %s"
-#define BUILTIN_AUTO_ERR_FMT   "Failed to make builtin extension %s automatic"
-#define BUILTIN_NAME_ERR_FMT   "Argument %d, keyword must be exactly one of %s; found \"%s\""
+#define BUILTIN_NAMES                 "ieee754, nextChar, percentile, regExp, rot13, spellFix, or wholeNumber"
+#define BUILTIN_LOAD_ERR_FMT          "Error loading builtin extension %s"
+#define BUILTIN_AUTO_ERR_FMT          "Failed to make builtin extension %s automatic"
+#define BUILTIN_CANCEL_AUTO_ERR_FMT   "Failed to cancel builtin extension %s as automatic"
+#define BUILTIN_NAME_ERR_FMT          "Argument %d, keyword must be exactly one of %s; found \"%s\""
 
 
 // Enum for the pragma commands in SQLite3.
@@ -165,11 +170,13 @@ typedef enum
     automaticIndex,
     busyTimeout,
     cacheSize,
+    cacheSpill,
     caseSensitiveLike,
     checkpointFullfsync,
     collationList,
     compileOptions,
     databaseList,
+    deferForeignKeys,
     encoding,
     foreignKeyCheck,
     foreignKeyList,
@@ -189,6 +196,7 @@ typedef enum
     mmapSize,
     pageCount,
     pageSize,
+    queryOnly,
     quickCheck,
     readUncommitted,
     recursiveTriggers,

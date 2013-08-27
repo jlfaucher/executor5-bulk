@@ -302,6 +302,7 @@
 ::method autoCollation class external "LIBRARY oosqlite oosqlext_autoCollation_cls"
 ::method autoFunction class external "LIBRARY oosqlite oosqlext_autoFunction_cls"
 ::method autoPackage class external "LIBRARY oosqlite oosqlext_autoPackage_cls"
+::method cancelAutoBuiltin class external "LIBRARY oosqlite oosqlext_cancelAutoBuiltin"
 ::method getLibrary class external "LIBRARY oosqlite oosqlext_getLibrary_cls"
 ::method getPackage class external "LIBRARY oosqlite oosqlext_getPackage_cls"
 ::method listBuiltins class external "LIBRARY oosqlite oosqlext_listBuiltins_cls"
@@ -398,6 +399,7 @@
 ::routine oosqlBindZeroBlob public external "LIBRARY oosqlite oosqlBindZeroBlob_rtn"
 ::routine oosqlBusyHandler public external "LIBRARY oosqlite oosqlBusyHandler_rtn"
 ::routine oosqlBusyTimeOut public external "LIBRARY oosqlite oosqlBusyTimeOut_rtn"
+::routine oosqlCancelAutoExtension public external "LIBRARY oosqlite oosqlCancelAutoExtension_rtn"
 ::routine oosqlChanges public external "LIBRARY oosqlite oosqlChanges_rtn"
 ::routine oosqlClearBindings public external "LIBRARY oosqlite oosqlClearBindings_rtn"
 ::routine oosqlClose public external "LIBRARY oosqlite oosqlClose_rtn"
@@ -532,9 +534,9 @@
 -- (oosqlite.dll / oosqlite.so depending on platform.)
 --
 -- Copy the values directly from the top of sqlite3.h.
-::constant VERSION        "3.7.17"
-::constant VERSION_NUMBER 3007017
-::constant SOURCE_ID      "2013-05-20 00:56:22 118a3b35693b134d56ebd780123b7fd6f1497668"
+::constant VERSION        "3.8.0"
+::constant VERSION_NUMBER 3008000
+::constant SOURCE_ID      "2013-08-26 04:50:08 f64cd21e2e23ed7cff48f7dafa5e76adde9321c2"
 
 
 -- OO_ prefix indicates constant is not from the SQLite library.
@@ -617,6 +619,7 @@
 ::constant IOERR_MMAP               6154
 ::constant LOCKED_SHAREDCACHE       262
 ::constant BUSY_RECOVERY            261
+::constant BUSY_SNAPSHOT            517
 ::constant CANTOPEN_NOTEMPDIR       270
 ::constant CANTOPEN_ISDIR           526
 ::constant CANTOPEN_FULLPATH        782
@@ -753,7 +756,8 @@
 ::constant DBSTATUS_CACHE_HIT            7
 ::constant DBSTATUS_CACHE_MISS           8
 ::constant DBSTATUS_CACHE_WRITE          9
-::constant DBSTATUS_MAX                  9   /* Largest defined DBSTATUS */
+::constant DBSTATUS_DEFERRED_FKS        10
+::constant DBSTATUS_MAX                 10   /* Largest defined DBSTATUS */
 
 
 /* Standard File Control Opcodes */
@@ -864,6 +868,7 @@
 ::constant STMTSTATUS_FULLSCAN_STEP    1
 ::constant STMTSTATUS_SORT             2
 ::constant STMTSTATUS_AUTOINDEX        3
+::constant STMTSTATUS_VM_STEP          4
 
 
 /* Synchronization Type Flags */

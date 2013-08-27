@@ -1836,13 +1836,6 @@ static int do_meta_command(char *zLine, struct callback_data *p){
       sqlite3_close(pDest);
       return 1;
     }
-#if 0 /* MM New code in 3.8.0, doesn't compile. */
-#ifdef SQLITE_HAS_CODEC
-    sqlite3_key(pDest, zKey, (int)strlen(zKey));
-#else
-    (void)zKey;
-#endif
-#endif  /* end if 0 */
     open_db(p);
     pBackup = sqlite3_backup_init(pDest, "main", p->db, zDb);
     if( pBackup==0 ){
