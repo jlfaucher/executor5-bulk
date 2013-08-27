@@ -2999,11 +2999,13 @@ Bytes of page memory used by all caches on this database connection:
           <member>automatic_index          </member>
           <member>busy_timeout             </member>
           <member>cache_size               </member>
+          <member>cache_spill              </member>
           <member>case_sensitive_like      </member>
           <member>checkpoint_fullfsync     </member>
           <member>collation_list           </member>
           <member>compile_options          </member>
           <member>database_list            </member>
+          <member>defer_foreign_keys       </member>
           <member>encoding                 </member>
           <member>foreign_key_check        </member>
           <member>foreign_key_list         </member>
@@ -3022,6 +3024,7 @@ Bytes of page memory used by all caches on this database connection:
           <member>max_page_count           </member>
           <member>page_count               </member>
           <member>page_size                </member>
+          <member>query_only               </member>
           <member>quick_check              </member>
           <member>read_uncommitted         </member>
           <member>recursive_triggers       </member>
@@ -3077,6 +3080,16 @@ Bytes of page memory used by all caches on this database connection:
             url="http://www.sqlite.org/pragma.html#pragma_cache_size">cache_size</ulink> documentation for complete details.
           </para>
           </listitem></varlistentry>
+          <varlistentry><term>cache_spill</term>
+          <listitem>
+          <para>
+            Enables or disables the ability of the pager to spill dirty cache pages to the database file in the middle of a
+            transaction. Cache_spill is enabled by default and most applications should leave it that way as cache spilling
+            is usually advantageous. Consult the SQLite <ulink
+            url="http://www.sqlite.org/pragma.html#pragma_cache_spill">cache_spill</ulink> documentation for complete
+            details.
+          </para>
+          </listitem></varlistentry>
           <varlistentry><term>case_sensitive_like</term>
           <listitem>
           <para>
@@ -3117,6 +3130,17 @@ Bytes of page memory used by all caches on this database connection:
             Works like a query to return one row for each database attached to the current database connection. Consult the
             SQLite <ulink url="http://www.sqlite.org/pragma.html#pragma_database_list">database_list</ulink> documentation
             for complete details.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>defer_foreign_keys</term>
+          <listitem>
+          <para>
+            When the defer_foreign_keys PRAGMA is on, enforcement of all foreign key constraints is delayed until the
+            outermost transaction is committed. The defer_foreign_keys pragma defaults to OFF so that foreign key constraints
+            are only deferred if they are created as "DEFERRABLE INITIALLY DEFERRED". This pragma is only meaningful if
+            foreign key constraints are enabled, of course. Consult the SQLite <ulink
+            url="http://www.sqlite.org/pragma.html#pragma_database_list">database_list</ulink> documentation for complete
+            details.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>encoding</term>
@@ -3274,6 +3298,13 @@ Bytes of page memory used by all caches on this database connection:
             Queries or sets the page size of the database. The page size must be a power of two between 512 and 65536
             inclusive. Consult the SQLite <ulink url="http://www.sqlite.org/pragma.html#pragma_page_size">page_size</ulink>
             documentation for complete details.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>query_only</term>
+          <listitem>
+          <para>
+            Prevents all changes to database files when enabled. Consult the SQLite <ulink
+            url="http://www.sqlite.org/pragma.html#pragma_query_only">query_only</ulink> documentation for complete details.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>quick_check</term>
