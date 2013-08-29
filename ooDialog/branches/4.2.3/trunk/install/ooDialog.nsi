@@ -392,6 +392,8 @@ Section  doInstall
     File "${SrcDir}\PlainBaseDialog.cls"
     File "${SrcDir}\RcDialog.cls"
     File "${SrcDir}\ResDialog.cls"
+    File "${SrcDir}\ShellObjects.cls"
+    File "${SrcDir}\ToolTip.cls"
     File "${SrcDir}\TreeView.cls"
     File "${SrcDir}\UserDialog.cls"
     File "${SrcDir}\UtilityClasses.cls"
