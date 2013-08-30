@@ -399,6 +399,9 @@ extern pCPlainBaseDialog requiredDlgCSelf(RexxMethodContext *c, RexxObjectPtr se
 extern pCDialogControl   requiredDlgControlCSelf(RexxMethodContext *c, RexxObjectPtr control, size_t argPos);
 extern pCPlainBaseDialog requiredPlainBaseDlg(RexxMethodContext *c, RexxObjectPtr dlg, size_t argPos);
 
+extern uint32_t          keyword2stateSystem(CSTRING flags);
+extern RexxStringObject  stateSystem2keyword(RexxMethodContext *c, uint32_t flags);
+
 /**
  *  93.900
  *  Error 93 - Incorrect call to method

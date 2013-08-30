@@ -2704,3 +2704,98 @@ err_out:
     return false;
 }
 
+/**
+ * Converts a string of keywords to the proper STATE_SYSTEM_* flag.
+ *
+ * @param flags
+ *
+ * @return uint32_t
+ */
+uint32_t keyword2stateSystem(CSTRING flags)
+{
+    uint32_t val = 0;
+
+    if ( StrStrI(flags, "ANIMATED")        != NULL ) val |= STATE_SYSTEM_ANIMATED;
+    if ( StrStrI(flags, "BUSY")            != NULL ) val |= STATE_SYSTEM_BUSY;
+    if ( StrStrI(flags, "CHECKED")         != NULL ) val |= STATE_SYSTEM_CHECKED;
+    if ( StrStrI(flags, "COLLAPSED")       != NULL ) val |= STATE_SYSTEM_COLLAPSED;
+    if ( StrStrI(flags, "DEFAULT")         != NULL ) val |= STATE_SYSTEM_DEFAULT;
+    if ( StrStrI(flags, "EXPANDED")        != NULL ) val |= STATE_SYSTEM_EXPANDED;
+    if ( StrStrI(flags, "EXTSELECTABLE")   != NULL ) val |= STATE_SYSTEM_EXTSELECTABLE;
+    if ( StrStrI(flags, "FLOATING")        != NULL ) val |= STATE_SYSTEM_FLOATING;
+    if ( StrStrI(flags, "FOCUSABLE")       != NULL ) val |= STATE_SYSTEM_FOCUSABLE;
+    if ( StrStrI(flags, "FOCUSED")         != NULL ) val |= STATE_SYSTEM_FOCUSED;
+    if ( StrStrI(flags, "HOTTRACKED")      != NULL ) val |= STATE_SYSTEM_HOTTRACKED;
+    if ( StrStrI(flags, "INDETERMINATE")   != NULL ) val |= STATE_SYSTEM_INDETERMINATE;
+    if ( StrStrI(flags, "INVISIBLE")       != NULL ) val |= STATE_SYSTEM_INVISIBLE;
+    if ( StrStrI(flags, "LINKED")          != NULL ) val |= STATE_SYSTEM_LINKED;
+    if ( StrStrI(flags, "MARQUEED")        != NULL ) val |= STATE_SYSTEM_MARQUEED;
+    if ( StrStrI(flags, "MIXED")           != NULL ) val |= STATE_SYSTEM_MIXED;
+    if ( StrStrI(flags, "MOVEABLE")        != NULL ) val |= STATE_SYSTEM_MOVEABLE;
+    if ( StrStrI(flags, "MULTISELECTABLE") != NULL ) val |= STATE_SYSTEM_MULTISELECTABLE;
+    if ( StrStrI(flags, "OFFSCREEN")       != NULL ) val |= STATE_SYSTEM_OFFSCREEN;
+    if ( StrStrI(flags, "PRESSED")         != NULL ) val |= STATE_SYSTEM_PRESSED;
+    if ( StrStrI(flags, "PROTECTED")       != NULL ) val |= STATE_SYSTEM_PROTECTED;
+    if ( StrStrI(flags, "READONLY")        != NULL ) val |= STATE_SYSTEM_READONLY;
+    if ( StrStrI(flags, "SELECTABLE")      != NULL ) val |= STATE_SYSTEM_SELECTABLE;
+    if ( StrStrI(flags, "SELECTED")        != NULL ) val |= STATE_SYSTEM_SELECTED;
+    if ( StrStrI(flags, "SELFVOICING")     != NULL ) val |= STATE_SYSTEM_SELFVOICING;
+    if ( StrStrI(flags, "SIZEABLE")        != NULL ) val |= STATE_SYSTEM_SIZEABLE;
+    if ( StrStrI(flags, "TRAVERSED")       != NULL ) val |= STATE_SYSTEM_TRAVERSED;
+    if ( StrStrI(flags, "UNAVAILABLE")     != NULL ) val |= STATE_SYSTEM_UNAVAILABLE;
+    if ( StrStrI(flags, "VALID")           != NULL ) val |= STATE_SYSTEM_VALID;
+
+
+    return val;
+}
+
+/**
+ * Converts a set of STATE_SYSTEM* flags to their keyword string.
+ *
+ * @param c
+ * @param flags
+ *
+ * @return A Rexx string object.
+ */
+RexxStringObject stateSystem2keyword(RexxMethodContext *c, uint32_t flags)
+{
+    char buf[256];
+    *buf = '\0';
+
+    if ( flags & STATE_SYSTEM_ANIMATED       ) strcat(buf, "ANIMATED ");
+    if ( flags & STATE_SYSTEM_BUSY           ) strcat(buf, "BUSY ");
+    if ( flags & STATE_SYSTEM_CHECKED        ) strcat(buf, "CHECKED ");
+    if ( flags & STATE_SYSTEM_COLLAPSED      ) strcat(buf, "COLLAPSED ");
+    if ( flags & STATE_SYSTEM_DEFAULT        ) strcat(buf, "DEFAULT ");
+    if ( flags & STATE_SYSTEM_EXPANDED       ) strcat(buf, "EXPANDED ");
+    if ( flags & STATE_SYSTEM_EXTSELECTABLE  ) strcat(buf, "EXTSELECTABLE ");
+    if ( flags & STATE_SYSTEM_FLOATING       ) strcat(buf, "FLOATING ");
+    if ( flags & STATE_SYSTEM_FOCUSABLE      ) strcat(buf, "FOCUSABLE ");
+    if ( flags & STATE_SYSTEM_FOCUSED        ) strcat(buf, "FOCUSED ");
+    if ( flags & STATE_SYSTEM_HOTTRACKED     ) strcat(buf, "HOTTRACKED ");
+    if ( flags & STATE_SYSTEM_INDETERMINATE  ) strcat(buf, "INDETERMINATE ");
+    if ( flags & STATE_SYSTEM_INVISIBLE      ) strcat(buf, "INVISIBLE ");
+    if ( flags & STATE_SYSTEM_LINKED         ) strcat(buf, "LINKED ");
+    if ( flags & STATE_SYSTEM_MARQUEED       ) strcat(buf, "MARQUEED ");
+    if ( flags & STATE_SYSTEM_MIXED          ) strcat(buf, "MIXED ");
+    if ( flags & STATE_SYSTEM_MOVEABLE       ) strcat(buf, "MOVEABLE ");
+    if ( flags & STATE_SYSTEM_MULTISELECTABLE) strcat(buf, "MULTISELECTABLE ");
+    if ( flags & STATE_SYSTEM_OFFSCREEN      ) strcat(buf, "OFFSCREEN ");
+    if ( flags & STATE_SYSTEM_PRESSED        ) strcat(buf, "PRESSED ");
+    if ( flags & STATE_SYSTEM_PROTECTED      ) strcat(buf, "PROTECTED ");
+    if ( flags & STATE_SYSTEM_READONLY       ) strcat(buf, "READONLY ");
+    if ( flags & STATE_SYSTEM_SELECTABLE     ) strcat(buf, "SELECTABLE ");
+    if ( flags & STATE_SYSTEM_SELECTED       ) strcat(buf, "SELECTED ");
+    if ( flags & STATE_SYSTEM_SELFVOICING    ) strcat(buf, "SELFVOICING ");
+    if ( flags & STATE_SYSTEM_SIZEABLE       ) strcat(buf, "SIZEABLE ");
+    if ( flags & STATE_SYSTEM_TRAVERSED      ) strcat(buf, "TRAVERSED ");
+    if ( flags & STATE_SYSTEM_UNAVAILABLE    ) strcat(buf, "UNAVAILABLE ");
+    if ( flags & STATE_SYSTEM_VALID          ) strcat(buf, "VALID ");
+
+    if ( *buf != '\0' )
+    {
+        *(buf + strlen(buf) - 1) = '\0';
+    }
+    return c->String(buf);
+}
+

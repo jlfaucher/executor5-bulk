@@ -5403,3 +5403,56 @@ RexxMethod2(RexxObjectPtr, pbdlg_dumpMessageTable, OPTIONAL_CSTRING, table, CSEL
 
     return NULLOBJECT;
 }
+
+
+RexxMethod2(RexxObjectPtr, pbdlg_test, OPTIONAL_CSTRING, table, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
+
+    REBARINFO     rbi;
+    REBARBANDINFO rbBand;
+    RECT          rc;
+    HWND   hwndCB, hwndRB;
+
+    hwndRB = GetDlgItem(pcpbd->hDlg, 1002);
+    if( ! hwndRB )
+    {
+        printf("pbdlg_test() failed to get ReBar hwnd\n");
+        return NULLOBJECT;
+    }
+
+    // Initialize and send the REBARINFO structure.
+    rbi.cbSize = sizeof(REBARINFO);  // Required when using this structure.
+    rbi.fMask  = 0;
+    rbi.himl   = (HIMAGELIST)NULL;
+
+    if(!SendMessage(hwndRB, RB_SETBARINFO, 0, (LPARAM)&rbi))
+    {
+        printf("pbdlg_test() failed to set bar info\n");
+        return NULLOBJECT;
+    }
+
+    // Initialize structure members for the band
+    rbBand.cbSize = sizeof(REBARBANDINFO);  // Required
+    rbBand.fMask  = RBBIM_COLORS | RBBIM_TEXT  |
+                    RBBIM_STYLE | RBBIM_CHILD  | RBBIM_CHILDSIZE |
+                    RBBIM_SIZE;
+    rbBand.fStyle = RBBS_CHILDEDGE;
+
+    // Get the combo box hwnd
+    hwndCB = GetDlgItem(pcpbd->hDlg, 1000);
+
+    // Set values unique to the band with the combo box.
+    GetWindowRect(hwndCB, &rc);
+    rbBand.lpText     = "Combo Box";
+    rbBand.hwndChild  = hwndCB;
+    rbBand.cxMinChild = 0;
+    rbBand.cyMinChild = rc.bottom - rc.top;
+    rbBand.cx         = 200;
+
+    // Add the band that has the combo box.
+    SendMessage(hwndRB, RB_INSERTBAND, (WPARAM)-1, (LPARAM)&rbBand);
+
+    return NULLOBJECT;
+}

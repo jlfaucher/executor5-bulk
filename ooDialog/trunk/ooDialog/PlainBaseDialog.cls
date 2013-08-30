@@ -854,6 +854,7 @@
 ::method newEdit unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newComboBox unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newListBox unguarded external "LIBRARY oodialog pbdlg_newControl"
+::method newReBar unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newScrollBar unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newToolTip unguarded external "LIBRARY oodialog pbdlg_newToolTip"
 ::method newTreeView unguarded external "LIBRARY oodialog pbdlg_newControl"
@@ -867,6 +868,7 @@
 ::method newControl unguarded external "LIBRARY oodialog pbdlg_getNewControl"           -- Do not document for 4.2.0, maybe doc later
 ::method dumpMessageTable unguarded external "LIBRARY oodialog pbdlg_dumpMessageTable"  -- Do not document for 4.2.0, maybe doc later
 
+::method test unguarded external "LIBRARY oodialog pbdlg_test"
 
 -- DEPRECATED  (to end of file)
 

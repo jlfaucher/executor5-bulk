@@ -285,6 +285,7 @@ typedef enum
     winUpDown              = 17,
     winToolTip             = 18,
     winComboLBox           = 19,
+    winReBar               = 20,
 
     // A special value used by the data table / data table connection functions.
     winNotAControl         = 42,
@@ -299,7 +300,8 @@ typedef enum
     oodPlainBaseDialog, oodCategoryDialog,    oodUserDialog,      oodRcDialog,         oodResDialog,
     oodControlDialog,   oodUserControlDialog, oodRcControlDialog, oodResControlDialog, oodUserPSPDialog,
     oodRcPSPDialog,     oodResPSPDialog,      oodDialogControl,   oodStaticControl,    oodButtonControl,
-    oodEditControl,     oodListBox,           oodProgressBar,     oodToolTip,          oodUnknown
+    oodEditControl,     oodListBox,           oodProgressBar,     oodToolTip,          oodReBar,
+    oodUnknown
 } oodClass_t;
 
 // How the Global constDir is to be used
@@ -1112,6 +1114,7 @@ extern RexxClassObject TheTvCustomDrawSimpleClass;
 extern RexxClassObject TheLvFullRowClass;
 extern RexxClassObject TheLvItemClass;
 extern RexxClassObject TheLvSubItemClass;
+extern RexxClassObject TheReBarBandInfoClass;
 
 extern HBRUSH searchForBrush(pCPlainBaseDialog pcpbd, size_t *index, uint32_t id);
 

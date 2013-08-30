@@ -69,6 +69,7 @@ extern POODIMAGE     rxGetOodImage(RexxMethodContext *, RexxObjectPtr, size_t);
 extern RexxObjectPtr rxNewValidImage(RexxMethodContext *, HANDLE, uint8_t, PSIZE, uint32_t, bool);
 extern POODIMAGE     rxGetImageIcon(RexxMethodContext *, RexxObjectPtr, size_t);
 extern POODIMAGE     rxGetImageCursor(RexxMethodContext *c, RexxObjectPtr o, size_t pos);
+extern POODIMAGE     rxGetImageBitmap(RexxMethodContext *c, RexxObjectPtr o, size_t pos);
 extern RexxObjectPtr oodGetImageAttribute(RexxMethodContext *, RexxObjectPtr, CSTRING, UINT, WPARAM, uint8_t, oodControl_t);
 extern RexxObjectPtr oodSetImageAttribute(RexxMethodContext *, CSTRING, RexxObjectPtr, HWND, HANDLE, uint8_t, oodControl_t);
 extern CSTRING       getImageTypeName(uint8_t);

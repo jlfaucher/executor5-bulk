@@ -124,6 +124,9 @@ RexxClassObject     TheLvItemClass = NULLOBJECT;
 // Initialized in the LvSubItem class init method (lvsi_init_cls.)
 RexxClassObject     TheLvSubItemClass = NULLOBJECT;
 
+// Initialized in the ReBarBandInfo class init method (rbbi_init_cls.)
+RexxClassObject     TheReBarBandInfoClass = NULLOBJECT;
+
 /* GdiplusStartupInput gdiplusStartupInput;
 ULONG_PTR           gdiplusToken; */
 
@@ -164,7 +167,7 @@ BOOL REXXENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
  * check the CommCtrl32 version and have a different set of flags for certain
  * versions.
  */
-#define INITCOMMONCONTROLS_CLASS_FLAGS    ICC_WIN95_CLASSES | ICC_DATE_CLASSES
+#define INITCOMMONCONTROLS_CLASS_FLAGS    ICC_WIN95_CLASSES | ICC_DATE_CLASSES | ICC_COOL_CLASSES
 
 /**
  * Determines the version of comctl32.dll and compares it against a minimum
@@ -752,6 +755,7 @@ REXX_METHOD_PROTOTYPE(pbdlg_getNewControl);
 REXX_METHOD_PROTOTYPE(pbdlg_putControl);
 REXX_METHOD_PROTOTYPE(pbdlg_dumpMessageTable);
 REXX_METHOD_PROTOTYPE(pbdlg_unInit);
+REXX_METHOD_PROTOTYPE(pbdlg_test);
 
 REXX_METHOD_PROTOTYPE(global_resolveSymbolicID);
 
@@ -1972,6 +1976,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbdlg_putControl,               pbdlg_putControl),
     REXX_METHOD(pbdlg_dumpMessageTable,         pbdlg_dumpMessageTable),
     REXX_METHOD(pbdlg_unInit,                   pbdlg_unInit),
+    REXX_METHOD(pbdlg_test,                     pbdlg_test),
 
     REXX_METHOD(global_resolveSymbolicID,       global_resolveSymbolicID),
 
