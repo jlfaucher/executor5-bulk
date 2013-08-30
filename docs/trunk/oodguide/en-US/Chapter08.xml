@@ -67,22 +67,20 @@ Topics (in no particular order):
   <section id="chap08-intro"><title>Introduction</title>    <!-- Section 8.1 -->
     <para>Exercise 8 introduces direct manipulation. Try opening an Order Form, then open a Customer
       dialog. Drag the Customer to an Order Form dialog and drop. The customer details are entered
-      automatically into the Order Form. Drag a Product dialog to the OrderForm dialog and product detail is also 
-      entered. Drag-drop as it appears to the application developer is discussed in the section 
-      <xref linkend="chap08-dragdrop"/>, and further detail is provided in <xref linkend="apx6-dm"/>.</para> 
-    <para>However, Exercise 8 also introduces a number of other things. 
-      Although not apparent to the user, substantial changes have been made to the MVF 
-      class structure. In particular, the unfortunate duplication of code in the three 
-      View superclasses of previous exercises is removed. The new structure is discussed in
-      <xref linkend="chap08-mvfRefactoring"/>, together with the changes at the application level.</para> 
+      automatically. Drag a Product dialog to the OrderForm dialog and the product number is
+      entered. Drag-drop as it appears to the application developer is discussed in the section
+        <xref linkend="chap08-dragdrop"/>, and further detail is provided in <xref linkend="apx6-dm"
+      />.</para> 
+    <para>However, Exercise 8 also introduces a number of other things. Although not apparent to the
+      user, substantial changes have been made to the MVF class structure. In particular, the
+      unfortunate duplication of code in the three View superclasses of previous exercises is
+      removed. The new structure is discussed in <xref linkend="chap08-mvfRefactoring"/>, while the
+      consequential changes at the application level are described in <xref linkend="chap08-usingMVF"/>.</para> 
     <para>You may have noticed in Exercise 7 that the process hangs when you close the
       Order Management dialog without first closing all Order Form dialogs. This problem, and its
       solution, is addressed in <xref linkend="chap08-eventMgmt"/>. </para>
-    <para>In addition, further development of the OrderForm function is briefly described.</para>
-    <para>
-      <xref linkend="chap08-eventMgmt"/>. However, , and this is discussed in  
-      (the three Viewmain Suthe , from ... 
-    This is </para>
+    <para>Finally, some enhancements to the <xref linkend="chap08-orderForm"/> function are briefly
+      described.</para>
   </section>
   <!-- *********************************************************************************************** -->
   
@@ -90,28 +88,33 @@ Topics (in no particular order):
     <title>Direct Manipulation</title>
     <indexterm><primary>Direct manipulation</primary></indexterm>
     <indexterm><primary>Drag-Drop</primary></indexterm>
-    <para>Direct manipulation (or drag-drop) is the use of the mouse to drag dialogs around the screen
-      and drop them on other dialogs. But of course it isn't the dialog that's visibly dragged - it's a small icon 
-      that represents the dialog. To try this out, first surface a Customer dialog (e.g. by double-clicking
+    <para>Direct manipulation (or drag-drop) is the use of the mouse to drag a small mouse icon representing a dialog
+      around the screen and drop it on other dialogs, resulting in sopme form of comunication between the two dialogs. 
+      To try this out, first surface a Customer dialog (e.g. by double-clicking
       on an item in the Customer List dialog). Second, create an Order Form dialog by double-clicking on the
-      OrderForm icon in the Order Manager dialog. Now put the mouse cursor
-      over the Customer dialog then press and hold
-      the "primary" button (usually the left mouse button).<footnote><para>The "primary" button defaults to being the left-hand 
-        button, but this can be changed in the Windows Mouse Properties so that it's the right-hand button.</para></footnote>
+      OrderForm icon in the Order Manager dialog. Now place the mouse cursor
+      over the Customer dialog then press and hold the "primary" button (usually the left mouse button).
+      <footnote><para>The "primary" button defaults to being the left-hand 
+      button, but this can be changed in the Windows Mouse Properties so that it's the right-hand button.</para></footnote>
       Start dragging - you'll see the mouse cursor change to a no-entry (or "no-drop") symbol. Drag it over the OrderForm. 
-      The mouse cursor changes to a Customer symbol. Now release the mouse button - that it, "drop" the Customer onto 
-      the Order Form. The customer details appear on the Order Form. 
+      The mouse cursor changes to a Customer symbol, meaning a drop is allowed. Now release the mouse button - 
+      that it, "drop" the Customer onto the Order Form. The customer details appear on the Order Form. 
     </para>
-    <para>Although behind this operation there is some quite complex code (discussed in <xref linkend="apx6-dm"/>, 
-      the code within application components
+    <para>Behind this operation there is some quite complex code (discussed in <xref linkend="apx6-dm"/>), 
+      implemented by a Drag-Drop Framework consisting of code within the <computeroutput>View</computeroutput> superclass
+      and a new "manager" object called the "Drag Manager" (<computeroutput>DragMgr.rex</computeroutput> in the 
+      <computeroutput>Exercise08\Support</computeroutput>) folder). The objective of the Drag-Drop Framework is to
+      make drag/drop as simple as possible fort he application developer. Thus the code within application components
       is very simple. In the drag-drop context, there are two kinds of component: a "source" dialog that is dragged,
-      and a "target" dialog that is dragged over and/or dropped upon (dragging more than one component is not supported).
+      and a "target" dialog that is dragged over and/or dropped upon (dragging more than one component is not supported
+      in Exercise 8). Note that, if it makes sense, a dialog may be both a source and a target. The code required to
+      participate in drag-drop is as follows:
     </para>
     <itemizedlist>
       <listitem>
-        <para><emphasis role="italic"><emphasis role="bold">Source Dialog</emphasis></emphasis></para>
-        <para>To enable support for dragging from a source dialog, simply provide the following code
-          when the dialog is started (typically in the <computeroutput>initDialog</computeroutput>
+        <para><emphasis role="italic"><emphasis role="bold">A Source Dialog</emphasis></emphasis></para>
+        <para>To enable support for dragging from a source dialog, simply provide the following superclass
+          invocation when the dialog is started (typically in the <computeroutput>initDialog</computeroutput>
           method):
           <programlisting><![CDATA[  r = self~dmSetAsSource:super("<cursor file name>")]]></programlisting>
           The cursor file (with file extension "cur") must be given with its path. For example, the
@@ -123,47 +126,69 @@ Topics (in no particular order):
               of this particular product should not be interpreted as a preference.</para>
           </footnote></para></listitem>
       <listitem>
-        <para><emphasis role="italic"><emphasis role="bold">Target Dialog</emphasis></emphasis></para>
-        <para>In the target two things have to be done. First, when being dragged over, decide whether a drop
-          is acceptable, so that the mouse cursor can be set as either no-drop or ok-to-drop. 
-          Second, if acceptable, accept the drop if it happens.</para>
+        <para><emphasis role="italic"><emphasis role="bold">A Target Dialog</emphasis></emphasis></para>
+        <para>To enable a dialog to accept a drop, simply provide the following superclass
+        invocation when the dialog is started (typically in the <computeroutput>initDialog</computeroutput>
+        method):<programlisting><![CDATA[  r = self~dmSetAsTarget:super(dropArea)]]></programlisting>The single 
+        optional parameter defines the area within the dialog onto which a drop is allowed. If omitted, the drop
+        area defaults to the dialog window less 10 on each side.</para>
+        <para>In a target dialog, two things have to be done. First, when being dragged over, decide whether a drop
+        is acceptable, so that the mouse cursor can be set (by the Drag/Drop Framework) as either no-drop or ok-to-drop. 
+        Second, if acceptable, accept the drop if it happens (the user might cancel the operation by pressing
+        the Escape key, or may carry on dragging over one dialog to another).</para>
         <itemizedlist>
           <listitem><para><emphasis role="bold">Drop acceptable?</emphasis></para>
-            <para>Checking if a drop is acceptable is done in the class object of the target's
-              model component. For a drop on an Order Form, this is
-              <computeroutput>.OrderFormModel</computeroutput> which accepts a drop of a
-              <computeroutput>CustomerModel</computeroutput>, as follows:<programlisting><![CDATA[  ::METHOD dmQueryDrop CLASS PUBLIC
-     use arg sourceClassName
-     if sourceClassName = "CUSTOMERMODEL" then return .true
-     else return .false]]></programlisting>Why the class object? Well, in the general case, a user
-              might want to drop on some visible representation of a target such as an item in a
-              ListView. To get to the right item, the mouse cursor could be dragged over many items.
+            <para>When the Drag/Drop Framework detects that the mouse is over a dialog other than the source dialog,
+              it checks whether a drop is acceptable by sending a <computeroutput>dmQueryDrop</computeroutput>
+              message to the class object of the target's model component. This message has a single parameter - the name 
+              of the source model's class. For example, a drop on an Order Form sends the <computeroutput>dmQueryDrop</computeroutput>
+              message to <computeroutput>.OrderFormModel</computeroutput>, which accepts a drop of a Customer as follows:
+              <programlisting><![CDATA[  ::METHOD dmQueryDrop CLASS PUBLIC
+    use arg sourceClassName
+    if sourceClassName = "CUSTOMERMODEL" then return .true
+    else return .false]]></programlisting>Returning <computeroutput>.true</computeroutput> changes the 
+              mouse cursor to the "drop ok" icon; returning <computeroutput>.false</computeroutput> changes the 
+              mouse cursor to the "no entry" or "no drop allowed" cursor (the code fro doing this is in the 
+              Drag/Drop Framework).</para>
+            <para>Why ask the class object and not the View instance if a drop is OK? Well, in the general case, 
+              a user might want to drop on some visible representation of a target such as an item in a
+              ListView. To get to the right item, the mouse cursor could be dragged over many other items.
               If each is asked if a drop is allowed, then each must first be instantiated, and this
               could mean many database accesses. Much better to check with an object that's already
               instantiated - such as the class object (class objects are instantiated when the
-              program starts). However, in Exercise 8 only instantiated dialogs (i.e. view objects)
+              program starts). Note, however, that in Exercise 8 only instantiated and visible dialogs
               can be drag-drop targets. </para>
           </listitem>
           <listitem><para><emphasis role="bold">Drop happens</emphasis></para>
-            <para>If a drop is acceptable, and if the user then releases the mouse button, then
-              the view instance receives a <computeroutput>dmDrop</computeroutput> message, upon
-              which the target typically asks the source object for data. For OrderFormView: <programlisting><![CDATA[  ::METHOD dmDrop PUBLIC
-     expose cd1
-     use strict arg sourceModel, sourceDlg
-     cd1~getCustomerData(sourceModel)           -- gets Customer data
-     return .true]]>                </programlisting>Note that the variable
-              <computeroutput>cd1</computeroutput> is the Customer Details control dialog. The
-              method <computeroutput>getCustomerData</computeroutput> invokes
-              <computeroutput>query</computeroutput> on the dragged Customer model
-              (<computeroutput>sourceModel</computeroutput>) and populates the Customer control
-              dialog in <computeroutput>OrderFormView</computeroutput>.  </para>
+            <para>If a drop is acceptable, and if the user then releases the mouse button, then the
+              view instance receives a <computeroutput>dmDrop</computeroutput> message from the
+              Drag/Drop Framework. (In <computeroutput>OrderFormView.rex</computeroutput> it is the
+              main dialog rather than one of the control dialogs that receives this message.) This
+              message has two parameters: the source dialog's model, and the source dialog. The
+              target's <computeroutput>dmDrop</computeroutput> method typically asks the source's
+              model object for data. For example, the drop method in
+                <computeroutput>OrderFormView</computeroutput> is as follows:<programlisting><![CDATA[  ::METHOD dmDrop PUBLIC
+    expose cd1 cd2
+    use strict arg sourceModel, sourceDlg
+    parse var sourceModel . modelName
+    select
+      when modelName =  "CUSTOMERMODEL" then do
+        cd1~getCustomer(sourceModel); return .true; end
+      when modelName = "PRODUCTMODEL" then do
+        cd2~getProduct(sourceModel); return .true; end
+    end
+    return .false]]></programlisting>Note that the variables <computeroutput>cd1</computeroutput>
+              and <computeroutput>cd2</computeroutput> are the Customer Details and
+              the Product Details control dialogs respectively (see <xref linkend="chap08-orderForm"/>). The method
+              <computeroutput>getCustomerData</computeroutput> in the Customer Details control
+              dialog invokes <computeroutput>query</computeroutput> on the source's model instance -
+              in this case <computeroutput>CustomerModel</computeroutput>. The customer details part of
+              the Order Form is then populated with the customer data received. Similarly for product
+              details.</para>
           </listitem>
         </itemizedlist>
       </listitem>
     </itemizedlist>
-    <para>Note: If a dialog has a <computeroutput>leaving</computeroutput> method, then it must 
-      super to the <computeroutput>View</computeroutput> superclass so that proper tidy-up can be done.
-    </para>
   </section>
   
   <!-- *********************************************************************************************** -->
@@ -213,7 +238,7 @@ Topics (in no particular order):
       </figure>Solid lines are normal "subclass" lines, while dotted lines are mixin "inherits".
       The ooRexx class definitions required for the <computeroutput>Customer</computeroutput>
       business component to operate with the two mixins is as follows (with unnatural spacing to
-      show differences more clearly): <programlisting><![CDATA[  ::CLASS Component                          PUBLIC MIXINCLASS Object
+      show differences more clearly): <programlisting><![CDATA[   ::CLASS Component                          PUBLIC MIXINCLASS Object
 
    ::CLASS View                               PUBLIC MIXINCLASS PlainBaseDialog
 
@@ -232,7 +257,7 @@ Topics (in no particular order):
   </section> 
   
   <!-- *********************************************************************************************** -->
-  <section id="chap08-usingMVF" xreflabel="MVF Re-Factoring"><title>Using the MVF</title>  <!-- Section 8.4 -->
+  <section id="chap08-usingMVF" xreflabel="Using the MVF"><title>Using the MVF</title>  <!-- Section 8.4 -->
     <para>For the application developer, using the revised MVF is very simple, as follows.</para>
     <para>For <emphasis role="italic"><emphasis role="bold">View</emphasis></emphasis> components
       such as <computeroutput>CustomerView.rex</computeroutput>:</para>
@@ -280,21 +305,21 @@ Topics (in no particular order):
       Event Manager is in the <computeroutput>Component</computeroutput> mixin. Application-level
       components merely super event requests, and <computeroutput>Component</computeroutput> does
       the rest.</para>
-     <para>The EMF works like this. First, a component (such as the Order Form) decides that it's
+    <para>Note that events handled by the Event Manager must not be confused with events generated by
+      ooDialog, such as menu selection events.</para>
+     <para>The EMF works like this. First, a dialog component (such as the Order Form) decides that it's
       interested in some event - say "AppClosing". When this event occurs, it wants to be sent a
-      message so that it can take appropriate action. To express its interest, the component sends
-      itself (most usually from its <computeroutput>activate</computeroutput> method ) a
+      message so that it can take appropriate action. To express its interest, the component supers 
+      (usually from its <computeroutput>activate</computeroutput> method) a
         <computeroutput>registerInterest</computeroutput> message. This has two parameters - the
       event in which it's interested and its object id (i.e. <computeroutput>self</computeroutput>)
       as follows:
-      <programlisting><![CDATA[   self~registerInterest("appClosing", self)]]>      </programlisting>This
+      <programlisting><![CDATA[   self~registerInterest("appClosing", self)]]></programlisting>This
       message is handled by the <computeroutput>Component</computeroutput> mixin, which forwards the
       message to a "manager" object called the "Event Manager"
         (<computeroutput>EventMgr.rex</computeroutput> in the
-        <computeroutput>Exercise08\Support</computeroutput> folder).<footnote>
-        <para>Events handled by the Event Manager should not be confused with events generated by
-          ooDialog, such as menu selection events.</para>
-      </footnote> The Event Manager adds the event to its directory of events. Each index is the
+        <computeroutput>Exercise08\Support</computeroutput> folder). The Event Manager adds the event
+       to its directory of events. Each index is the
       event name, and each item is an array of objects that have expressed interest in that event.
       Some time later, when the Order Manager dialog is being closed, it asks for the event
       "appClosing" to be triggered:
@@ -311,15 +336,17 @@ Topics (in no particular order):
   <section id="chap08-orderForm"><title>The Order Form</title> <!-- Section 8.6 -->
     <!--  - added an ok method to catch enter key.
           - use event management for control of close (else hangs)  - see section chap08-eventMgmt
-          - added open Product when dbl-click on a line in Order Details.
-          
-     OrderForm - added function:  
-     a. Can now select products and customer and tot up totals.
-     b. Dbl-click on order line surfaces the product. 
-     c. "Saving" the OrderForm when complete (but this needs write to file which may not be in Ex8!)
-     d. Drag/drop (see item 5)
-     
+          - added open Product when dbl-click on a line in Order Details. 
     -->
+    <para>TO BE COMPLETED!</para>          
+    <para>OrderForm - added function:</para>  
+    <para>a. Can now select products and customer and tot up totals.</para>
+    <para>b. Dbl-click on order line surfaces the product.</para> 
+    <para>c. "Saving" the OrderForm when complete (but this needs write to file which may not be in Ex8!)</para>
+    <para>d. Drag/drop (see item 5)</para>
+    <para>Note: If a dialog has a <computeroutput>leaving</computeroutput> method, then it must 
+      super to the <computeroutput>View</computeroutput> superclass so that proper tidy-up can be done.
+    </para>
     <para>xxx</para>
   </section>
   
