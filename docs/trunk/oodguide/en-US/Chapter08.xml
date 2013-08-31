@@ -61,11 +61,12 @@ Topics (in no particular order):
   5. Drag/Drop Customer/Product to OrderForm
 -->
 <chapter id="chapEight">
-  <title>Direct Manipulation or Drag/Drop</title>
+  <title>Dialog-to-Dialog Drag-Drop</title>
 
 <!-- *********************************************************************************************** -->
   <section id="chap08-intro"><title>Introduction</title>    <!-- Section 8.1 -->
-    <para>Exercise 8 introduces direct manipulation. Try opening an Order Form, then open a Customer
+    <para>Exercise 8 introduces drag-drop - sometimes known as "direct manipulation" - between dialog
+      components. Try opening an Order Form, then open a Customer
       dialog. Drag the Customer to an Order Form dialog and drop. The customer details are entered
       automatically. Drag a Product dialog to the OrderForm dialog and the product number is
       entered. Drag-drop as it appears to the application developer is discussed in the section
@@ -201,7 +202,7 @@ Topics (in no particular order):
       replaced by a single <computeroutput>View</computeroutput> superclass. Ideally, and using
       parts of the Customer business component as an example, the desired class structure would be
       as follows (where a blue border indicates an application component, red an ooDialog class,
-      green an MVF class, and black an ooRexx class):</para>
+      green an MVF class, and black an ooRexx-provided class):</para>
       <figure id="fig0801">
         <title>Exercise08 Notional Class Structure</title>
         <mediaobject>
@@ -224,11 +225,13 @@ Topics (in no particular order):
       the class hierarchy. In all other respects the mixin is a normal class.</para>
     <para>In Exercise 8, the ooRexx mixin facility is used to provide a single "View" mixin class.
       However, we also want <computeroutput>View</computeroutput> effectively to be a subclass of
-        <computeroutput>Component</computeroutput>. There are at least two ways of achieving this.
-      The solution used here is to make <computeroutput>Component</computeroutput> a mixin as well.
+        <computeroutput>Component</computeroutput>. 
+      The solution used here is to make <computeroutput>Component</computeroutput> a mixin as well
+      (but note that there may well be other ways of achieving the objective).
       As long as <computeroutput>View</computeroutput> and
         <computeroutput>Component</computeroutput> do not have the same method names, then all will
-      be well. The resulting class hierarchy is as follows: <figure id="fig0802">
+      be well. The resulting class hierarchy is as follows (with <computeroutput>ProductView</computeroutput>
+      added to illustrate an additional ooDialog superclass):<figure id="fig0802">
         <title>Exercise08 Class Structure</title>
         <mediaobject>
           <imageobject>
@@ -262,8 +265,8 @@ Topics (in no particular order):
     <para>For <emphasis role="italic"><emphasis role="bold">View</emphasis></emphasis> components
       such as <computeroutput>CustomerView.rex</computeroutput>:</para>
     <itemizedlist>
-      <listitem><para>Add to the start of the *.rex file:<programlisting>     <![CDATA[  ::REQUIRES "Support\View.rex"
-        ::REQUIRES "Support\Component.rex"]]></programlisting></para></listitem>
+      <listitem><para>Add to the start of the *.rex file:<programlisting><![CDATA[   ::REQUIRES "Support\View.rex"
+       ::REQUIRES "Support\Component.rex"]]></programlisting></para></listitem>
       <listitem><para>Make the view class statement to sublass from <computeroutput>View</computeroutput> instead of
           from <computeroutput>RcView</computeroutput>, <computeroutput>ResView</computeroutput>, or
             <computeroutput>UdView</computeroutput>.</para></listitem>
@@ -272,9 +275,9 @@ Topics (in no particular order):
       <listitem><para>In the <computeroutput>init</computeroutput> method, immediately after
          <computeroutput>forward class (super) continue</computeroutput>", add
          <computeroutput>self~initView</computeroutput>. This ensures that the View mixin is 
-         properly initialized (just supering <computeroutput>init</computeroutput> results in a run-time error.</para></listitem>
+         properly initialized (just supering <computeroutput>init</computeroutput> results in a run-time error).</para></listitem>
     </itemizedlist>
-    <para>For <emphasis role="bold"><emphasis role="italic">Model</emphasis></emphasis> and
+    <para>For <emphasis role="italic"><emphasis role="bold">Model</emphasis></emphasis> and
         <emphasis role="italic"><emphasis role="bold">Data</emphasis></emphasis> components, there's
       no change; merely ensure there's
       a<programlisting>     <![CDATA[  ::REQUIRES "Support\Model.rex"]]></programlisting>at the
@@ -293,7 +296,7 @@ Topics (in no particular order):
       user closes the application (that is, when the Order Management dialog is closed). But how
       should this be done? Somehow, all active Order Form dialogs must be told about the
       "application close" event so they can clean up the two control dialogs.</para>
-    <para>One solution is for the Order Management dialog to tell each Order Form that the
+    <para>One solution might be for the Order Management dialog to tell each Order Form that the
       application is about to close. Perhaps the Order Management dialog could inquire of the Object
       Manager as to which Order Form dialogs exist, and then send each of them a "close now"
       message. However, a more elegant solution - and one that has much wider potential use - is to
@@ -301,53 +304,64 @@ Topics (in no particular order):
     <para>A simple event management framework (EMF) is introduce in Exercise 8. The object that
       keeps track of events and who's interested in them is the Event Manager (the file
         <computeroutput>EventMgr.rex</computeroutput> in the
-        <computeroutput>Support</computeroutput> folder). The code that "talks" directly to the
-      Event Manager is in the <computeroutput>Component</computeroutput> mixin. Application-level
-      components merely super event requests, and <computeroutput>Component</computeroutput> does
-      the rest.</para>
+        <computeroutput>Exercise08\Support</computeroutput> folder). The code that "talks" directly
+      to the Event Manager is in the <computeroutput>Component</computeroutput> mixin.
+      Application-level components merely super event requests, and
+        <computeroutput>Component</computeroutput> does the rest.</para>
     <para>Note that events handled by the Event Manager must not be confused with events generated by
       ooDialog, such as menu selection events.</para>
-     <para>The EMF works like this. First, a dialog component (such as the Order Form) decides that it's
-      interested in some event - say "AppClosing". When this event occurs, it wants to be sent a
-      message so that it can take appropriate action. To express its interest, the component supers 
-      (usually from its <computeroutput>activate</computeroutput> method) a
+     <para>The EMF works like this. First, a dialog component (such as the Order Form) decides that
+      it's interested in some event - say "AppClosing". When this event occurs, it wants to be sent
+      a message so that it can take appropriate action. To express its interest, the component
+      supers (e.g. in its <computeroutput>activate</computeroutput> method) a
         <computeroutput>registerInterest</computeroutput> message. This has two parameters - the
-      event in which it's interested and its object id (i.e. <computeroutput>self</computeroutput>)
-      as follows:
+      event in which it's interested and its object id (i.e. <computeroutput>self</computeroutput>).
+      For example, the "register interest" invocation in
+        <computeroutput>OrderFormView</computeroutput> is:
       <programlisting><![CDATA[   self~registerInterest("appClosing", self)]]></programlisting>This
       message is handled by the <computeroutput>Component</computeroutput> mixin, which forwards the
-      message to a "manager" object called the "Event Manager"
-        (<computeroutput>EventMgr.rex</computeroutput> in the
-        <computeroutput>Exercise08\Support</computeroutput> folder). The Event Manager adds the event
-       to its directory of events. Each index is the
-      event name, and each item is an array of objects that have expressed interest in that event.
-      Some time later, when the Order Manager dialog is being closed, it asks for the event
-      "appClosing" to be triggered:
+      message to the Event Manager, which adds the event to its directory of events. In this
+      directory, each index is the event name, and each item is an array of objects that have
+      expressed interest in that event. Some time later, when the Order Manager
+        (<computeroutput>OrderMgrView</computeroutput> - which in Exercise 8 mixes in and so
+      inherits from both <computeroutput>ResizingAdmin</computeroutput>
+      <emphasis role="italic">and</emphasis>
+      <computeroutput>Component</computeroutput>) is closed, it asks for the event "appClosing" to
+      be triggered:
       <programlisting><![CDATA[   self~triggerEvent("appClosing")]]></programlisting>The
         <computeroutput>Component</computeroutput> mixin sends this to the Event Manager which then
       sends a <computeroutput>notify</computeroutput> message to each component that has registered
-      interest in this event. Note that this simple event management framework is fairly generic,
-      and can be used for any event by any component. The only constraint is that event names should
-      be unique. For example, registering an "AppClosing" event to signal that a dialog is opening
-      is likely to have unfortunate consequences (although the Event Manager will be quite happy).  </para>
+      interest in this event. The Order Form provides a method to capture this event and close its
+      control dialogs:<programlisting><![CDATA[   ::METHOD notify PUBLIC
+      use strict arg event
+      if event = "AppClosing" then self~closeControlDialogs]]></programlisting>Thus each Order Form
+      that's open when the app closes receives a notification so that it can close its control
+      dialogs. </para>
+    <para>Note that this simple event management framework is fairly generic, and can be used for
+      any event by any component. The only constraint is that event names should be unique across an
+      application. For example, triggering an "AppClosing" event to signal that a dialog is opening
+      is likely to have unfortunate consequences (although the Event Manager will be quite
+      happy).</para>
+     <para>Finally, note that the Event Manager has a <computeroutput>list</computeroutput> method
+      which lists all registered events on the console.</para>
    </section>
   
   <!-- *********************************************************************************************** -->
   <section id="chap08-orderForm"><title>The Order Form</title> <!-- Section 8.6 -->
-    <!--  - added an ok method to catch enter key.
-          - use event management for control of close (else hangs)  - see section chap08-eventMgmt
-          - added open Product when dbl-click on a line in Order Details. 
-    -->
+    <!--  -     -->
     <para>TO BE COMPLETED!</para>          
     <para>OrderForm - added function:</para>  
-    <para>a. Can now select products and customer and tot up totals.</para>
-    <para>b. Dbl-click on order line surfaces the product.</para> 
-    <para>c. "Saving" the OrderForm when complete (but this needs write to file which may not be in Ex8!)</para>
-    <para>d. Drag/drop (see item 5)</para>
-    <para>Note: If a dialog has a <computeroutput>leaving</computeroutput> method, then it must 
-      super to the <computeroutput>View</computeroutput> superclass so that proper tidy-up can be done.
-    </para>
-    <para>xxx</para>
+    <para>-  Use of event management to control closing of control dialogs.</para>
+    <para>-  Can now select products and customer and tot up totals.</para>
+    <para>-  Dbl-click on order line surfaces the product.</para> 
+    <para>-  Cannot be saved when complete - planned for a later exercise.</para>
+    <para>-  Drag/drop (see item 5)</para>
+    <para>-  Note: If a dialog has a <computeroutput>leaving</computeroutput> method, then it must
+      super to the <computeroutput>View</computeroutput> superclass so that proper tidy-up can be
+      done. </para>
+    <para>-  Added ok method to catch enter key</para>
+    <para>-  Opens product dialog when dbl-click on order line.</para>
+    <para/>
   </section>
   
 </chapter>
