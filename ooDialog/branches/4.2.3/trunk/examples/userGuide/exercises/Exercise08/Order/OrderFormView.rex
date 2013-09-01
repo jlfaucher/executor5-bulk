@@ -147,7 +147,7 @@
     --   communicate with OrderFormView.
     cd1~setOrderFormDlg(self)
     cd2~setOrderFormDlg(self)
-    --cd2~rootDialog(rootDlg)		-- Tell cd2 what the root dialog is.
+    cd2~rootDialog(rootDlg)		-- Tell cd2 what the root dialog is.
     
     -- Set up Order Totals and initialise CustDiscount:
     orderTotal = 0
@@ -819,7 +819,7 @@
     showProduct
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD showProduct UNGUARDED
-    expose lvOrderItems rootDlg		-- Do we need rootDlg?
+    expose lvOrderItems rootDlg
     item = lvOrderItems~selected
     if item = -1 then do
       ret = MessageDialog(.HRSofv~nilSelected, self~hwnd, title, 'WARNING')
@@ -827,7 +827,7 @@
     end
     info = .Directory~new
     if lvOrderItems~getItemInfo(item, info) then do
-      --say "OrderLinesDlg-showProduct-01: info~text =" info~text
+      --say "OrderLinesDlg-showProduct-01: info~text =" info~text "rootDlg =" rootDlg
       r = self~showModel:super("ProductModel", info~text, rootDlg)
     end
     else do
