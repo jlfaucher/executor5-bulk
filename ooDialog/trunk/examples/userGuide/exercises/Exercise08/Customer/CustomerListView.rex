@@ -154,14 +154,6 @@
     self~connectListViewEvent("IDC_CUSTLIST_LIST","ACTIVATE",openItem)	 	-- Double-click
     --self~connectListViewEvent("IDC_CUSTLIST_LIST","BEGINDRAG",beginDM)	 	-- Button 1 down
     
-/*rect = self~getControlRect("IDC_CUSTLIST_LIST")
-say "CustomerListView-initDialog-01: rect =" rect
-
-lvArea = .Rect~new(15,10,190,215)
---r = self~dmSetAsSource:super("Customer\bmp\Customer.cur"), lvArea)
-r = self~dmSetAsSource:super("Customer\bmp\Customer.cur", lvArea, lvCustomers)
---r = self~dmSetAsSource:super("Customer\bmp\Customer.cur")
-*/    
     self~loadList
 
 
@@ -207,31 +199,7 @@ r = self~dmSetAsSource:super("Customer\bmp\Customer.cur", lvArea, lvCustomers)
     -- Note: does not get fired if double-click was on an empty row.
     self~showCustomer
 
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/*  ::METHOD beginDM		-- NOT USED!!!
-    -- user starts drag operation (button 1 down and drag) from the ListView control.
-    expose lvCustomers
-    use arg id, item, point
-    --say "point is a Point?" point~isa(.Point) 
-    --say "What is point?" point~class
-    parse var point i j; --say "i = '"||i||"', '"||j||"'"
-    point = .Point~new(i,j)
-    say "CustomerListView-beginDM-01: id, item, point:" id||"," item||"," point
-    info = .Directory~new
-    if lvCustomers~getItemInfo(item, info) then do
-      custNo = info~text
-      say "CustomerListView-beginDM-02: custNo =" custNo
-      self~dmOnLBdown("lButton", point) -- hope point is mousePos
-      return
-    end
-    else do
-      say "CustomerListView-beginDM-03: ~getItemInfo returned .false"
-      return
-    end
-    
-    ::METHOD dmGetItemInfo	-- returns item info from selected list item.
-      return "ABC123"		-- TO BE FIXED!!!
-*/    
+
   /*----------------------------------------------------------------------------
     Application Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
