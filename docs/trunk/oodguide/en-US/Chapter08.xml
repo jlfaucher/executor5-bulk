@@ -349,19 +349,42 @@ Topics (in no particular order):
   <!-- *********************************************************************************************** -->
   <section id="chap08-orderForm"><title>The Order Form</title> <!-- Section 8.6 -->
     <!--  -     -->
-    <para>TO BE COMPLETED!</para>          
-    <para>OrderForm - added function:</para>  
-    <para>-  Use of event management to control closing of control dialogs.</para>
-    <para>-  Can now select products and customer and tot up totals.</para>
-    <para>-  Dbl-click on order line surfaces the product.</para> 
-    <para>-  Cannot be saved when complete - planned for a later exercise.</para>
-    <para>-  Drag/drop (see item 5)</para>
-    <para>-  Note: If a dialog has a <computeroutput>leaving</computeroutput> method, then it must
-      super to the <computeroutput>View</computeroutput> superclass so that proper tidy-up can be
-      done. </para>
-    <para>-  Added ok method to catch enter key</para>
-    <para>-  Opens product dialog when dbl-click on order line.</para>
-    <para/>
+    <para>The Order Form dialog is now partly semi-functional. Aside from the enhancements already
+      mentioned (drag/drop and closing properly on app close), several new capabilities are
+      added:</para>          
+      <orderedlist>
+        <listitem><para>Customer details can be entered using the keyboard (as well as with drag/drop). Type a
+          customer number (e.g. "CU0003") into the "Customer Number" field on the "Customer Details"
+          tab. The "Find Customer" button is enabled. Click on the button, and the Customer details
+          are entered on the form. Accessing customer details is done by the following code
+          (excluding error-handling code): <programlisting><![CDATA[  ::METHOD findCustomer UNGUARDED
+    expose ecCustNum objectMgr 
+    custNo = ecCustNum~getLine(1) 
+    idCust = objectMgr~getComponentId("CustomerModel",custNo)
+    dirCustData = idCust~query
+    self~setCustomer(dirCustData)]]></programlisting></para></listitem>
+        <listitem>
+        <para>Products can also be entered using the keyboard. Click on the "Order Lines" tab, and
+          enter a product number (e.g. "CU003") into the "Product No." field. Then enter a quantity
+          in the "Quantity" field. Finally, click the "Add Order Line" button. A line item fopr that
+          product is entered into the Order Details list view.</para>
+      </listitem>
+      <listitem>
+        <para>Third, totals are added up and discounts applied. However, removing a line item does
+          not, in this version, decrement the order totals (a serious omission in a real
+          system!).</para>
+      </listitem>
+        <listitem><para>Finally, try double-clicking on an Order Line. A product dialog for the line item is surfaced.
+          This uses the same code (mutatis mutandis) as that for surfacing a Customer dilaog. </para></listitem>
+       </orderedlist>
+ 
+    <para>Capabilities missing in this exercise include saving the Order to disk when it's complete,
+      allowing use of the enter key for the "Find Customer" and "Add Order Line" buttons, and
+      ensuring that the totals are always correct. In addition, the calculation of totals should be
+      done in the Model component, not in the View. This is because a major role of a model
+      component is to implement business rules. The results of applying such rules is then made
+      visible by the View component. In summary, the Model should do the "business" part while the
+      View should make the business visible and provide for new info to be entered.</para>
   </section>
   
 </chapter>
