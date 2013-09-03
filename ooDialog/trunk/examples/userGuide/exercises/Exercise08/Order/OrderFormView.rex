@@ -600,7 +600,7 @@
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD CustNumGotFocus UNGUARDED 
     expose pbFindCust
-    say "CustomerDetailsDlg-CustNumGotFocus-01."
+    --say "CustomerDetailsDlg-CustNumGotFocus-01."
     pbFindCust~style = "DEFPUSHBUTTON"
     pbFindCust~enable
     --self~focusControl("IDC_CUSTDTLS_FIND")
@@ -613,10 +613,10 @@
     -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
   ::METHOD findCustomer UNGUARDED
     expose ecCustNum ecCustName ecCustAddr ecCustDisc pbFindCust objectMgr dlgOrderForm
-    say "CustomerDetailsDlg-findCust-01."
+    --say "CustomerDetailsDlg-findCust-01."
     custNo = ecCustNum~getLine(1) 
     idCust = objectMgr~getComponentId("CustomerModel",custNo)
-    say "OrderFormView/CustomerDetailsDlg-findCustomer-01: idCustNo =" idCust
+    --say "OrderFormView/CustomerDetailsDlg-findCustomer-01: idCustNo =" idCust
     if idCust = .false then do
       r = ErrorDialog(.HRSofv~noCust)
       pbFindCust~disable
