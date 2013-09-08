@@ -150,6 +150,8 @@
 #define TAG_DATETIMEPICKER        0x0000000B
 #define TAG_MONTHCALENDAR         0x0000000C
 #define TAG_TOOLTIP               0x0000000D
+#define TAG_REBAR                 0x0000000E
+#define TAG_MENU                  0x0000000F
 #define TAG_CUSTOMDRAW            0x000000FF
 
 /**
@@ -162,10 +164,6 @@
 #define TAG_FLAGMASK              0x00FFFF00
 
 #define TAG_HELP                  0x00000100
-#define TAG_CONTEXTMENU           0x00000200
-#define TAG_MENUCOMMAND           0x00000400
-#define TAG_SYSMENUCOMMAND        0x00000800
-#define TAG_MENUMESSAGE           0x00001000
 
 #define TAG_STATECHANGED          0x00000100
 #define TAG_CHECKBOXCHANGED       0x00000200
@@ -633,7 +631,7 @@ typedef struct _enCSelf {
     size_t              cmNextIndex;
     size_t              mmSize;
     size_t              mmNextIndex;
-    RexxObjectPtr       rexxSelf;
+    RexxObjectPtr       rexxSelf;      // This is the dialog Rexx self, NOT the EventNotification::self
     HWND                hDlg;
     HHOOK               hHook;
     void               *pHookData;

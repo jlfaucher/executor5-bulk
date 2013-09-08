@@ -51,8 +51,8 @@ Bug Fixes in ooDialog:
  *
 
 
-DocumentationBug Fixes in ooDialog:
-----------------------------------
+Documentation Bug Fixes in ooDialog:
+------------------------------------
 
  *
 
@@ -60,7 +60,7 @@ DocumentationBug Fixes in ooDialog:
 Feature Requests in ooDialog:
 -----------------------------
 
- *
+ * Need ReBar RFE
 
 
 Miscellaneous Fixes:
@@ -83,10 +83,24 @@ New dialog classes:
 
 
 
+New dialog control classes:
+---------------------------
+
+ReBar control class:
+
+Rebar controls act as containers for child windows.
+
+
+
 New utility classes:
 --------------------
 
-?
+ReBarBandInfo:
+
+The ReBarBandInfo class is a helper class for the ReBar dialog control
+class and represents information about a specific band in the ReBar.
+
+
 
 
 
@@ -118,9 +132,75 @@ In the ? class:
 Enhanced Methods:
 -----------------
 
-In the ? class:
+In the EventNotification class:
 
-?
+addUserMsg()
+
+
+  * an eighth optional argument is added that allows the programmer to
+    specifiy how the interprter should expect the event handler to
+    respond.  I.e., do not wait, will reply wait, and sync wait.
+
+connectButtonEvent()
+
+  * the DROPDOWN event is added.
+
+connectComboBoxEvent()
+
+  * a willReply argument is added as the fourth argument and is valid
+    for all event types.
+
+connectCommandEvents()
+
+  * a willReply argument is added as the fourth argument.
+
+connectDraw()
+
+  * a willReply argument is added as the third argument.
+
+connectEditEvent()
+
+  * a willReply argument is added as the fourth argument and is valid
+    for all event types.
+
+connectHelp()
+
+  * a sync wait argument is added as the second argument.
+
+connectListBoxEvent()
+
+  * a willReply argument is added as the fourth argument and is valid
+    for all event types.
+
+connectMove()
+
+  * a sync wait argument is added as the second argument.
+
+connectNotifyEvent()
+
+  * a willReply argument is added as the fourth argument and is valid
+    for all event types.
+
+connectPosChanged()
+
+  * a sync wait argument is added as the second argument.
+
+connectStaticEvent()
+
+  * a willReply argument is added as the fourth argument and is valid
+    for all event types.
+
+connectTabEvent()
+
+  * the willReply argument is now valid for all event types.
+
+  * the event handler for all events is now sent a third argument, the
+    Rexx Tab object that is sending the event notification.
+
+connectTrackBarEvent()
+
+  * a willReply argument is added as the fourth argument and is valid
+    for all event types.
 
 
 

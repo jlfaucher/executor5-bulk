@@ -5405,54 +5405,21 @@ RexxMethod2(RexxObjectPtr, pbdlg_dumpMessageTable, OPTIONAL_CSTRING, table, CSEL
 }
 
 
-RexxMethod2(RexxObjectPtr, pbdlg_test, OPTIONAL_CSTRING, table, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, pbdlg_test, OPTIONAL_CSTRING, _hwnd, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
 
-    REBARINFO     rbi;
-    REBARBANDINFO rbBand;
-    RECT          rc;
-    HWND   hwndCB, hwndRB;
+    HWND hwndRb = (HWND)string2pointer(_hwnd);
+    REBARBANDINFO rbBand = {sizeof(REBARBANDINFO)};
 
-    hwndRB = GetDlgItem(pcpbd->hDlg, 1002);
-    if( ! hwndRB )
-    {
-        printf("pbdlg_test() failed to get ReBar hwnd\n");
-        return NULLOBJECT;
-    }
+    //rbBand.cbSize = sizeof(REBARBANDINFO);
+    rbBand.fMask  = RBBIM_BACKGROUND | RBBIM_CHEVRONLOCATION | RBBIM_CHEVRONSTATE | RBBIM_COLORS |
+                                      RBBIM_HEADERSIZE | RBBIM_ID | RBBIM_IDEALSIZE | RBBIM_IMAGE | RBBIM_LPARAM |
+                                      RBBIM_SIZE | RBBIM_STYLE | RBBIM_TEXT | RBBIM_CHILDSIZE | RBBIM_CHILD;
 
-    // Initialize and send the REBARINFO structure.
-    rbi.cbSize = sizeof(REBARINFO);  // Required when using this structure.
-    rbi.fMask  = 0;
-    rbi.himl   = (HIMAGELIST)NULL;
-
-    if(!SendMessage(hwndRB, RB_SETBARINFO, 0, (LPARAM)&rbi))
-    {
-        printf("pbdlg_test() failed to set bar info\n");
-        return NULLOBJECT;
-    }
-
-    // Initialize structure members for the band
-    rbBand.cbSize = sizeof(REBARBANDINFO);  // Required
-    rbBand.fMask  = RBBIM_COLORS | RBBIM_TEXT  |
-                    RBBIM_STYLE | RBBIM_CHILD  | RBBIM_CHILDSIZE |
-                    RBBIM_SIZE;
-    rbBand.fStyle = RBBS_CHILDEDGE;
-
-    // Get the combo box hwnd
-    hwndCB = GetDlgItem(pcpbd->hDlg, 1000);
-
-    // Set values unique to the band with the combo box.
-    GetWindowRect(hwndCB, &rc);
-    rbBand.lpText     = "Combo Box";
-    rbBand.hwndChild  = hwndCB;
-    rbBand.cxMinChild = 0;
-    rbBand.cyMinChild = rc.bottom - rc.top;
-    rbBand.cx         = 200;
-
-    // Add the band that has the combo box.
-    SendMessage(hwndRB, RB_INSERTBAND, (WPARAM)-1, (LPARAM)&rbBand);
+    SendMessage(hwndRb, RB_GETBANDINFO, 1, (LPARAM)&rbBand);
+    printf("Got band info for band 1 ideal_size=%d\n", rbBand.cxIdeal);
 
     return NULLOBJECT;
 }

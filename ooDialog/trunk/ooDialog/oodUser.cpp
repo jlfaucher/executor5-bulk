@@ -706,6 +706,31 @@ uint32_t listViewStyle(CSTRING opts, uint32_t style)
 }
 
 
+uint32_t reBarStyle(CSTRING opts, uint32_t style)
+{
+    if ( StrStrI(opts, "AUTOSIZE")          != NULL ) style |= RBS_AUTOSIZE       ;
+    if ( StrStrI(opts, "BANDBORDERS")       != NULL ) style |= RBS_BANDBORDERS    ;
+    if ( StrStrI(opts, "DBLCLKTOGGLE")      != NULL ) style |= RBS_DBLCLKTOGGLE   ;
+    if ( StrStrI(opts, "FIXEDORDER")        != NULL ) style |= RBS_FIXEDORDER     ;
+    if ( StrStrI(opts, "REGISTERDROP")      != NULL ) style |= RBS_REGISTERDROP   ;
+    if ( StrStrI(opts, "TOOLTIPS")          != NULL ) style |= RBS_TOOLTIPS       ;
+    if ( StrStrI(opts, "VARHEIGHT")         != NULL ) style |= RBS_VARHEIGHT      ;
+    if ( StrStrI(opts, "VERTICALGRIPPER")   != NULL ) style |= RBS_VERTICALGRIPPER;
+    if ( StrStrI(opts, "CCS_ADJUSTABLE")    != NULL ) style |= CCS_ADJUSTABLE     ;
+    if ( StrStrI(opts, "CCS_BOTTOM")        != NULL ) style |= CCS_BOTTOM         ;
+    if ( StrStrI(opts, "CCS_LEFT")          != NULL ) style |= CCS_LEFT           ;
+    if ( StrStrI(opts, "CCS_NODIVIDER")     != NULL ) style |= CCS_NODIVIDER      ;
+    if ( StrStrI(opts, "CCS_NOMOVEX")       != NULL ) style |= CCS_NOMOVEX        ;
+    if ( StrStrI(opts, "CCS_NOMOVEY")       != NULL ) style |= CCS_NOMOVEY        ;
+    if ( StrStrI(opts, "CCS_NOPARENTALIGN") != NULL ) style |= CCS_NOPARENTALIGN  ;
+    if ( StrStrI(opts, "CCS_NORESIZE")      != NULL ) style |= CCS_NORESIZE       ;
+    if ( StrStrI(opts, "CCS_RIGHT")         != NULL ) style |= CCS_RIGHT          ;
+    if ( StrStrI(opts, "CCS_TOP")           != NULL ) style |= CCS_TOP            ;
+    if ( StrStrI(opts, "CCS_VERT")          != NULL ) style |= CCS_VERT           ;
+    return style;
+}
+
+
 /**
  * Parses the tree-view control styles.
  *
@@ -714,10 +739,10 @@ uint32_t listViewStyle(CSTRING opts, uint32_t style)
  *
  * @return uint32_t
  *
- * @note  The original code checked for ALL and then added those style and
- *        returned.  This had the effect of INFOTIP being ignored in the keyword
- *        string: "ALL INFOTIP"  Now if we detect ALL, we then drop through and
- *        look for any other keywords.
+ * @note  The original code checked for ALL and then added the styles listed
+ *        below for all, and returned.  This had the effect of INFOTIP being
+ *        ignored in the keyword string: "ALL INFOTIP"  Now if we detect ALL, we
+ *        then drop through and look for any other keywords.
  */
 uint32_t treeViewStyle(CSTRING opts, uint32_t style)
 {
@@ -859,14 +884,19 @@ uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
 
     switch ( ctrl )
     {
+        case winDateTimePicker :
+            style |= getCommonWindowStyles(opts, false, true);
+            style = dateTimePickerStyle(opts, style);
+            break;
+
         case winListView :
             style |= getCommonWindowStyles(opts, true, true);
             style = listViewStyle(opts, style);
             break;
 
-        case winTreeView :
-            style |= getCommonWindowStyles(opts, true, true);
-            style = treeViewStyle(opts, style);
+        case winMonthCalendar :
+            style |= getCommonWindowStyles(opts, false, true);
+            style = monthCalendarStyle(opts, style);
             break;
 
         case winProgressBar :
@@ -874,9 +904,9 @@ uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
             style = progressBarStyle(opts, style);
             break;
 
-        case winTrackBar :
+        case winReBar :
             style |= getCommonWindowStyles(opts, false, true);
-            style = trackBarStyle(opts, style);
+            style = reBarStyle(opts, style);
             break;
 
         case winTab :
@@ -884,14 +914,14 @@ uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
             style = tabStyle(opts, style);
             break;
 
-        case winDateTimePicker :
-            style |= getCommonWindowStyles(opts, false, true);
-            style = dateTimePickerStyle(opts, style);
+        case winTreeView :
+            style |= getCommonWindowStyles(opts, true, true);
+            style = treeViewStyle(opts, style);
             break;
 
-        case winMonthCalendar :
+        case winTrackBar :
             style |= getCommonWindowStyles(opts, false, true);
-            style = monthCalendarStyle(opts, style);
+            style = trackBarStyle(opts, style);
             break;
 
         case winUpDown :
@@ -2727,6 +2757,24 @@ RexxMethod7(int32_t, dyndlg_createProgressBar, RexxObjectPtr, rxID, int, x, int,
 }
 
 
+/**
+ * Checks if the type of control is one that has "data".
+ *
+ * This is related to the original ooDialog developer's odd notion that a dialog
+ * control had "data" and therefore a "data attribute" made sense.
+ *
+ *
+ * @author Administrator (9/4/2013)
+ *
+ * @param ctrl
+ *
+ * @return bool
+ */
+inline bool controlHasData(oodControl_t ctrl)
+{
+    return ! (ctrl == winReBar || ctrl == winToolTip);
+}
+
 /** DynamicDialog::createNamedControl()
  *
  */
@@ -2768,7 +2816,7 @@ RexxMethod9(int32_t, dyndlg_createNamedControl, RexxObjectPtr, rxID, int, x, int
     int32_t result = 0;
 
     // Connect the data attribute if we need to.
-    if ( pcpbd->autoDetect )
+    if ( pcpbd->autoDetect && controlHasData(ctrl) )
     {
         if ( ! (ctrl == winTab && StrStrI(opts, "CAT") != NULL) )
         {

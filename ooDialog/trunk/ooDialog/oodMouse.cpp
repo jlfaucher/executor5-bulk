@@ -450,7 +450,7 @@ static LRESULT mouseWheelNotify(PMOUSEWHEELDATA mwd, WPARAM wParam, LPARAM lPara
         }
         else
         {
-            invokeDispatch(c, mwd->pcpbd->rexxSelf, c->String(mwd->method), args);
+            invokeDispatch(c, mwd->pcpbd, mwd->method, args);
             if ( tag & CTRLTAG_SENDTOCONTROL )
             {
                 reply = DefSubclassProc(mwd->hwnd, WM_MOUSEWHEEL, wParam, lParam);
@@ -473,7 +473,7 @@ static LRESULT mouseWheelNotify(PMOUSEWHEELDATA mwd, WPARAM wParam, LPARAM lPara
         }
         else
         {
-            invokeDispatch(c, mwd->pcpbd->rexxSelf, c->String(mwd->method), args);
+            invokeDispatch(c, mwd->pcpbd, mwd->method, args);
             if ( tag & TAG_REPLYFALSE )
             {
                 reply = (LRESULT)TheFalseObj;
@@ -541,7 +541,7 @@ static LRESULT invokeControlMethod(RexxThreadContext *c, pCPlainBaseDialog pcpbd
     }
     else
     {
-        invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+        invokeDispatch(c, pcpbd, methodName, args);
         if ( ! (tag & CTRLTAG_SENDTOCONTROL) )
         {
             return 0;
@@ -584,7 +584,7 @@ static MsgReplyType invokeDialogMethod(RexxThreadContext *c, pCPlainBaseDialog p
     }
     else
     {
-        invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+        invokeDispatch(c, pcpbd, methodName, args);
         if ( tag & TAG_REPLYFALSE )
         {
             ret = ReplyFalse;
@@ -1998,7 +1998,7 @@ RexxMethod5(RexxObjectPtr, mouse_connectEvent, CSTRING, event, OPTIONAL_CSTRING,
             }
         }
 
-        if ( addMiscMessage(pcen, context, wmMsg, 0xFFFFFFFF, 0, 0, 0, 0, methodName, tag) )
+        if ( addMiscMessage(pcen, context, wmMsg, UINT32_MAX, 0, 0, 0, 0, methodName, tag) )
         {
             return TheTrueObj;
         }

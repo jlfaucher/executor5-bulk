@@ -1929,22 +1929,14 @@ PRECT rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos)
 }
 
 
-RexxObjectPtr rxNewRect(RexxMethodContext *context, long l, long t, long r, long b)
+RexxObjectPtr rxNewRect(RexxMethodContext *c, long l, long t, long r, long b)
 {
-    RexxObjectPtr rect = NULL;
+    RexxArrayObject args = c->ArrayOfFour(c->WholeNumber(l),
+                                          c->WholeNumber(t),
+                                          c->WholeNumber(r),
+                                          c->WholeNumber(b));
 
-    RexxClassObject RectClass = rxGetContextClass(context, "RECT");
-    if ( RectClass != NULL )
-    {
-        RexxArrayObject args = context->NewArray(4);
-        context->ArrayAppend(args, context->WholeNumber(l));
-        context->ArrayAppend(args, context->WholeNumber(t));
-        context->ArrayAppend(args, context->WholeNumber(r));
-        context->ArrayAppend(args, context->WholeNumber(b));
-
-        rect = context->SendMessage(RectClass, "NEW", args);
-    }
-    return rect;
+    return c->SendMessage(TheRectClass, "NEW", args);
 }
 
 

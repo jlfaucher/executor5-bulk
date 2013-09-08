@@ -1247,9 +1247,7 @@ void notifyExitSizeMove(pCPlainBaseDialog pcpbd)
     }
     else
     {
-        RexxStringObject method = c->String(prid->sizeEndedMeth);
-        invokeDispatch(c, pcpbd->rexxSelf, method, args);
-        c->ReleaseLocalReference(method);
+        invokeDispatch(c, pcpbd, prid->sizeEndedMeth, args);
     }
 
     c->ReleaseLocalReference(args);

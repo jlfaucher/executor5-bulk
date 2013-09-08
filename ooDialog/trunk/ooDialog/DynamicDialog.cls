@@ -116,18 +116,19 @@
    return self~installBitmapButton(id, msgToRaise~space(0), bmp, focus, sel, disabl, opts)
 
 
-::method createEdit external "LIBRARY oodialog dyndlg_createEdit"
-::method createPasswordEdit external "LIBRARY oodialog dyndlg_createEdit"
-::method createScrollBar external "LIBRARY oodialog dyndlg_createScrollBar"
-::method createListBox external "LIBRARY oodialog dyndlg_createListBox"
 ::method createComboBox external "LIBRARY oodialog dyndlg_createComboBox"
-::method createTreeView external "LIBRARY oodialog dyndlg_createNamedControl"
-::method createListView external "LIBRARY oodialog dyndlg_createNamedControl"
-::method createProgressBar external "LIBRARY oodialog dyndlg_createProgressBar"
-::method createTrackBar external "LIBRARY oodialog dyndlg_createNamedControl"
-::method createTab external "LIBRARY oodialog dyndlg_createNamedControl"
 ::method createDateTimePicker external "LIBRARY oodialog dyndlg_createNamedControl"
+::method createEdit external "LIBRARY oodialog dyndlg_createEdit"
+::method createListBox external "LIBRARY oodialog dyndlg_createListBox"
+::method createListView external "LIBRARY oodialog dyndlg_createNamedControl"
 ::method createMonthCalendar external "LIBRARY oodialog dyndlg_createNamedControl"
+::method createPasswordEdit external "LIBRARY oodialog dyndlg_createEdit"
+::method createProgressBar external "LIBRARY oodialog dyndlg_createProgressBar"
+::method createReBar external "LIBRARY oodialog dyndlg_createNamedControl"
+::method createScrollBar external "LIBRARY oodialog dyndlg_createScrollBar"
+::method createTab external "LIBRARY oodialog dyndlg_createNamedControl"
+::method createTrackBar external "LIBRARY oodialog dyndlg_createNamedControl"
+::method createTreeView external "LIBRARY oodialog dyndlg_createNamedControl"
 ::method createUpDown external "LIBRARY oodialog dyndlg_createNamedControl"
 
 ::method createRadioButtonGroup

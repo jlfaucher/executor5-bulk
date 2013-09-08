@@ -5675,8 +5675,13 @@ static LRESULT doTCNSelChange(pCTabOwnerDialog pctod, pCManagedTab pcmt)
 
             if ( pcmt->ownerWantsSelChange )
             {
-                RexxArrayObject args = c->ArrayOfTwo(pccdNew->rexxSelf, c->UnsignedInt32(cur + 1));
-                invokeDispatch(c, pcmt->rexxOwner, c->String(TABOWNERSELCHANGE_MSG), args);
+                RexxObjectPtr   tabIndex = c->UnsignedInt32(cur + 1);
+                RexxArrayObject args     = c->ArrayOfTwo(pccdNew->rexxSelf, tabIndex);
+
+                invokeDispatch(c, pcmt->pcpbd, TABOWNERSELCHANGE_MSG, args);
+
+                c->ReleaseLocalReference(tabIndex);
+                c->ReleaseLocalReference(args);
             }
             break;
 

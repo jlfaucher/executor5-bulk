@@ -109,6 +109,7 @@ extern RexxObjectPtr notBooleanException(RexxThreadContext *c, size_t pos, RexxO
 extern RexxObjectPtr wrongArgOptionException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual);
 extern RexxObjectPtr wrongArgOptionException(RexxThreadContext *c, size_t pos, CSTRING list, CSTRING actual);
 extern RexxObjectPtr invalidTypeException(RexxThreadContext *c, size_t pos, const char *type);
+extern RexxObjectPtr invalidTypeException(RexxThreadContext *c, size_t pos, const char *type, RexxObjectPtr actual);
 extern RexxObjectPtr noSuchRoutineException(RexxThreadContext *c, CSTRING rtnName, size_t pos);
 extern RexxObjectPtr unsupportedRoutineException(RexxCallContext *c, CSTRING rtnName);
 extern RexxObjectPtr invalidReturnWholeNumberException(RexxThreadContext *c, CSTRING name, RexxObjectPtr actual, bool isMethod);

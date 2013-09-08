@@ -1183,9 +1183,7 @@ static LRESULT processControlMsg(HWND hwnd, uint32_t msg, WPARAM wParam, LPARAM 
         }
         else
         {
-            RexxStringObject mth = c->String(method);
-            invokeDispatch(c, pData->pcpbd->rexxSelf, mth, args);
-            c->ReleaseLocalReference(mth);
+            invokeDispatch(c, pData->pcpbd, method, args);
         }
 
         c->ReleaseLocalReference(_wP);
@@ -2602,10 +2600,11 @@ RexxMethod2(RexxObjectPtr, dlgctrl_putInBag, RexxObjectPtr, object, CSELF, pCSel
 
 
 /** ListView::getToolTips()
+ *  ReBar::getToolTips()
  *  TreeView::getToolTips()
  *
- *
- *  Retrieves the child ToolTip control used by this list-view or tree-view.
+ *  Retrieves the child ToolTip control used by this list-view, tree-view,
+ *  rebar, or...
  *
  *  @param  None.
  *
@@ -2633,9 +2632,13 @@ RexxMethod1(RexxObjectPtr, generic_getToolTips, CSELF, pCSelf)
     {
         hTT = ListView_GetToolTips(pcdc->hCtrl);
     }
-    else
+    else if ( ctrlType == winTreeView )
     {
         hTT = TreeView_GetToolTips(pcdc->hCtrl);
+    }
+    else if ( ctrlType == winReBar )
+    {
+        hTT = (HWND)SendMessage(pcdc->hCtrl, RB_GETTOOLTIPS, 0, 0);
     }
 
     if ( hTT == NULL )
@@ -2652,9 +2655,11 @@ done_out:
 
 
 /** ListView::setToolTips()
+ *  ReBar::setToolTips()
  *  TreeView::setToolTips()
  *
- *  Sets the child ToolTip control used by this list-view or tree-view controls
+ *  Sets the child ToolTip control used by this list-view, tree-view, rebar,
+ *  or...
  *
  *  @param  None.
  *
@@ -2679,7 +2684,7 @@ RexxMethod2(RexxObjectPtr, generic_setToolTips, RexxObjectPtr, toolTip, CSELF, p
     HWND         hOldTT   = NULL;
 
     // Rather than put the tool tip object in the dialog bag, we put it in this
-    // control's bag, list-view or tree-view.
+    // control's bag, list-view, tree-view, rebar, or...
     pCDialogControl pcdcTT = controlToCSelf(context, toolTip);
     protectControlObject(context, pcdc, toolTip);
 
@@ -2687,9 +2692,13 @@ RexxMethod2(RexxObjectPtr, generic_setToolTips, RexxObjectPtr, toolTip, CSELF, p
     {
         hOldTT = ListView_SetToolTips(pcdc->hCtrl, pcdcTT->hCtrl);
     }
-    else
+    else if ( ctrlType == winTreeView )
     {
         hOldTT = TreeView_SetToolTips(pcdc->hCtrl, pcdcTT->hCtrl);
+    }
+    else if ( ctrlType == winReBar )
+    {
+        hOldTT = (HWND)SendMessage(pcdc->hCtrl, RB_SETTOOLTIPS, (WPARAM)pcdcTT->hCtrl, 0);
     }
     if ( hOldTT == NULL )
     {

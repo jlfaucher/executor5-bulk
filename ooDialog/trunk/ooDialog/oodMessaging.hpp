@@ -82,12 +82,20 @@ extern RexxArrayObject getKeyEventRexxArgs(RexxThreadContext *c, WPARAM wParam, 
 extern void            releaseKeyEventRexxArgs(RexxThreadContext *c, RexxArrayObject args);
 
 extern bool          invokeDirect(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args);
-extern MsgReplyType  invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, RexxStringObject method, RexxArrayObject args);
+extern MsgReplyType  invokeDispatch(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args);
 extern bool          msgReplyIsGood(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING methodName, bool clear);
 extern RexxObjectPtr requiredBooleanReply(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING method, bool clear);
 
+// Process menu event notifications.  Defined in oodMenu.cpp
+extern MsgReplyType processMenuMsg(pCPlainBaseDialog pcpbd, uint32_t wmMsg, WPARAM wParam, LPARAM lParam, CSTRING method, uint32_t tag);
+
 // List-view functions.  Defined in oodListView.cpp:
-extern void maybeUpdateFullRowText(RexxThreadContext *c, NMLVDISPINFO *pdi);
+extern MsgReplyType lvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
+extern MsgReplyType lvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern MsgReplyType lvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
+
+// ReBar functions.  Defined in oodReBar.cpp:
+extern MsgReplyType rbnReleasedCapture(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
 
 // Tree-view notification processing functions.  Defined in oodTreeView.cpp:
 extern MsgReplyType  tvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
@@ -99,6 +107,11 @@ extern MsgReplyType  tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uin
 extern MsgReplyType  tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
 extern MsgReplyType  tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
 
+inline RexxObjectPtr notifyCode2rexxArg(RexxThreadContext *c, LPARAM lParam)
+{
+    return c->UnsignedInt32(((NMHDR *)lParam)->code);
+}
+
 inline RexxObjectPtr idFrom2rexxArg(RexxThreadContext *c, LPARAM lParam)
 {
     return c->Uintptr(((NMHDR *)lParam)->idFrom);
@@ -107,6 +120,11 @@ inline RexxObjectPtr idFrom2rexxArg(RexxThreadContext *c, LPARAM lParam)
 inline RexxObjectPtr hwndFrom2rexxArg(RexxThreadContext *c, LPARAM lParam)
 {
     return pointer2string(c, ((NMHDR *)lParam)->hwndFrom);
+}
+
+inline RexxObjectPtr controlFrom2rexxArg(pCPlainBaseDialog pcpbd, LPARAM lParam, oodControl_t ctrl)
+{
+    return createControlFromHwnd(pcpbd->dlgProcContext, pcpbd, ((NMHDR *)lParam)->hwndFrom, ctrl, true);
 }
 
 #endif

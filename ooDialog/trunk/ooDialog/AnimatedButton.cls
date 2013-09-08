@@ -44,8 +44,8 @@
 
 ::class 'AnimatedButton' public
 
-::attribute parentDlg
-::attribute stopped
+::attribute parentDlg unguarded
+::attribute stopped   unguarded
 
 ::method init
      expose spritewin spos. sprite.
@@ -230,7 +230,7 @@
    end
    return 0
 
-::method parentStopped
+::method parentStopped unguarded
    return self~parentDlg~finished
 
 ::method stop

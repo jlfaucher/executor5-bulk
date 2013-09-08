@@ -512,9 +512,7 @@ MsgReplyType tvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag
         }
         else
         {
-            RexxStringObject mthName = c->String(methodName);
-            invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
-            c->ReleaseLocalReference(mthName);
+            invokeDispatch(c, pcpbd, methodName, args);
         }
 
         c->ReleaseLocalReference(ptStr);
@@ -538,9 +536,7 @@ MsgReplyType tvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag
     }
     else
     {
-        RexxStringObject mthName = c->String(methodName);
-        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
-        c->ReleaseLocalReference(mthName);
+        invokeDispatch(c, pcpbd, methodName, args);
     }
 
     c->ReleaseLocalReference(idFrom);
@@ -602,14 +598,12 @@ MsgReplyType tvnBeginLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_
     {
         if ( StrCmpI(methodName, "DEFTREEEDITSTARTER") != 0 )
         {
-            RexxStringObject mthName = c->String(methodName);
             RexxObjectPtr    hItem   = pointer2string(c, pdi->item.hItem);
 
             args = c->ArrayOfTwo(idFrom, hItem);
 
-            invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+            invokeDispatch(c, pcpbd, methodName, args);
 
-            c->ReleaseLocalReference(mthName);
             c->ReleaseLocalReference(hItem);
             c->ReleaseLocalReference(args);
         }
@@ -639,9 +633,7 @@ MsgReplyType tvnBeginLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_
     }
     else
     {
-        RexxStringObject mthName = c->String(methodName);
-        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
-        c->ReleaseLocalReference(mthName);
+        invokeDispatch(c, pcpbd, methodName, args);
     }
 
     c->ReleaseLocalReference(idFrom);
@@ -691,12 +683,10 @@ MsgReplyType tvnDeleteItem(RexxThreadContext *c, CSTRING methodName, uint32_t ta
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
         RexxObjectPtr    rxLp    = c->Intptr(lParam);
-        RexxStringObject mthName = c->String(methodName);
 
         args = c->ArrayOfTwo(idFrom, rxLp);
-        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+        invokeDispatch(c, pcpbd, methodName, args);
 
-        c->ReleaseLocalReference(mthName);
         c->ReleaseLocalReference(rxLp);
         c->ReleaseLocalReference(idFrom);
         c->ReleaseLocalReference(args);
@@ -717,9 +707,7 @@ MsgReplyType tvnDeleteItem(RexxThreadContext *c, CSTRING methodName, uint32_t ta
     }
     else
     {
-        RexxStringObject mthName = c->String(methodName);
-        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
-        c->ReleaseLocalReference(mthName);
+        invokeDispatch(c, pcpbd, methodName, args);
     }
 
     c->ReleaseLocalReference(idFrom);
@@ -778,7 +766,6 @@ MsgReplyType tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
     {
         if ( StrCmpI(methodName, "DEFTREEEDITHANDLER") != 0 )
         {
-            RexxStringObject mthName = c->String(methodName);
             RexxObjectPtr    hItem   = pointer2string(c, pdi->item.hItem);
             RexxObjectPtr    text    = pdi->item.pszText ? c->String(pdi->item.pszText) : NULLOBJECT;
 
@@ -791,13 +778,12 @@ MsgReplyType tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
                 args = c->ArrayOfTwo(idFrom, hItem);
             }
 
-            invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+            invokeDispatch(c, pcpbd, methodName, args);
 
             if ( text != NULLOBJECT )
             {
                 c->ReleaseLocalReference(text);
             }
-            c->ReleaseLocalReference(mthName);
             c->ReleaseLocalReference(idFrom);
             c->ReleaseLocalReference(hItem);
             c->ReleaseLocalReference(args);
@@ -832,9 +818,7 @@ MsgReplyType tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
     }
     else
     {
-        RexxStringObject mthName = c->String(methodName);
-        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
-        c->ReleaseLocalReference(mthName);
+        invokeDispatch(c, pcpbd, methodName, args);
     }
 
     c->ReleaseLocalReference(idFrom);
@@ -989,9 +973,7 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
     }
     else
     {
-        RexxStringObject mthName = c->String(methodName);
-        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
-        c->ReleaseLocalReference(mthName);
+        invokeDispatch(c, pcpbd, methodName, args);
     }
 
     c->ReleaseLocalReference(idFrom);
@@ -1035,7 +1017,7 @@ MsgReplyType tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 {
     RexxObjectPtr   idFrom      = idFrom2rexxArg(c, lParam);
     bool            expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
-    uint16_t        vKey        = ((NMLVKEYDOWN *)lParam)->wVKey;
+    uint16_t        vKey        = ((NMTVKEYDOWN *)lParam)->wVKey;
 
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
@@ -1048,9 +1030,7 @@ MsgReplyType tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         }
         else
         {
-            RexxStringObject mth = c->String(methodName);
-            invokeDispatch(c, pcpbd->rexxSelf, mth, args);
-            c->ReleaseLocalReference(mth);
+            invokeDispatch(c, pcpbd, methodName, args);
         }
 
         c->ReleaseLocalReference(idFrom);
@@ -1077,9 +1057,7 @@ MsgReplyType tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     }
     else
     {
-        RexxStringObject mth = c->String(methodName);
-        invokeDispatch(c, pcpbd->rexxSelf, mth, args);
-        c->ReleaseLocalReference(mth);
+        invokeDispatch(c, pcpbd, methodName, args);
     }
 
     releaseKeyEventRexxArgs(c, args);
@@ -1126,13 +1104,11 @@ MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag
 
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
-        RexxStringObject mthName = c->String(methodName);
-        RexxObjectPtr    rxLp    = c->Intptr(lParam);
+        RexxObjectPtr rxLp = c->Intptr(lParam);
 
         args = c->ArrayOfTwo(idFrom, rxLp);
-        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
+        invokeDispatch(c, pcpbd, methodName, args);
 
-        c->ReleaseLocalReference(mthName);
         c->ReleaseLocalReference(rxLp);
         c->ReleaseLocalReference(idFrom);
         c->ReleaseLocalReference(args);
@@ -1181,9 +1157,7 @@ MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag
     }
     else
     {
-        RexxStringObject mthName = c->String(methodName);
-        invokeDispatch(c, pcpbd->rexxSelf, mthName, args);
-        c->ReleaseLocalReference(mthName);
+        invokeDispatch(c, pcpbd, methodName, args);
     }
 
     c->ReleaseLocalReference(idFrom);

@@ -212,10 +212,13 @@ extern void abortPropertySheet(pCPropertySheetDialog pcpsd, HWND hDlg, DlgProcEr
 extern void abortPropertySheetPage(pCPropertySheetPage page, HWND hDlg, DlgProcErrType t);
 extern void abortOwnedDlg(pCPlainBaseDialog pcpbd, HWND hDlg, DlgProcErrType t);
 
-// This function is defined in oodControl.cpp.  TODO should be in
-// oodControl.hpp, but needed by oodCommon.cpp, need to straighten out all
-// theses extern declarations.
-extern const char *controlType2controlName(oodControl_t control);
+// These functions are defined in oodControl.cpp.  TODO should be in
+// oodControl.hpp, but the order of includes misses them.  Need to straighten
+// out all these extern declarations.
+extern const char     *controlType2controlName(oodControl_t control);
+extern RexxObjectPtr   createControlFromHwnd(RexxMethodContext *, pCDialogControl, HWND, oodControl_t, bool);
+extern RexxObjectPtr   createControlFromHwnd(RexxMethodContext *, pCPlainBaseDialog, HWND, oodControl_t, bool);
+extern RexxObjectPtr   createControlFromHwnd(RexxThreadContext *, pCPlainBaseDialog, HWND, oodControl_t, bool);
 
 // These functions are defined in oodViewControls.cpp
 extern bool isInReportView(HWND hList);

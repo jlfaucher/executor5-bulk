@@ -417,6 +417,26 @@ RexxObjectPtr invalidTypeException(RexxThreadContext *c, size_t pos, const char 
     return NULLOBJECT;
 }
 
+/**
+ * Argument 'argument' is not a valid 'type'; found 'actual'
+ *
+ * Argument 1 is not a valid COLORREF; found a Directoy
+ *
+ * Raises 88.900
+ *
+ * @param c    Thread context we are executing in.
+ * @param pos  Argumet position
+ * @param type  "Some thing"
+ * @param actual
+ */
+RexxObjectPtr invalidTypeException(RexxThreadContext *c, size_t pos, const char *type, RexxObjectPtr actual)
+{
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "Argument %d is not a valid %s; found %s", pos, type, c->ObjectToStringValue(actual));
+    userDefinedMsgException(c, buffer);
+    return NULLOBJECT;
+}
+
 void invalidImageException(RexxThreadContext *c, size_t pos, CSTRING type, CSTRING actual)
 {
     char buffer[256];
