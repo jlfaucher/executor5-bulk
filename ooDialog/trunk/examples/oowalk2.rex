@@ -62,12 +62,14 @@
  *  animation.
  */
 
+ .application~autoDetection(.false)
+
  -- A directory manager saves the current directory and can later go back to
  -- that directory.  It also sets up the environment we need.  The class
  -- itself is located in samplesSetup.rex
  mgr = .DirectoryManager~new()
 
- dlg = .WalkerDialog~new('res\oowalk2.dll',100,data.)
+ dlg = .WalkerDialog~new('res\oowalk2.dll',100)
 
  if dlg~initCode \= 0 then do
    mgr~goBack
@@ -113,19 +115,27 @@
    quitCheckBox~check
    spriteButton~fillData(data.)
    spriteButton~suspendGotCha(.false)
-   self~setDataStem(data.)
+   self~doValueStemSet(data.)
    ret = Play("tada.wav", n)
 
    -- Animate the button.
    spriteButton~run
 
-::method doDataStemGet unguarded
+::method doValueStemGet unguarded
   use strict arg data.
-  self~getDataStem(data.)
+  data.101 = self~newEdit(101)~getText
+  data.102 = self~newEdit(102)~getText
+  data.103 = self~newEdit(103)~getText
+  if self~newCheckBox(104)~checked then data.104 = 1
+  else data.104 = 0
 
-::method doDataStemSet unguarded
+::method doValueStemSet unguarded
   use strict arg data.
-  self~setDataStem(data.)
+  self~newEdit(101)~setText(data.101)
+  self~newEdit(102)~setText(data.102)
+  self~newEdit(103)~setText(data.103)
+  if data.104 == 1 then self~newCheckBox(104)~check
+  else self~newCheckBox(104)~uncheck
 
 ::method onGotCha
    expose okButton
@@ -181,7 +191,7 @@
 
 ::class 'WalkButton' subclass AnimatedButton
 
-::method run
+::method run unguarded
    expose xDanger yDanger running
    xDanger = 300; yDanger = 70; running = .true
 
@@ -199,14 +209,14 @@
    running = .false
    self~parentDlg~maybeQuit
 
-::method doAnimatedSequence private
+::method doAnimatedSequence private unguarded
    expose xDanger yDanger
 
-   self~moveseq
-   self~parentDlg~doDataStemGet(data.)
+   self~parentDlg~doValueStemGet(data.)
    do k over data.
       if data.k~datatype('N') = 0 then data.k = 0
    end
+   self~moveseq
    self~setmove(data.101, data.102)
    self~setdelay(data.103)
    self~setsmooth(data.104)
@@ -237,7 +247,7 @@
    s.movey = -s.movey
    self~setsprite(s.)
    self~fillData(data.)
-   self~parentDlg~doDataStemSet(data.)
+   self~parentDlg~doValueStemSet(data.)
    return 0
 
 ::method hittop
@@ -247,7 +257,7 @@
    s.movey = -s.movey
    self~setsprite(s.)
    self~fillData(data.)
-   self~parentDlg~doDataStemSet(data.)
+   self~parentDlg~doValueStemSet(data.)
    return 0
 
 ::method fillData

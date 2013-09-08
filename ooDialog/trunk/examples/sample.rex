@@ -91,7 +91,7 @@
    self~loadApp("oophil.rex")
 
 ::method walker
-   self~loadApp("oowalker.rex")
+   self~loadApp("oowalk2.rex")
 
 ::method bandit
    self~loadApp("oobandit.rex", 3300)
