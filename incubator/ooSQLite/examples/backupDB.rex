@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -40,7 +40,7 @@
  *  backupDB.rex
  *
  * This program shows how to use the online backup feature of SQLite with the
- * classic Rexx interface to SQLite.
+ * object-orientated interface to SQLite.
  *
  * We are pretending here that the source database is in use with possibly a lot
  * of heavy activity, reads and writes.
@@ -60,32 +60,42 @@
  * In truth here, there is no other activity and the database is not big.  We
  * just make the limit too small.
  *
- * To focus on the functions used to do the actual backup, the error handling /
+ * To focus on the methods used to do the actual backup, the error handling /
  * checking is very minimal.
  *
- * backupWithTimeLimit() is a local function.  All functions beginning with
- * 'oosql' are functions from the ooSQLite package.
+ * backupWithTimeLimit() is a local function.
  *
  * Note that this example is exactly the same as the backupDB.rex example in the
- * examples directory, but implemented using the classic Rexx interface rather
- * than the object-orientated interface.
+ * examples/classic directory, but implemented using the object-orientated
+ * interface rather than the classic Rexx interface rather.
  */
 
-  ret1 = oosqlOpen('ooFoods.rdbx', 'srcDB')
-  ret2 = oosqlOpen('ooFoodsBackup.rdbx', 'destDB')
 
-  if ret1 \== .ooSQLite~OK | ret2 \== .ooSQLite~OK then do
-    say "Error opening one or boths database connections, aborting"
-    r = oosqlClose(srcDB)
-    r = oosqlClose(destDB)
-    return 99.
+	dbName  = .File~new('ooFoods.rdbx')
+	dstName = .File~new('ooFoodsBackup.rdbx')
+
+  dbSrcConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+  if dbSrcConn~initCode <> dbSrcConn~OK then do
+    say 'ooSQLiteConnection initialization error:' dbSrcConn~initCode
+    say '  Error code:' dbSrcConn~lastErrCode '('dbSrcConn~lastErrCode')'
+    say
+
+    dbSrcConn~close
+    return 99
   end
 
-  buHandle = oosqlBackupInit(destDB, srcDB)
-  if oosqlIsHandleNull(buHandle) then do
-    say 'Error initializing backup. Error code:' oosqlErrCode(destDB) oosqlErrMsg(destDB)
-    r = oosqlClose(srcDB)
-    r = oosqlClose(destDB)
+  bu = .ooSQLiteBackup~new(dbSrcConn, dstName)
+
+  if bu~initCode <> bu~OK then do
+    say 'ooSQLiteBackup initialization error:' bu~initCode
+    say '  Error code:' dbSrcConn~lastErrCode '('dbSrcConn~lastErrCode')'
+    say
+
+    -- If the destination database was specified as a file name, which was the
+    -- case here, it is automatically closed on error.  (Or it was never opened
+    -- to begin with.) If the destination database was specified as an open
+    -- connection, we would need to also close it here.
+    dbSrcConn~close
     return 99.
   end
 
@@ -95,13 +105,16 @@
 
   timeLimit = 21
 
-  ret = backupWithTimeLimit(buHandle, timeLimit)
-  if ret \== .ooSQLite~DONE & ret \== .ooSQLite~BUSY then do
+  ret = backupWithTimeLimit(bu, timeLimit)
+  if ret \== bu~DONE & ret \== bu~BUSY then do
     say 'Backup error:' oosqlErrCode(destDB) oosqlErrMsg(destDB)
+    say '  Error code:' dbSrcConn~lastErrCode '('dbSrcConn~lastErrCode')'
+    say
   end
 
-  r = oosqlClose(srcDB)
-  r = oosqlClose(destDB)
+  -- Again, since the destionation database was specified as a file name, it
+  -- is automatically closed.  Otherwise, it would also need to be closed here.
+  ret = dbSrcConn~close
 
   return ret
 
@@ -110,11 +123,11 @@
 -- This function will return DONE if completed and BUSY if abandoned.  Any other
 -- return would be a fatal error.
 ::routine backupWithTimeLimit
-  use strict arg buHandle, limit
+  use strict arg bu, limit
 
   count = 0
   do while .true
-    ret = oosqlBackupStep(buHandle, 2)
+    ret = bu~step(2)
     if ret == .ooSQLite~DONE then do
       say 'Backup finished with no error.'
       outcome = .ooSQLite~DONE
@@ -129,8 +142,8 @@
 
     -- This section shows how to calculate the percentage complete:
 
-    remain = oosqlBackupRemaining(buHandle)
-    pages  = oosqlBackupPageCount(buHandle)
+    remain = bu~remaining
+    pages  = bu~pageCount
     percentComplete = 100 * (pages - remain) / pages
     say "Backup" percentComplete "percent complete..."
 
@@ -142,6 +155,13 @@
       say "Backup has not completed within the time limit, going to abandon the operation."
       say
       outcome = .ooSQLite~BUSY
+
+      -- There should always be one invocation of finish for every backup, whether
+      -- or not the back up was successful.  However, if the backup finished
+      -- successfully, or a fatal error happened, the ooSQLite framework will
+      -- invoke finish() for us.  So, we only need to use finish() to abandon
+      -- the backup.  Which is what we are going to do here.
+      bu~finish
       leave
     end
 
@@ -149,8 +169,6 @@
     count += 1
 
   end
-
-  ret = oosqlBackupFinish(buHandle)
 
   return outcome
 
