@@ -216,10 +216,18 @@
       <listitem>
       <para>
         Specifies the destination database. This argument can either be an open database <emphasis
-        role="italic">connection</emphasis> or the file name for the database. If the argument is a database connection,
-        it must be an open connection that is not in an error state. If the argument is a file name, then a destination
-        database <link linkend="clsOOSQLiteConnection">connection</link> object is instantiated using the specified
-        name.
+        role="italic">connection</emphasis> or it specifies the file name for the database. If the argument is a database
+        connection, it must be an open connection that is not in an error state. If the argument specifies a file name, then
+        a destination database <link linkend="clsOOSQLiteConnection">connection</link> object is instantiated using the
+        specified name.
+      </para>
+      <para>
+        Top specify the destination database as a file name use either a string or a <computeroutput>File</computeroutput>
+        object. When a <computeroutput>File</computeroutput> object is used, case it is treated exactly if it was a
+        string file name and all remarks concerning a file name versus a database connection apply. When specified as a
+        <computeroutput>File</computeroutput> object, the absolutePath() method of the object is used to obtain the database
+        file name.  When specified as a string, the name is used as is, implying it could be a relative file name. I.e.,
+        <emphasis role="italic">myBackup.db</emphasis> would be created in the current directory.
       </para>
       <para>
         Normally, when this argument is a file name, the connection object is closed during the <link

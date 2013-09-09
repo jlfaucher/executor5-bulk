@@ -275,8 +275,17 @@
       <listitem>
       <para>
         The file name of the database to open. The special string <emphasis role="italic">:memory:</emphasis> can be
-        used to open an in memory database. The <emphasis role="italic">dbFileName</emphasis> argument can also be an
-        URI. Refer to the SQLite documentation for details.
+        used to open an in memory database.
+      </para>
+      <para>
+        This argument can be specified as a string, or as a <computeroutput>File</computeroutput> object. When specified as a
+        <computeroutput>File</computeroutput> object, the absolutePath() method of the object is used to obtain the database
+        file name.  When specified as a string, the name is used as is, implying it could be a relative file name.   I.e.,
+        <emphasis role="italic">myDatabase.db</emphasis> would have to be in the current directory to be opened successfully.
+      </para>
+      <para>
+        If the <emphasis role="italic">dbFileName</emphasis> argument is a string, it can also be an URI. Refer to the SQLite
+        documentation for details.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>opts [optional]</term>
