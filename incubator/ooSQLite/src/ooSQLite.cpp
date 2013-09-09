@@ -5272,8 +5272,17 @@ RexxMethod2(RexxObjectPtr, oosqlconn_setNull_atr, RexxObjectPtr, nullObj, CSELF,
 
 /** ooSQLiteConnection::init()
  *
- *  @param file     [required]   Name of the database for this sqlite database
- *                               connection.
+ *  @param file     [required]   Name of the database file for this sqlite
+ *                               database connection.
+ *
+ *                               This argument can be specified as a string, or
+ *                               as a .File object. When specified as a .File
+ *                               object, the absolutePath() method is used to
+ *                               obtain the database file name.  When specified
+ *                               as a string, the name is used as, implying it
+ *                               could be a relative file name.   I.e.,
+ *                               "myDatabase.db" would have to be in the current
+ *                               directory to be opened successfully.
  *
  *  @param flags    [optional]   Flags for opening the database.  Use the
  *                               .ooSQLiteConstants constants.
@@ -5289,10 +5298,9 @@ RexxMethod2(RexxObjectPtr, oosqlconn_setNull_atr, RexxObjectPtr, nullObj, CSELF,
  *                               this yet. so the sqlitee default is always
  *                               used.
  */
-RexxMethod5(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _flags, OPTIONAL_uint32_t, defFormat,
+RexxMethod5(RexxObjectPtr, oosqlconn_init, RexxObjectPtr, rxFile, OPTIONAL_int32_t, _flags, OPTIONAL_uint32_t, defFormat,
             OPTIONAL_CSTRING, vfsName, OSELF, self)
 {
-
     // Get a buffer for the ooSQLiteConnection CSelf.
     RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLiteConn));
     if ( cselfBuffer == NULLOBJECT )
@@ -5305,6 +5313,21 @@ RexxMethod5(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _fla
 
     pCooSQLiteConn pConn = (pCooSQLiteConn)context->BufferData(cselfBuffer);
     memset(pConn, 0, sizeof(CooSQLiteConn));
+
+    if ( context->IsOfType(rxFile, "FILE") )
+    {
+        rxFile = context->SendMessage0(rxFile, "ABSOLUTEPATH");
+        if ( rxFile == NULLOBJECT )
+        {
+            // I don't really think this is possible, ...
+            pConn->lastErrCode = OO_UNEXPECTED_RESULT;
+            pConn->initCode    = OO_UNEXPECTED_RESULT;
+            pConn->lastErrMsg  = context->String("the database file, specified as a File object, "
+                                         "could not be converted to a string file name");
+            return NULLOBJECT;
+        }
+    }
+    CSTRING file = context->ObjectToStringValue(rxFile);
 
     int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
     if ( argumentExists(2) )
@@ -9081,7 +9104,10 @@ RexxMethod2(RexxObjectPtr, oosqlbu_setSaveDestConn_atr, logical_t, save, CSELF, 
  *                             either be an .ooSQLiteConnection object, in which
  *                             case it must already be opened.  Or it can be the
  *                             database file name, in which case the
- *                             ooSQliteConnection object is instantiated.
+ *                             ooSQliteConnection object is instantiated.  The
+ *                             destination database file name can also be
+ *                             specified using a .File object, in which case it
+ *                             is treated exactly if it was a string file name.
  *
  *                             Normally, when this argument is a file name, the
  *                             connection object is closed during the finish()
@@ -9139,7 +9165,6 @@ RexxMethod6(RexxObjectPtr, oosqlbu_init, RexxObjectPtr, srcDB, RexxObjectPtr, ds
         outOfMemoryException(context->threadContext);
         return NULLOBJECT;
     }
-    RexxMethodContext *c = context;
     context->SetObjectVariable("CSELF", cselfBuffer);
 
     pCooSQLiteBackup pCbu = (pCooSQLiteBackup)context->BufferData(cselfBuffer);
@@ -9162,13 +9187,34 @@ RexxMethod6(RexxObjectPtr, oosqlbu_init, RexxObjectPtr, srcDB, RexxObjectPtr, ds
     }
     else
     {
-        CSTRING dstFileName = c->ObjectToStringValue(dstDB);
+        CSTRING dstFileName = NULL;
+
+        if ( context->IsOfType(dstDB, "FILE") )
+        {
+            RexxObjectPtr tmp = context->SendMessage0(dstDB, "ABSOLUTEPATH");
+            if ( tmp == NULLOBJECT )
+            {
+                // I don't think this is possible, but we'll set up the error stuff.
+                buSetInitErr(context, pCbu,
+                             context->String("the destination database specified as a File object "
+                                             "could not be converted to a string file name"),
+                             OO_UNEXPECTED_RESULT);
+
+                return NULLOBJECT;
+            }
+            dstFileName = context->ObjectToStringValue(tmp);
+        }
+        else
+        {
+            dstFileName = context->ObjectToStringValue(dstDB);
+        }
+
         pCbu->dstDbWasName  = true;
         dstName             = "main";
 
-        RexxObjectPtr dstTemp = c->SendMessage1(TheOOSQLiteConnectionClass, "NEW", dstDB);
+        RexxObjectPtr dstTemp = context->SendMessage1(TheOOSQLiteConnectionClass, "NEW", dstDB);
 
-        if ( c->CheckCondition() )
+        if ( context->CheckCondition() )
         {
             // The only condition this could be is out of memory.  The user
             // should not trap this, nothing will work  ... so we don't set up
@@ -9180,7 +9226,7 @@ RexxMethod6(RexxObjectPtr, oosqlbu_init, RexxObjectPtr, srcDB, RexxObjectPtr, ds
         {
             // I don't think this is possible, but we'll set up the error stuff.
             buSetInitErr(context, pCbu,
-                         context->String("Message \"new\" did not return a result for the destionation database"),
+                         context->String("Message \"new\" did not return a result for the destination database"),
                          OO_UNEXPECTED_RESULT);
 
             return NULLOBJECT;
@@ -9202,6 +9248,10 @@ RexxMethod6(RexxObjectPtr, oosqlbu_init, RexxObjectPtr, srcDB, RexxObjectPtr, ds
         if ( ! buCheckPageSize(pConnDst, pConnSrc, dstFileName) )
         {
             buSetInitErr(context, pCbu, dbErrStringRx(context, pConnSrc->db), dbErrCode(pConnSrc->db));
+            if ( pCbu->dstDbWasName )
+            {
+                context->SendMessage0(pConnDst->rexxSelf, "CLOSE");
+            }
             return NULLOBJECT;
         }
 
@@ -9235,8 +9285,8 @@ RexxMethod6(RexxObjectPtr, oosqlbu_init, RexxObjectPtr, srcDB, RexxObjectPtr, ds
         pCbu->dstCSelf = pConnDst;
         pCbu->srcCSelf = pConnSrc;
 
-        pCbu->srcRexxSelf = c->RequestGlobalReference(pConnSrc->rexxSelf);
-        pCbu->dstRexxSelf = c->RequestGlobalReference(pConnDst->rexxSelf);
+        pCbu->srcRexxSelf = context->RequestGlobalReference(pConnSrc->rexxSelf);
+        pCbu->dstRexxSelf = context->RequestGlobalReference(pConnDst->rexxSelf);
 
         pCbu->lastErrMsg = context->String("not an error");
         context->SetObjectVariable("__rxErrMsg", pCbu->lastErrMsg);
