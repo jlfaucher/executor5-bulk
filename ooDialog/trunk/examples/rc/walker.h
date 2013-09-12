@@ -1,7 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2013 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,37 +34,22 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* samples\ooDialog\rc\walker.rc       Animation demo                 */
-/*--------------------------------------------------------------------*/
 
-#include <windows.h>
-#include <walker.h>
+#define IDD_WALKER       100
+#define IDC_EDIT_MOVEX   101
+#define IDC_EDIT_MOVEY   102
+#define IDC_EDIT_DELAY   103
+#define IDC_CB_SMOOTH    104
+#define IDC_CB_GOTCHA    106
+#define IDC_PB_RESTART   107
+#define IDC_DRAW_BUTTON  105
 
-IDD_WALKER DIALOG 7, 19, 347, 255
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Animation Demonstration - Sprites with Open Object Rexx"
-FONT 8, "MS Sans Serif"
-{
- EDITTEXT IDC_EDIT_MOVEX, 45, 23, 25, 12, ES_LEFT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_GROUP | WS_TABSTOP
- EDITTEXT IDC_EDIT_MOVEY, 118, 23, 25, 12, ES_LEFT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_GROUP | WS_TABSTOP
- EDITTEXT IDC_EDIT_DELAY, 199, 23, 38, 12, WS_BORDER | WS_TABSTOP
- AUTOCHECKBOX "&Smooth corner wrap", IDC_CB_SMOOTH, 260, 22, 77, 15
- AUTOCHECKBOX "&Quit on 'Got-cha'", IDC_CB_GOTCHA, 12, 237, 77, 15
- PUSHBUTTON "Restart", IDC_PB_RESTART, 230, 237, 50, 14, WS_DISABLED
- DEFPUSHBUTTON "OK", IDOK, 290, 237, 50, 14
- CONTROL "Button1", IDC_DRAW_BUTTON, "BUTTON", BS_OWNERDRAW | WS_TABSTOP, 3, 62, 341, 164
- CONTROL "", -1, "STATIC", SS_BLACKFRAME | WS_CHILD | WS_VISIBLE, 1, 58, 345, 170
- LTEXT "Move &X:", -1, 12, 25, 30, 9
- LTEXT "Move &Y:", -1, 87, 25, 28, 9
- LTEXT "&Delay:", -1, 172, 24, 24, 10
- GROUPBOX "Move sequence", -1, 1, 6, 345, 40, BS_GROUPBOX | WS_CHILD | WS_VISIBLE
-}
+#define ID_BMP_FIG1      201
+#define ID_BMP_FIG2      202
+#define ID_BMP_FIG3      203
+#define ID_BMP_FIG4      204
+#define ID_BMP_FIG5      205
+#define ID_BMP_FIG6      206
+#define ID_BMP_FIG7      207
+#define ID_BMP_FIG8      208
 
-ID_BMP_FIG1 BITMAP "..\\bmp\\wlkfig1.bmp"
-ID_BMP_FIG2 BITMAP "..\\bmp\\wlkfig2.bmp"
-ID_BMP_FIG3 BITMAP "..\\bmp\\wlkfig3.bmp"
-ID_BMP_FIG4 BITMAP "..\\bmp\\wlkfig4.bmp"
-ID_BMP_FIG5 BITMAP "..\\bmp\\wlkfig5.bmp"
-ID_BMP_FIG6 BITMAP "..\\bmp\\wlkfig6.bmp"
-ID_BMP_FIG7 BITMAP "..\\bmp\\wlkfig7.bmp"
-ID_BMP_FIG8 BITMAP "..\\bmp\\wlkfig8.bmp"
