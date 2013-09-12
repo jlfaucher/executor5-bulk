@@ -146,6 +146,8 @@
 
 ::method    putStmt external "LIBRARY oosqlite oosqlconn_putStmt"                    -- Internal use only
 ::method    delStmt external "LIBRARY oosqlite oosqlconn_delStmt"                    -- Internal use only
+::method    pragmaGetTest external "LIBRARY oosqlite oosqlconn_pragmaGetTest"        -- Internal use only
+::method    pragmaSetTest external "LIBRARY oosqlite oosqlconn_pragmaSetTest"        -- Internal use only
 ::attribute ooSQLiteConnectionStmtBag private                                        -- Internal use only
 
 
