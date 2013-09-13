@@ -86,20 +86,20 @@ uint32_t keyword2rbbim(CSTRING flags)
         char *token = strtok(words, " ");
         while ( token != NULL )
         {
-            if (      StrCmpI(flags, "BACKGROUND")      == 0 ) val |= RBBIM_BACKGROUND;
-            else if ( StrCmpI(flags, "CHEVRONLOCATION") == 0 ) val |= RBBIM_CHEVRONLOCATION;
-            else if ( StrCmpI(flags, "CHEVRONSTATE")    == 0 ) val |= RBBIM_CHEVRONSTATE;
-            else if ( StrCmpI(flags, "CHILD")           == 0 ) val |= RBBIM_CHILD;
-            else if ( StrCmpI(flags, "CHILDSIZE")       == 0 ) val |= RBBIM_CHILDSIZE;
-            else if ( StrCmpI(flags, "COLORS")          == 0 ) val |= RBBIM_COLORS;
-            else if ( StrCmpI(flags, "HEADERSIZE")      == 0 ) val |= RBBIM_HEADERSIZE;
-            else if ( StrCmpI(flags, "ID")              == 0 ) val |= RBBIM_ID;
-            else if ( StrCmpI(flags, "IDEALSIZE")       == 0 ) val |= RBBIM_IDEALSIZE;
-            else if ( StrCmpI(flags, "IMAGE")           == 0 ) val |= RBBIM_IMAGE;
-            else if ( StrCmpI(flags, "LPARAM")          == 0 ) val |= RBBIM_LPARAM;
-            else if ( StrCmpI(flags, "SIZE")            == 0 ) val |= RBBIM_SIZE;
-            else if ( StrCmpI(flags, "STYLE")           == 0 ) val |= RBBIM_STYLE;
-            else if ( StrCmpI(flags, "TEXT")            == 0 ) val |= RBBIM_TEXT;
+            if (      StrCmpI(token, "BACKGROUND")      == 0 ) val |= RBBIM_BACKGROUND;
+            else if ( StrCmpI(token, "CHEVRONLOCATION") == 0 ) val |= RBBIM_CHEVRONLOCATION;
+            else if ( StrCmpI(token, "CHEVRONSTATE")    == 0 ) val |= RBBIM_CHEVRONSTATE;
+            else if ( StrCmpI(token, "CHILD")           == 0 ) val |= RBBIM_CHILD;
+            else if ( StrCmpI(token, "CHILDSIZE")       == 0 ) val |= RBBIM_CHILDSIZE;
+            else if ( StrCmpI(token, "COLORS")          == 0 ) val |= RBBIM_COLORS;
+            else if ( StrCmpI(token, "HEADERSIZE")      == 0 ) val |= RBBIM_HEADERSIZE;
+            else if ( StrCmpI(token, "ID")              == 0 ) val |= RBBIM_ID;
+            else if ( StrCmpI(token, "IDEALSIZE")       == 0 ) val |= RBBIM_IDEALSIZE;
+            else if ( StrCmpI(token, "IMAGE")           == 0 ) val |= RBBIM_IMAGE;
+            else if ( StrCmpI(token, "LPARAM")          == 0 ) val |= RBBIM_LPARAM;
+            else if ( StrCmpI(token, "SIZE")            == 0 ) val |= RBBIM_SIZE;
+            else if ( StrCmpI(token, "STYLE")           == 0 ) val |= RBBIM_STYLE;
+            else if ( StrCmpI(token, "TEXT")            == 0 ) val |= RBBIM_TEXT;
 
             token = strtok(NULL, " ");
         }

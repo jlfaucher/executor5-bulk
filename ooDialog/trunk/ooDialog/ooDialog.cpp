@@ -5405,21 +5405,12 @@ RexxMethod2(RexxObjectPtr, pbdlg_dumpMessageTable, OPTIONAL_CSTRING, table, CSEL
 }
 
 
-RexxMethod2(RexxObjectPtr, pbdlg_test, OPTIONAL_CSTRING, _hwnd, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, pbdlg_test, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
 
-    HWND hwndRb = (HWND)string2pointer(_hwnd);
-    REBARBANDINFO rbBand = {sizeof(REBARBANDINFO)};
-
-    //rbBand.cbSize = sizeof(REBARBANDINFO);
-    rbBand.fMask  = RBBIM_BACKGROUND | RBBIM_CHEVRONLOCATION | RBBIM_CHEVRONSTATE | RBBIM_COLORS |
-                                      RBBIM_HEADERSIZE | RBBIM_ID | RBBIM_IDEALSIZE | RBBIM_IMAGE | RBBIM_LPARAM |
-                                      RBBIM_SIZE | RBBIM_STYLE | RBBIM_TEXT | RBBIM_CHILDSIZE | RBBIM_CHILD;
-
-    SendMessage(hwndRb, RB_GETBANDINFO, 1, (LPARAM)&rbBand);
-    printf("Got band info for band 1 ideal_size=%d\n", rbBand.cxIdeal);
+    printf("There are no tests at this time.\n");
 
     return NULLOBJECT;
 }

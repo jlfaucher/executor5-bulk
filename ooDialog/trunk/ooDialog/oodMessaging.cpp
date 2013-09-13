@@ -2175,7 +2175,8 @@ MsgReplyType processMCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  * @remarks
  *
  */
-MsgReplyType processRBN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam, pCPlainBaseDialog pcpbd)
+MsgReplyType processRBN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code,
+                        LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
     switch ( code )
     {

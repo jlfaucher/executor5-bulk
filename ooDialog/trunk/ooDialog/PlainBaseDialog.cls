@@ -856,6 +856,7 @@
 ::method newListBox unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newReBar unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newScrollBar unguarded external "LIBRARY oodialog pbdlg_newControl"
+::method newToolBar unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newToolTip unguarded external "LIBRARY oodialog pbdlg_newToolTip"
 ::method newTreeView unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newListView unguarded external "LIBRARY oodialog pbdlg_newControl"

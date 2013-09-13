@@ -124,8 +124,11 @@ RexxClassObject     TheLvItemClass = NULLOBJECT;
 // Initialized in the LvSubItem class init method (lvsi_init_cls.)
 RexxClassObject     TheLvSubItemClass = NULLOBJECT;
 
-// Initialized in the ReBarBandInfo class init method (rbbi_init_cls.)
+// Initialized in the TheReBarBandInfo class init method (rbbi_init_cls.)
 RexxClassObject     TheReBarBandInfoClass = NULLOBJECT;
+
+// Initialized in the TbButton class init method (tbb_init_cls.)
+RexxClassObject     TheTbButtonClass = NULLOBJECT;
 
 /* GdiplusStartupInput gdiplusStartupInput;
 ULONG_PTR           gdiplusToken; */
@@ -1253,6 +1256,30 @@ REXX_METHOD_PROTOTYPE(rbbi_style             );
 REXX_METHOD_PROTOTYPE(rbbi_setStyle          );
 REXX_METHOD_PROTOTYPE(rbbi_text              );
 REXX_METHOD_PROTOTYPE(rbbi_setText           );
+
+// ToolBar
+REXX_METHOD_PROTOTYPE(tb_addButtons);
+REXX_METHOD_PROTOTYPE(tb_autoSize);
+REXX_METHOD_PROTOTYPE(tb_buttonCount);
+REXX_METHOD_PROTOTYPE(tb_buttonStructSize);
+REXX_METHOD_PROTOTYPE(tb_insertButton);
+
+// TbButton
+REXX_METHOD_PROTOTYPE(tbb_init_cls    );
+REXX_METHOD_PROTOTYPE(tbb_unInit      );
+REXX_METHOD_PROTOTYPE(tbb_init        );
+REXX_METHOD_PROTOTYPE(tbb_bitmapID    );
+REXX_METHOD_PROTOTYPE(tbb_setBitmapID );
+REXX_METHOD_PROTOTYPE(tbb_cmdID       );
+REXX_METHOD_PROTOTYPE(tbb_setCmdID    );
+REXX_METHOD_PROTOTYPE(tbb_itemData    );
+REXX_METHOD_PROTOTYPE(tbb_setItemData );
+REXX_METHOD_PROTOTYPE(tbb_state       );
+REXX_METHOD_PROTOTYPE(tbb_setState    );
+REXX_METHOD_PROTOTYPE(tbb_style       );
+REXX_METHOD_PROTOTYPE(tbb_setStyle    );
+REXX_METHOD_PROTOTYPE(tbb_text        );
+REXX_METHOD_PROTOTYPE(tbb_setText     );
 
 // TrackBar
 REXX_METHOD_PROTOTYPE(tb_getRange);
@@ -2829,6 +2856,30 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(rbbi_setStyle          ,       rbbi_setStyle           ),
     REXX_METHOD(rbbi_text              ,       rbbi_text               ),
     REXX_METHOD(rbbi_setText           ,       rbbi_setText            ),
+
+    // ToolBar
+    REXX_METHOD(tb_addButtons,                 tb_addButtons),
+    REXX_METHOD(tb_autoSize,                   tb_autoSize),
+    REXX_METHOD(tb_buttonCount,                tb_buttonCount),
+    REXX_METHOD(tb_buttonStructSize,           tb_buttonStructSize),
+    REXX_METHOD(tb_insertButton,               tb_insertButton),
+
+    // TbButton
+    REXX_METHOD(tbb_init_cls           ,       tbb_init_cls    ),
+    REXX_METHOD(tbb_unInit             ,       tbb_unInit      ),
+    REXX_METHOD(tbb_init               ,       tbb_init        ),
+    REXX_METHOD(tbb_bitmapID           ,       tbb_bitmapID    ),
+    REXX_METHOD(tbb_setBitmapID        ,       tbb_setBitmapID ),
+    REXX_METHOD(tbb_cmdID              ,       tbb_cmdID       ),
+    REXX_METHOD(tbb_setCmdID           ,       tbb_setCmdID    ),
+    REXX_METHOD(tbb_itemData           ,       tbb_itemData    ),
+    REXX_METHOD(tbb_setItemData        ,       tbb_setItemData ),
+    REXX_METHOD(tbb_state              ,       tbb_state       ),
+    REXX_METHOD(tbb_setState           ,       tbb_setState    ),
+    REXX_METHOD(tbb_style              ,       tbb_style       ),
+    REXX_METHOD(tbb_setStyle           ,       tbb_setStyle    ),
+    REXX_METHOD(tbb_text               ,       tbb_text        ),
+    REXX_METHOD(tbb_setText            ,       tbb_setText     ),
 
     // TrackBar
     REXX_METHOD(tb_getRange,                    tb_getRange),

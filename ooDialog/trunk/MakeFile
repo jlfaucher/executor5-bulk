@@ -131,8 +131,8 @@ CLASSFILES = $(OOD_OODIALOGSRC)\AnimatedButton.cls    $(OOD_OODIALOGSRC)\BaseDia
              $(OOD_OODIALOGSRC)\DynamicDialog.cls     $(OOD_OODIALOGSRC)\EventNotification.cls $(OOD_OODIALOGSRC)\ListView.cls         \
              $(OOD_OODIALOGSRC)\Menu.cls              $(OOD_OODIALOGSRC)\PlainBaseDialog.cls   $(OOD_OODIALOGSRC)\RcDialog.cls         \
              $(OOD_OODIALOGSRC)\ReBar.cls             $(OOD_OODIALOGSRC)\ResDialog.cls         $(OOD_OODIALOGSRC)\ShellObjects.cls     \
-             $(OOD_OODIALOGSRC)\ToolTip.cls           $(OOD_OODIALOGSRC)\TreeView.cls          $(OOD_OODIALOGSRC)\UserDialog.cls       \
-             $(OOD_OODIALOGSRC)\UtilityClasses.cls
+             $(OOD_OODIALOGSRC)\ToolBar.cls           $(OOD_OODIALOGSRC)\ToolTip.cls           $(OOD_OODIALOGSRC)\TreeView.cls         \
+             $(OOD_OODIALOGSRC)\UserDialog.cls        $(OOD_OODIALOGSRC)\UtilityClasses.cls
 
 BASETARGETS = target_ooDialog $(OOD_OUTDIR)\ooDialog.cls example_dlls
 
@@ -169,6 +169,9 @@ example_dlls:
     $(MAKE) /NOLOGO /F res.mak
     @cd $(OOD_ROOT_DIR)\examples\controls\ListView\rc
     @echo Make $(OOD_ROOT_DIR)\examples\controls\ListView\rc\res.mak
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\controls\ToolBar\rc
+    @echo Make $(OOD_ROOT_DIR)\examples\controls\ToolBar\rc\res.mak
     $(MAKE) /NOLOGO /F res.mak
     @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise04\Extras\DlgData\res
     @echo Make $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise04\Extras\DlgData\res\res.mak

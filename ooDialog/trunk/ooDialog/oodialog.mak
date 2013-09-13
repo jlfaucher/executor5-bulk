@@ -55,6 +55,15 @@ RC_NOLOGO = /nologo
 
 REXXAPI_LIBS = $(REXX_LIBS)
 
+# Generate the version information.  Quit if there is an error.  We only do this
+# when we are building outside of the interpreter build.  Within the interpreter
+# build, the ooDialog source will be the latest released version of ooDialog.
+# That released version will have a static ooDialog.ver.incl file that reflects
+# the exact version at the time of release.
+!IF [generateVersionFile.bat] != 0
+!  ERROR Build error: could not gerate version file, ooDialog.ver.incl
+!ENDIF
+
 !else
 
 OOD_OUTDIR=$(OR_OUTDIR)
@@ -63,11 +72,6 @@ REXXAPI_LIBS = $(OR_OUTDIR)\rexx.lib $(OR_OUTDIR)\rexxapi.lib
 OOD_INCLUDE_FILE = "$(OR_LIBSRC)\ORXWIN32.MAK"
 
 !endif
-
-# Generate the version information.  Quit if there is an error.
-!IF [generateVersionFile.bat] != 0
-!  ERROR Build error: could not gerate version file, ooDialog.ver.incl
-!ENDIF
 
 !include ooDialog.ver.incl
 !include $(OOD_INCLUDE_FILE)
@@ -94,9 +98,9 @@ SOURCEF= $(OOD_OUTDIR)\APICommon.obj               $(OOD_OUTDIR)\oodBarControls.
          $(OOD_OUTDIR)\oodMessaging.obj            $(OOD_OUTDIR)\oodMouse.obj            $(OOD_OUTDIR)\oodPackageEntry.obj    \
          $(OOD_OUTDIR)\oodPropertySheetDialog.obj  $(OOD_OUTDIR)\oodReBar.obj            $(OOD_OUTDIR)\oodResizableDialog.obj \
          $(OOD_OUTDIR)\oodResources.obj            $(OOD_OUTDIR)\oodRoutines.obj         $(OOD_OUTDIR)\oodShared.obj          \
-         $(OOD_OUTDIR)\oodShellObjects.obj         $(OOD_OUTDIR)\oodToolTip.obj          $(OOD_OUTDIR)\oodTreeView.obj        \
-         $(OOD_OUTDIR)\oodUser.obj                 $(OOD_OUTDIR)\oodUtilities.obj        $(OOD_OUTDIR)\oodViewControls.obj    \
-         $(OOD_OUTDIR)\oodialog.res
+         $(OOD_OUTDIR)\oodShellObjects.obj         $(OOD_OUTDIR)\oodToolBar.obj          $(OOD_OUTDIR)\oodToolTip.obj         \
+         $(OOD_OUTDIR)\oodTreeView.obj             $(OOD_OUTDIR)\oodUser.obj             $(OOD_OUTDIR)\oodUtilities.obj       \
+         $(OOD_OUTDIR)\oodViewControls.obj         $(OOD_OUTDIR)\oodialog.res
 
 # All Source files that include APICommon.hpp
 APICOMMON_SOURCEF = $(OOD_OUTDIR)\APICommon.obj              $(OOD_OUTDIR)\oodBarControls.obj     $(OOD_OUTDIR)\oodBaseDialog.obj    \
@@ -105,9 +109,9 @@ APICOMMON_SOURCEF = $(OOD_OUTDIR)\APICommon.obj              $(OOD_OUTDIR)\oodBa
                     $(OOD_OUTDIR)\oodKeyboard.obj            $(OOD_OUTDIR)\oodListView.obj        $(OOD_OUTDIR)\oodMenu.obj          \
                     $(OOD_OUTDIR)\oodMessaging.obj           $(OOD_OUTDIR)\oodMouse.obj           $(OOD_OUTDIR)\oodPackageEntry.obj  \
                     $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodResizableDialog.obj $(OOD_OUTDIR)\oodResources.obj     \
-                    $(OOD_OUTDIR)\oodRoutines.obj            $(OOD_OUTDIR)\oodShellObjects.obj    $(OOD_OUTDIR)\oodToolTip.obj       \
-                    $(OOD_OUTDIR)\oodTreeView.obj            $(OOD_OUTDIR)\oodUser.obj            $(OOD_OUTDIR)\oodUtilities.obj     \
-                    $(OOD_OUTDIR)\oodViewControls.obj
+                    $(OOD_OUTDIR)\oodRoutines.obj            $(OOD_OUTDIR)\oodShellObjects.obj    $(OOD_OUTDIR)\oodToolBar.obj       \
+                    $(OOD_OUTDIR)\oodToolTip.obj             $(OOD_OUTDIR)\oodTreeView.obj        $(OOD_OUTDIR)\oodUser.obj          \
+                    $(OOD_OUTDIR)\oodUtilities.obj           $(OOD_OUTDIR)\oodViewControls.obj
 
 # All Source files that include oodCommon.hpp
 COMMON_SOURCEF = $(OOD_OUTDIR)\oodBarControls.obj        $(OOD_OUTDIR)\oodBaseDialog.obj   $(OOD_OUTDIR)\oodBasicControls.obj       \

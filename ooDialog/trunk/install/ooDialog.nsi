@@ -233,6 +233,19 @@ Section  doInstall
     File "${ExamplesDir}\controls\ListView\subitem.editing\*.txt"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\ToolBar
+    ; Add the files ...
+    File "${ExamplesDir}\controls\ToolBar\*.rex"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\controls\ToolBar\rc
+    ; Add the files ...
+    File "${ExamplesDir}\controls\ToolBar\rc\*.rc"
+    File "${ExamplesDir}\controls\ToolBar\rc\*.h"
+    File "${ExamplesDir}\controls\ToolBar\rc\*.dll"
+    File "${ExamplesDir}\controls\ToolBar\rc\res.mak"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\controls\ToolTip
     ; Add the files ...
     File "${ExamplesDir}\controls\ToolTip\*.rex"
@@ -394,6 +407,7 @@ Section  doInstall
     File "${SrcDir}\ReBar.cls"
     File "${SrcDir}\ResDialog.cls"
     File "${SrcDir}\ShellObjects.cls"
+    File "${SrcDir}\ToolBar.cls"
     File "${SrcDir}\ToolTip.cls"
     File "${SrcDir}\TreeView.cls"
     File "${SrcDir}\UserDialog.cls"

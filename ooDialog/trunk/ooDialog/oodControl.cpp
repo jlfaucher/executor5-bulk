@@ -76,6 +76,7 @@ const char *controlType2winName(oodControl_t control)
         case winScrollBar :            return WC_SCROLLBAR;
         case winStatic :               return WC_STATIC;
         case winTab :                  return WC_TABCONTROL;
+        case winToolBar :              return TOOLBARCLASSNAME;
         case winTreeView :             return WC_TREEVIEW;
         case winTrackBar :             return TRACKBAR_CLASS;
         case winUpDown :               return UPDOWN_CLASS;
@@ -104,6 +105,7 @@ const char *controlType2className(oodControl_t control)
         case winScrollBar :            return "SCROLLBAR";
         case winStatic :               return "STATIC";
         case winTab :                  return "TAB";
+        case winToolBar :              return "TOOLBAR";
         case winToolTip :              return "TOOLTIP";
         case winTreeView :             return "TREEVIEW";
         case winTrackBar :             return "TRACKBAR";
@@ -133,6 +135,7 @@ const char *controlType2controlName(oodControl_t control)
         case winScrollBar :            return "ScrollBar";
         case winStatic :               return "Static";
         case winTab :                  return "Tab";
+        case winToolBar :              return "ToolBar";
         case winToolTip :              return "ToolTip";
         case winTrackBar :             return "TrackBar";
         case winTreeView :             return "TreeView";
@@ -157,6 +160,7 @@ oodControl_t winName2controlType(const char *className)
     else if ( strcmp(className, WC_SCROLLBAR      ) == 0 ) return winScrollBar;
     else if ( strcmp(className, WC_STATIC         ) == 0 ) return winStatic;
     else if ( strcmp(className, WC_TABCONTROL     ) == 0 ) return winTab;
+    else if ( strcmp(className, TOOLBARCLASSNAME  ) == 0 ) return winToolBar;
     else if ( strcmp(className, TOOLTIPS_CLASS    ) == 0 ) return winToolTip;
     else if ( strcmp(className, TRACKBAR_CLASS    ) == 0 ) return winTrackBar;
     else if ( strcmp(className, WC_TREEVIEW       ) == 0 ) return winTreeView;
@@ -214,6 +218,7 @@ oodControl_t controlName2controlType(CSTRING name)
     else if ( StrCmpI(name, "SCROLLBAR"     ) == 0 ) return winScrollBar;
     else if ( StrCmpI(name, "STATIC"        ) == 0 ) return winStatic;
     else if ( StrCmpI(name, "TAB"           ) == 0 ) return winTab;
+    else if ( StrCmpI(name, "TOOLBAR"       ) == 0 ) return winToolBar;
     else if ( StrCmpI(name, "TOOLTIP"       ) == 0 ) return winToolTip;
     else if ( StrCmpI(name, "TRACKBAR"      ) == 0 ) return winTrackBar;
     else if ( StrCmpI(name, "TREEVIEW"      ) == 0 ) return winTreeView;
@@ -337,6 +342,7 @@ oodControl_t oodName2controlType(CSTRING name)
     else if ( StrCmpN(name, "SCROLLBAR", 2     ) == 0 ) return winScrollBar;
     else if ( StrCmpN(name, "STATIC", 2        ) == 0 ) return winStatic;
     else if ( StrCmpN(name, "TAB", 3           ) == 0 ) return winTab;
+    else if ( StrCmpN(name, "TOOLB", 5         ) == 0 ) return winToolBar;
     else if ( StrCmpN(name, "TOOLT", 5         ) == 0 ) return winToolTip;
     else if ( StrCmpN(name, "TRACKBAR", 3      ) == 0 ) return winTrackBar;
     else if ( StrCmpN(name, "TREEVIEW", 3      ) == 0 ) return winTreeView;
