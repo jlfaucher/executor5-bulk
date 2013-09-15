@@ -6716,7 +6716,7 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
 
     if ( argCount == 0 )
     {
-        context->RaiseException(Rexx_Error_Incorrect_method_noarg, context->ArrayOfOne(TheOneObj));
+        missingArgException(context, 1);
         goto err_out;
     }
 
@@ -6725,7 +6725,7 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
         RexxObjectPtr obj = context->ArrayAt(args, i);
         if ( obj == NULLOBJECT )
         {
-            context->RaiseException(Rexx_Error_Incorrect_method_noarg, context->ArrayOfOne(context->WholeNumber(i)));
+            missingArgException(context, i);
             goto err_out;
         }
 

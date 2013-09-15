@@ -2697,6 +2697,38 @@ err_out:
 }
 
 /**
+ * Fills in a SIZE structure using an argument array passed to a Rexx object
+ * method.
+ *
+ * The purpose is to give the Rexx programmer some flexibility in how they pass
+ * in "point-like" coordinates to a method.
+ *
+ * This function uses getPointFromArgList() to do the work.  It is a convenience
+ * function for the ooDialog developer.
+ *
+ * @param c            Method context we are operating in.
+ * @param args         The arg list array (ARGLIST) passed to the native API
+ * @param point        [IN/OUT] Pointer to a point struct, this is filled in on
+ *                     success.
+ * @param startArg     The argument number in the arg array where the point
+ *                     specifications start.
+ * @param maxArgs      The maximum number of args allowed.
+ * @param arraySize    [IN/OUT] The size of the argument array, returned.
+ * @param usedArgs     [IN/OUT] The number of arguments used in specifying the
+ *                     point. I.e., if startArg is a .point, then usedArgs
+ *                     will be 1 on return.  If at startArg we have x, y, (or
+ *                     cx, cy) then useArgs will be 2 on return.
+ *
+ * @return True on success, false otherwise.  If the return is false, an
+ *         exception has been raised.
+ */
+bool getSizeFromArglist(RexxMethodContext *c, RexxArrayObject args, PPOINT point, int startArg, int maxArgs,
+                        size_t *arraySize, size_t *usedArgs)
+{
+    return getPointFromArglist(c, args, point, startArg, maxArgs, arraySize, usedArgs);
+}
+
+/**
  * Converts a string of keywords to the proper STATE_SYSTEM_* flag.
  *
  * @param flags

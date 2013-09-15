@@ -976,12 +976,12 @@
 ::method getPageStep unguarded
    return self~sendWinIntMsg(self~TBM_GETPAGESIZE, 0, 0)
 
-::method getRange unguarded external "LIBRARY oodialog tb_getRange"
+::method getRange unguarded external "LIBRARY oodialog trckbar_getRange"
 ::method getSelEnd unguarded
    use strict arg
    return self~sendWinIntMsg(self~TBM_GETSELEND, 0, 0)
 
-::method getSelRange unguarded external "LIBRARY oodialog tb_getSelRange"
+::method getSelRange unguarded external "LIBRARY oodialog trckbar_getSelRange"
 ::method getSelStart unguarded
    use strict arg
    return self~sendWinIntMsg(self~TBM_GETSELSTART, 0, 0)

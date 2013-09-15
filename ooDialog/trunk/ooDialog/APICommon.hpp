@@ -223,6 +223,24 @@ inline RexxObjectPtr missingArgException(RexxThreadContext *c, size_t argPos)
 }
 
 /**
+ *  Missing argument in method; argument 'argument' is required
+ *
+ *  Missing argument in method; argument 2 is required
+ *
+ *  Raises 93.90
+ *
+ * @param c    The method context we are operating under.
+ * @param pos  The 'argument' position.
+ *
+ * @return NULLOBJECT
+ */
+inline RexxObjectPtr missingArgException(RexxMethodContext *c, size_t argPos)
+{
+    c->RaiseException1(Rexx_Error_Incorrect_method_noarg, c->WholeNumber(argPos));
+    return NULLOBJECT;
+}
+
+/**
  *  Too many arguments in invocation; 'number' expected
  *
  *  Too many arguments in invocation; 5 expected

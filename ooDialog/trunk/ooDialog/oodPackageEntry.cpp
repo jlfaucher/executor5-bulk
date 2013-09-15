@@ -765,6 +765,7 @@ REXX_METHOD_PROTOTYPE(pbdlg_getTextSizeDlg);
 REXX_METHOD_PROTOTYPE(pbdlg_createToolTip);
 REXX_METHOD_PROTOTYPE(pbdlg_newToolTip);
 REXX_METHOD_PROTOTYPE(pbdlg_newControl);
+REXX_METHOD_PROTOTYPE(pbdlg_newControlEx);
 REXX_METHOD_PROTOTYPE(pbdlg_getNewControl);
 REXX_METHOD_PROTOTYPE(pbdlg_putControl);
 REXX_METHOD_PROTOTYPE(pbdlg_dumpMessageTable);
@@ -1258,11 +1259,13 @@ REXX_METHOD_PROTOTYPE(rbbi_text              );
 REXX_METHOD_PROTOTYPE(rbbi_setText           );
 
 // ToolBar
+REXX_METHOD_PROTOTYPE(tb_addBitmap);
 REXX_METHOD_PROTOTYPE(tb_addButtons);
 REXX_METHOD_PROTOTYPE(tb_autoSize);
 REXX_METHOD_PROTOTYPE(tb_buttonCount);
-REXX_METHOD_PROTOTYPE(tb_buttonStructSize);
 REXX_METHOD_PROTOTYPE(tb_insertButton);
+REXX_METHOD_PROTOTYPE(tb_loadImages);
+REXX_METHOD_PROTOTYPE(tb_setBitmapSize);
 
 // TbButton
 REXX_METHOD_PROTOTYPE(tbb_init_cls    );
@@ -1280,10 +1283,11 @@ REXX_METHOD_PROTOTYPE(tbb_style       );
 REXX_METHOD_PROTOTYPE(tbb_setStyle    );
 REXX_METHOD_PROTOTYPE(tbb_text        );
 REXX_METHOD_PROTOTYPE(tbb_setText     );
+REXX_METHOD_PROTOTYPE(tbb_assignBitmapID);
 
 // TrackBar
-REXX_METHOD_PROTOTYPE(tb_getRange);
-REXX_METHOD_PROTOTYPE(tb_getSelRange);
+REXX_METHOD_PROTOTYPE(trckbar_getRange);
+REXX_METHOD_PROTOTYPE(trckbar_getSelRange);
 
 // UpDown
 REXX_METHOD_PROTOTYPE(ud_deltaPosReply_cls);
@@ -2102,6 +2106,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbdlg_createToolTip,            pbdlg_createToolTip),
     REXX_METHOD(pbdlg_newToolTip,               pbdlg_newToolTip),
     REXX_METHOD(pbdlg_newControl,               pbdlg_newControl),
+    REXX_METHOD(pbdlg_newControlEx,             pbdlg_newControlEx),
     REXX_METHOD(pbdlg_getNewControl,            pbdlg_getNewControl),
     REXX_METHOD(pbdlg_putControl,               pbdlg_putControl),
     REXX_METHOD(pbdlg_dumpMessageTable,         pbdlg_dumpMessageTable),
@@ -2858,11 +2863,13 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(rbbi_setText           ,       rbbi_setText            ),
 
     // ToolBar
+    REXX_METHOD(tb_addBitmap,                  tb_addBitmap),
     REXX_METHOD(tb_addButtons,                 tb_addButtons),
     REXX_METHOD(tb_autoSize,                   tb_autoSize),
     REXX_METHOD(tb_buttonCount,                tb_buttonCount),
-    REXX_METHOD(tb_buttonStructSize,           tb_buttonStructSize),
     REXX_METHOD(tb_insertButton,               tb_insertButton),
+    REXX_METHOD(tb_loadImages,                 tb_loadImages),
+    REXX_METHOD(tb_setBitmapSize,              tb_setBitmapSize),
 
     // TbButton
     REXX_METHOD(tbb_init_cls           ,       tbb_init_cls    ),
@@ -2880,10 +2887,11 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tbb_setStyle           ,       tbb_setStyle    ),
     REXX_METHOD(tbb_text               ,       tbb_text        ),
     REXX_METHOD(tbb_setText            ,       tbb_setText     ),
+    REXX_METHOD(tbb_assignBitmapID     ,       tbb_assignBitmapID),
 
     // TrackBar
-    REXX_METHOD(tb_getRange,                    tb_getRange),
-    REXX_METHOD(tb_getSelRange,                 tb_getSelRange),
+    REXX_METHOD(trckbar_getRange,              trckbar_getRange),
+    REXX_METHOD(trckbar_getSelRange,           trckbar_getSelRange),
 
     // UpDown
     REXX_METHOD(ud_deltaPosReply_cls,           ud_deltaPosReply_cls),

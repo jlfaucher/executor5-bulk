@@ -43,11 +43,13 @@
 
 ::class 'ToolBar' subclass DialogControl public
 
+::method addBitmap external  "LIBRARY oodialog tb_addBitmap"
 ::method addButtons external  "LIBRARY oodialog tb_addButtons"
 ::method autoSize external  "LIBRARY oodialog tb_autoSize"
 ::method buttonCount external  "LIBRARY oodialog tb_buttonCount"
-::method buttonStructSize external  "LIBRARY oodialog tb_buttonStructSize"
 ::method insertButton external  "LIBRARY oodialog tb_insertButton"
+::method loadImages external  "LIBRARY oodialog tb_loadImages"
+::method setBitmapSize external  "LIBRARY oodialog tb_setBitmapSize"
 
 
 ::class 'TbButton' public
@@ -69,3 +71,5 @@
 ::attribute style set external "LIBRARY oodialog tbb_setStyle"
 ::attribute text get external "LIBRARY oodialog tbb_text"
 ::attribute text set external "LIBRARY oodialog tbb_setText"
+
+::method assignBitmapID external "LIBRARY oodialog tbb_assignBitmapID"

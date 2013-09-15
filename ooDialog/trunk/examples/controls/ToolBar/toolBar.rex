@@ -80,10 +80,6 @@ return 0
   tbb2 = .TbButton~new(IDB_WHERE, "Where Am I?", "BUTTON", "ENABLED")
   tbb3 = .TbButton~new(IDB_PUSH, "Please Push Me", "BUTTON", "ENABLED")
 
-  -- This method must be invoked before any buttons are added.  If the method is
-  -- not invoked, the buttons won't show.
-  tb~buttonStructSize
-
   -- addButtons() takes an array of TbButton objects:
   buttons = .array~of(tbb1, tbb2)
   ret = tb~addButtons(buttons) -- Returns true on success, othewise false

@@ -302,7 +302,7 @@ RexxMethod1(int32_t, sb_getPosition, CSELF, pCSelf)
 /** TrackBar::getRange()
  *
  */
-RexxMethod1(RexxObjectPtr, tb_getRange, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, trckbar_getRange, CSELF, pCSelf)
 {
     RexxDirectoryObject result = context->NewDirectory();
     HWND hCtrl = getDChCtrl(pCSelf);
@@ -317,7 +317,7 @@ RexxMethod1(RexxObjectPtr, tb_getRange, CSELF, pCSelf)
 /** TrackBar::getSelRange()
  *
  */
-RexxMethod1(RexxObjectPtr, tb_getSelRange, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, trckbar_getSelRange, CSELF, pCSelf)
 {
     RexxDirectoryObject result = context->NewDirectory();
     HWND hCtrl = getDChCtrl(pCSelf);

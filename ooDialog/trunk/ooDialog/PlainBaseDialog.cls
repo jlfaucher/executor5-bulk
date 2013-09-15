@@ -854,18 +854,18 @@
 ::method newEdit unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newComboBox unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newListBox unguarded external "LIBRARY oodialog pbdlg_newControl"
-::method newReBar unguarded external "LIBRARY oodialog pbdlg_newControl"
+::method newReBar unguarded external "LIBRARY oodialog pbdlg_newControlEx"
 ::method newScrollBar unguarded external "LIBRARY oodialog pbdlg_newControl"
-::method newToolBar unguarded external "LIBRARY oodialog pbdlg_newControl"
+::method newToolBar unguarded external "LIBRARY oodialog pbdlg_newControlEx"
 ::method newToolTip unguarded external "LIBRARY oodialog pbdlg_newToolTip"
 ::method newTreeView unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newListView unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newTab unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newProgressBar unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newTrackBar unguarded external "LIBRARY oodialog pbdlg_newControl"
-::method newMonthCalendar unguarded external "LIBRARY oodialog pbdlg_newControl"
-::method newDateTimePicker unguarded external "LIBRARY oodialog pbdlg_newControl"
-::method newUpDown unguarded external "LIBRARY oodialog pbdlg_newControl"
+::method newMonthCalendar unguarded external "LIBRARY oodialog pbdlg_newControlEx"
+::method newDateTimePicker unguarded external "LIBRARY oodialog pbdlg_newControlEx"
+::method newUpDown unguarded external "LIBRARY oodialog pbdlg_newControlEx"
 ::method newControl unguarded external "LIBRARY oodialog pbdlg_getNewControl"           -- Do not document for 4.2.0, maybe doc later
 ::method dumpMessageTable unguarded external "LIBRARY oodialog pbdlg_dumpMessageTable"  -- Do not document for 4.2.0, maybe doc later
 

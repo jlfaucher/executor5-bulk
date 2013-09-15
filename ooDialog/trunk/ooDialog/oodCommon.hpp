@@ -179,6 +179,7 @@ extern int               getKeywordValue(String2Int *cMap, const char * str);
 extern bool              goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size_t max, size_t *arraySize);
 extern bool              getRectFromArglist(RexxMethodContext *, RexxArrayObject, PRECT, bool, int, int, size_t *, size_t *);
 extern bool              getPointFromArglist(RexxMethodContext *, RexxArrayObject, PPOINT, int, int, size_t *, size_t *);
+extern bool              getSizeFromArglist(RexxMethodContext *, RexxArrayObject, PPOINT, int, int, size_t *, size_t *);
 
 // These functions are defined in oodUser.cpp.
 extern bool getCategoryHDlg(RexxMethodContext *, RexxObjectPtr, uint32_t *, HWND *, int);
@@ -222,6 +223,9 @@ extern RexxObjectPtr   createControlFromHwnd(RexxThreadContext *, pCPlainBaseDia
 
 // These functions are defined in oodViewControls.cpp
 extern bool isInReportView(HWND hList);
+
+// These functions are defined in oodToolBar.cpp
+extern void putToolBarSymbols(RexxMethodContext *c, RexxDirectoryObject constDir);
 
 // Shared button stuff.
 typedef enum {push, check, radio, group, owner, notButton} BUTTONTYPE, *PBUTTONTYPE;
