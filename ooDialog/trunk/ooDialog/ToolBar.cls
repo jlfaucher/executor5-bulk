@@ -45,11 +45,30 @@
 
 ::method addBitmap external  "LIBRARY oodialog tb_addBitmap"
 ::method addButtons external  "LIBRARY oodialog tb_addButtons"
+::method addString external  "LIBRARY oodialog tb_addString"
 ::method autoSize external  "LIBRARY oodialog tb_autoSize"
 ::method buttonCount external  "LIBRARY oodialog tb_buttonCount"
+::method getButton external  "LIBRARY oodialog tb_getButton"
+::method getButtonText external  "LIBRARY oodialog tb_getButtonText"
+::method getDisabledImageList external  "LIBRARY oodialog tb_getDisabledImageList"
+::method getExtendedStyle external  "LIBRARY oodialog tb_getExtendedStyle"
+::method getHotImageList external  "LIBRARY oodialog tb_getHotImageList"
+::method getImageList external  "LIBRARY oodialog tb_getImageList"
+::method getPressedImageList external  "LIBRARY oodialog tb_getPressedImageList"
 ::method insertButton external  "LIBRARY oodialog tb_insertButton"
+::method isButtonChecked external  "LIBRARY oodialog tb_isButtonChecked"
+::method isButtonEnabled external  "LIBRARY oodialog tb_isButtonEnabled"
+::method isButtonHidden external  "LIBRARY oodialog tb_isButtonHidden"
+::method isButtonHighlighted external  "LIBRARY oodialog tb_isButtonHighlighted"
+::method isButtonIndeterminate external  "LIBRARY oodialog tb_isButtonIndeterminate"
+::method isButtonPressed external  "LIBRARY oodialog tb_isButtonPressed"
 ::method loadImages external  "LIBRARY oodialog tb_loadImages"
 ::method setBitmapSize external  "LIBRARY oodialog tb_setBitmapSize"
+::method setDisabledImageList external  "LIBRARY oodialog tb_setDisabledImageList"
+::method setExtendedStyle external  "LIBRARY oodialog tb_setExtendedStyle"
+::method setHotImageList external  "LIBRARY oodialog tb_setHotImageList"
+::method setImageList external  "LIBRARY oodialog tb_setImageList"
+::method setPressedImageList external  "LIBRARY oodialog tb_setPressedImageList"
 
 
 ::class 'TbButton' public
@@ -57,7 +76,7 @@
 ::method init class external "LIBRARY oodialog tbb_init_cls"
 
 ::method init external "LIBRARY oodialog tbb_init"
-::method unInit external "LIBRARY oodialog tbb_unInit"
+--::method unInit external "LIBRARY oodialog tbb_unInit"
 
 ::attribute bitmapID get external "LIBRARY oodialog tbb_bitmapID"
 ::attribute bitmapID set external "LIBRARY oodialog tbb_setBitmapID"

@@ -1261,15 +1261,34 @@ REXX_METHOD_PROTOTYPE(rbbi_setText           );
 // ToolBar
 REXX_METHOD_PROTOTYPE(tb_addBitmap);
 REXX_METHOD_PROTOTYPE(tb_addButtons);
+REXX_METHOD_PROTOTYPE(tb_addString);
 REXX_METHOD_PROTOTYPE(tb_autoSize);
 REXX_METHOD_PROTOTYPE(tb_buttonCount);
+REXX_METHOD_PROTOTYPE(tb_getButton);
+REXX_METHOD_PROTOTYPE(tb_getButtonText);
+REXX_METHOD_PROTOTYPE(tb_getDisabledImageList);
+REXX_METHOD_PROTOTYPE(tb_getExtendedStyle);
+REXX_METHOD_PROTOTYPE(tb_getHotImageList);
+REXX_METHOD_PROTOTYPE(tb_getImageList);
+REXX_METHOD_PROTOTYPE(tb_getPressedImageList);
 REXX_METHOD_PROTOTYPE(tb_insertButton);
+REXX_METHOD_PROTOTYPE(tb_isButtonChecked);
+REXX_METHOD_PROTOTYPE(tb_isButtonEnabled);
+REXX_METHOD_PROTOTYPE(tb_isButtonHidden);
+REXX_METHOD_PROTOTYPE(tb_isButtonHighlighted);
+REXX_METHOD_PROTOTYPE(tb_isButtonIndeterminate);
+REXX_METHOD_PROTOTYPE(tb_isButtonPressed);
 REXX_METHOD_PROTOTYPE(tb_loadImages);
 REXX_METHOD_PROTOTYPE(tb_setBitmapSize);
+REXX_METHOD_PROTOTYPE(tb_setDisabledImageList);
+REXX_METHOD_PROTOTYPE(tb_setExtendedStyle);
+REXX_METHOD_PROTOTYPE(tb_setHotImageList);
+REXX_METHOD_PROTOTYPE(tb_setImageList);
+REXX_METHOD_PROTOTYPE(tb_setPressedImageList);
 
 // TbButton
 REXX_METHOD_PROTOTYPE(tbb_init_cls    );
-REXX_METHOD_PROTOTYPE(tbb_unInit      );
+//REXX_METHOD_PROTOTYPE(tbb_unInit      );
 REXX_METHOD_PROTOTYPE(tbb_init        );
 REXX_METHOD_PROTOTYPE(tbb_bitmapID    );
 REXX_METHOD_PROTOTYPE(tbb_setBitmapID );
@@ -2865,15 +2884,34 @@ RexxMethodEntry oodialog_methods[] = {
     // ToolBar
     REXX_METHOD(tb_addBitmap,                  tb_addBitmap),
     REXX_METHOD(tb_addButtons,                 tb_addButtons),
+    REXX_METHOD(tb_addString,                  tb_addString),
     REXX_METHOD(tb_autoSize,                   tb_autoSize),
     REXX_METHOD(tb_buttonCount,                tb_buttonCount),
+    REXX_METHOD(tb_getButton,                  tb_getButton),
+    REXX_METHOD(tb_getButtonText,              tb_getButtonText),
+    REXX_METHOD(tb_getDisabledImageList,       tb_getDisabledImageList),
+    REXX_METHOD(tb_getExtendedStyle,           tb_getExtendedStyle),
+    REXX_METHOD(tb_getHotImageList,            tb_getHotImageList),
+    REXX_METHOD(tb_getImageList,               tb_getImageList),
+    REXX_METHOD(tb_getPressedImageList,        tb_getPressedImageList),
     REXX_METHOD(tb_insertButton,               tb_insertButton),
+    REXX_METHOD(tb_isButtonChecked,            tb_isButtonChecked),
+    REXX_METHOD(tb_isButtonEnabled,            tb_isButtonEnabled),
+    REXX_METHOD(tb_isButtonHidden,             tb_isButtonHidden),
+    REXX_METHOD(tb_isButtonHighlighted,        tb_isButtonHighlighted),
+    REXX_METHOD(tb_isButtonIndeterminate,      tb_isButtonIndeterminate),
+    REXX_METHOD(tb_isButtonPressed,            tb_isButtonPressed),
     REXX_METHOD(tb_loadImages,                 tb_loadImages),
     REXX_METHOD(tb_setBitmapSize,              tb_setBitmapSize),
+    REXX_METHOD(tb_setDisabledImageList,       tb_setDisabledImageList),
+    REXX_METHOD(tb_setExtendedStyle,           tb_setExtendedStyle),
+    REXX_METHOD(tb_setImageList,               tb_setImageList),
+    REXX_METHOD(tb_setHotImageList,            tb_setHotImageList),
+    REXX_METHOD(tb_setPressedImageList,        tb_setPressedImageList),
 
     // TbButton
     REXX_METHOD(tbb_init_cls           ,       tbb_init_cls    ),
-    REXX_METHOD(tbb_unInit             ,       tbb_unInit      ),
+   // REXX_METHOD(tbb_unInit             ,       tbb_unInit      ),
     REXX_METHOD(tbb_init               ,       tbb_init        ),
     REXX_METHOD(tbb_bitmapID           ,       tbb_bitmapID    ),
     REXX_METHOD(tbb_setBitmapID        ,       tbb_setBitmapID ),

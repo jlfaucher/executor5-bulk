@@ -50,7 +50,7 @@
 #include "oodControl.hpp"
 #include "oodResources.hpp"
 // #include "oodMessaging.hpp"
-// #include "oodShared.hpp"
+ #include "oodShared.hpp"
 
 
 /**
@@ -60,6 +60,7 @@
 
 #define TBBUTTON_OBJ_MAGIC       "BPwcbLJ1c"
 #define TBBUTTON_TEXT_MAX        260
+#define TBB_TEXTLEN_ATTRIBUTE    "TBB!!TEXT!!LEN!!ATTRIBUTE"
 #define ADD_BITMAP_SRC_OBJ       "Image object, ResourceImage object, or documented keyword"
 #define ADDLOAD_SYSTEM_IMAGES    "StdLarge, StdSmall, ViewLarge, ViewSmall, HistLarge, HistSmall, HistNormal, HistHot, HistDisabled, or HistPressed"
 
@@ -84,7 +85,8 @@ inline CSTRING iltype2attrName(ImageListType t)
 
 inline bool isTbbInternalInit(RexxMethodContext *context, RexxObjectPtr rxCmdID, CSTRING text)
 {
-    return argumentExists(1) && context->IsBuffer(rxCmdID) && argumentExists(2) && strcmp(text, TBBUTTON_OBJ_MAGIC) == 0;
+    return argumentExists(1) && context->IsBuffer(rxCmdID) && argumentOmitted(2) &&
+           argumentExists(3) && strcmp(text, TBBUTTON_OBJ_MAGIC) == 0;
 }
 
 /**
@@ -181,16 +183,17 @@ uint32_t keyword2btns(CSTRING flags)
     char buf[256];
     *buf = '\0';
 
-    if ( flags & BTNS_BUTTON          ) strcat(buf, "BUTTON "         );
-    if ( flags & BTNS_SEP             ) strcat(buf, "SEP "            );
-    if ( flags & BTNS_CHECK           ) strcat(buf, "CHECK "          );
-    if ( flags & BTNS_GROUP           ) strcat(buf, "GROUP "          );
-    if ( flags & BTNS_CHECKGROUP      ) strcat(buf, "CHECKGROUP "     );
-    if ( flags & BTNS_DROPDOWN        ) strcat(buf, "DROPDOWN "       );
-    if ( flags & BTNS_AUTOSIZE        ) strcat(buf, "AUTOSIZE "       );
-    if ( flags & BTNS_NOPREFIX        ) strcat(buf, "NOPREFIX "       );
-    if ( flags & BTNS_SHOWTEXT        ) strcat(buf, "SHOWTEXT "       );
-    if ( flags & BTNS_WHOLEDROPDOWN   ) strcat(buf, "WHOLEDROPDOWN "  );
+    // BTNS_BUTTON == 0
+    if ( (flags & BTNS_BUTTON) == BTNS_BUTTON ) strcat(buf, "BUTTON "         );
+    if ( flags & BTNS_SEP                     ) strcat(buf, "SEP "            );
+    if ( flags & BTNS_CHECK                   ) strcat(buf, "CHECK "          );
+    if ( flags & BTNS_GROUP                   ) strcat(buf, "GROUP "          );
+    if ( flags & BTNS_CHECKGROUP              ) strcat(buf, "CHECKGROUP "     );
+    if ( flags & BTNS_DROPDOWN                ) strcat(buf, "DROPDOWN "       );
+    if ( flags & BTNS_AUTOSIZE                ) strcat(buf, "AUTOSIZE "       );
+    if ( flags & BTNS_NOPREFIX                ) strcat(buf, "NOPREFIX "       );
+    if ( flags & BTNS_SHOWTEXT                ) strcat(buf, "SHOWTEXT "       );
+    if ( flags & BTNS_WHOLEDROPDOWN           ) strcat(buf, "WHOLEDROPDOWN "  );
 
     if ( *buf != '\0' )
     {
@@ -263,45 +266,127 @@ uint32_t keyword2idb(RexxMethodContext *c, CSTRING keyword, size_t argPos)
 int32_t constructBitmapID(RexxMethodContext *context, RexxObjectPtr rxBitmapID, uint32_t ilID,
                           uint32_t offset, size_t argPos)
 {
-    int32_t index;
-
-    if ( context->Int32(rxBitmapID, &index) )
+    int32_t index = oodGlobalID(context, rxBitmapID, argPos, false);
+    if ( index == OOD_ID_EXCEPTION )
     {
-        if ( index > 0 )
-        {
-            index--;
-        }
+        return OOD_INVALID_ITEM_ID;
     }
-    else
+    index--;
+
+    if ( index < 0 )
     {
-        index = oodGlobalID(context, rxBitmapID, argPos, true);
-        if ( index == OOD_ID_EXCEPTION )
-        {
-            return OOD_INVALID_ITEM_ID;
-        }
+        return index;
     }
 
     index += offset;
     return MAKELONG(index, ilID);
 }
 
+/**
+ * Trys to determine if the iString field of the TBBUTTON struct is unicode.
+ * This is not foolproof.
+ *
+ * @param c
+ * @param ptbb
+ *
+ * @return bool
+ *
+ * @assumes  That iString has aleady been checked by IS_INTRESOURCE and is not a
+ *           number.  This will blow up of course if it is an index.
+ */
+static bool isUnicodeText(RexxMethodContext *c, LPTBBUTTON ptbb)
+{
+    RexxObjectPtr rxLen = c->GetObjectVariable(TBB_TEXTLEN_ATTRIBUTE);
+
+    size_t len;
+    if ( rxLen == NULLOBJECT || (! c->StringSize(rxLen, &len)) )
+    {
+        return false;
+    }
+
+    if ( rxLen == TheZeroObj )
+    {
+        return true;
+    }
+    if ( len == 0 )
+    {
+        // The user set text to ""
+        return false;
+    }
+
+    char *t = (char *)ptbb->iString;
+    if ( (strlen(t) == 1 && len != 1) || strlen(t) < len )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Convert the iString field of the TBBUTTON stuct to text, or an index.
+ *
+ * @param c
+ * @param ptbb
+ *
+ * @return RexxObjectPtr
+ *
+ * @remarks  We have a problem when using the TBBUTTON struct.  When we use it
+ *           to recieve information, the OS retuns the iString text as unicode.
+ *           When we set text, we must send it as ANSI.  When the use accesses
+ *           the text attribute, we need to return an ANSI string, but there is
+ *           no good way to test the INT_PTR to tell if it is unicode or not.
+ *
+ *           So, we are doing this.  If iString is unicode, then the strlen() of
+ *           the pointer cast to (char *) will be shorter than the length of an
+ *           ANSI string that the attribute was set to.  Because of '\0' in the
+ *           unicode string.  Each time we set the text attribute, we record the
+ *           length of the string. If it is an index, or when the TbButton
+ *           object is first instantiated, we record the length as 0.  We then
+ *           test that here to decide if we have the same ANSI string as the
+ *           attribute, or if it has been reset to a unicode string.  This is
+ *           not foolproof, but probably adequate.
+ */
 RexxObjectPtr getTbbText(RexxMethodContext *c, LPTBBUTTON ptbb)
 {
+    if ( IS_INTRESOURCE(ptbb->iString) )
+    {
+        return c->UnsignedInt32((uint32_t)ptbb->iString + 1);
+    }
+
     if ( ptbb->iString == NULL )
     {
         return TheNilObj;
     }
 
-    return c->String((CSTRING)ptbb->iString);
+    if ( isUnicodeText(c, ptbb) )
+    {
+        char *text = unicode2ansi((LPWSTR)ptbb->iString);
+        if ( text != NULL )
+        {
+            RexxObjectPtr result = c->String(text);
+            safeLocalFree(text);
+            return result;
+        }
+    }
+
+    return c->String((char *)ptbb->iString);
 }
 
 /**
  * Sets the text attribute for the TbButton object.
  *
- * If the TbButton is used to receive information, the iString member has to
- * point to a buffer to recieve the text.  When setting text, we probably do not
- * need to allocate a buffer, we could just assign the pointer.  However, to
- * keep things simpler, we just always allocate a buffer.
+ * However, this attribute can either be an index in the toolbar's internal
+ * string pool, or the the actual sting.  This makes things a little difficult.
+ *
+ * In many of the Win32 APIs when a struct is used to receive information, the
+ * caller needs to provide a buffer to recieve the text. But, the MSDN doc
+ * doesn't read that way for this API.
+ *
+ * We are going to assume that if we are setting text, the OS makes a copy of
+ * the string.  When we are recieving text we can see that the OS sets iString
+ * to a different pointer then we allocated.  So, it makes no sense to allocate
+ * a buffer to recieve text.
  *
  * Also, we set an arbitrary length of the text to 260 characters.  This is
  * similar to the maximum length of a string that will be displayed in other
@@ -313,9 +398,24 @@ RexxObjectPtr getTbbText(RexxMethodContext *c, LPTBBUTTON ptbb)
  *
  * @return bool
  */
-bool setTbbText(RexxMethodContext *c, LPTBBUTTON ptbb, CSTRING text, size_t argPos)
+bool setTbbText(RexxMethodContext *c, LPTBBUTTON ptbb, RexxObjectPtr rxText, size_t argPos)
 {
-    if ( text != NULL )
+    ValueDescriptor desc   = {0};
+    uint16_t        index  = 0xFFFF;
+    CSTRING         text   = NULL;
+
+    desc.type = REXX_VALUE_uint16_t;
+
+    if ( c->ObjectToValue(rxText, &desc) )
+    {
+        index = desc.value.value_uint16_t - 1;
+    }
+    else
+    {
+        text = c->ObjectToStringValue(rxText);
+    }
+
+    if ( text != NULL && index == 0xFFFF )
     {
         size_t len = strlen(text);
         if ( len > TBBUTTON_TEXT_MAX )
@@ -323,22 +423,16 @@ bool setTbbText(RexxMethodContext *c, LPTBBUTTON ptbb, CSTRING text, size_t argP
             stringTooLongException(c->threadContext, argPos, TBBUTTON_TEXT_MAX, len);
             return false;
         }
+
+        c->SetObjectVariable(TBB_TEXTLEN_ATTRIBUTE, c->StringSize(len));
+        ptbb->iString = (INT_PTR)text;
+    }
+    else
+    {
+        c->SetObjectVariable(TBB_TEXTLEN_ATTRIBUTE, TheZeroObj);
+        ptbb->iString = index;
     }
 
-    if ( ptbb->iString == NULL )
-    {
-        ptbb->iString = (INT_PTR)LocalAlloc(LPTR, TBBUTTON_TEXT_MAX + 1);
-        if ( ptbb->iString == NULL )
-        {
-            outOfMemoryException(c->threadContext);
-            return false;
-        }
-    }
-
-    if ( text != NULL )
-    {
-        strcpy((char *)ptbb->iString, text);
-    }
     return true;
 }
 
@@ -389,8 +483,11 @@ RexxMethod1(RexxObjectPtr, tbb_init_cls, OSELF, self)
 }
 
 
+#if 0
 /** TbButton::uninit()
  *
+ *  We do not need an unint(), I don't think.  We will not be allocating memory
+ *  for pttb->iString ...
  */
 RexxMethod1(RexxObjectPtr, tbb_unInit, CSELF, pCSelf)
 {
@@ -409,6 +506,7 @@ RexxMethod1(RexxObjectPtr, tbb_unInit, CSELF, pCSelf)
     }
     return NULLOBJECT;
 }
+#endif
 
 /** TbButton::init()
  *
@@ -420,10 +518,12 @@ RexxMethod1(RexxObjectPtr, tbb_unInit, CSELF, pCSelf)
  *  @param  itemDate
  *  @param  bitmapID
  */
-RexxMethod6(RexxObjectPtr, tbb_init, OPTIONAL_RexxObjectPtr, rxCmdID, OPTIONAL_CSTRING, text, OPTIONAL_CSTRING, style,
+RexxMethod6(RexxObjectPtr, tbb_init, OPTIONAL_RexxObjectPtr, rxCmdID, OPTIONAL_RexxObjectPtr, rxText, OPTIONAL_CSTRING, style,
             OPTIONAL_CSTRING, state, OPTIONAL_RexxObjectPtr, itemData, OPTIONAL_RexxObjectPtr, rxBitmapID)
 {
-    if ( isTbbInternalInit(context, rxCmdID, text) )
+    context->SetObjectVariable(TBB_TEXTLEN_ATTRIBUTE, TheZeroObj);
+
+    if ( isTbbInternalInit(context, rxCmdID, style) )
     {
         context->SetObjectVariable("CSELF", rxCmdID);
         goto done_out;
@@ -443,9 +543,9 @@ RexxMethod6(RexxObjectPtr, tbb_init, OPTIONAL_RexxObjectPtr, rxCmdID, OPTIONAL_C
         }
     }
 
-    // We always create a buffer to recieve text.  If the user omits the text
-    // argument, the buffer will be created and set to the empty string.
-    if ( ! setTbbText(context, ptbb, text, 2) )
+    // rxText can be a string or an index.  If the user omitted this arg, we
+    // leave things along.  Othewise we have setTbbText sort it out.
+    if ( argumentExists(2) && ! setTbbText(context, ptbb, rxText, 2) )
     {
         goto done_out;
     }
@@ -479,10 +579,12 @@ done_out:
 }
 
 /** TbButton::bitmapID                [attribute]
+ *
+ *  We are using 1-based indexes.
  */
 RexxMethod1(int32_t, tbb_bitmapID, CSELF, pCSelf)
 {
-    return ((LPTBBUTTON)pCSelf)->iBitmap;
+    return ((LPTBBUTTON)pCSelf)->iBitmap + 1;
 }
 RexxMethod2(RexxObjectPtr, tbb_setBitmapID, RexxObjectPtr, rxBitmapID, CSELF, pCSelf)
 {
@@ -494,7 +596,7 @@ RexxMethod2(RexxObjectPtr, tbb_setBitmapID, RexxObjectPtr, rxBitmapID, CSELF, pC
  */
 RexxMethod1(uint32_t, tbb_cmdID, CSELF, pCSelf)
 {
-    return (uint32_t)((LPTBBUTTON)pCSelf)->dwData;
+    return (uint32_t)((LPTBBUTTON)pCSelf)->idCommand;
 }
 RexxMethod2(RexxObjectPtr, tbb_setCmdID, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
 {
@@ -545,9 +647,9 @@ RexxMethod1(RexxObjectPtr, tbb_text, CSELF, pCSelf)
 {
     return getTbbText(context, (LPTBBUTTON)pCSelf);
 }
-RexxMethod2(RexxObjectPtr, tbb_setText, CSTRING, text, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, tbb_setText, RexxObjectPtr, rxText, CSELF, pCSelf)
 {
-    setTbbText(context, (LPTBBUTTON)pCSelf, text, 1);
+    setTbbText(context, (LPTBBUTTON)pCSelf, rxText, 1);
     return NULLOBJECT;
 }
 
@@ -577,44 +679,293 @@ RexxMethod4(RexxObjectPtr, tbb_assignBitmapID, RexxObjectPtr, rxBitmapID, OPTION
  *
  * @param c
  * @param constDir
+ *
+ * @remarks  We are trying to use 1-based indexes for the bitmapID.  So, we add
+ *           1 to the system symbolic IDs, so that we can decrement all ids
+ *           passed in by the user.
  */
 void putToolBarSymbols(RexxMethodContext *c, RexxDirectoryObject constDir)
 {
-    c->DirectoryPut(constDir, c->Int32(STD_CUT            ), "STD_CUT"            );
-    c->DirectoryPut(constDir, c->Int32(STD_COPY           ), "STD_COPY"           );
-    c->DirectoryPut(constDir, c->Int32(STD_PASTE          ), "STD_PASTE"          );
-    c->DirectoryPut(constDir, c->Int32(STD_UNDO           ), "STD_UNDO"           );
-    c->DirectoryPut(constDir, c->Int32(STD_REDOW          ), "STD_REDOW"          );
-    c->DirectoryPut(constDir, c->Int32(STD_DELETE         ), "STD_DELETE"         );
-    c->DirectoryPut(constDir, c->Int32(STD_FILENEW        ), "STD_FILENEW"        );
-    c->DirectoryPut(constDir, c->Int32(STD_FILEOPEN       ), "STD_FILEOPEN"       );
-    c->DirectoryPut(constDir, c->Int32(STD_FILESAVE       ), "STD_FILESAVE"       );
-    c->DirectoryPut(constDir, c->Int32(STD_PRINTPRE       ), "STD_PRINTPRE"       );
-    c->DirectoryPut(constDir, c->Int32(STD_PROPERTIES     ), "STD_PROPERTIES"     );
-    c->DirectoryPut(constDir, c->Int32(STD_HELP           ), "STD_HELP"           );
-    c->DirectoryPut(constDir, c->Int32(STD_FIND           ), "STD_FIND"           );
-    c->DirectoryPut(constDir, c->Int32(STD_REPLACE        ), "STD_REPLACE"        );
-    c->DirectoryPut(constDir, c->Int32(STD_PRINT          ), "STD_PRINT"          );
-    c->DirectoryPut(constDir, c->Int32(VIEW_LARGEICONS    ), "VIEW_LARGEICONS"    );
-    c->DirectoryPut(constDir, c->Int32(VIEW_SMALLICONS    ), "VIEW_SMALLICONS"    );
-    c->DirectoryPut(constDir, c->Int32(VIEW_LIST          ), "VIEW_LIST"          );
-    c->DirectoryPut(constDir, c->Int32(VIEW_DETAILS       ), "VIEW_DETAILS"       );
-    c->DirectoryPut(constDir, c->Int32(VIEW_SORTNAME      ), "VIEW_SORTNAME"      );
-    c->DirectoryPut(constDir, c->Int32(VIEW_SORTSIZE      ), "VIEW_SORTSIZE"      );
-    c->DirectoryPut(constDir, c->Int32(VIEW_SORTDATE      ), "VIEW_SORTDATE"      );
-    c->DirectoryPut(constDir, c->Int32(VIEW_SORTTYPE      ), "VIEW_SORTTYPE"      );
-    c->DirectoryPut(constDir, c->Int32(VIEW_PARENTFOLDER  ), "VIEW_PARENTFOLDER"  );
-    c->DirectoryPut(constDir, c->Int32(VIEW_NETCONNECT    ), "VIEW_NETCONNECT"    );
-    c->DirectoryPut(constDir, c->Int32(VIEW_NETDISCONNECT ), "VIEW_NETDISCONNECT" );
-    c->DirectoryPut(constDir, c->Int32(VIEW_NEWFOLDER     ), "VIEW_NEWFOLDER"     );
-    c->DirectoryPut(constDir, c->Int32(VIEW_VIEWMENU      ), "VIEW_VIEWMENU"      );
-    c->DirectoryPut(constDir, c->Int32(HIST_BACK          ), "HIST_BACK"          );
-    c->DirectoryPut(constDir, c->Int32(HIST_FORWARD       ), "HIST_FORWARD"       );
-    c->DirectoryPut(constDir, c->Int32(HIST_FAVORITES     ), "HIST_FAVORITES"     );
-    c->DirectoryPut(constDir, c->Int32(HIST_ADDTOFAVORITES), "HIST_ADDTOFAVORITES");
-    c->DirectoryPut(constDir, c->Int32(HIST_VIEWTREE      ), "HIST_VIEWTREE"      );
-    c->DirectoryPut(constDir, c->Int32(I_IMAGECALLBACK    ), "I_IMAGECALLBACK"    );
-    c->DirectoryPut(constDir, c->Int32(I_IMAGENONE        ), "I_IMAGENONE"        );
+    c->DirectoryPut(constDir, c->Int32(STD_CUT             + 1), "STD_CUT"            );
+    c->DirectoryPut(constDir, c->Int32(STD_COPY            + 1), "STD_COPY"           );
+    c->DirectoryPut(constDir, c->Int32(STD_PASTE           + 1), "STD_PASTE"          );
+    c->DirectoryPut(constDir, c->Int32(STD_UNDO            + 1), "STD_UNDO"           );
+    c->DirectoryPut(constDir, c->Int32(STD_REDOW           + 1), "STD_REDOW"          );
+    c->DirectoryPut(constDir, c->Int32(STD_DELETE          + 1), "STD_DELETE"         );
+    c->DirectoryPut(constDir, c->Int32(STD_FILENEW         + 1), "STD_FILENEW"        );
+    c->DirectoryPut(constDir, c->Int32(STD_FILEOPEN        + 1), "STD_FILEOPEN"       );
+    c->DirectoryPut(constDir, c->Int32(STD_FILESAVE        + 1), "STD_FILESAVE"       );
+    c->DirectoryPut(constDir, c->Int32(STD_PRINTPRE        + 1), "STD_PRINTPRE"       );
+    c->DirectoryPut(constDir, c->Int32(STD_PROPERTIES      + 1), "STD_PROPERTIES"     );
+    c->DirectoryPut(constDir, c->Int32(STD_HELP            + 1), "STD_HELP"           );
+    c->DirectoryPut(constDir, c->Int32(STD_FIND            + 1), "STD_FIND"           );
+    c->DirectoryPut(constDir, c->Int32(STD_REPLACE         + 1), "STD_REPLACE"        );
+    c->DirectoryPut(constDir, c->Int32(STD_PRINT           + 1), "STD_PRINT"          );
+    c->DirectoryPut(constDir, c->Int32(VIEW_LARGEICONS     + 1), "VIEW_LARGEICONS"    );
+    c->DirectoryPut(constDir, c->Int32(VIEW_SMALLICONS     + 1), "VIEW_SMALLICONS"    );
+    c->DirectoryPut(constDir, c->Int32(VIEW_LIST           + 1), "VIEW_LIST"          );
+    c->DirectoryPut(constDir, c->Int32(VIEW_DETAILS        + 1), "VIEW_DETAILS"       );
+    c->DirectoryPut(constDir, c->Int32(VIEW_SORTNAME       + 1), "VIEW_SORTNAME"      );
+    c->DirectoryPut(constDir, c->Int32(VIEW_SORTSIZE       + 1), "VIEW_SORTSIZE"      );
+    c->DirectoryPut(constDir, c->Int32(VIEW_SORTDATE       + 1), "VIEW_SORTDATE"      );
+    c->DirectoryPut(constDir, c->Int32(VIEW_SORTTYPE       + 1), "VIEW_SORTTYPE"      );
+    c->DirectoryPut(constDir, c->Int32(VIEW_PARENTFOLDER   + 1), "VIEW_PARENTFOLDER"  );
+    c->DirectoryPut(constDir, c->Int32(VIEW_NETCONNECT     + 1), "VIEW_NETCONNECT"    );
+    c->DirectoryPut(constDir, c->Int32(VIEW_NETDISCONNECT  + 1), "VIEW_NETDISCONNECT" );
+    c->DirectoryPut(constDir, c->Int32(VIEW_NEWFOLDER      + 1), "VIEW_NEWFOLDER"     );
+    c->DirectoryPut(constDir, c->Int32(VIEW_VIEWMENU       + 1), "VIEW_VIEWMENU"      );
+    c->DirectoryPut(constDir, c->Int32(HIST_BACK           + 1), "HIST_BACK"          );
+    c->DirectoryPut(constDir, c->Int32(HIST_FORWARD        + 1), "HIST_FORWARD"       );
+    c->DirectoryPut(constDir, c->Int32(HIST_FAVORITES      + 1), "HIST_FAVORITES"     );
+    c->DirectoryPut(constDir, c->Int32(HIST_ADDTOFAVORITES + 1), "HIST_ADDTOFAVORITES");
+    c->DirectoryPut(constDir, c->Int32(HIST_VIEWTREE       + 1), "HIST_VIEWTREE"      );
+    c->DirectoryPut(constDir, c->Int32(I_IMAGECALLBACK     + 1), "I_IMAGECALLBACK"    );
+    c->DirectoryPut(constDir, c->Int32(I_IMAGENONE         + 1), "I_IMAGENONE"        );
+}
+
+/**
+ * Stores the Rexx image list in an attribute to prevent it from GC.
+ *
+ * For the normal image list, the toolbar allows the user to use multiple image
+ * lists by indexing them.  There is no requirement that I see that the indexes
+ * be consecutive, MSDN calls them IDs.  Because of this we use a table to store
+ * then in rather than an array.
+ *
+ * This function both sets and gets an existing image list.  Both the set and the
+ * get functions always return the existing image list.  If there is no
+ * existing, .nil is returned.
+ *
+ * @param c         Method context we are executing in.
+ * @param il        Rexx image list object.
+ * @param ilIndex   Numeric index value
+ * @param set       If true, set il as the value of the attribut.  If false,
+ *                  ignore il and only return the existing.
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr setGetNormalImageList(RexxMethodContext *c, RexxObjectPtr il, uint32_t ilIndex, bool set)
+{
+    RexxObjectPtr existing = TheNilObj;
+    RexxObjectPtr index    = c->UnsignedInt32(ilIndex);
+    CSTRING       atrName  = iltype2attrName(iltPressed);
+
+    RexxObjectPtr table = c->GetObjectVariable(atrName);
+    if ( table == NULLOBJECT )
+    {
+        if ( ! set )
+        {
+            goto done_out;
+        }
+
+        table = rxNewBuiltinObject(c, "TABLE");
+        if ( table == NULLOBJECT )
+        {
+            goto done_out;
+        }
+        c->SetObjectVariable(atrName, table);
+        c->SendMessage2(table, "PUT", il, index);
+        goto done_out;
+    }
+
+    existing = c->SendMessage1(table, "AT", index);
+    printf("Table::at() existing=%p is .nil? %s", existing, existing == TheNilObj ? "true" : "false");
+    if ( set )
+    {
+        c->SendMessage2(table, "PUT", il, index);
+    }
+
+done_out:
+    return existing;
+}
+
+/**
+ * Used as generic code to get one of the 4 image lists the toolbar uses.
+ *
+ * @param context    Method context we are executing in.
+ *
+ * @param ilType     Identifies which image list to set.
+ * @param ilID       Image list identifier, only for the normal image list
+ * @param pCSelf     DialogControl CSelf
+ *
+ * @return  The specified image list, if one is set, otherwise .nil.
+ *
+ * @assumes   The caller only passes in a valid ilType.
+ */
+RexxObjectPtr getImageList(RexxMethodContext *context, ImageListType ilType, RexxObjectPtr ilID, void *pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    if ( ilType == iltNormal )
+    {
+        int32_t ilIndex = 0;
+        if ( argumentExists(1) )
+        {
+            ilIndex = oodGlobalID(context, ilID, 2, false);
+            if ( ilIndex == OOD_ID_EXCEPTION )
+            {
+                goto done_out;
+            }
+            else if ( ilIndex == -1 )
+            {
+                wrongArgValueException(context->threadContext, 1, "a non-negative numeric ID or a valid symbolic ID", ilID);
+                goto done_out;
+            }
+        }
+
+        result = setGetNormalImageList(context, NULLOBJECT, ilIndex, false);
+    }
+    else
+    {
+        result = context->GetObjectVariable(iltype2attrName(ilType));
+    }
+
+done_out:
+    return result == NULLOBJECT ? TheNilObj : result;
+}
+
+/**
+ * Used as generic code to set one of the 4 image lists the toolbar uses.
+ *
+ * @param context    Method context we are executing in.
+ *
+ * @param ilType     Identifies which image list to set.
+ * @param il         .ImageList object
+ * @param ilID       Image list identifier, only for the normal image list
+ * @param pCSelf     DialogControl CSelf
+ *
+ * @return RexxObjectPtr
+ *
+ * @assumes   The caller only passes in a valid ilType.
+ */
+RexxObjectPtr setImageList(RexxMethodContext *context, ImageListType ilType, RexxObjectPtr il, RexxObjectPtr ilID, void *pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        goto done_out;
+    }
+
+    RexxObjectPtr imageList = NULLOBJECT;
+    HIMAGELIST    himl      = NULL;
+    HWND          hTb       = pcdc->hCtrl;
+
+    if ( il == TheNilObj )
+    {
+        ; // Do nothing, this is fine, removes the current image list, if any.
+    }
+    else if ( context->IsOfType(il, "IMAGELIST") )
+    {
+        himl = rxGetImageList(context, il, 1);
+        if ( himl == NULL )
+        {
+            goto done_out;
+        }
+    }
+    else
+    {
+        wrongArgValueException(context->threadContext, 1, "ImageList or .nil", il);
+        goto done_out;
+    }
+
+    switch ( ilType )
+    {
+        case iltNormal :
+        {
+            int32_t ilIndex = 0;
+            if ( argumentExists(2) )
+            {
+                ilIndex = oodGlobalID(context, ilID, 2, false);
+                if ( ilIndex == OOD_ID_EXCEPTION )
+                {
+                    goto done_out;
+                }
+                else if ( ilIndex == -1 )
+                {
+                    wrongArgValueException(context->threadContext, 2, "a non-negative numeric ID or a valid symbolic ID", ilID);
+                    goto done_out;
+                }
+            }
+
+            SendMessage(hTb, TB_SETIMAGELIST, ilIndex, (LPARAM)himl);
+            result = setGetNormalImageList(context, il, ilIndex, true);
+        }
+            break;
+
+        case iltHot :
+            SendMessage(hTb, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
+            result = rxSetObjVar(context, iltype2attrName(iltHot), il);
+            break;
+
+        case iltDisabled :
+            SendMessage(hTb, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
+            result = rxSetObjVar(context, iltype2attrName(iltDisabled), il);
+            break;
+
+        case iltPressed :
+            SendMessage(hTb, TB_SETPRESSEDIMAGELIST, 0, (LPARAM)himl);
+            result = rxSetObjVar(context, iltype2attrName(iltPressed), il);
+            break;
+
+        default :
+            // Can't happen unless our code is screwed up.
+            break;
+    }
+
+done_out:
+    return result;
+}
+
+/**
+ * Converts a string of keywords to the proper TBSTYLE_EX_* extended style flag.
+ *
+ * @param flags
+ *
+ * @return uint32_t
+ */
+uint32_t keyword2tbsEx(CSTRING flags)
+{
+    uint32_t val      = 0;
+    char     buf[512] = {'\0'};
+
+    if ( StrStrI(flags, "DRAWDDARROWS"        ) != NULL ) val |= TBSTYLE_EX_DRAWDDARROWS         ;
+    if ( StrStrI(flags, "HIDECLIPPEDBUTTONS"  ) != NULL ) val |= TBSTYLE_EX_HIDECLIPPEDBUTTONS   ;
+    if ( StrStrI(flags, "MIXEDBUTTONS"        ) != NULL ) val |= TBSTYLE_EX_MIXEDBUTTONS         ;
+    if ( StrStrI(flags, "DOUBLEBUFFER"        ) != NULL ) val |= TBSTYLE_EX_DOUBLEBUFFER         ;
+
+    return val;
+}
+
+/**
+ * Converts a set of TBSTYLE_EX_* style flags to their keyword string.
+ *
+ * @param c
+ * @param flags
+ *
+ * @return A Rexx string object.
+ */
+ RexxStringObject tbsEx2keyword(RexxMethodContext *c, uint32_t flags)
+{
+    char buf[256];
+    *buf = '\0';
+
+    if ( flags & TBSTYLE_EX_DRAWDDARROWS        ) strcat(buf, "DRAWDDARROWS"        );
+    if ( flags & TBSTYLE_EX_HIDECLIPPEDBUTTONS  ) strcat(buf, "HIDECLIPPEDBUTTONS"  );
+    if ( flags & TBSTYLE_EX_MIXEDBUTTONS        ) strcat(buf, "MIXEDBUTTONS"        );
+    if ( flags & TBSTYLE_EX_DOUBLEBUFFER        ) strcat(buf, "DOUBLEBUFFER"        );
+
+    if ( *buf != '\0' )
+    {
+        *(buf + strlen(buf) - 1) = '\0';
+    }
+    return c->String(buf);
 }
 
 /** ToolBar::addBitmap()
@@ -676,6 +1027,11 @@ RexxMethod4(int32_t, tb_addBitmap, RexxObjectPtr, src, OPTIONAL_uint32_t, count,
     }
     else if ( c->IsOfType(src, "RESOURCEIMAGE") )
     {
+        if ( argumentOmitted(2) )
+        {
+            missingArgException(context, 2);
+            goto done_out;
+        }
         if ( argumentOmitted(3) )
         {
             missingArgException(context, 3);
@@ -724,7 +1080,7 @@ RexxMethod4(int32_t, tb_addBitmap, RexxObjectPtr, src, OPTIONAL_uint32_t, count,
         }
     }
 
-    result = (int32_t)SendMessage(getDChCtrl(pCSelf), TB_ADDBITMAP, count, (LPARAM)&tbab);
+    result = (int32_t)SendMessage(getDChCtrl(pCSelf), TB_ADDBITMAP, count, (LPARAM)&tbab) + 1;
 
 done_out:
     return result;
@@ -782,6 +1138,131 @@ done_out:
     return result;
 }
 
+/** ToolBar::addString()
+ *
+ *  Adds one or more strings to the toolbar's string pool.
+ *
+ *  @param   strSrc      [required]  The strings to add.  Can either be an array
+ *                       of strings, or a ResourceImage that contains the
+ *                       strings.
+ *
+ *  @param   resourceID  [optional] If strSrc is a ResourceImage, this is the
+ *                       resource ID of the string table in the resource module.
+ *                       If strSrc is an array, the resourceID arg is ignored.
+ *
+ *  @returns  The one-based index of the first string this method adds to the
+ *            toolbar's internal string pool.  I.e., if the string pool already
+ *            contains 3 strings and this method succeeds, the return will be 4.
+ *            If the method fails, 0 is returned.
+ */
+RexxMethod3(uint32_t, tb_addString, RexxObjectPtr, strSrc, OPTIONAL_RexxObjectPtr, rxID, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+
+    uint32_t   result  = 0;
+    CSTRING   *strings = NULL;
+    char      *strPool = NULL;
+    HINSTANCE  wParam  = NULL;
+    LPARAM     lParam  = NULL;
+
+    if ( c->IsArray(strSrc) )
+    {
+        RexxArrayObject strs = (RexxArrayObject)strSrc;
+
+        size_t count = c->ArrayItems(strs);
+        if ( count == 0 )
+        {
+            emptyArrayException(c->threadContext, 1);
+            goto done_out;
+        }
+
+        strings = (CSTRING *)LocalAlloc(LPTR, count * sizeof(CSTRING *));
+        if ( strings == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            goto done_out;
+        }
+
+        size_t bufSize = 0;
+        for ( size_t i = 1; i <= count; i++ )
+        {
+            CSTRING string;
+
+            RexxObjectPtr rxString = c->ArrayAt(strs, i);
+            if ( rxString == NULLOBJECT )
+            {
+                sparseArrayException(c->threadContext, 1, i);
+                goto done_out;
+            }
+
+            string   = context->ObjectToStringValue(rxString);
+            bufSize += strlen(string) + 1;
+
+            strings[i - 1] = string;
+        }
+        bufSize++;
+
+        strPool = (char *)LocalAlloc(LPTR, bufSize);
+        if ( strPool == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            goto done_out;
+        }
+
+        size_t  curLen;
+        char   *dst = strPool;
+        for ( size_t i = 0; i < count; i++ )
+        {
+            curLen = strlen(strings[i]) + 1;
+            memcpy(dst, strings[i], curLen);
+            dst += curLen;
+        }
+
+        // strPool must end wiht 2 NULLs, but since we allocated it filled with
+        // zeros, we don't need to do anything.
+        lParam = (LPARAM)strPool;
+    }
+    else if ( c->IsOfType(strSrc, "RESOURCEIMAGE") )
+    {
+        if ( argumentOmitted(2) )
+        {
+            missingArgException(context, 2);
+        }
+
+        PRESOURCEIMAGE pri = rxGetResourceImage(context, strSrc, 1);
+        if ( pri == NULL )
+        {
+            goto done_out;
+        }
+        if ( ! pri->isValid )
+        {
+            nullObjectException(context->threadContext, "ResourceImage", 1);
+            goto done_out;
+        }
+
+        uint32_t id = oodGlobalID(context, rxID, 2, true);
+        if ( id == OOD_ID_EXCEPTION )
+        {
+            goto done_out;
+        }
+        wParam = pri->hMod;
+        lParam = MAKELONG(id, 0);
+    }
+    else
+    {
+        wrongClassException(context->threadContext, 1, "an Array or a ResourceImage", strSrc);
+        goto done_out;
+    }
+
+    result = (uint32_t)SendMessage(getDChCtrl(pCSelf), TB_ADDSTRING, (WPARAM)wParam, lParam);
+    result++;
+
+done_out:
+    safeLocalFree(strings);
+    safeLocalFree(strPool);
+    return result;
+}
+
 /** ToolBar::autoSize()
  */
 RexxMethod1(RexxObjectPtr, tb_autoSize, CSELF, pCSelf)
@@ -797,6 +1278,168 @@ RexxMethod1(uint32_t, tb_buttonCount, CSELF, pCSelf)
     return (uint32_t)SendMessage(getDChCtrl(pCSelf), TB_BUTTONCOUNT, 0, 0);
 }
 
+/** ToolBar::getButton()
+ *
+ *  Returns a TbButton object containing the button information for the
+ *  specified button, or .nil on error.
+ *
+ *  Note that the button is specified using its 1-based index, not its command
+ *  ID.
+ */
+RexxMethod2(RexxObjectPtr, tb_getButton, uint32_t, index, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+
+    RexxObjectPtr result = TheNilObj;
+
+    RexxBufferObject tbbBuf = context->NewBuffer(sizeof(TBBUTTON));
+    if ( tbbBuf == NULLOBJECT )
+    {
+        outOfMemoryException(context->threadContext);
+        goto done_out;
+    }
+
+    LPTBBUTTON ptbb = (LPTBBUTTON)context->BufferData(tbbBuf);
+    memset(ptbb, 0, sizeof(TBBUTTON));
+
+    RexxArrayObject args = c->NewArray(3);
+    c->ArrayPut(args, tbbBuf, 1);
+    c->ArrayPut(args, c->String(TBBUTTON_OBJ_MAGIC), 3);
+
+    RexxObjectPtr tbButton = c->SendMessage(TheTbButtonClass, "NEW", args);
+    if ( tbButton == NULLOBJECT )
+    {
+        goto done_out;
+    }
+
+    index--;
+    if ( ! SendMessage(getDChCtrl(pCSelf), TB_GETBUTTON, index, (LPARAM)ptbb) )
+    {
+        goto done_out;
+    }
+    result = tbButton;
+
+done_out:
+    return result;
+}
+
+/** ToolBar::getButtonText()
+ *
+ *  Returns the display text for the specified button, or .nil on error.
+ *
+ *  Note that the button is specified using its command ID, not its index.
+ */
+RexxMethod2(RexxObjectPtr, tb_getButtonText, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto done_out;
+    }
+
+    LRESULT count = SendMessage(getDChCtrl(pCSelf), TB_GETBUTTONTEXT, id, NULL);
+    if ( count == -1 )
+    {
+        goto done_out;
+    }
+
+    char *buf = (char *)LocalAlloc(LPTR, count + 1);
+    if ( buf == NULL )
+    {
+        outOfMemoryException(context->threadContext);
+        goto done_out;
+    }
+
+    count = SendMessage(getDChCtrl(pCSelf), TB_GETBUTTONTEXT, id, (LPARAM)buf);
+    if ( count == -1 )
+    {
+        goto done_out;
+    }
+
+    result = context->String(buf);
+    LocalFree(buf);
+
+done_out:
+    return result;
+}
+
+/** ToolBar::getDisabledImageList()
+ *
+ *  Gets the image list that the toolbar uses to display buttons that are in
+ *  their disabled state.
+ *
+ *  @return  The image list, or .nil if there is no image list.
+ */
+RexxMethod1(RexxObjectPtr, tb_getDisabledImageList, CSELF, pCSelf)
+{
+    return getImageList(context, iltDisabled, NULLOBJECT, pCSelf);
+}
+
+/** ToolBar::getExtenedeStyle()
+ *
+ *  Gets the current extended styles for a toolbar control.
+ *
+ *  @return  A keyword list that represents the current extended styles.
+ */
+RexxMethod1(RexxObjectPtr, tb_getExtendedStyle, CSELF, pCSelf)
+{
+    uint32_t exStyle = (uint32_t)SendMessage(getDChCtrl(pCSelf), TB_GETEXTENDEDSTYLE, 0, 0);
+    return tbsEx2keyword(context, exStyle);
+}
+
+/** ToolBar::getHotImageList()
+ *
+ *  Gets the image list that the toolbar uses to display buttons that are in the
+ *  hot state.
+ *
+ *  @return  The image list, or .nil if there is no image list.
+ */
+RexxMethod1(RexxObjectPtr, tb_getHotImageList, CSELF, pCSelf)
+{
+    return getImageList(context, iltHot, NULLOBJECT, pCSelf);
+}
+
+/** ToolBar::getImageList()
+ *
+ *  Gets the image list that the toolbar uses to display buttons that are in
+ *  their default state.
+ *
+ *  @param  ilID       [optional]  Toolbars allow multiple image lists.  If the
+ *                     application is using multiple image lists, ilID
+ *                     identifies the image list to the toolbar.  If the
+ *                     application is not using multiple image lists, omit this
+ *                     argument or specify 0.
+ *
+ *  @return  The specified image list, or .nil if there is no image list.
+ *
+ */
+RexxMethod2(RexxObjectPtr, tb_getImageList, OPTIONAL_RexxObjectPtr, ilID, CSELF, pCSelf)
+{
+    return getImageList(context, iltNormal, ilID, pCSelf);
+}
+
+/** ToolBar::getPressedImageList()
+ *
+ *  Sets the image list that the toolbar uses to display buttons that are in the
+ *  pressed state.
+ *
+ *  @param  imageList  [required]  The new image list for the toolbar, or .nil
+ *                     to remove an existing image list.
+ *
+ *  @return  The previous image list, or .nil if there was no previous image
+ *           list.
+ */
+RexxMethod2(RexxObjectPtr, tb_getPressedImageList, RexxObjectPtr, il, CSELF, pCSelf)
+{
+    if ( requiredOS(context, "getPressedImageList", "Vista", Vista_OS) )
+    {
+        return getImageList(context, iltPressed, NULLOBJECT, pCSelf);
+    }
+    return TheNilObj;
+}
+
 /** ToolBar::insertButton()
  */
 RexxMethod3(logical_t, tb_insertButton, RexxObjectPtr, tbButton, uint32_t, index, CSELF, pCSelf)
@@ -807,6 +1450,78 @@ RexxMethod3(logical_t, tb_insertButton, RexxObjectPtr, tbButton, uint32_t, index
         return SendMessage(getDChCtrl(pCSelf), TB_INSERTBUTTON, index, (LPARAM)context->ObjectToCSelf(tbButton));
     }
     return FALSE;
+}
+
+/** ToolBar::isButtonChecked()
+ */
+RexxMethod2(logical_t, tb_isButtonChecked, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+    return SendMessage(getDChCtrl(pCSelf), TB_ISBUTTONCHECKED, id, 0);
+}
+
+/** ToolBar::isButtonEnabled()
+ */
+RexxMethod2(logical_t, tb_isButtonEnabled, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+    return SendMessage(getDChCtrl(pCSelf), TB_ISBUTTONENABLED, id, 0);
+}
+
+/** ToolBar::isButtonHidden()
+ */
+RexxMethod2(logical_t, tb_isButtonHidden, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+    return SendMessage(getDChCtrl(pCSelf), TB_ISBUTTONHIDDEN, id, 0);
+}
+
+/** ToolBar::isButtonHighlighted()
+ */
+RexxMethod2(logical_t, tb_isButtonHighlighted, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+    return SendMessage(getDChCtrl(pCSelf), TB_ISBUTTONHIGHLIGHTED, id, 0);
+}
+
+/** ToolBar::isButtonIndeterminate()
+ */
+RexxMethod2(logical_t, tb_isButtonIndeterminate, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+    return SendMessage(getDChCtrl(pCSelf), TB_ISBUTTONINDETERMINATE, id, 0);
+}
+
+/** ToolBar::isButtonPressed()
+ */
+RexxMethod2(logical_t, tb_isButtonPressed, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+    return SendMessage(getDChCtrl(pCSelf), TB_ISBUTTONPRESSED, id, 0);
 }
 
 /** ToolBar::loadImages()
@@ -882,5 +1597,99 @@ RexxMethod2(RexxObjectPtr, tb_setBitmapSize, ARGLIST, args, CSELF, pCSelf)
 
 done_out:
     return result;
+}
+
+/** ToolBar::setDisabledImageList()
+ *
+ *  Sets the image list that the toolbar uses to display buttons that are in
+ *  their disabled state.
+ *
+ *  @param  imageList  [required]  The new image list for the toolbar, or .nil
+ *                     to remove an existing image list.
+ *
+ *  @return  The previous image list, or .nil if there was no previous image
+ *           list.
+ */
+RexxMethod2(RexxObjectPtr, tb_setDisabledImageList, RexxObjectPtr, il, CSELF, pCSelf)
+{
+    return setImageList(context, iltDisabled, il, NULLOBJECT, pCSelf);
+}
+
+/** ToolBar::setExtenedeStyle()
+ *
+ *  Sets the extended styles for a toolbar control.
+ *
+ *  @param  [required]  A keyword list specifying which extended styles to set.
+ *
+ *  @return  A keyword list that represents the previous extended styles.
+ */
+RexxMethod2(RexxObjectPtr, tb_setExtendedStyle, CSTRING, _exStyle, CSELF, pCSelf)
+{
+    uint32_t exStyle = keyword2tbsEx(_exStyle);
+
+    // The return is the old style
+    exStyle = (uint32_t)SendMessage(getDChCtrl(pCSelf), TB_SETEXTENDEDSTYLE, 0, exStyle);
+    return tbsEx2keyword(context, exStyle);
+}
+
+/** ToolBar::setHotImageList()
+ *
+ *  Sets the image list that the toolbar uses to display buttons that are in the
+ *  hot state.
+ *
+ *  @param  imageList  [required]  The new image list for the toolbar, or .nil
+ *                     to remove an existing image list.
+ *
+ *  @return  The previous image list, or .nil if there was no previous image
+ *           list.
+ */
+RexxMethod2(RexxObjectPtr, tb_setHotImageList, RexxObjectPtr, il, CSELF, pCSelf)
+{
+    return setImageList(context, iltHot, il, NULLOBJECT, pCSelf);
+}
+
+/** ToolBar::setImageList()
+ *
+ *  Sets the image list that the toolbar uses to display buttons that are in
+ *  their default state.
+ *
+ *  @param  imageList  [required]  The new image list for the toolbar, or .nil
+ *                     to remove an existing image list.
+ *
+ *  @param  ilID       [optional]  Toolbars allow multiple image lists.  If the
+ *                     application is using multiple image lists, ilID
+ *                     identifies the image list to the toolbar.  If the
+ *                     application is not using multiple image lists, omit this
+ *                     argument or specify 0.
+ *
+ *  @return  The previous image list, or .nil if there was no previous image
+ *           list.
+ *
+ *  @note
+ *
+ */
+RexxMethod3(RexxObjectPtr, tb_setImageList, RexxObjectPtr, il, OPTIONAL_RexxObjectPtr, ilID, CSELF, pCSelf)
+{
+    return setImageList(context, iltNormal, il, ilID, pCSelf);
+}
+
+/** ToolBar::setPressedImageList()
+ *
+ *  Sets the image list that the toolbar uses to display buttons that are in the
+ *  pressed state.
+ *
+ *  @param  imageList  [required]  The new image list for the toolbar, or .nil
+ *                     to remove an existing image list.
+ *
+ *  @return  The previous image list, or .nil if there was no previous image
+ *           list.
+ */
+RexxMethod2(RexxObjectPtr, tb_setPressedImageList, RexxObjectPtr, il, CSELF, pCSelf)
+{
+    if ( requiredOS(context, "setPressedImageList", "Vista", Vista_OS) )
+    {
+        return setImageList(context, iltPressed, il, NULLOBJECT, pCSelf);
+    }
+    return TheNilObj;
 }
 

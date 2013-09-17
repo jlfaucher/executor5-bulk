@@ -845,7 +845,7 @@ int32_t idError(RexxMethodContext *c, RexxObjectPtr rxID)
  * @param id        Resource ID to resolve.
  * @param argPosID  Arg position used for exceptions
  * @param strict    If true the resolved ID must be 1 or greater, if false the
- *                  resolved ID must be -1 or greater.
+ *                  resolved ID must be -2 or greater.
  *
  * @return  The resolved numeric ID, or OOD_ID_EXCEPTION on error.  If,
  *          OOD_ID_EXCEPTION is returned an exception has been raised.
@@ -868,7 +868,7 @@ int32_t oodGlobalID(RexxThreadContext *c, RexxObjectPtr id, size_t argPosID, boo
         wrongArgValueException(c, argPosID, "a positive numeric ID or a valid symbolic ID", id);
         result = OOD_ID_EXCEPTION;
     }
-    else if ( result < -1 )
+    else if ( result < -2 )
     {
         wrongArgValueException(c, argPosID, "a valid numeric or symbolic resource ID", id);
         result = OOD_ID_EXCEPTION;
