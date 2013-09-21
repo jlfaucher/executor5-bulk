@@ -56,6 +56,14 @@
 #include "oodShared.hpp"
 #include "oodMessaging.hpp"
 
+inline bool isToolbarCustomizationCode(uint32_t code)
+{
+    return code == TBN_CUSTHELP      || code == TBN_DELETINGBUTTON || code == TBN_GETBUTTONINFO ||
+           code == TBN_INITCUSTOMIZE || code == TBN_QUERYDELETE    || code == TBN_QUERYINSERT   ||
+           code == TBN_RESET         || code == TBN_RESTORE        || code == TBN_SAVE          ||
+           code == TBN_TOOLBARCHANGE;
+}
+
 /**
  * The dialog procedure function for all regular ooDialog dialogs.  Handles and
  * processes all window messages for the dialog.
@@ -211,7 +219,12 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return TRUE;
     }
 
-    bool msgEnabled = IsWindowEnabled(hDlg) ? true : false;
+    // The Toolbar customization dialog is a modal dialog. When it starts our
+    // dialog is disabled and the toolbar dialog starts sending our dialog TBN_
+    // messages.  We never get them with msgEnabled false.  So, we have added
+    // another function to test for that special case.
+    bool msgEnabled = (IsWindowEnabled(hDlg) ||
+                       (uMsg == WM_NOTIFY && isToolbarCustomizationCode(((NMHDR *)lParam)->code))) ? true : false;
 
     // Do not search message table for WM_PAINT to improve redraw.
     if ( msgEnabled && uMsg != WM_PAINT && uMsg != WM_NCPAINT )
@@ -867,6 +880,116 @@ done_out:
 }
 
 
+// Some HTx values are negative
+int32_t keyword2ncHitTestt(CSTRING keyword)
+{
+    int32_t ht;
+
+    if ( StrCmpI(keyword,      "ERROR"              ) == 0 ) ht = HTERROR               ;
+    else if ( StrCmpI(keyword, "TRANSPARENT"        ) == 0 ) ht = HTTRANSPARENT         ;
+    else if ( StrCmpI(keyword, "NOWHERE"            ) == 0 ) ht = HTNOWHERE             ;
+    else if ( StrCmpI(keyword, "CLIENT"             ) == 0 ) ht = HTCLIENT              ;
+    else if ( StrCmpI(keyword, "CAPTION"            ) == 0 ) ht = HTCAPTION             ;
+    else if ( StrCmpI(keyword, "SYSMENU"            ) == 0 ) ht = HTSYSMENU             ;
+    else if ( StrCmpI(keyword, "SIZE"               ) == 0 ) ht = HTSIZE                ;
+    else if ( StrCmpI(keyword, "MENU"               ) == 0 ) ht = HTMENU                ;
+    else if ( StrCmpI(keyword, "HSCROLL"            ) == 0 ) ht = HTHSCROLL             ;
+    else if ( StrCmpI(keyword, "VSCROLL"            ) == 0 ) ht = HTVSCROLL             ;
+    else if ( StrCmpI(keyword, "MINBUTTON"          ) == 0 ) ht = HTMINBUTTON           ;
+    else if ( StrCmpI(keyword, "MAXBUTTON"          ) == 0 ) ht = HTMAXBUTTON           ;
+    else if ( StrCmpI(keyword, "LEFT"               ) == 0 ) ht = HTLEFT                ;
+    else if ( StrCmpI(keyword, "RIGHT"              ) == 0 ) ht = HTRIGHT               ;
+    else if ( StrCmpI(keyword, "TOP"                ) == 0 ) ht = HTTOP                 ;
+    else if ( StrCmpI(keyword, "TOPLEFT"            ) == 0 ) ht = HTTOPLEFT             ;
+    else if ( StrCmpI(keyword, "TOPRIGHT"           ) == 0 ) ht = HTTOPRIGHT            ;
+    else if ( StrCmpI(keyword, "BOTTOM"             ) == 0 ) ht = HTBOTTOM              ;
+    else if ( StrCmpI(keyword, "BOTTOMLEFT"         ) == 0 ) ht = HTBOTTOMLEFT          ;
+    else if ( StrCmpI(keyword, "BOTTOMRIGHT"        ) == 0 ) ht = HTBOTTOMRIGHT         ;
+    else if ( StrCmpI(keyword, "BORDER"             ) == 0 ) ht = HTBORDER              ;
+    else if ( StrCmpI(keyword, "OBJECT"             ) == 0 ) ht = HTOBJECT              ;
+    else if ( StrCmpI(keyword, "CLOSE"              ) == 0 ) ht = HTCLOSE               ;
+    else if ( StrCmpI(keyword, "HELP"               ) == 0 ) ht = HTHELP                ;
+    else
+    {
+        // Would like to raise an exception, but then we need to do the whole
+        // print condition, end dialog premature, etc., etc..
+
+        //wrongArgValueException(c->threadContext, 2, TBN_KEYWORDS, keyword);
+        ;
+    }
+
+    return ht;
+}
+
+CSTRING ncHitTest2string(WPARAM hit)
+{
+    switch ( hit )
+    {
+        case HTERROR       : return "ERROR";
+        case HTTRANSPARENT : return "TRANSPARENT";
+        case HTNOWHERE     : return "NOWHERE";
+        case HTCLIENT      : return "CLIENT";
+        case HTCAPTION     : return "CAPTION";
+        case HTSYSMENU     : return "SYSMENU";
+        case HTSIZE        : return "SIZE";
+        case HTMENU        : return "MENU";
+        case HTHSCROLL     : return "HSCROLL";
+        case HTVSCROLL     : return "VSCROLL";
+        case HTMINBUTTON   : return "MINBUTTON";
+        case HTMAXBUTTON   : return "MAXBUTTON";
+        case HTLEFT        : return "LEFT";
+        case HTRIGHT       : return "RIGHT";
+        case HTTOP         : return "TOP";
+        case HTTOPLEFT     : return "TOPLEFT";
+        case HTTOPRIGHT    : return "TOPRIGHT";
+        case HTBOTTOM      : return "BOTTOM";
+        case HTBOTTOMLEFT  : return "BOTTOMLEFT";
+        case HTBOTTOMRIGHT : return "BOTTOMRIGHT";
+        case HTBORDER      : return "BORDER";
+        case HTOBJECT      : return "OBJECT";
+        case HTCLOSE       : return "CLOSE";
+        case HTHELP        : return "HELP";
+    }
+    return "err";
+}
+
+
+RexxObjectPtr ncHitTest2string(RexxThreadContext *c, WPARAM hit)
+{
+    CSTRING keyword;
+
+    switch ( hit )
+    {
+        case HTERROR       : keyword = "ERROR"; break;
+        case HTTRANSPARENT : keyword = "TRANSPARENT"; break;
+        case HTNOWHERE     : keyword = "NOWHERE"; break;
+        case HTCLIENT      : keyword = "CLIENT"; break;
+        case HTCAPTION     : keyword = "CAPTION"; break;
+        case HTSYSMENU     : keyword = "SYSMENU"; break;
+        case HTSIZE        : keyword = "SIZE"; break;
+        case HTMENU        : keyword = "MENU"; break;
+        case HTHSCROLL     : keyword = "HSCROLL"; break;
+        case HTVSCROLL     : keyword = "VSCROLL"; break;
+        case HTMINBUTTON   : keyword = "MINBUTTON"; break;
+        case HTMAXBUTTON   : keyword = "MAXBUTTON"; break;
+        case HTLEFT        : keyword = "LEFT"; break;
+        case HTRIGHT       : keyword = "RIGHT"; break;
+        case HTTOP         : keyword = "TOP"; break;
+        case HTTOPLEFT     : keyword = "TOPLEFT"; break;
+        case HTTOPRIGHT    : keyword = "TOPRIGHT"; break;
+        case HTBOTTOM      : keyword = "BOTTOM"; break;
+        case HTBOTTOMLEFT  : keyword = "BOTTOMLEFT"; break;
+        case HTBOTTOMRIGHT : keyword = "BOTTOMRIGHT"; break;
+        case HTBORDER      : keyword = "BORDER"; break;
+        case HTOBJECT      : keyword = "OBJECT"; break;
+        case HTCLOSE       : keyword = "CLOSE"; break;
+        case HTHELP        : keyword = "HELP"; break;
+        default            : keyword = "err"; break;
+    }
+    return c->String(keyword);
+}
+
+
 /**
  * This function will (should) cleanly end the dialog and the Rexx dialog object
  * when things needed to be terminated for unusual reason.  It can put up a
@@ -1102,7 +1225,7 @@ RexxObjectPtr requiredBooleanReply(RexxThreadContext *c, pCPlainBaseDialog pcpbd
         }
     }
 
-    if ( reply != NULLOBJECT )
+    if ( reply != NULLOBJECT && reply != TheTrueObj && reply != TheFalseObj )
     {
         c->ReleaseLocalReference(reply);
     }
@@ -1406,6 +1529,52 @@ RexxObjectPtr getToolIDFromLParam(RexxThreadContext *c, LPARAM lParam)
     return rxID;
 }
 
+
+/**
+ * Several controls use the NM_RELEASEDCAPTURE notification.  We standardize the
+ * args to the event handler by routing things though this generic function.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param lParam
+ * @param pcpbd
+ * @param type
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  Two arguments are sent to the event handler.  The resource ID of
+ *           the control sending the notification and the Rexx control object
+ *           itself.
+ */
+MsgReplyType genericReleasedCapture(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam,
+                                    pCPlainBaseDialog pcpbd, oodControl_t type)
+{
+    RexxObjectPtr   idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr   rxRB   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, type, true);
+    RexxArrayObject args   = c->ArrayOfTwo(idFrom, rxRB);
+
+    switch ( tag & TAG_EXTRAMASK )
+    {
+        case TAG_REPLYFROMREXX :
+            invokeDirect(c, pcpbd, methodName, args);
+            break;
+
+        case TAG_SYNC :
+            invokeSync(c, pcpbd, methodName, args);
+            break;
+
+        default :
+            invokeDispatch(c, pcpbd, methodName, args);
+            break;
+    }
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxRB);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
 
 /**
  * Processes button control notifications.
@@ -2180,15 +2349,13 @@ MsgReplyType processRBN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 {
     switch ( code )
     {
+        case NM_NCHITTEST :
+            return rbnNcHitTest(c, methodName, tag, lParam, pcpbd);
 
         case NM_RELEASEDCAPTURE :
-            return rbnReleasedCapture(c, methodName, tag, lParam, pcpbd);
+            return genericReleasedCapture(c, methodName, tag, lParam, pcpbd, winReBar);
 
         /*
-        case TVN_BEGINDRAG :
-        case TVN_BEGINRDRAG :
-            return tvnBeginDrag(c, methodName, tag, lParam, pcpbd, code);
-
         case TVN_BEGINLABELEDIT :
             return tvnBeginLabelEdit(c, methodName, tag, lParam, pcpbd);
 
@@ -2305,6 +2472,69 @@ MsgReplyType processTCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     return ReplyTrue;
 }
 
+
+/**
+ * Handles the connected ToolBar event notifications.
+ *
+ * The tag code must have included the TAG_TOOLBAR flag for this function to be
+ * invoked.  Since the ToolBar control is newer than ooDialog 4.2.0, all ToolBar
+ * event connections have that tag.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param code
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @remarks
+ *
+ */
+MsgReplyType processTBN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code,
+                        LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    switch ( code )
+    {
+
+        case TBN_BEGINADJUST :
+            return tbnSimple(c, methodName, tag, lParam, pcpbd);
+
+        case TBN_CUSTHELP :
+            return tbnSimple(c, methodName, tag, lParam, pcpbd);
+
+        case TBN_DELETINGBUTTON :
+            return tbnDeletingButton(c, methodName, tag, lParam, pcpbd);
+
+        case TBN_ENDADJUST :
+            return tbnSimple(c, methodName, tag, lParam, pcpbd);
+
+        case TBN_GETBUTTONINFO :
+            return tbnGetButtonInfo(c, methodName, tag, lParam, pcpbd);
+
+        case TBN_INITCUSTOMIZE :
+            return tbnInitCustomize(c, methodName, tag, lParam, pcpbd);
+
+        case TBN_QUERYDELETE :
+            return tbnQuery(c, methodName, tag, lParam, pcpbd, code);
+
+        case TBN_QUERYINSERT :
+            return tbnQuery(c, methodName, tag, lParam, pcpbd, code);
+
+        case NM_RELEASEDCAPTURE :
+            return genericReleasedCapture(c, methodName, tag, lParam, pcpbd, winToolBar);
+
+        case TBN_TOOLBARCHANGE :
+            return tbnSimple(c, methodName, tag, lParam, pcpbd);
+
+        default :
+            break;
+    }
+
+    // This should never happen, we can't get here.
+    return ReplyTrue;
+}
 
 /**
  * Process tool tip notification messages.
@@ -2714,6 +2944,9 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
 
                 case TAG_TAB :
                     return processTCN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
+
+                case TAG_TOOLBAR :
+                    return processTBN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
 
                 case TAG_TOOLTIP :
                     return processTTN(c, m[i].rexxMethod, m[i].tag, code, wParam, lParam, pcpbd);
@@ -3356,14 +3589,60 @@ bool initEventNotification(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxOb
 #define EVENTNOTIFICATION_CLASS       "EventNotification"
 
 
-#define AUM_KEYWORDS                  "WillReply, or Sync" // addUserMsg()
 #define DTPN_KEYWORDS                 "CloseUp, DateTimeChange, DropDown, FormatQuery, Format, KillFocus, SetFocus, UserString, or KeyDown"
 #define MCN_KEYWORDS                  "GetDayState, Released, SelChange, Select, or ViewChange"
 #define RBN_KEYWORDS                  "NcHitTest, ReleasedCapture, AutoBreak, AutoSize, BeginDrag, ChevronPushed, ChildSize, DeletedBand, DeletingBand, EndDrag, GetObject, HeightChange, LayoutChanged, MinMax, or SplitterDrag"
+#define TBN_KEYWORDS                  "one of the documented ToolBar notification keywords"
 #define TTN_KEYWORDS                  "LinkClick, NeedText, Pop, or Show"
 
 // Fake notification code to use for the list box WM_VKEYTOITEM event.
 #define LBN_VKEYTOITEM  8
+
+/**
+ * Converts the _willReply argument in a connect even method to the proper tag.
+ *
+ * Orignally, the will reply argument was boolean, true for will reply and false
+ * otherwise.  Since then the 'sync' tag was added allowing the user to specify
+ * that the interpreter should wait for the event handler, but not require that
+ * the user actually return a value.
+ *
+ * But the true / false value had already been documented for a number of the
+ * methods.  To maintain backwards compatibility, and to keep things consistent,
+ * we allow true / false or the keyword "sync" for the _willreply argument.
+ *
+ * In addition, the default for all new controls is true and the default for all
+ * old controls must be false.
+ *
+ * @param context      Method context we are operating in, used argumentOmitted
+ * @param _willReply   The _willReply argument
+ * @param defaultTrue  True, if the default for the method is true.
+ *
+ * @return The tag that should be used, TAG_NOTHING, TAG_REPLYFROMREXX, or
+ *         TAG_SYNC.
+ */
+static uint32_t _willReplyToTag(RexxMethodContext *context, RexxObjectPtr _willReply, bool defaultTrue, size_t argPos)
+{
+    if ( argumentOmitted(argPos) )
+    {
+        return defaultTrue ? TAG_REPLYFROMREXX : TAG_NOTHING;
+    }
+
+    RexxMethodContext *c = context;
+    logical_t willReply;
+    if ( c->Logical(_willReply, &willReply) )
+    {
+        return willReply ? TAG_REPLYFROMREXX : TAG_NOTHING;
+    }
+
+    CSTRING keyword = c->ObjectToStringValue(_willReply);
+    if ( StrCmpI(keyword, "SYNC") == 0 )
+    {
+        return TAG_SYNC;
+    }
+
+    wrongArgValueException(context->threadContext, argPos, ".true, .false, or 'SYNC'", _willReply);
+    return TAG_INVALID;
+}
 
 /**
  * Convert a button notification code to a method name.
@@ -3684,7 +3963,8 @@ inline CSTRING lvn2name(uint32_t lvn, uint32_t tag)
  *
  *
  */
-static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, uint32_t *tag, bool *isDefEdit, logical_t willReply)
+static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, uint32_t *tag, bool *isDefEdit,
+                        RexxObjectPtr willReply)
 {
     uint32_t lvn = 0;
 
@@ -3787,9 +4067,14 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
         return false;
     }
 
-    if ( *tag != 0 && willReply )
+    if ( (*tag & TAG_REPLYFROMREXX) !=  TAG_REPLYFROMREXX )
     {
-        *tag = *tag | TAG_REPLYFROMREXX;
+        uint32_t extraTag = _willReplyToTag(c, willReply, false, 4);
+        if ( extraTag == TAG_INVALID )
+        {
+            return false;
+        }
+        *tag = *tag | extraTag;
     }
 
     *code = lvn;
@@ -4048,9 +4333,9 @@ static bool keyword2stn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
 /**
  * Convert a track bar notification code to a method name.
  */
-inline CSTRING tbn2name(uint32_t tbn)
+inline CSTRING tb2name(uint32_t tb)
 {
-    switch ( tbn )
+    switch ( tb )
     {
         case TB_LINEUP            : return "onUp"           ;
         case TB_LINEDOWN          : return "onDown"         ;
@@ -4070,24 +4355,24 @@ inline CSTRING tbn2name(uint32_t tbn)
  *
  * We can not raise an exception here, this is original ooDialog implemtbntation.
  */
-static bool keyword2tbn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
+static bool keyword2tb(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
 {
-    uint32_t tbn;
+    uint32_t tb;
 
-    if ( StrCmpI(keyword,      "UP"         ) == 0 ) tbn = TB_LINEUP         ;
-    else if ( StrCmpI(keyword, "DOWN"       ) == 0 ) tbn = TB_LINEDOWN       ;
-    else if ( StrCmpI(keyword, "PAGEUP"     ) == 0 ) tbn = TB_PAGEUP         ;
-    else if ( StrCmpI(keyword, "PAGEDOWN"   ) == 0 ) tbn = TB_PAGEDOWN       ;
-    else if ( StrCmpI(keyword, "POSITION"   ) == 0 ) tbn = TB_THUMBPOSITION  ;
-    else if ( StrCmpI(keyword, "DRAG"       ) == 0 ) tbn = TB_THUMBTRACK     ;
-    else if ( StrCmpI(keyword, "TOP"        ) == 0 ) tbn = TB_TOP            ;
-    else if ( StrCmpI(keyword, "BOTTOM"     ) == 0 ) tbn = TB_BOTTOM         ;
-    else if ( StrCmpI(keyword, "ENDTRACK"   ) == 0 ) tbn = TB_ENDTRACK       ;
+    if ( StrCmpI(keyword,      "UP"         ) == 0 ) tb = TB_LINEUP         ;
+    else if ( StrCmpI(keyword, "DOWN"       ) == 0 ) tb = TB_LINEDOWN       ;
+    else if ( StrCmpI(keyword, "PAGEUP"     ) == 0 ) tb = TB_PAGEUP         ;
+    else if ( StrCmpI(keyword, "PAGEDOWN"   ) == 0 ) tb = TB_PAGEDOWN       ;
+    else if ( StrCmpI(keyword, "POSITION"   ) == 0 ) tb = TB_THUMBPOSITION  ;
+    else if ( StrCmpI(keyword, "DRAG"       ) == 0 ) tb = TB_THUMBTRACK     ;
+    else if ( StrCmpI(keyword, "TOP"        ) == 0 ) tb = TB_TOP            ;
+    else if ( StrCmpI(keyword, "BOTTOM"     ) == 0 ) tb = TB_BOTTOM         ;
+    else if ( StrCmpI(keyword, "ENDTRACK"   ) == 0 ) tb = TB_ENDTRACK       ;
     else
     {
         return false;
     }
-    *flag = tbn;
+    *flag = tb;
     return true;
 }
 
@@ -4124,6 +4409,114 @@ static bool keyword2tcn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
     }
     *flag = tcn;
     return true;
+}
+
+/**
+ * Convert a toolbar notification code to a method name.
+ */
+inline CSTRING tbn2name(uint32_t tbn)
+{
+    switch ( tbn )
+    {
+        case NM_CHAR               : return "onChar"             ;
+        case NM_CLICK              : return "onClick"            ;
+        case NM_DBLCLK             : return "onDblClk"           ;
+        case NM_KEYDOWN            : return "onKeyDown"          ;
+        case NM_LDOWN              : return "onLDown"            ;
+        case NM_RCLICK             : return "onRClick"           ;
+        case NM_RDBLCLK            : return "onRDblClk"          ;
+        case NM_RELEASEDCAPTURE    : return "onReleasedCapture"  ;
+        case NM_TOOLTIPSCREATED    : return "onToolTipsCreated"  ;
+        case TBN_BEGINADJUST       : return "onBeginAdjust"      ;
+        case TBN_BEGINDRAG         : return "onBeginDrag"        ;
+        case TBN_CUSTHELP          : return "onCustHelp"         ;
+        case TBN_DELETINGBUTTON    : return "onDeletingButton"   ;
+        case TBN_DRAGOUT           : return "onDragOut"          ;
+        case TBN_DRAGOVER          : return "onDragOver"         ;
+        case TBN_DROPDOWN          : return "onDropDown"         ;
+        case TBN_DUPACCELERATOR    : return "onDupAccelerator"   ;
+        case TBN_ENDADJUST         : return "onEndAdjust"        ;
+        case TBN_ENDDRAG           : return "onEndDrag"          ;
+        case TBN_GETBUTTONINFO     : return "onGetButtonInfo"    ;
+        case TBN_GETDISPINFO       : return "onGetDISPinfo"      ;
+        case TBN_GETINFOTIP        : return "onGetInfoTip"       ;
+        case TBN_GETOBJECT         : return "onGetObject"        ;
+        case TBN_HOTITEMCHANGE     : return "onHotItemChange"    ;
+        case TBN_INITCUSTOMIZE     : return "onInitCustomize"    ;
+        case TBN_MAPACCELERATOR    : return "onMapAccelerator"   ;
+        case TBN_QUERYDELETE       : return "onQueryDelete"      ;
+        case TBN_QUERYINSERT       : return "onQueryInsert"      ;
+        case TBN_RESET             : return "onReset"            ;
+        case TBN_RESTORE           : return "onRestore"          ;
+        case TBN_SAVE              : return "onSave"             ;
+        case TBN_TOOLBARCHANGE     : return "onToolbarChange"    ;
+        case TBN_WRAPACCELERATOR   : return "onWrapAccelerator"  ;
+        case TBN_WRAPHOTITEM       : return "onWrapHotItem"      ;
+    }
+    return "onTBN";
+}
+
+/**
+ * Convert a keyword to the proper toolbar notification code.
+ *
+ * We know the keyword arg position is 2.  The ToolBar control is post
+ * ooRexx 4.0.1 so we raise an exception on error.
+ */
+static bool keyword2tbn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
+{
+    uint32_t tbn;
+
+    if ( StrCmpI(keyword,      "CHAR"               ) == 0 ) tbn = NM_CHAR               ;
+    else if ( StrCmpI(keyword, "CLICK"              ) == 0 ) tbn = NM_CLICK              ;
+    else if ( StrCmpI(keyword, "DBLCLK"             ) == 0 ) tbn = NM_DBLCLK             ;
+    else if ( StrCmpI(keyword, "KEYDOWN"            ) == 0 ) tbn = NM_KEYDOWN            ;
+    else if ( StrCmpI(keyword, "LDOWN"              ) == 0 ) tbn = NM_LDOWN              ;
+    else if ( StrCmpI(keyword, "RCLICK"             ) == 0 ) tbn = NM_RCLICK             ;
+    else if ( StrCmpI(keyword, "RDBLCLK"            ) == 0 ) tbn = NM_RDBLCLK            ;
+    else if ( StrCmpI(keyword, "RELEASEDCAPTURE"    ) == 0 ) tbn = NM_RELEASEDCAPTURE    ;
+    else if ( StrCmpI(keyword, "TOOLTIPSCREATED"    ) == 0 ) tbn = NM_TOOLTIPSCREATED    ;
+    else if ( StrCmpI(keyword, "BEGINADJUST"        ) == 0 ) tbn = TBN_BEGINADJUST       ;
+    else if ( StrCmpI(keyword, "BEGINDRAG"          ) == 0 ) tbn = TBN_BEGINDRAG         ;
+    else if ( StrCmpI(keyword, "CUSTHELP"           ) == 0 ) tbn = TBN_CUSTHELP          ;
+    else if ( StrCmpI(keyword, "DELETINGBUTTON"     ) == 0 ) tbn = TBN_DELETINGBUTTON    ;
+    else if ( StrCmpI(keyword, "DRAGOUT"            ) == 0 ) tbn = TBN_DRAGOUT           ;
+    else if ( StrCmpI(keyword, "DRAGOVER"           ) == 0 ) tbn = TBN_DRAGOVER          ;
+    else if ( StrCmpI(keyword, "DROPDOWN"           ) == 0 ) tbn = TBN_DROPDOWN          ;
+    else if ( StrCmpI(keyword, "DUPACCELERATOR"     ) == 0 ) tbn = TBN_DUPACCELERATOR    ;
+    else if ( StrCmpI(keyword, "ENDADJUST"          ) == 0 ) tbn = TBN_ENDADJUST         ;
+    else if ( StrCmpI(keyword, "ENDDRAG"            ) == 0 ) tbn = TBN_ENDDRAG           ;
+    else if ( StrCmpI(keyword, "GETBUTTONINFO"      ) == 0 ) tbn = TBN_GETBUTTONINFO     ;
+    else if ( StrCmpI(keyword, "GETDISPINFO"        ) == 0 ) tbn = TBN_GETDISPINFO       ;
+    else if ( StrCmpI(keyword, "GETINFOTIP"         ) == 0 ) tbn = TBN_GETINFOTIP        ;
+    else if ( StrCmpI(keyword, "GETOBJECT"          ) == 0 ) tbn = TBN_GETOBJECT         ;
+    else if ( StrCmpI(keyword, "HOTITEMCHANGE"      ) == 0 ) tbn = TBN_HOTITEMCHANGE     ;
+    else if ( StrCmpI(keyword, "INITCUSTOMIZE"      ) == 0 ) tbn = TBN_INITCUSTOMIZE     ;
+    else if ( StrCmpI(keyword, "MAPACCELERATOR"     ) == 0 ) tbn = TBN_MAPACCELERATOR    ;
+    else if ( StrCmpI(keyword, "QUERYDELETE"        ) == 0 ) tbn = TBN_QUERYDELETE       ;
+    else if ( StrCmpI(keyword, "QUERYINSERT"        ) == 0 ) tbn = TBN_QUERYINSERT       ;
+    else if ( StrCmpI(keyword, "RESET"              ) == 0 ) tbn = TBN_RESET             ;
+    else if ( StrCmpI(keyword, "RESTORE"            ) == 0 ) tbn = TBN_RESTORE           ;
+    else if ( StrCmpI(keyword, "SAVE"               ) == 0 ) tbn = TBN_SAVE              ;
+    else if ( StrCmpI(keyword, "TOOLBARCHANGE"      ) == 0 ) tbn = TBN_TOOLBARCHANGE     ;
+    else if ( StrCmpI(keyword, "WRAPACCELERATOR"    ) == 0 ) tbn = TBN_WRAPACCELERATOR   ;
+    else if ( StrCmpI(keyword, "WRAPHOTITEM"        ) == 0 ) tbn = TBN_WRAPHOTITEM       ;
+    else
+    {
+        wrongArgValueException(c->threadContext, 2, TBN_KEYWORDS, keyword);
+        return false;
+    }
+    *flag = tbn;
+    return true;
+}
+
+inline bool isMustReplyTbn(uint32_t tbn)
+{
+    return tbn == NM_CHAR            || tbn == NM_CLICK          || tbn == NM_KEYDOWN        ||
+           tbn == NM_RCLICK          || tbn == NM_RDBLCLK        || tbn == TBN_DROPDOWN      ||
+           tbn == TBN_GETBUTTONINFO  || tbn == TBN_GETDISPINFO   || tbn == TBN_GETINFOTIP    ||
+           tbn == TBN_GETOBJECT      || tbn == TBN_HOTITEMCHANGE || tbn == TBN_INITCUSTOMIZE ||
+           tbn == TBN_MAPACCELERATOR || tbn == TBN_QUERYDELETE   || tbn == TBN_QUERYINSERT   ||
+           tbn == TBN_RESTORE;
 }
 
 /**
@@ -4207,7 +4600,7 @@ inline CSTRING tvn2name(uint32_t tvn, uint32_t tag)
  *
  */
 static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, uint32_t *pTag, bool *isDefEdit,
-                        logical_t willReply, bool willReplyUsed)
+                        RexxObjectPtr willReply, bool willReplyUsed)
 {
     uint32_t tvn  = 0;
     uint32_t tag = 0;
@@ -4319,9 +4712,14 @@ static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
         return false;
     }
 
-    if ( tag != 0 && willReply )
+    if ( willReplyUsed )
     {
-        tag |= TAG_REPLYFROMREXX;
+        uint32_t extraTag = _willReplyToTag(c, willReply, false, 4);
+        if ( extraTag == TAG_INVALID )
+        {
+            return false;
+        }
+        tag |= extraTag;
     }
 
     *code = tvn;
@@ -5142,11 +5540,8 @@ RexxMethod1(logical_t, en_init_eventNotification, RexxObjectPtr, cSelf)
  *  @param  lp           [optional]  LPARAM for the message.
  *  @param  _lpFilter    [optional]  Filter applied to LPARAM.  If omitted the
  *                       filter is all hex Fs.
- *  @param  _tag         [optional]  A keyword that signals the interpreter to
- *                       wait for and expect a reply from the event handler, to
- *                       wait for the event handler to return but not expect a
- *                       returned value, or to not wait for the event handler at
- *                       all.
+ *  @param  _willReply   [optional]  The conventional _willReply arg, true,
+ *                       false, or sync.
  *
  *  @return  0 on success, 1 on failure.
  *
@@ -5156,10 +5551,10 @@ RexxMethod1(logical_t, en_init_eventNotification, RexxObjectPtr, cSelf)
  *            If incorrect arguments are detected a syntax condition is raised.
  *
  *  @remarks  All internal use of this method has been removed.  Therefore the
- *            old internal use of the _tag argument is no longer needed.  We
- *            change its use in 4.2.4 to allow the user to specify a key word
- *            that refers to TAG_REPLYFROMREXX or TAG_SYNC.  This allows the
- *            user to specify invoke dispatch, invoke direct, or invoke sync
+ *            old internal use of the _tag argument, which was never documented,
+ *            is no longer needed. We change its use in 4.2.4 to allow the user
+ *            to specify will reply or sync. This allows the user to specify
+ *            invoke dispatch, invoke direct, or invoke sync
  *
  *            Although it would make more sense to return true on succes and
  *            false on failure, the method has been documented as returning 0
@@ -5171,7 +5566,7 @@ RexxMethod1(logical_t, en_init_eventNotification, RexxObjectPtr, cSelf)
  */
 RexxMethod9(uint32_t, en_addUserMessage, CSTRING, methodName, CSTRING, wm, OPTIONAL_CSTRING, _wmFilter,
             OPTIONAL_RexxObjectPtr, wp, OPTIONAL_CSTRING, _wpFilter, OPTIONAL_RexxObjectPtr, lp, OPTIONAL_CSTRING, _lpFilter,
-            OPTIONAL_CSTRING, _tag, CSELF, pCSelf)
+            OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
     uint32_t result = 1;
@@ -5190,16 +5585,10 @@ RexxMethod9(uint32_t, en_addUserMessage, CSTRING, methodName, CSTRING, wm, OPTIO
         goto done_out;
     }
 
-    uint32_t tag = 0;
-    if ( argumentExists(8) )
+    uint32_t tag = _willReplyToTag(context, _willReply, false, 8);
+    if ( tag == TAG_INVALID )
     {
-        if (      StrCmpI(_tag, "WILLREPLY") == 0 ) tag = TAG_REPLYFROMREXX;
-        else if ( StrCmpI(_tag, "SYNC"     ) == 0 ) tag = TAG_SYNC;
-        else
-        {
-            wrongArgValueException(context->threadContext, 8, AUM_KEYWORDS, _tag);
-            goto done_out;
-        }
+        goto done_out;
     }
 
     bool success;
@@ -5345,7 +5734,7 @@ RexxMethod2(logical_t, en_hasKeyPressConnection, OPTIONAL_CSTRING, methodName, C
  *
  */
 RexxMethod5(RexxObjectPtr, en_connectButtonEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5355,9 +5744,13 @@ RexxMethod5(RexxObjectPtr, en_connectButtonEvent, RexxObjectPtr, rxID, CSTRING, 
         return TheNegativeOneObj;
     }
 
-    uint32_t tag = (willReply ? TAG_REPLYFROMREXX : 0);
-    uint32_t notificationCode;
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
 
+    uint32_t notificationCode;
     if ( ! keyword2bcn(context, event, &notificationCode) )
     {
         return TheNegativeOneObj;
@@ -5370,7 +5763,7 @@ RexxMethod5(RexxObjectPtr, en_connectButtonEvent, RexxObjectPtr, rxID, CSTRING, 
     if ( notificationCode == BN_CLICKED && (id < 3 || id == 9) )
     {
         // Already connected.
-        return 0;
+        return TheZeroObj;
     }
 
     if ( (notificationCode == BCN_HOTITEMCHANGE || notificationCode == BCN_DROPDOWN) )
@@ -5397,7 +5790,7 @@ RexxMethod5(RexxObjectPtr, en_connectButtonEvent, RexxObjectPtr, rxID, CSTRING, 
  *
  */
 RexxMethod5(RexxObjectPtr, en_connectComboBoxEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5407,7 +5800,12 @@ RexxMethod5(RexxObjectPtr, en_connectComboBoxEvent, RexxObjectPtr, rxID, CSTRING
         return TheNegativeOneObj;
     }
 
-    uint32_t tag = (willReply ? TAG_REPLYFROMREXX : 0);
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
+
     uint32_t notificationCode;
 
     if ( ! keyword2cbn(context, event, &notificationCode) )
@@ -5453,7 +5851,7 @@ RexxMethod5(RexxObjectPtr, en_connectComboBoxEvent, RexxObjectPtr, rxID, CSTRING
  *            control.
  */
 RexxMethod4(RexxObjectPtr, en_connectCommandEvents, RexxObjectPtr, rxID, CSTRING, methodName,
-            OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5467,7 +5865,12 @@ RexxMethod4(RexxObjectPtr, en_connectCommandEvents, RexxObjectPtr, rxID, CSTRING
         context->RaiseException1(Rexx_Error_Invalid_argument_null, TheTwoObj);
         return TheOneObj;
     }
-    uint32_t tag = (willReply ? TAG_REPLYFROMREXX : 0);
+    uint32_t tag = _willReplyToTag(context, willReply, false, 3);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
+
     return (addCommandMessage(pcen, context, id, 0x0000FFFF, 0, 0, methodName, tag) ? TheZeroObj : TheOneObj);
 }
 
@@ -5515,7 +5918,7 @@ RexxMethod4(RexxObjectPtr, en_connectCommandEvents, RexxObjectPtr, rxID, CSTRING
  *            is raised for a bad resource ID rather than returning -1.
  */
 RexxMethod5(RexxObjectPtr, en_connectDateTimePickerEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5537,7 +5940,6 @@ RexxMethod5(RexxObjectPtr, en_connectDateTimePickerEvent, RexxObjectPtr, rxID, C
     }
 
     uint32_t tag = TAG_DATETIMEPICKER;
-    bool willReply = argumentOmitted(4) || _willReply;
 
     if ( isMustReplyDtpn(notificationCode) )
     {
@@ -5545,7 +5947,11 @@ RexxMethod5(RexxObjectPtr, en_connectDateTimePickerEvent, RexxObjectPtr, rxID, C
     }
     else
     {
-          tag |= willReply ? TAG_REPLYFROMREXX : 0;
+        tag |= _willReplyToTag(context, _willReply, true, 4);
+        if ( (tag & TAG_INVALID) == TAG_INVALID )
+        {
+            goto err_out;
+        }
     }
 
     if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
@@ -5562,7 +5968,7 @@ err_out:
  * @remarks  This is the original ooDialog implementation, plus willReply.
  */
 RexxMethod4(RexxObjectPtr, en_connectDraw, OPTIONAL_RexxObjectPtr, rxID, OPTIONAL_CSTRING, methodName,
-            OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5576,7 +5982,12 @@ RexxMethod4(RexxObjectPtr, en_connectDraw, OPTIONAL_RexxObjectPtr, rxID, OPTIONA
         }
     }
 
-    uint32_t tag = (willReply ? TAG_REPLYFROMREXX : 0);
+    uint32_t tag = _willReplyToTag(context, willReply, false, 3);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
+
 
     if ( argumentOmitted(2) || *methodName == '\0' )
     {
@@ -5606,7 +6017,7 @@ RexxMethod4(RexxObjectPtr, en_connectDraw, OPTIONAL_RexxObjectPtr, rxID, OPTIONA
  *
  */
 RexxMethod5(RexxObjectPtr, en_connectEditEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5616,9 +6027,13 @@ RexxMethod5(RexxObjectPtr, en_connectEditEvent, RexxObjectPtr, rxID, CSTRING, ev
         return TheNegativeOneObj;
     }
 
-    uint32_t tag = (willReply ? TAG_REPLYFROMREXX : 0);
-    uint32_t notificationCode;
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
 
+    uint32_t notificationCode;
     if ( ! keyword2en(context, event, &notificationCode) )
     {
         return TheNegativeOneObj;
@@ -5649,7 +6064,7 @@ RexxMethod5(RexxObjectPtr, en_connectEditEvent, RexxObjectPtr, rxID, CSTRING, ev
  *         keyword.  TODO.
  */
 RexxMethod5(RexxObjectPtr, en_connectListBoxEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5659,9 +6074,13 @@ RexxMethod5(RexxObjectPtr, en_connectListBoxEvent, RexxObjectPtr, rxID, CSTRING,
         return TheNegativeOneObj;
     }
 
-    uint32_t tag = (willReply ? TAG_REPLYFROMREXX : 0);
-    uint32_t notificationCode;
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
 
+    uint32_t notificationCode;
     if ( ! keyword2lbn(context, event, &notificationCode) )
     {
         return TheNegativeOneObj;
@@ -5790,7 +6209,7 @@ RexxMethod5(RexxObjectPtr, en_connectListBoxEvent, RexxObjectPtr, rxID, CSTRING,
  *                                                    (from lParam)
  */
 RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5885,7 +6304,7 @@ RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING
  *            for MCN_GETDAYSTATE and not ignored for all other notifications.
  */
 RexxMethod5(RexxObjectPtr, en_connectMonthCalendarEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5910,17 +6329,20 @@ RexxMethod5(RexxObjectPtr, en_connectMonthCalendarEvent, RexxObjectPtr, rxID, CS
         methodName = mcn2name(notificationCode);
     }
 
-    uint32_t tag = TAG_MONTHCALENDAR;
-    bool willReply = argumentOmitted(4) || _willReply;
-
+    uint32_t tag = 0;
     if ( notificationCode == MCN_GETDAYSTATE )
     {
-        tag |= TAG_REPLYFROMREXX;
+        tag = TAG_REPLYFROMREXX;
     }
     else
     {
-        tag |= willReply ? TAG_REPLYFROMREXX : 0;
+        tag = _willReplyToTag(context, _willReply, true, 4);
+        if ( tag == TAG_INVALID )
+        {
+            goto err_out;
+        }
     }
+    tag |= TAG_MONTHCALENDAR;
 
     if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
     {
@@ -5936,7 +6358,7 @@ err_out:
  *
  */
 RexxMethod5(RexxObjectPtr, en_connectNotifyEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -5946,9 +6368,13 @@ RexxMethod5(RexxObjectPtr, en_connectNotifyEvent, RexxObjectPtr, rxID, CSTRING, 
         return TheNegativeOneObj;
     }
 
-    uint32_t tag = (willReply ? TAG_REPLYFROMREXX : 0);
-    uint32_t notificationCode;
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
 
+    uint32_t notificationCode;
     if ( ! keyword2nm(context, event, &notificationCode) )
     {
         return TheNegativeOneObj;
@@ -6014,7 +6440,7 @@ RexxMethod5(RexxObjectPtr, en_connectNotifyEvent, RexxObjectPtr, rxID, CSTRING, 
  *            example.
  */
 RexxMethod5(RexxObjectPtr, en_connectReBarEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -6043,17 +6469,20 @@ RexxMethod5(RexxObjectPtr, en_connectReBarEvent, RexxObjectPtr, rxID, CSTRING, e
         methodName = rbn2name(notificationCode);
     }
 
-    uint32_t tag = TAG_MONTHCALENDAR;
-    bool willReply = argumentOmitted(4) || _willReply;
-
+    uint32_t tag = 0;
     if ( isMustReplyRbn(notificationCode) )
     {
-        tag |= TAG_REPLYFROMREXX;
+        tag = TAG_REPLYFROMREXX;
     }
     else
     {
-        tag |= willReply ? TAG_REPLYFROMREXX : 0;
+        tag = _willReplyToTag(context, _willReply, true, 4);
+        if ( tag == TAG_INVALID )
+        {
+            goto err_out;
+        }
     }
+    tag |= TAG_REBAR;
 
     if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
     {
@@ -6069,7 +6498,7 @@ err_out:
  *
  */
 RexxMethod5(RexxObjectPtr, en_connectStaticEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -6079,9 +6508,13 @@ RexxMethod5(RexxObjectPtr, en_connectStaticEvent, RexxObjectPtr, rxID, CSTRING, 
         return TheNegativeOneObj;
     }
 
-    uint32_t tag = (willReply ? TAG_REPLYFROMREXX : 0);
-    uint32_t notificationCode;
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
 
+    uint32_t notificationCode;
     if ( ! keyword2stn(context, event, &notificationCode) )
     {
         return TheNegativeOneObj;
@@ -6187,7 +6620,7 @@ RexxMethod5(RexxObjectPtr, en_connectStaticEvent, RexxObjectPtr, rxID, CSTRING, 
  *             user can specify to reply directly.
  */
 RexxMethod5(RexxObjectPtr, en_connectScrollBarEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
 
@@ -6225,7 +6658,11 @@ RexxMethod5(RexxObjectPtr, en_connectScrollBarEvent, RexxObjectPtr, rxID, CSTRIN
         methodName = sbn2name(notificationCode);
     }
 
-    uint32_t tag = willReply ? TAG_REPLYFROMREXX : TAG_NOTHING;
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
 
     if ( addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, notificationCode, 0x0000FFFF, (LPARAM)hCtrl,
                         UINTPTR_MAX, methodName, tag) )
@@ -6252,7 +6689,7 @@ RexxMethod5(RexxObjectPtr, en_connectScrollBarEvent, RexxObjectPtr, rxID, CSTRIN
  */
 RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, msg,
             OPTIONAL_int32_t, min, OPTIONAL_int32_t, max, OPTIONAL_int32_t, pos,
-            OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
 
@@ -6287,7 +6724,11 @@ RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, 
         goto err_out;
     }
 
-    uint32_t tag = willReply ? TAG_REPLYFROMREXX : TAG_NOTHING;
+    uint32_t tag = _willReplyToTag(context, willReply, false, 6);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
 
     if ( (argumentExists(3) && argumentExists(4)) || argumentExists(5) )
     {
@@ -6432,19 +6873,12 @@ RexxMethod10(RexxObjectPtr, en_connectEachSBEvent, RexxObjectPtr, rxID, CSTRING,
         goto err_out;
     }
 
-    logical_t willReply = FALSE;
-
     RexxObjectPtr _willReply = c->ArrayAt(args, 14);
-    if ( _willReply != NULLOBJECT )
+    uint32_t      tag        = _willReplyToTag(context, _willReply, false, 14);
+    if ( tag == TAG_INVALID )
     {
-        if ( ! c->Logical(_willReply, &willReply) )
-        {
-            wrongArgValueException(context->threadContext, 14, ".true or .false", _willReply);
-            goto err_out;
-        }
+        goto err_out;
     }
-
-    uint32_t tag = willReply ? TAG_REPLYFROMREXX : TAG_NOTHING;
 
     if ( (argumentExists(5) && argumentExists(6)) || argumentExists(7) )
     {
@@ -6626,7 +7060,7 @@ err_out:
  *
  */
 RexxMethod5(RexxObjectPtr, en_connectTabEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -6636,9 +7070,14 @@ RexxMethod5(RexxObjectPtr, en_connectTabEvent, RexxObjectPtr, rxID, CSTRING, eve
         return TheNegativeOneObj;
     }
 
-    uint32_t notificationCode;
-    uint32_t tag = TAG_TAB | (willReply ? TAG_REPLYFROMREXX : 0);
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
+    tag |= TAG_TAB;
 
+    uint32_t notificationCode;
     if ( ! keyword2tcn(context, event, &notificationCode) )
     {
         return TheNegativeOneObj;
@@ -6655,6 +7094,98 @@ RexxMethod5(RexxObjectPtr, en_connectTabEvent, RexxObjectPtr, rxID, CSTRING, eve
     }
 
     return TheOneObj;
+}
+
+/** EventNotification::connectToolBarEvent()
+ *
+ *  Connects a Rexx dialog method with a toolbar control event.
+ *
+ *  @param  rxID        The resource ID of the dialog control.  Can be numeric
+ *                      or symbolic.
+ *
+ *  @param  event       Keyword specifying which event to connect.  Keywords at
+ *                      this time:
+ *
+ *                      ?AUTOBREAK?
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
+ *                      Rexx dialog.  If this argument is omitted then the
+ *                      method name is constructed by prefixing the event
+ *                      keyword with 'on'.  For instance onAutoBreak.
+ *
+ *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
+ *                      direct or indirect. With a direct invocation, the
+ *                      interpreter waits in the Windows message loop for the
+ *                      return from the Rexx method. With indirect, the Rexx
+ *                      method is invoked through ~startWith(), which of course
+ *                      returns immediately.  By default willReply is set to
+ *                      true.
+ *
+ *  @return  True if the event notification was connected, otherwsie false.
+ *
+ *  @note   If a symbolic ID is used and it can not be resolved to a numeric
+ *          number an exception is raised.
+ *
+ *  @remarks  This method is new since the 4.0.0 release, therefore an exception
+ *            is raised for a bad resource ID rather than returning -1.
+ *
+ *            For controls new since 4.0.0, event notifications that have a
+ *            reply are documented as always being 'direct' reply and
+ *            notifications that ignore the return are documented as allowing
+ *            the programmer to specify.  This means that willReply is ignored
+ *            for [see the list in isMustReplyTbn] and not ignored for [see the
+ *            list in isMustReplyTbn], for example.
+ */
+RexxMethod5(RexxObjectPtr, en_connectToolBarEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)
+{
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto err_out;
+    }
+
+    uint32_t notificationCode;
+    if ( ! keyword2tbn(context, event, &notificationCode) )
+    {
+        goto err_out;
+    }
+
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = tbn2name(notificationCode);
+    }
+
+    uint32_t tag = 0;
+    if ( isMustReplyTbn(notificationCode) )
+    {
+        tag = TAG_REPLYFROMREXX;
+    }
+    else
+    {
+        tag = _willReplyToTag(context, _willReply, true, 4);
+        if ( tag == TAG_INVALID )
+        {
+            goto err_out;
+        }
+    }
+    tag |= TAG_TOOLBAR;
+
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    {
+        return TheTrueObj;
+    }
+
+err_out:
+    return TheFalseObj;
 }
 
 /** EventNotification::connectToolTipEvent()
@@ -6705,7 +7236,7 @@ RexxMethod5(RexxObjectPtr, en_connectTabEvent, RexxObjectPtr, rxID, CSTRING, eve
  *            to do table look ups.  In addition
  */
 RexxMethod5(RexxObjectPtr, en_connectToolTipEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -6733,17 +7264,20 @@ RexxMethod5(RexxObjectPtr, en_connectToolTipEvent, RexxObjectPtr, rxID, CSTRING,
         methodName = ttn2name(notificationCode);
     }
 
-    uint32_t tag = TAG_TOOLTIP;
-    bool willReply = argumentOmitted(4) || _willReply;
-
+    uint32_t tag = 0;
     if ( notificationCode == TTN_NEEDTEXT || notificationCode == TTN_SHOW )
     {
-        tag |= TAG_REPLYFROMREXX;
+        tag = TAG_REPLYFROMREXX;
     }
     else
     {
-        tag |= (willReply ? TAG_REPLYFROMREXX : 0);
+        tag = _willReplyToTag(context, _willReply, true, 4);
+        if ( tag == TAG_INVALID )
+        {
+            goto err_out;
+        }
     }
+    tag |= TAG_TOOLTIP;
 
     if ( addNotifyMessage(pcen, context, (WPARAM)ptte->hToolTip, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
     {
@@ -6773,7 +7307,7 @@ err_out:
  *            detect this situation.
  */
 RexxMethod5(RexxObjectPtr, en_connectTrackBarEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -6793,17 +7327,21 @@ RexxMethod5(RexxObjectPtr, en_connectTrackBarEvent, RexxObjectPtr, rxID, CSTRING
         return TheNegativeOneObj;
     }
 
-    uint32_t tag = (willReply ? TAG_REPLYFROMREXX : 0);
-    uint32_t notificationCode;
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
 
-    if ( ! keyword2tbn(context, event, &notificationCode) )
+    uint32_t notificationCode;
+    if ( ! keyword2tb(context, event, &notificationCode) )
     {
         return TheNegativeOneObj;
     }
 
     if ( argumentOmitted(3) || *methodName == '\0' )
     {
-        methodName = tbn2name(notificationCode);
+        methodName = tb2name(notificationCode);
     }
 
     if ( isVerticalTrackBar(hTrackBar) )
@@ -6911,7 +7449,7 @@ RexxMethod5(RexxObjectPtr, en_connectTrackBarEvent, RexxObjectPtr, rxID, CSTRING
  *                                     (from lParam)
  */
 RexxMethod5(RexxObjectPtr, en_connectTreeViewEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
@@ -7069,11 +7607,16 @@ uint32_t methodName2windowMessage(CSTRING methodName)
  *           instead of TAG_WILLREPLY.  As newer methods are added, the behavior
  *           can be determined on a case by case basis.
  */
-RexxMethod4(RexxObjectPtr, en_connectWmEvent, OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, sync,
+RexxMethod4(RexxObjectPtr, en_connectWmEvent, OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply,
             NAME, msgName, CSELF, pCSelf)
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
-    uint32_t            tag  = (sync ? TAG_SYNC : 0);
+
+    uint32_t tag = _willReplyToTag(context, willReply, false, 2);
+    if ( tag == TAG_INVALID )
+    {
+        return TheOneObj;
+    }
 
     uint32_t winMsg = methodName2windowMessage(msgName);
     switch ( winMsg )
@@ -7113,13 +7656,10 @@ RexxMethod4(RexxObjectPtr, en_connectWmEvent, OPTIONAL_CSTRING, methodName, OPTI
             if ( argumentOmitted(1) || *methodName == '\0' ) methodName = "onSizeMoveEnded";
 
             // Already documented with this behavior
-            if ( argumentOmitted(2) )
+            tag = _willReplyToTag(context, willReply, true, 2);
+            if ( tag == TAG_INVALID )
             {
-                tag = TAG_REPLYFROMREXX;
-            }
-            else
-            {
-                tag = (sync ? TAG_REPLYFROMREXX : 0);
+                return TheOneObj;
             }
             break;
 
@@ -7134,6 +7674,4 @@ RexxMethod4(RexxObjectPtr, en_connectWmEvent, OPTIONAL_CSTRING, methodName, OPTI
     }
     return TheOneObj;
 }
-
-
 

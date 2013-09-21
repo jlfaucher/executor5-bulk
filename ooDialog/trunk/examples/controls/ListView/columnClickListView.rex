@@ -69,7 +69,7 @@
   self~createListView(IDC_LISTVIEW, 10, 20, 305, 145, "REPORT SHOWSELALWAYS")
   self~createPushButton(IDOK, 280, 175, 35, 15, "DEFAULT", "Close")
 
-  self~connectListViewEvent(IDC_LISTVIEW, "CLICK", onClick)
+  self~connectListViewEvent(IDC_LISTVIEW, "CLICK", onClick, .true)
 
 ::method initDialog
 
@@ -94,4 +94,5 @@
   columnIndex += 1
 
   say 'onClick() row:' itemIndex 'column:' columnIndex 'key state:' keyState
+  return 0
 

@@ -690,6 +690,7 @@ REXX_METHOD_PROTOTYPE(en_connectReBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectScrollBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectStaticEvent);
 REXX_METHOD_PROTOTYPE(en_connectTabEvent);
+REXX_METHOD_PROTOTYPE(en_connectToolBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectToolTipEvent);
 REXX_METHOD_PROTOTYPE(en_connectTrackBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectTreeViewEvent);
@@ -1264,13 +1265,19 @@ REXX_METHOD_PROTOTYPE(tb_addButtons);
 REXX_METHOD_PROTOTYPE(tb_addString);
 REXX_METHOD_PROTOTYPE(tb_autoSize);
 REXX_METHOD_PROTOTYPE(tb_buttonCount);
+REXX_METHOD_PROTOTYPE(tb_changeBitmap);
+REXX_METHOD_PROTOTYPE(tb_checkButton);
+REXX_METHOD_PROTOTYPE(tb_commandToIndex);
+REXX_METHOD_PROTOTYPE(tb_customize);
 REXX_METHOD_PROTOTYPE(tb_getButton);
 REXX_METHOD_PROTOTYPE(tb_getButtonText);
+REXX_METHOD_PROTOTYPE(tb_getButtonTextEx);
 REXX_METHOD_PROTOTYPE(tb_getDisabledImageList);
 REXX_METHOD_PROTOTYPE(tb_getExtendedStyle);
 REXX_METHOD_PROTOTYPE(tb_getHotImageList);
 REXX_METHOD_PROTOTYPE(tb_getImageList);
 REXX_METHOD_PROTOTYPE(tb_getPressedImageList);
+REXX_METHOD_PROTOTYPE(tb_indexTocommand);
 REXX_METHOD_PROTOTYPE(tb_insertButton);
 REXX_METHOD_PROTOTYPE(tb_isButtonChecked);
 REXX_METHOD_PROTOTYPE(tb_isButtonEnabled);
@@ -1280,6 +1287,7 @@ REXX_METHOD_PROTOTYPE(tb_isButtonIndeterminate);
 REXX_METHOD_PROTOTYPE(tb_isButtonPressed);
 REXX_METHOD_PROTOTYPE(tb_loadImages);
 REXX_METHOD_PROTOTYPE(tb_setBitmapSize);
+REXX_METHOD_PROTOTYPE(tb_setButtonText);
 REXX_METHOD_PROTOTYPE(tb_setDisabledImageList);
 REXX_METHOD_PROTOTYPE(tb_setExtendedStyle);
 REXX_METHOD_PROTOTYPE(tb_setHotImageList);
@@ -1288,7 +1296,6 @@ REXX_METHOD_PROTOTYPE(tb_setPressedImageList);
 
 // TbButton
 REXX_METHOD_PROTOTYPE(tbb_init_cls    );
-//REXX_METHOD_PROTOTYPE(tbb_unInit      );
 REXX_METHOD_PROTOTYPE(tbb_init        );
 REXX_METHOD_PROTOTYPE(tbb_bitmapID    );
 REXX_METHOD_PROTOTYPE(tbb_setBitmapID );
@@ -2054,6 +2061,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(en_connectScrollBarEvent,       en_connectScrollBarEvent),
     REXX_METHOD(en_connectStaticEvent,          en_connectStaticEvent),
     REXX_METHOD(en_connectTabEvent,             en_connectTabEvent),
+    REXX_METHOD(en_connectToolBarEvent,         en_connectToolBarEvent),
     REXX_METHOD(en_connectToolTipEvent,         en_connectToolTipEvent),
     REXX_METHOD(en_connectTrackBarEvent,        en_connectTrackBarEvent),
     REXX_METHOD(en_connectTreeViewEvent,        en_connectTreeViewEvent),
@@ -2887,13 +2895,19 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tb_addString,                  tb_addString),
     REXX_METHOD(tb_autoSize,                   tb_autoSize),
     REXX_METHOD(tb_buttonCount,                tb_buttonCount),
+    REXX_METHOD(tb_changeBitmap,               tb_changeBitmap),
+    REXX_METHOD(tb_checkButton,                tb_checkButton),
+    REXX_METHOD(tb_commandToIndex,             tb_commandToIndex),
+    REXX_METHOD(tb_customize,                  tb_customize),
     REXX_METHOD(tb_getButton,                  tb_getButton),
     REXX_METHOD(tb_getButtonText,              tb_getButtonText),
+    REXX_METHOD(tb_getButtonTextEx,            tb_getButtonTextEx),
     REXX_METHOD(tb_getDisabledImageList,       tb_getDisabledImageList),
     REXX_METHOD(tb_getExtendedStyle,           tb_getExtendedStyle),
     REXX_METHOD(tb_getHotImageList,            tb_getHotImageList),
     REXX_METHOD(tb_getImageList,               tb_getImageList),
     REXX_METHOD(tb_getPressedImageList,        tb_getPressedImageList),
+    REXX_METHOD(tb_indexTocommand,             tb_indexTocommand),
     REXX_METHOD(tb_insertButton,               tb_insertButton),
     REXX_METHOD(tb_isButtonChecked,            tb_isButtonChecked),
     REXX_METHOD(tb_isButtonEnabled,            tb_isButtonEnabled),
@@ -2903,6 +2917,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tb_isButtonPressed,            tb_isButtonPressed),
     REXX_METHOD(tb_loadImages,                 tb_loadImages),
     REXX_METHOD(tb_setBitmapSize,              tb_setBitmapSize),
+    REXX_METHOD(tb_setButtonText,              tb_setButtonText),
     REXX_METHOD(tb_setDisabledImageList,       tb_setDisabledImageList),
     REXX_METHOD(tb_setExtendedStyle,           tb_setExtendedStyle),
     REXX_METHOD(tb_setImageList,               tb_setImageList),
@@ -2911,7 +2926,6 @@ RexxMethodEntry oodialog_methods[] = {
 
     // TbButton
     REXX_METHOD(tbb_init_cls           ,       tbb_init_cls    ),
-   // REXX_METHOD(tbb_unInit             ,       tbb_unInit      ),
     REXX_METHOD(tbb_init               ,       tbb_init        ),
     REXX_METHOD(tbb_bitmapID           ,       tbb_bitmapID    ),
     REXX_METHOD(tbb_setBitmapID        ,       tbb_setBitmapID ),

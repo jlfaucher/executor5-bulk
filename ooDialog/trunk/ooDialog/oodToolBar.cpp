@@ -49,8 +49,8 @@
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodResources.hpp"
-// #include "oodMessaging.hpp"
- #include "oodShared.hpp"
+#include "oodMessaging.hpp"
+#include "oodShared.hpp"
 
 
 /**
@@ -59,7 +59,7 @@
 #define TBBUTTON_CLASS           "TbButton"
 
 #define TBBUTTON_OBJ_MAGIC       "BPwcbLJ1c"
-#define TBBUTTON_TEXT_MAX        260
+#define TBBUTTON_TEXT_MAX        127
 #define TBB_TEXTLEN_ATTRIBUTE    "TBB!!TEXT!!LEN!!ATTRIBUTE"
 #define ADD_BITMAP_SRC_OBJ       "Image object, ResourceImage object, or documented keyword"
 #define ADDLOAD_SYSTEM_IMAGES    "StdLarge, StdSmall, ViewLarge, ViewSmall, HistLarge, HistSmall, HistNormal, HistHot, HistDisabled, or HistPressed"
@@ -137,6 +137,10 @@ uint32_t keyword2tbstate(CSTRING flags)
     if ( *buf != '\0' )
     {
         *(buf + strlen(buf) - 1) = '\0';
+    }
+    if ( strlen(buf) == 0 )
+    {
+        return c->String("nil");
     }
     return c->String(buf);
 }
@@ -354,7 +358,7 @@ RexxObjectPtr getTbbText(RexxMethodContext *c, LPTBBUTTON ptbb)
         return c->UnsignedInt32((uint32_t)ptbb->iString + 1);
     }
 
-    if ( ptbb->iString == NULL )
+    if ( ptbb->iString == NULL || ptbb->iString == -1 )
     {
         return TheNilObj;
     }
@@ -482,31 +486,6 @@ RexxMethod1(RexxObjectPtr, tbb_init_cls, OSELF, self)
     return NULLOBJECT;
 }
 
-
-#if 0
-/** TbButton::uninit()
- *
- *  We do not need an unint(), I don't think.  We will not be allocating memory
- *  for pttb->iString ...
- */
-RexxMethod1(RexxObjectPtr, tbb_unInit, CSELF, pCSelf)
-{
-#if 0
-    printf("In tbb_unInit() pCSelf=%p\n", pCSelf);
-#endif
-
-    if ( pCSelf != NULLOBJECT )
-    {
-        LPTBBUTTON ptbb = (LPTBBUTTON)pCSelf;
-
-#if 0
-    printf("In tbb_unInit() iString=%p\n", ptbb->iString);
-#endif
-        safeLocalFree((void *)ptbb->iString);
-    }
-    return NULLOBJECT;
-}
-#endif
 
 /** TbButton::init()
  *
@@ -968,6 +947,241 @@ uint32_t keyword2tbsEx(CSTRING flags)
     return c->String(buf);
 }
 
+RexxObjectPtr rxTbbFromTbb(RexxThreadContext *c, TBBUTTON *pTbb)
+{
+    RexxObjectPtr    result   = TheNilObj;
+    RexxBufferObject rxTbbBuf = c->NewBuffer(sizeof(TBBUTTON));
+    if ( rxTbbBuf == NULLOBJECT )
+    {
+        outOfMemoryException(c);
+        goto done_out;
+    }
+
+    LPTBBUTTON ptbbBuff = (LPTBBUTTON)c->BufferData(rxTbbBuf);
+    memcpy(ptbbBuff, pTbb, sizeof(TBBUTTON));
+
+    RexxArrayObject args = c->NewArray(3);
+    c->ArrayPut(args, rxTbbBuf, 1);
+    c->ArrayPut(args, c->String(TBBUTTON_OBJ_MAGIC), 3);
+
+    RexxObjectPtr rxTbButton = c->SendMessage(TheTbButtonClass, "NEW", args);
+    if ( rxTbButton != NULLOBJECT )
+    {
+        result = rxTbButton;
+    }
+
+done_out:
+    return result;
+}
+
+void genericTbnInvoke(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args, uint32_t tag)
+{
+    switch ( tag & TAG_EXTRAMASK )
+    {
+        case TAG_REPLYFROMREXX :
+            invokeDirect(c, pcpbd, methodName, args);
+            break;
+
+        case TAG_SYNC :
+            invokeSync(c, pcpbd, methodName, args);
+            break;
+
+        default :
+            invokeDispatch(c, pcpbd, methodName, args);
+            break;
+    }
+}
+
+
+MsgReplyType tbnDeletingButton(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    RexxObjectPtr   idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr   rxTB   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winToolBar, true);
+
+    LPNMTOOLBAR nmtb = (LPNMTOOLBAR)lParam;
+
+    RexxObjectPtr   cmdID = c->UnsignedInt32(nmtb->iItem);
+    RexxArrayObject args  = c->ArrayOfThree(idFrom, cmdID, rxTB);
+
+    genericTbnInvoke(c, pcpbd, methodName, args, tag);
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(cmdID);
+    c->ReleaseLocalReference(rxTB);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
+/**
+ * Handles the TBN_GETBUTTONINFO notification.  This is sent from the toolbar
+ * customization dialog to collect the information for the buttons it puts in
+ * the dialog.
+ *
+ * The user is suppossed to fill in the TBBUTTON struct with the information for
+ * a button and return true.  The dialog keeps sending the message until false
+ * is returned.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  The OS allocates a buffer and sends a point to it, along with the
+ *           size of the buffer.  On Win7, it has always been 128, so we
+ *           restrict the ToolBar text limit to 127.  Need to check if it is 128
+ *           on XP.
+ *
+ *           We have the user sent the iString attribute in the TBUTTON sent to
+ *           them, and then here we copy it to the system buffer.  (Hmm, what if
+ *           the user is using the string pool?)
+ *
+ *           In NMTOOLBAR, the rcButton is always all 0's or garbage.  In
+ *           tbButton field, the dwData and iString fields are always garbage
+ *           and the others 0's. Although the fState field seems to increment by
+ *           1 each time though.  We just set everything in the tbButton struct
+ *           to zero, and then set the
+ */
+MsgReplyType tbnGetButtonInfo(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam,
+                              pCPlainBaseDialog pcpbd)
+{
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxTB   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winToolBar, true);
+
+    LPNMTOOLBAR nmtb = (LPNMTOOLBAR)lParam;
+
+    memset(&nmtb->tbButton, 0, sizeof(TBBUTTON));
+    nmtb->tbButton.iBitmap  = I_IMAGENONE;
+
+    RexxObjectPtr index   = c->Int32(nmtb->iItem + 1);
+    RexxObjectPtr textLen = c->Int32(nmtb->cchText - 1);
+    RexxObjectPtr rxTbb   = rxTbbFromTbb(c, &nmtb->tbButton);
+
+    RexxArrayObject args = c->ArrayOfFour(idFrom, index, textLen, rxTbb);
+    c->ArrayPut(args, rxTB, 5);
+
+    // The Rexx programmer returns .true, to indicate the tbButton struct is
+    // filled in, and then false to indicate she is has no more buttons.
+    RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+    msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+    if ( msgReply == TheTrueObj )
+    {
+        TBBUTTON *tbb = (TBBUTTON *)c->ObjectToCSelf(rxTbb);
+        memcpy(&nmtb->tbButton, tbb, sizeof(TBBUTTON));
+
+        strcpy(nmtb->pszText, (char *)tbb->iString);
+        tbb->iString = NULL;
+        setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TRUE);
+    }
+    else if ( msgReply == TheFalseObj )
+    {
+        setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, FALSE);
+    }
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(index);
+    c->ReleaseLocalReference(textLen);
+    c->ReleaseLocalReference(rxTbb);
+    c->ReleaseLocalReference(rxTB);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
+MsgReplyType tbnInitCustomize(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxTB   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winToolBar, true);
+    RexxArrayObject args = c->ArrayOfTwo(idFrom, rxTB);
+
+    // The Rexx programmer returns .true, to indicate the help button should be
+    // shown, or false, it shouldn'be shown.  The return to Windows is
+    // TBNRF_HIDEHELP to hide the button.
+    RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+    msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+    if ( msgReply == TheFalseObj )
+    {
+        setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TBNRF_HIDEHELP);
+    }
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxTB);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
+/**
+ * Handles the TBN_QUERYDELETE and TBN_QUERYINSERT notifications.
+ *
+ * The user returns true to allow the delete or insert and false to disallow it.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param lParam
+ * @param pcpbd
+ * @param code
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  In the NMTOOLBAR struct pszText, rcButton, and cchText are not
+ *           valid, we ignore them.
+ */
+MsgReplyType tbnQuery(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam,
+                      pCPlainBaseDialog pcpbd, uint32_t code)
+{
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxTB   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winToolBar, true);
+
+    LPNMTOOLBAR nmtb = (LPNMTOOLBAR)lParam;
+
+    RexxObjectPtr index  = c->Int32(nmtb->iItem + 1);
+    RexxObjectPtr rxTbb  = rxTbbFromTbb(c, &nmtb->tbButton);
+    RexxArrayObject args = c->ArrayOfFour(idFrom, index, rxTbb, rxTB);
+
+    RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+    msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+    if ( msgReply == TheTrueObj )
+    {
+        setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TRUE);
+    }
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(index);
+    c->ReleaseLocalReference(rxTbb);
+    c->ReleaseLocalReference(rxTB);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
+MsgReplyType tbnSimple(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxTB   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winToolBar, true);
+    RexxArrayObject args = c->ArrayOfTwo(idFrom, rxTB);
+
+    genericTbnInvoke(c, pcpbd, methodName, args, tag);
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxTB);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
 /** ToolBar::addBitmap()
  *
  *  Adds one or more images to the list of button images available for a
@@ -1278,6 +1492,107 @@ RexxMethod1(uint32_t, tb_buttonCount, CSELF, pCSelf)
     return (uint32_t)SendMessage(getDChCtrl(pCSelf), TB_BUTTONCOUNT, 0, 0);
 }
 
+/** ToolBar::changeBitmap()
+ */
+RexxMethod5(logical_t, tb_changeBitmap, RexxObjectPtr, rxCmdID, RexxObjectPtr, rxBitmapID,
+            OPTIONAL_uint32_t, ilID, OPTIONAL_uint32_t, offset, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+
+    int32_t bitmapID = constructBitmapID(context, rxBitmapID, ilID, offset, 2);
+    if ( bitmapID == OOD_INVALID_ITEM_ID )
+    {
+        return FALSE;
+    }
+
+    return SendMessage(getDChCtrl(pCSelf), TB_CHANGEBITMAP, id, bitmapID);
+}
+
+/** ToolBar::checkButton()
+ */
+RexxMethod3(logical_t, tb_checkButton, RexxObjectPtr, rxCmdID, OPTIONAL_logical_t, check, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+
+    if ( argumentOmitted(2) )
+    {
+        check = TRUE;
+    }
+
+    return SendMessage(getDChCtrl(pCSelf), TB_CHECKBUTTON, id, check);
+}
+
+/** ToolBar::commandToIndex()
+ *
+ *  Retrieves the one-based index for the button associated with the specified
+ *  command identifier.
+ *
+ *  @param cmdID
+ *
+ *  @returns  The one-based index of the button with the specified command ID,
+ *            or zero if there is no such command ID.
+ */
+RexxMethod2(uint32_t, tb_commandToIndex, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return 0;
+    }
+
+    LPARAM index = SendMessage(getDChCtrl(pCSelf), TB_COMMANDTOINDEX, id, 0);
+    index++;
+    return (uint32_t)index;
+}
+
+/** ToolBar::indexToCommand()
+ *
+ *  Retrieves the command ID for the button specified by the. one-based index.
+ *
+ *  @param index
+ *
+ *  @returns  The command ID for the button with the specified index, or zero if
+ *         there is no such command ID for the button, or .nil on error.
+ */
+RexxMethod2(RexxObjectPtr, tb_indexTocommand, uint32_t, index, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+    TBBUTTON      tbb    = { 0 };
+
+    RexxMethodContext *c = context;
+    index--;
+    if ( SendMessage(getDChCtrl(pCSelf), TB_GETBUTTON, index, (LPARAM)&tbb) )
+    {
+        result = c->UnsignedInt32(tbb.idCommand);
+    }
+    return result;
+}
+
+/** ToolBar::customize()
+ *
+ *  Displays the Customize Toolbar dialog box.
+ *
+ *  @returns  Zero, always.
+ *
+ *  @note  The dialog must connect and handle the QUERYINSERT and QUERYDELETE
+ *         notifications for the Customize Toolbar dialog box to appear. If the
+ *         toolbar does not handle those notifications, the Customize Toolbar
+ *         dialog starts to appear and closes immediately.
+ */
+RexxMethod1(uint32_t, tb_customize, CSELF, pCSelf)
+{
+    SendMessage(getDChCtrl(pCSelf), TB_CUSTOMIZE, 0, 0);
+    return 0;
+}
+
 /** ToolBar::getButton()
  *
  *  Returns a TbButton object containing the button information for the
@@ -1362,6 +1677,44 @@ RexxMethod2(RexxObjectPtr, tb_getButtonText, RexxObjectPtr, rxCmdID, CSELF, pCSe
     LocalFree(buf);
 
 done_out:
+    return result;
+}
+
+/** ToolBar::getButtonTextEx()
+ *
+ *  Gets the text for the specified button.
+ *
+ *  @param  cmdID  [reguired]  Specifies the button, by its command ID, to get
+ *                 the text for.
+ *
+ *  @return  The text for the button, or .nil on error.
+ *
+ *  @note  Once the setButtonText() method has been used to set the text of a
+ *         button, the getButtonText() method will no longer return the text of
+ *         the button. The getButtonTextEx() method has to be used.
+ *
+ *  @remarks
+ */
+RexxMethod2(RexxObjectPtr, tb_getButtonTextEx, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+    uint32_t      id     = oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return result;
+    }
+
+    TBBUTTONINFO  info = { sizeof(TBBUTTONINFO), TBIF_TEXT };
+    char          buf[TBBUTTON_TEXT_MAX + 1] = { '\0' };
+
+    info.pszText = (LPSTR)buf;
+    info.cchText = TBBUTTON_TEXT_MAX + 1;
+
+    if ( SendMessage(getDChCtrl(pCSelf), TB_GETBUTTONINFO, id, (LPARAM)&info) != -1 )
+    {
+        result = context->String((CSTRING)buf);
+    }
+
     return result;
 }
 
@@ -1597,6 +1950,35 @@ RexxMethod2(RexxObjectPtr, tb_setBitmapSize, ARGLIST, args, CSELF, pCSelf)
 
 done_out:
     return result;
+}
+
+/** ToolBar::setButtonText()
+ *
+ *  Sets the text for the specified button.
+ *
+ *  @param  text   [required]  The new text for the button.
+ *
+ *  @param  cmdID  [reguired]  Specifies the button, by its command ID, that is
+ *                 to have its text set.
+ *
+ *  @return  True on success, false on error.
+ *
+ *  @note  Once this method is invoked to set the text of a button, the
+ *         getButtonText() method will no longer return the text of the button.
+ *         The getButtonTextEx() method will have to be used.
+ */
+RexxMethod3(logical_t, tb_setButtonText, CSTRING, text, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 2, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+
+    TBBUTTONINFO info = { sizeof(TBBUTTONINFO), TBIF_TEXT };
+    info.pszText = (char *)text;
+
+    return SendMessage(getDChCtrl(pCSelf), TB_SETBUTTONINFO, id, (LPARAM)&info) != -1;
 }
 
 /** ToolBar::setDisabledImageList()

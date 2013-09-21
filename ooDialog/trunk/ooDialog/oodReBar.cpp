@@ -780,27 +780,85 @@ uint32_t keyword2rbsExt(CSTRING flags)
     return c->String(buf);
 }
 
-
-MsgReplyType rbnReleasedCapture(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
+static void genericRbnInvoke(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args, uint32_t tag)
 {
-    RexxObjectPtr   idFrom = idFrom2rexxArg(c, lParam);
-    RexxObjectPtr   rxRB   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winReBar, true);
-    RexxArrayObject args   = c->ArrayOfTwo(idFrom, rxRB);
+    switch ( tag & TAG_EXTRAMASK )
+    {
+        case TAG_REPLYFROMREXX :
+            invokeDirect(c, pcpbd, methodName, args);
+            break;
 
-    if ( (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX )
-    {
-        invokeDirect(c, pcpbd, methodName, args);
+        case TAG_SYNC :
+            invokeSync(c, pcpbd, methodName, args);
+            break;
+
+        default :
+            invokeDispatch(c, pcpbd, methodName, args);
+            break;
     }
-    else
+}
+
+/**
+ * Sent by a rebar control when the control receives a WM_NCHITTEST message.
+ *
+ * Return zero to allow the rebar to perform default processing of the hit test
+ * message, or return one of the HT* values documented under WM_NCHITTEST to
+ * override the default hit test processing.
+ *
+ * The Rexx event handler is sent these args:
+ *
+ *   use arg id, bandIndex (1-based), point, ReBar object
+ *
+ * and returns 0 or one of the HT keywords.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  The NMMOUSE struct has a dwItemData field that is sometimes not
+ *           null.  But, it is definitely not the itemData of a band, and the
+ *           doc for the ReBar NM_NCHITTEST does not say it is filled in.  Do
+ *           not send it to Rexx.
+ */
+MsgReplyType rbnNcHitTest(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    MsgReplyType  winReply = ReplyTrue;
+    RexxObjectPtr idFrom   = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxRB     = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winReBar, true);
+
+    LPNMMOUSE pMouse = (LPNMMOUSE)lParam;
+
+    RexxObjectPtr bandIndex = c->Uintptr(pMouse->dwItemSpec + 1);
+    RexxObjectPtr pt        = rxNewPoint(c, &pMouse->pt);
+    RexxObjectPtr htWord    = ncHitTest2string(c, pMouse->dwHitInfo);
+    RexxArrayObject args    = c->ArrayOfFour(idFrom, bandIndex, pt, htWord);
+
+    c->ArrayPut(args, rxRB, 5);
+
+    RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+    if ( msgReplyIsGood(c, pcpbd, msgReply, methodName, false) )
     {
-        invokeDispatch(c, pcpbd, methodName, args);
+        CSTRING htText = c->ObjectToStringValue(msgReply);
+        if ( *htText != '0' )
+        {
+            uint32_t ht = keyword2ncHitTestt(htText);
+            setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, ht);
+            winReply = ReplyTrue;
+        }
     }
 
     c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(bandIndex);
+    c->ReleaseLocalReference(pt);
+    c->ReleaseLocalReference(htWord);
     c->ReleaseLocalReference(rxRB);
     c->ReleaseLocalReference(args);
 
-    return ReplyTrue;
+    return winReply;
 }
 
 

@@ -98,9 +98,9 @@ return 0
     self~createListView(IDC_LISTVIEW, 10, 20, 305, 145, "REPORT SHOWSELALWAYS")
     self~createPushButton(IDOK, 280, 175, 35, 15, "DEFAULT", "Close")
 
-    self~connectListViewEvent(IDC_LISTVIEW, "CLICK", onClick)
-    self~connectListViewEvent(IDC_LISTVIEW, "BEGINSCROLL", onBeginScroll)
-    self~connectListViewEvent(IDC_LISTVIEW, "ENDSCROLL", onBeginScroll)
+    self~connectListViewEvent(IDC_LISTVIEW, "CLICK", onClick, .true)
+    self~connectListViewEvent(IDC_LISTVIEW, "BEGINSCROLL", onBeginScroll, sync)
+    self~connectListViewEvent(IDC_LISTVIEW, "ENDSCROLL", onBeginScroll, .false)
 
 
 /** initDialog()

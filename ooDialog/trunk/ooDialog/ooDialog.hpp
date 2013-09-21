@@ -152,6 +152,7 @@
 #define TAG_TOOLTIP               0x0000000D
 #define TAG_REBAR                 0x0000000E
 #define TAG_MENU                  0x0000000F
+#define TAG_TOOLBAR               0x00000010
 #define TAG_CUSTOMDRAW            0x000000FF
 
 /**
@@ -221,6 +222,8 @@
 // from the event handler. This is for backwards compatibility where it is
 // expected that existing programs have event handlers but don't return values.
 #define TAG_SYNC                  0x08000000
+
+#define TAG_INVALID               0xFFFFFFFF
 
 // Describes how a message searched for in the message table should be handled.
 typedef enum

@@ -271,39 +271,6 @@ inline CSTRING wm2name(uint32_t mcn)
     return "onWM";
 }
 
-inline CSTRING ncHitTest2string(WPARAM hit)
-{
-    switch ( hit )
-    {
-        case HTERROR       : return "ERROR";
-        case HTTRANSPARENT : return "TRANSPARENT";
-        case HTNOWHERE     : return "NOWHERE";
-        case HTCLIENT      : return "CLIENT";
-        case HTCAPTION     : return "CAPTION";
-        case HTSYSMENU     : return "SYSMENU";
-        case HTGROWBOX     : return "GROWBOX";
-        case HTMENU        : return "MENU";
-        case HTHSCROLL     : return "HSCROLL";
-        case HTVSCROLL     : return "VSCROLL";
-        case HTMINBUTTON   : return "MINBUTTON";
-        case HTMAXBUTTON   : return "MAXBUTTON";
-        case HTLEFT        : return "LEFT";
-        case HTRIGHT       : return "RIGHT";
-        case HTTOP         : return "TOP";
-        case HTTOPLEFT     : return "TOPLEFT";
-        case HTTOPRIGHT    : return "TOPRIGHT";
-        case HTBOTTOM      : return "BOTTOM";
-        case HTBOTTOMLEFT  : return "BOTTOMLEFT";
-        case HTBOTTOMRIGHT : return "BOTTOMRIGHT";
-        case HTBORDER      : return "BORDER";
-        case HTOBJECT      : return "OBJECT";
-        case HTCLOSE       : return "CLOSE";
-        case HTHELP        : return "HELP";
-    }
-    return "err";
-}
-
-
 /**
  * Produces a rexx argument array for the standard mouse event handler
  * arugments.  Which are: keyState, mousePos, mouseObj.

@@ -657,6 +657,23 @@ uint32_t getCommonWindowStyles(CSTRING opts, bool defaultBorder, bool defaultTab
 }
 
 
+uint32_t ccsStyle(CSTRING opts, uint32_t style)
+{
+    if ( StrStrI(opts, "CCS_ADJUSTABLE"   ) != NULL ) style |= CCS_ADJUSTABLE        ;
+    if ( StrStrI(opts, "CCS_BOTTOM"       ) != NULL ) style |= CCS_BOTTOM            ;
+    if ( StrStrI(opts, "CCS_LEFT"         ) != NULL ) style |= CCS_LEFT              ;
+    if ( StrStrI(opts, "CCS_NODIVIDER"    ) != NULL ) style |= CCS_NODIVIDER         ;
+    if ( StrStrI(opts, "CCS_NOMOVEX"      ) != NULL ) style |= CCS_NOMOVEX           ;
+    if ( StrStrI(opts, "CCS_NOMOVEY"      ) != NULL ) style |= CCS_NOMOVEY           ;
+    if ( StrStrI(opts, "CCS_NOPARENTALIGN") != NULL ) style |= CCS_NOPARENTALIGN     ;
+    if ( StrStrI(opts, "CCS_NORESIZE"     ) != NULL ) style |= CCS_NORESIZE          ;
+    if ( StrStrI(opts, "CCS_RIGHT"        ) != NULL ) style |= CCS_RIGHT             ;
+    if ( StrStrI(opts, "CCS_TOP"          ) != NULL ) style |= CCS_TOP               ;
+    if ( StrStrI(opts, "CCS_VERT"         ) != NULL ) style |= CCS_VERT              ;
+    return style;
+}
+
+
 uint32_t getCommonButtonStyles(uint32_t style, CSTRING opts, oodControl_t button)
 {
     style |= getCommonWindowStyles(opts, false, button != winRadioButton);
@@ -708,6 +725,8 @@ uint32_t listViewStyle(CSTRING opts, uint32_t style)
 
 uint32_t reBarStyle(CSTRING opts, uint32_t style)
 {
+    style |= ccsStyle(opts, style);
+
     if ( StrStrI(opts, "AUTOSIZE")          != NULL ) style |= RBS_AUTOSIZE       ;
     if ( StrStrI(opts, "BANDBORDERS")       != NULL ) style |= RBS_BANDBORDERS    ;
     if ( StrStrI(opts, "DBLCLKTOGGLE")      != NULL ) style |= RBS_DBLCLKTOGGLE   ;
@@ -716,17 +735,6 @@ uint32_t reBarStyle(CSTRING opts, uint32_t style)
     if ( StrStrI(opts, "TOOLTIPS")          != NULL ) style |= RBS_TOOLTIPS       ;
     if ( StrStrI(opts, "VARHEIGHT")         != NULL ) style |= RBS_VARHEIGHT      ;
     if ( StrStrI(opts, "VERTICALGRIPPER")   != NULL ) style |= RBS_VERTICALGRIPPER;
-    if ( StrStrI(opts, "CCS_ADJUSTABLE")    != NULL ) style |= CCS_ADJUSTABLE     ;
-    if ( StrStrI(opts, "CCS_BOTTOM")        != NULL ) style |= CCS_BOTTOM         ;
-    if ( StrStrI(opts, "CCS_LEFT")          != NULL ) style |= CCS_LEFT           ;
-    if ( StrStrI(opts, "CCS_NODIVIDER")     != NULL ) style |= CCS_NODIVIDER      ;
-    if ( StrStrI(opts, "CCS_NOMOVEX")       != NULL ) style |= CCS_NOMOVEX        ;
-    if ( StrStrI(opts, "CCS_NOMOVEY")       != NULL ) style |= CCS_NOMOVEY        ;
-    if ( StrStrI(opts, "CCS_NOPARENTALIGN") != NULL ) style |= CCS_NOPARENTALIGN  ;
-    if ( StrStrI(opts, "CCS_NORESIZE")      != NULL ) style |= CCS_NORESIZE       ;
-    if ( StrStrI(opts, "CCS_RIGHT")         != NULL ) style |= CCS_RIGHT          ;
-    if ( StrStrI(opts, "CCS_TOP")           != NULL ) style |= CCS_TOP            ;
-    if ( StrStrI(opts, "CCS_VERT")          != NULL ) style |= CCS_VERT           ;
     return style;
 }
 
@@ -812,6 +820,22 @@ uint32_t tabStyle(CSTRING opts, uint32_t style)
     if ( StrStrI(opts, "LABELLEFT"   ) != NULL ) style |= TCS_FORCELABELLEFT;
     if ( StrStrI(opts, "ALIGNRIGHT"  ) != NULL ) style |= TCS_RIGHTJUSTIFY;
     if ( StrStrI(opts, "CLIPSIBLINGS") != NULL ) style |= WS_CLIPSIBLINGS;
+    return style;
+}
+
+
+uint32_t toolBarStyle(CSTRING opts, uint32_t style)
+{
+    style |= ccsStyle(opts, style);
+
+    if ( StrStrI(opts, "TOOLTIPS"         ) != NULL ) style |= TBSTYLE_TOOLTIPS      ;
+    if ( StrStrI(opts, "WRAPABLE"         ) != NULL ) style |= TBSTYLE_WRAPABLE      ;
+    if ( StrStrI(opts, "ALTDRAG"          ) != NULL ) style |= TBSTYLE_ALTDRAG       ;
+    if ( StrStrI(opts, "FLAT"             ) != NULL ) style |= TBSTYLE_FLAT          ;
+    if ( StrStrI(opts, "LIST"             ) != NULL ) style |= TBSTYLE_LIST          ;
+    if ( StrStrI(opts, "CUSTOMERASE"      ) != NULL ) style |= TBSTYLE_CUSTOMERASE   ;
+    if ( StrStrI(opts, "REGISTERDROP"     ) != NULL ) style |= TBSTYLE_REGISTERDROP  ;
+    if ( StrStrI(opts, "TRANSPARENT"      ) != NULL ) style |= TBSTYLE_TRANSPARENT   ;
     return style;
 }
 
@@ -914,6 +938,11 @@ uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
             style = tabStyle(opts, style);
             break;
 
+        case winToolBar :
+            style |= getCommonWindowStyles(opts, false, true);
+            style = toolBarStyle(opts, style);
+            break;
+
         case winTreeView :
             style |= getCommonWindowStyles(opts, true, true);
             style = treeViewStyle(opts, style);
@@ -937,6 +966,68 @@ uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
     return style;
 }
 
+/**
+ * Used by create push buttons, radio buttons, and check boxes to determine if
+ * an automatic event connection is desired.
+ *
+ * @param opts
+ * @param ctrl
+ *
+ * @return bool
+ */
+inline bool needButtonConnect(CSTRING opts, oodControl_t ctrl)
+{
+    if ( opts != NULL )
+    {
+        switch ( ctrl )
+        {
+            case winCheckBox :
+                if ( StrStrI(opts, "CONNECTCHECKS") != NULL )
+                {
+                    return true;
+                }
+                break;
+            case winRadioButton :
+                if ( StrStrI(opts, "CONNECTRADIOS") != NULL )
+                {
+                    return true;
+                }
+                break;
+            case winPushButton :
+                if ( StrStrI(opts, "CONNECTBUTTONS") != NULL )
+                {
+                    return true;
+                }
+                break;
+            default :
+                break;
+        }
+    }
+    return false;
+}
+
+/**
+ * Determines if one of the keyword options for loading the dialog template from
+ * a .rc file is contained in the specified string
+ *
+ * @param opts
+ *
+ * @return bool
+ */
+inline bool isRcLoadItemsArg(CSTRING opts)
+{
+    if ( opts != NULL )
+    {
+        if ( StrStrI(opts, "CENTER")         != NULL ||
+             StrStrI(opts, "CONNECTBUTTONS") != NULL ||
+             StrStrI(opts, "CONNECTCHECKS")  != NULL ||
+             StrStrI(opts, "CONNECTRADIOS")  != NULL )
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 /**
  * Check if the word 'CENTER', case insignificant, is in a string.  Note that
@@ -962,6 +1053,168 @@ static bool hasCenterFlag(CSTRING opts)
     return false;
 }
 
+
+bool fillInButtonUsingIndex(RexxMethodContext *c, RexxStemObject inp, pButtonData btn, uint32_t i, RexxObjectPtr rexxSelf)
+{
+    char buf[256] = {'\0'};
+
+    _snprintf(buf, sizeof(buf), "%d.ID", i);
+
+    RexxObjectPtr value = c->GetStemElement(inp, buf);
+    if ( value == NULLOBJECT )
+    {
+        missingIndexInStemException(c->threadContext, 5, "ID");
+        return false;
+    }
+
+    int32_t id = checkID(c, value, rexxSelf);
+    if ( id < 1 )
+    {
+        return false;
+    }
+    btn->id = (uint32_t)id;
+
+    _snprintf(buf, sizeof(buf), "%d.TEXT", i);
+
+    value = c->GetStemElement(inp, buf);
+    btn->text = (value == NULLOBJECT) ? "" : c->ObjectToStringValue(value);
+
+    _snprintf(buf, sizeof(buf), "%d.METHOD", i);
+
+    value = c->GetStemElement(inp, buf);
+    btn->methName = (value == NULLOBJECT) ? "" : c->ObjectToStringValue(value);
+
+    uint32_t style = WS_CHILD;
+    CSTRING  opts  = NULL;
+    _snprintf(buf, sizeof(buf), "%d.OPTS", i);
+
+    value = c->GetStemElement(inp, buf);
+    if ( value == NULLOBJECT )
+    {
+        style |= BS_PUSHBUTTON;
+        opts = "";
+    }
+    else
+    {
+        opts = c->ObjectToStringValue(value);
+        style |= ( StrStrI(opts, "DEFAULT") != NULL ? BS_DEFPUSHBUTTON : BS_PUSHBUTTON );
+    }
+    btn->opts = getCommonButtonStyles(style, opts, winPushButton);
+
+    return true;
+}
+
+bool fillInButtonFromStem(RexxMethodContext *c, RexxStemObject s, pButtonData btn, RexxObjectPtr rexxSelf)
+{
+    RexxObjectPtr value = c->GetStemElement(s, "ID");
+    if ( value == NULLOBJECT )
+    {
+        missingIndexInStemException(c->threadContext, 5, "ID");
+        return false;
+    }
+
+    int32_t id = checkID(c, value, rexxSelf);
+    if ( id < 1 )
+    {
+        return false;
+    }
+    btn->id = (uint32_t)id;
+
+    value = c->GetStemElement(s, "TEXT");
+    btn->text = (value == NULLOBJECT) ? "" : c->ObjectToStringValue(value);
+
+    value = c->GetStemElement(s, "METHOD");
+    btn->methName = (value == NULLOBJECT) ? "" : c->ObjectToStringValue(value);
+
+    uint32_t style = WS_CHILD;
+    CSTRING  opts  = NULL;
+
+    value = c->GetStemElement(s, "OPTS");
+    if ( value == NULLOBJECT )
+    {
+        style |= BS_PUSHBUTTON;
+        opts = "";
+    }
+    else
+    {
+        CSTRING opts = c->ObjectToStringValue(value);
+        style |= ( StrStrI(opts, "DEFAULT") != NULL ? BS_DEFPUSHBUTTON : BS_PUSHBUTTON );
+    }
+    style = getCommonButtonStyles(style, opts, winPushButton);
+
+    btn->opts = style;
+
+    return true;
+}
+
+pButtonData *parseButtonStem(RexxMethodContext *c, uint32_t count, RexxStemObject inp, RexxObjectPtr rexxSelf)
+{
+    pButtonData *result = NULL;
+    size_t       used   = 0;
+
+    result = (pButtonData *)LocalAlloc(LPTR, count * sizeof(pButtonData *));
+    if ( result == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        goto err_out;
+    }
+
+    for ( uint32_t i = 1; i <= count; i++)
+    {
+        pButtonData btn = (pButtonData)LocalAlloc(LPTR, sizeof(ButtonData));
+        if ( btn == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            goto err_out;
+        }
+
+        result[i - 1] = btn;
+        used++;
+
+        RexxStemObject s = (RexxStemObject)c->GetStemArrayElement(inp, i);
+        if ( s != NULLOBJECT )
+        {
+            if ( ! fillInButtonFromStem(c, s, btn, rexxSelf) )
+            {
+                goto err_out;
+            }
+        }
+        else
+        {
+            if ( ! fillInButtonUsingIndex(c, inp, btn, i, rexxSelf) )
+            {
+                goto err_out;
+            }
+        }
+    }
+
+    return result;
+
+err_out:
+
+    for ( size_t i = 0; i < used; i++)
+    {
+        LocalFree(result[i]);
+    }
+    safeLocalFree(result);
+    return NULL;
+}
+
+/**
+ * Checks if the type of control is one that has "data".
+ *
+ * This is related to the original ooDialog developer's odd notion that a dialog
+ * control had "data" and therefore a "data attribute" made sense.
+ *
+ *
+ * @param ctrl
+ *
+ * @return bool
+ */
+inline bool controlHasData(oodControl_t ctrl)
+{
+    return ! (ctrl == winReBar || ctrl == winToolBar || ctrl == winToolTip);
+}
 
 int32_t connectCreatedControl(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr rxID, int32_t id,
                               CSTRING attributeName, oodControl_t ctrl)
@@ -1800,69 +2053,6 @@ RexxMethod8(int32_t, dyndlg_createStaticFrame, OPTIONAL_RexxObjectPtr, rxID, int
     return createStaticFrame(context, rxID, x, y, cx, cy, opts, msgName + 6, 0, pcdd);
 }
 
-/**
- * Used by create push buttons, radio buttons, and check boxes to determine if
- * an automatic event connection is desired.
- *
- * @param opts
- * @param ctrl
- *
- * @return bool
- */
-inline bool needButtonConnect(CSTRING opts, oodControl_t ctrl)
-{
-    if ( opts != NULL )
-    {
-        switch ( ctrl )
-        {
-            case winCheckBox :
-                if ( StrStrI(opts, "CONNECTCHECKS") != NULL )
-                {
-                    return true;
-                }
-                break;
-            case winRadioButton :
-                if ( StrStrI(opts, "CONNECTRADIOS") != NULL )
-                {
-                    return true;
-                }
-                break;
-            case winPushButton :
-                if ( StrStrI(opts, "CONNECTBUTTONS") != NULL )
-                {
-                    return true;
-                }
-                break;
-            default :
-                break;
-        }
-    }
-    return false;
-}
-
-/**
- * Determines if one of the keyword options for loading the dialog template from
- * a .rc file is contained in the specified string
- *
- * @param opts
- *
- * @return bool
- */
-inline bool isRcLoadItemsArg(CSTRING opts)
-{
-    if ( opts != NULL )
-    {
-        if ( StrStrI(opts, "CENTER")         != NULL ||
-             StrStrI(opts, "CONNECTBUTTONS") != NULL ||
-             StrStrI(opts, "CONNECTCHECKS")  != NULL ||
-             StrStrI(opts, "CONNECTRADIOS")  != NULL )
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 /** DynamicDialog::createPushButton()
  *
  */
@@ -1928,152 +2118,6 @@ RexxMethod10(int32_t, dyndlg_createPushButton, RexxObjectPtr, rxID, int, x, int,
 
     safeFree((void *)methName);
     return result;
-}
-
-bool fillInButtonUsingIndex(RexxMethodContext *c, RexxStemObject inp, pButtonData btn, uint32_t i, RexxObjectPtr rexxSelf)
-{
-    char buf[256] = {'\0'};
-
-    _snprintf(buf, sizeof(buf), "%d.ID", i);
-
-    RexxObjectPtr value = c->GetStemElement(inp, buf);
-    if ( value == NULLOBJECT )
-    {
-        missingIndexInStemException(c->threadContext, 5, "ID");
-        return false;
-    }
-
-    int32_t id = checkID(c, value, rexxSelf);
-    if ( id < 1 )
-    {
-        return false;
-    }
-    btn->id = (uint32_t)id;
-
-    _snprintf(buf, sizeof(buf), "%d.TEXT", i);
-
-    value = c->GetStemElement(inp, buf);
-    btn->text = (value == NULLOBJECT) ? "" : c->ObjectToStringValue(value);
-
-    _snprintf(buf, sizeof(buf), "%d.METHOD", i);
-
-    value = c->GetStemElement(inp, buf);
-    btn->methName = (value == NULLOBJECT) ? "" : c->ObjectToStringValue(value);
-
-    uint32_t style = WS_CHILD;
-    CSTRING  opts  = NULL;
-    _snprintf(buf, sizeof(buf), "%d.OPTS", i);
-
-    value = c->GetStemElement(inp, buf);
-    if ( value == NULLOBJECT )
-    {
-        style |= BS_PUSHBUTTON;
-        opts = "";
-    }
-    else
-    {
-        opts = c->ObjectToStringValue(value);
-        style |= ( StrStrI(opts, "DEFAULT") != NULL ? BS_DEFPUSHBUTTON : BS_PUSHBUTTON );
-    }
-    btn->opts = getCommonButtonStyles(style, opts, winPushButton);
-
-    return true;
-}
-
-bool fillInButtonFromStem(RexxMethodContext *c, RexxStemObject s, pButtonData btn, RexxObjectPtr rexxSelf)
-{
-    RexxObjectPtr value = c->GetStemElement(s, "ID");
-    if ( value == NULLOBJECT )
-    {
-        missingIndexInStemException(c->threadContext, 5, "ID");
-        return false;
-    }
-
-    int32_t id = checkID(c, value, rexxSelf);
-    if ( id < 1 )
-    {
-        return false;
-    }
-    btn->id = (uint32_t)id;
-
-    value = c->GetStemElement(s, "TEXT");
-    btn->text = (value == NULLOBJECT) ? "" : c->ObjectToStringValue(value);
-
-    value = c->GetStemElement(s, "METHOD");
-    btn->methName = (value == NULLOBJECT) ? "" : c->ObjectToStringValue(value);
-
-    uint32_t style = WS_CHILD;
-    CSTRING  opts  = NULL;
-
-    value = c->GetStemElement(s, "OPTS");
-    if ( value == NULLOBJECT )
-    {
-        style |= BS_PUSHBUTTON;
-        opts = "";
-    }
-    else
-    {
-        CSTRING opts = c->ObjectToStringValue(value);
-        style |= ( StrStrI(opts, "DEFAULT") != NULL ? BS_DEFPUSHBUTTON : BS_PUSHBUTTON );
-    }
-    style = getCommonButtonStyles(style, opts, winPushButton);
-
-    btn->opts = style;
-
-    return true;
-}
-
-pButtonData *parseButtonStem(RexxMethodContext *c, uint32_t count, RexxStemObject inp, RexxObjectPtr rexxSelf)
-{
-    pButtonData *result = NULL;
-    size_t       used   = 0;
-
-    result = (pButtonData *)LocalAlloc(LPTR, count * sizeof(pButtonData *));
-    if ( result == NULL )
-    {
-        outOfMemoryException(c->threadContext);
-        goto err_out;
-    }
-
-    for ( uint32_t i = 1; i <= count; i++)
-    {
-        pButtonData btn = (pButtonData)LocalAlloc(LPTR, sizeof(ButtonData));
-        if ( btn == NULL )
-        {
-            outOfMemoryException(c->threadContext);
-            goto err_out;
-        }
-
-        result[i - 1] = btn;
-        used++;
-
-        RexxStemObject s = (RexxStemObject)c->GetStemArrayElement(inp, i);
-        if ( s != NULLOBJECT )
-        {
-            if ( ! fillInButtonFromStem(c, s, btn, rexxSelf) )
-            {
-                goto err_out;
-            }
-        }
-        else
-        {
-            if ( ! fillInButtonUsingIndex(c, inp, btn, i, rexxSelf) )
-            {
-                goto err_out;
-            }
-        }
-    }
-
-    return result;
-
-err_out:
-
-    for ( size_t i = 0; i < used; i++)
-    {
-        LocalFree(result[i]);
-    }
-    safeLocalFree(result);
-    return NULL;
 }
 
 /** DynamicDialog::createPushButtonStem()
@@ -2754,25 +2798,6 @@ RexxMethod7(int32_t, dyndlg_createProgressBar, RexxObjectPtr, rxID, int, x, int,
         return -2;
     }
     return 0;
-}
-
-
-/**
- * Checks if the type of control is one that has "data".
- *
- * This is related to the original ooDialog developer's odd notion that a dialog
- * control had "data" and therefore a "data attribute" made sense.
- *
- *
- * @author Administrator (9/4/2013)
- *
- * @param ctrl
- *
- * @return bool
- */
-inline bool controlHasData(oodControl_t ctrl)
-{
-    return ! (ctrl == winReBar || ctrl == winToolTip);
 }
 
 /** DynamicDialog::createNamedControl()

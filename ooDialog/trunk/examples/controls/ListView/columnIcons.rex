@@ -36,8 +36,8 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  This example shows ...
- *
+ *  This example shows how to add icons to the invidual columns of a list-view
+ *  when it is in report view.
  *
  */
 
@@ -75,6 +75,7 @@
 ::method onReport
     expose list
     list~setView("REPORT")
+    return 0
 
 ::method onList
     expose list
@@ -118,11 +119,12 @@
 
 ::method connectEvents private
 
-    self~connectButtonEvent(IDC_RB_REPORT, "CLICKED", onReport)
-    self~connectButtonEvent(IDC_RB_LIST, "CLICKED", onList)
+    self~connectButtonEvent(IDC_RB_REPORT, "CLICKED", onReport, .true)
+    self~connectButtonEvent(IDC_RB_LIST, "CLICKED", onList, sync)
     self~connectButtonEvent(IDC_RB_ICON, "CLICKED", onIcon)
-    self~connectButtonEvent(IDC_RB_SMALL_ICON, "CLICKED", onSmallIcon)
+    self~connectButtonEvent(IDC_RB_SMALL_ICON, "CLICKED", onSmallIcon, .false)
     self~connectListViewEvent(IDC_LV_VIEWS, "COLUMNCLICK", onColClick, .true)
+    self~connectListViewEvent(IDC_LV_VIEWS, "BEGINDRAG", defListDragHandler)
 
 
 ::method setImageLists private

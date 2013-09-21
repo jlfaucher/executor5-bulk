@@ -38,9 +38,12 @@
 
 rcflags_common = /DWIN32 /v
 
-all:  toolBar.dll
+all:  toolBar.dll customizeToolBar.dll
 
 toolBar.dll: toolBar.res
+    link /NOLOGO  $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) -out:$(@B).dll
+
+customizeToolBar.dll: customizeToolBar.res
     link /NOLOGO  $(@B).res /NOENTRY /DLL /MACHINE:$(MACHINE) -out:$(@B).dll
 
 
@@ -48,3 +51,5 @@ toolBar.dll: toolBar.res
 toolBar.res: toolBar.rc
         rc $(rcflags_common) -r -fo$(@B).res toolBar.rc
 
+customizeToolBar.res: customizeToolBar.rc
+        rc $(rcflags_common) -r -fo$(@B).res customizeToolBar.rc

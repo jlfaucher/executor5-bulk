@@ -127,6 +127,7 @@
 ::method createReBar external "LIBRARY oodialog dyndlg_createNamedControl"
 ::method createScrollBar external "LIBRARY oodialog dyndlg_createScrollBar"
 ::method createTab external "LIBRARY oodialog dyndlg_createNamedControl"
+::method createToolBar external "LIBRARY oodialog dyndlg_createNamedControl"
 ::method createTrackBar external "LIBRARY oodialog dyndlg_createNamedControl"
 ::method createTreeView external "LIBRARY oodialog dyndlg_createNamedControl"
 ::method createUpDown external "LIBRARY oodialog dyndlg_createNamedControl"

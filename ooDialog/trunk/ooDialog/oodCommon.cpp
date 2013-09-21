@@ -1148,7 +1148,7 @@ HICON getOORexxIcon(uint32_t id)
     return icon;
 }
 
-DWORD oodGetSysErrCode(RexxThreadContext *c)
+uint32_t oodGetSysErrCode(RexxThreadContext *c)
 {
     uint32_t code = 0;
     RexxObjectPtr rxCode = c->DirectoryAt(TheDotLocalObj, "SYSTEMERRORCODE");
@@ -1917,6 +1917,16 @@ RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y)
 RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y)
 {
     return rxNewPoint(c->threadContext, x, y);
+}
+
+RexxObjectPtr rxNewPoint(RexxThreadContext *c, POINT *pt)
+{
+    return rxNewPoint(c, pt->x, pt->y);
+}
+
+RexxObjectPtr rxNewPoint(RexxMethodContext *c, POINT *pt)
+{
+    return rxNewPoint(c->threadContext, pt->x, pt->y);
 }
 
 PRECT rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos)

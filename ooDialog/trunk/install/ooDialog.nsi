@@ -240,9 +240,10 @@ Section  doInstall
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\controls\ToolBar\rc
     ; Add the files ...
-    File "${ExamplesDir}\controls\ToolBar\rc\*.rc"
-    File "${ExamplesDir}\controls\ToolBar\rc\*.h"
+    File "${ExamplesDir}\controls\ToolBar\rc\*.bmp"
     File "${ExamplesDir}\controls\ToolBar\rc\*.dll"
+    File "${ExamplesDir}\controls\ToolBar\rc\*.h"
+    File "${ExamplesDir}\controls\ToolBar\rc\*.rc"
     File "${ExamplesDir}\controls\ToolBar\rc\res.mak"
 
     ; Set the installation directory:

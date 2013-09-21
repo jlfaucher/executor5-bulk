@@ -131,7 +131,7 @@ extern char *            strdup_2methodName(const char *str);
 extern void              checkModal(pCPlainBaseDialog previous, logical_t modeless);
 
 extern oodClass_t    oodClass(RexxMethodContext *, RexxObjectPtr, oodClass_t *, size_t);
-extern DWORD         oodGetSysErrCode(RexxThreadContext *);
+extern uint32_t      oodGetSysErrCode(RexxThreadContext *);
 extern void          oodSetSysErrCode(RexxThreadContext *, DWORD);
 extern void          oodResetSysErrCode(RexxThreadContext *context);
 extern bool          oodGetWParam(RexxMethodContext *, RexxObjectPtr, WPARAM *, size_t, bool);
@@ -156,6 +156,8 @@ extern bool       requiredComCtl32Version(RexxMethodContext *context, DWORD mini
 extern PPOINT        rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, size_t argPos);
 extern RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y);
 extern RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y);
+extern RexxObjectPtr rxNewPoint(RexxThreadContext *c, POINT *pt);
+extern RexxObjectPtr rxNewPoint(RexxMethodContext *c, POINT *pt);
 extern PRECT         rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos);
 extern RexxObjectPtr rxNewRect(RexxMethodContext *context, long l, long t, long r, long b);
 extern RexxObjectPtr rxNewRect(RexxThreadContext *context, PRECT r);

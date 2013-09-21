@@ -72,6 +72,7 @@
 ::method connectStaticEvent external "LIBRARY oodialog en_connectStaticEvent"
 ::method connectScrollBarEvent external "LIBRARY oodialog en_connectScrollBarEvent"
 ::method connectTabEvent external "LIBRARY oodialog en_connectTabEvent"
+::method connectToolBarEvent external "LIBRARY oodialog en_connectToolBarEvent"
 ::method connectToolTipEvent external "LIBRARY oodialog en_connectToolTipEvent"
 ::method connectTrackBarEvent external "LIBRARY oodialog en_connectTrackBarEvent"
 ::method connectTreeViewEvent external "LIBRARY oodialog en_connectTreeViewEvent"
@@ -132,6 +133,7 @@
    pos = self~cursorPos
    parse var pos x y
    self~setCursorPos(x+1, y+1)  /* move cursor to force redraw */
+   return 0
 
 
 ::method defTreeDragHandler unguarded
@@ -208,6 +210,7 @@
    pos = self~CursorPos
    parse var pos x y
    self~SetCursorPos(x+1, y+1)  /* move cursor to force redraw */
+   return 0
 
 
 -- DEPRECATED (all methods to end of file.)

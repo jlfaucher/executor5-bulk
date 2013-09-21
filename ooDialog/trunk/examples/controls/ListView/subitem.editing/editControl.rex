@@ -97,8 +97,8 @@ return 0
   self~createEdit(IDC_EDIT, 10, 10, 40, 11, 'AUTHSCROLLH NOTAB HIDDEN')
   self~createPushButton(IDOK, 280, 175, 35, 15, "DEFAULT", "Close")
 
-  self~connectListViewEvent(IDC_LISTVIEW, "CLICK", onClick)
-  self~connectListViewEvent(IDC_LISTVIEW, "BEGINSCROLL", onBeginScroll)
+  self~connectListViewEvent(IDC_LISTVIEW, "CLICK", onClick, sync)
+  self~connectListViewEvent(IDC_LISTVIEW, "BEGINSCROLL", onBeginScroll, .true)
   self~connectListViewEvent(IDC_LISTVIEW, "ENDSCROLL", onBeginScroll)
 
 
