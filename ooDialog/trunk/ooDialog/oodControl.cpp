@@ -75,6 +75,7 @@ const char *controlType2winName(oodControl_t control)
         case winReBar :                return REBARCLASSNAME;
         case winScrollBar :            return WC_SCROLLBAR;
         case winStatic :               return WC_STATIC;
+        case winStatusBar :            return STATUSCLASSNAME ;
         case winTab :                  return WC_TABCONTROL;
         case winToolBar :              return TOOLBARCLASSNAME;
         case winTreeView :             return WC_TREEVIEW;
@@ -104,6 +105,7 @@ const char *controlType2className(oodControl_t control)
         case winReBar :                return "REBAR";
         case winScrollBar :            return "SCROLLBAR";
         case winStatic :               return "STATIC";
+        case winStatusBar :            return "STATUSBAR";
         case winTab :                  return "TAB";
         case winToolBar :              return "TOOLBAR";
         case winToolTip :              return "TOOLTIP";
@@ -134,6 +136,7 @@ const char *controlType2controlName(oodControl_t control)
         case winReBar :                return "ReBar";
         case winScrollBar :            return "ScrollBar";
         case winStatic :               return "Static";
+        case winStatusBar :            return "StatusBar";
         case winTab :                  return "Tab";
         case winToolBar :              return "ToolBar";
         case winToolTip :              return "ToolTip";
@@ -159,6 +162,7 @@ oodControl_t winName2controlType(const char *className)
     else if ( strcmp(className, REBARCLASSNAME    ) == 0 ) return winReBar;
     else if ( strcmp(className, WC_SCROLLBAR      ) == 0 ) return winScrollBar;
     else if ( strcmp(className, WC_STATIC         ) == 0 ) return winStatic;
+    else if ( strcmp(className, STATUSCLASSNAME   ) == 0 ) return winStatusBar;
     else if ( strcmp(className, WC_TABCONTROL     ) == 0 ) return winTab;
     else if ( strcmp(className, TOOLBARCLASSNAME  ) == 0 ) return winToolBar;
     else if ( strcmp(className, TOOLTIPS_CLASS    ) == 0 ) return winToolTip;
@@ -217,6 +221,7 @@ oodControl_t controlName2controlType(CSTRING name)
     else if ( StrCmpI(name, "REBAR"         ) == 0 ) return winReBar;
     else if ( StrCmpI(name, "SCROLLBAR"     ) == 0 ) return winScrollBar;
     else if ( StrCmpI(name, "STATIC"        ) == 0 ) return winStatic;
+    else if ( StrCmpI(name, "STATUSBAR"     ) == 0 ) return winStatusBar;
     else if ( StrCmpI(name, "TAB"           ) == 0 ) return winTab;
     else if ( StrCmpI(name, "TOOLBAR"       ) == 0 ) return winToolBar;
     else if ( StrCmpI(name, "TOOLTIP"       ) == 0 ) return winToolTip;
@@ -340,7 +345,8 @@ oodControl_t oodName2controlType(CSTRING name)
     else if ( StrCmpN(name, "RADIOBUTTON", 2   ) == 0 ) return winRadioButton;
     else if ( StrCmpN(name, "REBAR", 2         ) == 0 ) return winReBar;
     else if ( StrCmpN(name, "SCROLLBAR", 2     ) == 0 ) return winScrollBar;
-    else if ( StrCmpN(name, "STATIC", 2        ) == 0 ) return winStatic;
+    else if ( StrCmpN(name, "STATIC", 5        ) == 0 ) return winStatic;
+    else if ( StrCmpN(name, "STATUSBAR", 5     ) == 0 ) return winStatusBar;
     else if ( StrCmpN(name, "TAB", 3           ) == 0 ) return winTab;
     else if ( StrCmpN(name, "TOOLB", 5         ) == 0 ) return winToolBar;
     else if ( StrCmpN(name, "TOOLT", 5         ) == 0 ) return winToolTip;
@@ -430,7 +436,7 @@ RexxClassObject oodClass4controlType(RexxThreadContext *c, oodControl_t controlT
  * This function retrieves a localized string that describes an object's state,
  * exactly what that string will be for any given situation, I don't know.
  *
- * @remarks  In testing DateTimePicker::getInfo() I see the state is equla to 0
+ * @remarks  In testing DateTimePicker::getInfo() I see the state is equal to 0
  *           quite often.  Passing in 0 to the GetStateText() function returns a
  *           string -> "normal".  So, we will consider that valid.
  */

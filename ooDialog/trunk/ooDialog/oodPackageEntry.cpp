@@ -1160,6 +1160,9 @@ REXX_METHOD_PROTOTYPE(sb_setRange);
 REXX_METHOD_PROTOTYPE(sb_getPosition);
 REXX_METHOD_PROTOTYPE(sb_setPosition);
 
+// StatusBar
+REXX_METHOD_PROTOTYPE(stb_setParts);
+
 // ListBox
 REXX_METHOD_PROTOTYPE(lb_add);
 REXX_METHOD_PROTOTYPE(lb_addDirectory);
@@ -2960,6 +2963,9 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(sb_setRange,                    sb_setRange),
     REXX_METHOD(sb_getPosition,                 sb_getPosition),
     REXX_METHOD(sb_setPosition,                 sb_setPosition),
+
+    // Status
+    REXX_METHOD(stb_setParts,                   stb_setParts),
 
     REXX_METHOD(dss_makeDayStateBuffer,         dss_makeDayStateBuffer),
     REXX_METHOD(dss_quickDayStateBuffer,        dss_quickDayStateBuffer),

@@ -846,7 +846,6 @@
   return self~menuBar \== .nil & self~isLinked
 
 ::method createToolTip unguarded external "LIBRARY oodialog pbdlg_createToolTip"
-::method newStatic unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newPushButton unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newRadioButton unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newCheckBox unguarded external "LIBRARY oodialog pbdlg_newControl"
@@ -856,6 +855,8 @@
 ::method newListBox unguarded external "LIBRARY oodialog pbdlg_newControl"
 ::method newReBar unguarded external "LIBRARY oodialog pbdlg_newControlEx"
 ::method newScrollBar unguarded external "LIBRARY oodialog pbdlg_newControl"
+::method newStatic unguarded external "LIBRARY oodialog pbdlg_newControl"
+::method newStatusBar unguarded external "LIBRARY oodialog pbdlg_newControlEx"
 ::method newToolBar unguarded external "LIBRARY oodialog pbdlg_newControlEx"
 ::method newToolTip unguarded external "LIBRARY oodialog pbdlg_newToolTip"
 ::method newTreeView unguarded external "LIBRARY oodialog pbdlg_newControl"

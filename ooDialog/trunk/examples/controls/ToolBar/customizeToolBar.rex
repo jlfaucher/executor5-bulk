@@ -38,7 +38,7 @@
 /** customizeToolBar.rex
  *
  * The main purpose of this example is to show how to make the built-in
- * customization features of the toolbar availabel to the users of you
+ * customization features of the toolbar available to the users of your
  * application.  It also shows how to connect many of the event notifications of
  * the toolbar.
  *

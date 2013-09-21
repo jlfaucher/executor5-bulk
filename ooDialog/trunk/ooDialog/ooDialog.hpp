@@ -288,6 +288,7 @@ typedef enum
     winComboLBox           = 19,
     winReBar               = 20,
     winToolBar             = 21,
+    winStatusBar           = 22,
 
     // A special value used by the data table / data table connection functions.
     winNotAControl         = 42,
