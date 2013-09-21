@@ -3854,10 +3854,8 @@ RexxMethod9(logical_t, menu_insertItem, RexxObjectPtr, rxBefore, RexxObjectPtr, 
 
     cMenu->maybeRedraw(false);
 
-    printf("Check to connect item isMenuBar=%d !byPosition = %d\n", cMenu->isMenuBar(), ! byPosition);
     if ( cMenu->isMenuBar() && ! byPosition )
     {
-        printf("Maybe connect item\n");
         success = cMenu->maybeConnectItem(id, text, connect, methodName);
     }
 
