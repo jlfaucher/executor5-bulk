@@ -44,6 +44,8 @@
  */
 #include "ooDialog.hpp"     // Must be first, includes windows.h, commctrl.h, and oorexxapi.h
 
+#include <shlwapi.h>
+
 #if 0
 // Future enhancement.
 #include <gdiplus.h>
@@ -56,15 +58,12 @@ using namespace Gdiplus;
 #include "oodDeviceGraphics.hpp"
 #include "oodResources.hpp"
 
+
 /**
- * Defines, structs, etc., for the .ImageList class.
+ * Methods for the .ImageList class.
  */
+#define IMAGELIST_CLASS "ImageList"
 
-#define IMAGELISTCLASS             ".ImageList"
-
-
-// ImageList helper functions.
-RexxObjectPtr rxNewImageList(RexxMethodContext *, HIMAGELIST);
 
 #define IL_DEFAULT_FLAGS           ILC_COLOR32 | ILC_MASK
 #define IL_DEFAULT_COUNT           6
@@ -72,79 +71,32 @@ RexxObjectPtr rxNewImageList(RexxMethodContext *, HIMAGELIST);
 
 
 /**
- * Defines, structs, etc., for the .Image class.
+ * Map a keyword string to the proper ILD_* flags.  By default ILD_NORMAL is
+ * used when the argument is omitted (flags will be null.)  ILD_NORMAL is 0
+ * anyway.
+ *
+ * @param flags
+ *
+ * @return uint32_t
  */
-
-#define IMAGECLASS                 ".Image"
-
-
-// Helper functions.
-CSTRING getImageTypeName(uint8_t);
-RexxObjectPtr rxNewImageFromControl(RexxMethodContext *, HWND, HANDLE, uint8_t, oodControl_t);
-RexxObjectPtr rxNewEmptyImage(RexxMethodContext *, DWORD);
-
-POODIMAGE rxGetImageBitmap(RexxMethodContext *, RexxObjectPtr, size_t);
-
-RexxObjectPtr oodILFromBMP(RexxMethodContext *, HIMAGELIST *, RexxObjectPtr, int, int, HWND);
-
-
-/**
- * Defines and structs for the .ResourceImage class.
- */
-#define RESOURCEIMAGECLASS  ".ResourceImage"
-
-RexxObjectPtr oodSetImageAttribute(RexxMethodContext *c, CSTRING varName, RexxObjectPtr image, HWND hwnd,
-                                   HANDLE hOldImage, uint8_t type, oodControl_t ctrl)
+uint32_t keyword2ild(CSTRING flags)
 {
-    RexxObjectPtr result = c->GetObjectVariable(varName);
-    if ( result == NULLOBJECT )
-    {
-        result = TheNilObj;
-    }
-    c->SetObjectVariable(varName, image);
+    uint32_t val = ILD_NORMAL;
 
-    // It could be that the existing image was set from a resource DLL.  In
-    // which case we need to create an .Image object.
-    if ( result == TheNilObj && hOldImage != NULL )
+    if ( flags != NULL )
     {
-        result = rxNewImageFromControl(c, hwnd, hOldImage, type, ctrl);
+        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_BLEND          ;
+        if ( StrStrI(flags, "SIZEGRIP"    ) != NULL ) val |= ILD_BLEND25        ;
+        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_BLEND50        ;
+        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_FOCUS          ;
+        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_MASK           ;
+        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_NORMAL         ;
+        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_SELECTED       ;
+        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_TRANSPARENT    ;
     }
-    return result;
+
+    return val;
 }
-
-RexxObjectPtr oodGetImageAttribute(RexxMethodContext *c, RexxObjectPtr self, CSTRING varName,
-                                   UINT msg, WPARAM wParam, uint8_t type, oodControl_t ctrl)
-{
-    // If we already have an image in the object variable, just use it.
-    RexxObjectPtr result = c->GetObjectVariable(varName);
-    if ( result == NULLOBJECT )
-    {
-        HWND hwnd = controlToHCtrl(c, self);
-        HANDLE hImage = (HANDLE)SendMessage(hwnd, msg, wParam, 0);
-
-        if ( hImage == NULL )
-        {
-            result = TheNilObj;
-        }
-        else
-        {
-            // Create a new .Image object from the image handle.
-            result = rxNewImageFromControl(c, hwnd, hImage, type, ctrl);
-        }
-
-        // Set the result in the object variable.  If there is a next time we
-        // can retrieve it easily.
-        c->SetObjectVariable(varName, result);
-    }
-    return result;
-}
-
-
-/**
- * Methods for the .ImageList class.
- */
-#define IMAGELIST_CLASS "ImageList"
-
 
 HIMAGELIST rxGetImageList(RexxMethodContext *context, RexxObjectPtr il, size_t argPos)
 {
@@ -155,7 +107,7 @@ HIMAGELIST rxGetImageList(RexxMethodContext *context, RexxObjectPtr il, size_t a
         himl = (HIMAGELIST)context->ObjectToCSelf(il);
         if ( himl == NULL )
         {
-            nullObjectException(context->threadContext, IMAGELISTCLASS, argPos);
+            nullObjectException(context->threadContext, IMAGELIST_CLASS, argPos);
         }
     }
     return himl;
@@ -302,47 +254,11 @@ done_out:
     return imageList;
 }
 
-/** ImageList::init()
+/** ImageList::create()    [class method]
  *
  *
- *  @note  As far as I can see, all of the ImageList_xxx functions do not blow
- *         up if an invalid handle is used, even if it is null.  We could just
- *         set CSELF to the pointer value unconditionally and not have to worry
- *         about an interpreter crash.  The ooRexx programmer would just have a
- *         .ImageList object that didn't work.
  *
- *         A valid image list can be released and then becomes invalid (isNull
- *         returns true.)  Since this is the same behavior as .ResourceImage and
- *         .Image objects, both of which allow a null object to be instantiated
- *         (isNull returns true,) we allow a null ImageList to be created.
- *
- *         However, if p is not null, we test that p is actually a valid
- *         ImageList and raise an exception if it is not. All image lists have a
- *         size, if ImageListGetIconSize() fails, then p is not an image list
- *         handle.
  */
-RexxMethod1(RexxObjectPtr, il_init, POINTER, p)
-{
-    if ( p == NULL )
-    {
-        context->SetObjectVariable("CSELF", context->NewPointer(NULL));
-        goto out;
-    }
-    HIMAGELIST himl = (HIMAGELIST)p;
-
-    // Test that the pointer is really a valid handle to an image list.
-    int cx = 2, cy = 2;
-    if ( ! ImageList_GetIconSize(himl, &cx, &cy) )
-    {
-        invalidTypeException(context->threadContext, 1, "ImageList handle");
-        goto out;
-    }
-    context->SetObjectVariable("CSELF", context->NewPointer(himl));
-
-out:
-    return NULLOBJECT;
-}
-
 RexxMethod4(RexxObjectPtr, il_create_cls, OPTIONAL_RexxObjectPtr, size,  OPTIONAL_uint32_t, flags,
             OPTIONAL_int32_t, count, OPTIONAL_int32_t, grow)
 {
@@ -394,6 +310,52 @@ out:
     return result;
 }
 
+/** ImageList::init()
+ *
+ *
+ *  @note  As far as I can see, all of the ImageList_xxx functions do not blow
+ *         up if an invalid handle is used, even if it is null.  We could just
+ *         set CSELF to the pointer value unconditionally and not have to worry
+ *         about an interpreter crash.  The ooRexx programmer would just have a
+ *         .ImageList object that didn't work.
+ *
+ *         A valid image list can be released and then becomes invalid (isNull
+ *         returns true.)  Since this is the same behavior as .ResourceImage and
+ *         .Image objects, both of which allow a null object to be instantiated
+ *         (isNull returns true,) we allow a null ImageList to be created.
+ *
+ *         However, if p is not null, we test that p is actually a valid
+ *         ImageList and raise an exception if it is not. All image lists have a
+ *         size, if ImageListGetIconSize() fails, then p is not an image list
+ *         handle.
+ */
+RexxMethod1(RexxObjectPtr, il_init, POINTER, p)
+{
+    if ( p == NULL )
+    {
+        context->SetObjectVariable("CSELF", context->NewPointer(NULL));
+        goto out;
+    }
+    HIMAGELIST himl = (HIMAGELIST)p;
+
+    // Test that the pointer is really a valid handle to an image list.
+    int cx = 2, cy = 2;
+    if ( ! ImageList_GetIconSize(himl, &cx, &cy) )
+    {
+        invalidTypeException(context->threadContext, 1, "ImageList handle");
+        goto out;
+    }
+    context->SetObjectVariable("CSELF", context->NewPointer(himl));
+
+out:
+    return NULLOBJECT;
+}
+
+/** ImageList::add()
+ *
+ *
+ *
+ */
 RexxMethod3(int, il_add, RexxObjectPtr, image, OPTIONAL_RexxObjectPtr, optMask, CSELF, il)
 {
     RexxMethodContext *c = context;
@@ -402,7 +364,7 @@ RexxMethod3(int, il_add, RexxObjectPtr, image, OPTIONAL_RexxObjectPtr, optMask, 
     HIMAGELIST himl = (HIMAGELIST)il;
     if ( himl == NULL )
     {
-        nullObjectException(c->threadContext, IMAGELISTCLASS);
+        nullObjectException(c->threadContext, IMAGELIST_CLASS);
         goto out;
     }
 
@@ -429,28 +391,11 @@ out:
     return result;
 }
 
-RexxMethod3(int, il_addMasked, RexxObjectPtr, image, uint32_t, cRef, CSELF, il)
-{
-    int result = -1;
-
-    HIMAGELIST himl = (HIMAGELIST)il;
-    if ( himl == NULL )
-    {
-        nullObjectException(context->threadContext, IMAGELISTCLASS);
-        goto out;
-    }
-
-    POODIMAGE oi = rxGetImageBitmap(context, image, 1);
-    if ( oi == NULL )
-    {
-        goto out;
-    }
-    result = ImageList_AddMasked(himl, (HBITMAP)oi->hImage, cRef);
-
-out:
-    return result;
-}
-
+/** ImageList::addIcon()
+ *
+ *
+ *
+ */
 RexxMethod2(int, il_addIcon, RexxObjectPtr, image, CSELF, il)
 {
     int result = -1;
@@ -458,7 +403,7 @@ RexxMethod2(int, il_addIcon, RexxObjectPtr, image, CSELF, il)
     HIMAGELIST himl = (HIMAGELIST)il;
     if ( himl == NULL )
     {
-        nullObjectException(context->threadContext, IMAGELISTCLASS);
+        nullObjectException(context->threadContext, IMAGELIST_CLASS);
         goto out;
     }
     POODIMAGE oi = rxGetImageIcon(context, image, 1);
@@ -472,6 +417,11 @@ out:
     return result;
 }
 
+/** ImageList::addImages()
+ *
+ *
+ *
+ */
 RexxMethod3(int, il_addImages, RexxArrayObject, images, OPTIONAL_uint32_t, cRef, CSELF, il)
 {
     RexxMethodContext *c = context;
@@ -481,7 +431,7 @@ RexxMethod3(int, il_addImages, RexxArrayObject, images, OPTIONAL_uint32_t, cRef,
     HIMAGELIST himl = (HIMAGELIST)il;
     if ( himl == NULL )
     {
-        nullObjectException(context->threadContext, IMAGELISTCLASS);
+        nullObjectException(context->threadContext, IMAGELIST_CLASS);
         goto out;
     }
     size_t count = c->ArraySize(images);
@@ -574,6 +524,48 @@ out:
     return result;
 }
 
+/** ImageList::addMasked()
+ *
+ *
+ *
+ */
+RexxMethod3(int, il_addMasked, RexxObjectPtr, image, uint32_t, cRef, CSELF, il)
+{
+    int result = -1;
+
+    HIMAGELIST himl = (HIMAGELIST)il;
+    if ( himl == NULL )
+    {
+        nullObjectException(context->threadContext, IMAGELIST_CLASS);
+        goto out;
+    }
+
+    POODIMAGE oi = rxGetImageBitmap(context, image, 1);
+    if ( oi == NULL )
+    {
+        goto out;
+    }
+    result = ImageList_AddMasked(himl, (HBITMAP)oi->hImage, cRef);
+
+out:
+    return result;
+}
+
+/** ImageList::duplicate()
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, il_duplicate, CSELF, il)
+{
+    HIMAGELIST himl = (HIMAGELIST)il;
+    if ( himl != NULL )
+    {
+        return rxNewImageList(context, ImageList_Duplicate(himl));
+    }
+    nullObjectException(context->threadContext, IMAGELIST_CLASS);
+    return NULL;
+}
+
 /** ImageList::getCount()
  *
  *
@@ -586,7 +578,53 @@ RexxMethod1(int, il_getCount, CSELF, il)
     {
         return ImageList_GetImageCount(himl);
     }
-    nullObjectException(context->threadContext, IMAGELISTCLASS);
+    nullObjectException(context->threadContext, IMAGELIST_CLASS);
+    return NULL;
+}
+
+
+
+/** ImageList::getIcon()
+ *
+ *  @param index  [required] The one-based index of the icon to get.
+ *
+ *  @param style  [optional] The drawing style of the icon.  If this argument is
+ *                omitted, the NORMAL style is used
+ *
+ *  @param overlayIndex  [optional]  The one-based index of an overlay mask.
+ *
+ *  @return  The specified icon in this image list or .nil on error.
+ *
+ *  @remarks  For an Image_List, the overlay index is already one-based.
+ */
+RexxMethod4(RexxObjectPtr, il_getIcon, uint32_t, index, OPTIONAL_CSTRING, _style,
+            OPTIONAL_uint32_t, overlayIndex, CSELF, il)
+{
+    HIMAGELIST himl = (HIMAGELIST)il;
+    if ( himl != NULL )
+    {
+        uint32_t style = keyword2ild(_style);
+
+        if ( argumentExists(3) )
+        {
+            style |= INDEXTOOVERLAYMASK(overlayIndex);
+        }
+        index--;
+        HICON icon = ImageList_GetIcon(himl, index, style);
+
+        if ( icon != NULL )
+        {
+            SIZE s;
+            if ( ImageList_GetIconSize(himl, (int *)&s.cx, (int *)&s.cy) )
+            {
+                // LR_DEFAULTCOLOR means nothing, but I think that is correct
+                // for the flags so we use true for the last arg.
+                return rxNewValidImage(context, icon, IMAGE_ICON, &s, LR_DEFAULTCOLOR, true);
+            }
+        }
+        return TheNilObj;
+    }
+    nullObjectException(context->threadContext, IMAGELIST_CLASS);
     return NULL;
 }
 
@@ -611,43 +649,36 @@ RexxMethod1(RexxObjectPtr, il_getImageSize, CSELF, il)
             return rxNewSize(context, s.cx, s.cy);
         }
     }
-    nullObjectException(context->threadContext, IMAGELISTCLASS);
+    nullObjectException(context->threadContext, IMAGELIST_CLASS);
     return NULL;
 }
 
-RexxMethod1(RexxObjectPtr, il_duplicate, CSELF, il)
+/** ImageList::handle()
+ *
+ *
+ *
+ */
+RexxMethod1(POINTER, il_handle, CSELF, il)
 {
-    HIMAGELIST himl = (HIMAGELIST)il;
-    if ( himl != NULL )
+    if ( il == NULL )
     {
-        return rxNewImageList(context, ImageList_Duplicate(himl));
+        nullObjectException(context->threadContext, IMAGELIST_CLASS);
     }
-    nullObjectException(context->threadContext, IMAGELISTCLASS);
-    return NULL;
+    return il;
 }
 
-RexxMethod2(logical_t, il_remove, int, index, CSELF, il)
-{
-    HIMAGELIST himl = (HIMAGELIST)il;
-    if ( himl != NULL )
-    {
-        return ImageList_Remove(himl, index);
-    }
-    nullObjectException(context->threadContext, IMAGELISTCLASS);
-    return NULL;
-}
+/** ImageList::isNull()
+ *
+ *
+ *
+ */
+RexxMethod1(logical_t, il_isNull, CSELF, il) { return ( il == NULL);  }
 
-RexxMethod1(logical_t, il_removeAll, CSELF, il)
-{
-    HIMAGELIST himl = (HIMAGELIST)il;
-    if ( himl != NULL )
-    {
-        return ImageList_RemoveAll(himl);
-    }
-    nullObjectException(context->threadContext, IMAGELISTCLASS);
-    return NULL;
-}
-
+/** ImageList::release()
+ *
+ *
+ *
+ */
 RexxMethod1(uint32_t, il_release, CSELF, il)
 {
     if ( il != NULL )
@@ -658,16 +689,38 @@ RexxMethod1(uint32_t, il_release, CSELF, il)
     return 0;
 }
 
-RexxMethod1(POINTER, il_handle, CSELF, il)
+/** ImageList::remove()
+ *
+ *
+ *
+ */
+RexxMethod2(logical_t, il_remove, int32_t, index, CSELF, il)
 {
-    if ( il == NULL )
+    HIMAGELIST himl = (HIMAGELIST)il;
+    if ( himl != NULL )
     {
-        nullObjectException(context->threadContext, IMAGELISTCLASS);
+        index--;
+        return ImageList_Remove(himl, index);
     }
-    return il;
+    nullObjectException(context->threadContext, IMAGELIST_CLASS);
+    return FALSE;
 }
 
-RexxMethod1(logical_t, il_isNull, CSELF, il) { return ( il == NULL);  }
+/** ImageList::removeAll()
+ *
+ *
+ *
+ */
+RexxMethod1(logical_t, il_removeAll, CSELF, il)
+{
+    HIMAGELIST himl = (HIMAGELIST)il;
+    if ( himl != NULL )
+    {
+        return ImageList_RemoveAll(himl);
+    }
+    nullObjectException(context->threadContext, IMAGELIST_CLASS);
+    return NULL;
+}
 
 
 /**
@@ -675,101 +728,6 @@ RexxMethod1(logical_t, il_isNull, CSELF, il) { return ( il == NULL);  }
  */
 #define IMAGE_CLASS "Image"
 
-CSTRING getImageTypeName(uint8_t type)
-{
-    switch ( type )
-    {
-        case IMAGE_ICON :
-            return "Icon";
-        case IMAGE_BITMAP :
-            return "Bitmap";
-        case IMAGE_CURSOR :
-            return "Cursor";
-        case IMAGE_ENHMETAFILE :
-            return "Enhanced Metafile";
-        default :
-            return "Unknown";
-    }
-}
-
-POODIMAGE rxGetOodImage(RexxMethodContext *context, RexxObjectPtr o, size_t argPos)
-{
-    if ( requiredClass(context->threadContext, o, "Image", argPos) )
-    {
-        POODIMAGE oi = (POODIMAGE)context->ObjectToCSelf(o);
-        if ( oi->isValid )
-        {
-            return oi;
-        }
-        nullObjectException(context->threadContext, IMAGECLASS, argPos);
-    }
-    return NULL;
-}
-
-/**
- * Extracts a valid oodImage pointer from a RexxObjectPtr, ensuring that the
- * image is either an icon or a cursor.  (Cursors are icons.)
- *
- * @param c    The method context we are executing in.
- * @param o    The, assumed, .Image object.
- * @param pos  The argument position in the invocation from ooRexx.  Used for
- *             exception messages.
- *
- * @return A pointer to an OODIMAGE struct on success, othewise NULL.
- */
-POODIMAGE rxGetImageIcon(RexxMethodContext *c, RexxObjectPtr o, size_t pos)
-{
-    POODIMAGE oi = rxGetOodImage(c, o, pos);
-    if ( oi != NULL )
-    {
-        if ( oi->type == IMAGE_ICON || oi->type == IMAGE_CURSOR )
-        {
-            return oi;
-        }
-        wrongArgValueException(c->threadContext, pos, "Icon, Cursor", oi->typeName);
-    }
-    return NULL;
-}
-
-/**
- * Extracts a valid oodImage pointer from a RexxObjectPtr, ensuring that the
- * image is a cursor.  (Cursors are icons, but this function strictly enforces
- * that the image is a cursor.)
- *
- * @param c    The method context we are executing in.
- * @param o    The, assumed, .Image object.
- * @param pos  The argument position in the invocation from ooRexx.  Used for
- *             exception messages.
- *
- * @return A pointer to an OODIMAGE struct on success, othewise NULL.
- */
-POODIMAGE rxGetImageCursor(RexxMethodContext *c, RexxObjectPtr o, size_t pos)
-{
-    POODIMAGE oi = rxGetOodImage(c, o, pos);
-    if ( oi != NULL )
-    {
-        if ( oi->type == IMAGE_CURSOR )
-        {
-            return oi;
-        }
-        wrongArgValueException(c->threadContext, pos, "Cursor", oi->typeName);
-    }
-    return NULL;
-}
-
-POODIMAGE rxGetImageBitmap(RexxMethodContext *c, RexxObjectPtr o, size_t pos)
-{
-    POODIMAGE oi = rxGetOodImage(c, o, pos);
-    if ( oi != NULL )
-    {
-        if ( oi->type == IMAGE_BITMAP )
-        {
-            return oi;
-        }
-        invalidImageException(c->threadContext, pos, "Bitmap", oi->typeName);
-    }
-    return NULL;
-}
 
 RexxObjectPtr rxNewImageObject(RexxMethodContext *c, RexxBufferObject bufferObj)
 {
@@ -783,17 +741,35 @@ RexxObjectPtr rxNewImageObject(RexxMethodContext *c, RexxBufferObject bufferObj)
     return image;
 }
 
-RexxObjectPtr rxNewEmptyImage(RexxMethodContext *c, DWORD rc)
+/**
+ * Instantiates a new, non-null, .Image object.
+ *
+ * @param context
+ * @param hImage
+ * @param type
+ * @param s
+ * @param flags
+ * @param src       True, ooDialog created using LoadImage(). False created from
+ *                  a handle (so type, size, flags may not be correct.)
+ *
+ * @return  A new .Image object.
+ */
+RexxObjectPtr rxNewValidImage(RexxMethodContext *c, HANDLE hImage, uint8_t type, PSIZE s, uint32_t flags, bool src)
 {
     RexxBufferObject bufferObj = c->NewBuffer(sizeof(OODIMAGE));
     POODIMAGE cself = (POODIMAGE)c->BufferData(bufferObj);
 
-    // Set everything to invalid.
-    memset(cself, 0, sizeof(OODIMAGE));
-    cself->type = -1;
-    cself->size.cx = -1;
-    cself->size.cy = -1;
-    cself->lastError = rc;
+    cself->hImage = hImage;
+    cself->type = type;
+    cself->size.cx = s->cx;
+    cself->size.cy = s->cy;
+    cself->flags = flags;
+    cself->isValid = true;
+    cself->srcOOD = src;
+    cself->canRelease = ! (flags & LR_SHARED);
+    cself->typeName = getImageTypeName(type);
+    cself->lastError = 0;
+    cself->fileName = "";
 
     return rxNewImageObject(c, bufferObj);
 }
@@ -875,35 +851,162 @@ RexxObjectPtr rxNewImageFromControl(RexxMethodContext *c, HWND hwnd, HANDLE hIma
     return rxNewValidImage(c, hImage, type, &s, LR_SHARED, false);
 }
 
+
+RexxObjectPtr oodSetImageAttribute(RexxMethodContext *c, CSTRING varName, RexxObjectPtr image, HWND hwnd,
+                                   HANDLE hOldImage, uint8_t type, oodControl_t ctrl)
+{
+    RexxObjectPtr result = c->GetObjectVariable(varName);
+    if ( result == NULLOBJECT )
+    {
+        result = TheNilObj;
+    }
+    c->SetObjectVariable(varName, image);
+
+    // It could be that the existing image was set from a resource DLL.  In
+    // which case we need to create an .Image object.
+    if ( result == TheNilObj && hOldImage != NULL )
+    {
+        result = rxNewImageFromControl(c, hwnd, hOldImage, type, ctrl);
+    }
+    return result;
+}
+
+RexxObjectPtr oodGetImageAttribute(RexxMethodContext *c, RexxObjectPtr self, CSTRING varName,
+                                   UINT msg, WPARAM wParam, uint8_t type, oodControl_t ctrl)
+{
+    // If we already have an image in the object variable, just use it.
+    RexxObjectPtr result = c->GetObjectVariable(varName);
+    if ( result == NULLOBJECT )
+    {
+        HWND hwnd = controlToHCtrl(c, self);
+        HANDLE hImage = (HANDLE)SendMessage(hwnd, msg, wParam, 0);
+
+        if ( hImage == NULL )
+        {
+            result = TheNilObj;
+        }
+        else
+        {
+            // Create a new .Image object from the image handle.
+            result = rxNewImageFromControl(c, hwnd, hImage, type, ctrl);
+        }
+
+        // Set the result in the object variable.  If there is a next time we
+        // can retrieve it easily.
+        c->SetObjectVariable(varName, result);
+    }
+    return result;
+}
+
+
+
+CSTRING getImageTypeName(uint8_t type)
+{
+    switch ( type )
+    {
+        case IMAGE_ICON :
+            return "Icon";
+        case IMAGE_BITMAP :
+            return "Bitmap";
+        case IMAGE_CURSOR :
+            return "Cursor";
+        case IMAGE_ENHMETAFILE :
+            return "Enhanced Metafile";
+        default :
+            return "Unknown";
+    }
+}
+
+POODIMAGE rxGetOodImage(RexxMethodContext *context, RexxObjectPtr o, size_t argPos)
+{
+    if ( requiredClass(context->threadContext, o, "Image", argPos) )
+    {
+        POODIMAGE oi = (POODIMAGE)context->ObjectToCSelf(o);
+        if ( oi->isValid )
+        {
+            return oi;
+        }
+        nullObjectException(context->threadContext, IMAGE_CLASS, argPos);
+    }
+    return NULL;
+}
+
 /**
- * Instantiates a new, non-null, .Image object.
+ * Extracts a valid oodImage pointer from a RexxObjectPtr, ensuring that the
+ * image is either an icon or a cursor.  (Cursors are icons.)
  *
- * @param context
- * @param hImage
- * @param type
- * @param s
- * @param flags
- * @param src       True, ooDialog created using LoadImage(). False created from
- *                  a handle (so type, size, flags may not be correct.)
+ * @param c    The method context we are executing in.
+ * @param o    The, assumed, .Image object.
+ * @param pos  The argument position in the invocation from ooRexx.  Used for
+ *             exception messages.
  *
- * @return  A new .Image object.
+ * @return A pointer to an OODIMAGE struct on success, othewise NULL.
  */
-RexxObjectPtr rxNewValidImage(RexxMethodContext *c, HANDLE hImage, uint8_t type, PSIZE s, uint32_t flags, bool src)
+POODIMAGE rxGetImageIcon(RexxMethodContext *c, RexxObjectPtr o, size_t pos)
+{
+    POODIMAGE oi = rxGetOodImage(c, o, pos);
+    if ( oi != NULL )
+    {
+        if ( oi->type == IMAGE_ICON || oi->type == IMAGE_CURSOR )
+        {
+            return oi;
+        }
+        wrongArgValueException(c->threadContext, pos, "Icon, Cursor", oi->typeName);
+    }
+    return NULL;
+}
+
+/**
+ * Extracts a valid oodImage pointer from a RexxObjectPtr, ensuring that the
+ * image is a cursor.  (Cursors are icons, but this function strictly enforces
+ * that the image is a cursor.)
+ *
+ * @param c    The method context we are executing in.
+ * @param o    The, assumed, .Image object.
+ * @param pos  The argument position in the invocation from ooRexx.  Used for
+ *             exception messages.
+ *
+ * @return A pointer to an OODIMAGE struct on success, othewise NULL.
+ */
+POODIMAGE rxGetImageCursor(RexxMethodContext *c, RexxObjectPtr o, size_t pos)
+{
+    POODIMAGE oi = rxGetOodImage(c, o, pos);
+    if ( oi != NULL )
+    {
+        if ( oi->type == IMAGE_CURSOR )
+        {
+            return oi;
+        }
+        wrongArgValueException(c->threadContext, pos, "Cursor", oi->typeName);
+    }
+    return NULL;
+}
+
+POODIMAGE rxGetImageBitmap(RexxMethodContext *c, RexxObjectPtr o, size_t pos)
+{
+    POODIMAGE oi = rxGetOodImage(c, o, pos);
+    if ( oi != NULL )
+    {
+        if ( oi->type == IMAGE_BITMAP )
+        {
+            return oi;
+        }
+        invalidImageException(c->threadContext, pos, "Bitmap", oi->typeName);
+    }
+    return NULL;
+}
+
+RexxObjectPtr rxNewEmptyImage(RexxMethodContext *c, DWORD rc)
 {
     RexxBufferObject bufferObj = c->NewBuffer(sizeof(OODIMAGE));
     POODIMAGE cself = (POODIMAGE)c->BufferData(bufferObj);
 
-    cself->hImage = hImage;
-    cself->type = type;
-    cself->size.cx = s->cx;
-    cself->size.cy = s->cy;
-    cself->flags = flags;
-    cself->isValid = true;
-    cself->srcOOD = src;
-    cself->canRelease = ! (flags & LR_SHARED);
-    cself->typeName = getImageTypeName(type);
-    cself->lastError = 0;
-    cself->fileName = "";
+    // Set everything to invalid.
+    memset(cself, 0, sizeof(OODIMAGE));
+    cself->type = -1;
+    cself->size.cx = -1;
+    cself->size.cy = -1;
+    cself->lastError = rc;
 
     return rxNewImageObject(c, bufferObj);
 }
@@ -1561,7 +1664,7 @@ RexxMethod1(POINTER, image_handle, CSELF, oi)
 {
     if ( ! ((POODIMAGE)oi)->isValid )
     {
-        nullObjectException(context->threadContext, IMAGECLASS);
+        nullObjectException(context->threadContext, IMAGE_CLASS);
     }
     return ((POODIMAGE)oi)->hImage;
 }
@@ -1588,9 +1691,43 @@ PRESOURCEIMAGE rxGetResourceImage(RexxMethodContext *context, RexxObjectPtr r, s
 
 /** ResouceImage::init()
  *
+ *  Instantiates a new ResourceImage from an executable module.
  *
+ *  @param fileOrDlg  [required]  Either a dialog object, or a file name of an
+ *                    executable module.  (DLLs are executable modules.)
+ *
+ *                    When the arg is a dialog object:  If the dialog object is
+ *                    a ResDialog, the DLL used to instantiate the dialog is
+ *                    used. Otherwise, ooDialog.dll is used.  ooDialog.dll has
+ *                    some common resources bound to it that are always
+ *                    available for use.
+ *
+ *                    When the arg is not a dialog object, it must be the string
+ *                    file name of an executable file.
+ *
+ *  @param dlg        [optional] A dialog object.  This usage is deprecated, but
+ *                    is maintained for backwards compatibility.  Do not use
+ *                    this in new code.
+ *
+ *  @note  When this method was first introduced, the first arg had to be the
+ *         string file name of an excutable file.  Arg 2 was an optional dialog
+ *         object and could be used to optionally instantiate the resource image
+ *         from an already loaded DLL as outlined above for the fileOrDlg
+ *         argument.  This was silly, it forced the programmer to use a string
+ *         for the first arg, when only the dialog object was needed.  This
+ *         oversight is now fixed.
+ *
+ *  @remarks  Originally arg 1 was a CSTRING and named a file.  Arg 2 was an
+ *            optional dialog object.  If arg 2 existed, then we got the HMODULE
+ *            from the already loaded instance - either ooDialog.dll or the
+ *            hInstance if a ResDialog.
+ *
+ *            That was done when the new native API was new, and silly. Now we
+ *            just check the first arg for a dialog object or a string and do
+ *            the right thing.  But, we still need to preserve the old for
+ *            compatibility.
  */
-RexxMethod2(RexxObjectPtr, ri_init, CSTRING, file, OPTIONAL_RexxObjectPtr, dlg)
+RexxMethod2(RexxObjectPtr, ri_init, RexxObjectPtr, fileOrDlg, OPTIONAL_RexxObjectPtr, dlg)
 {
     oodResetSysErrCode(context->threadContext);
 
@@ -1600,44 +1737,62 @@ RexxMethod2(RexxObjectPtr, ri_init, CSTRING, file, OPTIONAL_RexxObjectPtr, dlg)
     PRESOURCEIMAGE ri = (PRESOURCEIMAGE)context->BufferData(cself);
     memset(ri, 0, sizeof(RESOURCEIMAGE));
 
-    if ( argumentOmitted(2) )
+    RexxMethodContext *c = context;
+    if ( c->IsOfType(fileOrDlg, "ResDialog") )
     {
-        ri->hMod = LoadLibraryEx(file, NULL, LOAD_LIBRARY_AS_DATAFILE);
-        if ( ri->hMod == NULL )
-        {
-            ri->lastError = GetLastError();
-            oodSetSysErrCode(context->threadContext, ri->lastError);
-        }
-        else
-        {
-            ri->canRelease = true;
-            ri->isValid = true;
-        }
+        pCPlainBaseDialog pcpbd = dlgToCSelf(context, fileOrDlg);
+        ri->hMod = pcpbd->hInstance;
+        ri->isValid = true;
+    }
+    else if ( c->IsOfType(fileOrDlg, "PlainBaseDialog") )
+    {
+        ri->hMod = MyInstance;
+        ri->isValid = true;
     }
     else
     {
-        if ( ! requiredClass(context->threadContext, dlg, "PlainBaseDialog", 2) )
-        {
-            goto err_out;
-        }
+        CSTRING file = c->ObjectToStringValue(fileOrDlg);
 
-        if ( stricmp(OODDLL, file) == 0 )
+        if ( argumentOmitted(2) )
         {
-            ri->hMod = MyInstance;
-            ri->isValid = true;
+            ri->hMod = LoadLibraryEx(file, NULL, LOAD_LIBRARY_AS_DATAFILE);
+            if ( ri->hMod == NULL )
+            {
+                ri->lastError = GetLastError();
+                oodSetSysErrCode(context->threadContext, ri->lastError);
+            }
+            else
+            {
+                ri->canRelease = true;
+                ri->isValid = true;
+            }
         }
         else
         {
-            if ( ! requiredClass(context->threadContext, dlg, "ResDialog", 2) )
+            if ( ! requiredClass(context->threadContext, dlg, "PlainBaseDialog", 2) )
             {
                 goto err_out;
             }
 
-            pCPlainBaseDialog pcpbd = dlgToCSelf(context, dlg);
-            ri->hMod = pcpbd->hInstance;
-            ri->isValid = true;
+            if ( stricmp(OODDLL, file) == 0 )
+            {
+                ri->hMod = MyInstance;
+                ri->isValid = true;
+            }
+            else
+            {
+                if ( ! requiredClass(context->threadContext, dlg, "ResDialog", 2) )
+                {
+                    goto err_out;
+                }
+
+                pCPlainBaseDialog pcpbd = dlgToCSelf(context, dlg);
+                ri->hMod = pcpbd->hInstance;
+                ri->isValid = true;
+            }
         }
     }
+
 
     return NULLOBJECT;
 
@@ -1694,7 +1849,7 @@ RexxMethod5(RexxObjectPtr, ri_getImage, RexxObjectPtr, _id, OPTIONAL_uint8_t, ty
     PRESOURCEIMAGE ri = (PRESOURCEIMAGE)cself;
     if ( ! ri->isValid )
     {
-        nullObjectException(context->threadContext, RESOURCEIMAGECLASS);
+        nullObjectException(context->threadContext, RESOURCE_IMAGE_CLASS);
         goto out;
     }
     ri->lastError = 0;
@@ -1728,7 +1883,7 @@ RexxMethod5(RexxObjectPtr, ri_getImages, RexxArrayObject, ids, OPTIONAL_uint8_t,
     PRESOURCEIMAGE ri = (PRESOURCEIMAGE)cself;
     if ( ! ri->isValid )
     {
-        nullObjectException(context->threadContext, RESOURCEIMAGECLASS);
+        nullObjectException(context->threadContext, RESOURCE_IMAGE_CLASS);
         goto out;
     }
     ri->lastError = 0;
@@ -1774,7 +1929,7 @@ RexxMethod1(POINTER, ri_handle, CSELF, ri)
 {
     if ( ! ((PRESOURCEIMAGE)ri)->isValid )
     {
-        nullObjectException(context->threadContext, RESOURCEIMAGECLASS);
+        nullObjectException(context->threadContext, RESOURCE_IMAGE_CLASS);
     }
     return ((PRESOURCEIMAGE)ri)->hMod;
 }

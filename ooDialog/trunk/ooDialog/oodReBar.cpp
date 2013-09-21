@@ -771,7 +771,7 @@ uint32_t keyword2rbsExt(CSTRING flags)
 
     if ( *buf == '\0' )
     {
-        strcpy(buf, "NONE");
+        strcpy(buf, "nil");
     }
     else
     {

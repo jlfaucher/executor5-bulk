@@ -1042,19 +1042,19 @@ REXX_METHOD_PROTOTYPE(image_systemErrorCode);
 // ImageList
 REXX_METHOD_PROTOTYPE(il_create_cls);
 REXX_METHOD_PROTOTYPE(il_init);
-REXX_METHOD_PROTOTYPE(il_release);
 REXX_METHOD_PROTOTYPE(il_add);
-REXX_METHOD_PROTOTYPE(il_addMasked);
 REXX_METHOD_PROTOTYPE(il_addIcon);
 REXX_METHOD_PROTOTYPE(il_addImages);
-REXX_METHOD_PROTOTYPE(il_addImages);
-REXX_METHOD_PROTOTYPE(il_getCount);
-REXX_METHOD_PROTOTYPE(il_getImageSize);
+REXX_METHOD_PROTOTYPE(il_addMasked);
 REXX_METHOD_PROTOTYPE(il_duplicate);
+REXX_METHOD_PROTOTYPE(il_getCount);
+REXX_METHOD_PROTOTYPE(il_getIcon);
+REXX_METHOD_PROTOTYPE(il_getImageSize);
+REXX_METHOD_PROTOTYPE(il_handle);
+REXX_METHOD_PROTOTYPE(il_isNull);
+REXX_METHOD_PROTOTYPE(il_release);
 REXX_METHOD_PROTOTYPE(il_remove);
 REXX_METHOD_PROTOTYPE(il_removeAll);
-REXX_METHOD_PROTOTYPE(il_isNull);
-REXX_METHOD_PROTOTYPE(il_handle);
 
 // DialogControl
 REXX_METHOD_PROTOTYPE(dlgctrl_new_cls);
@@ -1161,7 +1161,11 @@ REXX_METHOD_PROTOTYPE(sb_getPosition);
 REXX_METHOD_PROTOTYPE(sb_setPosition);
 
 // StatusBar
+REXX_METHOD_PROTOTYPE(stb_getBorders);
+REXX_METHOD_PROTOTYPE(stb_getIcon);
+REXX_METHOD_PROTOTYPE(stb_setIcon);
 REXX_METHOD_PROTOTYPE(stb_setParts);
+REXX_METHOD_PROTOTYPE(stb_setText);
 
 // ListBox
 REXX_METHOD_PROTOTYPE(lb_add);
@@ -2411,18 +2415,19 @@ RexxMethodEntry oodialog_methods[] = {
     // ImageList
     REXX_METHOD(il_create_cls,                  il_create_cls),
     REXX_METHOD(il_init,                        il_init),
-    REXX_METHOD(il_release,                     il_release),
     REXX_METHOD(il_add,                         il_add),
     REXX_METHOD(il_addMasked,                   il_addMasked),
     REXX_METHOD(il_addIcon,                     il_addIcon),
     REXX_METHOD(il_addImages,                   il_addImages),
-    REXX_METHOD(il_getCount,                    il_getCount),
-    REXX_METHOD(il_getImageSize,                il_getImageSize),
     REXX_METHOD(il_duplicate,                   il_duplicate),
-    REXX_METHOD(il_removeAll,                   il_removeAll),
-    REXX_METHOD(il_remove,                      il_remove),
-    REXX_METHOD(il_isNull,                      il_isNull),
+    REXX_METHOD(il_getCount,                    il_getCount),
+    REXX_METHOD(il_getIcon,                     il_getIcon),
+    REXX_METHOD(il_getImageSize,                il_getImageSize),
     REXX_METHOD(il_handle,                      il_handle),
+    REXX_METHOD(il_isNull,                      il_isNull),
+    REXX_METHOD(il_release,                     il_release),
+    REXX_METHOD(il_remove,                      il_remove),
+    REXX_METHOD(il_removeAll,                   il_removeAll),
 
     // DialogControl
     REXX_METHOD(dlgctrl_new_cls,                dlgctrl_new_cls),
@@ -2964,8 +2969,12 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(sb_getPosition,                 sb_getPosition),
     REXX_METHOD(sb_setPosition,                 sb_setPosition),
 
-    // Status
+    // StatusBar
+    REXX_METHOD(stb_getBorders,                 stb_getBorders),
+    REXX_METHOD(stb_getIcon,                    stb_getIcon),
+    REXX_METHOD(stb_setIcon,                    stb_setIcon),
     REXX_METHOD(stb_setParts,                   stb_setParts),
+    REXX_METHOD(stb_setText,                    stb_setText),
 
     REXX_METHOD(dss_makeDayStateBuffer,         dss_makeDayStateBuffer),
     REXX_METHOD(dss_quickDayStateBuffer,        dss_quickDayStateBuffer),

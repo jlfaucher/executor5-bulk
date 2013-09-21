@@ -114,9 +114,9 @@ New Public Routines:
 New Methods:
 ------------
 
-In the ? class:
+In the ResourceImage class:
 
-?
+getIcon()
 
 
 
@@ -134,8 +134,13 @@ Enhanced Methods:
 
 In the EventNotification class:
 
-addUserMsg()
+  * All event connection methods have an optional will reply type
+    argument. This argument is added to those methods that did not have
+    it.  All of the will reply type arguments now accepted 3 values
+    instead of 2.  .true, .false, or the keyword 'SYNC'.  See the
+    documentation for the proper usage and what the values mean.
 
+addUserMsg()
 
   * an eighth optional argument is added that allows the programmer to
     specifiy how the interprter should expect the event handler to
@@ -145,63 +150,16 @@ connectButtonEvent()
 
   * the DROPDOWN event is added.
 
-connectComboBoxEvent()
-
-  * a willReply argument is added as the fourth argument and is valid
-    for all event types.
-
-connectCommandEvents()
-
-  * a willReply argument is added as the fourth argument.
-
-connectDraw()
-
-  * a willReply argument is added as the third argument.
-
-connectEditEvent()
-
-  * a willReply argument is added as the fourth argument and is valid
-    for all event types.
-
-connectHelp()
-
-  * a sync wait argument is added as the second argument.
-
-connectListBoxEvent()
-
-  * a willReply argument is added as the fourth argument and is valid
-    for all event types.
-
-connectMove()
-
-  * a sync wait argument is added as the second argument.
-
-connectNotifyEvent()
-
-  * a willReply argument is added as the fourth argument and is valid
-    for all event types.
-
-connectPosChanged()
-
-  * a sync wait argument is added as the second argument.
-
-connectStaticEvent()
-
-  * a willReply argument is added as the fourth argument and is valid
-    for all event types.
-
 connectTabEvent()
 
-  * the willReply argument is now valid for all event types.
-
-  * the event handler for all events is now sent a third argument, the
+  * The event handler for all events is now sent a third argument, the
     Rexx Tab object that is sending the event notification.
 
-connectTrackBarEvent()
 
-  * a willReply argument is added as the fourth argument and is valid
-    for all event types.
+In the ResourceImage class:
 
+  *  The new() method has been enhanced to only need 1 argument.  The
+     optional 2nd argument is no longer needed.
 
 
 Enhanced Public Routines:

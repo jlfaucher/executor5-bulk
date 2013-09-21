@@ -50,10 +50,10 @@
 
    Changes:
    v01-00 03Jun12: First version for Exercise05.
-   v01-01 06Jun12: Minor changes for Exercise06.   
+   v01-01 06Jun12: Minor changes for Exercise06.
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
-                   folder, so change to ::Requires needed. 
-   
+                   folder, so change to ::Requires needed.
+
 ------------------------------------------------------------------------------*/
 
 .Application~addToConstDir("Product\ProductView.h")
@@ -443,7 +443,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::method initDialog
     expose font image
-    resImage = .ResourceImage~new( "", self)			  -- Create an instance of a resource image
+    resImage = .ResourceImage~new(self)			  -- Create an instance of a resource image
     image = resImage~getImage(IDB_PROD_ICON)			  -- Create an image from the Product bitmap
     stImage = self~newStatic(IDC_PRODABT_ICON_PLACE)~setImage(image) -- Create a static text control and set the image in it
     font = self~createFontEx("Ariel", 12)			  -- Create up a largish font with which to display text and ...

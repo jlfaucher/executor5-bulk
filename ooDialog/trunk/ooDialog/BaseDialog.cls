@@ -183,18 +183,19 @@
 ::method create class external "LIBRARY oodialog il_create_cls"
 
 ::method init external "LIBRARY oodialog il_init"
-::method release external "LIBRARY oodialog il_release"
 ::method add external "LIBRARY oodialog il_add"
-::method addMasked external "LIBRARY oodialog il_addMasked"
 ::method addIcon external "LIBRARY oodialog il_addIcon"
 ::method addImages external "LIBRARY oodialog il_addImages"
-::method getCount external "LIBRARY oodialog il_getCount"
-::method getImageSize external "LIBRARY oodialog il_getImageSize"
+::method addMasked external "LIBRARY oodialog il_addMasked"
 ::method duplicate external "LIBRARY oodialog il_duplicate"
-::method remove external "LIBRARY oodialog il_remove"
-::method removeAll external "LIBRARY oodialog il_removeAll"
+::method getCount external "LIBRARY oodialog il_getCount"
+::method getIcon external "LIBRARY oodialog il_getIcon"
+::method getImageSize external "LIBRARY oodialog il_getImageSize"
 ::method handle external "LIBRARY oodialog il_handle"
 ::method isNull external "LIBRARY oodialog il_isNull"
+::method release external "LIBRARY oodialog il_release"
+::method remove external "LIBRARY oodialog il_remove"
+::method removeAll external "LIBRARY oodialog il_removeAll"
 
 
 ::class 'CustomDraw' public mixinclass EventNotification

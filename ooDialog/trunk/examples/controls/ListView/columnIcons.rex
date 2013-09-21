@@ -130,7 +130,7 @@
 ::method setImageLists private
     expose list
 
-    resourceImage = .ResourceImage~new('ignored', self)
+    resourceImage = .ResourceImage~new(self)
     smIcons       = resourceImage~getImage(IDB_SMALL_ICONS)
     normalIcons   = resourceImage~getImage(IDB_NORMAL_ICONS)
 

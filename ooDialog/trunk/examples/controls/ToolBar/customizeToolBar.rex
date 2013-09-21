@@ -257,7 +257,7 @@ return 0
   flags = .DlgUtil~or(.Image~toID(ILC_COLOR32), .Image~toID(ILC_MASK))
   cRef  = .Image~colorRef(255, 0, 255)
 
-  ri = .ResourceImage~new('rc\toolBar.dll', self)
+  ri = .ResourceImage~new(self)
   imageBMP = ri~getImage(IDB_BUTTONS_IL)
 
   imageList = .ImageList~create(.Size~new(24, 24), flags, 20, 0)
