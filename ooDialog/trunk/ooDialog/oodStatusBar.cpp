@@ -164,6 +164,87 @@ RexxMethod2(RexxObjectPtr, stb_getIcon, uint32_t, index, CSELF, pCSelf)
     return stbGetIcon(context, index);
 }
 
+/** StatusBar::getParts()
+ *
+ *  Returns the number of parts in the status bar, and optionally, the
+ *  co-ordinate of the right edge of each part
+ *
+ *  @param edges  [optional] [in / out] An array object in which the right edge
+ *                of each part is returned.  If this argument is present, it
+ *                will have indexes filled in with the right co-ordinate of each
+ *                part.  The item at index 1 will have the right co-ordinate of
+ *                the first part, the item at index 2 will have the right edge
+ *                of the second part, etc.. Up to the numbe of parts.  Existing
+ *                items at those indexes will be over-written.  It is suggested
+ *                that the programmer use an empty array, but not required.
+ *
+ *  @return Returns the count of parts in this status bar, always.
+ */
+RexxMethod2(uint32_t, stb_getParts, OPTIONAL_RexxArrayObject, rxEdges, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+
+    uint32_t count = (uint32_t)SendMessage(getDChCtrl(pCSelf), SB_GETPARTS, 0, 0);
+    if ( argumentExists(1) )
+    {
+        int32_t *edges = (int32_t *)LocalAlloc(LPTR, count * sizeof(int32_t));
+        if ( edges == NULL )
+        {
+            outOfMemoryException(context->threadContext);
+            goto done_out;
+        }
+
+        SendMessage(getDChCtrl(pCSelf), SB_GETPARTS, count, (LPARAM)edges);
+        for ( size_t i = 0; i < count; i++ )
+        {
+            c->ArrayPut(rxEdges, c->Int32(edges[i]), i + 1);
+        }
+    }
+
+done_out:
+    return count;
+}
+
+/** StatusBar::getRect()
+ *
+ *  Returns a .Rect object that contains the bounding rectangle of the specified
+ *  part in this status bar.
+ *
+ *  @param index  [required] The one-based index of the part.
+ *
+ *  @return Returns a .Rect object with the bounding rectangle of the pare, or
+ *          .nil on error.
+ */
+RexxMethod2(RexxObjectPtr, stb_getRect, uint32_t, index, CSELF, pCSelf)
+{
+    RECT r;
+
+    index--;
+    if ( SendMessage(getDChCtrl(pCSelf), SB_GETRECT, index, (LPARAM)&r) )
+    {
+        return rxNewRect(context, &r);
+    }
+    return TheNilObj;
+}
+
+/** StatusBar::isSimple()
+ *
+ *
+ */
+RexxMethod1(logical_t, stb_isSimple, CSELF, pCSelf)
+{
+    return SendMessage(getDChCtrl(pCSelf), SB_ISSIMPLE, 0, 0);
+}
+
+/** StatusBar::setBkColor()
+ *
+ *
+ */
+RexxMethod2(uint32_t, stb_setBkColor, uint32_t, clr, CSELF, pCSelf)
+{
+    return (uint32_t)SendMessage(getDChCtrl(pCSelf), SB_SETBKCOLOR, 0, clr);
+}
+
 /** StatusBar::setIcon()
  *
  *
@@ -211,6 +292,17 @@ RexxMethod3(RexxObjectPtr, stb_setIcon, RexxObjectPtr, icon, uint32_t, index, CS
 
 done_out:
     return existing;
+}
+
+/** StatusBar::setMinHeight()
+ *
+ *
+ */
+RexxMethod2(uint32_t, stb_setMinHeight, uint32_t, height, CSELF, pCSelf)
+{
+    SendMessage(getDChCtrl(pCSelf), SB_SETMINHEIGHT, height, 0);
+    SendMessage(getDChCtrl(pCSelf), WM_SIZE, 0, 0);
+    return 0;
 }
 
 /** StatusBar::setParts()
@@ -297,5 +389,15 @@ RexxMethod4(logical_t, stb_setText, CSTRING, text, uint32_t, index, OPTIONAL_CST
     index--;
     index |= style;
     return SendMessage(getDChCtrl(pCSelf), SB_SETTEXT, (WPARAM)index, (LPARAM)text);
+}
+
+/** StatusBar::simple()
+ *
+ *
+ */
+RexxMethod2(uint32_t, stb_simple, logical_t, simple, CSELF, pCSelf)
+{
+    SendMessage(getDChCtrl(pCSelf), SB_SIMPLE, simple, 0);
+    return 0;
 }
 

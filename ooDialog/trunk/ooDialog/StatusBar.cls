@@ -38,15 +38,21 @@
 /**
  * Windows Dialog Interface for Open Object Rexx (ooRexx.)
  *
- * StatusBar and StatusBar helper classes.
+ * StatusBar class.
  */
 
 ::class 'StatusBar' subclass DialogControl public
 
 ::method getBorders external  "LIBRARY oodialog stb_getBorders"
 ::method getIcon external  "LIBRARY oodialog stb_getIcon"
+::method getParts external  "LIBRARY oodialog stb_getParts"
+::method getRect external  "LIBRARY oodialog stb_getRect"
+::method isSimple external  "LIBRARY oodialog stb_isSimple"
+::method setBkColor external  "LIBRARY oodialog stb_setBkColor"
 ::method setIcon external  "LIBRARY oodialog stb_setIcon"
+::method setMinHeight external  "LIBRARY oodialog stb_setMinHeight"
 ::method setParts external  "LIBRARY oodialog stb_setParts"
 ::method setText external  "LIBRARY oodialog stb_setText"
+::method simple	external  "LIBRARY oodialog stb_simple"
 
 
