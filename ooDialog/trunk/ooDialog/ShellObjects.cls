@@ -128,7 +128,7 @@
 
 
 ::class 'CommonDialogCustomizations' public mixinclass Object
-::method initCustomizations private external "LIBRARY oodialog cid_initCustomizations"
+::method initCustomizations private external "LIBRARY oodialog cid_initCustomizations"  -- Internal use only
 ::method addCheckButton external "LIBRARY oodialog cid_addCheckButton"
 ::method addComboBox external "LIBRARY oodialog cid_addComboBox"
 ::method addControlItem external "LIBRARY oodialog cid_addControlItem"
