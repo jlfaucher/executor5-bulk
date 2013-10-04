@@ -128,7 +128,7 @@
   </itemizedlist>
   <para>
     As long as this is all done on one thread, there is no problem. The ooDialog framework initializes COM when the object is
-    instantiated and releases COM when the underlying dialog is closed, that is when the <xref linkend="mthGetFolder"/> or
+    instantiated and releases COM when the underlying dialog is closed, that is when the <xref linkend="mthGetFolderBff"/> or
     <xref linkend="mthGetItemIDList"/> method returns. However, if the programmer wants, or needs, to implement a different
     usage pattern, then it becomes the programmer's responsibility to ensure that COM is initialized and released properly on
     each thread. The <computeroutput>BrowseForFolder</computeroutput> class provides the tools the programmer needs to do
@@ -623,7 +623,7 @@
 <entry>Returns the display name for an item <link linkend="varItemIDList">ID</link> list.</entry>
 </row>
 <row>
-<entry><xref linkend="mthGetFolder"/> </entry>
+<entry><xref linkend="mthGetFolderBff"/> </entry>
 <entry>Shows the browse for folder dialog configured as defined by the current values of the attributes of this object.</entry>
 </row>
 <row>
@@ -1779,8 +1779,8 @@ $Recycle.Bin
 </variablelist>
 </section>  <!-- End BrowseForFolder::getDisplayName() -->
 
-<section id="mthGetFolder" xreflabel="getFolder"><title>getFolder</title>
-<indexterm><primary>getFolder</primary></indexterm>
+<section id="mthGetFolderBff" xreflabel="getFolder"><title>getFolder</title>
+<indexterm><primary>getFolder</primary><secondary>BrowseForFolder class</secondary></indexterm>
 <indexterm><primary>BrowseForFolder class</primary><secondary>getFolder</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1915,7 +1915,7 @@ $Recycle.Bin
   <para>
     The recommended usage pattern for the BrowseForFolder object is to instantiate the object, configure the dialog through
     the object's attributes, and show the dialog using <emphasis role="italic">getItemIDList</emphasis>, or <xref
-    linkend="mthGetFolder"/>. In this way the COM library is <link linkend="varCOMLibrary">initialized</link> when the
+    linkend="mthGetFolderBff"/>. In this way the COM library is <link linkend="varCOMLibrary">initialized</link> when the
     object is instantiated and released during the return from <emphasis role="italic">getFolder</emphasis> or <emphasis
     role="italic">getItemIDList</emphasis>.
   </para>
@@ -2037,7 +2037,7 @@ $Recycle.Bin
   </para>
   <para>
     For each invocation of <emphasis role="italic">initCOM</emphasis> that returns true, a matching call to <xref
-    linkend="mthReleaseCOMBff"/> must be made on the same thread. Note that the <xref linkend="mthGetFolder"/> and <xref
+    linkend="mthReleaseCOMBff"/> must be made on the same thread. Note that the <xref linkend="mthGetFolderBff"/> and <xref
     linkend="mthGetItemIDList"/> methods release the COM library on the thread they are executing in when the <emphasis
     role="italic">reuse</emphasis> arguemnt is false. Therefore, if <emphasis role="italic">initCOM</emphasis> is invoked on
     thread xx, the matching release COM requirement can be fulfilled by invoking <emphasis role="italic">getFolder</emphasis>
@@ -2184,7 +2184,7 @@ leaving() thread ID 4032
     As noted through out the <computeroutput>BrowseForFolder</computeroutput> documentation, the COM library must be
     initialized and released for each thread the browse for folder object is used on. The ooDialog initializes the COM
     library on the thread the object is first instantiated on and releases the COM library on the thread that the <xref
-    linkend="mthGetFolder"/> method, or the <xref linkend="mthGetItemIDList"/> is invoked on. If the same browse for folder
+    linkend="mthGetFolderBff"/> method, or the <xref linkend="mthGetItemIDList"/> is invoked on. If the same browse for folder
     object is used on another thread than the thread it was instatiated on, the methods of the object may fail unless the COM
     library is initialized on the other thread. The <xref linkend="mthInitCOMBff"/> method is provided to perform the
     initialization, and the <emphasis role="italic">releaseCOM</emphasis> method is provided to release the COM library on
@@ -2192,7 +2192,7 @@ leaving() thread ID 4032
   </para>
   <para>
     For each invocation of <emphasis role="italic">initCOM</emphasis> that returns true, a matching call to <emphasis
-    role="italic">releaseCOM</emphasis> must be made on the same thread. Note that the <xref linkend="mthGetFolder"/> and
+    role="italic">releaseCOM</emphasis> must be made on the same thread. Note that the <xref linkend="mthGetFolderBff"/> and
     <xref linkend="mthGetItemIDList"/> methods release the COM library on the thread they are executing in when the <emphasis
     role="italic">reuse</emphasis> arguemnt is false. Therefore, if <emphasis role="italic">initCOM</emphasis> is invoked on
     thread xx, the matching release COM requirement can be fulfilled by invoking <emphasis role="italic">getFolder</emphasis>
@@ -4875,8 +4875,8 @@ leaving() thread ID 4032
 </variablelist>
 </section>  <!-- End CommonItemDialog::getFileTypeIndex() -->
 
-<section id="mthGetFolder" xreflabel="getFolder"><title>getFolder</title>
-<indexterm><primary>getFolder</primary></indexterm>
+<section id="mthGetFolderCid" xreflabel="getFolder"><title>getFolder</title>
+<indexterm><primary>getFolder</primary><secondary>CommonItemDialog class</secondary></indexterm>
 <indexterm><primary>CommonItemDialog class</primary><secondary>getFolder</secondary></indexterm>
 <programlisting>
 <![CDATA[
