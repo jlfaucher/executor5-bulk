@@ -1069,11 +1069,11 @@
 </row>
 <row>
 <entry>ID_PSREBOOTSYSTEM</entry>
-<entry>Possible return value from the <xref linkend="mthExecuteClsPSD"/> or <xref linkend="mthGetResult"/> methods. Indicates a page sent the reboot system message to the property sheet. The computer must be restarted for the user's changes to take effect. The application is responsible for rebooting the  computer.</entry>
+<entry>Possible return value from the <xref linkend="mthExecuteClsPSD"/> or <xref linkend="mthGetResultClsPSD"/> methods. Indicates a page sent the reboot system message to the property sheet. The computer must be restarted for the user's changes to take effect. The application is responsible for rebooting the  computer.</entry>
 </row>
 <row>
 <entry>ID_PSRESTARTWINDOWS</entry>
-<entry>Possible return value from the <xref linkend="mthExecuteClsPSD"/> or <xref linkend="mthGetResult"/> methods. Indicates a page sent the restart Window message to the property sheet. Microsoft Windwos must be restarted for the user's changes to take effect. The application is responsible for restarting Windows.</entry>
+<entry>Possible return value from the <xref linkend="mthExecuteClsPSD"/> or <xref linkend="mthGetResultClsPSD"/> methods. Indicates a page sent the restart Window message to the property sheet. Microsoft Windwos must be restarted for the user's changes to take effect. The application is responsible for restarting Windows.</entry>
 </row>
 <row>
 <entry>MAXPROPPAGES</entry>
@@ -1160,7 +1160,7 @@
 <entry>Gets the Rexx dialog object for the page specified by <emphasis role="italic">index</emphasis>.</entry>
 </row>
 <row>
-<entry><xref linkend="mthGetResult"/></entry>
+<entry><xref linkend="mthGetResultClsPSD"/></entry>
 <entry>Returns a keyword indicating the result of executing the <computeroutput>PropertySheetDialog</computeroutput>.</entry>
 </row>
 <row>
@@ -2442,8 +2442,8 @@
 </variablelist>
 </section>  <!-- End PropertySheetDialog::getPage() -->
 
-<section id="mthGetResult" xreflabel="getResult"><title>getResult</title>
-<indexterm><primary>getResult</primary></indexterm>
+<section id="mthGetResultClsPSD" xreflabel="getResult"><title>getResult</title>
+<indexterm><primary>getResult</primary><secondary>PropertySheetDialog class</secondary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>getResult</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3262,7 +3262,7 @@
   <para>
     An application should invoke the <emphasis role="italic">rebootSystem</emphasis> method only in response to the
     APPLY or KILLACTIVE notifications.  Invoking the method causes the <xref linkend="mthExecuteClsPSD"/>
-    method to return the ID_PSREBOOTSYSTEM value, or for the <xref linkend="mthGetResult"/> method to
+    method to return the ID_PSREBOOTSYSTEM value, or for the <xref linkend="mthGetResultClsPSD"/> method to
     return <emphasis role="italic">RebootSystem</emphasis>. But only if the user clicks the OK button to close the
     property sheet. It is the application's responsibility to reboot the system.
   </para>
@@ -3345,7 +3345,7 @@
   <para>
     An application should invoke the <emphasis role="italic">restartWindows</emphasis> method only in response to the
     APPLY or KILLACTIVE notifications.  Invoking the method causes the <xref linkend="mthExecuteClsPSD"/>
-    method to return the ID_PSRESTARTWINDOWS value, or for the <xref linkend="mthGetResult"/> method to
+    method to return the ID_PSRESTARTWINDOWS value, or for the <xref linkend="mthGetResultClsPSD"/> method to
     return <emphasis role="italic">RestartWindows</emphasis>. But only if the user clicks the OK button to close the
     property sheet. It is the application's responsibility to restart Windows.
   </para>
