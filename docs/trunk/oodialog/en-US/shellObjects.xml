@@ -631,11 +631,11 @@
 <entry>Shows the browse for folder dialog and retrieves the item <link linkend="varItemIDList">ID</link> list the user picks.</entry>
 </row>
 <row>
-<entry><xref linkend="mthInitCOM"/> </entry>
+<entry><xref linkend="mthInitCOMBff"/> </entry>
 <entry>Initializes the COM <link linkend="varCOMLibrary">library</link> on the current thread.</entry>
 </row>
 <row>
-<entry><xref linkend="mthReleaseCOM"/> </entry>
+<entry><xref linkend="mthReleaseCOMBff"/> </entry>
 <entry>Releases the COM <link linkend="varCOMLibrary">library</link> on the current thread.</entry>
 </row>
 <row>
@@ -2000,8 +2000,8 @@ $Recycle.Bin
 </variablelist>
 </section>  <!-- End BrowseForFolder::getItemIDList() -->
 
-<section id="mthInitCOM" xreflabel="initCOM"><title>initCOM</title>
-<indexterm><primary>initCOM</primary></indexterm>
+<section id="mthInitCOMBff" xreflabel="initCOM"><title>initCOM</title>
+<indexterm><primary>initCOM</primary><secondary>BrowseForFolder class</secondary></indexterm>
 <indexterm><primary>BrowseForFolder class</primary><secondary>initCOM</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2037,7 +2037,7 @@ $Recycle.Bin
   </para>
   <para>
     For each invocation of <emphasis role="italic">initCOM</emphasis> that returns true, a matching call to <xref
-    linkend="mthReleaseCOM"/> must be made on the same thread. Note that the <xref linkend="mthGetFolder"/> and <xref
+    linkend="mthReleaseCOMBff"/> must be made on the same thread. Note that the <xref linkend="mthGetFolder"/> and <xref
     linkend="mthGetItemIDList"/> methods release the COM library on the thread they are executing in when the <emphasis
     role="italic">reuse</emphasis> arguemnt is false. Therefore, if <emphasis role="italic">initCOM</emphasis> is invoked on
     thread xx, the matching release COM requirement can be fulfilled by invoking <emphasis role="italic">getFolder</emphasis>
@@ -2152,8 +2152,8 @@ leaving() thread ID 4032
 </variablelist>
 </section>  <!-- End BrowseForFolder::initCOM() -->
 
-<section id="mthReleaseCOM" xreflabel="releaseCOM"><title>releaseCOM</title>
-<indexterm><primary>releaseCOM</primary></indexterm>
+<section id="mthReleaseCOMBff" xreflabel="releaseCOM"><title>releaseCOM</title>
+<indexterm><primary>releaseCOM</primary><secondary>BrowseForFolder class</secondary></indexterm>
 <indexterm><primary>BrowseForFolder class</primary><secondary>releaseCOM</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2186,7 +2186,7 @@ leaving() thread ID 4032
     library on the thread the object is first instantiated on and releases the COM library on the thread that the <xref
     linkend="mthGetFolder"/> method, or the <xref linkend="mthGetItemIDList"/> is invoked on. If the same browse for folder
     object is used on another thread than the thread it was instatiated on, the methods of the object may fail unless the COM
-    library is initialized on the other thread. The <xref linkend="mthInitCOM"/> method is provided to perform the
+    library is initialized on the other thread. The <xref linkend="mthInitCOMBff"/> method is provided to perform the
     initialization, and the <emphasis role="italic">releaseCOM</emphasis> method is provided to release the COM library on
     the other thread.
   </para>
@@ -2366,7 +2366,7 @@ leaving() thread ID 4032
     released. Also note that the <xref linkend="mthGetItemIDList"/> method uses true for the <emphasis
     role="italic">reuse</emphasis> argument. This tells the ooDialog framework to not release COM during the invocation of
     the <emphasis role="italic">getItemIDList</emphasis> method. Because of this the example uses <xref
-    linkend="mthReleaseCOM"/> to properly release the COM library when the example ends:
+    linkend="mthReleaseCOMBff"/> to properly release the COM library when the example ends:
 
 <programlisting>
 <![CDATA[
@@ -5001,8 +5001,8 @@ leaving() thread ID 4032
 </variablelist>
 </section>  <!-- End CommonItemDialog::getResult() -->
 
-<section id="mthInitCOM" xreflabel="initCOM"><title>initCOM</title>
-<indexterm><primary>initCOM</primary></indexterm>
+<section id="mthInitCOMCid" xreflabel="initCOM"><title>initCOM</title>
+<indexterm><primary>initCOM</primary><secondary>CommonItemDialog class</secondary></indexterm>
 <indexterm><primary>CommonItemDialog class</primary><secondary>initCOM</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5127,8 +5127,8 @@ leaving() thread ID 4032
 </variablelist>
 </section>  <!-- End CommonItemDialog::release() -->
 
-<section id="mthReleaseCOM" xreflabel="releaseCOM"><title>releaseCOM</title>
-<indexterm><primary>releaseCOM</primary></indexterm>
+<section id="mthReleaseCOMCid" xreflabel="releaseCOM"><title>releaseCOM</title>
+<indexterm><primary>releaseCOM</primary><secondary>CommonItemDialog class</secondary></indexterm>
 <indexterm><primary>CommonItemDialog class</primary><secondary>releaseCOM</secondary></indexterm>
 <programlisting>
 <![CDATA[
