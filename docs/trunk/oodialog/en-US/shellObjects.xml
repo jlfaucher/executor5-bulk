@@ -42,15 +42,16 @@
     #
     #########################################################################
 -->
-<chapter id="chpShellObjects" xreflabel="Shell Objects"><title>Shell Objects</title>
+<chapter id="chpShellObjects" xreflabel="Shell Objects"><title>Windows Shell Objects</title>
 <indexterm><primary>shell objects</primary></indexterm>
 <para>
-  xx
+  The ooDialog framework provides a number of classes that are used to access the Windows Shell. The Windows Shell objects
+  are implemented using COM (the Component Object Model, a standard introduced by Microsoft.) The Windows Shell should not be
+  confused with the Windows window manager, which is responsible for the windowing system in Windows. ooDialog is primarily
+  concerned with, and mostly deals with, the windowing system. However, in a modern Windows system, not all tasks can be done
+  through the windowing system. Selecting or choosing a folder is an example of a task that is not done through the window
+  manager.
 </para>
-<para>
-  xxx
-</para>
-
 
 <section id="sctShellobjectsList"><title>Shell Object Classes Table</title>
 
@@ -74,6 +75,34 @@
 <entry>Provides access to the Windows <emphasis role="italic">Browse For Folder</emphasis> dialog, allowing complete configuration of the dialog.</entry>
 </row>
 <row>
+<entry><xref linkend="clsComConstants"/> class</entry>
+<entry>x.</entry>
+</row>
+<row>
+<entry><xref linkend="clsCommonDialogCustomizations"/> class</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+</row>
+<row>
+<entry><xref linkend="clsCommonItemDialog"/> class</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+</row>
+<row>
+<entry><xref linkend="clsCommonDialogEvents"/> class</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+</row>
+<row>
+<entry><xref linkend="clsOpenFileDialog"/> class</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+</row>
+<row>
+<entry><xref linkend="clsSaveFileDialog"/> class</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+</row>
+<row>
+<entry><xref linkend="clsShellItemFilter"/> class</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+</row>
+<row>
 <entry><xref linkend="clsSimpleFolderBrowse"/> class</entry>
 <entry>Allows the display of a simple to use, but non-configurable, Windows <emphasis role="italic">Browse For Folder</emphasis> dialog.</entry>
 </row>
@@ -89,16 +118,9 @@
 <indexterm><primary>BrowseForFolder class</primary><secondary>Shell / COM considerations</secondary></indexterm>
 
 <para>
-  The browse for folder dialog is part of the Windows Shell. Shell objects are implemented using COM (the Component Object
-  Model, a standard introduced by Microsoft.) The Windows Shell should not be confused with the Windows window manager, which
-  is responsible for the windowing system in Windows. ooDialog is primarily concerned with, and deals with, the windowing
-  system. However, in a modern Windows system, not all tasks can be done through the windowing system. Selecting or choosing
-  a folder is an example of task that is not done through the window manager.
-</para>
-<para>
-  In general, the Rexx programmer can work with the <computeroutput>BrowseForFolder</computeroutput> class in the same way as
-  working with any other ooDialog dialog classes. However, because the underlying Windows object is a COM object rather than
-  the usual windowing system window, there are a few considerations the programmer needs to be aware of.
+  In general, the Rexx programmer can work with the <emphasis role="italic">shell</emphasis> object classes in the same way
+  as working with any other ooDialog dialog classes. However, because the underlying Windows objects are COM objects rather
+  than the usual windowing system window, there are a few considerations the programmer needs to be aware of.
 </para>
 <variablelist>
   <varlistentry id="varCOMLibrary" xreflabel="COM library"><term><emphasis role="bold">COM Library / Threading:</emphasis></term>
@@ -107,7 +129,8 @@
     The use of COM objects requirers that the COM library be initialized and released for <emphasis
     role="italic">each</emphasis> thread that a COM object is used in. Normally the Rexx programmer does not need to be much
     aware of threading and thread issues. However the COM requiement that the library be initialized and released on each
-    thread changes that. The normal usage pattern for a browse for folder object would be:
+    thread changes that. Using the <xref linkend="clsBrowseForFolder"/> object as an example, the normal usage pattern would
+    be:
   </para>
   <itemizedlist>
   <listitem>
@@ -127,14 +150,18 @@
   </listitem>
   </itemizedlist>
   <para>
+    This usage pattern is the same for other shell objects such as a <xref linkend="clsOpenFileDialog"/> object, a <xref
+    linkend="clsSaveFileDialog"/> object, etc..
+  </para>
+  <para>
     As long as this is all done on one thread, there is no problem. The ooDialog framework initializes COM when the object is
     instantiated and releases COM when the underlying dialog is closed, that is when the <xref linkend="mthGetFolderBff"/> or
     <xref linkend="mthGetItemIDList"/> method returns. However, if the programmer wants, or needs, to implement a different
     usage pattern, then it becomes the programmer's responsibility to ensure that COM is initialized and released properly on
-    each thread. The <computeroutput>BrowseForFolder</computeroutput> class provides the tools the programmer needs to do
-    that. If COM is not initialized on a thread the browse for folder object is running on, then methods invoked on the
-    object may fail. If COM is not released on a thread it <emphasis role="italic">was</emphasis> initialized on, then system
-    resource leaks can occur.
+    each thread. The <computeroutput>BrowseForFolder</computeroutput> class, and other ooDialog shell classes, provide the
+    tools the programmer needs to do that. If COM is not initialized on a thread the browse for folder object is running on,
+    then methods invoked on the object may fail. If COM is not released on a thread it <emphasis role="italic">was</emphasis>
+    initialized on, then system resource leaks can occur.
   </para>
   <para>
     This is not that complicated and is not really that different than other areas of ooDialog concerning system resources. If
@@ -144,10 +171,10 @@
     here is that this <emphasis role="italic">initialize / release</emphasis> cycle is on a per thread basis.
   </para>
   <para>
-    The documentation for the individual attributes and methods of the <computeroutput>BrowseForFolder</computeroutput> class
-    will make note of when the programmer needs to consider these threading issues when using the attribute or method. In
-    addition, the <xref linkend="clsSimpleFolderBrowse"/> class provides an interface to the Browse For Folder dialog where
-    the Rexx programmer does not need to be aware of COM.
+    The documentation for the individual attributes and methods of the shell object classes will make note of when the
+    programmer needs to consider these threading issues when using the attribute or method. In addition, some of the ooDialog
+    shell classes, such as the <xref linkend="clsSimpleFolderBrowse"/> class, provide simplified interfaces where the Rexx
+    programmer does not need to be aware of COM.
   </para>
   </listitem></varlistentry>
   <varlistentry id="varItemIDList" xreflabel="item ID list"><term><emphasis role="bold">Item ID List</emphasis></term>
@@ -156,8 +183,8 @@
     The Windows Shell identifies objects in the Shell using a device called an item ID list. Files, folders, printers,
     remote computers all have an item ID list that is used to uniquely identify them to the Shell. The ooDialog programmer
     does not really need to know about the details of these item ID lists. However, it is difficult to document the
-    <computeroutput>BrowseForFolder</computeroutput> class without making references to an item ID list. Although technically
-    incorrect, the programmer can just think of them as <link linkend="defHandle">handles</link>.
+    shell classes without making references to an item ID list. Although technically incorrect, the programmer can just think
+    of them as <link linkend="defHandle">handles</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -178,10 +205,10 @@
 <para>
   In Windows Vista and later the CSIDL values have been replaced by Known Folder values, but for compatibility the CSIDL
   values still work. ooDialog does not yet support the known folder values, only the CSIDL names. Some of the methods of the
-  <computeroutput>BrowseForFolder</computeroutput> class and the <xref linkend="clsSimpleFolderBrowse"/> class accept the
-  CSIDL names listed below for arguments. Future enhancements to ooDialog may also accept the CSIDL names, so they are listed
-  here in one place. The names are not case sensitive, but are otherwise spelled exactly as Microsoft does. Google can be
-  used to research any of the names further. Only the names listed are recognized in ooDialog.
+  <xref linkend="claBrowseForFolder"/> class and the <xref linkend="clsSimpleFolderBrowse"/> class accept the CSIDL names
+  listed below for arguments. Future enhancements to ooDialog may add other Shell classes that also accept the CSIDL names.
+  The names are listed here in one place. The names are not case sensitive, but are otherwise spelled exactly as
+  Microsoft does. Google can be used to research any of the names further. Only the names listed are recognized in ooDialog.
 </para>
 
 <variablelist>
@@ -2447,11 +2474,11 @@ leaving() thread ID 4032
 </row>
 <row>
 <entry>S_FALSE</entry>
-<entry>False.</entry>
+<entry>False, not true.</entry>
 </row>
 <row>
 <entry>S_OK</entry>
-<entry>Ok.</entry>
+<entry>The operation completed successfully, or without errors.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2464,10 +2491,43 @@ leaving() thread ID 4032
 <section id="clsCommonDialogCustomizations" xreflabel="CommonDialogCustomizations"><title>CommonDialogCustomizations Class</title>
 <indexterm><primary>CommonDialogCustomizations class</primary></indexterm>
 <para>
-  A CommonDialogCustomizations object ...
+  The <computeroutput>CommonDialogCustomizations</computeroutput> class is a <emphasis role="italic">mixin</emphasis> class
+  that provides a way to customize a <xref linkend="clsCommonItemDialog"/> object. The
+  <computeroutput>CommonDialogCustomizations</computeroutput> class has methods that allow an application to add controls
+  to a common item dialog. To use this <emphasis role="italic">mixin</emphasis> class, the programmer typicaly adds it to the
+  common item dialog's inheritance chain before instantiating a <xref linkend="clsOpenFileDialog"/> or <xref
+  linkend="clsSaveFileDialog"/> object as shown in this code snippet:
+
+<programlisting>
+<![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
+
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ret = sfd~startVisualGroup(IDC_GB_RADIOS, 'Save file with extension:')
+  ret = sfd~addRadioButtonList(IDC_RBL_RADIOS)
+  ...
+]]>
+</programlisting>
+
 </para>
 <para>
-  xx
+  Controls should be added to the dialog before the dialog is shown. The layout of the controls is implied by the order
+  in which they are added. They can be added above or below the standard file dialog's set of controls. Once the dialog is
+  shown, controls cannot be added or removed, but the existing controls can be hidden or disabled at any time. Their labels
+  can also be changed at any time.
+</para>
+<para>
+  Container controls are controls that can have items added to them. Container controls include combo boxes, menus, the
+  drop-down list attached to the Open button, and any option button groups. The order that items appear in a container is the
+  order in which they were added. The operating system does not provide a way to reorder them. IDs are scoped to the parent
+  control. Container controls, with the exception of menus, have a selected item.
+</para>
+<para>
+  Items with a container control cannot be changed after they have been created, except for their enabled and visible states.
+  However, they can be added and removed at any time. For example, if the programmer needed to change the text of a menu, she
+  would have to remove the current menu and add another with the correct text.
 </para>
 
 <section id="sctMethodsCommonDialogCustomizations"><title>Method Table</title>
@@ -2485,16 +2545,12 @@ leaving() thread ID 4032
 </thead>
 <tbody>
 <row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-</row>
-<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthAddCheckButton">addCheckButton</link></entry>
-<entry>addCheckButton</entry>
+<entry><xref linkend="mthAddCheckButton"/> </entry>
+<entry>Adds a check box to the dialog.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2506,13 +2562,13 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>addCheckButton</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addCheckButton(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addCheckButton(--id--,--label--+------------+--)------------><
+                                   +-,-checked--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a check box to the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2521,10 +2577,23 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the check box control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>label [required]</term>
+    <listitem>
+    <para>
+      The text, the label, for the check box.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>checked [optional]</term>
+    <listitem>
+    <para>
+      True if the check box should be checked, false if it should not be checked. The default if this argument is omitted is
+      false.
     </para>
     </listitem></varlistentry>
   </variablelist>
