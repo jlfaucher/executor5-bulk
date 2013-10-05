@@ -4052,6 +4052,11 @@ RexxMethod3(uint32_t, cid_startVisualGroup, RexxObjectPtr, rxID, CSTRING, label,
  */
 RexxMethod1(RexxObjectPtr, cde_init, OSELF, self)
 {
+    if ( ! requiredOS(context, Vista_OS, "CommonDialogEvents", "Vista") )
+    {
+        return TheOneObj;
+    }
+
     CommonDialogEvents *pcde = new (std::nothrow) CommonDialogEvents(self, context->threadContext->instance);
 
     RexxBufferObject bufObj = context->NewBuffer(sizeof(CCommonDialogEvents));
