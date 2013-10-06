@@ -2784,7 +2784,7 @@ leaving() thread ID 4032
     <varlistentry><term>containerID [required]</term>
     <listitem>
     <para>
-      The resource ID of the container to which the control item is being added May be numeric or <xref
+      The resource ID of the container to which the control item is being added. May be numeric or <xref
       linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
@@ -2812,7 +2812,7 @@ leaving() thread ID 4032
   <listitem>
   <para>
     The default state for the added item is enabled and visible. Control ittems in container control groups cannot be changed
-    after they have been created, with the exception of their enabled and visible states. Container controls include option
+    after they have been created, with the exception of their enabled and visible states. Container controls include radio
     button groups, combo boxes, drop-down lists on the Open or Save button, and menus.
   </para>
   </listitem></varlistentry>
@@ -2828,7 +2828,7 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example adds a menu to the dialog with 3 menu items:
+    This example uses the <emphasis role="italic">addControlItem</emphasis> method to add 3 menu items to a menu:
 <programlisting>
 <![CDATA[
   .CommonItemDialog~inherit(.CommonDialogCustomizations)
@@ -2951,13 +2951,12 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomization class</primary><secondary>addMenu</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addMenu(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addMenu(--id--,--label--)--------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a menu to the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2966,10 +2965,16 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the menu control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>label [required]</term>
+    <listitem>
+    <para>
+      The label for the menu control.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2977,13 +2982,14 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The default state for the menu control is enabled and visible. Menus are container controls. To add menu items to the
+    menu use the <xref linkend="mthAddControlItem"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2998,10 +3004,19 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the <emphasis role="italic">addMenu</emphasis> method to add a menu to the dialog:
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ret = sfd~addMenu(IDC_MENU, "Pick from this Menu")
+  ret = sfd~addControlItem(IDC_MENU, 'Select Rexx', IDC_MENU_REX)
+  ret = sfd~addControlItem(IDC_MENU, 'Use text', IDC_MENU_TXT)
+  ret = sfd~addControlItem(IDC_MENU, 'Write to console', IDC_MENU_CONSOLE)
+  ...
 ]]>
 </programlisting>
   </para>
@@ -3014,13 +3029,12 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>addPushButton</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addPushButton(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addPushButton(--id--,--label--)--------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a button to the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3029,10 +3043,16 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the push button. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>label [required]</term>
+    <listitem>
+    <para>
+      The label for the push button.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3040,13 +3060,13 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The default state for the push button is enabled and visible.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3061,10 +3081,17 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example adds a push button to a save file dialog:
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ...
+  sfd~addPushButton(IDC_PB_DONE, 'Done Now')
+  sfd~makeProminent(IDC_PB_DONE)
 ]]>
 </programlisting>
   </para>
@@ -3077,25 +3104,24 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>addRadioButtonList</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addRadioButtonList(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addRadioButtonList(--id--)-------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a radio button group to the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the radio button group. May be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3103,13 +3129,15 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The default state for a radio button group control is enabled and visible. Radio button groups are container controls.
+    Use the <xref linkend="mthAddControlItem"/> method to add radio buttons to the group. To have a label for the radio
+    button group, use the <xref linkend="mthStartVisualGroup"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3124,10 +3152,21 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example adds a radio button group with 3 radio buttons and a label:
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ret = sfd~startVisualGroup(IDC_GB_RADIOS, 'Save file with extension:')
+  ret = sfd~addRadioButtonList(IDC_RBL_RADIOS)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rex', IDC_RB_REX)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.txt', IDC_RB_TXT)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rxg', IDC_RB_RXG)
+  ret = sfd~endVisualGroup()
+  ...
 ]]>
 </programlisting>
   </para>
@@ -3140,25 +3179,24 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>addSeparator</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addSeparator(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addSeparator(--id--)-------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a separator to the dialog, allowing a visual separation of controls.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the radio button group. May be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3166,13 +3204,13 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The default state for the separator control is enabled and visible.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3187,9 +3225,21 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example adds a separator control to separate the edit control from the menu below it:
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
+
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ...
+  ret = sfd~startVisualGroup(IDC_VG_EDIT, 'Some text please:')
+  ret = sfd~addEditBox(IDC_EDIT)
+  ret = sfd~endVisualGroup()
+  ret = sfd~addSeparator(IDC_SEPARATOR1)
+
+  ret = sfd~addMenu(IDC_MENU, "Pick from this Menu")
 
 ]]>
 </programlisting>
@@ -3203,13 +3253,12 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>addText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addText(--id--,--text--)---------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds text content, ie. a static text control, to the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3218,10 +3267,16 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the text control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The text to add.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3229,13 +3284,13 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The default state for the text control is enabled and visible.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3253,7 +3308,15 @@ leaving() thread ID 4032
     This example ...
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ...
+  ret = sfd~addSeparator(IDC_SEPARATOR2)
+  ret = sfd~addText(IDC_TEXT, "No files are selected")
+  ...
 ]]>
 </programlisting>
   </para>
