@@ -3838,7 +3838,6 @@ RexxMethod2(uint32_t, cid_enableOpenDropDown, RexxObjectPtr, rxID, CSELF, pCSelf
 
 /** CommonDialogCustomizations::endVisualGroup()
  *
- * Called internally to set the CSelf point for this class.
  */
 RexxMethod1(uint32_t, cid_endVisualGroup, CSELF, pCSelf)
 {
