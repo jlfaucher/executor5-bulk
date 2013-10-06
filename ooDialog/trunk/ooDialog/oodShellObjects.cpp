@@ -3779,8 +3779,23 @@ RexxMethod4(uint32_t, cid_addControlItem, RexxObjectPtr, rxContainerID, CSTRING,
 }
 
 
-RexxMethod3(uint32_t, cid_addEditBox, RexxObjectPtr, rxID, CSTRING, label, CSELF, pCSelf)
+/** CommonDialogCustomizations::addEditBox
+ *
+ *  @remarks  The MSDN doc says that the second arg is a label for the edit
+ *            control, but it is actually text that gets set for the edit box.
+ *            To actually add a label, you have to use startVisualGroup,
+ *            addEditBox, endVisual group.
+ *
+ *            If we send a null to the COM method for text, we get a garbled
+ *            string in the edit box.  Probably just lucky we don't crash, so we
+ *            use an empty string.
+ */
+RexxMethod3(uint32_t, cid_addEditBox, RexxObjectPtr, rxID, OPTIONAL_CSTRING, text, CSELF, pCSelf)
 {
+    if ( argumentOmitted(2) )
+    {
+        label = "";
+    }
     return cdcControlFunc(context, rxID, label, NULLOBJECT, 0, pCSelf, CdcEditBox);
 }
 
