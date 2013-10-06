@@ -56,13 +56,13 @@
 <section id="sctShellobjectsList"><title>Shell Object Classes Table</title>
 
 <para>
-  The ooDialog classes and routines for working with shell objects are listed the following table:
+  The ooDialog classes and routines for working with shell objects are listed in the following table:
 </para>
 <table id="tShellClasses" frame="all">
 <title>The ooDialog Shell Object Classes</title>
 <tgroup cols="2">
-<colspec colwidth="11*" />
-<colspec colwidth="32*" />
+<colspec colwidth="14*" />
+<colspec colwidth="30*" />
 <thead>
 <row>
 <entry>Class</entry>
@@ -76,31 +76,31 @@
 </row>
 <row>
 <entry><xref linkend="clsComConstants"/> class</entry>
-<entry>x.</entry>
+<entry>A <emphasis role="italic">mixin</emphasis> class containing constant values useful when working with shell objects.</entry>
 </row>
 <row>
 <entry><xref linkend="clsCommonDialogCustomizations"/> class</entry>
-<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only. A <emphasis role="italic">mixin</emphasis> class that provides a way to customize a <computeroutput>CommonItemDialog</computeroutput> object.</entry>
 </row>
 <row>
 <entry><xref linkend="clsCommonItemDialog"/> class</entry>
-<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only. The common item dialog was formerly known as the common file dialog. It is used in two variations, the open file dialog and the save file dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="clsCommonDialogEvents"/> class</entry>
-<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only. Contains event handler methods that allow the ooDialog program to be notified of events within a common file dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="clsOpenFileDialog"/> class</entry>
-<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only. A concrete subclass of the <computeroutput>CommonItemDialog</computeroutput> that displays an open file dialog to the user.</entry>
 </row>
 <row>
 <entry><xref linkend="clsSaveFileDialog"/> class</entry>
-<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only. A concrete subclass of the <computeroutput>CommonItemDialog</computeroutput> that displays a save file dialog to the user.</entry>
 </row>
 <row>
 <entry><xref linkend="clsShellItemFilter"/> class</entry>
-<entry><emphasis role="bold">Vista</emphasis> or later only.</entry>
+<entry><emphasis role="bold">Vista</emphasis> or later only. Can be used if an application needs to perform special filtering to remove some items from the common item dialog's view.</entry>
 </row>
 <row>
 <entry><xref linkend="clsSimpleFolderBrowse"/> class</entry>
@@ -155,13 +155,13 @@
   </para>
   <para>
     As long as this is all done on one thread, there is no problem. The ooDialog framework initializes COM when the object is
-    instantiated and releases COM when the underlying dialog is closed, that is when the <xref linkend="mthGetFolderBff"/> or
-    <xref linkend="mthGetItemIDList"/> method returns. However, if the programmer wants, or needs, to implement a different
-    usage pattern, then it becomes the programmer's responsibility to ensure that COM is initialized and released properly on
-    each thread. The <computeroutput>BrowseForFolder</computeroutput> class, and other ooDialog shell classes, provide the
-    tools the programmer needs to do that. If COM is not initialized on a thread the browse for folder object is running on,
-    then methods invoked on the object may fail. If COM is not released on a thread it <emphasis role="italic">was</emphasis>
-    initialized on, then system resource leaks can occur.
+    instantiated and releases COM when the underlying dialog is closed, that is when the <xref linkend="mthGetFolderBff"/>,
+    <xref linkend="mthGetItemIDList"/>, <xref linkend="mthGetResultCid"/>, etc., methods return. However, if the programmer
+    wants, or needs, to implement a different usage pattern, then it becomes the programmer's responsibility to ensure that
+    COM is initialized and released properly on each thread. The <computeroutput>BrowseForFolder</computeroutput> class, and
+    other ooDialog shell classes, provide the tools the programmer needs to do that. If COM is not initialized on a thread
+    the browse for folder object is running on, then methods invoked on the object may fail. If COM is not released on a
+    thread it <emphasis role="italic">was</emphasis> initialized on, then system resource leaks can occur.
   </para>
   <para>
     This is not that complicated and is not really that different than other areas of ooDialog concerning system resources. If
@@ -185,6 +185,58 @@
     does not really need to know about the details of these item ID lists. However, it is difficult to document the
     shell classes without making references to an item ID list. Although technically incorrect, the programmer can just think
     of them as <link linkend="defHandle">handles</link>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="varHResult" xreflabel="HRESULT code"><term><emphasis role="bold">COM result codes</emphasis></term>
+  <listitem>
+  <para>
+    In the COM API, methods invoked on COM objects return a result code called a HRESULT. This is just a number, very
+    similar to the <xref linkend="defSystemErrorCode"/> of the Win32 API. However, there is no easy way to look up the
+    meaning of a HRESULT code in the Windows <xref linkend="defWindowsDoc"/> as there is with a system error code. Many, if
+    not most, of the ooDialog shell object methods return the HRESULT error code on an error. When a COM error is detected,
+    the ooDialog shell object methods set the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable to the
+    HRESULT error code.
+  </para>
+  <para>
+    HRESULT codes are often shown in hexadecimal format. The ooDialog shell object methods return HRESULT codes as a base 10
+    number. If the programmer converts the number to hexadecimal format, an Internet search will usually turn up the meaning
+    of the error code. For example, one of the shell object methods could return 2147500068. Converted to hexadecimal this is
+    0x80004024. A search for 0x80004024 quickly leads to 0x80004024: The specified activation could not occur in the client
+    context as specified. In addition, the <xref linkend="mthErrMsg"/> method of the <computeroutput>DlgUtil</computeroutput>
+    class will return a formatted error message string for any HRESULT code in either decimal or hexidecimal. The <emphasis
+    role="italic">errMsg</emphasis> message works for system error codes also. For example:
+
+<programlisting>
+<![CDATA[
+  hResult = 2147500068
+  sysErr  = 2
+
+  say 'HRESULT error code:'
+  say .DlgUtil~errMsg(hResult)
+  say
+  say 'System error code:'
+  say .DlgUtil~errMsg(sysErr)
+
+::requires 'ooDialog.cls'
+
+/* Output would be:
+HRESULT error code:
+Error code 2147500068 (0x80004024): The specified activation could not occur in the client context as specified.
+
+
+System error code:
+Error code 2 (0x00000002): The system cannot find the file specified.
+*/
+]]>
+</programlisting>
+
+    Note that the error message itself comes from Microsoft, ooDialog simply reports it and is not responsible for the
+    clarity, or lack of clarity, of the message.
+  </para>
+  <para>
+    The <xref linkend="clsComConstants"/> class provides some constants for common HRESULT codes. The
+   <computeroutput>S_OK</computeroutput> constant is the HRESULT code for no error. Its value is 0 and the programmer can
+   check for 0 or non-zero to test for success or failure of methods that return a HRESULT code.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2495,9 +2547,9 @@ leaving() thread ID 4032
   The <computeroutput>CommonDialogCustomizations</computeroutput> class is a <emphasis role="italic">mixin</emphasis> class
   that provides a way to customize a <xref linkend="clsCommonItemDialog"/> object. The
   <computeroutput>CommonDialogCustomizations</computeroutput> class has methods that allow an application to add controls
-  to a common item dialog. To use this <emphasis role="italic">mixin</emphasis> class, the programmer typicaly adds it to the
-  common item dialog's inheritance chain before instantiating a <xref linkend="clsOpenFileDialog"/> or <xref
-  linkend="clsSaveFileDialog"/> object as shown in this code snippet:
+  to a common item dialog. To use this <emphasis role="italic">mixin</emphasis> class, the programmer <emphasis
+  role="bold">must</emphasis> add it to the common item dialog's inheritance chain before instantiating a <xref
+  linkend="clsOpenFileDialog"/> or <xref linkend="clsSaveFileDialog"/> object as shown in this code snippet:
 
 <programlisting>
 <![CDATA[
@@ -6993,10 +7045,13 @@ leaving() thread ID 4032
 <section id="clsOpenFileDialog" xreflabel="OpenFileDialog"><title>OpenFileDialog Class</title>
 <indexterm><primary>OpenFileDialog class</primary></indexterm>
 <para>
-  A OpenFileDialog object ...
+  The OpenFileDialog class is a concrete subclass of the <xref linkend="clsCommonItemDialog"/>. The programmer does not
+  instantiate a new <computeroutput>CommonItemDialog</computeroutput> object, but rather instantiates a new
+  <computeroutput>OpenFileDiaog</computeroutput> or <xref linkend="clsSaveFileDialog"/> object. The
+  <computeroutput>OpenFileDialog</computeroutput> is only available on Windows Vista or later operating systems.
 </para>
 <para>
-  xx
+
 </para>
 
 <section id="sctMethodsOpenFileDialog"><title>Method Table</title>
