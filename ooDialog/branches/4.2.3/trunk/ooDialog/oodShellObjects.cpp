@@ -3794,9 +3794,9 @@ RexxMethod3(uint32_t, cid_addEditBox, RexxObjectPtr, rxID, OPTIONAL_CSTRING, tex
 {
     if ( argumentOmitted(2) )
     {
-        label = "";
+        text = "";
     }
-    return cdcControlFunc(context, rxID, label, NULLOBJECT, 0, pCSelf, CdcEditBox);
+    return cdcControlFunc(context, rxID, text, NULLOBJECT, 0, pCSelf, CdcEditBox);
 }
 
 
