@@ -3838,7 +3838,6 @@ RexxMethod2(uint32_t, cid_enableOpenDropDown, RexxObjectPtr, rxID, CSELF, pCSelf
 
 /** CommonDialogCustomizations::endVisualGroup()
  *
- * Called internally to set the CSelf point for this class.
  */
 RexxMethod1(uint32_t, cid_endVisualGroup, CSELF, pCSelf)
 {
@@ -3966,10 +3965,26 @@ RexxMethod3(uint32_t, cid_removeControlItem, RexxObjectPtr, rxContainerID, RexxO
 
 /**  CommonDialogCustomizations::setCheckBoxState()
  *
+ *   Also implements CommonDialogCustomizations::check() and
+ *   CommonDialogCustomizations::uncheck()
  *
  */
-RexxMethod3(uint32_t, cid_setCheckButtonState, RexxObjectPtr, rxID, logical_t, checked, CSELF, pCSelf)
+RexxMethod4(uint32_t, cid_setCheckButtonState, RexxObjectPtr, rxID, OPTIONAL_logical_t, checked,
+            NAME, methodName, CSELF, pCSelf)
 {
+    if ( StrCmpI(methodName, "CHECK") == 0 )
+    {
+        checked = TRUE;
+    }
+    else if ( StrCmpI(methodName, "UNCHECK") == 0 )
+    {
+        checked = FALSE;
+    }
+    else if ( argumentOmitted(2) )
+    {
+        missingArgException(context->threadContext, 2);
+        return 0;
+    }
     return cdcControlFunc(context, rxID, NULL, NULLOBJECT, checked, pCSelf, CdcSetCheckButton);
 }
 

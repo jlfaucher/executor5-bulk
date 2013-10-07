@@ -158,6 +158,7 @@
 ::method setEditBoxText external "LIBRARY oodialog cid_setEditBoxText"
 ::method setSelectedControlItem external "LIBRARY oodialog cid_setSelectedControlItem"
 ::method startVisualGroup external "LIBRARY oodialog cid_startVisualGroup"
+::method uncheck external "LIBRARY oodialog cid_setCheckButtonState"
 
 ::class 'ComConstants' mixinclass Object
 ::constant  S_OK              0

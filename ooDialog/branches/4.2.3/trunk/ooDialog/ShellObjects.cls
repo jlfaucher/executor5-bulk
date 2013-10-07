@@ -128,7 +128,7 @@
 
 
 ::class 'CommonDialogCustomizations' public mixinclass Object
-::method initCustomizations private external "LIBRARY oodialog cid_initCustomizations"
+::method initCustomizations private external "LIBRARY oodialog cid_initCustomizations"  -- Internal use only
 ::method addCheckButton external "LIBRARY oodialog cid_addCheckButton"
 ::method addComboBox external "LIBRARY oodialog cid_addComboBox"
 ::method addControlItem external "LIBRARY oodialog cid_addControlItem"
@@ -158,6 +158,7 @@
 ::method setEditBoxText external "LIBRARY oodialog cid_setEditBoxText"
 ::method setSelectedControlItem external "LIBRARY oodialog cid_setSelectedControlItem"
 ::method startVisualGroup external "LIBRARY oodialog cid_startVisualGroup"
+::method uncheck external "LIBRARY oodialog cid_setCheckButtonState"
 
 ::class 'ComConstants' mixinclass Object
 ::constant  S_OK              0
