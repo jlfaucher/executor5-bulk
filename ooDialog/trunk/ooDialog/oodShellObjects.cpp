@@ -4004,7 +4004,7 @@ RexxMethod4(uint32_t, cid_setControlItemState, RexxObjectPtr, rxContainerID, Rex
  *
  *
  */
-RexxMethod4(uint32_t, cid_setControlItemText, RexxObjectPtr, rxContainerID, CSTRING, text, RexxObjectPtr, rxItemID, CSELF, pCSelf)
+RexxMethod4(uint32_t, cid_setControlItemText, RexxObjectPtr, rxContainerID, RexxObjectPtr, rxItemID, CSTRING, text, CSELF, pCSelf)
 {
     return cdcControlFunc(context, rxContainerID, text, rxItemID, 0, pCSelf, CdcSetControlItemText);
 }
