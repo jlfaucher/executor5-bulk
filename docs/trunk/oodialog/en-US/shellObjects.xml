@@ -2605,6 +2605,61 @@ leaving() thread ID 4032
 <entry><xref linkend="mthAddCheckButton"/> </entry>
 <entry>Adds a check box to the dialog.</entry>
 </row>
+<row>
+<entry><xref linkend="mthAddComboBox"/> </entry>
+<entry>Adds a combo box to the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddControlItem"/> </entry>
+<entry>Adds a control item to a container control in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddEditBox"/> </entry>
+<entry>Adds an edit box control to the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddMenu"/> </entry>
+<entry>Adds a menu to the dialog.</entry>
+</row>
+<entry><xref linkend="mthAddPushButton"/> </entry>
+<entry>Adds a push button to the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddRadioButtonList"/> </entry>
+<entry>Adds a radio button group to the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddSeparatorCdc"/> </entry>
+<entry>Adds a separator to the dialog, allowing a visual separation of controls.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAddText"/> </entry>
+<entry>Adds text content, ie. a static text control, to the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCheckCdc"/> </entry>
+<entry>Sets the state of the specified check box to <emphasis role="italic">checked</emphasis>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthEnableOpenDropDown"/> </entry>
+<entry>Enables a drop-down list on the Open or Save button in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthEndVisualGroup"/> </entry>
+<entry>Stops the addition of elements to a visual group in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetCheckButtonState"/> </entry>
+<entry>Determines the state of the specified check box, checked or not checked.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsChecked"/> </entry>
+<entry>Returns true if the specified check box is checked and false if it is not checked.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUncheckCdc"/> </entry>
+<entry>Sets the state of the specified check box to <emphasis role="italic">unchecked</emphasis>.</entry>
+</row>
 </tbody></tgroup>
 </table>
 </para>
@@ -3034,7 +3089,7 @@ leaving() thread ID 4032
 </programlisting>
 
 <para>
-  Adds a button to the dialog.
+  Adds a push button to the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3174,7 +3229,7 @@ leaving() thread ID 4032
 </variablelist>
 </section>  <!-- End CommonDialogCustomizations::addRadioButtonList() -->
 
-<section id="mthAddSeparatorCid" xreflabel="addSeparator"><title>addSeparator</title>
+<section id="mthAddSeparatorCdc" xreflabel="addSeparator"><title>addSeparator</title>
 <indexterm><primary>addSeparator</primary><secondary>CommonDialogCustomizations class</secondary></indexterm>
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>addSeparator</secondary></indexterm>
 <programlisting>
@@ -3329,25 +3384,24 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>check</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--check(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--check(--id--)--------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the state of the specified check box to <emphasis role="italic">checked</emphasis>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the check box. May be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3355,13 +3409,14 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This is a convenience method. It is equivalent to using the <xref linkend="mthSetCheckButtonState"/> method with a second
+    arugment of <emphasis role="italic">.true</emphasis>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3371,17 +3426,6 @@ leaving() thread ID 4032
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3392,25 +3436,24 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>enableOpenDropDown</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--enableOpenDropDown(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--enableOpenDropDown(--id--)-------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Enables a drop-down list on the Open or Save button in the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the drop-down list. May be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3418,13 +3461,15 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method applies to both the Open file dialog and to the Save file dialog. That is, for an Open file dialog it enables
+    a drop-down list on the Open button and for a Save file dialog it enables a drop-down list on the Save button. After
+    enabling the drop-down list use the <xref linkend="mthAddControlItem"/> method to add items to the list.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3439,9 +3484,19 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example enables a drop-down list on the Save button of the Save file dialog. It then adds 3 items to the list:
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
+
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ...
+  ret = sfd~enableOpenDropDown(IDC_DROP)
+  ret = sfd~addControlItem(IDC_DROP, 'Always overwrite', IDC_DROP_OVERWRITE)
+  ret = sfd~addControlItem(IDC_DROP, 'Prompt on overwrite', IDC_DROP_PROMPT)
+  ret = sfd~addControlItem(IDC_DROP, 'Never overwrite', IDC_DROP_NOOVERWRITE)
 
 ]]>
 </programlisting>
@@ -3455,39 +3510,31 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>endVisualGroup</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--endVisualGroup(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--endVisualGroup-------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Stops the addition of elements to a visual group in the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments to this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <xref linkend="mthStartVisualGroup"/> method begins a visual group. All controls added after the invocation of that
+    method are added to that visual group until the <emphasis role="italic">endVisualGroup</emphasis> method is invoked.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3502,9 +3549,21 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example starts a visual group, adds a radio button list with 3 radio buttons, and then ends the visual group:
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
+
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ret = sfd~startVisualGroup(IDC_GB_RADIOS, 'Save file with extension:')
+  ret = sfd~addRadioButtonList(IDC_RBL_RADIOS)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rex', IDC_RB_REX)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.txt', IDC_RB_TXT)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rxg', IDC_RB_RXG)
+  ret = sfd~endVisualGroup()
+  ...
 
 ]]>
 </programlisting>
@@ -3518,25 +3577,24 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>getCheckButtonState</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCheckButtonState(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getCheckButtonState(--id--)------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines the state of the specified check box, checked or not checked.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the drop-down list. May be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3544,13 +3602,14 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if the check box is checked, otherwise false. If an error were to happen, the
+    <computeroutput>.SystemErrorCode</computeroutput> will be set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <xref linkend="mthIsCheckedCdc"/> method is an alias for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3560,17 +3619,6 @@ leaving() thread ID 4032
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3839,19 +3887,19 @@ leaving() thread ID 4032
 </programlisting>
 
 <para>
-  xx
+  Returns true if the specified check box is checked and false if it is not checked.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the drop-down list. May be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3859,13 +3907,14 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if the check box is checked, otherwise false. If an error were to happen, the
+    <computeroutput>.SystemErrorCode</computeroutput> will be set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <xref linkend="mthGetCheckButtonState"/> method is equivalent to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3875,17 +3924,6 @@ leaving() thread ID 4032
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4583,6 +4621,58 @@ leaving() thread ID 4032
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End CommonDialogCustomizations::startVisualGroup() -->
+
+<section id="mthUncheckCdc" xreflabel="uncheck"><title>uncheck</title>
+<indexterm><primary>uncheck</primary><secondary>CommonDialogCustomizations class</secondary></indexterm>
+<indexterm><primary>CommonDialogCustomizations class</primary><secondary>uncheck</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--uncheck(--id--)------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the state of the specified check box to <emphasis role="italic">unchecked</emphasis>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the check box. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This is a convenience method. It is equivalent to using the <xref linkend="mthSetCheckButtonState"/> method with a second
+    arugment of <emphasis role="italic">.false</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonDialogCustomizations::uncheck() -->
 
 </section> <!-- End CommonDialogCustomizations Class -->
 
