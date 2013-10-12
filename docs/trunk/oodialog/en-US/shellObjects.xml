@@ -2654,8 +2654,68 @@ leaving() thread ID 4032
 <entry>Determines the state of the specified check box, checked or not checked.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetControlItemState"/> </entry>
+<entry>Gets the current state of an item in a container control found in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetControlState"/> </entry>
+<entry>Gets the current visibility and enabled states of the specified control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetEditBoxText"/> </entry>
+<entry>Gets the current text in an edit box control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetSelectedControlItem"/> </entry>
+<entry>Gets the ID of the selected item in the specified specified container control in the dialog.</entry>
+</row>
+<row>
 <entry><xref linkend="mthIsCheckedCdc"/> </entry>
 <entry>Returns true if the specified check box is checked and false if it is not checked.</entry>
+</row>
+<row>
+<entry><xref linkend="mthMakeProminent"/> </entry>
+<entry>Places a control in the dialog so that it stands out compared to other added controls.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveAllControlItems"/> </entry>
+<entry>Removes all items from a container control in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRemoveControlItem"/> </entry>
+<entry>Removes an item from a container control in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetCheckButtonState"/> </entry>
+<entry>Sets the state of a check box, checked or not checked, in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetControlItemState"/> </entry>
+<entry>Sets the current state of an item in a container control found in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetControlItemText"/> </entry>
+<entry>Sets the text, the label, of a control item. For example, the text that accompanies a radio button or an item in a menu.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetControlLabel"/> </entry>
+<entry>Sets the text associated with a control, such as button label or a static text label.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetControlState"/> </entry>
+<entry>Sets the current visibility and enabled states of a given control.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetEditBoxText"/> </entry>
+<entry>Sets the text in an edit box control found in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetSelectedControlItem"/> </entry>
+<entry>Sets the specified item as the selected item in a radio button group or a combo box found in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthStartVisualGroup"/> </entry>
+<entry>Declares a visual group in the dialog. Subsequent calls to any <emphasis role="italic">add</emphasis> methods adds those controls to this group.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUncheckCdc"/> </entry>
@@ -3902,7 +3962,7 @@ leaving() thread ID 4032
 </programlisting>
 
 <para>
-  xx
+  Gets the ID of the selected item in the specified specified container control in the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4310,7 +4370,7 @@ leaving() thread ID 4032
 </programlisting>
 
 <para>
-  xx
+  Sets the current state of an item in a container control found in the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4335,7 +4395,7 @@ leaving() thread ID 4032
     <varlistentry><term>state [required]</term>
     <listitem>
     <para>
-      Exactly one of the following keywords that specified the state to set, case is not significant:
+      Exactly one of the following keywords that specifies the state to set, case is not significant:
     </para>
     <para>
       <simplelist type='vert' columns='3'>
@@ -4348,25 +4408,25 @@ leaving() thread ID 4032
         <varlistentry><term>INACTIVE</term>
         <listitem>
         <para>
-          The control item is disabled and hidden.
+          Set the control item's state to disabled and hidden.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>ENABLED</term>
         <listitem>
         <para>
-          The control item is enabled, but it is not visible to the user.
+          Set the control item's state to enabled. It will not be visible to the user.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>VISIBLE</term>
         <listitem>
         <para>
-          The control item is disabled, but visible.
+          Set the control item's state to visible, but it will not be enabled.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>ENABLEDVISIBLE</term>
         <listitem>
         <para>
-          The control item is enabled and visible.
+          Set the control item's state to enabled and visible.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -4455,13 +4515,7 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4476,10 +4530,12 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example changes the labels of 3 menu items in a menu:
 <programlisting>
 <![CDATA[
-
+  ret = cfd~setControlItemText(IDC_MENU, IDC_MENU_REX, 'Pick Rexx')
+  ret = cfd~setControlItemText(IDC_MENU, IDC_MENU_TXT, 'Pick Text')
+  ret = cfd~setControlItemText(IDC_MENU, IDC_MENU_CONSOLE, 'Pick The Console')
 ]]>
 </programlisting>
   </para>
@@ -4492,13 +4548,12 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>setControlLabel</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setControlLabel(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setControlLabel(--id--,--text--)-------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the text associated with a control, such as button label or a static text label.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4507,10 +4562,16 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the control May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The text to associate with the comntrol.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4518,7 +4579,7 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -4539,10 +4600,12 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example changes the labels of a push button and a static text control to reflect a change in the function of saving
+    a file:
 <programlisting>
 <![CDATA[
-
+  ret = cfd~setControlLabel(IDC_PB_DONE, 'Save / Backup')
+  ret = cfd~setControlLabel(IDC_TEXT, 'When Saving a file a backup file will be created')
 ]]>
 </programlisting>
   </para>
@@ -4555,13 +4618,12 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>setControlState</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setControlState(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setControlState(--id--,--state--)------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the current visibility and enabled states of a given control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4570,10 +4632,50 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the control whose state is being set. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state [required]</term>
+    <listitem>
+    <para>
+      Exactly one of the following keywords that specifies the state to set, case is not significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>INACTIVE  </member>
+        <member>ENABLED   </member>
+        <member>VISIBLE   </member>
+        <member>ENABLEDVISIBLE</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>INACTIVE</term>
+        <listitem>
+        <para>
+          Set the control's state to disabled and hidden.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ENABLED</term>
+        <listitem>
+        <para>
+          Set the control's state to enabled. It will not be visible to the user.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VISIBLE</term>
+        <listitem>
+        <para>
+          Set the control's state to visible, but it will not be enabled.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ENABLEDVISIBLE</term>
+        <listitem>
+        <para>
+          Set the control's state to enabled and visible.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4581,13 +4683,14 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the dialog is shown, controls cannot be added or removed, but the existing controls can be hidden or disabled at any
+    time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4602,10 +4705,11 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example disables an extra push button that was added to the dialog when the function of the push button is not
+    available:
 <programlisting>
 <![CDATA[
-
+  ret = cfd~setControlState(IDC_PB_DONE, 'VISABLE')
 ]]>
 </programlisting>
   </para>
@@ -4618,13 +4722,12 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>setEditBoxText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setEditBoxText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setEditBoxText(--id--,--text--)--------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the text in an edit box control found in the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4633,10 +4736,16 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the edit box. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The text to put in the edit box.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4644,13 +4753,7 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4665,10 +4768,13 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from an application that creates a back up file each time the user saves a file. The Save File dialog
+    automatically determines a back up file name, but the user is allowed to change the name. The application puts the
+    suggested back up name in an edit box, which the user can edit if desired:
 <programlisting>
 <![CDATA[
-
+  buName = self~calcBackupName()
+  cfd~setEditBoxText(IDC_EDIT_BU_NAME, buName)
 ]]>
 </programlisting>
   </para>
@@ -4681,13 +4787,12 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>setSelectedControlItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setSelectedControlItem(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setSelectedControlItem(--containerID--,--itemID--)----------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the specified item as the selected item in a radio button group or a combo box found in the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4696,10 +4801,17 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>containerID [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the container whose selected item is being set. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemID [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the control item that will be set to the selected item. May be numeric or <xref
+      linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4707,13 +4819,15 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Although it seems as though this method should work with drop-down lists on the Open or Save button, testing has shown
+    that it does not. The underlying COM object returns <emphasis role="italic">error code 0x80004001, Not
+    implemented</emphasis>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4728,10 +4842,23 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example adds a radio button group to a Save File dialog and then sets the middle radion button as the selected
+    item:
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ret = sfd~startVisualGroup(IDC_GB_RADIOS, 'Save file with extension:')
+  ret = sfd~addRadioButtonList(IDC_RBL_RADIOS)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.txt', IDC_RB_TXT)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rex', IDC_RB_REX)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rxg', IDC_RB_RXG)
+  ret = sfd~endVisualGroup()
+
+  ret = sfd~setSelectedControlItem(IDC_RBL_RADIOS, IDC_RB_REX)
 ]]>
 </programlisting>
   </para>
@@ -4744,13 +4871,13 @@ leaving() thread ID 4032
 <indexterm><primary>CommonDialogCustomizations class</primary><secondary>startVisualGroup</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--startVisualGroup(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--startVisualGroup(--id--,--label--)--------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Declares a visual group in the dialog. Subsequent calls to any <emphasis role="italic">add</emphasis> methods adds those
+  controls to this group.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4759,10 +4886,16 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the visual group. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>label [required]</term>
+    <listitem>
+    <para>
+      A lable that is used with the visual group.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4770,13 +4903,17 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Additional comments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Controls will continue to be added to this visual group until the <xref linkend="mthEndVisualGroup"/> method is invoked.
+  </para>
+  <para>
+    A visual group can be hidden and disabled like any other control, except that doing so affects all of the controls within
+    it. The control members of the visual group can also be hidden and disabled individually.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4791,10 +4928,24 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example starts a visual group that consists of a radio button group. One main reason for starting a visual group,
+    rather than just adding the radion button group, is that the visual group makes it easy to add a label for the radio
+    button group:
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
 
+  sfd = .SaveFileDialog~new
+
+  -- Customize the dialog
+  ret = sfd~startVisualGroup(IDC_GB_RADIOS, 'Save file with extension:')
+  ret = sfd~addRadioButtonList(IDC_RBL_RADIOS)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.txt', IDC_RB_TXT)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rex', IDC_RB_REX)
+  ret = sfd~addControlItem(IDC_RBL_RADIOS, '*.rxg', IDC_RB_RXG)
+  ret = sfd~endVisualGroup()
+
+  ret = sfd~setSelectedControlItem(IDC_RBL_RADIOS, IDC_RB_REX)
 ]]>
 </programlisting>
   </para>
