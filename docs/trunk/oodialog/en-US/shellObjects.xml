@@ -192,10 +192,15 @@
   <para>
     In the COM API, methods invoked on COM objects return a result code called a HRESULT. This is just a number, very
     similar to the <xref linkend="defSystemErrorCode"/> of the Win32 API. However, there is no easy way to look up the
-    meaning of a HRESULT code in the Windows <xref linkend="defWindowsDoc"/> as there is with a system error code. Many, if
-    not most, of the ooDialog shell object methods return the HRESULT error code on an error. When a COM error is detected,
-    the ooDialog shell object methods set the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable to the
-    HRESULT error code.
+    meaning of a HRESULT code in the Windows <xref linkend="defWindowsDoc"/> as there is with a system error code. The return
+    from many, if not most, of the ooDialog shell object methods is the HRESULT code returned by the underlying COM objects.
+    In a addition, all the ooDialog shell object methods set the <link linkend="dotSystemErrorCode">.SystemErrorCode</link>
+    variable to the HRESULT code.
+  </para>
+  <para>
+    The <xref linkend="clsComConstants"/> class provides some constants for common HRESULT codes. The
+   <computeroutput>S_OK</computeroutput> constant is the HRESULT code for no error. Its value is 0 and the programmer can
+   check for 0 or non-zero to test for success or failure of methods that return a HRESULT code.
   </para>
   <para>
     HRESULT codes are often shown in hexadecimal format. The ooDialog shell object methods return HRESULT codes as a base 10
@@ -226,17 +231,15 @@ Error code 2147500068 (0x80004024): The specified activation could not occur in 
 
 System error code:
 Error code 2 (0x00000002): The system cannot find the file specified.
+
+HRESULT success code:
+Error code 0 (0x00000000): The operation completed successfully.
 */
 ]]>
 </programlisting>
 
     Note that the error message itself comes from Microsoft, ooDialog simply reports it and is not responsible for the
     clarity, or lack of clarity, of the message.
-  </para>
-  <para>
-    The <xref linkend="clsComConstants"/> class provides some constants for common HRESULT codes. The
-   <computeroutput>S_OK</computeroutput> constant is the HRESULT code for no error. Its value is 0 and the programmer can
-   check for 0 or non-zero to test for success or failure of methods that return a HRESULT code.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2522,6 +2525,10 @@ leaving() thread ID 4032
 </thead>
 <tbody>
 <row>
+<entry>CANCELED</entry>
+<entry>The return value from the <xref linkend="mthShow"/> method of the <xref linkend="clsCommonItemDialog"/> class when the user cancels the dialog.</entry>
+</row>
+<row>
 <entry>E_NOTIMPL</entry>
 <entry>The particular method of the COM object is not implemented.</entry>
 </row>
@@ -2572,8 +2579,8 @@ leaving() thread ID 4032
   can also be changed at any time.
 </para>
 <para>
-  Container controls are controls that can have items added to them. Container controls include combo boxes, menus, the
-  drop-down list attached to the Open button, and any option button groups. The order that items appear in a container is the
+  Container controls are controls that can have items added to them. Container controls include combo boxes, menus, drop-down
+  lists attached to the Open or Save button, and any radio button groups. The order that items appear in a container is the
   order in which they were added. The operating system does not provide a way to reorder them. IDs are scoped to the parent
   control. Container controls, with the exception of menus, have a selected item.
 </para>
@@ -5011,11 +5018,36 @@ leaving() thread ID 4032
 <section id="clsCommonItemDialog" xreflabel="CommonItemDialog"><title>CommonItemDialog Class</title>
 <indexterm><primary>CommonItemDialog class</primary></indexterm>
 <para>
-  A CommonItemDialog object ...
+  The common item dialog was formerly known as the common file dialog. It is used in two variations, the open file dialog and
+  the save file dialog. The common item dialog is only available on a Vista or later version of Windows. The <emphasis
+  role="italic">CommonItemDialog</emphasis> class provides most of the implementation of the common item dialog, but is not
+  instantiated directly by the Rexx programmer. Rather the programmer instantiates one of its concrete subclasses, the <xref
+  linkend="clsOpenFileDialog"/> class, or <xref linkend="clsSaveFileDialog"/> class.
 </para>
 <para>
-  xx
+  The common item dialog is more full featured than the earlier common file dialog. It is also more customizable. ooDialog
+  supplies some helper classes for the common item dialog:
 </para>
+<itemizedlist>
+<listitem>
+<para>
+  The <xref linkend="clsCommonDialogCustomizations"/> class: Provides a way to customize the common item dialog that is shown
+  to the user.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <xref linkend="clsCommonDialogEvents"/> class: Provides a way to connect event notifications sent from the common item
+  dialog.
+</para>
+</listitem>
+<listitem>
+<para>
+  The <xref linkend="clsShellItemFilter"/> class: Adds the ability to do special filtering of the folders and files shown to
+  the user in the common item dialog.
+</para>
+</listitem>
+</itemizedlist>
 
 <section id="sctMethodsCommonItemDialog"><title>Method Table</title>
 <para>
@@ -5036,12 +5068,112 @@ leaving() thread ID 4032
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
-<entry><link linkend="mthNewClsCommonItemDialog">new</link></entry>
+<entry><xref linkend="mthNewClsCommonItemDialog"/></entry>
+<entry>The common item dialog can not be instantiated directly. Instead instatiate an <xref linkend="clsOpenFileDialog"/> or a <xref linkend="clsSaveFileDialog"/> object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAddPlace"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAdvise"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthClearClientData"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthClose"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetCurrentSelection"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFileName"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFolderCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetResultCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthInitCOMCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRelease"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthReleaseCOMCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetClientGuid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetDefaultExtension"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetDefaultFolder"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileName"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileNameLabel"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileTypeIndex"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileTypes"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFilter"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFolder"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetOkButtonLabel"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetTitle"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthShow"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUnadvise"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend=""/></entry>
+<entry>.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -5053,62 +5185,15 @@ leaving() thread ID 4032
 <indexterm><primary>CommonItemDialog class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The Rexx programmer can not instantiate a <computeroutput>CommonItemDialog</computeroutput> directly. Rather the programmer
+  must instantiate an <xref linkend="clsOpenFileDialog"/> or a <xref linkend="clsSaveFileDialog"/> object, depending on what
+  functionality is desired.
 </para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
 </section>  <!-- End CommonItemDialog::new() -->
 
 <section id="mthAddPlace" xreflabel="addPlace"><title>addPlace</title>
@@ -7628,12 +7713,116 @@ leaving() thread ID 4032
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
-<entry><link linkend="mthNewClsOpenFileDialog">new</link></entry>
+<entry><xref linkend="mthNewClsOpenFileDialog"/></entry>
+<entry>Instantiates a new open file dialog object</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAddPlace"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAdvise"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthClearClientData"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthClose"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetCurrentSelection"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFileName"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFolderCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetResultCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><emphasis role="bold"><link linkend="mthGetResults">getResults</link></emphasis></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthInitCOMCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRelease"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthReleaseCOMCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetClientGuid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetDefaultExtension"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetDefaultFolder"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileName"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileNameLabel"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileTypeIndex"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileTypes"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFilter"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFolder"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetOkButtonLabel"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetTitle"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthShow"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUnadvise"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend=""/></entry>
+<entry>.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -7797,12 +7986,116 @@ leaving() thread ID 4032
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
-<entry><link linkend="mthNewClsSaveFileDialog">new</link></entry>
+<entry><xref linkend="mthNewClsSaveFileDialog"/></entry>
+<entry>Instantiates a new save file dialog object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthAddPlace"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthAdvise"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthClearClientData"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthClose"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetCurrentSelection"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFileName"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFolderCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetResultCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthInitCOMCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthRelease"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthReleaseCOMCid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetClientGuid"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetDefaultExtension"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetDefaultFolder"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><emphasis role="bold"><link linkend="mtSetSaveAsItem">setSaveAsItem</link></emphasis></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileName"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileNameLabel"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileTypeIndex"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileTypes"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFilter"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFolder"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetOkButtonLabel"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetTitle"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthShow"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUnadvise"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend=""/></entry>
+<entry>.</entry>
 </row>
 </tbody></tgroup>
 </table>
