@@ -2222,13 +2222,32 @@ RexxMethod1(RexxObjectPtr, cid_init, RexxObjectPtr, cselfBuf)
  *
  *  @notes
  */
-RexxMethod2(uint32_t, cid_addPlace, RexxObjectPtr, folder, CSELF, pCSelf)
+RexxMethod3(uint32_t, cid_addPlace, RexxObjectPtr, folder, OPTIONAL_CSTRING, _where, CSELF, pCSelf)
 {
     HRESULT hr;
     pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid == NULL )
     {
         goto done_out;
+    }
+
+    FDAP where = FDAP_TOP;
+    if ( argumentExists(2) )
+    {
+        if ( StrCmpI(_where, "TOP") == 0 )
+        {
+            ; // puposefully do nothing
+        }
+        else if ( StrCmpI(_where, "BOTTOM") == 0 )
+        {
+            where = FDAP_BOTTOM;
+        }
+        else
+        {
+            wrongArgKeywordException(context, 2, "TOP or BOTTOM", _where);
+            oodSetSysErrCode(context->threadContext, E_INVALIDARG);
+            return E_INVALIDARG;
+        }
     }
 
     IShellItem *psi = getShellItemFromObject(context, folder, 1, &hr);
