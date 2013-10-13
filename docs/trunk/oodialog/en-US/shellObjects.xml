@@ -5176,7 +5176,7 @@ leaving() thread ID 4032
 </para>
 </section>
 
-<section id="mthNewClsCommonItemDialog"><title>new (Class Method)</title>
+<section id="mthNewClsCommonItemDialog" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>CommonItemDialog class</secondary></indexterm>
 <indexterm><primary>CommonItemDialog class</primary><secondary>new</secondary></indexterm>
 <programlisting>
@@ -5192,18 +5192,263 @@ leaving() thread ID 4032
 </para>
 </section>  <!-- End CommonItemDialog::new() -->
 
+<section id="atrOptions" xreflabel="options"><title>options (Attribute)</title>
+<indexterm><primary>options</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>options</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--options-----------------------------------------------------><
+
+>>--options = varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the options in effect for the common item dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">options get:</emphasis></term>
+  <listitem>
+  <para>
+    Gets the current options for the dialog as a string of space separated keyword values. The possible keywords are listed
+    in the remarks.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">options set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the current options for the dialog through the use of a string of space separated keywords, case is not significant.
+    The current options are replaced completely by the options specified.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The common item dialog options control the dialog's behavior. The following lists the allowable keywords. The value of
+    the <emphasis role="italic">options</emphasis> attribute is a string containing zero or more of the keywords, separated
+    by spaces, case insignificant. As noted, some options are the default behavior of the dialog and other options can not be
+    used together:
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>ALLNONSTORAGEITEMS</member>
+      <member>ALLOWMULTISELECT  </member>
+      <member>CREATEPROMPT      </member>
+      <member>DEFAULTNOMINIMODE </member>
+      <member>DONTADDTORECENT   </member>
+      <member>FILEMUSTEXIST     </member>
+      <member>FORCEFILESYSTEM   </member>
+      <member>FORCEPREVIEWPANEON</member>
+      <member>FORCESHOWHIDDEN   </member>
+      <member>HIDEMRUPLACES     </member>
+      <member>HIDEPINNEDPLACES  </member>
+      <member>NOCHANGEDIR       </member>
+      <member>NODEREFERENCELINKS</member>
+      <member>NOREADONLYRETURN  </member>
+      <member>NOTESTFILECREATE  </member>
+      <member>NOVALIDATE        </member>
+      <member>OVERWRITEPROMPT   </member>
+      <member>PATHMUSTEXIST     </member>
+      <member>PICKFOLDERS       </member>
+      <member>SHAREAWARE        </member>
+      <member>STRICTFILETYPES   </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>ALLNONSTORAGEITEMS</term>
+      <listitem>
+      <para>
+        Enables the user to choose any item in the shell namespace, not just those with STREAM or FILESYSTEM attributes.
+        This flag cannot be combined with FORCEFILESYSTEM.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ALLOWMULTISELECT</term>
+      <listitem>
+      <para>
+        Allow the user to select multiple items in the open file dialog. Note that setting this option will only have an
+        effect on the <xref linkend="clsOpenFileDialog."/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CREATEPROMPT</term>
+      <listitem>
+      <para>
+        Prompt for creation if the item returned in the save dialog does not exist. Note that this does not actually create
+        the item.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DEFAULTNOMINIMODE</term>
+      <listitem>
+      <para>
+        Indicates to the Save As dialog that it should open in expanded mode. Expanded mode is the mode that is set and
+        unset by clicking the button in the lower-left corner of the Save As dialog that switches between <emphasis
+        role="italic">Browse Folders</emphasis> and <emphasis role="italic">Hide Folders</emphasis> when clicked.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DONTADDTORECENT</term>
+      <listitem>
+      <para>
+        Do not save the item being opened or saved to the list of recent places.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>FILEMUSTEXIST</term>
+      <listitem>
+      <para>
+        The item returned must exist. This is a default value for the open dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>FORCEFILESYSTEM</term>
+      <listitem>
+      <para>
+        Ensures that returned items are file system items (FILESYSTEM). Note that this does not apply to items returned by
+        <xref linkend="mthGetCurrentSelection"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>FORCEPREVIEWPANEON</term>
+      <listitem>
+      <para>
+        Indicates to the Open File dialog that the preview pane should always be displayed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>FORCESHOWHIDDEN</term>
+      <listitem>
+      <para>
+        Show hidden items.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDEMRUPLACES</term>
+      <listitem>
+      <para>
+        Hide the list of places from which the user has recently opened or saved items.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDEPINNEDPLACES</term>
+      <listitem>
+      <para>
+        Hide the list of pinned places from which the user can choose.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOCHANGEDIR</term>
+      <listitem>
+      <para>
+        Not used. Note however that the operating system may return this value when querying the current options of the
+        dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NODEREFERENCELINKS</term>
+      <listitem>
+      <para>
+        Shortcuts should not be treated as their target items, allowing an application to open a .lnk file.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOREADONLYRETURN</term>
+      <listitem>
+      <para>
+        Do not return read-only items.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTESTFILECREATE</term>
+      <listitem>
+      <para>
+        Do not test creation of the item returned in the save dialog. If this flag is not set, the calling application must
+        handle errors discovered in the creation test.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOVALIDATE</term>
+      <listitem>
+      <para>
+        Do not check for situations that would prevent an application from opening the selected file, such as sharing
+        violations or access denied errors.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>OVERWRITEPROMPT</term>
+      <listitem>
+      <para>
+        When saving a file, prompt before overwriting an existing file of the same name. This is a default value for the save
+        dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PATHMUSTEXIST</term>
+      <listitem>
+      <para>
+        The item returned must be in an existing folder. This is a default value.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PICKFOLDERS</term>
+      <listitem>
+      <para>
+        Enables the user to choose folders rather than files.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SHAREAWARE</term>
+      <listitem>
+      <para>
+        In the case of a sharing violation when an application is opening a file, call the application back through
+        <xref linkend="mthOnShareViolation"/> event handler for guidance. This keyword is overridden by NOVALIDATE.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>STRICTFILETYPES</term>
+      <listitem>
+      <para>
+        Ensures that the returned file name has a file extension that matches the currently selected file type. The dialog
+        appends the correct file extension if necessary.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the default options in effect for a <computeroutput>OpenFileDialog</computeroutput>;
+<programlisting>
+<![CDATA[
+  fod = .OpenFileDialog~new
+
+  say 'options:' fod~options
+
+/* Output will be:
+options: FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
+*/
+]]>
+</programlisting>
+    This example shows how to add additional options to the current options in effect:
+
+<programlisting>
+<![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
+  fod = .OpenFileDialog~new
+
+  fod~options = fod~options 'ALLOWMULTISELECT'
+  say 'options:' fod~options
+
+/* Output will be:
+options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::options() [attribute]  -->
+
 <section id="mthAddPlace" xreflabel="addPlace"><title>addPlace</title>
 <indexterm><primary>addPlace</primary></indexterm>
 <indexterm><primary>CommonItemDialog class</primary><secondary>addPlace</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addPlace(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addPlace(--folder--+----------+--)-----------><
+                       +-.-where--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a folder to the list of places available for the user to open or save items.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5212,10 +5457,18 @@ leaving() thread ID 4032
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>folder [required]</term>
     <listitem>
     <para>
-      xx
+      The folder to add. The folder can be specified as the full path name of the folder, a <link
+      linkend="sctSpecialFolderNames">CSIDL_xx</link> name, or an <xref linkend="varItemIDList"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>where [optional]</term>
+    <listitem>
+    <para>
+      Specifies where the folder is placed within the list. The only allowable values are TOP or BOTTOM. If the argument is
+      omitted, the default is TOP.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5223,13 +5476,16 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Currently the only way to get an item ID list is through the <xref linkend="mthGetItemIDList"/> method of the <xref
+    linkend="clsBrowseForFolder"/> class. Future enhancements of ooDialog may make more use of item ID list, which is when
+    the <emphasis role="italic">addPlace</emphasis> method accepts an item ID list for the <emphasis
+    role="italic">folder</emphasis> argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5244,10 +5500,14 @@ leaving() thread ID 4032
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example adds the Fonts folder to the dialog:
 <programlisting>
 <![CDATA[
+  fod = .OpenFileDialog~new
 
+  fod~options = 'NOCHANGEDIR PATHMUSTEXIST ALLNONSTORAGEITEMS'
+
+  ret = fod~addPlace('CSIDL_FONTS')
 ]]>
 </programlisting>
   </para>
@@ -6856,7 +7116,7 @@ leaving() thread ID 4032
 </table>
 </section>
 
-<section id="mthNewClsCommonDialogEvents"><title>new (Class Method)</title>
+<section id="mthNewClsCommonDialogEvents" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>CommonDialogEvents class</secondary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>new</secondary></indexterm>
 <programlisting>
@@ -7821,7 +8081,7 @@ leaving() thread ID 4032
 </para>
 </section>
 
-<section id="mthNewClsOpenFileDialog"><title>new (Class Method)</title>
+<section id="mthNewClsOpenFileDialog" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>OpenFileDialog class</secondary></indexterm>
 <indexterm><primary>OpenFileDialog class</primary><secondary>new</secondary></indexterm>
 <programlisting>
@@ -8090,7 +8350,7 @@ leaving() thread ID 4032
 </para>
 </section>
 
-<section id="mthNewClsSaveFileDialog"><title>new (Class Method)</title>
+<section id="mthNewClsSaveFileDialog" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>SaveFileDialog class</secondary></indexterm>
 <indexterm><primary>SaveFileDialog class</primary><secondary>new</secondary></indexterm>
 <programlisting>
@@ -8258,7 +8518,7 @@ leaving() thread ID 4032
 </para>
 </section>
 
-<section id="mthNewClsShellItemFilter"><title>new (Class Method)</title>
+<section id="mthNewClsShellItemFilter" xreflabel="new"><title>new (Class Method)</title>
 <indexterm><primary>new</primary><secondary>ShellItemFilter class</secondary></indexterm>
 <indexterm><primary>ShellItemFilter class</primary><secondary>new</secondary></indexterm>
 <programlisting>
