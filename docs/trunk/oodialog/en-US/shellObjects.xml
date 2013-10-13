@@ -678,7 +678,7 @@ Error code 0 (0x00000000): The operation completed successfully.
 <entry>Reflects the thread ID of the thread this browse for folder object was instantiated on.</entry>
 </row>
 <row>
-<entry><xref linkend="atrOptions"/> </entry>
+<entry><xref linkend="atrOptionsBff"/> </entry>
 <entry>Reflects the Browse For Folder dialog options set for this object.</entry>
 </row>
 <row>
@@ -822,7 +822,7 @@ Error code 0 (0x00000000): The operation completed successfully.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    During instantiation, the <xref linkend="atrOptions"/>, <xref linkend="atrRoot"/>. and the <xref
+    During instantiation, the <xref linkend="atrOptionsBff"/>, <xref linkend="atrRoot"/>. and the <xref
     linkend="atrInitialThread"/> attributes are also set.
   </para>
   </listitem></varlistentry>
@@ -1247,8 +1247,8 @@ leaving() thread ID 3580
 </variablelist>
 </section>  <!-- End BrowseForFolder::initialThread() [attribute]  -->
 
-<section id="atrOptions" xreflabel="options"><title>options (Attribute)</title>
-<indexterm><primary>options</primary></indexterm>
+<section id="atrOptionsBff" xreflabel="options"><title>options (Attribute)</title>
+<indexterm><primary>options</primary><secondary>BrowseForFolder class</secondary></indexterm>
 <indexterm><primary>BrowseForFolder class</primary><secondary>options</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2024,9 +2024,9 @@ $Recycle.Bin
     browse for folder dialog. This ensures that the user picks a subfolder of the first folder picked.
   </para>
   <para>
-    Some other things to note about the example. For the first showing of the <xref linkend="atrOptions"/> attribute is set
-    to the empty string and the root is set to CSIDL_DESKTOP. CSIDL_DESKTOP is the root of the entire shell namespace. This
-    combination allows the browsing of every folder in the shell. In the first invocation of <emphasis
+    Some other things to note about the example. For the first showing of the <xref linkend="atrOptionsBff"/> attribute is
+    set to the empty string and the root is set to CSIDL_DESKTOP. CSIDL_DESKTOP is the root of the entire shell namespace.
+    This combination allows the browsing of every folder in the shell. In the first invocation of <emphasis
     role="italic">getItemIDList</emphasis>, note the use of the <emphasis role="italic">reuse</emphasis> arg. The prevents
     the COM library from being released. Then in the last invocation of <emphasis role="italic">getFolder</emphasis>, the
     <emphasis role="italic">reuse</emphasis> arg is not used, and the ooDialog framework takes care of releasing the COM
@@ -5072,6 +5072,14 @@ leaving() thread ID 4032
 <entry>The common item dialog can not be instantiated directly. Instead instatiate an <xref linkend="clsOpenFileDialog"/> or a <xref linkend="clsSaveFileDialog"/> object.</entry>
 </row>
 <row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="atrOptionsCid"/></entry>
+<entry>Reflects the options in effect for the common item dialog.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
@@ -5192,8 +5200,8 @@ leaving() thread ID 4032
 </para>
 </section>  <!-- End CommonItemDialog::new() -->
 
-<section id="atrOptions" xreflabel="options"><title>options (Attribute)</title>
-<indexterm><primary>options</primary></indexterm>
+<section id="atrOptionsCid" xreflabel="options"><title>options (Attribute)</title>
+<indexterm><primary>options</primary><secondary>CommonItemDialog class</secondary></indexterm>
 <indexterm><primary>CommonItemDialog class</primary><secondary>options</secondary></indexterm>
 <programlisting>
 <![CDATA[
