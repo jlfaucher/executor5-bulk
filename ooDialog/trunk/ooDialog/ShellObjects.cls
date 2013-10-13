@@ -80,9 +80,7 @@
 ::method test external "LIBRARY oodialog bff_test"
 
 
-::class 'CommonItemDialog' public
-
-::constant  CANCELED     2147943623
+::class 'CommonItemDialog' public inherit ComConstants
 
 ::attribute options get external "LIBRARY oodialog cid_options"
 ::attribute options set external "LIBRARY oodialog cid_setOptions"
@@ -161,9 +159,10 @@
 ::method uncheck external "LIBRARY oodialog cid_setCheckButtonState"
 
 ::class 'ComConstants' mixinclass Object
-::constant  S_OK              0
-::constant  S_FALSE           1
+::constant  CANCELED          2147943623
 ::constant  E_NOTIMPL         34360000513  -- _HRESULT_TYPEDEF_(0x80004001L)
+::constant  S_FALSE           1
+::constant  S_OK              0
 
 
 ::class 'ShellItemFilter' public inherit ComConstants
