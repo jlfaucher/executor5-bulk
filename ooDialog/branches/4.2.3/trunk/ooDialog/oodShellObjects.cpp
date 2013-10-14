@@ -2218,17 +2218,40 @@ RexxMethod1(RexxObjectPtr, cid_init, RexxObjectPtr, cselfBuf)
  *  @param folder  [required] The folder ...  This can be specified as a full
  *                 path, a CSIDL_XX name, or an item ID list.
  *
+ *  @param where   [optional] Specifies where the folder is placed within the
+ *                 list. The only allowable values are TOP or BOTTOM. If the
+ *                 argumen is omitted, the default is TOP.
+ *
  *  @param  Returns the system result code.
  *
  *  @notes
  */
-RexxMethod2(uint32_t, cid_addPlace, RexxObjectPtr, folder, CSELF, pCSelf)
+RexxMethod3(uint32_t, cid_addPlace, RexxObjectPtr, folder, OPTIONAL_CSTRING, _where, CSELF, pCSelf)
 {
     HRESULT hr;
     pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
     if ( pccid == NULL )
     {
         goto done_out;
+    }
+
+    FDAP where = FDAP_TOP;
+    if ( argumentExists(2) )
+    {
+        if ( StrCmpI(_where, "TOP") == 0 )
+        {
+            ; // puposefully do nothing
+        }
+        else if ( StrCmpI(_where, "BOTTOM") == 0 )
+        {
+            where = FDAP_BOTTOM;
+        }
+        else
+        {
+            wrongArgKeywordException(context, 2, "TOP or BOTTOM", _where);
+            oodSetSysErrCode(context->threadContext, E_INVALIDARG);
+            return E_INVALIDARG;
+        }
     }
 
     IShellItem *psi = getShellItemFromObject(context, folder, 1, &hr);

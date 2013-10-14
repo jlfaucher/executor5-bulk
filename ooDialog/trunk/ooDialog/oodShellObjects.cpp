@@ -2218,6 +2218,10 @@ RexxMethod1(RexxObjectPtr, cid_init, RexxObjectPtr, cselfBuf)
  *  @param folder  [required] The folder ...  This can be specified as a full
  *                 path, a CSIDL_XX name, or an item ID list.
  *
+ *  @param where   [optional] Specifies where the folder is placed within the
+ *                 list. The only allowable values are TOP or BOTTOM. If the
+ *                 argumen is omitted, the default is TOP.
+ *
  *  @param  Returns the system result code.
  *
  *  @notes
