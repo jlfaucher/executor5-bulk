@@ -87,8 +87,9 @@
     -- Text to appear on the List View:
     dlgInfo[1] = .HRSplv		
     -- Columns (Fields) to show in List View:
-    --dlgInfo[2] = "1-Number-60,2-Family Name-80,5-Job Description-100"	
     dlgInfo[2] = "2-Family Name-80,5-Job Description-100,1-Number-60-Key"
+    -- width-height of the dialog:
+    dlgInfo[3] = "225-273"
     return dlgInfo
 
   /*----------------------------------------------------------------------------
