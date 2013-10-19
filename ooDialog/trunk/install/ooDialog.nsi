@@ -743,7 +743,7 @@ Section  doInstall
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise09\Extras\Person\bmp
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Exercise09\Extras\Person\bmp\*.ico"
-    
+
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise09\Order
     ; Add the files ...
@@ -777,8 +777,8 @@ Section  doInstall
     ; Add the files ...
     File "${ExamplesDir}\userGuide\exercises\Exercise09\Product\res\*.ico"
     File "${ExamplesDir}\userGuide\exercises\Exercise09\Product\res\*.bmp"
-    File "${ExamplesDir}\userGuide\exercises\Exercise09\Product\res\*.dll"
-    File "${ExamplesDir}\userGuide\exercises\Exercise09\Product\res\res.mak"
+    ; File "${ExamplesDir}\userGuide\exercises\Exercise09\Product\res\*.dll"
+    ; File "${ExamplesDir}\userGuide\exercises\Exercise09\Product\res\res.mak"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise09\Support
@@ -948,61 +948,66 @@ FunctionEnd
  *
  *  We check for this possible problem by trying to delete the files.  If we
  *  can not, we abort, keeping the current version intact.
+ *
+ *  However, it turns out some people do not install the doc.  So, we need to
+ *  check if the doc file(s) actuatlly exist before we test them.
  */
 Function CheckForProblems
 
-  ClearErrors
-  CopyFiles /SILENT $INSTDIR\doc\oodialog.pdf $INSTDIR\doc\oodialogTest.pdf
-  ${If} ${Errors}
-      StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodialog.pdf$\n$\n"
-      Call InstallerProblem
+  ${If} ${FileExists} $INSTDIR\doc\oodialogTest.pdf
+      ClearErrors
+      CopyFiles /SILENT $INSTDIR\doc\oodialog.pdf $INSTDIR\doc\oodialogTest.pdf
+      ${If} ${Errors}
+          StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodialog.pdf$\n$\n"
+          Call InstallerProblem
 
-      ; ooDialog.pdf was not copied, we don't need to do anything before
-      ; aborting.
-      Abort
-  ${EndIf}
+          ; ooDialog.pdf was not copied, we don't need to do anything before
+          ; aborting.
+          Abort
+      ${EndIf}
 
-  ClearErrors
-  Delete $INSTDIR\doc\oodialog.pdf
-  ${If} ${Errors}
-      StrCpy $installerProblemIntro "The installer detected a problem with oodialog.pdf$\n$\n"
-      Call InstallerProblem
+      ClearErrors
+      Delete $INSTDIR\doc\oodialog.pdf
+      ${If} ${Errors}
+          StrCpy $installerProblemIntro "The installer detected a problem with oodialog.pdf$\n$\n"
+          Call InstallerProblem
 
-      ; ooDialog.pdf was not deleted, we just need to delete the copy.
-      Delete $INSTDIR\doc\oodialogTest.pdf
-      Abort
-  ${EndIf}
+          ; ooDialog.pdf was not deleted, we just need to delete the copy.
+          Delete $INSTDIR\doc\oodialogTest.pdf
+          Abort
+      ${EndIf}
 
-  ; ooDialog.pdf was deleted, we rename the copy to keep things clean
-  Rename $INSTDIR\doc\oodialogTest.pdf $INSTDIR\doc\oodialog.pdf
+      ; ooDialog.pdf was deleted, we rename the copy to keep things clean
+      Rename $INSTDIR\doc\oodialogTest.pdf $INSTDIR\doc\oodialog.pdf
+  ${EndIf}  ; if exist oodialog.pdf
 
   ; We check oodguide.pdf also, but it may not exist.
   ${If} ${FileExists} $INSTDIR\doc\oodguide.pdf
-    ClearErrors
-    CopyFiles /SILENT $INSTDIR\doc\oodguide.pdf $INSTDIR\doc\oodguideTest.pdf
-    ${If} ${Errors}
-        StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodguide.pdf$\n$\n"
-        Call InstallerProblem
+      ClearErrors
+      CopyFiles /SILENT $INSTDIR\doc\oodguide.pdf $INSTDIR\doc\oodguideTest.pdf
+      ${If} ${Errors}
+          StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodguide.pdf$\n$\n"
+          Call InstallerProblem
 
-        ; oodguide.pdf was not copied, we don't need to do anything before
-        ; aborting.
-        Abort
-    ${EndIf}
+          ; oodguide.pdf was not copied, we don't need to do anything before
+          ; aborting.
+          Abort
+      ${EndIf}
 
-    ClearErrors
-    Delete $INSTDIR\doc\oodguide.pdf
-    ${If} ${Errors}
-        StrCpy $installerProblemIntro "The installer detected a problem with oodguide.pdf$\n$\n"
-        Call InstallerProblem
+      ClearErrors
+      Delete $INSTDIR\doc\oodguide.pdf
+      ${If} ${Errors}
+          StrCpy $installerProblemIntro "The installer detected a problem with oodguide.pdf$\n$\n"
+          Call InstallerProblem
 
-        ; oodguide.pdf was not deleted, we just need to delete the copy.
-        Delete $INSTDIR\doc\oodguideTest.pdf
-        Abort
-    ${EndIf}
+          ; oodguide.pdf was not deleted, we just need to delete the copy.
+          Delete $INSTDIR\doc\oodguideTest.pdf
+          Abort
+      ${EndIf}
 
-    ; oodguide.pdf was deleted, we rename the copy to keep things clean
-    Rename $INSTDIR\doc\oodguideTest.pdf $INSTDIR\doc\oodguide.pdf
-  ${EndIf}
+      ; oodguide.pdf was deleted, we rename the copy to keep things clean
+      Rename $INSTDIR\doc\oodguideTest.pdf $INSTDIR\doc\oodguide.pdf
+  ${EndIf} ; if exist oodguide.pdf
 
   ClearErrors
   CopyFiles /SILENT $INSTDIR\oodialog.dll $INSTDIR\oodialogTest.dll
