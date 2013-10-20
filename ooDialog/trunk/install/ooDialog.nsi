@@ -101,6 +101,7 @@
   !define MUI_WELCOMEFINISHPAGE_BITMAP "orange.bmp"
 
   !define MUI_LICENSEPAGE
+  !define MUI_COMPONENTSPAGE
   !define MUI_FINISHPAGE
   !define MUI_FINISHPAGE_NOAUTOCLOSE
 
@@ -124,6 +125,7 @@
 
   !insertmacro MUI_PAGE_WELCOME
   !insertmacro MUI_PAGE_LICENSE "${ROOTDIR}\install\CPLv1.0.txt"
+  !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_INSTFILES
   !insertmacro MUI_PAGE_FINISH
 
@@ -137,12 +139,21 @@
 ;Installer Sections
 ;===============================================================================
 
-Section  doInstall
+;-------------------------------------------------------------------------------
+;  Hidden section to delete the existing ooDialog
+
+Section -deleteExisting
+  Call RemoveFiles
+SectionEnd
+
+;-------------------------------------------------------------------------------
+; Core component
+Section  "ooDialog ${SHORTVERSION} Core (required)" SecCore
+  SectionIn 1 RO
 
   DetailPrint "********** Installing ooDialog  **********"
   DetailPrint ""
 
-  Call RemoveFiles
 
   ; Install the files
   SetOutPath "$INSTDIR"
@@ -160,6 +171,12 @@ Section  doInstall
     File "${ExamplesDir}\ooRexxTry\ooRexxTry.rex"
     CreateShortCut "${SMooRexxFolder}\Try Rexx (GUI).lnk" "$INSTDIR\rexx.exe" '"$INSTDIR\ooRexxTry.rex"' "$INSTDIR\rexx.exe"
     DetailPrint ""
+SectionEnd
+
+;-------------------------------------------------------------------------------
+; Documentation component
+
+Section  "ooDialog ${SHORTVERSION} Documentation" SecDoc
 
     DetailPrint "********** ooDialog ${SHORTVERSION} Documentation **********"
     ; Set the installation directory:
@@ -175,6 +192,11 @@ Section  doInstall
     CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog Release Notes.lnk" "$INSTDIR\doc\ooDialog_ReleaseNotes.txt" "" "$INSTDIR\doc\ooDialog_ReleaseNotes.txt" 0
     CreateShortCut  "${SMooRexxFolder}\Documentation\ooRexxTry Reference.lnk" "$INSTDIR\doc\ooRexxTry.pdf" "" "$INSTDIR\doc\ooRexxTry.pdf" 0
     DetailPrint ""
+SectionEnd
+
+;-------------------------------------------------------------------------------
+; Examples component
+Section  "ooDialog ${SHORTVERSION} Examples" SecExample
 
     DetailPrint "********** ooDialog ${SHORTVERSION} Samples **********"
     ; Set the installation directory:
@@ -865,6 +887,22 @@ Function .onInit
   ${endif}
 
   Call CheckForProblems
+
+FunctionEnd
+
+
+/** .onMouseOverSection()  Call back function
+ *
+ * Invoked when the user puts the mouse over one of the componets that can be
+ * installed.  This is what provides the description of each component.
+ */
+Function .onMouseOverSection
+
+  !insertmacro MUI_DESCRIPTION_BEGIN
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecCore} "Installs the core components of ${LONGNAME} to the ooRexx installation direcotry."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecDoc} "Install the ${LONGNAME} documentation."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecExample} "Install example ${LONGNAME} programs."
+ !insertmacro MUI_DESCRIPTION_END
 
 FunctionEnd
 
