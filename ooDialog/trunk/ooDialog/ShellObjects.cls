@@ -109,6 +109,7 @@
 ::method setFileTypes external "LIBRARY oodialog cid_setFileTypes"
 ::method setFilter external "LIBRARY oodialog cid_setFilter"
 ::method setFolder external "LIBRARY oodialog cid_setFolder"
+::method setCancelButtonLabel external "LIBRARY oodialog cid_setCancelButtonLabel"
 ::method setOkButtonLabel external "LIBRARY oodialog cid_setOkButtonLabel"
 ::method setTitle external "LIBRARY oodialog cid_setTitle"
 ::method show unguarded external "LIBRARY oodialog cid_show"

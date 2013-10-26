@@ -666,6 +666,7 @@ REXX_METHOD_PROTOTYPE(wb_clear);
 REXX_METHOD_PROTOTYPE(wb_foreGroundWindow);
 REXX_METHOD_PROTOTYPE(wb_screenClient);
 REXX_METHOD_PROTOTYPE(wb_mapWindowPoints);
+REXX_METHOD_PROTOTYPE(wb_updateWindow);
 REXX_METHOD_PROTOTYPE(wb_getWindowLong_pvt);
 REXX_METHOD_PROTOTYPE(wb_setWindowLong_pvt);
 
@@ -1863,6 +1864,7 @@ REXX_METHOD_PROTOTYPE(cid_setFileTypeIndex);
 REXX_METHOD_PROTOTYPE(cid_setFileTypes);
 REXX_METHOD_PROTOTYPE(cid_setFilter);
 REXX_METHOD_PROTOTYPE(cid_setFolder);
+REXX_METHOD_PROTOTYPE(cid_setCancelButtonLabel);
 REXX_METHOD_PROTOTYPE(cid_setOkButtonLabel);
 REXX_METHOD_PROTOTYPE(cid_setTitle);
 REXX_METHOD_PROTOTYPE(cid_show);
@@ -2052,6 +2054,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(wb_setWindowLong_pvt,           wb_setWindowLong_pvt),
     REXX_METHOD(wb_show,                        wb_show),
     REXX_METHOD(wb_showFast,                    wb_showFast),
+    REXX_METHOD(wb_updateWindow,                wb_updateWindow),
     REXX_METHOD(wb_windowRect,                  wb_windowRect),
 
     REXX_METHOD(en_init_eventNotification,      en_init_eventNotification),
@@ -3226,6 +3229,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cid_setFileTypes,               cid_setFileTypes),
     REXX_METHOD(cid_setFilter,                  cid_setFilter),
     REXX_METHOD(cid_setFolder,                  cid_setFolder),
+    REXX_METHOD(cid_setCancelButtonLabel,       cid_setCancelButtonLabel),
     REXX_METHOD(cid_setOkButtonLabel,           cid_setOkButtonLabel),
     REXX_METHOD(cid_setTitle,                   cid_setTitle),
     REXX_METHOD(cid_show,                       cid_show),

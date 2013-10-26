@@ -2040,6 +2040,25 @@ static void cidDone(RexxMethodContext *c, pCCommonItemDialog pccid)
     }
 }
 
+HRESULT cidGetDlgHwnd(RexxMethodContext *c, pCCommonItemDialog pccid)
+{
+    IOleWindow  *pWindow;
+
+    HRESULT hr = pccid->pfd->QueryInterface(IID_PPV_ARGS(&pWindow));
+    if ( SUCCEEDED(hr) )
+    {
+        HWND hwndDlg;
+
+        hr = pWindow->GetWindow(&hwndDlg);
+        if ( hr == S_OK )
+        {
+            pccid->hwndDlg = hwndDlg;
+        }
+        pWindow->Release();
+    }
+    return hr;
+}
+
 /**
  * Common code for:
  *
@@ -2122,6 +2141,23 @@ static HRESULT cidSetText(RexxMethodContext *c, CSTRING text, CidTextType type, 
             case CidFileNameLabel :
                 hr = pccid->pfd->SetFileNameLabel(wName);
                 break;
+
+            case CidCancelButtonLabel :
+            {
+                if ( pccid->hwndDlg == NULL )
+                {
+                    hr = cidGetDlgHwnd(c, pccid);
+                    if ( ! SUCCEEDED(hr) )
+                    {
+                        break;
+                    }
+                }
+                if ( SetDlgItemTextW(pccid->hwndDlg, IDCANCEL, wName) == 0 )
+                {
+                    hr = GetLastError();
+                }
+                break;
+            }
 
             case CidOkButtonLabel :
                 hr = pccid->pfd->SetOkButtonLabel(wName);
@@ -3061,15 +3097,37 @@ RexxMethod2(uint32_t, cid_setFolder, RexxObjectPtr, folder, CSELF, pCSelf)
 }
 
 
- /** CommonItemDialog::setTitle()
+ /** CommonItemDialog::setCancelButtonLabel()
  *
- *  Sets the title for the dialog.
+ *  Sets the label of the Cancel button in the dialog.
  *
- *  @param title  [required] The title for the common item dialog
+ *  @param label  [required] The text for the Cacel button in the dialog
  *
  *  @param  Returns the system result code.
  *
- *  @notes  The title must be less than 260 characters in length.
+ *  @notes  The label must be less than 260 characters in length.
+ *
+ *          This method will fail if invoked before show(), and after show()
+ *          returns, it is too late.  Therefore the method must be invoked from
+ *          one of the CommonDialogEvents event handling methods.
+ *          onFolderChanging() is a good choice if the programmer wants the
+ *          label changed before the dialog is shown.
+ */
+RexxMethod2(uint32_t, cid_setCancelButtonLabel, CSTRING, title, CSELF, pCSelf)
+{
+    return cidSetText(context, title, CidCancelButtonLabel, pCSelf);
+}
+
+
+ /** CommonItemDialog::setOkButtonLabel()
+ *
+ *  Sets the label of the Ok button in the dialog.
+ *
+ *  @param label  [required] The text for the Ok button in the dialog
+ *
+ *  @param  Returns the system result code.
+ *
+ *  @notes  The label must be less than 260 characters in length.
  */
 RexxMethod2(uint32_t, cid_setOkButtonLabel, CSTRING, title, CSELF, pCSelf)
 {

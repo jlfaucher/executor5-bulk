@@ -232,6 +232,7 @@ private:
 typedef struct _cidCSelf
 {
     IFileDialog        *pfd;
+    HWND                hwndDlg;        // Window handle of the common item file dialog
     RexxObjectPtr       rexxSelf;
     CommonDialogEvents *pcde;
     ShellItemFilter    *psif;
@@ -267,6 +268,7 @@ typedef enum
     CidFileName,
     CidFileNameLabel,
     CidDefaultExtension,
+    CidCancelButtonLabel,
     CidOkButtonLabel
 } CidTextType;
 
