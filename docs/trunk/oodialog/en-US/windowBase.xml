@@ -4978,6 +4978,78 @@ Generic form:
 </variablelist>
 </section>
 
+<section id="mthUpdateWindow" xreflabel="updateWindow"><title>updateWindow</title>
+<indexterm><primary>updateWindow</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>updateWindow</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>updateWindow</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>updateWindow</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--updateWindow---------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Updates the client area of this window by sending a paint message to the window, if the window's update region is not
+  empty.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Normally paint messages are added to the application message queue by the operating system only when the application
+    queue is empty. The window processes this messages when it is not busy. The <emphasis
+    role="italic">updateWindow</emphasis> method causes the operarating system to send the paint message directly to the
+    message processing procedure of the window, bypassing the application queue. The result of this is that any invalid part
+    of the window is redrawn immediately.
+  </para>
+  <para>
+    Note that if there is no invalid portion of the window, this method has no effect. The operating system simply does
+    nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected. This method can not be used if the underlying dialog does not
+    exist.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example, the list view is in report mode. The code snippet causes the list view to invalidate 3 rows in the
+    view. Normally the 3 rows would not be redrawn until the list view received the next paint message. Using the <emphasis
+    role="italic">updateWindow</emphasis> method causes the 3 rows to be redrawn immediately:
+<programlisting>
+<![CDATA[
+
+  if keyEvent == 'none' then do
+      listView~redrawItems(currentIndex - 1, currentIndex + 1)
+      listView~updateWindow
+  end
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::updateWindow() -->
+
 <section id="mthWindowRect" xreflabel="windowRect"><title>windowRect</title>
 <indexterm><primary>windowRect</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>windowRect</secondary></indexterm>

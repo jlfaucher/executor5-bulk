@@ -5528,25 +5528,26 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 <indexterm><primary>CommonItemDialog class</primary><secondary>advise</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--advise(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--advise(--eventHandler--)---------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Assigns an event handler object that invokes methods in the ooDialog program for event notificationss coming from the
+  common item dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>eventHandler [required]</term>
     <listitem>
     <para>
-      xx
+      An instantiated <xref linkend="clsCommonDialogEvents"/> object that intercepts the common item dialog's event
+      notifications.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5554,7 +5555,7 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -6782,6 +6783,109 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End CommonItemDialog::setFolder() -->
+
+<section id="mthSetCancelButtonLabel" xreflabel="setCancelButtonLabel"><title>setCancelButtonLabel</title>
+<indexterm><primary>setCancelButtonLabel</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setCancelButtonLabel</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCancelButtonLabel(--label--)--------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the label of the Cancel button in the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>label [required]</term>
+    <listitem>
+    <para>
+      The new label for the Cancel button.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unlike the <xref linkend="mthSetOkButtonLabel"/> method, which is supplied by the underlying COM dialog object, the
+    <emphasis role="italic">setCancelButtonLabel</emphasis> is an enhancement added by ooDialog. Because of this, its use is
+    slightly different than the use of the <emphasis role="italic">setOkButtonLable</emphasis> method.
+  </para>
+  <para>
+    The ooDialog framework gets a handle to the Cancel button and resets its label to that specified. The button does not
+    exist until the dialog is created through the <xref linkend="mthShow"/> method. Since the <emphasis
+    role="italic">show</emphasis> method does not return until the dialog is destroyed, the programmer needs to invoke this
+    method from an event handler in the <xref linkend="clsCommonDialogEvents"/> class. It has been observed that the folder
+    <link linkend="mthOnFolderChanging">changing</link> event is always invoked the first time the dialog is shown, before it
+    is visible. This makes that event handler an ideal place to change the label of the Cancel button. This technique is
+    shown in the example. Clever programmers may implement alternative ways to use the <emphasis
+    role="italic">setCancelButtonLabel</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the labels of both the Ok and the Cancel buttons. The Cancel button is changed to <emphasis
+    role="italic">Abort</emphasis>.
+<programlisting> <![CDATA[
+
+
+  fileOpen = .OpenFileDialog~new
+
+  events = .CDEvents~new
+  fileOpen~advise(events)
+
+  fileOpen~setOkButtonLabel('Open This File')
+
+  ret = fileOpen~show()
+  if ret == .CommonItemDialog~canceled then say 'The user canceled'
+  else say 'The user picked:' fileOpen~getResult
+
+::requires 'ooDialog.cls'
+
+::class 'CDEvents' subclass CommonDialogEvents
+
+::method onFolderChanging unguarded
+  expose labelChanged
+  use arg cfd, hwnd
+
+  -- Only change the label on the first event.
+  if \ labelChanged~dataType('O') then labelChanged = .false
+
+  if \ labelChanged then do
+      cfd~setCancelButtonLabel('Abort')
+      labelChanged = .true
+  end
+
+  return self~S_OK
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setCancelButtonLabel() -->
 
 <section id="mthSetOkButtonLabel" xreflabel="setOkButtonLabel"><title>setOkButtonLabel</title>
 <indexterm><primary>setOkButtonLabel</primary></indexterm>
