@@ -899,7 +899,7 @@ FunctionEnd
 Function .onMouseOverSection
 
   !insertmacro MUI_DESCRIPTION_BEGIN
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecCore} "Installs the core components of ${LONGNAME} to the ooRexx installation direcotry."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecCore} "Installs the core components of ${LONGNAME} to the ooRexx installation directory."
     !insertmacro MUI_DESCRIPTION_TEXT ${SecDoc} "Install the ${LONGNAME} documentation."
     !insertmacro MUI_DESCRIPTION_TEXT ${SecExample} "Install example ${LONGNAME} programs."
  !insertmacro MUI_DESCRIPTION_END

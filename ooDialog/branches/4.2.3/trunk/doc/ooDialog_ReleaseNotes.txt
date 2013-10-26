@@ -57,6 +57,9 @@ Bug Fixes in ooDialog:
 
  * #1198 ooDialog installer aborts if oodialog.pdf does not exist
 
+ * #1204 When parsing a .rc file ooDialog does not recognize some
+   control statements
+
 
 DocumentationBug Fixes in ooDialog:
 ----------------------------------
@@ -79,16 +82,27 @@ Feature Requests in ooDialog:
 
  * #549 The setColor() method does not work well with comboboxes
 
+ * #554 Enhance stand alone ooDialog installer to use components
+
+ * #555 .OpenFileDialog set the 'CANCEL' button label
+
+ * #556 Would like access to the Win32 UpdateWindow() API
+
 
 Miscellaneous Fixes:
 --------------------
 
- * Fixed a problem detecting a ComboBox control in the .rc files
-   produced by some resource editors.
+ * Fixed a problem detecting some controls in the .rc files produced by
+   some resource editors.  Combo box, edit, list box, and scroll bar.
 
 
 New Functionality in ooDialog:
 ------------------------------
+
+The stand alone ooDialog installer now allows the user to choose to skip
+the installation of the documentation and / or the example programs.
+This matches the ooRexx installation where the documentation and sample
+programs do not have to be installed.
 
 An ooDialog executable, ooDialog.exe, has been added to the
 distribution.  The executable will run ooDialog programs in a manner
@@ -128,6 +142,12 @@ In the Application class:
 
 requiredOS()       Checks that the current operating system is at least
                    the minmum specified.
+
+In the WindowBase class:
+
+updateWindow()     Causes an immediate repaint of an invalid region in
+                   the window.  Does nothing if there is no invalid
+                   region.
 
 In the ComboBox class:
 
