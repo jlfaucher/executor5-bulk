@@ -111,7 +111,7 @@ CFLAGS=-c -fPIC $(BASEFLAGS)
 
 OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/ooSqlSysLibrary.o \
             $(OUT_DIR)/ieee754.o $(OUT_DIR)/nextchar.o $(OUT_DIR)/percentile.o $(OUT_DIR)/rot13.o \
-            $(OUT_DIR)/regexp.o $(OUT_DIR)/spellfix.o $(OUT_DIR)/wholenumber.o
+            $(OUT_DIR)/regexp.o $(OUT_DIR)/spellfix.o $(OUT_DIR)/totype.o $(OUT_DIR)/wholenumber.o
 
 
 # What we want to build.
@@ -150,6 +150,9 @@ $(OUT_DIR)/rot13.o: src/sqlite/extensions/rot13.c Makefile.lin
 
 $(OUT_DIR)/spellfix.o: src/sqlite/extensions/spellfix.c Makefile.lin
 	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/spellfix.o src/sqlite/extensions/spellfix.c
+
+$(OUT_DIR)/totype.o: src/sqlite/extensions/totype.c Makefile.lin
+	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/totype.o src/sqlite/extensions/totype.c
 
 $(OUT_DIR)/wholenumber.o: src/sqlite/extensions/wholenumber.c Makefile.lin
 	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/wholenumber.o src/sqlite/extensions/wholenumber.c

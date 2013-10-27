@@ -57,7 +57,9 @@
 #include "ooSqlSysLibrary.hpp"
 
 // The range of errors needs to be contiguous and not include any SQLite error
-// rc.  The next SQLite error rc is 1034.
+// rc.  The next SQLite error rc is 1034.  Unfortunately, there is no guarentee
+// that newer versions of SQLite3 won't intrude into this range, so it should be
+// checked each time a new version of SQLite 3 is introduced.
 #define OO_ERR_FIRST                     1000
 #define OO_INTERNAL_ERR                  1000
 #define OO_WRONG_ARG_TYPE                1001
@@ -113,6 +115,7 @@ extern int sqlite3_percentile_init(sqlite3 *db, char **pzErrMsg, const sqlite3_a
 extern int sqlite3_regexp_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_rot_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_spellfix_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
+extern int sqlite3_totype_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 extern int sqlite3_wholenumber_init(sqlite3 *db, char **pzErrMsg, const sqlite3_api_routines *pApi);
 
 END_EXTERN_C()
@@ -125,6 +128,7 @@ const fnXExtensionInit builtins[] =
     sqlite3_regexp_init,
     sqlite3_rot_init,
     sqlite3_spellfix_init,
+    sqlite3_totype_init
     sqlite3_wholenumber_init
 };
 
@@ -136,6 +140,7 @@ const char *builtinNames[] =
     "regExp",
     "rot13",
     "spellFix",
+    "toType"
     "wholeNumber"
 };
 
@@ -143,10 +148,11 @@ const char *builtinDescription[] =
 {
     "Implements functions for the exact display and input of IEEE754 Binary64 floating-point numbers.",
     "Implements next_char(A,T,F,H) that finds all \"next\" characters for string A given the vocabulary in T.F",
-    "implement the percentile(Y,P) SQL function as described in the documentation.",
+    "implements the percentile(Y,P) SQL function as described in the documentation.",
     "Implements a compact regular-expression matcher for posix extended regular expressions against UTF8 text.",
     "Implements a rot13() function and a rot13 collating sequence.",
     "Implements the spellfix1 VIRTUAL TABLE that can be used to search a large vocabulary for close matches.",
+    "Implements the functions tointeger(X) and toreal(X)."
     "Implements a virtual table that returns the whole numbers between 1 and 4294967295, inclusive."
 };
 
@@ -155,7 +161,7 @@ const char *builtinDescription[] =
     "---------------------------------------------------------------------------------------------------------"
 #define BUILTINS_COUNT sizeof(builtins) / sizeof(fnXExtensionInit)
 
-#define BUILTIN_NAMES                 "ieee754, nextChar, percentile, regExp, rot13, spellFix, or wholeNumber"
+#define BUILTIN_NAMES                 "ieee754, nextChar, percentile, regExp, rot13, spellFix, toType, or wholeNumber"
 #define BUILTIN_LOAD_ERR_FMT          "Error loading builtin extension %s"
 #define BUILTIN_AUTO_ERR_FMT          "Failed to make builtin extension %s automatic"
 #define BUILTIN_CANCEL_AUTO_ERR_FMT   "Failed to cancel builtin extension %s as automatic"
@@ -204,6 +210,7 @@ typedef enum
     schemaVersion,
     secureDelete,
     shrinkMemory,
+    softHeapLimit,
     synchronous,
     tableInfo,
     tempStore,

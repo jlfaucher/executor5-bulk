@@ -536,9 +536,9 @@
 -- (oosqlite.dll / oosqlite.so depending on platform.)
 --
 -- Copy the values directly from the top of sqlite3.h.
-::constant VERSION        "3.8.0"
-::constant VERSION_NUMBER 3008000
-::constant SOURCE_ID      "2013-08-26 04:50:08 f64cd21e2e23ed7cff48f7dafa5e76adde9321c2"
+::constant VERSION        "3.8.1"
+::constant VERSION_NUMBER 3008001
+::constant SOURCE_ID      "2013-10-17 12:57:35 c78be6d786c19073b3a6730dfe3fb1be54f5657a"
 
 
 -- OO_ prefix indicates constant is not from the SQLite library.
@@ -595,52 +595,56 @@
 
 
 /* beginning-of-extended-error-codes */
-::constant IOERR_READ               266
-::constant IOERR_SHORT_READ         522
-::constant IOERR_WRITE              778
-::constant IOERR_FSYNC              1034
-::constant IOERR_DIR_FSYNC          1290
-::constant IOERR_TRUNCATE           1546
-::constant IOERR_FSTAT              1802
-::constant IOERR_UNLOCK             2058
-::constant IOERR_RDLOCK             2314
-::constant IOERR_DELETE             2570
-::constant IOERR_BLOCKED            2826
-::constant IOERR_NOMEM              3082
-::constant IOERR_ACCESS             3338
-::constant IOERR_CHECKRESERVEDLOCK  3594
-::constant IOERR_LOCK               3850
-::constant IOERR_CLOSE              4106
-::constant IOERR_DIR_CLOSE          4362
-::constant IOERR_SHMOPEN            4618
-::constant IOERR_SHMSIZE            4874
-::constant IOERR_SHMLOCK            5130
-::constant IOERR_SHMMAP             5386
-::constant IOERR_SEEK               5642
-::constant IOERR_DELETE_NOENT       5898
-::constant IOERR_MMAP               6154
-::constant LOCKED_SHAREDCACHE       262
-::constant BUSY_RECOVERY            261
-::constant BUSY_SNAPSHOT            517
-::constant CANTOPEN_NOTEMPDIR       270
-::constant CANTOPEN_ISDIR           526
-::constant CANTOPEN_FULLPATH        782
-::constant CORRUPT_VTAB             267
-::constant READONLY_RECOVERY        264
-::constant READONLY_CANTLOCK        520
-::constant READONLY_ROLLBACK        776
-::constant ABORT_ROLLBACK           516
-::constant CONSTRAINT_CHECK         275
-::constant CONSTRAINT_COMMITHOOK    531
-::constant CONSTRAINT_FOREIGNKEY    787
-::constant CONSTRAINT_FUNCTION      1043
-::constant CONSTRAINT_NOTNULL       1299
-::constant CONSTRAINT_PRIMARYKEY    1555
-::constant CONSTRAINT_TRIGGER       1811
-::constant CONSTRAINT_UNIQUE        2067
-::constant CONSTRAINT_VTAB          2323
-::constant NOTICE_RECOVER_WAL       283
-::constant NOTICE_RECOVER_ROLLBACK  539
+::constant IOERR_READ                 266
+::constant IOERR_SHORT_READ           522
+::constant IOERR_WRITE                778
+::constant IOERR_FSYNC                1034
+::constant IOERR_DIR_FSYNC            1290
+::constant IOERR_TRUNCATE             1546
+::constant IOERR_FSTAT                1802
+::constant IOERR_UNLOCK               2058
+::constant IOERR_RDLOCK               2314
+::constant IOERR_DELETE               2570
+::constant IOERR_BLOCKED              2826
+::constant IOERR_NOMEM                3082
+::constant IOERR_ACCESS               3338
+::constant IOERR_CHECKRESERVEDLOCK    3594
+::constant IOERR_LOCK                 3850
+::constant IOERR_CLOSE                4106
+::constant IOERR_DIR_CLOSE            4362
+::constant IOERR_SHMOPEN              4618
+::constant IOERR_SHMSIZE              4874
+::constant IOERR_SHMLOCK              5130
+::constant IOERR_SHMMAP               5386
+::constant IOERR_SEEK                 5642
+::constant IOERR_DELETE_NOENT         5898
+::constant IOERR_MMAP                 6154
+::constant IOERR_GETTEMPPATH          6410
+::constant IOERR_CONVPATH             6666
+::constant LOCKED_SHAREDCACHE         262
+::constant BUSY_RECOVERY              261
+::constant BUSY_SNAPSHOT              517
+::constant CANTOPEN_NOTEMPDIR         270
+::constant CANTOPEN_ISDIR             526
+::constant CANTOPEN_FULLPATH          782
+::constant CANTOPEN_CONVPATH          1038
+::constant CORRUPT_VTAB               267
+::constant READONLY_RECOVERY          264
+::constant READONLY_CANTLOCK          520
+::constant READONLY_ROLLBACK          776
+::constant ABORT_ROLLBACK             516
+::constant CONSTRAINT_CHECK           275
+::constant CONSTRAINT_COMMITHOOK      531
+::constant CONSTRAINT_FOREIGNKEY      787
+::constant CONSTRAINT_FUNCTION        1043
+::constant CONSTRAINT_NOTNULL         1299
+::constant CONSTRAINT_PRIMARYKEY      1555
+::constant CONSTRAINT_TRIGGER         1811
+::constant CONSTRAINT_UNIQUE          2067
+::constant CONSTRAINT_VTAB            2323
+::constant NOTICE_RECOVER_WAL         283
+::constant NOTICE_RECOVER_ROLLBACK    539
+::constant WARNING_AUTOINDEX          284
 
 
 /* end-of-extended-error-codes */

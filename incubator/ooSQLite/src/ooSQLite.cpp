@@ -4032,12 +4032,15 @@ RexxMethod1(int, oosql_test_cls, ARGLIST, args)
     printf("IOERR_SEEK              =%d\n", SQLITE_IOERR_SEEK              );
     printf("IOERR_DELETE_NOENT      =%d\n", SQLITE_IOERR_DELETE_NOENT      );
     printf("IOERR_MMAP              =%d\n", SQLITE_IOERR_MMAP              );
+    printf("IOERR_GETTEMPPATH       =%d\n", SQLITE_IOERR_GETTEMPPATH       );
+    printf("IOERR_CONVPATH          =%d\n", SQLITE_IOERR_CONVPATH          );
     printf("LOCKED_SHAREDCACHE      =%d\n", SQLITE_LOCKED_SHAREDCACHE      );
     printf("BUSY_RECOVERY           =%d\n", SQLITE_BUSY_RECOVERY           );
     printf("BUSY_SNAPSHOT           =%d\n", SQLITE_BUSY_SNAPSHOT           );
     printf("CANTOPEN_NOTEMPDIR      =%d\n", SQLITE_CANTOPEN_NOTEMPDIR      );
     printf("CANTOPEN_ISDIR          =%d\n", SQLITE_CANTOPEN_ISDIR          );
     printf("CANTOPEN_FULLPATH       =%d\n", SQLITE_CANTOPEN_FULLPATH       );
+    printf("CANTOPEN_CONVPATH       =%d\n", SQLITE_CANTOPEN_CONVPATH       );
     printf("CORRUPT_VTAB            =%d\n", SQLITE_CORRUPT_VTAB            );
     printf("READONLY_RECOVERY       =%d\n", SQLITE_READONLY_RECOVERY       );
     printf("READONLY_CANTLOCK       =%d\n", SQLITE_READONLY_CANTLOCK       );
@@ -4054,6 +4057,7 @@ RexxMethod1(int, oosql_test_cls, ARGLIST, args)
     printf("CONSTRAINT_VTAB         =%d\n", SQLITE_CONSTRAINT_VTAB         );
     printf("NOTICE_RECOVER_WAL      =%d\n", SQLITE_NOTICE_RECOVER_WAL      );
     printf("NOTICE_RECOVER_ROLLBACK =%d\n", SQLITE_NOTICE_RECOVER_ROLLBACK );
+    printf("WARNING_AUTOINDEX       =%d\n", SQLITE_WARNING_AUTOINDEX       );
 
     return 0;
 }
@@ -4632,6 +4636,7 @@ PragmaType getPragmaType(RexxThreadContext *c, CSTRING name)
     if ( strcmp(pName, "schema_version")            == 0 ) return schemaVersion;
     if ( strcmp(pName, "secure_delete")             == 0 ) return secureDelete;
     if ( strcmp(pName, "shrink_memory")             == 0 ) return shrinkMemory;
+    if ( strcmp(pName, "soft_heap_limit")           == 0 ) return softHeapLimit;
     if ( strcmp(pName, "synchronous")               == 0 ) return synchronous;
     if ( strcmp(pName, "table_info")                == 0 ) return tableInfo;
     if ( strcmp(pName, "temp_store")                == 0 ) return tempStore;
@@ -6979,7 +6984,6 @@ RexxMethod3(RexxObjectPtr, oosqlconn_pragma, RexxStringObject, _name, OPTIONAL_R
         case synchronous  :
         case tempStore  :
         case userVersion  :
-        case walAutocheckpoint  :
         case writableSchema  :
             if ( argumentOmitted(2) )
             {
@@ -6999,6 +7003,8 @@ RexxMethod3(RexxObjectPtr, oosqlconn_pragma, RexxStringObject, _name, OPTIONAL_R
         case maxPageCount  :
         case mmapSize  :
         case secureDelete  :
+        case softHeapLimit  :
+        case walAutocheckpoint  :
             if ( argumentOmitted(2) )
             {
                 return pragmaGet(context, pConn, name);

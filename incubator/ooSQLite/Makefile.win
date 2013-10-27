@@ -192,9 +192,9 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM
 # For NSIS
 OUTDIR = $(ROOTDIR)\$(BIN_DIR)
 
-OBJ_FILES = $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj $(OUT_DIR)\ooSqlSysLibrary.obj \
-            $(OUT_DIR)\nextchar.obj $(OUT_DIR)\ieee754.obj $(OUT_DIR)\percentile.obj $(OUT_DIR)\rot13.obj \
-            $(OUT_DIR)\regexp.obj $(OUT_DIR)\spellfix.obj $(OUT_DIR)\wholenumber.obj
+OBJ_FILES = $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj   $(OUT_DIR)\ooSqlSysLibrary.obj \
+            $(OUT_DIR)\nextchar.obj $(OUT_DIR)\ieee754.obj $(OUT_DIR)\percentile.obj  $(OUT_DIR)\rot13.obj \
+            $(OUT_DIR)\regexp.obj $(OUT_DIR)\spellfix.obj  $(OUT_DIR)\totype.obj $(OUT_DIR)\wholenumber.obj
 
 
 # What we want to build.  ooSQLite3.exe is the command line version of SQLite.
@@ -235,6 +235,9 @@ $(OUT_DIR)\rot13.obj: src\sqlite\extensions\rot13.c Makefile.win
 
 $(OUT_DIR)\spellfix.obj: src\sqlite\extensions\spellfix.c Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\spellfix.c
+
+$(OUT_DIR)\totype.obj: src\sqlite\extensions\totype.c Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\totype.c
 
 $(OUT_DIR)\wholenumber.obj: src\sqlite\extensions\wholenumber.c Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\extensions\wholenumber.c
