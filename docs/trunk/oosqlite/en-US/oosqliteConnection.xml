@@ -3071,52 +3071,53 @@ Bytes of page memory used by all caches on this database connection:
       </para>
       <para>
         <simplelist type='vert' columns='3'>
-          <member>applicationID           </member>
-          <member>autoVacuum              </member>
-          <member>automaticIndex          </member>
-          <member>busyTimeout             </member>
-          <member>cacheSize               </member>
-          <member>cacheSpill              </member>
-          <member>caseSensitiveLike       </member>
-          <member>checkpointFullfsync     </member>
-          <member>collationList           </member>
-          <member>compileOptions          </member>
-          <member>databaseList            </member>
-          <member>deferForeignKeys        </member>
-          <member>encoding                </member>
-          <member>foreignKeyCheck         </member>
-          <member>foreignKeyList          </member>
-          <member>foreignKeys             </member>
-          <member>freelistCount           </member>
-          <member>fullfsync               </member>
-          <member>ignoreCheckConstraints  </member>
-          <member>incrementalVacuum       </member>
-          <member>indexInfo               </member>
-          <member>indexList               </member>
-          <member>integrityCheck          </member>
-          <member>journalMode             </member>
-          <member>journalSizeLimit        </member>
-          <member>legacyFileFormat        </member>
-          <member>lockingMode             </member>
-          <member>maxPageCount            </member>
-          <member>mmapSize                </member>
-          <member>pageCount               </member>
-          <member>pageSize                </member>
-          <member>queryOnly               </member>
-          <member>quickCheck              </member>
-          <member>readUncommitted         </member>
-          <member>recursiveTriggers       </member>
-          <member>reverseUnorderedSelects </member>
-          <member>schemaVersion           </member>
-          <member>secureDelete            </member>
-          <member>shrinkMemory            </member>
-          <member>synchronous             </member>
-          <member>tableInfo               </member>
-          <member>tempStore               </member>
-          <member>userVersion             </member>
-          <member>walAutocheckpoint       </member>
-          <member>walCheckpoint           </member>
-          <member>writableSchema          </member>
+          <member>application_id             </member>
+          <member>auto_vacuum                </member>
+          <member>automatic_index            </member>
+          <member>busy_timeout               </member>
+          <member>cache_size                 </member>
+          <member>cache_spill                </member>
+          <member>case_sensitive_like        </member>
+          <member>checkpoint_fullfsync       </member>
+          <member>collation_list             </member>
+          <member>compile_options            </member>
+          <member>database_list              </member>
+          <member>defer_foreign_keys         </member>
+          <member>encoding                   </member>
+          <member>foreign_key_check          </member>
+          <member>foreign_key_list           </member>
+          <member>foreign_keys               </member>
+          <member>freelist_count             </member>
+          <member>fullfsync                  </member>
+          <member>ignore_check_constraints   </member>
+          <member>incremental_vacuum         </member>
+          <member>index_info                 </member>
+          <member>index_list                 </member>
+          <member>integrity_check            </member>
+          <member>journal_mode               </member>
+          <member>journal_size_limit         </member>
+          <member>legacy_file_format         </member>
+          <member>locking_mode               </member>
+          <member>max_page_count             </member>
+          <member>mmap_size                  </member>
+          <member>page_count                 </member>
+          <member>page_size                  </member>
+          <member>query_only                 </member>
+          <member>quick_check                </member>
+          <member>read_uncommitted           </member>
+          <member>recursive_triggers         </member>
+          <member>reverse_unordered_selects  </member>
+          <member>schema_version             </member>
+          <member>secure_delete              </member>
+          <member>shrink_memory              </member>
+          <member>soft_heap_limit            </member>
+          <member>synchronous                </member>
+          <member>table_info                 </member>
+          <member>temp_store                 </member>
+          <member>user_version               </member>
+          <member>wal_autocheckpoint         </member>
+          <member>wal_checkpoint             </member>
+          <member>writable_schema            </member>
         </simplelist>
         <variablelist>
           <varlistentry><term>application_id</term>
@@ -3745,6 +3746,24 @@ Bytes of page memory used by all caches on this database connection:
               <member>No <emphasis role="italic">value</emphasis> argument returns: result code.  </member>
               <member>With <emphasis role="italic">value</emphasis> argument: invalid, condition raised </member>
               <member><emphasis role="italic">value:</emphasis> invalid </member>
+            </simplelist>
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>soft_heap_limit</term>
+          <listitem>
+          <para>
+            This pragma invokes the <link linkend="mthSoftHeapLimit64">softHeapLimit64</link> method with the argument N,
+            if N is specified and is a non-negative integer. The soft_heap_limit pragma always returns the same integer that
+            would be returned by the <emphasis role="italic">softHeapLimit64</emphasis> method with an argument of -1.
+            C-language function. Consult the SQLite <ulink
+            url="http://www.sqlite.org/pragma.html#pragma_soft_heap_limit">shrink_memory</ulink> documentation for complete
+            details.
+          </para>
+          <para>
+            <simplelist type='vert' columns='1'>
+              <member>No <emphasis role="italic">value</emphasis> argument returns: single value.</member>
+              <member>With <emphasis role="italic">value</emphasis> argument returns: single value </member>
+              <member><emphasis role="italic">value:</emphasis> N </member>
             </simplelist>
           </para>
           </listitem></varlistentry>
