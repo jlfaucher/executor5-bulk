@@ -128,7 +128,7 @@ const fnXExtensionInit builtins[] =
     sqlite3_regexp_init,
     sqlite3_rot_init,
     sqlite3_spellfix_init,
-    sqlite3_totype_init
+    sqlite3_totype_init,
     sqlite3_wholenumber_init
 };
 
@@ -140,7 +140,7 @@ const char *builtinNames[] =
     "regExp",
     "rot13",
     "spellFix",
-    "toType"
+    "toType",
     "wholeNumber"
 };
 
@@ -152,7 +152,7 @@ const char *builtinDescription[] =
     "Implements a compact regular-expression matcher for posix extended regular expressions against UTF8 text.",
     "Implements a rot13() function and a rot13 collating sequence.",
     "Implements the spellfix1 VIRTUAL TABLE that can be used to search a large vocabulary for close matches.",
-    "Implements the functions tointeger(X) and toreal(X)."
+    "Implements the functions tointeger(X) and toreal(X).",
     "Implements a virtual table that returns the whole numbers between 1 and 4294967295, inclusive."
 };
 
