@@ -251,6 +251,8 @@ Section  "ooDialog ${SHORTVERSION} Examples" SecExample
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\controls\ListView\subitem.editing
     ; Add the files ...
+    File "${ExamplesDir}\controls\ListView\subitem.editing\*.h"
+    File "${ExamplesDir}\controls\ListView\subitem.editing\*.rc"
     File "${ExamplesDir}\controls\ListView\subitem.editing\*.rex"
     File "${ExamplesDir}\controls\ListView\subitem.editing\*.txt"
 
