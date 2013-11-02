@@ -98,6 +98,7 @@
 ::method getFolder external "LIBRARY oodialog cid_getFolder"
 ::method getResult external "LIBRARY oodialog cid_getResult"
 ::method initCOM unguarded external "LIBRARY oodialog cid_initCOM"
+::method isReleased unguarded external "LIBRARY oodialog cid_isReleased"
 ::method release external "LIBRARY oodialog cid_release"
 ::method releaseCOM unguarded external "LIBRARY oodialog cid_releaseCOM"
 ::method setClientGuid external "LIBRARY oodialog cid_setClientGuid"

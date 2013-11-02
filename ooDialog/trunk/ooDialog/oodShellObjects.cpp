@@ -2706,6 +2706,36 @@ RexxMethod1(RexxObjectPtr, cid_initCOM, CSELF, pCSelf)
 }
 
 
+/** CommonItemDialog::isReleased()
+ *
+ *  Determines if this common item dialog object has been released or not.
+ *
+ *  @return True if this object has been released, false if it has not.
+ *
+ *  @notes  The relese() method must be invoked once and only once on this
+ *          object to release the system resources used by the common file
+ *          dialog.
+ *
+ *          After release() has been invoked, no other methods on this object,
+ *          except the isReleased() method, can be invoked. The isReleased()
+ *          method can be used to determine if this object is still valid or
+ *          not.
+ */
+RexxMethod1(RexxObjectPtr, cid_isReleased, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)pCSelf;
+    if ( pccid == NULL )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_INVALID_FUNCTION);
+        baseClassInitializationException(context, COMMONITEMDIALOG_CLASS);
+        return TheFalseObj;
+    }
+
+    return pccid->pfd == NULL ? TheTrueObj : TheFalseObj;
+}
+
 /** CommonItemDialog::release()
  *
  *  Releases the operating system resources used by this Rexx object.
@@ -2736,9 +2766,9 @@ RexxMethod1(RexxObjectPtr, cid_release, CSELF, pCSelf)
  *
  *  Calls CoUninitialize() on the current thread.
  *
- *  The user is responsible for invoking releaseCom(), on the same thread as
- *  this object was instantiated on, *once* when she is done with the
- *  CommonItemDialog object.
+ *  The user is responsible for invoking release(), on the same thread as this
+ *  object was instantiated on, *once* when she is done with the
+ *  CommonItemDialog object.  release() also releases the COM library.
  *
  *  In addition to that invocation, the user is responsible for invoking
  *  releaseCom() once for each successful invocation of initCom().
@@ -2746,13 +2776,21 @@ RexxMethod1(RexxObjectPtr, cid_release, CSELF, pCSelf)
  *  @return True if CoUnitialize() was called on this thread, false if this is
  *          the same thread as the original thread CoUnitialize() was called on,
  *          and COM is not intialized at this time.
+ *
+ *  @remarks  CoUninitialize() has nothing to do with the IFileDialog inteface
+ *            pointer.  So, it can, and at times should, be invoked after the
+ *            interface pointer has been released. We purposively don't check
+ *            that this object has already been released.
  */
 RexxMethod1(RexxObjectPtr, cid_releaseCOM, CSELF, pCSelf)
 {
-    HRESULT hr;
-    pCCommonItemDialog pccid = (pCCommonItemDialog)getCidCSelf(context, pCSelf, &hr);
+    oodResetSysErrCode(context->threadContext);
+
+    pCCommonItemDialog pccid = (pCCommonItemDialog)pCSelf;
     if ( pccid == NULL )
     {
+        oodSetSysErrCode(context->threadContext, ERROR_INVALID_FUNCTION);
+        baseClassInitializationException(context, COMMONITEMDIALOG_CLASS);
         return TheFalseObj;
     }
 

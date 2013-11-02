@@ -1853,6 +1853,7 @@ REXX_METHOD_PROTOTYPE(cid_getFileTypeIndex);
 REXX_METHOD_PROTOTYPE(cid_getFolder);
 REXX_METHOD_PROTOTYPE(cid_getResult);
 REXX_METHOD_PROTOTYPE(cid_initCOM);
+REXX_METHOD_PROTOTYPE(cid_isReleased);
 REXX_METHOD_PROTOTYPE(cid_release);
 REXX_METHOD_PROTOTYPE(cid_releaseCOM);
 REXX_METHOD_PROTOTYPE(cid_setClientGuid);
@@ -3218,6 +3219,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cid_getFolder,                  cid_getFolder),
     REXX_METHOD(cid_getResult,                  cid_getResult),
     REXX_METHOD(cid_initCOM,                    cid_initCOM),
+    REXX_METHOD(cid_isReleased,                 cid_isReleased),
     REXX_METHOD(cid_release,                    cid_release),
     REXX_METHOD(cid_releaseCOM,                 cid_releaseCOM),
     REXX_METHOD(cid_setClientGuid,              cid_setClientGuid),
