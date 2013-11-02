@@ -187,6 +187,87 @@
     of them as <link linkend="defHandle">handles</link>.
   </para>
   </listitem></varlistentry>
+  <varlistentry id="varSIGDN" xreflabel="SIGDN"><term><emphasis role="bold">Shell Item Get Display Name</emphasis></term>
+  <listitem>
+  <para>
+    Each object in the Windows Shell is usually called a <emphasis role="italic">shell item</emphasis> in the MSDN <xref
+    linkend="defWindowsDoc"/>. As discussed above each object is uniquely identified by its item ID list. However, these IDs
+    are not suitable for identifying a shell item to a Windows user. The shell provides a method for the programmer to get a
+    suitable display name for every shell item. For any given shell item, the name of the item can be formatted in a number
+    of different ways. The shell uses a special value called a <emphasis role="italic">SIGDN</emphasis> to specify the type
+    of display name. In ooDialog, each SIGDN value has a keyword that the programmer uses to specify the display name type in
+    methods that allow specifying the type. These key words are case insensitive. The keywords are:
+  </para>
+  <para>
+  <simplelist type='vert' columns='2'>
+    <member>DESKTOPABSOLUTEEDITING     </member>
+    <member>DESKTOPABSOLUTEPARSING     </member>
+    <member>FILESYSPATH                </member>
+    <member>PARENTRELATIVE             </member>
+    <member>PARENTRELATIVEEDITING      </member>
+    <member>PARENTRELATIVEFORADDRESSBAR</member>
+    <member>PARENTRELATIVEPARSING      </member>
+    <member>URL                        </member>
+    <member>NORMALDISPLAY              </member>
+  </simplelist>
+  <variablelist>
+    <varlistentry><term>DESKTOPABSOLUTEEDITING</term>
+    <listitem>
+    <para>
+      Returns the editing name relative to the desktop.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>DESKTOPABSOLUTEPARSING</term>
+    <listitem>
+    <para>
+      Returns the parsing name relative to the desktop.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>FILESYSPATH</term>
+    <listitem>
+    <para>
+      Returns the display name relative to the file system path
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>PARENTRELATIVE</term>
+    <listitem>
+    <para>
+      MSDN does not document this.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>PARENTRELATIVEEDITING</term>
+    <listitem>
+    <para>
+      Returns the editing name relative to the parent folder.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>PARENTRELATIVEFORADDRESSBAR</term>
+    <listitem>
+    <para>
+      Returns the path relative to the parent folder in a friendly format as displayed in an address bar.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>PARENTRELATIVEPARSING</term>
+    <listitem>
+    <para>
+      Returns the parsing name relative to the parent folder.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>URL</term>
+    <listitem>
+    <para>
+      Returns the display name relative to a URL.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>NORMALDISPLAY</term>
+    <listitem>
+    <para>
+      Returns the display name relative to the desktop.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
   <varlistentry id="varHResult" xreflabel="HRESULT code"><term><emphasis role="bold">COM result codes</emphasis></term>
   <listitem>
   <para>
@@ -1733,82 +1814,11 @@ leaving() thread ID 3580
     <varlistentry><term>type [optional]</term>
     <listitem>
     <para>
-      There are several different types or formats of display names. By default if this arugment is omitted, the method first
-      tries to get the full file system path name. But, if that fails, it tries again using the DESKTOPABSOLUTEEDITING flag.
-      This should always return something.
-    </para>
-    <para>
-      When used, the <emphasis role="italic">type</emphasis> argument specifies the format of the returned display name using
-      exactly one of the following keyword, case is not significant:
-    </para>
-    <para>
-    <simplelist type='vert' columns='2'>
-      <member>DESKTOPABSOLUTEEDITING     </member>
-      <member>DESKTOPABSOLUTEPARSING     </member>
-      <member>FILESYSPATH                </member>
-      <member>PARENTRELATIVE             </member>
-      <member>PARENTRELATIVEEDITING      </member>
-      <member>PARENTRELATIVEFORADDRESSBAR</member>
-      <member>PARENTRELATIVEPARSING      </member>
-      <member>URL                        </member>
-      <member>NORMALDISPLAY              </member>
-    </simplelist>
-    <variablelist>
-      <varlistentry><term>DESKTOPABSOLUTEEDITING</term>
-      <listitem>
-      <para>
-        Returns the editing name relative to the desktop.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>DESKTOPABSOLUTEPARSING</term>
-      <listitem>
-      <para>
-        Returns the parsing name relative to the desktop.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>FILESYSPATH</term>
-      <listitem>
-      <para>
-        Returns the display name relative to the file system path
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>PARENTRELATIVE</term>
-      <listitem>
-      <para>
-        MSDN does not document this.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>PARENTRELATIVEEDITING</term>
-      <listitem>
-      <para>
-        Returns the editing name relative to the parent folder.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>PARENTRELATIVEFORADDRESSBAR</term>
-      <listitem>
-      <para>
-        Returns the path relative to the parent folder in a friendly format as displayed in an address bar.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>PARENTRELATIVEPARSING</term>
-      <listitem>
-      <para>
-        Returns the parsing name relative to the parent folder.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>URL</term>
-      <listitem>
-      <para>
-        Returns the display name relative to a URL.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>NORMALDISPLAY</term>
-      <listitem>
-      <para>
-        Returns the display name relative to the desktop.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+      A <xref linkend="varSIGDN"/> keyword that specfies the format of the returned display name. By default if this
+      arugment is omitted, the method uses the FILESYSPATH keyword. But, if that fails, it tries again using the
+      DESKTOPABSOLUTEEDITING keyword. This should always return something. When used, the <emphasis
+      role="italic">type</emphasis> argument specifies the format of the returned display name using exactly one of the
+      <emphasis role="italic">SIGDN</emphasis> keywords.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1822,8 +1832,14 @@ leaving() thread ID 3580
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Not all format types will return a display name for any item ID list. For example, if the item ID list is a virtual
-    folder and the FILESYSPATH format is requested, the method will fail.
+    Not all format types will return a display name for any arbitrary item ID list. For example, if the item ID list is a
+    virtual folder and the FILESYSPATH format is requested, the method will fail.
+  </para>
+  <para>
+    If the <emphasis role="italic">type</emphasis> argument is omitted this method should return some name for any shell
+    item, virtual folder or not. In this case the method first tries to get a full file path name. But, if that fails the
+    method tries again using the flag for destop absolute editing. If the <emphasis role="italic">type</emphasis> argument is
+    used, then the method uses the specified SIGDN flag as is and returns whatever the shell returns.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5085,39 +5101,47 @@ leaving() thread ID 4032
 </row>
 <row>
 <entry><xref linkend="mthAddPlace"/></entry>
-<entry>.</entry>
+<entry>Adds a folder to the list of places available for the user to open or save items.</entry>
 </row>
 <row>
 <entry><xref linkend="mthAdvise"/></entry>
-<entry>.</entry>
+<entry>Assigns an event handler object that invokes methods in the ooDialog program for event notificationss coming from the common item dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClearClientData"/></entry>
-<entry>.</entry>
+<entry>Instructs the file dialog to clear all persistent state information.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClose"/></entry>
-<entry>.</entry>
+<entry>Closes the dialog..</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetCurrentSelection"/></entry>
-<entry>.</entry>
+<entry>Gets the user's current selection in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFileName"/></entry>
-<entry>.</entry>
+<entry>Retrieves the text currently entered in the dialog's File name edit box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFileTypeIndex"/></entry>
+<entry>Gets the one-based index of the currently selected file type.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFolderCid"/></entry>
-<entry>.</entry>
+<entry>Retrieves either the folder currently selected in the dialog, or, if the dialog is not currently displayed, the folder that is to be selected when the dialog is opened.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetResultCid"/></entry>
-<entry>.</entry>
+<entry>Gets the choice that the user made in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthInitCOMCid"/></entry>
-<entry>.</entry>
+<entry>Initializes the COM <link linkend="varCOMLibrary">library</link> on the current thread.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsReleased"/></entry>
+<entry>Tests if the file dialog object has been <link linkend="mthRelease">released</link>.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRelease"/></entry>
@@ -5495,7 +5519,7 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <listitem>
   <para>
     Currently the only way to get an item ID list is through the <xref linkend="mthGetItemIDList"/> method of the <xref
-    linkend="clsBrowseForFolder"/> class. Future enhancements of ooDialog may make more use of item ID list, which is when
+    linkend="clsBrowseForFolder"/> class. Future enhancements of ooDialog may make more use of item ID list, which is why
     the <emphasis role="italic">addPlace</emphasis> method accepts an item ID list for the <emphasis
     role="italic">folder</emphasis> argument.
   </para>
@@ -5565,7 +5589,9 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To recieve event notifications from a common item dialog, the programmer creates a subclass of the
+    <computeroutput>CommonDialogEvents</computeroutput> class and over-rides the event handler methods of the class for the
+    events the programmer is interested in.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5580,10 +5606,42 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a technique that allows the label of the <emphasis role="italic">Cancel</emphasis> button to be
+    changed. Before the common file dialog is opened a folder changing notification is sent. The example uses an event
+    handler method for that event and the first time it recieves the notification sets the label of the cancel button to
+    <emphasis role="italic">Abort</emphasis>.
 <programlisting>
 <![CDATA[
+  fileOpen = .OpenFileDialog~new
 
+  events = .CDEvents~new
+  fileOpen~advise(events)
+
+  fileOpen~setOkButtonLabel('Open This File')
+
+  if fileOpen~show() == .CommonItemDialog~canceled then
+      say 'The user canceled'
+  else
+      say 'The user picked:' fileOpen~getResult
+
+::requires 'ooDialog.cls'
+
+::class 'CDEvents' subclass CommonDialogEvents
+
+::method onFolderChanging unguarded
+  expose labelChanged
+  use arg cfd, hwnd
+
+  -- Only change the label on the first event.
+  if \ labelChanged~dataType('O') then
+      labelChanged = .false
+
+  if \ labelChanged then do
+      cfd~setCancelButtonLabel('Abort')
+      labelChanged = .true
+  end
+
+  return self~S_OK
 ]]>
 </programlisting>
   </para>
@@ -5596,39 +5654,40 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 <indexterm><primary>CommonItemDialog class</primary><secondary>clearClientData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--clearClientData(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--clearClientData------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instructs the file dialog to clear all persistent state information.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments to this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the <xref linkend="varHResult"/> that the underlying COM object returns. This method seems to always return:
+    0x80004005, <emphasis role="italic">Unspecified error</emphasis>. This is true even in the MSDN samples. However testing
+    shows that the method works, despite the error return code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In Windows XP, a state, such as the last visited folder, was saved on an application, on a per-process, basis. However,
+    that state information was used without regard to the current action. Take an application that opens back up files and
+    also opens text documents. If the last visited folder was the back up files folder when the user is opening up a text
+    document, the file dialog would start in the back up files folder.
+  </para>
+  <para>
+    With the common item file dialog, persistent information can still be associated with an application, but it can also be
+    associated with a GUID by using the <xref linkend="mthSetClientGuid"/> method. If a GUID was set using the <emphasis
+    role="italic">setClientGuid</emphasis> then that GUID is used to clear persisted information.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5638,17 +5697,6 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5659,25 +5707,27 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 <indexterm><primary>CommonItemDialog class</primary><secondary>close</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--close(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--close(--+-----------+--)---------------------><
+            +--hResult--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Closes the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>hResult [optional]</term>
     <listitem>
     <para>
-      xx
+      The <xref linkend="varHResult"/> that will be returned by the <xref linkend="mthShow"/> method to indicate that the
+      dialog was closed before a selection was made. This may be specified as a decimal number or as a string in conventional
+      <xref linkend="defConventionalHex"/> format. If the argument is omitted, <computeroutput>S_OK</computeroutput> is used.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5685,13 +5735,20 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A programmer can invoke this method from an event handler method while the dialog is open. The dialog will close and the
+    <emphasis role="italic">show</emphasis> method will return with the HRESULT specified by the <emphasis
+    role="italic">hResult</emphasis> argument. If this method is invoked, there is no result available for the
+    <xref linkend="mthGetResultCid"/> or <xref linkend="mthGetResults"/> methods, and they will fail if invoked.
+  </para>
+  <para>
+    Note that testing has shown that the dialog does not immediately close when the method is invoked. Rather it closes when
+    the user selects a new file or a new folder.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5706,10 +5763,70 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from a program used during the initial testing for the common item file dialog.  As such it is
+    somewhat contrived, but serves the purpose of an example. A <emphasis role="italic">Closer</emphasis> class is
+    implemented with a <emphasis role="italic">close</emphasis> method. In the example, the <emphasis
+    role="italic">close</emphasis> method is started executing on another thread. This method then sleeps for a short bit,
+    inovkes some methods on the open file dialog, and then invokes the <emphasis role="italic">close</emphasis> method of the
+    open file dialog:
 <programlisting>
 <![CDATA[
+  closer = .Closer~new
 
+  ofd = .OpenFileDialog~new
+
+  filter = .array~of('Rexx', '*.rex', 'Bitmap', '*.bmp', 'Image', '*.jpg;*.jpeg')
+  ret = ofd~setFileTypes(filter)
+  ret = ofd~setFileTypeIndex(1)
+
+  ofd~setFolder('C:\Program Files')
+  closer~set(ofd)
+
+  closer~start('close')
+
+  ret = ofd~show()
+  say 'show() ret: ' ret 'ret -> errMsg:' .DlgUtil~errMsg(ret)
+  say 'getFileName:' ofd~getFileName .DlgUtil~errMsg(.systemErrorCode)
+  say 'getResult:  ' ofd~getResult .DlgUtil~errMsg(.systemErrorCode)
+  ofd~release
+
+::requires 'ooDialog.cls'
+
+::class 'Closer'
+
+::method set
+expose ofd
+use strict arg ofd
+
+::method close unguarded
+expose ofd
+use strict arg timeOut = 5
+
+ofd~initCom
+
+j = SysSleep(timeOut)
+say 'current file name:      ' ofd~getFileName .DlgUtil~errMsg(.systemErrorCode)
+say 'current file type index:' ofd~getFileTypeIndex .DlgUtil~errMsg(.systemErrorCode)
+say 'current file selection: ' ofd~getCurrentSelection .DlgUtil~errMsg(.systemErrorCode)
+say 'current folder          ' ofd~getFolder .DlgUtil~errMsg(.systemErrorCode)
+say; say
+ret = ofd~close('0x80004004')
+
+ofd~releaseCom
+
+/* Output will be something like the following:
+
+current file name:        Error code 0 (0x00000000): The operation completed successfully.
+current file type index: 1 Error code 0 (0x00000000): The operation completed successfully.
+current file selection:  The NIL object Error code 2147500037 (0x80004005): Unspecified error
+current folder           C:\Program Files Error code 0 (0x00000000): The operation completed successfully.
+
+
+show() ret:  2147500036 ret -> errMsg: Error code 2147500036 (0x80004004): Operation aborted
+getFileName: The NIL object Error code 2147500037 (0x80004005): Unspecified error
+getResult:   The NIL object Error code 2147549183 (0x8000ffff): Catastrophic failure
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -5723,24 +5840,27 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 <programlisting>
 <![CDATA[
 >>--getCurrentSelection(--+--------+--)---------------------------------------------><
-                  +--type--+
+                          +--type--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the user's current selection in the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>type [optional]</term>
     <listitem>
     <para>
-      xx
+      A <xref linkend="varSIGDN"/> keyword that specfies the format of the returned current selection name. By default if
+      this arugment is omitted, the method uses the FILESYSPATH keyword. When used, the <emphasis
+      role="italic">type</emphasis> argument specifies the format of the returned current selection name using exactly one of
+      the <emphasis role="italic">SIGDN</emphasis> keywords.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5748,13 +5868,20 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The display name of the current selection, or the <computeroutput>.nil</computeroutput> object on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method returns the string name of the shell item currently selected in the dialog. This item can be a file or folder
+    selected in the view window, or something that the user has typed into the dialog's edit box. The latter case may
+    require a parsing operation (by the shell, cancelable by the user) that blocks the current thread.
+  </para>
+  <para>
+    Typically the <emphasis role="italic">getCurrentSelection</emphasis> method would be invoked from an event <link
+    linkend="clsCommonDialogEvents">handler</link>. Invoking the method before the file dialog is shown, or after it has been
+    closed will return the <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5769,10 +5896,22 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from a business application for a company that does not allow its employees to open files marked as
+    reserved. The files are marked by the IT department by putting <emphasis role="italic">resv</emphasis> in the file name:
 <programlisting>
 <![CDATA[
+::method onFileOk unguarded
+    use arg ofd, hwnd
 
+    fileName = ofd~getCurrentSelection
+    if fileName~caselessPos('resv') <> 0 then do
+        msg = '"Reserved" files can not be opened.  Please select another file.'
+        title = 'File Open Error'
+        r = MessageDialog(msg, hwnd, title, 'OK', 'WARNING')
+        return self~S_FALSE
+    end
+
+    return self~S_OK
 ]]>
 </programlisting>
   </para>
@@ -5785,39 +5924,32 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 <indexterm><primary>CommonItemDialog class</primary><secondary>getFileName</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getFileName(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getFileName----------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the text currently entered in the dialog's File name edit box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method does not have any arguments.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The text in the edit box, or the <computeroutput>.nil</computeroutput> object on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Unlike some other methods such as the <xref linkend="mthGetCurrentSelection"/>, the <emphasis
+    role="italic">getFileName</emphasis> can be used after the file dialog has been closed. Even if the user canceled the
+    dialog. Of course it can also be invoked from an event <link linkend="clsCommonDialogEvents">handler</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5832,10 +5964,42 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This code snippet shows the difference when using the <emphasis role="italic">getFileName</emphasis> and <emphasis
+    role="italic">getCurrentSelection</emphasis> methods. Note in the output that <emphasis
+    role="italic">getFileName</emphasis> returned the text in the edit box which does not match what the user actually
+    selected as shown by <emphasis role="italic">getResult</emphasis>. The user selected a file by double clicking on it,
+    which bypasses the edit box altogether:
 <programlisting>
 <![CDATA[
+  ret = ofd~show()
 
+  say 'getFileName:        ' fod~getFileName
+  say '  rc:' .DlgUtil~errMsg(.systemErrorCode)
+  say
+  say 'getCurrentSelection:' fod~getCurrentSelection
+  say '  rc:' .DlgUtil~errMsg(.systemErrorCode)
+  say
+  say 'getResult:          ' fod~getResult(PARENTRELATIVE)
+  say '  rc:' .DlgUtil~errMsg(.systemErrorCode)
+  say
+  say 'getResult:          ' fod~getResult
+  say '  rc:' .DlgUtil~errMsg(.systemErrorCode)
+
+/* output might be:
+
+getFileName:         madeUp.name
+  rc: Error code 0 (0x00000000): The operation completed successfully.
+
+getCurrentSelection: The NIL object
+  rc: Error code 2147500037 (0x80004005): Unspecified error
+
+getResult:           Jellyfish.jpg
+  rc: Error code 0 (0x00000000): The operation completed successfully.
+
+getResult:           C:\Users\Public\Pictures\Sample Pictures\Jellyfish.jpg
+  rc: Error code 0 (0x00000000): The operation completed successfully.
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -5848,39 +6012,31 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 <indexterm><primary>CommonItemDialog class</primary><secondary>getFileTypeIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getFileTypeIndex(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getFileTypeIndex-----------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the one-based index of the currently selected file type.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    This method has no arguments.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the one-based index of the selected file type in the file type array passed to the <xref
+    linkend="mthSetFileTypes"/> method. Returns -1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method can be inovked either while the dialog is open or after it has been closed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5890,17 +6046,6 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5911,25 +6056,29 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 <indexterm><primary>CommonItemDialog class</primary><secondary>getFolder</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getFolder(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getFolder(--+---------+--)-------------------><
+                +--sigdn--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves either the folder currently selected in the dialog, or, if the dialog is not currently displayed, the folder that
+  is to be selected when the dialog is opened.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>sigdn [optional]</term>
     <listitem>
     <para>
-      xx
+      A <xref linkend="varSIGDN"/> keyword that specfies the format of the name of the currently selected folder. The default
+      if this arugment is omitted is the FILESYSPATH keyword. If not omitted, the <emphasis
+      role="italic">sigdn</emphasis> argument specifies the format of the returned folder name using exactly one of the
+      <emphasis role="italic">SIGDN</emphasis> keywords.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5937,13 +6086,7 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The currently selected folder name, or the <computeroutput>.nil</computeroutput> object on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5958,10 +6101,30 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example code gets the file name of the item choosen by the user and the folder the item is in:
 <programlisting>
 <![CDATA[
 
+  ret = fod~show()
+  if ret == fod~S_OK then do
+      say 'getResult:          ' fod~getResult(PARENTRELATIVE)
+      say '  rc:' .DlgUtil~errMsg(.systemErrorCode)
+      say
+
+      say 'getFolder:          ' fod~getFolder
+      say '  rc:' .DlgUtil~errMsg(.systemErrorCode)
+      say
+  end
+  fod~release
+  return 0
+
+/* Output might be:
+getResult:           ooRexxTry.rex
+  rc: Error code 0 (0x00000000): The operation completed successfully.
+
+getFolder:           C:\Rexx\ooRexx
+  rc: Error code 0 (0x00000000): The operation completed successfully.
+*/
 ]]>
 </programlisting>
   </para>
@@ -5974,25 +6137,28 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 <indexterm><primary>CommonItemDialog class</primary><secondary>getResult</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getResult(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getResult(--+---------+--)-------------------><
+                +--sigdn--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the choice that the user made in the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>sigdn [optional]</term>
     <listitem>
     <para>
-      xx
+      A <xref linkend="varSIGDN"/> keyword that specfies the format of the name of the shell item choosen by the user. The
+      default if this arugment is omitted is the FILESYSPATH keyword. If not omitted, the <emphasis
+      role="italic">sigdn</emphasis> argument specifies the format of the returned name using exactly one of the <emphasis
+      role="italic">SIGDN</emphasis> keywords.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -6000,13 +6166,20 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The name of the shell item choosen by the user, or the <computeroutput>.nil</computeroutput> object on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">getResult</emphasis> method can be invoked after the dialog has closed or during the handling
+    of an <xref linkend="mthOnFileOk"/> event notification. Invoking this method at any other time will fail. If multiple
+    items were chosen, this method will fail. In the case of multiple items, invoke the <xref linkend="mthGetResults"/>
+    method.
+  </para>
+  <para>
+    The <xref linkend="mthShow"/> method must return a success code for a result to be available to the <emphasis
+    role="italic">getResult</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -6021,10 +6194,31 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows how to use the <emphasis role="italic">sigdn</emphasis> argument to return just the file name of the
+    item choosen by the user rather than the complete file path name:
 <programlisting>
 <![CDATA[
 
+  ret = fod~show()
+  if ret == fod~S_OK then do
+      say 'getResult:          ' fod~getResult(PARENTRELATIVE)
+      say '  rc:' .DlgUtil~errMsg(.systemErrorCode)
+      say
+
+      say 'getFolder:          ' fod~getFolder
+      say '  rc:' .DlgUtil~errMsg(.systemErrorCode)
+      say
+  end
+  fod~release
+  return 0
+
+/* Output might be:
+getResult:           ooRexxTry.rex
+  rc: Error code 0 (0x00000000): The operation completed successfully.
+
+getFolder:           C:\Rexx\ooRexx
+  rc: Error code 0 (0x00000000): The operation completed successfully.
+*/
 ]]>
 </programlisting>
   </para>
@@ -6037,39 +6231,51 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
 <indexterm><primary>CommonItemDialog class</primary><secondary>initCOM</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--initCOM(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--initCOM--------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Initializes the COM <link linkend="varCOMLibrary">library</link> on the current thread.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+     Returns true when the COM library is initialized as a result of the <emphasis role="italic">initCom</emphasis>
+    invocation. Returns false if the library is not initialized as a result of the <emphasis role="italic">initCom</emphasis>
+    invocation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the common item file dialog is first instantiated, the ooDialog framework initializes the COM library on the thread
+    that is executing. If that same object is used on another thread than the initial thread, the methods of the object may
+    fail unless the COM library is initialized on the other thread. The <emphasis role="italic">initCOM</emphasis> method is
+    provided to perform that initialization.
+  </para>
+  <para>
+    For each invocation of <emphasis role="italic">initCOM</emphasis> that returns true, a matching call to <xref
+    linkend="mthReleaseCOMCid"/> must be made on the same thread. Note that the <xref linkend="mthRelease"/> method also
+    releases the COM library, but only <emphasis role="italic">if</emphasis> it is inovked on the same thread as the file
+    dialog object was instantiated on.
+  </para>
+  <para>
+    If <emphasis role="italic">initCOM</emphasis> returns false, then there is no need to invoke <emphasis
+    role="italic">releaseCOM</emphasis>. Indeed, invoking <emphasis role="italic">releaseCOM</emphasis> will be a mistake as
+    this will cause the matching <emphasis role="italic">initCOM</emphasis> / <emphasis role="italic">releaseCOM</emphasis>
+    calls to become unbalanced. When <emphasis role="italic">initCom</emphasis> returns false, it can be for two reasons. If
+    the COM library has already been initialized on the current thread, false is returned and the
+    <computeroutput>.SystemErrorCode</computeroutput> is set to 1. There is also the possibility of a failure in initializing
+    the COM library. In this case, false is returned and the <computeroutput>.SystemErrorCode</computeroutput> is set to a
+    COM error code returned by the COM library.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -6084,16 +6290,113 @@ options: ALLOWMULTISELECT FILEMUSTEXIST NOCHANGEDIR PATHMUSTEXIST
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This is a contrived example that gives the user only 15 seconds to pick a file. If the user does not pick a file within
+    that time period, the open file dialog is closed. The open file dialog object is passed to a second thread, making it
+    necessary to initialize, and release, the COM library on that thread
 <programlisting>
 <![CDATA[
 
+  closer = .Closer~new
+
+  ofd = .OpenFileDialog~new
+
+  filter = .array~of('Rexx', '*.rex', 'Bitmap', '*.bmp', 'Image', '*.jpg;*.jpeg')
+  ret = ofd~setFileTypes(filter)
+  ret = ofd~setFileTypeIndex(1)
+
+  ofd~setFolder('C:\Rexx\ooRexx')
+  closer~set(ofd)
+
+  timeout = 15
+  msgObj = closer~start('close', timeout)
+
+  ret = ofd~show()
+  if ret == ofd~S_OK then do
+    say 'Congrats, you picked a file within' timeout 'seconds. File:' ofd~getResult(PARENTRELATIVE)
+  end
+  else do
+    say 'Tough luck, you are too slow.'
+  end
+
+  -- If we relase the open file object before the
+  -- second thread is finished we will have an error
+  -- raised.  So we wait ...
+  say 'Please wait while system resources are cleaned up ...'
+  msgObj~result
+  ofd~release
+
+::requires 'ooDialog.cls'
+
+::class 'Closer'
+
+::method set
+expose ofd
+use strict arg ofd
+
+::method close unguarded
+expose ofd
+use strict arg timeOut = 5
+
+ofd~initCom
+
+j = SysSleep(timeOut)
+ret = ofd~close('0x80004004')
+
+ofd~releaseCom
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End CommonItemDialog::initCOM() -->
+
+<section id="mthIsReleased" xreflabel="isReleased"><title>isReleased</title>
+<indexterm><primary>isReleased</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>isReleased</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isReleased-----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Tests if the file dialog object has been <link linkend="mthRelease">released</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the system resources used by the common item file dialog object have been released, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Each common item dialog that is instantiated must have its system resources released when the application is done using
+    that object. Once the system resources for the object have been released, it is an error to invoke any method on that
+    object and a condition will be raised if a method is invoked. The only exceptions to that rule are the <emphasis
+    role="italic">isReleased</emphasis> and the <xref linkend="mthReleaseCOMCid"/> methods. The <emphasis
+    role="italic">isReleased</emphasis> method can be invoked at any time to test if the object has already been released.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::isReleased() -->
+
 
 <section id="mthRelease" xreflabel="release"><title>release</title>
 <indexterm><primary>release</primary></indexterm>
