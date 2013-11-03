@@ -1222,6 +1222,10 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 <entry>Returns the error message text for the specified Windows system error code.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetGUID"/></entry>
+<entry>Returns a GUID in string format.</entry>
+</row>
+<row>
 <entry><xref linkend="mthGetSystemMetricsClsDlgUtil"/></entry>
 <entry>Obtains the system metric value for a given index.</entry>
 </row>
@@ -1587,6 +1591,92 @@ Error code 87 (0x00000057): The parameter is incorrect.
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::errMsg() -->
+
+<section id="mthGetGUID" xreflabel="getGUID"><title>getGUID</title>
+<indexterm><primary>getGUID</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>getGUID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getGUID(--+----------------+--)--------------><
+              +--conventional--+
+]]>
+</programlisting>
+
+<para>
+  Returns a GUID in string format.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>conventional [optional]</term>
+    <listitem>
+    <para>
+      Specifies the format of the returned GUID. If true the returned string format is Microsoft's conventional format. If
+      false the string is returned in universal format. If omitted, <emphasis role="italic">conventional</emphasis> is false.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A GUID in the string format specified, or the <computeroutput>.nil</computeroutput> object on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    A GUID is actually a number, a 128-bit number. That large a number is difficult to display and the conventional string
+    format is commonly used when talking about a GUID. It is even difficult to pass that large a number as an argument to a
+    function or method. Often software accepts the string format of a GUID and internally converts it to a number.
+  </para>
+  <para>
+    A new GUID is generated for each invocation of this method.
+  </para>
+  <para>
+    By default the string GUID will be similar to:
+   <computeroutput>3d2c9438-a3b0-494d-ba5d-10f53e6ec9cf</computeroutput>
+  </para>
+  <para>
+    If Microsoft's convention is requested the same GUID would be returned as:
+    <computeroutput>{3d2c9438-a3b0-494d-ba5d-10f53e6ec9cf}</computeroutput>
+  </para>
+  <para>
+    A GUID and a UUID are synomous and can be used interchangable in ooDialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example prints out a new GUID every time it is executed. Typically, the GUID would then be copy-pasted into the
+    software it will be used in:
+<programlisting>
+<![CDATA[
+/* genGUID.rex - simple GUID generating program. */
+
+    guid = .DlgUtil~getGUID
+    say guid
+return 0
+::requires 'ooDialog.cls'
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::getGUID() -->
 
 <section id="mthGetSystemMetricsClsDlgUtil" xreflabel="getSystemMetrics"><title>getSystemMetrics (Class Method)</title>
 <indexterm><primary>getSystemMetrics</primary></indexterm>

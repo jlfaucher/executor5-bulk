@@ -5145,11 +5145,11 @@ leaving() thread ID 4032
 </row>
 <row>
 <entry><xref linkend="mthRelease"/></entry>
-<entry>.</entry>
+<entry>Releases the system resources used by the underlying COM object that this Rexx object represents.</entry>
 </row>
 <row>
 <entry><xref linkend="mthReleaseCOMCid"/></entry>
-<entry>.</entry>
+<entry>Releases the COM library on the current thread.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetCancelButtonLabel"/></entry>
@@ -5157,39 +5157,39 @@ leaving() thread ID 4032
 </row>
 <row>
 <entry><xref linkend="mthSetClientGuid"/></entry>
-<entry>.</entry>
+<entry>Allows the calling application to associate a GUID with a dialog's persistent state.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetDefaultExtension"/></entry>
-<entry>.</entry>
+<entry>Sets the default extension to be added to file names.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetDefaultFolder"/></entry>
-<entry>.</entry>
+<entry>Sets the folder used as a default if there is not a recently used folder value available.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFileName"/></entry>
-<entry>.</entry>
+<entry>Sets the file name initially placed in the file name edit box of the dialog</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFileNameLabel"/></entry>
-<entry>.</entry>
+<entry>Sets the text of the label next to the file name edit box</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFileTypeIndex"/></entry>
-<entry>.</entry>
+<entry>Sets the file type that appears as selected in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFileTypes"/></entry>
-<entry>.</entry>
+<entry>Sets the file types filter.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFilter"/></entry>
-<entry>.</entry>
+<entry>Sets a special filter that can be used to remove some items from the dialog's view.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFolder"/></entry>
-<entry>.</entry>
+<entry>Sets the folder that is selected when the dialog is opened.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetOkButtonLabel"/></entry>
@@ -5197,15 +5197,15 @@ leaving() thread ID 4032
 </row>
 <row>
 <entry><xref linkend="mthSetTitle"/></entry>
-<entry>.</entry>
+<entry>Sets the title of the common item dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthShow"/></entry>
-<entry>.</entry>
+<entry>Launches the modal dialog window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUnadvise"/></entry>
-<entry>.</entry>
+<entry>Removes the event handler that was attached through the <xref linkend="mthAdvise"/> method.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -6403,40 +6403,53 @@ ofd~releaseCom
 <indexterm><primary>CommonItemDialog class</primary><secondary>release</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--release(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--release--------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Releases the system resources used by the underlying COM object that this Rexx object represents. Each instantiated common
+  item dialog Rexx object needs to have the <emphasis role="italic">release</emphasis> method invoked on the object when the
+  application is finished with the object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">release</emphasis> method must be invoked once, and only once, on this object
+    to release the system resources used by the common file dialog. This also releases the COM library, <emphasis
+    role="italic"><emphasis role="bold">if</emphasis></emphasis> the library was initialized on the current thread.
   </para>
+  <para>
+    After <emphasis role="italic">release</emphasis> has been invoked, no other methods, except <xref
+    linkend="mthIsReleased"/> and <xref linkend="mthReleaseCOMCid"/>, can be invoked on this object. The <emphasis
+    role="italic">release</emphasis> method can be invoked on any thread, but this method only releases the COM library if
+    <emphasis role="italic">release</emphasis> is invoked on the same thread as this object was instantiated on.
+  </para>
+  <note><title>Note</title><para>
+    It is not recommended that the programmer use a single Rexx common item dialog object on more than one thread. It is
+    recommended that the programmer instantiate the common item dialog, configure the dialog, show the dialog, retrieve the
+    user's input, and release the dialog, all on the same thread. It is possible to use the same object on multiple threads.
+    However, ensuring that system resources and the COM library are cleaned up properly becomes more difficult to manage.
+  </para>
+  <para>
+    If the programmer uses the same common item dialog object on more than one thread, then it becomes the programmer's
+    responsibility to ensure that the COM library is initialized and released on each thread, that the init and release are
+    in balanced pairs, and that release is called once and only once for the objet. This is certainly doable, however it is
+    more complicated then restricting the use of the object to one thread.
+  </para></note>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -6447,12 +6460,78 @@ ofd~releaseCom
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <varlistentry id="exmpReleaseMethod" xreflabel="release() example"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses a single common item dialog object on two threads.  It ensures that the COM library is initialized and
+    released on each thread and that the object is released.
+  </para>
+  <para>
+    Note however that the code doesn't guarentee that the <emphasis role="italic">getResult</emphasis> or <emphasis
+    role="italic">show</emphasis> is not invoked afte the COM object has been released. It just makes it unlikely. If the
+    user selects a file and the timeout happens at the same instant, both threads could recieve true from <emphasis
+    role="italic">isReleased</emphasis> method, because neither thread has yet invoked <emphasis
+    role="italic">release</emphasis>.
 <programlisting>
 <![CDATA[
+  closer = .Closer~new
+
+  ofd = .OpenFileDialog~new
+
+  filter = .array~of('Rexx', '*.rex', 'Bitmap', '*.bmp', 'Image', '*.jpg;*.jpeg')
+  ret = ofd~setFileTypes(filter)
+  ret = ofd~setFileTypeIndex(1)
+
+  ofd~setFolder('C:\Rexx\ooRexx')
+  closer~set(ofd)
+
+  timeout = 15
+  closer~start('close', timeout)
+
+  selectedFile = .nil
+  ret = ofd~show()
+  if ret == ofd~S_OK then do
+    if \ ofd~isReleased then do
+      selectedFile = ofd~getResult(PARENTRELATIVE)
+      ofd~release
+      say 'Congrats, you picked a file within' timeout 'seconds. File:' selectedFile
+    end
+    else do
+      say 'Congrats, you picked a file within' timeout 'seconds.'
+      say 'But the dialog was released before the results could be retrieved'
+
+      -- The COM library has not been released on this thread
+      ofd~releaseCOM
+    end
+  end
+  else do
+    say 'Tough luck, you are too slow.'
+  end
+
+
+::requires 'ooDialog.cls'
+
+::class 'Closer'
+
+::method set
+expose ofd
+use strict arg ofd
+
+::method close unguarded
+expose ofd
+use strict arg timeOut = 5
+
+ofd~initCom
+
+j = SysSleep(timeOut)
+if \ ofd~isReleased then do
+  ret = ofd~close('0x80004004')
+  -- Releases the object, but does not release
+  -- COM on this thread, or the original thread.
+  ofd~release
+end
+
+ofd~releaseCom
 
 ]]>
 </programlisting>
@@ -6466,40 +6545,59 @@ ofd~releaseCom
 <indexterm><primary>CommonItemDialog class</primary><secondary>releaseCOM</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--releaseCOM(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--releaseCOM-----------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Releases the COM library on the current thread.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if the Windows API used to release the COM library is called. Returns false if the API is not called.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If <emphasis role="italic">releaseCom</emphasis> is invoked on the same thread as this object was instantiated on, and
+    the COM library has already been released on the thread, then the Windows API is not called and false is returned.
   </para>
+  <para>
+    When the <xref linkend="mthNewClsCommonItemDialog"/> method is invoked, ooDialog initalizes the COM library
+    automatically. When the <xref linkend="mthRelease"/> method is invoked, <emphasis role="italic">if it is the same thread
+    </emphasis> as <emphasis role="italic">new</emphasis> was invoked on, ooDialog automatically releases the COM library. As
+    long as the programmer follows the recommended practice of only using a common item dialog object on one thread, the
+    programmer need not worry about initializing and releasing the COM library. The <emphasis
+    role="italic">releaseCOM</emphasis> and <xref linkend="mthInitCOMCid"/> methods are provided for the programmer's use if
+    the recommended practice is not followed, the programmer needs to be aware of these points:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    The COM library needs to be initialized and released, once, on each thread, a single common item dialog is used on.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    If, on a thread, the library was initialized and released, and the object was going to be used again, the init / release
+    pair would need to be done again.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The automatic COM initialization and release done by the ooDialog framework.
+  </para>
+  </listitem>
+  </itemizedlist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -6513,583 +6611,11 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The <xref linkend="exmpReleaseMethod"/> shows the usage of the <emphasis role="italic">releaseCOM</emphasis> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End CommonItemDialog::releaseCOM() -->
-
-<section id="mthSetClientGuid" xreflabel="setClientGuid"><title>setClientGuid</title>
-<indexterm><primary>setClientGuid</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setClientGuid</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setClientGuid(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CommonItemDialog::setClientGuid() -->
-
-<section id="mthSetDefaultExtension" xreflabel="setDefaultExtension"><title>setDefaultExtension</title>
-<indexterm><primary>setDefaultExtension</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setDefaultExtension</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setDefaultExtension(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CommonItemDialog::setDefaultExtension() -->
-
-<section id="mthSetDefaultFolder" xreflabel="setDefaultFolder"><title>setDefaultFolder</title>
-<indexterm><primary>setDefaultFolder</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setDefaultFolder</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setDefaultFolder(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CommonItemDialog::setDefaultFolder() -->
-
-<section id="mthSetFileName" xreflabel="setFileName"><title>setFileName</title>
-<indexterm><primary>setFileName</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setFileName</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setFileName(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CommonItemDialog::setFileName() -->
-
-<section id="mthSetFileNameLabel" xreflabel="setFileNameLabel"><title>setFileNameLabel</title>
-<indexterm><primary>setFileNameLabel</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setFileNameLabel</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setFileNameLabel(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CommonItemDialog::setFileNameLabel() -->
-
-<section id="mthSetFileTypeIndex" xreflabel="setFileTypeIndex"><title>setFileTypeIndex</title>
-<indexterm><primary>setFileTypeIndex</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setFileTypeIndex</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setFileTypeIndex(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CommonItemDialog::setFileTypeIndex() -->
-
-<section id="mthSetFileTypes" xreflabel="setFileTypes"><title>setFileTypes</title>
-<indexterm><primary>setFileTypes</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setFileTypes</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setFileTypes(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CommonItemDialog::setFileTypes() -->
-
-<section id="mthSetFilter" xreflabel="setFilter"><title>setFilter</title>
-<indexterm><primary>setFilter</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setFilter</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setFilter(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CommonItemDialog::setFilter() -->
-
-<section id="mthSetFolder" xreflabel="setFolder"><title>setFolder</title>
-<indexterm><primary>setFolder</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setFolder</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setFolder(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CommonItemDialog::setFolder() -->
 
 <section id="mthSetCancelButtonLabel" xreflabel="setCancelButtonLabel"><title>setCancelButtonLabel</title>
 <indexterm><primary>setCancelButtonLabel</primary></indexterm>
@@ -7194,30 +6720,33 @@ ofd~releaseCom
 </variablelist>
 </section>  <!-- End CommonItemDialog::setCancelButtonLabel() -->
 
-<section id="mthSetOkButtonLabel" xreflabel="setOkButtonLabel"><title>setOkButtonLabel</title>
-<indexterm><primary>setOkButtonLabel</primary></indexterm>
-<indexterm><primary>CommonItemDialog class</primary><secondary>setOkButtonLabel</secondary></indexterm>
+<section id="mthSetClientGuid" xreflabel="setClientGuid"><title>setClientGuid</title>
+<indexterm><primary>setClientGuid</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setClientGuid</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setOkButtonLabel(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setClientGuid(--guid--)----------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Allows the calling application to associate a GUID with a dialog's persistent state.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>guid [required]</term>
     <listitem>
     <para>
-      xx
+      The GUID to assoicate with the dialog's persistent state. A GUID (Globally Unique Identifier) is a unique
+      reference number used as an identifier in computer software. GUID typically refers to an implementations of the
+      Universally Unique Identifier (UUID) standard. The <xref linkend="mthGetGUID"/> of the <xref linkend="clsDlgUtil"/>
+      class can be used to obtain a GUID. Note that the <emphasis role="italic">guid</emphasis> is specified as a string in
+      conventional format.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7225,13 +6754,20 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A dialog's pesistent state can include factors such as the last visited directory and the size and position of the
+    dialog. Typically, this state is persisted based on the name of the executable file. By specifying a GUID, a program
+    can have different persisted states for different versions of the dialog within the same program, for example, a backup
+    to file dialog and an open text document dialog.
+  </para>
+  <para>
+    The <emphasis role="italic">setClientGuid</emphasis> should be called immediately after the instantiation of the dialog
+    object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -7246,9 +6782,709 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example has several GUID strings used for different types of the common item dialog used in an accounting program.
+    The GUID strings have been generated and then assigned to constant values in the program:
 <programlisting>
 <![CDATA[
+::class 'EasyAccounts' subclass RcDialog
+
+-- Do not copy these GUIDs into your own code.  Always generate your own GUID.
+::constant GUID_OPEN          '021b0a3d-cb16-4def-ab42-7fc259fd84d9'
+::constant GUID_SAVE          'beff4495-fa60-468b-90c3-1dcb6fde0e78'
+::constant GUID_OPEN_MULTI    'b6c25d80-198e-4baa-aad8-1249e4f15b3f'
+::constant GUID_OPEN_CUSTOM   '745c45cb-3464-46fc-96cf-8628ad4bf63b'
+::constant GUID_SAVE_DEFAULT  'fe2c5305-d7f9-43cd-9d7b-9c3d4d1b79be'
+::constant GUID_OPEN_FOLDER   'ce5ad183-b42f-4f37-a5d6-78d1cffea2e6'
+
+...
+
+
+  ofd = .OpenFileDialog~new
+  ret = ofd~setClientGuid(self~GUID_OPEN)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setClientGuid() -->
+
+<section id="mthSetDefaultExtension" xreflabel="setDefaultExtension"><title>setDefaultExtension</title>
+<indexterm><primary>setDefaultExtension</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setDefaultExtension</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDefaultExtension(--exension--)------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the default extension to be added to file names.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>extension [required]</term>
+    <listitem>
+    <para>
+      The defualt extension for the common item dialog. Do not include the period. <emphasis role="italic">jpg</emphasis> is
+      correct, while <emphasis role="italic">.jpg</emphasis> is not.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The extension must be less than 260 characters in length.
+  </para>
+  <para>
+    If this method is invoked before showing the dialog, the dialog will update the default extension automatically when the
+    uer chooses a new file type. See <xref linkend="mthSetFileTypes"/>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the default extension to <emphasis role="italic">.cls</emphasis>. Notice that the <emphasis
+    role="italic">dot</emphasis> is left off of the string passed to the method, <emphasis role="italic">cls</emphasis> not
+    <emphasis role="italic">.cls</emphasis>:
+<programlisting>
+<![CDATA[
+  sfd = .SaveFileDialog~new
+  ret = sfd~setClientGuid(self~GUID_SAVE_DEFAULT)
+
+  filter = .array~of('Rexx Program File', '*.rex', 'Rexx Class File', '*.cls', 'Text File', '*.txt')
+  sfd~setFileTypes(filter)
+
+  sfd~setFileTypeIndex(2)
+  sfd~setDefaultExtension('cls')
+
+  ret = sfd~setSaveAsItem(rexx_home'\ooDialog.cls')
+
+  -- Show the dialog and get the response
+  ret = sfd~show(self)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setDefaultExtension() -->
+
+<section id="mthSetDefaultFolder" xreflabel="setDefaultFolder"><title>setDefaultFolder</title>
+<indexterm><primary>setDefaultFolder</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setDefaultFolder</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDefaultFolder(--folder--)-----------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the folder used as a default if there is not a recently used folder value available.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>folder [required]</term>
+    <listitem>
+    <para>
+      The folder that is set as the default folder when the dialog opens. This can be specified as a full path name, a
+      <link linkend="sctSpecialFolderNames">CSIDL_XX</link> name, or an <xref linkend="varItemIDList"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Contrast this method with the <xref linkend="mthSetFolder"/> method. The dialog will open with the folder specified with
+    <emphasis role="italic">setDefaultFolder</emphasis> as the selected folder only if there is not a recently used folder
+    saved by the operating system. Whereas the <emphasis role="italic">setFolder</emphasis> method will explicitly open the
+    dialog with the specified folder as the initial selected folder.
+  </para>
+  <para>
+    Currently the only way to get an item ID list is through the <xref linkend="mthGetItemIDList"/> method of the <xref
+    linkend="clsBrowseForFolder"/> class. Future enhancements of ooDialog may make more use of item ID list, which is why
+    the <emphasis role="italic">setDefaultFolder</emphasis> method accepts an item ID list for the <emphasis
+    role="italic">folder</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses the <xref linkend="mthSetClientGuid"/> method so that the state of the open file dialog will be
+    persisted. The very first time the application is used, there will be no saved state, so the application sets the default
+    folder to the ooRexx installation directory, (unless the ooRexx directory can't be found.) The first time the application
+    uses the open file dialog, it will open with the ooRexx installation directory as the initial directory. After that the
+    dialog will open with the last visited directory as the initial directory:
+<programlisting>
+<![CDATA[
+  guid = '95e626ab-a59d-4779-b7ac-15d49a900ee7'
+
+  ofd = .OpenFileDialog~new
+  ret = ofd~setClientGuid(guid)
+
+  initFolder = value('REXX_HOME', , 'ENVIRONMENT')
+  if initFolder == '' then initFolder = 'C:\Program Files'
+  ofd~setDefaultFolder(initFolder)
+  ...
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setDefaultFolder() -->
+
+<section id="mthSetFileName" xreflabel="setFileName"><title>setFileName</title>
+<indexterm><primary>setFileName</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setFileName</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFileName(--fileName--)--------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the file name initially placed in the file name edit box of the dialog
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>fileName [required]</term>
+    <listitem>
+    <para>
+      The initial file name displayed in the edit box.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">fileName</emphasis> argument must be less than 260 characters in length.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setFileName() -->
+
+<section id="mthSetFileNameLabel" xreflabel="setFileNameLabel"><title>setFileNameLabel</title>
+<indexterm><primary>setFileNameLabel</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setFileNameLabel</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFileNameLabel(--label--)------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the text of the label next to the file name edit box
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>label [required]</term>
+    <listitem>
+    <para>
+      The text for the label of the file name edit box.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">label</emphasis> argument must be less than 260 characters in length.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses the <emphasis role="italic">setFileNameLabel</emphasis> argument to change the default lable for the
+    file name edit box:
+<programlisting>
+<![CDATA[
+  ofd = .OpenFileDialog~new
+  ret = ofd~setClientGuid(self~GUID_OPEN_CUSTOM)
+
+  ofd~options = ofd~options~delWord(ofd~options~wordPos('FILEMUSTEXIST'), 1)
+
+  ofd~setTitle("The ooRexx Project's Open File Dialog")
+  ofd~setFileNameLabel('Type in, or select an existing, file to open here:')
+  ofd~setOkButtonLabel('Finished')
+
+  opts = 'FORCEPREVIEWPANEON HIDEMRUPLACES HIDEPINNEDPLACES'
+  ofd~options = ofd~options opts
+
+  -- Okay, we are all set, show the dialog and get the response from the user:
+  ret = ofd~show(self)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setFileNameLabel() -->
+
+<section id="mthSetFileTypeIndex" xreflabel="setFileTypeIndex"><title>setFileTypeIndex</title>
+<indexterm><primary>setFileTypeIndex</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setFileTypeIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFileTypeIndex(--index--)------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the file type that appears as selected in the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The 1-based index in the file types filter array (<xref linkend="mthSetFileTypes"/>) that should be the selected file
+      type when the dialog is shown.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system seems to set the file type to that closet to the index number. If index is 0, then file type 1 in
+    the array is selected. In an array of 4 file types, if index is 566, the file type 4 is selected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses the <emphasis role="italic">setFileTypeIndex</emphasis> method to set the selected file type to the
+    second file type in the file types array. Note that each file type in the array is a pair, that is the first file type is
+    the <emphasis role="italic">Rexx Program File</emphasis> / <emphasis role="italic">*.rex</emphasis> pair:
+<programlisting>
+<![CDATA[
+  sfd = .SaveFileDialog~new
+  ret = sfd~setClientGuid(self~GUID_SAVE_DEFAULT)
+
+  filter = .array~of('Rexx Program File', '*.rex', 'Rexx Class File', '*.cls', 'Text File', '*.txt')
+  sfd~setFileTypes(filter)
+
+  sfd~setFileTypeIndex(2)
+  sfd~setDefaultExtension('cls')
+
+  ret = sfd~setSaveAsItem(rexx_home'\ooDialog.cls')
+
+  -- Show the dialog and get the response
+  ret = sfd~show(self)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setFileTypeIndex() -->
+
+<section id="mthSetFileTypes" xreflabel="setFileTypes"><title>setFileTypes</title>
+<indexterm><primary>setFileTypes</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setFileTypes</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFileTypes(--fileTypes--)------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the file types filter.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>fileTypes [required]</term>
+    <listitem>
+    <para>
+      An array that specifies the file types. Index 1 is friendly name of the filter, index 2 is the filter pattern. Index 3
+      is the friendly name of the second file type, index 4 is the pattern for the second file type, etc..
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When using the Open file dialog, the file types declared are used to filter the view. When using the Save file dialog,
+    these values determine which file extension is appended to the file name.
+  </para>
+  <para>
+    The types array must not be sparse and it must contain an even number of items.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses the <emphasis role="italic">setFileTypes</emphasis> method to set 3 file types for the save file
+    dialog. Note that each file type in the array is a pair, that is the first file type is the <emphasis role="italic">Rexx
+    Program File</emphasis> / <emphasis role="italic">*.rex</emphasis> pair, the second file type is the <emphasis
+    role="italic">Rexx Class File</emphasis> / <emphasis role="italic">*.cls</emphasis> pair, etc.:
+<programlisting>
+<![CDATA[
+  sfd = .SaveFileDialog~new
+  ret = sfd~setClientGuid(self~GUID_SAVE_DEFAULT)
+
+  filter = .array~of('Rexx Program File', '*.rex', 'Rexx Class File', '*.cls', 'Text File', '*.txt')
+  sfd~setFileTypes(filter)
+
+  sfd~setFileTypeIndex(2)
+  sfd~setDefaultExtension('cls')
+
+  ret = sfd~setSaveAsItem(rexx_home'\ooDialog.cls')
+
+  -- Show the dialog and get the response from the user
+  ret = sfd~show(self)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setFileTypes() -->
+
+<section id="mthSetFilter" xreflabel="setFilter"><title>setFilter</title>
+<indexterm><primary>setFilter</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setFilter</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFilter(--filter--)------------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets a special filter that can be used to remove some items from the dialogs view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>filter [required]</term>
+    <listitem>
+    <para>
+      The <xref linkend="clsShellItemFilter"/> object used to do the filtering.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The filter can only be set one time and can not be removed. The filter ojbect can not be reused.
+  </para>
+  <para>
+   The MSDN <xref linkend="defWindowsDoc"/> MSDN says both:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    To filter by file type, <xref linkend="mthSetFileTypes"/> should be used, because in folders with a large number of
+    items it may offer better performance than applying a <xref linkend="clsShellItemFilter"/>
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Deprecated. <emphasis role="italic">setFilter</emphasis> mehtod is no longer available for use as of Windows 7
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In the example programs distributed with ooDialog, there is an exmple:
+    <computeroutput>saveFileWithFilter.rex</computeroutput> that demonstrates how to implement a <xref
+    linkend="clsShellItemFilter"/> subclass and use it with the <emphasis role="italic">setFilter</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setFilter() -->
+
+<section id="mthSetFolder" xreflabel="setFolder"><title>setFolder</title>
+<indexterm><primary>setFolder</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setFolder</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFolder(--folder--)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the folder that is selected when the dialog is opened.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>folder [required]</term>
+    <listitem>
+    <para>
+      The folder that is set as the selected folder when the dialog opens. This can be specified as a full path name, a
+      <link linkend="sctSpecialFolderNames">CSIDL_XX</link> name, or an <xref linkend="varItemIDList"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Contrast this method with the <xref linkend="mthSetDefaultFolder"/> method. The dialog will open with the folder
+    specified with <emphasis role="italic">setDefaultFolder</emphasis> as the selected folder only if there is not a recently
+    used folder saved by the operating system. Whereas the <emphasis role="italic">setFolder</emphasis> method will
+    explicitly open the dialog with the specified folder as the initial selected folder.
+  </para>
+  <para>
+    Currently the only way to get an item ID list is through the <xref linkend="mthGetItemIDList"/> method of the <xref
+    linkend="clsBrowseForFolder"/> class. Future enhancements of ooDialog may make more use of item ID list, which is why
+    the <emphasis role="italic">setFolder</emphasis> method accepts an item ID list for the <emphasis
+    role="italic">folder</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    Normally the operating system will pick the initial directory that is selected when the open file dialog is first shown.
+    Usually this is the last directory the user had selected. In this example the <emphasis
+    role="italic">setFolder</emphasis> method over-rides thats behaviour and forces the dialog to open with the specified
+    directory selected:
+<programlisting>
+<![CDATA[
+::method onSaveFile private
+  expose rexx_home
+
+  ofd = .OpenFileDialog~new
+  ret = ofd~setClientGuid(self~GUID_OPEN_FOLDER)
+
+  ofd~setFolder(rexx_home)
+
+  -- Show the dialog and get the response
+  selection = ofd~show(self)
+  return selection
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CommonItemDialog::setFolder() -->
+
+<section id="mthSetOkButtonLabel" xreflabel="setOkButtonLabel"><title>setOkButtonLabel</title>
+<indexterm><primary>setOkButtonLabel</primary></indexterm>
+<indexterm><primary>CommonItemDialog class</primary><secondary>setOkButtonLabel</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setOkButtonLabel(--label--)------------------><
+]]>
+</programlisting>
+
+<para>
+  Sets the label of the Ok button in the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>label [required]</term>
+    <listitem>
+    <para>
+      The new label for the Ok button.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The label must be less than 260 characters in length.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses the <emphasis role="italic">setOkButtonLabel</emphasis> to change the label of the Ok button to
+    <emphasis role="italic">Finished</emphasis>:
+<programlisting>
+<![CDATA[
+  ofd = .OpenFileDialog~new
+  ret = ofd~setClientGuid(self~GUID_OPEN_CUSTOM)
+
+  ofd~options = ofd~options~delWord(ofd~options~wordPos('FILEMUSTEXIST'), 1)
+
+  ofd~setTitle("The ooRexx Project's Open File Dialog")
+  ofd~setFileNameLabel('Type in, or select an existing, file to open here:')
+  ofd~setOkButtonLabel('Finished')
 
 ]]>
 </programlisting>
@@ -7262,25 +7498,24 @@ ofd~releaseCom
 <indexterm><primary>CommonItemDialog class</primary><secondary>setTitle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setTitle(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setTitle(--title--)--------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the title of the common item dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>title [required]</term>
     <listitem>
     <para>
-      xx
+      The title for the common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7288,13 +7523,13 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The title must be less than 260 characters in length.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -7309,10 +7544,18 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the <emphasis role="italic">setTitle</emphasis> method to chage the title of the open file dialog to
+    <emphasis role="italic">The ooRexx Project's Open File Dialog</emphasis>
 <programlisting>
 <![CDATA[
+  ofd = .OpenFileDialog~new
+  ret = ofd~setClientGuid(self~GUID_OPEN_CUSTOM)
 
+  ofd~options = ofd~options~delWord(ofd~options~wordPos('FILEMUSTEXIST'), 1)
+
+  ofd~setTitle("The ooRexx Project's Open File Dialog")
+  ofd~setFileNameLabel('Type in, or select an existing, file to open here:')
+  ofd~setOkButtonLabel('Finished')
 ]]>
 </programlisting>
   </para>
@@ -7325,25 +7568,26 @@ ofd~releaseCom
 <indexterm><primary>CommonItemDialog class</primary><secondary>show</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--show(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--show(--+---------+--)------------------------><
+           +--owner--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Launches the modal dialog window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>owner [optional]</term>
     <listitem>
     <para>
-      xx
+      The Rexx dialog object that is the owner of the common item dialog. The owner dialog is disabled until the <emphasis
+      role="italic">show</emphasis> method retuns, which is usually the desired behavior.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7351,13 +7595,17 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The return from the <emphasis role="italic">show</emphasis> method specifies if the the dialog was shown with out error,
+    and or if the user canceled the dialog. S_OK indicates that the dialog was shown without error and the user made a
+    selection. If the user cancels the dialog the return is the <xref linkend="clsComConstants"/> CANCELED value. Any other
+    value is an error code. To actually get the selection, the programmer uses the <xref linkend="mthGetResultCid"/> or the
+    <xref linkend="mthGetResults"/> methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -7372,10 +7620,16 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This code snippet is exectued from within a method of an ooDialog dialog subclass. It sets the subclass object as the
+    owner of the open file dialog.
 <programlisting>
 <![CDATA[
+  ret = ofd~show(self)
 
+  if ret == ofd~canceled then text = 'The user canceled the open'
+  else text = 'Open file:' ofd~getResult
+
+  ofd~release
 ]]>
 </programlisting>
   </para>
@@ -7388,39 +7642,34 @@ ofd~releaseCom
 <indexterm><primary>CommonItemDialog class</primary><secondary>unadvise</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--unadvise(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--unadvise-------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes the event handler that was attached through the <xref linkend="mthAdvise"/> method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments for this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    There can only be one <xref linkend="clsCommonDialogEvents"/> object assigned to a common item dialog. To stop recieving
+    event notifications an attached event handler can be removed. Once an event handler object has been attached and then
+    removed throuh the <emphasis role="italic">unadvise</emphasis> method, that object is no longer valid. The removed object
+    can not be reattached though the <emphasis role="italic">advise</emphasis> method. Rather a new
+    <computeroutput>CommonDialogEvents</computeroutput> object would need to be instantiated and attached.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -7432,21 +7681,11 @@ ofd~releaseCom
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End CommonItemDialog::unadvise() -->
 
 </section> <!-- End CommonItemDialog Class -->
+
 
 <section id="clsCommonDialogEvents" xreflabel="CommonDialogEvents"><title>CommonDialogEvents Class</title>
 <indexterm><primary>CommonDialogEvents class</primary></indexterm>
@@ -8397,35 +8636,39 @@ ofd~releaseCom
 </row>
 <row>
 <entry><xref linkend="mthAddPlace"/></entry>
-<entry>.</entry>
+<entry>Adds a folder to the list of places available for the user to open or save items.</entry>
 </row>
 <row>
 <entry><xref linkend="mthAdvise"/></entry>
-<entry>.</entry>
+<entry>Assigns an event handler object that invokes methods in the ooDialog program for event notificationss coming from the common item dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClearClientData"/></entry>
-<entry>.</entry>
+<entry>Instructs the file dialog to clear all persistent state information.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClose"/></entry>
-<entry>.</entry>
+<entry>Closes the dialog..</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetCurrentSelection"/></entry>
-<entry>.</entry>
+<entry>Gets the user's current selection in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFileName"/></entry>
-<entry>.</entry>
+<entry>Retrieves the text currently entered in the dialog's File name edit box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFileTypeIndex"/></entry>
+<entry>Gets the one-based index of the currently selected file type.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFolderCid"/></entry>
-<entry>.</entry>
+<entry>Retrieves either the folder currently selected in the dialog, or, if the dialog is not currently displayed, the folder that is to be selected when the dialog is opened.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetResultCid"/></entry>
-<entry>.</entry>
+<entry>Gets the choice that the user made in the dialog.</entry>
 </row>
 <row>
 <entry><emphasis role="bold"><link linkend="mthGetResults">getResults</link></emphasis></entry>
@@ -8433,67 +8676,75 @@ ofd~releaseCom
 </row>
 <row>
 <entry><xref linkend="mthInitCOMCid"/></entry>
-<entry>.</entry>
+<entry>Initializes the COM <link linkend="varCOMLibrary">library</link> on the current thread.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsReleased"/></entry>
+<entry>Tests if the file dialog object has been <link linkend="mthRelease">released</link>.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRelease"/></entry>
-<entry>.</entry>
+<entry>Releases the system resources used by the underlying COM object that this Rexx object represents.</entry>
 </row>
 <row>
 <entry><xref linkend="mthReleaseCOMCid"/></entry>
-<entry>.</entry>
+<entry>Releases the COM library on the current thread.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetCancelButtonLabel"/></entry>
+<entry>Sets the label of the Cancel button in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetClientGuid"/></entry>
-<entry>.</entry>
+<entry>Allows the calling application to associate a GUID with a dialog's persistent state.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetDefaultExtension"/></entry>
-<entry>.</entry>
+<entry>Sets the default extension to be added to file names.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetDefaultFolder"/></entry>
-<entry>.</entry>
+<entry>Sets the folder used as a default if there is not a recently used folder value available.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFileName"/></entry>
-<entry>.</entry>
+<entry>Sets the file name initially placed in the file name edit box of the dialog</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFileNameLabel"/></entry>
-<entry>.</entry>
+<entry>Sets the text of the label next to the file name edit box</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFileTypeIndex"/></entry>
-<entry>.</entry>
+<entry>Sets the file type that appears as selected in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFileTypes"/></entry>
-<entry>.</entry>
+<entry>Sets the file types filter.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFilter"/></entry>
-<entry>.</entry>
+<entry>Sets a special filter that can be used to remove some items from the dialog's view.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetFolder"/></entry>
-<entry>.</entry>
+<entry>Sets the folder that is selected when the dialog is opened.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetOkButtonLabel"/></entry>
-<entry>.</entry>
+<entry>Sets the label of the Ok button in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetTitle"/></entry>
-<entry>.</entry>
+<entry>Sets the title of the common item dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthShow"/></entry>
-<entry>.</entry>
+<entry>Launches the modal dialog window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUnadvise"/></entry>
-<entry>.</entry>
+<entry>Removes the event handler that was attached through the <xref linkend="mthAdvise"/> method.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -8666,103 +8917,115 @@ ofd~releaseCom
 </row>
 <row>
 <entry><xref linkend="mthAddPlace"/></entry>
-<entry>.</entry>
+<entry>Adds a folder to the list of places available for the user to open or save items.</entry>
 </row>
 <row>
 <entry><xref linkend="mthAdvise"/></entry>
-<entry>.</entry>
+<entry>Assigns an event handler object that invokes methods in the ooDialog program for event notificationss coming from the common item dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClearClientData"/></entry>
-<entry>.</entry>
+<entry>Instructs the file dialog to clear all persistent state information.</entry>
 </row>
 <row>
 <entry><xref linkend="mthClose"/></entry>
-<entry>.</entry>
+<entry>Closes the dialog..</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetCurrentSelection"/></entry>
-<entry>.</entry>
+<entry>Gets the user's current selection in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFileName"/></entry>
-<entry>.</entry>
+<entry>Retrieves the text currently entered in the dialog's File name edit box.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetFileTypeIndex"/></entry>
+<entry>Gets the one-based index of the currently selected file type.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFolderCid"/></entry>
-<entry>.</entry>
+<entry>Retrieves either the folder currently selected in the dialog, or, if the dialog is not currently displayed, the folder that is to be selected when the dialog is opened.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetResultCid"/></entry>
-<entry>.</entry>
+<entry>Gets the choice that the user made in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthInitCOMCid"/></entry>
-<entry>.</entry>
+<entry>Initializes the COM <link linkend="varCOMLibrary">library</link> on the current thread.</entry>
+</row>
+<row>
+<entry><xref linkend="mthIsReleased"/></entry>
+<entry>Tests if the file dialog object has been <link linkend="mthRelease">released</link>.</entry>
 </row>
 <row>
 <entry><xref linkend="mthRelease"/></entry>
-<entry>.</entry>
+<entry>Releases the system resources used by the underlying COM object that this Rexx object represents.</entry>
 </row>
 <row>
 <entry><xref linkend="mthReleaseCOMCid"/></entry>
-<entry>.</entry>
+<entry>Releases the COM library on the current thread.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetCancelButtonLabel"/></entry>
+<entry>Sets the label of the Cancel button in the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetClientGuid"/></entry>
-<entry>.</entry>
+<entry>Allows the calling application to associate a GUID with a dialog's persistent state.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetDefaultExtension"/></entry>
-<entry>.</entry>
+<entry>Sets the default extension to be added to file names.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetDefaultFolder"/></entry>
-<entry>.</entry>
+<entry>Sets the folder used as a default if there is not a recently used folder value available.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileName"/></entry>
+<entry>Sets the file name initially placed in the file name edit box of the dialog</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileNameLabel"/></entry>
+<entry>Sets the text of the label next to the file name edit box</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileTypeIndex"/></entry>
+<entry>Sets the file type that appears as selected in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFileTypes"/></entry>
+<entry>Sets the file types filter.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFilter"/></entry>
+<entry>Sets a special filter that can be used to remove some items from the dialog's view.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetFolder"/></entry>
+<entry>Sets the folder that is selected when the dialog is opened.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetOkButtonLabel"/></entry>
+<entry>Sets the label of the Ok button in the dialog.</entry>
 </row>
 <row>
 <entry><emphasis role="bold"><link linkend="mthSetSaveAsItem">setSaveAsItem</link></emphasis></entry>
 <entry>.</entry>
 </row>
 <row>
-<entry><xref linkend="mthSetFileName"/></entry>
-<entry>.</entry>
-</row>
-<row>
-<entry><xref linkend="mthSetFileNameLabel"/></entry>
-<entry>.</entry>
-</row>
-<row>
-<entry><xref linkend="mthSetFileTypeIndex"/></entry>
-<entry>.</entry>
-</row>
-<row>
-<entry><xref linkend="mthSetFileTypes"/></entry>
-<entry>.</entry>
-</row>
-<row>
-<entry><xref linkend="mthSetFilter"/></entry>
-<entry>.</entry>
-</row>
-<row>
-<entry><xref linkend="mthSetFolder"/></entry>
-<entry>.</entry>
-</row>
-<row>
-<entry><xref linkend="mthSetOkButtonLabel"/></entry>
-<entry>.</entry>
-</row>
-<row>
 <entry><xref linkend="mthSetTitle"/></entry>
-<entry>.</entry>
+<entry>Sets the title of the common item dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthShow"/></entry>
-<entry>.</entry>
+<entry>Launches the modal dialog window.</entry>
 </row>
 <row>
 <entry><xref linkend="mthUnadvise"/></entry>
-<entry>.</entry>
+<entry>Removes the event handler that was attached through the <xref linkend="mthAdvise"/> method.</entry>
 </row>
 </tbody></tgroup>
 </table>
