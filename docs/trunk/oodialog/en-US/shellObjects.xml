@@ -8604,13 +8604,12 @@ ofd~releaseCom
   <computeroutput>OpenFileDiaog</computeroutput> or <xref linkend="clsSaveFileDialog"/> object. The
   <computeroutput>OpenFileDialog</computeroutput> is only available on Windows Vista or later operating systems.
 </para>
-<para>
-
-</para>
 
 <section id="sctMethodsOpenFileDialog"><title>Method Table</title>
 <para>
-  The following table lists the class and instance methods of the <computeroutput>OpenFileDialog</computeroutput> class:
+  The following table lists the class and instance methods of the <computeroutput>OpenFileDialog</computeroutput> class.
+  Most of the methods come from the Common Item Dialog and are listed here for convenience. The method name(s) in bold in the
+  table are unique to the open file dialog:
 
 <table id="tblMethodsOpenFileDialog" frame="all"> <title>OpenFileDialog Class Method Reference</title>
 <tgroup cols="2">
@@ -8672,7 +8671,7 @@ ofd~releaseCom
 </row>
 <row>
 <entry><emphasis role="bold"><link linkend="mthGetResults">getResults</link></emphasis></entry>
-<entry>.</entry>
+<entry>Gets the files selected by the user when multi-file selection is enabled.</entry>
 </row>
 <row>
 <entry><xref linkend="mthInitCOMCid"/></entry>
@@ -8756,39 +8755,32 @@ ofd~releaseCom
 <indexterm><primary>OpenFileDialog class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new open file dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are new arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a new <computeroutput>OpenFileDialog</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    It is highly unlikely that anything will fail when instantiating a new open file dialog. However, if there is an error,
+    the <computeroutput>.SystemErrorCode</computeroutput> will be set to an error code and the <xref
+    linkend="mthIsReleased"/> method will return true
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -8803,10 +8795,13 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a new open file dialog and checks for error. Typically the author does not perform this error
+    check, but that is not to suggest it shouldn't be done:
 <programlisting>
 <![CDATA[
-
+  ofd = .OpenFileDialog~new
+  if ofd~isReleased | .SystemErrorCode <> ofd~S_OK then return 99
+  ...
 ]]>
 </programlisting>
   </para>
@@ -8820,24 +8815,27 @@ ofd~releaseCom
 <programlisting>
 <![CDATA[
 >>--getResults(--+--------+--)---------------------------------------------><
-                  +--type--+
+                 +--sigdn--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the files selected by the user when multi selection is enabled.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>sigdn [optional]</term>
     <listitem>
     <para>
-      xx
+      A <xref linkend="varSIGDN"/> keyword that specfies the format of the names of the shell items choosen by the user. The
+      default if this arugment is omitted is the FILESYSPATH keyword. If not omitted, the <emphasis
+      role="italic">sigdn</emphasis> argument specifies the format of the returned names using exactly one of the <emphasis
+      role="italic">SIGDN</emphasis> keywords. All returned items are formatted the same.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8845,13 +8843,13 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    On success returns an array of the file names. On error returns the <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method fails when the open file dialog did not have multi selection enabled or if the user canceled the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -8866,10 +8864,39 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example initiates an open file dialog and enables the multi-file selection capability. The dialog is shown and the
+    user's response is formattted into a text message which is used to display the results
 <programlisting>
 <![CDATA[
+  ofd = .OpenFileDialog~new
+  ret = ofd~setClientGuid(self~GUID_OPEN_MULTI)
 
+  -- To allow the user to select multiple files, we need to add this keywod
+  -- to the options:
+  ofd~options = ofd~options 'ALLOWMULTISELECT'
+
+  -- Show the dialog and get the response
+  ret = ofd~show(self)
+
+  if ret == ofd~canceled then do
+      text = 'The user canceled the open operation.'
+  end
+  else do
+      files = ofd~getResults
+      if files~items == 1 then do
+          text = 'Open file:' files[1]
+      end
+      else do
+          text = 'Open files (file names only):'
+          msg = 'Open files (complete file names as returned):' || .endOfLine~copies(2)
+
+          do f over files
+              text ||= ' ' || fileSpec('N', f)
+              msg  ||= f || .endOfLine
+          end
+      end
+  end
+  ofd~release
 ]]>
 </programlisting>
   </para>
@@ -8883,15 +8910,17 @@ ofd~releaseCom
 <section id="clsSaveFileDialog" xreflabel="SaveFileDialog"><title>SaveFileDialog Class</title>
 <indexterm><primary>SaveFileDialog class</primary></indexterm>
 <para>
-  A SaveFileDialog object ...
-</para>
-<para>
-  xx
+  A SaveFileDialog object is a concrete subclass of the <xref linkend="clsCommonItemDialog"/>. The programmer does not
+  instantiate a new <computeroutput>CommonItemDialog</computeroutput> object, but rather instantiates a new
+  <computeroutput>SaveFileDiaog</computeroutput> or <xref linkend="clsOpendFileDialog"/> object. The
+  <computeroutput>SaveFileDialog</computeroutput> is only available on Windows Vista or later operating systems.
 </para>
 
 <section id="sctMethodsSaveFileDialog"><title>Method Table</title>
 <para>
-  The following table lists the class and instance methods of the <computeroutput>SaveFileDialog</computeroutput> class:
+  The following table lists the class and instance methods of the <computeroutput>SaveFileDialog</computeroutput> class. Most
+  of the methods come from the Common Item Dialog and are listed here for convenience. The method name(s) in bold in the
+  table are unique to the save file dialog:
 
 <table id="tblMethodsSaveFileDialog" frame="all"> <title>SaveFileDialog Class Method Reference</title>
 <tgroup cols="2">
@@ -9013,7 +9042,7 @@ ofd~releaseCom
 </row>
 <row>
 <entry><emphasis role="bold"><link linkend="mthSetSaveAsItem">setSaveAsItem</link></emphasis></entry>
-<entry>.</entry>
+<entry>Sets the item to be used as the initial entry in the save file dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthSetTitle"/></entry>
@@ -9037,39 +9066,32 @@ ofd~releaseCom
 <indexterm><primary>SaveFileDialog class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new save file dialog object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are new arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a new <computeroutput>SaveFileDialog</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    It is highly unlikely that anything will fail when instantiating a new save file dialog. However, if there is an error,
+    the <computeroutput>.SystemErrorCode</computeroutput> will be set to an error code and the <xref
+    linkend="mthIsReleased"/> method will return true.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -9084,10 +9106,13 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a new save file dialog and checks for error. Typically the author does not perform this error
+    check, but that is not to suggest it shouldn't be done:
 <programlisting>
 <![CDATA[
-
+  sfd = .SaveFileDialog~new
+  if sfd~isReleased | .SystemErrorCode <> sfd~S_OK then return 99
+  ...
 ]]>
 </programlisting>
   </para>
@@ -9100,25 +9125,24 @@ ofd~releaseCom
 <indexterm><primary>SaveFileDialog class</primary><secondary>setSaveAsItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setSaveAsItem(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setSaveAsItem(--filePathName--)--------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the item to be used as the initial entry in the save file dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>filePathName [required]</term>
     <listitem>
     <para>
-      xx
+      The initial file name. This must be the complete path name of an <emphasis role="italic">existing</emphasis> file.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -9126,13 +9150,20 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <xref linkend="varHResult"/>. S_OK if successful, or an error value otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The text of the file name edit box is set to the file name part of <emphasis role="italic">filePathName</emphasis>, and
+    the containing folder is opened in the view of the dialog.
+  </para>
+  <para>
+   The <emphasis role="italic">setSaveAsItem</emphasis> method would generally be used when the application is saving
+   a file that already exists.  This method fails if the full path name is not used, or if the file does not exist. For files
+   that do not already exist, <xref linkend="mthSetFileName"/> and <xref linkend="mthSetFolder"/> methods can be used to
+   place a file name in the edit box and open the view to a specific folder.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9147,10 +9178,18 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example opens a save file dialog and sets the initial save as name to <computeroutput>ooDialog.cls</computeroutput>
+    in the ooRexx installation directory:
 <programlisting>
 <![CDATA[
+::method saveToDefaultFile unguarded private
+    expose rexx_home
 
+    sfd = .SaveFileDialog~new
+    ret = sfd~setClientGuid(self~GUID_SAVE_DEFAULT)
+
+    ret = sfd~setSaveAsItem(rexx_home'\ooDialog.cls')
+    ...
 ]]>
 </programlisting>
   </para>
@@ -9163,11 +9202,37 @@ ofd~releaseCom
 <section id="clsShellItemFilter" xreflabel="ShellItemFilter"><title>ShellItemFilter Class</title>
 <indexterm><primary>ShellItemFilter class</primary></indexterm>
 <para>
-  A ShellItemFilter object ...
+  A <computeroutput>ShellItemFilter</computeroutput> object can be used if an application needs to perform special filtering
+  to remove some items from the common item dialog's view. The class contains only one instance method, <xref
+  linkend="mthIncludeItem"/>. When a shell item filter object is set as the filter, through the <xref
+  linkend="mthSetFilter"/> method, of a common item dialog, the <emphasis role="italic">includeItem</emphasis> method is
+  invoked for each item that would normally be included in the view. If the method returns S_OK the item is included in the
+  view and if the method returns S_FALSE the item is not included in the view.
 </para>
 <para>
-  xx
+  The default implementation of <emphasis role="italic">includeItem</emphasis> simply returns S_OK for every item. To use the
+  shell item filter to actually filter the items in the view of a common item dialog, the programmer creates a subclass of
+  the <computeroutput>ShellItemFilter</computeroutput> and sets that object as the filter for a common item dialog using the
+  <emphasis role="italic">setFiter</emphasis> method. In the subclass, the programmer over-rides the <emphasis
+  role="italic">includItem</emphasis> method and returns S_OK or S_FALSE for each item, depending on the logic of the
+  application.
 </para>
+<para>
+  The MSDN <xref linkend="defWindowsDoc"/> MSDN says both:
+</para>
+<itemizedlist>
+<listitem>
+<para>
+  To filter by file type, <xref linkend="mthSetFileTypes"/> should be used, because in folders with a large number of
+  items it may offer better performance than applying a <xref linkend="clsShellItemFilter"/>
+</para>
+</listitem>
+<listitem>
+<para>
+  Deprecated. <emphasis role="italic">setFilter</emphasis> mehtod is no longer available for use as of Windows 7
+</para>
+</listitem>
+</itemizedlist>
 
 <section id="sctMethodsShellItemFilter"><title>Method Table</title>
 <para>
@@ -9188,12 +9253,16 @@ ofd~releaseCom
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
-<entry><link linkend="mthNewClsShellItemFilter">new</link></entry>
+<entry><xref linkend="mthNewClsShellItemFilter"/> </entry>
+<entry>Instantiates a new <computeroutput>ShellItemFilter</computeroutput> object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthIncludeItem"/> </entry>
+<entry>Sets the status of a specific shell item to be incldued in the view, or not included.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -9205,39 +9274,25 @@ ofd~releaseCom
 <indexterm><primary>ShellItemFilter class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>ShellItemFilter</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments to the <emphasis role="italic">new</emphasis> method of the
+    <computeroutput>ShellItemFilter</computeroutput> class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns a newly instantiated <computeroutput>ShellItemFilter</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -9252,10 +9307,17 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the basics of using a shell item filter. The <xref linkend="mthIncludeItem"/> documentation shows the
+    basics of implementing an <emphasis role="italic">includeItem</emphasis> event handler:
 <programlisting>
 <![CDATA[
+  sfd = .SaveFileDialog~new
+  filterObj = .SIFilter~new
+  sfd~setFilter(filterObj)
 
+  ...
+
+::class 'SIFilter' subclass ShellItemFilter
 ]]>
 </programlisting>
   </para>
@@ -9268,13 +9330,18 @@ ofd~releaseCom
 <indexterm><primary>ShellItemFilter class</primary><secondary>includeItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--includeItem(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method includeItem unguarded
+  use arg cfd, dlgHwnd, filePathName
+
+  return self~S_OK
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">includeItem</emphasis> method is in effect an event handler method. It is invoked when the
+  underlying common item dialog COM object is about to add an item to its view. The <emphasis
+  role="italic">includeItem</emphasis> method handles that event by reply S_OK to allow the item to be added, or by replying
+  S_FALSE to exclude the item form the view.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -9283,10 +9350,22 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd [required]</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is about to add an item to the view.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlgHwnd [required]</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the common item dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>filePathName [required]</term>
+    <listitem>
+    <para>
+      The complete path name of the item about to be added.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -9294,13 +9373,15 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Return S_OK to allow the item to be added to the view. Return S_FALSE to exclude the item from the view.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The default implementation of the <emphasis role="italic">includeItem</emphasis> returns S_OK for every item. For the
+    <computeroutput>ShllItemFilter</computeroutput> objec to be of any use, the programmer must over-ride this method and
+    return S_FALSE for some items to exclude them.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -9315,10 +9396,17 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows an over-ride of the <emphasis role="italic">includeItem</emphasis> method used to filter out file
+    names that are not to be used as a save file. If any file has the string <emphasis role="italic">reserved</emphasis>,
+    case insensitive, in its name, it is not shown in the save file dialog's view:
 <programlisting>
 <![CDATA[
+::method includeItem
+    use arg sfd, hwnd, item
 
+    if item~caselessPos('reserved') <> 0 then return self~S_FALSE
+
+    return self~S_OK
 ]]>
 </programlisting>
   </para>
