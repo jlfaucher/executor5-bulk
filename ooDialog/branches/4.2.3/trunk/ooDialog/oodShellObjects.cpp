@@ -2040,22 +2040,56 @@ static void cidDone(RexxMethodContext *c, pCCommonItemDialog pccid)
     }
 }
 
-HRESULT cidGetDlgHwnd(RexxMethodContext *c, pCCommonItemDialog pccid)
+/**
+ * A helper function to get the window handle of the Common Item Dialog.
+ *
+ * @param c
+ * @param pfd
+ * @param pHr
+ *
+ * @return The window handle.
+ */
+HWND getCIDHwnd(IFileDialog *pfd, HRESULT *pHr)
 {
-    IOleWindow  *pWindow;
+    IOleWindow  *piow  = NULL;
+    HWND         hwnd  = NULL;
 
-    HRESULT hr = pccid->pfd->QueryInterface(IID_PPV_ARGS(&pWindow));
+    HRESULT hr = pfd->QueryInterface(IID_PPV_ARGS(&piow));
     if ( SUCCEEDED(hr) )
     {
-        HWND hwndDlg;
-
-        hr = pWindow->GetWindow(&hwndDlg);
-        if ( hr == S_OK )
-        {
-            pccid->hwndDlg = hwndDlg;
-        }
-        pWindow->Release();
+        hr = piow->GetWindow(&hwnd);
+        piow->Release();
     }
+    *pHr = hr;
+
+    return hwnd;
+}
+
+/**
+ * A helper function to get the window handle of the Common Item Dialog as a
+ * Rexx object.
+ *
+ * @param c
+ * @param pfd
+ *
+ * @return The window handle as a Rexx object
+ *
+ * @remarks  We ignore any errors here and just return a NULL handle.  Seems to
+ *           work every time, though.
+ */
+RexxObjectPtr getCommonDialogHwnd(RexxThreadContext *c, IFileDialog *pfd)
+{
+    HRESULT hr;
+    HWND    hwnd = getCIDHwnd(pfd, &hr);
+
+    return  pointer2string(c, hwnd);
+}
+
+HRESULT cidGetDlgHwnd(RexxMethodContext *c, pCCommonItemDialog pccid)
+{
+    HRESULT hr;
+    pccid->hwndDlg = getCIDHwnd(pccid->pfd, &hr);
+
     return hr;
 }
 
@@ -4226,31 +4260,6 @@ RexxMethod1(RexxObjectPtr, cde_init, OSELF, self)
  COM class for the Rexx CommonDialogEvents class
 \*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - -*/
 
-/**
- * A helper function to get the window handle of the Common Item Dialog.
- *
- * @param c
- * @param pfd
- *
- * @return The window handle as a Rexx object
- *
- * @remarks  We ignore any errors here and just return a NULL handle.  Seems to
- *           work every time, though.
- */
-RexxObjectPtr getCommonDialogHwnd(RexxThreadContext *c, IFileDialog *pfd)
-{
-    IOleWindow  *piow  = NULL;
-    HWND         hwnd  = NULL;
-
-    HRESULT hr = pfd->QueryInterface(IID_PPV_ARGS(&piow));
-    if ( SUCCEEDED(hr) )
-    {
-        hr = piow->GetWindow(&hwnd);
-        piow->Release();
-    }
-
-    return  pointer2string(c, hwnd);
-}
 
 /**
  * A private method to end things if one of the Rexx methods has a condition
@@ -4585,7 +4594,7 @@ HRESULT CommonDialogEvents::OnTypeChange(IFileDialog *pfd)
 
 /** CommonDialogEvents::dialogControlEvent()
  *
- *  Generic cod to Handle all the IFileDialogControlEvents method responses.
+ *  Generic code to Handle all the IFileDialogControlEvents method responses.
  *
  * @param pfdc
  * @param itemID
