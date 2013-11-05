@@ -5085,7 +5085,7 @@ leaving() thread ID 4032
 </row>
 <row>
 <entry><xref linkend="mthNewClsCommonItemDialog"/></entry>
-<entry>The common item dialog can not be instantiated directly. Instead instatiate an <xref linkend="clsOpenFileDialog"/> or a <xref linkend="clsSaveFileDialog"/> object.</entry>
+<entry>The common item dialog can not be instantiated directly. Instead instantiate an <xref linkend="clsOpenFileDialog"/> or a <xref linkend="clsSaveFileDialog"/> object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
@@ -5113,7 +5113,7 @@ leaving() thread ID 4032
 </row>
 <row>
 <entry><xref linkend="mthClose"/></entry>
-<entry>Closes the dialog..</entry>
+<entry>Closes the dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetCurrentSelection"/></entry>
@@ -5121,7 +5121,7 @@ leaving() thread ID 4032
 </row>
 <row>
 <entry><xref linkend="mthGetFileName"/></entry>
-<entry>Retrieves the text currently entered in the dialog's File name edit box.</entry>
+<entry>Retrieves the text currently entered in the dialog's file name edit box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetFileTypeIndex"/></entry>
@@ -6447,7 +6447,7 @@ ofd~releaseCom
   <para>
     If the programmer uses the same common item dialog object on more than one thread, then it becomes the programmer's
     responsibility to ensure that the COM library is initialized and released on each thread, that the init and release are
-    in balanced pairs, and that release is called once and only once for the objet. This is certainly doable, however it is
+    in balanced pairs, and that release is called once and only once for the object. This is certainly doable, however it is
     more complicated then restricting the use of the object to one thread.
   </para></note>
   </listitem></varlistentry>
@@ -7690,10 +7690,15 @@ ofd~releaseCom
 <section id="clsCommonDialogEvents" xreflabel="CommonDialogEvents"><title>CommonDialogEvents Class</title>
 <indexterm><primary>CommonDialogEvents class</primary></indexterm>
 <para>
-  A CommonDialogEvents object ...
+  A <computeroutput>CommonDialogEvents</computeroutput> object is a collection of event handling methods. When an
+  instantiated common dialog events object is attached to a common item dialog through its <xref linkend="mthAdvise"/>
+  method, the dialog sends event notifications to the common dialog events object.
 </para>
 <para>
-  xx
+  The <computeroutput>CommonDialogEvents</computeroutput> class has an event handler, with a default implementation, for
+  every event notification that the common item dialog can send. To use the common dialog events class, the programmer
+  defines a subclass, decides what notifications she is interested in, and over-rides the event handler method(s) for those
+  notifications.
 </para>
 
 <section id="sctMethodsCommonDialogEvents"><title>Method Table</title>
@@ -7711,7 +7716,7 @@ ofd~releaseCom
 </thead>
 <tbody>
 <row>
-<entry><link linkend="sctCommonDialogEventsConstants">Constant Methods</link></entry>
+<entry><xref linkend="sctCommonDialogEventsConstants"/></entry>
 <entry>Lists and explains the <emphasis role="italic">constant</emphasis> values provided by the <computeroutput>CommonDialogEvents</computeroutput> class.</entry>
 </row>
 <row>
@@ -7719,19 +7724,71 @@ ofd~releaseCom
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsCommonDialogEvents">new</link></entry>
-<entry>XXX</entry>
+<entry><xref linkend="mthNewClsCommonDialogEvents"/></entry>
+<entry>Instantiates a new <computeroutput>CommonDialogEvents</computeroutput> object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><xref linkend="mthOnButtonClicked"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnCheckButtonToggled"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnControlActivating"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnFileOk"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnFolderChange"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnFolderChanging"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnHelp"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnItemSelected"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnItemSelected"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnOverwrite"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnSelectionChange"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnShareViolation"/></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><xref linkend="mthOnTypeChange"/></entry>
+<entry>.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 </section>
 
-<section id="sctCommonDialogEventsConstants"><title>Constant Methods</title>
+<section id="sctCommonDialogEventsConstants" xreflabel="Constant Methods"><title>Constant Methods</title>
 <indexterm><primary>constant methods</primary><secondary>CommonDialogEvents class</secondary></indexterm>
 <indexterm><primary>CommonDialogEvents class</primary><secondary>constant methods</secondary></indexterm>
 <para>
@@ -7768,7 +7825,7 @@ ofd~releaseCom
 </row>
 <row>
 <entry>FDESVR_REFUSE</entry>
-<entry>The application has determined that the file should not be returned from the common itemdialog.</entry>
+<entry>The application has determined that the file should not be returned from the common item dialog.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -7779,39 +7836,24 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new------------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>CommonDialogEvents</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments to the <emphasis role="italic">new</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    A newly instantiated <computeroutput>CommonDialogEvents</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -7826,9 +7868,13 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a common dialog events object and attaches it to the open file dialog through the <xref
+    linkend="mthAdvise"/> method:
 <programlisting>
 <![CDATA[
+  ofd = .OpenFileDialog~new
+  ev = .CDEvents~new
+  ofd~advise(ev)
 
 ]]>
 </programlisting>
@@ -7842,8 +7888,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onButtonClicked</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onButtonClicked(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onButtonClicked unguarded
+    use arg cfd, hwnd, id
+
+    return self~S_OK
 ]]>
 </programlisting>
 
@@ -7857,10 +7905,22 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the button that was clicked
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7905,8 +7965,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onCheckButtonToggled</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onCheckButtonToggled(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onCheckButtonToggled unguarded
+  use arg cfd, hwnd, id, checked
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -7920,10 +7982,28 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the check box that was toggled.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>checked</term>
+    <listitem>
+    <para>
+      True if the check box is now checked, false if it is now unchecked.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7968,8 +8048,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onControlActivating</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onControlActivating(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onControlActivating unguarded
+  use arg cfd, hwnd, id
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -7983,10 +8065,22 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the drop-down list or tool menu that is about to be displayed.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8031,8 +8125,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onFileOk</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onFileOk(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onFileOk unguarded
+  use arg cfd, hwnd
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -8046,10 +8142,16 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8094,8 +8196,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onFolderChange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onFolderChange(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onFolderChange unguarded
+  use arg cfd, hwnd
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -8109,10 +8213,16 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8157,8 +8267,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onFolderChanging</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onFolderChanging(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onFolderChanging unguarded
+  use arg cfd, hwnd
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -8172,10 +8284,16 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8220,8 +8338,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onHelp</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onHelp(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onHelp unguarded
+  use arg cfd, hwnd
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -8235,10 +8355,16 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8283,8 +8409,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onItemSelected</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onItemSelected(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onItemSelected unguarded
+  use arg cfd, hwnd
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -8298,10 +8426,16 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8346,8 +8480,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onOverwrite</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onOverwrite(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onOverwrite unguarded
+  use arg cfd, hwnd
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -8361,10 +8497,16 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8409,8 +8551,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onSelectionChange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onSelectionChange(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onSelectionChange unguarded
+  use arg cfd, hwnd
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -8424,10 +8568,16 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8472,8 +8622,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onShareViolation</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onShareViolation(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onShareViolation unguarded
+  use arg cfd, hwnd
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -8487,10 +8639,16 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8535,8 +8693,10 @@ ofd~releaseCom
 <indexterm><primary>CommonDialogEvents class</primary><secondary>onTypeChange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--onTypeChange(--+--------+--)---------------------------------------------><
-                  +--type--+
+::method onTypeChange unguarded
+  use arg cfd, hwnd
+
+  return self~S_OK
 ]]>
 </programlisting>
 
@@ -8550,10 +8710,16 @@ ofd~releaseCom
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>cfd</term>
     <listitem>
     <para>
-      xx
+      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
