@@ -7733,55 +7733,55 @@ ofd~releaseCom
 </row>
 <row>
 <entry><xref linkend="mthOnButtonClicked"/></entry>
-<entry>.</entry>
+<entry>Invoked when the user clicks a push button.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnCheckButtonToggled"/></entry>
-<entry>.</entry>
+<entry>Invoked when the user changes the state of a check box.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnControlActivating"/></entry>
-<entry>.</entry>
+<entry>Called when an Open button drop-down list customized through the <xref linkend="mthEnableOpenDropDown"/> method, or a menu is about to display its contents.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnFileOk"/></entry>
-<entry>.</entry>
+<entry>Invoked just before the dialog is about to return with a result.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnFolderChange"/></entry>
-<entry>.</entry>
+<entry>Invoked when the user navigates to a new folder. This notification is sent after the folder has been changed.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnFolderChanging"/></entry>
-<entry>.</entry>
+<entry>Invoked before <xref linkend="mthOnFolderChange"/>. This notification allows the programmer to stop navigation to a particular location.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnHelp"/></entry>
-<entry>.</entry>
+<entry>An <emphasis role="italic">onHelp</emphasis> event handler was in a MSDN example for common dialog events. But it is not documented and doesn't seem to get invoked. It has been left as a place holder only, do not expect it to work.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnItemSelected"/></entry>
-<entry>.</entry>
+<entry>Invoked when an item is selected in a combo box, when a user clicks a radio button (called an option button by the common item dialog documentation), or an item is chosen from a menu.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnItemSelected"/></entry>
-<entry>.</entry>
+<entry>Invoked when an item is selected in a combo box, when a user clicks a radio button (called an option button by the common item dialog documentation), or an item is chosen from a menu.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnOverwrite"/></entry>
-<entry>.</entry>
+<entry>Invoked from the save dialog when the user chooses to overwrite a file.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnSelectionChange"/></entry>
-<entry>.</entry>
+<entry>Invoked when the user changes the selection in the dialog's view.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnShareViolation"/></entry>
-<entry>.</entry>
+<entry>Implementing this event handler allows an application to respond to sharing violations that arise from Open or Save operations.</entry>
 </row>
 <row>
 <entry><xref linkend="mthOnTypeChange"/></entry>
-<entry>.</entry>
+<entry>Invoked when the dialog is opened to notify the application of the initial chosen filetype.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -7896,7 +7896,7 @@ ofd~releaseCom
 </programlisting>
 
 <para>
-  xx
+  Invoked when the user clicks a push button.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7928,13 +7928,7 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The return from the event handler seems to be ignored by the operating system. The programmer should return S_OK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -7942,17 +7936,31 @@ ofd~releaseCom
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from an application that has a lot of customizations allowing the user to enter a lot of metadata
+    that is saved by the application along with saving a file. The user clicks a push button to have the application verify
+    that all the required metadata has been entered ...
 <programlisting>
 <![CDATA[
+::class 'CDEvents' subclass CommonDialogEvents
 
+::method onButtonClicked unguarded
+  use arg cfd, hwnd, item
+
+  if item == .constDir[IDC_PB_VERIFY] then do
+    text = cfd~getEditBoxText(IDC_EDIT)
+    if text == '' then do
+      title = 'Save File Error'
+      msg = 'You must enter a comment when saving this'.endOfLine || -
+            'file. The comment will be saved along with the file.'
+
+      j = MessageDialog(msg, hwnd, title, OK, ERROR)
+    end
+  end
+  return self~S_OK
 ]]>
 </programlisting>
   </para>
@@ -7973,7 +7981,7 @@ ofd~releaseCom
 </programlisting>
 
 <para>
-  xx
+  Invoked when the user changes the state of a check box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8011,33 +8019,13 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The return from the event handler seems to be ignored by the operating system. The programmer should return S_OK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -8056,7 +8044,8 @@ ofd~releaseCom
 </programlisting>
 
 <para>
-  xx
+  Called when an Open button drop-down list customized through the <xref linkend="mthEnableOpenDropDown"/> method, or a
+  menu is about to display its contents.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8088,33 +8077,20 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return from the event handler seems to be ignored by the operating system. The programmer should return S_OK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In response to this notification, an application can update the contents of the menu or list about to be displayed,
+    based on the current state of the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -8133,7 +8109,7 @@ ofd~releaseCom
 </programlisting>
 
 <para>
-  xx
+  Invoked just before the dialog is about to return with a result.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8159,13 +8135,21 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Return S_OK to accept the current result in the dialog or S_FALSE to refuse it. When S_FALSE is returned, the dialog will
+    remain open.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When this event handler is invoked, the <xref linkend="mthGetResultCid"/> and <xref linkend="mthGetResults"/> methods can
+    be invoked. The application can use this event handling method to perform additional validation before the dialog
+    closes, or to prevent the dialog from closing. If the application prevents the dialog from closing, it should display
+    something to the user to indicate why the file is not acceptd. Typically the <emphasis role="italic">hwnd</emphasis>
+    argument would be used as the owner window of the message dialog.
+  </para>
+  <para>
+    An application can also use this method to perform all of its work surrounding the opening or saving of files.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -8173,17 +8157,27 @@ ofd~releaseCom
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from a business application that does not allow the user to save or open files that are marked as
+    <emphasis role="italic">reserved</emphasis>. Reserved files are marked by the administrator by placing the string
+    <emphasis role="italic">resv</emphasis> in the file name:
 <programlisting>
 <![CDATA[
+::method onFileOk unguarded
+    use arg ofd, hwnd
 
+    fileName = ofd~getCurrentSelection
+    if fileName~caselessPos('resv') <> 0 then do
+        msg = '"Reserved" files can not be opened.  Please select another file.'
+        title = 'File Open Error'
+        r = MessageDialog(msg, hwnd, title, 'OK', 'WARNING')
+        return self~S_FALSE
+    end
+
+    return self~S_OK
 ]]>
 </programlisting>
   </para>
@@ -8204,7 +8198,7 @@ ofd~releaseCom
 </programlisting>
 
 <para>
-  xx
+  Invoked when the user navigates to a new folder. This notification is sent after the folder has been changed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8230,22 +8224,19 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return from the event handler seems to be ignored by the operating system. The programmer should return S_OK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This notification is sent when the dialog is opened.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -8254,7 +8245,40 @@ ofd~releaseCom
     This example ...
 <programlisting>
 <![CDATA[
+  .constDir[IDC_TEXT_DIR]   = 300
+  .constDir[IDC_TEXT_LABEL] = 305
 
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
+  fileOpen = .OpenFileDialog~new
+
+  events = .CDEvents~new
+  fileOpen~advise(events)
+
+  ret = fileOpen~startVisualGroup(IDC_TEXT_LABEL, 'Current Folder:')
+  ret = fileOpen~addText(IDC_TEXT_DIR, "")
+  ret = fileOpen~endVisualGroup()
+
+  filter = .array~of('Rexx Program', '*.rex', 'Text Document', '*.txt', 'Hidden Consol Rexx Program', '*.rxg')
+  fileOpen~setFileTypes(filter)
+  fileOpen~setFileTypeIndex(1)
+
+  if fileOpen~show() == .CommonItemDialog~canceled then
+      say 'The user canceled'
+  else
+      say 'The user picked:' fileOpen~getResult
+
+  fileOpen~release
+
+::requires 'ooDialog.cls'
+
+::class 'CDEvents' subclass CommonDialogEvents
+
+::method onFolderChange unguarded
+  use arg fileOpen, hwnd
+
+  folder = fileOpen~getFolder
+  fileOpen~setControlLabel(IDC_TEXT_DIR, folder)
+  return self~S_OK
 ]]>
 </programlisting>
   </para>
@@ -8268,14 +8292,15 @@ ofd~releaseCom
 <programlisting>
 <![CDATA[
 ::method onFolderChanging unguarded
-  use arg cfd, hwnd
+  use arg cfd, hwnd, folder
 
   return self~S_OK
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Invoked before <xref linkend="mthOnFolderChange"/>. This notification allows the programmer to stop navigation to a
+  particular location.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8296,18 +8321,31 @@ ofd~releaseCom
       The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>folder</term>
+    <listitem>
+    <para>
+      The complete path name of the folder the user is about to change to.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Return S_OK or E_NOTIMPL to allow the folder change to occur. Return S_FALSE to prevent the folder change.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The programmer can call <xref linkend="mthSetFolder"/> from within this event handler to redirect navigation to an
+    alternate folder. The actual navigation does not occur until <emphasis role="italic">onFoldderChanging</emphasis> has
+    returned.
+  </para>
+  <para>
+    If the application simply prevents navigation to a particular folder, it should display something to the user to
+    indicate why the folder change is restricted. Typically the <emphasis role="italic">hwnd</emphasis> argument would be
+    used as the owner window of the message dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -8315,17 +8353,44 @@ ofd~releaseCom
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This is a contrived example used to show the basics of the <emphasis role="italic">onFolderChanging</emphasis> event
+    handler. The user is prevented from naviagating to any folder that contains <emphasis role="italic">rexx</emphasis> in
+    the folder name:
 <programlisting>
 <![CDATA[
+  .CommonItemDialog~inherit(.CommonDialogCustomizations)
+  fileOpen = .OpenFileDialog~new
 
+  events = .CDEvents~new
+  fileOpen~advise(events)
+  fileOpen~setFolder('C:\Program Files')
+
+  if fileOpen~show() == .CommonItemDialog~canceled then
+      say 'The user canceled'
+  else
+      say 'The user picked:' fileOpen~getResult
+
+  fileOpen~release
+
+::requires 'ooDialog.cls'
+
+::class 'CDEvents' subclass CommonDialogEvents
+
+::method onFolderChanging unguarded
+  use arg fileOpen, hwnd, folder
+
+  if folder~caselessPos('Rexx') <> 0 then do
+      msg = 'Navigating to a "Rexx" folder is not allowed.  Please select another folder.'
+      title = 'Folder Navigation Error'
+      r = MessageDialog(msg, hwnd, title, 'OK', 'WARNING')
+      return self~S_FALSE
+  end
+
+  return self~S_OK
 ]]>
 </programlisting>
   </para>
@@ -8346,62 +8411,9 @@ ofd~releaseCom
 </programlisting>
 
 <para>
-  xx
+  An <emphasis role="italic">onHelp</emphasis> event handler was in a MSDN example for common dialog events. But it is not
+  documented and doesn't seem to get invoked. It has been left as a place holder only, do not expect it to work.
 </para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>cfd</term>
-    <listitem>
-    <para>
-      The Rexx <xref linkend="clsCommonItemDialog"/> object that is sending the event notification.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>hwnd</term>
-    <listitem>
-    <para>
-      The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
 </section>  <!-- End CommonDialogEvents::onHelp() -->
 
 <section id="mthOnItemSelected" xreflabel="onItemSelected"><title>onItemSelected</title>
@@ -8410,14 +8422,15 @@ ofd~releaseCom
 <programlisting>
 <![CDATA[
 ::method onItemSelected unguarded
-  use arg cfd, hwnd
+  use arg cfd, hwnd, itemID, containerID
 
   return self~S_OK
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Invoked when an item is selected in a combo box, when a user clicks a radio button (called an option button by the common
+  item dialog documentation), or an item is chosen from a menu.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8438,18 +8451,33 @@ ofd~releaseCom
       The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>itemID</term>
+    <listitem>
+    <para>
+      The resource ID of the selected item in the container control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>containerID</term>
+    <listitem>
+    <para>
+      The resource ID of the control that contains the selected item.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return from the event handler seems to be ignored by the operating system. The programmer should return S_OK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This notification is not sent when the user chooses an item from the drop-down menu attached to the Open button. MSDN
+    gives this explanation for that behaviour: <emphasis role="italic"> the action taken in that case is always the same:
+    close the dialog as if the user had simply clicked the Open button.</emphasis> In this situation, the programmer can call
+    the <xref linkend="mthGetSelectedControlItem"/> to obtain the item the user chose from the menu.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -8457,17 +8485,38 @@ ofd~releaseCom
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example checks the appropriate radio button when the user selects a menu item:
 <programlisting>
 <![CDATA[
+::class 'CDEvents' subclass CommonDialogEvents
 
+::method onItemSelected
+  use arg cfd, hwnd, item, container
+
+  if container == .constDir[IDC_MENU] then do
+    select
+      when item == .constDir[IDC_MENU_REX] then do
+          cfd~setSelectedControlItem(IDC_RBL_RADIOS, IDC_RB_REX)
+          cfd~setFileTypeIndex(1)
+      end
+      when item == .constDir[IDC_MENU_TXT] then do
+          cfd~setSelectedControlItem(IDC_RBL_RADIOS, IDC_RB_TXT)
+          cfd~setFileTypeIndex(2)
+      end
+      when item == .constDir[IDC_MENU_CONSOLE] then do
+          cfd~setSelectedControlItem(IDC_RBL_RADIOS, IDC_RB_RXG)
+          cfd~setFileTypeIndex(3)
+      end
+      otherwise nop
+    end
+    -- End select
+  end
+
+  return self~S_OK
 ]]>
 </programlisting>
   </para>
@@ -8481,14 +8530,14 @@ ofd~releaseCom
 <programlisting>
 <![CDATA[
 ::method onOverwrite unguarded
-  use arg cfd, hwnd
+  use arg cfd, hwnd, fileName
 
-  return self~S_OK
+  return self~E_NOTIMPL
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Invoked from the save dialog when the user chooses to overwrite a file.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8509,18 +8558,26 @@ ofd~releaseCom
       The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>fileName</term>
+    <listitem>
+    <para>
+      The complete path name of the file that will be overwritten.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The event handler should return one of the <link linkend="sctCommonDialogEventsConstants">FDESVR_xx</link> constants or
+    E_NOTIMPL. Returning any other value may cause unpredictable behavior.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This event handler is only invoked if the common item dialog has the <link linkend="atrOptionsCid">OVERWRITEPROMPT</link>
+    option set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -8535,9 +8592,37 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
+    This example comes from a business application where IT marks certain files that can not be overwritten. However, when
+    the user tries to overwrite a restricted file, it is possible to overwrite the file by entering the proper key code:
+<programlisting> <![CDATA[ ::class 'CDEvents' subclass CommonDialogEvents
+
+::method onOverwrite unguarded
+  use arg cfd, hwnd, file
+
+  magicText = cfd~getEditBoxText(IDC_EDIT)
+  fileName  = fileSpec('N', file)
+
+  if fileName~caselessPos('reserv') <> 0 then do
+    title = 'IT File Overwrite Manager'
+
+    if magicText == self~magicKey then do
+      msg = "Permission key matches.  Permission to overwrite" file 'has been granted.'
+      j = MessageDialog(msg, hwnd, title, 'OK', 'INFORMATION')
+      return self~FDESVR_ACCEPT
+    end
+    else if magicText == '' then do
+      msg = "IT does not allow overwritting this file.  Permission to overwrite " || -
+            "the file can be granted by entering the correct key in the edit box."
+      j = MessageDialog(msg, hwnd, title, 'OK', 'WARNING')
+      return self~FDESVR_REFUSE
+    end
+    else do
+      msg = "IT does not allow overwritting this file.  Overwrite permission denied."
+      j = MessageDialog(msg, hwnd, title, 'OK', 'ERROR')
+      return self~FDESVR_REFUSE
+    end
+  end
+  return self~FDESVR_ACCEPT
 
 ]]>
 </programlisting>
@@ -8559,7 +8644,7 @@ ofd~releaseCom
 </programlisting>
 
 <para>
-  xx
+  Invoked when the user changes the selection in the dialog's view.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8585,13 +8670,14 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return from the event handler seems to be ignored by the operating system. The programmer should return S_OK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Testing shows that the common item dialog sends this notification when the selecte file changes and when the selected
+    folder changes
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -8599,17 +8685,19 @@ ofd~releaseCom
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a simple event handler that can be used to test when the dialog sends the selection change
+    notification:
 <programlisting>
 <![CDATA[
+::method onSelectionChange unguarded
+  use arg fileOpen, hwnd
+  say 'Got onSelectionChange() notification. Selection is:' fileOpen~getCurrentSelection
 
+  return self~S_OK
 ]]>
 </programlisting>
   </para>
@@ -8623,14 +8711,15 @@ ofd~releaseCom
 <programlisting>
 <![CDATA[
 ::method onShareViolation unguarded
-  use arg cfd, hwnd
+  use arg cfd, hwnd, fileName
 
-  return self~S_OK
+  return self~E_NOTIMPL
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Implementing this event handler allows an application to respond to sharing violations that arise from Open or Save
+  operations.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8651,38 +8740,36 @@ ofd~releaseCom
       The window <xref linkend="defHandle"/> of the underlying Windows common item dialog.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>fileName</term>
+    <listitem>
+    <para>
+      The complete path name of the file that will be overwritten.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The event handler should return one of the <link linkend="sctCommonDialogEventsConstants">FDESVR_xx</link> constants or
+    E_NOTIMPL. Returning any other value may cause unpredictable behavior.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A sharing violation can occur if an application tries to read or modify a file when another process holds the file lock
+    for that file.
+  </para>
+  <para>
+    This event handler is only invoked if the common item dialog has the <link linkend="atrOptionsCid">SHAREAWARE</link>
+    option set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -8701,7 +8788,7 @@ ofd~releaseCom
 </programlisting>
 
 <para>
-  xx
+  Invoked when the dialog is opened to notify the application of the initial chosen filetype.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8727,13 +8814,15 @@ ofd~releaseCom
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return from the event handler seems to be ignored by the operating system. The programmer should return S_OK.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    <emphasis role="italic">onTypeChange</emphasis> would make a good event handler for the purpose of performing some action
+    when the common file dialog is about to be opened, but has not been shown yet. However the notification is only sent if
+    the application sets a file types (<xref linkend="mthSetFileTypes"/>) filter.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -8741,16 +8830,50 @@ ofd~releaseCom
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example changes the label of the Cancel button in a file open dialog. That label can only be changed after the
+    dialog is shown and typically a programmer would prefer to do it before the dialog is visible:
 <programlisting>
 <![CDATA[
+  fileOpen = .OpenFileDialog~new
+
+  events = .CDEvents~new
+  fileOpen~advise(events)
+
+  fileOpen~setOkButtonLabel('Open This File')
+
+  filter = .array~of('Rexx Program', '*.rex', 'Text Document', '*.txt', 'Hidden Consol Rexx Program', '*.rxg')
+  fileOpen~setFileTypes(filter)
+  fileOpen~setFileTypeIndex(1)
+
+  if fileOpen~show() == .CommonItemDialog~canceled then
+      say 'The user canceled'
+  else
+      say 'The user picked:' fileOpen~getResult
+
+  fileOpen~release
+
+::requires 'ooDialog.cls'
+
+::class 'CDEvents' subclass CommonDialogEvents
+
+::method onTypeChange unguarded
+  expose labelChanged
+  use arg cfd, hwnd
+
+  -- Only change the label on the first event.
+  if \ labelChanged~dataType('O') then
+      labelChanged = .false
+
+  if \ labelChanged then do
+      cfd~setCancelButtonLabel('Abort')
+      labelChanged = .true
+  end
+
+  return self~S_OK
 
 ]]>
 </programlisting>
