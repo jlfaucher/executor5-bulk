@@ -77,6 +77,11 @@ inline bool requiresElevation(pConfigureArguments pca)
     return false;
 }
 
+inline bool isSingleMode(HWND hDlg)
+{
+    return IsDlgButtonChecked(hDlg, IDC_RB_SINGLE_VIEW) == BST_CHECKED;
+}
+
 static void setDlgIcon(HWND hDlg, HINSTANCE hInstance)
 {
     HANDLE hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_APP_ICON), IMAGE_ICON,
@@ -427,7 +432,6 @@ done_out:
     return elevated;
 }
 
-
 /**
  *
  *
@@ -717,6 +721,9 @@ static void strUpper(char *s)
  *        A '-' character indicates the .ext is not registered.  A '*' character
  *        indicates the .ext is registered.  A '+' character indicates the .ext
  *        is registered, but not registered to the ooDialog prog ID.
+ *
+ *        This is also used to update a PATHEXT record, which does not use the
+ *        'other' concept.
  */
 static void updateExtDisplayName(pExtensionInfo rec)
 {
@@ -768,6 +775,7 @@ static void updateExtDisplayName(pExtensionInfo rec)
     }
 
     _snprintf(rec->displayName, MAX_EXT_DISPLAY, "%s%s", prefix, rec->extension);
+    _snprintf(rec->displayName2, MAX_EXT_DISPLAY, "%s", rec->extension);
 }
 
 /**
@@ -1018,7 +1026,56 @@ static pExtensionInfo dupExtRec(HWND hDlg, pExtensionInfo rec)
     return r;
 }
 
-static bool isRequiredPathExt(char *ext)
+/**
+ * Checks if currentRec is an extension that will be deleted from the PATHEXT
+ * list box.  If the extension is not in the 'in scope' PATHEXT then deleting it
+ * from the list box would not actually do anything, so we shouldn't do
+ * anything.
+ *
+ * @param hDlg
+ * @param currentRec
+ *
+ * @return True don't do any thing, false do do something.
+ *
+ * @note  We explain to the user why nothing is done.
+ */
+static bool isNotRelevantPathExt(HWND hDlg, pAssocArguments paa, pExtensionInfo currentRec)
+{
+    char msg[SMALL_BUF_SIZE];
+
+    if ( paa->allUsers )
+    {
+        if ( ! currentRec->allUsers )
+        {
+            _snprintf(msg, SMALL_BUF_SIZE, NOT_IN_SCOPE_PATHEXT_ERR_FMT, currentRec->extension, "All Users");
+            internalInfoMsgBox(hDlg, msg, USER_ERR_TITLE);
+            return true;
+        }
+    }
+    else
+    {
+        if ( ! currentRec->curUser )
+        {
+            _snprintf(msg, SMALL_BUF_SIZE, NOT_IN_SCOPE_PATHEXT_ERR_FMT, currentRec->extension, "Current User");
+            internalInfoMsgBox(hDlg, msg, USER_ERR_TITLE);
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * To prevent a catastrophe on the user's computer, we refuse to delete things
+ * like .exe from the PATHEXT.
+ *
+ * @param ext
+ * @param hDlg
+ *
+ * @return True, the extension is required, false it is not required.
+ *
+ * @note  We explain to the user why nothing is done.
+ */
+static bool isRequiredPathExt(char *ext, HWND hDlg)
 {
     if ( StrCmpI(".COM", ext) == 0 ||
          StrCmpI(".EXE", ext) == 0 ||
@@ -1026,6 +1083,11 @@ static bool isRequiredPathExt(char *ext)
          StrCmpI(".CMD", ext) == 0
        )
     {
+        char msg[SMALL_BUF_SIZE];
+
+        _snprintf(msg, SMALL_BUF_SIZE, REQUIRED_PATHEXT_ERR_FMT, ext);
+        internalInfoMsgBox(hDlg, msg, USER_ERR_TITLE);
+
         return true;
     }
     return false;
@@ -1272,8 +1334,296 @@ static void fillPathExtRecs(pExtensionInfo *recs, char *pathExt, size_t count, b
 
 }
 
+/**
+ * Frees all the alocated memory in extRecs and sets the counters back to 0.
+ *
+ * @param extRecs
+ */
+static void resetExtRecords(pExtRecords extRecs)
+{
+    if ( extRecs->allUsersRecs != NULL )
+    {
+        for ( size_t i = 0; i < extRecs->auSize; i++ )
+        {
+            safeLocalFree(extRecs->allUsersRecs[i]);
+        }
+        safeLocalFree(extRecs->allUsersRecs);
+        extRecs->allUsersRecs = NULL;
+        extRecs->auSize = 0;
+        extRecs->auNext = 0;
+    }
 
-static void getAddPathExtRecords(HWND hDlg, HWND hLB)
+    if ( extRecs->curUserRecs != NULL )
+    {
+        for ( size_t i = 0; i < extRecs->cuSize; i++ )
+        {
+            safeLocalFree(extRecs->curUserRecs[i]);
+        }
+        safeLocalFree(extRecs->curUserRecs);
+        extRecs->curUserRecs = NULL;
+        extRecs->cuSize = 0;
+        extRecs->cuNext = 0;
+    }
+}
+
+/**
+ * Frees all allocated memory in extRecs and frees extRecs itself.
+ *
+ * @param extRecs
+ */
+static pExtRecords freeExtRecords(pExtRecords extRecs)
+{
+    if ( extRecs != NULL )
+    {
+        resetExtRecords(extRecs);
+        safeLocalFree(extRecs);
+    }
+    return NULL;
+}
+
+/**
+ * Returns a pointer to an extRecords struct that is empty.  That is all
+ * allocated memory in the struct has been freed if the struct previously
+ * existed and things set back to 0, or if the stuct did not previously exist,
+ * it was allocated.
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @return  A ponter to an extRecords strut, or NULL on error.
+ */
+static pExtRecords getEmptyExtRecords(HWND hDlg, pAssocArguments paa)
+{
+    pExtRecords extRecs = NULL;
+
+    if ( paa->extensionRecords == NULL )
+    {
+        extRecs = (pExtRecords)LocalAlloc(LPTR, sizeof(extRecords));
+        if ( extRecs == NULL )
+        {
+            reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
+        }
+        return extRecs;
+    }
+    else
+    {
+        resetExtRecords(paa->extensionRecords);
+    }
+    return paa->extensionRecords;
+}
+
+static void savePathExtListBoxOrder(HWND hDlg, pAssocArguments paa)
+{
+    pExtRecords extRecs = paa->extensionRecords;
+    HWND        hLB     = paa->lbPathExt;
+
+    pExtensionInfo *recArray = NULL;
+    size_t          count     = 0;
+    size_t          next      = 0;
+
+    if ( paa->allUsers )
+    {
+        recArray = extRecs->allUsersRecs;
+        count    = extRecs->auSize;
+        next     = extRecs->auNext;
+    }
+    else
+    {
+        recArray = extRecs->curUserRecs;
+        count    = extRecs->cuSize;
+        next     = extRecs->cuNext;
+    }
+
+    size_t itemCount = (size_t)SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
+
+    // The PATHEXT list box will never have 0 items.
+    for (size_t i = 0, j = 0; i < itemCount; i++ )
+    {
+        pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
+        if ( paa->allUsers )
+        {
+            if ( info->allUsers )
+            {
+                recArray[j++] = info;
+            }
+        }
+        else
+        {
+            if ( info->curUser )
+            {
+                recArray[j++] = info;
+            }
+        }
+
+        if ( j >= count )
+        {
+            // Add error code.  This should never happen, if an extension is added
+            // to the list box, its record should be added to the appropriate
+            // records array.  But we haven't coded that yet.
+            ;
+        }
+    }
+
+    if ( next < count )
+    {
+        for ( size_t i = next; i < count; i++ )
+        {
+            recArray[i] = NULL;
+        }
+    }
+}
+
+static pExtensionInfo findExtRecInArray(pExtensionInfo *recs, size_t count, char *ext)
+{
+    for (size_t i = 0; i < count; i++ )
+    {
+        pExtensionInfo curRec = recs[i];
+        if ( StrCmpI(curRec->extension, ext) == 0 )
+        {
+            return curRec;
+        }
+    }
+    return NULL;
+}
+
+/**
+ * When a PATHEXT extension is deleted from or added to the PATHEXT list box, we
+ * need to update the arrays that save the PATHEXT extension records.
+ *
+ * @param hDlg
+ * @param ext
+ * @param deleting
+ */
+static void updatePathExtArrays(HWND hDlg,  pAssocArguments paa, pExtensionInfo rec, bool deleting)
+{
+    pExtRecords extRecs = paa->extensionRecords;
+    HWND        hLB     = paa->lbPathExt;
+
+    pExtensionInfo *inScope  = NULL;
+    pExtensionInfo *outScope = NULL;
+    size_t          count     = 0;
+    size_t          next      = 0;
+
+    if ( deleting )
+    {
+        if ( paa->allUsers )
+        {
+            extRecs->auNext--;
+            savePathExtListBoxOrder(hDlg, paa);
+
+            pExtensionInfo info = findExtRecInArray(extRecs->curUserRecs, extRecs->cuNext, rec->extension);
+            if ( info != NULL && info->allUsers )
+            {
+                info->allUsers = false;
+                updateExtDisplayName(info);
+            }
+        }
+        else
+        {
+            extRecs->cuNext--;
+            savePathExtListBoxOrder(hDlg, paa);
+
+            pExtensionInfo info = findExtRecInArray(extRecs->allUsersRecs, extRecs->auNext, rec->extension);
+            if ( info != NULL && info->curUser )
+            {
+                info->curUser = false;
+                updateExtDisplayName(info);
+            }
+        }
+    }
+    else
+    {
+        // Adding - not coded.
+    }
+
+}
+
+static void fillPathExtListBox(HWND hDlg, pAssocArguments paa)
+{
+    pExtRecords extRecs = paa->extensionRecords;
+    HWND        hLB     = paa->lbPathExt;
+
+    pExtensionInfo *recArray = NULL;
+    size_t         count     = 0;
+    pExtensionInfo *secArray = NULL;
+    size_t         count2    = 0;
+
+    if ( isSingleMode(hDlg) )
+    {
+        if ( paa->allUsers )
+        {
+            recArray = extRecs->allUsersRecs;
+            count    = extRecs->auNext;
+        }
+        else
+        {
+            recArray = extRecs->curUserRecs;
+            count    = extRecs->cuNext;
+        }
+
+        for ( size_t i = 0; i < count; i++ )
+        {
+            pExtensionInfo current = recArray[i];
+
+            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName2);
+            SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+        }
+    }
+    else
+    {
+        if ( paa->allUsers )
+        {
+            recArray = extRecs->allUsersRecs;
+            count    = extRecs->auNext;
+            secArray = extRecs->curUserRecs;
+            count2   = extRecs->cuNext;
+        }
+        else
+        {
+            recArray = extRecs->curUserRecs;
+            count    = extRecs->cuNext;
+            secArray = extRecs->allUsersRecs;
+            count2   = extRecs->auNext;
+        }
+
+        /* Add all records in the record array that matches the scope. */
+        for ( size_t i = 0; i < count; i++ )
+        {
+            pExtensionInfo current = recArray[i];
+
+            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+            SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+        }
+
+        /* Now go through all the record in the array that doesn't match the
+           scope, and add any record that has not already been added. */
+        for ( size_t i = 0; i < count2; i++ )
+        {
+            pExtensionInfo current = secArray[i];
+
+            if ( paa->allUsers )
+            {
+                if ( ! current->allUsers )
+                {
+                    LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+                    SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+                }
+            }
+            else
+            {
+                if ( ! current->curUser )
+                {
+                    LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+                    SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+                }
+            }
+        }
+    }
+
+    // eliminateDups(hLB); don't think this is needed any more.
+}
+
+static void getAddPathExtRecords(HWND hDlg, pAssocArguments paa)
 {
     char  *keyName = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
     HKEY   hKey    = HKEY_LOCAL_MACHINE;
@@ -1288,6 +1638,15 @@ static void getAddPathExtRecords(HWND hDlg, HWND hLB)
 
     pExtensionInfo *recs     = NULL;
     pExtensionInfo *userRecs = NULL;
+    pExtRecords     extRecs  = NULL;
+
+    HWND hLB = paa->lbPathExt;
+
+    extRecs = getEmptyExtRecords(hDlg, paa);
+    if ( extRecs == NULL )
+    {
+        goto done_out;
+    }
 
     uint32_t retCode = RegOpenKeyEx(hKey, keyName, 0, KEY_QUERY_VALUE, &hEnvKey);
     if ( retCode == ERROR_SUCCESS )
@@ -1372,61 +1731,57 @@ static void getAddPathExtRecords(HWND hDlg, HWND hLB)
 
     if ( curCnt > 0 )
     {
-        // This will fill the list box with *all* the PATHEXT records.  It
-        // combines the all users and current users PATHEXT.
         userRecs = allocExtRecords(curCnt, hDlg);
         if ( userRecs == NULL )
         {
             goto err_out;
         }
         fillPathExtRecs(userRecs, expanded, curCnt, false);
+    }
 
+    // First we need to fix up the display name for all records in each array.
+    for ( size_t i = 0; i < allCnt; i++)
+    {
+        pExtensionInfo current = recs[i];
+
+        if ( curCnt > 0 )
+        {
+            int32_t idx = findPathExt(userRecs, curCnt, current->extension);
+            if ( idx >= 0 )
+            {
+                current->curUser = true;
+            }
+        }
+        updateExtDisplayName(current);
+    }
+
+    if ( curCnt > 0 )
+    {
         for ( size_t i = 0; i < curCnt; i++)
         {
             pExtensionInfo current = userRecs[i];
 
             int32_t idx = findPathExt(recs, allCnt, current->extension);
-            if ( idx < 0 )
+            if ( idx >= 0 )
             {
-                updateExtDisplayName(current);
-
-                LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
-                SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+                current->allUsers = true;
             }
-            else
-            {
-                // Use the all users record and free the current user record.
-                safeLocalFree(current);
-                current = recs[idx];
-                current->curUser = true;
-                updateExtDisplayName(current);
-
-                LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
-                SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
-            }
-        }
-    }
-    else
-    {
-        // Nothing is current user's PATHEXT, fill the list box with the all
-        // users PATHEXT.
-        for ( size_t i = 0; i < allCnt; i++)
-        {
-            pExtensionInfo current = recs[i];
-
             updateExtDisplayName(current);
-
-            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
-            SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
         }
     }
 
-    eliminateDups(hLB);
+    // Then save the two record arrays and associated info.
+    extRecs->allUsersRecs = recs;
+    extRecs->curUserRecs  = userRecs;
+    extRecs->auSize       = allCnt;
+    extRecs->auNext       = allCnt;
+    extRecs->cuSize       = curCnt;
+    extRecs->cuNext       = curCnt;
+    paa->extensionRecords = extRecs;
 
-    // All the individual records are stored in the item data for each item in
-    // the list box, so we no longer need the record containers.
-    safeLocalFree(recs);
-    safeLocalFree(userRecs);
+    // Finally fill the list box with the proper records according to mode
+    fillPathExtListBox(hDlg, paa);
+
     goto done_out;
 
 err_out:
@@ -1651,7 +2006,7 @@ static void addPathExt(HWND hDlg, pAssocArguments paa)
     HWND   hLB   = paa->lbPathExt;
 
     maybeEmptyLB(hLB);
-    getAddPathExtRecords(hDlg, hLB);
+    getAddPathExtRecords(hDlg, paa);
 }
 
 /**
@@ -1675,8 +2030,8 @@ void setAssocControls(HWND hDlg, pAssocArguments paa, bool flag)
     EnableWindow(paa->lbSuggested, enable);
     EnableWindow(paa->lbPathExt, enable);
 
-    EnableWindow(GetDlgItem(hDlg, IDC_EDIT_EXTENSION), enable);
-    EnableWindow(GetDlgItem(hDlg, IDC_PB_ADD_EXTENSION), enable);
+    EnableWindow(GetDlgItem(hDlg, IDC_EDIT_FA_EXT), enable);
+    EnableWindow(GetDlgItem(hDlg, IDC_PB_ADD_FA_EXT), enable);
     EnableWindow(GetDlgItem(hDlg, IDC_PB_ADD_CURRENT), enable);
     EnableWindow(GetDlgItem(hDlg, IDC_PB_REMOVE_CURRENT), enable);
     EnableWindow(GetDlgItem(hDlg, IDC_PB_ADD_PATHEXT), enable);
@@ -1712,7 +2067,6 @@ static void setRegisteredState(HWND hDlg, pAssocArguments paa)
         }
 
         setAssocControls(hDlg, paa, false);
-
         addSuggestedExt(hDlg, paa);
         addCurrentExt(hDlg, paa);
         addPathExt(hDlg, paa);
@@ -1775,8 +2129,8 @@ static void setRegisteredState(HWND hDlg, pAssocArguments paa)
 static void setStaticText(HWND hDlg, pAssocArguments paa)
 {
     SetDlgItemText(hDlg, IDC_GB_ASSOCIATE, paa->allUsers ?
-                   "Associating File Extensions with ooDialog.exe File Type for All Users" :
-                   "Associating File Extensions with ooDialog.exe File Type for the Current User");
+                   "Configuring File Associations and the PATHEXT for:  All Users" :
+                   "Configuring File Associations and the PATHEXT for:  the Current User");
 
     SetDlgItemText(hDlg, IDC_ST_FTYPE, paa->friendlyName);
     SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "Current User");
@@ -2138,6 +2492,10 @@ static void writeNewPathExt(HWND hDlg, pAssocArguments paa, char *val)
         }
 
         RegCloseKey(hEnvKey);
+        if ( retCode == ERROR_SUCCESS )
+        {
+            SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+        }
     }
     else
     {
@@ -2278,12 +2636,25 @@ intptr_t pbDone(HWND hDlg)
         for ( LRESULT i = 0; i < count; i++ )
         {
             pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
-            strcat(valBuf, info->extension);
-            if ( i != count - 1 )
+
+            if ( paa->allUsers )
             {
-                strcat(valBuf, ";");
+                if ( info->allUsers )
+                {
+                    strcat(valBuf, info->extension);
+                    strcat(valBuf, ";");
+                }
+            }
+            else
+            {
+                if ( info->curUser )
+                {
+                    strcat(valBuf, info->extension);
+                    strcat(valBuf, ";");
+                }
             }
         }
+        valBuf[strlen(valBuf) - 1] = '\0';
 
 #ifdef _DEBUG
         char msg[SMALL_BUF_SIZE];
@@ -2462,6 +2833,7 @@ intptr_t pbMovePathExt(HWND hDlg, bool up)
     internalInfoMsgBox(msg, "Move item UP");
     */
 
+    bool single = isSingleMode(hDlg);
     if ( up )
     {
         if ( index == 0 )
@@ -2478,7 +2850,7 @@ intptr_t pbMovePathExt(HWND hDlg, bool up)
         SendMessage(paa->lbPathExt, LB_DELETESTRING, index - 1, 0);
 
         // Now reinsert the deleted item at the position of our item
-        SendMessage(paa->lbPathExt, LB_INSERTSTRING, index, (LPARAM)rec->displayName);
+        SendMessage(paa->lbPathExt, LB_INSERTSTRING, index, (LPARAM)(single ? rec->displayName2 : rec->displayName));
         SendMessage(paa->lbPathExt, LB_SETITEMDATA, index, (LPARAM)rec);
         SendMessage(paa->lbPathExt, LB_SETTOPINDEX, index - 1, 0);
     }
@@ -2496,7 +2868,8 @@ intptr_t pbMovePathExt(HWND hDlg, bool up)
 
         // Now reinsert the item above its old index.
         index ++;
-        SendMessage(paa->lbPathExt, LB_INSERTSTRING, index, (LPARAM)currentRec->displayName);
+        SendMessage(paa->lbPathExt, LB_INSERTSTRING, index,
+                    (LPARAM)(single ? currentRec->displayName2 : currentRec->displayName));
         SendMessage(paa->lbPathExt, LB_SETITEMDATA, index, (LPARAM)currentRec);
         SendMessage(paa->lbPathExt, LB_SETCURSEL, index, 0);
     }
@@ -2505,6 +2878,26 @@ done_out:
     return TRUE;
 }
 
+/**
+ * Handles a click on the Delete PATHEXT extension button, the button with the X
+ * icon.
+ *
+ * @param hDlg
+ *
+ * @return intptr_t
+ *
+ * @note  We can't just blindly delete an item.  We first check:  is an item
+ *        selected, if not do nothing.  Is the selected item in the scoped
+ *        PATHEXT, if not put up a message box telling the user that no change
+ *        is possible.  Is the extension 'special', if yes put up message box
+ *        telling the user it can't be deleted.
+ *
+ *        Then, if we do delete the extension we need to update the arrays.  For
+ *        the in scope array, we decrement the next index by 1 and use save
+ *        order to fix up the array.  For the not in scope array, we find the
+ *        extension in the array, if it exists we mark it as not existing in the
+ *        in scope PATHEXT
+ */
 intptr_t pbDelPathExt(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
@@ -2517,16 +2910,18 @@ intptr_t pbDelPathExt(HWND hDlg)
         goto done_out;
     }
 
-    if ( isRequiredPathExt(currentRec->extension) )
+    if ( isNotRelevantPathExt(hDlg, paa, currentRec) )
     {
-        char msg[SMALL_BUF_SIZE];
-        _snprintf(msg, SMALL_BUF_SIZE, REQUIRED_PATHEXT_ERR_FMT, currentRec->extension);
-        internalInfoMsgBox(hDlg, msg, USER_ERR_TITLE);
+        goto done_out;
+    }
 
+    if ( isRequiredPathExt(currentRec->extension, hDlg) )
+    {
         goto done_out;
     }
 
     SendMessage(paa->lbPathExt, LB_DELETESTRING, index, 0);
+    updatePathExtArrays(hDlg, paa, currentRec, true);
     safeLocalFree(currentRec);
 
 done_out:
@@ -2753,13 +3148,43 @@ intptr_t pbHelp(HWND hDlg)
         reportErrorPlus(hDlg, "ShellExecuteEx", OS_ERR_TITLE, "Failed to show the PDF help file", GetLastError());
     }
 
-    /*
+    /*  Works:
+    ShellExecute(NULL, "open", "\"C:\\Program Files (x86)\\Adobe\\Reader 10.0\\Reader\\AcroRd32.exe\"",
+				"/A page=97 \"C:\\Rexx\\ooRexx\\doc\\ooDialog.pdf\"", NULL, SW_SHOWNORMAL);
+    */
+
+    /* Also works:
+    ShellExecute(NULL, "open", "\"AcroRd32.exe\"",
+	    		"/A page=97 \"C:\\Rexx\\ooRexx\\doc\\ooDialog.pdf\"", NULL, SW_SHOWNORMAL);
+    */
+
+    /* Example from Web:
     ShellExecute(NULL, "open", "\"D:\\program files\\Adobe Reader 9.exe\"",
 				"/A page=45 "
                 "\"C:\\Documents and Settings\\Prabakar\\My Documents\\Downloads\\How to Do "
                 "Everything _ Ubuntu (McGraw-Hill).pdf\"", NULL, SW_SHOWNORMAL);
     */
 
+    return TRUE;
+}
+
+intptr_t rbModeSwitch(HWND hDlg, bool isSingleNow)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    HWND hLB = paa->lbPathExt;
+
+    savePathExtListBoxOrder(hDlg, paa);
+    SendMessage(hLB, LB_RESETCONTENT, 0, 0);
+    fillPathExtListBox(hDlg, paa);
+    /*if ( isSingleNow )
+    {
+        internalInfoMsgBox("Switched to single mode", "Testing");
+    }
+    else
+    {
+        internalInfoMsgBox("Switched to dual mode", "Testing");
+    }
+    */
     return TRUE;
 }
 
@@ -2780,7 +3205,7 @@ intptr_t handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
         case IDC_PB_REGISTER :
             return pbRegister(hDlg);
 
-        case IDC_PB_ADD_EXTENSION :
+        case IDC_PB_ADD_FA_EXT :
             return pbAddExtension(hDlg);
 
         case IDC_PB_ADD_CURRENT :
@@ -2804,6 +3229,12 @@ intptr_t handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
         case IDHELP :
             return pbHelp(hDlg);
 
+        case IDC_RB_SINGLE_VIEW :
+            return rbModeSwitch(hDlg, true);
+
+        case IDC_RB_DOUBLE_VIEW :
+            return rbModeSwitch(hDlg, false);
+
         default:
             break;
     }
@@ -2825,7 +3256,7 @@ static void setUp(HWND hDlg, pAssocArguments paa)
     paa->lbCurrent   = GetDlgItem(hDlg, IDC_LB_CURRENT);
     paa->lbPathExt   = GetDlgItem(hDlg, IDC_LB_PATHEXT);
     paa->pbRegister  = GetDlgItem(hDlg, IDC_PB_REGISTER);
-    paa->edit        = GetDlgItem(hDlg, IDC_EDIT_EXTENSION);
+    paa->edit        = GetDlgItem(hDlg, IDC_EDIT_FA_EXT);
 
     LoadString(paa->hInstance, IDS_FRIENDLY_NAME, paa->friendlyName, MAX_FRIENDLY_NAME);
 
@@ -2841,6 +3272,8 @@ static void setUp(HWND hDlg, pAssocArguments paa)
     setDlgIcon(hDlg, paa->hInstance);
     setButtonIcons(hDlg, paa->hInstance);
     setStaticText(hDlg, paa);
+
+    CheckDlgButton(hDlg, IDC_RB_DOUBLE_VIEW, BST_CHECKED);
 
     setRegisteredState(hDlg, paa);
 }

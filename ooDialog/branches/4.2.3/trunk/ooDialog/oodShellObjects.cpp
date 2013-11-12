@@ -3906,7 +3906,7 @@ RexxMethod1(RexxObjectPtr, cid_initCustomizations, RexxObjectPtr, cselfBuf)
 
 RexxMethod4(uint32_t, cid_addCheckButton, RexxObjectPtr, rxID, CSTRING, label, OPTIONAL_logical_t, checked, CSELF, pCSelf)
 {
-    return cdcControlFunc(context, rxID, label, NULLOBJECT, checked, pCSelf, CdcPushButton);
+    return cdcControlFunc(context, rxID, label, NULLOBJECT, checked, pCSelf, CdcCheckButton);
 }
 
 RexxMethod2(uint32_t, cid_addComboBox, RexxObjectPtr, rxID, CSELF, pCSelf)

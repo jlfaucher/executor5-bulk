@@ -63,20 +63,24 @@
 #define IDI_DOWN_ARROW                          112
 #define IDI_DELETE                              114
 #define IDC_ST_SCOPE                            1000
+#define IDC_GB_VIEW                             1001
 #define IDC_ST_DISPLAY_ICON                     1001
 #define IDC_ST_RUNAS                            1002
 #define IDC_CK_FILEASSOC                        1003
+#define IDC_ST_PATHEXT_DETAILS                  1003
 #define IDC_ST_REGISTERED                       1004
 #define IDC_ST_FTYPE                            1005
 #define IDC_EDIT                                1006
+#define IDC_RB_SINGLE_VIEW                      1006
 #define IDC_ST_REGALL                           1007
 #define IDC_ST_ELEVATED                         1008
 #define IDC_PB_UP                               1009
+#define IDC_PB_ADD_FA_EXT                       1010
 #define IDC_ST_SHORT_MSG                        1010
 #define IDC_GB_SERVICES                         1011
+#define IDC_RB_DOUBLE_VIEW                      1011
 #define IDC_PB_DOWN                             1012
 #define IDC_ST_REGCURRENT                       1013
-#define IDC_EDIT_EXTENSION                      1014
 #define IDC_LB_SUGGESTED                        1015
 #define IDC_LB_CURRENT                          1016
 #define IDC_LB_PATHEXT                          1017
@@ -86,8 +90,8 @@
 #define IDC_PB_REGISTER                         1021
 #define IDC_PB_DEL                              1022
 #define IDC_RB_CURRENT                          1023
-#define IDC_PB_ADD_EXTENSION                    1024
 #define IDC_RB_ALL                              1025
+#define IDC_EDIT_FA_EXT                         1026
 #define IDC_PB_CONFIGURE                        1026
 #define IDC_ST_INADMINGROUP                     1027
 #define IDC_ST_ISRUNASADMIN                     1028
@@ -95,9 +99,10 @@
 #define IDC_ST_IL                               1030
 #define IDC_GB_ASSOCIATE                        1031
 #define IDC_CK_UPDATE                           1032
-#define IDC_ST_PATHEXT_DETAILS                  1033
 #define IDS_FRIENDLY_NAME                       40000
+#define IDC_EDIT_PE_EXT                         40001
 #define IDS_INFOTIP                             40001
+#define IDC_PB_ADD_PE_EXT                       40003
 
 
 // Eveything else is not passed to the resource compiler:
@@ -117,6 +122,7 @@
 #define OS_PARSING_ERR_FMT           "Operating system parsing of the command line failed.\n\nLast reported error code: %d\n"
 #define EMPTY_STRING_ARG_ERR_FMT     "Argument %d is the empty string (\"\").\n\nThis is not allowed.\n"
 #define REQUIRED_PATHEXT_ERR_FMT     "To prevent your computer from becoming unusable, the %s extension can not be removed from your PATHEXT"
+#define NOT_IN_SCOPE_PATHEXT_ERR_FMT "The %s extension is not in the \"%s\" PATHEXT. This list box item is for information only and will not be deleted."
 
 #define OODIALOG_PROGID              "ooRexx.ooDialog"
 #define OODIALOG_PROGID_VERSIONED    "ooRexx.ooDialog.1"
@@ -127,6 +133,11 @@
 // testing now and possible future changes.
 #define MAX_PROGID                   32
 #define MAX_FRIENDLY_NAME            64
+
+#define MAX_EXT_NAME   32                  // Length of an extension, includes the dot
+#define MAX_EXT_DISPLAY  MAX_EXT_NAME + 4  // Add a prefix, max 4 chars, to the extension name
+#define MAX_HKEY_NAME  255                 // Length for a subkey name buffer
+#define MAX_HKEY_VALUE 16383               // Length for a subky value buffer
 
 inline void safeLocalFree(void *p)
 {
@@ -174,12 +185,40 @@ typedef struct _programArguments
 } programArguments;
 typedef programArguments *pProgramArguments;
 
+typedef struct _extInfo
+{
+    char    displayName[MAX_EXT_DISPLAY];  // Dual column mode.
+    char    displayName2[MAX_EXT_DISPLAY]; // Single column mode.
+    char    extension[MAX_EXT_NAME];
+    bool    exists;            // If true file association is in registry, otherwise not
+    bool    allUsers;          // If true our file association exists for all users
+    bool    curUser;           // If true our file association exists for the current user
+    bool    allUsersOther;     // If true file association exists for all users, but not our Prog ID
+    bool    curUserOther;      // If true file association exists for the current user, but not our Prog ID
+    bool    remove;            // If true file assoication should be removed from registry
+    bool    pathExt;           // If true extension should be added to PATHEXT
+    bool    suggested;         // If true this is one of the suggested extensions.
+} extensionInfo;
+typedef extensionInfo *pExtensionInfo;
+
+typedef struct _extRecordss
+{
+    pExtensionInfo    *allUsersRecs;      // PATHEXT records for scope All Users
+    pExtensionInfo    *curUserRecs;       // PATHEXT records for scope Current User
+    size_t             auSize;            // size of allUsersRecs array
+    size_t             cuSize;            // size of curUserRecs array
+    size_t             auNext;            // next empty index in allUsersRecs array
+    size_t             cuNext;            // next empty index in curUserRecs array
+} extRecords;
+typedef extRecords *pExtRecords;
+
 typedef struct _assocArguments
 {
     char               friendlyName[MAX_FRIENDLY_NAME];
     char               progID[MAX_PROGID];
     HINSTANCE          hInstance;         // This executable's instance
     char              *exeName;
+    pExtRecords        extensionRecords;
     HFONT              lbFont;
     HWND               lbSuggested;
     HWND               lbCurrent;
@@ -208,26 +247,6 @@ typedef struct _configureArguments
     bool               wasElevated;
 } configureArguments;
 typedef configureArguments *pConfigureArguments;
-
-#define MAX_EXT_NAME   32                  // Length of an extension, includes the dot
-#define MAX_EXT_DISPLAY  MAX_EXT_NAME + 4  // Add a prefix, max 4 chars, to the extension name
-#define MAX_HKEY_NAME  255                 // Length for a subkey name buffer
-#define MAX_HKEY_VALUE 16383               // Length for a subky value buffer
-
-typedef struct _extInfo
-{
-    char    displayName[MAX_EXT_DISPLAY];
-    char    extension[MAX_EXT_NAME];
-    bool    exists;            // If true file association is in registry, otherwise not
-    bool    allUsers;          // If true our file association exists for all users
-    bool    curUser;           // If true our file association exists for the current user
-    bool    allUsersOther;     // If true file association exists for all users, but not our Prog ID
-    bool    curUserOther;      // If true file association exists for the current user, but not our Prog ID
-    bool    remove;            // If true file assoication should be removed from registry
-    bool    pathExt;           // If true extension should be added to PATHEXT
-    bool    suggested;         // If true this is one of the suggested extensions.
-} extensionInfo;
-typedef extensionInfo *pExtensionInfo;
 
 
 static char *long_syntax_text =
