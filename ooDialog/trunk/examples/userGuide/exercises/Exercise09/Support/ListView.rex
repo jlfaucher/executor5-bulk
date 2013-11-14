@@ -79,7 +79,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD newInstance CLASS PUBLIC
     use arg idListModel, rootDlg			-- Defined by MVF 
-    dlgInfo = self~getDlgInfo	-- Dialog info is provided by the subclass. 
+    dlgConfig = self~getDlgConfig	 -- Dialog info/config is provided by the subclass. 
     dlg = self~new
     if dlg~initCode = 0 then do
       -- Add a symbolic resource IDs:
@@ -89,7 +89,7 @@
       --say ".ListView-newInstance-02: Dialog Title =" dlgText~dlgTitle
       --dlg~create(100, 100, 225, 273, "Test ListView UserDlg 2", "VISIBLE")
       --say ".ListView-iewInstance-01: HRS~noMenu =" dlgtext~noMenu
-      dlg~activate( idListModel, rootDlg, dlgInfo)
+      dlg~activate( idListModel, rootDlg, dlgConfig)
       --dlg~execute("SHOWTOP")
     end
     return dlg						-- Required by MVF
@@ -98,39 +98,39 @@
   ::METHOD init
     forward class (super) continue
     self~initView
-    say "ListView-init-01."
+    --say "ListView-init-01."
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate UNGUARDED
-    expose rootDlg dlgText modelData columnSpec
-    use arg idListModel, rootDlg, dlgInfo
-    dlgText = dlgInfo[1]
-    columnSpec = dlgInfo[2]	-- a comma-speparated spec of col no & width.
-    dlgWidthHeight = dlgInfo[3]
-    parse var dlgWidthHeight dlgWidth "-" dlgHeight
-    
-    forward class (super) continue
+    expose rootDlg dlgConfig modelData
+    use arg idListModel, rootDlg, dlgConfig
+    forward class (super) continue		-- super invokes defineDialog
     modelData = RESULT    
-    --say "ListView-activate-01; modelData =" modelData
 
-    self~create(100, 100, dlgWidth, dlgHeight, dlgText~dlgTitle, "VISIBLE MINIMIZEBOX")
-    --self~create(100, 100, 225, 273, dlgText~dlgTitle, "VISIBLE MINIMIZEBOX")
-    --self~create(0, 0, 225, 273, dlgText~dlgTitle, "VISIBLE THICKFRAME")
-    self~popupAsChild(rootDlg, "SHOWTOP")
+    columnSpec = dlgConfig[lvColumns]	-- a comma-speparated spec of col no & width.
+    dlgSize = dlgConfig[dlgSize]
+    parse var dlgSize dlgWidth "-" dlgHeight
+    self~addIconResource(199, dlgConfig[dlgIcon])
+    self~create(100, 100, dlgWidth, dlgHeight, dlgConfig[text]~dlgTitle, "VISIBLE MINIMIZEBOX")
+    self~popupAsChild(rootDlg, "SHOWTOP",,199)
     
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD defineDialog
-    expose dlgText
-    say "ListView-defineDialog-01."
-    self~createListView(IDC_LISTVIEW, 15,10,190,215, "REPORT SHOWSELALWAYS")
+    expose dlgConfig
+    dlgText = dlgConfig[text]
+    lvSize = dlgConfig[lvSize]
+    parse var lvSize lvW "-" lvH
+    -- say "ListView-defineDialog-01: lvWdth lvHeight =" lvW lvH    
+    self~createListView(IDC_LISTVIEW, 15,10,lvW,lvH, "REPORT SHOWSELALWAYS")
     self~createPushButton(IDCANCEL, 150, 235, 50, 14, "", dlgText~cancelButton)
     self~createPushButton(IDC_SHOWITEM, 89, 235, 54, 14, "DEFAULT DISABLED", -
                           dlgText~showButton, showItem)
   
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
-    expose lv dlgText columnSpec keyColSpec columnNumbers keyColNum
-    
+    expose lv dlgConfig keyColSpec keyColNum
+    --say "ListView-initDialog-01."
+    dlgText = dlgConfig[text]
     menu = .BinaryMenuBar~new(.nil, 901, , self)
 
     subMenu = .PopupMenu~new(902)
@@ -149,30 +149,31 @@
     -- Get a reference to the ListView:
     lv = self~newListView(IDC_LISTVIEW)
     lv~addExtendedStyle("FULLROWSELECT GRIDLINES") 
-    say "ListView-initDialog-03: lv =" lv
 
     -- Format the ListView:
     -- 1. Make an array out of the string columns specs:
-    arrColSpecs = columnSpec~makeArray(",")
+    arrColSpecs = dlgConfig[lvColumns]~makeArray(",")
+    --say "ListView-initDialog-01: arColSpecs:" arrColSpecs[1] arrColSpecs[2] arrColSpecs[3]
     -- 2. Make an array for any format flags (either "f" or "r" or "fr" - 
-    --    f = invoke self~formatXxx where xxx is the column name)
+    --    f = invoke self~format(n) where n is the column name)
     --    r = right-adjust data in the column
     -- 3. Note that a key column cannot (in this version) be formatted 
     --    using format flags.
     -- Parse the column definitions and issue the 'insertColumnsPX's; also
     --  make an array of the data fields to be shown:
-    columnNumbers = .array~new	-- an array of the column numbers in the spec.
-    arrFormats    = .array~new
+    fileColNumbers = .array~new	-- an array of the file column numbers in the spec.
+    arrColCallBacks = .array~new
     keyColNum = 1		-- if no key column defined, then default is 1. 
-    do i = 1 to arrColSpecs~items
-      colSpec = arrColSpecs[i]
-      parse var colSpec colNum "-" colHeader "-" pixels "-" keyColumn
-      columnNumbers[i] = colNum
-      if keyColumn~caselessPos("R") >0 then align = "RIGHT"; else align = "LEFT"
-      lv~insertColumnPX(i-1,colHeader,pixels,align)
-      if keyColumn~caselessEquals("KEY") then keyColNum = i
+    do i = 1 to arrColSpecs~items	-- do for each column spec
+      colSpec = arrColSpecs[i]    
+      parse var colSpec colHeader "-" pixels "-" colNum "-" flags
+      --say "ListView-initDialog-02:" 
+      fileColNumbers[i] = colNum
+      if flags~caselessPos("R") >0 then colAlign = "R"; else colAlign = "L"
+      lv~insertColumnPX(i-1,colHeader,pixels,colAlign)
+      if flags~caselessPos("K") then keyColNum = i
+      if flags~caselessPos("F") then arrColCallBacks[i] = .true 
     end
-    say "ListView-initDialog-04: keyColNum =" keyColNum
       	    
 /*    lv~insertColumnPX(0,"Number",60,"LEFT")
     lv~insertColumnPX(1,"Name",150,"LEFT")
@@ -180,7 +181,69 @@
     self~connectListViewEvent("IDC_LISTVIEW","CLICK",itemSelected) -- Single click
     self~connectListViewEvent("IDC_LISTVIEW","ACTIVATE",openItem)  -- Double-click
 
-    self~loadList
+    self~loadList(fileColNumbers,arrColCallBacks)
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD loadList PRIVATE    
+    expose lv modelData 
+    use strict arg fileColNumbers, arrColCallBacks
+    -- fileColNumbers is an array of the file columns to be selected and shown
+    -- on the listview. E.g. .array~of(3,1,5) states that fields (i.e. columns)
+    -- to be selected from the file are (in this order) 3, 1, and 5.)
+    --say "ListView-loadList-00: modelData =" modelData "columnNumbers =" fileColNumbers
+    rows = modelData[count]
+    colsRequired = fileColNumbers~items
+    --say "ListView-loadlist-01: fileColNumbers =" fileColNumbers~toString(,",")
+    arrData = modelData[records]
+   
+    arrRow = .array~new	     	     -- The array to be used in addRowFromArray().
+    do i=1 to rows			-- iterate over data rows
+      do j = 1 to colsRequired		   -- iterate over the cols required
+      	col = fileColNumbers[j]
+      	--say "ListView-loadList-02: col =" col
+     	arrRow[j] = arrData[i,col]
+     	if arrColCallBacks[j] = .true then do
+     	  --say "ListView-loadList-03: modelData[i,col] =" arrData[i,col]
+     	  -- col = 2 -- debug stmt - wrong column to check if subclass returns .false.
+     	  formattedField= self~lvFieldFormat(col, arrData[i,col])
+     	  if formattedField \= .false then arrRow[j] = formattedField
+     	  else say "ListView-loadList-01: Error in specifying correct field for subclass method 'lvFieldFormat'." 
+        end
+      end
+      lv~addRowFromArray(arrRow, , 'null')
+    end
+
+   --lv~addRow( , , arrData[i,1], arrData[i,2], arrData[i,3])
+   -- lvCustomers~setColumnWidth(1) -- set width of 2nd column to longest text entry.
+
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD showItem UNGUARDED		-- Surfaces the item dialog
+    expose lv rootDlg keyColNum
+    --say "ListView-showItem-00: column that's the key is:" keyColNum
+    item = lv~selected
+    if item = -1 then do
+      say "ListView-showItem-01: Nothing selected."
+      return
+    end
+    info = .Directory~new
+    --if lv~getItemInfo(item, info) then do
+    if lv~getItemInfo(item, info, keyColNum-1) then do
+      -- say "ListView-showItem-02: info~text =" info~text
+      objectMgr = .local~my.ObjectMgr
+      parse var self . className	-- Q: Who am I? A: an xxxxListView
+      parse var className classRoot "LISTVIEW"
+      --say "ListView-showItem-03: Class Name Root =" classRoot
+      modelClassName = classRoot||"Model" 
+      objectMgr~showModel(modelClassName, info~text, rootDlg)
+      self~disableControl("IDC_SHOWITEM")
+      --self~focusControl("IDC_LISTVIEW")
+    end
+ 
+    
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD openItem UNGUARDED
+    --say "openItem-01."
+    self~showItem
     
     
   /*----------------------------------------------------------------------------
@@ -213,69 +276,13 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD itemSelected UNGUARDED
     use arg id, itemIndex, columnIndex, keyState    
-    say "itemSelected-01; item index =" itemIndex
+    --say "ListView-itemSelected-01; item index =" itemIndex
     if itemIndex > -1 then do
       self~enableControl("IDC_SHOWITEM")
       --self~focusControl( "IDC_SHOWITEM") -- This changes the select color of the selected item!!!!
     end
     else self~disableControl("IDC_SHOWITEM")
 
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD showItem UNGUARDED		-- Surfaces the item dialog
-    expose lv rootDlg keyColNum
-    say "ListView-showItem-01: column that's the key is:" keyColNum
-    item = lv~selected
-    if item = -1 then do
-      say "Nothing selected."
-      return
-    end
-    info = .Directory~new
-    --if lv~getItemInfo(item, info) then do
-    if lv~getItemInfo(item, info, keyColNum-1) then do
-      -- say "ListView-showItem-02: info~text =" info~text
-      objectMgr = .local~my.ObjectMgr
-      parse var self . className	-- Q: Who am I? A: an xxxxListView
-      parse var className classRoot "LISTVIEW"
-      --say "ListView-showItem-03: Class Name Root =" classRoot
-      modelClassName = classRoot||"Model" 
-      objectMgr~showModel(modelClassName, info~text, rootDlg)
-      --objectMgr~showModel("PersonModel", info~text, rootDlg)
-      self~disableControl("IDC_SHOWITEM")
-      --self~focusControl("IDC_LISTVIEW")
-    end
-    say
-    
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD openItem UNGUARDED
-    say "openItem-01."
-    self~showItem
-    
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD loadList    
-    expose lv modelData columnNumbers
-    -- columnNumbers is an array of the file columns to be selected and shown
-    -- on the listview. E.g. .array~of(3,1,5) states that fields (i.e. columns)
-    -- to beselected from the file are (in this order) 3, 1, and 5.)
-
-    rows = modelData[count]
-    colsRequired = columnNumbers~items
-    --say "ListView-loadList-01: colsRequired =" colsRequired
-    arrData = modelData[records]
-   
-    arrRow = .array~new	     	     -- The array to be used in addRowFromArray().
-    do i=1 to rows			-- iterate over data rows
-      do j = 1 to colsRequired		   -- iterate over the cols required
-      	col = columnNumbers[j]
-      	arrRow[j] = arrData[i,col]
-      end
-      lv~addRowFromArray(arrRow, , 'null')
-    end
-
-   --lv~addRow( , , arrData[i,1], arrData[i,2], arrData[i,3])
-   -- lvCustomers~setColumnWidth(1) -- set width of 2nd column to longest text entry.
-
-  
-    
 /*============================================================================*/
     
     

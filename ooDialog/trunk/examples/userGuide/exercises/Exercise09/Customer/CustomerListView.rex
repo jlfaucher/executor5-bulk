@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide - Exercise09
 
-   Customer List View						  v04-00 14Oct13
+   Customer List View						  v04-00 14Nov13
    ------------------
    
    Contains: classes "CustomerListView" and "HRSclv".
@@ -50,7 +50,7 @@
    v02-00 08Jan13: Removed stand-alone startup code (not needed after Ex06)
                    Commented out say's.
    v03-00 24May13: Updated to use View and Component mixins.
-   v04-00 14Oct13: Uses the LisView superclass introduced in Exercise 9. 
+   v04-00 14Nov13: Uses the LisView superclass introduced in Exercise 9. 
 
    Outstanding Problems: None reported.
 *******************************************************************************/
@@ -93,14 +93,16 @@
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  ::METHOD getDlgInfo CLASS PRIVATE
-    dlgInfo = .Array~new
+  ::METHOD getDlgConfig CLASS PRIVATE
+    dlgConfig = .Directory~new
     -- Text to appear on the List View:    
-    dlgInfo[1] = .HRSclv
-    -- Columns (Fields) to show in List View:    
-    dlgInfo[2] = "1-Number-60-key, 2-Name-170, 5-Zip-80"
-    dlgInfo[3] = "225-273"	-- width-height of dialog
-    return dlgInfo
+    dlgConfig[text] = .HRSclv	-- Text strings visible to the user
+    				-- Columns (Fields) to show in List View:    
+    dlgConfig[lvColumns] = "Number-60-1-k,Name-170-2,Zip-80-5"
+    dlgConfig[dlgSize]   = "225-273"	-- width-height of dialog
+    dlgConfig[lvSize]    = "190-215"
+    dlgConfig[dlgIcon]   = "Customer\bmp\custlist.ico"
+    return dlgConfig
 
   /*----------------------------------------------------------------------------
     Instance Methods
@@ -112,10 +114,14 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  HRSclv (Human-Readable Strings for CustomerListView)		  v02-00 15Oct13
+  HRSclv (Human-Readable Strings for CustomerListView)		  v02-00 14Nov13
   ---
   The HRSclv class provides constant character strings for dialog title, menus,
   buttons, and user-visible messages issued by the CustomerListView class.
+  
+  Changes:
+  v01-00 07Jun12: First Version
+  v02-00 14Nov13: Second version (used from Exercise 9)  
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS HRSclv PRIVATE		-- Human-Readable Strings

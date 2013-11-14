@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 09: The Person ListView				  v01-00 09Oct13
+   Exercise 09: The Person ListView				  v01-00 14Nov13
 
    Contains: classes "PersonListView" and "HRSplv".
 
@@ -46,7 +46,7 @@
                 This is an "Intermediate" component - it is invoked by OrderMgmt,
                 and invokes PersonView.
 
-   v01-00 09Oct12: First Version.
+   v01-00 14Nov12: First Version.
 
    Outstanding Problems: None reported.
 *******************************************************************************/
@@ -60,38 +60,35 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  PersonListView						  v01-00 09Oct13
+  PersonListView						  v01-00 14Nov13
   ----------------
   The view of a list of Persons.
   Changes:
-    v01-01: First version
+    v01-00 14Nov13: First version
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
 
 ::CLASS PersonListView SUBCLASS ListView PUBLIC --INHERIT View Component
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
---  ::METHOD newInstance CLASS PUBLIC
---    self~newInstance:super(.HRSplv)
-    
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    getDlgInfo (class method) - invoked by the ListView superclass to get
-                                the text to disply on the list view, and also
-                                the columns from the data file to display.    
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD getDlgInfo CLASS
-    dlgInfo = .Array~new
+    getDlgConfig - invoked by the ListView superclass to get info about what to
+                   display on the listview. 
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD getDlgConfig CLASS PRIVATE
+    dlgConfig = .Directory~new
     -- Text to appear on the List View:
-    dlgInfo[1] = .HRSplv		
-    -- Columns (Fields) to show in List View:
-    dlgInfo[2] = "2-Family Name-80,5-Job Description-100,1-Number-60-Key"
-    -- width-height of the dialog:
-    dlgInfo[3] = "225-273"
-    return dlgInfo
+    dlgConfig[text] = .HRSplv	-- The class object containing text strings 
+    				-- visible to the user.	
+    dlgConfig[lvColumns] = "Family Name-80-2,Job Description-100-5,Number-60-1-k"
+    dlgConfig[dlgSize]   = "205-273"	 -- width-height of the dialog
+    dlgConfig[lvSize]    = "170-215"	 -- width-height of the listview control
+    dlgConfig[dlgIcon]   = "extras\person\bmp\personlist.ico"
+    return dlgConfig
 
+    
   /*----------------------------------------------------------------------------
     Instance Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

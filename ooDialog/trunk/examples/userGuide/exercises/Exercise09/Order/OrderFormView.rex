@@ -853,7 +853,7 @@
   ::METHOD leaving UNGUARDED
     --expose objectMgr viewClass viewInstance
     --objectMgr~removeView(viewClass, viewInstance)
-    say "OrderFormView/OrderLinesDlg-leaving-01."
+    --say "OrderFormView/OrderLinesDlg-leaving-01."
   /*-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - */
 
 /*============================================================================*/

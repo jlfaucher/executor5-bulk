@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide - Exercise09
    
-   Product List View						  v04-00 15Oct13
+   Product List View						  v04-00 14Nov13
    -----------------
    
    Contains: classes "ProductListView" and "HRSplv" (for human-readable strings).
@@ -53,7 +53,7 @@
                      folder, so change to ::Requires needed. 
      v03-00 20May13: Now inherits directly from RcDialog plus the View &
                      Component mixins.
-     v04-00 15Oct13: Uses the LisView superclass introduced in Exercise 9. 
+     v04-00 14Nov13: Uses the LisView superclass introduced in Exercise 9. 
 
    Outstanding Problems: None reported.
 *******************************************************************************/
@@ -79,44 +79,53 @@
                     View & Compoment mixins.                   
     v04-00 15Oct13: Most code provided by the ListView superclass introduced
                     in Exercise 9.
+                    
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-
 ::CLASS ProductListView SUBCLASS ListView PUBLIC
-
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  ::METHOD getDlgInfo CLASS PRIVATE
-    dlgInfo = .Array~new
-    -- Text to appear on the List View:    
-    dlgInfo[1] = .HRSplv
-    -- Columns (Fields) to show in List View:    
-    --dlgInfo[2] = "1-Number-60-key, 2-Name-130, 3-Price-50-f, 4-UOM-40"
-    dlgInfo[2] = "1-Number-60-key, 2-Name-130, 3-Price-50-fr, 4-UOM-40-r"
-    dlgInfo[3] = "225-273"	-- width-height of dialog
-    return dlgInfo
-
-  ::METHOD formatPrice PRIVATE
-    use arg price
-    return (price/100)~format(,2)
     
-  
   /*----------------------------------------------------------------------------
     Instance Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+  ::METHOD getDlgConfig CLASS PRIVATE
+    dlgConfig = .Directory~new
+    -- Text to appear on the List View:    
+    dlgConfig[text] = .HRSplv
+    -- Columns (Fields) to show in List View:    
+    dlgConfig[lvColumns] = "Number-60-1-k,Name-130-2,Price-50-3-fr,UOM-40-4-r"
+    dlgConfig[dlgSize]   = "225-273"	-- width-height of dialog
+    dlgConfig[lvSize]    = "190-215"	-- width-height of ListView control
+    dlgConfig[dlgIcon]   = "Product\res\product.ico"    
+    return dlgConfig
+
+    
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD lvFieldFormat PRIVATE
+    use strict arg fieldNumber, fieldValue
+    if fieldNumber = 3 then do
+      return (fieldValue/100)~format(,2)
+    end
+    else return .false
+  
 /*============================================================================*/
 
 
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  HRSplv (Human-Readable Strings for ProductListView)		  v02-00 15Oct13
+  HRSplv (Human-Readable Strings for ProductListView)		  v02-00 14Nov13
   ---
   The HRSplv class provides constant character strings for dialog title, menus,
   buttons, and user-visible messages issued by the ProductListView class.
+  
+  Changes:
+  v01-00 07Jun12: First Version
+  v02-00 14Nov13: Second version (used from Exercise 9)    
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS HRSplv PRIVATE		-- Human-Readable Strings

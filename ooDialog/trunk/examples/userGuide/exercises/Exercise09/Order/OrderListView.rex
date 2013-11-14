@@ -35,16 +35,14 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 08: The Order ListView 				  v03-00 24May13
+   Exercise 09: The Order ListView 				  v04-00 23Oct13
 
    Contains: class "OrderListView", "HRSolv"
 
-   Pre-requisite files: OrderListView.rc, OrderListView.h.
+   Pre-requisite files: None.
 
    Description: Provides a list of Orders and supports viewing any given
                 Order via a double-click on that Order's item in the list.
-                This is an "Intermediate" component - it is invoked by OrderMgmt,
-                and invokes OrderView.
 
    Changes:
    v01-00 07Jun12: First Version (Ex06).
@@ -54,202 +52,91 @@
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
                    folder, so change to ::Requires needed. 
    v03-00 24May13: Exercice08 Update to use View & Component mixin.
-
+   v04-00 23Oct13: Uses new ListView superclass. 
+   
    Outstanding Problems: None reported.
 
 *******************************************************************************/
 
 
-.Application~addToConstDir("Order\OrderListView.h")
-
-
 ::REQUIRES "ooDialog.cls"
 ::REQUIRES "Order\OrderView.rex"
---::REQUIRES "Support\RcView.rex"
-::REQUIRES "Support\View.rex"
+--::REQUIRES "Support\View.rex"
+--::REQUIRES "Support\Component.rex"
+::REQUIRES "Support\ListView.rex"
+
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  OrderListView						  	  v01-01 25Aug12
+  OrderListView						  	  v04-00 14Nov13
   -------------
   The view of a list of products.
   Changes:
     v01-00 07Jun12: First version
     v02-00 25Aug12: Updated for Ex07 using the MVF.
-    v03-00 24May13: Update for Ex08 to use View & Component mixin.    
+    v03-00 24May13: Update for Ex08 to use View & Component mixin.
+    v04-00 14Nov13: Uses ListView superclass.
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderListView SUBCLASS RcDialog PUBLIC INHERIT View Component	  -- v03
-
+::CLASS OrderListView SUBCLASS ListView PUBLIC 
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  ::METHOD newInstance CLASS PUBLIC
-    use strict arg idModel, rootDlg						  --Ex07
-    --say ".OrderListView-newInstance-01: root, idModel =" rootDlg idModel
-    dlg = self~new("Order\OrderListView.rc", "IDD_ORDLIST_LISTVIEW")
-    --say ".OrderListView-newInstance-02."
-    dlg~activate(idModel, rootDlg)					  --Ex07
-    return dlg								  --Ex07
-
+    
   /*----------------------------------------------------------------------------
     Instance Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  /*----------------------------------------------------------------------------
-    Dialog Setup Methods
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD getDlgConfig CLASS PRIVATE
+    dlgConfig = .Directory~new
+    -- Text to appear on the List View:    
+    dlgConfig[text] = .HRSolv	-- The class object containing text strings 
+    				-- visible to the user.
+    dlgConfig[lvColumns] ="OrderNo-60-1-k,CustNo-65-2,CustName-140-6,Date-60-3-fr" 
+    dlgConfig[dlgSize] = "255-273"	-- width-height of Dialog
+    dlgConfig[lvSize] = "225-225"	-- width-height of ListView control
+    dlgConfig[dlgIcon] = "OrderCustomer\bmp\orderlist.ico"
+    return dlgConfig
 
-  ::METHOD init
-    forward class (super) continue
-    self~initView
-    if \ self~createMenuBar then do		-- if there was a problem
-      self~initCode = 1
-      return
+    
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  ::METHOD lvFieldFormat PRIVATE
+    use strict arg fieldNumber, fieldValue
+    if fieldNumber = 3 then do			-- Field 3 is a date yyyymmdd
+      year  = fieldValue~left(2)
+      month = fieldValue~substr(3,2)
+      day   = fieldValue~right(2)
+      return month||"/"||day||"/"||year
     end
-
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD createMenuBar
-    -- Creates the menu bar on the dialog.
-    expose menuBar
-    --say "OrderListView-createMenuBar-01."
-    menuBar = .ScriptMenuBar~new("Order\OrderListView.rc", "IDR_ORDLIST_MENU", , , .true)
-    return .true
-
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD activate UNGUARDED
-    expose rootDlg modelData						  --Ex07
-    use strict arg idModel, rootDlg					  --Ex07
-    --say "OrderListView-activate-01: idModel, root =" idModel rootDlg
-    forward class (super) continue					  --Ex07
-    modelData = RESULT							  --Ex07
-    --say "OrderListView-activate-02: modelData =" modelData
-    self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_ORDLIST_DLGICON")
-    --return self								  --Ex07
-
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD initDialog
-    expose menuBar lvOrders btnShowOrder modelData			  --Ex07
-    -- Called by ooDialog after SHOWTOP.
-
-    menuBar~attachTo(self)
-
-    --say "OrderListView-initDialog-01"; say
-    lvOrders = self~newListView("IDC_ORDLIST_LIST");
-    lvOrders~addExtendedStyle(GRIDLINES FULLROWSELECT)
-    lvOrders~insertColumnPX(0,"OrderNo",60,"LEFT")
-    lvOrders~insertColumnPX(1,"CustNo",80,"LEFT")
-    lvOrders~insertColumnPX(2,"CustName",130,"LEFT")
-    lvOrders~insertColumnPX(3,"Date",80,"LEFT")
-    self~connectListViewEvent("IDC_ORDLIST_LIST","CLICK",itemSelected)
-    self~connectListViewEvent("IDC_ORDLIST_LIST","ACTIVATE",openItem)	-- double-click
-    self~connectButtonEvent("IDC_ORDLIST_SHOWORDER","CLICKED",showOrder)
-
-    self~loadList
-
-
-  /*----------------------------------------------------------------------------
-    Event-Handler Methods - Menu Events
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD newOrder UNGUARDED
-    self~noMenuFunction(.HRSolv~newOrder)
-
-  /*- - Help - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD about UNGUARDED
-    self~noMenuFunction(.HRSolv~helpAbout)
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD noMenuFunction UNGUARDED
-    use arg title
-    ret = MessageDialog(.HRSolv~noMenu, self~hwnd, title, 'WARNING')
-
-
-  /*----------------------------------------------------------------------------
-    Event Handling Methods - List Items
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-  ::METHOD itemSelected unguarded
-    expose lvOrders --btnShowOrder
-    use arg id, itemIndex, columnIndex, keyState
-    if itemIndex > -1 then self~enableControl("IDC_ORDLIST_SHOWORDER")
-    else self~disableControl("IDC_ORDLIST_SHOWORDER")
-
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD openItem UNGUARDED
-    --say "OrderListView-openItem-01: item selected =" item
-    self~showOrder
-
-
-  /*----------------------------------------------------------------------------
-    Application Methods
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD showOrder unguarded
-    expose lvOrders rootDlg
-    item = lvOrders~selected
-    --say "OrderListView-showOrder-01: item selected =" item
-    if item = -1 then do		-- if no item selected.
-      ret = MessageDialog(.HRSolv~nilSelected, self~hwnd, title, 'WARNING')
-      return
-    end
-    info=.Directory~new
-    if lvOrders~getItemInfo(item, info) then do
-      --say "OrderListView-showOrder-02: info~text =" info~text
-      objectMgr = .local~my.ObjectMgr
-      objectMgr~showModel("OrderModel", info~text, rootDlg)		--Ex07
-      self~disableControl("IDC_ORDLIST_SHOWORDER")
-    end
-    else do
-      say "OrderListView-showOrder-04: ~getItemInfo returned .false."
-    end
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD loadList
-    expose lvOrders modelData						-- Ex07
-    --say "OrderListView-loadList-01: dataArray =" modelData		-- Ex07
-    rows = modelData[count]						-- Ex07 - number of rows
-    arrData = modelData[records]
-    --say "OrderListView-loadList-02:Dims =" modelData~dimension(1) modelData~dimension(2)
-    do i = 1 to rows
-      --say "OrderListView-loadList-04a: modelData[i,2] =" modelData[i,2]
-      -- Change date to display format - i.e. yymmdd to (US format!) mm-dd-yy):
-      date = arrData[i,3]
-      displayDate = date~substr(3,2)||"/"||date~substr(5)||"/"||date~substr(1,2)
-      lvOrders~addRow( , ,arrData[i,1], arrData[i,2], arrData[i,6], displayDate)
-    end
-    lvOrders~setColumnWidth(2)	-- set width of 3rd column to longest text entry.
-
-
+    else return .false
+    	    
 /*============================================================================*/
 
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  HRSolv (Human-Readable Strings for OrderListView)		  v01-00 07Jun12
+  HRSolv (Human-Readable Strings for OrderListView)		  v02-00 24Oct13
   ---
-  The HRSolv class provides constant character strings for user-visible messages
-  issued by the OrderListView class.
+  The HRSolv class provides constant character strings for user-visible text.
 
   Changes:
    v01-00 07Jun12: First Version
+   v02-00 24Oct13: Second version (used from Exercise 9)
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
 ::CLASS HRSolv PRIVATE		-- Human-Readable Strings
+  ::CONSTANT dlgTitle     "Order List"
+  ::CONSTANT menu1        "Actions"
+  ::CONSTANT menu11       "New Order..."
+  ::CONSTANT menu2        "Help"
+  ::CONSTANT menu21       "About..."
   ::CONSTANT noMenu       "This menu item is not yet implemented."
-  ::CONSTANT newOrder     "New Order"
-  ::CONSTANT helpAbout    "Help - About"
-  ::CONSTANT nilSelected  "Please select an item first."
-
+  ::CONSTANT showButton   "Show Order"
+  ::CONSTANT cancelButton "Cancel"
+  
 /*============================================================================*/
 
 
