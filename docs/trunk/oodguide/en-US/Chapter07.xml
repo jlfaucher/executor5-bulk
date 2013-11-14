@@ -720,7 +720,7 @@ familyName: James; firstName: Alfred;
       <title id="ch7-cmpntdata-kinds.title">Kinds of Component</title>
       <!-- Section 7.3.1 -->
       <indexterm>
-        <primary>Kind of component</primary>
+        <primary>Kinds of component</primary>
       </indexterm>
       <indexterm>
         <primary>Component</primary>
@@ -782,12 +782,12 @@ familyName: James; firstName: Alfred;
         commented out with the comment <computeroutput>v01-00</computeroutput>; methods or
         statements added for MVF use are commented with <computeroutput>MVF</computeroutput>;
         modified statements are commented <computeroutput>v01-00-->MVF</computeroutput>; and
-        unchanged statements are commented <computeroutput>v01-00 &amp; MVF</computeroutput>.<footnote>
-          <para>Actually, Wow is somewhat schizophrenic, in that it can be launched either as a
+        unchanged statements are commented <computeroutput>v01-00</computeroutput>.
+        <footnote><para>Actually, Wow is somewhat schizophrenic, in that it can be launched either as a
             singleton or as anonymous - that is, with an instance name of "The" or "A". If "The",
             then only one instance is allowed. If "A", then multiple instances can be
-            created.</para>
-        </footnote>As mentioned above, this whole approach of having component names define the type
+            created.</para></footnote>
+        As mentioned above, this whole approach of having component names define the type
         of component is not particularly scalable. A better approach - certainly for
         production-strength apps - is to provide a configuration file that names the classes and
         states what type they are. Such a file might look something like this, and would remove the
@@ -897,7 +897,7 @@ familyName: James; firstName: Alfred;
         methods are over-ridden, and handled entirely by the
         <computeroutput>OrderData</computeroutput> class. While
         <computeroutput>getFile</computeroutput> is very simple - merely returning
-        <computeroutput>dirOrderHeaders</computeroutput> (which is sufficient for the Product
+        <computeroutput>dirOrderHeaders</computeroutput> (which is sufficient for the Order
         List component), the <computeroutput>getRecord</computeroutput> method needs to build the
         data for a single Order from both <computeroutput>dirOrderHeaders</computeroutput> and
         <computeroutput>dirOrderLines</computeroutput>. Thus it also over-rides its superclass
