@@ -62,61 +62,68 @@
 #define IDI_UP_ARROW                            110
 #define IDI_DOWN_ARROW                          112
 #define IDI_DELETE                              114
+#define IDI_DELETE_XX                           115
 #define IDC_ST_SCOPE                            1000
 #define IDC_GB_VIEW                             1001
-#define IDC_ST_DISPLAY_ICON                     1001
-#define IDC_ST_RUNAS                            1002
-#define IDC_CK_FILEASSOC                        1003
-#define IDC_ST_PATHEXT_DETAILS                  1003
-#define IDC_ST_REGISTERED                       1004
-#define IDC_ST_FTYPE                            1005
-#define IDC_EDIT                                1006
-#define IDC_RB_SINGLE_VIEW                      1006
-#define IDC_ST_REGALL                           1007
-#define IDC_ST_ELEVATED                         1008
-#define IDC_PB_UP                               1009
-#define IDC_PB_ADD_FA_EXT                       1010
-#define IDC_ST_SHORT_MSG                        1010
-#define IDC_GB_SERVICES                         1011
-#define IDC_RB_DOUBLE_VIEW                      1011
-#define IDC_PB_DOWN                             1012
-#define IDC_ST_REGCURRENT                       1013
-#define IDC_LB_SUGGESTED                        1015
-#define IDC_LB_CURRENT                          1016
-#define IDC_LB_PATHEXT                          1017
-#define IDC_PB_ADD_CURRENT                      1018
-#define IDC_PB_REMOVE_CURRENT                   1019
-#define IDC_PB_ADD_PATHEXT                      1020
-#define IDC_PB_REGISTER                         1021
-#define IDC_PB_DEL                              1022
-#define IDC_RB_CURRENT                          1023
-#define IDC_RB_ALL                              1025
-#define IDC_EDIT_FA_EXT                         1026
-#define IDC_PB_CONFIGURE                        1026
-#define IDC_ST_INADMINGROUP                     1027
-#define IDC_ST_ISRUNASADMIN                     1028
-#define IDC_ST_ISELEVATED                       1029
-#define IDC_ST_IL                               1030
-#define IDC_GB_ASSOCIATE                        1031
-#define IDC_CK_UPDATE                           1032
+#define IDC_GB_PATHEXT                          1002
+#define IDC_ST_RUNAS                            1003
+#define IDC_CK_FILEASSOC                        1004
+#define IDC_ST_PATHEXT_DETAILS                  1005
+#define IDC_ST_REGISTERED                       1006
+#define IDC_ST_FTYPE                            1007
+#define IDC_EDIT                                1008
+#define IDC_RB_SINGLE_VIEW                      1009
+#define IDC_ST_REGALL                           1010
+#define IDC_ST_ELEVATED                         1011
+#define IDC_PB_UP                               1012
+#define IDC_PB_ADD_FA_EXT                       1013
+#define IDC_ST_SHORT_MSG                        1014
+#define IDC_GB_SERVICES                         1015
+#define IDC_RB_DOUBLE_VIEW                      1016
+#define IDC_PB_DOWN                             1017
+#define IDC_ST_REGCURRENT                       1018
+#define IDC_LB_SUGGESTED                        1019
+#define IDC_LB_CURRENT                          1020
+#define IDC_LB_PATHEXT                          1021
+#define IDC_PB_ADD_CURRENT                      1022
+#define IDC_PB_REMOVE_CURRENT                   1023
+#define IDC_PB_ADD_PATHEXT                      1024
+#define IDC_PB_REGISTER                         1025
+#define IDC_PB_DEL                              1026
+#define IDC_RB_CURRENT                          1027
+#define IDC_RB_ALL                              1028
+#define IDC_EDIT_FA_EXT                         1029
+#define IDC_PB_CONFIGURE                        1030
+#define IDC_ST_INADMINGROUP                     1031
+#define IDC_ST_ISRUNASADMIN                     1032
+#define IDC_ST_ISELEVATED                       1033
+#define IDC_ST_IL                               1034
+#define IDC_GB_ASSOCIATE                        1035
+#define IDC_CK_UPDATE                           1036
+#define IDC_ST_DISPLAY_ICON                     1037
+#define IDC_PB_DELXX                            1038
 #define IDS_FRIENDLY_NAME                       40000
 #define IDC_EDIT_PE_EXT                         40001
-#define IDS_INFOTIP                             40001
+#define IDS_INFOTIP                             40002
 #define IDC_PB_ADD_PE_EXT                       40003
 
 
 // Eveything else is not passed to the resource compiler:
 #ifndef RC_INVOKED
 
-#define PATHEXT_DETAILS              "PATHEXT is only changed when Update is checked and Done is clicked. "    \
+#define PATHEXT_DETAILS              "PATHEXT is only changed when Update is checked and Done is clicked. "
+                                     /*
                                      " Use the Up / Down buttons to change the order of the extensions; the "  \
                                      "X button to delete an extension. To prevent an error, the common "       \
                                      "extensions, .com, .exe, .bat, and .cmd, can not be deleted."
+                                     */
 
 #define OS_ERR_TITLE                 "ooDialog Execute Program: Windows Error"
+#define OOD_ERR_TITLE                "ooDialog Execute Program: Internal Error"
 #define USER_ERR_TITLE               "ooDialog Execute Program: User Error"
 #define REG_ERR_TITLE                "ooDialog Execute Program: Registry Error"
 
+#define PATHEXT_UPDATE_FAILED        "An internal error is preventing any change to the PATHEXT variable."
 #define UNICODE_CONVERSION_ERR       "Conversion from Unicode to ANSI, or memory\nallocation, failed."
 #define OUT_OF_MEMORY_ERR_FMT        "Failed to allocate memory:\n\nFunction:\t\t%s\nError Code:\t%d"
 #define OS_PARSING_ERR_FMT           "Operating system parsing of the command line failed.\n\nLast reported error code: %d\n"
@@ -157,6 +164,22 @@ static char *oodSuggestedExts[] =
 
 #define OOD_SUGGESTED_EXT_COUNT      (sizeof(oodSuggestedExts) / sizeof(char *))
 
+static char *requiredPathExts[] =
+{
+    ".COM",
+    ".EXE",
+    ".BAT",
+    ".CMD",
+};
+
+#define REQUIRED_PATH_EXT_COUNT      (sizeof(requiredPathExts) / sizeof(char *))
+
+// We make these arrays a little big and hopefully we won't need to realloc them.
+#define MIN_SUGGESTED_ARRAY_SIZE      12
+#define MIN_CURRENT_ARRAY_SIZE        12
+#define MIN_ALLUSERS_ARRAY_SIZE       16
+#define MIN_CURRENTUSER_ARRAY_SIZE    16
+
 typedef enum
 {
     noDislpay = 0,
@@ -164,6 +187,14 @@ typedef enum
     versionDisplay,
     syntaxDisplay
 } dlgType_t;
+
+typedef enum
+{
+    auPeRecArray = 0,  // All Users PATHEXT
+    cuPeRecArray,      // Current User PATHEXT
+    suFaRecArray,      // Suggested File Association
+    cuFaRecArray       // Current File Association
+} recArrayType_t;
 
 typedef struct _programArguments
 {
@@ -203,10 +234,16 @@ typedef extensionInfo *pExtensionInfo;
 
 typedef struct _extRecordss
 {
+    pExtensionInfo    *faSuggestedRecs;   // Suggested file association records
+    pExtensionInfo    *faCurrentRecs;     // Currently registered file association record
     pExtensionInfo    *allUsersRecs;      // PATHEXT records for scope All Users
     pExtensionInfo    *curUserRecs;       // PATHEXT records for scope Current User
+    size_t             faSuggestedSize;   // size of faSuggestedRecs array
+    size_t             faCurrentSize;     // size of faCurrentRecs array
     size_t             auSize;            // size of allUsersRecs array
     size_t             cuSize;            // size of curUserRecs array
+    size_t             faSuggestedNext;   // next empty index in faSuggestedRecs array
+    size_t             faCurrentNext;     // next empty index in faCurrentRecs array
     size_t             auNext;            // next empty index in allUsersRecs array
     size_t             cuNext;            // next empty index in curUserRecs array
 } extRecords;
@@ -224,7 +261,8 @@ typedef struct _assocArguments
     HWND               lbCurrent;
     HWND               lbPathExt;
     HWND               pbRegister;
-    HWND               edit;
+    HWND               peEdit;
+    HWND               faEdit;
     bool               allUsers;          // If true file associations is for all users, otherwise current user
     bool               isRunAsAdmin;
     bool               isElevated;

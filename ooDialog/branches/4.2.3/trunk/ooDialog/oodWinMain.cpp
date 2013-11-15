@@ -54,6 +54,8 @@
 #include "oodShared.hpp"
 #include "oodExecutable.hpp"
 
+#define WinMainDlg_BEGIN
+
 inline CSTRING level2text(uint32_t level)
 {
 
@@ -96,29 +98,46 @@ static void setButtonIcons(HWND hDlg, HINSTANCE hInstance)
 {
     int32_t cx   = GetSystemMetrics(SM_CXSMICON);
     int32_t cy   = GetSystemMetrics(SM_CYSMICON);
+
     HANDLE hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_UP_ARROW), IMAGE_ICON, cx, cy, 0);
     HWND hButton = GetDlgItem(hDlg, IDC_PB_UP);
 
-     if( hIcon )
-     {
-         SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
-     }
+    if ( hIcon )
+    {
+        SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
+    }
 
-     hButton = GetDlgItem(hDlg, IDC_PB_DOWN);
-     hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_DOWN_ARROW), IMAGE_ICON, cx, cy, 0);
+    hButton = GetDlgItem(hDlg, IDC_PB_DOWN);
+    hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_DOWN_ARROW), IMAGE_ICON, cx, cy, 0);
 
-     if( hIcon )
-     {
-         SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
-     }
+    if ( hIcon )
+    {
+        SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
+    }
 
-     hButton = GetDlgItem(hDlg, IDC_PB_DEL);
-     hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_DELETE), IMAGE_ICON, cx, cy, 0);
+    hButton = GetDlgItem(hDlg, IDC_PB_DEL);
+    hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_DELETE), IMAGE_ICON, cx, cy, 0);
 
-     if( hIcon )
-     {
-         SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
-     }
+    if ( hIcon )
+    {
+        SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
+    }
+
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    hButton = GetDlgItem(hDlg, IDC_PB_DELXX);
+
+    if ( paa->allUsers )
+    {
+        ShowWindow(hButton, SW_HIDE);
+    }
+    else
+    {
+        hIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDI_DELETE_XX), IMAGE_ICON, cx, cy, 0);
+        if ( hIcon )
+        {
+            SendMessage(hButton, BM_SETIMAGE , IMAGE_ICON, (LPARAM)hIcon);
+        }
+    }
 }
 
 /**
@@ -165,6 +184,18 @@ static void reportErrorPlus(HWND hwnd, CSTRING function, CSTRING title, CSTRING 
 
 	internalErrorMsgBox(hwnd, msgBuf, title);
 	LocalFree(formatMsgBuf);
+}
+
+/**
+ * Reports an error using the specified message in a message box.
+ *
+ * @param hwnd
+ * @param msg
+ * @param title
+ */
+static void reportError(HWND hwnd, CSTRING msg, CSTRING title)
+{
+	internalErrorMsgBox(hwnd, msg, title);
 }
 
 /**
@@ -695,6 +726,112 @@ intptr_t CALLBACK WinMainDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
     return FALSE;
 }
 
+#define FileAssocDlg_BEGIN
+
+/**
+ * Frees the alocated records in the specified extension info array and adjusts
+ * the next pointer.  Does not free the array itself.
+ *
+ * @param extRecs
+ */
+static void resetExtRecords(pExtRecords extRecs, recArrayType_t ra)
+{
+    switch ( ra )
+    {
+        case auPeRecArray :
+            if ( extRecs->allUsersRecs != NULL )
+            {
+                for ( size_t i = 0; i < extRecs->auNext; i++ )
+                {
+                    safeLocalFree(extRecs->allUsersRecs[i]);
+                    extRecs->allUsersRecs[i] = NULL;
+                }
+                extRecs->auNext = 0;
+            }
+            break;
+
+        case cuPeRecArray :
+            if ( extRecs->curUserRecs != NULL )
+            {
+                for ( size_t i = 0; i < extRecs->cuNext; i++ )
+                {
+                    safeLocalFree(extRecs->curUserRecs[i]);
+                    extRecs->curUserRecs[i] = NULL;
+                }
+                extRecs->cuNext = 0;
+            }
+            break;
+
+        case suFaRecArray :
+            if ( extRecs->faSuggestedRecs != NULL )
+            {
+                for ( size_t i = 0; i < extRecs->faSuggestedNext; i++ )
+                {
+                    safeLocalFree(extRecs->faSuggestedRecs[i]);
+                    extRecs->faSuggestedRecs[i] = NULL;
+                }
+                extRecs->faSuggestedNext = 0;
+            }
+            break;
+
+        case cuFaRecArray :
+            if ( extRecs->faCurrentRecs != NULL )
+            {
+                for ( size_t i = 0; i < extRecs->faCurrentNext; i++ )
+                {
+                    safeLocalFree(extRecs->faCurrentRecs[i]);
+                    extRecs->faCurrentRecs[i] = NULL;
+                }
+                extRecs->faCurrentNext = 0;
+            }
+            break;
+
+        default :
+            /* Can't happen all values of the enum are handled. */
+            break;
+    }
+}
+
+/**
+ * Frees all allocated memory in extRecs and frees extRecs itself.
+ *
+ * @param extRecs
+ */
+static pExtRecords freeExtRecords(pExtRecords extRecs)
+{
+    if ( extRecs != NULL )
+    {
+        resetExtRecords(extRecs, auPeRecArray);
+        resetExtRecords(extRecs, cuPeRecArray);
+        resetExtRecords(extRecs, suFaRecArray);
+        resetExtRecords(extRecs, cuFaRecArray);
+
+        safeLocalFree(extRecs->allUsersRecs);
+        safeLocalFree(extRecs->curUserRecs);
+        safeLocalFree(extRecs->faCurrentRecs);
+        safeLocalFree(extRecs->faSuggestedRecs);
+
+        safeLocalFree(extRecs);
+    }
+    return NULL;
+}
+
+/**
+ * Called to end the FileAssocDlg dialog.  Since this dialog could,
+ * theoretically, be run numerous times within the same process, we free all
+ * allocated memory when we close the dialog.
+ *
+ * @param hDlg
+ * @param WPARAM
+ */
+static void endThisDialog(HWND hDlg, WPARAM wParam)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    freeExtRecords(paa->extensionRecords);
+    EndDialog(hDlg, wParam);
+}
+
 /**
  * In place string upper.
  *
@@ -816,7 +953,7 @@ static bool suggestedExt(pExtensionInfo info)
  *                 we use an input argument.
  *
  */
-void qualifyExtensionInfo(char *extKeyName, pExtensionInfo rec, char *progID)
+static void qualifyExtensionInfo(char *extKeyName, pExtensionInfo rec, char *progID)
 {
     char     value[MAX_HKEY_VALUE] = {'\0'};
     uint32_t maxValue              = MAX_HKEY_VALUE;
@@ -882,7 +1019,7 @@ void qualifyExtensionInfo(char *extKeyName, pExtensionInfo rec, char *progID)
  *
  * @return pExtensionInfo
  */
-pExtensionInfo getExtRec(HWND hLB, CSTRING extension, uint32_t *index)
+static pExtensionInfo getExtRec(HWND hLB, CSTRING extension, uint32_t *index)
 {
     LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
     if ( count > 0 )
@@ -912,7 +1049,7 @@ pExtensionInfo getExtRec(HWND hLB, CSTRING extension, uint32_t *index)
  *
  * @return pExtensionInfo
  */
-pExtensionInfo getSelectedExtRec(HWND hLB, uint32_t *index)
+static pExtensionInfo getSelectedExtRec(HWND hLB, uint32_t *index)
 {
     LRESULT selected = SendMessage(hLB, LB_GETCURSEL, NULL, NULL);
     if ( selected < 0 )
@@ -944,6 +1081,25 @@ inline bool extRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
 }
 
 /**
+ * Checks an extension record to see if the extension is registered in the
+ * 'other' scope.  That is, if the current scope is all users, is the extension
+ * registered for the current user?
+ *
+ * @return bool
+ */
+inline bool extRegisteredInOtherScope(pAssocArguments paa, pExtensionInfo existing)
+{
+    if ( paa->allUsers )
+    {
+        return existing->curUser;
+    }
+    else
+    {
+        return existing->allUsers;
+    }
+}
+
+/**
  * Updates the extension record using the assumption that it is registered in
  * the current scope.
  *
@@ -954,7 +1110,7 @@ inline bool extRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
  *        because the extension was just updated to point to our prog ID.  We
  *        don't actuall need to check what it was, we just do it.
  */
-void nowRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
+static void nowRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
 {
     if ( paa->allUsers )
     {
@@ -978,7 +1134,7 @@ void nowRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
  *
  * @note
  */
-void notRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
+static void notRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
 {
     if ( paa->allUsers )
     {
@@ -991,29 +1147,14 @@ void notRegisteredInScope(pAssocArguments paa, pExtensionInfo existing)
     updateExtDisplayName(existing);
 }
 
-static void eliminateDups(HWND hLB)
-{
-    LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
-    if ( count > 0 )
-    {
-        for ( LRESULT currentIndex = 0; currentIndex <= count - 2; currentIndex++ )
-        {
-            pExtensionInfo currentRec = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, currentIndex, 0);
-
-            for ( LRESULT newIndex = count -1; newIndex >= currentIndex + 1; newIndex-- )
-            {
-                pExtensionInfo newRec = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, newIndex, 0);
-
-                if ( StrCmpI(currentRec->extension, newRec->extension) == 0 )
-                {
-                    SendMessage(hLB, LB_DELETESTRING, newIndex, 0);
-                    safeLocalFree(newRec);
-                }
-            }
-        }
-    }
-}
-
+/**
+ * Creates a copy of the specified extension info record.
+ *
+ * @param hDlg
+ * @param rec
+ *
+ * @return pExtensionInfo
+ */
 static pExtensionInfo dupExtRec(HWND hDlg, pExtensionInfo rec)
 {
     pExtensionInfo r = (pExtensionInfo)LocalAlloc(LPTR, sizeof(extensionInfo));
@@ -1077,34 +1218,35 @@ static bool isNotRelevantPathExt(HWND hDlg, pAssocArguments paa, pExtensionInfo 
  */
 static bool isRequiredPathExt(char *ext, HWND hDlg)
 {
-    if ( StrCmpI(".COM", ext) == 0 ||
-         StrCmpI(".EXE", ext) == 0 ||
-         StrCmpI(".BAT", ext) == 0 ||
-         StrCmpI(".CMD", ext) == 0
-       )
+    for ( size_t i = 0; i < REQUIRED_PATH_EXT_COUNT; i++ )
     {
-        char msg[SMALL_BUF_SIZE];
+        if ( StrCmpI(requiredPathExts[i], ext) == 0 )
+        {
+            char msg[SMALL_BUF_SIZE];
 
-        _snprintf(msg, SMALL_BUF_SIZE, REQUIRED_PATHEXT_ERR_FMT, ext);
-        internalInfoMsgBox(hDlg, msg, USER_ERR_TITLE);
+            _snprintf(msg, SMALL_BUF_SIZE, REQUIRED_PATHEXT_ERR_FMT, ext);
+            internalInfoMsgBox(hDlg, msg, USER_ERR_TITLE);
 
-        return true;
+            return true;
+        }
     }
     return false;
 }
 
 /**
- * Allocates the extension records for the extensions mapped to the ooDialog
- * file type that were found in the registry.  We allocate an array of pointes
- * to an extensionInfo block and then allocate each record individually because
- * we need (may need) to free individual records.
+ * Allocates the specified number of extensionInfo structs.  This is used both
+ * for the file association extension records and the PATHEXT extension records.
+ *
+ * We allocate an array of pointers to an extensionInfo block and then allocate
+ * each record individually because we need (may need) to free individual
+ * records.
  *
  * @param matches
  * @param hDlg
  *
  * @return pExtensionInfo*
  */
-pExtensionInfo *allocExtRecords(size_t matches, HWND hDlg)
+static pExtensionInfo *allocExtensionInfoRecs(size_t matches, HWND hDlg)
 {
     pExtensionInfo *recs  = NULL;
     size_t          count = 0;
@@ -1116,7 +1258,7 @@ pExtensionInfo *allocExtRecords(size_t matches, HWND hDlg)
         goto err_out;
     }
 
-    for (size_t i = 0; i < matches; i++)
+    for ( size_t i = 0; i < matches; i++ )
     {
         pExtensionInfo r = (pExtensionInfo)LocalAlloc(LPTR, sizeof(extensionInfo));
         if ( r == NULL )
@@ -1143,6 +1285,82 @@ done_out:
 }
 
 /**
+ * Returns a pointer to a newly alocated extRecords struct.
+ *
+ * @param hDlg
+ *
+ * @return  A ponter to an extRecords strut, or NULL on error.
+ *
+ * @assumes paa->extensionRecords is NULL.
+ */
+static pExtRecords allocExtRecordsStruct(HWND hDlg)
+{
+    pExtensionInfo *faSuggestedRecs = NULL;
+    pExtensionInfo *faCurrentRecs   = NULL;
+    pExtensionInfo *allUsersRecs    = NULL;
+    pExtensionInfo *curUserRecs     = NULL;
+    pExtRecords     extRecs         = NULL;
+    uint32_t        rc              = 0;
+
+    extRecs = (pExtRecords)LocalAlloc(LPTR, sizeof(extRecords));
+    if ( extRecs == NULL )
+    {
+        rc = GetLastError();
+        goto err_out;
+    }
+
+    faSuggestedRecs = (pExtensionInfo *)LocalAlloc(LPTR, MIN_SUGGESTED_ARRAY_SIZE * sizeof(pExtensionInfo *));
+    if ( faSuggestedRecs == NULL )
+    {
+        rc = GetLastError();
+        goto err_out;
+    }
+
+    faCurrentRecs = (pExtensionInfo *)LocalAlloc(LPTR, MIN_CURRENT_ARRAY_SIZE * sizeof(pExtensionInfo *));
+    if ( faCurrentRecs == NULL )
+    {
+        rc = GetLastError();
+        goto err_out;
+    }
+
+    allUsersRecs = (pExtensionInfo *)LocalAlloc(LPTR, MIN_ALLUSERS_ARRAY_SIZE * sizeof(pExtensionInfo *));
+    if ( allUsersRecs == NULL )
+    {
+        rc = GetLastError();
+        goto err_out;
+    }
+
+    curUserRecs = (pExtensionInfo *)LocalAlloc(LPTR, MIN_CURRENTUSER_ARRAY_SIZE * sizeof(pExtensionInfo *));
+    if ( curUserRecs == NULL )
+    {
+        rc = GetLastError();
+        goto err_out;
+    }
+
+    extRecs->allUsersRecs    = allUsersRecs;
+    extRecs->curUserRecs     = curUserRecs;
+    extRecs->faCurrentRecs   = faCurrentRecs;
+    extRecs->faSuggestedRecs = faSuggestedRecs;
+
+    extRecs->auSize          = MIN_ALLUSERS_ARRAY_SIZE;
+    extRecs->cuSize          = MIN_CURRENTUSER_ARRAY_SIZE;
+    extRecs->faCurrentSize   = MIN_CURRENT_ARRAY_SIZE;
+    extRecs->faSuggestedSize = MIN_SUGGESTED_ARRAY_SIZE;
+
+    return extRecs;
+
+err_out:
+    safeLocalFree(faSuggestedRecs);
+    safeLocalFree(faCurrentRecs);
+    safeLocalFree(allUsersRecs);
+    safeLocalFree(curUserRecs);
+    safeLocalFree(extRecs);
+
+    reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", rc);
+    return NULL;
+}
+
+/**
  * Gets the extension information records for all extensions mapped to the
  * specified progID currently in the registry.
  *
@@ -1153,7 +1371,7 @@ done_out:
  *
  * @note  The caller is responsible for freeing the array.
  */
-pExtensionInfo *getExtensionRecords(HWND hDlg, char *progID, size_t *count)
+static pExtensionInfo *getExtensionRecords(HWND hDlg, char *progID, size_t *count)
 {
     uint32_t cSubKeys = 0;
     HKEY     hKCR     = HKEY_CLASSES_ROOT;
@@ -1211,7 +1429,7 @@ pExtensionInfo *getExtensionRecords(HWND hDlg, char *progID, size_t *count)
         goto done_out;
     }
 
-    recs = allocExtRecords(matches, hDlg);
+    recs = allocExtensionInfoRecs(matches, hDlg);
     if ( recs == NULL )
     {
         goto done_out;
@@ -1258,6 +1476,14 @@ done_out:
     return recs;
 }
 
+/**
+ * Counts the individual extensions in a string of extensions where the
+ * individual extenstions are separated by a ';' character.
+ *
+ * @param value
+ *
+ * @return size_t
+ */
 static size_t countPathExt(char *value)
 {
     size_t cnt = 0;
@@ -1287,7 +1513,17 @@ static size_t countPathExt(char *value)
     return cnt;
 }
 
-static int32_t findPathExt(pExtensionInfo *recs, size_t count, char *extension)
+/**
+ * Returns the index of the extension information record in an array of records
+ * for the specified extension. Or -1 if there is no record.
+ *
+ * @param recs
+ * @param count
+ * @param extension
+ *
+ * @return int32_t
+ */
+static int32_t getExtRecordIndex(pExtensionInfo *recs, size_t count, char *extension)
 {
     for ( size_t i = 0; i < count; i++ )
     {
@@ -1301,179 +1537,17 @@ static int32_t findPathExt(pExtensionInfo *recs, size_t count, char *extension)
     return -1;
 }
 
-static void fillPathExtRecs(pExtensionInfo *recs, char *pathExt, size_t count, bool isAllUsers)
-{
-    char *start = pathExt;
-    char *p;
-
-    for ( size_t i = 0; i < count; i++ )
-    {
-        p = strchr(start, ';');
-        if ( p != NULL )
-        {
-            *p = '\0';
-            p++;
-        }
-
-        pExtensionInfo current = recs[i];
-
-        current->exists = true;
-        strcpy(current->extension, start);
-        if ( isAllUsers )
-        {
-            current->allUsers = true;
-        }
-        else
-        {
-            current->curUser = true;
-        }
-        strUpper(current->extension);
-
-        start = p;
-    }
-
-}
-
 /**
- * Frees all the alocated memory in extRecs and sets the counters back to 0.
+ * Returns the extension information record in an array of records for the
+ * specified extension.  Or null if there is no record.
  *
- * @param extRecs
+ * @param recs
+ * @param count
+ * @param ext
+ *
+ * @return pExtensionInfo
  */
-static void resetExtRecords(pExtRecords extRecs)
-{
-    if ( extRecs->allUsersRecs != NULL )
-    {
-        for ( size_t i = 0; i < extRecs->auSize; i++ )
-        {
-            safeLocalFree(extRecs->allUsersRecs[i]);
-        }
-        safeLocalFree(extRecs->allUsersRecs);
-        extRecs->allUsersRecs = NULL;
-        extRecs->auSize = 0;
-        extRecs->auNext = 0;
-    }
-
-    if ( extRecs->curUserRecs != NULL )
-    {
-        for ( size_t i = 0; i < extRecs->cuSize; i++ )
-        {
-            safeLocalFree(extRecs->curUserRecs[i]);
-        }
-        safeLocalFree(extRecs->curUserRecs);
-        extRecs->curUserRecs = NULL;
-        extRecs->cuSize = 0;
-        extRecs->cuNext = 0;
-    }
-}
-
-/**
- * Frees all allocated memory in extRecs and frees extRecs itself.
- *
- * @param extRecs
- */
-static pExtRecords freeExtRecords(pExtRecords extRecs)
-{
-    if ( extRecs != NULL )
-    {
-        resetExtRecords(extRecs);
-        safeLocalFree(extRecs);
-    }
-    return NULL;
-}
-
-/**
- * Returns a pointer to an extRecords struct that is empty.  That is all
- * allocated memory in the struct has been freed if the struct previously
- * existed and things set back to 0, or if the stuct did not previously exist,
- * it was allocated.
- *
- * @param hDlg
- * @param paa
- *
- * @return  A ponter to an extRecords strut, or NULL on error.
- */
-static pExtRecords getEmptyExtRecords(HWND hDlg, pAssocArguments paa)
-{
-    pExtRecords extRecs = NULL;
-
-    if ( paa->extensionRecords == NULL )
-    {
-        extRecs = (pExtRecords)LocalAlloc(LPTR, sizeof(extRecords));
-        if ( extRecs == NULL )
-        {
-            reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
-        }
-        return extRecs;
-    }
-    else
-    {
-        resetExtRecords(paa->extensionRecords);
-    }
-    return paa->extensionRecords;
-}
-
-static void savePathExtListBoxOrder(HWND hDlg, pAssocArguments paa)
-{
-    pExtRecords extRecs = paa->extensionRecords;
-    HWND        hLB     = paa->lbPathExt;
-
-    pExtensionInfo *recArray = NULL;
-    size_t          count     = 0;
-    size_t          next      = 0;
-
-    if ( paa->allUsers )
-    {
-        recArray = extRecs->allUsersRecs;
-        count    = extRecs->auSize;
-        next     = extRecs->auNext;
-    }
-    else
-    {
-        recArray = extRecs->curUserRecs;
-        count    = extRecs->cuSize;
-        next     = extRecs->cuNext;
-    }
-
-    size_t itemCount = (size_t)SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
-
-    // The PATHEXT list box will never have 0 items.
-    for (size_t i = 0, j = 0; i < itemCount; i++ )
-    {
-        pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
-        if ( paa->allUsers )
-        {
-            if ( info->allUsers )
-            {
-                recArray[j++] = info;
-            }
-        }
-        else
-        {
-            if ( info->curUser )
-            {
-                recArray[j++] = info;
-            }
-        }
-
-        if ( j >= count )
-        {
-            // Add error code.  This should never happen, if an extension is added
-            // to the list box, its record should be added to the appropriate
-            // records array.  But we haven't coded that yet.
-            ;
-        }
-    }
-
-    if ( next < count )
-    {
-        for ( size_t i = next; i < count; i++ )
-        {
-            recArray[i] = NULL;
-        }
-    }
-}
-
-static pExtensionInfo findExtRecInArray(pExtensionInfo *recs, size_t count, char *ext)
+static pExtensionInfo getExtRecord(pExtensionInfo *recs, size_t count, char *ext)
 {
     for (size_t i = 0; i < count; i++ )
     {
@@ -1487,57 +1561,69 @@ static pExtensionInfo findExtRecInArray(pExtensionInfo *recs, size_t count, char
 }
 
 /**
- * When a PATHEXT extension is deleted from or added to the PATHEXT list box, we
- * need to update the arrays that save the PATHEXT extension records.
+ * Fills in a single extension info record with its basic information.
  *
- * @param hDlg
+ * Note that this does not fill in or update the display name fields.  Use
+ * updateExtDisplayName() for that.
+ *
+ * @param record
  * @param ext
- * @param deleting
+ * @param isAllUsers
  */
-static void updatePathExtArrays(HWND hDlg,  pAssocArguments paa, pExtensionInfo rec, bool deleting)
+static void fillPathExtRecord(pExtensionInfo record, char *ext, bool isAllUsers)
 {
-    pExtRecords extRecs = paa->extensionRecords;
-    HWND        hLB     = paa->lbPathExt;
-
-    pExtensionInfo *inScope  = NULL;
-    pExtensionInfo *outScope = NULL;
-    size_t          count     = 0;
-    size_t          next      = 0;
-
-    if ( deleting )
+    record->exists = true;
+    strcpy(record->extension, ext);
+    if ( isAllUsers )
     {
-        if ( paa->allUsers )
-        {
-            extRecs->auNext--;
-            savePathExtListBoxOrder(hDlg, paa);
-
-            pExtensionInfo info = findExtRecInArray(extRecs->curUserRecs, extRecs->cuNext, rec->extension);
-            if ( info != NULL && info->allUsers )
-            {
-                info->allUsers = false;
-                updateExtDisplayName(info);
-            }
-        }
-        else
-        {
-            extRecs->cuNext--;
-            savePathExtListBoxOrder(hDlg, paa);
-
-            pExtensionInfo info = findExtRecInArray(extRecs->allUsersRecs, extRecs->auNext, rec->extension);
-            if ( info != NULL && info->curUser )
-            {
-                info->curUser = false;
-                updateExtDisplayName(info);
-            }
-        }
+        record->allUsers = true;
     }
     else
     {
-        // Adding - not coded.
+        record->curUser = true;
     }
-
+    strUpper(record->extension);
 }
 
+/**
+ * Fills in all PATHEXT extension records in the specified array
+ *
+ * @param recs        An array of extensionInfo structs
+ * @param pathExt     A PATHEXT string, i.e.: .rex;.com;.cmd; ...
+ * @param count       The count of records in recs
+ * @param isAllUsers  The PATHEXT string is the All Users PATHEXT
+ *
+ * @assumes  The count of records matches the number of extensions in pathExt
+ */
+static void fillPathExtRecords(pExtensionInfo *recs, char *pathExt, size_t count, bool isAllUsers)
+{
+    char *start = pathExt;
+    char *p;
+
+    for ( size_t i = 0; i < count; i++ )
+    {
+        p = strchr(start, ';');
+        if ( p != NULL )
+        {
+            *p = '\0';
+            p++;
+        }
+
+        fillPathExtRecord(recs[i], start, isAllUsers);
+        start = p;
+    }
+}
+
+/**
+ * Fills the PATHEXT list box using the PATHEXT record arrays and the current
+ * mode, single or dual.
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @assumes the record arrays are currently correct and that the caller has
+ *          emptied the list box.
+ */
 static void fillPathExtListBox(HWND hDlg, pAssocArguments paa)
 {
     pExtRecords extRecs = paa->extensionRecords;
@@ -1619,12 +1705,486 @@ static void fillPathExtListBox(HWND hDlg, pAssocArguments paa)
             }
         }
     }
-
-    // eliminateDups(hLB); don't think this is needed any more.
 }
 
+/**
+ * Fills the File Association Suggested list box using the records in the
+ * suggested record array.
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @remarks  For the suggested list box, this is easy.  The only records in the
+ *           suggested record array are ones that are not registered in the
+ *           current scope.  All we are doing is updating the display name.
+ */
+static void fillSuggestedListBox(HWND hDlg, pAssocArguments paa)
+{
+    pExtRecords extRecs = paa->extensionRecords;
+    HWND        hLB     = paa->lbSuggested;
+
+    pExtensionInfo *recArray = extRecs->faSuggestedRecs;
+    size_t          count    = extRecs->faSuggestedNext;
+
+    for ( size_t i = 0; i < count; i++ )
+    {
+        pExtensionInfo  current = recArray[i];
+        char           *display  = isSingleMode(hDlg) ? current->displayName2 : current->displayName;
+
+        LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)display);
+        SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+    }
+
+}
+
+static void fillCurrentListBox(HWND hDlg, pAssocArguments paa)
+{
+    pExtRecords extRecs = paa->extensionRecords;
+    HWND        hLB     = paa->lbCurrent;
+
+    pExtensionInfo *recArray = extRecs->faCurrentRecs;
+    size_t          count    = extRecs->faCurrentNext;
+
+    if ( isSingleMode(hDlg) )
+    {
+        for ( size_t i = 0; i < count; i++ )
+        {
+            pExtensionInfo current = recArray[i];
+
+            if ( extRegisteredInScope(paa, current) )
+            {
+                LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName2);
+                SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+            }
+        }
+    }
+    else
+    {
+        for ( size_t i = 0; i < count; i++ )
+        {
+            pExtensionInfo current = recArray[i];
+
+            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
+            SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
+        }
+    }
+}
+
+/**
+ * Saves the order of the extension records for the PATHEXT.
+ *
+ * @param hDlg
+ * @param paa
+ */
+static void savePathExtListBoxOrder(HWND hDlg, pAssocArguments paa)
+{
+    pExtRecords extRecs = paa->extensionRecords;
+    HWND        hLB     = paa->lbPathExt;
+
+    pExtensionInfo *recArray = NULL;
+    size_t          count     = 0;
+    size_t          next      = 0;
+
+    if ( paa->allUsers )
+    {
+        recArray = extRecs->allUsersRecs;
+        count    = extRecs->auSize;
+        next     = extRecs->auNext;
+    }
+    else
+    {
+        recArray = extRecs->curUserRecs;
+        count    = extRecs->cuSize;
+        next     = extRecs->cuNext;
+    }
+
+    size_t itemCount = (size_t)SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
+
+    // The PATHEXT list box will never have 0 items.
+    for (size_t i = 0, j = 0; i < itemCount; i++ )
+    {
+        pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
+        if ( paa->allUsers )
+        {
+            if ( info->allUsers )
+            {
+                recArray[j++] = info;
+            }
+        }
+        else
+        {
+            if ( info->curUser )
+            {
+                recArray[j++] = info;
+            }
+        }
+
+        if ( j >= count )
+        {
+            // Add error code.  This should never happen, if an extension is added
+            // to the list box, its record should be added to the appropriate
+            // records array.  But we haven't coded that yet.
+            ;
+        }
+    }
+
+    if ( next < count )
+    {
+        for ( size_t i = next; i < count; i++ )
+        {
+            recArray[i] = NULL;
+        }
+    }
+}
+
+/**
+ * Checks that the record array specified by ra is big enough to add at least
+ * one more record (default.) Or, (optional,) big enough to add min more
+ * records.  If not, the array is doubled in size.
+ *
+ * @param hDlg
+ * @param ra
+ * @param min
+ *
+ * @return bool
+ */
+static bool ensureArraySize(HWND hDlg, recArrayType_t ra, size_t min)
+{
+    pAssocArguments paa     = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    pExtRecords     extRecs = paa->extensionRecords;
+
+    pExtensionInfo *curArray;
+    size_t          curSize;
+    size_t          curNext;
+
+    switch ( ra )
+    {
+        case auPeRecArray :
+            curArray = extRecs->allUsersRecs;
+            curSize  = extRecs->auSize;
+            curNext  = extRecs->auNext;
+            break;
+
+        case cuPeRecArray :
+            curArray = extRecs->curUserRecs;
+            curSize  = extRecs->cuSize;
+            curNext  = extRecs->cuNext;
+            break;
+
+        case suFaRecArray :
+            curArray = extRecs->faSuggestedRecs;
+            curSize  = extRecs->faSuggestedSize;
+            curNext  = extRecs->faSuggestedNext;
+            break;
+
+        case cuFaRecArray :
+            curArray = extRecs->faCurrentRecs;
+            curSize  = extRecs->faCurrentSize;
+            curNext  = extRecs->faCurrentNext;
+            break;
+
+        default :
+            /* Can't really happen */
+            return false;
+    }
+
+    if ( curNext + min < curSize )
+    {
+        return true;
+    }
+
+    size_t newSize = 2 * curSize;
+    while ( curNext + min >= newSize )
+    {
+        newSize *= 2;
+    }
+
+    pExtensionInfo *newArray = (pExtensionInfo *)LocalAlloc(LPTR, newSize * sizeof(pExtensionInfo));
+    if ( newArray == NULL )
+    {
+        reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
+        return false;
+    }
+
+    memcpy(newArray, curArray, curSize * sizeof(pExtensionInfo));
+    LocalFree(curArray);
+
+    switch ( ra )
+    {
+        case auPeRecArray :
+            extRecs->allUsersRecs = newArray;
+            extRecs->auSize       = newSize;
+            break;
+
+        case cuPeRecArray :
+            extRecs->curUserRecs = newArray;
+            extRecs->cuSize       = newSize;
+            break;
+
+        case suFaRecArray :
+            extRecs->faSuggestedRecs = newArray;
+            extRecs->faSuggestedSize = newSize;
+            break;
+
+        case cuFaRecArray :
+            extRecs->faCurrentRecs = newArray;
+            extRecs->faCurrentSize = newSize;
+            break;
+    }
+
+    return true;
+}
+inline bool ensureArraySize(HWND hDlg, recArrayType_t ra)
+{
+    return ensureArraySize(hDlg, ra, 1);
+}
+
+/**
+ * Ensures that if there is the possibility of the user updating the current
+ * user PATHEXT, it has the required extensions in it.
+ *
+ * @param paa
+ *
+ * @remarks  When we fill in the fields of a new record, we know that a required
+ *           PATHEXT extension exists in the all users PATHEXT, (unless the user
+ *           is an idiot,) and that we are adding the record to the current user
+ *           PATHEXT.
+ */
+static bool ensureSafePathExt(HWND hDlg, pAssocArguments paa)
+{
+    pExtRecords extRecs = paa->extensionRecords;
+
+    if ( extRecs->cuNext == 0 )
+    {
+        pExtensionInfo *recs = allocExtensionInfoRecs(REQUIRED_PATH_EXT_COUNT, hDlg);
+        if ( recs == NULL )
+        {
+            return false;
+        }
+
+        for ( size_t i = 0; i < REQUIRED_PATH_EXT_COUNT; i++ )
+        {
+            pExtensionInfo allUsersRec = getExtRecord(extRecs->allUsersRecs, extRecs->auNext, requiredPathExts[i]);
+            pExtensionInfo current     = recs[i];
+
+            if ( allUsersRec != NULL )
+            {
+                allUsersRec->curUser = true;
+                current->allUsers    = true;
+            }
+            else
+            {
+                allUsersRec->curUser = false;
+            }
+
+            current->curUser  = true;
+            current->exists   = true;
+            strcpy(current->extension, requiredPathExts[i]);
+            updateExtDisplayName(current);
+
+            extRecs->curUserRecs[extRecs->cuNext++] = current;
+        }
+    }
+    return true;
+}
+
+/**
+ * Adds a extension info record to the specified array, increasing the array
+ * size if needed.
+ *
+ * @param hDlg
+ * @param rec
+ * @param ra  Which record array we are concerned with.
+ *
+ * @remarks  For the PATHEXT, only the 'in scope' PATHEXT can be changed.  The
+ *           'out of scope' array remains fixed.  We are going to assume the
+ *           caller used the correct record array type.
+ */
+static bool addRecToArray(HWND hDlg, pExtensionInfo rec, recArrayType_t ra)
+{
+    pAssocArguments paa     = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    pExtRecords     extRecs = paa->extensionRecords;
+
+    // Make sure there will be enough room in the array to begin with.
+    if ( !ensureArraySize(hDlg, ra) )
+    {
+        return false;
+    }
+
+    switch ( ra )
+    {
+        case auPeRecArray :
+            extRecs->allUsersRecs[extRecs->auNext++] = rec;
+            break;
+
+        case cuPeRecArray :
+            extRecs->curUserRecs[extRecs->cuNext++] = rec;
+            break;
+
+        case suFaRecArray :
+            extRecs->faSuggestedRecs[extRecs->faSuggestedNext++] = rec;
+            break;
+
+        case cuFaRecArray :
+            extRecs->faCurrentRecs[extRecs->faCurrentNext++] = rec;
+            break;
+
+        default :
+            return false;
+    }
+    return true;
+}
+
+/**
+ * When a PATHEXT extension is deleted from or added to the PATHEXT list box, we
+ * need to update the arrays that save the PATHEXT extension records.
+ *
+ * @param hDlg
+ * @param ext
+ * @param deleting
+ *
+ * @remarks  If we are deleting, the caller has already deleted the item from
+ *           the PATHEXT list box.  If we are adding, we add the item to the
+ *           list box, and it will go at the end of the record array.
+ *
+ *           The all users PATHEXT will never be empty.  But there might not be
+ *           any PATHEXT for the current user.  We need to be sure the user does
+ *           not add a current user PATHEXT that does not contain .exe, etc.. So
+ *           we check to see if the current user PATHEXT is empty and add the
+ *           required PATHEXT records if needed.
+ */
+static void updatePathExtArrays(HWND hDlg, pAssocArguments paa, pExtensionInfo rec, bool deleting)
+{
+    pExtRecords extRecs = paa->extensionRecords;
+    HWND        hLB     = paa->lbPathExt;
+
+    pExtensionInfo *inScope  = NULL;
+    pExtensionInfo *outScope = NULL;
+    size_t          count     = 0;
+    size_t          next      = 0;
+
+    pExtensionInfo info = NULL;
+
+    if ( deleting )
+    {
+        if ( paa->allUsers )
+        {
+            extRecs->auNext--;
+            savePathExtListBoxOrder(hDlg, paa);
+
+            info = getExtRecord(extRecs->curUserRecs, extRecs->cuNext, rec->extension);
+            if ( info != NULL && info->allUsers )
+            {
+                info->allUsers = false;
+                updateExtDisplayName(info);
+            }
+        }
+        else
+        {
+            extRecs->cuNext--;
+            savePathExtListBoxOrder(hDlg, paa);
+
+            info = getExtRecord(extRecs->allUsersRecs, extRecs->auNext, rec->extension);
+            if ( info != NULL && info->curUser )
+            {
+                info->curUser = false;
+                updateExtDisplayName(info);
+            }
+        }
+    }
+    else
+    {
+        // Be sure we don't lose the current order
+        savePathExtListBoxOrder(hDlg, paa);
+
+        // The record sent to us needs its fields updated.
+        rec->allUsersOther = false;
+        rec->curUserOther  = false;
+        strUpper(rec->extension);
+
+        recArrayType_t ra;
+        if ( paa->allUsers )
+        {
+            rec->allUsers = true;
+            ra            = auPeRecArray;
+
+            info = getExtRecord(extRecs->curUserRecs, extRecs->cuNext, rec->extension);
+            if ( info != NULL )
+            {
+                rec->curUser   = true;
+                info->allUsers = true;
+                updateExtDisplayName(info);
+            }
+        }
+        else
+        {
+            rec->curUser = true;
+            ra           = cuPeRecArray;
+
+            ensureSafePathExt(hDlg, paa);
+
+            info = getExtRecord(extRecs->allUsersRecs, extRecs->auNext, rec->extension);
+            if ( info != NULL )
+            {
+                rec->allUsers = true;
+                info->curUser = true;
+                updateExtDisplayName(info);
+            }
+        }
+
+        updateExtDisplayName(rec);
+        addRecToArray(hDlg, rec, ra);
+
+        SendMessage(hLB, LB_RESETCONTENT, 0, 0);
+        fillPathExtListBox(hDlg, paa);
+    }
+}
+
+/**
+ * Determines if an extension already exists in the PATHEXT for the current
+ * scope.
+ *
+ * @param paa
+ * @param ext
+ *
+ * @return bool
+ */
+static bool pathExtExtExists(pAssocArguments paa, char *ext)
+{
+    pExtensionInfo *recArray = NULL;
+    pExtRecords     extRecs  = paa->extensionRecords;
+    size_t          next     = 0;
+
+    if ( paa->allUsers )
+    {
+        recArray = extRecs->allUsersRecs;
+        next     = extRecs->auNext;
+    }
+    else
+    {
+        recArray = extRecs->curUserRecs;
+        next     = extRecs->cuNext;
+    }
+
+    return getExtRecord(recArray, next, ext) != NULL;
+}
+
+/**
+ * Gets the individual extension records for the All Users and Current User
+ * PATHEXT.  Unlike the file association records, these records do not change
+ * during the life time of the dialog, so we only want to do this once.
+ *
+ * @param hDlg
+ * @param paa
+ */
 static void getAddPathExtRecords(HWND hDlg, pAssocArguments paa)
 {
+    if ( paa->extensionRecords->auNext > 0 )
+    {
+        // A little insurance, we shouldn't be called in the first place.
+        return;
+    }
+
     char  *keyName = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
     HKEY   hKey    = HKEY_LOCAL_MACHINE;
     HKEY   hEnvKey;
@@ -1638,15 +2198,9 @@ static void getAddPathExtRecords(HWND hDlg, pAssocArguments paa)
 
     pExtensionInfo *recs     = NULL;
     pExtensionInfo *userRecs = NULL;
-    pExtRecords     extRecs  = NULL;
+    pExtRecords     extRecs  = paa->extensionRecords;
 
     HWND hLB = paa->lbPathExt;
-
-    extRecs = getEmptyExtRecords(hDlg, paa);
-    if ( extRecs == NULL )
-    {
-        goto done_out;
-    }
 
     uint32_t retCode = RegOpenKeyEx(hKey, keyName, 0, KEY_QUERY_VALUE, &hEnvKey);
     if ( retCode == ERROR_SUCCESS )
@@ -1680,13 +2234,13 @@ static void getAddPathExtRecords(HWND hDlg, pAssocArguments paa)
         goto done_out;
     }
 
-    recs = allocExtRecords(allCnt, hDlg);
+    recs = allocExtensionInfoRecs(allCnt, hDlg);
     if ( recs == NULL )
     {
         goto done_out;
     }
 
-    fillPathExtRecs(recs, expanded, allCnt, true);
+    fillPathExtRecords(recs, expanded, allCnt, true);
 
     value[0] = '\0';
     maxValue = MAX_HKEY_VALUE;
@@ -1731,12 +2285,12 @@ static void getAddPathExtRecords(HWND hDlg, pAssocArguments paa)
 
     if ( curCnt > 0 )
     {
-        userRecs = allocExtRecords(curCnt, hDlg);
+        userRecs = allocExtensionInfoRecs(curCnt, hDlg);
         if ( userRecs == NULL )
         {
             goto err_out;
         }
-        fillPathExtRecs(userRecs, expanded, curCnt, false);
+        fillPathExtRecords(userRecs, expanded, curCnt, false);
     }
 
     // First we need to fix up the display name for all records in each array.
@@ -1746,7 +2300,7 @@ static void getAddPathExtRecords(HWND hDlg, pAssocArguments paa)
 
         if ( curCnt > 0 )
         {
-            int32_t idx = findPathExt(userRecs, curCnt, current->extension);
+            int32_t idx = getExtRecordIndex(userRecs, curCnt, current->extension);
             if ( idx >= 0 )
             {
                 current->curUser = true;
@@ -1761,23 +2315,37 @@ static void getAddPathExtRecords(HWND hDlg, pAssocArguments paa)
         {
             pExtensionInfo current = userRecs[i];
 
-            int32_t idx = findPathExt(recs, allCnt, current->extension);
+            int32_t idx = getExtRecordIndex(recs, allCnt, current->extension);
             if ( idx >= 0 )
             {
                 current->allUsers = true;
             }
-                updateExtDisplayName(current);
+            updateExtDisplayName(current);
         }
     }
 
+    // Check that the  arrays are big enough.
+    if ( (! ensureArraySize(hDlg, auPeRecArray, allCnt)) || (! ensureArraySize(hDlg, cuPeRecArray, curCnt)) )
+    {
+        endThisDialog(hDlg, NULL);
+        return;
+    }
+
     // Then save the two record arrays and associated info.
-    extRecs->allUsersRecs = recs;
-    extRecs->curUserRecs  = userRecs;
-    extRecs->auSize       = allCnt;
-    extRecs->auNext       = allCnt;
-    extRecs->cuSize       = curCnt;
-    extRecs->cuNext       = curCnt;
-    paa->extensionRecords = extRecs;
+    for ( size_t i = 0; i < allCnt; i++ )
+    {
+        extRecs->allUsersRecs[i] = recs[i];
+    }
+    extRecs->auNext = allCnt;
+
+    for ( size_t i = 0; i < curCnt; i++ )
+    {
+        extRecs->curUserRecs[i] = userRecs[i];
+    }
+    extRecs->cuNext = curCnt;
+
+    safeLocalFree(recs);
+    safeLocalFree(userRecs);
 
     // Finally fill the list box with the proper records according to mode
     fillPathExtListBox(hDlg, paa);
@@ -1804,7 +2372,7 @@ done_out:
  *
  * @param paa
  */
-void checkRegistration(pAssocArguments paa)
+static void checkRegistration(pAssocArguments paa)
 {
     char     value[MAX_HKEY_VALUE] = {'\0'};
     uint32_t maxValue              = MAX_HKEY_VALUE;
@@ -1841,35 +2409,199 @@ void checkRegistration(pAssocArguments paa)
 }
 
 /**
- * Removes all items from the specified list box, if there are any items.
+ * In a list box you can't simply change the displayed name of an item.  The
+ * item has to be deleted and a new string inserted.
  *
- * Each item in any of the list boxes has an extension record struct set as the
- * item data for the item.  These records need to be freed before the list box
- * is emptied.
+ * In much of this application we simply empty the list box and then refill it
+ * from the record arrays.  This ensures that the item index in the list box
+ * matches the index of the extension info record in its array.
  *
- * @param hLB
+ * Sometimes though, all we want is to change the item string displayed.  This
+ * function handles that.
+ *
+ * @param paa
+ * @param rec
+ * @param index
+ * @param ra
  */
-void maybeEmptyLB(HWND hLB)
+static void updateDisplayNameInPlace(pAssocArguments paa, pExtensionInfo rec, uint32_t index, recArrayType_t ra)
 {
-    LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
-    if ( count > 0 )
+    HWND  hLB;
+
+    switch ( ra )
     {
-        for (LRESULT i = 0; i > count; i++ )
-        {
-            pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
-            safeLocalFree(info);
-        }
-        SendMessage(hLB, LB_RESETCONTENT, 0, 0);
+        case auPeRecArray :
+        case cuPeRecArray :
+            hLB = paa->lbPathExt;
+            break;
+
+        case suFaRecArray :
+            hLB = paa->lbSuggested;
+            break;
+
+        case cuFaRecArray :
+            hLB = paa->lbCurrent;
+            break;
     }
+
+    char *display = isSingleMode(hLB) ? rec->displayName2 : rec->displayName;
+
+    SendMessage(hLB, LB_DELETESTRING, index, 0);
+    SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)display);
+    SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)rec);
 }
 
 /**
- * Adds the suggested file extensions to the list box.  The first time through,
- * the list box will be empty.  But, we may do this several times if the user
- * adds and / or removes the registration for the file type.
+ * Retrieves the assumed extension from an edit control, allocates an extension
+ * info record for it, and returns it.
  *
- * If there are any items in the list box, we need to not only remove them, but
- * to also free the extension memory.
+ * @param hDlg
+ * @param edit
+ *
+ * @return A pExtensionInfo record on success and null on error.
+ */
+static pExtensionInfo getExtRecordFromEditBox(HWND hDlg, HWND edit)
+{
+    char           text[MAX_EXT_NAME];
+    int32_t        count = MAX_EXT_NAME;
+    pExtensionInfo info = NULL;
+
+    count = GetWindowText(edit, text, count);
+    if ( count == 0 )
+    {
+        uint32_t rc = GetLastError();
+        if ( rc != 0 )
+        {
+            reportError(hDlg, "GetWindowText", OS_ERR_TITLE, rc);
+        }
+        goto done_out;
+    }
+
+    info = (pExtensionInfo)LocalAlloc(LPTR, sizeof(extensionInfo));
+    if ( info == NULL )
+    {
+        reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
+        goto done_out;
+    }
+    if ( *text != '.' )
+    {
+        strcpy(info->extension, ".");
+    }
+    strcat(info->extension, text);
+
+done_out:
+    return info;
+}
+
+/**
+ * Resets the extension info record array specified by ra and removes all items
+ * from the associated list box.
+ *
+ * @param paa
+ * @param ra
+ *
+ * @assumes We are only called for the Suggested File Association or the Current
+ *          File Association list boxes.
+ *
+ * @note  We just invoke resetExtRecords() unconditionally, if there are no
+ *        records the function will just return.
+ */
+static void maybeReset(pAssocArguments paa, recArrayType_t ra)
+{
+    resetExtRecords(paa->extensionRecords, ra);
+
+    SendMessage(ra == suFaRecArray ? paa->lbSuggested : paa->lbCurrent, LB_RESETCONTENT, 0, 0);
+}
+
+/**
+ * Removes the extension info record specified by its index from the suggested
+ * list box and the suggested records array.
+ *
+ * @param hDlg
+ * @param index
+ *
+ * @return The removed record.
+ *
+ * @note  The removed record must be freed by the caller.
+ */
+static pExtensionInfo removeFromSuggested(HWND hDlg, uint32_t index, int32_t arrayIndex)
+{
+    pAssocArguments paa     = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    pExtRecords     extRecs = paa->extensionRecords;
+
+    pExtensionInfo tempRec = extRecs->faSuggestedRecs[arrayIndex];
+
+    if ( arrayIndex + 1 == extRecs->faSuggestedNext )
+    {
+        // The record being remove is the last entry in the array, just set it
+        // to null.
+        extRecs->faSuggestedRecs[arrayIndex] = NULL;
+    }
+    else
+    {
+        // The record being remove is not the last entry.  Move the entries
+        // following the removed entry to the one being removed.
+        memmove(&extRecs->faSuggestedRecs[arrayIndex],
+                &extRecs->faSuggestedRecs[arrayIndex + 1],
+                (extRecs->faSuggestedNext - arrayIndex + 1) * sizeof(pExtensionInfo));
+
+        extRecs->faSuggestedRecs[extRecs->faSuggestedNext - 1] = NULL;
+    }
+    extRecs->faSuggestedNext--;
+
+    SendMessage(paa->lbSuggested, LB_DELETESTRING, index, 0);
+
+    return tempRec;
+}
+
+/**
+ * Removes the extension info record specified by its index from the current
+ * list box and the current records array.
+ *
+ * @param hDlg
+ * @param index
+ *
+ * @return The removed record.
+ *
+ * @note  The removed record must be freed by the caller.
+ */
+static pExtensionInfo removeFromCurrent(HWND hDlg, uint32_t index, int32_t arrayIndex)
+{
+    pAssocArguments paa     = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    pExtRecords     extRecs = paa->extensionRecords;
+
+    pExtensionInfo tempRec = extRecs->faCurrentRecs[arrayIndex];
+
+    if ( arrayIndex + 1 == extRecs->faCurrentNext )
+    {
+        // The record being remove is the last entry in the array, just set it
+        // to null.
+        extRecs->faCurrentRecs[arrayIndex] = NULL;
+    }
+    else
+    {
+        // The record being remove is not the last entry.  Move the entries
+        // following the removed entry to the one being removed.
+        memmove(&extRecs->faCurrentRecs[arrayIndex],
+                &extRecs->faCurrentRecs[arrayIndex + 1],
+                (extRecs->faCurrentNext - arrayIndex + 1) * sizeof(pExtensionInfo));
+
+        extRecs->faCurrentRecs[extRecs->faCurrentNext - 1] = NULL;
+    }
+    extRecs->faCurrentNext--;
+
+    SendMessage(paa->lbCurrent, LB_DELETESTRING, index, 0);
+
+    return tempRec;
+}
+
+/**
+ * Adds the suggested file extensions to the list box.
+ *
+ * The first time through, the list box will be empty.  But, we may do this
+ * several times if the user adds and / or removes the registration for the file
+ * type.  Rather than try to updated existing records on succesive invocations,
+ * we just reset everything and start over.
  *
  * For the suggested extensions, we may end up with 2 records.  If the extension
  * is not registered in this scope, then we want it to be an item in the
@@ -1884,12 +2616,15 @@ void maybeEmptyLB(HWND hLB)
  * @param paa
  *
  * @return bool
+ *
+ * @remarks  The suggeste record array is always big enough to hold all the
+ *           suggested extensions.  Since we reset that array to begin with, we
+ *           do not need to worry about the size of the array here.
  */
 static bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
 {
-    HWND hLB = paa->lbSuggested;
 
-    maybeEmptyLB(hLB);
+    maybeReset(paa, suFaRecArray);
 
     for ( size_t i = 0; i < OOD_SUGGESTED_EXT_COUNT; i++ )
     {
@@ -1912,11 +2647,13 @@ static bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
         }
         else
         {
-            if ( strcmp(info->displayName, "") == 0 )
-            {
-                internalErrorMsgBox(hDlg, info->extension, "Display Name is empty string");
-            }
-            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)info->displayName);
+            pExtRecords extRecs = paa->extensionRecords;
+            HWND        hLB     = paa->lbSuggested;
+            char       *display = isSingleMode(hDlg) ? info->displayName2 : info->displayName;
+
+            extRecs->faSuggestedRecs[extRecs->faSuggestedNext++] = info;
+
+            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)display);
             SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)info);
         }
     }
@@ -1932,7 +2669,7 @@ static bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
  * use its record.
  *
  * @param hDlg
- * @param paa
+ * @param paa            NOTE redo comments
  *
  * @note  When we get the extension records we get a record for every .ext
  *        registered to our prog ID.
@@ -1949,64 +2686,56 @@ static bool addSuggestedExt(HWND hDlg, pAssocArguments paa)
  *        it a good candidate for a 'suggestion', so we put it in the suggested
  *        list box.
  */
-void addCurrentExt(HWND hDlg, pAssocArguments paa)
+static void addCurrentExt(HWND hDlg, pAssocArguments paa)
 {
-    size_t count = 0;
     HWND   hLB   = paa->lbCurrent;
 
-    maybeEmptyLB(hLB);
+    maybeReset(paa, cuFaRecArray);
 
-    pExtensionInfo *recs = getExtensionRecords(hDlg, paa->progID, &count);
+    size_t          count = 0;
+    pExtensionInfo *recs  = getExtensionRecords(hDlg, paa->progID, &count);
+
+    if ( ! ensureArraySize(hDlg, cuFaRecArray, count) )
+    {
+        endThisDialog(hDlg, NULL);
+        return;
+    }
 
     for ( size_t i = 0; i < count; i++ )
     {
         pExtensionInfo current = recs[i];
-        if ( current->suggested )
-        {
-            if ( ! extRegisteredInScope(paa, current) )
-            {
-                LocalFree(current);
-                continue;
-            }
 
-            if ( strcmp(current->displayName, "") == 0 )
-            {
-                internalErrorMsgBox(hDlg, current->extension, "Current Suggested Display Name is empty string");
-            }
-            LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
-            SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
-        }
-        else
-        {
-            if ( extRegisteredInScope(paa, current) )
-            {
-                if ( strcmp(current->displayName, "") == 0 )
-                {
-                    internalErrorMsgBox(hDlg, current->extension, "Current NOT Suggested IN SCOPE Display Name is empty string");
-                }
-                LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)current->displayName);
-                SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
-            }
-            else
-            {
-                if ( strcmp(current->displayName, "") == 0 )
-                {
-                    internalErrorMsgBox(hDlg, current->extension, "Current NOT Suggested NOT IN SCOPE Display Name is empty string");
-                }
-                LRESULT index = SendMessage(paa->lbSuggested, LB_ADDSTRING, 0, (LPARAM)current->displayName);
-                SendMessage(paa->lbSuggested, LB_SETITEMDATA, index, (LPARAM)current);
-            }
-        }
+        pExtRecords extRecs = paa->extensionRecords;
+        HWND        hLB     = paa->lbCurrent;
+        char       *display = isSingleMode(hDlg) ? current->displayName2 : current->displayName;
+
+        extRecs->faCurrentRecs[extRecs->faCurrentNext++] = current;
+
+        LRESULT index = SendMessage(hLB, LB_ADDSTRING, 0, (LPARAM)display);
+        SendMessage(hLB, LB_SETITEMDATA, index, (LPARAM)current);
     }
 }
 
+/**
+ * Fills the PATHEXT list box with its items.
+ *
+ * In the first version of this dialog we upated the PATHEXT list box each time
+ * the registered / unregistered state changed, like we do for the file
+ * association list boxes. However since any changes to PATHEXT are not done
+ * until the dialog exits, that is not necessary.
+ *
+ * That makes this is an unneeded intermediate step, but it is being retained in
+ * case we need to go back to the original logic.
+ *
+ * @param hDlg
+ * @param paa
+ */
 static void addPathExt(HWND hDlg, pAssocArguments paa)
 {
-    size_t count = 0;
-    HWND   hLB   = paa->lbPathExt;
-
-    maybeEmptyLB(hLB);
-    getAddPathExtRecords(hDlg, paa);
+    if ( paa->extensionRecords->auNext == 0 )
+    {
+        getAddPathExtRecords(hDlg, paa);
+    }
 }
 
 /**
@@ -2022,7 +2751,7 @@ static void addPathExt(HWND hDlg, pAssocArguments paa)
  * @param paa
  * @param flag
  */
-void setAssocControls(HWND hDlg, pAssocArguments paa, bool flag)
+static void setAssocControls(HWND hDlg, pAssocArguments paa, bool flag)
 {
     BOOL enable = flag ? TRUE : FALSE;
 
@@ -2148,29 +2877,29 @@ static void setStaticText(HWND hDlg, pAssocArguments paa)
  *
  * @return HKEY
  */
-HKEY getScopeVars(pAssocArguments paa, char **user)
+static HKEY getScopeVars(pAssocArguments paa, char **user)
 {
     HKEY  hPreDefKey = HKEY_CURRENT_USER;
-    char *u          = "the current user.";
+    char *u          = "the Current User.";
 
     if ( paa->allUsers )
     {
         hPreDefKey = HKEY_LOCAL_MACHINE;
-        u          = "all users";
+        u          = "All Users";
     }
     *user = u;
     return hPreDefKey;
 }
 
-
 /**
+ * Deletes our ooDialog ProgID from the registry.
  *
  * @param hDlg
  * @param paa
  *
  * @return bool
  */
-bool deleteRegProgID(HWND hDlg, pAssocArguments paa)
+static bool deleteRegProgID(HWND hDlg, pAssocArguments paa)
 {
     char *user;
     HKEY hPreDefKey = getScopeVars(paa, & user);
@@ -2191,7 +2920,6 @@ bool deleteRegProgID(HWND hDlg, pAssocArguments paa)
     return true;
 }
 
-
 /**
  * Deletes all extension (.xxx) subkeys for our ooDialog file type (prog ID)
  * within the scope (all users / current user) we are under.
@@ -2206,16 +2934,16 @@ bool deleteRegProgID(HWND hDlg, pAssocArguments paa)
  *        set.  So, I ignore that specific error.  In getExtensionRecords() we
  *        just ignore all errors and that might be what we should do here.
  *        After all, if we can't query the default value for an extension
- *        subkey, it was probably not set by use.
+ *        subkey, it was probably not set by us.
  *
  *        If we enumerate through the .ext keys and check each one for our prog
  *        ID, and delete it on a match, the index gets screwed up and we fail to
- *        delete extensions if there are more than on.
+ *        delete extensions if there are more than one.
  *
  *        Theoretically, all registered extension will be in our current list
  *        box.  So what we do, is enumerate the list box items and delete each
  *        extension that is is registered in our scope.  This seems to work
- *        will, but it is dependent on the list box items being accurate.
+ *        well, but it is dependent on the list box items being accurate.
  *
  *        The other approach would be to enumerate all subkeys and keep track of
  *        our matches.  The current approach is simplier and we'll use it unless
@@ -2290,7 +3018,7 @@ static bool deleteRegAllExt(HWND hDlg, pAssocArguments paa)
  *        check the disposition and if was created, we could delete the key if
  *        we fail to set the default value.
  */
-HKEY writeRegSubkeyValue(HKEY openedKey, char *subkey, char *defValue, HWND hDlg, char *user)
+static HKEY writeRegSubkeyValue(HKEY openedKey, char *subkey, char *defValue, HWND hDlg, char *user)
 {
     uint32_t disp;
     uint32_t rc;
@@ -2465,6 +3193,14 @@ static bool removeProgID(HWND hDlg, pAssocArguments paa)
     return true;
 }
 
+/**
+ * Writes a new PATHEXT value to the registry.  Which registry key is written is
+ * based on the current scope.
+ *
+ * @param hDlg
+ * @param paa
+ * @param val
+ */
 static void writeNewPathExt(HWND hDlg, pAssocArguments paa, char *val)
 {
     char  *keyName = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
@@ -2494,7 +3230,8 @@ static void writeNewPathExt(HWND hDlg, pAssocArguments paa, char *val)
         RegCloseKey(hEnvKey);
         if ( retCode == ERROR_SUCCESS )
         {
-            SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+            DWORD_PTR result;
+            SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Environment", SMTO_NORMAL, 10000, &result);
         }
     }
     else
@@ -2507,6 +3244,99 @@ static void writeNewPathExt(HWND hDlg, pAssocArguments paa, char *val)
     return;
 }
 
+/**
+ * Removes the PATHEXT value for the Current User.
+ *
+ * @param hDlg
+ * @param paa
+ * @param val
+ *
+ * @assumes The caller has ensured that the scope is correct.
+ */
+static bool removePathExt(HWND hDlg, pAssocArguments paa)
+{
+    char  *keyName = "Environment";
+    char  *user    = "the Current User.";
+    HKEY   hKey    = HKEY_CURRENT_USER;
+    HKEY   hEnvKey;
+    char   extraMsg[SMALL_BUF_SIZE];
+
+    if ( hKey == HKEY_CURRENT_USER )
+    {
+        keyName = "Environment";
+    }
+
+    uint32_t retCode = RegOpenKeyEx(hKey, keyName, 0, KEY_SET_VALUE, &hEnvKey);
+    if ( retCode == ERROR_SUCCESS )
+    {
+        retCode = RegDeleteValue(hEnvKey, "PATHEXT");
+        if ( retCode != ERROR_SUCCESS )
+        {
+            _snprintf(extraMsg, SMALL_BUF_SIZE,
+                      "Failed to remove the %s value for %s", "PATHEXT", user);
+
+            reportErrorPlus(hDlg, "RegDeleteValue", REG_ERR_TITLE, extraMsg, retCode);
+            return false;
+        }
+
+        RegCloseKey(hEnvKey);
+        if ( retCode == ERROR_SUCCESS )
+        {
+            DWORD_PTR result;
+            SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Environment", SMTO_NORMAL, 10000, &result);
+        }
+    }
+    else
+    {
+        _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to open the %s\\%s registry key for setting a value.",
+                  hKey == HKEY_LOCAL_MACHINE ? "HKLM" : "HKCU", keyName);
+        reportErrorPlus(hDlg, "RegOpenKeyEx", REG_ERR_TITLE, extraMsg, retCode);
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Handles removing the Current User PATHEXT variable.  Asks the user if it is
+ * okay before doing it.
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @return intptr_t
+ *
+ * @assumes the caller has insured the scope is the Current User.
+ */
+static intptr_t removingPathExtForCurrentUser(HWND hDlg, pAssocArguments paa)
+{
+    char msg[MEDIUM_BUF_SIZE];
+    _snprintf(msg, SMALL_BUF_SIZE, "The PATHEXT variable for the Current User will be removed completely.\n\n"
+                                   "Continue with this operations?");
+
+    int32_t reply = MessageBox(hDlg, msg, "Removing PATHEXT for the Current User",
+                               MB_YESNOCANCEL | MB_ICONINFORMATION | MB_DEFBUTTON3);
+    if ( reply == IDYES )
+    {
+        removePathExt(hDlg, paa);
+    }
+    else if ( reply == IDCANCEL )
+    {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/**
+ * Adds our ooDialog ProgID to the registry
+ *
+ * @author Administrator (11/12/2013)
+ *
+ * @param hDlg
+ * @param paa
+ *
+ * @return bool
+ */
 static bool addProgID(HWND hDlg, pAssocArguments paa)
 {
     char *user;
@@ -2618,7 +3448,7 @@ done_out:
  *
  * @return intptr_t
  */
-intptr_t pbDone(HWND hDlg)
+static intptr_t pbDone(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
@@ -2631,7 +3461,21 @@ intptr_t pbDone(HWND hDlg)
     HWND hLB = paa->lbPathExt;
 
     LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
-    if ( count > 0 )
+    if ( count == 0 )
+    {
+        // If we are configuring for the Current User, this means the user wants
+        // to remove the Current User PATHEXT completely.
+        if ( ! paa->allUsers )
+        {
+            return removingPathExtForCurrentUser(hDlg, paa);
+        }
+        else
+        {
+            reportError(hDlg, PATHEXT_UPDATE_FAILED, OOD_ERR_TITLE);
+            return TRUE;
+        }
+    }
+    else
     {
         for ( LRESULT i = 0; i < count; i++ )
         {
@@ -2649,20 +3493,40 @@ intptr_t pbDone(HWND hDlg)
             {
                 if ( info->curUser )
                 {
-            strcat(valBuf, info->extension);
-                strcat(valBuf, ";");
+                    strcat(valBuf, info->extension);
+                    strcat(valBuf, ";");
+                }
             }
         }
+
+        if ( strlen(valBuf) == 0 )
+        {
+            if ( ! paa->allUsers )
+            {
+                return removingPathExtForCurrentUser(hDlg, paa);
+            }
+            else
+            {
+                reportError(hDlg, PATHEXT_UPDATE_FAILED, OOD_ERR_TITLE);
+                return TRUE;
+            }
         }
+
         valBuf[strlen(valBuf) - 1] = '\0';
 
-#ifdef _DEBUG
-        char msg[SMALL_BUF_SIZE];
-        _snprintf(msg, SMALL_BUF_SIZE, "New pathext=%s", valBuf);
-        internalInfoMsgBox(hDlg, msg, "Testing");
-#endif
+        char msg[MEDIUM_BUF_SIZE];
+        _snprintf(msg, SMALL_BUF_SIZE, "The PATHEXT variable for %s will be changed to:\n\n"
+                                       "%s.\n\nContinue and write this value?", paa->allUsers ? "All Users" : "the Current User", valBuf);
 
-        writeNewPathExt(hDlg, paa, valBuf);
+        int32_t reply = MessageBox(hDlg, msg, "Configure PATHEXT", MB_YESNOCANCEL | MB_ICONINFORMATION | MB_DEFBUTTON3);
+        if ( reply == IDYES )
+        {
+            writeNewPathExt(hDlg, paa, valBuf);
+        }
+        else if ( reply == IDCANCEL )
+        {
+            return FALSE;
+        }
     }
 
     return TRUE;
@@ -2673,42 +3537,73 @@ intptr_t pbDone(HWND hDlg)
  * suggested list box to the current list box.
  *
  * This needs to get the record of the suggested item, register the extension,
- * adjust the list boxes to the new status.
+ * adjust the list boxes and record arrays to the new status.
  *
  * @param hDlg
  *
  * @return intptr_t  We always return true.
+ *
+ * @remarks  The itemIndex of an item in a list box is often, but not always,
+ *           the itemIndex of the extension record in its array.
  */
-intptr_t pbAddCurrent(HWND hDlg)
+static intptr_t pbAddCurrent(HWND hDlg)
 {
-    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    pAssocArguments paa     = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    pExtRecords     extRecs = paa->extensionRecords;
 
-    uint32_t       index;
-    pExtensionInfo suggestedRec = getSelectedExtRec(paa->lbSuggested, &index);
+    uint32_t       itemIndex;
+    pExtensionInfo suggestedRec = getSelectedExtRec(paa->lbSuggested, &itemIndex);
     if ( suggestedRec == NULL )
     {
         goto done_out;
     }
 
     // It can't be registered in this scope, or it wouldn't have a record in the
-    // suggested list box. We want to register the extension.
+    // suggested list box. We need to register the extension.
     if ( ! registerRegExt(hDlg, paa, suggestedRec->extension) )
     {
         goto done_out;
     }
 
-    // The extension is now registered in the current scope, so the suggested
-    // item must be removed no matter what we do in the current list box
-    SendMessage(paa->lbSuggested, LB_DELETESTRING, index, 0);
+    int32_t arrayIndex = getExtRecordIndex(extRecs->faSuggestedRecs, extRecs->faSuggestedNext, suggestedRec->extension);
 
-    // An item for the extension can not already be in the current list box,
-    // because it was not registered in this scope.  We update the record we got
-    // from the suggested list box which automatically updates the display name.
-    nowRegisteredInScope(paa, suggestedRec);
+    // The extension is now registered in the current scope, so the suggested
+    // item must be removed no matter what we do in the current list box.
+    // However we save the removed record because we may continue to use it,
+    // then we free it, possibly, later.
+    suggestedRec = removeFromSuggested(hDlg, itemIndex, arrayIndex);
+
+    // An item for the extension may already be in the current list box, showing
+    // as registered, but not in the current scope. We see if that record
+    // exists.
+    pExtensionInfo currentRec = getExtRecord(extRecs->faCurrentRecs, extRecs->faCurrentNext, suggestedRec->extension);
+
+    if ( currentRec == NULL )
+    {
+        // Instead of freeing the suggestRec, we will add it to the current recs
+        // array.
+        currentRec = suggestedRec;
+        if ( ! addRecToArray(hDlg, currentRec, cuFaRecArray) )
+        {
+            endThisDialog(hDlg, NULL);
+            return TRUE;
+        }
+    }
+    else
+    {
+        // We already have a rec, we just need to update its fields. In this
+        // case we can free the suggested Rec.
+        safeLocalFree(suggestedRec);
+    }
+
+    // The extension is now registered in the current scope, so we update the
+    // record we are using to reflect that, which automatically updates the
+    // display name.
+    nowRegisteredInScope(paa, currentRec);
 
     // Now update the current list box
-    index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)suggestedRec->displayName);
-    SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)suggestedRec);
+    SendMessage(paa->lbCurrent, LB_RESETCONTENT, 0, 0);
+    fillCurrentListBox(hDlg, paa);
 
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
 
@@ -2721,15 +3616,16 @@ done_out:
  * current list box to the suggested list box.
  *
  * This needs to get the record from the current list box, un-register the
- * extension, adjust the list boxes to the new status.
+ * extension, adjust the list boxes and record arrays to the new status.
  *
  * @param hDlg
  *
  * @return intptr_t
  */
-intptr_t pbRemoveCurrent(HWND hDlg)
+static intptr_t pbRemoveCurrent(HWND hDlg)
 {
-    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    pAssocArguments paa     = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+    pExtRecords     extRecs = paa->extensionRecords;
 
     uint32_t       index;
     pExtensionInfo currentRec = getSelectedExtRec(paa->lbCurrent, &index);
@@ -2738,27 +3634,62 @@ intptr_t pbRemoveCurrent(HWND hDlg)
         goto done_out;
     }
 
-    // It must be registered in this scope, or it wouldn't have a record in the
-    // current list box. We want to un-register the extension.
+    // The record might not be registered in this scope.  If not we don't want
+    // to do anything.  We should maybe put up a message box to let the user
+    // know why the push button didn't do anything.
+    if ( ! extRegisteredInScope(paa, currentRec) )
+    {
+        goto done_out;
+    }
+
+    // It is registered in this scope.  We want to un-register the extension.
     if ( ! deleteRegExt(hDlg, paa, currentRec->extension) )
     {
         goto done_out;
     }
 
-    // The extension is no longer registered in the current scope, so the
-    // current list box item must be removed no matter what we do in the
-    // suggested list box.
-    SendMessage(paa->lbCurrent, LB_DELETESTRING, index, 0);
-
-    // An item for the extension can not already be in the suggested list box,
-    // because it was  registered in this scope.  We update the record we got
-    // from the current list box, which automatically updates the display
-    // name.
+    // Mark this record as not registered in the current scope, also updates the
+    // display names.
     notRegisteredInScope(paa, currentRec);
 
-    // Now update the suggested list box
-    index = (uint32_t)SendMessage(paa->lbSuggested, LB_ADDSTRING, 0, (LPARAM)currentRec->displayName);
-    SendMessage(paa->lbSuggested, LB_SETITEMDATA, index, (LPARAM)currentRec);
+    // The extension is no longer registered in the current scope, but it could
+    // be registered in the 'other' scope.  The 'other' scope being the opposite
+    // of what we are configuring for i.e., if are configuring for all users the
+    // other scope is current user.  If this is the case, we need 2 records. One
+    // is left in the current list box and we need a new record for the
+    // suggested list box.
+    pExtensionInfo suggestedRec = NULL;
+    if ( extRegisteredInOtherScope(paa, currentRec) )
+    {
+        suggestedRec = dupExtRec(hDlg, currentRec);
+        if ( suggestedRec == NULL )
+        {
+            endThisDialog(hDlg, NULL);
+            return TRUE;
+        }
+        updateDisplayNameInPlace(paa, currentRec, index, cuFaRecArray);
+    }
+    else
+    {
+        // Not registered in the other scope, so the current list box item must
+        // be removed from the current list box and record array.
+        // removeFromCurrent() returns the record it is removing.  We rename it
+        // to suggestedRec and will insert it into the suggested list box.
+        int32_t arrayIndex = getExtRecordIndex(extRecs->faCurrentRecs, extRecs->faCurrentNext, currentRec->extension);
+        suggestedRec = removeFromCurrent(hDlg, index, arrayIndex);
+    }
+
+    // An item for the extension can not already be in the suggested list box,
+    // because it was  registered in this scope.  We add the record to the
+    // suggested records and update the suggested list box.
+    if ( ! addRecToArray(hDlg, suggestedRec, suFaRecArray) )
+    {
+        endThisDialog(hDlg, NULL);
+        return TRUE;
+    }
+
+    SendMessage(paa->lbSuggested, LB_RESETCONTENT, 0, 0);
+    fillSuggestedListBox(hDlg, paa);
 
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
 
@@ -2781,7 +3712,7 @@ done_out:
  *
  * @return intptr_t  We always return true.
  */
-intptr_t pbAddPathExt(HWND hDlg)
+static intptr_t pbArrowAddPathExt(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
@@ -2792,31 +3723,26 @@ intptr_t pbAddPathExt(HWND hDlg)
         goto done_out;
     }
 
-    // We just use this to test if the extension is already present in the list
-    // box.
-    pExtensionInfo rec = getExtRec(paa->lbPathExt, currentRec->extension, &index);
-    if ( rec != NULL )
+    // We want to see if the extension already exists in the PATHEXT for the
+    // current scope
+    if ( pathExtExtExists(paa, currentRec->extension) )
     {
         goto done_out;
     }
 
-    rec = dupExtRec(hDlg, currentRec);
+    pExtensionInfo rec = dupExtRec(hDlg, currentRec);
     if ( rec == NULL )
     {
         goto done_out;
     }
 
-    strUpper(rec->extension);
-    updateExtDisplayName(rec);
-
-    index = (uint32_t)SendMessage(paa->lbPathExt, LB_ADDSTRING, 0, (LPARAM)rec->displayName);
-    SendMessage(paa->lbPathExt, LB_SETITEMDATA, index, (LPARAM)rec);
+    updatePathExtArrays(hDlg, paa, rec, false);
 
 done_out:
     return TRUE;
 }
 
-intptr_t pbMovePathExt(HWND hDlg, bool up)
+static intptr_t pbMovePathExt(HWND hDlg, bool up)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
@@ -2898,7 +3824,7 @@ done_out:
  *        extension in the array, if it exists we mark it as not existing in the
  *        in scope PATHEXT
  */
-intptr_t pbDelPathExt(HWND hDlg)
+static intptr_t pbDelPathExt(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
@@ -2928,31 +3854,113 @@ done_out:
     return TRUE;
 }
 
-intptr_t pbAddExtension(HWND hDlg)
+/**
+ * Handles a click on the Double Delete PATHEXT extension button, the button
+ * with the XXX icon.
+ *
+ * This allows the user to completely remove the Current User PATHEXT.  The X
+ * delete button will not allow the user to remove .exe, .com, etc.. extensions.
+ * This prevents the user from removing the Current User PATHEXT variable
+ * completely.
+ *
+ * @param hDlg
+ *
+ * @return intptr_t
+ *
+ * @note  The DelXX button should be hidden unless we are configuring for the
+ *        Current User, but we double check the scope for insurance.
+ */
+static intptr_t pbDelXXPathExt(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
-    pExtensionInfo info = NULL;
-    char           text[MAX_EXT_NAME];
-    int32_t        count = MAX_EXT_NAME;
-
-    count = GetWindowText(paa->edit, text, count);
-    if ( count == 0 )
+    if ( ! paa->allUsers )
     {
-        goto err_out;
+        pExtRecords extRecs = paa->extensionRecords;
+
+        pExtensionInfo *auRecs = extRecs->allUsersRecs;
+        pExtensionInfo *cuRecs = extRecs->curUserRecs;
+
+        // First we need to fix up the display name in the all users records
+        // array for each recored we are removing.
+        for ( size_t i = 0; i < extRecs->cuNext; i++)
+        {
+            pExtensionInfo current = cuRecs[i];
+
+            int32_t idx = getExtRecordIndex(auRecs, extRecs->auNext, current->extension);
+            if ( idx >= 0 )
+            {
+                pExtensionInfo allRec = auRecs[idx];
+                allRec->curUser = false;
+                updateExtDisplayName(allRec);
+            }
+        }
+
+        resetExtRecords(extRecs, cuPeRecArray);
+        SendMessage(paa->lbPathExt, LB_RESETCONTENT, 0, 0);
+        fillPathExtListBox(hDlg, paa);
     }
 
-    info = (pExtensionInfo)LocalAlloc(LPTR, sizeof(extensionInfo));
+    return TRUE;
+}
+
+
+/**
+ * Handles the click on the add PATHEXT extension button.  If the user has typed
+ * in a valid extension in the edit box, the extension is added to the PATHEXT
+ * list box for the in scope PATHEXT.
+ *
+ * @param hDlg
+ *
+ * @return intptr_t
+ */
+static intptr_t pbAddPEExtension(HWND hDlg)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    pExtensionInfo info = getExtRecordFromEditBox(hDlg, paa->peEdit);
     if ( info == NULL )
     {
-        reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
         goto err_out;
     }
-    if ( *text != '.' )
+
+    // We want to see if the extension already exists in the PATHEXT for the
+    // current scope
+    if ( pathExtExtExists(paa, info->extension) )
     {
-        strcpy(info->extension, ".");
+        goto err_out;
     }
-    strcat(info->extension, text);
+
+    updatePathExtArrays(hDlg, paa, info, false);
+
+    goto good_out;
+
+err_out:
+    safeLocalFree(info);
+
+good_out:
+    SetWindowText(paa->peEdit, "");
+    return TRUE;
+}
+
+/**
+ * Handles the click on the add file association extension button.  If the user
+ * has typed in a valid extension in the edit box, the extension is registered
+ * as a file association and the current list box is updated.
+ *
+ * @param hDlg
+ *
+ * @return intptr_t
+ */
+static intptr_t pbAddFAExtension(HWND hDlg)
+{
+    pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
+
+    pExtensionInfo info = getExtRecordFromEditBox(hDlg, paa->faEdit);
+    if ( info == NULL )
+    {
+        goto err_out;
+    }
 
     qualifyExtensionInfo(info->extension, info, paa->progID);
 
@@ -2973,17 +3981,12 @@ intptr_t pbAddExtension(HWND hDlg)
         {
             goto err_out;
         }
-
         nowRegisteredInScope(paa, existing);
-
-        SendMessage(paa->lbCurrent, LB_DELETESTRING, index, 0);
-
-        index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)existing->displayName);
-        SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)existing);
-
-        LocalFree(info);
+        updateDisplayNameInPlace(paa, existing, index, cuFaRecArray);
         goto good_out;
     }
+
+    pExtRecords extRecs = paa->extensionRecords;
 
     // See if the user entered an extenstion that is also in the suggested list
     // box.
@@ -2996,38 +3999,48 @@ intptr_t pbAddExtension(HWND hDlg)
         {
             goto err_out;
         }
-
         nowRegisteredInScope(paa, existing);
 
-        SendMessage(paa->lbSuggested, LB_DELETESTRING, index, 0);
+        int32_t arrayIndex = getExtRecordIndex(extRecs->faSuggestedRecs, extRecs->faSuggestedNext, existing->extension);
 
-        index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)existing->displayName);
-        SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)existing);
+        existing = removeFromSuggested(hDlg, index, arrayIndex);
+        if ( ! addRecToArray(hDlg, existing, cuFaRecArray) )
+        {
+            endThisDialog(hDlg, NULL);
+            return TRUE;
+        }
 
-        LocalFree(info);
+        SendMessage(paa->lbCurrent, LB_RESETCONTENT, 0, 0);
+        fillCurrentListBox(hDlg, paa);
         goto good_out;
     }
 
-    // Okay, completely new, just register it and update the list box
+    // Okay, a completely new extension, just register it and update the list
+    // box and the records array.
     if ( ! registerRegExt(hDlg, paa, info->extension) )
     {
         goto err_out;
     }
-
     nowRegisteredInScope(paa, info);
 
-    index = (uint32_t)SendMessage(paa->lbCurrent, LB_ADDSTRING, 0, (LPARAM)info->displayName);
-    SendMessage(paa->lbCurrent, LB_SETITEMDATA, index, (LPARAM)info);
+    if ( ! addRecToArray(hDlg, info, cuFaRecArray) )
+    {
+        endThisDialog(hDlg, NULL);
+        return TRUE;
+    }
+
+    SendMessage(paa->lbCurrent, LB_RESETCONTENT, 0, 0);
+    fillCurrentListBox(hDlg, paa);
 
     goto good_out;
 
 err_out:
     safeLocalFree(info);
-    SetWindowText(paa->edit, "");
+    SetWindowText(paa->faEdit, "");
     return TRUE;
 
 good_out:
-    SetWindowText(paa->edit, "");
+    SetWindowText(paa->faEdit, "");
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
     return TRUE;
 }
@@ -3051,7 +4064,7 @@ good_out:
  *        When the operation is a success, then the state of the dialog must
  *        always be reset.
  */
-intptr_t pbRegister(HWND hDlg)
+static intptr_t pbRegister(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
 
@@ -3120,7 +4133,7 @@ intptr_t pbRegister(HWND hDlg)
     return TRUE;
 }
 
-intptr_t pbHelp(HWND hDlg)
+static intptr_t pbHelp(HWND hDlg)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
     char buf[MEDIUM_BUF_SIZE];
@@ -3168,45 +4181,47 @@ intptr_t pbHelp(HWND hDlg)
     return TRUE;
 }
 
-intptr_t rbModeSwitch(HWND hDlg, bool isSingleNow)
+static intptr_t rbModeSwitch(HWND hDlg, bool isSingleNow)
 {
     pAssocArguments paa = (pAssocArguments)getWindowPtr(hDlg, GWLP_USERDATA);
-    HWND hLB = paa->lbPathExt;
 
     savePathExtListBoxOrder(hDlg, paa);
-    SendMessage(hLB, LB_RESETCONTENT, 0, 0);
+    SendMessage(paa->lbPathExt, LB_RESETCONTENT, 0, 0);
     fillPathExtListBox(hDlg, paa);
-    /*if ( isSingleNow )
-    {
-        internalInfoMsgBox("Switched to single mode", "Testing");
-    }
-    else
-    {
-        internalInfoMsgBox("Switched to dual mode", "Testing");
-    }
-    */
+
+    SendMessage(paa->lbSuggested, LB_RESETCONTENT, 0, 0);
+    fillSuggestedListBox(hDlg, paa);
+
+    SendMessage(paa->lbCurrent, LB_RESETCONTENT, 0, 0);
+    fillCurrentListBox(hDlg, paa);
+
     return TRUE;
 }
 
-intptr_t handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
+static intptr_t handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
 {
 
     switch ( LOWORD(wParam) )
     {
         case IDOK:
-            pbDone(hDlg);
-            EndDialog(hDlg, wParam);
+            if ( pbDone(hDlg) )
+            {
+                endThisDialog(hDlg, wParam);
+            }
             return TRUE;
 
         case IDCANCEL:
-            EndDialog(hDlg, wParam);
+            endThisDialog(hDlg, wParam);
             return TRUE;
 
         case IDC_PB_REGISTER :
             return pbRegister(hDlg);
 
+        case IDC_PB_ADD_PE_EXT :
+            return pbAddPEExtension(hDlg);
+
         case IDC_PB_ADD_FA_EXT :
-            return pbAddExtension(hDlg);
+            return pbAddFAExtension(hDlg);
 
         case IDC_PB_ADD_CURRENT :
             return pbAddCurrent(hDlg);
@@ -3215,7 +4230,7 @@ intptr_t handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
             return pbRemoveCurrent(hDlg);
 
         case IDC_PB_ADD_PATHEXT :
-            return pbAddPathExt(hDlg);
+            return pbArrowAddPathExt(hDlg);
 
         case IDC_PB_UP :
             return pbMovePathExt(hDlg, true);
@@ -3225,6 +4240,9 @@ intptr_t handleButtonClick(HWND hDlg, WPARAM wParam, LPARAM lParam)
 
         case IDC_PB_DEL :
             return pbDelPathExt(hDlg);
+
+        case IDC_PB_DELXX :
+            return pbDelXXPathExt(hDlg);
 
         case IDHELP :
             return pbHelp(hDlg);
@@ -3256,7 +4274,8 @@ static void setUp(HWND hDlg, pAssocArguments paa)
     paa->lbCurrent   = GetDlgItem(hDlg, IDC_LB_CURRENT);
     paa->lbPathExt   = GetDlgItem(hDlg, IDC_LB_PATHEXT);
     paa->pbRegister  = GetDlgItem(hDlg, IDC_PB_REGISTER);
-    paa->edit        = GetDlgItem(hDlg, IDC_EDIT_FA_EXT);
+    paa->faEdit      = GetDlgItem(hDlg, IDC_EDIT_FA_EXT);
+    paa->peEdit      = GetDlgItem(hDlg, IDC_EDIT_PE_EXT);
 
     LoadString(paa->hInstance, IDS_FRIENDLY_NAME, paa->friendlyName, MAX_FRIENDLY_NAME);
 
@@ -3267,7 +4286,7 @@ static void setUp(HWND hDlg, pAssocArguments paa)
     SendMessage(paa->lbPathExt, WM_SETFONT, (WPARAM)font, FALSE);
 
     // Leave room for both the ending NULL and to add a '.'
-    SendMessage(paa->edit, EM_SETLIMITTEXT, MAX_EXT_NAME - 2, 0);
+    SendMessage(paa->faEdit, EM_SETLIMITTEXT, MAX_EXT_NAME - 2, 0);
 
     setDlgIcon(hDlg, paa->hInstance);
     setButtonIcons(hDlg, paa->hInstance);
@@ -3275,10 +4294,20 @@ static void setUp(HWND hDlg, pAssocArguments paa)
 
     CheckDlgButton(hDlg, IDC_RB_DOUBLE_VIEW, BST_CHECKED);
 
+    paa->extensionRecords = allocExtRecordsStruct(hDlg);
+    if ( paa->extensionRecords == NULL )
+    {
+        endThisDialog(hDlg, NULL);
+        return;
+    }
+
     setRegisteredState(hDlg, paa);
 }
 
 /**
+ *  The window procedure for the File Association / PATHEXT configuration
+ *  dialog.
+ *
  *  HKEY_CURRENT_USER \ Environment
  *
  *  HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session
@@ -3324,6 +4353,18 @@ intptr_t CALLBACK FileAssocDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
 }
 
 
+/**
+ * The window procedure for the Configure Services dialog.
+ *
+ * @author Administrator (11/12/2013)
+ *
+ * @param hDlg
+ * @param uMsg
+ * @param wParam
+ * @param lParam
+ *
+ * @return intptr_t CALLBACK
+ */
 intptr_t CALLBACK ConfigureDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if ( uMsg == WM_INITDIALOG )
@@ -3489,6 +4530,8 @@ intptr_t CALLBACK ConfigureDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM l
     return FALSE;
 }
 
+
+#define WinMain_FUNCTIONS_BEGIN
 
 inline bool haveFlag(CSTRING a)
 {
