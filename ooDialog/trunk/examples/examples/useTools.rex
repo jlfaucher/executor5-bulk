@@ -61,11 +61,14 @@
  * underlying Windows dialog.
  */
 
-  .application~useGlobalConstDir("O", "resources\useTools.h")
+  parse source . . srcDir
+  srcDir = filespec('L', srcDir)
+
+  .application~useGlobalConstDir("O", srcDir"resources\useTools.h")
 
   dlg = .MainDialog~new
 
-  dlgTool = .ToolPaletteDlg~new
+  dlgTool = .ToolPaletteDlg~new(srcDir)
   dlgTool~ownerDialog = dlg
 
   -- Start the main dialog asynchronously so we continue and then can start the
@@ -206,10 +209,11 @@
 ::method init
   expose s buttonIDs
 
-  forward class (super) continue
+  self~init:super
+  --forward class (super) continue
 
   -- Populate the buttonIDs and buttonNames arrays.
-  self~populateButtons
+  self~populateButtons(arg(1))
 
   -- The bitmaps are 32 x 32, we want the button to have a 4 pixel margin so
   -- that the button high-lighting for hot, pressed, default, etc., shows.
@@ -325,6 +329,7 @@
 -- names.
 ::method populateButtons private
   expose buttonIDs buttonNames
+  use strict arg srcDir
 
   buttonIDs   = .array~of(IDC_PB_LOCKMODULE,    -
                           IDC_PB_LOCKPROJECT,   -
@@ -340,17 +345,17 @@
                           IDC_PB_CLOSE          -
                           )
 
-  buttonNames = .array~of('resources\LockModule.bmp',     -
-                          'resources\LockProject.bmp',    -
-                          'resources\SplitModule.bmp',    -
-                          'resources\SaveModule.bmp',     -
-                          'resources\SaveProject.bmp',    -
-                          'resources\SaveAll.bmp',        -
-                          'resources\CheckIn.bmp',        -
-                          'resources\LinkToWeb.bmp',      -
-                          'resources\CodeReview.bmp',     -
-                          'resources\Update.bmp',         -
-                          'resources\ProjectReview.bmp',  -
-                          'resources\ClosePalette.bmp'    -
+  buttonNames = .array~of(srcDir'resources\LockModule.bmp',     -
+                          srcDir'resources\LockProject.bmp',    -
+                          srcDir'resources\SplitModule.bmp',    -
+                          srcDir'resources\SaveModule.bmp',     -
+                          srcDir'resources\SaveProject.bmp',    -
+                          srcDir'resources\SaveAll.bmp',        -
+                          srcDir'resources\CheckIn.bmp',        -
+                          srcDir'resources\LinkToWeb.bmp',      -
+                          srcDir'resources\CodeReview.bmp',     -
+                          srcDir'resources\Update.bmp',         -
+                          srcDir'resources\ProjectReview.bmp',  -
+                          srcDir'resources\ClosePalette.bmp'    -
                           )
 

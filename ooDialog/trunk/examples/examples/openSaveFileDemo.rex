@@ -94,10 +94,13 @@
  */
     if \ .application~requiredOS('Vista', 'openSaveFileDemo.rex') then return 99
 
-    -- Set up the symbolic IDs and then put up our example dialog.
-    .application~setDefaults('O', 'resources\osfDialogs.h', .false)
+    parse source . . srcDir
+    srcDir = filespec('L', srcDir)
 
-    dlg = .CommonSaveDialog~new('resources\osfDialogs.rc', IDD_SIMPLE_OSF_DIALOGS)
+    -- Set up the symbolic IDs and then put up our example dialog.
+    .application~setDefaults('O', srcDir'resources\osfDialogs.h', .false)
+
+    dlg = .CommonSaveDialog~new(srcDir'resources\osfDialogs.rc', IDD_SIMPLE_OSF_DIALOGS)
     dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
     return 0

@@ -91,10 +91,13 @@
  */
     if \ .application~requiredOS('Vista', 'saveFileWithFilter.rex') then return 99
 
-    -- Set up the symbolic IDs and then put up our example dialog.
-    .application~setDefaults('O', 'resources\saveFileWithFilter.h', .false)
+    parse source . . srcDir
+    srcDir = filespec('L', srcDir)
 
-    dlg = .CommonSaveDialog~new('resources\saveFileWithFilter.rc', IDD_SAVE_FILE)
+    -- Set up the symbolic IDs and then put up our example dialog.
+    .application~setDefaults('O', srcDir'resources\saveFileWithFilter.h', .false)
+
+    dlg = .CommonSaveDialog~new(srcDir'resources\saveFileWithFilter.rc', IDD_SAVE_FILE)
     dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
     return 0

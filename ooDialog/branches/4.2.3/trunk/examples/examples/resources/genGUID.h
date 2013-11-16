@@ -5,7 +5,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,42 +35,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/** genGUID.rex - simple GUID generating program.
- *
- * Copy and paste the output as needed.
- *
- * To run in console only mode use:
- *
- *   genGuid 1
- *
- * In graphical mode you can use copy and paste of the edit control displayed.
- */
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
 
-    -- Ensure we can be run from any directory.
-    parse source . . srcDir
-    srcDir = filespec('L', srcDir)
-
-    .application~setDefaults('O', srcDir'resources\genGUID.h', .false)
-
-    guid = .DlgUtil~getGUID
-    say guid
-
-    if arg() == 0 then do
-        dlg = .DisplayDlg~new(srcDir'resources\genGUID.rc', IDD_GUID_GENERATOR)
-        if dlg~initCode = 0 then do
-            dlg~guid   = guid
-            dlg~execute("SHOWTOP")
-        end
-    end
-
-return 0
-
-::requires 'ooDialog.cls'
-
-::class 'DisplayDlg' subclass RcDialog
-
-::attribute guid
-
-::method initDialog
-    expose guid
-    self~newEdit(IDC_EDIT_GUID)~setText(guid)
+#define IDD_GUID_GENERATOR                      100
+#define IDC_EDIT_GUID                           1002

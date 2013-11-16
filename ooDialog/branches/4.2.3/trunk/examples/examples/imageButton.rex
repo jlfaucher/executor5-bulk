@@ -81,8 +81,12 @@
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 use arg
 
-  rcFile = "resources\imageButton.rc"
-  symbolFile = "resources\imageButton.h"
+  -- Ensure we can be run from any directory.
+  parse source . . srcDir
+  srcDir = filespec('L', srcDir)
+
+  rcFile = srcDir"resources\imageButton.rc"
+  symbolFile = srcDir"resources\imageButton.h"
 
   .application~setDefaults("O", symbolFile, .false)
 
@@ -94,6 +98,7 @@ use arg
     return 99
   end
 
+  dlg~srcDir = srcDir
   dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
 
 return 0
@@ -105,6 +110,8 @@ return 0
 ::requires "ooDialog.cls"
 
 ::class 'ImageListDlg' subclass RcDialog
+
+::attribute srcDir
 
 ::method initDialog
   expose pbPush pbView pbAdd stStatus ctr imagesLoaded
@@ -129,7 +136,7 @@ return 0
   self~setPictureButtons
 
 ::method setPictureButtons private
-  expose pbView pbAdd stStatus imagesLoaded imageList
+  expose pbView pbAdd stStatus imagesLoaded imageList srcDir
 
   -- Using an image list with the button controls needs at least comctl32
   -- version 6.  See what version we are running under and don't use the image
@@ -144,12 +151,12 @@ return 0
 
   -- The images are loaded from files.
   files = .array~new()
-  files[1] = "resources\Normal.bmp"       -- Normal
-  files[2] = "resources\Hot.bmp"          -- Hot (hover)
-  files[3] = "resources\Pushed.bmp"       -- Pushed
-  files[4] = "resources\Disabled.bmp"     -- Disabled
-  files[5] = "resources\Default.bmp"      -- Default button
-  files[6] = "resources\Hot.bmp"          -- Stylus hot, tablet PC only
+  files[1] = srcDir"resources\Normal.bmp"       -- Normal
+  files[2] = srcDir"resources\Hot.bmp"          -- Hot (hover)
+  files[3] = srcDir"resources\Pushed.bmp"       -- Pushed
+  files[4] = srcDir"resources\Disabled.bmp"     -- Disabled
+  files[5] = srcDir"resources\Default.bmp"      -- Default button
+  files[6] = srcDir"resources\Hot.bmp"          -- Stylus hot, tablet PC only
 
   -- .ImageList~create() exposes the Windows API ImageList_Create().  Use the
   -- MSDN documentation to fully understand this API.  Simply do a Google search
