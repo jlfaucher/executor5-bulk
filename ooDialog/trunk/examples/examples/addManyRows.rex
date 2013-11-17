@@ -86,8 +86,7 @@
  */
 
     -- Ensure we can be run from any directory.
-    parse source . . srcDir
-    srcDir = filespec('L', srcDir)
+    srcDir = locate()
 
     -- Set the defaults for this application.  Use the global .constDir 'O'nly,
     -- Read the 'addManyRows.h' file for symbolic resource ID  definitions.
@@ -104,7 +103,6 @@
 
     dlg = .AddManyRowsDlg~new(srcDir'resources\addManyRows.rc', IDD_ADD_ROWS)
     if dlg~initCode = 0 then do
-        dlg~srcDir = srcDir
         dlg~itemCount = dlgIntro~selectedCount
         dlg~execute("SHOWTOP")
     end
@@ -122,7 +120,6 @@ return 0
 ::class 'AddManyRowsDlg' subclass RcDialog
 
 ::attribute itemCount
-::attribute srcDir
 ::attribute createRowsTime
 ::attribute insertRowsTime
 ::attribute insertedRows
@@ -218,9 +215,9 @@ return 0
  * let the user decide what and how to sort.
  */
 ::method onSortInternally unguarded
-    expose list staticInternal srcDir
+    expose list staticInternal
 
-    dlg = .SortSetupDlg~new(srcDir'resources\addManyRows.rc', IDD_SORT_PARAMS)
+    dlg = .SortSetupDlg~new(.application~srcDir'resources\addManyRows.rc', IDD_SORT_PARAMS)
     if dlg~execute('SHOWTOP') == dlg~IDCANCEL then return 0
 
     d = .directory~new
@@ -244,7 +241,7 @@ return 0
  * list-view
  */
 ::method onSortRexx unguarded
-    expose list staticRexxSort rexxColumn rexxAscending rexxCaseless srcDir
+    expose list staticRexxSort rexxColumn rexxAscending rexxCaseless
 
     count = self~itemCount
 
@@ -269,7 +266,7 @@ return 0
         if MessageDialog(msg, self~hwnd, title, 'YESNO', 'WARNING') == self~IDNO then return 0
     end
 
-    dlg = .SortSetupDlg~new(srcDir'resources\addManyRows.rc', IDD_SORT_PARAMS)
+    dlg = .SortSetupDlg~new(.application~srcDir'resources\addManyRows.rc', IDD_SORT_PARAMS)
     if dlg~execute('SHOWTOP') == dlg~IDCANCEL then return 0
 
     rexxColumn    = dlg~column

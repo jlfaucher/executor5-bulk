@@ -91,8 +91,7 @@
  */
     if \ .application~requiredOS('Vista', 'saveFileWithFilter.rex') then return 99
 
-    parse source . . srcDir
-    srcDir = filespec('L', srcDir)
+    srcDir = locate()
 
     -- Set up the symbolic IDs and then put up our example dialog.
     .application~setDefaults('O', srcDir'resources\saveFileWithFilter.h', .false)

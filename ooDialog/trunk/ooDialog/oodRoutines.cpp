@@ -51,6 +51,7 @@
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
 #include "oodDeviceGraphics.hpp"
+#include "oodShared.hpp"
 
 
 #define MB_BUTTON_KEYWORDS "ABORTRETRYIGNORE CANCELTRYCONTINUE HELP OK OKCANCEL RETRYCANCEL YESNO YESNOCANCEL"
@@ -515,7 +516,78 @@ RexxRoutine2(RexxObjectPtr, findWindow_rtn, CSTRING, caption, OPTIONAL_CSTRING, 
     return pointer2string(context->threadContext, hwnd);
 }
 
+/**
+ * Gets the complete file name of executing Rexx routine and returns the
+ * complete directory path name, including the trailing slash.
+ *
+ * @param c
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr getSrcDirString(RexxCallContext *c)
+{
+    char buff[MEDIUM_BUF_SIZE] = {'\0'};
 
+    RexxObjectPtr     callCntx = c->GetCallerContext();
+    RexxPackageObject pck      = (RexxPackageObject)c->SendMessage0(callCntx, "PACKAGE");
+    RexxObjectPtr     name     = c->SendMessage0(pck, "NAME");
+
+    int32_t len = _snprintf(buff, MEDIUM_BUF_SIZE - 1, "%s", c->ObjectToStringValue(name));
+    if ( len < 0 || len == MEDIUM_BUF_SIZE - 1 )
+    {
+        buff[MEDIUM_BUF_SIZE - 1] = '\0';
+    }
+
+    // We want to keep the last slash:
+    char *sl = StrRChr(buff, buff + len, '\\');
+    *(sl + 1) = '\0';
+
+    return c->String(buff);
+}
+
+/** locate()
+ *
+ *  Returns the directory the callers source code file is located in and sets
+ *  the .application object's srcDir attribute.
+ *
+ *  @param  update [optional]  By default this routine only calculates the
+ *                   directory the first time it is invoked. On succesive
+ *                   invocations, it simply returns the same value. If update is
+ *                   set to true it recalculates the directory and sets the
+ *                   .application object's srcDir attribute to the new value.
+ *
+ *  @return The directory the caller's source code file is located in.
+ *
+ *  @note  The update argument is completely ignored the first time this routine
+ *         is called.
+ *
+ */
+RexxRoutine1(RexxObjectPtr, locate_rtn, OPTIONAL_logical_t, update)
+{
+    RexxCallContext *c = context;
+    pCApplicationManager pcam   = (pCApplicationManager)context->ObjectToCSelf(TheApplicationObj);
+    RexxObjectPtr        srcDir = pcam->rxProgramDir;
+
+    if ( srcDir == TheNilObj )
+    {
+        srcDir = getSrcDirString(context);
+        context->RequestGlobalReference(srcDir);
+        pcam->rxProgramDir = srcDir;
+        goto done_out;
+    }
+
+    if ( update )
+    {
+        context->ReleaseGlobalReference(srcDir);
+
+        srcDir = getSrcDirString(context);
+        context->RequestGlobalReference(srcDir);
+        pcam->rxProgramDir = srcDir;
+    }
+
+done_out:
+    return srcDir;
+}
 /** MessageDialog()
  *
  *
@@ -825,8 +897,15 @@ RexxRoutine2(uintptr_t, winTimer_rtn, CSTRING, mode, uintptr_t, msOrId)
  *  only.
  *
  */
-RexxRoutine1(RexxObjectPtr, routineTest_rtn, RexxObjectPtr, obj)
+RexxRoutine0(RexxObjectPtr, routineTest_rtn)
 {
-    return TheZeroObj;
+
+    RexxCallContext *c = context;
+    RexxObjectPtr cntx = c->GetCallerContext();
+    RexxPackageObject pck = (RexxPackageObject)c->SendMessage0(cntx, "PACKAGE");
+    RexxObjectPtr name = c->SendMessage0(pck, "NAME");
+    printf("Package name=%s\n", c->ObjectToStringValue(name));
+
+    return name;
 }
 

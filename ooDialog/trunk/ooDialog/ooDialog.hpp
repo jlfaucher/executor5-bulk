@@ -1059,6 +1059,7 @@ typedef PageDialogInfo *pPageDialogInfo;
 /* Struct for the AppliationManager object CSelf. */
 typedef struct _amCSelf {
     RexxObjectPtr     rexxSelf;
+    RexxObjectPtr     rxProgramDir;  // The directory the main program resides in, or .nil
     bool              autoDetect;
 } CApplicationManager;
 typedef CApplicationManager *pCApplicationManager;

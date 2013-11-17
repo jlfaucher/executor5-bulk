@@ -228,6 +228,8 @@
 
 ::class 'ApplicationManager' public inherit ResourceUtils
 
+::attribute srcDir get external "LIBRARY oodialog app_srcDir_atr"
+
 ::method init external "LIBRARY oodialog app_init"
 
 ::method addToConstDir external "LIBRARY oodialog app_addToConstDir"
@@ -302,7 +304,7 @@
 ::class 'SM' public
 ::attribute cMouseButtons get class external "LIBRARY oodialog sm_cMouseButtons_cls"
 ::attribute cxCursor get class external      "LIBRARY oodialog sm_cxCursor_cls"
-::attribute cxDrag get class external        "LIBRARY oodialog sm_cyDrag_cls"
+::attribute cxDrag get class external        "LIBRARY oodialog sm_cxDrag_cls"
 ::attribute cxFixedFrame get class external  "LIBRARY oodialog sm_cxFixedFrame_cls"
 ::attribute cxScreen get class external      "LIBRARY oodialog sm_cxScreen_cls"
 ::attribute cxSize get class external        "LIBRARY oodialog sm_cxSize_cls"
@@ -1580,6 +1582,7 @@
    use strict arg info
    return messageDialog(info, , "Information", "OK", "INFORMATION", "SETFOREGROUND TASKMODAL")
 
+::routine locate public external "LIBRARY oodialog locate_rtn"
 ::routine messageDialog public external "LIBRARY oodialog messageDialog_rtn"
 ::routine msSleep public external "LIBRARY oodialog msSleep_rtn"
 ::routine play public external "LIBRARY oodialog play_rtn"

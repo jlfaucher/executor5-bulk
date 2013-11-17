@@ -500,6 +500,7 @@ PfnDliHook __pfnDliNotifyHook2 = delayNoteHook;
 
 REXX_TYPED_ROUTINE_PROTOTYPE(fileNameDlg_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(findWindow_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(locate_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(messageDialog_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(msSleep_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(play_rtn);
@@ -512,6 +513,7 @@ RexxRoutineEntry oodialog_functions[] =
 {
     REXX_TYPED_ROUTINE(fileNameDlg_rtn,        fileNameDlg_rtn),
     REXX_TYPED_ROUTINE(findWindow_rtn,         findWindow_rtn),
+    REXX_TYPED_ROUTINE(locate_rtn,             locate_rtn),
     REXX_TYPED_ROUTINE(messageDialog_rtn,      messageDialog_rtn),
     REXX_TYPED_ROUTINE(msSleep_rtn,            msSleep_rtn),
     REXX_TYPED_ROUTINE(play_rtn,               play_rtn),
@@ -555,6 +557,7 @@ REXX_METHOD_PROTOTYPE(dlgutil_test_cls);
 
 // ApplicationManager
 REXX_METHOD_PROTOTYPE(app_init);
+REXX_METHOD_PROTOTYPE(app_srcDir_atr);
 REXX_METHOD_PROTOTYPE(app_addToConstDir);
 REXX_METHOD_PROTOTYPE(app_autoDetection);
 REXX_METHOD_PROTOTYPE(app_defaultFont);
@@ -1947,6 +1950,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_test_cls,               dlgutil_test_cls),
 
     REXX_METHOD(app_init,                       app_init),
+    REXX_METHOD(app_srcDir_atr,                 app_srcDir_atr),
     REXX_METHOD(app_addToConstDir,              app_addToConstDir),
     REXX_METHOD(app_autoDetection,              app_autoDetection),
     REXX_METHOD(app_defaultFont,                app_defaultFont),

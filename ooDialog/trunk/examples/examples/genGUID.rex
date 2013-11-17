@@ -47,8 +47,7 @@
  */
 
     -- Ensure we can be run from any directory.
-    parse source . . srcDir
-    srcDir = filespec('L', srcDir)
+    srcDir = locate()
 
     .application~setDefaults('O', srcDir'resources\genGUID.h', .false)
 

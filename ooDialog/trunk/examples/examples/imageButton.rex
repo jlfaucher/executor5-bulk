@@ -82,8 +82,7 @@
 use arg
 
   -- Ensure we can be run from any directory.
-  parse source . . srcDir
-  srcDir = filespec('L', srcDir)
+  srcDir = locate()
 
   rcFile = srcDir"resources\imageButton.rc"
   symbolFile = srcDir"resources\imageButton.h"
@@ -98,8 +97,7 @@ use arg
     return 99
   end
 
-  dlg~srcDir = srcDir
-  dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
+  dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
 return 0
 -- End of entry point.
@@ -110,8 +108,6 @@ return 0
 ::requires "ooDialog.cls"
 
 ::class 'ImageListDlg' subclass RcDialog
-
-::attribute srcDir
 
 ::method initDialog
   expose pbPush pbView pbAdd stStatus ctr imagesLoaded
@@ -136,7 +132,7 @@ return 0
   self~setPictureButtons
 
 ::method setPictureButtons private
-  expose pbView pbAdd stStatus imagesLoaded imageList srcDir
+  expose pbView pbAdd stStatus imagesLoaded imageList
 
   -- Using an image list with the button controls needs at least comctl32
   -- version 6.  See what version we are running under and don't use the image
@@ -148,6 +144,8 @@ return 0
   -- In the following code, there are a lot of if tests.  You can change any of
   -- the if tests to its converse to get an idea of the dialog behavior when
   -- errors happen.  Have fun, experiment.
+
+  srcDir = .application~srcDir
 
   -- The images are loaded from files.
   files = .array~new()

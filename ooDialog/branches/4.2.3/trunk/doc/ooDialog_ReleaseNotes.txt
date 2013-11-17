@@ -88,6 +88,9 @@ Feature Requests in ooDialog:
 
  * #556 Would like access to the Win32 UpdateWindow() API
 
+ * #559 ooDialog - add a convenience function to help locate resource
+   files
+
 
 Miscellaneous Fixes:
 --------------------
@@ -184,6 +187,22 @@ setImageList()      Enhanced to take a keyword for the type of image
                     list in addition to the raw number.
 
 
+New Attributes:
+--------------
+
+In the Application class:
+
+srcDir       Returns the directory name the initial Rexx program was
+             started in.
+
+
+New Public Routines:
+--------------------
+
+locate()    Returns the complete directory name of the Rexx source code
+            file that is executing and sets the .application srcDir
+            attribute to that value.
+
 
 New samples:
 ------------
@@ -224,6 +243,15 @@ notifications.  This is done with the .CommonDialogEvents class.
 An example showing how to embed contorls in a list view to allow
 in-place subitem editing.  The example also demonstrates the
 ResizingAdmin and BrowseForFolder classes.
+
+
+Enhanced Samples:
+-----------------
+
+All of the samples have been enhanced so the they can locate any needed
+resource files no matter which directory they are executed from.  This
+allows them to run correctly if, for example, they are dragged and
+dropped on ooDialog.exe.
 
 
 

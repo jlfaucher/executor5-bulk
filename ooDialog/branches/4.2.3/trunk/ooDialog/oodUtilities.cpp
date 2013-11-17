@@ -605,8 +605,9 @@ RexxMethod2(RexxObjectPtr, app_init, RexxObjectPtr, magic, OSELF, self)
     pCApplicationManager pcam = (pCApplicationManager)context->BufferData(obj);
     memset(pcam, 0, sizeof(CApplicationManager));
 
-    pcam->autoDetect = true;
-    pcam->rexxSelf = self;
+    pcam->rxProgramDir = TheNilObj;
+    pcam->autoDetect  = true;
+    pcam->rexxSelf    = self;
 
     context->SetObjectVariable("CSELF", obj);
 
@@ -648,6 +649,15 @@ void putDefaultSymbols(RexxMethodContext *c, RexxDirectoryObject constDir)
     c->DirectoryPut(constDir, c->Int32(IDI_DLG_DEFAULT),  "IDI_DLG_DEFAULT");
 }
 
+/** ApplicationManger::srcDir()   [attribute]
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, app_srcDir_atr, CSELF, pCSelf)
+{
+    pCApplicationManager pcam = (pCApplicationManager)pCSelf;
+    return pcam->rxProgramDir;
+}
 
 /** ApplicationManger::useGlobalConstDir()
  *

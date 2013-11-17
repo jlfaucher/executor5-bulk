@@ -61,8 +61,7 @@
  * underlying Windows dialog.
  */
 
-  parse source . . srcDir
-  srcDir = filespec('L', srcDir)
+  srcDir = locate()
 
   .application~useGlobalConstDir("O", srcDir"resources\useTools.h")
 
@@ -209,11 +208,10 @@
 ::method init
   expose s buttonIDs
 
-  self~init:super
-  --forward class (super) continue
+  forward class (super) continue
 
   -- Populate the buttonIDs and buttonNames arrays.
-  self~populateButtons(arg(1))
+  self~populateButtons()
 
   -- The bitmaps are 32 x 32, we want the button to have a 4 pixel margin so
   -- that the button high-lighting for hot, pressed, default, etc., shows.
@@ -329,7 +327,8 @@
 -- names.
 ::method populateButtons private
   expose buttonIDs buttonNames
-  use strict arg srcDir
+
+  srcDir = .application~srcDir
 
   buttonIDs   = .array~of(IDC_PB_LOCKMODULE,    -
                           IDC_PB_LOCKPROJECT,   -
