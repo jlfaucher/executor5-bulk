@@ -80,8 +80,10 @@ Topics (in no particular order):
     <para>You may have noticed in Exercise 7 that the process hangs when you close the
       Order Management dialog without first closing all Order Form dialogs. This problem, and its
       solution, is addressed in <xref linkend="chap08-eventMgmt"/>. </para>
-    <para>Finally, some enhancements to the <xref linkend="chap08-orderForm"/> function are briefly
+    <para>Also, some enhancements to the <xref linkend="chap08-orderForm"/> function are briefly
       described.</para>
+    <para>Finally, the last section - <xref linkend="chap08-toBeContinued"/> gives a brief preview 
+      of some of the function planned for the next version of this Guide. </para>
   </section>
   <!-- *********************************************************************************************** -->
   
@@ -387,4 +389,27 @@ Topics (in no particular order):
       View should make the business visible and provide for new info to be entered.</para>
   </section>
   
+  <section id="chap08-toBeContinued"><title>To Be Continued</title> <!-- Section 8.7 -->
+    <para>In the next version of this Guide, the development of the Order Management application
+      will be continued. In particular, it is planned to move the text data files to an <ulink
+        url="http://www.sqlite.org/index.html"><citetitle>SQLite</citetitle></ulink> database, will
+      provide for data to be updated as well as read. SQLite will be accessed using <ulink
+        url="http://sourceforge.net/projects/oorexx/files/ooSQLite/"
+        ><citetitle>ooSQLite</citetitle></ulink> - the ooRexx language interface to SQLite. </para>
+      <para>A second function planned is drag/drop of a component from a list view
+      such as <computeroutput>CustomerListView</computeroutput> to an Order Form. 
+      The Order Form will see this as a drop of a specific Customer rather than of a Customer List.</para> 
+      <para>You may have noticed that most of the code in the List View components 
+      (e.g. <computeroutput>CustomerListView.rex</computeroutput>)
+      is identical aside from some variable names. This cries out for a ListView superclass. 
+      Exercise 9 will introduce just such a superclass, and the individual list views will merely 
+      configure the view and provide a call-back method for any data needing specific attention - 
+      for example formatting a date field according to country-specific usage.  
+    </para>
+    <para>Finally, aside from other enhancements, it is planned to show how an application
+      consisting of multiple dialogs can be "packaged" so that the many folders and 
+      <computeroutput>.rex</computeroutput>files are simplified into a much smaller number
+      of files.
+    </para>
+  </section>
 </chapter>
