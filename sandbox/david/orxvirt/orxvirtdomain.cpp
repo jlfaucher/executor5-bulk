@@ -301,7 +301,7 @@ RexxMethod2(int,                         // Return type
  * @return        Zero.
  **/
 RexxMethod2(RexxObjectPtr,               // Return type
-            orxvirtDomainGetXmlDesc,     // Object_method name
+            orxvirtDomainGetXMLDesc,     // Object_method name
             int, flags,                  // Flags
             CSELF, self)                 // Self
 {
