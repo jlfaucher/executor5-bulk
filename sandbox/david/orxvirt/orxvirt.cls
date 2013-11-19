@@ -249,6 +249,13 @@
 
 
 /*============================================================================*/
+/* Routine: orxvirtVersion                                                    */
+/*============================================================================*/
+
+::ROUTINE orxvirtVersion EXTERNAL "LIBRARY orxvirt orxvirtVersion"
+
+
+/*============================================================================*/
 /* Class: orxvirtConnect                                                      */
 /*============================================================================*/
 
@@ -304,7 +311,7 @@ return 'unknown'
 ::METHOD getXMLDesc
 -- get the xml description and put it into a file
 -- note that the output file will be empty on an error
-use strict arg filename, flags = .virDomainXMLFlags~VIR_DOMAIN_XML_INACTIVE()
+use strict arg filename, flags = 0
 xml = self~getXMLDesc_internal(flags)
 ofile = .stream~new(filename)
 ofile~charout(xml)

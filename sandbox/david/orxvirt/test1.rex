@@ -40,6 +40,8 @@
 /*----------------------------------------------------------------------------*/
 
 
+say 'The current orxvirt version is' orxvirtVersion()'.'
+
 connect = .orxvirtConnect~new()
 retc = connect~openauth()
 say 'open method retc =' retc

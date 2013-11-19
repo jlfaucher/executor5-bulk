@@ -51,8 +51,6 @@
 /* Local Definitions                                                          */
 /*----------------------------------------------------------------------------*/
 
-#define verstr "0.0.1"
-
 
 /*============================================================================*/
 /* Private Functions                                                          */
@@ -73,7 +71,7 @@
  */
 RexxRoutine0(RexxObjectPtr, orxvirtVersion)
 {
-    return context->NewStringFromAsciiz(verstr);
+    return context->NewStringFromAsciiz(ORXVIRT_VERSTR);
 }
 
 
@@ -110,7 +108,7 @@ RexxPackageEntry orxvirtobject_package_entry = {
     STANDARD_PACKAGE_HEADER
     REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "OrxVirt",                           // name of the package
-    verstr,                              // package information
+    ORXVIRT_VERSTR,                      // package information
     NULL,                                // no load/unload functions
     NULL,
     orxvirtobject_routines,              // the exported routines
