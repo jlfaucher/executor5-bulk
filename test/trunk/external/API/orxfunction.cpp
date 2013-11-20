@@ -483,6 +483,7 @@ RexxRoutine1(RexxClassObject,
     return value;
 }
 
+
 RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestZeroIntArgs,       TestZeroIntArgs),
     REXX_TYPED_ROUTINE(TestOneIntArg,         TestOneIntArg),

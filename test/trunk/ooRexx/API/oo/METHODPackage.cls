@@ -245,6 +245,14 @@
 ::method TestDoubleToObjectAlt EXTERNAL "LIBRARY orxmethod TestDoubleToObjectAlt"
 ::method TestCStringToObject EXTERNAL "LIBRARY orxmethod TestCStringToObject"
 ::method TestObjectToCString EXTERNAL "LIBRARY orxmethod TestObjectToCString"
+::method TestNewMutableBuffer EXTERNAL "LIBRARY orxmethod TestNewMutableBuffer"
+::method TestIsMutableBuffer EXTERNAL "LIBRARY orxmethod TestIsMutableBuffer"
+::method TestMutableBufferLength EXTERNAL "LIBRARY orxmethod TestMutableBufferLength"
+::method TestSetMutableBufferLength EXTERNAL "LIBRARY orxmethod TestSetMutableBufferLength"
+::method TestMutableBufferCapacity EXTERNAL "LIBRARY orxmethod TestMutableBufferCapacity"
+::method TestSetMutableBufferCapacity EXTERNAL "LIBRARY orxmethod TestSetMutableBufferCapacity"
+::method TestSetMutableBufferValue EXTERNAL "LIBRARY orxmethod TestSetMutableBufferValue"
+::method TestGetMutableBufferValue EXTERNAL "LIBRARY orxmethod TestGetMutableBufferValue"
 
 ::method TestRaiseExceptionX
   signal on syntax

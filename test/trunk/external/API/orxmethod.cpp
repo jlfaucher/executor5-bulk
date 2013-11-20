@@ -2052,6 +2052,53 @@ RexxMethod0(size_t,
     return version;
 }
 
+RexxMethod1(RexxMutableBufferObject, TestNewMutableBuffer, size_t, l)
+{
+    return context->NewMutableBuffer(l);
+}
+
+RexxMethod1(size_t, TestMutableBufferLength, RexxMutableBufferObject, b)
+{
+    return context->MutableBufferLength(b);
+}
+
+RexxMethod2(size_t, TestSetMutableBufferLength, RexxMutableBufferObject, b, size_t, l)
+{
+    return context->SetMutableBufferLength(b, l);
+}
+
+RexxMethod0(size_t, TestMutableBufferCapacity, RexxMutableBufferObject, b)
+{
+    return context->MutableBufferCapactity(b);
+}
+
+RexxMethod1(size_t, TestSetMutableBufferCapacity, RexxMutableBufferObject, b, size_t, l)
+{
+    context->SetMutableBufferCapacity(b, l);
+    return context->MutableBufferCapacity(b);
+}
+
+RexxMethod1(logical_t, TestIsMutableBuffer, RexxMutableBufferObject, b)
+{
+    return context->IsMutableBuffer(b);
+}
+
+RexxMethod1(RexxMutableBufferObject, TestSetMutableBufferValue, RexxMutableBufferObject, b, CSTRING, newValue)
+{
+    size_t l = strlen(newValue);
+    char * buffer = (char *)context->SetMutableBufferCapacity(b, l);
+    memcpy(buffer, newValue, l);
+    context->SetMutableBufferLength(b, l);
+    return b;
+}
+
+RexxMethod1(RexxStringObject, TestGetMutableBufferValue, RexxMutableBufferObject, b)
+{
+    size_t l = context->MutableBufferLength(b);
+    char * buffer = (char *)context->MutableBufferData(b);
+    return context->NewString(buffer, l);
+}
+
 
 
 
@@ -2267,6 +2314,14 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestNewStringAlt,            TestNewStringAlt),
     REXX_METHOD(TestCStringToObject,         TestCStringToObject),
     REXX_METHOD(TestObjectToCString,         TestObjectToCString),
+    REXX_METHOD(TestNewMutableBuffer,        TestNewMutableBuffer),
+    REXX_METHOD(TestIsMutableBuffer,         TestIsMutableBuffer),
+    REXX_METHOD(TestMutableBufferLength,     TestMutableBufferLength),
+    REXX_METHOD(TestSetMutableBufferLength,  TestSetMutableBufferLength),
+    REXX_METHOD(TestMutableBufferCapacity,   TestMutableBufferCapacity),
+    REXX_METHOD(TestSetMutableBufferCapacity,TestSetMutableBufferCapacity),
+    REXX_METHOD(TestSetMutableBufferValue,   TestSetMutableBufferValue),
+    REXX_METHOD(TestGetMutableBufferValue,   TestGetMutableBufferValue),
     REXX_LAST_METHOD()
 };
 
