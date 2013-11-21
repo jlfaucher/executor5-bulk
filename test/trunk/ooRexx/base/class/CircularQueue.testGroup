@@ -462,3 +462,16 @@ countSupplierItems: procedure
   self~assertFalse(.circularqueue~of(1,2,3,4)~equivalent(.circularqueue~of(1,2,3)))
   -- simple test between list and array
   self~assertTrue(.circularqueue~of(1,2,3)~equivalent(.array~of(1,2,3)))
+
+::method "test_disjoint"
+  -- empty circularqueues are disjoint because they have no elements in common.
+  self~assertTrue(.circularqueue~new(5)~disjoint(.circularqueue~new(4)))
+  -- empty vs. non-empty, two ways.  Both disjoint
+  self~assertTrue(.circularqueue~of(1,2,3)~disjoint(.circularqueue~new(10)))
+  self~assertTrue(.circularqueue~new(2)~disjoint(.circularqueue~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.circularqueue~of(1,2,3)~disjoint(.circularqueue~of(4,5,6)))
+  -- equal errays
+  self~assertFalse(.circularqueue~of(1,2,3)~disjoint(.circularqueue~of(1,2,3)))
+  -- single element overlap
+  self~assertFalse(.circularqueue~of(1,2,3)~disjoint(.circularqueue~of(3,4,5)))

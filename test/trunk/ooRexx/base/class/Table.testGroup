@@ -656,6 +656,41 @@ makeColl: procedure
   self~assertFalse(table1~equivalent(table3))
   self~assertFalse(table3~equivalent(table1))
 
+::method "test_disjoint"
+  emptyTable = .table~new
+  table1 = .table~new
+  table1[1] = "a"
+  table1[2] = "b"
+  table1[3] = "c"
+
+  table2 = table1~copy
+  -- same indexes, different values
+  table3 = .table~new
+  table1[1] = "x"
+  table1[2] = "y"
+  table1[3] = "z"
+
+  -- empty tables of two different sizes...still equivalent
+
+
+  self~assertTrue(emptyTable~disjoint(.table~new))
+  -- empty vs. non-empty, two ways
+  self~assertTrue(table1~disjoint(emptyTable))
+  self~assertTrue(emptytable~disjoint(table1))
+  -- simple overlap test
+  self~assertFalse(table1~disjoint(table2))
+  -- same indices, different values
+  self~assertTrue(table1~disjoint(table3))
+  -- same values, different indexes
+  table3~empty
+  table3[4] = "a"
+  table3[5] = "b"
+  table3[6] = "c"
+  self~assertTrue(table1~disjoint(table3))
+  -- different number of items
+  table2~remove(3)
+  self~assertFalse(table1~disjoint(table2))
+
 
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else

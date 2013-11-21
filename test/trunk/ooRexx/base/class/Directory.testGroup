@@ -652,6 +652,41 @@ makeColl: procedure
 
 
 
+::method "test_disjoint"
+  emptydirectory = .directory~new
+  directory1 = .directory~new
+  directory1[1] = "a"
+  directory1[2] = "b"
+  directory1[3] = "c"
+
+  directory2 = directory1~copy
+  -- same indexes, different values
+  directory3 = .directory~new
+  directory1[1] = "x"
+  directory1[2] = "y"
+  directory1[3] = "z"
+
+  -- empty directorys of two different sizes...still equivalent
+
+
+  self~assertTrue(emptydirectory~disjoint(.directory~new))
+  -- empty vs. non-empty, two ways
+  self~assertTrue(directory1~disjoint(emptydirectory))
+  self~assertTrue(emptydirectory~disjoint(directory1))
+  -- simple overlap test
+  self~assertFalse(directory1~disjoint(directory2))
+  -- same indices, different values
+  self~assertTrue(directory1~disjoint(directory3))
+  -- same values, different indexes
+  directory3~empty
+  directory3[4] = "a"
+  directory3[5] = "b"
+  directory3[6] = "c"
+  self~assertTrue(directory1~disjoint(directory3))
+  -- different number of items
+  directory2~remove(3)
+  self~assertFalse(directory1~disjoint(directory2))
+
 
 /* --------------------- Directory specific methods -------------------- */
 

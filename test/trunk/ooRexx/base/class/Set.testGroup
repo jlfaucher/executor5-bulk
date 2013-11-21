@@ -697,6 +697,20 @@ makeColl: procedure
   self~assertTrue(.set~of(1,2,3)~equivalent(.array~of(1,,2,,3)))
 
 
+::method "test_disjoint"
+  -- empty sets are disjoint because they have no elements in common.
+  self~assertTrue(.set~new~disjoint(.set~new))
+  -- empty vs. non-empty, two ways.  Both disjoint
+  self~assertTrue(.set~of(1,2,3)~disjoint(.set~new))
+  self~assertTrue(.set~new~disjoint(.set~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.set~of(1,2,3)~disjoint(.set~of(4,5,6)))
+  -- equal collections
+  self~assertFalse(.set~of(1,2,3)~disjoint(.set~of(1,2,3)))
+  -- single element overlap
+  self~assertFalse(.set~of(1,2,3)~disjoint(.set~of(3,4,5)))
+
+
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
 */

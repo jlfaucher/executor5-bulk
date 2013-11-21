@@ -673,6 +673,40 @@ makeColl: procedure
   self~assertFalse(stem1~equivalent(stem3))
   self~assertFalse(stem3~equivalent(stem1))
 
+::method "test_disjoint"
+  emptystem = .stem~new
+  stem1 = .stem~new
+  stem1[1] = "a"
+  stem1[2] = "b"
+  stem1[3] = "c"
+
+  stem2 = stem1~copy
+  -- same indexes, different values
+  stem3 = .stem~new
+  stem1[1] = "x"
+  stem1[2] = "y"
+  stem1[3] = "z"
+
+  -- empty stems of two different sizes...still equivalent
+
+
+  self~assertTrue(emptystem~disjoint(.stem~new))
+  -- empty vs. non-empty, two ways
+  self~assertTrue(stem1~disjoint(emptystem))
+  self~assertTrue(emptystem~disjoint(stem1))
+  -- simple overlap test
+  self~assertFalse(stem1~disjoint(stem2))
+  -- same indices, different values
+  self~assertTrue(stem1~disjoint(stem3))
+  -- same values, different indexes
+  stem3~empty
+  stem3[4] = "a"
+  stem3[5] = "b"
+  stem3[6] = "c"
+  self~assertTrue(stem1~disjoint(stem3))
+  -- different number of items
+  stem2~remove(3)
+  self~assertFalse(stem1~disjoint(stem2))
 
 
 
