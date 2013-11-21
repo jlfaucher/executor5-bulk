@@ -445,3 +445,20 @@ countSupplierItems: procedure
   self~assertEquals(3, a~items)
   self~assertSame(8, a~firstitem)
   self~assertSame(10, a~lastitem)
+
+
+::method "test_equivalent"
+  -- empty arrays of two different sizes...still equivalent
+  self~assertTrue(.circularqueue~new(5)~equivalent(.circularqueue~new(4)))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(.circularqueue~of(1,2,3)~equivalent(.circularqueue~new(3)))
+  self~assertFalse(.circularqueue~new(10)~equivalent(.circularqueue~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.circularqueue~of(1,2,3)~equivalent(.circularqueue~of(1,2,3)))
+  -- same number of items, different values
+  self~assertFalse(.circularqueue~of(1,2,3)~equivalent(.circularqueue~of(1,2,4)))
+  -- mismatch on number of arguments, tested both ways
+  self~assertFalse(.circularqueue~of(1,2,3)~equivalent(.circularqueue~of(1,2,3,4)))
+  self~assertFalse(.circularqueue~of(1,2,3,4)~equivalent(.circularqueue~of(1,2,3)))
+  -- simple test between list and array
+  self~assertTrue(.circularqueue~of(1,2,3)~equivalent(.array~of(1,2,3)))

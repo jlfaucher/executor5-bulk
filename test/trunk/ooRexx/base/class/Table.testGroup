@@ -607,7 +607,6 @@ makeColl: procedure
   self~assertTrue(sameContent(ce, c1~xor(c1)))
   self~assertTrue(sameContent(ce, c2~xor(c2)))
 
-
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
   o1=.object~new
   c =clz~new~~put("1", 1)~~put("2", 2)~~put(o1,o1)
@@ -625,6 +624,37 @@ makeColl: procedure
   d2=c~xor(other)
 
   self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
+
+::method "test_equivalent"
+  emptyTable = .table~new
+  table1 = .table~new
+  table1[1] = "a"
+  table1[2] = "b"
+  table1[3] = "c"
+
+  table2 = table1~copy
+
+  -- empty tables of two different sizes...still equivalent
+
+
+  self~assertTrue(emptyTable~equivalent(.table~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(table1~equivalent(emptyTable))
+  self~assertFalse(emptytable~equivalent(table1))
+  -- simple true test
+  self~assertTrue(table1~equivalent(table2))
+  table2[2] = 'z'
+  -- same number of items, different values
+  self~assertFalse(table1~equivalent(table2))
+  -- same values, different indexes
+  table3 = table1~copy
+  table3~remove(2)
+  table3[4] = "b"
+  self~assertFalse(table1~equivalent(table3))
+  -- different number of items
+  table3~remove(4)
+  self~assertFalse(table1~equivalent(table3))
+  self~assertFalse(table3~equivalent(table1))
 
 
 /* Test whether both collections contain the same entries.

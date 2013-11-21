@@ -1209,3 +1209,19 @@ return testResult
   self~assertEquals(2, a~next(1))
   self~assertEquals(1, a~previous(2))
 
+
+::method "test_equivalent"
+  -- empty arrays of two different sizes...still equivalent
+  self~assertTrue(.queue~new~equivalent(.queue~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(.queue~of(1,2,3)~equivalent(.queue~new))
+  self~assertFalse(.queue~new~equivalent(.queue~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.queue~of(1,2,3)~equivalent(.queue~of(1,2,3)))
+  -- same number of items, different values
+  self~assertFalse(.queue~of(1,2,3)~equivalent(.queue~of(1,2,4)))
+  -- mismatch on number of arguments, tested both ways
+  self~assertFalse(.queue~of(1,2,3)~equivalent(.queue~of(1,2,3,4)))
+  self~assertFalse(.queue~of(1,2,3,4)~equivalent(.queue~of(1,2,3)))
+  -- simple test between list and array
+  self~assertTrue(.queue~of(1,2,3)~equivalent(.array~of(1,2,3)))

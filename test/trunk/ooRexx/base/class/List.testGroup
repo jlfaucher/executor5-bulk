@@ -792,6 +792,21 @@ makeColl: procedure
   self~assertSame(1, resultObj~items, 'w x y z xor w y z should result in 1 item')
   self~assertTrue(resultObj~hasItem('x'), 'w x y z xor w y z result should contain an item of x')
 
+::method "test_equivalent"
+  -- empty arrays of two different sizes...still equivalent
+  self~assertTrue(.list~new~equivalent(.list~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(.list~of(1,2,3)~equivalent(.list~new))
+  self~assertFalse(.list~new~equivalent(.list~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.list~of(1,2,3)~equivalent(.list~of(1,2,3)))
+  -- same number of items, different values
+  self~assertFalse(.list~of(1,2,3)~equivalent(.list~of(1,2,4)))
+  -- mismatch on number of arguments, tested both ways
+  self~assertFalse(.list~of(1,2,3)~equivalent(.list~of(1,2,3,4)))
+  self~assertFalse(.list~of(1,2,3,4)~equivalent(.list~of(1,2,3)))
+  -- simple test between list and array
+  self~assertTrue(.list~of(1,2,3)~equivalent(.array~of(1,2,3)))
 
 
 

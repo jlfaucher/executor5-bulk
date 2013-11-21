@@ -677,7 +677,24 @@ makeColl: procedure
   self~assertTrue(resultObj~isA(.set), "Result object after xor must be same class as receiver")
   self~assertTrue(sameContent(resultObj, expectedSet), "Expected XOR of Tom Frank Mary with Tom Frank Sue is:" || nl ||                    "Mary Sue")
 
+::method "test_equivalent"
+  -- empty collection
+  self~assertTrue(.set~new~equivalent(.set~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(.set~of(1,2,3)~equivalent(.set~new))
+  self~assertFalse(.set~new~equivalent(.set~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.set~of(1,2,3)~equivalent(.set~of(1,2,3)))
+  -- same number of items, different values
+  self~assertFalse(.set~of(1,2,3)~equivalent(.set~of(1,2,4)))
+  -- mismatch on number of arguments, tested both ways
+  self~assertFalse(.set~of(1,2,3)~equivalent(.set~of(1,2,3,4)))
+  self~assertFalse(.set~of(1,2,3,4)~equivalent(.set~of(1,2,3)))
 
+  -- simple cross class test using an array.  The array is converted to a set using the items
+  self~assertTrue(.set~of(1,2,3)~equivalent(.array~of(1,2,3)))
+  -- and the same using a sparse array
+  self~assertTrue(.set~of(1,2,3)~equivalent(.array~of(1,,2,,3)))
 
 
 /* Test whether both collections contain the same entries.

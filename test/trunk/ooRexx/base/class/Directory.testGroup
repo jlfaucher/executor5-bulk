@@ -619,6 +619,37 @@ makeColl: procedure
   self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
 
 
+::method "test_equivalent"
+  emptydirectory = .directory~new
+  directory1 = .directory~new
+  directory1[1] = "a"
+  directory1[2] = "b"
+  directory1[3] = "c"
+
+  directory2 = directory1~copy
+
+  -- empty directorys of two different sizes...still equivalent
+
+
+  self~assertTrue(emptydirectory~equivalent(.directory~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(directory1~equivalent(emptydirectory))
+  self~assertFalse(emptydirectory~equivalent(directory1))
+  -- simple true test
+  self~assertTrue(directory1~equivalent(directory2))
+  directory2[2] = 'z'
+  -- same number of items, different values
+  self~assertFalse(directory1~equivalent(directory2))
+  -- same values, different indexes
+  directory3 = directory1~copy
+  directory3~remove(2)
+  directory3[4] = "b"
+  self~assertFalse(directory1~equivalent(directory3))
+  -- different number of items
+  directory3~remove(4)
+  self~assertFalse(directory1~equivalent(directory3))
+  self~assertFalse(directory3~equivalent(directory1))
+
 
 
 

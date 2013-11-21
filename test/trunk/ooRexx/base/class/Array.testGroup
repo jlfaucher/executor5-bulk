@@ -1921,6 +1921,42 @@ makeColl: procedure
   target = .array~of(1,2,3)
   self~assertEquals(3, target~delete(.array~of(2,3)))
 
+
+::method "test_equivalent"
+  -- empty arrays of two different sizes...still equivalent
+  self~assertTrue(.array~new(10)~equivalent(.array~new(20)))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(.array~of(1,2,3)~equivalent(.array~new))
+  self~assertFalse(.array~new~equivalent(.array~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.array~of(1,2,3)~equivalent(.array~of(1,2,3)))
+  -- same number of items, different values
+  self~assertFalse(.array~of(1,2,3)~equivalent(.array~of(1,2,4)))
+  -- mismatch on number of arguments, tested both ways
+  self~assertFalse(.array~of(1,2,3)~equivalent(.array~of(1,2,3,4)))
+  self~assertFalse(.array~of(1,2,3,4)~equivalent(.array~of(1,2,3)))
+  -- equivalance of sparse arrays
+  self~assertTrue(.array~of(1,,3)~equivalent(.array~of(1,,3)))
+
+  a1 = .array~new(3, 3)
+  a1[1,3] = "a"
+  a1[2,2] = "b"
+  a1[3,1] = "c"
+
+  a2 = .array~new(3, 3)
+  a2[1,3] = "a"
+  a2[2,2] = "b"
+  a2[3,1] = "c"
+  -- pair of multi-dimention arrays
+  self~assertTrue(a1~equivalent(a2))
+  -- now non-equivalent ones
+  a1[1,2] = "z"
+  self~assertFalse(a1~equivalent(a2))
+  self~assertFalse(a2~equivalent(a1))
+
+
+
+
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
 */
@@ -1973,3 +2009,5 @@ makeColl: procedure
      if a1[i+start-1]<>a2[i] then return .false
   end
   return .true
+
+

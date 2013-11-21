@@ -468,6 +468,37 @@ makeColl: procedure
   d2=c1~xor(other)
   self~assertTrue(self~sameContent(c2, d2), "subtest8: 'other' is an 'OrderedCollection'")
 
+::method "test_equivalent"
+  emptytable = .identitytable~new
+  table1 = .identitytable~new
+  table1[1] = "a"
+  table1[2] = "b"
+  table1[3] = "c"
+
+  table2 = table1~copy
+
+  -- empty tables of two different sizes...still equivalent
+
+
+  self~assertTrue(emptytable~equivalent(.identitytable~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(table1~equivalent(emptytable))
+  self~assertFalse(emptytable~equivalent(table1))
+  -- simple true test
+  self~assertTrue(table1~equivalent(table2))
+  table2[2] = 'z'
+  -- same number of items, different values
+  self~assertFalse(table1~equivalent(table2))
+  -- same values, different indexes
+  table3 = table1~copy
+  table3~remove(2)
+  table3[4] = "b"
+  self~assertFalse(table1~equivalent(table3))
+  -- different number of items
+  table3~remove(4)
+  self~assertFalse(table1~equivalent(table3))
+  self~assertFalse(table3~equivalent(table1))
+
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
 */

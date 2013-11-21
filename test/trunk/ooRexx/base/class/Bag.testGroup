@@ -776,6 +776,27 @@ makeColl: procedure
 
   self~assertTrue(sameContent(expectedBag, resultBag), "Using Bag, XOR of Lion Tiger Dog 'obj' Tiger Tiger with Elm Maple Dog 'obj'" || nl ||                    "should be Lion Tiger Tiger Tiger Elm Maple")
 
+::method "test_equivalent"
+  -- empty collection
+  self~assertTrue(.bag~new~equivalent(.bag~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(.bag~of(1,2,3)~equivalent(.bag~new))
+  self~assertFalse(.bag~new~equivalent(.bag~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.bag~of(1,2,3)~equivalent(.bag~of(1,2,3)))
+  -- same number of items, different values
+  self~assertFalse(.bag~of(1,2,3)~equivalent(.bag~of(1,2,4)))
+  -- duplicate items vs. non-duplicate items
+  self~assertFalse(.bag~of(1,2,3)~equivalent(.bag~of(1,2,2,3)))
+  self~assertFalse(.bag~of(1,2,2,3)~equivalent(.bag~of(1,2,3)))
+  -- mismatch on number of arguments, tested both ways
+  self~assertFalse(.bag~of(1,2,3)~equivalent(.bag~of(1,2,3,4)))
+  self~assertFalse(.bag~of(1,2,3,4)~equivalent(.bag~of(1,2,3)))
+
+  -- simple cross class test using an array.  The array is converted to a set using the items
+  self~assertTrue(.set~of(1,2,3)~equivalent(.array~of(1,2,3)))
+  -- and the same using a sparse array
+  self~assertTrue(.set~of(1,2,3)~equivalent(.array~of(1,,2,,3)))
 
 
 

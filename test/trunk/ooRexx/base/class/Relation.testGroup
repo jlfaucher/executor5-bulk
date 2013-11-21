@@ -702,6 +702,51 @@ makeColl: procedure
   self~assertTrue(i~hasItem("bar"))
 
 
+::method "test_equivalent"
+  emptyrelation = .relation~new
+  relation1 = .relation~new
+  relation1[1] = "a"
+  relation1[2] = "b"
+  relation1[3] = "c"
+
+  relation2 = relation1~copy
+
+  -- empty relations of two different sizes...still equivalent
+
+
+  self~assertTrue(emptyrelation~equivalent(.relation~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(relation1~equivalent(emptyrelation))
+  self~assertFalse(emptyrelation~equivalent(relation1))
+  -- simple true test
+  self~assertTrue(relation1~equivalent(relation2))
+  relation2[2] = 'z'
+  -- same number of items, different values
+  self~assertFalse(relation1~equivalent(relation2))
+  -- same values, different indexes
+  relation3 = relation1~copy
+  relation3~remove(2)
+  relation3[4] = "b"
+  self~assertFalse(relation1~equivalent(relation3))
+  -- different number of items
+  relation3~remove(4)
+  self~assertFalse(relation1~equivalent(relation3))
+  self~assertFalse(relation3~equivalent(relation1))
+
+  relation1 = .relation~new
+  relation1[1] = "a"
+  relation1[2] = "b"
+  relation1[3] = "c"
+  relation1[3] = "d"
+
+  relation2 = .relation~new
+  relation2[1] = "a"
+  relation2[2] = "b"
+  relation2[3] = "d"     -- duplicates created in a different order
+  relation2[3] = "c"
+  self~assertTrue(relation1~equivalent(relation2))
+
+
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
 */

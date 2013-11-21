@@ -642,6 +642,36 @@ makeColl: procedure
   self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
 
 
+::method "test_equivalent"
+  emptystem = .stem~new
+  stem1 = .stem~new
+  stem1[1] = "a"
+  stem1[2] = "b"
+  stem1[3] = "c"
+
+  stem2 = stem1~copy
+
+  -- empty stems of two different sizes...still equivalent
+
+
+  self~assertTrue(emptystem~equivalent(.stem~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(stem1~equivalent(emptystem))
+  self~assertFalse(emptystem~equivalent(stem1))
+  -- simple true test
+  self~assertTrue(stem1~equivalent(stem2))
+  stem2[2] = 'z'
+  -- same number of items, different values
+  self~assertFalse(stem1~equivalent(stem2))
+  -- same values, different indexes
+  stem3 = stem1~copy
+  stem3~remove(2)
+  stem3[4] = "b"
+  self~assertFalse(stem1~equivalent(stem3))
+  -- different number of items
+  stem3~remove(4)
+  self~assertFalse(stem1~equivalent(stem3))
+  self~assertFalse(stem3~equivalent(stem1))
 
 
 
