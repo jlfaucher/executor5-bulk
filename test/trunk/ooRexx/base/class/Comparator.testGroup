@@ -144,6 +144,27 @@ return testResult
   self~assertSame(1, c~compare(.TestComparable~new("ab"), .TestComparable~new("abc")))
   self~assertSame(-1, c~compare(.TestComparable~new("abc"), .TestComparable~new("ab")))
 
+::method TestNumericComparator
+  c = .NumericComparator~new
+  -- a whole series of equivalent numeric values
+  self~assertSame(0, c~compare(1, 1e0))
+  self~assertSame(0, c~compare(1.00000, 10e-1))
+  -- these should compare equal under numeric digits 9
+  self~assertSame(0, c~compare(1.000e+0, 1.000000001))
+  -- now some greater options
+  self~assertSame(1, c~compare("1", "-0.0"))
+  self~assertSame(1, c~compare("-4e2", "-401"))
+  self~assertSame(1, c~compare("+6", "5.99999999"))
+  -- and some less than tests...we'll just invert the previous tests
+  self~assertSame(-1, c~compare("-0.0", "1"))
+  self~assertSame(-1, c~compare("-401", "-4e2"))
+  self~assertSame(-1, c~compare("5.99999999", "+6"))
+
+  c2 = .NumericComparator~new(12)
+  -- some examples that would compare equal under default digits
+  self~assertSame(0, c~compare(123456789000, 123456789001))
+  self~assertSame(-1, c2~compare(123456789000, 123456789001))
+
 
 ::class TestComparable
 ::method init
