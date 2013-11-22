@@ -1998,6 +1998,65 @@ makeColl: procedure
   self~expectSyntax("93.903")
   arr = .array~new(.array~of(3,,4))
 
+::method "test_fill"
+  arr = .array~new
+  -- zero size array doesn't fill any thing
+  arr~fill(0)
+  self~assertSame(arr~size, 0)
+  self~assertSame(arr~items, 0)
+  -- fill empty sized array
+  arr = .array~new(3)
+  arr~fill(3)
+  self~assertSame(arr~size, 3)
+  self~assertSame(arr~items, 3)
+  self~assertTrue(sameContent(arr, .array~of(3, 3, 3)))
+  -- arrays keep track of the last item for the append method
+  -- to function efficiently.  Make sure this still works
+  arr~append(4)
+  self~assertSame(arr~size, 4)
+  self~assertSame(arr~items, 4)
+  self~assertTrue(sameContent(arr, .array~of(3, 3, 3, 4)))
+
+  arr = .array~of(1,,,4)
+  -- fill a sparse array
+  arr~fill('a')
+  self~assertSame(arr~size, 4)
+  self~assertSame(arr~items, 4)
+  self~assertTrue(sameContent(arr, .array~of("a", "a", "a", "a")))
+
+  arr = .array~new(2, 2)
+  arr~fill(1)
+  self~assertSame(arr~size, 4)
+  self~assertSame(arr~items, 4)
+  loop i = 1 to 2
+     loop j = 1 to 2
+        self~assertSame(arr[i, j], 1)
+     end
+  end
+
+  arr = .array~new(2, 2, 2)
+  arr~fill(1)
+  self~assertSame(arr~size, 8)
+  self~assertSame(arr~items, 8)
+  loop i = 1 to 2
+     loop j = 1 to 2
+        loop k = 1 to 2
+           self~assertSame(arr[i, j, k], 1)
+        end
+     end
+  end
+
+
+::method test_fill_err1
+  self~expectSyntax("93.903")
+  arr = .array~new(4)
+  arr~fill
+
+::method test_fill_err2
+  self~expectSyntax("93.902")
+  arr = .array~new(4)
+  arr~fill(1, 2)
+
 
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
