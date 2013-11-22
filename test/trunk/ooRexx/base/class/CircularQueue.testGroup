@@ -54,6 +54,42 @@ return testResult
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 ::class "CircularQueue.testGroup" subclass ooTestCase public
+::method init
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+  forward class (super) continue    -- let superclass initialize
+
+  clz=.CircularQueue                -- collection class object to use
+  bUserDefinedIndex=.false          -- user defined index? (determines what MAKEARRAY returns)
+  bSingleItem      =.true           -- index associates only one item
+
+  collDir=.directory~new            -- define directory containing predefined collections
+  collDir~emptyColl=clz~new(5)
+
+  o1=.object~new
+  o2=.object~new
+
+  collDir~coll_1   =clz~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~coll_2   =clz~of(            "2v", "2v", o1, o1, o2, o2, "3v")
+
+  collDir~allIndexes1=.array~of(0, 1, 2, 3, 4, 5)
+  collDir~allIndexes2=.array~of(0, 1, 2, 3, 4, 5, 6)
+
+  collDir~allItems1=.array~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~allItems2=.array~of(            "2v", "2v", o1, o1, o2, o2, "3v")
+
+
+   /* determine resulting collection   */
+  collDir~difference1 =clz~of("1v","2v")  /* coll_1~difference(coll_2) */
+  collDir~difference2 =clz~of(o2, o2, "3v")       /* coll_2~difference(coll_1) */
+
+
+  collDir~interSectionColl=clz~of("2v", "2v", o1, o1)
+
+  collDir~unionColl1      =clz~of("1v", "2v", "2v", "2v", "2v", "2v", o1, o1, o1, o1, o2, o2, "3v")
+  collDir~unionColl2      =clz~of("2v", "2v", "3v", "1v", "2v", "2v", "2v", o1, o1, o2, o2, o1, o1)
+
+  collDir~xorColl1        =clz~of("1v", "2v", o2, o2, "3v")
+  collDir~xorColl2        =clz~of(o2, o2, "3v", "1v", "2v")
 
 
    -- test INIT arguments (sent via NEW) ---------------------------------------------
@@ -475,3 +511,253 @@ countSupplierItems: procedure
   self~assertFalse(.circularqueue~of(1,2,3)~disjoint(.circularqueue~of(1,2,3)))
   -- single element overlap
   self~assertFalse(.circularqueue~of(1,2,3)~disjoint(.circularqueue~of(3,4,5)))
+
+::method "test_interSection"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~interSectionColl
+
+  self~assertEquals(ce, ce~interSection(ce))
+
+  self~assertEquals(ce, c1~interSection(ce))
+  self~assertEquals(ce, c2~interSection(ce))
+
+  self~assertEquals(res, c1~interSection(c2))
+  self~assertEquals(res, c2~interSection(c1))
+
+  self~assertEquals(c1, c1~interSection(c1))
+  self~assertEquals(c2, c2~interSection(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("2", o1)          -- expected result
+  d2=c~interSection(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list intersection table
+  receiverList = .queue~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~intersection(argumentTable)
+  self~assertSame(.queue, resultObj~class, "(1.) After intersection operation result must be same class as receiver")
+  self~assertSame(3, resultObj~items, 'w x y z intersect w y z should result in 3 items')
+  self~assertTrue(resultObj~hasItem('w'), 'w x y z intersect w y z result should contain an item of w')
+
+::method "test_subset"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  cu1=collDir~unionColl1
+  cu2=collDir~unionColl2
+
+  self~assertTrue(ce~subset(ce))
+  self~assertTrue(ce~subset(c1))
+  self~assertTrue(ce~subset(c2))
+
+  self~assertTrue(c1~subset(c1))
+  self~assertTrue(c2~subset(c2))
+
+  self~assertTrue(ce~subset(cu))
+
+  self~assertTrue(c1~subset(cu1))
+  self~assertTrue(c1~subset(cu2))
+
+  self~assertTrue(c2~subset(cu1))
+  self~assertTrue(c2~subset(cu2))
+
+  self~assertFalse(c1~subset(ce))
+  self~assertFalse(c1~subset(c2))
+
+  self~assertFalse(c2~subset(ce))
+  self~assertFalse(c2~subset(c1))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d2=c~subSet(other)
+  self~assertFalse(d2, "subtest14: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list subset table
+  receiverList = clz~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  self~assertFalse(receiverList~subset(argumentTable), 'w x y z is not a subset of w y z')
+  receiverList~removeItem('x')
+  receiverList~removeItem('z')
+  self~assertTrue(receiverList~subset(argumentTable), 'w y is a subset of w y z')
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  other=.array~new
+  other[101]="1"
+  other[102]="2"
+  other[103]="3"
+  other[104]="2"
+  other[106]=o1
+  other[107]=o1
+  d2=c~subSet(other)
+  self~assertTrue(d2, "subtest16: 'other' is an 'OrderedCollection'")
+
+::method "test_union"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertEquals(ce, ce~union(ce))
+
+  self~assertEquals(c1, c1~union(ce))
+  self~assertEquals(c2, c2~union(ce))
+
+  self~assertEquals(c1, ce~union(c1))
+  self~assertEquals(c2, ce~union(c2))
+
+  self~assertEquals(collDir~unionColl1, c1~union(c2))
+  self~assertEquals(collDir~unionColl2, c2~union(c1))
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1", "2", "2", o1, o1)  -- expected result
+  d2=c~union(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list union table
+  receiverList = clz~of('x', 'y')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~union(argumentTable)
+  self~assertSame(clz, resultObj~class, "(1.) After union operation result must be same class as receiver")
+  self~assertSame(4, resultObj~items, 'w x y z union w y z should result in 4 items')
+  self~assertTrue(resultObj~hasItem('x'), 'w x y z union w y z result should contain an item of x')
+
+
+
+
+::method "test_xor"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~xorColl
+
+  self~assertEquals(ce, ce~xor(ce))
+
+  self~assertEquals(c1, c1~xor(ce))
+  self~assertEquals(c2, c2~xor(ce))
+
+  self~assertEquals(collDir~xorColl1, c1~xor(c2))
+  self~assertEquals(collDir~xorColl2, c2~xor(c1))
+
+  self~assertEquals(ce, c1~xor(c1))
+  self~assertEquals(ce, c2~xor(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")          -- expected result
+  d2=c~xor(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list XOR table
+  receiverList = .list~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~xor(argumentTable)
+  self~assertSame(.list, resultObj~class, "(1.) After xor operation result must be same class as receiver")
+  self~assertSame(1, resultObj~items, 'w x y z xor w y z should result in 1 item')
+  self~assertTrue(resultObj~hasItem('x'), 'w x y z xor w y z result should contain an item of x')
+
+::method "test_difference"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertEquals(ce, ce~difference(ce))
+
+  self~assertEquals(c1, c1~difference(ce))
+  self~assertEquals(c2, c2~difference(ce))
+
+  self~assertEquals(collDir~difference1, c1~difference(c2))
+  self~assertEquals(collDir~difference2, c2~difference(c1))
+
+  self~assertEquals(ce, c1~difference(c1))
+  self~assertEquals(ce, c2~difference(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")     -- expected result
+  d2=c~difference(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list difference table
+  receiverList = clz~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~difference(argumentTable)
+  self~assertSame(clz, resultObj~class, "(1.) After difference operation result must be same class as receiver")
+  self~assertSame(1, resultObj~items, 'w x y z difference w y z should result in 1 item')
+  self~assertTrue(resultObj~hasItem('x'), 'w x y z difference w y z result should contain an item of x')
+
+
+/* Test whether both collections contain the same entries.
+   returns .true, if the same, .false else
+*/
+::routine "sameContent"
+  use arg coll_1, coll_2
+
+  if coll_1~items<>coll_2~items then      -- not the same amount of objects
+     return .false
+   -- work on a copy
+  tmp=coll_1~copy
+  do o over coll_2
+     if \tmp~hasItem(o) then             -- no entry anymore ?
+        return .false
+
+     tmp~removeItem(o)                        -- remove object
+  end
+
+  return (tmp~items=0)                    -- if the same, then no items left
