@@ -43,15 +43,12 @@
 /*                                                                          */
 /****************************************************************************/
 
- -- A directory manager saves the current directory and can later go back to
- -- that directory.  It also sets up the environment we need.  The class
- -- itself is located in samplesSetup.rex
- mgr = .DirectoryManager~new()
+  srcDir = locate()
 
   -- Use the global .constDir for symbolic IDs
-  .application~useGlobalConstDir('O', 'rc\ldvideo.h')
+  .application~useGlobalConstDir('O', srcDir'rc\ldvideo.h')
 
- logfile = 'oovideo.log'
+ logfile = srcDir'oovideo.log'
  a.IDC_EDIT_TAPE_NO = "10000"
  a.IDC_EDIT_TAPE_LABEL = "Actionfilms 1"
  a.IDC_EDIT_FILM1 = "Gone with the Wind"
@@ -66,7 +63,7 @@
  a.IDC_RB_C180 = 1
  a.IDC_CK_HIFI = 1
 
- dlg = .MyDialog~new("rc\ldvideo.rc", IDD_VIDEO_DLG, A., , "CONNECTBUTTONS")
+ dlg = .MyDialog~new(srcDir"rc\ldvideo.rc", IDD_VIDEO_DLG, A., , "CONNECTBUTTONS")
 
  if dlg~initcode > 0 then do
     call errorDialog "Couldn't load the Video dialog"
@@ -129,7 +126,7 @@
 ::method validate
    tst = self~newEdit(IDC_EDIT_TAPE_NO)~getText
    if tst <> "" then do
-      call Play "wav\take.wav"
+      call Play .application~srcDir"wav\take.wav"
       return .true
    end
    else do
@@ -141,7 +138,7 @@
   return .false
 
 ::method cancel unguarded
-   ret = Play("wav\cancel.wav", yes)
+   ret = Play(.application~srcDir"wav\cancel.wav", yes)
 
    msg   = "Do you really want to cancel?       "
    title = 'Exiting Video Database Application'

@@ -326,7 +326,6 @@ Section  "ooDialog ${SHORTVERSION} Examples" SecExample
 
     SetOutPath $INSTDIR\samples\oodialog\propertySheet.tabControls
     ; Add the files ...
-    File "${ExamplesDir}\propertySheet.tabControls\*.cls"
     File "${ExamplesDir}\propertySheet.tabControls\oodListViews.rex"
     File "${ExamplesDir}\propertySheet.tabControls\PropertySheetDemo.rex"
     File "${ExamplesDir}\propertySheet.tabControls\TabDemo.rex"
@@ -369,7 +368,6 @@ Section  "ooDialog ${SHORTVERSION} Examples" SecExample
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\resizableDialogs\ResizingAdmin
     ; Add the files ...
-    File "${ExamplesDir}\resizableDialogs\ResizingAdmin\*.cls"
     File "${ExamplesDir}\resizableDialogs\ResizingAdmin\*.rex"
 
     ; Set the installation directory:

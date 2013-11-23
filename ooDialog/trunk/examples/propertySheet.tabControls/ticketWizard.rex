@@ -62,11 +62,8 @@
  * stand this program.
  */
 
-  -- A directory manager saves the current directory and can later go back to
-  -- that directory.  The class itself is located in DirectoryManaager.cls
-  mgr = .DirectoryManager~new()
-
-  .application~useGlobalConstDir('O', "rc\ticketWizard.h")
+  sd = locate()
+  .application~useGlobalConstDir('O', sd"rc\ticketWizard.h")
 
   -- Let the user select a font for the example program.
   oldFont = setFont()
@@ -119,19 +116,16 @@
   -- Create the property sheet using the dialog pages and set its attributes.
   wizDlg = .TicketWizard97~new(pages, "Wizard97", "Let's Go To The Movies")
 
-  wizDlg~header = .Image~getImage("rc\ticketWizardTheater.bmp")
-  wizDlg~watermark = .Image~getImage("rc\ticketWizardRexxLA.bmp")
+  wizDlg~header = .Image~getImage(sd"rc\ticketWizardTheater.bmp")
+  wizDlg~watermark = .Image~getImage(sd"rc\ticketWizardRexxLA.bmp")
 
   -- Execute the wizard.
   wizDlg~execute
 
-  -- Return to the directory we started from and restore the default font.
-  mgr~goBack
   ret = restoreFont(oldFont)
   return
 
 ::requires "ooDialog.cls"
-::requires "DirectoryManager.cls"
 
 -- TicketWizard97
 --   The property sheet for the example program.  Although the
@@ -665,7 +659,7 @@
 
   staticImage = self~newStatic(IDC_ST_MOVIE_BMP)
   size = staticImage~getRealSize
-  image = .Image~getImage('rc\ticketWizardMovie.bmp', .Image~toID(IMAGE_BITMAP), size)
+  image = .Image~getImage(.application~srcDir'rc\ticketWizardMovie.bmp', .Image~toID(IMAGE_BITMAP), size)
   staticImage~setImage(image)
 
   filmArray = .array~new(20)
@@ -1071,7 +1065,7 @@
 
     if .DlgUtil~comCtl32Version < 6 then do
       self~createBitmapButton(IDC_PB_TICKET_BMP, x, y, s~width, s~height, "FRAME USEPAL STRETCH GROUP", "Get the Ticket", -
-                              'onGetTicket', "rc\ticketWizardTicket.bmp")
+                              'onGetTicket', .application~srcDir"rc\ticketWizardTicket.bmp")
    end
    else do
       self~createPushButton(IDC_PB_TICKET_BMP, x, y, s~width, s~height, "GROUP", "", 'onGetTicket')
@@ -1101,7 +1095,7 @@
    size~width -= 10;
    size~height -= 10;
 
-   image = .Image~getImage('rc\ticketWizardTicket.bmp', .Image~toID(IMAGE_BITMAP), size)
+   image = .Image~getImage(.application~srcDir'rc\ticketWizardTicket.bmp', .Image~toID(IMAGE_BITMAP), size)
    imageList = .ImageList~create(size, .Image~toID(ILC_COLOR8), 1, 0)
    imageList~add(image)
 
@@ -1251,7 +1245,7 @@
     oldFont~name = .PlainBaseDialog~getFontName
     oldFont~size = .PlainBaseDialog~getFontSize
 
-    dlg = .FontPicker~new("rc\ticketWizard.rc", IDD_FONT_PICKER, , , , 6)
+    dlg = .FontPicker~new(.application~srcDir"rc\ticketWizard.rc", IDD_FONT_PICKER, , , , 6)
     if dlg~initCode == 0 then do
         dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
     end

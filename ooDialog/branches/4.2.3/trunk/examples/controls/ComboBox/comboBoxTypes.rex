@@ -50,9 +50,10 @@
  *  with the removeFullColor() method.
  */
 
-    .application~setDefaults('O', 'comboBoxTypes.h', .false)
+    sd = locate()
+    .application~setDefaults('O', sd'comboBoxTypes.h', .false)
 
-    dlg = .ComboBoxTypes~new("comboBoxTypes.rc", IDD_COMBOBOX_TYPES)
+    dlg = .ComboBoxTypes~new(sd"comboBoxTypes.rc", IDD_COMBOBOX_TYPES)
 
     if dlg~initCode = 0 then do
       dlg~execute("SHOWTOP")
@@ -166,6 +167,7 @@
     -- End select
 
     self~redraw
+    return 0
 
 
 -- This is the event handler for the Close Up push button.  It is meant to close

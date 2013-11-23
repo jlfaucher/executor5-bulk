@@ -62,14 +62,10 @@
  *  animation.
  */
 
- .application~setDefaults('O', 'rc\walker.h', .false)
+ srcDir = locate()
+ .application~setDefaults('O', srcDir'rc\walker.h', .false)
 
- -- A directory manager saves the current directory and can later go back to
- -- that directory.  It also sets up the environment we need.  The class
- -- itself is located in samplesSetup.rex
- mgr = .DirectoryManager~new()
-
- dlg = .WalkerDialog~new('res\oowalk2.dll', IDD_WALKER)
+ dlg = .WalkerDialog~new(srcDir'res\oowalk2.dll', IDD_WALKER)
 
  if dlg~initCode \= 0 then do
    mgr~goBack
@@ -77,7 +73,6 @@
  end
  dlg~execute("SHOWTOP")
 
- mgr~goBack
  return
 
 /*---------------------------- requires -----------------------------*/
@@ -126,7 +121,7 @@
    spriteButton~fillData(data.)
    spriteButton~suspendGotCha(.false)
    self~doValueStemSet(data.)
-   ret = Play("tada.wav", n)  -- TODO not playing in Win7
+   ret = Play(srcDir"tada.wav", n)  -- TODO not playing in Win7
 
    -- Animate the button.
    spriteButton~run
@@ -244,7 +239,7 @@
    else gotCha = .true
 
 ::method hitright
-   ret = play('ding.wav', 'YES')      -- TODO, these 3 .wav files are not playing in Win7
+   ret = play('ding.wav', 'YES')
    return 1
 
 ::method hitleft

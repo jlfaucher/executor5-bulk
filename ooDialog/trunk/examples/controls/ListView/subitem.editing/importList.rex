@@ -39,7 +39,8 @@
  *
  */
 
-    .application~setDefaults("O", "importList.h", .false)
+    sd = locate()
+    .application~setDefaults("O", sd"importList.h", .false)
 
     files = getInitialFiles()
     if files == .nil then return 99
@@ -47,7 +48,7 @@
     if files~items == 0 then initDir = 'C:\'
     else initDir = filespec("location", files[1])
 
-    dlg = .ImporterList~new("importList.rc", IDD_IMPORTER)
+    dlg = .ImporterList~new(sd"importList.rc", IDD_IMPORTER)
     if dlg~initCode = 0 then do
         dlg~fileList = files
         dlg~fileListDirectory = initDir
@@ -113,7 +114,7 @@ return 0
 ::method initDialog
     expose hText edit comboBox listView mouse pbProcess pbImport textDir fileListDirectory menuBar
 
-    menuBar = .ScriptMenuBar~new("importList.rc", IDM_MENUBAR)
+    menuBar = .ScriptMenuBar~new(.application~srcDir"importList.rc", IDM_MENUBAR)
     menuBar~attachTo(self)
 
     hText    = self~newStatic(IDC_HEADER)

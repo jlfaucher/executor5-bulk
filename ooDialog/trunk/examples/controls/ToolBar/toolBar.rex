@@ -49,9 +49,10 @@
  * this example.
  */
 
-  .application~setDefaults('O', 'rc\toolBar.h', .false)
+  sd = locate()
+  .application~setDefaults('O', sd'rc\toolBar.h', .false)
 
-  dlg = .ToolBarDlg~new("rc\toolBar.dll", IDD_TBAR)
+  dlg = .ToolBarDlg~new(sd"rc\toolBar.dll", IDD_TBAR)
   dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
 return 0

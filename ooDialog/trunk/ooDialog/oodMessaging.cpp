@@ -7643,6 +7643,12 @@ RexxMethod4(RexxObjectPtr, en_connectWmEvent, OPTIONAL_CSTRING, methodName, OPTI
 
         case WM_SIZE :
             if ( argumentOmitted(1) || *methodName == '\0' ) methodName = "onResize";
+
+            // Before the sync option was added to the _willReply argument,
+            // .true was documented for connectResize() as waiting for the event
+            // handler, but not requiring a return value.  Unfortunately this
+            // needs to be maintained.
+            tag = (tag == TAG_REPLYFROMREXX ? TAG_SYNC : tag);
             break;
 
         case WM_SIZING :

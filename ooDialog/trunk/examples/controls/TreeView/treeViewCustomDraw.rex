@@ -46,20 +46,17 @@
  * tips, etc..
  */
 
-    -- A directory manager saves the current directory and can later go back to
-    -- that directory.  The class itself is located in DirectoryManaager.cls
-    mgr = .DirectoryManager~new()
+    -- Get our source code file location.
+    srcDir = locate()
 
     -- Use the global .constDir for symbolic IDs and turn automatic data
     -- detection off.
-    .application~setDefaults('O', 'rc\treeViewCustomDraw.h', .false)
+    .application~setDefaults('O', srcDir'rc\treeViewCustomDraw.h', .false)
 
-    dlg = .InventoryDlg~new("rc\treeViewCustomDraw.rc", IDD_TREE_DLG)
+    dlg = .InventoryDlg~new(srcDir"rc\treeViewCustomDraw.rc", IDD_TREE_DLG)
     if dlg~initCode = 0 then do
         ret = dlg~execute("SHOWTOP")
     end
-
-    mgr~goBack
 
 return 0
 
@@ -73,9 +70,12 @@ return 0
 
 \*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 ::class 'TreeViewConstants' mixinclass Object
-::constant BMP_FILE  "rc\treeViewCustomDraw.bmp"  -- Icons for selected/not-selected items.
-::constant TREE_FILE "treeViewCustomDraw.inp"      -- Input file with the items to build the tree.
-::constant ITEM_FILE "treeViewCustomDrawi.inp"     -- Input file with dynamically added items.
+::attribute BMP_FILE get
+    return .application~srcDir"rc\treeViewCustomDraw.bmp"   -- Icons for selected/not-selected items.
+::attribute TREE_FILE get
+    return .application~srcDir"treeViewCustomDraw.inp"      -- Input file with the items to build the tree.
+::attribute ITEM_FILE get
+    return .application~srcDir"treeViewCustomDrawi.inp"     -- Input file with dynamically added items.
 
 ::constant APPLICATION_TITLE  "Crazy Sam's Emporium - Inventory"
 
@@ -330,7 +330,7 @@ return 0
 ::method onNewItem unguarded
     expose tv
 
-    dlg = .NewTreeItemDlg~new("rc\treeViewCustomDraw.rc",  IDD_ADD_TREE_ITEM, tv)
+    dlg = .NewTreeItemDlg~new(.application~srcDir"rc\treeViewCustomDraw.rc",  IDD_ADD_TREE_ITEM, tv)
     dlg~execute
 
 return 0
@@ -838,28 +838,3 @@ return 0
 return self~ok:super
 
 
-/*- DirectoryManager Class- - - - - - - - - - - - - - - - - - - - - - - - - - *\
-
-   This class allows this program to be called from different direcorty than the
-   directory this program is located in.
-
-\*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-::class 'DirectoryManager'
-
-::method init
-  expose originalDirectory
-
-  -- Save our current directory.
-  originalDirectory = directory()
-
-  -- Get the full path to this program file.
-  parse source . . pgmFile
-
-  -- Get the directory this program file is located in, and then cd to it.
-  pgmDir = pgmFile~left(pgmFile~lastpos('\') - 1)
-  pgmDir = directory(pgmDir)
-
-
-::method goBack
-  expose originalDirectory
-  ret = directory(originalDirectory)

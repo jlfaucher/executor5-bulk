@@ -41,9 +41,10 @@
  *
  */
 
-    .application~useGlobalConstDir('O', "rc\columnIcons.h")
+    sd = locate()
+    .application~useGlobalConstDir('O', sd"rc\columnIcons.h")
 
-    dlg = .ListViews~new("rc\columnIcons.dll", IDD_DIALOG)
+    dlg = .ListViews~new(sd"rc\columnIcons.dll", IDD_DIALOG)
     if dlg~initCode == 0 then do
         dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
     end

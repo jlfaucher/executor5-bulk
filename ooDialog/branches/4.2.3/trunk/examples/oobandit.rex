@@ -64,16 +64,12 @@
    .constDir[IDC_EDIT]           = 120
    .constDir[IDC_UD]             = 1206
 
-   -- A directory manager saves the current directory and can later go back to
-   -- that directory.  It also sets up the environment we need.  The class
-   -- itself is located in samplesSetup.rex
-   mgr = .DirectoryManager~new()
+   j = locate()
 
          /* 1ms fast, 500ms slow, 200ms start, equals random every 25th */
    d = .BanditDlg~new(1, 1000, 1000, 25)
    d~execute("SHOWTOP")
 
-   mgr~goBack
    return 0
 
 /*---------------------------------- requires ------------------------*/
@@ -125,15 +121,17 @@
 ::method defineDialog
    expose bmp. initialSpeed dlgSize bitMapSize
 
+   sd = .application~srcDir
+
    -- Load the bitmaps into memory.
-   bmp.1 = self~loadBitmap("bmp\tiger.bmp")
-   bmp.2 = self~loadBitmap("bmp\chihuahu.bmp")
-   bmp.3 = self~loadBitmap("bmp\eleph2.bmp")
-   bmp.4 = self~loadBitmap("bmp\horse.bmp")
-   bmp.5 = self~loadBitmap("bmp\sealion.bmp")
-   bmp.6 = self~loadBitmap("bmp\moose.bmp")
-   bmp.7 = self~loadBitmap("bmp\rhinoce.bmp")
-   bmp.8 = self~loadBitmap("bmp\goat.bmp")
+   bmp.1 = self~loadBitmap(sd"bmp\tiger.bmp")
+   bmp.2 = self~loadBitmap(sd"bmp\chihuahu.bmp")
+   bmp.3 = self~loadBitmap(sd"bmp\eleph2.bmp")
+   bmp.4 = self~loadBitmap(sd"bmp\horse.bmp")
+   bmp.5 = self~loadBitmap(sd"bmp\sealion.bmp")
+   bmp.6 = self~loadBitmap(sd"bmp\moose.bmp")
+   bmp.7 = self~loadBitmap(sd"bmp\rhinoce.bmp")
+   bmp.8 = self~loadBitmap(sd"bmp\goat.bmp")
    bmp.0 = 8
 
    -- Note that for a static text control, the CENTERIMAGE flag has the effect

@@ -51,14 +51,12 @@
  * installBitmapButton() the buttons look like Windows 95 buttons.
  */
 
- -- A directory manager saves the current directory and can later go back to
- -- that directory.  It also sets up the environment we need.  The class itself
- -- is located in samplesSetup.rex
- mgr = .DirectoryManager~new()
+ -- Ensure this program can be executed from any directory.
+ prgDir = locate()
 
  -- Use the global .constDir for symbolic IDs and the symbol definitions are in
  -- AnimalGame.h
- .application~useGlobalConstDir('O', 'rc\AnimalGame.h')
+ .application~useGlobalConstDir('O', prgDir'rc\AnimalGame.h')
 
  firstEditID = .constDir[IDC_EDIT_RHINO]
  lastEditID  = .constDir[IDC_EDIT_HORSE]
@@ -66,7 +64,7 @@
     b.i = "unknown animal"
  end
 
- dlg = .AnimalDialog~new("res\AnimalGame.dll", IDD_ANIMALS, b., firstEditID, lastEditID)
+ dlg = .AnimalDialog~new(prgDir"res\AnimalGame.dll", IDD_ANIMALS, b., firstEditID, lastEditID)
 
  if dlg~initCode \= 0 then do
    msg   = 'Failed to create dialog, aborting'
@@ -78,14 +76,12 @@
 
  dlg~execute("SHOWTOP")
 
- mgr~goBack
-
  return 0
 
 /*------------------------------- requires ---------------------------*/
 
 ::requires "ooDialog.cls"
-::requires "samplesSetup.rex"
+::requires "samplesSetup.rex"  -- Sets up the sound path
 
 /*------------------------------- dialog class -----------------------*/
 
@@ -115,7 +111,7 @@
   -- Load all our bitmaps from a resource only DLL.  Since the .Size argument is
   -- omitted from the getImages() method, the operating system uses the actual
   -- size of the bitmap.
-  res = .ResourceImage~new('res\AnimalGame.dll')
+  res = .ResourceImage~new(.application~srcDir'res\AnimalGame.dll')
   bitmaps = res~getImages(imageIDs)
 
   -- Connect each button to a method with the same name as the symbolic ID of

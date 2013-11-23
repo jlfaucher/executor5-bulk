@@ -46,9 +46,10 @@
  *
  */
 
+    sd = locate()
     .application~useGlobalConstDir('O')
 
-    dlg = .CustomizableToolBar~new('rc\customizeToolBar.dll', IDD_TBAR, , 'rc\customizeToolBar.h')
+    dlg = .CustomizableToolBar~new(sd'rc\customizeToolBar.dll', IDD_TBAR, , sd'rc\customizeToolBar.h')
     dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
 return 0

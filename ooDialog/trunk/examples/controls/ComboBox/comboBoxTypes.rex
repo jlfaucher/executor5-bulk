@@ -50,9 +50,10 @@
  *  with the removeFullColor() method.
  */
 
-    .application~setDefaults('O', 'comboBoxTypes.h', .false)
+    sd = locate()
+    .application~setDefaults('O', sd'comboBoxTypes.h', .false)
 
-    dlg = .ComboBoxTypes~new("comboBoxTypes.rc", IDD_COMBOBOX_TYPES)
+    dlg = .ComboBoxTypes~new(sd"comboBoxTypes.rc", IDD_COMBOBOX_TYPES)
 
     if dlg~initCode = 0 then do
       dlg~execute("SHOWTOP")

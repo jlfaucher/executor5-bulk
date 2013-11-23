@@ -550,11 +550,11 @@ RexxObjectPtr getSrcDirString(RexxCallContext *c)
  *  Returns the directory the callers source code file is located in and sets
  *  the .application object's srcDir attribute.
  *
- *  @param  update [optional]  By default this routine only calculates the
- *                   directory the first time it is invoked. On succesive
- *                   invocations, it simply returns the same value. If update is
- *                   set to true it recalculates the directory and sets the
- *                   .application object's srcDir attribute to the new value.
+ *  @param  update [optional]  By default this routine only sets the
+ *                 .aplication's srcDir attriute the first time it is invoked.
+ *                 On succesive invocations, it does not change the attribute.
+ *                 If update is set to true it resets the .application object's
+ *                 srcDir attribute to the value it is returning.
  *
  *  @return The directory the caller's source code file is located in.
  *
@@ -568,25 +568,22 @@ RexxRoutine1(RexxObjectPtr, locate_rtn, OPTIONAL_logical_t, update)
     pCApplicationManager pcam   = (pCApplicationManager)context->ObjectToCSelf(TheApplicationObj);
     RexxObjectPtr        srcDir = pcam->rxProgramDir;
 
+    RexxObjectPtr tempSrcDir = getSrcDirString(context);
+
     if ( srcDir == TheNilObj )
     {
-        srcDir = getSrcDirString(context);
-        context->RequestGlobalReference(srcDir);
-        pcam->rxProgramDir = srcDir;
+        pcam->rxProgramDir = context->RequestGlobalReference(tempSrcDir);
         goto done_out;
     }
 
     if ( update )
     {
         context->ReleaseGlobalReference(srcDir);
-
-        srcDir = getSrcDirString(context);
-        context->RequestGlobalReference(srcDir);
-        pcam->rxProgramDir = srcDir;
+        pcam->rxProgramDir = context->RequestGlobalReference(tempSrcDir);
     }
 
 done_out:
-    return srcDir;
+    return tempSrcDir;
 }
 /** MessageDialog()
  *

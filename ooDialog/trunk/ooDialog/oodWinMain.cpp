@@ -2861,6 +2861,10 @@ static void setStaticText(HWND hDlg, pAssocArguments paa)
                    "Configuring File Associations and the PATHEXT for:  All Users" :
                    "Configuring File Associations and the PATHEXT for:  the Current User");
 
+    SetDlgItemText(hDlg, IDC_GB_PATHEXT, paa->allUsers ?
+                   "Configure PATHEXT for:  All Users" :
+                   "Configure PATHEXT for:  the Current User");
+
     SetDlgItemText(hDlg, IDC_ST_FTYPE, paa->friendlyName);
     SetDlgItemText(hDlg, IDC_ST_SCOPE, paa->allUsers ? "All Users" : "Current User");
     SetDlgItemText(hDlg, IDC_ST_RUNAS, paa->isRunAsAdmin ? "True" : "False");

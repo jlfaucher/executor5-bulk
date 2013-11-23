@@ -50,13 +50,10 @@
  *
  */
 
-  -- A directory manager saves the current directory and can later go back to
-  -- that directory.  The class itself is located in DirectoryManaager.cls
-  mgr = .DirectoryManager~new()
+  srcDir = locate()
+  .application~useGlobalConstDir("O", srcDir'rc\oodListViews.h')
 
-  .application~useGlobalConstDir("O", 'rc\oodListViews.h')
-
-  dlg = .ListsDialog~new("rc\oodListViews.rc", IDD_LISTVIEWS)
+  dlg = .ListsDialog~new(srcDir"rc\oodListViews.rc", IDD_LISTVIEWS)
 
   if dlg~initCode <> 0 then do
     say "Error instantiating the ListsDialog, aborting"
@@ -65,12 +62,9 @@
 
   dlg~execute("SHOWTOP")
 
-  mgr~goBack
-
   return 0
 
 ::requires "ooDialog.cls"
-::requires "DirectoryManager.cls"
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -126,7 +120,7 @@
   w = (displayRect~right * (7 / 12)) % 4
   tabControl~setMinTabWidth(w)
 
-  pageDialog = .PageDialog~new("rc\oodListViews.rc", IDD_PAGE, , , , , self)
+  pageDialog = .PageDialog~new(.application~srcDir"rc\oodListViews.rc", IDD_PAGE, , , , , self)
   pageDialog~useInfoTips = .true
   pageDialog~initialize(smallIcons, normalIcons, records)
 
@@ -282,7 +276,7 @@
 ::method onAdd unguarded
   expose pageDialog
 
-  dlg = .AddressDialog~new('rc\oodListViews.rc', IDD_ADDRESS)
+  dlg = .AddressDialog~new(.application~srcDir'rc\oodListViews.rc', IDD_ADDRESS)
 
   if dlg~initCode = 0 then do
     if dlg~execute("SHOWTOP") == self~IDOK then do
@@ -321,7 +315,7 @@
 
   rec = pageDialog~getSelectedRecord
 
-  dlg = .AddressDialog~new('rc\oodListViews.rc', IDD_ADDRESS, rec)
+  dlg = .AddressDialog~new(.application~srcDir'rc\oodListViews.rc', IDD_ADDRESS, rec)
 
   if dlg~initCode = 0 then do
     if dlg~execute("SHOWTOP") == self~IDOK then do
@@ -420,7 +414,7 @@
 ::method createImageLists private
   expose smallIcons normalIcons
 
-  small = .Image~getImage("rc\oodListViews1.bmp")
+  small = .Image~getImage(.application~srcDir"rc\oodListViews1.bmp")
   tmpIL = .ImageList~create(.Size~new(16, 12), .Image~toID(ILC_COLOR4), 4, 0)
   if \small~isNull,  \tmpIL~isNull then do
       tmpIL~add(small)
@@ -431,7 +425,7 @@
     smallIcons = .nil
   end
 
-  normal = .Image~getImage("rc\oodListViews2.bmp")
+  normal = .Image~getImage(.application~srcDir"rc\oodListViews2.bmp")
   tmpIL = .ImageList~create(.Size~new(32, 32), .Image~toID(ILC_COLOR4), 4, 0)
   if \normal~isNull,  \tmpIL~isNull then do
       tmpIL~add(normal)
