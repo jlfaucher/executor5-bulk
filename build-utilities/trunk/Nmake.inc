@@ -65,7 +65,7 @@ PLUGINDIR = $(WINDIR)\ooRexxProcess
 
 # To build the NSIS plugin, ooRexxProcess, you must set NSIS_HOME_DIR to point
 # to your installation of NSIS.  Do not include the trailing '\'.
-NSIS_HOME_DIR = C:\Tools\NSIS
+NSIS_HOME_DIR = C:\Tools\misc.dev.tools\Nsis
 
 # Default ooRexx top level build directory.  Change this to point to the correct
 # directory, or define on the command line to Nmake.
