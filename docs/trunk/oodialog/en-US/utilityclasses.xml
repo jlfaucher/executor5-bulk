@@ -103,7 +103,7 @@
 </row>
 <row>
 <entry><xref linkend="rtnLocate"/></entry>
-<entry>Returns the directory containing the Rexx source code file that <emphasis role="italic">locate</emphasis> is executing in. Similar to <emphasis role="italic">parse source</emphasis>.</entry>
+<entry>Returns the directory containing the Rexx source code file that <emphasis role="italic">Locate</emphasis> is executing in. Similar to <emphasis role="italic">parse source</emphasis>.</entry>
 </row>
 <row>
 <entry><xref linkend="rtnMSSleep"/></entry>
@@ -345,7 +345,7 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 
 <para>
   Reflects the complete path name of the directory the main program file is located in, provided the <xref
-  linkend="rtnLocate"/> method has been executed in the interpreter process. The path name includes the trailing slash
+  linkend="rtnLocate"/> routine has been executed in the interpreter process. The path name includes the trailing slash
   (<emphasis role="italic">\</emphasis>.)
 </para>
 <variablelist>
@@ -353,23 +353,31 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   <listitem>
   <para>
     Returns a complete path name of a directory, or the <computeroutput>.nil</computeroutput> object if the <xref
-    linkend="rtnLocate"/> is not been executed.
+    linkend="rtnLocate"/> rouitine has not been executed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">srcDir set:</emphasis></term>
   <listitem>
   <para>
     The programmer can not set the value of this attribute directly. The ooDialog framework sets, or resets, its value when
-    the <emphasis role="italic">locate</emphasis> routine is executed.
+    the <emphasis role="italic">Locate</emphasis> routine is executed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The purpose of the <emphasis role="italic">locate</emphasis> function and the <emphasis role="italic">srcDir</emphasis>
+    The purpose of the <emphasis role="italic">Locate</emphasis> function and the <emphasis role="italic">srcDir</emphasis>
     attribute is to help the programmer create complete path names for any auxiliary files needed by an application. This
     allows the application to execute correctly, even if started from a directory other than its installtion directory. The
     documentation for the <xref linkend="rtnLocate"/> routine contains some additional insight into this purpose.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the intention for the <emphasis role="italic">srcDir</emphasis> attribute is
+    to return the complete directory path name of the main application's source directory. However, this is dependent on the
+    programmer's usage of the <emphasis role="italic">Locate</emphasis> routine. The actual value of the attribute is the
+    directory in which the source code file, in which <emphasis role="italic">Locate</emphasis> is executed. If the
+    programmer calls <emphasis role="italic">Locate</emphasis> in a source code file that is not located in the application's
+    main directory, then the <emphasis role="italic">srcDir</emphasis> attribute is going to that directory.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -381,12 +389,12 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example shows the <emphasis role="italic">locate</emphasis> function being used to get the installation directory of
+    This example shows the <emphasis role="italic">Locate</emphasis> function being used to get the installation directory of
     an application and then the <emphasis role="italic">srcDir</emphasis> attribute being used to access the directory value
     in a private method of a class:
 <programlisting>
 <![CDATA[
-  srcDir = locate()
+  srcDir = Locate()
 
   rcFile = srcDir"resources\imageButton.rc"
   symbolFile = srcDir"resources\imageButton.h"
@@ -3157,20 +3165,20 @@ returns its handle.</para>
 </section>
 
 
-<section id="rtnLocate"><title>locate</title>
-<indexterm><primary>locate</primary></indexterm>
-<indexterm><primary>public routines</primary><secondary>locate</secondary></indexterm>
+<section id="rtnLocate" xreflabel="Locate"><title>Locate</title>
+<indexterm><primary>Locate</primary></indexterm>
+<indexterm><primary>public routines</primary><secondary>Locate</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--locate(--+----------+--)---------------------><
+>>--Locate(--+----------+--)---------------------><
              +--update--+
 ]]>
 </programlisting>
 
 <para>
-  Returns the directory containing the Rexx source code file that <emphasis role="italic">locate</emphasis> is executing in.
+  Returns the directory containing the Rexx source code file that <emphasis role="italic">Locate</emphasis> is executing in.
   This is similar to <emphasis role="italic">parse source</emphasis>, but returns the complete directory path rather than the
-  complete file name. In addition, <emphasis role="italic">locate</emphasis> sets the value of the <xref
+  complete file name. In addition, <emphasis role="italic">Locate</emphasis> sets the value of the <xref
   linkend="atrSrcDir"/> attribute of the <xref linkend="dotApplication"/> to the complete directory path name.
 </para>
 <variablelist>
@@ -3195,27 +3203,27 @@ returns its handle.</para>
   <listitem>
   <para>
     Returns the complete path name, including the trailing slash (<emphasis role="italic">\</emphasis>,) of the directory the
-    source code file containing the executing <emphasis role="italic">locate</emphasis> is located in.
+    source code file containing the executing <emphasis role="italic">Locate</emphasis> is located in.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The primary purpose of the <emphasis role="italic">locate</emphasis> function is to help the ooDialog programmer create
+    The primary purpose of the <emphasis role="italic">Locate</emphasis> function is to help the ooDialog programmer create
     complete path names for any resource files, or other auxiliary files, needed by an application. This in turns allows the
-    application to be executed from any directory. The <emphasis role="italic">locate</emphasis> function is a conveience
+    application to be executed from any directory. The <emphasis role="italic">Locate</emphasis> function is a conveience
     function. The same functionality can be achieved using <emphasis role="italic">parse source</emphasis> and some mechanism
     for retaining the directory value.
   </para>
   <para>
-    Typically, <emphasis role="italic">locate</emphasis> function would be executed once during the start up of an
+    Typically, <emphasis role="italic">Locate</emphasis> function would be executed once during the start up of an
     application and the <emphasis role="italic">srcDir</emphasis> attribute of the <emphasis
     role="italic">.application</emphasis> object would be used elsewhere in the application to gain access to the directory
-    value. If the programmer chooses to execute <emphasis role="italic">locate</emphasis> more than once, then she would need
+    value. If the programmer chooses to execute <emphasis role="italic">Locate</emphasis> more than once, then she would need
     to decide if the <emphasis role="italic">srcDir</emphasis> attribute's value shoud be updated with the new direcotry
-    value. Assuming, <emphasis role="italic">locate</emphasis> is returning a new value. This is the purpose of the <emphasis
+    value. Assuming, <emphasis role="italic">Locate</emphasis> is returning a new value. This is the purpose of the <emphasis
     role="italic">update</emphasis> argument. By default, the <emphasis role="italic">srcDir</emphasis> attribute will not be
-    changed. Pass true as the first argument to <emphasis role="italic">locate</emphasis> to force the routine to update the
+    changed. Pass true as the first argument to <emphasis role="italic">Locate</emphasis> to force the routine to update the
     <emphasis role="italic">srcDir</emphasis> attribute.
   </para>
   </listitem></varlistentry>
@@ -3223,13 +3231,13 @@ returns its handle.</para>
   <listitem>
   <para>
     This example comes from an application that has its resource files located in a subdirectory of the main application
-    directory. The <emphasis role="italic">locate</emphasis> function is used to get the complete path name of the directory
+    directory. The <emphasis role="italic">Locate</emphasis> function is used to get the complete path name of the directory
     the main program file is in and then the returned value is used to construct complete path names to the application's
     resource files:
 <programlisting>
 <![CDATA[
 
-  srcDir = locate()
+  srcDir = Locate()
 
   rcFile = srcDir"resources\imageButton.rc"
   symbolFile = srcDir"resources\imageButton.h"
@@ -3265,7 +3273,7 @@ returns its handle.</para>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End locate() -->
+</section>  <!-- End Locate() -->
 
 
 <section id="rtnMSSleep" xreflabel="MSSleep"><title>MSSleep Routine</title>
