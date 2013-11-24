@@ -132,6 +132,9 @@ in the system). The classes indented are subclasses:</para>
 <secondary>InvertingComparator class</secondary></indexterm>
 
 <indexterm><primary>classes</primary>
+<secondary>NumericComparator class</secondary></indexterm>
+
+<indexterm><primary>classes</primary>
 <secondary>DateTime class</secondary></indexterm>
 
 <indexterm><primary>classes</primary>
@@ -232,6 +235,7 @@ Object
         ColumnComparator
         DescendingComparator
         InvertingComparator
+        NumericComparator
     DateTime
     File
     InputOutputStream
@@ -273,15 +277,15 @@ future, and until then, you can cancel the alarm.</para>
 <section id="buffercl"><title>The Buffer Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Buffer class</secondary></indexterm>
-<para>A Buffer instance is a Rexx interpreter managed block of storage. 
-This class is designed primarily for writing methods and functions in native code 
+<para>A Buffer instance is a Rexx interpreter managed block of storage.
+This class is designed primarily for writing methods and functions in native code
 and can only be created using the native code application programming interfaces.</para>
 </section>
 
 <section id="caselesscolumncomparatorcl"><title>The CaselessColumnComparator Class</title>
 <indexterm><primary>classes</primary>
 <secondary>CaselessColumnComparator class</secondary></indexterm>
-<para>The CaselessColumnComparator class performs caseless orderings of specific substrings 
+<para>The CaselessColumnComparator class performs caseless orderings of specific substrings
 of String objects.
 </para>
 </section>
@@ -337,9 +341,9 @@ once.
 <listitem>
 <indexterm><primary>classes</primary>
 <secondary>CircularQueue class</secondary></indexterm>
-<para>The CircularQueue class allows for storing objects in a circular queue 
-of a predefined size. Once the end of the queue has been reached, new item objects are 
-inserted from the beginning, replacing earlier entries. Any object can be placed in the 
+<para>The CircularQueue class allows for storing objects in a circular queue
+of a predefined size. Once the end of the queue has been reached, new item objects are
+inserted from the beginning, replacing earlier entries. Any object can be placed in the
 queue and the same object can occupy more than one position in the queue.
 </para></listitem></varlistentry>
 
@@ -355,10 +359,10 @@ the string == comparison method to test for strict equality.
 <listitem>
 <indexterm><primary>classes</primary>
 <secondary>IdentityTable class</secondary></indexterm>
-<para>An identity table is a collection with indexes that can be any object. 
-In an identity table, each item is associated with a single index, and there can be only 
-one item for each index. Index and item matches in an identity table are made using an 
-object identity comparison. That is, an index will only match if the same instance is 
+<para>An identity table is a collection with indexes that can be any object.
+In an identity table, each item is associated with a single index, and there can be only
+one item for each index. Index and item matches in an identity table are made using an
+object identity comparison. That is, an index will only match if the same instance is
 used in the collection.
 </para></listitem></varlistentry>
 
@@ -376,8 +380,8 @@ the list.
 <listitem>
 <indexterm><primary>classes</primary>
 <secondary>Properties class</secondary></indexterm>
-<para>A properties object is a collection with unique indexes that are character 
-strings representing names and items that are also restricted to character string values. 
+<para>A properties object is a collection with unique indexes that are character
+strings representing names and items that are also restricted to character string values.
 Properties objects are useful for processing bundles of application option values.
 </para></listitem></varlistentry>
 
@@ -438,8 +442,8 @@ method to test for strict equality. A table contains no duplicate indexes.
 <section id="comparablecl"><title>The Comparable Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Comparable class</secondary></indexterm>
-<para>Any object that inherits the Comparable mixin class and implements a compareTo() 
-method can be sorted. The DateTime Class and TimeSpan Class are examples of built-in 
+<para>Any object that inherits the Comparable mixin class and implements a compareTo()
+method can be sorted. The DateTime Class and TimeSpan Class are examples of built-in
 Rexx classes that can be sorted. Any user created class may also implement a compareTo()
 method to enable sorting.
 </para>
@@ -448,9 +452,9 @@ method to enable sorting.
 <section id="comparatorcl"><title>The Comparator Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Comparator class</secondary></indexterm>
-<para>The Comparator class is the base class for implementing Comparator objects that can 
-be used with the Array sortWith() or stableSortWith() method. The compare() method implements 
-some form of comparison that determines the relative ordering of two objects. Many Comparator 
+<para>The Comparator class is the base class for implementing Comparator objects that can
+be used with the Array sortWith() or stableSortWith() method. The compare() method implements
+some form of comparison that determines the relative ordering of two objects. Many Comparator
 implementations are specific to particular object types.
 </para>
 </section>
@@ -467,7 +471,7 @@ formats, as well as allowing arithmetic operations between dates.
 <section id="descendingcomparatorcl"><title>The DescendingComparator Class</title>
 <indexterm><primary>classes</primary>
 <secondary>DescendingComparator class</secondary></indexterm>
-<para>The DescendingComparator class performs sort orderings in descending order. 
+<para>The DescendingComparator class performs sort orderings in descending order.
 This is the inverse of a Comparator sort order.
 </para>
 </section>
@@ -475,7 +479,7 @@ This is the inverse of a Comparator sort order.
 <section id="filecl"><title>The File Class</title>
 <indexterm><primary>classes</primary>
 <secondary>File class</secondary></indexterm>
-<para>The File class provides services which are common to all the filesystems supported by ooRexx. 
+<para>The File class provides services which are common to all the filesystems supported by ooRexx.
 A File object represents a path to a file or directory. The path can be relative or absolute.
 </para>
 </section>
@@ -483,8 +487,8 @@ A File object represents a path to a file or directory. The path can be relative
 <section id="inputoutputstreamcl"><title>The InputOutputStream Class</title>
 <indexterm><primary>classes</primary>
 <secondary>InputOutputStream class</secondary></indexterm>
-<para>This class is defined as an abstract mixin class. It must be implemented by subclassing it 
-or inheriting from it as a mixin. Many of the methods in this class are abstract and must be overridden 
+<para>This class is defined as an abstract mixin class. It must be implemented by subclassing it
+or inheriting from it as a mixin. Many of the methods in this class are abstract and must be overridden
 or they will throw a syntax error when invoked.
 </para>
 </section>
@@ -492,8 +496,8 @@ or they will throw a syntax error when invoked.
 <section id="inputstreamcl"><title>The InputStream Class</title>
 <indexterm><primary>classes</primary>
 <secondary>InputStream class</secondary></indexterm>
-<para>This class is defined as an abstract mixin class. It must be implemented by subclassing it 
-or inheriting from it as a mixin. Many of the methods in this class are abstract and must be overridden 
+<para>This class is defined as an abstract mixin class. It must be implemented by subclassing it
+or inheriting from it as a mixin. Many of the methods in this class are abstract and must be overridden
 or they will throw a syntax error when invoked.
 </para>
 </section>
@@ -501,7 +505,7 @@ or they will throw a syntax error when invoked.
 <section id="invertingcomparatorcl"><title>The InvertingComparator Class</title>
 <indexterm><primary>classes</primary>
 <secondary>InvertingComparator class</secondary></indexterm>
-<para>The InvertingComparator class inverts the comparison results of another 
+<para>The InvertingComparator class inverts the comparison results of another
 Comparator object to reverse the resulting sort order.
 </para>
 </section>
@@ -553,6 +557,14 @@ throw a syntax error when invoked.
 </para>
 </section>
 
+<section id="numericcomparatorcl"><title>The NumericComparator Class</title>
+<indexterm><primary>classes</primary>
+<secondary>NumericComparator class</secondary></indexterm>
+<para>The NumericComparator class compares string using numeric comparison rules to
+determine sort order.
+</para>
+</section>
+
 <section id="orderablecl"><title>The Orderable Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Orderable class</secondary></indexterm>
@@ -575,9 +587,9 @@ contained in Package class instances.
 <section id="pointercl"><title>The Pointer Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Pointer class</secondary></indexterm>
-<para>A Pointer instance is a wrapper around a native pointer value. 
-This class is designed primarily for writing methods and functions in native code and 
-can only be created using the native code application programming interfaces. 
+<para>A Pointer instance is a wrapper around a native pointer value.
+This class is designed primarily for writing methods and functions in native code and
+can only be created using the native code application programming interfaces.
 The Pointer class new method will raise an error if invoked.
 </para>
 </section>
@@ -585,7 +597,7 @@ The Pointer class new method will raise an error if invoked.
 <section id="regularexpressioncl"><title>The RegularExpression Class</title>
 <indexterm><primary>classes</primary>
 <secondary>RegularExpression class</secondary></indexterm>
-<para>This class provides support for regular expressions. 
+<para>This class provides support for regular expressions.
 A regular expression is a pattern you can use to match strings.
 </para>
 </section>
@@ -646,12 +658,12 @@ manipulation (see <xref linkend="rexio" /> for examples).</para>
 <section id="streamsuppliercl"><title>The StreamSupplier Class</title>
 <indexterm><primary>classes</primary>
 <secondary>StreamSupplier class</secondary></indexterm>
-<para>A subclass of the Supplier class that will provided stream lines using 
-supplier semantics. This allows the programmer to iterate over the remaining 
-lines in a stream. A StreamSupplier object provides a snapshot of the stream 
-at the point in time it is created, including the current line read position. 
-In general, the iteration is not effected by later changes to the read and 
-write positioning of the stream. However, forces external to the iteration may 
+<para>A subclass of the Supplier class that will provided stream lines using
+supplier semantics. This allows the programmer to iterate over the remaining
+lines in a stream. A StreamSupplier object provides a snapshot of the stream
+at the point in time it is created, including the current line read position.
+In general, the iteration is not effected by later changes to the read and
+write positioning of the stream. However, forces external to the iteration may
 change the content of the remaining lines as the itertion progresses.
 </para>
 </section>

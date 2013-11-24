@@ -3080,6 +3080,81 @@ The InvertingComparator will invert the ordering returned by the provided Compar
 <emphasis role="italic">comparator</emphasis> compare() method.
 </para>
 </section>
+
+<section id="clsNumericComparator"><title>The NumericComparator Class</title>
+<indexterm><primary>NumericComparator class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>NumericComparator class</secondary></indexterm>
+
+<para>The NumericComparator class compares strings using numeric comparison rules
+rather than string comparison rules.</para>
+
+<figure><title>The NumericComparator class and methods</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/ooRexxNumericComparatorClass.png" />
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The NumericComparator class also has available class methods that its
+metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
+
+<section><title>Inherited Methods</title>
+
+<para>Methods inherited from the
+Object class (<xref linkend="clsObject" />).</para>
+<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+<para>Methods inherited from the
+Comparator class (<xref linkend="clsComparator" />).</para>
+<simplelist type="vert" columns="3">
+<member>compare (<xref linkend="mthComparatorCompare" />)</member>
+</simplelist>
+
+</section>
+
+<section id="mthNumericComparatorCompare"><title>compare</title>
+<indexterm><primary>compare method</primary>
+<secondary>of NumericComparator class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>compare method</secondary>
+<tertiary>of NumericComparator class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "1" if <emphasis role="italic">first</emphasis> is larger than the
+<emphasis role="italic">second</emphasis>
+object, "0" if the two objects are equal, and "-1" if <emphasis role="italic">first</emphasis> is
+smaller than <emphasis role="italic">second</emphasis>.  Comparisons are performed using numeric
+comparison rules, so the array strings must be valid numeric values.
+</para>
+</section>
+
+<section id="mthNumericComparatorInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of NumericComparator class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of NumericComparator class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-init(-+--------+-)----------------------------------><
+         +-digits-+
+]]>
+</programlisting>
+<para>Initializes a Numeric comparator to sort strings using numeric comparison rules using the
+<emphasis role="italic">comparator</emphasis> compare() method.  If <emphasis role="italic">digits</emphasis>
+is specified, the comparisons will be performed using the provided precision.  The
+default precision is <emphasis role="italic">digits</emphasis>.
+</para>
+</section>
 </section>
 
 <section id="clsMonitor"><title>The Monitor Class</title>
