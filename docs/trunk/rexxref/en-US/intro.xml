@@ -2734,7 +2734,7 @@ a.[c]  c.[a]  a.[fred] y.[a,z]
 <indexterm><primary>symbols</primary>
 <secondary>environment</secondary></indexterm>
 <para>An environment symbol starts with a period and has at least one other character.
-This character must not be a digit. By default the value of an environment
+The symbol may not be a valid Rexx number.  By default the value of an environment
 symbol is the string consisting of the characters of the symbol (translated
 to uppercase). If the symbol identifies an object in the current environment,
 its value is the mapped object.</para>
@@ -2747,6 +2747,8 @@ its value is the mapped object.</para>
 .true      // The Rexx "true" object.  Has the value "1"
 
 .xyz       // Normally the value .XYZ
+
+.3DGlasses // Normally the value .3DGLASSES
 </programlisting>
 </example>
 <para>When you use an environment symbol, the language processor performs a
