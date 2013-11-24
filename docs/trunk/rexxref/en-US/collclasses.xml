@@ -278,6 +278,50 @@ collection class object. The
 allow all of the index values in the receiver collection.</para>
 </section>
 
+<section id="mthCollectionDisjoint"><title>subset</title>
+<indexterm><primary>disjoint method</primary>
+<secondary>of Collection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>disjoint method</secondary>
+<tertiary>of Collection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-disjoint(argument)------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the receiver collection
+and
+<emphasis role="italic">argument</emphasis> collection do not have any items in common.
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any
+collection class object.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="mthCollectionEquivalent"><title>subset</title>
+<indexterm><primary>equivalent method</primary>
+<secondary>of Collection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>equivalent method</secondary>
+<tertiary>of Collection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-equivalent(argument)----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+receiver collection are also contained in the
+<emphasis role="italic">argument</emphasis> collection and both collections contain the same number of items; returns
+<computeroutput>0</computeroutput> (false) otherwise. The
+<emphasis role="italic">argument</emphasis> can be any
+collection class object.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
 <section id="mthCollectionHasIndex"><title>hasIndex</title>
 <indexterm><primary>hasIndex method</primary>
 <secondary>of Collection class</secondary></indexterm>
@@ -7417,8 +7461,8 @@ from the argument collection class.</para>
 <para>These methods are available to instances of the following collection
 classes:</para>
 <itemizedlist>
-<listitem><para>The OrderedCollections Array, List, and Queue</para></listitem>
-<listitem><para>The MapCollections Directory, Stem, Table, and Relation</para></listitem>
+<listitem><para>The OrderedCollections Array, List, Queue, and CircularQueue</para></listitem>
+<listitem><para>The MapCollections Directory, Stem, Table, IdentityTable, and Relation</para></listitem>
 <listitem><para>The SetCollections Set and Bag.</para></listitem>
 </itemizedlist>
 <programlisting>
@@ -7512,6 +7556,25 @@ A SUBSET B = .false
 B SUBSET A = .false
 </programlisting>
 </para></listitem></varlistentry>
+<varlistentry><term>EQUIVALENT operation</term>
+<listitem><para>Returns <computeroutput>.true</computeroutput>
+if the first set contains only elements that also appear in the second set
+and the two sets have the same number of elements,
+otherwise it returns <computeroutput>.false</computeroutput>:
+<programlisting>
+A EQUIVALENT B = .false
+B EQUIVALENT A = .false
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>DISJOINT operation</term>
+<listitem><para>Returns <computeroutput>.true</computeroutput>
+if there are no elements that appear in both sets,
+otherwise it returns <computeroutput>.false</computeroutput>:
+<programlisting>
+A DISJOINT B = .false
+B DISJOINT A = .false
+</programlisting>
+</para></listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -7567,6 +7630,25 @@ otherwise it returns <computeroutput>.false</computeroutput>:
 <programlisting>
 A SUBSET B = .false
 B SUBSET A = .false
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>EQUIVALENT operation</term>
+<listitem><para>Returns <computeroutput>.true</computeroutput>
+if the first set contains only elements that also appear in the second set
+and the two sets have the same number of elements,
+otherwise it returns <computeroutput>.false</computeroutput>:
+<programlisting>
+A EQUIVALENT B = .false
+B EQUIVALENT A = .false
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>DISJOINT operation</term>
+<listitem><para>Returns <computeroutput>.true</computeroutput>
+if there are no elements that appear in both sets,
+otherwise it returns <computeroutput>.false</computeroutput>:
+<programlisting>
+A DISJOINT B = .false
+B DISJOINT A = .false
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
