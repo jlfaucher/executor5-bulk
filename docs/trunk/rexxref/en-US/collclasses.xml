@@ -2522,6 +2522,7 @@ Queue class (<xref linkend="clsQueue" />).</para>
 <member>queue (<xref linkend="mthQueueQueue" />)</member>
 <member>remove (<xref linkend="mthQueueRemove" />)</member>
 <member>removeItem (<xref linkend="mthQueueRemoveItem" /></member>
+<member>removeItem (<xref linkend="mthQueueSection" /></member>
 <member>supplier (<xref linkend="mthQueueSupplier" />)</member>
 </simplelist>
 
@@ -2589,6 +2590,57 @@ the initial size of the queue.
 added item.
 If the circular queue is full, than the first item will be deleted before the
 insertion takes place.
+</para>
+</section>
+
+<section id="mthCircularQueueInsert"><title>insert</title>
+<indexterm><primary>insert method</primary>
+<secondary>of CircularQueue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>insert method</secondary>
+<tertiary>of CircularQueue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-insert(item-+--------+-)------------------------------------><
+               +-,index-+
+]]>
+</programlisting>
+
+<para>Returns a queue-supplied index for
+<emphasis role="italic">item</emphasis>, which is added to the queue. The inserted
+item follows any existing item with index
+<emphasis role="italic">index</emphasis> in the queue ordering.
+If <emphasis role="italic">index</emphasis> is the Nil object,
+<emphasis role="italic">item</emphasis>
+is inserted at the head of the queue. If you omit
+<emphasis role="italic">index</emphasis>, <emphasis role="italic">item</emphasis>
+becomes the last item in
+the queue. </para>
+<para>Inserting an item in the queue at position
+<emphasis role="italic">index</emphasis> will cause the items in the queue after
+position <emphasis role="italic">index</emphasis> to have their indexes modified
+by the queue object.  If inserting an object causes the queue to grow beyond the size,
+the last item in the queue will be removed.
+</para>
+</section>
+
+<section id="mthCircularQueueIntersection"><title>intersection</title>
+<indexterm><primary>intersection method</primary>
+<secondary>of CircularQueue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>intersection method</secondary>
+<tertiary>of CircularQueue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-intersection(argument)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing
+only those items from the receiver that are in both the receiver collection and
+the <emphasis role="italic">argument</emphasis> collection. The <emphasis
+role="italic">argument</emphasis> can be any collection class object.  The
+resulting CircularQueue instance will be the same size as the receiver.
 </para>
 </section>
 
@@ -2770,6 +2822,46 @@ from the circular queue.
 </note>
 </section>
 
+<section id="mthCircularQueueSection"><title>section</title>
+<indexterm><primary>section method</primary>
+<secondary>of CircularQueue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>section method</secondary>
+<tertiary>of CircularQueue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-section(start-+--------+-)----------------------------------><
+                 +-,items-+
+]]>
+</programlisting>
+
+<para>Returns a new queue (of the same class as the receiver) containing selected
+items from the receiver. The first item in the new queue is the item corresponding
+to index <emphasis role="italic">start</emphasis> in the receiver.
+Subsequent items in the new queue correspond to those in the receiver
+(in the same sequence).
+If you specify the whole number
+<emphasis role="italic">items</emphasis>, the new queue contains only this
+number of items (or the number of subsequent items in the receiver, if this
+is less than <emphasis role="italic">items</emphasis>). If you do not specify
+<emphasis role="italic">items</emphasis>, the new
+queue contains all subsequent items from the receiver. The receiver queue
+remains unchanged.  The new queue item will be sized to the larger of
+the receiver queue size or <emphasis role="italic">items</emphasis>.  The selection
+of the items will wrap from the end around to the beginning of the queue. For example,
+</para>
+<programlisting>
+q1 = .circularqueue~of("Fred", "Mike", "David")
+q2 = q1~section(2)        -- effectively rotates the queue
+
+do name over a
+   say name  -- displays "Mike", "David", and "Fred"
+end
+</programlisting>
+<para>returns a new queue of three items, starting with the second item,
+effectively rotating the order of the contained items.
+</section>
+
 <section id="mthCircularQueueSize"><title>size</title>
 <indexterm><primary>size method</primary>
 <secondary>of CircularQueue class</secondary>
@@ -2882,6 +2974,61 @@ letter is needed; all characters following it are ignored.)
 </listitem>
 </varlistentry>
 </variablelist>
+</section>
+
+<section id="mthCircularQueueUnion"><title>union</title>
+<indexterm><primary>union method</primary>
+<secondary>of CircularQueue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>union method</secondary>
+<tertiary>of CircularQueue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-union(argument)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all the items from the receiver collection and selected items from the
+<emphasis role="italic">argument</emphasis> collection.
+The resulting
+CircularQueue object will have a size that is the larger of the receiver's size
+or the union size of the two collections.
+This method includes
+an item from <emphasis role="italic">argument</emphasis> in
+the new collection only if there is no equivalent item
+in the receiver collection and the method has not already included. The order in
+which this method selects items in
+<emphasis role="italic">argument</emphasis> is unspecified (the program
+should not rely on any order.). The
+<emphasis role="italic">argument</emphasis> can be any
+collection class object.
+</para>
+</section>
+
+<section id="mthCircularQueueXor"><title>xor</title>
+<indexterm><primary>xor method</primary>
+<secondary>of CircularQueue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of CircularQueue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-xor(argument)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new collection of the same class as the receiver that contains
+all items from the receiver collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all items that appear in both collections are removed.
+The resulting
+CircularQueue object will have a size that is the larger of the receiver's size
+or the xor size of the two collections.
+The
+<emphasis role="italic">argument</emphasis> can be any
+collection class object.
+</para>
 </section>
 
 <section id="cquex"><title>Example</title>
