@@ -65,6 +65,8 @@ can use any classes, methods, and routines that the directives established.</par
 <secondary>creation</secondary></indexterm>
 <indexterm><primary>GET subkeyword</primary>
 <secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>ABSTRACT subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>SET subkeyword</primary>
 <secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>CLASS subkeyword</primary>
@@ -87,8 +89,8 @@ method properties.</para>
 
 <programlisting>
 <![CDATA[
->>-::ATTRIBUTE--name--+-----+-------+-------+------------------------->
-                      +-GET-+       +-CLASS-+
+>>-::ATTRIBUTE--name--+-----+-------+-------+---+----------+---------->
+                      +-GET-+       +-CLASS-+   +-ABSTRACT-+
                       +-SET-+
 
     +-PUBLIC--+  +-GUARDED---+  +-UNPROTECTED-+
@@ -164,6 +166,11 @@ methods. See <xref linkend="provide" />. The attribute methods are
 associated with the class specified on the most recent ::CLASS directive. The
 ::ATTRIBUTE must be preceded by a ::CLASS directive if CLASS is
 specified.</para>
+<para>If ABSTRACT is specified, then all created methods will be marked as ABSTRACT and will
+raise an error if directly invoked.
+For ABSTRACT methods there is no method code body following the directive,
+so another directive (or the end of the program) must follow the
+::ATTRIBUTE directive.</para>
 <para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
 identifies a method in an external native library that will be invoked as the
 named method.  The
