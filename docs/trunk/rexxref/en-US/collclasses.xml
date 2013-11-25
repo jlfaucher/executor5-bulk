@@ -1140,7 +1140,9 @@ space is to be allocated initially for each dimension of the array.
 <para>Each <emphasis role="italic">size</emphasis> argument must a non-negative
 whole number.
 If it is <computeroutput>0</computeroutput>, the corresponding dimension is
-initially empty.</para>
+initially empty.  The dimensions may also be specified as a single-dimension array
+of sizes.
+</para>
 <indexterm><primary>examples</primary>
 <secondary>of method</secondary></indexterm>
 <example id="ex.Array-of">
@@ -1461,6 +1463,22 @@ a~empty  -- a = .array~new
 </example>
 </section>
 
+<section id="mthArrayFill"><title>fill</title>
+<indexterm><primary>fill method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fill method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fill(value)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Sets all indexes of the array to <emphasis role="italic">value</emphasis>
+</para>
+</section>
+
 <section id="mthArrayFirst"><title>first</title>
 <indexterm><primary>first method</primary>
 <secondary>of Array class</secondary></indexterm>
@@ -1607,8 +1625,7 @@ say a~hasItem("Mark")  -- says: 0
 target item appears at more than one index, the first located index will
 be returned.  For multi-dimension arrays, the index is returned as an array of
 index values.  If the array does not contain the specified item, the Nil object is
-returned. Item equality is determined by using the == method of <emphasis
-role="italic">item</emphasis>.
+returned. Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>index method</secondary></indexterm>
