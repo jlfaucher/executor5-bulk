@@ -5663,7 +5663,7 @@ Object class (<xref linkend="clsObject" />).</para>
 
 <section id="mthRexxContextArgs"><title>args</title>
 <indexterm><primary>args method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>args method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5679,7 +5679,7 @@ This is equivalent to using the Arg(1, 'A') (<xref linkend="bifArg" />) built-in
 
 <section id="mthRexxContextCondition"><title>condition</title>
 <indexterm><primary>condition method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>condition method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5696,7 +5696,7 @@ Condition('O') (<xref linkend="bifCondition" />) built-in function.
 
 <section id="mthRexxContextDigits"><title>digits</title>
 <indexterm><primary>digits method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>digits method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5712,7 +5712,7 @@ the digits() (<xref linkend="bifDigits" />) built-in function.
 
 <section id="mthRexxContextExecutable"><title>executable</title>
 <indexterm><primary>executable method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>executable method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5730,7 +5730,7 @@ the active context.
 
 <section id="mthRexxContextForm"><title>form</title>
 <indexterm><primary>form method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>form method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5746,7 +5746,7 @@ form() (<xref linkend="bifForm" />) built-in function.
 
 <section id="mthRexxContextFuzz"><title>fuzz</title>
 <indexterm><primary>fuzz method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>fuzz method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5762,7 +5762,7 @@ fuzz() (<xref linkend="bifFuzz" />) built-in function.
 
 <section id="mthRexxContextLine"><title>line</title>
 <indexterm><primary>line method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>line method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5778,7 +5778,7 @@ fuzz() (<xref linkend="bifFuzz" />) built-in function.
 
 <section id="mthRexxContextName"><title>name</title>
 <indexterm><primary>name method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>name method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5799,7 +5799,7 @@ is the name of the label used to invoke the call.  If the context is the main pa
 
 <section id="mthRexxContextPackage"><title>package</title>
 <indexterm><primary>package method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>package method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5815,7 +5815,7 @@ associated with the current executable object.
 
 <section id="mthRexxContextRS"><title>rs</title>
 <indexterm><primary>rs method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>rs method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5830,9 +5830,26 @@ the .RS (<xref linkend="rs" />) environment symbol.
 </para>
 </section>
 
+<section id="mthRexxContextStackFrames"><title>stackFrames</title>
+<indexterm><primary>stackFrames method</primary>
+<secondary>of RexxContext class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>stackFrames method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-stackFrames-----------------------------------------------><
+]]>
+</programlisting>
+<para>Returns an array object of StackFrame objects representing the current call
+stack.  The first item will represent the current Rexx context and subsequent
+elements are earlier elements in the call stack.
+</para>
+</section>
+
 <section id="mthRexxContextVariables"><title>variables</title>
 <indexterm><primary>variables method</primary>
-<secondary>of RexxContextclass</secondary></indexterm>
+<secondary>of RexxContext class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>variables method</secondary>
 <tertiary>of RexxContext class</tertiary></indexterm>
@@ -5847,6 +5864,209 @@ mapped values are the values of the variables.  The directory will only
 contain simple variables and stem variables.  Compound variable values may
 be accessed by using the stem objects that are returned for the stem
 variable names.
+</para>
+</section>
+</section>
+
+<section id="clsStackFrame"><title>The StackFrame Class</title>
+<indexterm><primary>StackFrame class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>StackFrame class</secondary></indexterm>
+
+<para>The StackFrame class gives access to execution information about the
+currently executing Rexx activity.  Instances of the StackFrame class can only be
+obtained via the .CONTEXT environment symbol or from a condition object created for a
+trapped condition.  A StackFrame instance represents an instance of an execution unit on the
+current activity's call stack.  It provides information on code location, arguments, etc. that
+are useful for debugging and problem determination.
+They cannot be directly created
+by the user. It is a
+subclass of the Object class (<xref linkend="clsObject" />).</para>
+<figure><title>The StackFrame class and methods</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/ooStackFrameClass.png" />
+</imageobject>
+</mediaobject>
+</figure>
+
+<section><title>Inherited Methods</title>
+
+<para>Methods inherited from the
+Object class (<xref linkend="clsObject" />).</para>
+<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+</section>
+
+<section id="mthStackFrameArguments"><title>arguments</title>
+<indexterm><primary>arguments method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>arguments method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-arguments----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the arguments used to the execution frame represented by the StackFrame instance.
+</para>
+</section>
+
+<section id="mthStackFrameExecutable"><title>executable</title>
+<indexterm><primary>executable method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>executable method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-executable---------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the executable object for the StackFrame context.  The
+executable will be either a Routine (<xref linkend="clsRoutine" />) or
+Method object (<xref linkend="clsMethod" />), depending on the type of
+the StackFrame element.
+</para>
+</section>
+
+<section id="mthStackFrameLine"><title>line</title>
+<indexterm><primary>line method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>line method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-line-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the current line number of the StackFrame context.  If the
+frame instance is not Rexx code, for example, compiled native code, the
+nil object (.nil) is returned.
+</para>
+</section>
+
+<section id="mthStackFrameName"><title>name</title>
+<indexterm><primary>name method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>name method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-name-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the name associated with the stack frame context.  The name
+meaning depends on the type of context.
+<itemizedlist>
+<listitem>
+<para>If the stack frame contest is a method invocation, <emphasis role="italic">name</emphasis>
+is the message name used to invoke the method.
+</para>
+</listitem>
+<listitem>
+<para>If the stack frame contest is a routine invocation, <emphasis role="italic">name</emphasis>
+is the name of the routine.
+</para>
+</listitem>
+<listitem>
+<para>If the stack frame contest is an internal routine invocation, <emphasis role="italic">name</emphasis>
+is the name of the label used to invoke the internal routine.
+</para>
+</listitem>
+<listitem>
+<para>If the stack frame contest is the initial main part of a Rexx program, <emphasis role="italic">name</emphasis>
+is the name of the package.
+</para>
+</listitem>
+<listitem>
+<para>If the stack frame contest is an INTERPRET instruction, a zero-length string is returned.
+</para>
+</listitem>
+</itemizedlist>
+</para>
+</section>
+
+<section id="mthStackFrameTarget"><title>target</title>
+<indexterm><primary>target method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>target method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-target-----------------------------------------------------><
+]]>
+</programlisting>
+<para>If the StackFrame instance is for a method invocation, target returns the object that the method was
+invoked against.  Return the nil object (.nil) for all other StackFrame types.
+</para>
+</section>
+
+<section id="mthStackFrameTraceLine"><title>traceLine</title>
+<indexterm><primary>traceLine method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>traceLine method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-traceLine--------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the trace back line that would be displayed for tracebacks associated with error messages.  When
+possible, this will be the source line of the Rexx code in the call stack.
+</para>
+</section>
+
+<section id="mthStackFrameType"><title>type</title>
+<indexterm><primary>type method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>type method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-type-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the type of invocation represented by this stack frame.  Possible values
+are:
+<variablelist>
+<varlistentry>
+<term>PROGRAM</term>
+<listitem>
+<para>The stack frame represents the top level of a program.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>METHOD</term>
+<listitem>
+<para>The stack frame represents a method invocation.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>ROUTINE</term>
+<listitem>
+<para>The stack frame represents a routine invocation.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>INTERPRET</term>
+<listitem>
+<para>The stack frame represents an INTERPRET instruction.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>INTERNALCALL</term>
+<listitem>
+<para>The stack frame represents a subroutine or function call to an internal label.</para>
+</listitem>
+</varlistentry>
+</variablelist>
 </para>
 </section>
 </section>
