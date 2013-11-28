@@ -43,11 +43,12 @@
     #########################################################################
 -->
 <chapter id="chpOoDialogExe" xreflabel="ooDialog.exe"><title>The ooDialog Exeutable</title>
-<indexterm><primary>ooDiaog executable</primary></indexterm>
+<indexterm><primary>ooDialog executable</primary></indexterm>
 <para>
   The distribution of ooDialog includes an executable file, named: <computeroutput>ooDialog.exe</computeroutput>. This
   executable file is located in the same directory as the <computeroutput>oodialog.dll</computeroutput> and
-  <computeroutput>ooDialog.cls</computeroutput> files.
+  <computeroutput>ooDialog.cls</computeroutput> files. In the typical installation of ooRexx or ooDialog, this diretory will
+  be in the PATH which allows ooDialog.exe to be accessed from anywhere on the computer.
 </para>
 
 <section id="sctOverView"><title>OverView</title>
@@ -60,10 +61,245 @@
   currently, there are no dependencies on <computeroutput>ooDialog.exe</computeroutput> in the ooDialog framework.
 </para>
 <para>
-  The following briefly lists and describes the functionality provided by the ooDialog executable
+  The following briefly lists and describes the functionality provided by the ooDialog executable:
 </para>
 
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Displays information about the installed ooDialog:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Executes ooRexx programs without a console window:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Serves as a drop target for drag and dropping ooRexx programs:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Configures file associations for ooDialog and the PATHEXT:</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
 </section> <!-- End OverView section -->
+
+
+<section id="sctOodExeCLO"><title>ooDialog.Exe Command Line Options</title>
+<indexterm><primary>ooDialog executable</primary><secondary>command line options</secondary></indexterm>
+
+<para>
+  One of the simplest features ooDialog.exe provides is to display information about the current installation of ooDialog.
+  Since the installation of ooDialog has been decoupled from the installation of ooRexx, the version of ooRexx no longer has
+  any relation to the installed version of ooDialog. ooDialog.exe can be executed from a command prompt, using the
+  <computeroutput>-v</computeroutput> option, to quickly determine the version of the installed ooDialog:
+<programlisting>
+<![CDATA[
+C:\Rexx>oodialog -v
+ooDialog 4.2.4.9574
+
+C:\Rexx>
+]]>
+</programlisting>
+</para>
+<para>
+  If ooDialog.exe is executed from a command prompt with no options, or if it is double-clicked in Explorer, it opens an
+  informational window that displays the ooDialog version and other details concerning the executable and its purpose.
+  Executing ooDialog.exe from a command prompt with the <computeroutput>-h</computeroutput> option displays the syntax for
+  ooDialog.exe. For example:
+<programlisting>
+<![CDATA[
+C:\Rexx>oodialog -h
+Syntax:
+
+    ooDialog [option flags] [programName] [arg1 arg2 ... argN]
+
+option flags:
+  -h        Show this, the short help text.
+  /?        Same as -h.
+  -H        Show the long help text.
+  --help    If from a console window, show the long help.
+  -s        Display the ooDialog Setup dialog.
+  -v        Print the short version string.
+  -V        Print the long version string.
+  --version If from a console window, print the long version string.
+
+programName:
+  The first argument that does not begin with '-' is taken as the name
+  of a Rexxx program to be executed.
+
+arg1 ... argN:
+  Arguments 1 through N are passed on to programName.
+
+
+C:\Rexx>
+]]>
+</programlisting>
+</para>
+<para>
+  Executing ooDialog.exe from a command prompt with the <computeroutput>--version</computeroutput> option displays more
+  detailed information concerning the ooDialog version, along with the version of ooRexx that ooDialog is running under. For
+  example:
+<programlisting>
+<![CDATA[
+C:\Rexx>oodialog --version
+
+ooDialog: ooDialog Version 4.2.4.9574 (64 bit) - Internal Test Version
+          Built Nov 27 2013 07:38:21
+          Copyright (c) IBM Corporation 1995, 2004.
+          Copyright (c) RexxLA 2005-2013.
+          All Rights Reserved.
+
+Rexx:     Open Object Rexx Version 4.2.0
+
+
+C:\Rexx>
+]]>
+</programlisting>
+</para>
+
+</section> <!-- End oodExeCLO section -->
+
+
+<section id="sctOodExePL"><title>ooDialog.Exe as a Program Launcher</title>
+<indexterm><primary>ooDialog executable</primary><secondary>program launcher</secondary></indexterm>
+
+<para>
+  A primary use of ooDialog.exe is to execute ooDialog programs without displaying a secondary console window. This is very
+  much like the rexxhide.exe program that comes with the Windows ooRexx distribution. The ooRexx interpreter (rexx.exe) is
+  built as a console application. This is what gives the interpreter access to the standard input and output streams. Which
+  in turn allows the <emphasis role="italic">say</emphasis> instruction to write text to the console and the <emphasis
+  role="italic">pull</emphasis> instruction to retrieve text the user has typed.
+</para>
+<para>
+  Because it is a console application, whenever rexx.exe starts, the operating system creates a console window if it is not
+  already being executed from a console window. For a purely graphical application, as most ooDialog programs are, this
+  secondary console window can be an annoyance. The ooDialog executable, (and rexxhide.exe,) are built as a windows
+  applicattion and internally use the ooRexx naive API to start an instance of the interpreter to execute the Rexx program.
+  Because they are built as a windows application, no console window is created by the operating system.
+</para>
+<para>
+  One drawback that rexxhide.exe has, is that since it is built as a windows application with no console window, all text
+  normally writen to the console is lost. This includes the error condition text written when a condition is raised. Because
+  of this Rexx programs run under rexxhide.exe just silently end if a problem in the program raises a condition. This can be
+  frustrating because the program will just terminate and there is no way to know why.
+</para>
+<para>
+  The ooDialog executable has been enhanced to help with this situation. If a condition is raised and the Rex program is
+  terminated, oodialg.exe traps the condition text and then displays it in a window when the interpreter terminates.
+</para>
+<para>
+  There are a number of ways to launch ooDialog programs using ooDialog.exe:
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">direct invocation:</emphasis></term>
+  <listitem>
+  <para>
+    From a command prompt simply use ooDialog.exe instead of rexx.exe:
+<programlisting>
+<![CDATA[
+/* Instead of this: */
+
+C:\Rexx>rexx.exe ooRexx\ooRexxTry.rex
+
+/* Use this: */
+
+C:\Rexx>ooDialog.exe ooRexx\ooRexxTry.rex
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">within a shortcut or Start menu item:</emphasis></term>
+  <listitem>
+  <para>
+    Typically, people create a short cut to an ooDialog program using rexxhide.exe. Then, double-clicking the short cut in
+    Explorer launches the ooDialog program with no console Window. The ooRexx installer has set up these types of short cuts
+    for ooDialog example programs for years:
+<programlisting>
+<![CDATA[
+/* The ooRexx installer has set up a Start menu item to the ooDialog sample.rex programe like this: */
+
+Target type:      Application
+Target location:  ooRexx
+Target:           C:\Rexx\ooRexx\rexxhide.exe "C:\Rexx\ooRexx\samples\oodialog\sample.rex"
+Start in:         C:\Rexx\ooRexx\samples\oodialog\
+
+/* Use this for the short cut instead: */
+
+Target type:      Application
+Target location:  ooRexx
+Target:           C:\Rexx\ooRexx\ooDialog.exe "C:\Rexx\ooRexx\samples\oodialog\sample.rex"
+Start in:         C:\Rexx\ooRexx\samples\oodialog\
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">with drag and drop:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog exectuable is drag and drop enabled. That is, ooDialog.exe can serve as a drop target. In Explorer when an
+    ooDialog program file is dragged and dropped on the ooDialog.exe icon, the ooDialog program will execute without a
+    secondary console window. A common use of this ability would be to create a short cut to ooDialog.exe on the desktop and
+    drag and drop ooDialog programs on the short cut.
+  </para>
+  <para>
+    This snapshot of a portion of a user's Desktop shows a short cut icon to ooDialog.exe. ooDialog programs such as
+    <emphasis role="italic">columnIcons.rex</emphasis> can be dragged from Explorer and dropped on the short cut, which
+    launches the ooDialog program.
+    <figure id="figDesktopIcon"><title>Drag and Drop Scenario</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodDesktopIcon.jpg" scale="100" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title>
+  <para>
+    The discussionr on using ooDialgo.exe as a program launcher has referred to launching ooDialog programs. However,
+    ooDialog.exe will execute any ooRexx program. It is not restricted to launching only ooDialog programs.
+  </para>
+</note>
+
+</section> <!-- End oodExePL section -->
+
+
+<section id="sctOodExeFA"><title>ooDialog.Exe Configure File Associations</title>
+<indexterm><primary>ooDialog executable</primary><secondary>configure file associations</secondary></indexterm>
+
+<para>
+
+</para>
+<para>
+  The <emphasis role="italic">Configure ooDialog Services</emphasis> dialog is used to start the process of configuring file
+  associations for ooDialog.exe:
+  <figure id="figConfigServices"><title>Configure Services Dialog</title>
+  <mediaobject>
+  <imageobject>
+  <imagedata fileref="images/oodConfigureServices.jpg" scale="100" />
+  </imageobject>
+  </mediaobject>
+  </figure>
+  Future versions of ooDialog may have the ability to configure more services than just file associations, in which case this
+  dialog will be expanded to allow that configuration. Currently, only file associations are configured through this dialog.
+</para>
+
+</section> <!-- End oodExeFA section -->
+
 
 </chapter> <!-- End ooDialog Executable -->
 
