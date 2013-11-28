@@ -828,21 +828,21 @@ Section  "ooDialog ${SHORTVERSION} Examples" SecExample
     ; Create start menu shortcuts
     DetailPrint "********** ooDialog ${SHORTVERSION} Start Menu Shortcuts **********"
 
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Window Tree.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\winsystem\displayWindowTree.rex"' "$INSTDIR\rexx.exe"
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\winsystem\usewmgr.rex"' "$INSTDIR\rexx.exe"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Window Tree.lnk" "$INSTDIR\ooDialog.exe" '"$INSTDIR\samples\oodialog\winsystem\displayWindowTree.rex"' "$INSTDIR\rexx.exe"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk" "$INSTDIR\ooDialog.exe" '"$INSTDIR\samples\oodialog\winsystem\usewmgr.rex"' "$INSTDIR\rexx.exe"
 
     CreateDirectory "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog"
 
     SetOutPath $INSTDIR\samples\oodialog\Controls\ComboBox
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Combo Box Types.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\Controls\ComboBox\comboBoxTypes.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Combo Box Types.lnk" "$INSTDIR\ooDialog.exe" '"$INSTDIR\samples\oodialog\Controls\ComboBox\comboBoxTypes.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
 
     SetOutPath $INSTDIR\samples\oodialog\Controls\ToolTip
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Custom Position Tool Tips.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\Controls\ToolTip\customPositionToolTip.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Custom Position Tool Tips.lnk" "$INSTDIR\ooDialog.exe" '"$INSTDIR\samples\oodialog\Controls\ToolTip\customPositionToolTip.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
 
     SetOutPath $INSTDIR\samples\oodialog\Controls\ListView
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\List-view Views.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\Controls\ListView\columnIcons.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\List-view Views.lnk" "$INSTDIR\ooDialog.exe" '"$INSTDIR\samples\oodialog\Controls\ListView\columnIcons.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
 
-    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Samples.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\sample.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Samples.lnk" "$INSTDIR\ooDialog.exe" '"$INSTDIR\samples\oodialog\sample.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
     DetailPrint ""
 
 
