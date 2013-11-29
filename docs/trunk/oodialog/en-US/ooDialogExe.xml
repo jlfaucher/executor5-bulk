@@ -197,6 +197,14 @@ C:\Rexx>
   The ooDialog executable has been enhanced to help with this situation. If a condition is raised and the Rex program is
   terminated, oodialg.exe traps the condition text and then displays it in a window when the interpreter terminates.
 </para>
+
+<note><title>Note</title>
+  <para>
+    This discussion on using ooDialgo.exe as a program launcher mostly refers to launching ooDialog programs. However,
+    ooDialog.exe will execute any ooRexx program. It is not restricted to launching only ooDialog programs.
+  </para>
+</note>
+
 <para>
   There are a number of ways to launch ooDialog programs using ooDialog.exe:
 </para>
@@ -224,7 +232,7 @@ C:\Rexx>ooDialog.exe ooRexx\ooRexxTry.rex
   <para>
     Typically, people create a short cut to an ooDialog program using rexxhide.exe. Then, double-clicking the short cut in
     Explorer launches the ooDialog program with no console Window. The ooRexx installer has set up these types of short cuts
-    for ooDialog example programs for years:
+    for ooDialog example programs for years. In the short cut, ooDialog.exe can be used instead of rexxhide.exe:
 <programlisting>
 <![CDATA[
 /* The ooRexx installer has set up a Start menu item to the ooDialog sample.rex programe like this: */
@@ -266,15 +274,46 @@ Start in:         C:\Rexx\ooRexx\samples\oodialog\
     </figure>
   </para>
   </listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title>
+  <varlistentry><term><emphasis role="bold">using file types and associations:</emphasis></term>
+  <listitem>
   <para>
-    The discussion on using ooDialgo.exe as a program launcher has referred to launching ooDialog programs. However,
-    ooDialog.exe will execute any ooRexx program. It is not restricted to launching only ooDialog programs.
+    Probably one of the best ways to use ooDialog.exe to execute ooDialog programs is through the use of file type
+    associations. Once a file type has been created for ooDialog.exe, and an extension associated with that file type,
+    double-clicking on any file with the extension will execute the ooDialog program.
   </para>
-</note>
+  <para>
+    The figure below shows a user's system where a file type has been created for ooDialog.exe and the extension <emphasis
+    role="italic">.ood</emphasis> is associated with that file type. Double-clicking on
+    <computeroutput>columnIcons.ood</computeroutput> has executed that ooDialog program.
+    <figure id="figFileAssociation"><title>.ood Extension Associated with ooDialog.exe</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodFileAssociation.jpg" scale="70" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </para>
+  <para>
+    Although it is not discernible from the figure itself, the created file type on the user's system is
+    <computeroutput>ooRexx.ooDialog.1</computeroutput>. File types and associations are relatively easy to create and manage
+    from the command prompt, or through Explorer. People familar file type associations will recognize that the following
+    displays the file type and association from the system in the figure above:
+<programlisting>
+<![CDATA[
+C:\Rexx>ftype ooRexx.ooDialog.1
+ooRexx.ooDialog.1="C:\Rexx\ooRexx\ooDialog.exe" "%1" %*
 
+C:\Rexx>assoc .ood
+.ood=ooRexx.ooDialog.1
+
+C:\Rexx>
+]]>
+</programlisting>
+    For people not familar with creating file types and associations, ooDialog.exe can be used to configure file associations
+    for the system through a graphical user interface. This use of ooDialgo.exe is explained in the next section
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section> <!-- End oodExePL section -->
 
 
@@ -282,7 +321,12 @@ Start in:         C:\Rexx\ooRexx\samples\oodialog\
 <indexterm><primary>ooDialog executable</primary><secondary>configure file associations</secondary></indexterm>
 
 <para>
-
+  Windows has promoted a scheme to identify the type of a file through the file name extension of the file. (The extension
+  part of a file name is everything following the last dot in the file name.) Different types of files are then associated
+  with the program that uses the file. When a file type and its association are made known to the operating system, when the
+  user interacts with a known file type, the operarting system will start the program that uses the file directly. For
+  instance, text files can be associated with the user's favorite editor. Double-clicking on a text file will then start the
+  editor will the file ready to edit.
 </para>
 <para>
   The <emphasis role="italic">Configure ooDialog Services</emphasis> dialog is used to start the process of configuring file
@@ -297,12 +341,32 @@ Start in:         C:\Rexx\ooRexx\samples\oodialog\
   Future versions of ooDialog may have the ability to configure more services than just file associations, in which case this
   dialog will be expanded to allow that configuration. Currently, only file associations are configured through this dialog.
 </para>
-
-
 <para>
-  This snapshot of a portion of a user's Desktop shows a short cut icon to ooDialog.exe. ooDialog programs such as
-  <emphasis role="italic">columnIcons.rex</emphasis> can be dragged from Explorer and dropped on the short cut, which
-  launches the ooDialog program.
+  The configure services dialog can be brought up in two ways. From a command prompt, the <emphasis
+  role="italic">-s</emphasis> option will immediately start the dialog:
+<programlisting>
+<![CDATA[
+C:\Rexx>oodialog -s
+
+C:\Rexx>
+]]>
+</programlisting>
+  Starting ooDialog.exe with no arguments, either from the command prompt or by double-clicking ooDialog.exe, brings up the
+  information display window:
+  <figure id="figInformationWindow"><title>ooDialogInformationWindow</title>
+  <mediaobject>
+  <imageobject>
+  <imagedata fileref="images/oodInformationWindow.jpg" scale="100" />
+  </imageobject>
+  </mediaobject>
+  </figure>
+  Check the <emphasis role="italic">Configure other ooDialog services</emphasis> check box. The <emphasis
+  role="italic">Close</emphasis> button's label will change to <emphasis role="italic">Continue</emphasis> and clicking the
+  button starst the configure services dialog.
+</para>
+<para>
+  The following figure shows the dialog that is used to configure file associations for ooDialog.exe and the use of the
+  dialog is explained:
   <figure id="figConfigFileAssociations"><title>Drag and Drop Scenario</title>
   <mediaobject>
   <imageobject>
