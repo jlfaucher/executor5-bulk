@@ -187,12 +187,12 @@ C:\Rexx>
 <para>
   Because it is a console application, whenever rexx.exe starts, the operating system creates a console window if it is not
   already being executed from a console window. For a purely graphical application, as most ooDialog programs are, this
-  secondary console window can be an annoyance. The ooDialog executable, (and rexxhide.exe,) are built as a windows
+  secondary console window can be an annoyance. The ooDialog executable, (and rexxhide.exe,) are built as a windowed
   applicattion and internally use the ooRexx naive API to start an instance of the interpreter to execute the Rexx program.
-  Because they are built as a windows application, no console window is created by the operating system.
+  Because they are built as a windowed application, no console window is created by the operating system.
 </para>
 <para>
-  One drawback that rexxhide.exe has, is that since it is built as a windows application with no console window, all text
+  One drawback that rexxhide.exe has, is that since it is built as a windowed application with no console window, all text
   normally writen to the console is lost. This includes the error condition text written when a condition is raised. Because
   of this Rexx programs run under rexxhide.exe just silently end if a problem in the program raises a condition. This can be
   frustrating because the program will just terminate and there is no way to know why.
@@ -267,7 +267,7 @@ Start in:         C:\Rexx\ooRexx\samples\oodialog\
   </para>
   <para>
     This snapshot of a portion of a user's Desktop shows a short cut icon to ooDialog.exe. ooDialog programs such as
-    <emphasis role="italic">columnIcons.rex</emphasis> can be dragged from Explorer and dropped on the short cut, which
+    <computeroutput>columnIcons.rex</computeroutput> can be dragged from Explorer and dropped on the short cut, which
     launches the ooDialog program.
     <figure id="figDesktopIcon"><title>Drag and Drop Scenario</title>
     <mediaobject>
@@ -292,7 +292,7 @@ Start in:         C:\Rexx\ooRexx\samples\oodialog\
     <figure id="figFileAssociation"><title>.ood Extension Associated with ooDialog.exe</title>
     <mediaobject>
     <imageobject>
-    <imagedata fileref="images/oodFileAssociation.jpg" scale="65" />
+    <imagedata fileref="images/oodFileAssociation.jpg" scale="60" />
     </imageobject>
     </mediaobject>
     </figure>
@@ -338,7 +338,7 @@ C:\Rexx>
   <figure id="figConfigServices"><title>Configure Services Dialog</title>
   <mediaobject>
   <imageobject>
-  <imagedata fileref="images/oodConfigureServices.jpg" scale="100" />
+  <imagedata fileref="images/oodConfigureServices.jpg" scale="80" />
   </imageobject>
   </mediaobject>
   </figure>
@@ -366,7 +366,33 @@ C:\Rexx>
   </figure>
   Check the <emphasis role="italic">Configure other ooDialog services</emphasis> check box. The <emphasis
   role="italic">Close</emphasis> button's label will change to <emphasis role="italic">Continue</emphasis> and clicking the
-  button starst the configure services dialog.
+  button starts the configure services dialog.
+</para>
+<para>
+  The configure services dialog can be used to configure file type associations and the PATHEXT environment variable for
+  either the current user, or for all users. Any user can configure file associations or environment variables for herself or
+  himself. With the heightened security procedures introduced in Windows Vista and later, users can no longer set
+  configurations of all users, unless they do so from an elevated process. By default the configure services dialog will be
+  set to configure for the current user. If this is changed to all users, and the current process is not elevated, the UAC
+  shield icon will be placed on the <emphasis role="italic">Configure</emphasis> button to indicate that the task requires
+  administrator credentials. If <emphasis role="italic">Configure</emphasis> is clicked, the Credential UI will be displayed
+  to obtain the credentials.
+</para>
+<para>
+  This is shown below. Note that the lower left quadrant of the dialog displays the security status of the running process:
+  <figure id="figElevatedDialog"><title>Elevation Required</title>
+  <mediaobject>
+  <imageobject>
+  <imagedata fileref="images/oodElevatedDialog.jpg" scale="80" />
+  </imageobject>
+  </mediaobject>
+  </figure>
+</para>
+<para>
+  Once the <emphasis role="italic">scope</emphasis> (the current user or all users) of the task is selected using the radio
+  buttons, the user of the dialog proceeds by clicking the <emphasis role="italic">Configure</emphasis> button. As hinted at,
+  the user of the dialog can only work with one scope at a time. However, when the selected scope is configured, the user
+  will be returned to the configure user services dialog, and could then select to configure the other scope if desired.
 </para>
 <para>
   This figure shows the dialog that is used to configure file associations for ooDialog.exe and the use of the
@@ -379,9 +405,153 @@ C:\Rexx>
   </mediaobject>
   </figure>
 </para>
+<para>
+  To better explain how to use the dialog to configure the file associations, and or the PATHEXT, each part of the dialog
+  will be discussed in turn. <emphasis role="bold">Note:</emphasis> it is important to keep in mind that file associations
+  for all users and the current user are merged together by the operating system. Therefore the file associations in effect
+  for any user are those registered for all users and those registered just for herself or himself. However, the operating
+  system does not merge the PATHEXT. If there is a PATHEXT defined for the current user, the operating system <emphasis
+  role="italic">replaces</emphasis> the all users PATHEXT with the PATHEXT defined by the current user.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Upper Third Portion:</emphasis></term>
+  <listitem>
+  <para>
+    The upper third of the dialog is an informtional display only. It shows the scope of the current task, the process
+    execution status, if ooDialog.exe is, or is not, registered as a file type, etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">The Register Button:</emphasis></term>
+  <listitem>
+  <para>
+    The large register button is used to register, or un-register the ooDialog program file type. The label of the button
+    changes to reflect the current status of the registration. If the file type is currently registered, the button is used
+    to un-register it. If the file type is not registered, the button is used to register the file type.
+  </para>
+  <para>
+    The registration or un-registration takes place immediately when the button is clicked. If the ooDialog program type is
+    un-registered, all extensions associated with the file type are un-associated at the same time, for the current scope.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">File Association Extension / Add:</emphasis></term>
+  <listitem>
+  <para>
+    This edit box and push button are used to add a file extension to the currently associated types. The the extension in
+    the edit box and click the <emphasis role="italic">Add</emphasis> button. The association takes place immediately. The
+    extension can be entered with or without the dot character.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">File Association List Boxes:</emphasis></term>
+  <listitem>
+  <para>
+    There are two list boxes used to display file association file extensions. The <emphasis
+    role="italic">Currently Associated</emphasis> list box shows all file extensions associate with the ooDialog Program file
+    type. The <emphasis role="italic">Suggested Extensions</emphasis> list box is initially filled with a few suggested
+    extensions. This is provided as a convenience for the user of the dialog.
+  </para>
+  <para>
+    The list boxes can be in either dual column or single column mode. Recall that the operating system merges the file
+    associations for all users and the current user. Because of this, if the ooDialog program file type is registered in
+    either scope, (all users or the current user,) any associated file extension will work, no matter what scope it is
+    associated in. This is reflected in the dual column mode. Every file extension in the currently associated list box is in
+    effect for the user of the dialog. Each item in the list box has two columns. The first column shows the status for All
+    Users, the second column shows the status for the Current User.
+  </para>
+  <para>
+    The <emphasis role="italic"><emphasis role="bold">+</emphasis></emphasis> character is used to show that the extension is
+    associated in that scope. The <emphasis role="italic"><emphasis role="bold">-</emphasis></emphasis> character is used to
+    show that the extension is not registered in that scope.
+  </para>
+  <para>
+    The <link linkend="figDualColumnExample">dual column</link> figure shows how to interpret the information displayed in
+    the dialog. The Scope field shows that the task is currently configuring for All Users. The File Type is Registered field
+    shows that the ooDialog Program file type is registered. The following fields show the file type is not registered
+    for all users, but is registered for the current user. That is, the file type is not registered for the current scope of
+    the task.
+  </para>
+  <para>
+    The items in the currently registered list box show the <emphasis role="italic">ood</emphasis> extension is not registerd
+    for all users / is registered for the current user, (<computeroutput>- * .ood</computeroutput>). The <emphasis
+    role="italic">rxd</emphasis> extension is the inverse, registered for all users, not registered for the current user
+    (<computeroutput>* - .ood</computeroutput>).
+    <figure id="figDualColumnExample"><title>Dual Column Example</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodDualColumnExample.jpg" scale="80" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </para>
+  <para>
+    The <emphasis role="italic">Add</emphasis> and <emphasis role="italic">Remove</emphasis> buttons between the two list
+    boxes are used to move the selected extension in one list box to the other. If an extension is selected in the <emphasis
+    role="italic">Suggest Extensions</emphasis> list box and the add button clicked, the extension is immediately registered
+    in the current scope.
+  </para>
+  <para>
+    Bear in mind that actions taken in the dialog are always only in relation to the current scope. For example in the
+    figure, if the .ood extension in the currently registered list box is selected and the remove button is clicked, nothing
+    will happen.  The .ood extension is not associated in the current scope, so it can not be un-associated. The .ood
+    extension is associated for the current user, but the dialog is not working on that scope, so again that can not be
+    changed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Single / Double Column View:</emphasis></term>
+  <listitem>
+  <para>
+    These two radio buttons are used to switch between dual column view, explained above, and single column view. In single
+    column view the current registery values are shown only as they relate to the current scope. If the <link
+    linkend="figDualColumnExample">dual column</link> figure were to be switched to single column view, it would appear as
+    this:
+    <figure id="figSingleColumnExample"><title>Single Column Example</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodSingleColumnExample.jpg" scale="80" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+    Note that the .ood extension is not associated for all users, so it does not appear in the currently associated list box.
+    In some ways the single column view may be less confusing. But, for file associations, it does not present a true
+    picture. The .ood extension is listed in the suggested extensions list box, but there is no real reason to associate it.
+    Since .ood is associated for the current user, when the operating system merges the file associations for all users and
+    the current user, it becomed assocaited in effect. Switching betweed the two views may be the best way to understand the
+    current associations.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">PATHEXT Extension / Add:</emphasis></term>
+  <listitem>
+  <para>
+
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">PATHEXT List Box:</emphasis></term>
+  <listitem>
+  <para>
+
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">PATHEXT List Box Buttons:</emphasis></term>
+  <listitem>
+  <para>
+
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Update the PATHEXT when done Check Box:</emphasis></term>
+  <listitem>
+  <para>
+
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Done Button:</emphasis></term>
+  <listitem>
+  <para>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 
 </section> <!-- End oodExeFA section -->
-
 
 </chapter> <!-- End ooDialog Executable -->
 
