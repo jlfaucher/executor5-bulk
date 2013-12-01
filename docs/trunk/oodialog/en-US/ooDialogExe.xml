@@ -57,7 +57,7 @@
 <para>
   The ooDialog executable provides a number of enhancements and services to use along with the ooDialog framework. These
   range from the simplistic to the relatively complex. There is no need, or requirement, to ever run the executable if the
-  ooDialog user is not interested in any of the features provide by <computeroutput>ooDialog.exe</computeroutput>. That is,
+  ooDialog user is not interested in any of the features provided by <computeroutput>ooDialog.exe</computeroutput>. That is,
   currently, there are no dependencies on <computeroutput>ooDialog.exe</computeroutput> in the ooDialog framework.
 </para>
 <para>
@@ -86,7 +86,7 @@
     ooRexx programs can be dragged and dropped on ooDialog.exe, or a short cut to ooDialog.exe, to execute them.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Configures file associations for ooDialog and the PATHEXT:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Configures file associations for ooDialog and the PATHEXT</emphasis></term>
   <listitem>
   <para>
     For users not familiar with setting up file types and associations, ooDialog.exe can present a graphical user interface
@@ -379,7 +379,9 @@ C:\Rexx>
   to obtain the credentials.
 </para>
 <para>
-  This is shown below. Note that the lower left quadrant of the dialog displays the security status of the running process:
+  This is shown below. Note that the lower left quadrant of the dialog displays the security status of the running process.
+  In this case the process is shown as <emphasis role="italic">not</emphasis> elevatd. Changing the All Users file
+  associations would required that the process be elevated.
   <figure id="figElevatedDialog"><title>Elevation Required</title>
   <mediaobject>
   <imageobject>
@@ -387,6 +389,14 @@ C:\Rexx>
   </imageobject>
   </mediaobject>
   </figure>
+</para>
+<para>
+  When the <emphasis role="italic">For All Users</emphasis> radio
+  button was selectd, the UAC shield icon was added to the <emphasis role="italic">Configure</emphasis> button. If the user
+  of the dialog changes the selected radio button to the <emphasis role="italic">For Current User</emphasis> button, the
+  shield icon would be removed. At this point, if the dialog user clicks the <emphasis role="italic">Configure</emphasis>
+  button, the Credential UI will be displayed. If the user enters the proper password for an Administrator, the Configure
+  File Associations is displayed. Otherwise, it is not displayed.
 </para>
 <para>
   Once the <emphasis role="italic">scope</emphasis> (the current user or all users) of the task is selected using the radio
@@ -431,7 +441,7 @@ C:\Rexx>
   </para>
   <para>
     The registration or un-registration takes place immediately when the button is clicked. If the ooDialog program type is
-    un-registered, all extensions associated with the file type are un-associated at the same time, for the current scope.
+    un-registered, all extensions associated with the file type, for the current scope, are un-associated at the same time.
     File extensions associated in the other scope can not be changed, the dialog can only work with one scope at a time.
   </para>
   </listitem></varlistentry>
@@ -440,7 +450,7 @@ C:\Rexx>
   <para>
     This edit box and push button are used to add a file extension to the currently associated types. Type the extension in
     the edit box and click the <emphasis role="italic">Add</emphasis> button. The association takes place immediately. The
-    extension can be entered with or without the dot character.
+    extension can be entered with or without the dot (<computeroutput>.</computeroutput>) character.
   </para>
   </listitem></varlistentry>
   <varlistentry id="vleFileAssociationListBoxes"><term><emphasis role="bold">File Association List Boxes:</emphasis></term>
@@ -473,9 +483,9 @@ C:\Rexx>
     the task.
   </para>
   <para>
-    The items in the currently registered list box show the <emphasis role="italic">ood</emphasis> extension is not registerd
-    for all users / is registered for the current user, (<computeroutput>- * .ood</computeroutput>). The <emphasis
-    role="italic">rxd</emphasis> extension is the inverse, registered for all users, not registered for the current user
+    The items in the currently associated list box show the <emphasis role="italic">ood</emphasis> extension is not
+    associated for all users / is associated for the current user, (<computeroutput>- * .ood</computeroutput>). The <emphasis
+    role="italic">rxd</emphasis> extension is the inverse, associated for all users, not associated for the current user
     (<computeroutput>* - .ood</computeroutput>).
     <figure id="figDualColumnExample"><title>Dual Column Example</title>
     <mediaobject>
@@ -488,8 +498,8 @@ C:\Rexx>
   <para>
     The <emphasis role="italic">Add</emphasis> and <emphasis role="italic">Remove</emphasis> buttons between the two list
     boxes are used to move the selected extension in one list box to the other. If an extension is selected in the <emphasis
-    role="italic">Suggest Extensions</emphasis> list box and the add button clicked, the extension is immediately associated,
-    in the current scope.
+    role="italic">Suggested Extensions</emphasis> list box and the add button clicked, the extension is immediately
+    associated, in the current scope.
   </para>
   <para>
     Likewise, if an extension is selected in the <emphasis role="italic">Currently Associated</emphasis> list box and the
@@ -498,7 +508,7 @@ C:\Rexx>
   </para>
   <para>
     Bear in mind that actions taken in the dialog are always only in relation to the current scope. For example in the
-    figure, if the .ood extension in the currently registered list box is selected and the remove button is clicked, nothing
+    figure, if the .ood extension in the currently associated list box is selected and the remove button is clicked, nothing
     will happen.  The .ood extension is not associated in the current scope, so it can not be un-associated. The .ood
     extension is associated for the current user, but the dialog is not working on that scope, so again that can not be
     changed.
@@ -509,12 +519,12 @@ C:\Rexx>
   <para>
     These two radio buttons are used to switch between dual column view, explained above, and single column view. In single
     column view the current registery values are shown only as they relate to the current scope. If the <link
-    linkend="figDualColumnExample">dual column</link> figure were to be switched to single column view, it would appear as
+    linkend="figDualColumnExample">dual column</link> figure were to be switched to single column view, it would appear like
     this:
     <figure id="figSingleColumnExample"><title>Single Column Example</title>
     <mediaobject>
     <imageobject>
-    <imagedata fileref="images/oodSingleColumnExample.jpg" scale="80" />
+    <imagedata fileref="images/oodSingleColumnExample.jpg" scale="70" />
     </imageobject>
     </mediaobject>
     </figure>
@@ -530,10 +540,10 @@ C:\Rexx>
   <listitem>
   <para>
     The PATHEXT related dialog controls allow the user of the dialog to add or remove extensions from the PATHEXT environment
-    variable, and or to re-order the extensions in PATHEXT. The operating system uses this environment variable to determine
-    if a file is an executable file from its name. If a file's name has an extension in the PATHEXT, then the operating
-    system treats the file as an executable program rather than a data file. Files whose extension is in the PATHEXT are also
-    executed by typing their file name, without the extension, on the command prompt.
+    variable, and / or to re-order the extensions in PATHEXT. The operating system uses this environment variable to
+    determine if a file is an executable file from its name. If a file's name has an extension in the PATHEXT, then the
+    operating system treats the file as an executable program rather than a data file. Files whose extension is in the
+    PATHEXT are also executed by typing their file name, without the extension, on the command prompt.
   </para>
   <para>
     This functionality of editing the PATHEXT variable is added as a convenience for the dialog user. The behavior of this
@@ -551,7 +561,7 @@ C:\Rexx>
   </listitem>
   <listitem>
   <para>
-    Unlike file association changes which are saved immediately, no changes to the PATHEXT are saved until the <emphasis
+    Unlike file association changes which take place immediately, no changes to the PATHEXT are saved until the <emphasis
     role="italic">Done</emphasis> button is clicked. In addition, the <emphasis role="italic">Update the PATHEXT when done</emphasis>
     check box must be checked at the time the button is clicked. This is done to ensure the dialog user really intends for
     the changes to be made.
@@ -576,7 +586,7 @@ C:\Rexx>
   <listitem>
   <para>
     Like the file associations list boxes, the PATHEXT list box can be displayed in dual or single column view. The <link
-    linkend="vleFileAssociationListBoxes">description</link> for the File Association List Boxes explains how the two view
+    linkend="vleFileAssociationListBoxes">description</link> for the File Association List Boxes explains how the two views
     work and how to interpret the list box items. However, since the operating system does not merge the All Users and
     Current Users PATHEXT values, the single column view may be easier to use when editing the PATHEXT.
   </para>
@@ -609,7 +619,7 @@ C:\Rexx>
   <varlistentry><term><emphasis role="bold">PATHEXT List Box Buttons:</emphasis></term>
   <listitem>
   <para>
-    This figure shows the buttons surrounding the PATHEXT list box that are used to edit the PATHEXT:
+    This figure shows the buttons surrounding the PATHEXT list box that are used to edit the PATHEXT
     <figure id="figPathExtButtons"><title>PATHEXT Editing Buttons</title>
     <mediaobject>
     <imageobject>
@@ -662,9 +672,22 @@ C:\Rexx>
     changes are discarded.
   </para>
   <para>
-    When the <emphasis role="italic">Done</emphasis> is clicked, before the new PATHEXT is actually written, a message box
-    will display exactly how the PATHEXT will saved. This message box gives the user of the dialog one last chance to confirm
-    that she wants the PATHEXT to be changed.
+    When the <emphasis role="italic">Done</emphasis> button is clicked, before the new PATHEXT is actually written, a message
+    box will display exactly how the PATHEXT will saved. This message box gives the user of the dialog one last chance to
+    confirm that she wants the PATHEXT to be changed.
+  </para>
+  <para>
+    Clicking <emphasis role="italic">Yes</emphasis> writes the new PATHEXT value to the registry. Clicking <emphasis
+    role="italic">No</emphasis> discards any changes and closes the dialog. Clicking <emphasis
+    role="italic">Cancle</emphasis> returns to the configure file associations dialog allowing the dialog user to retry
+    making changes to PATHEXT.
+    <figure id="figPATHEXTDone"><title>Change PATHEXT Confirmation</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodPATHEXTDone.jpg" scale="100" />
+    </imageobject>
+    </mediaobject>
+    </figure>
   </para>
   </listitem></varlistentry>
 </variablelist>
