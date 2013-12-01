@@ -357,10 +357,10 @@ C:\Rexx>
 </programlisting>
   Starting ooDialog.exe with no arguments, either from the command prompt or by double-clicking ooDialog.exe, brings up the
   information display window:
-  <figure id="figInformationWindow"><title>ooDialogInformationWindow</title>
+  <figure id="figInformationWindow"><title>ooDialog Information Window</title>
   <mediaobject>
   <imageobject>
-  <imagedata fileref="images/oodInformationWindow.jpg" scale="70" />
+  <imagedata fileref="images/oodInformationWindow.jpg" scale="60" />
   </imageobject>
   </mediaobject>
   </figure>
@@ -418,37 +418,39 @@ C:\Rexx>
   <varlistentry><term><emphasis role="bold">Upper Third Portion:</emphasis></term>
   <listitem>
   <para>
-    The upper third of the dialog is an informtional display only. It shows the scope of the current task, the process
+    The upper third of the dialog is an informational display only. It shows the scope of the current task, the process
     execution status, if ooDialog.exe is, or is not, registered as a file type, etc..
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">The Register Button:</emphasis></term>
   <listitem>
   <para>
-    The large register button is used to register, or un-register the ooDialog program file type. The label of the button
+    The large register button is used to register, or un-register, the ooDialog program file type. The label of the button
     changes to reflect the current status of the registration. If the file type is currently registered, the button is used
     to un-register it. If the file type is not registered, the button is used to register the file type.
   </para>
   <para>
     The registration or un-registration takes place immediately when the button is clicked. If the ooDialog program type is
     un-registered, all extensions associated with the file type are un-associated at the same time, for the current scope.
+    File extensions associated in the other scope can not be changed, the dialog can only work with one scope at a time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">File Association Extension / Add:</emphasis></term>
   <listitem>
   <para>
-    This edit box and push button are used to add a file extension to the currently associated types. The the extension in
+    This edit box and push button are used to add a file extension to the currently associated types. Type the extension in
     the edit box and click the <emphasis role="italic">Add</emphasis> button. The association takes place immediately. The
     extension can be entered with or without the dot character.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">File Association List Boxes:</emphasis></term>
+  <varlistentry id="vleFileAssociationListBoxes"><term><emphasis role="bold">File Association List Boxes:</emphasis></term>
   <listitem>
   <para>
     There are two list boxes used to display file association file extensions. The <emphasis
-    role="italic">Currently Associated</emphasis> list box shows all file extensions associate with the ooDialog Program file
-    type. The <emphasis role="italic">Suggested Extensions</emphasis> list box is initially filled with a few suggested
-    extensions. This is provided as a convenience for the user of the dialog.
+    role="italic">Currently Associated</emphasis> list box shows all file extensions associated with the ooDialog Program
+    file type. The <emphasis role="italic">Suggested Extensions</emphasis> list box is initially filled with a few suggested
+    extensions. This is provided as a convenience for the user of the dialog, there is no requirement that suggested
+    extensions be used.
   </para>
   <para>
     The list boxes can be in either dual column or single column mode. Recall that the operating system merges the file
@@ -478,7 +480,7 @@ C:\Rexx>
     <figure id="figDualColumnExample"><title>Dual Column Example</title>
     <mediaobject>
     <imageobject>
-    <imagedata fileref="images/oodDualColumnExample.jpg" scale="80" />
+    <imagedata fileref="images/oodDualColumnExample.jpg" scale="70" />
     </imageobject>
     </mediaobject>
     </figure>
@@ -486,8 +488,13 @@ C:\Rexx>
   <para>
     The <emphasis role="italic">Add</emphasis> and <emphasis role="italic">Remove</emphasis> buttons between the two list
     boxes are used to move the selected extension in one list box to the other. If an extension is selected in the <emphasis
-    role="italic">Suggest Extensions</emphasis> list box and the add button clicked, the extension is immediately registered
+    role="italic">Suggest Extensions</emphasis> list box and the add button clicked, the extension is immediately associated,
     in the current scope.
+  </para>
+  <para>
+    Likewise, if an extension is selected in the <emphasis role="italic">Currently Associated</emphasis> list box and the
+    <emphasis role="italic">Remove</emphasis> button is clicked then the extension is imediately un-associated. The <emphasis
+    role="italic">Remove</emphasis> button is the only way to un-associate an extension using the dialog.
   </para>
   <para>
     Bear in mind that actions taken in the dialog are always only in relation to the current scope. For example in the
@@ -515,38 +522,149 @@ C:\Rexx>
     In some ways the single column view may be less confusing. But, for file associations, it does not present a true
     picture. The .ood extension is listed in the suggested extensions list box, but there is no real reason to associate it.
     Since .ood is associated for the current user, when the operating system merges the file associations for all users and
-    the current user, it becomed assocaited in effect. Switching betweed the two views may be the best way to understand the
+    the current user, it becomes associated in effect. Switching betweed the two views may be the best way to understand the
     current associations.
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">PATHEXT related dialog controls:</emphasis></term>
+  <listitem>
+  <para>
+    The PATHEXT related dialog controls allow the user of the dialog to add or remove extensions from the PATHEXT environment
+    variable, and or to re-order the extensions in PATHEXT. The operating system uses this environment variable to determine
+    if a file is an executable file from its name. If a file's name has an extension in the PATHEXT, then the operating
+    system treats the file as an executable program rather than a data file. Files whose extension is in the PATHEXT are also
+    executed by typing their file name, without the extension, on the command prompt.
+  </para>
+  <para>
+    This functionality of editing the PATHEXT variable is added as a convenience for the dialog user. The behavior of this
+    functionality is similar to the functionality of configuring the file type associations for ooDialog.exe, but also has
+    some differences. Keep the following points in mind when working with the PATHEXT in the dialog:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    The purpose of editing PATHEXT in the dialog is to allow the dialog user to easily add an associated extension to the
+    PATHEXT. For instance if the extension <computeroutput>.ood</computeroutput> is associated with the ooDialog file type,
+    then adding that extension to the PATHEXT will allow any ooDialog programs with the extension to be executed by
+    ooDialog.exe automatically if the file name, with or without the extension, is typed on the command line.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Unlike file association changes which are saved immediately, no changes to the PATHEXT are saved until the <emphasis
+    role="italic">Done</emphasis> button is clicked. In addition, the <emphasis role="italic">Update the PATHEXT when done</emphasis>
+    check box must be checked at the time the button is clicked. This is done to ensure the dialog user really intends for
+    the changes to be made.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Unlike file associations, the operating system does not merge the All Users PATHEXT and the Curren User's PATHEXT
+    values. If the current user sets a PATHEXT value, it <emphasis role="italic">replaces</emphasis> the All Users PATHEXT
+    for that user.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    A poorly formed PATHEXT value can cause the system to behave erractically. For instance if PATHEXT did not contain the
+    <computeroutput>.EXE</computeroutput> extension, programs might not be able to be executed. For this reason, the dialolg
+    will not remove the .exe, .cmd, .com, and .bat extensions from PATHEXT. The only exception to this is if the scope is the
+    Current User, the dialog will allow the user to completely delete the PATHEXT variable for the Current User. The All
+    Users PATHEXT can not be deleted through the dialog.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Like the file associations list boxes, the PATHEXT list box can be displayed in dual or single column view. The <link
+    linkend="vleFileAssociationListBoxes">description</link> for the File Association List Boxes explains how the two view
+    work and how to interpret the list box items. However, since the operating system does not merge the All Users and
+    Current Users PATHEXT values, the single column view may be easier to use when editing the PATHEXT.
+  </para>
+  </listitem>
+  </itemizedlist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">PATHEXT Extension / Add:</emphasis></term>
   <listitem>
   <para>
-
+    The PATHEXT edit box and Add button are similar in use to the File Association Extension edit box and Add button. The
+    dialog user types the extension in the edit box and clicks the <emphasis role="italic">Add</emphasis> button to add a
+    file extension to the PATHEXE list box for the current scope. The dot character may or may not be used. If the extension
+    entered in the edit box does not start with a dot character, one is added. The extension is also upper-cased. Other than
+    that, no attempt is made to validate the entry typed by the dialog user.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">PATHEXT List Box:</emphasis></term>
   <listitem>
   <para>
-
+    The PATHEXT list box is initially filled with information that depicts the current PATHEXT for All Users and the PATHEXT
+    for the Current User. The Current User PATHEXT may not exist, in fact that is relatively common. The dialog user can
+    make changes to the PATHEXT in the current scope by interacting with the PATHEXT list box and its related buttons. The
+    list box will always reflect how the PATHEXT will be saved, if the <emphasis role="italic">Update the PATHEXT when done</emphasis>
+    check box is checked and the <emphasis role="italic">Done</emphasis> button is pressed. The <link
+    linkend="vleFileAssociationListBoxes">description</link> for the File Association List Boxes describes how to interpret
+    the list box items. For the PATHEXT, it is probably easier to interpret what the PATHEXT value will be saved as in single
+    column view.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">PATHEXT List Box Buttons:</emphasis></term>
   <listitem>
   <para>
-
+    This figure shows the buttons surrounding the PATHEXT list box that are used to edit the PATHEXT:
+    <figure id="figPathExtButtons"><title>PATHEXT Editing Buttons</title>
+    <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/oodPATHEXTButtons.jpg" scale="100" />
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </para>
+  <para>
+    The figure shows that the current scope of the dialog is the Current User. The PATHEXT list box is in single column view,
+    so the list box items reflect exactly which extensions, and their order, will be written to the PATHEXT for the Current
+    User, if the user were to save the PAThEXT.
+  </para>
+  <para>
+    The upper <emphasis role="italic">Add</emphasis> button has already been described. If the user has typed an extension in
+    the edit box, the <emphasis role="italic">Add</emphasis> button will add that extension to the list box. The <emphasis
+    role="italic">Add --></emphasis> button on the left serves a similar function. If an item in the <emphasis
+    role="italic">Currently Registerd</emphasis> list box is selected, clicking the <emphasis role="italic">Add
+    --></emphasis> will add it to the list box.
+  </para>
+  <para>
+    The Up and Down arrow buttons are used to re-order the extensions. If an item in the list box is selected, clicking the
+    Up arrow button will move the item up one position. Clicking the Down arrow button moves the item down one position.
+    Clicking the X button deletes the currently selected item from the PATHEXT.
+  </para>
+  <para>
+    The Hammer and Cresent Wrench button is only present when the scope is the Current User. Clicking this button deletes the
+    Current Users PATHEXT completely.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Update the PATHEXT when done Check Box:</emphasis></term>
   <listitem>
   <para>
-
+    As mentioned above, the PATHEXT is not changed, not updated, until the dialog is closed with the <emphasis
+    role="italic">Done</emphasis> button. If and only if the <emphasis role="italic">Update the PATHEXT when done</emphasis>
+    check box is checked, the new PATHEXT value, as defined by the dialog user while interacting with the dialog, is written
+    to the registry.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Done Button:</emphasis></term>
   <listitem>
   <para>
-
+    Clicking the <emphasis role="italic">Done</emphasis> button closes the dialog. Since all file association changes are
+    written to the registry as the dialog user makes them, clicking the <emphasis role="italic">Done</emphasis> button and
+    using the <computeroutput>Esc</computeroutput> key to close the dialog are essentially the same. The only time using the
+    <emphasis role="italic">Done</emphasis> button is of importance is if the dialog user wants changes to the PATHEXT to be
+    saved. In this case, the  <emphasis role="italic">Update the PATHEXT when done</emphasis>
+    check box must be checked and the <emphasis role="italic">Done</emphasis> button must be used to close the dialog. If the
+    check box is checked, but the user closes the dialog with the <computeroutput>Esc</computeroutput> key, any PATHEXT
+    changes are discarded.
+  </para>
+  <para>
+    When the <emphasis role="italic">Done</emphasis> is clicked, before the new PATHEXT is actually written, a message box
+    will display exactly how the PATHEXT will saved. This message box gives the user of the dialog one last chance to confirm
+    that she wants the PATHEXT to be changed.
   </para>
   </listitem></varlistentry>
 </variablelist>
