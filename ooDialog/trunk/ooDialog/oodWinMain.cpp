@@ -1234,6 +1234,29 @@ static bool isRequiredPathExt(char *ext, HWND hDlg)
 }
 
 /**
+ * Determines and returns the predefined registry key and its descriptive string
+ * that matches the scope we are using.  Local machine or  current user.
+ *
+ * @param paa
+ * @param user  Descriptive string [out]
+ *
+ * @return HKEY
+ */
+static HKEY getScopeVars(pAssocArguments paa, char **user)
+{
+    HKEY  hPreDefKey = HKEY_CURRENT_USER;
+    char *u          = "the Current User.";
+
+    if ( paa->allUsers )
+    {
+        hPreDefKey = HKEY_LOCAL_MACHINE;
+        u          = "All Users";
+    }
+    *user = u;
+    return hPreDefKey;
+}
+
+/**
  * Allocates the specified number of extensionInfo structs.  This is used both
  * for the file association extension records and the PATHEXT extension records.
  *
@@ -1463,6 +1486,146 @@ static pExtensionInfo *getExtensionRecords(HWND hDlg, char *progID, size_t *coun
                             strcpy(current->extension, keyName);
 
                             qualifyExtensionInfo(keyName, current, progID);
+                        }
+                    }
+                    RegCloseKey(hExtKey);
+                }
+            }
+        }
+    }
+
+done_out:
+    *count = matches;
+    return recs;
+}
+
+/**
+ * Get the names of all extensions associated with our ProgID in the current
+ * scope.
+ *
+ * @param hDlg
+ * @param paa
+ * @param count
+ *
+ * @return An array of strings which are the extension names.
+ *
+ * @note  The caller is responsible for freeing the memory of the strings and
+ *        the array itself.
+ */
+static char **getAllExtensionNames(HWND hDlg, pAssocArguments paa, size_t *count)
+{
+    char     *user;
+    uint32_t  retCode;
+    HKEY      hClassesKey;
+    HKEY      hPreDefKey = getScopeVars(paa, &user);
+    uint32_t  cSubKeys   = 0;
+
+    retCode = RegOpenKeyEx(hPreDefKey, "SOFTWARE\\Classes", 0, KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE, &hClassesKey);
+    if ( retCode != ERROR_SUCCESS )
+    {
+        *count = 0;
+        return NULL;
+    }
+
+    // We only need the number of subkeys.
+    retCode = RegQueryInfoKey(hClassesKey, NULL, NULL, NULL, (LPDWORD)&cSubKeys, NULL,
+                              NULL, NULL, NULL, NULL, NULL, NULL);
+
+    uint32_t maxName;                  // Size of name buffer
+    char     keyName[MAX_HKEY_NAME];   // Buffer for subkey name
+
+    uint32_t maxValue = MAX_HKEY_VALUE; // Size of value buffer
+    char     value[MAX_HKEY_VALUE];     // Buffer for default value for subkey
+
+    // Enumerate the subkeys, and see if the prog ID matches our ooDialog prog
+    // ID.  We go through the loop twice, once to count the number of matches so
+    // we can allocate an array of strings.  Then a second time to
+    // actually fill in the records.
+
+    char   **recs     = NULL;
+    size_t   matches  = 0;
+    char    *progID   = paa->progID;
+
+    for ( uint32_t i = 0; i < cSubKeys; i++ )
+    {
+        maxName = MAX_HKEY_NAME;
+        retCode = RegEnumKeyEx(hClassesKey, i, keyName, (LPDWORD)&maxName, NULL, NULL, NULL, NULL);
+        if (retCode == ERROR_SUCCESS)
+        {
+            if ( *keyName == '.' )
+            {
+                HKEY hExtKey;
+
+                retCode = RegOpenKeyEx(hClassesKey, keyName, 0, KEY_QUERY_VALUE, &hExtKey);
+                if ( retCode == ERROR_SUCCESS )
+                {
+                    maxValue = MAX_HKEY_VALUE;
+                    value[0] = '\0';
+
+                    retCode = RegQueryValueEx(hExtKey, "", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue);
+                    if ( retCode == ERROR_SUCCESS )
+                    {
+                        if ( StrCmpI(value, progID) == 0 )
+                        {
+                            matches++;
+                        }
+                    }
+                    RegCloseKey(hExtKey);
+                }
+            }
+        }
+    }
+
+    if ( matches == 0 )
+    {
+        goto done_out;
+    }
+
+    recs = (char **)LocalAlloc(LPTR, matches * sizeof(char *));
+    if ( recs == NULL )
+    {
+        reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
+        matches = 0;
+        goto done_out;
+    }
+
+    size_t processed = 0;
+    for ( uint32_t i = 0; i < cSubKeys; i++ )
+    {
+        maxName = MAX_HKEY_NAME;
+        retCode = RegEnumKeyEx(hClassesKey, i, keyName, (LPDWORD)&maxName, NULL, NULL, NULL, NULL);
+        if (retCode == ERROR_SUCCESS)
+        {
+            if ( *keyName == '.' )
+            {
+                HKEY hExtKey;
+
+                retCode = RegOpenKeyEx(hClassesKey, keyName, 0, KEY_QUERY_VALUE, &hExtKey);
+                if ( retCode == ERROR_SUCCESS )
+                {
+                    maxValue = MAX_HKEY_VALUE;
+                    value[0] = '\0';
+
+                    retCode = RegQueryValueEx(hExtKey, "", NULL, NULL, (LPBYTE)value, (LPDWORD)&maxValue);
+                    if ( retCode == ERROR_SUCCESS )
+                    {
+                        if ( StrCmpI(value, progID) == 0 )
+                        {
+                            char *n = (char *)LocalAlloc(LPTR, strlen(keyName) + 1);
+                            if ( n == NULL )
+                            {
+                                reportError(hDlg, OUT_OF_MEMORY_ERR_FMT, OS_ERR_TITLE, "LocalAlloc", GetLastError());
+                                for ( size_t j = 0; j < processed; j++ )
+                                {
+                                    safeLocalFree(recs[j]);
+                                }
+                                safeLocalFree(recs);
+                                recs = NULL;
+                                matches = 0;
+                                goto done_out;
+                            }
+                            strcpy(n, keyName);
+                            recs[processed++] = n;
                         }
                     }
                     RegCloseKey(hExtKey);
@@ -2873,29 +3036,6 @@ static void setStaticText(HWND hDlg, pAssocArguments paa)
 }
 
 /**
- * Determines and returns the predefined registry key and its descriptive string
- * that matches the scope we are using.  Local machine or  current user.
- *
- * @param paa
- * @param user  Descriptive string [out]
- *
- * @return HKEY
- */
-static HKEY getScopeVars(pAssocArguments paa, char **user)
-{
-    HKEY  hPreDefKey = HKEY_CURRENT_USER;
-    char *u          = "the Current User.";
-
-    if ( paa->allUsers )
-    {
-        hPreDefKey = HKEY_LOCAL_MACHINE;
-        u          = "All Users";
-    }
-    *user = u;
-    return hPreDefKey;
-}
-
-/**
  * Deletes our ooDialog ProgID from the registry.
  *
  * @param hDlg
@@ -2956,14 +3096,13 @@ static bool deleteRegProgID(HWND hDlg, pAssocArguments paa)
 static bool deleteRegAllExt(HWND hDlg, pAssocArguments paa)
 {
     char     *user;
-    HKEY      hPreDefKey = getScopeVars(paa, & user);
+    HKEY      hPreDefKey = getScopeVars(paa, &user);
     uint32_t  rc = 0;
     HKEY      hClassesKey;
     char      extraMsg[SMALL_BUF_SIZE];
 
-    // It seems like this should be opened with the DELETE flag also.  But it
-    // seems to work as is.
-    rc = RegOpenKeyEx(hPreDefKey, "SOFTWARE\\Classes\\", 0, KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE, &hClassesKey);
+    rc = RegOpenKeyEx(hPreDefKey, "SOFTWARE\\Classes\\", 0, KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE | DELETE,
+                      &hClassesKey);
     if ( rc != ERROR_SUCCESS )
     {
         _snprintf(extraMsg, SMALL_BUF_SIZE, "Failed to open the %s registry key for %s", "SOFTWARE\\Classes\\", user);
@@ -2972,32 +3111,32 @@ static bool deleteRegAllExt(HWND hDlg, pAssocArguments paa)
         return false;
     }
 
-    bool success = true;
-    HWND hLB     = paa->lbCurrent;
+    bool   success = true;
+    size_t count   = 0;
 
-    LRESULT count = SendMessage(hLB, LB_GETCOUNT, NULL, NULL);
-    if ( count > 0 )
+    char **names = getAllExtensionNames(hDlg, paa, &count);
+    if ( names == NULL )
     {
-        for ( LRESULT i = 0; i < count; i++ )
-        {
-            pExtensionInfo info = (pExtensionInfo)SendMessage(hLB, LB_GETITEMDATA, i, 0);
-
-            if ( extRegisteredInScope(paa, info) )
-            {
-                rc = RegDeleteKey(hClassesKey, info->extension);
-                if ( rc != ERROR_SUCCESS )
-                {
-                    _snprintf(extraMsg, SMALL_BUF_SIZE,
-                              "Failed to delete the SOFTWARE\\Classes\\%s registry subkey for %s",
-                              info->extension, user);
-
-                    reportErrorPlus(hDlg, "RegDeleteKey", REG_ERR_TITLE, extraMsg, rc);
-                    success = false;
-                }
-            }
-        }
+        RegCloseKey(hClassesKey);
+        return false;
     }
 
+    for ( size_t i = 0; i < count; i++ )
+    {
+        rc = RegDeleteKey(hClassesKey, names[i]);
+        if ( rc != ERROR_SUCCESS )
+        {
+            _snprintf(extraMsg, SMALL_BUF_SIZE,
+                      "Failed to delete the SOFTWARE\\Classes\\%s registry subkey for %s",
+                      names[i], user);
+
+            reportErrorPlus(hDlg, "RegDeleteKey", REG_ERR_TITLE, extraMsg, rc);
+            success = false;
+        }
+        safeLocalFree(names[i]);
+    }
+
+    safeLocalFree(names);
     RegCloseKey(hClassesKey);
     return success;
 }
