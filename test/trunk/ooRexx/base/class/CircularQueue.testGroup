@@ -742,6 +742,22 @@ countSupplierItems: procedure
   self~assertSame(1, resultObj~items, 'w x y z difference w y z should result in 1 item')
   self~assertTrue(resultObj~hasItem('x'), 'w x y z difference w y z result should contain an item of x')
 
+::method test_bug_1211
+
+  union = .circularqueue~of(1,2,3)~union(.circularqueue~of(4,5,6))
+
+  self~assertSame(6, union~size)
+  self~assertSame(6, union~items)
+  self~assertTrue(sameContent(union, .circularqueue~of(1,2,3,4,5,6)))
+
+  xor = .circularqueue~of(1,2,3)~xor(.circularqueue~of(4,5,6))
+
+  self~assertSame(6, xor~size)
+  self~assertSame(6, xor~items)
+  self~assertTrue(sameContent(xor, .circularqueue~of(1,2,3,4,5,6)))
+
+
+
 
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
