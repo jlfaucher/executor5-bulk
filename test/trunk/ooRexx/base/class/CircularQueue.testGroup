@@ -780,6 +780,14 @@ countSupplierItems: procedure
   self~assertSame(3, c~items)
   self~assertTrue(sameContent(c, .circularqueue~of(1,2,3)))
 
+::method test_bug_1183
+
+  c = .circularqueue~of(1,2,3)
+  c~insert('a', 2)
+
+  self~assertSame(3, c~size)
+  self~assertSame(3, c~items)
+  self~assertTrue(sameContent(c, .circularqueue~of(1,'a',2)))
 
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
