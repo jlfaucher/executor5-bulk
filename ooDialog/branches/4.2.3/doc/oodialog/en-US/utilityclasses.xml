@@ -287,6 +287,10 @@
 <entry>Resolves a symbolic ID to its numeric value.</entry>
 </row>
 <row>
+<entry><xref linkend="mthRequiredOS"/></entry>
+<entry>Checks that an ooDialog program is executing on a required minimum Windows version.</entry>
+</row>
+<row>
 <entry><xref linkend="mthSetDefaults"/></entry>
 <entry>Sets one or more of the global defualts for the application.</entry>
 </row>
@@ -807,6 +811,113 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 </variablelist>
 </section>  <!-- End ApplicationManager::defaultIcon() -->
 
+
+<section id="ruapParseIncludeFile" xreflabel="parseIncludeFile"><title>parseIncludeRile</title>
+<programlisting>
+ResourceUtils::<xref linkend="mthParseIncludeFile"/>
+
+<![CDATA[
+>>--parseIncludeFile(--fileName--)---------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="mthRequiredOS" xreflabel="requiredOS"><title>requiredOS</title>
+<indexterm><primary>requiredOS</primary></indexterm>
+<indexterm><primary>ApplicationManager class</primary><secondary>requiredOS</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--requiredOS(--os--,--appName--)---------------><
+]]>
+</programlisting>
+
+<para>
+  Checks that an ooDialog program is executing on a required minimum Windows version.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>os</term>
+    <listitem>
+    <para>
+      A key word specifying the minimum required version of Windows. The allowable key words are: <emphasis
+      role="italic">W2K, XP, W2K3, Vista,</emphasis> and <emphasis role="italic"> Windows7</emphasis>. Case is not
+      significant.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>appName [required]</term>
+    <listitem>
+    <para>
+      This should be the name of the application that is executing. The name is used in the message box shown to the user.
+    </para>
+    </listitem></varlistentry>
+  </variablelist> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if the current Windows OS mets the minimum requirement specified by <emphasis role="italic">os</emphasis>, otherwise
+    false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the current OS does not meet the minimum version specified by <emphasis role="italic">os</emphasis>, a message box is
+    shown to the user with the message stating: The <emphasis role="italic">appName</emphasis> application requires Windows
+    <emphasis role="italic">os</emphasis> or later. It can not run on <emphasis role="italic">current OS name</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from an ooDialog application that can not be used on XP. The very first line of the application checks
+    that the current Windows version is at least Vista or later and ends the program if it is not.  If the current OS is XP
+    for instance, the <emphasis role="italic">requiredOS</emphasis> method will display a message to the user stating that:
+    <emphasis role="italic">The openSaveFileDemo.rex application requires Windows Vista or later. It can not run on
+    XP.</emphasis> before it returns:
+<programlisting>
+<![CDATA[
+  if \ .application~requiredOS('Vista', 'openSaveFileDemo.rex') then return 99
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ApplicationManager::requiredOS() -->
+
+<section id="ruapResolveNumericID" xreflabel="resolveNumericID"><title>resolveNumericID</title>
+<programlisting>
+ResourceUtils::<xref linkend="mthResolveNumericID"/>
+
+<![CDATA[
+>>--resolveNumericID(--id--)---------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="ruapResolveSymbolicID" xreflabel="resolveSymbolicID"><title>resolveSymbolicID</title>
+<programlisting>
+ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
+
+<![CDATA[
+>>--resolveSymbolicID(--id--)--------------------><
+
+]]>
+</programlisting>
+</section>
+
 <section id="mthSetDefaults" xreflabel="setDefaults"><title>setDefaults</title>
 <indexterm><primary>setDefaults</primary></indexterm>
 <indexterm><primary>ApplicationManager class</primary><secondary>setDefaults</secondary></indexterm>
@@ -1023,40 +1134,6 @@ ResourceUtils::<xref linkend="atrConstDir"/>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ApplicationManager::setDefaults() -->
-
-<section id="ruapParseIncludeFile" xreflabel="parseIncludeFile"><title>parseIncludeRile</title>
-<programlisting>
-ResourceUtils::<xref linkend="mthParseIncludeFile"/>
-
-<![CDATA[
->>--parseIncludeFile(--fileName--)---------------><
-
-]]>
-</programlisting>
-</section>
-
-<section id="ruapResolveNumericID" xreflabel="resolveNumericID"><title>resolveNumericID</title>
-<programlisting>
-ResourceUtils::<xref linkend="mthResolveNumericID"/>
-
-<![CDATA[
->>--resolveNumericID(--id--)---------------------><
-
-]]>
-</programlisting>
-</section>
-
-<section id="ruapResolveSymbolicID" xreflabel="resolveSymbolicID"><title>resolveSymbolicID</title>
-<programlisting>
-ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
-
-<![CDATA[
->>--resolveSymbolicID(--id--)--------------------><
-
-]]>
-</programlisting>
-</section>
-
 <section id="mthUseGlobalConstDir" xreflabel="useGlobalConstDir"><title>useGlobalConstDir</title>
 <indexterm><primary>useGlobalConstDir</primary></indexterm>
 <indexterm><primary>ApplicationManager class</primary><secondary>useGlobalConstDir</secondary></indexterm>
