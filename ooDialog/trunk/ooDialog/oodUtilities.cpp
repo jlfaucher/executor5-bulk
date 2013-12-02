@@ -783,7 +783,7 @@ RexxMethod3(RexxObjectPtr, app_requiredOS, CSTRING, os, CSTRING, name, CSELF, pC
         char buf[512];
 
         _snprintf(buf, 511, "The %s application requires Windows %s or\n"
-                            "later.  It can not run on %s\n", name, getWindowsName());
+                            "later.  It can not run on %s\n", name, os, getWindowsName());
 
         MessageBox(NULL, buf, "ooDialog Application Error", MB_OK | MB_ICONWARNING | MB_SETFOREGROUND);
 
