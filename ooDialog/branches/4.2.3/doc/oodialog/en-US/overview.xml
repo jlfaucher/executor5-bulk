@@ -3067,12 +3067,22 @@ xPixels = xDialogUnits * self~FactorX
   <itemizedlist>
   <listitem>
   <para>
-    *
+    * #1175 Incorrect super class initialization can bypass DynamicDialog init
   </para>
   </listitem>
   <listitem>
   <para>
-    *
+    * #1176 ooDialog - the SingleSelection class has the potential of not executing
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1198 ooDialog installer aborts if oodialog.pdf does not exist
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #1204 When parsing a .rc file ooDialog does not recognize some control statements
   </para>
   </listitem>
   </itemizedlist>
@@ -3086,7 +3096,12 @@ xPixels = xDialogUnits * self~FactorX
   <itemizedlist>
   <listitem>
   <para>
-    *
+    * #201 getTextAlign(), getTextExtent(), setTextAlign() not documented
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #202 ooDialog Reference 4.2.3 - Text errors in Section 8.1 Method Table
   </para>
   </listitem>
   </itemizedlist>
@@ -3100,56 +3115,137 @@ xPixels = xDialogUnits * self~FactorX
   <itemizedlist>
   <listitem>
   <para>
-    *
+    * #508 ooDialog - index for tree-view state images
   </para>
   </listitem>
   <listitem>
   <para>
-    *
+    * #537 Add FIle Open Dialog to allow more options than available with the FileNameDialog
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #540 Add a stand alone ooDialog program launcher
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #549 The setColor() method does not work well with comboboxes
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #554 Enhance stand alone ooDialog installer to use components
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #555 .OpenFileDialog set the 'CANCEL' button label
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #556 Would like access to the Win32 UpdateWindow() API
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    * #559 ooDialog - add a convenience function to help locate resource files
   </para>
   </listitem>
   </itemizedlist>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Miscellaneous Fixes in ooDialog 4.2.3:</emphasis></term>
+  <listitem>
+  <para>
+    Fixed a problem detecting some controls in the .rc files produced by some resource editors. Combo box, edit, list box,
+    and scroll bar.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Funtionality in ooDialog 4.2.3:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The stand alone ooDialog installer now allows the user to choose to skip the installation of the documentation and / or
+    the example programs. This matches the ooRexx installation where the documentation and sample programs do not have to be
+    installed.
   </para>
   <para>
-    xx
+    An ooDialog executable, <link linkend="chpOoDialogExe">ooDialog.exe</link>, has been added to the
+    distribution.  The executable will run ooDialog programs in a manner similar to rexxhide, provides command line
+    information on the version of ooDialog installed, and can be used to set up file types and associations for ooDialog
+    programs.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Dialog Classes in ooDialog 4.2.3:</emphasis></term>
   <listitem>
   <para>
-    xx
+    <xref linkend="clsCommonItemDialog"/>
+  </para>
+  <para>
+    <xref linkend="clsOpenFileDialog"/>
+  </para>
+  <para>
+    <xref linkend="clsSaveFileDialog"/>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Utility Classes in ooDialog 4.2.3:</emphasis></term>
   <listitem>
+    <para>
+      <xref linkend="clsComConstants"/>
+    </para>
   <para>
-    xx
+    <xref linkend="clsCommonDialogEvents"/>
+  </para>
+  <para>
+    <xref linkend="clsCommonDialogCustomizations"/>
+  </para>
+  <para>
+    <xref linkend="clsShellItemFilter"/>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Public Routines in ooDialog 4.2.3:</emphasis></term>
   <listitem>
   <para>
-    xx
+    <xref linkend="rtnLocate"/>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Methods in ooDialog 4.2.3:</emphasis></term>
   <listitem>
   <variablelist>
-    <varlistentry><term>In the XX class:</term>
+    <varlistentry><term>In the <computeroutput>ApplicationManager</computeroutput> class:</term>
     <listitem>
     <para>
-      xx
+      <xref linkend="mthRequiredOS"/>
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>In the YY class:</term>
+    <varlistentry><term>In the <computeroutput>ComboBox</computeroutput> class:</term>
     <listitem>
     <para>
-      yy
+      <xref linkend="mthRemoveFullColor"/>
+    </para>
+    <para>
+      <xref linkend="mthSetFullColor"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>In the <computeroutput>DlgUtil</computeroutput> class:</term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetGUID"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>In the <computeroutput>TreeView</computeroutput> class:</term>
+    <listitem>
+    <para>
+      <xref linkend="mthGetStateImage"/>
+    </para>
+    <para>
+      <xref linkend="mthSetStateImage"/>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>In the <computeroutput>WindowBase</computeroutput> class:</term>
+    <listitem>
+    <para>
+      <xref linkend="mthUpdateWindow"/>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3157,10 +3253,10 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">New Attributes in ooDialog 4.2.3:</emphasis></term>
   <listitem>
     <variablelist>
-      <varlistentry><term>In the XX class:</term>
+      <varlistentry><term>In the <computeroutput>ApplicationManager</computeroutput> class:</term>
       <listitem>
       <para>
-        xx
+        <xref linkend="atrSrcDir"/>
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3168,10 +3264,13 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Enhanced Methods in ooDialog 4.2.3:</emphasis></term>
   <listitem>
   <variablelist>
-    <varlistentry><term>In the XX class:</term>
+    <varlistentry><term>In the <computeroutput>TreeView</computeroutput> class:</term>
     <listitem>
     <para>
-      xx
+      <xref linkend="mthGetImageListClsTreeView"/>
+    </para>
+    <para>
+      <xref linkend="mthSetImageListClsTreeView"/>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3179,29 +3278,81 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Enhanced Public Routines in ooDialog 4.2.3:</emphasis></term>
   <listitem>
   <para>
-    xx
+    None.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Deprecated Methods in ooDialog 4.2.3:</emphasis></term>
   <listitem>
-  <variablelist>
-    <varlistentry><term>In the ZZ class:</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+  <para>
+    None.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Samples in ooDialog 4.2.3:</emphasis></term>
   <listitem>
   <para>
-    xxx
+    Demonstrates what the 3 types of combo boxes look like.  Shows how to use the removeFullColor() and setFullColor()
+    methods of the ComboBox class.
   </para>
   <itemizedlist>
   <listitem>
   <para>
-    <computeroutput>ooDialog\xxx.rex</computeroutput>
+    <computeroutput>oodialog\controls\ComboBox\comboBoxTypes.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    Shows how to implement an incremental search feature for the items in a list box and over-ride the list box control's
+    internal incremental search.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\controls\ListBox\incrementalSearch.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    An example showing how to use the .DlgUtil's genGUID() method. Also provides a simple application that can be used to
+    generate GUIDs for any use.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\genGUID.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    An example showing a number of different uses of both the Open File Dialog and the Save File Dialog.  Demonstrates the
+    most common usage patterns.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\openSaveFileDemo.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    An example showing how to use the Common Item Dialog in file save mode. This example shows 2 things.  1.) How to use a
+    filter with the dialog. This is done with the .ShellItemFilter class.  2.) How to connect event notifications.  This is
+    done with the .CommonDialogEvents class.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\examples\saveFileWithFilter.rex</computeroutput>
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    An example showing how to embed contorls in a list view to allow in-place subitem editing.  The example also demonstrates
+    the ResizingAdmin and BrowseForFolder classes.
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    <computeroutput>oodialog\controls\ListView\subitem.editing\importList.rex</computeroutput>
   </para>
   </listitem>
   </itemizedlist>
@@ -3209,20 +3360,15 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Enhanced Samples in ooDialog 4.2.3:</emphasis></term>
   <listitem>
   <para>
-    xxx
+    All of the samples have been enhanced so the they can locate any needed resource files no matter which directory they are
+    executed from.  This allows them to run correctly if, for example, they are dragged and dropped on ooDialog.exe.
   </para>
-  <itemizedlist>
-  <listitem>
-  <para>
-    <computeroutput>oodialog\xxx.rex</computeroutput>
-  </para>
-  </listitem>
-  </itemizedlist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Documentation Changes in ooDialog 4.2.3:</emphasis></term>
   <listitem>
   <para>
-    xxx
+    All changes in ooDialog 4.2.3 have been fully documented. Other than that, only small progress has been made in reviewing
+    older sections of the reference manual for accuracy.
   </para>
   </listitem></varlistentry>
 </variablelist>
