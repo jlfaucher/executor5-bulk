@@ -60,3 +60,9 @@ return testResult
    self~assertSame('ab', 'ab'~STRING)
    self~assertSame(' ab ', ' ab '~STRING)
 
+::method test_constant_methods
+   self~assertSame('00'x, .String~null)
+   self~assertSame('0d'x, .String~cr)
+   self~assertSame('0a'x, .String~nl)
+   self~assertSame('09'x, .String~tab)
+
