@@ -46,6 +46,12 @@
  *
  *              The main program, this program, shows how to use the
  *              scrollBitmapFromTo() and scrollInControl() methods.
+ *
+ * Note: this program uses the public routine, locate(), to get the full path
+ * name to the directory this source code file is located. In places, the
+ * variable holding this value has been callously abbreviated to 'sd' which
+ * stands for source directory.
+ *
  */
 
   -- Use the global .constDir for symbolic IDs
@@ -58,12 +64,9 @@
   .constDir[IDC_PB_VIEWER]    = 111
   .constDir[IDC_PB_DRAW]      = 112
 
-   j = locate()
-
    d = .GraphDialog~new()
    if d~initCode \= 0 then do
       say "Dialog init did not work"
-      mgr~goBack
       return d~initCode
    end
 
@@ -102,7 +105,7 @@
    -- install.bmp   550 x 100 pixels
    -- install2.bmp  450 x 120 pixels
 
-   sd = .application~srcDir
+   sd = locate()
 
    self~createBitmapButton(IDC_BMP_TOP, 1, 10, self~sizeX-1, trunc(130 / self~factorY), "USEPAL", , , sd"bmp\install.bmp")
    self~createBitmapButton(IDC_BMP_MIDDLE, 20, but2pos, self~sizeX - 20, but2size, , , , sd"bmp\install2.bmp")

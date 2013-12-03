@@ -60,6 +60,12 @@
  * This is a rather complex program.  The commenting is not 100%.  Be sure to
  * read the ooDialog documentation on the PropertySheetDialog to fully under-
  * stand this program.
+ *
+ * Note: this program uses the public routine, locate(), to get the full path
+ * name to the directory this source code file is located. In places, the
+ * variable holding this value has been callously abbreviated to 'sd' which
+ * stands for source directory.
+ *
  */
 
   sd = locate()
@@ -657,9 +663,10 @@
 ::method initDialog
   expose filmArray movieDays selectedMovies movieCombo
 
+  sd = locate()
   staticImage = self~newStatic(IDC_ST_MOVIE_BMP)
   size = staticImage~getRealSize
-  image = .Image~getImage(.application~srcDir'rc\ticketWizardMovie.bmp', .Image~toID(IMAGE_BITMAP), size)
+  image = .Image~getImage(sd'rc\ticketWizardMovie.bmp', .Image~toID(IMAGE_BITMAP), size)
   staticImage~setImage(image)
 
   filmArray = .array~new(20)
@@ -1012,6 +1019,9 @@
 ::class 'CompletionDlg' subclass UserPSPDialog
 
 ::method defineDialog
+    expose sd
+
+    sd = locate()
 
     -- Watermark bitmap is 164 x 316.  The wizard does not stretch the bitmap,
     -- its size remains constant.  So, the width of the bitmap, in dialog units,
@@ -1065,7 +1075,7 @@
 
     if .DlgUtil~comCtl32Version < 6 then do
       self~createBitmapButton(IDC_PB_TICKET_BMP, x, y, s~width, s~height, "FRAME USEPAL STRETCH GROUP", "Get the Ticket", -
-                              'onGetTicket', .application~srcDir"rc\ticketWizardTicket.bmp")
+                              'onGetTicket', sd"rc\ticketWizardTicket.bmp")
    end
    else do
       self~createPushButton(IDC_PB_TICKET_BMP, x, y, s~width, s~height, "GROUP", "", 'onGetTicket')
@@ -1074,7 +1084,7 @@
    self~connectComboBoxEvent(IDC_COMBO_COMPLETE, "SELENDOK", "onComboUpdate")
 
 ::method initDialog
-  expose movieCombo staticTheater staticDay staticTime
+  expose movieCombo staticTheater staticDay staticTime sd
 
   msg = "Thank You For Using the ooRexx Movie Ticket Selectitron Wizard"
     font1 = self~createFontEx("Verdana", 12, "BOLD")
@@ -1095,7 +1105,8 @@
    size~width -= 10;
    size~height -= 10;
 
-   image = .Image~getImage(.application~srcDir'rc\ticketWizardTicket.bmp', .Image~toID(IMAGE_BITMAP), size)
+   sd = locate()
+   image = .Image~getImage(sd'rc\ticketWizardTicket.bmp', .Image~toID(IMAGE_BITMAP), size)
    imageList = .ImageList~create(size, .Image~toID(ILC_COLOR8), 1, 0)
    imageList~add(image)
 
@@ -1245,7 +1256,8 @@
     oldFont~name = .PlainBaseDialog~getFontName
     oldFont~size = .PlainBaseDialog~getFontSize
 
-    dlg = .FontPicker~new(.application~srcDir"rc\ticketWizard.rc", IDD_FONT_PICKER, , , , 6)
+    sd = locate()
+    dlg = .FontPicker~new(sd"rc\ticketWizard.rc", IDD_FONT_PICKER, , , , 6)
     if dlg~initCode == 0 then do
         dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
     end

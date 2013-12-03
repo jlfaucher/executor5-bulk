@@ -41,6 +41,12 @@
  * This example demonstrates how to use the PropertySheetDialog and has examples
  * of using 5 dialog controls, the: List View, Tree View, Progress Bar, Track
  * Bar, and Tab.
+ *
+ * Note: this program uses the public routine, locate(), to get the full path
+ * name to the directory this source code file is located. In places, the
+ * variable holding this value has been callously abbreviated to 'sd' which
+ * stands for source directory.
+ *
  */
 
   sd = locate()
@@ -73,7 +79,8 @@
 ::class 'ListViewDlg' subclass RcPSPDialog
 
 ::method initDialog
-    expose lv
+
+    sd = locate()
 
     -- Instantiate a Rexx list view object that represents the underlying
     -- Windows list-view.  The list-view style is report.
@@ -89,7 +96,7 @@
     -- Set the images for the items in the list-view.  The list-view control was
     -- created without the SHAREIMAGES styles, so it takes care of releasing the
     -- image list when the program ends.
-    image = .Image~getImage(.application~srcDir"rc\propertySheetDemoListView.bmp")
+    image = .Image~getImage(sd"rc\propertySheetDemoListView.bmp")
     imageList = .ImageList~create(.Size~new(16, 16), .Image~toID(ILC_COLOR8), 4, 0)
     if \image~isNull,  \imageList~isNull then do
         imageList~add(image)
@@ -165,7 +172,8 @@
     tv = self~newTreeView(IDC_TV_MAIN)
 
     -- Create and set the ImageList for the tree view items
-    image = .Image~getImage(.application~srcDir"rc\propertySheetDemoTreeView.bmp")
+    sd = locate()
+    image = .Image~getImage(sd"rc\propertySheetDemoTreeView.bmp")
     imageList = .ImageList~create(.Size~new(32, 32), .Image~toID(ILC_COLOR8), 10, 0)
     if \image~isNull,  \imageList~isNull then do
           imageList~add(image)
@@ -490,8 +498,9 @@
 
    -- Create a COLORREF (pure white) and load our bitmap.  The bitmap is a
    -- series of 16x16 images, each one a colored letter.
+   sd = locate()
    cRef = .Image~colorRef(255, 255, 255)
-   image = .Image~getImage(.application~srcDir"rc\propertySheetDemoTab.bmp")
+   image = .Image~getImage(sd"rc\propertySheetDemoTab.bmp")
 
    -- Create our image list, as a masked image list.
    flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))

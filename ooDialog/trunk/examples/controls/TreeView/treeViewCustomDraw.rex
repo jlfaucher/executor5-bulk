@@ -44,6 +44,12 @@
  * image lists to supply the icons for tree-view items, using a custom compare
  * function in the Rexx dialog to sort the tree-view items, displaying info
  * tips, etc..
+ *
+ * Note: this program uses the public routine, locate(), to get the full path
+ * name to the directory this source code file is located. In places, the
+ * variable holding this value has been callously abbreviated to 'sd' which
+ * stands for source directory.
+ *
  */
 
     -- Get our source code file location.
@@ -71,11 +77,14 @@ return 0
 \*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 ::class 'TreeViewConstants' mixinclass Object
 ::attribute BMP_FILE get
-    return .application~srcDir"rc\treeViewCustomDraw.bmp"   -- Icons for selected/not-selected items.
+    sd = locate()
+    return sd"rc\treeViewCustomDraw.bmp"   -- Icons for selected/not-selected items.
 ::attribute TREE_FILE get
-    return .application~srcDir"treeViewCustomDraw.inp"      -- Input file with the items to build the tree.
+    sd = locate()
+    return sd"treeViewCustomDraw.inp"      -- Input file with the items to build the tree.
 ::attribute ITEM_FILE get
-    return .application~srcDir"treeViewCustomDrawi.inp"     -- Input file with dynamically added items.
+    sd = locate()
+    return sd"treeViewCustomDrawi.inp"     -- Input file with dynamically added items.
 
 ::constant APPLICATION_TITLE  "Crazy Sam's Emporium - Inventory"
 
@@ -330,7 +339,8 @@ return 0
 ::method onNewItem unguarded
     expose tv
 
-    dlg = .NewTreeItemDlg~new(.application~srcDir"rc\treeViewCustomDraw.rc",  IDD_ADD_TREE_ITEM, tv)
+    sd = locate()
+    dlg = .NewTreeItemDlg~new(sd"rc\treeViewCustomDraw.rc",  IDD_ADD_TREE_ITEM, tv)
     dlg~execute
 
 return 0

@@ -49,6 +49,12 @@
  * the OS draws the button with the same look and feel of other buttons.  On
  * Windows 7, the buttons look like Windows 7 buttons.  Whereas with
  * installBitmapButton() the buttons look like Windows 95 buttons.
+ *
+ * Note: this program uses the public routine, locate(), to get the full path
+ * name to the directory this source code file is located. In places, the
+ * variable holding this value has been callously abbreviated to 'sd' which
+ * stands for source directory.
+ *
  */
 
  -- Ensure this program can be executed from any directory.
@@ -111,7 +117,8 @@
   -- Load all our bitmaps from a resource only DLL.  Since the .Size argument is
   -- omitted from the getImages() method, the operating system uses the actual
   -- size of the bitmap.
-  res = .ResourceImage~new(.application~srcDir'res\AnimalGame.dll')
+  sd = locate()
+  res = .ResourceImage~new(sd'res\AnimalGame.dll')
   bitmaps = res~getImages(imageIDs)
 
   -- Connect each button to a method with the same name as the symbolic ID of

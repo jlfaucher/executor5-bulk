@@ -52,6 +52,12 @@
  *
  *  Then the size of the dialog and the size and placement of the dialog
  *  controls are calculated around the bitmap size.
+ *
+ * Note: this program uses the public routine, locate(), to get the full path
+ * name to the directory this source code file is located. In places, the
+ * variable holding this value has been callously abbreviated to 'sd' which
+ * stands for source directory.
+ *
  */
 
    -- Use the global .constDir for symbolic IDs, and add IDs for this example.
@@ -63,8 +69,6 @@
    .constDir[IDC_PB_BMP_RIGHT]   = 1203
    .constDir[IDC_EDIT]           = 120
    .constDir[IDC_UD]             = 1206
-
-   j = locate()
 
          /* 1ms fast, 500ms slow, 200ms start, equals random every 25th */
    d = .BanditDlg~new(1, 1000, 1000, 25)
@@ -121,7 +125,7 @@
 ::method defineDialog
    expose bmp. initialSpeed dlgSize bitMapSize
 
-   sd = .application~srcDir
+   sd = locate()
 
    -- Load the bitmaps into memory.
    bmp.1 = self~loadBitmap(sd"bmp\tiger.bmp")
