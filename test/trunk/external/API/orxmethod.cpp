@@ -2067,28 +2067,30 @@ RexxMethod2(size_t, TestSetMutableBufferLength, RexxMutableBufferObject, b, size
     return context->SetMutableBufferLength(b, l);
 }
 
-RexxMethod0(size_t, TestMutableBufferCapacity, RexxMutableBufferObject, b)
+RexxMethod1(size_t, TestMutableBufferCapacity, RexxMutableBufferObject, b)
 {
-    return context->MutableBufferCapactity(b);
+    return context->MutableBufferCapacity(b);
 }
 
-RexxMethod1(size_t, TestSetMutableBufferCapacity, RexxMutableBufferObject, b, size_t, l)
+RexxMethod2(size_t, TestSetMutableBufferCapacity, RexxMutableBufferObject, b, size_t, l)
 {
     context->SetMutableBufferCapacity(b, l);
     return context->MutableBufferCapacity(b);
 }
 
-RexxMethod1(logical_t, TestIsMutableBuffer, RexxMutableBufferObject, b)
+RexxMethod1(logical_t, TestIsMutableBuffer, RexxObjectPtr, b)
 {
     return context->IsMutableBuffer(b);
 }
 
-RexxMethod1(RexxMutableBufferObject, TestSetMutableBufferValue, RexxMutableBufferObject, b, CSTRING, newValue)
+RexxMethod2(RexxMutableBufferObject, TestSetMutableBufferValue, RexxMutableBufferObject, b, CSTRING, newValue)
 {
     size_t l = strlen(newValue);
     char * buffer = (char *)context->SetMutableBufferCapacity(b, l);
-    memcpy(buffer, newValue, l);
+    // must set the length first if we are extending, as the set
+    // will pad with nulls if it goes longer.
     context->SetMutableBufferLength(b, l);
+    memcpy(buffer, newValue, l);
     return b;
 }
 

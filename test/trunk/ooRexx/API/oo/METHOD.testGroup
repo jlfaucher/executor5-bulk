@@ -2590,3 +2590,92 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .METHODtester~new
   self~expectSyntax('88.900')
   tester~TestObjectToDoubleAlt('abc')
+
+::method testNewMutableBuffer
+  tester = .METHODtester~new
+  buffer = tester~TestNewMutableBuffer(100)
+  self~assertTrue(buffer~isA(.MutableBuffer))
+  self~assertSame(100, buffer~getbuffersize)
+  self~assertSame(0, buffer~length)
+
+::method testMutableBufferLength
+  tester = .METHODtester~new
+
+  buffer = .mutablebuffer~new("1234567890")
+  self~assertSame(10, tester~TestMutableBufferLength(buffer))
+
+  buffer = .mutablebuffer~new("")
+  self~assertSame(0, tester~TestMutableBufferLength(buffer))
+
+  buffer~append("abc")
+  self~assertSame(3, tester~TestMutableBufferLength(buffer))
+
+::method testSetMutableBufferLength
+  tester = .METHODtester~new
+
+  -- cap the buffer size so we can more easily test going over
+  buffer = .mutablebuffer~new("1234567890", 10)
+
+  self~assertSame(3, tester~TestSetMutableBufferLength(buffer, 3))
+  self~assertSame("123", buffer~string)
+
+  self~assertSame(5, tester~TestSetMutableBufferLength(buffer, 5))
+  self~assertSame("123"||"0000"x, buffer~string)
+
+  self~assertSame(10, tester~TestSetMutableBufferLength(buffer, 15))
+  self~assertSame("123"||"00000000000000"x, buffer~string)
+
+::method testMutableBufferCapacity
+  tester = .METHODtester~new
+
+  buffer = .mutablebuffer~new("1234567890")
+  self~assertSame(256, tester~TestMutableBufferCapacity(buffer))
+
+  buffer = .mutablebuffer~new("1234567890", 10)
+  self~assertSame(10, tester~TestMutableBufferCapacity(buffer))
+
+  buffer~setBufferSize(100)
+  self~assertSame(100, tester~TestMutableBufferCapacity(buffer))
+
+  buffer~setBufferSize(0)
+  self~assertSame(10, tester~TestMutableBufferCapacity(buffer))
+
+::method testSetMutableBufferCapacity
+  tester = .METHODtester~new
+
+  buffer = .mutablebuffer~new("1234567890", 10)
+  self~assertSame(100, tester~TestSetMutableBufferCapacity(buffer, 100))
+  self~assertSame(100, buffer~getBufferSize)
+  self~assertSame(10, buffer~length)
+
+  -- does not lower the capacity, just ensures it is large enough for the
+  -- given.
+  self~assertSame(100, tester~TestSetMutableBufferCapacity(buffer, 50))
+  self~assertSame(100, buffer~getBufferSize)
+  self~assertSame(10, buffer~length)
+
+::method testIsMutableBuffer
+  tester = .METHODtester~new
+
+  buffer = .mutablebuffer~new("1234567890", 10)
+  self~assertTrue(tester~TestIsMutableBuffer(buffer))
+  self~assertFalse(tester~TestIsMutableBuffer(buffer~string))
+
+::method testSetGetMutableBuffer
+  tester = .METHODtester~new
+
+  buffer = .mutablebuffer~new("1234567890", 10)
+  tester~TestSetMutableBufferValue(buffer, "abcdef")
+  self~assertSame(10, buffer~getBufferSize)
+  self~assertSame(6, buffer~length)
+  self~assertSame("abcdef", tester~TestGetMutableBufferValue(buffer))
+
+  -- now force the buffer to expand the size
+  tester~TestSetMutableBufferValue(buffer, "12345678901234567890")
+  self~assertSame(20, buffer~getBufferSize)
+  self~assertSame(20, buffer~length)
+  self~assertSame("12345678901234567890", buffer~string)
+  self~assertSame("12345678901234567890", tester~TestGetMutableBufferValue(buffer))
+
+
+
