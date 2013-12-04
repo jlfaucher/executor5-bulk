@@ -79,6 +79,7 @@
 ::class 'ListViewDlg' subclass RcPSPDialog
 
 ::method initDialog
+    expose lv
 
     sd = locate()
 
