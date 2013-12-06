@@ -1254,21 +1254,7 @@ If <emphasis role="italic">count</emphasis> is not specified, all occurrences of
 <emphasis role="italic">needle</emphasis> are replaced.  If <emphasis role="italic">count</emphasis>
 is specified, it must be a positive, whole number that gives the maximum number of
 occurrences to be replaced.
-The following defines the effect: </para>
-<example id="ex.bif-changestr-newneedle">
-<title>Builtin function CHANGESTR with newneedle</title>
-<programlisting>
-result = ""
-$tempx = 1
-do forever
-   $tempy = pos(needle, haystack, $tempx)
-   if $tempy = 0 then leave
-   result = result || substr(haystack, $tempx, $tempy - $tempx) || newneedle
-   $tempx = $tempy + length(needle)
-end
-result = result || substr(haystack, $tempx)
-</programlisting>
-</example>
+</para>
 <para>Here are some examples:</para>
 <indexterm><primary>CHANGESTR function</primary>
 <secondary>example</secondary></indexterm>
@@ -1721,22 +1707,7 @@ COPIES("abc",0)    ->    ""
 <para>Returns a count of the occurrences of
 <emphasis role="italic">needle</emphasis> in
 <emphasis role="italic">haystack</emphasis> that
-do not overlap. The following defines the effect:</para>
-<indexterm><primary>COUNTSTR function</primary>
-<secondary>example</secondary></indexterm>
-<indexterm><primary>examples</primary>
-<secondary>COUNTSTR function</secondary></indexterm>
-<example id="ex.bif-countstr-1">
-<title>Builtin function COUNTSTR with needle and haystack</title>
-<programlisting>
-result=0
-$tempx=pos(needle,haystack)
-do while $temp > 0
-result=result+1
-$temp=pos(needle,haystack,$temp+length(needle))
-end
-</programlisting>
-</example>
+do not overlap.</para>
 <para>Here are some examples: </para>
 <indexterm><primary>COUNTSTR function</primary>
 <secondary>example</secondary></indexterm>
