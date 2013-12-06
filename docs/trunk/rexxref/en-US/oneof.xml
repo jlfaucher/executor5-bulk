@@ -343,7 +343,7 @@ instruction, the line number of INTERPRET instruction is returned.</para>
 <indexterm><primary>built-in object</primary>
 <secondary>.METHODS object</secondary></indexterm>
 <indexterm><primary>public object</primary>
-<secondary>.METHOD object</secondary></indexterm>
+<secondary>.METHODS object</secondary></indexterm>
 <para>The .METHODS environment symbol identifies a directory (see
 <xref linkend="clsDirectory" />) of methods
 that ::METHOD directives in the currently running program define.  The
@@ -363,6 +363,34 @@ the .METHODS symbol has the default value of
 o=.object~enhanced(.methods)  /* create object, enhance it with methods */
 o~talk("echo this text")  /* test "TALK" method */
 ::method talk  /* floating method by the name of "TALK" */
+  use arg text  /* retrieve the argument */
+  say text  /* display received argument */
+</programlisting>
+</example>
+</section>
+
+<section id="routinee"><title>The ROUTINES Directory (.ROUTINES)</title>
+<indexterm><primary>.ROUTINES Directory</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.ROUTINES object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.ROUTINES object</secondary></indexterm>
+<para>The .ROUTINES environment symbol identifies a directory (see
+<xref linkend="clsDirectory" />) of routines
+that ::ROUTINE directives in the currently running program define.  The
+directory indexes are the routine names. The directory
+values are the routine objects. See
+<xref linkend="clsRoutine" />.</para>
+<para>
+If there are no ::ROUTINE directives,
+the .ROUTINES symbol has the default value of
+<computeroutput>.ROUTINES</computeroutput>.</para>
+<example>
+<title>.ROUTINES</title>
+<programlisting>
+/* .routines contains one entry with the index (routine name) "TALK" */
+.routines~talk~call("echo this text")  /* test talk routine */
+::routine talk  /* floating routine by the name of "TALK" */
   use arg text  /* retrieve the argument */
   say text  /* display received argument */
 </programlisting>
