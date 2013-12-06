@@ -336,12 +336,12 @@ a file using the same extension as the caller.  All directory locations will be 
 a given extension before moving to the next potential extension.
 </para></listitem>
 <listitem><para>
-Some applications Rexx as a scripting language may define extensions that should be added to
-the search order.  For example, an editor might define a preferred extension that should be
+Some applications using Rexx as a scripting language may define additional extension types.
+For example, an editor might define a preferred extension that should be
 used for editor macros.  This extension would be searched next.
 </para></listitem>
 <listitem><para>
-The default system extensions (.REX).
+The default system extension (.REX).
 </para></listitem>
 <listitem><para>
 If the target file has not been located using any of the above extensions, the file name
@@ -350,10 +350,18 @@ is tried without an added extension.
 </orderedlist>
 <para>There are some system file system considerations involved when search for files.
 The Windows file system is case insensitive, so files can be located regardless of how
-the call is specified.  Unix-based systems have a case sensitive file system, so files much
+the call is specified.  Unix-based systems have a case sensitive file system, so files must
 be exact case matches in order to be located.  For these systems, each time a file name
 probe is attempted, the name will be tried in the case specified and also as a lower case
-name.</para>
+name.  The check is not performed on the very last step that uses the file name without an extension to
+avoid unintentional conflicts with other executable files.
+</para>
+<para>Note that for function or subroutine calls using an unquoted name, the target name is the
+string value of the name symbol, which will be an uppercase value.  Thus calls to myfunc(), MyFunc(),
+and myFUNC() all trigger a search for a function named "MYFUNC".  Calls specified as a quoted string
+will maintain the original string case.  Thus 'myfunc'() and 'MyFunc'() would search for different names.
+</para>
+
 
 <figure id="os2exf"><title>Function and Routine Resolution and Execution</title>
 <mediaobject>
