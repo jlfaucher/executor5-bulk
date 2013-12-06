@@ -2815,8 +2815,8 @@ will be deleted, before the insertion takes place. In this case the
 If <emphasis role="italic">option</emphasis> is specified, it may be "Normal" or
 "Unique".  The default is "Normal".  Only the first letter of the option
 capitalized letter is required; all characters following it are ignored. If
-<emphasis role="italic">option</emphasis> is 'Unique', any matching item already
-in the queue will be removed before before <emphasis
+<emphasis role="italic">option</emphasis> is 'Unique', any matching items already
+in the queue will be removed before <emphasis
 role="italic">item</emphasis> is added to the queue.
 removed before the operation is performed. This allows you to maintain a list
 like the recent files list of an editor.
@@ -2856,7 +2856,7 @@ will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
 If <emphasis role="italic">option</emphasis> is specified, it may be "Normal" or
 "Unique".  The default is "Normal".  Only the first letter of the option
 capitalized letter is required; all characters following it are ignored. If
-<emphasis role="italic">option</emphasis> is 'Unique', any matching item already
+<emphasis role="italic">option</emphasis> is 'Unique', any matching items already
 in the queue will be removed before before <emphasis
 role="italic">item</emphasis> is added to the queue.
 removed before the operation is performed. This allows you to maintain a list
@@ -2883,8 +2883,8 @@ like the recent files list of an editor.
 <para>
 Resizes the circular queue object to be able to contain
 <emphasis role="italic">newSize</emphasis> items.
-If the previous size was larger than <emphasis role="italic">newSize</emphasis>,
-any extra items are removed in the specified
+If more than <emphasis role="italic">newSize</emphasis>,
+items are in the queue, any extra items are removed in the specified
 <emphasis role="italic">order</emphasis>.
 </para>
 
@@ -2896,15 +2896,14 @@ the capitalized letter is needed; all characters following it are ignored.)
 <variablelist>
 <varlistentry><term>Fifo</term>
 <listitem>
-<para>First-in, first-out.  This keeps the most recently added items.  This is
+<para>First-in, first-out.  This keeps the items at the front of the queue.  Item deletions occur at the end of the queue.  This is
 the default action.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Lifo</term>
 <listitem>
-<para>Last-in, first-out (stacklike).  This removes the most recently added
-items.
+<para>Last-in, first-out (stacklike).  This removes items from the front of the queue.
 </para>
 </listitem>
 </varlistentry>
@@ -3147,7 +3146,7 @@ say "after resizing to 4 items in FIFO style (keeping the newest):"
 say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
 say
 
-u~resize(2, "LILO")     -- resize lifo-style (keep oldest)
+u~resize(2, "LIFO")     -- resize lifo-style (keep oldest)
 say "after resizing to 2 items in LIFO style (keeping the oldest):"
 say "content: ["u"]," "content (LIFO): ["u~string("->","L")"]"
 say
