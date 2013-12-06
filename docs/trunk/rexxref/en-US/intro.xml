@@ -2709,22 +2709,23 @@ details). A Stem object is a type of collection that supports the []
 and []= methods used by other collection classes. The [] method
 provides an alternate means of accessing compound variables that also allows
 embedded subexpressions.</para>
+<para>Tails for compound variables are normally specified by symbols separated by periods.
+An alternative is to specify the tail as a bracketed list of expressions separated by commas.
+The expressions are evaluated to character strings.
+These are concatenated with intervening periods and the resulting string is used as tail.
+This notation can be used in assignments to compound variables as well as when referencing them.
+Examples:</para>
 <example>
 <title>Evaluated compound variables</title>
 <programlisting>
-a=3       /* assigns "3" to the variable A    */
-z=4                 /*   "4"      to Z        */
-c="Fred"            /*   "Fred"   to C        */
-a.[z]="Fred"        /*   "Fred"   to A.4      */
-a.[z+1]="Rick"      /*   "Rick"   to A.5      */
-a.[fred]=5          /*   "5"      to A.FRED   */
-a.[c]="Bill"        /*   "Bill"   to A.Fred   */
-c.[c]=a.fred        /*   "5"      to C.Fred   */
-y.[a,z]="Annie"     /*   "Annie"  to Y.3.4    */
-say  a  z  c  a.[a] a.[z]  a.[z+1]
-a.[c]  c.[a]  a.[fred] y.[a,z]
-/* displays the string:                     */
-/*    "3 4 Fred A.3 Fred Rick Bill C.3 5 Annie"  */
+a.[1+2,3+4]=17      -- assigns A.3.7
+Say a.3.7           -- => 17
+v1='1+2'
+v2='3+4'
+a.v1.v2=18          -- tail used: '1+2.3+4'
+Say a.['1+2','3+4'] -- => 18
+Parse Value '1 2 3' With . a.[1,1+1] .
+Say a.1.2           -- => 2
 </programlisting>
 </example>
 </section>
