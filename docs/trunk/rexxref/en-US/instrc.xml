@@ -781,8 +781,9 @@ can be any instruction, including assignments,
 commands, message instructions, and keyword instructions (including any of
 the more complex constructs such as IF, SELECT, and the DO instruction itself).
 </para></listitem>
-<listitem><para>The subkeywords WHILE and UNTIL are reserved within a DO
-instruction in that they cannot be used as symbols in any of the expressions.
+<listitem><para>The subkeywords WHILE, UNTIL, and OVER are reserved within a DO
+instruction in that they act as expression terminators for other keywords.  Thus they
+cannot be used as symbols in any of the expressions.
 Similarly, TO, BY, and FOR cannot be used in
 <emphasis role="italic">expri</emphasis>,
 <emphasis role="italic">exprt</emphasis>,
@@ -790,7 +791,27 @@ Similarly, TO, BY, and FOR cannot be used in
 <emphasis role="italic">exprf</emphasis>.
 <indexterm><primary>FOREVER repetitor on DO instruction</primary></indexterm>
 FOREVER is also reserved, but only if it immediately
-follows the keyword DO and is not followed by an equal sign.</para></listitem>
+follows the keyword DO and is not followed by an equal sign.
+However, parentheses
+around or within an expression can prevent these keywords from terminating an expression.
+For example, </para>
+<example>
+<programlisting>
+do i = 1 while i < until
+   say i
+end
+</programlisting>
+</example>
+<para>is considered a syntax error because of the variable named UNTIL.  Using parentheses
+around the expression allows the variable UNTIL to be used:</para>
+<example>
+<programlisting>
+do i = 1 while (i < until)
+   say i
+end
+</programlisting>
+</example>
+</listitem>
 <listitem><para>The <emphasis role="italic">exprb</emphasis>
 option defaults to <computeroutput>1</computeroutput>,
 if relevant.</para></listitem>
@@ -1774,16 +1795,37 @@ can be any instruction, including assignments,
 commands, message instructions, and keyword instructions (including any of
 the more complex constructs such as IF, SELECT, and the LOOP instruction itself).
 </para></listitem>
-<listitem><para>The subkeywords WHILE and UNTIL are reserved within a LOOP
-instruction in that they cannot be used as symbols in any of the expressions.
+<listitem><para>The subkeywords WHILE, UNTIL, and OVER are reserved within a DO
+instruction in that they act as expression terminators for other keywords.  Thus they
+cannot be used as symbols in any of the expressions.
 Similarly, TO, BY, and FOR cannot be used in
 <emphasis role="italic">expri</emphasis>,
 <emphasis role="italic">exprt</emphasis>,
 <emphasis role="italic">exprb</emphasis>, or
 <emphasis role="italic">exprf</emphasis>.
-<indexterm><primary>FOREVER repetitor on LOOP instruction</primary></indexterm>
+<indexterm><primary>FOREVER repetitor on DO instruction</primary></indexterm>
 FOREVER is also reserved, but only if it immediately
-follows the keyword LOOP and is not followed by an equal sign.</para></listitem>
+follows the keyword DO and is not followed by an equal sign.
+However, parentheses
+around or within an expression can prevent these keywords from terminating an expression.
+For example, </para>
+<example>
+<programlisting>
+loop i = 1 while i < until
+   say i
+end
+</programlisting>
+</example>
+<para>is considered a syntax error because of the variable named UNTIL.  Using parentheses
+around the expression allows the variable UNTIL to be used:</para>
+<example>
+<programlisting>
+loop i = 1 while (i < until)
+   say i
+end
+</programlisting>
+</example>
+</listitem>
 <listitem><para>The <emphasis role="italic">exprb</emphasis>
 option defaults to <computeroutput>1</computeroutput>,
 if relevant.</para></listitem>
