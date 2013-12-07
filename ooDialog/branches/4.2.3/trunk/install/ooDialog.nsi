@@ -501,8 +501,8 @@ Section  "ooDialog ${SHORTVERSION} Examples" SecExample
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Customer\bmp
     ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Exercise06\Customer\bmp\*.ico"
     File "${ExamplesDir}\userGuide\exercises\Exercise06\Customer\bmp\*.bmp"
+    File "${ExamplesDir}\userGuide\exercises\Exercise06\Customer\bmp\*.ico"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Extras
@@ -584,12 +584,6 @@ Section  "ooDialog ${SHORTVERSION} Examples" SecExample
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Extras\Person\*.rc"
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Extras\Person\*.rex"
     File "${ExamplesDir}\userGuide\exercises\Exercise07\Extras\Person\*.txt"
-
-    ; Set output path to the installation directory.
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Extras\Wow4
-    ; Add the files ...
-    File "${ExamplesDir}\userGuide\exercises\Exercise07\Extras\Wow4\*.rex"
-    File "${ExamplesDir}\userGuide\exercises\Exercise07\Extras\Wow4\*.txt"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise07\Order
