@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Release Notes XML File
     #
-    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2013, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -49,19 +49,19 @@
 <section><title>Hardware Requirements</title>
 <itemizedlist>
 <listitem><para>
-  Approximately 38 MB free disk space is needed for a complete installation.
+  Approximately 50 MB free disk space is needed for a complete installation.
 </para></listitem>
 <listitem><para>
   8 MB free disk space for the core interpreter.
 </para></listitem>
 <listitem><para>
-  22 MB free disk space for online documentation.
+  29 MB free disk space for online documentation.
 </para></listitem>
 <listitem><para>
-  7 MB free disk space for all samples.
+  14 MB free disk space for all samples.
 </para></listitem>
 <listitem><para>
-  1 MB free disk space for the API headers and libraries.
+  ,25 MB free disk space for the API headers and libraries.
 </para></listitem>
 <listitem><para>
   IBM-compatible, Pentium or AMD processor, or higher. Both 32-bit and 64-bit processores are supported.
@@ -70,21 +70,39 @@
 </section>
 
 <section><title>Software Requirements</title>
+<para>
+  On Windows, the ooRexx development team is committed to supporting all active versions of Windows. That is, versions of
+  Windows that Micrsoft has not declared end of life. For ooRexx version 4.2.0, the officially supported version of Window
+  are Windows XP through Windows 8.1. The team will not <emphasis role="italic">purposively</emphasis> make changes to
+  prevent ooRexx from running on versions of Windows that have reached end of life. However, the team is more interested in
+  supporting newer versions of Windows than they are in supporting out of date operating systems. Versions of Windows that
+  are no longer supported by Microsoft, are officially not supported by ooRexx.
+</para>
+<para>
+  The follwoing lists the versions of Windows that ooRexx 4.2.0 has been consistently tested on by the development team:
+</para>
+<itemizedlist>
+<listitem><para>Windows XP</para></listitem>
+<listitem><para>Windows Vista</para></listitem>
+<listitem><para>Windows 7</para></listitem>
+</itemizedlist>
+<para>
+  The following lists the version of Windows where the development team has good anecdotal evidence that ooRexx 4.2.0 still
+  works well on:
+</para>
 <itemizedlist>
 <listitem><para>Windows 2000</para></listitem>
 <listitem><para>Windows 2003</para></listitem>
-<listitem><para>Windows XP</para></listitem>
-<listitem><para>Windows Vista</para></listitem>
 </itemizedlist>
 <para>
-  ooRexx version 4.0.0 is not supported on Windows prior to Windows 2000. There is no known reason why
-  this version of ooRexx will not work on Windows NT(R) 4.0, but it has not been tried. Likewise, ooRexx
-  may work on Windows 98 or Windows Me, but there is no support for it.
+  The following lists the version of Windows that the development team is committed to supporting. However, ooRexx 4.2.0 has
+  not been well tested by the development team on these vesions of Windows. Testing has been done by committed users of
+  ooRexx.
 </para>
-<para>
-  It is likely that ooRexx version 4.0.0 will work on Windows Server 2008, however it has not been
-  tested.
-</para>
+<itemizedlist>
+<listitem><para>Windows 8</para></listitem>
+<listitem><para>Windows 8.1</para></listitem>
+</itemizedlist>
 </section>
 
 <section><title>Installation and Configuration Information</title>
@@ -98,7 +116,7 @@
   If a previous version of ooRexx is installed, you <emphasis role="italic">should</emphasis> uninstall
   it. If two different versions of ooRexx are installed on the same system, the results are not
   predictable and the interpreter will <emphasis role="italic">not</emphasis> work correctly. You could
-  install over the top of the existing installation, but that is not recommended.
+  install over the top of the existing installation, but that is not recommended and is not supported.
 </para>
 <para>
   A previous version of ooRexx can be uninstalled (<xref linkend="sectWindowsUninstall" />) before
@@ -113,7 +131,7 @@
   install <computeroutput>rxapi</computeroutput> as a Windows Service.
 </para>
 <para>
-  ooRexx should be installed by a user with adminstrator rights. On Vista this is a requirement. It is
+  ooRexx should be installed by a user with adminstrator rights. On Vista and later this is a requirement. It is
   also a requirement in order to install rxapi as a service. In addition, there are several installation
   steps that can only be performed with adminstrator rights. They are:
 </para>
@@ -134,7 +152,7 @@
   variable.
 </para></listitem>
 <listitem><para>
-  On Windows 2003 / Windows XP, and later, if the installation program is run without administrator
+  On Windows XP, and later, if the installation program is run without administrator
   rights, ooRexx can not be installed to its default location in <computeroutput>\Program
   Files\</computeroutput>.
 </para></listitem>
@@ -155,8 +173,8 @@
   can be installed on a 64-bit version of Windows . However, to take full advantage of both the operating
   system and ooRexx, the user should install the 64-bit version of ooRexx on a 64-bit version of Windows.
   The installation programs for the two types of ooRexx are clearly labeled:
-  <computeroutput>ooRexx400-1-x86_32.exe</computeroutput> and
-  <computeroutput>ooRexx400-1-x86_64.exe</computeroutput>.
+  <computeroutput>ooRexx-4.2.0.windows.x86_32.exe</computeroutput> and
+  <computeroutput>ooRexx-4.2.0.windows.x86_64.exe</computeroutput>.
 </para>
 </section>
 
@@ -168,8 +186,8 @@
 <para>
   The ooRexx installation program is a typical Windows installation program. Download the installation
   program for your operating system. From Windows Explorer double-click the appropriate installation
-  package: <computeroutput>ooRexx400-1-x86_32.exe</computeroutput> or
-  <computeroutput>ooRexx400-1-x86_64.exe</computeroutput>. Follow the prompts in the installation dialog.
+  package: <computeroutput>ooRexx-4.2.0.windows.x86_32.exe</computeroutput> or
+  <computeroutput>ooRexx-4.2.0.windows.x86_64.exe</computeroutput>. Follow the prompts in the installation dialog.
   Naturally, the program can also be run from a console window by typing the executable name at the
   command prompt.
 </para>
@@ -205,18 +223,18 @@
   contains spaces. For example:
 <programlisting>
 <![CDATA[
-ooRexx400-1-x86_64.exe /S /D=C:\Program Files\Interpreters\ooRexx
+ooRexx-4.2.0.windows.x86_64.exe /S /D=C:\Program Files\Interpreters\ooRexx
 ]]>
 </programlisting>
-</para></listitem>
-</varlistentry>
+</para>
+</listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="sectWindowsUninstall"><title>Windows Uninstallation Information</title>
 <para>
-  From the Control Panel select "Add Remove Programs", then select "Open Object Rexx
-  for Windows" and select "Remove".
+  In XP, from the Control Panel select "Add Remove Programs", then select "Open Object Rexx for Windows" and select "Remove".
+  In later versions of Windows, select "Programs and Features" from the Control Panel and follow the same steps.
 </para>
 <para>
   Alternatively, the ooRexx installation places a menu item in the program folder that can be used to
