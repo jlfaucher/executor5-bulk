@@ -59,9 +59,14 @@ return testResult
     self~assertSame('010000001C', dts(s))
 
 ::method 'test02'
+      say mydts(' ') dts(' ')
+      say mydts(.string~tab) dts(.string~tab)
+
+
+
     do i = 0 to 255
         s = d2c(i)
-        self~assertSame(mydts(s), dts(s))
+        self~assertSame(mydts(s), dts(s), "Character" i d2x(i))
     end
 
 ::method 'test03'

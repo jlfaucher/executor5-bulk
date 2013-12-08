@@ -1770,9 +1770,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    currentTime = time()
 
    cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SUB1
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    cb4=TIME('r')||'*'||TIME('R')
    Parse Var cb1 cb1a '*' cb1b
    Parse Var cb2 cb2a '*' cb2b
@@ -1794,7 +1794,7 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
 
    SUB1:
    cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb3='54494d45'x('r')||'*'||TIME('R')
    Return
 
@@ -1803,9 +1803,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    currentTime = time()
 
    cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SUB2
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    cb4=TIME('r')||'*'||TIME('R')
    Parse Var cb1 cb1a '*' cb1b
    Parse Var cb2 cb2a '*' cb2b
@@ -1833,14 +1833,14 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
 
    SUB1:
    cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb3='54494d45'x('r')||'*'||TIME('R')
    Return
    SUB2:
    cb5='TIME'('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb6="TIME"('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SUB1
    Return
 
@@ -1851,9 +1851,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
 
    currentTime = time()
    cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SCBTIMEA
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    cb4=TIME('r')||'*'||TIME('R')
    Pull cb2 cb3
    Parse Var cb1 cb1a '*' cb1b
@@ -1879,9 +1879,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    currentTime = time()
 
    cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SCBTIMEB
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Pull cb5 cb6
    Pull cb2 cb3
    cb4=TIME('r')||'*'||TIME('R')
@@ -1913,9 +1913,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    currentTime = time()
 
    cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SUB3
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    cb4=TIME('rage')||'*'||TIME('RAGE')
    Parse Var cb1 cb1a '*' cb1b
    Parse Var cb2 cb2a '*' cb2b
@@ -1936,19 +1936,19 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
 
    SUB1:
    cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb3='54494d45'x('r')||'*'||TIME('R')
    Return
    SUB2:
    cb5='TIME'('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb6="TIME"('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SUB1
    Return
    SUB3:
    cb2=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb3=TIME('rage')||'*'||TIME('R-12')
    Return
 
@@ -1957,9 +1957,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    currentTime = time()
 
    cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SUB4
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    cb4=TIME('rage')||'*'||TIME('RAGE')
    Parse Var cb1 cb1a '*' cb1b
    Parse Var cb2 cb2a '*' cb2b
@@ -1986,26 +1986,26 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
 
    SUB1:
    cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb3='54494d45'x('r')||'*'||TIME('R')
    Return
    SUB2:
    cb5='TIME'('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb6="TIME"('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SUB1
    Return
    SUB3:
    cb2=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb3=TIME('rage')||'*'||TIME('R-12')
    Return
    SUB4:
    cb5=TIME('rage')||'*'||TIME('RAGE 27')
-   Call sysSLEEP '5'
+   Call sysSLEEP '5.1'
    cb6=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SUB1
    Return
 
@@ -2015,9 +2015,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    currentTime = time()
 
    cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SCBTIMEC
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    cb4=TIME('rage')||'*'||TIME('RAGE')
    Pull cb2 cb3
    Parse Var cb1 cb1a '*' cb1b
@@ -2043,9 +2043,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    currentTime = time()
 
    cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Call SCBTIMED
-   Call sysSLEEP '1'
+   Call sysSLEEP '1.1'
    Pull cb5 cb6
    Pull cb2 cb3
    cb4=TIME('rage')||'*'||TIME('RAGE')
@@ -2095,7 +2095,7 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    Parse Version version
    Parse Source fn
    cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP(5)
+   Call sysSLEEP(5.1)
    cb3=TIME('r')||'*'||TIME('R')
    Queue cb2 cb3
    return
@@ -2110,9 +2110,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    Parse Version version
    Parse Source fn
    cb5=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP(5)
+   Call sysSLEEP(5.1)
    cb6=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP(1)
+   Call sysSLEEP(1.1)
    Queue cb5 cb6
    Call SCBTIMEA
    return
@@ -2127,7 +2127,7 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    Parse Version version
    Parse Source fn
    cb2=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP(5)
+   Call sysSLEEP(5.1)
    cb3=TIME('rage')||'*'||TIME('RAGE')
    Queue cb2 cb3
    return
@@ -2142,9 +2142,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    Parse Version version
    Parse Source fn
    cb5=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP(5)
+   Call sysSLEEP(5.1)
    cb6=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP(1)
+   Call sysSLEEP(1.1)
    Queue cb5 cb6
    Call SCBTIMEA
    return
