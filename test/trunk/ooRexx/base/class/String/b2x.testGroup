@@ -61,11 +61,18 @@ return testResult
    self~expectSyntax(93.932)
    self~assertSame(' '~b2x, ' ')
 
+::method "test_2b"
+   self~expectSyntax(93.932)
+   self~assertSame(.string~tab~b2x, ' ')
+
 ::method "test_3"
    self~assertSame('1111'~b2x, 'F')
 
 ::method "test_4"
    self~assertSame('0001 0001'~b2x, '11')
+
+::method "test_4b"
+   self~assertSame(('0001'||.string~tab||'0001')~b2x, '11')
 
 ::method "test_5"
    self~assertSame('1 0001'~b2x, '11')
@@ -73,6 +80,10 @@ return testResult
 ::method "test_6"
    self~expectSyntax(93.932)
    self~assertSame(' 1111'~b2x, 'F')
+
+::method "test_6b"
+   self~expectSyntax(93.932)
+   self~assertSame((.string~tab||'1111')~b2x, 'F')
 
 ::method "test_7"
    self~expectSyntax(93.932)
@@ -85,6 +96,10 @@ return testResult
 ::method "test_9"
    self~expectSyntax(93.932)
    self~assertSame('1111 '~b2x, '1')
+
+::method "test_9b"
+   self~expectSyntax(93.932)
+   self~assertSame(('1111'||.string~tab)~b2x, '1')
 
 ::method "test_10"
    self~expectSyntax(93.932)
