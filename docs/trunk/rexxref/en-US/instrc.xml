@@ -2223,11 +2223,9 @@ PARSE VALUE time() WITH  hours ":" mins ":" secs
 </programlisting>
 <para>gets the current time and splits it into its constituent parts.</para>
 </listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">PARSE VAR</emphasis>
-<emphasis role="italic">name</emphasis>
+<varlistentry><term><emphasis role="bold">PARSE VAR</emphasis> <emphasis role="italic">name</emphasis>
 <indexterm><primary>VAR option of PARSE instruction</primary></indexterm>
-<indexterm><primary>variable</primary>
-<secondary>parsing of</secondary></indexterm>
+<indexterm><primary>variable</primary><secondary>parsing of</secondary></indexterm>
 </term>
 <listitem><para>parses the character string value of the variable
 <emphasis role="italic">name</emphasis>. The
@@ -2251,26 +2249,28 @@ to uppercase before it is parsed.</para>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">PARSE VERSION</emphasis>
 <indexterm><primary>VERSION option of PARSE instruction</primary></indexterm>
-<indexterm><primary>date and version of the language processor</primary>
-</indexterm>
-<indexterm><primary>language</primary>
-<secondary>processor date and version</secondary></indexterm>
+<indexterm><primary>date and version of the language processor</primary></indexterm>
+<indexterm><primary>language</primary><secondary>processor date and version</secondary></indexterm>
 </term>
-<listitem><para>parses information describing the language level and the date
-of the language processor. This information consists of five blank-delimited
-words:
+<listitem>
+<para>
+  parses information describing the language level and the date of the language processor. This information consists of
+  five blank-delimited words:
 <itemizedlist>
 <listitem><para>The string <computeroutput>REXX-ooRexx_4.2.0(MT)_32-bit</computeroutput>,
 if using the ooRexx interpreter at version 4, release 2, modification 0, and
-compiled for 32-bit addressing mode.</para></listitem>
-</listitem>
-<listitem><para>The language level description, for example
-<computeroutput>6.03</computeroutput>.</para></listitem>
-<listitem><para>Three tokens that describe the language processor release
-date in the same format as the default for the DATE built-in function
-(see <xref linkend="bifDate" />),
-for example, &quot;27 Sep 2007&quot;.</para></listitem></itemizedlist>
-</para></listitem></varlistentry>
+compiled for 32-bit addressing mode.
+</para></listitem>
+<listitem><para>
+  The language level description, for example <computeroutput>6.03</computeroutput>.
+</para></listitem>
+<listitem><para>
+  Three tokens that describe the language processor release date in the same format as the default for the DATE built-in
+  function (see <xref linkend="bifDate" />), for example, &quot;27 Sep 2007&quot;.
+</para></listitem>
+</itemizedlist>
+</para>
+</listitem></varlistentry>
 </variablelist>
 </section>
 

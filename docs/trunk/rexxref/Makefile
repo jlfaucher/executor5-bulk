@@ -44,7 +44,7 @@ PRODUCT = rexxref
 all: pdf html
 
 pdf:
-	- rm -r tmp/en-US/pdf
+	- rm -rf tmp/en-US/pdf
 	publican build --formats=pdf --langs=en-US
 	cd tmp/en-US/pdf; mv ooRexx*.pdf $(PRODUCT).pdf; cd ../../..
 
@@ -57,5 +57,5 @@ html:
 
 
 clean:
-	rm -f tmp
+	rm -rf tmp
 
