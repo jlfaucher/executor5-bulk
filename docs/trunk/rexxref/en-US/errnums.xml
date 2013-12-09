@@ -242,14 +242,14 @@ Say NOT EQUALS
 <para>
 <emphasis role="bold">Explanation:</emphasis>
 </para>
-<para>More ENDs were found in your program than DO or SELECT instructions, or the ENDs did not match the DO or SELECT instructions. This message also occurs if you try to transfer control into the middle of a loop using SIGNAL. In this case, the language processor does not expect the END because it did not process the previous DO instruction. Remember also that SIGNAL deactivates any current loops, so it cannot transfer control from one place inside a loop to another.</para>
-<para>Another cause for this message is placing an END immediately after a THEN or ELSE subkeyword or specifying a name on the END keyword that does not match the name following DO. Putting the name of the control variable on ENDs that close repetitive loops can also help locate this kind of error.</para>
+<para>More ENDs were found in your program than DO, LOOP, or SELECT instructions, or the ENDs did not match the DO, LOOP, or SELECT instructions. This message also occurs if you try to transfer control into the middle of a loop using SIGNAL. In this case, the language processor does not expect the END because it did not process the previous DO instruction. Remember also that SIGNAL deactivates any current loops, so it cannot transfer control from one place inside a loop to another.</para>
+<para>Another cause for this message is placing an END immediately after a THEN or ELSE subkeyword or specifying a name on the END keyword that does not match the name following DO or LOOP. Putting the name of the control variable on ENDs that close repetitive loops can also help locate this kind of error.</para>
 <para>The associated subcodes are: </para>
 <variablelist>
 <varlistentry>
 <term>001</term>
 <listitem>
-<para>END has no corresponding DO or SELECT</para>
+<para>END has no corresponding DO, LOOP, or SELECT</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -297,10 +297,10 @@ Say NOT EQUALS
 </para>
 <para>Your program exceeds the nesting level limit for control structures (for example, DO...END and IF...THEN...ELSE). This could be because of a looping INTERPRET instruction, such as:</para>
 <programlisting>
-
+    
       line='INTERPRET line'
       INTERPRET line
-
+    
     </programlisting>
 <para>These lines loop until they exceed the nesting level limit and the language processor issues this message. Similarly, a recursive subroutine or internal function that does not end correctly can loop until it causes this message.</para>
 <para>The associated subcodes are: </para>
@@ -346,11 +346,11 @@ Say NOT EQUALS
 </variablelist>
 </section>
 <section id="ERR14">
-<title>Error 14 - Incomplete DO/SELECT/IF</title>
+<title>Error 14 - Incomplete DO/LOOP/SELECT/IF</title>
 <para>
 <emphasis role="bold">Explanation:</emphasis>
 </para>
-<para>At the end of the program or the string for an INTERPRET instruction, a DO or SELECT instruction was found without a matching END or an IF clause that is not followed by a THEN clause.  Putting the name of the control variable on each END closing a controlled loop can help locate this kind of error.</para>
+<para>At the end of the program or the string for an INTERPRET instruction, a DO, LOOP, or SELECT instruction was found without a matching END or an IF clause that is not followed by a THEN clause.  Putting the name of the control variable on each END closing a controlled loop can help locate this kind of error.</para>
 <para>The associated subcodes are: </para>
 <variablelist>
 <varlistentry>
@@ -378,6 +378,12 @@ Say NOT EQUALS
 </listitem>
 </varlistentry>
 <varlistentry>
+<term>005</term>
+<listitem>
+<para>LOOP instruction on line <emphasis role="italic">line_number</emphasis> requires matching END</para>
+</listitem>
+</varlistentry>
+<varlistentry>
 <term>901</term>
 <listitem>
 <para>OTHERWISE on line <emphasis role="italic">line_number</emphasis> requires matching END</para>
@@ -392,19 +398,19 @@ Say NOT EQUALS
 </para>
 <para>Hexadecimal strings must not have leading or trailing whitespace characters and whitespace can only be embedded at byte boundaries.  Only the digits 0-9 and the letters a-f and A-F are allowed.  The following are valid hexadecimal strings: </para>
 <programlisting>
-
+    
         '13'x
         'A3C2 1c34'x
         '1de8'x
-
+    
     </programlisting>
 <para>Binary strings can have whitespace only at the boundaries of groups of four binary digits.  Only the digits 0 and 1 are allowed.  These are valid binary strings: </para>
 <programlisting>
-
+    
         '1011'b
         '110 1101'b
         '101101 11010011'b
-
+    
     </programlisting>
 <para>You might have mistyped one of the digits, for example, typing a letter O instead of the number 0. Or you might have used the one-character symbol X or B (the name of the variable X or B, respectively) after a literal string when the string is not intended as a hexadecimal or binary specification. In this case, use the explicit concatenation operator (||) to concatenate the string to the value of the symbol.</para>
 <para>The associated subcodes are: </para>
@@ -577,7 +583,7 @@ special character (such as a parenthesis).
 <varlistentry>
 <term>905</term>
 <listitem>
-<para>String or symbol expected after EXTERNAL keyword</para>
+<para>String expected after EXTERNAL keyword</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1149,6 +1155,12 @@ special character (such as a parenthesis).
 <term>924</term>
 <listitem>
 <para>Unknown keyword on ::OPTIONS directive; found "<emphasis role="italic">word</emphasis>"</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>925</term>
+<listitem>
+<para>Unknown keyword on ::ATTRIBUTE directive; found "<emphasis role="italic">word</emphasis>"</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -2816,7 +2828,7 @@ special character (such as a parenthesis).
 <varlistentry>
 <term>901</term>
 <listitem>
-<para>Not enough arguments in method; <emphasis role="italic">number</emphasis> expected</para>
+<para>Not enough arguments for method; <emphasis role="italic">number</emphasis> expected</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -3667,7 +3679,54 @@ special character (such as a parenthesis).
 <para>Duplicate ::CONSTANT directive instruction</para>
 </listitem>
 </varlistentry>
+<varlistentry>
+<term>933</term>
+<listitem>
+<para>Abstract methods cannot have a method body</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>934</term>
+<listitem>
+<para>Attribute methods cannot have a method body</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>935</term>
+<listitem>
+<para>External attributes cannot have a method body</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>936</term>
+<listitem>
+<para>External methods cannot have a method body</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>937</term>
+<listitem>
+<para>Attribute methods without a SET or GET designation cannot have a method body</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>938</term>
+<listitem>
+<para>Constant methods cannot have a method body</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>939</term>
+<listitem>
+<para>External routines cannot have a method body</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>940</term>
+<listitem>
+<para>Abstract attributes cannot have a method body</para>
+</listitem>
+</varlistentry>
 </variablelist>
 </section>
 </section>
-
