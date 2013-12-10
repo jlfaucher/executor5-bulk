@@ -244,7 +244,7 @@ subclasses.
 </programlisting>
 
 <para>Add an item to the collection at the specified index.  This is an abstract
-method that must be implemented by a subclasses.
+method that must be implemented by subclasses.
 </para>
 </section>
 
@@ -261,7 +261,7 @@ method that must be implemented by a subclasses.
 </programlisting>
 
 <para>Return an array of all indexes used by this collection.  This is an
-abstract method that must be implemented by a subclasses.
+abstract method that must be implemented by subclasses.
 </para>
 </section>
 
@@ -278,7 +278,7 @@ abstract method that must be implemented by a subclasses.
 </programlisting>
 
 <para>Return an array containing all items stored in the collection.
-This is an abstract method that must be implemented by a subclasses.</para>
+This is an abstract method that must be implemented by subclasses.</para>
 </section>
 
 <section id="mthCollectionAt"><title>at</title>
@@ -301,7 +301,7 @@ This is an abstract method that must be implemented by a subclasses.</para>
 with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, this method returns the
 Nil object.
-This is an abstract method that must be implemented by a subclasses.</para>
+This is an abstract method that must be implemented by subclasses.</para>
 </section>
 
 <section id="mthCollectionDifference"><title>difference</title>
@@ -558,7 +558,7 @@ the new collection only if there is no item with the same associated index
 in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified (the program
-should not rely on any order.). The
+should not rely on any order). The
 <emphasis role="italic">argument</emphasis> can be any
 collection class object. The
 <emphasis role="italic">argument</emphasis> must also allow all of the
@@ -626,7 +626,7 @@ Collection class (<xref linkend="clsCollection" />).</para>
 >>-putAll(collection)------------------------------------------><
 ]]>
 </programlisting>
-<para>Adds all items <emphasis role="italic">collection</emphasis> to the target directory.  The
+<para>Adds all items in <emphasis role="italic">collection</emphasis> to the target directory.  The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values returned by the supplier.  The item
 indexes from the source <emphasis role="italic">collection</emphasis> must be strings.  The items are
@@ -673,7 +673,7 @@ such as an array or a list.
 
 <section id="mthOrderedCollectionAppend"><title>append</title>
 <indexterm><primary>append method</primary>
-<secondary>of OrederedCollection class</secondary></indexterm>
+<secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>append method</secondary>
 <tertiary>of OrderedCollection class</tertiary></indexterm>
@@ -1044,7 +1044,7 @@ the new collection only if there is no equivalent item
 in the receiver collection and the method has not already included. The order in
 which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified (the program
-should not rely on any order.). The
+should not rely on any order). The
 <emphasis role="italic">argument</emphasis> can be any
 collection class object.
 </para>
@@ -1180,7 +1180,7 @@ OrderedCollection class (<xref linkend="clsOrderedCollection" />).</para>
 <para> Returns a new empty array. If you specify
 any <emphasis role="italic">size</emphasis> arguments,
 the size is taken as a hint about how big each dimension
-should be. The Array classes uses this only to allocate the initial array
+should be. The Array class uses this only to allocate the initial array
 object.  For multiple dimension arrays, you can also specify how much
 space is to be allocated initially for each dimension of the array.
 </para>
@@ -2297,7 +2297,7 @@ indexes are skipped in the returned array: </para>
 directions=.array~of("North","South", ,"West")
 do i=1 to 4                                  /* Produces: North          */
   say directions[i]                          /*           South          */
-                                             /*           The Nil object */
+                                             /*           The NIL object */
 end                                          /*           West           */
 </programlisting>
 </example>
@@ -2433,7 +2433,6 @@ put() (<xref linkend="mthBagPut" />) method.</para>
 </programlisting>
 
 <para>Returns a new Bag containing only those items from the receiver that the
-the
 <emphasis role="italic">argument</emphasis> collection
 does not contain. The <emphasis role="italic">argument</emphasis> can be any
 collection class object.
@@ -2474,7 +2473,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 </programlisting>
 
 <para>Returns a new Bag containing only those items from the receiver that are
-in also in the
+also in the
 <emphasis role="italic">argument</emphasis> collection. The <emphasis
 role="italic">argument</emphasis> can be any collection class object.</para>
 </section>
@@ -2743,7 +2742,7 @@ the initial size of the queue.
 
 <para>Append an item to the end of the collection ordering, returning the index of the
 added item.
-If the circular queue is full, than the first item will be deleted before the
+If the circular queue is full, then the first item will be deleted, before the
 insertion takes place.
 </para>
 </section>
@@ -2834,7 +2833,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 </varlistentry>
 <varlistentry><term>Lifo</term>
 <listitem>
-<para>Last-in, first-out order (stacklike).
+<para>Last-in, first-out order (stack-like).
 </para>
 </listitem>
 </varlistentry>
@@ -2864,7 +2863,7 @@ the queue. The pushed item object will be the new first item in the circular que
 </para>
 
 <para>
-If the circular queue is full, than the last item stored in the circular queue
+If the circular queue is full, then the last item stored in the circular queue
 will be deleted, before the insertion takes place. In this case the
 <emphasis role="italic">deleted item</emphasis> will be returned, otherwise
 <emphasis role="italic">.nil</emphasis>.
@@ -2872,12 +2871,12 @@ will be deleted, before the insertion takes place. In this case the
 
 <para>
 If <emphasis role="italic">option</emphasis> is specified, it may be "Normal" or
-"Unique".  The default is "Normal".  Only the first letter of the option
-capitalized letter is required; all characters following it are ignored. If
+"Unique".  The default is "Normal".  Only the capitalized letter is needed;
+all characters following it are ignored. If
 <emphasis role="italic">option</emphasis> is 'Unique', any matching items already
 in the queue will be removed before <emphasis
 role="italic">item</emphasis> is added to the queue.
-removed before the operation is performed. This allows you to maintain a list
+This allows you to maintain a list
 like the recent files list of an editor.
 </para>
 </section>
@@ -2906,19 +2905,19 @@ at the end of the circular queue.
 </para>
 
 <para>
-If the circular queue is full, than the first item will be deleted, before the
+If the circular queue is full, then the first item will be deleted, before the
 insertion takes place.  In this case the <emphasis role="italic">deleted item</emphasis>
 will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
 </para>
 
 <para>
 If <emphasis role="italic">option</emphasis> is specified, it may be "Normal" or
-"Unique".  The default is "Normal".  Only the first letter of the option
-capitalized letter is required; all characters following it are ignored. If
+"Unique".  The default is "Normal".  Only the capitalized letter is needed;
+all characters following it are ignored. If
 <emphasis role="italic">option</emphasis> is 'Unique', any matching items already
-in the queue will be removed before before <emphasis
+in the queue will be removed before <emphasis
 role="italic">item</emphasis> is added to the queue.
-removed before the operation is performed. This allows you to maintain a list
+This allows you to maintain a list
 like the recent files list of an editor.
 </para>
 </section>
@@ -2962,7 +2961,7 @@ the default action.
 </varlistentry>
 <varlistentry><term>Lifo</term>
 <listitem>
-<para>Last-in, first-out (stacklike).  This removes items from the front of the queue.
+<para>Last-in, first-out (stack-like).  This removes items from the front of the queue.
 </para>
 </listitem>
 </varlistentry>
@@ -3080,7 +3079,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 </varlistentry>
 <varlistentry><term>Lifo</term>
 <listitem>
-<para>Last-in, first-out (stacklike)
+<para>Last-in, first-out (stack-like)
 </para>
 </listitem>
 </varlistentry>
@@ -3124,7 +3123,7 @@ letter is needed; all characters following it are ignored.)
 </varlistentry>
 <varlistentry><term>Lifo</term>
 <listitem>
-<para>Last-in, first-out (stacklike)
+<para>Last-in, first-out (stack-like)
 </para>
 </listitem>
 </varlistentry>
@@ -3401,7 +3400,7 @@ methods.</para>
 linkend="mthDirectorySetMethod" />) is associated with index
 <emphasis role="italic">name</emphasis>, the result of running this method is
 returned. If the collection has no item or method associated with index
-<emphasis role="italic">name</emphasis>, the Nill object is returned.
+<emphasis role="italic">name</emphasis>, the Nil object is returned.
 </para>
 <example id="ex.Directory-at">
 <title>Directory class - at method</title>
@@ -5450,7 +5449,7 @@ MapCollection (<xref linkend="clsMapCollection" />).</para>
 </programlisting>
 
 <para>Returns an item associated with <emphasis role="italic">index</emphasis>.
-Thie is the same as the
+This is the same as the
 at() (<xref linkend="mthRelationAt" />) method.</para>
 </section>
 
@@ -5640,7 +5639,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <para>Returns <computeroutput>1</computeroutput> (true) if the relation
 contains the member item <emphasis role="italic">item</emphasis>,
 <computeroutput>0</computeroutput> (false).
-If <emphasis role="italic">index</emphasis> is specified, hasIndex()
+If <emphasis role="italic">index</emphasis> is specified, hasItem()
 will only return true if the relation contains the pairing of
 <emphasis role="italic">item</emphasis> associated with index
 <emphasis role="italic">index</emphasis>.
@@ -6650,7 +6649,7 @@ stem object's default value.
 <para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the stem.
 The supplier allows you to iterate though the index/item pairs contained in the Stem
 object at the time the supplier was created.
-The supplier iterams the items in an unspecified order.
+The supplier iterates the items in an unspecified order.
 </para>
 </section>
 
