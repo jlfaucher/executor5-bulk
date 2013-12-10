@@ -5875,7 +5875,7 @@ variable names.
 <secondary>StackFrame class</secondary></indexterm>
 
 <para>The StackFrame class gives access to execution information about the
-currently executing Rexx activity.  Instances of the StackFrame class can only be
+currently executing Rexx activity.  Instances of the StackFrame class can be
 obtained via the .CONTEXT environment symbol or from a condition object created for a
 trapped condition.  A StackFrame instance represents an instance of an execution unit on the
 current activity's call stack.  It provides information on code location, arguments, etc. that
@@ -5910,7 +5910,7 @@ Object class (<xref linkend="clsObject" />).</para>
 >>-arguments----------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the arguments used to the execution frame represented by the StackFrame instance.
+<para>Returns the arguments used to invoke the execution frame represented by the StackFrame instance.
 </para>
 </section>
 
@@ -5944,7 +5944,7 @@ the StackFrame element.
 ]]>
 </programlisting>
 <para>Returns the current line number of the StackFrame context.  If the
-frame instance is not Rexx code, for example, compiled native code, the
+frame instance is not Rexx code (e.g., compiled native code), the
 nil object (.nil) is returned.
 </para>
 </section>
@@ -5960,7 +5960,7 @@ nil object (.nil) is returned.
 >>-makeString-------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the frame traceLine value as the objects string value.
+<para>Returns the frame traceLine value as the object's string value.
 </para>
 </section>
 
@@ -5979,27 +5979,27 @@ nil object (.nil) is returned.
 meaning depends on the type of context.
 <itemizedlist>
 <listitem>
-<para>If the stack frame contest is a method invocation, <emphasis role="italic">name</emphasis>
+<para>If the stack frame context is a method invocation, <emphasis role="italic">name</emphasis>
 is the message name used to invoke the method.
 </para>
 </listitem>
 <listitem>
-<para>If the stack frame contest is a routine invocation, <emphasis role="italic">name</emphasis>
-is the name of the routine.
+<para>If the stack frame context is a routine invocation, <emphasis role="italic">name</emphasis>
+is the routine.
 </para>
 </listitem>
 <listitem>
-<para>If the stack frame contest is an internal routine invocation, <emphasis role="italic">name</emphasis>
-is the name of the label used to invoke the internal routine.
+<para>If the stack frame context is an internal routine invocation, <emphasis role="italic">name</emphasis>
+is the label name used to invoke the internal routine.
 </para>
 </listitem>
 <listitem>
-<para>If the stack frame contest is the initial main part of a Rexx program, <emphasis role="italic">name</emphasis>
-is the name of the package.
+<para>If the stack frame context is the initial main part of a Rexx program, <emphasis role="italic">name</emphasis>
+is the name of the file containing the program.
 </para>
 </listitem>
 <listitem>
-<para>If the stack frame contest is an INTERPRET instruction, a zero-length string is returned.
+<para>If the stack frame context is an INTERPRET instruction, a zero-length string is returned.
 </para>
 </listitem>
 </itemizedlist>
@@ -6017,7 +6017,7 @@ is the name of the package.
 >>-string-----------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the frame traceLine value as the objects string value.
+<para>Returns the frame traceLine value as the object's string value.
 </para>
 </section>
 
@@ -6032,7 +6032,7 @@ is the name of the package.
 >>-target-----------------------------------------------------><
 ]]>
 </programlisting>
-<para>If the StackFrame instance is for a method invocation, target returns the object that the method was
+<para>If the StackFrame instance is a method invocation, target returns the object that the method was
 invoked against.  Return the nil object (.nil) for all other StackFrame types.
 </para>
 </section>
@@ -6048,8 +6048,9 @@ invoked against.  Return the nil object (.nil) for all other StackFrame types.
 >>-traceLine--------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the trace back line that would be displayed for tracebacks associated with error messages.  When
-possible, this will be the source line of the Rexx code in the call stack.
+<para>Returns the trace back line that would be displayed for error message trace.  When
+possible, this will be the source line of the Rexx code in the call stack.  If source is not available,
+the trace back will identify the method or routine belonging to the stack frame.
 </para>
 </section>
 
@@ -6064,37 +6065,37 @@ possible, this will be the source line of the Rexx code in the call stack.
 >>-type-------------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the type of invocation represented by this stack frame.  Possible values
+<para>Returns the type of invocation for this stack frame.  Possible values
 are:
 <variablelist>
 <varlistentry>
 <term>PROGRAM</term>
 <listitem>
-<para>The stack frame represents the top level of a program.</para>
+<para>The stack frame is the top level of a program.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>METHOD</term>
 <listitem>
-<para>The stack frame represents a method invocation.</para>
+<para>The stack frame is a method invocation.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>ROUTINE</term>
 <listitem>
-<para>The stack frame represents a routine invocation.</para>
+<para>The stack frame is a routine invocation.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>INTERPRET</term>
 <listitem>
-<para>The stack frame represents an INTERPRET instruction.</para>
+<para>The stack frame is code created by an INTERPRET instruction.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>INTERNALCALL</term>
 <listitem>
-<para>The stack frame represents a subroutine or function call to an internal label.</para>
+<para>The stack frame is a subroutine or function call to an internal label.</para>
 </listitem>
 </varlistentry>
 </variablelist>
