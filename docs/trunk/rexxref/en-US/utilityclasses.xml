@@ -1004,7 +1004,7 @@ characters).
 <para>The base date of 1 January 0001 is determined
 by extending the current Gregorian calendar backward (365 days each year,
 with an extra day every year that is divisible by 4 except century years that
-are not divisible by 400. It does not take into account any errors in the calendar
+are not divisible by 400). It does not take into account any errors in the calendar
 system that created the Gregorian calendar originally.</para>
 </section>
 
@@ -3817,7 +3817,7 @@ characters converted to lowercase.  If <emphasis role="italic">n</emphasis> is s
 be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
-the default is to convert the remainder of the buffer.</para>
+is not specified, the default is to convert the remainder of the buffer.</para>
 </section>
 
 <section id="mthMutableBufferMakeArray"><title>makeArray</title>
@@ -4245,7 +4245,7 @@ characters converted to uppercase.  If <emphasis role="italic">n</emphasis> is s
 be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
-the default is to convert the remainder of the buffer.</para>
+is not specified, the default is to convert the remainder of the buffer.</para>
 </section>
 
 <section id="mthMutableBufferVerify"><title>verify</title>
@@ -5489,7 +5489,7 @@ supplier to be passed to methods that expect an object that implements a
   in time it is created, including the current line read position. In general, the iteration is not
   effected by later changes to the read and write positioning of the stream. However, forces external to
   the iteration may change the <emphasis role="italic">content</emphasis> of the remaining lines as the
-  itertion progresses.
+  iteration progresses.
 </para>
 <figure><title>The StreamSupplier class and methods</title>
 <mediaobject>
@@ -6563,7 +6563,7 @@ say .File~new("../my file")~absolutePath           -- /opt/my file
 <para>Performs a sorting comparison of the target File object to the <emphasis role="italic">other</emphasis> File object.
 The comparison is made on the absolute paths (strings) of both File objects.
 If the filesystem is case-sensitive then the paths comparison is case-sensitive, otherwise the comparison is caseless.
-If the two paths are equal , 0 is returned. If the target path is larger, 1 is returned. -1 if the
+If the two paths are equal, 0 is returned. If the target path is larger, 1 is returned. -1 if the
 <emphasis role="italic">other</emphasis> argument is the larger path.
 </para>
 <example>
@@ -6853,7 +6853,7 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>Returns an array of files/directories names which are immediate childrens of the directory
+<para>Returns an array of files/directories names which are immediate children of the directory
 denoted by the absolute path of the receiver object.
 The order in which the names are returned is dependent on the file system (not necessarily alphabetic order).
 The special names "." and ".." are not returned.
@@ -6892,7 +6892,7 @@ factor.rex
 ]]>
 </programlisting>
 
-<para>Returns an array of files/directories which are immediate childrens of the directory
+<para>Returns an array of files/directories which are immediate children of the directory
 denoted by the absolute path of the receiver object.
 The order in which the names are returned is dependent on the file system (not necessarily alphabetic order).
 The special names "." and ".." are not returned.

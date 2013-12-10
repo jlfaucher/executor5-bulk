@@ -520,7 +520,7 @@ different code pages, for example the exclamation mark (!).</para></listitem>
 <indexterm><primary>whitespace</primary></indexterm>
 <para>A whitespace character is one that the interpreter recognizes as a "blank"
 or "space" character.  There are two characters used by Rexx as whitespace that
-can be used interchangably:
+can be used interchangeably:
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">(blank)</emphasis></term>
@@ -1663,10 +1663,10 @@ alphabetic characters.</para>
 <indexterm><primary>not less than operator</primary></indexterm>
 </para></entry></row>
 <row><entry>&lt;=
-<indexterm><primary>less than or equal to operator (>=)</primary></indexterm>
+<indexterm><primary>less than or equal to operator (&lt;=)</primary></indexterm>
 </entry>
 <entry><para>Less than or equal to
-<indexterm><primary>&lt;= (less than or equal operator(&lt;=)</primary>
+<indexterm><primary>&lt;= (less than or equal operator)</primary>
 </indexterm>
 </para></entry></row>
 <row><entry>\>, &not;></entry>
@@ -2385,8 +2385,8 @@ alphabetic characters translated to uppercase).</para>
 17E-3
 </programlisting>
 </example>
-<para>Symbols where the first character is a period and the second character
-is alphabetic are environment symbols
+<para>Symbols, where the first character is a period and the second character
+is alphabetic, are environment symbols
 (<xref linkend="ensym" />) and
 may have a
 value other other than the symbol name.
@@ -2440,7 +2440,7 @@ containing the stem variable name.
 The Stem object's assigned name is
 the name of the stem variable (with the characters translated to uppercase).
 If the stem variable has been assigned a value, or the Stem object has been
-given a default value, the assigned name override the default stem name.
+given a default value, the assigned name overrides the default stem name.
 A reference to a stem variable will return the associate Stem object.
 </para>
 <indexterm><primary>compound</primary>
@@ -2450,9 +2450,9 @@ A reference to a stem variable will return the associate Stem object.
 <secondary>assignment to</secondary></indexterm>
 <para>When a stem is the target of an assignment, the action taken
 depends on the value being assigned.  If the new value is a Stem object,
-the new Stem object will replace the the Stem object that is currently associated
+the new Stem object will replace the Stem object that is currently associated
 with the stem variable.  This can result in multiple stem variables referring to
-a the same Stem object, effectively creating a variable alias.</para>
+the same Stem object, effectively creating a variable alias.</para>
 <example>
 <title>Stems</title>
 <programlisting>
@@ -2590,7 +2590,7 @@ a symbol has been assigned a value. In addition, you can set
 SIGNAL ON NOVALUE (<xref linkend="uninit" />)
 to trap the use of any uninitialized variables (except when they are tails
 in compound variables or stem variables, which are always initialized with a Stem object
-when first used.
+when first used.)
 </para></listitem>
 </orderedlist>
 </section>
