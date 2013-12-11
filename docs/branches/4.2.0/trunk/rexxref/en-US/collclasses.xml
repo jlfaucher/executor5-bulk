@@ -195,9 +195,6 @@ xor
 </tgroup>
 </table>
 
-
-
-
 <section id="mthCollectionAtGet"><title>[]</title>
 <indexterm><primary>[] method</primary>
 <secondary>of Collection class</secondary></indexterm>
@@ -587,13 +584,38 @@ index values in the receiver collection.</para>
 methods implemented by all collections that use create a mapping from an index
 object to a value.
 </para>
-<figure><title>The MapCollection class</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxMapCollectionClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxMapCollectionClass" frame="all" pgwide="0">
+<title>ooRexx MapCollection Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Collection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>makeArray
+putAll
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <para>This class is defined as a mixin class.</para>
 
@@ -654,13 +676,58 @@ The index objects will not be ordered in any predictable order.
 methods implemented by all collections that have an inherent index ordering,
 such as an array or a list.
 </para>
-<figure><title>The OrderedCollection class</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxOrderedCollectionClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxOrderedCollectionClass" frame="all" pgwide="0">
+<title>ooRexx OrderedCollection Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Collection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>append
+appendAll
+delete
+difference
+first
+firstItem
+insert
+intersection
+last
+lastItem
+</screen>
+      </entry>
+      <entry>
+<screen>next
+previous
+section
+subset
+sort
+sortWith
+stableSort
+stableSortWith
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <para>This class is defined as a mixin class.</para>
 
@@ -1070,13 +1137,36 @@ collection class object.
 <para>This is a tagging mixin class only and does not define any methods of
 its own.  Collections that implement SetCollection are MapCollections that
 constrain the index and item to be be the same object.</para>
-<figure><title>The SetCollection class</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxSetCollectionClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxSetCollectionClass" frame="all" pgwide="0">
+<title>ooRexx SetCollection Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Collection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">SetCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>put, []=
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <para>This class is defined as a mixin class.</para>
 
@@ -1107,13 +1197,70 @@ of the array. This number is called the dimensionality of the array.</para>
 assigned to an array index then that index is considered to contain the NIL
 object.
 </para>
-<figure><title>The Array class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxArrayClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxArrayClass" frame="all" pgwide="0">
+<title>ooRexx Array Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Array</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+append
+at, []
+delete
+dimension
+dimensions
+empty
+fill
+first
+firstItem
+hasIndex
+hasItem
+index
+insert
+isEmpty
+items
+</screen>
+      </entry>
+      <entry>
+<screen>last
+lastItem
+makeArray
+makeString
+next
+previous
+put, []=
+remove
+removeItem
+section
+size
+sort
+sortWith
+stableSort
+stableSortWith
+supplier
+toString
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Array class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -2318,13 +2465,61 @@ end
 to having an item that is the same as the index. Any object can be placed
 in a bag, and the same object can be placed in a bag several times.
 </para>
-<figure><title>The Bag class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxBagClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxBagClass" frame="all" pgwide="0">
+<title>ooRexx Bag Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Relation</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Bag</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ SetCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>difference
+hasIndex
+hasItem
+intersection
+makeArray
+</screen>
+      </entry>
+      <entry>
+<screen>put, []=
+putAll
+subset
+union
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Bag class also has available class methods that its metaclass,
 the Class class (<xref linkend="clsClass" />), defines.
@@ -2608,13 +2803,62 @@ objects are inserted from the beginning, replacing earlier entries. Any object
 can be placed in the queue and the same object can occupy more than one position
 in the queue.
 </para>
-<figure><title>The CircularQueue class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxCircularQueueClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxCircularQueueClass" frame="all" pgwide="0">
+<title>ooRexx CircularQueue Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Queue</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">CircularQueue</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>init
+append
+insert
+intersection
+makeArray
+push
+queue
+</screen>
+      </entry>
+      <entry>
+<screen>resize
+section
+size
+string
+supplier
+union
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>
 The CircularQueue class also has available class methods that its
@@ -3257,13 +3501,63 @@ content: [3,2], content (LIFO): [2->3]
 <para>A Directory is a MapCollection using unique character string indexes.  The
 items of the collection can be any valid Rexx object.
 </para>
-<figure><title>The Directory class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxDirectoryClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxDirectoryClass" frame="all" pgwide="0">
+<title>ooRexx Directory Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Directory</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+at, []
+empty
+entry
+hasEntry
+hasIndex
+hasItem
+index
+isEmpty
+items
+</screen>
+      </entry>
+      <entry>
+<screen>makeArray
+put, []=
+remove
+removeItem
+setEntry
+setMethod
+supplier
+unknown
+unSetMethod
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Directory class also has available class methods that
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -3840,13 +4134,66 @@ for that item regardless of other additions or removals.
 Only indexes the list
 object generates are valid i.e. the list is never a sparse list and the list
 object will not modify indexes for items in the list.</para>
-<figure><title>The List class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxListClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxListClass" frame="all" pgwide="0">
+<title>ooRexx List Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">List</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+append
+at, []
+delete
+empty
+first
+firstItem
+hasIndex
+hasItem
+index
+insert
+isEmpty
+</screen>
+      </entry>
+      <entry>
+<screen>items
+last
+lastItem
+makeArray
+previous
+put, []=
+remove
+removeItem
+section
+supplier
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The List class also has available class methods that its metaclass,
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -4434,14 +4781,58 @@ indexes that are character strings representing names and items that
 are also restricted to character string values.  Properties objects
 are useful for processing bundles of application option values.
 </para>
+<table id="ooRexxPropertiesClass" frame="all" pgwide="0">
+<title>ooRexx Properties Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Directory</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Properties</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>load
+new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>getLogical
+getProperty
+getWhole
+load
+put, []=
+</screen>
+      </entry>
+      <entry>
+<screen>save
+setLogical
+setProperty
+setWhole
+</screen>                                                  
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
-<figure><title>The Properties class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxPropertiesClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
 <note><title>Note</title>
 <para>The Properties class also has available class methods that
 its metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -4727,13 +5118,57 @@ indexes. The indexes specify the position of an item relative to the head
 (first item) of the queue. Adding or removing an item changes the association
 of an index to its queue item. You can add items at either the tail or the
 head of the queue.</para>
-<figure><title>The Queue class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxQueueClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxQueueClass" frame="all" pgwide="0">
+<title>ooRexx Queue Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Queue</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+append
+at, []
+delete
+empty
+first
+</screen>
+      </entry>
+      <entry>
+<screen>firstItem
+hasIndex
+hasItem
+index
+insert
+isEmpty
+items
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Queue class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -5386,13 +5821,62 @@ the queue first.</para>
 be any object.  In a relation, each item is associated with
 a single index, but there can be more than one item with the same index (unlike
 a table, which can contain only one item for any index).</para>
-<figure><title>The Relation class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxRelationClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxRelationClass" frame="all" pgwide="0">
+<title>ooRexx Relation Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Relation</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allAt
+allIndexes
+allItems
+at, []
+difference
+empty
+hasIndex
+hasItem
+index
+intersection
+</screen>
+      </entry>
+      <entry>
+<screen>isEmpty
+items
+makeArray
+put, []=
+remove
+removeItem
+subset
+supplier
+union
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Relation class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -5980,13 +6464,58 @@ a set (unlike a Bag collection).
 Item equality is determined by
 using the == method.
 </para>
-<figure><title>The Set class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxSetClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxSetClass" frame="all" pgwide="0">
+<title>ooRexx Set Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Table</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Set</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ SetCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>hasItem
+intersection
+put, []=
+putAll
+</screen>
+      </entry>
+      <entry>
+<screen>subset
+union
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Set class also has available class methods that its metaclass,
 the Class class (<xref linkend="clsClass" />), defines.
@@ -6236,13 +6765,54 @@ index values in the receiver collection.</para>
 
 <para>A stem object is a collection with unique indexes
 that are character strings.</para>
-<figure><title>The Stem class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxStemClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxStemClass" frame="all" pgwide="0">
+<title>ooRexx Stem Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Stem</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>= \= == \== <> ><
+allIndexes
+allItems
+at, []
+empty
+hasIndex
+hasItem
+index
+isEmpty
+</screen>
+      </entry>
+      <entry>
+<screen>items
+makeArray
+put, []=
+remove
+removeItem
+request
+supplier
+toDirectory
+unknown
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Stem class also has available class methods that its metaclass,
 the Class class (<xref linkend="clsClass" />), defines.
@@ -6695,13 +7265,56 @@ a relation, which can contain more than one item with the same index).
 Index equality is determined by
 using the == method.
 </para>
-<figure><title>The Table class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxTableClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxTableClass" frame="all" pgwide="0">
+<title>ooRexx Table Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Table</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+at, []
+empty
+hasIndex
+hasItem
+index
+</screen>
+      </entry>
+      <entry>
+<screen>isEmpty
+items
+makeArray
+put, []=
+remove
+removeItem
+supplier
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Table class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -7030,13 +7643,56 @@ matches in an identity table are made using an object
 identity comparison.  That is, an index will only match if the same instance is
 used in the collection.
 </para>
-<figure><title>The IdentityTable class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxIdentityTableClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxIdentityTableClass" frame="all" pgwide="0">
+<title>ooRexx IdentityTable Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">IdentityTable</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+at, []
+empty
+hasIndex
+hasItem
+index
+</screen>
+      </entry>
+      <entry>
+<screen>isEmpty
+items
+makeArray
+put, []=
+remove
+removeItem
+supplier
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The IdentityTable class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
