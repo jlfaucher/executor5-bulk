@@ -186,6 +186,7 @@ makeArray
 put, []=
 subset
 supplier
+toString
 union
 xor
 </screen>
@@ -630,6 +631,23 @@ Collection class (<xref linkend="clsCollection" />).</para>
 
 </section>
 
+<section id="mthMapCollectionMakeArray"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of MapCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of MapCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeArray---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array of the index values used by the receiver object.
+The index objects will not be ordered in any predictable order.
+</para>
+</section>
+
 <section id="mthMapCollectionPutAll"><title>putAll</title>
 <indexterm><primary>putAll method</primary>
 <secondary>of MapCollection class</secondary></indexterm>
@@ -649,23 +667,6 @@ added in the order provided by the supplier object.
 If duplicate
 indexes exist in <emphasis role="italic">collection</emphasis>, the last item provided by the
 supplier will overwrite previous items with the same index.
-</para>
-</section>
-
-<section id="mthMapCollectionMakeArray"><title>makeArray</title>
-<indexterm><primary>makeArray method</primary>
-<secondary>of MapCollection class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>makeArray method</secondary>
-<tertiary>of MapCollection class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-makeArray---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array of the index values used by the receiver object.
-The index objects will not be ordered in any predictable order.
 </para>
 </section>
 </section>
@@ -710,10 +711,11 @@ insert
 intersection
 last
 lastItem
+next
 </screen>
       </entry>
       <entry>
-<screen>next
+<screen>
 previous
 section
 subset
@@ -721,6 +723,8 @@ sort
 sortWith
 stableSort
 stableSortWith
+subset
+union
 xor
 </screen>
       </entry>
@@ -944,7 +948,7 @@ or returns the Nil object if the item having that index is last in the collectio
 </para>
 </section>
 
-<section id="mthOrderedCollectionPrevious"><title>next</title>
+<section id="mthOrderedCollectionPrevious"><title>previous</title>
 <indexterm><primary>previous method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1160,7 +1164,7 @@ constrain the index and item to be be the same object.</para>
    </row>
    <row>
       <entry>
-<screen>put, []=
+<screen>
 </screen>
       </entry>
    </row>
@@ -1216,8 +1220,16 @@ object.
       <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
    </row>
    <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+of
+</screen>
+      </entry>
+   </row>
+   <row>
       <entry>
-<screen>allIndexes
+<screen>
+allIndexes
 allItems
 append
 at, []
@@ -1233,11 +1245,11 @@ hasItem
 index
 insert
 isEmpty
-items
 </screen>
       </entry>
       <entry>
-<screen>last
+<screen>items
+last
 lastItem
 makeArray
 makeString
@@ -1300,6 +1312,63 @@ Collection class (<xref linkend="clsCollection" />).</para>
 OrderedCollection class (<xref linkend="clsOrderedCollection" />).</para>
 <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
+</section>
+
+<section id="mthArrayInsert"><title>insert</title>
+<indexterm><primary>insert method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>insert method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programArraying>
+<![CDATA[
+>>-insert(item-+--------+-)------------------------------------><
+               +-,index-+
+]]>
+</programArraying>
+
+<para>Returns a Array-supplied index for item
+<emphasis role="italic">item</emphasis>, which is added to the Array. The inserted
+item follows an existing item with index
+<emphasis role="italic">index</emphasis> in the Array ordering.
+If <emphasis role="italic">index</emphasis> is the Nil object, <emphasis role="italic">item</emphasis>
+becomes the first item in the Array. If you omit
+<emphasis role="italic">index</emphasis>, the <emphasis role="italic">item</emphasis> becomes the last item in
+the Array.</para>
+<para>Inserting an item in the Array at position
+<emphasis role="italic">index</emphasis> will cause the items in the Array after
+position <emphasis role="italic">index</emphasis> to have their indexes
+shifted by the Array object.
+The index values for any items in the Array are incremented by the insertion.</para>
+<indexterm><primary>examples</primary>
+<secondary>insert method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<example id="ex.Array-insert">
+<title>Array class - insert method</title>
+<programArraying>
+musketeers=.Array~of("Porthos","Athos","Aramis") /* Creates Array MUSKETEERS        */
+                                                 /* consisting of: Porthos         */
+                                                 /*                Athos           */
+                                                 /*                Aramis          */
+musketeers~insert("D&apos;Artagnan",1)    /* Adds D&apos;Artagnan after Porthos  */
+                                          /* Array is now: Porthos           */
+                                          /*              D&apos;Artagnan   */
+                                          /*              Athos             */
+                                          /*              Aramis            */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan",.nil) /* Adds D&apos;Artagnan before Porthos */
+                                          /* Array is now:  D&apos;Artagnan  */
+                                          /*               Porthos          */
+                                          /*               Athos            */
+                                          /*               Aramis           */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis   */
+                                          /* Array is now:  Porthos          */
+                                          /*               Athos            */
+                                          /*               Aramis           */
+                                          /*               D&apos;Artagnan  */
+</programArraying>
+</example>
 </section>
 
 <section id="mthArrayNew"><title>new (Class Method)</title>
@@ -2504,12 +2573,11 @@ in a bag, and the same object can be placed in a bag several times.
 hasIndex
 hasItem
 intersection
-makeArray
+put, []=
 </screen>
       </entry>
       <entry>
-<screen>put, []=
-putAll
+<screen>putAll
 subset
 union
 xor
@@ -4517,7 +4585,7 @@ The index values for any items in the list are not modified by the insertion.</p
 <secondary>insert method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <example id="ex.List-insert">
-<title>Directory class - insert method</title>
+<title>List class - insert method</title>
 <programlisting>
 musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS        */
                                                 /* consisting of: Porthos         */
@@ -4826,7 +4894,7 @@ put, []=
 setLogical
 setProperty
 setWhole
-</screen>                                                  
+</screen>
       </entry>
    </row>
 </tbody>
@@ -5152,16 +5220,30 @@ at, []
 delete
 empty
 first
-</screen>
-      </entry>
-      <entry>
-<screen>firstItem
+firstItem
 hasIndex
 hasItem
 index
 insert
 isEmpty
 items
+</screen>
+      </entry>
+      <entry>
+<screen>last
+lastItem
+makeArray
+next
+peek
+previous
+pull
+push
+put
+queue
+remove
+removeItem
+section
+supplier
 </screen>
       </entry>
    </row>
@@ -5848,6 +5930,7 @@ a table, which can contain only one item for any index).</para>
    <row>
       <entry>
 <screen>allAt
+allIndex
 allIndexes
 allItems
 at, []
@@ -5857,18 +5940,20 @@ hasIndex
 hasItem
 index
 intersection
+isEmpty
 </screen>
       </entry>
       <entry>
-<screen>isEmpty
-items
+<screen>items
 makeArray
 put, []=
 remove
+removeAll
 removeItem
 subset
 supplier
 union
+uniqueIndexes
 xor
 </screen>
       </entry>
