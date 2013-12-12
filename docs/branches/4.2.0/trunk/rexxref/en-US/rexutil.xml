@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2014, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -2697,14 +2697,14 @@ else say "File is not Temporary."
 </programlisting>
 
 <para>
-  Returns a string identifying the Linux system version. The first word of the returned string is Linux
+  Returns a string identifying the Linux system version. The first word of the returned string is "Linux"
   and the second word in the string identifies the kernel version. A possible output for a Linux system
   might be:
 </para>
 <example id="ex.syslinver">
 <title>RexxUtil - SysLinver</title>
 <programlisting>
-Say SysLinVer()   ->  "Linux 2006.2.6.18-1.2798.fc6"
+Say SysLinVer()   ->  "Linux 3.8.13.4-desktop-1.mga3"
 </programlisting>
 </example>
 </section>
@@ -4217,7 +4217,7 @@ page.</para></listitem></varlistentry>
 Utilities package. It can be used to verify the availability of certain
 functions.</para>
 <para>Return code: The REXXUTIL version number in the format
-<computeroutput>n.mm</computeroutput>.</para>
+<computeroutput>n.m.l</computeroutput>.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <para>Because this function was not part of the original packaging, a sample
 logic to check for a certain level of RexxUTIL can look as follows:</para>
@@ -4253,7 +4253,7 @@ If RxFuncQuery("SysSetFileDateTime") = 1 Then
 
 <para>
   Returns a string to identify the operating system and version. The first word of the returned string
-  contains the identifier for the operating system and the rest of the string contains a operating
+  contains the identifier for the operating system and the rest of the string contains an operating system
   specific version string. Something like: <computeroutput>WindowsNT x</computeroutput> or
   <computeroutput>Linux x</computeroutput>.
 </para>
@@ -4263,7 +4263,7 @@ If RxFuncQuery("SysSetFileDateTime") = 1 Then
 <example id="ex.sysversion">
 <title>RexxUtil - SysVersion</title>
 <programlisting>
-Say SysVersion()   ->  "Linux #1 SMP Mon Oct 16 14:54:20 EDT 2006.2.6.18-1.2798.fc6"
+Say SysVersion()   ->  "Linux #67~precise1-Ubuntu SMP Wed Nov 13 16:16:57 UTC 2013.3.5.0-44-generic"
 Say SysVersion()   ->  "WindowsNT 6.01"             /* Windows 7 */
 </programlisting>
 </example>
@@ -4585,16 +4585,16 @@ You can use SysGetErrortext() to get a description of the error.
 <indexterm><primary>SysWinGetDefaultPrinter</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
-<secondary>SysGetDefaultPrinter</secondary></indexterm>
+<secondary>SysWinGetDefaultPrinter</secondary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWinGetPrinters</secondary>
 <tertiary>example</tertiary></indexterm>
 <indexterm><primary>SysWinGetPrinters</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
-<secondary>SysGetPrinters</secondary></indexterm>
-<example id="ex.sysgetprinters">
-<title>RexxUtil - SysGetprinters and SysGetdefaultprinters</title>
+<secondary>SysWinGetPrinters</secondary></indexterm>
+<example id="ex.syswingetprinters">
+<title>RexxUtil - SysWinGetPrinters and SysWinGetDefaultPrinter</title>
 <programlisting>
 <![CDATA[
 /* set default printer */
@@ -4660,6 +4660,15 @@ end
 </programlisting>
 
 <para>Returns a string specifying the Windows operating system version
-information in the form <computeroutput>x.xx</computeroutput>.</para>
+information in the form <computeroutput>WindowsNT x.xx</computeroutput>.</para>
+<para>
+Some possible output might be:
+</para>
+<example id="ex.syswinver">
+<title>RexxUtil - SysWinVer</title>
+<programlisting>
+Say SysWinVer()   ->  "WindowsNT 6.01"    /* Windows 7 */
+</programlisting>
+</example>
 </section>
 </chapter>
