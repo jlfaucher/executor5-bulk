@@ -839,7 +839,7 @@ only those items from the receiver that are not also contained in the
 <tertiary>of OrderedCollection class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-firstItem------------------------------------------------------><
+>>-firstItem---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -922,7 +922,7 @@ collection is empty.
 <tertiary>of OrderedCollection class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-lastItem-------------------------------------------------------><
+>>-lastItem----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -956,7 +956,7 @@ or returns the Nil object if the item having that index is last in the collectio
 <tertiary>of OrderedCollection class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-previous(index)-------------------------------------------------><
+>>-previous(index)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1706,7 +1706,7 @@ say a~dimension(2)  -- says: 2 (upper bound of dimension two)
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-dimensions---------------------------------------------------><
+>>-dimensions--------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -3156,7 +3156,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 
 <programlisting>
 <![CDATA[
->>-push(item-+------------+)-------------------------------------><
+>>-push(item-+------------+)-----------------------------------><
              +--,option---+
 ]]>
 </programlisting>
@@ -3846,7 +3846,7 @@ contains any item associated with index
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(item)----------------------------------------------><
+>>-hasItem(item)-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4425,7 +4425,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-delete(---index--)-----------------------------------------><
+>>-delete(---index--)------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4525,7 +4525,7 @@ contains any item associated with index
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(item)----------------------------------------------><
+>>-hasItem(item)-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -5414,7 +5414,7 @@ returning the index of the inserted item.</para>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-delete(---index--)-----------------------------------------><
+>>-delete(---index--)------------------------------------------><
 ]]>
 </programlisting>
 
@@ -5513,7 +5513,7 @@ or <computeroutput>0</computeroutput> (false).</para>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(item)----------------------------------------------><
+>>-hasItem(item)-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -6086,8 +6086,7 @@ using the == method of <emphasis role="italic">item</emphasis>.
 
 <para>Returns an array of all indexes contained in the Relation. The returned
 array will have one index for every item stored in the relation, including
-duplicates.  To retrieve the indexes without duplicates, use the uniqueindexes (<xref linkend="mthRelationUniqueIndexes" />) method.
-set.
+duplicates.  To retrieve the indexes without duplicates, use the uniqueIndexes (<xref linkend="mthRelationUniqueIndexes" />) method.
 </para>
 </section>
 
@@ -6193,7 +6192,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <tertiary>of Relation class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(item-+--------+-)-----------------------------------------><
+>>-hasItem(item-+--------+-)-----------------------------------><
                 +-,index-+
 ]]>
 </programlisting>
@@ -6356,7 +6355,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <tertiary>of Relation class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-removeAll(index)-----------------------------------------------><
+>>-removeAll(index)--------------------------------------------><
 ]]>
 </programlisting>
 
@@ -6377,19 +6376,28 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <tertiary>of Relation class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-removeItem(item,index)--------------------------------------><
+>>-removeItem(item-+--------+-)--------------------------------><
+                   +-,index-+
 ]]>
 </programlisting>
 
-<para>Returns and removes from a relation the member item
-<emphasis role="italic">item</emphasis> (associated with index
-<emphasis role="italic">index</emphasis>). Returns the Nil object if
-<emphasis role="italic">value</emphasis> is not a member item associated
+<para>
+If <emphasis role="italic">index</emphasis> is not specified, returns and
+removes from a relation the member item <emphasis role="italic">item</emphasis>.
+If the relation contains <emphasis role="italic">item</emphasis> associated
+with more than one index, the item returned and removed is unspecified.
+<para></para>
+If <emphasis role="italic">index</emphasis> is specified, returns and
+removes the member item <emphasis role="italic">item</emphasis> associated
 with index <emphasis role="italic">index</emphasis>.
 If
 <emphasis role="italic">item</emphasis> is the only member with
-<emphasis role="italic">index</emphasis>) then the
-<emphasis role="italic">index</emphasis>) is also removed from the Relation.
+<emphasis role="italic">index</emphasis>, then the
+<emphasis role="italic">index</emphasis> is also removed from the Relation.
+<para></para>
+Returns the Nil object if
+<emphasis role="italic">item</emphasis> is not a member item (associated
+with index <emphasis role="italic">index</emphasis>, if specified).
 </para>
 </section>
 
@@ -6731,7 +6739,7 @@ index values in the receiver collection.</para>
 <tertiary>of Set class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-put(item-+--------+-)-----------------------------------------><
+>>-put(item-+--------+-)---------------------------------------><
             +-,index-+
 ]]>
 </programlisting>
@@ -7309,7 +7317,7 @@ The supplier iterates the items in an unspecified order.
 <tertiary>of Stem class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-toDirectory----------------------------------------------------><
+>>-toDirectory-------------------------------------------------><
 ]]>
 </programlisting>
 
