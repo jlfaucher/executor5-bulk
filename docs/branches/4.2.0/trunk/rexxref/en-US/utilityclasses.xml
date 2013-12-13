@@ -56,13 +56,116 @@ and 31 December 9999 at 23:59:59.999999.  A DateTime object has methods to allow
 formatting a date or time in various formats, as well as allowing arithmetic operations between
 dates.
 </para>
-<figure><title>The DateTime class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxDateTimeClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxDateTimeClass" frame="all" pgwide="0">
+<title>ooRexx DateTime Class</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<colspec colname="c3" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">DateTime</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="left"><emphasis role="bold">+ Comparable</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="left"><emphasis role="bold">+ Orderable</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>fromBaseDate
+fromCivilTime
+fromEuropeandate
+fromIsoDate
+fromLongTime
+fromNormalDate
+fromNormalTime
+fromOrderedDate
+</screen>
+      </entry namest="c2" nameend="c3">
+      <entry>
+<screen>fromStandardDate
+fromTicks
+fromUsaDate
+fromUTCIsoDate
+maxDate
+minDate
+today
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>+ -
+addDays
+addHours
+addMicroseconds
+addMinutes
+addSeconds
+addWeeks
+addYears
+baseDate
+civilTime
+compareTo
+date
+day
+dayMicroseconds
+dayMinutes
+dayName
+daySeconds
+</screen>
+      </entry>
+      <entry>
+<screen>daysInMonth
+daysInYear
+elapsed
+europeanDate
+fullDate
+hashCode
+hours
+init
+isLeapTear
+isoDate
+languageDate
+longTime
+microseconds
+minutes
+month
+monthName
+normalDate
+</screen>
+      </entry>
+      <entry>
+<screen>normalTime
+offset
+orderedDate
+seconds
+string
+standardDate
+ticks
+timeOfDay
+toLocalTime
+toTimeZone
+toUtcTime
+usaDate
+utcIsoDate
+year
+yearDay
+yearWeek
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The DateTime class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -1533,13 +1636,31 @@ For non-leap years, this returns 365.
 notification capability by supplying a facility to send any message to any
 object at a given time. You can cancel an alarm before it sends its message.
 </para>
-<figure><title>The Alarm class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxAlarmClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxAlarmClass" frame="all" pgwide="0">
+<title>ooRexx Alarm Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Alarm</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>cancel
+init
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Alarm class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -1655,13 +1776,76 @@ and 31 December 9999 at 23:59:59.999999.  A TimeSpan object has methods to allow
 formatting a date or time in various formats, as well as allowing arithmetic operations between
 dates.
 </para>
-<figure><title>The TimeSpan class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxTimeSpanClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxTimeSpanClass" frame="all" pgwide="0">
+<title>ooRexx TimeSpan Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">TimeSpan</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ Comparable</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ Orderable</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>fromCivilTime
+fromDays
+fromHours
+fromLongTime
+fromMicroseconds
+fromMinutes
+fromNormalTime
+fromSeconds
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>+ - / // *
+addDays
+addHours
+addMicroseconds
+addMinutes
+addSeconds
+addWeeks
+compareTo
+days
+duration
+fromStringFormat
+hashCode
+</screen>
+      </entry>
+      <entry>
+<screen>hours
+init
+microseconds
+minutes
+seconds
+sign
+string
+totalDays
+totalHours
+totMicroseconds
+totalMinutes
+totalSeconds
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The TimeSpan class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -2404,13 +2588,29 @@ is less than a day, the days field and the period separator will be omitted.
 
 <para>This class is defined as a mixin class.</para>
 
-<figure><title>The Comparable class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxComparableClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxComparableClass" frame="all" pgwide="0">
+<title>ooRexx Comparable Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Comparable</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compareTo
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Comparable class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -2455,13 +2655,33 @@ smaller than the receiving object.</para>
     This class is defined as a mixin class.
 </para>
 
-<figure><title>The Orderable class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxOrderableClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxOrderableClass" frame="all" pgwide="0">
+<title>ooRexx Orderable Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Orderable</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compareTo
+= \= &lt;&gt; &gt;&lt; == \=
+&gt; &gt;= \&gt; &lt; &lt;= \&lt;
+&gt;&gt; &gt;&gt;= &lt;&lt; &lt;&lt;= 
+\&gt;&gt; \&lt;&lt;
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
@@ -2650,13 +2870,29 @@ results as the non-strict comparisons.
     The compare() method implements some form of comparison that determines the relative ordering
     of two objects.   Many Comparator implementations are specific to particular object types.
 </para>
-<figure><title>The Comparator class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxComparatorClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxComparatorClass" frame="all" pgwide="0">
+<title>ooRexx Comparator Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Comparator</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compare
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Comparator class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -2698,14 +2934,35 @@ Subclasses may override this to implement more specific comparisons.
 <indexterm><primary>class</primary>
 <secondary>CaselessComparator class</secondary></indexterm>
 <para>The CaselessComparator class performs caseless orderings of String objects.</para>
+<table id="ooRexxCaselessComparatorClass" frame="all" pgwide="0">
+<title>ooRexx CaselessComparator Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Comparator</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">CaselessComparator</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compare
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
-<figure><title>The CaselessComparator class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxCaselessComparatorClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
 <note><title>Note</title>
 <para>The CaselessComparator class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -2751,13 +3008,36 @@ smaller than <emphasis role="italic">first</emphasis>.  The two strings are comp
 <secondary>ColumnComparator class</secondary></indexterm>
 <para>The ColumnComparator class performs orderings based on specific substrings of String objects.</para>
 
-<figure><title>The ColumnComparator class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxColumnComparatorClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxColumnComparatorClass" frame="all" pgwide="0">
+<title>ooRexx ColumnComparator Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Comparator</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">ColumnComparator</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compare
+init
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The ColumnComparator class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -2820,13 +3100,36 @@ smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns
 <secondary>CaselessColumnComparator class</secondary></indexterm>
 <para>The CaselessColumnComparator class performs caseless orderings of specific substrings of String objects.</para>
 
-<figure><title>The CaselessColumnComparator class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxCaselessColumnComparatorClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxCaselessColumnComparatorClass" frame="all" pgwide="0">
+<title>ooRexx CaselessColumnComparator Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Comparator</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">CaselessColumnComparator</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compare
+init
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The CaselessColumnComparator class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -2894,13 +3197,36 @@ a Comparator (<xref linkend="clsComparator" />) sort order.
 
 <para>This class is defined as a mixin class. It must be used
 by inheriting from it as a mixin.</para>
-<figure><title>The DescendingComparator class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxDescendingComparatorClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxDescendingComparatorClass" frame="all" pgwide="0">
+<title>ooRexx DescendingComparator Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Comparator</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">DescendingComparator</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compare
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The DescendingComparator class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -2950,13 +3276,36 @@ the Comparable compareTo method (<xref linkend="mthComparableCompareTo" />.
 <para>The CaselessDescendingComparator class performs caseless string sort orderings in descending order.  This is the inverse of
 a CaselessComparator (<xref linkend="clsCaselessComparator" />) sort order.
 </para>
-<figure><title>The CaselessDescendingComparator class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxCaselessDescendingComparatorClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxCaselessDescendingComparatorClass" frame="all" pgwide="0">
+<title>ooRexx CaselessDescendingComparator Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Comparator</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">CaselessDescendingComparator</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compare
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The CaselessDescendingComparator class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -3003,13 +3352,36 @@ smaller than <emphasis role="italic">first</emphasis>.  The two strings are comp
 <para>The InvertingComparator class inverts the comparison results of
 another Comparator object to reverse the resulting sort order.</para>
 
-<figure><title>The InvertingComparator class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxInvertingComparatorClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxInvertingComparatorClass" frame="all" pgwide="0">
+<title>ooRexx InvertingComparator Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Comparator</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">InvertingComparator</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compare
+init
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The InvertingComparator class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -3074,13 +3446,35 @@ The InvertingComparator will invert the ordering returned by the provided Compar
 <para>The NumericComparator class compares strings using numeric comparison rules
 rather than string comparison rules.</para>
 
-<figure><title>The NumericComparator class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxNumericComparatorClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxNumericComparatorClass" frame="all" pgwide="0">
+<title>ooRexx NumericComparator Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Comparator</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">NumericComparator</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>compare
+init
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 <note><title>Note</title>
 <para>The NumericComparator class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -3150,13 +3544,32 @@ Monitor object are forwarded to a different target object.  The message target c
 changed dynamically.
 </para>
 
-<figure><title>The Monitor class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxMonitorClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxMonitorClass" frame="all" pgwide="0">
+<title>ooRexx Monitor Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Monitor</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>current
+destination
+init
+unknown
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Monitor class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -3269,13 +3682,83 @@ requiring a new object allocation.  A MutableBuffer object can provide better
 performance for algorithms that involve frequent concatenations to build up
 longer string objects because it creates fewer intermediate objects.
 </para>
-<figure><title>The MutableBuffer class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxMutableBufferClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxMutableBufferClass" frame="all" pgwide="0">
+<title>ooRexx MutableBuffer Class</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<colspec colname="c3" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">MutableBuffer</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="left">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>append
+caselessChangeStr
+caselessCountStr
+caselessLastPos
+caselessMatch
+caselessMatchChar
+caselessPos
+caselessWordPos
+changestr
+countstr
+delete
+delStr
+delWord
+</screen>
+      </entry>
+      <entry>
+<screen>getBufferSize
+insert
+lastPos
+length
+lower
+makeArray
+match
+matchChar
+overlay
+pos
+replaceAt
+setBufferSize
+space
+</screen>
+      </entry>
+      <entry>
+<screen>string
+subChar
+subStr
+subWord
+subWords
+translate
+upper
+verify
+word
+wordIndex
+wordLength
+wordPos
+words
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The MutableBuffer class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -4477,13 +4960,39 @@ statement to activate its functionality, as follows:</para></note>
 ]]>
 </programlisting>
 
-<figure><title>The RegularExpression class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxRegularExpressionClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxRegularExpressionClass" frame="all" pgwide="0">
+<title>ooRexx RegularExpression Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">RegularExpression</emphasis></entry>
+   </row>
+   <row>
+      <entry align="left">
+<screen>::requires "rxregexp.cls"
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>init
+match
+parse
+pos
+position
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The RegularExpression class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -4917,13 +5426,55 @@ say myRE~position                     -- will be 2 (failure to match)
 
 <para>The RexxQueue class provides object-style access to Rexx external data queues.</para>
 
-<figure><title>The RexxQueue class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxRexxQueueClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxRexxQueueClass" frame="all" pgwide="0">
+<title>ooRexx RexxQueue Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">RexxQueue</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left">
+<screen>create
+delete
+exists
+open
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>delete
+empty
+get
+init
+lineIn
+lineOut
+makeArray
+</screen>
+      </entry>
+      <entry>
+<screen>pull
+push
+queue
+queued
+say
+set
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The RexxQueue class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -5257,13 +5808,49 @@ been previously created.  The method return value is the name of current queue b
 Supplier objects are created from a snapshot of a collection.  The iteration
 results are not affected by later changes to the source collection object.
 </para>
-<figure><title>The Supplier class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxSupplierClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxSupplierClass" frame="all" pgwide="0">
+<title>ooRexx Supplier Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Supplier</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+available
+getArrays
+index
+</screen>
+      </entry>
+      <entry>
+<screen>init
+items
+next
+supplier
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Supplier class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -5491,13 +6078,40 @@ supplier to be passed to methods that expect an object that implements a
   the iteration may change the <emphasis role="italic">content</emphasis> of the remaining lines as the
   iteration progresses.
 </para>
-<figure><title>The StreamSupplier class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxStreamSupplierClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxStreamSupplierClass" frame="all" pgwide="0">
+<title>ooRexx StreamSupplier Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry  align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Supplier</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">StreamSupplier</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>available
+index
+init
+item
+next
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The StreamSupplier class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -5628,13 +6242,45 @@ currently executing Rexx code.  Instances of the RexxContext class can only be
 obtained via the .CONTEXT environment symbol.  They cannot be directly created
 by the user. It is a
 subclass of the Object class (<xref linkend="clsObject" />).</para>
-<figure><title>The RexxContext class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxContextClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxRexxContextClass" frame="all" pgwide="0">
+<title>ooRexx RexxContext Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">RexxContext</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>args
+condition
+digits
+executable
+form
+fuzz
+</screen>
+      </entry>
+      <entry>
+<screen>line
+name
+package
+rs
+stackFrame
+variables
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <section><title>Inherited Methods</title>
 
@@ -5865,13 +6511,42 @@ are useful for debugging and problem determination.
 They cannot be directly created
 by the user. It is a
 subclass of the Object class (<xref linkend="clsObject" />).</para>
-<figure><title>The StackFrame class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooStackFrameClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxStackFrameClass" frame="all" pgwide="0">
+<title>ooRexx StackFrame Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">StackFrame</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>arguments
+executable
+line
+makeString
+name
+</screen>
+      </entry>
+      <entry>
+<screen>string
+target
+traceLine
+type
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <section><title>Inherited Methods</title>
 
@@ -6097,13 +6772,36 @@ garbage collection, the reference inside the WeakReference instance will be
 cleared and the VALUE method will return .nil on all subsequent calls.
 WeakReferences are useful for maintaining caches of objects without preventing
 the objects from being reclaimed by the garbage collector when needed.</para>
-<figure><title>The WeakReference class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxWeakReferenceClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxWeakReferenceClass" frame="all" pgwide="0">
+<title>ooRexx WeakReference Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">WeakReference</emphasis></entry>
+   </row>
+   <row>
+      <entry align="left">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>value
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The WeakReference class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -6153,13 +6851,38 @@ collected, then the Nil object is returned.
 <indexterm><primary>Pointer class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Pointer class</secondary></indexterm>
-<figure><title>The Pointer class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxPointerClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxPointerClass" frame="all" pgwide="0">
+<title>ooRexx Pointer Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Pointer</emphasis></entry>
+   </row>
+   <row>
+      <entry align="left">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>= ==
+\= &lt;&gt: &gt;&lt; \==
+isNull
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <para>A Pointer instance is a wrapper around a native pointer value.  This class
 is designed primarily for writing methods and functions in native code and can
 only be created using the native code application programming interfaces.  The Pointer
@@ -6275,13 +6998,36 @@ Returns 0 (false) if the pointer value is non-zero.
 <indexterm><primary>Buffer class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Buffer class</secondary></indexterm>
-<figure><title>The Buffer class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxBufferClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxBufferClass" frame="all" pgwide="0">
+<title>ooRexx Buffer Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Buffer</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>new
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <para>A Buffer instance is a Rexx interpreter managed block of storage.  This class
 is designed primarily for writing methods and functions in native code and can
 only be created using the native code application programming interfaces.  The Buffer
@@ -6326,13 +7072,78 @@ The Buffer class new method will raise an error if invoked.</para>
 If you create a File object with a relative path, the absolute path will be calculated using the current default directory.
 This absolute path is memorized on the File object, and will not change if you change of default directory.
 </para>
-<figure><title>The File class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxFileClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxFileClass" frame="all" pgwide="0">
+<title>ooRexx File Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">File</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ Comparable</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ Orderable</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left">
+<screen>isCaseSensitive
+listRoots
+pathSeparator
+separator
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>absoluteFile
+absolutePath
+canRead
+canWrite
+compareTo
+delete
+exists
+hashCode
+init
+isCaseSensitive
+isDirectory
+isFile
+isHidden
+lastModified
+lastModified=
+</screen>
+      </entry>
+      <entry>
+<screen>length
+list
+listFiles
+makedir
+makedirs
+name
+parent
+parentFile
+path
+pathSeparator
+renameTo
+separator
+setReadOnly
+string
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The File class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
