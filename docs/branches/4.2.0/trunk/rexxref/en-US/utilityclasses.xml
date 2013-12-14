@@ -131,7 +131,7 @@ fullDate
 hashCode
 hours
 init
-isLeapTear
+isLeapYear
 isoDate
 languageDate
 longTime
@@ -147,18 +147,19 @@ normalDate
 offset
 orderedDate
 seconds
-string
 standardDate
+string
 ticks
 timeOfDay
 toLocalTime
 toTimeZone
 toUtcTime
 usaDate
+utcDate
 utcIsoDate
+weekDay
 year
 yearDay
-yearWeek
 </screen>
       </entry>
    </row>
@@ -1557,15 +1558,15 @@ represents a time in the future.
 </para>
 </section>
 
-<section id="mthDateTimeIsLeapyear"><title>isLeapyear</title>
-<indexterm><primary>isLeapyear method</primary>
+<section id="mthDateTimeIsLeapYear"><title>isLeapYear</title>
+<indexterm><primary>isLeapYear method</primary>
 <secondary>of DateTime class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>isLeapyear method</secondary>
+<secondary>isLeapYear method</secondary>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-isLeapyear---------------------------------------------><
+>>-isLeapYear---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -1813,12 +1814,13 @@ fromMicroseconds
 fromMinutes
 fromNormalTime
 fromSeconds
+fromStringFormat
 </screen>
       </entry>
    </row>
    <row>
       <entry>
-<screen>+ - / // *
+<screen>+ - / % // *
 addDays
 addHours
 addMicroseconds
@@ -2691,7 +2693,7 @@ smaller than the receiving object.</para>
 <screen>compareTo
 = \= &lt;&gt; &gt;&lt; == \=
 &gt; &gt;= \&gt; &lt; &lt;= \&lt;
-&gt;&gt; &gt;&gt;= &lt;&lt; &lt;&lt;= 
+&gt;&gt; &gt;&gt;= &lt;&lt; &lt;&lt;=
 \&gt;&gt; \&lt;&lt;
 </screen>
       </entry>
@@ -3787,8 +3789,8 @@ caselessMatch
 caselessMatchChar
 caselessPos
 caselessWordPos
-changestr
-countstr
+changeStr
+countStr
 delete
 delStr
 delWord
@@ -4621,16 +4623,16 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 <para>Retrieves the content of the buffer as a string.</para>
 </section>
 
-<section id="mthMutableBufferSubchar"><title>subchar</title>
-<indexterm><primary>subcharmethod</primary>
+<section id="mthMutableBufferSubChar"><title>subChar</title>
+<indexterm><primary>subChar method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>subchar method</secondary>
+<secondary>subChar method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
->>-subchar(n)----------------------------------------------><
+>>-subChar(n)----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -5047,7 +5049,7 @@ statement to activate its functionality, as follows:</para></note>
    </row>
    <row>
       <entry align="left">
-<screen>::requires "rxregexp.cls"
+<screen>::require "rxregexp.cls"
 </screen>
       </entry>
    </row>
@@ -5913,7 +5915,7 @@ index
       </entry>
       <entry>
 <screen>init
-items
+item
 next
 supplier
 </screen>
@@ -5972,7 +5974,7 @@ the Nil object for any nonexistent items in either array.</para>
 
 <programlisting>
 <![CDATA[
->>-allItems--------------------------------------------------------><
+>>-allIndexes-----------------------------------------------------><
 ]]>
 </programlisting>
 <para>Returns an array of all index values from the current supplier position to the end of the
@@ -6357,7 +6359,7 @@ fuzz
 name
 package
 rs
-stackFrame
+stackFrames
 variables
 </screen>
       </entry>
@@ -6696,7 +6698,7 @@ nil object (.nil) is returned.
 </para>
 </section>
 
-<section id="mthStackMakeString"><title>line</title>
+<section id="mthStackFrameMakeString"><title>makeString</title>
 <indexterm><primary>makeString method</primary>
 <secondary>of StackFrame class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -6753,7 +6755,7 @@ is the name of the file containing the program.
 </para>
 </section>
 
-<section id="mthStackString"><title>line</title>
+<section id="mthStackFrameString"><title>string</title>
 <indexterm><primary>string method</primary>
 <secondary>of StackFrame class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -7216,8 +7218,8 @@ lastModified=
 <screen>length
 list
 listFiles
-makedir
-makedirs
+makeDir
+makeDirs
 name
 parent
 parentFile
@@ -7267,7 +7269,7 @@ Orderable class (<xref linkend="clsObject" />).</para>
 
 <para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
 </para>
-<para>This query method is available as both instance and class method.
+<para>This query method is available as both an instance and class method.
 </para>
 </section>
 
@@ -7316,7 +7318,7 @@ R:\
 
 <para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
 </para>
-<para>This query method is available as both instance and class method.
+<para>This query method is available as both an instance and class method.
 </para>
 </section>
 
@@ -7334,7 +7336,7 @@ R:\
 
 <para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
 </para>
-<para>This query method is available as both instance and class method.
+<para>This query method is available as both an instance and class method.
 </para>
 <example>
 <title>Class FILE - separator method</title>
@@ -7595,7 +7597,7 @@ file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
 
 <para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
 </para>
-<para>This query method is available as both instance and class method.
+<para>This query method is available as both an instance and class method.
 </para>
 </section>
 
@@ -7994,7 +7996,7 @@ the final separator (if any).
 
 <para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
 </para>
-<para>This query method is available as both instance and class method.
+<para>This query method is available as both an instance and class method.
 </para>
 </section>
 
@@ -8035,7 +8037,7 @@ The new name is <emphasis role="italic">dest</emphasis>.
 
 <para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
 </para>
-<para>This query method is available as both instance and class method.
+<para>This query method is available as both an instance and class method.
 </para>
 </section>
 
