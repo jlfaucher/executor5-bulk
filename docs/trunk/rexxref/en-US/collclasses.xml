@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2014, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -150,13 +150,57 @@ Collection (<xref linkend="clsCollection" />)
 methods implemented by all Collections.  Many of the Collection class methods
 are abstract and must be implemented the inheriting subclasses.
 </para>
-<figure><title>The Collection Class</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxCollectionsClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxCollectionClass" frame="all" pgwide="0">
+<title>ooRexx Collection Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Collection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+at, []
+difference
+disjoint
+equivalent
+hasIndex
+hasItem
+index
+</screen>
+      </entry>
+      <entry>
+<screen>intersection
+items
+makeArray
+put, []=
+subset
+supplier
+toString
+union
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <section id="mthCollectionAtGet"><title>[]</title>
 <indexterm><primary>[] method</primary>
@@ -547,13 +591,42 @@ index values in the receiver collection.</para>
 methods implemented by all collections that use create a mapping from an index
 object to a value.
 </para>
-<figure><title>The MapCollection class</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxMapCollectionClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxMapCollectionClass" frame="all" pgwide="0">
+<title>ooRexx MapCollection Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entryalign="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entryalign="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Collection</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>makeArray
+putAll
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <para>This class is defined as a mixin class.</para>
 
@@ -566,6 +639,23 @@ Object class (<xref linkend="clsObject" />).</para>
 Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
+</section>
+
+<section id="mthMapCollectionMakeArray"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of MapCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of MapCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeArray---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array of the index values used by the receiver object.
+The index objects will not be ordered in any predictable order.
+</para>
 </section>
 
 <section id="mthMapCollectionPutAll"><title>putAll</title>
@@ -589,23 +679,6 @@ indexes exist in <emphasis role="italic">collection</emphasis>, the last item pr
 supplier will overwrite previous items with the same index.
 </para>
 </section>
-
-<section id="mthMapCollectionMakeArray"><title>makeArray</title>
-<indexterm><primary>makeArray method</primary>
-<secondary>of MapCollection class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>makeArray method</secondary>
-<tertiary>of MapCollection class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-makeArray---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a single-index array of the index values used by the receiver object.
-The index objects will not be ordered in any predictable order.
-</para>
-</section>
 </section>
 
 <section id="clsOrderedCollection"><title>The OrderedCollection Class</title>
@@ -614,13 +687,67 @@ The index objects will not be ordered in any predictable order.
 methods implemented by all collections that have an inherent index ordering,
 such as an array or a list.
 </para>
-<figure><title>The OrderedCollection class</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxOrderedCollectionClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxOrderedCollectionClass" frame="all" pgwide="0">
+<title>ooRexx OrderedCollection Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Collection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>append
+appendAll
+delete
+difference
+first
+firstItem
+insert
+intersection
+last
+lastItem
+next
+</screen>
+      </entry>
+      <entry>
+<screen>
+previous
+section
+subset
+sort
+sortWith
+stableSort
+stableSortWith
+subset
+union
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <para>This class is defined as a mixin class.</para>
 
@@ -728,7 +855,7 @@ only those items from the receiver that are not also contained in the
 <tertiary>of OrderedCollection class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-firstItem------------------------------------------------------><
+>>-firstItem---------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -811,7 +938,7 @@ collection is empty.
 <tertiary>of OrderedCollection class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-lastItem-------------------------------------------------------><
+>>-lastItem----------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -837,7 +964,7 @@ or returns the Nil object if the item having that index is last in the collectio
 </para>
 </section>
 
-<section id="mthOrderedCollectionPrevious"><title>next</title>
+<section id="mthOrderedCollectionPrevious"><title>previous</title>
 <indexterm><primary>previous method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -845,7 +972,7 @@ or returns the Nil object if the item having that index is last in the collectio
 <tertiary>of OrderedCollection class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-previous(index)-------------------------------------------------><
+>>-previous(index)---------------------------------------------><
 ]]>
 </programlisting>
 
@@ -895,7 +1022,7 @@ remains unchanged.
 ]]>
 </programlisting>
 
-<para>Sorts a a collection of Comparable items into ascending order using an algorithm that is not guaranteed to be stable.
+<para>Sorts a collection of Comparable items into ascending order using an algorithm that is not guaranteed to be stable.
 See <xref linkend="sortarray" /> for details.
 </para>
 </section>
@@ -1030,13 +1157,40 @@ collection class object.
 <para>This is a tagging mixin class only and does not define any methods of
 its own.  Collections that implement SetCollection are MapCollections that
 constrain the index and item to be be the same object.</para>
-<figure><title>The SetCollection class</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxSetCollectionClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxSetCollectionClass" frame="all" pgwide="0">
+<title>ooRexx SetCollection Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Collection</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">SetCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <para>This class is defined as a mixin class.</para>
 
@@ -1067,13 +1221,78 @@ of the array. This number is called the dimensionality of the array.</para>
 assigned to an array index then that index is considered to contain the NIL
 object.
 </para>
-<figure><title>The Array class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxArrayClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxArrayClass" frame="all" pgwide="0">
+<title>ooRexx Array Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Array</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>
+allIndexes
+allItems
+append
+at, []
+delete
+dimension
+dimensions
+empty
+fill
+first
+firstItem
+hasIndex
+hasItem
+index
+insert
+isEmpty
+</screen>
+      </entry>
+      <entry>
+<screen>items
+last
+lastItem
+makeArray
+makeString
+next
+previous
+put, []=
+remove
+removeItem
+section
+size
+sort
+sortWith
+stableSort
+stableSortWith
+supplier
+toString
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Array class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -1113,6 +1332,63 @@ Collection class (<xref linkend="clsCollection" />).</para>
 OrderedCollection class (<xref linkend="clsOrderedCollection" />).</para>
 <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
+</section>
+
+<section id="mthArrayInsert"><title>insert</title>
+<indexterm><primary>insert method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>insert method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-insert(item-+--------+-)------------------------------------><
+               +-,index-+
+]]>
+</programlisting>
+
+<para>Returns an Array-supplied index for item
+<emphasis role="italic">item</emphasis>, which is added to the Array. The inserted
+item follows an existing item with index
+<emphasis role="italic">index</emphasis> in the Array ordering.
+If <emphasis role="italic">index</emphasis> is the Nil object, <emphasis role="italic">item</emphasis>
+becomes the first item in the Array. If you omit
+<emphasis role="italic">index</emphasis>, the <emphasis role="italic">item</emphasis> becomes the last item in
+the Array.</para>
+<para>Inserting an item in the Array at position
+<emphasis role="italic">index</emphasis> will cause the items in the Array after
+position <emphasis role="italic">index</emphasis> to have their indexes
+shifted by the Array object.
+The index values for any items in the Array are incremented by the insertion.</para>
+<indexterm><primary>examples</primary>
+<secondary>insert method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<example id="ex.Array-insert">
+<title>Array class - insert method</title>
+<programlisting>
+musketeers=.Array~of("Porthos","Athos","Aramis") /* Creates Array MUSKETEERS        */
+                                                 /* consisting of: Porthos         */
+                                                 /*                Athos           */
+                                                 /*                Aramis          */
+musketeers~insert("D&apos;Artagnan",1)    /* Adds D&apos;Artagnan after Porthos  */
+                                          /* Array is now: Porthos           */
+                                          /*              D&apos;Artagnan   */
+                                          /*              Athos             */
+                                          /*              Aramis            */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan",.nil) /* Adds D&apos;Artagnan before Porthos */
+                                          /* Array is now:  D&apos;Artagnan  */
+                                          /*               Porthos          */
+                                          /*               Athos            */
+                                          /*               Aramis           */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis   */
+                                          /* Array is now:  Porthos          */
+                                          /*               Athos            */
+                                          /*               Aramis           */
+                                          /*               D&apos;Artagnan  */
+</programlisting>
+</example>
 </section>
 
 <section id="mthArrayNew"><title>new (Class Method)</title>
@@ -1450,7 +1726,7 @@ say a~dimension(2)  -- says: 2 (upper bound of dimension two)
 <tertiary>of Array class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-dimensions---------------------------------------------------><
+>>-dimensions--------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -2278,13 +2554,60 @@ end
 to having an item that is the same as the index. Any object can be placed
 in a bag, and the same object can be placed in a bag several times.
 </para>
-<figure><title>The Bag class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxBagClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxBagClass" frame="all" pgwide="0">
+<title>ooRexx Bag Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Relation</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Bag</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ SetCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>difference
+hasIndex
+hasItem
+intersection
+put, []=
+</screen>
+      </entry>
+      <entry>
+<screen>putAll
+subset
+union
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Bag class also has available class methods that its metaclass,
 the Class class (<xref linkend="clsClass" />), defines.
@@ -2568,13 +2891,62 @@ objects are inserted from the beginning, replacing earlier entries. Any object
 can be placed in the queue and the same object can occupy more than one position
 in the queue.
 </para>
-<figure><title>The CircularQueue class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxCircularQueueClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxCircularQueueClass" frame="all" pgwide="0">
+<title>ooRexx CircularQueue Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Queue</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">CircularQueue</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>init
+append
+insert
+intersection
+makeArray
+push
+queue
+</screen>
+      </entry>
+      <entry>
+<screen>resize
+section
+size
+string
+supplier
+union
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>
 The CircularQueue class also has available class methods that its
@@ -2804,7 +3176,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 
 <programlisting>
 <![CDATA[
->>-push(item-+------------+)-------------------------------------><
+>>-push(item-+------------+)-----------------------------------><
              +--,option---+
 ]]>
 </programlisting>
@@ -3217,13 +3589,63 @@ content: [3,2], content (LIFO): [2->3]
 <para>A Directory is a MapCollection using unique character string indexes.  The
 items of the collection can be any valid Rexx object.
 </para>
-<figure><title>The Directory class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxDirectoryClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxDirectoryClass" frame="all" pgwide="0">
+<title>ooRexx Directory Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Directory</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+at, []
+empty
+entry
+hasEntry
+hasIndex
+hasItem
+index
+isEmpty
+items
+</screen>
+      </entry>
+      <entry>
+<screen>makeArray
+put, []=
+remove
+removeItem
+setEntry
+setMethod
+supplier
+unknown
+unSetMethod
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Directory class also has available class methods that
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -3444,7 +3866,7 @@ contains any item associated with index
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(item)----------------------------------------------><
+>>-hasItem(item)-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -3800,13 +4222,66 @@ for that item regardless of other additions or removals.
 Only indexes the list
 object generates are valid i.e. the list is never a sparse list and the list
 object will not modify indexes for items in the list.</para>
-<figure><title>The List class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxListClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxListClass" frame="all" pgwide="0">
+<title>ooRexx List Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">List</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+append
+at, []
+delete
+empty
+first
+firstItem
+hasIndex
+hasItem
+index
+insert
+isEmpty
+</screen>
+      </entry>
+      <entry>
+<screen>items
+last
+lastItem
+makeArray
+previous
+put, []=
+remove
+removeItem
+section
+supplier
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The List class also has available class methods that its metaclass,
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -3970,7 +4445,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-delete(---index--)-----------------------------------------><
+>>-delete(---index--)------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4070,7 +4545,7 @@ contains any item associated with index
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(item)----------------------------------------------><
+>>-hasItem(item)-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4130,7 +4605,7 @@ The index values for any items in the list are not modified by the insertion.</p
 <secondary>insert method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <example id="ex.List-insert">
-<title>Directory class - insert method</title>
+<title>List class - insert method</title>
 <programlisting>
 musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS        */
                                                 /* consisting of: Porthos         */
@@ -4394,14 +4869,58 @@ indexes that are character strings representing names and items that
 are also restricted to character string values.  Properties objects
 are useful for processing bundles of application option values.
 </para>
+<table id="ooRexxPropertiesClass" frame="all" pgwide="0">
+<title>ooRexx Properties Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Directory</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Properties</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>load
+new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>getLogical
+getProperty
+getWhole
+load
+put, []=
+</screen>
+      </entry>
+      <entry>
+<screen>save
+setLogical
+setProperty
+setWhole
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
-<figure><title>The Properties class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxPropertiesClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
 <note><title>Note</title>
 <para>The Properties class also has available class methods that
 its metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -4687,13 +5206,71 @@ indexes. The indexes specify the position of an item relative to the head
 (first item) of the queue. Adding or removing an item changes the association
 of an index to its queue item. You can add items at either the tail or the
 head of the queue.</para>
-<figure><title>The Queue class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxQueueClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxQueueClass" frame="all" pgwide="0">
+<title>ooRexx Queue Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Queue</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+append
+at, []
+delete
+empty
+first
+firstItem
+hasIndex
+hasItem
+index
+insert
+isEmpty
+items
+</screen>
+      </entry>
+      <entry>
+<screen>last
+lastItem
+makeArray
+next
+peek
+previous
+pull
+push
+put
+queue
+remove
+removeItem
+section
+supplier
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Queue class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -4857,7 +5434,7 @@ returning the index of the inserted item.</para>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-delete(---index--)-----------------------------------------><
+>>-delete(---index--)------------------------------------------><
 ]]>
 </programlisting>
 
@@ -4956,7 +5533,7 @@ or <computeroutput>0</computeroutput> (false).</para>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(item)----------------------------------------------><
+>>-hasItem(item)-----------------------------------------------><
 ]]>
 </programlisting>
 
@@ -5346,13 +5923,65 @@ the queue first.</para>
 be any object.  In a relation, each item is associated with
 a single index, but there can be more than one item with the same index (unlike
 a table, which can contain only one item for any index).</para>
-<figure><title>The Relation class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxRelationClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxRelationClass" frame="all" pgwide="0">
+<title>ooRexx Relation Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Relation</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allAt
+allIndex
+allIndexes
+allItems
+at, []
+difference
+empty
+hasIndex
+hasItem
+index
+intersection
+isEmpty
+</screen>
+      </entry>
+      <entry>
+<screen>items
+makeArray
+put, []=
+remove
+removeAll
+removeItem
+subset
+supplier
+union
+uniqueIndexes
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Relation class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -5477,8 +6106,7 @@ using the == method of <emphasis role="italic">item</emphasis>.
 
 <para>Returns an array of all indexes contained in the Relation. The returned
 array will have one index for every item stored in the relation, including
-duplicates.  To retrieve the indexes without duplicates, use the uniqueindexes (<xref linkend="mthRelationUniqueIndexes" />) method.
-set.
+duplicates.  To retrieve the indexes without duplicates, use the uniqueIndexes (<xref linkend="mthRelationUniqueIndexes" />) method.
 </para>
 </section>
 
@@ -5584,7 +6212,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <tertiary>of Relation class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(item-+--------+-)-----------------------------------------><
+>>-hasItem(item-+--------+-)-----------------------------------><
                 +-,index-+
 ]]>
 </programlisting>
@@ -5747,7 +6375,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <tertiary>of Relation class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-removeAll(index)-----------------------------------------------><
+>>-removeAll(index)--------------------------------------------><
 ]]>
 </programlisting>
 
@@ -5768,19 +6396,30 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <tertiary>of Relation class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-removeItem(item,index)--------------------------------------><
+>>-removeItem(item-+--------+-)--------------------------------><
+                   +-,index-+
 ]]>
 </programlisting>
 
-<para>Returns and removes from a relation the member item
-<emphasis role="italic">item</emphasis> (associated with index
-<emphasis role="italic">index</emphasis>). Returns the Nil object if
-<emphasis role="italic">value</emphasis> is not a member item associated
+<para>
+If <emphasis role="italic">index</emphasis> is not specified, returns and
+removes from a relation the member item <emphasis role="italic">item</emphasis>.
+If the relation contains <emphasis role="italic">item</emphasis> associated
+with more than one index, the item returned and removed is unspecified.
+</para>
+<para>
+If <emphasis role="italic">index</emphasis> is specified, returns and
+removes the member item <emphasis role="italic">item</emphasis> associated
 with index <emphasis role="italic">index</emphasis>.
 If
 <emphasis role="italic">item</emphasis> is the only member with
-<emphasis role="italic">index</emphasis>) then the
-<emphasis role="italic">index</emphasis>) is also removed from the Relation.
+<emphasis role="italic">index</emphasis>, then the
+<emphasis role="italic">index</emphasis> is also removed from the Relation.
+</para>
+<para>
+Returns the Nil object if
+<emphasis role="italic">item</emphasis> is not a member item (associated
+with index <emphasis role="italic">index</emphasis>, if specified).
 </para>
 </section>
 
@@ -5940,13 +6579,58 @@ a set (unlike a Bag collection).
 Item equality is determined by
 using the == method.
 </para>
-<figure><title>The Set class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxSetClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxSetClass" frame="all" pgwide="0">
+<title>ooRexx Set Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Table</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Set</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ SetCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>of
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>hasItem
+intersection
+put, []=
+putAll
+</screen>
+      </entry>
+      <entry>
+<screen>subset
+union
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Set class also has available class methods that its metaclass,
 the Class class (<xref linkend="clsClass" />), defines.
@@ -6077,7 +6761,7 @@ index values in the receiver collection.</para>
 <tertiary>of Set class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-put(item-+--------+-)-----------------------------------------><
+>>-put(item-+--------+-)---------------------------------------><
             +-,index-+
 ]]>
 </programlisting>
@@ -6196,13 +6880,60 @@ index values in the receiver collection.</para>
 
 <para>A stem object is a collection with unique indexes
 that are character strings.</para>
-<figure><title>The Stem class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxStemClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxStemClass" frame="all" pgwide="0">
+<title>ooRexx Stem Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Stem</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>= \= == \== &lt;&gt; &gt;&lt;
+allIndexes
+allItems
+at, []
+empty
+hasIndex
+hasItem
+index
+isEmpty
+</screen>
+      </entry>
+      <entry>
+<screen>items
+makeArray
+put, []=
+remove
+removeItem
+request
+supplier
+toDirectory
+unknown
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Stem class also has available class methods that its metaclass,
 the Class class (<xref linkend="clsClass" />), defines.
@@ -6614,7 +7345,7 @@ The supplier iterates the items in an unspecified order.
 <tertiary>of Stem class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-toDirectory----------------------------------------------------><
+>>-toDirectory-------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -6655,13 +7386,56 @@ a relation, which can contain more than one item with the same index).
 Index equality is determined by
 using the == method.
 </para>
-<figure><title>The Table class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxTableClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxTableClass" frame="all" pgwide="0">
+<title>ooRexx Table Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Table</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+at, []
+empty
+hasIndex
+hasItem
+index
+</screen>
+      </entry>
+      <entry>
+<screen>isEmpty
+items
+makeArray
+put, []=
+remove
+removeItem
+supplier
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Table class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -6990,13 +7764,56 @@ matches in an identity table are made using an object
 identity comparison.  That is, an index will only match if the same instance is
 used in the collection.
 </para>
-<figure><title>The IdentityTable class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxIdentityTableClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxIdentityTableClass" frame="all" pgwide="0">
+<title>ooRexx IdentityTable Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">IdentityTable</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+at, []
+empty
+hasIndex
+hasItem
+index
+</screen>
+      </entry>
+      <entry>
+<screen>isEmpty
+items
+makeArray
+put, []=
+remove
+removeItem
+supplier
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The IdentityTable class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.

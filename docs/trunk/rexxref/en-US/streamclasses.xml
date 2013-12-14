@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2014, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -54,13 +54,49 @@ Rexx data streams.</para>
 <para>This class is defined as an abstract mixin class. It must be implemented
 by subclassing it or inheriting from it as a mixin. Many of the methods in this
 class are abstract and must be overridden or they will throw a syntax error when invoked.</para>
-<figure><title>The InputStream class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxInputStreamClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxInputStreamClass" frame="all" pgwide="0">
+<title>ooRexx InputStream Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">InputStream</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>arrayIn
+charIn
+charOut
+chars
+close
+</screen>
+      </entry>
+      <entry>
+<screen>lineIn
+lineOut
+lines
+open
+position
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The InputStream class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -181,13 +217,49 @@ syntax error 93.963 to be raised.</para>
 <para>This class is defined as an abstract mixin class. It must be implemented
 by subclassing it or inheriting from it as a mixin. Many of the methods in this
 class are abstract and must be overridden or they will throw a syntax error when invoked.</para>
-<figure><title>The OutputStream class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxOutputStreamClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxOutputStreamClass" frame="all" pgwide="0">
+<title>ooRexx OutputStream Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">OutputStream</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>arrayOut
+charIn
+charOut
+chars
+close
+</screen>
+      </entry>
+      <entry>
+<screen>lineIn
+lineOut
+lines
+open
+position
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The OutputStream class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -309,13 +381,41 @@ syntax error 93.963 to be raised.</para>
 <para>This class is defined as an abstract mixin class. It must be implemented
 by subclassing it or inheriting from it as a mixin. Many of the methods in this
 class are abstract and must be overridden or they will throw a syntax error when invoked.</para>
-<figure><title>The InputOutputStream class</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxInputOutputStreamClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxInputOutputStreamClass" frame="all" pgwide="0">
+<title>ooRexx InoutOutputStream Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">InputOutputStream</emphasis></entry>
+   </row>
+   <row>
+      <entry align="left"><emphasis role="bold">+ InputStream</emphasis></entry>
+   </row>
+   <row>
+      <entry align="left"><emphasis role="bold">+ OutputStream</emphasis></entry>
+   </row>
+   <row>
+      <entry>
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>   <row>
+      <entry>
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The InputOutputStream class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.
@@ -374,13 +474,75 @@ Rexx. (See <xref linkend="iostrms" /> for a
 discussion of Rexx input and output.)</para>
 <para>The Stream class is a subclass of the
 InputOutputStream class (<xref linkend="clsInputOutputStream" />).</para>
-<figure><title>The Stream class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxStreamClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxStreamClass" frame="all" pgwide="0">
+<title>ooRexx Stream Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">InputOutputStream</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ InputStream</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OutputStream</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Stream</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>arrayIn
+arrayOut
+charIn
+charOut
+chars
+close
+command
+description
+flush
+init
+lineIn
+lineOut
+</screen>
+      </entry>
+      <entry>
+<screen>lines
+makeArray
+open
+position
+qualify
+query
+say
+seek
+state
+string
+supplier
+unInit
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Stream class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.

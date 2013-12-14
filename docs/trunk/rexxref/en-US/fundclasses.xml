@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2014, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -53,13 +53,58 @@
 
 <para>The Object class is the root of the class hierarchy. The instance methods
 of the Object class are, therefore, available on all objects.</para>
-<figure><title>The Object class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxObjectClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxObjectClass" frame="all" pgwide="0">
+<title>ooRexx Object Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>= \= == \== &lt;&gt; &lt;&gt; ||
+'' (abuttal)
+' ' (blank)
+class
+copy
+defaultName
+hashCode
+hasMethod
+identityHash
+init
+instanceMethod
+instanceMethods
+isA
+</screen>
+      </entry>
+      <entry>
+<screen>isinstanceOf
+objectName
+objectName=
+request
+run
+send
+sendWith
+setMethod
+start
+startWith
+string
+unsetMethod
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Object class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -970,13 +1015,59 @@ method is a protected method.</para></listitem>
 produce objects. It is a subclass of the
 Object class (<xref linkend="clsObject" />). The instance methods of the
 Class class are also the class methods of all classes.</para>
-<figure><title>The Class class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxClassClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxClassClass" frame="all" pgwide="0">
+<title>ooRexx Class Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Class</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>&nbsp;
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>= \= == \== &lt;&gt; &gt;&lt;
+activate
+baseClass
+defaultName
+define
+delete
+enhanced
+id
+inherit
+isSubclassOf
+metaClass
+</screen>
+      </entry>
+      <entry>
+<screen>method
+methods
+mixinClass
+new
+queryMixinClass
+subClass
+subClasses
+superClass
+superClasses
+inInherit
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
 
 <section><title>Inherited Methods</title>
 
@@ -1719,13 +1810,130 @@ room~uninherit(location)
 <para>String objects represent character-string data values. A character
 string value can have any length and contain any characters.
 </para>
-<figure><title>The String class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxStringClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxStringClass" frame="all" pgwide="0">
+<title>ooRexx String Class</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<colspec colname="c3" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">String</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="left">+ Comparable</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c3" align="left">
+<screen>new
+cr
+nl
+null
+tab
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>+ - * ** / // %
+\ = \= &lt;&gt; &gt;&lt; == \==
+&gt; &gt;= \&gt; &lt; &lt;= \&lt;
+&gt;&gt; &gt;&gt;= &lt;&lt; &lt;&lt;=
+\&lt;&lt; \&gt;&gt; &amp; &amp;&amp; | ||
+'' (abuttal)
+' ' (blank)
+abbrev
+abs
+b2x
+bitAnd
+bitOr
+bitXor
+c2d
+c2x
+caselessAbbrev
+caselessChangeStr
+caselessCompare
+caselessCompareTo
+caselessCountStr
+caselessEquals
+caselessLastPos
+caselessMatch
+caselessMatchChar
+caselessPos
+caselessWordPos
+ceiling
+</screen>
+      </entry>
+      <entry>
+<screen>center/centre
+changeStr
+compare
+compareTo
+copies
+countStr
+d2c
+d2x
+dataType
+decodeBase64
+delStr
+delWord
+encodeBase64
+equals
+floor
+format
+hashCode
+insert
+lastPos
+left
+length
+lower
+makeArray
+makeString
+match
+matchChar
+max
+min
+</screen>
+      </entry>
+      <entry>
+<screen>overlay
+pos
+replaceAt
+reverse
+right
+round
+sign
+space
+strip
+subChar
+subStr
+subWord
+subWords
+translate
+trunc
+upper
+verify
+word
+wordIndex
+wordLength
+wordPos
+words
+x2b
+x2c
+x2d
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The String class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />, defines.
@@ -4933,7 +5141,7 @@ will be removed.</para>
 </example>
 </section>
 
-<section id="mthStringsubchar"><title>subchar</title>
+<section id="mthStringsubChar"><title>subchar</title>
 <indexterm><primary>subchar method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5671,13 +5879,53 @@ the method returns <computeroutput>0</computeroutput>.</para>
 
 <para>The Method class creates method objects from Rexx source code.
 It is a subclass of the Object class (<xref linkend="clsObject" />).</para>
-<figure><title>The Method class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxMethodClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+
+<table id="ooRexxMethodClass" frame="all" pgwide="0">
+<title>ooRexx Method Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Method</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left">
+<screen>new
+newFile
+loadExternalMethod
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>isGuarded
+isPrivate
+isProtected
+package
+setGuarded
+</screen>
+      </entry>
+      <entry>
+<screen>setPrivate
+setProtected
+setSecurityManager
+setUnguarded
+source
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Method class also has available class methods that its
 metaclass, the Class class, defines.</para></note>
@@ -5964,13 +6212,42 @@ items.</para>
 <para>The Routine class creates routine objects from Rexx source code.
 It is a
 subclass of the Object class (<xref linkend="clsObject" />).</para>
-<figure><title>The Routine class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxRoutineClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxRoutineClass" frame="all" pgwide="0">
+<title>ooRexx Routine Class</title>
+<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<tbody>
+   <row>
+      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry align="center"><emphasis role="bold">Routine</emphasis></entry>
+   </row>
+   <row>
+      <entry align="left">
+<screen>new
+newFile
+loadExternalRoutine
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>call
+callWith
+package
+setSecurityManager
+source
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Routine class also has available class methods that its
 metaclass, the Class class, defines.</para></note>
@@ -6165,13 +6442,65 @@ source code unit and also manages external dependencies referenced by ::REQUIRES
 directives.  The files loaded by ::REQUIRES are also contained in Package class
 instances. It is a subclass of the Object class (<xref linkend="clsObject" />.
 </para>
-<figure><title>The Package class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxPackageClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxPackageClass" frame="all" pgwide="0">
+<title>ooRexx Package Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Package</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>addClass
+addPackage
+addPublicClass
+addPublicRoutine
+addRoutine
+classes
+definedMethods
+digits
+findClass
+findRoutine
+form
+fuzz
+importedClasses
+importedPackages
+importedRoutines
+</screen>
+      </entry>
+      <entry>
+<screen>loadLibrary
+loadPackage
+name
+publicClasses
+publicRoutines
+routines
+setSecurityManager
+source
+sourceLine
+sourceSize
+trace
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Package class also has available class methods that its metaclass, the
 Class class, defines.
@@ -6661,13 +6990,49 @@ method of the Message class or the
 <emphasis role="bold">start</emphasis> (<xref linkend="mthObjectStart" />) method of the
 Object class.
 </para>
-<figure><title>The Message class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/ooRexxMessageClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<table id="ooRexxMessageClass" frame="all" pgwide="0">
+<title>ooRexx Message Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Message</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>arguments
+completed
+errorCondition
+hasError
+messageName
+</screen>
+      </entry>
+      <entry>
+<screen>notify
+result
+send
+start
+target
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The Message class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
