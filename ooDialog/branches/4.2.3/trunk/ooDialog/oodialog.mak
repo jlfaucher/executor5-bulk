@@ -55,6 +55,15 @@ RC_NOLOGO = /nologo
 
 REXXAPI_LIBS = $(REXX_LIBS)
 
+# Generate the version information.  Quit if there is an error.  We only do this
+# when we are building outside of the interpreter build.  Within the interpreter
+# build, the ooDialog source will be the latest released version of ooDialog.
+# That released version will have a static ooDialog.ver.incl file that reflects
+# the exact version at the time of release.
+!IF [generateVersionFile.bat] != 0
+!  ERROR Build error: could not gerate version file, ooDialog.ver.incl
+!ENDIF
+
 !else
 
 OOD_OUTDIR=$(OR_OUTDIR)
@@ -64,11 +73,6 @@ OOD_INCLUDE_FILE = "$(OR_LIBSRC)\ORXWIN32.MAK"
 
 !endif
 
-# Generate the version information.  Quit if there is an error.
-!IF [generateVersionFile.bat] != 0
-!  ERROR Build error: could not gerate version file, ooDialog.ver.incl
-!ENDIF
-
 !include ooDialog.ver.incl
 !include $(OOD_INCLUDE_FILE)
 
@@ -77,6 +81,11 @@ copy_year_str = -DOOD_COPY_YEAR=\"$(OOD_COPY_YEAR)\"
 ver_str = -DOOD_VER_STR=\""ooDialog $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL).$(OOD_BLD_LVL)"\"
 ood_ver_strings = $(copy_year_str) $(ver_str)
 ood_ver_def = -DOOD_VER=$(OOD_MAJOR) -DOOD_REL=$(OOD_MINOR) -DOOD_MOD=$(OOD_MOD_LVL) -DOOD_BLD=$(OOD_BLD_LVL) $(ood_ver_strings)
+
+!ifdef OODIALOG_WINSDK_6_1
+!message OODIALOG_WINSDK_6_1 $(OODIALOG_WINSDK_6_1)
+cflags_common = $(cflags_common) -DOODIALOG_WINSDK_6_1
+!endif
 
 # We use our own rc flags version.
 rcflags_oodialog = rc $(RC_NOLOGO) /DWIN32 -dOODIALOG_VER=$(OOD_MAJOR) -dOODIALOG_REL=$(OOD_MINOR) -dOODIALOG_SUB=$(OOD_MOD_LVL) -dOODIALOG_BLD=$(OOD_BLD_LVL) -dOODIALOG_VER_STR=\"$(OOD_VER_STR)\" -dOODIALOG_COPY_YEAR=\"$(OOD_COPY_YEAR)\" -dMANIFEST_FILE=$(M_FILE)
