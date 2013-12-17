@@ -79,12 +79,21 @@ dpkg -P ooRexx
 </programlisting>
 </para>
 <para>
-  On Windows, when the installation program is started, the installer will recognize that a previous
-  version is installed. It will then present an option to uninstall the previous version before
-  proceeding with the 4.2.0 install. Alternatively, you can completely uninstall the previous version prior to starting the
-  4.2.0 installation.
+  On Windows, when the installation program is started, the installer will recognize that a previous version is installed. It
+  will then present an option to uninstall the previous version before proceeding with the 4.2.0 install. Alternatively, you
+  can completely uninstall the previous version prior to starting the 4.2.0 installation.
 </para>
 </note>
+
+<warning><title>Warning</title>
+<para>
+  <emphasis role="italic">On Windows only.</emphasis> If a previous Windows install exists and is not the same addressing
+  mode (32 or 64) as the version of ooRexx about to be installed, there are potential problems when the uninstaller is
+  launched from the installer automatically. In this case it is <emphasis role="bold">strongly</emphasis> advised that the
+  uninstallation program be run first to completely uninstall the current version of ooRexx, and then the new installer be
+  run.
+</para>
+</warning>
 
 <!-- New in this Release -->
 <xi:include href="newinrelease.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
