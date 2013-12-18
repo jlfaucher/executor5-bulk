@@ -45,11 +45,15 @@ all: pdf html
 
 pdf: datepub svnrev
 	- rm -rf tmp/en-US/pdf
+	- rm publican.cfg
+	- cp ./publican.in ./publican.cfg; cat ../oorexx.ver >> ./publican.cfg
 	publican build --formats=pdf --langs=en-US
 	cd tmp/en-US/pdf; mv ooRexx*.pdf $(PRODUCT).pdf; cp $(PRODUCT).pdf ../../../; cd ../../..
 
 html: datepub.tmp svnrev.tmp
 	- rm -rf tmp/en-US/html
+	- rm publican.cfg
+	- cp ./publican.in ./publican.cfg; cat ../oorexx.ver >> ./publican.cfg
 	publican build --formats=html --langs=en-US
 	cd tmp/en-US/html; zip -r $(PRODUCT)-html.zip *; cd ../../..
 

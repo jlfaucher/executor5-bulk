@@ -46,6 +46,7 @@ all: pdf html
 pdf:
 	- rm -r tmp/en-US/pdf
 	- rm publican.cfg
+	- cp ./publican.in ./publican.cfg; cat ../oorexx.ver >> ./publican.cfg
 	publican build --formats=pdf --langs=en-US
 	cd tmp/en-US/pdf; mv ooRexx*.pdf $(PRODUCT).pdf; cd ../../..
 
