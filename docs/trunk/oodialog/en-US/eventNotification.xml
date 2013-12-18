@@ -653,6 +653,10 @@
 <entry>Connects an event notification from a tab control to a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><xref linkend="mthConnectToolBarEvent"/></entry>
+<entry>Connects an event notification from a toolbar control to a method in the Rexx dialog.</entry>
+</row>
+<row>
 <entry><xref linkend="mthConnectToolTipEvent"/></entry>
 <entry>Connects an event notification from a ToolTip control to a method in the Rexx dialog.</entry>
 </row>
@@ -7151,7 +7155,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 
 <programlisting>
 <![CDATA[
-::class 'SimpleDialog subclass UserDialog
+::class 'SimpleDialog' subclass UserDialog
 
 ::method initDialog
 
@@ -7167,7 +7171,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   self~newScrollBar(IDC_SB_FILE)~setPos(pos, .true)
 
   say "Pos:" pos
-  say "Verify event code:
+  say "Verify event code:"
   say "  THUMBPOSITION:" .ScrollBar~THUMBPOSITION
   say "  This event:   " eventCode
 
@@ -7703,6 +7707,121 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </variablelist>
 
 </section>
+
+<section id="mthConnectToolBarEvent" xreflabel="connectToolBarEvent"><title>connectToolBarEvent</title>
+<indexterm><primary>connectToolBarEvent</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectToolBarEvent</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>connectToolBarEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectToolBarEvent(--id--,--event--+-----------+--+-------------+--)------><
+                                        +-,-mthName-+  +-,-willReply-+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the toolbar control whose notification message is to be connected to a method in the Rexx dialog.
+      May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
+    <listitem>
+    <para>
+      Exactly one of the following keywords. The keyword specifies the event to be connected. Case is not significant.
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>?</member>
+        <member>?</member>
+        <member>?</member>
+        <member>?</member>
+      </simplelist>
+    </para>
+    <variablelist>
+      <varlistentry id="kywToolBarBEGINADJUST" xreflabel="BEGINADJUST"><term>BEGINADJUST</term>
+      <listitem>
+      <para>
+        xxx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method that is to be invoked whenever the specified event happens. The programmer defines this method.
+      If this argument is omitted, a method name is automatically generated that consists of the event keyword preceded by
+      <computeroutput>on</computeroutput>. For instance, <computeroutput>onBeginAdjust</computeroutput>. The method name can
+      not be the empty string. The empty string is treated as an omitted argument.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
+      linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler, for some of the toolbar events.
+      The default is ...
+    </para>
+    <para>
+      xxx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the event was connected correctly, otherwise
+   <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Syntax errors are raised when incorrect usage is detected, including the use of an invalid symbolic ID or an
+    unrecognized event keyword.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
+    connected event happens.
+  </para>
+  <para>
+    The underlying dialog receives the TBN_* messages as the notifications for the tool tip events.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End EventNotification::connectToolBarEvent() -->
 
 
 <section id="mthConnectToolTipEvent" xreflabel="connectToolTipEvent"><title>connectToolTipEvent</title>

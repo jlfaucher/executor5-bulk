@@ -292,6 +292,10 @@
 <entry>Creates a tab control in the dialog template.</entry>
 </row>
 <row>
+<entry><xref linkend="mthCreateToolBar"/></entry>
+<entry>Creates a toolbar control in the dialog template.</entry>
+</row>
+<row>
 <entry><xref linkend="mthCreateTrackBar"/></entry>
 <entry>Creates a trackbar control in the dialog template.</entry>
 </row>
@@ -10370,6 +10374,210 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
   </listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthCreateToolBar" xreflabel="createToolBar"><title>createToolBar</title>
+<indexterm><primary>createToolBar</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>createToolBar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createToolBar(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)-><
+                                            +-,-style-+  +-,-attributeName-+
+]]>
+</programlisting>
+
+<para>
+  Creates an <xref linkend="clsToolBar"/> control in the dialog template and specifies the resource ID, position, size,
+  style, and attribute name for the control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The <xref linkend="idArgument"/> for the up-down control. May be numeric or
+        <xref linkend="defSymbolicId"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy [required]</term>
+      <listitem>
+      <para>
+        The  control <xref linkend="controlCoordinatesArgument"/>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <xref linkend="styleExplanation"/> keywords
+        separated by spaces:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>ALTDRAG      </member>
+          <member>CUSTOMERASE  </member>
+          <member>FLAT         </member>
+          <member>LIST         </member>
+          <member>REGISTERDROP </member>
+          <member>TOOLTIPS     </member>
+          <member>TRANSPARENT  </member>
+          <member>WRAPABLE     </member>
+          <member>BORDER       </member>
+          <member>DISABLED     </member>
+          <member>GROUP        </member>
+          <member>HIDDEN       </member>
+          <member>TAB          </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>ALTDRAG</term>
+          <listitem>
+          <para>
+            x
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CUSTOMERASE</term>
+          <listitem>
+          <para>
+            x
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            y
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LIST</term>
+          <listitem>
+          <para>
+            y
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>REGISTERDROP</term>
+          <listitem>
+          <para>
+            z
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOOLTIPS</term>
+          <listitem>
+          <para>
+            z
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TRANSPARENT</term>
+          <listitem>
+          <para>
+            z
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WRAPABLE</term>
+          <listitem>
+          <para>
+            z
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsborder"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsdisabled"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsgroup"/> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The not <xref linkend="wsvisible"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TAB</term>
+          <listitem>
+          <para>
+            Create the control with the <xref linkend="wstabstop"/> control style. By default the control
+            is created without the tabstop style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>attributeName [optional]</term>
+      <listitem>
+      <para>
+        Although this argument is accepted so that the format of the <emphasis role="italic">createTooBar</emphasis> is
+        similar to the other <emphasis role="italic">createXX</emphasis> methods, the concept of a toolbar having <emphasis
+        role="italic">data</emphasis> makes no sense. If the argument is used it is ignored.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The dialog template has either not been started or is complete.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        A symbolic ID was used, but it could not be resolved correctly.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+  self~createToolBar(IDC_TOOLBAR, 0, 0, 20, 11, "TOOLTIPS LIST HIDDEN BORDER FLAT CCS_ADJUSTABLE ALTDRAG")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserDialog::createToolBar() -->
 
 <section id="mthCreateTrackBar" xreflabel="createTrackbar"><title>createTrackbar</title>
 <indexterm><primary>createTrackbar</primary></indexterm>

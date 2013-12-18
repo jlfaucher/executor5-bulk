@@ -1465,6 +1465,10 @@ DialogControl::<xref linkend="mthUsingUnicode"/>
 <entry>Creates a tab control in the dialog template.</entry>
 </row>
 <row>
+<entry><xref linkend="mthCreateToolBar"/></entry>
+<entry>Creates a toolbar control in the dialog template.</entry>
+</row>
+<row>
 <entry><xref linkend="mthCreateTrackBar"/></entry>
 <entry>Creates a trackbar control in the dialog template.</entry>
 </row>
@@ -2031,6 +2035,17 @@ DynamicDialog::<xref linkend="mthCreateTab"/>
 </programlisting>
 </section>
 
+<section id="ddCreateToolBar"><title>createToolBar</title>
+<programlisting>
+DynamicDialog::<xref linkend="mthCreateToolBar"/>
+
+<![CDATA[
+>>--createToolBar(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)-><
+                                            +-,-style-+  +-,-attributeName-+
+]]>
+</programlisting>
+</section>
+
 <section id="ddCreateTrackBar"><title>createTrackBar</title>
 <programlisting>
 DynamicDialog::<xref linkend="mthCreateTrackBar"/>
@@ -2576,6 +2591,14 @@ DynamicDialog::<xref linkend="mthLoadItems"/>
 <row>
 <entry><xref linkend="pbdNewTab"/></entry>
 <entry>Returns an object of the <computeroutput>Tab</computeroutput> class for the tab control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><xref linkend="pbdNewToolBar"/></entry>
+<entry>Returns an object of the <computeroutput>ToolBar</computeroutput> class for the toolbar control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><xref linkend="pbdNewToolTip"/></entry>
+<entry>Returns an object of the <computeroutput>ToolTip</computeroutput> class for the tooltip control with the specified resource ID.</entry>
 </row>
 <row>
 <entry><xref linkend="pbdNewTreeView"/></entry>
@@ -3758,6 +3781,16 @@ PlainBaseDialog::<xref linkend="mthNewScrollBar"/>
 </programlisting>
 </section>
 
+<section id="pbdNewStatic" xreflabel="newStatic"><title>newStatic</title>
+<programlisting>
+PlainBaseDialog::<xref linkend="mthNewStatic"/>
+
+<![CDATA[
+>>--newStatic(--id--)----------------------------><
+]]>
+</programlisting>
+</section>
+
 <section id="pbdNewTab" xreflabel="newTab"><title>newTab</title>
 <programlisting>
 PlainBaseDialog::<xref linkend="mthNewTab"/>
@@ -3768,12 +3801,22 @@ PlainBaseDialog::<xref linkend="mthNewTab"/>
 </programlisting>
 </section>
 
-<section id="pbdNewStatic" xreflabel="newStatic"><title>newStatic</title>
+<section id="pbdNewToolBar" xreflabel="newToolBar"><title>newToolBar</title>
 <programlisting>
-PlainBaseDialog::<xref linkend="mthNewStatic"/>
+PlainBaseDialog::<xref linkend="mthNewToolBar"/>
 
 <![CDATA[
->>--newStatic(--id--)----------------------------><
+>>--newToolBar(--id--)-------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="pbdNewToolTip" xreflabel="newToolTip"><title>newToolTip</title>
+<programlisting>
+PlainBaseDialog::<xref linkend="mthNewToolTip"/>
+
+<![CDATA[
+>>--newToolTip(--id--)-------------------------------><
 ]]>
 </programlisting>
 </section>

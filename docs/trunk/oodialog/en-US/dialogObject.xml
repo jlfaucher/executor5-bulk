@@ -403,6 +403,10 @@
 <entry>Connects an event notification from a tab control to a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><xref linkend="enConnectToolBarEvent"/></entry>
+<entry>Connects an event notification from a toolbar control to a method in the Rexx dialog.</entry>
+</row>
+<row>
 <entry><xref linkend="enConnectToolTipEvent"/></entry>
 <entry>Connects an event notification from a tool tip control to a method in the Rexx dialog.</entry>
 </row>
@@ -1011,8 +1015,16 @@
 <entry>Returns an object of the <computeroutput>Static</computeroutput> class for the static control with the specified resource ID.</entry>
 </row>
 <row>
+<entry><xref linkend="mthNewStatusBar"/></entry>
+<entry>Returns an object of the <computeroutput>StatusBar</computeroutput> class for the status bar control with the specified resource ID.</entry>
+</row>
+<row>
 <entry><xref linkend="mthNewTab"/></entry>
 <entry>Returns an object of the <computeroutput>Tab</computeroutput> class for the tab control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><xref linkend="mthNewToolBar"/></entry>
+<entry>Returns an object of the <computeroutput>ToolBar</computeroutput> class for the toolbar control with the specified resource ID.</entry>
 </row>
 <row>
 <entry><xref linkend="mthNewToolTip"/></entry>
@@ -4239,6 +4251,65 @@ controlObject = dialogObject~new[ControlName](resourceID)
 </variablelist>
 </section>
 
+<section id="mthNewStatusBar" xreflabel="newStatusBar"><title>newStatusBar</title>
+<indexterm><primary>newStatusBar</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>newStatusBar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--newStatusBar(--id--)-------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">newStatusBar</emphasis> method returns an object of the <xref linkend="clsStatusBar"/> control
+  class. This object represents the status bar control in the underlying dialog with the specified resource ID.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the status bar dialog control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An object of the status bar control class or <emphasis role="italic">.nil</emphasis> on any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example gets a new status bar control object that represents the status bar control in the underlying
+    dialog with the symbolic ID of IDC_STATUSBAR. Provided the underlying dialog control exists, it is divided into parts and
+    the text for each part is assigned and the text for each part is set:
+
+  <programlisting>
+  <![CDATA[
+    status = self~newStatusBar(IDC_STATUSBAR)
+
+    parts = .array~of(50, 100, 200, -1)
+    status~setParts(parts)
+    status~setText("Line 1", 1)
+    status~setText("Column 1", 2)
+    status~setText("No Selection", 3)
+    status~setText("RW", 4)
+
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthNewTab" xreflabel="newTab"><title>newTab</title>
 <indexterm><primary>newTab</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>newTab</secondary></indexterm>
@@ -4273,6 +4344,68 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <listitem>
   <para>
     An object of the tab control class or <emphasis role="italic">.nil</emphasis> on any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example initializes the tab control with symbolic ID IDC_TAB to have 5 tabs:
+
+<programlisting>
+<![CDATA[
+::class 'MyDlgClass' subclass ResDialog
+
+::method initDialog
+  self~newTab(IDC_TAB)~addSequence("Design", "Implementation", -
+                                   "Test", "Review", "Release")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthNewToolBar" xreflabel="newToolBar"><title>newToolBar</title>
+<indexterm><primary>newToolBar</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>newToolBar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--newToolBar(--id--)---------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">newToolBar</emphasis> method returns an object of the
+ <xref linkend="clsToolBar"/> control class. This object represents the toolbar control in the underlying dialog
+  with the specified resource ID.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the toolbar dialog control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An object of the toolbar control class or <emphasis role="italic">.nil</emphasis> on any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4338,9 +4471,10 @@ controlObject = dialogObject~new[ControlName](resourceID)
   </para>
   <para>
     There is only one Rexx object created for each single Windows dialog control. Once the <emphasis
-    role="italic">createToolTip</emphasis> method has created the underlying ToolTip, each invocation of the <emphasis
-    role="italic">newToolTip</emphasis> method, using the same resource ID, will return the same Rexx object.
-  </para> </listitem></varlistentry>
+    role="italic">newToolBar</emphasis> method has been invoked once, each successive invocation of the <emphasis
+    role="italic">newToolBar</emphasis> method, using the same resource ID, will return the same Rexx object.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -4350,36 +4484,23 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example creates a balloon ToolTip that displays an important message. The message is different during different
-    states of the application. When the message text needs to be changed, the updateMsg() method uses the <emphasis
-    role="italic">newToolTip</emphasis> method to get the Rexx object representing the underlying ToolTip and changes the
-    text for the message:
+    This example instantiates a new toolbar object and then begins to initialize the underlying Windows toolbar:
 <programlisting>
 <![CDATA[
 ::method initDialog
-  expose icon
-
-  toolTip = self~createToolTip(IDC_TT_BALLOON, 'BALLOON')
-  toolTip~setTitle("Important Message", icon)
   ...
 
+  tb = self~newToolBar(IDC_TOOLBAR)
 
-::method updateMsg private
-    use strict arg newMsg
-
-    toolInfo = .ToolInfo~forID(self~newEdit(IDC_EDIT))
-    toolInfo~text = newMsg
-
-    tt = self~newToolTip(IDC_TT_BALLOON)
-    tt~updateTipText(toolInfo)
-
-
+  ret = tb~setExtendedStyle('DOUBLEBUFFER MIXEDBUTTONS')
+  ret = tb~setBitmapSize(.Size~new(24, 24))
+  ...
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End dialog object::newToolTip() -->
+</section>  <!-- End dialog object::newToolBar() -->
 
 <section id="mthNewTrackBar" xreflabel="newTrackBar"><title>newTrackBar</title>
 <indexterm><primary>newTrackBar</primary></indexterm>
@@ -4872,6 +4993,17 @@ EventNotification::<xref linkend="mthConnectTabEvent"/>
 <![CDATA[
 >>--connectTabEvent(--id--,--event--+---------------+--+--------------+--)-----><
                                     +-,--methodName-+  +-,-willReply--+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectToolBarEvent" xreflabel="connectToolBarEvent"><title>connectToolBarEvent</title>
+<programlisting>
+EventNotification::<xref linkend="mthConnectToolBarEvent"/>
+
+<![CDATA[
+>>--connectToolBarEvent(--id--,--event--+-----------+--+--------------+--)-----><
+                                        +-,-mthName-+  +-,-willReply--+
 ]]>
 </programlisting>
 </section>
