@@ -45,11 +45,14 @@ all: pdf html
 
 pdf:
 	- rm -r tmp/en-US/pdf
+	- rm publican.cfg
 	publican build --formats=pdf --langs=en-US
 	cd tmp/en-US/pdf; mv ooRexx*.pdf $(PRODUCT).pdf; cd ../../..
 
 html:
 	- rm -r tmp/en-US/html
+	- rm publican.cfg
+	- cp ./publican.in ./publican.cfg; cat ../oorexx.ver >> ./publican.cfg
 	publican build --formats=html --langs=en-US
 	cd tmp/en-US/html; zip -r $(PRODUCT)-html.zip *; cd ../../..
 
