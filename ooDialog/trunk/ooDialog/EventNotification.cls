@@ -68,9 +68,10 @@
 ::method connectReBarEvent external "LIBRARY oodialog en_connectReBarEvent"
 ::method connectResize external "LIBRARY oodialog en_connectWmEvent"          -- WM_SIZE
 ::method connectResizing external "LIBRARY oodialog en_connectWmEvent"        -- WM_SIZING
+::method connectScrollBarEvent external "LIBRARY oodialog en_connectScrollBarEvent"
 ::method connectSizeMoveEnded external "LIBRARY oodialog en_connectWmEvent"   -- WM_EXITSIZEMOVE
 ::method connectStaticEvent external "LIBRARY oodialog en_connectStaticEvent"
-::method connectScrollBarEvent external "LIBRARY oodialog en_connectScrollBarEvent"
+::method connectStatusBarEvent external "LIBRARY oodialog en_connectStatusBarEvent"
 ::method connectTabEvent external "LIBRARY oodialog en_connectTabEvent"
 ::method connectToolBarEvent external "LIBRARY oodialog en_connectToolBarEvent"
 ::method connectToolTipEvent external "LIBRARY oodialog en_connectToolTipEvent"

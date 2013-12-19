@@ -3591,6 +3591,7 @@ bool initEventNotification(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxOb
 
 #define DTPN_KEYWORDS                 "CloseUp, DateTimeChange, DropDown, FormatQuery, Format, KillFocus, SetFocus, UserString, or KeyDown"
 #define MCN_KEYWORDS                  "GetDayState, Released, SelChange, Select, or ViewChange"
+#define SBN_KEYWORDS                  "Click DblClk RClick RDblClk SimpleModeChange"
 #define RBN_KEYWORDS                  "NcHitTest, ReleasedCapture, AutoBreak, AutoSize, BeginDrag, ChevronPushed, ChildSize, DeletedBand, DeletingBand, EndDrag, GetObject, HeightChange, LayoutChanged, MinMax, or SplitterDrag"
 #define TBN_KEYWORDS                  "one of the documented ToolBar notification keywords"
 #define TTN_KEYWORDS                  "LinkClick, NeedText, Pop, or Show"
@@ -4233,6 +4234,52 @@ inline bool isMustReplyRbn(uint32_t rbn)
 }
 
 /**
+ * Convert a status bar notification code to a method name.
+ */
+inline CSTRING sbn2name(uint32_t sbn)
+{
+    switch ( sbn )
+    {
+        case NM_CLICK              : return "onClick";
+        case NM_DBLCLK             : return "onDblClk";
+        case NM_RCLICK             : return "onRClick";
+        case NM_RDBLCLK            : return "onRDblClk";
+        case SBN_SIMPLEMODECHANGE  : return "onSimpleModeChange";
+    }
+    return "onSBN";
+}
+
+/**
+ * Convert a keyword to the proper rebar notification code.
+ *
+ * We know the keyword arg position is 2.  The ReBar control is post
+ * ooRexx 4.0.1 so we raise an exception on error.
+ */
+static bool keyword2sbn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
+{
+    uint32_t sbn;
+
+    if ( StrCmpI(keyword,      "CLICK")             == 0 ) sbn = NM_CLICK              ;
+    else if ( StrCmpI(keyword, "DBLCLK")            == 0 ) sbn = NM_DBLCLK             ;
+    else if ( StrCmpI(keyword, "RCLICK")            == 0 ) sbn = NM_RCLICK             ;
+    else if ( StrCmpI(keyword, "RDBLCLKE")          == 0 ) sbn = NM_RDBLCLK            ;
+    else if ( StrCmpI(keyword, "SIMPLEMODECHANGE")  == 0 ) sbn = SBN_SIMPLEMODECHANGE  ;
+    else
+    {
+        wrongArgValueException(c->threadContext, 2, SBN_KEYWORDS, keyword);
+        return false;
+    }
+    *flag = sbn;
+    return true;
+}
+
+inline bool isMustReplySbn(uint32_t sbn)
+{
+    return sbn ==  NM_CLICK   || sbn ==  NM_DBLCLK || sbn ==  NM_RCLICK ||
+           sbn ==  NM_RDBLCLK || sbn ==  SBN_SIMPLEMODECHANGE;
+}
+
+/**
  * Convert a scroll bar notification code to a method name.
  *
  * For SB_LINEUP   / SB_LINELEFT  -> onUp
@@ -4242,7 +4289,7 @@ inline bool isMustReplyRbn(uint32_t rbn)
  * For SB_TOP      / SB_LEFT      -> onTop
  * For SB_BOTTOM   / SB_RIGHT     -> onBottom
  */
-inline CSTRING sbn2name(uint32_t sbn)
+inline CSTRING scbn2name(uint32_t sbn)
 {
     switch ( sbn )
     {
@@ -4264,7 +4311,7 @@ inline CSTRING sbn2name(uint32_t sbn)
  *
  * We know the keyword arg position is 2.  No exception can be raised here.
  */
-static bool keyword2sbn(CSTRING keyword, uint32_t *flag)
+static bool keyword2scbn(CSTRING keyword, uint32_t *flag)
 {
     uint32_t sbn;
 
@@ -6493,46 +6540,6 @@ err_out:
     return TheFalseObj;
 }
 
-/** EventNotification::connectStaticEvent()
- *
- *
- */
-RexxMethod5(RexxObjectPtr, en_connectStaticEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
-{
-    pCEventNotification pcen = (pCEventNotification)pCSelf;
-
-    int32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
-    {
-        return TheNegativeOneObj;
-    }
-
-    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
-    if ( tag == TAG_INVALID )
-    {
-        return TheNegativeOneObj;
-    }
-
-    uint32_t notificationCode;
-    if ( ! keyword2stn(context, event, &notificationCode) )
-    {
-        return TheNegativeOneObj;
-    }
-
-    if ( argumentOmitted(3) || *methodName == '\0' )
-    {
-        methodName = stn2name(notificationCode);
-    }
-
-    if ( addCommandMessage(pcen, context, MAKEWPARAM(id, notificationCode), 0xFFFFFFFF, 0, 0, methodName, tag) )
-    {
-        return TheZeroObj;
-    }
-
-    return TheOneObj;
-}
-
 /** EventNotification::connectScrollBarEvent()
  *
  *  Connects a Rexx dialog method with a scroll bar event.
@@ -6641,7 +6648,7 @@ RexxMethod5(RexxObjectPtr, en_connectScrollBarEvent, RexxObjectPtr, rxID, CSTRIN
     }
 
     uint32_t notificationCode;
-    if ( ! keyword2sbn(event, &notificationCode) )
+    if ( ! keyword2scbn(event, &notificationCode) )
     {
         return TheNegativeOneObj;
     }
@@ -6655,7 +6662,7 @@ RexxMethod5(RexxObjectPtr, en_connectScrollBarEvent, RexxObjectPtr, rxID, CSTRIN
 
     if ( argumentOmitted(3) || *methodName == '\0' )
     {
-        methodName = sbn2name(notificationCode);
+        methodName = scbn2name(notificationCode);
     }
 
     uint32_t tag = _willReplyToTag(context, willReply, false, 4);
@@ -6802,6 +6809,133 @@ RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, 
 
 err_out:
     return TheOneObj;
+}
+
+/** EventNotification::connectStaticEvent()
+ *
+ *
+ */
+RexxMethod5(RexxObjectPtr, en_connectStaticEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
+{
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
+    {
+        return TheNegativeOneObj;
+    }
+
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
+
+    uint32_t notificationCode;
+    if ( ! keyword2stn(context, event, &notificationCode) )
+    {
+        return TheNegativeOneObj;
+    }
+
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = stn2name(notificationCode);
+    }
+
+    if ( addCommandMessage(pcen, context, MAKEWPARAM(id, notificationCode), 0xFFFFFFFF, 0, 0, methodName, tag) )
+    {
+        return TheZeroObj;
+    }
+
+    return TheOneObj;
+}
+
+/** EventNotification::connectStatusBarEvent()
+ *
+ *  Connects a Rexx dialog method with a status bare control event.
+ *
+ *  @param  rxID        The resource ID of the dialog control.  Can be numeric
+ *                      or symbolic.
+ *
+ *  @param  event       Keyword specifying which event to connect.  Keywords at
+ *                      this time:
+ *
+ *
+ *
+ *
+ *
+ *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
+ *                      Rexx dialog.  If this argument is omitted then the
+ *                      method name is constructed by prefixing the event
+ *                      keyword with 'on'.  For instance onAutoBreak.
+ *
+ *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
+ *                      direct or indirect. With a direct invocation, the
+ *                      interpreter waits in the Windows message loop for the
+ *                      return from the Rexx method. With indirect, the Rexx
+ *                      method is invoked through ~startWith(), which of course
+ *                      returns immediately.  By default willReply is set to
+ *                      true.
+ *
+ *  @return  True if the event notification was connected, otherwsie false.
+ *
+ *  @note   If a symbolic ID is  used and it can not be resolved to a numeric
+ *          number an exception is raised.
+ *
+ *  @remarks  This method is new since the 4.0.0 release, therefore an exception
+ *            is raised for a bad resource ID rather than returning -1.
+ *
+ *            For controls new since 4.0.0, event notifications that have a
+ *            reply are documented as always being 'direct' reply and
+ *            notifications that ignore the return are documented as allowing
+ *            the programmer to specify.  This means that willReply is only
+ *            ignored for SBN_SIMPLEMODECHANGE and not ignored for any of the
+ *            other events.
+ */
+RexxMethod5(RexxObjectPtr, en_connectStatusBarEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)
+{
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto err_out;
+    }
+
+    uint32_t notificationCode;
+    if ( ! keyword2sbn(context, event, &notificationCode) )
+    {
+        goto err_out;
+    }
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = sbn2name(notificationCode);
+    }
+
+    uint32_t tag = 0;
+    if ( isMustReplySbn(notificationCode) )
+    {
+        tag = TAG_REPLYFROMREXX;
+    }
+    else
+    {
+        tag = _willReplyToTag(context, _willReply, true, 4);
+        if ( tag == TAG_INVALID )
+        {
+            goto err_out;
+        }
+    }
+    tag |= TAG_STATUSBAR;
+
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    {
+        return TheTrueObj;
+    }
+
+err_out:
+    return TheFalseObj;
 }
 
 /** EventNotification::connectEachScrollBarEvent()

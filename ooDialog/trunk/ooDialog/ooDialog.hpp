@@ -153,6 +153,7 @@
 #define TAG_REBAR                 0x0000000E
 #define TAG_MENU                  0x0000000F
 #define TAG_TOOLBAR               0x00000010
+#define TAG_STATUSBAR             0x00000011
 #define TAG_CUSTOMDRAW            0x000000FF
 
 /**

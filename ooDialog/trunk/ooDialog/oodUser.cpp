@@ -727,14 +727,24 @@ uint32_t reBarStyle(CSTRING opts, uint32_t style)
 {
     style |= ccsStyle(opts, style);
 
-    if ( StrStrI(opts, "AUTOSIZE")          != NULL ) style |= RBS_AUTOSIZE       ;
-    if ( StrStrI(opts, "BANDBORDERS")       != NULL ) style |= RBS_BANDBORDERS    ;
-    if ( StrStrI(opts, "DBLCLKTOGGLE")      != NULL ) style |= RBS_DBLCLKTOGGLE   ;
-    if ( StrStrI(opts, "FIXEDORDER")        != NULL ) style |= RBS_FIXEDORDER     ;
-    if ( StrStrI(opts, "REGISTERDROP")      != NULL ) style |= RBS_REGISTERDROP   ;
-    if ( StrStrI(opts, "TOOLTIPS")          != NULL ) style |= RBS_TOOLTIPS       ;
-    if ( StrStrI(opts, "VARHEIGHT")         != NULL ) style |= RBS_VARHEIGHT      ;
-    if ( StrStrI(opts, "VERTICALGRIPPER")   != NULL ) style |= RBS_VERTICALGRIPPER;
+    if ( StrStrI(opts, "AUTOSIZE"       ) != NULL ) style |= RBS_AUTOSIZE       ;
+    if ( StrStrI(opts, "BANDBORDERS"    ) != NULL ) style |= RBS_BANDBORDERS    ;
+    if ( StrStrI(opts, "DBLCLKTOGGLE"   ) != NULL ) style |= RBS_DBLCLKTOGGLE   ;
+    if ( StrStrI(opts, "FIXEDORDER"     ) != NULL ) style |= RBS_FIXEDORDER     ;
+    if ( StrStrI(opts, "REGISTERDROP"   ) != NULL ) style |= RBS_REGISTERDROP   ;
+    if ( StrStrI(opts, "TOOLTIPS"       ) != NULL ) style |= RBS_TOOLTIPS       ;
+    if ( StrStrI(opts, "VARHEIGHT"      ) != NULL ) style |= RBS_VARHEIGHT      ;
+    if ( StrStrI(opts, "VERTICALGRIPPER") != NULL ) style |= RBS_VERTICALGRIPPER;
+    return style;
+}
+
+
+uint32_t statusBarStyle(CSTRING opts, uint32_t style)
+{
+    style |= ccsStyle(opts, style);
+
+    if ( StrStrI(opts, "SIZEGRIP")          != NULL ) style |= SBARS_SIZEGRIP;
+    if ( StrStrI(opts, "TOOLTIPS")          != NULL ) style |= SBARS_TOOLTIPS;
     return style;
 }
 
@@ -931,6 +941,11 @@ uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
         case winReBar :
             style |= getCommonWindowStyles(opts, false, true);
             style = reBarStyle(opts, style);
+            break;
+
+        case winStatusBar :
+            style |= getCommonWindowStyles(opts, false, true);
+            style = statusBarStyle(opts, style);
             break;
 
         case winTab :
@@ -1213,7 +1228,7 @@ err_out:
  */
 inline bool controlHasData(oodControl_t ctrl)
 {
-    return ! (ctrl == winReBar || ctrl == winToolBar || ctrl == winToolTip);
+    return ! (ctrl == winReBar || ctrl == winStatusBar) || ctrl == winToolBar || ctrl == winToolTip;
 }
 
 int32_t connectCreatedControl(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr rxID, int32_t id,

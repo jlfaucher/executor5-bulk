@@ -70,7 +70,7 @@
 ::method setBandInfo unguarded external "LIBRARY oodialog rebar_setBandInfo"
 ::method setBandWidth unguarded external "LIBRARY oodialog rebar_setBandWidth"
 ::method setBarInfo unguarded external "LIBRARY oodialog rebar_setBarInfo"
-::method rebar_setBkColor unguarded external "LIBRARY oodialog rebar_setBkColor"
+::method setBkColor unguarded external "LIBRARY oodialog rebar_setBkColor"
 ::method setColorScheme unguarded external "LIBRARY oodialog rebar_setColorScheme"
 ::method setExtendedStyle unguarded external "LIBRARY oodialog rebar_setExtendedStyle"
 ::method setImageList unguarded external "LIBRARY oodialog rebar_setBarInfo"

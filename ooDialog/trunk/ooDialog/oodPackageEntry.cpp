@@ -693,6 +693,7 @@ REXX_METHOD_PROTOTYPE(en_connectNotifyEvent);
 REXX_METHOD_PROTOTYPE(en_connectReBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectScrollBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectStaticEvent);
+REXX_METHOD_PROTOTYPE(en_connectStatusBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectTabEvent);
 REXX_METHOD_PROTOTYPE(en_connectToolBarEvent);
 REXX_METHOD_PROTOTYPE(en_connectToolTipEvent);
@@ -2081,6 +2082,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(en_connectReBarEvent,           en_connectReBarEvent),
     REXX_METHOD(en_connectScrollBarEvent,       en_connectScrollBarEvent),
     REXX_METHOD(en_connectStaticEvent,          en_connectStaticEvent),
+    REXX_METHOD(en_connectStatusBarEvent,       en_connectStatusBarEvent),
     REXX_METHOD(en_connectTabEvent,             en_connectTabEvent),
     REXX_METHOD(en_connectToolBarEvent,         en_connectToolBarEvent),
     REXX_METHOD(en_connectToolTipEvent,         en_connectToolTipEvent),
