@@ -1007,6 +1007,10 @@
 <entry>Returns an object of the <computeroutput>RadioButton</computeroutput> class for the radio button control with the specified resource ID.</entry>
 </row>
 <row>
+<entry><xref linkend="mthNewReBar"/></entry>
+<entry>Returns an object of the <computeroutput>ReBar</computeroutput> class for the rebar control with the specified resource ID.</entry>
+</row>
+<row>
 <entry><xref linkend="mthNewScrollBar"/></entry>
 <entry>Returns an object of the <computeroutput>ScrollBar</computeroutput> class for the scroll bar control with the specified resource ID.</entry>
 </row>
@@ -4121,6 +4125,65 @@ controlObject = dialogObject~new[ControlName](resourceID)
 </variablelist>
 </section>
 
+
+<section id="mthNewReBar" xreflabel="newReBar"><title>newReBar</title>
+<indexterm><primary>newReBar</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>newReBar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--newReBar(--id--)-------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">newReBar</emphasis> method returns an object of the <xref linkend="clsReBar"/> control
+  class. This object represents the rebar control in the underlying dialog with the specified resource ID.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the rebar dialog control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An object of the rebar control class or <emphasis role="italic">.nil</emphasis> on any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example gets a new rebar control object that represents the rebar control in the underlying
+    dialog with the symbolic ID of IDC_RBAR. The application then begins populating the rebar with bands:
+
+  <programlisting>
+  <![CDATA[
+    rb = self~newReBar(IDC_RBAR)
+
+    cb = self~newComboBox(IDC_CB)
+    r = cb~windowRect
+
+    band = .ReBarBandInfo~new(cb, 'Combo Box', CHILDEDGE, 'Bogus', 50)
+    band~cxMinChild = 0
+    band~cyMinChild = r~bottom - r~top
+
+    ret = rb~insertBand(band)
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="mthNewScrollBar" xreflabel="newScrollBar"><title>newScrollBar</title>
 <indexterm><primary>newScrollBar</primary></indexterm>

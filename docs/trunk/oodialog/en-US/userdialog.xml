@@ -268,6 +268,10 @@
 <entry>Creates a group of radio buttons with labels in the dialog template using a stem to specify the labels.</entry>
 </row>
 <row>
+<entry><xref linkend="mthCreateReBar"/></entry>
+<entry>Creates a rebar control in the dialog template.</entry>
+</row>
+<row>
 <entry><xref linkend="mthCreateScrollBar"/></entry>
 <entry>Creates a scroll bar control in the dialog template.</entry>
 </row>
@@ -286,6 +290,10 @@
 <row>
 <entry><xref linkend="mthCreateStaticText"/></entry>
 <entry>Creates a static text control in the dialog template.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateStatusBar"/></entry>
+<entry>Creates a status bare control in the dialog template.</entry>
 </row>
 <row>
 <entry><xref linkend="mthCreateTab"/></entry>
@@ -1203,6 +1211,122 @@ if success then dlg~execute
 </variablelist>
 
 </section>
+
+
+<section id="sctCommonControlStyles" xreflabel="Common Control Styles"><title>Common Control Styles</title>
+<indexterm><primary>Common Control Styles</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>Common Control Styles</secondary></indexterm>
+
+<para>
+  Windows has a set of common control styles. ooDialog has support for using these styles when creating the <xref
+  linkend="clsReBar"/>, <xref linkend="clsStatusBar"/>, and <xref linkend="clsToolBar"/> dialog controls in a
+  <computeroutput>UserDialog</computeroutput>. The Microsoft <xref linkend="defWindowsDoc"/> says except where noted, these
+  styles apply to header controls, toolbar controls, and status windows. However, some of the styles seem to also effect the
+  rebar control.
+</para>
+<para>
+  In addition, the Microsoft documentation is rather vague as to exactly what styles effect each control. Some styles seem to
+  have no effect, other styles obviously do have an effect. The ooDialog framework parses the <emphasis
+  role="italic">style</emphasis> argument for all the following keywords and adds that style when creating the dialog
+  control. In many cases the ooDialog programer will have to experiment to determine for herself what effect, if any, the
+  style has on a control.
+</para>
+<para>
+  The following keywords, separated by blank, will add the common control style to a rebar, status bar, or tool bar control.
+  Case is not significant:
+  <simplelist type='vert' columns='3'>
+    <member>CCS_ADJUSTABLE    </member>
+    <member>CCS_BOTTOM        </member>
+    <member>CCS_LEFT          </member>
+    <member>CCS_NODIVIDER     </member>
+    <member>CCS_NOMOVEX       </member>
+    <member>CCS_NOMOVEY       </member>
+    <member>CCS_NOPARENTALIGN </member>
+    <member>CCS_NORESIZE      </member>
+    <member>CCS_RIGHT         </member>
+    <member>CCS_TOP           </member>
+    <member>CCS_VERT          </member>
+  </simplelist>
+  <variablelist>
+    <varlistentry><term>CCS_ADJUSTABLE</term>
+    <listitem>
+    <para>
+      Enables a toolbar's built-in customization features, which allow the user to drag a button to a new position or to
+      remove a button by dragging it off the toolbar. In addition, the user can double-click the toolbar to display the
+      Customize Toolbar dialog box, which enables the user to add, delete, and rearrange toolbar buttons.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_BOTTOM</term>
+    <listitem>
+    <para>
+      Causes the control to position itself at the bottom of the parent window's client area and sets the width to be the
+      same as the parent window's width. Status bar windows have this style by default.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_LEFT</term>
+    <listitem>
+    <para>
+      Causes the control to be displayed vertically on the left side of the parent window.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_NODIVIDER</term>
+    <listitem>
+    <para>
+      Prevents a two-pixel highlight from being drawn at the top of the control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_NOMOVEX</term>
+    <listitem>
+    <para>
+      Causes the control to resize and move itself vertically, but not horizontally, in response to a WM_SIZE message. If
+      CCS_NORESIZE is used, this style does not apply.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_NOMOVEY</term>
+    <listitem>
+    <para>
+      Causes the control to resize and move itself horizontally, but not vertically, in response to a WM_SIZE message. If
+      CCS_NORESIZE is used, this style does not apply. Header windows have this style by default.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_NOPARENTALIGN</term>
+    <listitem>
+    <para>
+      Prevents the control from automatically moving to the top or bottom of the parent window. Instead, the control keeps
+      its position within the parent window despite changes to the size of the parent. If CCS_TOP or CCS_BOTTOM is also used,
+      the height is adjusted to the default, but the position and width remain unchanged.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_NORESIZE</term>
+    <listitem>
+    <para>
+      Prevents the control from using the default width and height when setting its initial size or a new size. Instead, the
+      control uses the width and height specified in the request for creation or sizing.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_RIGHT</term>
+    <listitem>
+    <para>
+      Causes the control to be displayed vertically on the right side of the parent window.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_TOP</term>
+    <listitem>
+    <para>
+      Causes the control to position itself at the top of the parent window's client area and sets the width to be the same
+      as the parent window's width. Toolbars have this style by default.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CCS_VERT</term>
+    <listitem>
+    <para>
+      Causes the control to be displayed vertically.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+</para>
+
+</section> <!-- End Common Control Styles section -->
 
 
 <section id="sctCreateButtonControls"><title>Create Button Controls</title>
@@ -7608,6 +7732,221 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 </section>
 
 
+<section id="mthCreateReBar" xreflabel="createReBar"><title>createReBar</title>
+<indexterm><primary>createReBar</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>createReBar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createReBar(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)-><
+                                            +-,-style-+  +-,-attributeName-+
+]]>
+</programlisting>
+
+<para>
+  Creates a <xref linkend="clsReBar"/> control in the dialog template and specifies the resource ID, position, size, and
+  style for the control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The <xref linkend="idArgument"/> for the rebar control. May be numeric or <xref linkend="defSymbolicId"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy [required]</term>
+      <listitem>
+      <para>
+        The  control <xref linkend="controlCoordinatesArgument"/>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <xref linkend="styleExplanation"/> keywords separated by spaces. Case is not
+        significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>AUTOSIZE       </member>
+          <member>BANDBORDERS    </member>
+          <member>DBLCLKTOGGLE   </member>
+          <member>FIXEDORDER     </member>
+          <member>REGISTERDROP   </member>
+          <member>TOOLTIPS       </member>
+          <member>VARHEIGHT      </member>
+          <member>VERTICALGRIPPER</member>
+          <member>BORDER         </member>
+          <member>DISABLED       </member>
+          <member>GROUP          </member>
+          <member>HIDDEN         </member>
+          <member>TAB            </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>AUTOSIZE</term>
+          <listitem>
+          <para>
+            The rebar control will automatically change the layout of the bands when the size or position of the control
+            changes. An AUTOSIZE notification will be sent when this occurs.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BANDBORDERS</term>
+          <listitem>
+          <para>
+            The rebar control displays narrow lines to separate adjacent bands.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DBLCLKTOGGLE</term>
+          <listitem>
+          <para>
+            The rebar band will toggle its maximized or minimized state when the user double-clicks the band. Without this
+            style, the maximized or minimized state is toggled when the user single-clicks on the band.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FIXEDORDER</term>
+          <listitem>
+          <para>
+            The rebar control always displays bands in the same order. You can move bands to different rows, but the band
+            order is static.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>REGISTERDROP</term>
+          <listitem>
+          <para>
+            The rebar control generates GETOBJECT notification messages when an object is dragged over a band in the control.
+            Although the ooDialog framework supports this style and event notification, there is no way within the framework
+            to make use of it.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOOLTIPS</term>
+          <listitem>
+          <para>
+            This style keword is for completeness, the rebar control itself does not yet support tool tips.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VARHEIGHT</term>
+          <listitem>
+          <para>
+            The rebar control displays bands at the minimum required height, when possible. Without this style, the rebar
+            control displays all bands at the same height, using the height of the tallest visible band to determine the
+            height of other bands.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VERTICALGRIPPER</term>
+          <listitem>
+          <para>
+            The size grip will be displayed vertically instead of horizontally in a vertical rebar control. This style is
+            ignored for rebar controls that do not have the CCS_VERT style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsborder"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsdisabled"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsgroup"/> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The not <xref linkend="wsvisible"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TAB</term>
+          <listitem>
+          <para>
+            Create the control with the <xref linkend="wstabstop"/> control style. By default the control
+            is created without the tabstop style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      <para>
+        In addition, the <emphasis role="italic">createReBar</emphasis> method has support for any <xref
+        linkend="sctCommonControlStyles"/> keyword.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>attributeName [optional]</term>
+      <listitem>
+      <para>
+        Although this argument is accepted so that the format of the <emphasis role="italic">createTooBar</emphasis> method
+        is similar to the other <emphasis role="italic">createXX</emphasis> methods, the concept of a rebar having
+        <emphasis role="italic">data</emphasis> makes no sense. If the argument is used it is ignored.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The dialog template has either not been started or is complete.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        A symbolic ID was used, but it could not be resolved correctly.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Although Microsoft's documentation implies that the <xref linkend="sctCommonControlStyles"/> are ignored by the rebar
+    control, experimentation has shown the the control does not ignore them.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example creates a rebar control that displays the bands at the minimum required height when possible, has
+    narrow lines between adjacent bands, and keeps the bands in the same order:
+<programlisting>
+<![CDATA[
+  self~createReBar(IDC_RBAR, 0, 1, 220, 22, "VARHEIGHT BANDBORDERS FIXEDORDER")
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserDialog::createReBar() -->
+
+
 <section id="mthCreateScrollBar" xreflabel="createScrollBar"><title>createScrollBar</title>
 <indexterm><primary>createScrollBar</primary></indexterm>
 <indexterm><primary>UserDialog class</primary><secondary>createScrollBar</secondary></indexterm>
@@ -10154,6 +10493,168 @@ return 0
 </section> <!-- End Create Static Controls section -->
 
 
+<section id="mthCreateStatusBar" xreflabel="createStatusBar"><title>createStatusBar</title>
+<indexterm><primary>createStatusBar</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>createStatusBar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createStatusBar(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)-><
+                                              +-,-style-+  +-,-attributeName-+
+]]>
+</programlisting>
+
+<para>
+  Creates a <xref linkend="clsStatusBar"/> control in the dialog template and specifies the resource ID, position, size, and
+  style name for the control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The <xref linkend="idArgument"/> for the status bar control. May be numeric or <xref linkend="defSymbolicId"/>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy [required]</term>
+      <listitem>
+      <para>
+        The  control <xref linkend="controlCoordinatesArgument"/>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <xref linkend="styleExplanation"/> keywords separated by spaces. Case is not
+        significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>SIZEGRIP  </member>
+          <member>TOOLTIPS  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>SIZEGRIP</term>
+          <listitem>
+          <para>
+            The status bar control includes a sizing grip at the right end of the status bar. A sizing grip is like a sizing
+            border, it is a rectangular area that the user can click and drag to resize the status bar.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOOLTIPS</term>
+          <listitem>
+          <para>
+            This style enables ToolTips.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsborder"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsdisabled"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <xref linkend="wsgroup"/> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The not <xref linkend="wsvisible"/> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TAB</term>
+          <listitem>
+          <para>
+            Create the control with the <xref linkend="wstabstop"/> control style. By default the control
+            is created without the tabstop style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      <para>
+        In addition, <emphasis role="italic">createStatusBar</emphasis> has support for any <xref
+        linkend="sctCommonControlStyles"/> keyword.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>attributeName [optional]</term>
+      <listitem>
+      <para>
+        Although this argument is accepted so that the format of the <emphasis role="italic">createStatusBar</emphasis>
+        method is similar to the other <emphasis role="italic">createXX</emphasis> methods, the concept of a status bar
+        having <emphasis role="italic">data</emphasis> makes no sense. If the argument is used it is ignored.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The dialog template has either not been started or is complete.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        A symbolic ID was used, but it could not be resolved correctly.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Experimentation has shown that the CCS_LEFT, CCS_TOP, and CCS_RIGHT styles can be used with the status bar control.
+    Although, left and right styles do not display the text of the status bar very well.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example creates a status bar in the dialog template with both the sizing grip and tool tip sytles.  Note
+    that the position and size of the status bar are ignored by the operating system when it creates the control. Instead,
+    the control is placed at the bottom of the dialog, using a default height, and its width is the width of the dialog:
+
+<programlisting>
+<![CDATA[
+  self~createStatusBar(IDC_STATUS, 167, 90, 50, 14, 'SIZEGRIP TOOLTIPS')
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserDialog::createStatusBar() -->
+
 <section id="mthCreateTab" xreflabel="createTab"><title>createTab</title>
 <indexterm><primary>createTab</primary></indexterm>
 <indexterm><primary>UserDialog class</primary><secondary>createTab</secondary></indexterm>
@@ -10386,8 +10887,8 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
 </programlisting>
 
 <para>
-  Creates an <xref linkend="clsToolBar"/> control in the dialog template and specifies the resource ID, position, size,
-  style, and attribute name for the control.
+  Creates a <xref linkend="clsToolBar"/> control in the dialog template and specifies the resource ID, position, size, and
+  style for the control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -10398,7 +10899,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The <xref linkend="idArgument"/> for the up-down control. May be numeric or
+        The <xref linkend="idArgument"/> for the toolbar control. May be numeric or
         <xref linkend="defSymbolicId"/>.
       </para>
       </listitem></varlistentry>
@@ -10434,49 +10935,60 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
           <varlistentry><term>ALTDRAG</term>
           <listitem>
           <para>
-            x
+            Allows users to change a toolbar button's position by dragging it while holding down the ALT key. If this style
+            is not specified, the user must hold down the SHIFT key while dragging a button. Note that the CCS_ADJUSTABLE
+            style must be specified to enable toolbar buttons to be dragged.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CUSTOMERASE</term>
           <listitem>
           <para>
-            x
+            Generates CUSTOMDRAW notification messages when the toolbar processes WM_ERASEBKGND messages. Note that support
+            for toolbar <xref linkend="clsCustomDraw"/> has not yet been implemented in the ooDialog framework.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>FLAT</term>
           <listitem>
           <para>
-            y
+            Creates a flat toolbar. In a flat toolbar, both the toolbar and the buttons are transparent and hot-tracking is
+            enabled. Button text appears under button bitmaps.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>LIST</term>
           <listitem>
           <para>
-            y
+            Creates a flat toolbar with button text to the right of the bitmap. Otherwise, this style is identical to FLAT.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>REGISTERDROP</term>
           <listitem>
           <para>
-            z
+            Generates GETOBJECT notification messages to request drop target objects when the cursor passes over toolbar
+            buttons. Although the ooDialog framework supports this style and event notification, there is no way within the
+            framework to make use of it.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TOOLTIPS</term>
           <listitem>
           <para>
-            z
+            Creates a ToolTip control that an application can use to display descriptive text for the buttons in the toolbar.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TRANSPARENT</term>
           <listitem>
           <para>
-            z
+            Creates a transparent toolbar. In a transparent toolbar, the toolbar is transparent but the buttons are not.
+            Button text appears under button bitmaps.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>WRAPABLE</term>
           <listitem>
           <para>
-            z
+            Creates a toolbar that can have multiple lines of buttons. Toolbar buttons can "wrap" to the next line when the
+            toolbar becomes too narrow to include all buttons on the same line. When the toolbar is wrapped, the break will
+            occur on either the rightmost separator or the rightmost button if there are no separators on the bar. This style
+            must be set to display a vertical toolbar control when the toolbar is part of a vertical rebar control. This
+            style cannot be combined with CCS_VERT.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>BORDER</term>
@@ -10512,13 +11024,17 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
           </listitem></varlistentry>
         </variablelist>
       </para>
+      <para>
+        In addition, the <emphasis role="italic">createToolBar</emphasis> method has support for any <xref
+        linkend="sctCommonControlStyles"/> keyword.
+      </para>
       </listitem></varlistentry>
       <varlistentry><term>attributeName [optional]</term>
       <listitem>
       <para>
-        Although this argument is accepted so that the format of the <emphasis role="italic">createTooBar</emphasis> is
-        similar to the other <emphasis role="italic">createXX</emphasis> methods, the concept of a toolbar having <emphasis
-        role="italic">data</emphasis> makes no sense. If the argument is used it is ignored.
+        Although this argument is accepted so that the format of the <emphasis role="italic">createTooBar</emphasis> method
+        is similar to the other <emphasis role="italic">createXX</emphasis> methods, the concept of a toolbar having
+        <emphasis role="italic">data</emphasis> makes no sense. If the argument is used it is ignored.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -10565,19 +11081,18 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example ...
-
+    The following example creates a toolbar that is initially invisible. In the application, after the buttons fro the
+    toolbar have been added, the toolbar is made visible:
 <programlisting>
 <![CDATA[
-
   self~createToolBar(IDC_TOOLBAR, 0, 0, 20, 11, "TOOLTIPS LIST HIDDEN BORDER FLAT CCS_ADJUSTABLE ALTDRAG")
-
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End UserDialog::createToolBar() -->
+
 
 <section id="mthCreateTrackBar" xreflabel="createTrackbar"><title>createTrackbar</title>
 <indexterm><primary>createTrackbar</primary></indexterm>

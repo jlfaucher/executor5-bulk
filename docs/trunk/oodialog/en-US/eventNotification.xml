@@ -1872,8 +1872,8 @@ lo word resource ID:       1003
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control to request text to be displayed in a
-          <link linkend="sctDTPCallback">callback</link>/> field. The <emphasis role="italic">willReply</emphasis> argument
-          is ignored for this event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a reply.
+          <link linkend="sctDTPCallback">callback</link> field. The <emphasis role="italic">willReply</emphasis> argument is
+          ignored for this event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>FORMATQUERY</term>
@@ -6529,6 +6529,149 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </variablelist>
 </section>
 
+<section id="mthConnectReBarEvent" xreflabel="connectReBarEvent"><title>connectReBarEvent</title>
+<indexterm><primary>connectReBarEvent</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectReBarEvent</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>connectReBarEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectReBarEvent(--id--,--event--+-----------+--+-------------+--)--------><
+                                      +-,-mthName-+  +-,-willReply-+
+]]>
+</programlisting>
+
+<para>
+  Connects an event notification message from a rebar control to a method in the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the rebar control whose notification message is to be connected to a method in the Rexx dialog.
+      May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
+    <listitem>
+    <para>
+      Exactly one of the following keywords. The keyword specifies the event to be connected. Case is not significant.
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>AUTOBREAK</member>
+        <member>?</member>
+        <member>?</member>
+        <member>?</member>
+      </simplelist>
+    </para>
+    <variablelist>
+      <varlistentry id="kywReBarAUTOBREAK" xreflabel="AUTOBREAK"><term>AUTOBREAK</term>
+      <listitem>
+      <para>
+        xxx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method that is to be invoked whenever the specified event happens. The programmer defines this method.
+      If this argument is omitted, a method name is automatically generated that consists of the event keyword preceded by
+      <computeroutput>on</computeroutput>. For instance, <computeroutput>onAutoBreak</computeroutput>. The method name can
+      not be the empty string. The empty string is treated as an omitted argument.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
+      linkend="sctCodingEventHandlers">waits</link>, or does not wait, for the reply from the event handler. The value of
+      this argument can be <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or the keyword
+      <emphasis role="italic">sync</emphasis>, case insignificant. The default if the argument is omitted is
+      <computeroutput>.true</computeroutput>
+    </para>
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">.true</emphasis></term>
+      <listitem>
+      <para>
+        The interpreter waits for the return from the event handler and the event handler <emphasis
+        role="italic">must</emphasis> return a value.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.false</emphasis></term>
+      <listitem>
+      <para>
+        The interpreter does not wait for the return from the event handler. Because of this any return from the event
+        handler is discarded.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">sync</emphasis></term>
+      <listitem>
+      <para>
+        The interpreter waits until the event handler method returns, but ignores the return value. The event handler is not
+        required to return a value, but good practice would be to always return a value from an event handler.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    <para>
+      For those event notifications that the operating system expects a return value, the <emphasis
+      role="italic">willReply</emphasis> argument is ignored. For these events, the event handler must always return a value
+      of the correct type. I.e., if the operating system expects a reply of true or false, the event handler mus always
+      return true or false. The events in the following list fall into this category:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>NCHITTEST     </member>
+        <member>AUTOBREAK     </member>
+        <member>BEGINDRAG     </member>
+        <member>CHILDSIZE     </member>
+        <member>GETOBJECT     </member>
+        <member>MINMAX        </member>
+      </simplelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the event was connected correctly, otherwise
+   <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Syntax errors are raised when incorrect usage is detected, including the use of an invalid symbolic ID or an
+    unrecognized event keyword.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
+    connected event happens.
+  </para>
+  <para>
+    The underlying dialog receives the RBN_* messages as the notifications for the rebar events.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End EventNotification::connectReBarEvent() -->
+
+
 <section id="mthConnectResize" xreflabel="connectResize"><title>connectResize</title>
 <indexterm><primary>connectResize</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectResize</secondary></indexterm>
@@ -7483,6 +7626,183 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </variablelist>
 </section>
 
+
+<section id="mthConnectStatusBarEvent" xreflabel="connectStatusBarEvent"><title>connectStatusBarEvent</title>
+<indexterm><primary>connectStatusBarEvent</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectStatusBarEvent</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>connectStatusBarEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectStatusBarEvent(--id--,--event--+-----------+--+-------------+--)----><
+                                          +-,-mthName-+  +-,-willReply-+
+]]>
+</programlisting>
+
+<para>
+  Connects an event notification message from a status bar control to a method in the Rexx dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the status bar control whose notification message is to be connected to a method in the Rexx dialog.
+      May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
+    <listitem>
+    <para>
+      Exactly one of the following keywords. The keyword specifies the event to be connected. Case is not significant.
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>CLICK           </member>
+        <member>DBLCLK          </member>
+        <member>RCLICK          </member>
+        <member>RDBLCLK         </member>
+        <member>SIMPLEMODECHANGE</member>
+      </simplelist>
+    </para>
+    <variablelist>
+      <varlistentry id="kywStatusBarCLICK" xreflabel="CLICK"><term>CLICK</term>
+      <listitem>
+      <para>
+        Sent by a status bar control to notify the dialog that the user has clicked the left mouse button within the
+        control. The event handler returns true to indicate that the mouse click was handled and to suppress the default
+        processing by the operating system. Return false to allow default processing of the click.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywStatusBarDBLCLK" xreflabel="DBLCLK"><term>DBLCLK</term>
+      <listitem>
+      <para>
+        Sent by a status bar control to notify the dialog that the user has double-clicked the left mouse button within the
+        control. The event handler returns true to indicate that the mouse click was handled and to suppress the default
+        processing by the operating system. Return false to allow default processing of the click.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywStatusBarRCLICK" xreflabel="RCLICK"><term>RCLICK</term>
+      <listitem>
+      <para>
+        Sent by a status bar control to notify the dialog that the user has clicked the right mouse button within the
+        control. The event handler returns true to indicate that the mouse click was handled and to suppress the default
+        processing by the operating system. Return false to allow default processing of the click.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywStatusBarRDBLCLK" xreflabel="RDBLCLK"><term>RDBLCLK</term>
+      <listitem>
+      <para>
+        Sent by a status bar control to notify the dialog that the user has double-clicked the right mouse button within the
+        control. The event handler returns true to indicate that the mouse click was handled and to suppress the default
+        processing by the operating system. Return false to allow default processing of the click.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywStatusBarSIMPLEMODECHANGE" xreflabel="SIMPLEMODECHANGE"><term>SIMPLEMODECHANGE</term>
+      <listitem>
+      <para>
+        Sent by a status bar control when the simple mode changes due to the invocation of the <xref linkend="mthSimple"/>
+        method. The reply from the event handler is ignored by the operating system.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method that is to be invoked whenever the specified event happens. The programmer defines this method.
+      If this argument is omitted, a method name is automatically generated that consists of the event keyword preceded by
+      <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>. The method name can
+      not be the empty string. The empty string is treated as an omitted argument.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
+      linkend="sctCodingEventHandlers">waits</link>, or does not wait, for the reply from the event handler. The value of
+      this argument can be <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or the keyword
+      <emphasis role="italic">sync</emphasis>, case insignificant. The default if the argument is omitted is
+      <computeroutput>.true</computeroutput>
+    </para>
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">.true</emphasis></term>
+      <listitem>
+      <para>
+        The interpreter waits for the return from the event handler and the event handler <emphasis
+        role="italic">must</emphasis> return a value.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.false</emphasis></term>
+      <listitem>
+      <para>
+        The interpreter does not wait for the return from the event handler. Because of this any return from the event
+        handler is discarded.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">sync</emphasis></term>
+      <listitem>
+      <para>
+        The interpreter waits until the event handler method returns, but ignores the return value. The event handler is not
+        required to return a value, but good practice would be to always return a value from an event handler.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    <para>
+      For those event notifications that the operating system expects a return value, the <emphasis
+      role="italic">willReply</emphasis> argument is ignored. For these events, the event handler must always return a value
+      of the correct type. I.e., if the operating system expects a reply of true or false, the event handler mus always
+      return true or false. The events in the following list fall into this category:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>CLICK           </member>
+        <member>DBLCLK          </member>
+        <member>RCLICK          </member>
+        <member>RDBLCLK         </member>
+        <member>SIMPLEMODECHANGE</member>
+      </simplelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the event was connected correctly, otherwise
+   <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Syntax errors are raised when incorrect usage is detected, including the use of an invalid symbolic ID or an
+    unrecognized event keyword.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
+    connected event happens.
+  </para>
+  <para>
+    The underlying dialog receives the SBN_* messages as the notifications for the status bar events.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End EventNotification::connectStatusBarEvent() -->
+
+
 <section id="mthConnectTabEvent" xreflabel="connectTabEvent"><title>connectTabEvent</title>
 <indexterm><primary>connectTabEvent</primary></indexterm>
 <programlisting>
@@ -7720,7 +8040,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </programlisting>
 
 <para>
-  xx
+  Connects an event notification message from a toolbar control to a method in the Rexx dialog object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7771,11 +8091,59 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
     <listitem>
     <para>
       The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
-      linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler, for some of the toolbar events.
-      The default is ...
+      linkend="sctCodingEventHandlers">waits</link>, or does not wait, for the reply from the event handler. The value of
+      this argument can be <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or the keyword
+      <emphasis role="italic">sync</emphasis>, case insignificant. The default if the argument is omitted is
+      <computeroutput>.true</computeroutput>
+    </para>
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">.true</emphasis></term>
+      <listitem>
+      <para>
+        The interpreter waits for the return from the event handler and the event handler <emphasis
+        role="italic">must</emphasis> return a value.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.false</emphasis></term>
+      <listitem>
+      <para>
+        The interpreter does not wait for the return from the event handler. Because of this any return from the event
+        handler is discarded.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">sync</emphasis></term>
+      <listitem>
+      <para>
+        The interpreter waits until the event handler method returns, but ignores the return value. The event handler is not
+        required to return a value, but good practice would be to always return a value from an event handler.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    <para>
+      For those event notifications that the operating system expects a return value, the <emphasis
+      role="italic">willReply</emphasis> argument is ignored. For these events, the event handler must always return a value
+      of the correct type. I.e., if the operating system expects a reply of true or false, the event handler mus always
+      return true or false. The events in the following list fall into this category:
     </para>
     <para>
-      xxx
+      <simplelist type='vert' columns='3'>
+        <member>CHAR          </member>
+        <member>CLICK         </member>
+        <member>KEYDOWN       </member>
+        <member>RCLICK        </member>
+        <member>RDBLCLK       </member>
+        <member>DROPDOWN      </member>
+        <member>GETBUTTONINFO </member>
+        <member>GETDISPINFO   </member>
+        <member>GETINFOTIP    </member>
+        <member>GETOBJECT     </member>
+        <member>HOTITEMCHANGE </member>
+        <member>INITCUSTOMIZE </member>
+        <member>MAPACCELERATOR</member>
+        <member>QUERYDELETE   </member>
+        <member>QUERYINSERT   </member>
+        <member>RESTORE       </member>
+      </simplelist>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7805,18 +8173,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
     connected event happens.
   </para>
   <para>
-    The underlying dialog receives the TBN_* messages as the notifications for the tool tip events.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The underlying dialog receives the TBN_* messages as the notifications for the toolbar events.
   </para>
   </listitem></varlistentry>
 </variablelist>
