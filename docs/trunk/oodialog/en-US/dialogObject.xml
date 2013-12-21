@@ -4474,15 +4474,38 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example initializes the tab control with symbolic ID IDC_TAB to have 5 tabs:
+    The following example gets a <emphasis role="italic">ToolBar</emphasis> object that represents the underlying Windows
+    toolbar with the symbolic ID of IDC_TOOLBAR and then begins initializing it:
 
 <programlisting>
 <![CDATA[
-::class 'MyDlgClass' subclass ResDialog
-
 ::method initDialog
-  self~newTab(IDC_TAB)~addSequence("Design", "Implementation", -
-                                   "Test", "Review", "Release")
+  expose tb
+
+  tb = self~newToolBar(IDC_TOOLBAR)
+
+  ret = tb~setExtendedStyle('DOUBLEBUFFER MIXEDBUTTONS')
+  ret = tb~setBitmapSize(.Size~new(24, 24))
+
+  self~loadBitmaps(tb)
+
+  strings = .array~of("Press Me Please", "Where Am I?","Please Push Me", "Get Button", "Customize")
+  ret = tb~addString(strings)
+
+  tbb1 = .TbButton~new(IDB_PRESS, "Press Me Please", "BUTTON", "ENABLED", , 1); say 'tbb1 text:' tbb1~text
+  tbb2 = .TbButton~new(IDB_WHERE, 2, "BUTTON", "ENABLED", , 11)
+  tbb3 = .TbButton~new(IDB_PUSH, 3, "BUTTON", "ENABLED", , 3)
+  tbb4 = .TbButton~new(IDB_COPY_TO_FOLDER, 4, "BUTTON", "ENABLED", , 4)
+  tbb5 = .TbButton~new(IDB_CUT_CLIPBOARD, 5, "BUTTON", "ENABLED", , 5)
+
+  buttons = .array~of(tbb1, tbb2, tbb3, tbb4, tbb5)
+  ret = tb~addButtons(buttons) -- Returns true on success, othewise false
+
+  -- Now that the tool bar has its buttons, tell it to recalculate its size.
+  tb~autoSize
+
+  -- And show the tool bar.
+  tb~show
 
 ]]>
 </programlisting>

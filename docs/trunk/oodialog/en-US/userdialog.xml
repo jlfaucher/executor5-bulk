@@ -1130,7 +1130,7 @@ if success then dlg~execute
     <xref linkend="mthGroup"/> method of the DialogControl class.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term id="wstabstop" xreflabel="tabstop"><emphasis role="bold">TAB NOTAB</emphasis></term>
+  <varlistentry><term id="wstabstop" xreflabel="tabstop"><emphasis role="bold">TAB, NOTAB</emphasis></term>
   <listitem>
   <para>
     The tabstop style is another style that is only meaningful with dialog controls.  When a control has the tabstop
@@ -7761,7 +7761,8 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control <xref linkend="controlCoordinatesArgument"/>
+        The  control <xref linkend="controlCoordinatesArgument"/>. Rebar controls typically ignore the co-ordinates, they
+        position and size themselves according to their internal logic.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
@@ -7846,19 +7847,22 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The <xref linkend="wsborder"/> window style.
+            Adds the <xref linkend="wsborder"/> window style. By default the BORDER style is not added. However, rebar
+            controls seem to ignore this style completely. The <emphasis role="italic">createRebar</emphasis> method accepts
+            this keyword so that the ooDialog programmer can experiment with it. But it is not expected that using BORDER
+            will produce any noticeable difference in appearance.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The <xref linkend="wsdisabled"/> window style.
+            Gives the reboar control the <xref linkend="wsdisabled"/> window style. By default the control is enabled
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The <xref linkend="wsgroup"/> control style.
+            The <xref linkend="wsgroup"/> control style is added to the control. By default the GROUP style is not used.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>HIDDEN</term>
@@ -7871,7 +7875,10 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
           <listitem>
           <para>
             Create the control with the <xref linkend="wstabstop"/> control style. By default the control
-            is created without the tabstop style.
+            is created without the TABSTOP style. Note that the behavior of the rebar control does not change with, or
+            without, the TABSTOP style. The <emphasis role="italic">createRebar</emphasis> method accepts this keyword so
+            that the ooDialog programmer can experiment with it. But it is not expected that using TAB will produce any
+            noticeable difference in behavior.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -7922,7 +7929,11 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <listitem>
   <para>
     Although Microsoft's documentation implies that the <xref linkend="sctCommonControlStyles"/> are ignored by the rebar
-    control, experimentation has shown the the control does not ignore them.
+    control, experimentation has shown that the control does not ignore them.
+  </para>
+  <para>
+    A rebar window can also be dynamically added to an <computeroutput>UserDialog</computeroutput> through the <xref
+    linkend="mthCreateReBarWindow"/> method
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -10522,7 +10533,8 @@ return 0
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control <xref linkend="controlCoordinatesArgument"/>
+        The  control <xref linkend="controlCoordinatesArgument"/>. Status bar controls typically ignore the co-ordinate
+        arguments. Rather they size and position themselvers according to their internal logic.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
@@ -10535,6 +10547,11 @@ return 0
         <simplelist type='vert' columns='3'>
           <member>SIZEGRIP  </member>
           <member>TOOLTIPS  </member>
+          <member>BORDER    </member>
+          <member>DISABLED  </member>
+          <member>GROUP     </member>
+          <member>HIDDEN    </member>
+          <member>TAB       </member>
         </simplelist>
         <variablelist>
           <varlistentry><term>SIZEGRIP</term>
@@ -10553,19 +10570,21 @@ return 0
           <varlistentry><term>BORDER</term>
           <listitem>
           <para>
-            The <xref linkend="wsborder"/> window style.
+            Status bars usually do not have The <xref linkend="wsborder"/> window style, they draw their own border. The
+            BORDER adds an extra border to the status bar.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The <xref linkend="wsdisabled"/> window style.
+            Adds the <xref linkend="wsdisabled"/> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The <xref linkend="wsgroup"/> control style.
+            The status bar will have the <xref linkend="wsgroup"/> control style. By default the status bar does not have the
+            group style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>HIDDEN</term>
@@ -10906,7 +10925,8 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
       <varlistentry><term>x, y, cx, cy [required]</term>
       <listitem>
       <para>
-        The  control <xref linkend="controlCoordinatesArgument"/>
+        The  control <xref linkend="controlCoordinatesArgument"/>. Toolbar controls typically ignore the co-ordinate
+        arguments. Rather they size and position themselvers according to their internal logic.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
@@ -10925,11 +10945,11 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
           <member>TOOLTIPS     </member>
           <member>TRANSPARENT  </member>
           <member>WRAPABLE     </member>
-          <member>BORDER       </member>
+          <member>NOBORDER     </member>
           <member>DISABLED     </member>
           <member>GROUP        </member>
           <member>HIDDEN       </member>
-          <member>TAB          </member>
+          <member>NOTAB        </member>
         </simplelist>
         <variablelist>
           <varlistentry><term>ALTDRAG</term>
@@ -10991,35 +11011,38 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
             style cannot be combined with CCS_VERT.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>BORDER</term>
+          <varlistentry><term>NOBORDER</term>
           <listitem>
           <para>
-            The <xref linkend="wsborder"/> window style.
+            By default a toolbar has the <xref linkend="wsborder"/> window style. Use the NOBORDER keyword for a toolbar
+            without a border
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
           <para>
-            The <xref linkend="wsdisabled"/> window style.
+            The toolbar will have the <xref linkend="wsdisabled"/> window style. By default the toolbar is enabled.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            The <xref linkend="wsgroup"/> control style.
+            The toolbar will have the <xref linkend="wsgroup"/> control style. By default toolbars are not given the group
+            style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The not <xref linkend="wsvisible"/> window style.
+            By default the toolbar is created with the <xref linkend="wsvisible"/> window style. Use the HIDDEN keyword to
+            have the toolbar created invisible.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>TAB</term>
+          <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            Create the control with the <xref linkend="wstabstop"/> control style. By default the control
-            is created without the tabstop style.
+            Create the control without the <xref linkend="wstabstop"/> control style. By default the control is created with
+            the tabstop style.
           </para>
           </listitem></varlistentry>
         </variablelist>
