@@ -56,6 +56,7 @@
 #include "oodMessaging.hpp"
 #include "oodDeviceGraphics.hpp"
 #include "oodResizableDialog.hpp"
+#include "oodUser.hpp"
 
 
 class LoopThreadArgs
@@ -2238,6 +2239,276 @@ RexxMethod3(CSTRING, winex_getSetArcDirection, POINTERSTRING, _hDC, OPTIONAL_CST
 err_out:
     return "";
 }
+
+
+/**
+ *  Methods for the .CreateWindow class.
+ */
+#define CREATEWINDOW_CLASS      "CreateWindow"
+
+
+static pCCreateWindows validateCwCSelf(RexxMethodContext *c, void *pCSelf)
+{
+    pCCreateWindows pccw = (pCCreateWindows)pCSelf;
+    if ( pccw == NULL )
+    {
+        baseClassInitializationException(c, "CreateWindow");
+    }
+    else
+    {
+        if ( pccw->hDlg == NULL )
+        {
+            if ( pccw->wndBase->hwnd == NULL )
+            {
+                noWindowsDialogException(c, pccw->rexxDlg);
+            }
+            else
+            {
+                pccw->hDlg = pccw->wndBase->hwnd;
+            }
+        }
+    }
+
+    return pccw;
+}
+
+
+bool initCreateWindows(RexxMethodContext *c, RexxObjectPtr self, pCPlainBaseDialog pcpbd)
+{
+    RexxBufferObject obj = c->NewBuffer(sizeof(CCreateWindows));
+    if ( obj == NULLOBJECT )
+    {
+        return false;
+    }
+
+    pCCreateWindows pccw = (pCCreateWindows)c->BufferData(obj);
+    pccw->rexxDlg  = self;
+    pccw->wndBase  = pcpbd->wndBase;;
+    pccw->hDlg     = NULL;
+    pccw->hinst    = MyInstance;
+
+    c->SendMessage1(self, "INITCREATEWINDOWS", obj);
+
+    return true;
+}
+
+
+/** CreateWindows::initCreateWindows()
+ *
+ */
+RexxMethod1(logical_t, cw_initCreateWindows, RexxObjectPtr, cSelf)
+{
+    if ( ! context->IsBuffer(cSelf) )
+    {
+        wrongClassException(context->threadContext, 1, "Buffer");
+        return FALSE;
+    }
+
+    context->SetObjectVariable("CSELF", cSelf);
+    return TRUE;
+}
+
+
+/** CreateWindows::createReBarWindow()
+ *
+ *  Creates a Windows rebar and returns the Rexx ReBar object.
+ *
+ *  @param id     [required] The resource ID of the rebar.
+ *
+ *  @param sytle  [optional] Style keywords.  If omitted the rebar uses the
+ *                default rebar style of visible, tabstop, variable height, band
+ *                borders, and common control no divider style.
+ *
+ *  @notes Sets the .SystemErrorCode
+ *
+ *         rebars ignore the position and size co-ordinates, so there is no
+ *         arguments for them.
+ *
+ *  @remarks  The rebar control seems to remove the WS_BORDER style when it is
+ *            created.  The WS_TABSTOP style seems to have no effect, behavior
+ *            is the same with or without it.  However, tabbing does *not* work
+ *            if the control does not have the WS_EX_CONTROLPARENT styles. The
+ *            WS_EX_TOOLWINDOW style is used here because several of the MSDN
+ *            samples use it.  But, not sure if it is really needed or
+ *            appropriate.
+ */
+RexxMethod3(RexxObjectPtr, cw_createReBarWindow, RexxObjectPtr, rxID, OPTIONAL_CSTRING, _style, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    RexxObjectPtr result = TheNilObj;
+    pCCreateWindows pccw =  validateCwCSelf(context, pCSelf);
+    if ( pccw == NULL )
+    {
+        goto done_out;
+    }
+
+    uint32_t id = oodResolveSymbolicID(context, pccw->rexxDlg, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto done_out;
+    }
+
+    uint32_t style = WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN ;
+    if ( argumentExists(2) )
+    {
+        style |= getControlStyle(winReBar, _style);
+    }
+    else
+    {
+        style |= WS_VISIBLE | WS_TABSTOP | RBS_VARHEIGHT | RBS_BANDBORDERS | CCS_NODIVIDER;
+    }
+
+    HWND hRebar = CreateWindowEx(WS_EX_TOOLWINDOW | WS_EX_CONTROLPARENT, REBARCLASSNAME, NULL, style,
+                                 0, 0, 0, 0, pccw->hDlg, (HMENU)id, pccw->hinst, NULL);
+    if ( hRebar == NULL )
+    {
+        oodSetSysErrCode(context->threadContext);
+        goto done_out;
+    }
+
+    RexxClassObject rxClass = oodClass4controlType(winReBar, context);
+    if ( rxClass == NULLOBJECT )
+    {
+        goto done_out;
+    }
+
+    result = createRexxControl(context->threadContext, hRebar, pccw->hDlg, id, winReBar, pccw->rexxDlg,
+                               rxClass, false, true);
+
+done_out:
+    return result;
+}
+
+
+/** CreateWindows::createStatusBarWindow()
+ *
+ *  Creates a Windows status bar and returns the Rexx StatusBar object.
+ *
+ *  @param id     [required] The resource ID of the status bar.
+ *
+ *  @param sytle  [optional] Style keywords.  If omitted the status bar uses
+ *                the default status bar style of visible, sizing grep, tool
+ *                tips enabled.
+ *
+ *  @notes Sets the .SystemErrorCode
+ *
+ *         Status bars ignore the position and size co-ordinates, so there is
+ *         no arguments for them.
+ */
+RexxMethod3(RexxObjectPtr, cw_createStatusBarWindow, RexxObjectPtr, rxID, OPTIONAL_CSTRING, _style, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    RexxObjectPtr result = TheNilObj;
+    pCCreateWindows pccw =  validateCwCSelf(context, pCSelf);
+    if ( pccw == NULL )
+    {
+        goto done_out;
+    }
+
+    uint32_t id = oodResolveSymbolicID(context, pccw->rexxDlg, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto done_out;
+    }
+
+    uint32_t style = WS_CHILD;
+    if ( argumentExists(2) )
+    {
+        style |= getControlStyle(winStatusBar, _style);
+    }
+    else
+    {
+        style |= SBARS_SIZEGRIP | SBARS_TOOLTIPS | WS_VISIBLE;
+    }
+
+    HWND hStatus = CreateWindowEx(0, STATUSCLASSNAME, NULL, style, 0, 0, 0, 0, pccw->hDlg,
+                                  (HMENU)id, pccw->hinst, NULL);
+    if ( hStatus == NULL )
+    {
+        oodSetSysErrCode(context->threadContext);
+        goto done_out;
+    }
+
+    RexxClassObject rxClass = oodClass4controlType(winStatusBar, context);
+    if ( rxClass == NULLOBJECT )
+    {
+        goto done_out;
+    }
+
+    result = createRexxControl(context->threadContext, hStatus, pccw->hDlg, id, winStatusBar, pccw->rexxDlg,
+                               rxClass, false, true);
+
+done_out:
+    return result;
+}
+
+
+/** CreateWindows::createToolBarWindow()
+ *
+ *  Creates a Windows toolbar and returns the Rexx ToolBar object.
+ *
+ *  @param id     [required] The resource ID of the toolbar.
+ *
+ *  @param sytle  [optional] Style keywords.  If omitted the toolbar uses the
+ *                default toolbar style of visible, border, tabstop, and
+ *                wrappable.
+ *
+ *  @notes Sets the .SystemErrorCode
+ *
+ *  @remarks  Originally we were going to have the size and position arguments.
+ *            However, after testing that, the size and position arguments are
+ *            ignored just like they are are in status bars and rebars.
+ */
+RexxMethod3(RexxObjectPtr, cw_createToolBarWindow, RexxObjectPtr, rxID, OPTIONAL_CSTRING, _style, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    RexxObjectPtr result = TheNilObj;
+    pCCreateWindows pccw =  validateCwCSelf(context, pCSelf);
+    if ( pccw == NULL )
+    {
+        goto done_out;
+    }
+
+    uint32_t id = oodResolveSymbolicID(context, pccw->rexxDlg, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto done_out;
+    }
+
+    uint32_t style = WS_CHILD;
+    if ( argumentExists(2) )
+    {
+        style |= getControlStyle(winToolBar, _style);
+    }
+    else
+    {
+        style |= WS_VISIBLE | WS_BORDER | WS_TABSTOP | TBSTYLE_WRAPABLE;
+    }
+
+    HWND hToolbar = CreateWindowEx(0, TOOLBARCLASSNAME, NULL, style, 0, 0, 0, 0, pccw->hDlg,
+                                  (HMENU)id, pccw->hinst, NULL);
+    if ( hToolbar == NULL )
+    {
+        oodSetSysErrCode(context->threadContext);
+        goto done_out;
+    }
+
+    RexxClassObject rxClass = oodClass4controlType(winToolBar, context);
+    if ( rxClass == NULLOBJECT )
+    {
+        goto done_out;
+    }
+
+    result = createRexxControl(context->threadContext, hToolbar, pccw->hDlg, id, winToolBar, pccw->rexxDlg,
+                               rxClass, false, true);
+
+done_out:
+    return result;
+}
+
 
 
 /**

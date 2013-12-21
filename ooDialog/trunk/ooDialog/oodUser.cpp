@@ -458,6 +458,11 @@ bool startDialogTemplate(RexxThreadContext *c, DLGTEMPLATEEX **ppBase, pCDynamic
  *        null is needed for txt.  On the other hand className must be checked
  *        because that is how we determine if the control is being identified
  *        by the control atom or by the class name.
+ *
+ * @TOOO  We have enhanced this to use the extended dialog template, but we need
+ *        to add an extra arg so that the user can specify the extended styles.
+ *        The rebar control does not behave correctly without the
+ *        WS_EX_CONTROLPARENT style. So, for now, we add that manually.
  */
 bool addToDialogTemplate(RexxMethodContext *c, pCDynamicDialog pcdd, SHORT kind, const char *className, int id,
                            int x, int y, int cx, int cy, const char * txt, uint32_t style)
@@ -493,6 +498,10 @@ bool addToDialogTemplate(RexxMethodContext *c, pCDynamicDialog pcdd, SHORT kind,
    }
    else
    {
+       if ( strcmp(className, REBARCLASSNAME) == 0 )
+       {
+           pItem->exStyle = WS_EX_CONTROLPARENT;
+       }
        p += putUnicodeText(p, className);
    }
 
@@ -912,7 +921,7 @@ uint32_t upDownStyle(CSTRING opts, uint32_t style)
 }
 
 
-uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
+extern uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
 {
     uint32_t style = WS_CHILD;
 
@@ -939,12 +948,12 @@ uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
             break;
 
         case winReBar :
-            style |= getCommonWindowStyles(opts, false, true);
+            style |= getCommonWindowStyles(opts, false, false);
             style = reBarStyle(opts, style);
             break;
 
         case winStatusBar :
-            style |= getCommonWindowStyles(opts, false, true);
+            style |= getCommonWindowStyles(opts, false, false);
             style = statusBarStyle(opts, style);
             break;
 
@@ -954,7 +963,7 @@ uint32_t getControlStyle(oodControl_t ctrl, CSTRING opts)
             break;
 
         case winToolBar :
-            style |= getCommonWindowStyles(opts, false, true);
+            style |= getCommonWindowStyles(opts, true, true);
             style = toolBarStyle(opts, style);
             break;
 

@@ -663,6 +663,15 @@ typedef struct _weCSelf {
 } CWindowExtensions;
 typedef CWindowExtensions *pCWindowExtensions;
 
+/* Struct for the CreateWindows object CSelf. */
+typedef struct _cwCSelf {
+    HINSTANCE      hinst;
+    pCWindowBase   wndBase;
+    HWND           hDlg;
+    RexxObjectPtr  rexxDlg;
+} CCreateWindows;
+typedef CCreateWindows *pCCreateWindows;
+
 /* Struct for the PlainBaseDialog object CSelf.  The struct itself is
  * allocated using interpreter memory and therefore garbage collected by the
  * interpreter.  But, there are still things like the table allocated externally

@@ -3232,6 +3232,14 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
     pcpbd->autoDetect  = (pcpbd->isPropSheetDlg ? FALSE : TRUE);
     pcpbd->rexxSelf    = self;
 
+    if ( context->IsOfType(self, "CREATEWINDOWS") )
+    {
+        if ( ! initCreateWindows(context, self, pcpbd) )
+        {
+            goto terminate_out;
+        }
+    }
+
     // Set our default font to the PlainBaseDialog class default font.
     pCPlainBaseDialogClass pcpbdc = dlgToClassCSelf(context);
     strcpy(pcpbd->fontName, pcpbdc->fontName);

@@ -198,6 +198,15 @@
 ::method removeAll external "LIBRARY oodialog il_removeAll"
 
 
+::class 'CreateWindows' public mixinclass Object
+
+::method initCreateWindows external "LIBRARY oodialog cw_initCreateWindows"
+::method createReBarWindow external "LIBRARY oodialog cw_createReBarWindow"
+::method createStatusBarWindow external "LIBRARY oodialog cw_createStatusBarWindow"
+::method createToolBarWindow external "LIBRARY oodialog cw_createToolBarWindow"
+
+
+
 ::class 'CustomDraw' public mixinclass EventNotification
 
 ::constant CDRF_DODEFAULT                  0  -- 0x00000000

@@ -205,6 +205,7 @@ extern void          ensureFinished(pCPlainBaseDialog pcpbd, RexxThreadContext *
 
 // These functions are defined in oodBaseDialog.cpp
 extern bool initWindowExtensions(RexxMethodContext *, RexxObjectPtr, HWND, pCWindowBase, pCPlainBaseDialog);
+extern bool initCreateWindows(RexxMethodContext *c, RexxObjectPtr self, pCPlainBaseDialog pcpbd);
 extern bool validControlDlg(RexxMethodContext *c, pCPlainBaseDialog pcpbd);
 extern bool processOwnedDialog(RexxMethodContext *c, pCPlainBaseDialog pcpbd);
 extern void setFontAttrib(RexxThreadContext *c, pCPlainBaseDialog pcpbd);

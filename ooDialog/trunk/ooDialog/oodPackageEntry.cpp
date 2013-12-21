@@ -1780,6 +1780,12 @@ REXX_METHOD_PROTOTYPE(mouse_test);
 REXX_METHOD_PROTOTYPE(kb_getAsyncKeyState_cls);
 
 
+// CreateWindows
+REXX_METHOD_PROTOTYPE(cw_initCreateWindows);
+REXX_METHOD_PROTOTYPE(cw_createReBarWindow);
+REXX_METHOD_PROTOTYPE(cw_createStatusBarWindow);
+REXX_METHOD_PROTOTYPE(cw_createToolBarWindow);
+
 // CustomDraw
 REXX_METHOD_PROTOTYPE(cd_init);
 REXX_METHOD_PROTOTYPE(cd_customDrawControl);
@@ -3147,6 +3153,12 @@ RexxMethodEntry oodialog_methods[] = {
 
     // Keyboard
     REXX_METHOD(kb_getAsyncKeyState_cls,        kb_getAsyncKeyState_cls),
+
+// CreateWindows
+    REXX_METHOD(cw_initCreateWindows,           cw_initCreateWindows),
+    REXX_METHOD(cw_createReBarWindow,           cw_createReBarWindow),
+    REXX_METHOD(cw_createStatusBarWindow,       cw_createStatusBarWindow),
+    REXX_METHOD(cw_createToolBarWindow,         cw_createToolBarWindow),
 
 // CustomDraw
     REXX_METHOD(cd_init,                        cd_init),
