@@ -130,15 +130,317 @@
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
+<entry><xref linkend="mthCreateReBarWindow"/> </entry>
+<entry>Creates a <xref linkend="clsReBar"/> control in the dialog.</entry>
+</row>
+<row>
 <entry><xref linkend="mthCreateStatusBarWindow"/> </entry>
 <entry>Creates a <xref linkend="clsStatusBar"/> control in the dialog.</entry>
+</row>
+<row>
+<entry><xref linkend="mthCreateToolBarWindow"/> </entry>
+<entry>Creates a <xref linkend="clsToolBar"/> control in the dialog.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 </section>
 
+<section id="mthCreateReBarWindow" xreflabel="createReBarWindow"><title>createReBarWindow</title>
+<indexterm><primary>createStatusBarWindow</primary></indexterm>
+<indexterm><primary>CreateWindows class</primary><secondary>createStatusBarWindow</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createStatusBarWindow(--id--+----------+--)--><
+                                +-,-style--+
+]]>
+</programlisting>
+
+<para>
+  Creates a <xref linkend="clsStatusBar"/> control in the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the status bar control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following <xref linkend="styleExplanation"/> keywords separated by spaces. Case is not
+      significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>SIZEGRIP  </member>
+        <member>TOOLTIPS  </member>
+        <member>BORDER    </member>
+        <member>DISABLED  </member>
+        <member>GROUP     </member>
+        <member>HIDDEN    </member>
+        <member>TAB       </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>SIZEGRIP</term>
+        <listitem>
+        <para>
+          The status bar control includes a sizing grip at the right end of the status bar. A sizing grip is like a sizing
+          border, it is a rectangular area that the user can click and drag to resize the status bar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TOOLTIPS</term>
+        <listitem>
+        <para>
+          This style enables ToolTips.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BORDER</term>
+        <listitem>
+        <para>
+          Status bars usually do not have The <xref linkend="wsborder"/> window style, they draw their own border. The
+          BORDER adds an extra border to the status bar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+        <para>
+          Adds the <xref linkend="wsdisabled"/> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUP</term>
+        <listitem>
+        <para>
+          The status bar will have the <xref linkend="wsgroup"/> control style. By default the status bar does not have the
+          group style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDDEN</term>
+        <listitem>
+        <para>
+          The not <xref linkend="wsvisible"/> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TAB</term>
+        <listitem>
+        <para>
+          Create the control with the <xref linkend="wstabstop"/> control style. By default the control
+          is created without the tabstop style.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    <para>
+      In addition, <emphasis role="italic">createStatusBar</emphasis> has support for any <xref
+      linkend="sctCommonControlStyles"/> keyword.
+    </para>
+    <para>
+      If the <emphasis role="italic">style</emphasis> argument is omitted, the default style is <emphasis
+      role="italic">SIZEGRIP TOOLTIPS</emphasis> .
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An instantiated Rexx status bar object on success, or the <computeroutput>.nil</computeroutput> object on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that a status bar window ignores any position or size co-ordinates when it is created. It automatically positions
+   and sizes itself. That is why there are no arguments to this method for the position or size of the status bar.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is from a <computeroutput>ResDialog</computeroutput> program. Since the resource editor used to create the
+    resourc only DLL for the program did not support status bars, the programmer elected to create the status bar by using
+    the <computeroutput>CreateWindows</computeroutput> mixin class:
+<programlisting>
+<![CDATA[
+::class 'RebarDlg' subclass ResDialog inherit CreateWindows
+
+::method initDialog
+
+    ...
+
+  statusBar = self~createStatusBarWindow(IDC_STATUSBAR, 'BORDER SIZEGRIP')
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CreateWindows::createStatusBarWindow() -->
+
+
 <section id="mthCreateStatusBarWindow" xreflabel="createStatusBarWindow"><title>createStatusBarWindow</title>
+<indexterm><primary>createStatusBarWindow</primary></indexterm>
+<indexterm><primary>CreateWindows class</primary><secondary>createStatusBarWindow</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createStatusBarWindow(--id--+----------+--)--><
+                                +-,-style--+
+]]>
+</programlisting>
+
+<para>
+  Creates a <xref linkend="clsStatusBar"/> control in the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the status bar control. May be numeric or <xref linkend="defSymbolicId"/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following <xref linkend="styleExplanation"/> keywords separated by spaces. Case is not
+      significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>SIZEGRIP  </member>
+        <member>TOOLTIPS  </member>
+        <member>BORDER    </member>
+        <member>DISABLED  </member>
+        <member>GROUP     </member>
+        <member>HIDDEN    </member>
+        <member>TAB       </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>SIZEGRIP</term>
+        <listitem>
+        <para>
+          The status bar control includes a sizing grip at the right end of the status bar. A sizing grip is like a sizing
+          border, it is a rectangular area that the user can click and drag to resize the status bar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TOOLTIPS</term>
+        <listitem>
+        <para>
+          This style enables ToolTips.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BORDER</term>
+        <listitem>
+        <para>
+          Status bars usually do not have The <xref linkend="wsborder"/> window style, they draw their own border. The
+          BORDER adds an extra border to the status bar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+        <para>
+          Adds the <xref linkend="wsdisabled"/> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUP</term>
+        <listitem>
+        <para>
+          The status bar will have the <xref linkend="wsgroup"/> control style. By default the status bar does not have the
+          group style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDDEN</term>
+        <listitem>
+        <para>
+          The not <xref linkend="wsvisible"/> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TAB</term>
+        <listitem>
+        <para>
+          Create the control with the <xref linkend="wstabstop"/> control style. By default the control
+          is created without the tabstop style.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    <para>
+      In addition, <emphasis role="italic">createStatusBar</emphasis> has support for any <xref
+      linkend="sctCommonControlStyles"/> keyword.
+    </para>
+    <para>
+      If the <emphasis role="italic">style</emphasis> argument is omitted, the default style is <emphasis
+      role="italic">SIZEGRIP TOOLTIPS</emphasis> .
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An instantiated Rexx status bar object on success, or the <computeroutput>.nil</computeroutput> object on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that a status bar window ignores any position or size co-ordinates when it is created. It automatically positions
+   and sizes itself. That is why there are no arguments to this method for the position or size of the status bar.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is from a <computeroutput>ResDialog</computeroutput> program. Since the resource editor used to create the
+    resourc only DLL for the program did not support status bars, the programmer elected to create the status bar by using
+    the <computeroutput>CreateWindows</computeroutput> mixin class:
+<programlisting>
+<![CDATA[
+::class 'RebarDlg' subclass ResDialog inherit CreateWindows
+
+::method initDialog
+
+    ...
+
+  statusBar = self~createStatusBarWindow(IDC_STATUSBAR, 'BORDER SIZEGRIP')
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CreateWindows::createStatusBarWindow() -->
+
+
+<section id="mthCreateToolBarWindow" xreflabel="createToolBarWindow"><title>createToolBarWindow</title>
 <indexterm><primary>createStatusBarWindow</primary></indexterm>
 <indexterm><primary>CreateWindows class</primary><secondary>createStatusBarWindow</secondary></indexterm>
 <programlisting>
