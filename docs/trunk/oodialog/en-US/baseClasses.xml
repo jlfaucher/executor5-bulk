@@ -113,7 +113,7 @@
 <table id="tblMethodsCreateWindows" frame="all"> <title>CreateWindows Class Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1*"/>
-<colspec colwidth="4*"/>
+<colspec colwidth="3*"/>
 <thead>
 <row>
 <entry>Method</entry>
@@ -147,17 +147,17 @@
 </section>
 
 <section id="mthCreateReBarWindow" xreflabel="createReBarWindow"><title>createReBarWindow</title>
-<indexterm><primary>createStatusBarWindow</primary></indexterm>
-<indexterm><primary>CreateWindows class</primary><secondary>createStatusBarWindow</secondary></indexterm>
+<indexterm><primary>createReBarWindow</primary></indexterm>
+<indexterm><primary>CreateWindows class</primary><secondary>createSReBarWindow</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--createStatusBarWindow(--id--+----------+--)--><
-                                +-,-style--+
+>>--createReBarWindow(--id--+----------+--)------><
+                            +-,-style--+
 ]]>
 </programlisting>
 
 <para>
-  Creates a <xref linkend="clsStatusBar"/> control in the dialog.
+  Creates a <xref linkend="clsReBar"/> control in the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -169,7 +169,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the status bar control. May be numeric or <xref linkend="defSymbolicId"/>.
+      The resource ID of the rebar control. May be numeric or <xref linkend="defSymbolicId"/>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
@@ -180,46 +180,96 @@
     </para>
     <para>
       <simplelist type='vert' columns='3'>
-        <member>SIZEGRIP  </member>
-        <member>TOOLTIPS  </member>
-        <member>BORDER    </member>
-        <member>DISABLED  </member>
-        <member>GROUP     </member>
-        <member>HIDDEN    </member>
-        <member>TAB       </member>
+        <member>AUTOSIZE       </member>
+        <member>BANDBORDERS    </member>
+        <member>DBLCLKTOGGLE   </member>
+        <member>FIXEDORDER     </member>
+        <member>REGISTERDROP   </member>
+        <member>TOOLTIPS       </member>
+        <member>VARHEIGHT      </member>
+        <member>VERTICALGRIPPER</member>
+        <member>BORDER         </member>
+        <member>DISABLED       </member>
+        <member>GROUP          </member>
+        <member>HIDDEN         </member>
+        <member>TAB            </member>
       </simplelist>
       <variablelist>
-        <varlistentry><term>SIZEGRIP</term>
+        <varlistentry><term>AUTOSIZE</term>
         <listitem>
         <para>
-          The status bar control includes a sizing grip at the right end of the status bar. A sizing grip is like a sizing
-          border, it is a rectangular area that the user can click and drag to resize the status bar.
+          The rebar control will automatically change the layout of the bands when the size or position of the control
+          changes. An AUTOSIZE notification will be sent when this occurs.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BANDBORDERS</term>
+        <listitem>
+        <para>
+          The rebar control displays narrow lines to separate adjacent bands.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DBLCLKTOGGLE</term>
+        <listitem>
+        <para>
+          The rebar band will toggle its maximized or minimized state when the user double-clicks the band. Without this
+          style, the maximized or minimized state is toggled when the user single-clicks on the band.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FIXEDORDER</term>
+        <listitem>
+        <para>
+          The rebar control always displays bands in the same order. You can move bands to different rows, but the band
+          order is static.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>REGISTERDROP</term>
+        <listitem>
+        <para>
+          The rebar control generates GETOBJECT notification messages when an object is dragged over a band in the control.
+          Although the ooDialog framework supports this style and event notification, there is no way within the framework
+          to make use of it.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TOOLTIPS</term>
         <listitem>
         <para>
-          This style enables ToolTips.
+          This style keword is for completeness, the rebar control itself does not yet support tool tips.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VARHEIGHT</term>
+        <listitem>
+        <para>
+          The rebar control displays bands at the minimum required height, when possible. Without this style, the rebar
+          control displays all bands at the same height, using the height of the tallest visible band to determine the
+          height of other bands.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VERTICALGRIPPER</term>
+        <listitem>
+        <para>
+          The size grip will be displayed vertically instead of horizontally in a vertical rebar control. This style is
+          ignored for rebar controls that do not have the CCS_VERT style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BORDER</term>
         <listitem>
         <para>
-          Status bars usually do not have The <xref linkend="wsborder"/> window style, they draw their own border. The
-          BORDER adds an extra border to the status bar.
+          Adds the <xref linkend="wsborder"/> window style. By default the BORDER style is not added. However, rebar
+          controls seem to ignore this style completely. The <emphasis role="italic">createRebar</emphasis> method accepts
+          this keyword so that the ooDialog programmer can experiment with it. But it is not expected that using BORDER
+          will produce any noticeable difference in appearance.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DISABLED</term>
         <listitem>
         <para>
-          Adds the <xref linkend="wsdisabled"/> window style.
+          Gives the reboar control the <xref linkend="wsdisabled"/> window style. By default the control is enabled
         </para>
         </listitem></varlistentry>
         <varlistentry><term>GROUP</term>
         <listitem>
         <para>
-          The status bar will have the <xref linkend="wsgroup"/> control style. By default the status bar does not have the
-          group style.
+          The <xref linkend="wsgroup"/> control style is added to the control. By default the GROUP style is not used.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>HIDDEN</term>
@@ -232,18 +282,21 @@
         <listitem>
         <para>
           Create the control with the <xref linkend="wstabstop"/> control style. By default the control
-          is created without the tabstop style.
+          is created without the TABSTOP style. Note that the behavior of the rebar control does not change with, or
+          without, the TABSTOP style. The <emphasis role="italic">createRebar</emphasis> method accepts this keyword so
+          that the ooDialog programmer can experiment with it. But it is not expected that using TAB will produce any
+          noticeable difference in behavior.
         </para>
         </listitem></varlistentry>
       </variablelist>
     </para>
     <para>
-      In addition, <emphasis role="italic">createStatusBar</emphasis> has support for any <xref
+      In addition, the <emphasis role="italic">createReBar</emphasis> method has support for any <xref
       linkend="sctCommonControlStyles"/> keyword.
     </para>
     <para>
       If the <emphasis role="italic">style</emphasis> argument is omitted, the default style is <emphasis
-      role="italic">SIZEGRIP TOOLTIPS</emphasis> .
+      role="italic">TABSTOP VARHEIGHT BANDBORDERS CCS_NODIVIDER</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -257,7 +310,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Note that a status bar window ignores any position or size co-ordinates when it is created. It automatically positions
+    Note that a rebar window ignores any position or size co-ordinates when it is created. It automatically positions
    and sizes itself. That is why there are no arguments to this method for the position or size of the status bar.
   </para>
   </listitem></varlistentry>
@@ -274,8 +327,8 @@
   <listitem>
   <para>
     This example is from a <computeroutput>ResDialog</computeroutput> program. Since the resource editor used to create the
-    resourc only DLL for the program did not support status bars, the programmer elected to create the status bar by using
-    the <computeroutput>CreateWindows</computeroutput> mixin class:
+    resourc only DLL for the program only supported rebars in a very limited way, the programmer elected to create the rebar
+    by using the <computeroutput>CreateWindows</computeroutput> mixin class:
 <programlisting>
 <![CDATA[
 ::class 'RebarDlg' subclass ResDialog inherit CreateWindows
@@ -284,7 +337,7 @@
 
     ...
 
-  statusBar = self~createStatusBarWindow(IDC_STATUSBAR, 'BORDER SIZEGRIP')
+  rb = self~createReBarWindow(IDC_RBAR, 'VARHEIGHT BANDBORDERS CCS_NODIVIDER')
 ]]>
 </programlisting>
   </para>
@@ -425,7 +478,7 @@
     the <computeroutput>CreateWindows</computeroutput> mixin class:
 <programlisting>
 <![CDATA[
-::class 'RebarDlg' subclass ResDialog inherit CreateWindows
+::class 'StatusBarDlg' subclass ResDialog inherit CreateWindows
 
 ::method initDialog
 
