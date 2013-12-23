@@ -960,6 +960,16 @@ return .ooTestResult~new(5)~~addException(err)
   retc = t2~TestQueryMacro('myupper')
   self~assertEquals(2, retc)
 
+::method 'test_77_function'
+  t2 = .TestFunctionRegistration~new
+  self~assertEquals(0, t2~TestRegisterFunctionExe("MYFUNCTION"))
+  self~assertEquals(0, t2~TestQueryFunction("MYFUNCTION"))
+
+  self~assertEquals("MYFUNCTION 1 Hello World!", myfunction("Hello World!"))
+  self~assertEquals(0, t2~TestDeregisterFunction("MYFUNCTION"))
+  self~assertEquals(30, t2~TestQueryFunction("MYFUNCTION"))
+
+
 ::method locateTestFile
   use arg file
   parse source . . me

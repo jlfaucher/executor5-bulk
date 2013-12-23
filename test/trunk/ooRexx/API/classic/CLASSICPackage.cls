@@ -86,3 +86,7 @@ return flag
 ::method TestReorderMacro PUBLIC EXTERNAL "LIBRARY orxclassic TestReorderMacro"
 ::method TestClearMacroSpace PUBLIC EXTERNAL "LIBRARY orxclassic TestClearMacroSpace"
 
+::class TestFunctionRegistration public
+::method TestRegisterFunctionExe PUBLIC EXTERNAL "LIBRARY orxclassic TestRegisterFunctionExe"
+::method TestDeregisterFunction PUBLIC EXTERNAL "LIBRARY orxclassic TestDeregisterFunction"
+::method TestQueryFunction PUBLIC EXTERNAL "LIBRARY orxclassic TestQueryFunction"

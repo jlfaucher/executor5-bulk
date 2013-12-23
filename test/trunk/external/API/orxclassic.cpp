@@ -40,6 +40,27 @@
 #include <string.h>
 #include <stdio.h>
 
+// test function for testing the function registration functions
+size_t REXXENTRY TestFunction(
+   const char *Name,
+   size_t Argc,           /* number of arguments */
+   CONSTRXSTRING Argv[],  /* list of argument strings */
+   const char *Queuename, /* current queue name */
+   PRXSTRING Retstr)      /* returned  */
+{
+    // if registered as an error tester, raise an error
+    if (strcmp(Name, "TESTERROR") == 0) {
+        return 40;
+    }
+
+    // return the name, count of arguments, and first argument as a return value
+    sprintf(Retstr->strptr, "%s %d %s", Name, Argc, Argv[0].strptr);
+    Retstr->strlength = strlen(Retstr->strptr);
+    return 0;
+}
+
+
+
 RexxMethod1(RexxObjectPtr,              // Return type
             TestCreateQueue,            // Method name
             OPTIONAL_CSTRING, qname)    // Queue name
@@ -394,6 +415,30 @@ RexxMethod0(int,                        // Return type
     return retc;
 }
 
+RexxMethod1(int,                        // Return type
+            TestRegisterFunctionExe,    // Method name
+            CSTRING, name)              // function name
+{
+    RexxReturnCode retc = RexxRegisterFunctionExe(name, (REXXPFN)TestFunction);
+    return retc;
+}
+
+RexxMethod1(int,                        // Return type
+            TestDeregisterFunction,    // Method name
+            CSTRING, name)              // function name
+{
+    RexxReturnCode retc = RexxDeregisterFunction(name);
+    return retc;
+}
+
+RexxMethod1(int,                        // Return type
+            TestQueryFunction,    // Method name
+            CSTRING, name)              // function name
+{
+    RexxReturnCode retc = RexxQueryFunction(name);
+    return retc;
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestCreateQueue,        TestCreateQueue),
@@ -413,6 +458,9 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestQueryMacro,         TestQueryMacro),
     REXX_METHOD(TestReorderMacro,       TestReorderMacro),
     REXX_METHOD(TestClearMacroSpace,    TestClearMacroSpace),
+    REXX_METHOD(TestRegisterFunctionExe,TestRegisterFunctionExe),
+    REXX_METHOD(TestDeregisterFunction, TestDeregisterFunction),
+    REXX_METHOD(TestQueryFunction, TestQueryFunction),
     REXX_LAST_METHOD()
 };
 
