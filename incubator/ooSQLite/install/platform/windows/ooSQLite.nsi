@@ -358,6 +358,14 @@ Function WelcomePageLeave
 
   StrCpy $INSTDIR $RegVal_installedLocation
 
+  ; It is common for the user to delete the ooSQLite files without running the
+  ; uninstaller.  If that happens, the ooSQLite registry key exists and it looks
+  ; like ooSQLite is installed.  Here we check if the DLL actually exists and
+  ; assume ooSQLite is not installed if the DLL is not here.
+  ${IfNot} ${FileExists} $INSTDIR\ooSQLite.dll
+      StrCpy $ooSQLiteIsInstalled 'false'
+  ${EndIf}
+
   Call DetermineRexxVersion
 
   ${if} $isMinimumRequiredRexx == "false"
@@ -369,31 +377,35 @@ Function WelcomePageLeave
       return
   ${EndIf}
 
-  ClearErrors
-  CopyFiles /SILENT $INSTDIR\doc\ooSQLite.pdf $INSTDIR\doc\ooSQLiteTest.pdf
-  ${If} ${Errors}
-      StrCpy $installerProblemIntro "The installer detected a problem trying to copy ooSQLite.pdf$\n$\n"
-      StrCpy $haveProblems "true"
+  ; Skip this test if we can't find the PDF file to begin with.
+  ${If} ${FileExists} $INSTDIR\doc\ooSQLite.pdf
+      ClearErrors
+      CopyFiles /SILENT $INSTDIR\doc\ooSQLite.pdf $INSTDIR\doc\ooSQLiteTest.pdf
+      ${If} ${Errors}
+          StrCpy $installerProblemIntro "The installer detected a problem trying to copy ooSQLite.pdf$\n$\n"
+          StrCpy $haveProblems "true"
 
-      ; ooSQLite.pdf was not copied, we don't need to do anything before
-      ; aborting.  Aborting is done in the custom page.
-      return
+          ; ooSQLite.pdf was not copied, we don't need to do anything before
+          ; aborting.  Aborting is done in the custom page.
+          return
+      ${EndIf}
+
+      ClearErrors
+      Delete $INSTDIR\doc\ooSQLite.pdf
+      ${If} ${Errors}
+          StrCpy $installerProblemIntro "The installer detected a problem with ooSQLite.pdf$\n$\n"
+          StrCpy $haveProblems "true"
+
+          ; ooSQLite.pdf was not deleted, we just need to delete the copy.
+          Delete $INSTDIR\doc\ooSQLiteTest.pdf
+          return
+      ${EndIf}
+
+      ; ooSQLite.pdf was deleted, we rename the copy to keep things clean
+      Rename $INSTDIR\doc\ooSQLiteTest.pdf $INSTDIR\doc\ooSQLite.pdf
   ${EndIf}
 
-  ClearErrors
-  Delete $INSTDIR\doc\ooSQLite.pdf
-  ${If} ${Errors}
-      StrCpy $installerProblemIntro "The installer detected a problem with ooSQLite.pdf$\n$\n"
-      StrCpy $haveProblems "true"
-
-      ; ooSQLite.pdf was not deleted, we just need to delete the copy.
-      Delete $INSTDIR\doc\ooSQLiteTest.pdf
-      return
-  ${EndIf}
-
-  ; ooSQLite.pdf was deleted, we rename the copy to keep things clean
-  Rename $INSTDIR\doc\ooSQLiteTest.pdf $INSTDIR\doc\ooSQLite.pdf
-
+  ; We tested above that this file exists.
   ClearErrors
   CopyFiles /SILENT $INSTDIR\ooSQLite.dll $INSTDIR\ooSQLiteTest.dll
   ${If} ${Errors}
