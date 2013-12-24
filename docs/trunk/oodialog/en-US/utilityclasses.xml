@@ -5990,6 +5990,10 @@ s2: a Size (2, 3)
 <entry>The thickness of the border around a non-resizable window that has a caption, in pixels. The width of the vertical border.</entry>
 </row>
 <row>
+<entry><xref linkend="atrCxIcon"/></entry>
+<entry>The default width of an icon, in pixels.</entry>
+</row>
+<row>
 <entry><xref linkend="atrCxScreen"/></entry>
 <entry>The width of the primary monitor in pixels.</entry>
 </row>
@@ -6007,15 +6011,15 @@ s2: a Size (2, 3)
 </row>
 <row>
 <entry><xref linkend="atrCyCaption"/></entry>
-<entry>The height of a caption area in pixesl.</entry>
+<entry>The height of a caption area in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="atrCyCursor"/></entry>
-<entry>The height of a cursor in pixles.</entry>
+<entry>The height of a cursor in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="atrCyDrag"/></entry>
-<entry>The height of drag rectangle in pixles.</entry>
+<entry>The height of drag rectangle in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="atrCyFixedFrame"/></entry>
@@ -6026,12 +6030,24 @@ s2: a Size (2, 3)
 <entry>The height of a horizontal scroll bar in pixels.</entry>
 </row>
 <row>
+<entry><xref linkend="atrCyIcon"/></entry>
+<entry>The default height of an icon, in pixels.</entry>
+</row>
+<row>
 <entry><xref linkend="atrCyMenu"/></entry>
 <entry>The height of a single-line menu bar, in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="atrCyScreen"/></entry>
 <entry>The height of the primary monitor in pixles.</entry>
+</row>
+<row>
+<entry><xref linkend="atrCySize"/></entry>
+<entry>The height of a button in a window caption or title bar, in pixels.</entry>
+</row>
+<row>
+<entry><xref linkend="atrCySmIcon"/></entry>
+<entry>The recommended height of a small icon, in pixels.</entry>
 </row>
 <row>
 <entry><xref linkend="atrMenuDropAlignment"/></entry>
@@ -6167,6 +6183,36 @@ s2: a Size (2, 3)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End SM::cxFixedFrame() [attribute]  -->
+
+
+<section id="atrCxIcon" xreflabel="cxIcon"><title>cxIcon (Attribute)</title>
+<indexterm><primary>cxIcon</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cxIcon</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cxIcon---------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reflects the default width of an icon, in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cxIcon get:</emphasis></term>
+  <listitem>
+  <para>
+    The default width of an icon, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxIcon set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cxIcon</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cxIcon() [attribute]  -->
 
 
 <section id="atrCxScreen" xreflabel="cxScreen"><title>cxScreen (Attribute)</title>
@@ -6447,6 +6493,36 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cyHscroll() [attribute]  -->
 
 
+<section id="atrCyIcon" xreflabel="cyIcon"><title>cyIcon (Attribute)</title>
+<indexterm><primary>cyIcon</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cyIcon</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cyIcon---------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reflects the default height of an icon, in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cyIcon get:</emphasis></term>
+  <listitem>
+  <para>
+    The default height of an icon, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cyIcon set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cyIcon</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cyIcon() [attribute]  -->
+
+
 <section id="atrCyMenu" xreflabel="cyMenu"><title>cyMenu (Attribute)</title>
 <indexterm><primary>cyMenu</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cyMenu</secondary></indexterm>
@@ -6505,6 +6581,68 @@ s2: a Size (2, 3)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End SM::cyScreen() [attribute]  -->
+
+
+<section id="atrCySize" xreflabel="cySize"><title>cySize (Attribute)</title>
+<indexterm><primary>cySize</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cySize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cySize---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the height of a button in a window caption or title bar, in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cySize get:</emphasis></term>
+  <listitem>
+  <para>
+    The height of a button in the title bar, such as the close button, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cySize set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cySize</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cySize() [attribute]  -->
+
+
+<section id="atrCySmIcon" xreflabel="cySmIcon"><title>cySmIcon (Attribute)</title>
+<indexterm><primary>cySmIcon</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cySmIcon</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cySmIcon-------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reflects the recommended height of a small icon, in pixels. Small icons typically appear in window captions and in small
+  icon view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cySmIcon get:</emphasis></term>
+  <listitem>
+  <para>
+    The recommended height of a small icon, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cySmIcon set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cySmIcon</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cySmIcon() [attribute]  -->
 
 
 <section id="atrMenuDropAlignment" xreflabel="menuDropAlignment"><title>menuDropAlignment (Attribute)</title>
@@ -6794,9 +6932,9 @@ s2: a Size (2, 3)
 <indexterm><primary>SPI class</primary><secondary>menuFade</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--menuFade--------------------------------><
+>>--menuFade-------------------------------------><
 
->>--menuFade = onOff------------------------><
+>>--menuFade = onOff-----------------------------><
 
 ]]>
 </programlisting>
