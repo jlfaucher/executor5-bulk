@@ -357,6 +357,44 @@ static RexxStringObject extendedStyleToString(RexxMethodContext *c, HWND hList)
     return c->String(buf);
 }
 
+/**
+ * Gets the image list type from the specified argument object, where the object
+ * could be the numeric value, a string keyword, or omitted altogether.
+ *
+ * @param context
+ * @param _type
+ * @param argPos
+ *
+ * @return The list-view image list type or OOD_NO_VALUE on error.  An exception
+ *         has been raised on error.
+ */
+static uint32_t getImageListTypeArg(RexxMethodContext *context, RexxObjectPtr _type, size_t argPos)
+{
+    uint32_t type = LVSIL_NORMAL;
+
+    if ( argumentExists(argPos) )
+    {
+        if ( ! context->UnsignedInt32(_type, &type) )
+        {
+            CSTRING lvsil = context->ObjectToStringValue(_type);
+            if (      StrCmpI("NORMAL", lvsil) == 0 ) type = LVSIL_NORMAL;
+            else if ( StrCmpI("SMALL", lvsil)  == 0 ) type = LVSIL_SMALL;
+            else if ( StrCmpI("STATE", lvsil)  == 0 ) type = LVSIL_STATE;
+            else
+            {
+                wrongArgValueException(context->threadContext, argPos, "Normal, Small, or State", _type);
+                type = OOD_NO_VALUE;
+            }
+        }
+
+        if ( type != OOD_NO_VALUE && type > LVSIL_STATE )
+        {
+            wrongRangeException(context->threadContext, argPos, LVSIL_NORMAL, LVSIL_STATE, type);
+            type = OOD_NO_VALUE;
+        }
+    }
+    return type;
+}
 
 static int getColumnWidthArg(RexxMethodContext *context, RexxObjectPtr _width, size_t argPos)
 {
@@ -3203,24 +3241,26 @@ err_out:
  *          or state. Normal is the default.
  *
  *  @return  The image list, if it exists, otherwise .nil.
+ *
+ *  @remarks  Originally the image list type argument had to be the numeric
+ *            value of the type.  This was a mistake.  For backward
+ *            compatibility we still need to accept a number, but we allow a
+ *            string keyword.
  */
-RexxMethod2(RexxObjectPtr, lv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
+RexxMethod2(RexxObjectPtr, lv_getImageList, OPTIONAL_RexxObjectPtr, _type, OSELF, self)
 {
-    if ( argumentOmitted(1) )
+    RexxObjectPtr result = TheNilObj;
+    uint32_t      type   = getImageListTypeArg(context, _type, 1);
+
+    if ( type != OOD_NO_VALUE )
     {
-        type = LVSIL_NORMAL;
-    }
-    else if ( type > LVSIL_STATE )
-    {
-        wrongRangeException(context->threadContext, 1, LVSIL_NORMAL, LVSIL_STATE, type);
-        return NULLOBJECT;
+        result = context->GetObjectVariable(getLVAttributeName(type));
+        if ( result == NULLOBJECT )
+        {
+            result = TheNilObj;
+        }
     }
 
-    RexxObjectPtr result = context->GetObjectVariable(getLVAttributeName(type));
-    if ( result == NULLOBJECT )
-    {
-        result = TheNilObj;
-    }
     return result;
 }
 
@@ -4757,26 +4797,34 @@ done_out:
  *  @remarks  It is possible for this method to fail, without an exception
  *            raised.  Therefore returning NULLOBJECT on all errors is not
  *            viable.  The question is whether to return .nil on error, or 0.
- *            For now, 0 is returned for an error.
+ *            For now, 0 is returned for an error, *when* an exception has not
+ *            been raised.
+ *
+ *            Originally the image list type argument had to be the numeric
+ *            value of the type.  This was a mistake.  For backward
+ *            compatibility we still need to accept a number, but we allow a
+ *            string keyword.
  */
 RexxMethod5(RexxObjectPtr, lv_setImageList, RexxObjectPtr, ilSrc,
-            OPTIONAL_int32_t, width, OPTIONAL_int32_t, height, OPTIONAL_int32_t, ilType, CSELF, pCSelf)
+            OPTIONAL_RexxObjectPtr, width, OPTIONAL_int32_t, height, OPTIONAL_RexxObjectPtr, ilType, CSELF, pCSelf)
 {
     RexxObjectPtr result = TheNilObj;
 
     HWND hwnd = getDChCtrl(pCSelf);
     oodResetSysErrCode(context->threadContext);
 
-    HIMAGELIST himl = NULL;
     RexxObjectPtr imageList = NULL;
-    int type = LVSIL_NORMAL;
+    HIMAGELIST    himl      = NULL;
+    uint32_t      type      = LVSIL_NORMAL;
 
     if ( ilSrc == TheNilObj )
     {
         imageList = ilSrc;
-        if ( argumentExists(2) )
+
+        type = getImageListTypeArg(context, width, 2);
+        if ( type == OOD_NO_VALUE )
         {
-            type = width;
+            goto err_out;
         }
     }
     else if ( context->IsOfType(ilSrc, "IMAGELIST") )
@@ -4788,30 +4836,34 @@ RexxMethod5(RexxObjectPtr, lv_setImageList, RexxObjectPtr, ilSrc,
             goto err_out;
         }
 
-        if ( argumentExists(2) )
+        type = getImageListTypeArg(context, width, 2);
+        if ( type == OOD_NO_VALUE )
         {
-            type = width;
+            goto err_out;
         }
     }
     else
     {
-        imageList = oodILFromBMP(context, &himl, ilSrc, width, height, hwnd);
+        uint32_t _width;
+
+        if ( ! context->ObjectToUnsignedInt32(width, &_width) )
+        {
+            wrongRangeException(context->threadContext, 2, (uint32_t)0, UINT32_MAX, width);
+            goto err_out;
+        }
+
+        imageList = oodILFromBMP(context, &himl, ilSrc, _width, height, hwnd);
         if ( imageList == NULLOBJECT )
         {
             result = TheZeroObj;
             goto err_out;
         }
 
-        if ( argumentExists(4) )
+        type = getImageListTypeArg(context, ilType, 4);
+        if ( type == OOD_NO_VALUE )
         {
-            type = ilType;
+            goto err_out;
         }
-    }
-
-    if ( type > LVSIL_STATE )
-    {
-        wrongRangeException(context->threadContext, argumentExists(4) ? 4 : 2, LVSIL_NORMAL, LVSIL_STATE, type);
-        goto err_out;
     }
 
     ListView_SetImageList(hwnd, himl, type);

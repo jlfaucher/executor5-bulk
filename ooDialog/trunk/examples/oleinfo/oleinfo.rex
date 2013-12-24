@@ -130,7 +130,7 @@ callFailed:
   return InitRet
 
 ::method InitDialog
-  self~newListView(104)~setImageList(self~getImages, .Image~toID(LVSIL_SMALL))
+  self~newListView(104)~setImageList(self~getImages, SMALL)
   cb = self~newComboBox(100)
   default = .array~of("InternetExplorer.Application","Excel.Application","Freelance.Application",,
                       "Notes.NotesSession","Lotus123.Workbook","Outlook.Application",,

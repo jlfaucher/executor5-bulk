@@ -139,12 +139,12 @@
     imageList = .ImageList~create(.Size~new(16), flags, 28, 0)
     imageList~add(smIcons)
 
-    list~setImageList(imageList, .Image~toId(LVSIL_SMALL))
+    list~setImageList(imageList, SMALL)
 
     imageList = .ImageList~create(.Size~new(32), flags, 9, 0)
     imageList~add(normalIcons)
 
-    list~setImageList(imageList, .Image~toId(LVSIL_NORMAL))
+    list~setImageList(imageList, NORMAL)
 
 
 ::method populateList private

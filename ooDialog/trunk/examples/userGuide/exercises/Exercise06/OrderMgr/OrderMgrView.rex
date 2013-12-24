@@ -118,7 +118,7 @@ call "OrderMgr\RequiresList.rex"
     self~lv = self~newListView(IDC_ORDMGR_ICONS)
 
     -- Add the Image List to the ListView:
-    self~lv~setImageList(iconList, .Image~toID(LVSIL_NORMAL))
+    self~lv~setImageList(iconList, NORMAL)
     -- Add icons (i.e. records) to the ListView:
     do i=1 to records~items
       self~lv~addRow(, i-1, records[i]~name)

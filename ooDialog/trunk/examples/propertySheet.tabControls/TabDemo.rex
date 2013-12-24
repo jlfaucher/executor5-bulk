@@ -334,7 +334,7 @@
     lv~insertColumn(3, "Year low", 50)
     lv~insertColumn(4, "Description", 120)
 
-    lv~setImageList(imageList, .Image~toID(LVSIL_SMALL))
+    lv~setImageList(imageList, SMALL)
 
     -- Fill the list-view with random data.
     do row over listData

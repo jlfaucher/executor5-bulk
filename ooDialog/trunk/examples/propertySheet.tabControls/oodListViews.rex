@@ -529,8 +529,8 @@
 
   lv = self~newListView(IDC_LISTVIEW)
 
-  if smallIcons <> .nil then lv~setImageList(smallIcons, .Image~toID(LVSIL_SMALL))
-  if normalIcons <> .nil then lv~setImageList(normalIcons, .Image~toID(LVSIL_NORMAL))
+  if smallIcons <> .nil then lv~setImageList(smallIcons, SMALL)
+  if normalIcons <> .nil then lv~setImageList(normalIcons, NORMAL)
 
   lv~insertColumn(0, "Name", 50)
   lv~insertColumn(1, "Street", 60)

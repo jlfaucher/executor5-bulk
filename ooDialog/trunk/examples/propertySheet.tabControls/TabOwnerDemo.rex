@@ -209,7 +209,7 @@
     imageList = .ImageList~create(.Size~new(16, 16), .Image~toID(ILC_COLOR8), 4, 0)
     if \image~isNull,  \imageList~isNull then do
         imageList~add(image)
-        lv~setImageList(imageList, .Image~toID(LVSIL_SMALL))
+        lv~setImageList(imageList, SMALL)
 
         -- The image list makes a copy of the bitmap, so we can release it now
         -- to free up some (small) amount of system resources.  This is not
