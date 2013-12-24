@@ -306,6 +306,7 @@
 ::attribute cxCursor get class external      "LIBRARY oodialog sm_cxCursor_cls"
 ::attribute cxDrag get class external        "LIBRARY oodialog sm_cxDrag_cls"
 ::attribute cxFixedFrame get class external  "LIBRARY oodialog sm_cxFixedFrame_cls"
+::attribute cxIcon get class external        "LIBRARY oodialog sm_cxIcon_cls"
 ::attribute cxScreen get class external      "LIBRARY oodialog sm_cxScreen_cls"
 ::attribute cxSize get class external        "LIBRARY oodialog sm_cxSize_cls"
 ::attribute cxSmIcon get class external      "LIBRARY oodialog sm_cxSmIcon_cls"
@@ -315,8 +316,11 @@
 ::attribute cyDrag get class external        "LIBRARY oodialog sm_cyDrag_cls"
 ::attribute cyFixedFrame get class external  "LIBRARY oodialog sm_cyFixedFrame_cls"
 ::attribute cyHscroll get class external     "LIBRARY oodialog sm_cyHScroll_cls"
+::attribute cyIcon get class external        "LIBRARY oodialog sm_cyIcon_cls"
 ::attribute cyMenu get class external        "LIBRARY oodialog sm_cyMenu_cls"
 ::attribute cyScreen get class external      "LIBRARY oodialog sm_cyScreen_cls"
+::attribute cySize get class external        "LIBRARY oodialog sm_cySize_cls"
+::attribute cySmIcon get class external      "LIBRARY oodialog sm_cySmIcon_cls"
 ::attribute menuDropAlignment get class external "LIBRARY oodialog sm_menuDropAlignment_cls"
 
 ::class 'OS' public

@@ -606,6 +606,7 @@ REXX_METHOD_PROTOTYPE(sm_cMouseButtons_cls);
 REXX_METHOD_PROTOTYPE(sm_cxCursor_cls);
 REXX_METHOD_PROTOTYPE(sm_cxDrag_cls);
 REXX_METHOD_PROTOTYPE(sm_cxFixedFrame_cls);
+REXX_METHOD_PROTOTYPE(sm_cxIcon_cls);
 REXX_METHOD_PROTOTYPE(sm_cxScreen_cls);
 REXX_METHOD_PROTOTYPE(sm_cxSize_cls);
 REXX_METHOD_PROTOTYPE(sm_cxSmIcon_cls);
@@ -615,8 +616,11 @@ REXX_METHOD_PROTOTYPE(sm_cyCursor_cls);
 REXX_METHOD_PROTOTYPE(sm_cyDrag_cls);
 REXX_METHOD_PROTOTYPE(sm_cyFixedFrame_cls);
 REXX_METHOD_PROTOTYPE(sm_cyHScroll_cls);
+REXX_METHOD_PROTOTYPE(sm_cyIcon_cls);
 REXX_METHOD_PROTOTYPE(sm_cyMenu_cls);
 REXX_METHOD_PROTOTYPE(sm_cyScreen_cls);
+REXX_METHOD_PROTOTYPE(sm_cySize_cls);
+REXX_METHOD_PROTOTYPE(sm_cySmIcon_cls);
 REXX_METHOD_PROTOTYPE(sm_menuDropAlignment_cls);
 
 // ResourceUtils
@@ -2004,6 +2008,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(sm_cxCursor_cls,                sm_cxCursor_cls),
     REXX_METHOD(sm_cxDrag_cls,                  sm_cxDrag_cls),
     REXX_METHOD(sm_cxFixedFrame_cls,            sm_cxFixedFrame_cls),
+    REXX_METHOD(sm_cxIcon_cls,                  sm_cxIcon_cls),
     REXX_METHOD(sm_cxScreen_cls,                sm_cxScreen_cls),
     REXX_METHOD(sm_cxSize_cls,                  sm_cxSize_cls),
     REXX_METHOD(sm_cxSmIcon_cls,                sm_cxSmIcon_cls),
@@ -2013,8 +2018,11 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(sm_cyDrag_cls,                  sm_cyDrag_cls),
     REXX_METHOD(sm_cyFixedFrame_cls,            sm_cyFixedFrame_cls),
     REXX_METHOD(sm_cyHScroll_cls,               sm_cyHScroll_cls),
+    REXX_METHOD(sm_cyIcon_cls,                  sm_cyIcon_cls),
     REXX_METHOD(sm_cyMenu_cls,                  sm_cyMenu_cls),
     REXX_METHOD(sm_cyScreen_cls,                sm_cyScreen_cls),
+    REXX_METHOD(sm_cySize_cls,                  sm_cySize_cls),
+    REXX_METHOD(sm_cySmIcon_cls,                sm_cySmIcon_cls),
     REXX_METHOD(sm_menuDropAlignment_cls,       sm_menuDropAlignment_cls),
 
     REXX_METHOD(rsrcUtils_resolveIconID_pvt,    rsrcUtils_resolveIconID_pvt),

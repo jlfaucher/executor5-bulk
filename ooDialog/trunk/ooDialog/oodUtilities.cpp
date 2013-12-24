@@ -2028,6 +2028,10 @@ RexxMethod0(int32_t, sm_cxFixedFrame_cls)
 {
     return GetSystemMetrics(SM_CXFIXEDFRAME);
 }
+RexxMethod0(int32_t, sm_cxIcon_cls)
+{
+    return GetSystemMetrics(SM_CXICON);
+}
 RexxMethod0(int32_t, sm_cxScreen_cls)
 {
     return GetSystemMetrics(SM_CXSCREEN);
@@ -2064,6 +2068,10 @@ RexxMethod0(int32_t, sm_cyHScroll_cls)
 {
     return GetSystemMetrics(SM_CYHSCROLL);
 }
+RexxMethod0(int32_t, sm_cyIcon_cls)
+{
+    return GetSystemMetrics(SM_CYICON);
+}
 RexxMethod0(int32_t, sm_cyMenu_cls)
 {
     return GetSystemMetrics(SM_CYMENU);
@@ -2071,6 +2079,14 @@ RexxMethod0(int32_t, sm_cyMenu_cls)
 RexxMethod0(int32_t, sm_cyScreen_cls)
 {
     return GetSystemMetrics(SM_CYSCREEN);
+}
+RexxMethod0(int32_t, sm_cySize_cls)
+{
+    return GetSystemMetrics(SM_CYSIZE);
+}
+RexxMethod0(int32_t, sm_cySmIcon_cls)
+{
+    return GetSystemMetrics(SM_CYSMICON);
 }
 RexxMethod0(int32_t, sm_menuDropAlignment_cls)
 {
