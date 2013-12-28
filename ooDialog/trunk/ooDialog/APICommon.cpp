@@ -845,7 +845,7 @@ RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRIN
 
 RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual)
 {
-    return wrongArgOptionException(c, pos, list, c->ObjectToStringValue(actual));
+    return wrongArgKeywordsException(c, pos, list, c->ObjectToStringValue(actual));
 }
 
 /**

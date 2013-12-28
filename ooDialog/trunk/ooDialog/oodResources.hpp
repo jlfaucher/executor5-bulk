@@ -79,7 +79,10 @@ extern RexxObjectPtr oodILFromBMP(RexxMethodContext *, HIMAGELIST *, RexxObjectP
 extern PRESOURCEIMAGE rxGetResourceImage(RexxMethodContext *context, RexxObjectPtr r, size_t argPos);
 
 
-#define IMAGE_TYPE_LIST            "Bitmap, Icon, Cursor, Enhanced Metafile"
+#define IMAGE_TYPE_LIST        "Bitmap, Icon, Cursor, EnhMetafile"
+#define IMAGE_FLAGS_LIST       "DefaultColor, MonoChrome, Color, CopyReturnOrg, CopyDeleteOrg, LoadFromFile, LoadTransparent, DefaultSize, VgaColor, LoadMap3DColors, CreateDibSection, CopyFromResource, or Shared"
+#define IMAGELIST_CREATE_LIST  "Mask, Color, ColordDB, Color4, Color8, Color16, Color24, Color32, Palette, Mirror, PerItemMirror, OriginalSize, or HighQualityScale"
+#define LOAD_RESOURCE_LIST     "Blend, Blend25, Blend50, Focus, Mask, Normal, Selected, or Transparent"
 
 
 #endif

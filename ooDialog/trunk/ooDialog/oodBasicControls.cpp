@@ -432,7 +432,8 @@ RexxMethod2(RexxObjectPtr, stc_getImage, OPTIONAL_uint8_t, type, OSELF, self)
                              "TEXT, ICON, BITMAP, LEFT, RIGHT, HCENTER, TOP, BOTTOM, VCENTER, PUSHLIKE, "  \
                              "NOTPUSHLIKE, MULTILINE, NOTMULTILINE, NOTIFY, NOTNOTIFY, FLAT, NOTFLAT"
 
-#define BC_SETSTATE_OPTS     "CHECKED, UNCHECKED, INDETERMINATE, FOCUS, PUSH, NOTPUSHED"
+#define BC_SETSTATE_OPTS      "CHECKED, UNCHECKED, INDETERMINATE, FOCUS, PUSH, NOTPUSHED"
+#define BUTTON_ALIGNMENT_LIST "LEFT, RIGHT, TOP, BOTTOM, or CENTER"
 #define MIN_HALFHEIGHT_GB    12
 
 
@@ -482,6 +483,63 @@ static HWND changeDefPushButton(HWND hCtrl)
 }
 
 /**
+ * Gets the button image list alignment value from the specified argument
+ * object, where the object could be the numeric value, a string keyword, or
+ * omitted altogether.
+ *
+ * @param context
+ * @param _type
+ * @param defType   The value to use if the argument is omitted.
+ * @param argPos
+ *
+ * @return The alignment value or OOD_NO_VALUE on error.  An exception has been
+ *         raised on error.
+ */
+static uint32_t getButtonILAlignArg(RexxMethodContext *context, RexxObjectPtr _align, uint32_t defAlign, size_t argPos)
+{
+    uint32_t align = defAlign;
+
+    if ( argumentExists(argPos) )
+    {
+        if ( ! context->UnsignedInt32(_align, &align) )
+        {
+            CSTRING al = context->ObjectToStringValue(_align);
+            if (      StrCmpI("LEFT", al)   == 0 ) align = BUTTON_IMAGELIST_ALIGN_LEFT;
+            else if ( StrCmpI("RIGH", al)   == 0 ) align = BUTTON_IMAGELIST_ALIGN_RIGHT;
+            else if ( StrCmpI("TOP", al)    == 0 ) align = BUTTON_IMAGELIST_ALIGN_TOP;
+            else if ( StrCmpI("BOTTOM", al) == 0 ) align = BUTTON_IMAGELIST_ALIGN_BOTTOM;
+            else if ( StrCmpI("CENTER", al) == 0 ) align = BUTTON_IMAGELIST_ALIGN_CENTER;
+            else
+            {
+                wrongArgValueException(context->threadContext, argPos, BUTTON_ALIGNMENT_LIST, _align);
+                align = OOD_NO_VALUE;
+            }
+        }
+
+        if ( align != OOD_NO_VALUE && align > BUTTON_IMAGELIST_ALIGN_CENTER )
+        {
+            wrongRangeException(context->threadContext, argPos,
+                                BUTTON_IMAGELIST_ALIGN_LEFT, BUTTON_IMAGELIST_ALIGN_CENTER, align);
+            align = OOD_NO_VALUE;
+        }
+    }
+    return align;
+}
+
+static RexxStringObject align2keywords(RexxMethodContext *c, uint32_t align)
+{
+    CSTRING key = "Unknown";
+
+    if ( align == BUTTON_IMAGELIST_ALIGN_LEFT   ) key = "Left";
+    if ( align == BUTTON_IMAGELIST_ALIGN_RIGHT  ) key = "Right";
+    if ( align == BUTTON_IMAGELIST_ALIGN_TOP    ) key = "Top";
+    if ( align == BUTTON_IMAGELIST_ALIGN_BOTTOM ) key = "Bottom";
+    if ( align == BUTTON_IMAGELIST_ALIGN_CENTER ) key = "Center";
+
+    return c->String(key);
+}
+
+/**
  * Gets the button image list information for this button, which includes the
  * image list itself, the image alignment, and the margin around the image.
  *
@@ -522,6 +580,7 @@ static RexxObjectPtr bcGetImageList(RexxMethodContext *c, HWND hwnd)
             if ( alignment != NULLOBJECT )
             {
                 c->DirectoryPut(table, alignment, "ALIGNMENT");
+                c->DirectoryPut(table, align2keywords(c, biml.uAlign), "ALIGNMENTKEYWORD");
             }
             result = table;
         }
@@ -1213,7 +1272,9 @@ out:
  *
  *          d~imageList -> The .ImageList object set by setImageList().
  *          d~rect      -> A .Rect object containing the margins.
- *          d~alignment -> The image alignment in the button.
+ *          d~rect      -> A .Rect object containing the margins.
+ *          d~alignment -> The image alignment in the button, numeric.
+ *          d~alignmentKeyword -> The image alignment in the button, string.
  *
  * @requires  Common Controls version 6.0 or later.
  *
@@ -1262,7 +1323,7 @@ RexxMethod1(RexxObjectPtr, bc_getImageList, CSELF, pCSelf)
  * @see bcGetImageList() for the format of the returned image list information.
  */
 RexxMethod4(RexxObjectPtr, bc_setImageList, RexxObjectPtr, imageList, OPTIONAL_RexxObjectPtr, margin,
-            OPTIONAL_uint8_t, align, CSELF, pCSelf)
+            OPTIONAL_RexxObjectPtr, align, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
     RexxObjectPtr result = NULLOBJECT;
@@ -1302,19 +1363,10 @@ RexxMethod4(RexxObjectPtr, bc_setImageList, RexxObjectPtr, imageList, OPTIONAL_R
         biml.margin.bottom = pRect->bottom;
     }
 
-    if ( argumentExists(3) )
+    biml.uAlign = getButtonILAlignArg(context, align, BUTTON_IMAGELIST_ALIGN_CENTER, 3);
+    if ( biml.uAlign == OOD_NO_VALUE )
     {
-        if ( align > BUTTON_IMAGELIST_ALIGN_CENTER )
-        {
-            wrongRangeException(context->threadContext, 3, BUTTON_IMAGELIST_ALIGN_LEFT,
-                                BUTTON_IMAGELIST_ALIGN_CENTER, align);
-            goto err_out;
-        }
-        biml.uAlign =  align;
-    }
-    else
-    {
-        biml.uAlign = BUTTON_IMAGELIST_ALIGN_CENTER;
+        goto err_out;
     }
 
     result = bcGetImageList(context, hwnd);

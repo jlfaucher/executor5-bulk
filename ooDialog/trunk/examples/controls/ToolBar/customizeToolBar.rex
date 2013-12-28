@@ -255,7 +255,7 @@ return 0
   expose imageList
   use strict arg tb
 
-  flags = .DlgUtil~or(.Image~toID(ILC_COLOR32), .Image~toID(ILC_MASK))
+  flags = 'COLOR32 MASK'
   cRef  = .Image~colorRef(255, 0, 255)
 
   ri = .ResourceImage~new(self)

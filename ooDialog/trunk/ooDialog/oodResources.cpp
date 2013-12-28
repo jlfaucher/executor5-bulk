@@ -60,6 +60,155 @@ using namespace Gdiplus;
 
 
 /**
+ * Gets the image list type from the specified argument object, where the object
+ * could be the numeric value, a string keyword, or omitted altogether.
+ *
+ * @param context
+ * @param _type
+ * @param defType   The value to use if the argument is omitted.
+ * @param argPos
+ *
+ * @return The image type or OOD_NO_VALUE on error.  An exception has been
+ *         raised on error.
+ */
+static uint32_t getImageTypeArg(RexxMethodContext *context, RexxObjectPtr _type, uint32_t defType, size_t argPos)
+{
+    uint32_t type = defType;
+
+    if ( argumentExists(argPos) )
+    {
+        if ( ! context->UnsignedInt32(_type, &type) )
+        {
+            CSTRING image = context->ObjectToStringValue(_type);
+            if (      StrCmpI("BITMAP", image)       == 0 ) type = IMAGE_BITMAP;
+            else if ( StrCmpI("ICON", image)         == 0 ) type = IMAGE_ICON;
+            else if ( StrCmpI("CURSOR", image)       == 0 ) type = IMAGE_CURSOR;
+            else if ( StrCmpI("ENHMETAFILE", image)  == 0 ) type = IMAGE_ENHMETAFILE;
+            else
+            {
+                wrongArgValueException(context->threadContext, argPos, IMAGE_TYPE_LIST, _type);
+                type = OOD_NO_VALUE;
+            }
+        }
+
+        if ( type != OOD_NO_VALUE && type > IMAGE_ENHMETAFILE )
+        {
+            wrongRangeException(context->threadContext, argPos, IMAGE_BITMAP, IMAGE_ENHMETAFILE, type);
+            type = OOD_NO_VALUE;
+        }
+    }
+    return type;
+}
+
+/**
+ * Gets the size for an image where the size argument must be a .Size object, or
+ * could be omitted.
+ *
+ * @param context
+ * @param size      Rexx .Size Object, could be omitted
+ * @param defSize   Default size if size is omitted, used to return the new size
+ *                  if argument is not omitted.
+ * @param argPos
+ *
+ * @return True on success, false on error.  On error an exception has been
+ *         raised.
+ */
+static bool getImageSizeArg(RexxMethodContext *context, RexxObjectPtr size, SIZE *defSize, size_t argPos)
+{
+    if ( argumentExists(argPos) )
+    {
+        SIZE *p = rxGetSize(context, size, argPos);
+        if ( p == NULL )
+        {
+            return false;
+        }
+        defSize->cx = p->cx;
+        defSize->cy = p->cy;
+    }
+    return true;
+}
+
+
+/**
+ * Gets the image load resource flags the specified argument object, where the
+ * object could be the numeric value, a string keyword, or omitted altogether.
+ *
+ * @param context
+ * @param _flags
+ * @param defFlags   The value to use if the argument is omitted.
+ * @param argPos
+ *
+ * @return The image flags or OOD_NO_VALUE on error.  An exception has been
+ *         raised on error.
+ */
+static uint32_t getImageFlagsArg(RexxMethodContext *context, RexxObjectPtr _flags, uint32_t defFlags, size_t argPos)
+{
+    uint32_t flags = defFlags;
+
+    if ( argumentExists(argPos) )
+    {
+        if ( ! context->UnsignedInt32(_flags, &flags) )
+        {
+            CSTRING lr = context->ObjectToStringValue(_flags);
+
+            char *dup = strdupupr(lr);
+            if ( dup == NULL )
+            {
+                outOfMemoryException(context->threadContext);
+                return OOD_NO_VALUE;
+            }
+
+            flags = 0;
+            char *token = strtok(dup, " ");
+            while ( token != NULL )
+            {
+                if (      strcmp(token, "DEFAULTCOLOR")     == 0 ) flags |= LR_DEFAULTCOLOR           ;
+                else if ( strcmp(token, "MONOCHROME")       == 0 ) flags |= LR_MONOCHROME             ;
+                else if ( strcmp(token, "COLOR")            == 0 ) flags |= LR_COLOR                  ;
+                else if ( strcmp(token, "COPYRETURNORG")    == 0 ) flags |= LR_COPYRETURNORG          ;
+                else if ( strcmp(token, "COPYDELETEORG")    == 0 ) flags |= LR_COPYDELETEORG          ;
+                else if ( strcmp(token, "LOADFROMFILE")     == 0 ) flags |= LR_LOADFROMFILE           ;
+                else if ( strcmp(token, "LOADTRANSPARENT")  == 0 ) flags |= LR_LOADTRANSPARENT        ;
+                else if ( strcmp(token, "DEFAULTSIZE")      == 0 ) flags |= LR_DEFAULTSIZE            ;
+                else if ( strcmp(token, "VGACOLOR")         == 0 ) flags |= LR_VGACOLOR               ;
+                else if ( strcmp(token, "LOADMAP3DCOLORS")  == 0 ) flags |= LR_LOADMAP3DCOLORS        ;
+                else if ( strcmp(token, "CREATEDIBSECTION") == 0 ) flags |= LR_CREATEDIBSECTION       ;
+                else if ( strcmp(token, "COPYFROMRESOURCE") == 0 ) flags |= LR_COPYFROMRESOURCE       ;
+                else if ( strcmp(token, "SHARED")           == 0 ) flags |= LR_SHARED                 ;
+                else
+                {
+                    wrongArgKeywordsException(context->threadContext, argPos, IMAGE_FLAGS_LIST, _flags);
+                    flags = OOD_NO_VALUE;
+                    break;
+                }
+
+                token = strtok(NULL, " ");
+            }
+            LocalFree(dup);
+        }
+
+        if ( flags != OOD_NO_VALUE )
+        {
+            // The user specified flags.  Use some safeguards, determined by the
+            // value of the default flags.  In all other cases, assume the user
+            // knows best.
+
+            if ( defFlags == LR_LOADFROMFILE )
+            {
+                // Ensure the user did not use shared and did use load from file.
+                flags = (flags &  ~LR_SHARED) | LR_LOADFROMFILE;
+            }
+            else if ( defFlags == (LR_SHARED | LR_DEFAULTSIZE) )
+            {
+                // Ensure the user did not use load from file and did use shared.
+                flags = (flags &  ~LR_LOADFROMFILE) | LR_SHARED;
+            }
+        }
+    }
+    return flags;
+}
+
+/**
  * Methods for the .ImageList class.
  */
 #define IMAGELIST_CLASS "ImageList"
@@ -68,6 +217,69 @@ using namespace Gdiplus;
 #define IL_DEFAULT_FLAGS           ILC_COLOR32 | ILC_MASK
 #define IL_DEFAULT_COUNT           6
 #define IL_DEFAULT_GROW            0
+
+/**
+ * Gets the image list create flags the from specified argument object, where
+ * the object could be the numeric value, a string keyword, or omitted
+ * altogether.
+ *
+ * @param context
+ * @param _flags
+ * @param defFlags   The value to use if the argument is omitted.
+ * @param argPos
+ *
+ * @return The image flags.
+ *
+ */
+static uint32_t getImageListCreateFlagsArg(RexxMethodContext *context, RexxObjectPtr _flags,
+                                           uint32_t defFlags, size_t argPos)
+{
+    uint32_t flags = defFlags;
+
+    if ( argumentExists(argPos) )
+    {
+        if ( ! context->UnsignedInt32(_flags, &flags) )
+        {
+            CSTRING ilc = context->ObjectToStringValue(_flags);
+
+            char *dup = strdupupr(ilc);
+            if ( dup == NULL )
+            {
+                outOfMemoryException(context->threadContext);
+                return OOD_NO_VALUE;
+            }
+
+            flags = 0;
+            char *token = strtok(dup, " ");
+            while ( token != NULL )
+            {
+                if (      strcmp(token, "MASK")             == 0 ) flags |= ILC_MASK                  ;
+                else if ( strcmp(token, "COLOR")            == 0 ) flags |= ILC_COLOR                 ;
+                else if ( strcmp(token, "COLORDDB")         == 0 ) flags |= ILC_COLORDDB              ;
+                else if ( strcmp(token, "COLOR4")           == 0 ) flags |= ILC_COLOR4                ;
+                else if ( strcmp(token, "COLOR8")           == 0 ) flags |= ILC_COLOR8                ;
+                else if ( strcmp(token, "COLOR16")          == 0 ) flags |= ILC_COLOR16               ;
+                else if ( strcmp(token, "COLOR24")          == 0 ) flags |= ILC_COLOR24               ;
+                else if ( strcmp(token, "COLOR32")          == 0 ) flags |= ILC_COLOR32               ;
+                else if ( strcmp(token, "PALETTE")          == 0 ) flags |= ILC_PALETTE               ;
+                else if ( strcmp(token, "MIRROR")           == 0 ) flags |= ILC_MIRROR                ;
+                else if ( strcmp(token, "PERITEMMIRROR")    == 0 ) flags |= ILC_PERITEMMIRROR         ;
+                else if ( strcmp(token, "ORIGINALSIZE")     == 0 ) flags |= ILC_ORIGINALSIZE          ;
+                else if ( strcmp(token, "HIGHQUALITYSCALE") == 0 ) flags |= ILC_HIGHQUALITYSCALE      ;
+                else
+                {
+                    wrongArgKeywordsException(context->threadContext, argPos, IMAGELIST_CREATE_LIST, _flags);
+                    flags = OOD_NO_VALUE;
+                    break;
+                }
+
+                token = strtok(NULL, " ");
+            }
+            LocalFree(dup);
+        }
+    }
+    return flags;
+}
 
 
 /**
@@ -79,20 +291,40 @@ using namespace Gdiplus;
  *
  * @return uint32_t
  */
-uint32_t keyword2ild(CSTRING flags)
+uint32_t keyword2ild(RexxMethodContext *c, CSTRING flags, size_t argPos)
 {
     uint32_t val = ILD_NORMAL;
 
     if ( flags != NULL )
     {
-        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_BLEND          ;
-        if ( StrStrI(flags, "SIZEGRIP"    ) != NULL ) val |= ILD_BLEND25        ;
-        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_BLEND50        ;
-        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_FOCUS          ;
-        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_MASK           ;
-        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_NORMAL         ;
-        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_SELECTED       ;
-        if ( StrStrI(flags, "TOOLTIPS"    ) != NULL ) val |= ILD_TRANSPARENT    ;
+        char *dup = strdupupr(flags);
+        if ( dup == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            return OOD_NO_VALUE;
+        }
+
+        char *token = strtok(dup, " ");
+        while ( token != NULL )
+        {
+            if (      strcmp(flags, "BLEND"       ) == 0 ) val |= ILD_BLEND          ;
+            else if ( strcmp(flags, "BLEND25"     ) == 0 ) val |= ILD_BLEND25        ;
+            else if ( strcmp(flags, "BLEND50"     ) == 0 ) val |= ILD_BLEND50        ;
+            else if ( strcmp(flags, "FOCUS"       ) == 0 ) val |= ILD_FOCUS          ;
+            else if ( strcmp(flags, "MASK"        ) == 0 ) val |= ILD_MASK           ;
+            else if ( strcmp(flags, "NORMAL"      ) == 0 ) val |= ILD_NORMAL         ;
+            else if ( strcmp(flags, "SELECTED"    ) == 0 ) val |= ILD_SELECTED       ;
+            else if ( strcmp(flags, "TRANSPARENT" ) == 0 ) val |= ILD_TRANSPARENT    ;
+            else
+            {
+                wrongArgValueException(c->threadContext, argPos, LOAD_RESOURCE_LIST, flags);
+                val = OOD_NO_VALUE;
+                break;
+            }
+
+            token = strtok(NULL, " ");
+        }
+        LocalFree(dup);
     }
 
     return val;
@@ -259,7 +491,7 @@ done_out:
  *
  *
  */
-RexxMethod4(RexxObjectPtr, il_create_cls, OPTIONAL_RexxObjectPtr, size,  OPTIONAL_uint32_t, flags,
+RexxMethod4(RexxObjectPtr, il_create_cls, OPTIONAL_RexxObjectPtr, size,  OPTIONAL_RexxObjectPtr, _flags,
             OPTIONAL_int32_t, count, OPTIONAL_int32_t, grow)
 {
     RexxMethodContext *c = context;
@@ -282,16 +514,10 @@ RexxMethod4(RexxObjectPtr, il_create_cls, OPTIONAL_RexxObjectPtr, size,  OPTIONA
         s.cy = GetSystemMetrics(SM_CYICON);
     }
 
-    if ( argumentExists(2) )
+    uint32_t flags = getImageListCreateFlagsArg(context, _flags, IL_DEFAULT_FLAGS, 2);
+    if ( (flags & (ILC_ORIGINALSIZE | ILC_HIGHQUALITYSCALE)) && (! requiredComCtl32Version(c, "init", COMCTL32_6_0)) )
     {
-        if ( (flags & (ILC_MIRROR | ILC_PERITEMMIRROR)) && (! requiredComCtl32Version(c, "init", COMCTL32_6_0)) )
-        {
-            goto out;
-        }
-    }
-    else
-    {
-        flags = IL_DEFAULT_FLAGS;
+        goto out;
     }
 
     if ( argumentOmitted(3) )
@@ -603,7 +829,11 @@ RexxMethod4(RexxObjectPtr, il_getIcon, uint32_t, index, OPTIONAL_CSTRING, _style
     HIMAGELIST himl = (HIMAGELIST)il;
     if ( himl != NULL )
     {
-        uint32_t style = keyword2ild(_style);
+        uint32_t style = keyword2ild(context, _style, 2);
+        if ( style == OOD_NO_VALUE )
+        {
+            return NULLOBJECT;
+        }
 
         if ( argumentExists(3) )
         {
@@ -625,7 +855,7 @@ RexxMethod4(RexxObjectPtr, il_getIcon, uint32_t, index, OPTIONAL_CSTRING, _style
         return TheNilObj;
     }
     nullObjectException(context->threadContext, IMAGELIST_CLASS);
-    return NULL;
+    return NULLOBJECT;
 }
 
 /** ImageList::getImageSize()
@@ -1091,51 +1321,6 @@ out:
     return result;
 }
 
-bool getStandardImageArgs(RexxMethodContext *context, uint8_t *type, uint8_t defType, RexxObjectPtr size,
-                          SIZE *defSize, uint32_t *flags, uint32_t defFlags)
-{
-    oodResetSysErrCode(context->threadContext);
-
-    if ( argumentOmitted(2) )
-    {
-        *type = defType;
-    }
-
-    if ( argumentExists(3) )
-    {
-        SIZE *p = rxGetSize(context, size, 3);
-        if ( p == NULL )
-        {
-            return false;
-        }
-        defSize->cx = p->cx;
-        defSize->cy = p->cy;
-    }
-
-    if ( argumentOmitted(4) )
-    {
-        *flags = defFlags;
-    }
-    else
-    {
-        // The user specified flags.  Use some safeguards, determined by the
-        // value of the default flags.  In all other cases, assume the user
-        // knows best.
-
-        if ( defFlags == LR_LOADFROMFILE )
-        {
-            // Ensure the user did not use shared and did use load from file.
-            *flags = (*flags &  ~LR_SHARED) | LR_LOADFROMFILE;
-        }
-        else if ( defFlags == (LR_SHARED | LR_DEFAULTSIZE) )
-        {
-            // Ensure the user did not use load from file and did use shared.
-            *flags = (*flags &  ~LR_LOADFROMFILE) | LR_SHARED;
-        }
-    }
-    return true;
-}
-
 /**
  * Initializes the string to int map for IDs and flags used by images and image
  * lists.  This will included things like a button control's alignment flags for
@@ -1268,16 +1453,19 @@ RexxMethod1(uint32_t, image_toID_cls, CSTRING, symbol)
 
 /** Image::getImage()  [class method]
  *
- *  Instantiate an .Image object from one of the system OEM images, or loaded
- *  from an image file (.bmp, .ico, etc..)
+ *  Instantiate an .Image object from one of the system images, or loaded from
+ *  an image file (.bmp, .ico, etc..)
  *
  *  @param   id  Either the numeric resource id of an OEM system image, or the
  *               file name of a stand-alone image file.
  *
- *  @note  The programmer can use one of the .OEM constants to load a system
- *         image, or the raw number if she knows it.
+ *               The programmer should use one of the .OEM constants to load a
+ *               system image, or the raw number if she knows it.  If id is not
+ *               a number, it is assumed to be a file name.  Note that many of
+ *               the .OEM constants have the same numeric value.  The type
+ *               argument distinguishes whether a bitmap or an icon is loaded
  *
- *         This method is designed to always return an .Image object, or raise
+ *  @note  This method is designed to always return an .Image object, or raise
  *         an exception.  The user would need to test the returned .Image object
  *         for null to be sure it is good.  I.e.:
  *
@@ -1286,8 +1474,8 @@ RexxMethod1(uint32_t, image_toID_cls, CSTRING, symbol)
  *          -- error
  *        end
  */
-RexxMethod4(RexxObjectPtr, image_getImage_cls, RexxObjectPtr, id, OPTIONAL_uint8_t, type,
-            OPTIONAL_RexxObjectPtr, size, OPTIONAL_uint32_t, flags)
+RexxMethod4(RexxObjectPtr, image_getImage_cls, RexxObjectPtr, id, OPTIONAL_RexxObjectPtr, _type,
+            OPTIONAL_RexxObjectPtr, size, OPTIONAL_RexxObjectPtr, _flags)
 {
     RexxObjectPtr result = NULLOBJECT;
     SIZE s = {0};
@@ -1312,8 +1500,19 @@ RexxMethod4(RexxObjectPtr, image_getImage_cls, RexxObjectPtr, id, OPTIONAL_uint8
         name = context->ObjectToStringValue(id);
     }
 
-    if ( ! getStandardImageArgs(context, &type, IMAGE_BITMAP, size, &s, &flags,
-                                fromFile ? LR_LOADFROMFILE : LR_SHARED | LR_DEFAULTSIZE) )
+    uint32_t type = getImageTypeArg(context, _type, IMAGE_BITMAP, 2);
+    if ( type == OOD_NO_VALUE )
+    {
+        goto out;
+    }
+
+    if ( ! getImageSizeArg(context, size, &s, 3) )
+    {
+        goto out;
+    }
+
+    uint32_t flags = getImageFlagsArg(context, _flags, fromFile ? LR_LOADFROMFILE : LR_SHARED | LR_DEFAULTSIZE, 4);
+    if ( flags == OOD_NO_VALUE )
     {
         goto out;
     }
@@ -1382,7 +1581,7 @@ out:
  *  @return An image object, which may be a null image on error.
  */
 RexxMethod4(RexxObjectPtr, image_userIcon_cls, RexxObjectPtr, dlg, RexxObjectPtr, rxID,
-            OPTIONAL_RexxObjectPtr, size, OPTIONAL_uint32_t, flags)
+            OPTIONAL_RexxObjectPtr, size, OPTIONAL_RexxObjectPtr, _flags)
 {
     RexxObjectPtr result = NULLOBJECT;
     SIZE s = {0};
@@ -1427,6 +1626,11 @@ RexxMethod4(RexxObjectPtr, image_userIcon_cls, RexxObjectPtr, dlg, RexxObjectPtr
         s.cy = p->cy;
     }
 
+    uint32_t defFlags = getImageFlagsArg(context, _flags, LR_LOADFROMFILE, 4);
+    if ( defFlags == OOD_NO_VALUE )
+    {
+        goto out;
+    }
     if ( argumentExists(4) )
     {
         // Make sure the user has compatible flags for this operation.
@@ -1448,14 +1652,26 @@ out:
     return result;
 }
 
-RexxMethod4(RexxObjectPtr, image_fromFiles_cls, RexxArrayObject, files, OPTIONAL_uint8_t, type,
-            OPTIONAL_RexxObjectPtr, size, OPTIONAL_uint32_t, flags)
+RexxMethod4(RexxObjectPtr, image_fromFiles_cls, RexxArrayObject, files, OPTIONAL_RexxObjectPtr, _type,
+            OPTIONAL_RexxObjectPtr, size, OPTIONAL_RexxObjectPtr, _flags)
 {
     RexxMethodContext *c = context;
     RexxArrayObject result = NULLOBJECT;
     SIZE s = {0};
 
-    if ( ! getStandardImageArgs(context, &type, IMAGE_BITMAP, size, &s, &flags, LR_LOADFROMFILE) )
+    uint32_t type = getImageTypeArg(context, _type, IMAGE_BITMAP, 2);
+    if ( type == OOD_NO_VALUE )
+    {
+        goto out;
+    }
+
+    if ( ! getImageSizeArg(context, size, &s, 3) )
+    {
+        goto out;
+    }
+
+    uint32_t flags = getImageFlagsArg(context, _flags, LR_LOADFROMFILE, 4);
+    if ( flags == OOD_NO_VALUE )
     {
         goto out;
     }
@@ -1507,14 +1723,26 @@ out:
  *  doc that the IDs can be numeric or symbolic.
  *
  */
-RexxMethod4(RexxObjectPtr, image_fromIDs_cls, RexxArrayObject, ids, OPTIONAL_uint8_t, type,
-            OPTIONAL_RexxObjectPtr, size, OPTIONAL_uint32_t, flags)
+RexxMethod4(RexxObjectPtr, image_fromIDs_cls, RexxArrayObject, ids, OPTIONAL_RexxObjectPtr, _type,
+            OPTIONAL_RexxObjectPtr, size, OPTIONAL_RexxObjectPtr, _flags)
 {
     RexxMethodContext *c = context;
     RexxArrayObject result = NULLOBJECT;
     SIZE s = {0};
 
-    if ( ! getStandardImageArgs(context, &type, IMAGE_ICON, size, &s, &flags, LR_SHARED | LR_DEFAULTSIZE) )
+    uint32_t type = getImageTypeArg(context, _type, IMAGE_ICON, 2);
+    if ( type == OOD_NO_VALUE )
+    {
+        goto out;
+    }
+
+    if ( ! getImageSizeArg(context, size, &s, 3) )
+    {
+        goto out;
+    }
+
+    uint32_t flags = getImageFlagsArg(context, _flags, LR_SHARED | LR_DEFAULTSIZE, 4);
+    if ( flags == OOD_NO_VALUE )
     {
         goto out;
     }
@@ -1833,8 +2061,8 @@ err_out:
  *          -- error
  *        end
  */
-RexxMethod5(RexxObjectPtr, ri_getImage, RexxObjectPtr, _id, OPTIONAL_uint8_t, type,
-            OPTIONAL_RexxObjectPtr, size, OPTIONAL_uint32_t, flags, CSELF, cself)
+RexxMethod5(RexxObjectPtr, ri_getImage, RexxObjectPtr, _id, OPTIONAL_RexxObjectPtr, _type,
+            OPTIONAL_RexxObjectPtr, size, OPTIONAL_RexxObjectPtr, _flags, CSELF, cself)
 {
     RexxObjectPtr result = NULLOBJECT;
     SIZE s = {0};
@@ -1845,7 +2073,6 @@ RexxMethod5(RexxObjectPtr, ri_getImage, RexxObjectPtr, _id, OPTIONAL_uint8_t, ty
         goto out;
     }
 
-
     PRESOURCEIMAGE ri = (PRESOURCEIMAGE)cself;
     if ( ! ri->isValid )
     {
@@ -1854,7 +2081,19 @@ RexxMethod5(RexxObjectPtr, ri_getImage, RexxObjectPtr, _id, OPTIONAL_uint8_t, ty
     }
     ri->lastError = 0;
 
-    if ( ! getStandardImageArgs(context, &type, IMAGE_BITMAP, size, &s, &flags, LR_SHARED) )
+    uint32_t type = getImageTypeArg(context, _type, IMAGE_BITMAP, 2);
+    if ( type == OOD_NO_VALUE )
+    {
+        goto out;
+    }
+
+    if ( ! getImageSizeArg(context, size, &s, 3) )
+    {
+        goto out;
+    }
+
+    uint32_t flags = getImageFlagsArg(context, _flags, LR_SHARED, 4);
+    if ( flags == OOD_NO_VALUE )
     {
         goto out;
     }
@@ -1874,8 +2113,8 @@ out:
     return result;
 }
 
-RexxMethod5(RexxObjectPtr, ri_getImages, RexxArrayObject, ids, OPTIONAL_uint8_t, type,
-            OPTIONAL_RexxObjectPtr, size, OPTIONAL_uint32_t, flags, CSELF, cself)
+RexxMethod5(RexxObjectPtr, ri_getImages, RexxArrayObject, ids, OPTIONAL_RexxObjectPtr, _type,
+            OPTIONAL_RexxObjectPtr, size, OPTIONAL_RexxObjectPtr, _flags, CSELF, cself)
 {
     RexxObjectPtr result = NULLOBJECT;
     SIZE s = {0};
@@ -1888,7 +2127,19 @@ RexxMethod5(RexxObjectPtr, ri_getImages, RexxArrayObject, ids, OPTIONAL_uint8_t,
     }
     ri->lastError = 0;
 
-    if ( ! getStandardImageArgs(context, &type, IMAGE_BITMAP, size, &s, &flags, LR_SHARED) )
+    uint32_t type = getImageTypeArg(context, _type, IMAGE_BITMAP, 2);
+    if ( type == OOD_NO_VALUE )
+    {
+        goto out;
+    }
+
+    if ( ! getImageSizeArg(context, size, &s, 3) )
+    {
+        goto out;
+    }
+
+    uint32_t flags = getImageFlagsArg(context, _flags, LR_SHARED, 4);
+    if ( flags == OOD_NO_VALUE )
     {
         goto out;
     }

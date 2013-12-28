@@ -666,7 +666,7 @@
   sd = locate()
   staticImage = self~newStatic(IDC_ST_MOVIE_BMP)
   size = staticImage~getRealSize
-  image = .Image~getImage(sd'rc\ticketWizardMovie.bmp', .Image~toID(IMAGE_BITMAP), size)
+  image = .Image~getImage(sd'rc\ticketWizardMovie.bmp', BITMAP, size)
   staticImage~setImage(image)
 
   filmArray = .array~new(20)
@@ -1106,11 +1106,11 @@
    size~height -= 10;
 
    sd = locate()
-   image = .Image~getImage(sd'rc\ticketWizardTicket.bmp', .Image~toID(IMAGE_BITMAP), size)
-   imageList = .ImageList~create(size, .Image~toID(ILC_COLOR8), 1, 0)
+   image = .Image~getImage(sd'rc\ticketWizardTicket.bmp', BITMAP, size)
+   imageList = .ImageList~create(size, COLOR8, 1, 0)
    imageList~add(image)
 
-   align = .Image~toID(BUTTON_IMAGELIST_ALIGN_CENTER)
+   align = CENTER
    margin = .Rect~new(5)
    bmpButton~setImageList(imageList, margin, align)
 

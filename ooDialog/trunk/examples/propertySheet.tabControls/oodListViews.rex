@@ -425,7 +425,7 @@
   expose smallIcons normalIcons sd
 
   small = .Image~getImage(sd"rc\oodListViews1.bmp")
-  tmpIL = .ImageList~create(.Size~new(16, 12), .Image~toID(ILC_COLOR4), 4, 0)
+  tmpIL = .ImageList~create(.Size~new(16, 12), COLOR4, 4, 0)
   if \small~isNull,  \tmpIL~isNull then do
       tmpIL~add(small)
       small~release
@@ -436,7 +436,7 @@
   end
 
   normal = .Image~getImage(sd"rc\oodListViews2.bmp")
-  tmpIL = .ImageList~create(.Size~new(32, 32), .Image~toID(ILC_COLOR4), 4, 0)
+  tmpIL = .ImageList~create(.Size~new(32, 32), COLOR4, 4, 0)
   if \normal~isNull,  \tmpIL~isNull then do
       tmpIL~add(normal)
       normal~release

@@ -858,6 +858,18 @@
 ::constant OIC_INFORMATION     32516
 ::constant OIC_SHIELD          32518
 
+::constant IDI_APPLICATION     32512
+::constant IDI_HAND            32513
+::constant IDI_QUESTION        32514
+::constant IDI_EXCLAMATION     32515
+::constant IDI_ASTERISK        32516
+::constant IDI_WINLOGO         32517
+::constant IDI_SHIELD          32518
+::constant IDI_WARNING         32515
+::constant IDI_ERROR           32513
+::constant IDI_INFORMATION     32516
+
+
 /**
  * Standard Dialog Control Classes.  Some simple short cut dialogs.
  */

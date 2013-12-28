@@ -475,7 +475,7 @@ callFailed:
 
 ::method getImages private
   image = .Image~getImage(.application~srcDir"icons.bmp")
-  imageList = .ImageList~create(.Size~new(16, 12), .Image~toID(ILC_COLOR4), 6, 0)
+  imageList = .ImageList~create(.Size~new(16, 12), COLOR4, 6, 0)
   if \image~isNull,  \imageList~isNull then do
       imageList~add(image)
       image~release

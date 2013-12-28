@@ -114,7 +114,7 @@ New Public Routines:
 New Methods:
 ------------
 
-In the ResourceImage class:
+In the ImageList class:
 
 getIcon()
 
@@ -123,16 +123,31 @@ getIcon()
 New Attributes:
 ---------------
 
-In the ? class:
+In the SM class:
+----------------
 
-?
+  * cxIcon
+
+  * cyIcon
+
+  * cySize
+
+  * cySmIcon
 
 
 
 Enhanced Methods:
------------------
+=================
+
+In the Button class:
+-------------------
+
+  *  getImageList() and setImageList() methods accept string keywords
+     for the alignment argument.
+
 
 In the EventNotification class:
+-------------------------------
 
   * All event connection methods have an optional will reply type
     argument. This argument is added to those methods that did not have
@@ -156,14 +171,61 @@ connectTabEvent()
     Rexx Tab object that is sending the event notification.
 
 
+In the Image class:
+-------------------
+
+  *  The getImage() method has been enhanced to accept string keywords
+     for the type and flags arguments.
+
+  *  The fromIDs() method has been enhanced to accept string key words
+     for the typed and flags arguments.
+
+  *  The userIcon() method has been enhanced to accept string key words
+     for the flags arguments.
+
+
+In the ImageList class:
+-----------------------
+
+  *  The create() method has been enhanced to accept string key words
+     for the flags argument.
+
+
+In the ListView class:
+----------------------
+
+  *  The getImageList() method has been enhanced to accept a string key
+     word for the type agrument.
+
+  *  The setImageList() method has been enhanced to accept a string key
+     word for the type agrument.
+
+
 In the ResourceImage class:
+---------------------------
 
   *  The new() method has been enhanced to only need 1 argument.  The
      optional 2nd argument is no longer needed.
 
+  *  The getImage() method has been enhanced to accept string key words
+     for the type and flags arguments.
+
+  *  The getImages() method has been enhanced to accept string key words
+     for the type and flags arguments.
+
+
+In the TreeView class:
+----------------------
+
+  *  The getImageList() method has been enhanced to accept a string key
+     word for the type agrument.
+
+  *  The setImageList() method has been enhanced to accept a string key
+     word for the type agrument.
+
 
 Enhanced Public Routines:
--------------------------
+=========================
 
 ?
 
