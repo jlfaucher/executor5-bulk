@@ -1602,6 +1602,13 @@ self~newPushButton(IDCANCEL)~click
             The numeric flag that specifies the alignment of the image list.
           </para>
           </listitem></varlistentry>
+          <varlistentry><term>alignmentKeyword</term>
+          <listitem>
+          <para>
+            The string keyword that specifies the alignment of the image list. This will be exactly one of: Left, Right, Top,
+            Bottom, Center, or Unknown. It is very unlikely that the keyword will ever be Unknown.
+          </para>
+          </listitem></varlistentry>
         </variablelist>
       </para>
       </listitem></varlistentry>
@@ -1639,30 +1646,18 @@ self~newPushButton(IDCANCEL)~click
   if d <> .nil then do
     say '  image:  ' d~imageList
     say '  rect:   ' d~rect
-    say '  align:  ' self~getAlignmentText(d~alignment)
+    say '  align:  ' d~alignmentKeyword
 
     say 'Image margins:' d~rect~left',' d~rect~top',' d~rect~right',' d~rect~bottom
   end
   ...
-
-::method getAlignmentText private
-  use strict arg align
-  select
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_CENTER) then return "center"
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_LEFT) then return "left"
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_RIGHT) then return "right"
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_TOP) then return "top"
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_BOTTOM) then return "bottom"
-    otherwise return "error"
-  end
-  -- End select
 
 /* Output might be for example:
 
   Got image list: a Directory
     image:   an ImageList
     rect:    a Rect
-    align:   left
+    align:   Left
   Image margins: 1, 1, 1, 1
 
  */
@@ -1910,8 +1905,24 @@ return .true
       <varlistentry><term>alignment [optional]</term>
       <listitem>
       <para>
-        Specifies the alignment of the image on the button. You can use the <xref linkend="mthToIDClsImage"/> method of the
-        <xref linkend="clsImage"/> class to get the correct numeric value for one of the following symbols, or use the
+        Specifies the alignment of the image on the button. The <emphasis role="italic">alignment</emphasis> argument can be
+        specified either by the numeric value of the flag that the button control recognizes, or by a string keyword.
+      </para>
+      <para>
+        The following keywords can be used to specify the alignment, case is not significant:
+      </para>
+      <para>
+        <simplelist type='horiz' columns='2'>
+        <member>LEFT   </member>
+        <member>RIGHT  </member>
+        <member>TOP    </member>
+        <member>BOTTOM </member>
+        <member>CENTER </member>
+        </simplelist>
+      </para>
+      <para>
+        To specify the alignment using a numeric value, the programmer can use the <xref linkend="mthToIDClsImage"/> method
+        of the <xref linkend="clsImage"/> class to get the correct numeric value for one of the following symbols, or use the
         numeric value itself.
       </para>
       <para>
@@ -1924,7 +1935,7 @@ return .true
         </simplelist>
       </para>
       <para>
-        The default is BUTTON_IMAGELIST_ALIGN_CENTER.
+        The default is CENTER, of BUTTON_IMAGELIST_ALIGN_CENTER if using the numeric value.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2030,14 +2041,14 @@ return .true
   files[6] = "resources\Hot.bmp"          -- Stylus hot, tablet PC only
 
   -- Set the flags to create a 24 bit color, masked image list.
-  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
+  flags = "COLOR24 MASK"
   imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10)
 
   images = .Image~fromFiles(files)
   cRef = .Image~colorRef(255, 255, 255)
   imageList~addImages(images, cRef)
 
-  align = .Image~toID(BUTTON_IMAGELIST_ALIGN_LEFT)
+  align = LEFT
   margin = .Rect~new(1)
 
   ret = pbView~setImageList(imageList, margin, align)
